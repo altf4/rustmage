@@ -1,0 +1,11 @@
+{
+  "name": "Red Herring",
+  "catalogue_id": 3427,
+  "oracle_id": "f0ee45b5-697b-48f8-b1a6-cb3ae75e4a29",
+  "facts_sha256": "d45db7becf00945102efbe1c4d1dc61a0d3eefcd778e08309b66c1b8a93ec5f9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "183caa9bcf9aea37407013f514709eb860a2f64acf0da8ceb7c53174d7feb518"
+  }
+}

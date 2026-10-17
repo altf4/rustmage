@@ -1,0 +1,11 @@
+{
+  "name": "Kyoshi Battle Fan",
+  "catalogue_id": 2429,
+  "oracle_id": "849e54f9-7662-4186-859c-e4f52afbccac",
+  "facts_sha256": "965f76a8bd1256f7cdc8eaa47fd954d1f00e5afcc6e9f9ace59fa9dd86eb5c95",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "69a3570717579ee7d7c8bd0b8b868be96126db24e18af77b65dad30f13a56fc7"
+  }
+}

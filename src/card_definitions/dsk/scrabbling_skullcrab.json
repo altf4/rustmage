@@ -1,0 +1,11 @@
+{
+  "name": "Scrabbling Skullcrab",
+  "catalogue_id": 3734,
+  "oracle_id": "1448489c-dfb8-43aa-ae3d-ed832381c1d9",
+  "facts_sha256": "0ea6be2a0171efa2e43b1c8b703c34483b40bf9455500936fdd9788a38d2743a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "153addeeedf65c0151bb0f7d29e70d03c5df3117202a36ebc52a1c7e13971390"
+  }
+}

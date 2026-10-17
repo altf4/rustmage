@@ -1,0 +1,11 @@
+{
+  "name": "Stark Industries",
+  "catalogue_id": 4103,
+  "oracle_id": "52401cb4-1bce-4191-9220-0d93ea4108b8",
+  "facts_sha256": "95836c3aaf6f888948f388e0f7c8fe65b7e0065953c57d8e29a0fa4e2c56e3c6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f1938c2066eb3d94349c7c4ec19b76988c23bc50a565f9fbfa20abcacd83dc5a"
+  }
+}

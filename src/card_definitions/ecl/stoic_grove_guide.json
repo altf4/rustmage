@@ -1,0 +1,11 @@
+{
+  "name": "Stoic Grove-Guide",
+  "catalogue_id": 4156,
+  "oracle_id": "96c4b51c-8a10-428c-a948-e1ba9c652bfd",
+  "facts_sha256": "d85cca77cfb8027dc0b4f689506aba9f92e38fea8f588581e0e116c718dddcec",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ada818abfc7f9c92f8935e363d888f79a0314c99eea9b7f3dbf900cd27acb653"
+  }
+}

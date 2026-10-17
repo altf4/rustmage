@@ -1,0 +1,11 @@
+{
+  "name": "Shivan Dragon",
+  "catalogue_id": 3838,
+  "oracle_id": "711eea87-0fa3-46e0-a42b-fa5a86455f04",
+  "facts_sha256": "685fe8d6aa0ed00a2a8e68910f02fc0d94759c263e9e506591d71908ce451d50",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b4071655f9acb57f06f849c2adec679f12282ca41d8347fe3d22092941781e4d"
+  }
+}

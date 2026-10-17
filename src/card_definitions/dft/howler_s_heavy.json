@@ -1,0 +1,11 @@
+{
+  "name": "Howler's Heavy",
+  "catalogue_id": 2086,
+  "oracle_id": "8abeaa77-d455-47e7-bf60-aefb94ab83fb",
+  "facts_sha256": "c1f9dfa786ffb454b823e808a9e15060fb0ac9462f88e0ae199f0b4402e74e5b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f222f26c6cb7786bee77a26dd7108e7e5b1ce448ae13b3ae156187408316d3e2"
+  }
+}

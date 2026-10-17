@@ -1,0 +1,11 @@
+{
+  "name": "Trapped in the Screen",
+  "catalogue_id": 4661,
+  "oracle_id": "20f2fc0e-b1d4-4f80-9c7a-a9fb25fef7b8",
+  "facts_sha256": "e12119b787d7dfdd763dc2cf47affa4e1efb4a0afd10285e72cdf40d465207d6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a68433e4115623e300cd57b9620645bbd93b83444e4430139362d9847fd4d722"
+  }
+}

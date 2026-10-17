@@ -1,0 +1,11 @@
+{
+  "name": "Terror of Mount Velus",
+  "catalogue_id": 4399,
+  "oracle_id": "8161248c-16a3-47db-a3ae-cdfd878d49e0",
+  "facts_sha256": "f3c5fb1022fdbca915382b808741a99832530b56e002c3d934f79502a82748f9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "29eed4528f9fb47ea92297b5c6ce46079a1898fe622d48873021c63cd6167210"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Lifecraft Engine",
+  "catalogue_id": 2491,
+  "oracle_id": "caa69b51-1efd-4d0e-803b-914a83ccb836",
+  "facts_sha256": "b3dfe4f76b4c14447d09fb505c887fb366ac4589dadc36136efa19f483c04630",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "177fbc6098a0ee9d0234242a8a730c2c0a0677425b0994ea9f438f1877a48f24"
+  }
+}

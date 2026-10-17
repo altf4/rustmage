@@ -1,0 +1,11 @@
+{
+  "name": "Dream Seizer",
+  "catalogue_id": 1180,
+  "oracle_id": "c7e4bc5d-e1d9-4fbc-8d53-0cec73086828",
+  "facts_sha256": "fb29584141e20d4321ec38fe35b6302bd860f589515d5fd07bc1e4012f199444",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ee73d836174144109cf593d09cb4b8d7e86a8f1697d29b83b69c0f406f9fb1bb"
+  }
+}

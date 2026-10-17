@@ -1,0 +1,11 @@
+{
+  "name": "Requiting Hex",
+  "catalogue_id": 3472,
+  "oracle_id": "eda16b31-33db-4ad2-901a-80fbe6273733",
+  "facts_sha256": "bd91a3439b9f34b804bb491bbf275f69e979557c0dde953a32351a3c086e11a6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1a3b267df756334a1b63dcc7e583d611d6ff079c8939db32ade7397d5a531fe1"
+  }
+}

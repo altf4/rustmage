@@ -1,0 +1,11 @@
+{
+  "name": "Resplendent Angel",
+  "catalogue_id": 3481,
+  "oracle_id": "2ac93092-1a57-4cf7-8f03-1dca86d5c476",
+  "facts_sha256": "1b3f86556fc165254108cf7cd300fa8f55386f0b495116d8c193236b96b9f7a0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2475bb1a3108a653bbaaaf92be1319a65c7ca4a487e8af8964f484e17414ae6c"
+  }
+}

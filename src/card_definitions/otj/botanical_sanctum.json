@@ -1,0 +1,11 @@
+{
+  "name": "Botanical Sanctum",
+  "catalogue_id": 510,
+  "oracle_id": "88f8f683-738e-48f3-afff-c8f73f1033a2",
+  "facts_sha256": "a53e7eaa817bf296fd572d04b0543af5e9d693c29ad34a825b467eaf1ae5f4f6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ae6078f7d228c44198992f7134573219195e395b9091cec0dd87b711f0894c5c"
+  }
+}

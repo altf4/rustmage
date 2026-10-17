@@ -1,0 +1,11 @@
+{
+  "name": "A.I.M. Synthoids",
+  "catalogue_id": 19,
+  "oracle_id": "10916f33-aaa6-43a1-9835-b60fd061161f",
+  "facts_sha256": "31ed7557b297aa7e02625ff14bf1b11d6d3e9d4f27409fcfae11badcc421fabe",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2e5ce277a8c4285b134fc6fba41a740b08d9f5e14895d0c16b13897accf49b2c"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Sothera, the Supervoid",
+  "catalogue_id": 3971,
+  "oracle_id": "760ede92-a826-4144-9de8-84ba9b8743d1",
+  "facts_sha256": "7771962fa7e33f2c50e4d0451737bfe3368dfd53cde755518f00fe7e067c550d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bf458e74f3c4a785d3bacbfb830c8e3fa0d6268d08d251893d6143cb430b7f57"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Iron Hills Blacksmith",
+  "catalogue_id": 2227,
+  "oracle_id": "9febdfa8-8af2-4aba-b2e6-cb2baad7e02b",
+  "facts_sha256": "bca0c95b4b02da5c6d816921e950a5be09cac7ef24ff11cc2d894296dd0b88af",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ad4193652041ccb01fb0c0083804bddd794fd67bdb4fdcd1f653d0b476b23a09"
+  }
+}

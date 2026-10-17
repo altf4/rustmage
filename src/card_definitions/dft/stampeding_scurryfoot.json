@@ -1,0 +1,11 @@
+{
+  "name": "Stampeding Scurryfoot",
+  "catalogue_id": 4093,
+  "oracle_id": "7b860806-0118-40f8-861b-225a7c1cf151",
+  "facts_sha256": "ea2e183598dd24742427e0c261e2c74646cb7b72a1cd9bb95239bc0605f29674",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3891534d807e3ebfea0e77f182ce6af51ebef49b192327e3ae3f47792852d359"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Gwenom, Remorseless",
+  "catalogue_id": 1918,
+  "oracle_id": "c48cf135-b280-4e9f-a9d9-225104870741",
+  "facts_sha256": "7088cf9d28a9d5193f73b24183e20b3d09d013e7dc203ef96e84573185abff41",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "44bb7982c5a4efc4694d8053e903938bb5dd9698466835c7808aa364f10adadc"
+  }
+}

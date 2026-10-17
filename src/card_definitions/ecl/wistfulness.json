@@ -1,0 +1,11 @@
+{
+  "name": "Wistfulness",
+  "catalogue_id": 5094,
+  "oracle_id": "e5e8fce4-c97a-4ae4-9583-003c565e3bd6",
+  "facts_sha256": "37cc5f398099a670c4e263751bba12a319a69ba23a9ac80657be5b3a7f97e73a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c593cb4e64aa269b6d65c726812fa7fda9472e4a6b8a1d2ace4a1694931da278"
+  }
+}

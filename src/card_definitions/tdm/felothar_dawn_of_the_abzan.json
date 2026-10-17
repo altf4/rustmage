@@ -1,0 +1,11 @@
+{
+  "name": "Felothar, Dawn of the Abzan",
+  "catalogue_id": 1493,
+  "oracle_id": "fd666669-ad23-4e41-b78c-1cd7b82eb8b4",
+  "facts_sha256": "7d1a0f47bfe1e8373cefb3fcf929ce8e2a86bf8c29c5d2365b50c841fdd7bb55",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c5d28174b1ff42f03ac60e6bad5e4d84d171a4c924232e475fba204d14c5d16a"
+  }
+}

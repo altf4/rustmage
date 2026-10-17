@@ -1,0 +1,11 @@
+{
+  "name": "Portent of Calamity",
+  "catalogue_id": 3205,
+  "oracle_id": "0d49187a-1c37-4c3a-afc2-fac2bbc6b29a",
+  "facts_sha256": "df4b48a002ecd8661df7e19c0167249646ee0f90f8455b4c1b2f2a2fcf7afe64",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "695b0eae9e010ca30eac6966ca7df5f2d23b62fff7ed2dde9e50a10154858968"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Gossip's Talent",
+  "catalogue_id": 1835,
+  "oracle_id": "96e6d220-87db-4dab-abaa-e80c9577d89a",
+  "facts_sha256": "120a0e5c48559ce8446c7707e399a28cb2ced07885b15d3e7bbfe20f8c6f5e40",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7908f6c84412f9d366d6674e9362be7f22609b86dde7a74e824f1248033446de"
+  }
+}

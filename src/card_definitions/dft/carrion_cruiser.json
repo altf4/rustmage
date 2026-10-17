@@ -1,0 +1,11 @@
+{
+  "name": "Carrion Cruiser",
+  "catalogue_id": 657,
+  "oracle_id": "98a61659-9882-417c-9c16-16ebb26f9037",
+  "facts_sha256": "5b8909a0f0227419223071337d5d50fbbb623a3cf47528340e0d704f4322590d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f62be2e2417ccf9b341a7e478cb91141298bfd46e17e4eb5083832ad2e7ada0f"
+  }
+}

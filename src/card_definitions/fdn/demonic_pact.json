@@ -1,0 +1,11 @@
+{
+  "name": "Demonic Pact",
+  "catalogue_id": 1041,
+  "oracle_id": "19a2f0a0-9e68-4982-a5f5-b77d805befd7",
+  "facts_sha256": "ca7169977d35693f4d905d0e99d5ad339840ea06e603e93bdde68b10e1abfe37",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "08633e47a22b677b401ee704d8bf3caaaeca77b6790ecd601889d79472e06b94"
+  }
+}

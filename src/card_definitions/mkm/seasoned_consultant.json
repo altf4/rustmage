@@ -1,0 +1,11 @@
+{
+  "name": "Seasoned Consultant",
+  "catalogue_id": 3754,
+  "oracle_id": "9ee64b00-6619-451e-bb48-10af107dcb2f",
+  "facts_sha256": "97a5118dd2b41fa6385e5845165c56ad031e250e4969fa0baadce4140f6e2ae8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "01ceceabc40e4b8cae3a7c9ad4e8f8bb91e75cc3b8340a95c7e0ef62988edaef"
+  }
+}

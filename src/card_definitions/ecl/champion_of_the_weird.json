@@ -1,0 +1,11 @@
+{
+  "name": "Champion of the Weird",
+  "catalogue_id": 709,
+  "oracle_id": "1726f9cd-6f18-4509-b95b-bca82ba795a4",
+  "facts_sha256": "e27884b47f26bff6dfbb44a26ea0869d4faf44a77dc4df051faa414d267d1e62",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ee408478e185f11868c0fdf11767ee73ff7351af508d1fe4a353ba42ec34b823"
+  }
+}

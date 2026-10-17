@@ -1,0 +1,11 @@
+{
+  "name": "Leonin Vanguard",
+  "catalogue_id": 2478,
+  "oracle_id": "de1e1352-adb2-4ac1-bb2a-ee654d5c727d",
+  "facts_sha256": "1d59cb20e6d1d8b555b47012fe289d7e3dd17f8ee8b910c7d9ee823a48ad59a3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "91f142ad55680d7a09baffbec8c2375af64e1e636530e39e2924ae0376290ec3"
+  }
+}

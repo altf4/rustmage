@@ -1,0 +1,11 @@
+{
+  "name": "Bellowing Crier",
+  "catalogue_id": 381,
+  "oracle_id": "f2f3be8a-5ea1-47c2-8104-747f4589f5e6",
+  "facts_sha256": "efd8ae5e1de53403ae405bd608a7e0085108ba63eb4e1adcd8168106e090c5cd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "72202ca3716069ea5021e0508a276bc1b92d69e413ed037deea914dc30a39815"
+  }
+}

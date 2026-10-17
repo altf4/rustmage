@@ -1,0 +1,11 @@
+{
+  "name": "Fabled Passage",
+  "catalogue_id": 1421,
+  "oracle_id": "0c85b8f7-0bd0-4680-9ec5-d4b110460a54",
+  "facts_sha256": "a0ecb913d25a8f80488b27c0bf8cc42ecc8cb7078e39a0ae3cef4b9474057b55",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d80513a7e26f8c3e82bbd0d80117178ba4776ea23da3cdc4abeb3d93779e3c0d"
+  }
+}

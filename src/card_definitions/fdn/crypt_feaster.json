@@ -1,0 +1,11 @@
+{
+  "name": "Crypt Feaster",
+  "catalogue_id": 912,
+  "oracle_id": "4c22257e-8a00-40b7-a29b-55fcec7ddbd4",
+  "facts_sha256": "361ec9d85fa12fc5185827cb42ed7a19ce1d446f645079a06d554b2c5b1b180e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "879e5ac6c76aeb562c61fecb7f396864018ba89bde74d45df8804416d87500d6"
+  }
+}

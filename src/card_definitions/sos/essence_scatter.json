@@ -1,0 +1,11 @@
+{
+  "name": "Essence Scatter",
+  "catalogue_id": 1373,
+  "oracle_id": "46665089-aa3d-44c3-964d-6638dfbb5782",
+  "facts_sha256": "28bb2f54b198ab5dbb42863bc8b49a62bfa0b5d0be9ba33ef80f6328960af85e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ad53a94d252acfcb0561e20d00c7e61b8effee7476ffeb7c8c979b0fa1c908e8"
+  }
+}

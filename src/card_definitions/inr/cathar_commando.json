@@ -1,0 +1,11 @@
+{
+  "name": "Cathar Commando",
+  "catalogue_id": 680,
+  "oracle_id": "774dce79-67e0-4820-8013-c7a7347993ce",
+  "facts_sha256": "e8a56597c41b231ad03da061dc43f6c25d8ee8b430dd5c07dc94e651402439c7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4d562a04901ed424750fbad3b1ab6da706f9d8e8c075cf85e30b033b7908bc88"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Enigma Drake",
+  "catalogue_id": 1340,
+  "oracle_id": "62007675-8a0d-4211-83b2-0daf3641dedc",
+  "facts_sha256": "017f1e419631421ee1fe431c3f84b28d573f70037f61cd47bedb624322289db2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4447f7755c565afbe37505d58835e9214c9dffec4f5d5ddee0c26c83d62044a2"
+  }
+}

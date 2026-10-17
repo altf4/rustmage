@@ -1,0 +1,11 @@
+{
+  "name": "At Knifepoint",
+  "catalogue_id": 252,
+  "oracle_id": "bddb2064-afdb-4184-ae4a-633745e64a3c",
+  "facts_sha256": "c8cb07c933a160c4b1f1eddc337437469a5adbf0fd96a8d030012f16c3e68e05",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "834a145cce42bfa721ffc8fa7e1606361469d59495ae521f94f5ca2464947d31"
+  }
+}

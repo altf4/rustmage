@@ -1,0 +1,11 @@
+{
+  "name": "Dragon Sniper",
+  "catalogue_id": 1154,
+  "oracle_id": "913dbce2-6805-453f-a9c3-64f1cc658627",
+  "facts_sha256": "e14ad99f5a0e28ed6dfdcd3c05facd53c557108b6a7cf56055993781a15fcf9c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a249393814b3a5c6f94dce475397cc702b625ff970dee8851d3917f18645b4c9"
+  }
+}

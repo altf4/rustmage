@@ -1,0 +1,11 @@
+{
+  "name": "Absorbing Man",
+  "catalogue_id": 38,
+  "oracle_id": "ec8e310f-e871-498f-8d80-c3617c5e1433",
+  "facts_sha256": "c76253acf1b3305b8cee40daf9c7d8b567cfcb2fc46624b7aed34fe62a99a9ac",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a8e06cb519eb3f875c166baf513a98aeb104e3bf02c51d6f1d155f8ca1362871"
+  }
+}

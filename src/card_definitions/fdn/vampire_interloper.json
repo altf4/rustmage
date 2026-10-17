@@ -1,0 +1,11 @@
+{
+  "name": "Vampire Interloper",
+  "catalogue_id": 4838,
+  "oracle_id": "b753d7dd-4c6b-4472-a009-671572f927eb",
+  "facts_sha256": "6cf225578a3d3b83f5dd180599eb846c5c273aa7a2e5edce97a15b65153c3f4a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0cd0235e880abcb010011ba73731db26d9bb74466028ae27f89f2b3e24979506"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Walltop Sentries",
+  "catalogue_id": 4959,
+  "oracle_id": "fb3a0910-a582-41ef-b5b9-3cda1f1cd5ce",
+  "facts_sha256": "0ab2058748cd22f27f2313fb159cc31eaece605bec28501af56d8c6e72e23f63",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5c19eaa324988727eb93c3c8505888769f3c36536128bec118a95773285dbe72"
+  }
+}

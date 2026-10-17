@@ -1,0 +1,11 @@
+{
+  "name": "Culvert Ambusher",
+  "catalogue_id": 924,
+  "oracle_id": "c11fef0f-972d-4756-9902-fd3e3af00707",
+  "facts_sha256": "db7a8da7d056db0c58fed8dc06d40dec520a4bb27769e1232e60fa3c7cdc8bdb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fb9418ba87b95449051a5282b135096777eedf7b221fc65c8fbf41d3b7626d22"
+  }
+}

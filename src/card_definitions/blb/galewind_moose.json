@@ -1,0 +1,11 @@
+{
+  "name": "Galewind Moose",
+  "catalogue_id": 1664,
+  "oracle_id": "b0747a4f-d041-4750-aef5-a5d101696f65",
+  "facts_sha256": "78b4fadf0ce38e95f74db1746ea440140c968d3e186e36d549dd9eff2731e461",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6292c927142d79af7bf379d9379b1b6242a05598cbadcb33727d2571bca1f945"
+  }
+}

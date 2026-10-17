@@ -1,0 +1,11 @@
+{
+  "name": "Voracious Greatshark",
+  "catalogue_id": 4935,
+  "oracle_id": "5d96840e-f9b3-4c86-8f59-f12e5736318f",
+  "facts_sha256": "5479741c4d81a012196420b0400fd2c8a053ff7802c7af356123bb2c50932325",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c4885746676b16c32d0dfd5168f7c7a35d98836d60a2b20d77e0a141f29784f6"
+  }
+}

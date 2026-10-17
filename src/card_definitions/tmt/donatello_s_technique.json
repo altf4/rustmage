@@ -1,0 +1,11 @@
+{
+  "name": "Donatello's Technique",
+  "catalogue_id": 1127,
+  "oracle_id": "194284f7-cf92-4d9f-a8ce-e4dc3505ab7a",
+  "facts_sha256": "14353c04633da34dcdf2f01dad9aadb5a386b55be8f70438ec5bbdbcad3cafba",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "40b7a3d26ed17a7ea69b5de2ca058dd31b16dd97c544f1de7646f630f76ec091"
+  }
+}

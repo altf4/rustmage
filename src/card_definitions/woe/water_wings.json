@@ -1,0 +1,11 @@
+{
+  "name": "Water Wings",
+  "catalogue_id": 4996,
+  "oracle_id": "17f8e8cb-cd1b-4d94-9efa-ce268e8e7096",
+  "facts_sha256": "37a893d0b7193b8087b1bc44091c3a70dea0283c378428d1bfaf45bb6362f283",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ed7148dcbd223ff9a1e5d8949e3e78bf7d61510b6e752ff6c8fdb273af5709b2"
+  }
+}

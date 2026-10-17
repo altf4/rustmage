@@ -1,0 +1,11 @@
+{
+  "name": "The Chief Warg",
+  "catalogue_id": 4427,
+  "oracle_id": "5ebe8de1-aa3d-410d-b43d-1685259c7a97",
+  "facts_sha256": "8cb29f1696dc0fc768e7944168f75ba74225d509c478caf1c460d3e217550507",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "afec377ac93c7c7d82dafe5b07d5f12098413769eed546fbbae867ec5531bd96"
+  }
+}

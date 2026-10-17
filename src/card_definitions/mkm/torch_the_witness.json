@@ -1,0 +1,11 @@
+{
+  "name": "Torch the Witness",
+  "catalogue_id": 4639,
+  "oracle_id": "51473069-68dc-4e87-b345-d7cbcfdeea74",
+  "facts_sha256": "d66d3607d9ed26f73e388748e5b30dd9bce63bb426c1b320d4a4934d63c4e12a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2604f307c472f0a88504f27048c256da5c0ec3be2b338135c783fba8ce864a46"
+  }
+}

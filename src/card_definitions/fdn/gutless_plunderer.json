@@ -1,0 +1,11 @@
+{
+  "name": "Gutless Plunderer",
+  "catalogue_id": 1913,
+  "oracle_id": "31265357-5ecb-4d83-80ff-1795b1dfdecb",
+  "facts_sha256": "945cfbd7a97a85355e2ce677dcbc036d910c7d831129c5fc58953d8c855f5f86",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1d2db40a7a7c8fd519490e9284222a547be6ce301a98b08989fa81b9ddda4e6d"
+  }
+}

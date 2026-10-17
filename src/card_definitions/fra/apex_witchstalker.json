@@ -1,0 +1,11 @@
+{
+  "name": "Apex Witchstalker",
+  "catalogue_id": 183,
+  "oracle_id": "253d0cf7-65d3-4f13-aaf2-aae5bb60ac46",
+  "facts_sha256": "e6e86cc319d5e0bf192ba2bdbff16ce148a58c52554b6fbf234b6940bc3082cc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "531d7ad8ddd542b3dc872cb4cf797af35221d3288470d013a6d52e75d59a538a"
+  }
+}

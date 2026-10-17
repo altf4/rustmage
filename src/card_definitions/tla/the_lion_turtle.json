@@ -1,0 +1,11 @@
+{
+  "name": "The Lion-Turtle",
+  "catalogue_id": 4467,
+  "oracle_id": "fff728a1-56f5-4e97-91e2-19aba5772909",
+  "facts_sha256": "10c74b9f3d7076173032091654d5200b0eee040abc9d2bc8e8638669e202564a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "13239c82816defaba680be245fc7351bb44d277c8dd49ba417dd6b5d782d237e"
+  }
+}

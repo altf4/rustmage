@@ -1,0 +1,11 @@
+{
+  "name": "Rally the Monastery",
+  "catalogue_id": 3359,
+  "oracle_id": "3f6101a5-3038-45b0-8302-b2e4127b9510",
+  "facts_sha256": "1ddbb138b07e5b000aba8b4b4d902078fdc464f4c6611ca6e61f88030d534faf",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8017d8b6bfd22bd8c15c0137ebd3ad8afda1a14bd7ecaf3db656b3e39fe7eb72"
+  }
+}

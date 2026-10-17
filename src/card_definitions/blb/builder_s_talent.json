@@ -1,0 +1,11 @@
+{
+  "name": "Builder's Talent",
+  "catalogue_id": 577,
+  "oracle_id": "0b19082c-8f80-448b-9e1b-0f324a159409",
+  "facts_sha256": "9d2c90d13e5c1e0a053338077a4c797b6627404ec8c187341b9d0535ae85aa0e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6bedeb3f38b93df8b7817fb194a55e27b9a41a626afc89cf0a2a38ba0e0442b2"
+  }
+}

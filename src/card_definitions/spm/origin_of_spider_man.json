@@ -1,0 +1,11 @@
+{
+  "name": "Origin of Spider-Man",
+  "catalogue_id": 3039,
+  "oracle_id": "7fbe9056-190f-40a1-bee9-59ebd6f981f5",
+  "facts_sha256": "72e44742308c78eb5a77170c1d7e8f1c05e86639ce786f12b3feeb889f01844d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e0f42535f2d5f9343a15685b9d86960409c5889e1bb14771aa5c0e29af88faf4"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Insectoid Exterminator",
+  "catalogue_id": 2179,
+  "oracle_id": "3d081701-514b-4611-b5a1-239b8f335fb6",
+  "facts_sha256": "b6f4859f757cecfe3c9959ffc41e4312e4b6c483421df3b7625dc3181eacef46",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "995b246c96988c265d9653f4747fc9ebe366169db2386d486a2f5905c1eb05bf"
+  }
+}

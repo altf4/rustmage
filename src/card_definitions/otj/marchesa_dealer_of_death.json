@@ -1,0 +1,11 @@
+{
+  "name": "Marchesa, Dealer of Death",
+  "catalogue_id": 2660,
+  "oracle_id": "37449c93-4d32-4f1a-982f-8f3416214368",
+  "facts_sha256": "fbf59a5f759cf5ec16bb3b8e1059e822afea9e5e69a91fc16fe2c0d7fd7f8e45",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "10b70567bafa0de589fb4c59d23ee9450dc5de05c0bf14d05edafab33a137df3"
+  }
+}

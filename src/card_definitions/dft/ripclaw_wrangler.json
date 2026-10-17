@@ -1,0 +1,11 @@
+{
+  "name": "Ripclaw Wrangler",
+  "catalogue_id": 3535,
+  "oracle_id": "6b2ffdb8-3681-4d64-ac03-8c860082e60e",
+  "facts_sha256": "e043aa9aff741fa01d29c7be9c2aa42f4fcea450540b56752e813ca266655f3c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0635487e5aa32f6a394ba8d735cb9fdbf7b78b5853969a9ce5eec00c3ea68232"
+  }
+}

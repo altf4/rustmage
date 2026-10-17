@@ -1,0 +1,11 @@
+{
+  "name": "Rough Rhino Cavalry",
+  "catalogue_id": 3595,
+  "oracle_id": "3ac94b28-4b0a-4121-99b9-9cd7dff7948c",
+  "facts_sha256": "eb15d206fa8c3858e0dfe3d112972c7c438e683711226c03d421849b8af372e5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9157f1037005b219c615869325f96473c99bd850eda05d5b1e5aa1be12756a72"
+  }
+}

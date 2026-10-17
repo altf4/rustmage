@@ -1,0 +1,11 @@
+{
+  "name": "Incinerating Blast",
+  "catalogue_id": 2156,
+  "oracle_id": "49f0da4a-e046-4220-b90e-e105a5f2ef00",
+  "facts_sha256": "dbfab404d2ee1ba822cb0de44b74388577beabe7aeefbde94cdfc3a640af7e1b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f89bff2b60940d9ca522403a6d68dc183627e85a459b50333fd92d0e808d7152"
+  }
+}

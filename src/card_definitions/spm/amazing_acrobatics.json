@@ -1,0 +1,11 @@
+{
+  "name": "Amazing Acrobatics",
+  "catalogue_id": 143,
+  "oracle_id": "0466f23c-d07c-4015-82d5-eab4b226f1ff",
+  "facts_sha256": "0c297d5a069dba2432500e53c1b4c7687b7c993aa8cce00a646040bba1d8260d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "37c655c575eb5fd62d64b5611519fd8a312ef63f10c0a8faa18fd2a7ed5a406d"
+  }
+}

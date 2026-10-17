@@ -1,0 +1,11 @@
+{
+  "name": "Northampton Farm",
+  "catalogue_id": 2966,
+  "oracle_id": "e05f1a43-16ce-4e88-b0ad-2202efb25516",
+  "facts_sha256": "73fa7f45c99155e0c60eee1c3c69a38907b0cd2cf0c67b5c06a62295f117fdde",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "992c24df15c18e4fafcba49afd40dd95d2f35082c7dd0da27fbc564e3ec6f61e"
+  }
+}

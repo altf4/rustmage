@@ -1,0 +1,11 @@
+{
+  "name": "Pensive Professor",
+  "catalogue_id": 3124,
+  "oracle_id": "4b8736e2-fc41-4a25-bb6c-7351afc40981",
+  "facts_sha256": "c6111292ce9a7493fcb340344d6c9a2181915e6ff058176ed3aa78bbf93ccb60",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9c25148a442a84585a0f3b92d9b2edf5c8f4a04712bc0e73a5fe6776aa9ee92a"
+  }
+}

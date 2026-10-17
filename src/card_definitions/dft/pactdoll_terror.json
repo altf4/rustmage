@@ -1,0 +1,11 @@
+{
+  "name": "Pactdoll Terror",
+  "catalogue_id": 3087,
+  "oracle_id": "e02fff6b-9ee4-474f-97fc-d70d4bc8001b",
+  "facts_sha256": "4ac78e5e887647a879c6ca3af8e93ed8ee52844ea1105645d0fa7028676c1696",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6136d3f338fb7188a073cc57849317487d521147dd9e7dc1779176009c92d5a8"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Sabotender",
+  "catalogue_id": 3643,
+  "oracle_id": "65385311-1158-4e94-892a-683997706ca8",
+  "facts_sha256": "93a96a1254a9bafb1cf587f5fc38d0bf6800f31314b4b328c0076f1aa1c8609e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4e24031619d4cfd29877ef2f40764f250cc93f473c3ee34b3ea6aa8567abed7f"
+  }
+}

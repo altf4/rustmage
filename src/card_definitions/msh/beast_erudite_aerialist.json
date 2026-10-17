@@ -1,0 +1,11 @@
+{
+  "name": "Beast, Erudite Aerialist",
+  "catalogue_id": 360,
+  "oracle_id": "191ba5f0-45f4-4b7f-910d-4bd4d2d28b33",
+  "facts_sha256": "5f15dc64e2c1cd15521324dd1c798c51aaf52266a0d5ffb121719860adc883c0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "959b367d03a63601188a6a60ba5fcaf21aee90a20fb18063fdad6287f6e3c40f"
+  }
+}

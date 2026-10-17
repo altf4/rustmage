@@ -1,0 +1,11 @@
+{
+  "name": "Metamorphic Blast",
+  "catalogue_id": 2730,
+  "oracle_id": "69c8e690-c0a2-4c4e-910d-123c9c5b922f",
+  "facts_sha256": "a78c94818ed10d7488f8d91a68da6f58b2eafbfdf5b700204b02ed8aaa6cbc25",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ba3dd5222f62b2ec76bdf11289bfd380d151df2213c30e9f7c44a2d7e81b75af"
+  }
+}

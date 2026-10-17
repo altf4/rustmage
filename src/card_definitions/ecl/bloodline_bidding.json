@@ -1,0 +1,11 @@
+{
+  "name": "Bloodline Bidding",
+  "catalogue_id": 458,
+  "oracle_id": "bdb9e933-f679-4930-b669-0d123db09d16",
+  "facts_sha256": "d69a6c403d6d0023df9ee914632278be67f8eba1537303ce289d38cde307b3e0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c815a45b6cb0cc7eba78f4a313d9b3f17dca9b87b03e57c99cc2aa35896da9a2"
+  }
+}

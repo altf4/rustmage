@@ -1,0 +1,11 @@
+{
+  "name": "Gloom Ripper",
+  "catalogue_id": 1786,
+  "oracle_id": "78e1beca-840d-47b2-8759-cc31454fdf5a",
+  "facts_sha256": "585c580697926b5efe237af69def0057819617bd6e0cd7520d32e245188162a4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "140d9ce57787836f6c8cf929c5e567e3cf7cee172ae33d1a107819e8600b4551"
+  }
+}

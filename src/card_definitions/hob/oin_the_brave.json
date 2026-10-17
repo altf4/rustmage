@@ -1,0 +1,11 @@
+{
+  "name": "Óin the Brave",
+  "catalogue_id": 5182,
+  "oracle_id": "a25ba5cc-6ff8-4215-b70d-7e86e15e3c1a",
+  "facts_sha256": "f07c60c22e1cdb9e0a276cb9450c1671644e69e46a30a1d9d4b362fdbac69992",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8592896a9d5e7049b4a0a1bcbd4fbd3db09845aced8761bfdfbbdfee82c56eba"
+  }
+}

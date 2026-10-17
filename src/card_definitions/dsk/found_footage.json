@@ -1,0 +1,11 @@
+{
+  "name": "Found Footage",
+  "catalogue_id": 1607,
+  "oracle_id": "ad37551c-9d20-4902-8190-6a0aa32a7947",
+  "facts_sha256": "516628c2776f0f578a32299f151aa96600e7c11d638a28712849a9920fe9c1cc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "112b32ac24991732c1346aa9629cc064ce59c397643bbde79bfc7563cbf66461"
+  }
+}

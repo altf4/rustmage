@@ -1,0 +1,11 @@
+{
+  "name": "Guac & Marshmallow Pizza",
+  "catalogue_id": 1896,
+  "oracle_id": "d6d83a51-9d57-44a7-aae3-a96d43ec5ac8",
+  "facts_sha256": "7cc1c4090f6951f613b360c7b200eb21132f42ca0759ab7be27659b51e95ff8f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "99c9286a633a199588b1162c7e22fbed498fd4feea6e10dbefcdb361eb74bb8b"
+  }
+}

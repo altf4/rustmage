@@ -1,0 +1,11 @@
+{
+  "name": "Felonious Rage",
+  "catalogue_id": 1492,
+  "oracle_id": "e1905321-180b-41d2-b7ef-0974ab90f188",
+  "facts_sha256": "ce2eae5741933749072435bb28f5274a2bff404570ea2e71a648a53f556daa27",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1235b0d2e3104d1e37a94e17fd18fbdebc6e9347bc247a9ae6945d7af59e3058"
+  }
+}

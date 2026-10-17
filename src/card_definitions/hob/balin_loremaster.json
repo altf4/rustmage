@@ -1,0 +1,11 @@
+{
+  "name": "Balin, Loremaster",
+  "catalogue_id": 312,
+  "oracle_id": "0d420e41-43e9-41d6-832c-5a9f410c994e",
+  "facts_sha256": "22bf7c6abde8352d5ed27c6f25d4eaeb080b763fdef5196360b2e751f59859fa",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e6c63e811f7908cf51ff039258bb9d90df34fc6888c1e228b9f6ac17922ab4e3"
+  }
+}

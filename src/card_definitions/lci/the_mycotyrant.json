@@ -1,0 +1,11 @@
+{
+  "name": "The Mycotyrant",
+  "catalogue_id": 4481,
+  "oracle_id": "b69bbb8d-7f8c-45d6-983a-759b5fce6ebd",
+  "facts_sha256": "421ea51a49fc76ba00ec796f977eafeb3cd3dea61f5d12dcc1eabc07dfd4cdd1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "06aee22f50ae1ed491e0ffc50f9660f5f173c2e12336793397da0456f5874074"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Fountainport Bell",
+  "catalogue_id": 1609,
+  "oracle_id": "ea4c5b8f-a5ff-47dd-8e47-5ae7b21926b4",
+  "facts_sha256": "3e6a27d595ca4e9e1e95305cd25fe180760b514c291df0ac75d323d0a2f15263",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "702e34643656666cbd97ef76f74f745500dac054e38dcadf423df33c428018f1"
+  }
+}

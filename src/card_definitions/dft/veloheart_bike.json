@@ -1,0 +1,11 @@
+{
+  "name": "Veloheart Bike",
+  "catalogue_id": 4858,
+  "oracle_id": "fa123b21-518a-4f1d-9629-c44576d45f21",
+  "facts_sha256": "3268aecd11947ac0910c06c73538d0f79c4c4477f83da0a5e734e8a519670fc8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "515f8c621d3146ef20af2f8e42d3dc4f0f4a1d041456de7cf25d18a3922f7c51"
+  }
+}

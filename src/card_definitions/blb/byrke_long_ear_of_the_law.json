@@ -1,0 +1,11 @@
+{
+  "name": "Byrke, Long Ear of the Law",
+  "catalogue_id": 607,
+  "oracle_id": "e9c6e4e6-0c3f-4048-93e6-161a1221ea36",
+  "facts_sha256": "31373536a0c5eb888951d8da36dfe2c6b8d323096c5d5873cc3df9fa5857d7eb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c489725fe9c687088606f70071522b2b3b86cfcf358e86355489a61ed8ea3f15"
+  }
+}

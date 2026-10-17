@@ -1,0 +1,11 @@
+{
+  "name": "Mindwhisker",
+  "catalogue_id": 2771,
+  "oracle_id": "f823b122-94ac-42ba-b511-9e54d64db112",
+  "facts_sha256": "8d647f624635f3212abd0e8b0466d147f20a488c5f547e805adaaa2e487f4b0a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3b5c73dcd795be005c2029f6fe14700423c6e76451b34333ed465b109364e6c2"
+  }
+}

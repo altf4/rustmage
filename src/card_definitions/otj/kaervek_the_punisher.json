@@ -1,0 +1,11 @@
+{
+  "name": "Kaervek, the Punisher",
+  "catalogue_id": 2304,
+  "oracle_id": "fa9a6083-75ab-41ae-b607-39d21d9a3d3a",
+  "facts_sha256": "da0de495144407739d27c41754c24a329071cb99d994ba5b635b854ee89192f6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d14813f01d64bf2c626952714fb374379eac7660820306dc6e2b4562dd757070"
+  }
+}

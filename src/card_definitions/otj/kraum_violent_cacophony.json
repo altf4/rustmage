@@ -1,0 +1,11 @@
+{
+  "name": "Kraum, Violent Cacophony",
+  "catalogue_id": 2407,
+  "oracle_id": "1d764f70-985e-4cf0-9482-f30f73b9baf1",
+  "facts_sha256": "488ce6c563c8665eada6db54593ff4ceda3dd697d2ad855d18154a113b02b941",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8213cc7a18d0e743f38399ed9cdededbad6ba576b2c153e9cd3909e5c52129df"
+  }
+}

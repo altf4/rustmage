@@ -1,0 +1,11 @@
+{
+  "name": "High-Flying Ace",
+  "catalogue_id": 2040,
+  "oracle_id": "84a56740-8563-4ce5-8560-d44998d7f80d",
+  "facts_sha256": "bafcea3e7f17f86c1ec862b65e3cfc2d740a26a73737323c64d8ca87ce8f825b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "abec0a72a97c15349f4af2a1dee9d83f5c36901c928036cb87c9e90deecf2ece"
+  }
+}

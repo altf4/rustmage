@@ -1,0 +1,11 @@
+{
+  "name": "Marshals' Pathcruiser",
+  "catalogue_id": 2670,
+  "oracle_id": "60f20f32-b6db-4ee7-a0aa-535647e6fcd5",
+  "facts_sha256": "edeb891e23aa8edba75797ada64285b10e752fc04b27d530e1e9223bbc1035da",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cb24e893c81bd1f4b2c43b63bb79bdaa397a04eae9cdfdbe6ccbc79173ba5f5b"
+  }
+}

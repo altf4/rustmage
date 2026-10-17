@@ -1,0 +1,11 @@
+{
+  "name": "Bovine Intervention",
+  "catalogue_id": 519,
+  "oracle_id": "7402d98f-6d58-4ff2-a0db-9eec4417a75f",
+  "facts_sha256": "5574407cfbb97dbeea0e7abe17ce3b2d9de10c4e0da66f748c9e73c67a93fe69",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c471f02c2e152aa1e9af2aae19a6080421ca6de011ba1bf34180b2809b0a6836"
+  }
+}

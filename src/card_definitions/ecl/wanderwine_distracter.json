@@ -1,0 +1,11 @@
+{
+  "name": "Wanderwine Distracter",
+  "catalogue_id": 4967,
+  "oracle_id": "6c0f6673-bc24-4c84-b4e7-736283ffd60e",
+  "facts_sha256": "edde661005dd61c06b941d5710608773eb0a990cf8765187f6431108f8e5cbcd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "efcd56ec06b98a34bbb642fe3f524cf8f2a09cd91f3af0313781fd66be35ea71"
+  }
+}

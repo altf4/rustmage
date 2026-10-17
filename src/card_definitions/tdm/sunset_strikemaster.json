@@ -1,0 +1,11 @@
+{
+  "name": "Sunset Strikemaster",
+  "catalogue_id": 4245,
+  "oracle_id": "d81ade13-e7c7-4fe3-bb0c-5007ed9f1198",
+  "facts_sha256": "c99f2a30a45a9ddfcd27d104f4bd1d820342fecef10dc201fac8e75c3eabdc61",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "33f27242451d844477a48a8f70e4204f526ee65d502f399c57d31f3bad979847"
+  }
+}

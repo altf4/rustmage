@@ -1,0 +1,11 @@
+{
+  "name": "Spinerock Tyrant",
+  "catalogue_id": 4046,
+  "oracle_id": "e35d4c62-5211-4785-b683-a83719195d87",
+  "facts_sha256": "edd65e9b5d7097373068055a78041eb50c82fb178265c10e29cac4b530dbed5c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "65261f3dc9aaab212435ba96107425ef8e7aa0f55b0148bb66f3699fcd0ede7b"
+  }
+}

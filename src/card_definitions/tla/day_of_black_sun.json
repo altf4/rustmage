@@ -1,0 +1,11 @@
+{
+  "name": "Day of Black Sun",
+  "catalogue_id": 986,
+  "oracle_id": "dc857129-533c-41d1-8e8b-1c0443030d69",
+  "facts_sha256": "9dc7783c48c2dc9645f7482dfbf13734161994047b437b6ca58e51ccfb8aa605",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "233b88275ae3e4e79152ef9ce52433fe4cc8d44e154f8f8f67d4cba9ed541a32"
+  }
+}

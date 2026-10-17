@@ -1,0 +1,11 @@
+{
+  "name": "Cinder Strike",
+  "catalogue_id": 752,
+  "oracle_id": "54421e69-d79e-4c2e-8ce6-96994d168835",
+  "facts_sha256": "ff46dfc8597b441eb10e3a880cc2da41c8c34c9a03ad69f26537b60400bdf1ce",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ea35f03b7ff41f3b702bd444bab815ae9eee87e81a85c25003767f19961c4994"
+  }
+}

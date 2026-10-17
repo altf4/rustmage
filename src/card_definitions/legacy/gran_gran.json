@@ -1,0 +1,11 @@
+{
+  "name": "Gran-Gran",
+  "catalogue_id": 1842,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7436f90363e593822bbed73f71aee84a17bbee0186fe6470eb7deb33276cfd5b"
+  }
+}

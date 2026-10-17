@@ -1,0 +1,11 @@
+{
+  "name": "Roamer's Routine",
+  "catalogue_id": 3560,
+  "oracle_id": "cf2355f3-11d2-4b03-b663-9fad6b07e4b2",
+  "facts_sha256": "e21cdaa91cca9bdb37cefe6ab21d80bc690bf06f363c0b56068cd9cfecf7f693",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7db6d88869734fd4257d625ce40a3472cf2ec5c9821f7a7a996fe3a64e35f8c7"
+  }
+}

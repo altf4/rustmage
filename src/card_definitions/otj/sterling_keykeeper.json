@@ -1,0 +1,11 @@
+{
+  "name": "Sterling Keykeeper",
+  "catalogue_id": 4134,
+  "oracle_id": "f893d3d6-efef-4394-8e15-e01deed72b4f",
+  "facts_sha256": "a5afe1c5663271aa71c4cfe72bd272e81155f8774204df2882378a27a9d24851",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9377de6ae4c9cef0e9a98fe2df73d64556c2558c8b83b30fb8753981d71a36b6"
+  }
+}

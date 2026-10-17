@@ -1,0 +1,11 @@
+{
+  "name": "Persistent Marshstalker",
+  "catalogue_id": 3132,
+  "oracle_id": "77eb76cf-a361-44e0-aeee-e8ef4b695799",
+  "facts_sha256": "afd1576635c09d4da2280e6a616b164ce6fb4d5e9f061be34a178c47ffac2ab4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "87c286b75031172eb171fd8fbc70fbf92a5f7d829b881969a73c7ded3cec9bcf"
+  }
+}

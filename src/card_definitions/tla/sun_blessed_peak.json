@@ -1,0 +1,11 @@
+{
+  "name": "Sun-Blessed Peak",
+  "catalogue_id": 4232,
+  "oracle_id": "d188a397-c7d9-4f16-bc21-d9e1b5ffc951",
+  "facts_sha256": "7e179c2e680af77dc7383d8b16066bd044ec029590d80dfe1ca85cf385379c9f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "62dd8c605235adfc33bcb9516fd21c0f11589e1315e236462e7e181f3c067432"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Hardened Escort",
+  "catalogue_id": 1944,
+  "oracle_id": "2c6ef9e8-6b60-436c-8391-ae0baabb3a1b",
+  "facts_sha256": "94ed9924ef418e8e08fee0ed467f20e210ccc29cc798af6399b583f389b19dbf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "87f94312c9f5b7db44edd0d930f9b260325d2c9e189fe223e0c10bc4e6c86487"
+  }
+}

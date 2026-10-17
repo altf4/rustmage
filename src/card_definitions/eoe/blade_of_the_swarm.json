@@ -1,0 +1,11 @@
+{
+  "name": "Blade of the Swarm",
+  "catalogue_id": 437,
+  "oracle_id": "33042d12-f08b-4b3e-b106-c424ef868c13",
+  "facts_sha256": "a6c1b5c4fc391db1f38f6b8806175e3aec8f54905a283b19069ef30d2a0d1882",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dc827a2dbfd86bb4f941ed95d7f68690d0511905d3dde9fcfea42ba932133185"
+  }
+}

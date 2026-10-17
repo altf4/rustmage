@@ -1,0 +1,11 @@
+{
+  "name": "Forgotten Monument",
+  "catalogue_id": 1594,
+  "oracle_id": "71393988-ad6f-43fd-9978-c0de15ae8e87",
+  "facts_sha256": "33724808d7f63407f33e0ffd7c4ef4686d38d4b8013b7b81a4786d0b535a3e63",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dd673a616d02602417a921df562dbb32f3adff95c82479d8d70124293f989399"
+  }
+}

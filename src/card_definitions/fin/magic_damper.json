@@ -1,0 +1,11 @@
+{
+  "name": "Magic Damper",
+  "catalogue_id": 2616,
+  "oracle_id": "ada82f93-dc93-4a95-a13f-42b5942b3413",
+  "facts_sha256": "c158baf52aeee03417a8865f928b397b32cb56243f50a850f89547b877f35645",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "59a336dc642cecb5b1ddd65fbccc3183cc2f7c310ef514f32e5432902b1a6517"
+  }
+}

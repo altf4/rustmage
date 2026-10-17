@@ -1,0 +1,11 @@
+{
+  "name": "Sozin's Comet",
+  "catalogue_id": 3989,
+  "oracle_id": "bc0da02c-2b85-4ddc-9ce0-63934dd14164",
+  "facts_sha256": "70917d851e695e8149486e0b6f12b78780fdb17af4d4f71ecd19eccd3f4f381d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6385046a4604b4b7c9bb5813249ddc02c4cf1f8f55758b39ad9d570eb495aaf7"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Unidentified Hovership",
+  "catalogue_id": 4784,
+  "oracle_id": "bde67dfb-706b-4942-a365-984ea6e97a2b",
+  "facts_sha256": "42890f9941be4315ef1cff06fc5fed31b968ed73ccadbed8f54f6c0423106fea",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "58b14cb187ee3d3e4beac2c16ed9b5c77909b5a0423ba3c8b57f6bd0fc4745cb"
+  }
+}

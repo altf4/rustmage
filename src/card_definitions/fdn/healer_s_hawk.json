@@ -1,0 +1,11 @@
+{
+  "name": "Healer's Hawk",
+  "catalogue_id": 1975,
+  "oracle_id": "28a52ba1-95da-44e1-8ac5-0dc23c902394",
+  "facts_sha256": "2c67290735aa42938b709f0c3d6803c839947cd03239f516dba05dd7a4ee6f26",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8f0a322da7f309155eb329e6c13a083e34a8e79354cdf961bea0edb9a33a6ec3"
+  }
+}

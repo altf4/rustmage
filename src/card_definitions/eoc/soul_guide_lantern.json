@@ -1,0 +1,11 @@
+{
+  "name": "Soul-Guide Lantern",
+  "catalogue_id": 3975,
+  "oracle_id": "1b5e6560-ff2e-4475-96cb-63f64c8a86db",
+  "facts_sha256": "0cea4416b6495c3befc5f88c0ff9bb1b2c02eaa710c6368cc0935405c8cabd7a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aa1e1a908f58c73fc8841f3e3118a624a745a5954f266f80283e9adee7d64d6d"
+  }
+}

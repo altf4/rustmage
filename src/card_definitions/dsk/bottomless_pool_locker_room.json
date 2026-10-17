@@ -1,0 +1,11 @@
+{
+  "name": "Bottomless Pool // Locker Room",
+  "catalogue_id": 512,
+  "oracle_id": "b9ac4856-5cdb-479f-b0f5-7fa0b232a5ff",
+  "facts_sha256": "42cad1866abe5f42ec9995788a6e7e4ad9a0c2a99c2dc06fa6ec953a07773228",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eca1ac9603ffb2414c8ee100110e865a7da9236af054f306592e4ce23eac33a6"
+  }
+}

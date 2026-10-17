@@ -1,0 +1,11 @@
+{
+  "name": "Unable to Scream",
+  "catalogue_id": 4751,
+  "oracle_id": "3d240726-5214-4493-8537-29bf65db1e4b",
+  "facts_sha256": "54351554cc0e8313f558c26f14a88ad7bb0906827fc70bbe532f4053568fdc05",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3560827b23fb8a1981191d8cbd7aba5a9bd345dd55d6443543ff63d945400b1a"
+  }
+}

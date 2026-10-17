@@ -1,0 +1,11 @@
+{
+  "name": "Rite of Replication",
+  "catalogue_id": 3545,
+  "oracle_id": "fb60739e-1dc3-481d-a056-ad72e665c680",
+  "facts_sha256": "3019ec67b9a9721e9fea643050d9ad2a78465f70162e916591636bafe74f1559",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5711010e61728ea9162509fcb6a4763c9a078b99f198d220ad0f3cf0fdd21ab5"
+  }
+}

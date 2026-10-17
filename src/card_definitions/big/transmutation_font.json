@@ -1,0 +1,11 @@
+{
+  "name": "Transmutation Font",
+  "catalogue_id": 4660,
+  "oracle_id": "a68e57f3-f138-4c26-b8d5-55d1adec44a8",
+  "facts_sha256": "caa44fb801d6a152f64cbf7a7c0649fb0bd0780e3e8ba3decdc5988a7faf978c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fec97b79aee6ab9d772ef7ebcd27557f705c144b38e81d2fe76d05914cce0a48"
+  }
+}

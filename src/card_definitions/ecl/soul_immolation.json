@@ -1,0 +1,11 @@
+{
+  "name": "Soul Immolation",
+  "catalogue_id": 3973,
+  "oracle_id": "338747e8-bed8-4e60-8b19-5c2b80799477",
+  "facts_sha256": "0b873ed7cf3e532bc3e4214090c6441c1d865ea166712c05ae2b921f6b8a2d63",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "29ee71d6765b3bed9396414ea29d6b6351335b24b25e74cfd6d18f00ced7f6aa"
+  }
+}

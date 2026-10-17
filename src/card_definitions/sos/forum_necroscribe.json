@@ -1,0 +1,11 @@
+{
+  "name": "Forum Necroscribe",
+  "catalogue_id": 1604,
+  "oracle_id": "50c97054-77c9-4446-9a41-e4f8877b887d",
+  "facts_sha256": "157ee57381d080861747acd60c8f66dd4f3d8c4550c9c9c196897172245c14bb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "15457a38f00ede8db9513ad82ce7ad05eb931aad64af9500091a9a12c7ef3739"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Master Piandao",
+  "catalogue_id": 2680,
+  "oracle_id": "e294d9d2-df91-4410-85d3-8ffb13fb2285",
+  "facts_sha256": "09540e59baa2f819b631bb1f8fbd9c6ab69f6e672e88e8d2b401b90bc099771c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "852c89fceace2d72ded4b1dfae096702c24f20fbda6b00e40f04fbcb906b8734"
+  }
+}

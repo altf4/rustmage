@@ -1,0 +1,11 @@
+{
+  "name": "Dead Weight",
+  "catalogue_id": 992,
+  "oracle_id": "b1804304-fac1-4b19-a48d-6ade9407972a",
+  "facts_sha256": "3e81e9b9315e50b90691d1de284dd44931621cb7561f86b23614f443c3329ca4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1cecfbe4ed64cc0194415dd9ca36da806ef7b0052d230784902ae3cef78a62a7"
+  }
+}

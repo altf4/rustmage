@@ -1,0 +1,11 @@
+{
+  "name": "Dredger's Insight",
+  "catalogue_id": 1185,
+  "oracle_id": "3f21c1c6-7992-4036-ad3e-b599153e54fe",
+  "facts_sha256": "6a9d54f937863d80396a1c7c13e12a38145893c7c7482a5418627d15f3676fcc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "23971984c750100f16dfe894f2b41b452e97075b7f319e6f8a03be76f2da2173"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Turtle Blimp",
+  "catalogue_id": 4707,
+  "oracle_id": "bb8c6dd2-1abe-4eb2-be1f-b0c078e5f257",
+  "facts_sha256": "b364b927216fc36cb44e4c8d02ec1120f95fba248d5d3ca7b80366051acb9cd5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e85f346d8d4538631dda7c3c8be27e6da8ba4f009c51d32ddbf82816b16f1b84"
+  }
+}

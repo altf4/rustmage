@@ -1,0 +1,11 @@
+{
+  "name": "Likeness Looter",
+  "catalogue_id": 2504,
+  "oracle_id": "e04560ea-f2bd-4cb7-8f65-3aa0dd58fbdf",
+  "facts_sha256": "7f91195a0f9008a61c37f8bd0574e2784c574850db59517340fa5251fe1d0dfc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "47cb0038ed8dde9dd9c234e9b151a376c026aeb35e62e2a381caa3fed7e92b35"
+  }
+}

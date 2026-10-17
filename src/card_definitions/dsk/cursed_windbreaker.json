@@ -1,0 +1,11 @@
+{
+  "name": "Cursed Windbreaker",
+  "catalogue_id": 939,
+  "oracle_id": "8a265910-2e10-4e97-88ab-c0cb1a712eb8",
+  "facts_sha256": "449858c0947c4611b4512ca792b2aef20b94d67e1ff8d43f5fe6f5634c788302",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "578ff9ec9d602c6e4cc73a68ec329044ac8db2acaa20ba8485bab35fe410755d"
+  }
+}

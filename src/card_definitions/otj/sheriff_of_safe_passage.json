@@ -1,0 +1,11 @@
+{
+  "name": "Sheriff of Safe Passage",
+  "catalogue_id": 3828,
+  "oracle_id": "ec16008f-18d6-4461-b99c-0a504f211618",
+  "facts_sha256": "c20103f86d8b57f8e341cf4e668ae3f894e6bcd34c9db2efde2e6f682cb0f995",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b3c196876494e50b8df448402da1508df07b00a6ef802c9f480c2d32a93f57a3"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Emergency Phytomedic // Seed Suture",
+  "catalogue_id": 1312,
+  "oracle_id": "7737ccdc-49f2-463e-8ffd-43ab98d11f45",
+  "facts_sha256": "cc60c634f249293f61490d30138b03834f342df1d80fb5da589917ed7a77d410",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9344471dab7f344a622ce3c5cbf6b639e0765b22bd77f483145f57b6a0accf65"
+  }
+}

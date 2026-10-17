@@ -1,0 +1,11 @@
+{
+  "name": "Puny Snack",
+  "catalogue_id": 5219,
+  "oracle_id": "f762c225-1c8c-4f12-aa88-c8c89e0a7185",
+  "facts_sha256": "314bd19bddbd8d941ffba387842098f58d4b5f507ce7deb1612d07360d47d728",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "82c8062e3ecc83a462186b6cae3e25600a561dfb729a6de8628988e28657b4a6"
+  }
+}

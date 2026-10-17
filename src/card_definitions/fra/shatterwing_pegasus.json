@@ -1,0 +1,11 @@
+{
+  "name": "Shatterwing Pegasus",
+  "catalogue_id": 3822,
+  "oracle_id": "7d6641e7-4d14-4a06-b588-0c752af529bd",
+  "facts_sha256": "3054a8eaa068cf92d21e24ad3fcbdc25143aab09b0cc0c2c3d6e097cd428b633",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "66223cbdcd605ecf1ab634ab4230230b56927b4ca54f836545ea89f020a5c94c"
+  }
+}

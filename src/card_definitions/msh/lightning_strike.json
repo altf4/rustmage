@@ -1,0 +1,11 @@
+{
+  "name": "Lightning Strike",
+  "catalogue_id": 2497,
+  "oracle_id": "f34b9bc4-7bfe-47fd-ba23-4eeeb46026eb",
+  "facts_sha256": "0f71624f371316e9bf2b90c154f73cc9eb1c9ae61cd5b90b49c77bc97b7285a3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "edcd909baffe7e4b01541694a6b39baa997c081b7d01a49384d7c20ec59f88c7"
+  }
+}

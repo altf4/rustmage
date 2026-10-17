@@ -1,0 +1,11 @@
+{
+  "name": "Dwarven Castle Guard",
+  "catalogue_id": 1213,
+  "oracle_id": "b51e0ae3-126b-4b7e-9dd1-818a5b8e512a",
+  "facts_sha256": "6afb5efd94eb35da3ec5a95b8543b5c325b5445d475a489225a9fb045cd26c87",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a476b0b068ddd6fdae87f4bd8e2b5d9a32356583d67d0d2da4717c1c0c15343a"
+  }
+}

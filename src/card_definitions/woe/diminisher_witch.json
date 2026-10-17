@@ -1,0 +1,11 @@
+{
+  "name": "Diminisher Witch",
+  "catalogue_id": 1079,
+  "oracle_id": "c2283655-f6b8-4399-ba1f-68a7107f9485",
+  "facts_sha256": "e32703886f8d20eb3f240e1a344f738a357c11d677e1fa5d01b14b6463f9e20c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fcd7e1c2a640c1441fbbaaed9c6eaf31654707847209c4ca39deff66f1d0821f"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Stargaze",
+  "catalogue_id": 4102,
+  "oracle_id": "db8b4869-f898-40ad-bbad-62390a02d1b1",
+  "facts_sha256": "1a6dc6ed19b728a86f56585115d32bce90527174d00ed9d46224ed58a8c9f642",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d6203d50f6f92649664e48960755a6535a667db87574b6da1f1543332f75d949"
+  }
+}

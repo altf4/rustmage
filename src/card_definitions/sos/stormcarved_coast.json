@@ -1,0 +1,11 @@
+{
+  "name": "Stormcarved Coast",
+  "catalogue_id": 4171,
+  "oracle_id": "4722105b-0085-4bb8-bca1-9de0d3eb5600",
+  "facts_sha256": "1c9cb655e171db698db42bb25ac8295797c13cb80fd36351e2671b0cc83190d0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fd910f3811c51425064fc3b75b4c485e37f72841beca1668261ec74ca5cf46ff"
+  }
+}

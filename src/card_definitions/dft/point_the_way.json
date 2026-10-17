@@ -1,0 +1,11 @@
+{
+  "name": "Point the Way",
+  "catalogue_id": 3192,
+  "oracle_id": "0ffe9c8b-e0cb-4a29-bc14-649dbec5d1f3",
+  "facts_sha256": "12b7aa1b365b055f1ad5f1193152a850c1481177e84f465e7aeca5e0e9f59298",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "830f373fa97da30ea7dd48a744171dc73116ce7a2fd341ad41233ae71cf6b060"
+  }
+}

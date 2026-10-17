@@ -1,0 +1,11 @@
+{
+  "name": "Petrify",
+  "catalogue_id": 3145,
+  "oracle_id": "ebec110e-aff3-48aa-abf6-309dd2ffb478",
+  "facts_sha256": "1e2c33508b87b7ee5519474517dd56b3aadb3f4f2d31e3bc86f2f3d5c6e0fbba",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "802edc10d7846913e922c6e59b1f387680a5b12d6d094bca7e6836d102929014"
+  }
+}

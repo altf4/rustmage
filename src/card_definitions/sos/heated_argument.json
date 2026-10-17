@@ -1,0 +1,11 @@
+{
+  "name": "Heated Argument",
+  "catalogue_id": 1985,
+  "oracle_id": "329f6434-8f1b-4a10-8feb-2a9dc5f2712b",
+  "facts_sha256": "8fb80517157d86b842ff023c340063e60ac50d1c0c033396d1922bffb779a79d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3584458733245b2e798d1cb95f12ba8bf6fd69bbb952e8ff4bb7e1b591c7427d"
+  }
+}

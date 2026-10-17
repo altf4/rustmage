@@ -1,0 +1,11 @@
+{
+  "name": "Druid of the Spade",
+  "catalogue_id": 1194,
+  "oracle_id": "9740ce6d-ef6b-4d70-839a-8bd5e0e1e0a1",
+  "facts_sha256": "8279e2fba422938c5fd7e35dc14e64c9635416200a1de59624bd71c3dcbb8363",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c6837d28d854865ec752707e5788227d8a021518f450a59474411bf9df08287f"
+  }
+}

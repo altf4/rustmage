@@ -1,0 +1,11 @@
+{
+  "name": "Multiversal Incursion",
+  "catalogue_id": 2876,
+  "oracle_id": "d3678fce-6897-4f2c-bf50-243facb6581b",
+  "facts_sha256": "ae1af4a2274c84d24e50aee6cd0e5ad68ff374269719b7f12f11bfb34bf56687",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "95ff7957ec562b63625d83153fdc68a9e784801d7c22f235ec991021572a1fe2"
+  }
+}

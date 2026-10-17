@@ -1,0 +1,11 @@
+{
+  "name": "Living Phone",
+  "catalogue_id": 2526,
+  "oracle_id": "da554d71-1f13-49ae-9eb2-c778a23df08b",
+  "facts_sha256": "944c0436ba1800404dbdbb82398f98a043a9fbc58d32a2c3f0b426b2ad5ac853",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0fd9a71e3dac1cd203ae4cfe55b18a942fd8bef432a69e730fbd10526dddad5e"
+  }
+}

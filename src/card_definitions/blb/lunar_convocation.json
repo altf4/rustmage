@@ -1,0 +1,11 @@
+{
+  "name": "Lunar Convocation",
+  "catalogue_id": 2582,
+  "oracle_id": "cb68d1e4-36aa-4a00-b671-8959e7d526d4",
+  "facts_sha256": "ddb6e2db72330751a87ea661faff845f8d2dba7e16bbba9e627aeaad7ffacc07",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "963ce0bbf78ff49d3ed64650fc3a47be8ef73f9c2cdb97b2addde97471c49c82"
+  }
+}

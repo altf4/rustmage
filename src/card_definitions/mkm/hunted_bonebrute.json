@@ -1,0 +1,11 @@
+{
+  "name": "Hunted Bonebrute",
+  "catalogue_id": 2103,
+  "oracle_id": "c1d9c41a-0941-4b7e-b8a6-890d30386458",
+  "facts_sha256": "2e2f1be5c9236030574b9300d9a17639f925d2a6991f78b0a2a1319b836bd83b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c36bd09fc8bcd572a0fbf19d2381e4aa60e0e9652ebefbe120a9c36525f50784"
+  }
+}

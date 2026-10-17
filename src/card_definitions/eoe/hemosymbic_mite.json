@@ -1,0 +1,11 @@
+{
+  "name": "Hemosymbic Mite",
+  "catalogue_id": 2004,
+  "oracle_id": "103e0b63-fbde-4054-91f7-dd04b40b59ef",
+  "facts_sha256": "b75b5f33dbe2f44daabe911725cd7b0d837e4ecef49f00ee37601fef1ec8061e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4ce70832a34a07aaa6b6e341aeccec38af3430f7d238bb64bede94afddf3799b"
+  }
+}

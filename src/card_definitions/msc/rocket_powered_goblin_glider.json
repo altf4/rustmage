@@ -1,0 +1,11 @@
+{
+  "name": "Rocket-Powered Goblin Glider",
+  "catalogue_id": 3568,
+  "oracle_id": "5db9121d-934a-44f1-b178-b389c6595af7",
+  "facts_sha256": "f5f3b93b34350961e845aff9ff93bfd268080876fd7cb2cb069f11151405a12a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9faed0286ffb153a15fbcef295323aaab403dab2c4cbe08498cb78bb052f81a7"
+  }
+}

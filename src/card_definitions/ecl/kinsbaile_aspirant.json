@@ -1,0 +1,11 @@
+{
+  "name": "Kinsbaile Aspirant",
+  "catalogue_id": 2364,
+  "oracle_id": "845d80ee-1cd5-437a-90a5-40dcc657d3aa",
+  "facts_sha256": "4d4076d82347cc219b43a4a6ec29eab57896f1de4e8477540d33c7b788a27eb3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e22b38c471ad7fcc8560069485b5e866b5683cc52b8e19cc5d9399c29cab0da1"
+  }
+}

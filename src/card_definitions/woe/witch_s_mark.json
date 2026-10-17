@@ -1,0 +1,11 @@
+{
+  "name": "Witch's Mark",
+  "catalogue_id": 5095,
+  "oracle_id": "00807825-88e5-4b88-8527-a49f553a91be",
+  "facts_sha256": "93cadefe19d119bb85e63a23f2e7baaf3e40f68c39ea4104a15e0d3fddf11167",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cc29149bd1d1d3c484b33ca2ceccf87fb4b6ddbd6bd217815ff7d70058037c3b"
+  }
+}

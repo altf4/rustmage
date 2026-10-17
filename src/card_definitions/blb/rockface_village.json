@@ -1,0 +1,11 @@
+{
+  "name": "Rockface Village",
+  "catalogue_id": 3570,
+  "oracle_id": "7e103748-3f76-42ce-a063-d0256b2dce2b",
+  "facts_sha256": "7c85255cf9f7730ceed4908485d9bcd4c495cb04171e1d2aa389a2b6431f82c1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9dab54bf3b3dcb3c07f68ed7dcfd1c66709bc84e0d8c3c69f46014b302007a08"
+  }
+}

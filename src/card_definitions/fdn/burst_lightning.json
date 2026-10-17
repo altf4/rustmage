@@ -1,0 +1,11 @@
+{
+  "name": "Burst Lightning",
+  "catalogue_id": 600,
+  "oracle_id": "ac2086fe-98ee-4280-9c7c-c5c2d6548a8b",
+  "facts_sha256": "5800e9bb1afb4f72ce53df00467cc8eca9dce31a3299e745d412bdc67e375f3d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0bc207b44c1de931313545936950dfd2eee8912f773c4ac58c0a8a301609443d"
+  }
+}

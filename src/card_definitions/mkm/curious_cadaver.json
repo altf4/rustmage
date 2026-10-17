@@ -1,0 +1,11 @@
+{
+  "name": "Curious Cadaver",
+  "catalogue_id": 929,
+  "oracle_id": "cc5370e0-a0e6-4958-a6f2-093a3868b575",
+  "facts_sha256": "e6d225bfc1846cfd9aec3e3d044ab103aac6dd75506fff3326e2e00e91d271c4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "71bcd5d2e525c31ff3a8dd9c183eaeb732daea0fdc02fb837f989419f2aaa1f0"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Insomnia, Crown City",
+  "catalogue_id": 2184,
+  "oracle_id": "b7140f72-91b6-4be4-8d71-c019e64c2351",
+  "facts_sha256": "5e4cd77282a8a5ad320e9935aed013765b912e576cd9b869f372fe04d09c1fd9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a22c079d481f56f0ab5b3a8c617bbbd77f01721eece106a7436d9ec81684c594"
+  }
+}

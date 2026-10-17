@@ -1,0 +1,11 @@
+{
+  "name": "Way of the Necromancer",
+  "catalogue_id": 5012,
+  "oracle_id": "f3087daa-d2ff-4227-abff-3398da6297af",
+  "facts_sha256": "71829cf2c5c0689163909f5bd1bd51bc78c258f4293c482a54c8df5dee36df42",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2d85dcf77e1308c97f0b63a086016ef138bf4947efd8b36c9cbf0f1725a16269"
+  }
+}

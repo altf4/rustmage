@@ -1,0 +1,11 @@
+{
+  "name": "Adventurer's Inn",
+  "catalogue_id": 63,
+  "oracle_id": "232bd88c-ecdb-43dd-b34a-d381cb3bedf2",
+  "facts_sha256": "cecd110be4948b51b45793626c08c59fcf9d6ebb505ecf56b3330c0a385035ea",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5ab561a4d9678b363cb4040c3740c26be31d018380bc3f57fdc8a8f3b81e6326"
+  }
+}

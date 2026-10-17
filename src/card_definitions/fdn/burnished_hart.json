@@ -1,0 +1,11 @@
+{
+  "name": "Burnished Hart",
+  "catalogue_id": 594,
+  "oracle_id": "893fed41-c144-433f-af88-bc7d419b7fb3",
+  "facts_sha256": "60a53d5d4d04b51cb062cd25c538fb167d9e2a5898b068bdb8d2aac50b8cbe0f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4a40eddbf918e5db47b9d08f77579524e0f9ce3b097b356d3ee40340a11184c1"
+  }
+}

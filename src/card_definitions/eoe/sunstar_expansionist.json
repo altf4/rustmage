@@ -1,0 +1,11 @@
+{
+  "name": "Sunstar Expansionist",
+  "catalogue_id": 4250,
+  "oracle_id": "944a91ab-c217-4c1d-b920-2e5503c34546",
+  "facts_sha256": "e0f9e3a36dc88dcaeef7da039f0745cf3f16cada3526e7f5931315d8a96fa219",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "985ed512516b683f1f8c3c8f8b93641a92faeb60c4dcb02b7e540b058464b2ed"
+  }
+}

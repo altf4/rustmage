@@ -1,0 +1,11 @@
+{
+  "name": "H.E.R.B.I.E. Scout Unit",
+  "catalogue_id": 1920,
+  "oracle_id": "393ff8c5-4da0-4290-b498-222cc0244026",
+  "facts_sha256": "3eada033cd75c1c296a7bebc85c2715fc943671289410d519f3548fd9093f402",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8803b9c13318ab11c0abd614b0c3d549f71c5b8d25efa9829b37a542ea7e236b"
+  }
+}

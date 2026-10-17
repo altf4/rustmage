@@ -1,0 +1,11 @@
+{
+  "name": "Blood Hustler",
+  "catalogue_id": 453,
+  "oracle_id": "bb02e64c-0c4a-41ae-972e-ce83e6fc4cb9",
+  "facts_sha256": "024a427a8159364f847c51617008e39fcfef594f6f2b1f520385a298c73ffd83",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ec13f276dd8085876c4d7a76b4abbcb8ec7189f0b85accba32b37f55cf7eb42e"
+  }
+}

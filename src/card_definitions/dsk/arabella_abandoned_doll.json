@@ -1,0 +1,11 @@
+{
+  "name": "Arabella, Abandoned Doll",
+  "catalogue_id": 196,
+  "oracle_id": "7c4bbb1b-29c4-4e06-aed0-b361293a585b",
+  "facts_sha256": "0cfb489f5597a9b506e720d479675d24ec08a9d199b9ebe2716bd93e82d91af8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8aa6696c8b11e3792437021be02d3a50dd435f9dd29b15a518f77bee03a87130"
+  }
+}

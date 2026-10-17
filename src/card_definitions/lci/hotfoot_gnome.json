@@ -1,0 +1,11 @@
+{
+  "name": "Hotfoot Gnome",
+  "catalogue_id": 2078,
+  "oracle_id": "3efb64a4-04f6-4b78-be1c-5b6320c02a71",
+  "facts_sha256": "833ac1f2557b41eeaa54aa7664553e443ff669144e8f9602edccc87206bbc9af",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "df4753dce234b933e8044b309b4c2ed22c918735ae191c393829c9ffe25d3a10"
+  }
+}

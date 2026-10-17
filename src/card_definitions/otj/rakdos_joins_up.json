@@ -1,0 +1,11 @@
+{
+  "name": "Rakdos Joins Up",
+  "catalogue_id": 3351,
+  "oracle_id": "6a47865c-8fa2-4cb2-aebf-8009c065395f",
+  "facts_sha256": "ef26a4d1cb16ce582b36ad58939ce1562bf30edc25ea952e55f27f4a5aa6fa15",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "62809bf524919bcd0069accd8ba00a3a65efd9097e31e1e268cf998d15f10c64"
+  }
+}

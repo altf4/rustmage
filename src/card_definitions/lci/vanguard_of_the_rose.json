@@ -1,0 +1,11 @@
+{
+  "name": "Vanguard of the Rose",
+  "catalogue_id": 4845,
+  "oracle_id": "de4678f8-a441-4e4a-a339-9b62ebfb0100",
+  "facts_sha256": "31da3533a22a09a1e769cc093b5c651141a517587efd1b42cf3636fc9af74b2f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ff76bae5c79ddc3a367602a9ed01f6d77a48cb0ad5a1207dfeac61809cdd5c8b"
+  }
+}

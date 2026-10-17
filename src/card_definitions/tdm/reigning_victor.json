@@ -1,0 +1,11 @@
+{
+  "name": "Reigning Victor",
+  "catalogue_id": 3448,
+  "oracle_id": "b8c5e481-371c-4999-bb2c-347a2aa33171",
+  "facts_sha256": "591ebe720a5ebd63293a6566018a2ff584d3476e329de13fc3b2c623fd5f2910",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6b409f6588f362d4cca4706633d82ce84fbe5f6e216d43c89071e6a4e4dedb1e"
+  }
+}

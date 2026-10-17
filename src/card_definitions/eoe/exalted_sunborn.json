@@ -1,0 +1,11 @@
+{
+  "name": "Exalted Sunborn",
+  "catalogue_id": 1392,
+  "oracle_id": "43febbcd-ecbe-4edb-ad90-7fc6dc381d05",
+  "facts_sha256": "724879790633a1f823bef6d4b308a4dfd45ba7a3198d4ab8f6099e354e3e04c4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d5398b0c96bbb9128b68e589d1dbadcb6ff464d82d482edf4f7b5a026f91d1db"
+  }
+}

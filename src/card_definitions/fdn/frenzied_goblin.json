@@ -1,0 +1,11 @@
+{
+  "name": "Frenzied Goblin",
+  "catalogue_id": 1621,
+  "oracle_id": "6ac470a1-c2be-4971-a5ca-10bb189ebe4d",
+  "facts_sha256": "4cb14321f697c7d80900ba70b6c057cafa342aed3367f513eba3d36093df82f7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ab2cd72b7929ac88b10de8f115da53aac478734fc7af20e5a77ac52e42c7555f"
+  }
+}

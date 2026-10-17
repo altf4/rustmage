@@ -1,0 +1,11 @@
+{
+  "name": "Selvala, Eager Trailblazer",
+  "catalogue_id": 3784,
+  "oracle_id": "95b20721-1af9-4f3f-a39b-7cd1d4ce0b20",
+  "facts_sha256": "34b73e7a83fb9bb749bf1d7f204a84d5705eb3e66fe5348274bf670bc87e0710",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f5a5a9b0f054a3888fb0b0678050048f91f4e29da4ed3434533e3641d7aaa5fd"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Friendly Neighborhood",
+  "catalogue_id": 1625,
+  "oracle_id": "10fe402e-8d6f-4058-9f42-86f229055359",
+  "facts_sha256": "19d808b6ad5389b2f78fbd67daaca6c563bbe5e01b6c6ae40d3f0dbdaa9fd4bb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bc99ac219f00e74f8fe8c8ca5f7999a9e24c9061429a5448aa8849b468de388e"
+  }
+}

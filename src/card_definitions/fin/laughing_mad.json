@@ -1,0 +1,11 @@
+{
+  "name": "Laughing Mad",
+  "catalogue_id": 2456,
+  "oracle_id": "4f65e6a9-0d90-44b9-9b76-00814db2dbd8",
+  "facts_sha256": "6efcde55baffa5e323b74ee6f7a197ff190a3f3e2974e083de09b6ad0e43396c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a06e50ca4636b446620343ff7135018dd8f3b068643083f3a68cd7d3316b953b"
+  }
+}

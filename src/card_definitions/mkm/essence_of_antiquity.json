@@ -1,0 +1,11 @@
+{
+  "name": "Essence of Antiquity",
+  "catalogue_id": 1374,
+  "oracle_id": "26a7f92d-6914-466d-b7c7-9ac121dd5118",
+  "facts_sha256": "1af071b1ba94d93cf0d26e52579bd6ea18a491f6935d089d76d6891dd1ca1318",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "74120f27b59195ff0d7dbc645384e642453cb41eaee0c12d9e7a37b1899e83e0"
+  }
+}

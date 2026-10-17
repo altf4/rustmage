@@ -1,0 +1,11 @@
+{
+  "name": "Quick Draw",
+  "catalogue_id": 3311,
+  "oracle_id": "ae0d17f6-859c-4b41-8b66-b68abb837bbb",
+  "facts_sha256": "19b40ee57833ad4e3ee4868e90d2187e80f7472a911357ff63aaa0d274aabf04",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a9c6696410e8a898b6a2474b072d0693d5c8e65e1987851f14229a0ea07bdb9d"
+  }
+}

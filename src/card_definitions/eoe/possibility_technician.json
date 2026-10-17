@@ -1,0 +1,11 @@
+{
+  "name": "Possibility Technician",
+  "catalogue_id": 3208,
+  "oracle_id": "ebbf84f7-d142-4de5-bfc1-ea86f082d733",
+  "facts_sha256": "d600ab1401e9fbb028996ddef53da905dcf46c921b1f058dca783b8bb245d3e8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6ad7c0898042d655fd100fdcac11ee95e49ed8d9f838efe05dc6d3785125cc14"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Twists and Turns // Mycoid Maze",
+  "catalogue_id": 4729,
+  "oracle_id": "740aa9d9-91a9-431e-8bf9-1344e5273e27",
+  "facts_sha256": "a936c70db72e3d7c8c117efb388793feadef10f432fe290de68685cd088bedb3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "410cd37ee796f9c9fcf669dd5afcbded882aee4c9842e4cd296cd0806dda3ce3"
+  }
+}

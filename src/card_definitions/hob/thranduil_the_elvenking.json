@@ -1,0 +1,11 @@
+{
+  "name": "Thranduil, the Elvenking",
+  "catalogue_id": 4560,
+  "oracle_id": "4a5f76e7-40be-4b06-9935-4a3b2672e1c2",
+  "facts_sha256": "611be6f336bc2cc0e82880ebe80ce26075ba06d98a0589462132c97e26026911",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c1fbc70d09597b4c52888fa9c64955efe556c3610f851343b925daa552d08522"
+  }
+}

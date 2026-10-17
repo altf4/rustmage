@@ -1,0 +1,11 @@
+{
+  "name": "Lost Days",
+  "catalogue_id": 2562,
+  "oracle_id": "3bc47eae-cf6f-4b5e-96e1-94a4f307f474",
+  "facts_sha256": "45f16e83dd1bd686f8aba2f86650cdba0f7f797fee03c4e0355c2092e84498ae",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "584a75a4ac0222459b58b772430d742882becfe0063975a1ba47b6495e16907e"
+  }
+}

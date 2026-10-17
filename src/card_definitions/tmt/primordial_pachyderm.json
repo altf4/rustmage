@@ -1,0 +1,11 @@
+{
+  "name": "Primordial Pachyderm",
+  "catalogue_id": 3237,
+  "oracle_id": "5ebdc1a5-e678-444b-abb8-8753558a39de",
+  "facts_sha256": "1fe603e5e42f8ed399fba7222624d589401e65cf93a34d00a2baaeba98dd6790",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "df03e33607ca63b8e8faf88a8888b68c10f7e1e446dfe7e696020c8ead682295"
+  }
+}

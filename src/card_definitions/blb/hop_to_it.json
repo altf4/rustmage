@@ -1,0 +1,11 @@
+{
+  "name": "Hop to It",
+  "catalogue_id": 2069,
+  "oracle_id": "e8a9350a-07c1-47ed-8c4f-88e4b3b17545",
+  "facts_sha256": "315891c5edc6f364e104f997edadd0b88b448beac76b6f1c653765155cd13355",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9d90daa3268b34e6b02f029a3aa46dbbb4147eaea7b1cc2833def9ba8cfce0ff"
+  }
+}

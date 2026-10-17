@@ -1,0 +1,11 @@
+{
+  "name": "Knight of Doves",
+  "catalogue_id": 2384,
+  "oracle_id": "d2e6fbcb-ebbd-40e8-8a01-b675fcacaf8e",
+  "facts_sha256": "8a49549ee76e46a02466adea49a1e2d04d699a4fd03737d99532c4a5cb8b325d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b16d9ac020b0ed96c569cba1d8877ae0e5b396a5a6123767b47b0d528d4ab104"
+  }
+}

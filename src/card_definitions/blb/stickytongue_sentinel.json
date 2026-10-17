@@ -1,0 +1,11 @@
+{
+  "name": "Stickytongue Sentinel",
+  "catalogue_id": 4136,
+  "oracle_id": "899f0931-4e9b-4fa8-9f6d-d13a7de05334",
+  "facts_sha256": "c356bc71a340f6d50d49308f4c1b30e07204a9ecb01b8405851f177e21e30d92",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "006f6e402445455b4cbe29df0643130633da56f76932d7bfd4b75af5edbe9d6d"
+  }
+}

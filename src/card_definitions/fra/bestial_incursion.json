@@ -1,0 +1,11 @@
+{
+  "name": "Bestial Incursion",
+  "catalogue_id": 396,
+  "oracle_id": "bc00f29a-e9d2-4b86-bb22-33b686ac4365",
+  "facts_sha256": "8741e73e77f2a0408866c2eac66a227c23ec5e45d5aee90d7467408ab7ce2eae",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4cc5af749eefe8311433b0e6c7f1066ca45bc699061bafcd13699bba0e54e38f"
+  }
+}

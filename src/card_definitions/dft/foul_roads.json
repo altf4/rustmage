@@ -1,0 +1,11 @@
+{
+  "name": "Foul Roads",
+  "catalogue_id": 1606,
+  "oracle_id": "d4e4c8a5-e97b-4295-a403-d17834f73502",
+  "facts_sha256": "62b60b67ef77abc410b832145b7aed2dfdbcffccb60c745d3b56a6110c01fcd3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "14f8369e90f99ffe88d5a6de6dbac9e1a6b9ffa9d19e0b0bbe2c5a39f7cc75f0"
+  }
+}

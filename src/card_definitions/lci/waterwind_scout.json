@@ -1,0 +1,11 @@
+{
+  "name": "Waterwind Scout",
+  "catalogue_id": 5002,
+  "oracle_id": "db65f874-6bf3-4fdb-a977-10b01b7ee2e9",
+  "facts_sha256": "c5e7d3c924a37f6e7e87066f96a109839d560069d4d94d6d469442d626a77306",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "081af2d5b8a5406fd956b91b13244a606e911ab20d0902bb3bc4b7e9001bd358"
+  }
+}

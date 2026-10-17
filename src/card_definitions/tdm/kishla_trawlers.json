@@ -1,0 +1,11 @@
+{
+  "name": "Kishla Trawlers",
+  "catalogue_id": 2372,
+  "oracle_id": "09277185-fccd-4747-aa79-f569c581022a",
+  "facts_sha256": "96ff993890cfab9e3438248775cb1d813bcf19dc74ce928444defcfa8e172b5f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "be4399dbeb3006231f162f45ec25b6c8aba54082781baa6797870e864299444d"
+  }
+}

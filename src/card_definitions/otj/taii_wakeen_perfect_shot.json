@@ -1,0 +1,11 @@
+{
+  "name": "Taii Wakeen, Perfect Shot",
+  "catalogue_id": 4317,
+  "oracle_id": "17327d50-be12-423d-9d37-d6bae519f50c",
+  "facts_sha256": "e45c4ff6e3e81b4a1980796901935f2df045209af16241ff08e6212877b8e3f8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6cdcf8512b03974820d3a2c03e80176060cfa3699140b2dd7331f18dcaad2f84"
+  }
+}

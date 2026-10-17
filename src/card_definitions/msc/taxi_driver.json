@@ -1,0 +1,11 @@
+{
+  "name": "Taxi Driver",
+  "catalogue_id": 4347,
+  "oracle_id": "a17a92f7-e95c-4d0e-a43e-7e6b41a59139",
+  "facts_sha256": "95caa6169aa047f518ccc5564476ce7bb89e2f12eb6d1ca969c4fd9ecf23c4cb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "69fea46331ebc88dbc112a4e8f90ae75e39c2bb3e7943d4294b8a2855befd679"
+  }
+}

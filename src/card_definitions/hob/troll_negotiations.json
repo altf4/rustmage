@@ -1,0 +1,11 @@
+{
+  "name": "Troll Negotiations",
+  "catalogue_id": 4686,
+  "oracle_id": "6e275711-eb76-4924-ba38-c38a36d9d82a",
+  "facts_sha256": "64705af5caf85a37808a930b0b60f76023d57ef11f4e6e9c401580276cf1164a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6d0d0a6aa41eeb211276a46a524f09b4d0b267c1ce059bddb27fa4990d73f77a"
+  }
+}

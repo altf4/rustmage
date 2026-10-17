@@ -1,0 +1,11 @@
+{
+  "name": "Moon Girl and Devil Dinosaur",
+  "catalogue_id": 2840,
+  "oracle_id": "bfe0818b-ae13-4174-85c8-24b895d28df0",
+  "facts_sha256": "cbf66e06a7f0df1f7fc08ee5480c32d41ae48bb2aa131116d3721333f544f96c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "25ba2c55392caa1e170f044ab451a577a5de0d43b7312e023b7194c2fd291516"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Nervous Gardener",
+  "catalogue_id": 2918,
+  "oracle_id": "15dca6a7-8367-4b86-a86c-e44f10fb3c53",
+  "facts_sha256": "13a3aabdfaeb9d7bb5139bf60fe86a10b614139cfee473e95d64cd16608b84c9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a3f91a763156a54c38b148874e5328a1561a61b0a0403accd7574b2177bc81e4"
+  }
+}

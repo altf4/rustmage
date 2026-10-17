@@ -1,0 +1,11 @@
+{
+  "name": "Zhao, the Moon Slayer",
+  "catalogue_id": 5161,
+  "oracle_id": "94c64d41-d756-42b6-b0e7-0a351d64a68c",
+  "facts_sha256": "df3a46b5a82e42dd8afc56673e9d132a60fb41cd51ff5b2b594d0b2697eb98ad",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "91f37eb242efb7fd46ef44c8357c41d59f0681b06c161e2a0112683b56c102bc"
+  }
+}

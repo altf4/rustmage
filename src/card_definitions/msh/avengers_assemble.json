@@ -1,0 +1,11 @@
+{
+  "name": "Avengers Assemble!",
+  "catalogue_id": 282,
+  "oracle_id": "3477e1cc-46af-46f4-9ea2-bdf0bf1f880e",
+  "facts_sha256": "cc151c839e5ff498ff3c3a24e6969164372345f4e1bb91421773ac90d44526e7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6006f1daf761d79445d9458f84ee4833ca0c4690c11268bebf201e1c44ff0513"
+  }
+}

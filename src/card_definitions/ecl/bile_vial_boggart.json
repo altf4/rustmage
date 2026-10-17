@@ -1,0 +1,11 @@
+{
+  "name": "Bile-Vial Boggart",
+  "catalogue_id": 412,
+  "oracle_id": "5a651557-ce08-46ba-aecd-0e4fbfdef3c0",
+  "facts_sha256": "987ca869a8cff2675ade1f9ef12af0e40b692fb6c17b544ab67167acd0aa1c23",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0d4791e2db778b03b99478e59698b3b7b58af17c11ca0db0447ec17bef205211"
+  }
+}

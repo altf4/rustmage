@@ -1,0 +1,11 @@
+{
+  "name": "Secluded Starforge",
+  "catalogue_id": 3758,
+  "oracle_id": "69f55a7c-6ddf-412e-b63b-b395731a1ff2",
+  "facts_sha256": "b4f855fa8ad3b019e242abe1070cc02ee2e8b13b7405d40ba0b80cfb66558258",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3ae76f73f1e2e7b62213929b5f77e3dbeea758ce3318c73c0ffe576e94129666"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Kavaron Skywarden",
+  "catalogue_id": 2328,
+  "oracle_id": "c1f1ba17-b5e8-4bb3-a767-befd52e2db72",
+  "facts_sha256": "773e677f78c8677a34aa0681d92a462f5315114a49d345f6cd81403797af3905",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2eb265e2b7f1326b5acffecc1d913f967959b0d2b27507fa461e7468ecd4a60f"
+  }
+}

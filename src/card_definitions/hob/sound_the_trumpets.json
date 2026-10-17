@@ -1,0 +1,11 @@
+{
+  "name": "Sound the Trumpets",
+  "catalogue_id": 3981,
+  "oracle_id": "dbcf2a79-b455-43ac-9cf0-9e63708800f4",
+  "facts_sha256": "6eb97dedbcadaa244a32a8b38ddb7237d8f8d2179f1954a864224638e8b07506",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "25812cf0a659e7ba23038e0ea1400b7644d611cfad720f2a140985c303e8b3ec"
+  }
+}

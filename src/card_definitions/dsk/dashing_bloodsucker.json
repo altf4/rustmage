@@ -1,0 +1,11 @@
+{
+  "name": "Dashing Bloodsucker",
+  "catalogue_id": 974,
+  "oracle_id": "211dca11-b633-4deb-9d51-210fd3843995",
+  "facts_sha256": "95141df0ed2915e03bdc223a9b872d353af004dbc4f263ec0ee5406568709fc8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1647f67cc0ad297e3dc4e340623c3b461bfabfc18741aaad93b9bed65a6927f8"
+  }
+}

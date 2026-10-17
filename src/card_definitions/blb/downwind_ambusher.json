@@ -1,0 +1,11 @@
+{
+  "name": "Downwind Ambusher",
+  "catalogue_id": 1144,
+  "oracle_id": "1e0a2709-2cd2-4954-81ca-60654ab03d7c",
+  "facts_sha256": "54c32067e2bfc8cb0d45e28defce4fa12c4acad09873363be80d6c88a657c9d2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "980290d9fe44bfb54e4714b4e9a6b585cfb65c204ac1697b1a202a1a785ac66e"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Hawkeye, Master Marksman",
+  "catalogue_id": 1967,
+  "oracle_id": "6b59bb1f-f2d4-4d47-bd57-23927d588381",
+  "facts_sha256": "7db2bd745aa109b9cddbe494c9eca8f33f2a35d21a77882ff0531ced491cb4f9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b7e03188f874aaeb793ea81c94306ac7dc050303684fc082074a0d959420579d"
+  }
+}

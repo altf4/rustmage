@@ -1,0 +1,11 @@
+{
+  "name": "Broodspinner",
+  "catalogue_id": 570,
+  "oracle_id": "ad50214c-4d0e-4f95-9098-fd7d64dbf7f4",
+  "facts_sha256": "4be30a0615985af682d4b92735ea5dfc07455fc081e0b46706aff978d6fca83e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9af9655d55bee4172021a6383cdfa115c35a9082500578d22f25648da9861dc2"
+  }
+}

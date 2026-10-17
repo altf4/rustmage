@@ -1,0 +1,11 @@
+{
+  "name": "Omni-Changeling",
+  "catalogue_id": 3017,
+  "oracle_id": "66d4370e-19b9-4680-9b1e-a192537bc002",
+  "facts_sha256": "3407d6b1fde78defb83682bb15acb422c91fb13d6b5b20ff714cf5d30756a0a4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a4da38ed9635cad831ad823872087668dae7a5464a62ffe32414092be33e1d94"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Ajani's Pridemate",
+  "catalogue_id": 114,
+  "oracle_id": "95e94dea-5ac0-4d6f-adec-ca147aee861f",
+  "facts_sha256": "0eedf40271aa0c0a2f6c207d60ef5d9169a14203f47064d060138e52c54ccaf1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "661da960b561803cb4d5e07461b328721a2690f64537f944628ff3eb1dd9385d"
+  }
+}

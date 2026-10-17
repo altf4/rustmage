@@ -1,0 +1,11 @@
+{
+  "name": "Prayer of Binding",
+  "catalogue_id": 3217,
+  "oracle_id": "4505ff9f-97f1-45d1-aea9-5590fefb4a4d",
+  "facts_sha256": "f0369bbb59e3536588f35e7b05a7c19b15400c437d10b2a55f534b625f145344",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "06ae9fbf5f0bb5c76227c7b917e4661249f836240b01fb620b56548e8096aad4"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Roving Actuator",
+  "catalogue_id": 3598,
+  "oracle_id": "78ac1e6c-2704-4844-9e87-642324c23997",
+  "facts_sha256": "491b1eb80ae160a2aae44050b7867d18ffcf6bc2136cb9e6f6684ed18a7c8651",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "81a61326149c98d5c7ac3720b48175c7867b22d9b949864b29403b3c52bfcf4e"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Temple of Deceit",
+  "catalogue_id": 4363,
+  "oracle_id": "33b9b3bd-33ca-46f3-b8bb-a978bc3d1085",
+  "facts_sha256": "8a68f86b0de3fc53a470255413172c1793d0bab5ff1c3a8b413dec38a0fdad70",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f41eb1e702e08b91e2bdeb928c338ea5b3cbd32766a42d084d65e1e7e38d6904"
+  }
+}

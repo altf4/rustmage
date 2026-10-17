@@ -1,0 +1,11 @@
+{
+  "name": "The Mind Stone",
+  "catalogue_id": 4477,
+  "oracle_id": "b175e826-09e8-4fae-9f2e-b902f95b282d",
+  "facts_sha256": "2d1251fd99d3d9cff8245178e5fd2fe18a28b5727b109c4ab3fc8b05db66cac2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "acdc7d44d6cdfc093428bfaa2b4027781366c3344a8294bd74de24efb00a5850"
+  }
+}

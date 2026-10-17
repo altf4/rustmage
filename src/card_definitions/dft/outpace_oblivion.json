@@ -1,0 +1,11 @@
+{
+  "name": "Outpace Oblivion",
+  "catalogue_id": 3063,
+  "oracle_id": "4d92f48d-c851-4b71-b7fa-916459928d59",
+  "facts_sha256": "463e9042a01f4c58afafed241003bbcb0c247eb5bc92c95d58f53f4e96929197",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "95ba274432926204e5532612f8107cb8334e8169f3b0691c188d5d5cd0671c9a"
+  }
+}

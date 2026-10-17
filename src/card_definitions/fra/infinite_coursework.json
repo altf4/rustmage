@@ -1,0 +1,11 @@
+{
+  "name": "Infinite Coursework",
+  "catalogue_id": 2162,
+  "oracle_id": "666b34b5-a0c2-43e3-befd-7c3979313682",
+  "facts_sha256": "c6543c14ceaba6035655425f16492947ab0ae62cfbc0d688eddd8c0b1df7af76",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b078aa6a59506713e82dce99a9056e7075317048398c08033f01b1d99d7c5333"
+  }
+}

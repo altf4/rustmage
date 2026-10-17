@@ -1,0 +1,11 @@
+{
+  "name": "Intrepid Rabbit",
+  "catalogue_id": 5287,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1751f41d2149055f7785bc0eca5e32dfc004b54ee0c07222a0a9a36ce5f26aae"
+  }
+}

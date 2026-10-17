@@ -1,0 +1,11 @@
+{
+  "name": "Moment of Triumph",
+  "catalogue_id": 2823,
+  "oracle_id": "57579799-2582-417f-9864-4560cac39ac3",
+  "facts_sha256": "390b33b83bc585d34109ca915f39e8a7b10a794308359db1e2191f7a573fa303",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f6c5382b3c911b6e3436fb2ca4f1dff6342d1fc5605e10addc34943737b80fcf"
+  }
+}

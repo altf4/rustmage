@@ -1,0 +1,11 @@
+{
+  "name": "Tidus, Blitzball Star",
+  "catalogue_id": 4595,
+  "oracle_id": "ef827c62-a5c5-4a7a-92a8-edefb081fae8",
+  "facts_sha256": "d29bc4e6a386e34e19efffb4c6acfda85941a7d97d1e367d01eb9c164025e10d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0781332f0180c833712128e7ad6eb44cad563a6385aed2ab27fe3b11abcf4a01"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Starseer Mentor",
+  "catalogue_id": 4111,
+  "oracle_id": "12a165c4-229b-458b-8fc7-c1b7cba35a8e",
+  "facts_sha256": "63ca81acc29d87e1199d9ccc981cab84aa77350f12d05f8afaf4012df1221ed6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9ed35031a99aa8efac35970a813484c214e862ea553b242f14a329eec2f943c4"
+  }
+}

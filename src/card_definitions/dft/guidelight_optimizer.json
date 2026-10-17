@@ -1,0 +1,11 @@
+{
+  "name": "Guidelight Optimizer",
+  "catalogue_id": 1904,
+  "oracle_id": "045488b3-0206-4dcd-91ab-59ec542f06c0",
+  "facts_sha256": "ed0b599babb6b4387000e3c62194464a7f033be58a8b4b02656fbfa815644968",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9be3e137f3f9ea2941d4e2aea9705bf69d1fe132f5aa902bd4bd1eb6b7c17ad0"
+  }
+}

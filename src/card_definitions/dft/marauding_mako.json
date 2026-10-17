@@ -1,0 +1,11 @@
+{
+  "name": "Marauding Mako",
+  "catalogue_id": 2657,
+  "oracle_id": "e349be42-5f14-44a9-9608-281985c10e2d",
+  "facts_sha256": "432bedcde1534e6ba2a41a61f414558d281a161ecb2c5f00364750607141b8fc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f32bf6657863df8081106b2d5f7aaff9912c7ed433bb5c1124f7538c96aa914c"
+  }
+}

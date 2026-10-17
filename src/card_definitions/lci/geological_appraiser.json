@@ -1,0 +1,11 @@
+{
+  "name": "Geological Appraiser",
+  "catalogue_id": 1712,
+  "oracle_id": "a0a1cd2b-ed7c-4cce-8497-4873e1e5e3df",
+  "facts_sha256": "b9460f7df193f4a68ed5b725e35938af0ea0c17ceadd27624b41597d5418a463",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "db177a9ddde5d661035150599629eb5c31dbfbe8f5168944606172640b429635"
+  }
+}

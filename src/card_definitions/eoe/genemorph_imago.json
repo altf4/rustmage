@@ -1,0 +1,11 @@
+{
+  "name": "Genemorph Imago",
+  "catalogue_id": 1705,
+  "oracle_id": "bf3a0585-3976-4078-8beb-6afa79f97027",
+  "facts_sha256": "e545030b3904626430c30a4c6f88fd880f266fab9f72350673134879be346a00",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2618487d93a059c1333e3311da86e6d0adec2abff4bc3ad9069db2de4f617fd7"
+  }
+}

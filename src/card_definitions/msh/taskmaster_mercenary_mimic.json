@@ -1,0 +1,11 @@
+{
+  "name": "Taskmaster, Mercenary Mimic",
+  "catalogue_id": 4342,
+  "oracle_id": "dcd97730-b793-4c0c-b158-625ac3656b4a",
+  "facts_sha256": "901c65769a029dfe6af658c0715fb2ab2caa86bb233a0c30ad4ab7805f5ed5a0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d4f5c0584f7334b197fed4bb49dad722aadca9b3c9578996b999b710ea0f1df3"
+  }
+}

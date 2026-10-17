@@ -1,0 +1,11 @@
+{
+  "name": "Eclipsed Kithkin",
+  "catalogue_id": 1256,
+  "oracle_id": "e6227840-6e3e-48c7-b4a4-42cfd8f14b68",
+  "facts_sha256": "2b1e98608fb9e97c45b5aaaab6b911529ad62065e5f060a8daade538d80fbf91",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1258585318e319f91c86bf77d6fcd7607dfe52f6db881e8b7664eb1a2c8540f6"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Gladiolus Amicitia",
+  "catalogue_id": 1763,
+  "oracle_id": "fb5a05d1-baa5-459d-a2e5-438f4a60b82f",
+  "facts_sha256": "24e6b18b6ba9ec3cdab4b76da495ef3057054ac8fd46687adeac3d9fa0f8fb54",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5527e22759264cd0b40b93a1612ebdcf4a8dd6b9cfa719bca2c3683ffa5f8ef2"
+  }
+}

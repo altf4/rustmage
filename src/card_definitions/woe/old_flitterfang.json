@@ -1,0 +1,11 @@
+{
+  "name": "Old Flitterfang",
+  "catalogue_id": 3005,
+  "oracle_id": "f95bdf0d-5bd1-4215-b143-0930973807ce",
+  "facts_sha256": "52a314d87e2c1e1c20dc74dc808731b0fdb0207ee01aa5c0477e1c4400543fe1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8a21accf892a7ca9adae8e698b7428574e76ecce4aa1d1d53fe72712ab368232"
+  }
+}

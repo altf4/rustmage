@@ -1,0 +1,11 @@
+{
+  "name": "Orazca Puzzle-Door",
+  "catalogue_id": 3031,
+  "oracle_id": "6bcf21ef-6641-4752-a0da-937a9277c812",
+  "facts_sha256": "1ca9efe536b4a2a5b30e57deda350913102aae90974fc572027d466b3d8db918",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e11b32752b384b4359ec3bb1afbf25844fb7707ba5c7497f4775bef8701d4036"
+  }
+}

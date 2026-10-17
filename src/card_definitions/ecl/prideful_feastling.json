@@ -1,0 +1,11 @@
+{
+  "name": "Prideful Feastling",
+  "catalogue_id": 3229,
+  "oracle_id": "faf2f368-a7e7-4427-bc03-929f294b1e03",
+  "facts_sha256": "793c2b4c0de675ddcdfc4e6dbc60e9bb8f4e9f2b04419149a91fd055ab8f3153",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "23425b203515e72e18182a5b9eb81b6528f15a9bbf96ebe2af6d0cb5ea19598f"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Robot Domination",
+  "catalogue_id": 3564,
+  "oracle_id": "4f69d2f9-c16a-4752-9026-794a29d73af8",
+  "facts_sha256": "de2dd594ff456a6e237a8ba35477974857742943a1a937cacdd771015aaf0297",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4d4abf8892b52820e3025fb5294f3f660ea2d07d70c2148758df8e4b9bab9c08"
+  }
+}

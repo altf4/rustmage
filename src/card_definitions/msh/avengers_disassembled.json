@@ -1,0 +1,11 @@
+{
+  "name": "Avengers Disassembled",
+  "catalogue_id": 283,
+  "oracle_id": "34493cf5-7586-48ef-806d-57273b2ab034",
+  "facts_sha256": "464e268fc245124f85d9fb6eaae6df0604bc60d981900ad8c104194a140f99dd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7595725188a342cc7614ae6eb52cc18273c145a11856cbc72c95890d986848d7"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Bristlepack Sentry",
+  "catalogue_id": 560,
+  "oracle_id": "05852d99-8f30-4318-913c-d0b1eaf8c222",
+  "facts_sha256": "bf5b3a8b4f18f80c84867fd38d2d10b16328448f34eea750b23388f1b6ea497c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e712913a906a18f0810b0b1c3d166eaf9397dde34d9e9b34298861199e6c3c02"
+  }
+}

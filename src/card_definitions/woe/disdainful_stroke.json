@@ -1,0 +1,11 @@
+{
+  "name": "Disdainful Stroke",
+  "catalogue_id": 1092,
+  "oracle_id": "11e02134-7b1a-46a4-a89e-7539dd1efada",
+  "facts_sha256": "5fec12d2a2cc32d24b197970ee52b1953729a38c519af82b7d7877eeb46a0cdb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "771b71185068feb171fa3a82f8753e69d1c3e30b0a6f7688205b68e5784f642a"
+  }
+}

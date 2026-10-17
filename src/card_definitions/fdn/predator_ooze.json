@@ -1,0 +1,11 @@
+{
+  "name": "Predator Ooze",
+  "catalogue_id": 3220,
+  "oracle_id": "a51ec70d-1356-4403-a858-b99445bac54a",
+  "facts_sha256": "330fee1fd4bdcb9146982a8e6818c9811ecbe61b9b15d803f38e6ea5c4838d0e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0790e893f804b5a572a2125c1a279ff02be0834753b001d6b0e497873c3170dd"
+  }
+}

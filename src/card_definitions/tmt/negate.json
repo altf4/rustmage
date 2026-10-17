@@ -1,0 +1,11 @@
+{
+  "name": "Negate",
+  "catalogue_id": 2914,
+  "oracle_id": "3407fe41-fdd3-4119-8f70-4bc4590a379f",
+  "facts_sha256": "34e74431417b713872cd1af5d0dcfb47afae4c865874994fe263eb5c138bd075",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "642f0b5225c497321025fb71832e9cf93a9c72977defa5511a8af2ea05e475f1"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Dawnhand Dissident",
+  "catalogue_id": 981,
+  "oracle_id": "2cabf7a4-17af-45c7-b314-a84f5dc0d070",
+  "facts_sha256": "8f4e509d51651b0577c07444f83f569a2f59c3dfab777eed14c613b7d0d5ad8a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dda26eeb269c0ec00242551773833bdab85756bd70e214b8ed13ef5fb22be848"
+  }
+}

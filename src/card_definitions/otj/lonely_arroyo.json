@@ -1,0 +1,11 @@
+{
+  "name": "Lonely Arroyo",
+  "catalogue_id": 2540,
+  "oracle_id": "36508a8a-d1a4-400e-bfda-09436bc4d5d4",
+  "facts_sha256": "bd1a36be7f9f8ce93bf1621192f57af5d3fd2f0a3f385de4da7b58d3fe56ea15",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8d4702afe4f8bf00b491db61c418e9ba44899cebde1fa0ee13c0469f64bc2426"
+  }
+}

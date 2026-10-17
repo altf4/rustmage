@@ -1,0 +1,11 @@
+{
+  "name": "Chimil, the Inner Sun",
+  "catalogue_id": 737,
+  "oracle_id": "119d9671-61ba-4629-89b1-f94bdec5cb74",
+  "facts_sha256": "4f41c5607317647ff688501967e2c6ecf109527e634f90e27900a62f8b4591fe",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e82553827d479c38767a5dded9b2b9727d857154250ab5c140f809ad679ade90"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Frilled Sparkshooter",
+  "catalogue_id": 1628,
+  "oracle_id": "69038520-7156-48d9-aae8-ba3cc76a5993",
+  "facts_sha256": "2bfe7aa38c978e5f139841a97246200069e2bc580237d575dba7f5f40073a334",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bba1d416ad2d7497d02cf99b0bcf9a5844069d6c5c41854411fa8da9916e1af0"
+  }
+}

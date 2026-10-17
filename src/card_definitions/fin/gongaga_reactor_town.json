@@ -1,0 +1,11 @@
+{
+  "name": "Gongaga, Reactor Town",
+  "catalogue_id": 1830,
+  "oracle_id": "ac4e1818-4873-4143-9b99-46f205d006d9",
+  "facts_sha256": "6ae591af3f6e4632d693d613a0aeeb09b047d6bdf315980ea04da43510d98cc0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9bcdfc813aa207e26473e74a8dd1bd11cfd233d5165bca9f801a998d453ff871"
+  }
+}

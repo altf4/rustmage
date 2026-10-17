@@ -1,0 +1,11 @@
+{
+  "name": "Clive, Ifrit's Dominant // Ifrit, Warden of Inferno",
+  "catalogue_id": 772,
+  "oracle_id": "ceba3d03-be5a-4dd7-b829-7db216a0f44e",
+  "facts_sha256": "6c0c31d83f19d69984cad8c9f05176f5250cc64b931bd238576d67c631f03ec0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7e55c70e894dc191857d89dd035335b21ff58ee7c4dee73e730bb4e73f330a46"
+  }
+}

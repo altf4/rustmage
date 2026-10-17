@@ -1,0 +1,11 @@
+{
+  "name": "Cut Propulsion",
+  "catalogue_id": 941,
+  "oracle_id": "cf3234f2-09d7-4d8b-b871-3bf0fcb75b6d",
+  "facts_sha256": "60940cac952a95f326f9ca86368aa6c5e02f4a4d7a861ef31ba4f5ed797c9f28",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ac3c39fd0230774a4ccc307b077c3c5fa5c7cb49c32ef0d0771e063d9b0c0d9c"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Hide in Plain Sight",
+  "catalogue_id": 2032,
+  "oracle_id": "94b15f1d-827b-45e9-a684-5d0c52ea0a09",
+  "facts_sha256": "64cf4b80e8c313c08b07f330dad047672295818a3b8fd34ab5d991a3a9d35eb1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "584467d203deb10e962fc94083cafaf9acb4c62c8b845fedeed5cdbaebb35ccc"
+  }
+}

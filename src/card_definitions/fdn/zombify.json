@@ -1,0 +1,11 @@
+{
+  "name": "Zombify",
+  "catalogue_id": 5169,
+  "oracle_id": "bb95db4d-5017-4121-bf79-d68476602d8c",
+  "facts_sha256": "bbd1d0d24ecd16201e273d286371ee30bd19ccf31e02792ac5872bc4f24419e2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "98e0c62c91e32473bced0f459535655d7d93caeac9d2a0878d89c3bb14653bb2"
+  }
+}

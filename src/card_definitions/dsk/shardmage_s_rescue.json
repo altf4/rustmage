@@ -1,0 +1,11 @@
+{
+  "name": "Shardmage's Rescue",
+  "catalogue_id": 3813,
+  "oracle_id": "406247ee-2b86-4068-b5fa-65cdc83a82f4",
+  "facts_sha256": "5de3693335d30d1b953c5f0df4f35164a0180b000c095bc15ab5342236899f15",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "059625efc63cb43d33904f3d5183f1bd513b93327f230436e9e66401caa1b223"
+  }
+}

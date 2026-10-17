@@ -1,0 +1,11 @@
+{
+  "name": "Reverent Howl",
+  "catalogue_id": 3509,
+  "oracle_id": "86214b4c-a3ad-4372-b5fe-8f742a7a3d4c",
+  "facts_sha256": "6128a93a42172874aebe842a326a65b5a29fb6e96ac923df02ef96bd5491123d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "950a4dc63d647aab23f22a36d03e0c7a4a1ea2a69a025c2a0a6f427b779581fb"
+  }
+}

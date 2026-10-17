@@ -1,0 +1,11 @@
+{
+  "name": "Luxknight Breacher",
+  "catalogue_id": 2589,
+  "oracle_id": "e0a508b5-0896-4620-a93e-60b958829703",
+  "facts_sha256": "1d3a940b415848302786eca427af86912eb17301568088eb7e384d00415e6817",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "88e93941b3631a6045b787aec87ba1289d12f09cb700e514af9da2e3d1e0b481"
+  }
+}

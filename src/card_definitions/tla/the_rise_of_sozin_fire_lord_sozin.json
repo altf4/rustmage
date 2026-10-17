@@ -1,0 +1,11 @@
+{
+  "name": "The Rise of Sozin // Fire Lord Sozin",
+  "catalogue_id": 4490,
+  "oracle_id": "9b0b217d-cc9d-4187-89cb-f13160ed2983",
+  "facts_sha256": "b9f81aea129eb1475bc28b0c8ed3a0bcebbc74ba9bff8149ea74d56fba38dc6a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9206fcf01ba7af64821cea245bf87dd85154151d9cd33f0f62d9126fd63c48c8"
+  }
+}

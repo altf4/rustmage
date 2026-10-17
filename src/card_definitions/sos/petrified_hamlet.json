@@ -1,0 +1,11 @@
+{
+  "name": "Petrified Hamlet",
+  "catalogue_id": 3144,
+  "oracle_id": "78a2972c-14f4-41f3-99f9-167948bdd73a",
+  "facts_sha256": "bea98924a7d058ba657ea90674b5516394ede45d556cab7f909200b5391f1f5d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c3713a9e48661e74179c12920744ba98e781fd1918d8a4b9a93010aea94775ff"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Twinblade Blessing",
+  "catalogue_id": 4718,
+  "oracle_id": "b3e1674f-dba1-4570-9990-e5dc643e237d",
+  "facts_sha256": "64de1295e9dea869a2f6fa7f1b0eb879331da544c2826297e4a439b40d7b3738",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "af5ccc248b7efeb79d00b0bc8e2d46667fc91e43a42628575b7357f2bca1c2c9"
+  }
+}

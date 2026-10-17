@@ -1,0 +1,11 @@
+{
+  "name": "Neglected Manor",
+  "catalogue_id": 2915,
+  "oracle_id": "c8c632ab-14ec-44e1-ac00-81d48336320d",
+  "facts_sha256": "9a40fc366cdcf8debf02c5cc617ad1bb19eb6064996277daa17e958ec6c1f2ff",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ab2c49f0402e70c294ded3cae0db9388d978fffe58b1138fcfb9642a8cdd6ad3"
+  }
+}

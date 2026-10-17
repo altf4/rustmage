@@ -1,0 +1,11 @@
+{
+  "name": "Spire Mechcycle",
+  "catalogue_id": 4053,
+  "oracle_id": "7d347d59-0cd5-4207-86cb-5d6244c7c70a",
+  "facts_sha256": "181dcd6474a7760ef9f67799a5f34fd091b8f7265ade643b3593f2e7e3d858a9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8a547032c936a1e3336c4698db8588effd9e0bcb5851398b107c27b18211473e"
+  }
+}

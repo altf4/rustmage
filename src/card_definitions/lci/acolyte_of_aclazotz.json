@@ -1,0 +1,11 @@
+{
+  "name": "Acolyte of Aclazotz",
+  "catalogue_id": 49,
+  "oracle_id": "324d2aa8-6dea-4b0d-898d-1e52ed187565",
+  "facts_sha256": "56b2437688e38f3155d62029415d685b0a243f27a6e964aa606078a43f60a60a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "38e8d596cc36ffb4ffef0ae23e1ec00ac46fd1d04a385480a0005dbc0f8591d5"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Case of the Stashed Skeleton",
+  "catalogue_id": 670,
+  "oracle_id": "64219e17-1302-4a43-85d2-8a6214448890",
+  "facts_sha256": "66458040328b8a1178eeacb5e13314ab6b225da8f7ad7a60bce9c41fa5418d4d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "085c6b49a299f1feb478b0aa6f43939638e40757bd4f8b2a36c47b24cb5400af"
+  }
+}

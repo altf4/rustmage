@@ -1,0 +1,11 @@
+{
+  "name": "Zurgo, Thunder's Decree",
+  "catalogue_id": 5181,
+  "oracle_id": "393d0bf8-5f2e-4eaa-91a1-9132429a7371",
+  "facts_sha256": "c50c16138bb0572a1a932e5c9861f497a264e5a4b6aa78ced267b126fc8b3041",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3ce0082b6fd242d5cf19fe566ec89f3cffec4111608a07c35811701856bd8d39"
+  }
+}

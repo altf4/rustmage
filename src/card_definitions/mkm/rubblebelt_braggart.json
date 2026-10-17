@@ -1,0 +1,11 @@
+{
+  "name": "Rubblebelt Braggart",
+  "catalogue_id": 3607,
+  "oracle_id": "4ae7f959-9f44-4769-8bd3-49ca18928aba",
+  "facts_sha256": "14890fc4aec2ae2408c3bd4fcb83b08c04d784f9f2bda49236090cea2533e219",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d735dcafd5db46af8611492ee3e5f49a2367644621981ba9c392c1e8bf4f5b13"
+  }
+}

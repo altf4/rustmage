@@ -1,0 +1,11 @@
+{
+  "name": "Wisecrack",
+  "catalogue_id": 5090,
+  "oracle_id": "e9c9a445-4386-4616-ad00-f08064d73dcd",
+  "facts_sha256": "fa903f8b00aae4f6859bc0468fd1eb017ec6bab348e19de69523a397be5f0c20",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "67fd199f35d5c8a5568962cc83783ec7f7ff59eba4d271b81238a6ce572f2b29"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Valgavoth's Faithful",
+  "catalogue_id": 4823,
+  "oracle_id": "a871dfbf-1fb9-4d1c-81bb-e4f0b131a11b",
+  "facts_sha256": "cfbe83c828de2df683a704a27565ca535f01248b1860d92d7aa7ca2737a0d2bc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f2f9af75d505a57b448cb3097e50836d0337b060a7a1a4a19c6c423356d54172"
+  }
+}

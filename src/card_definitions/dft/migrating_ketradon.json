@@ -1,0 +1,11 @@
+{
+  "name": "Migrating Ketradon",
+  "catalogue_id": 2754,
+  "oracle_id": "5d957045-acb2-4546-8c19-71511fd497ef",
+  "facts_sha256": "692619a879d88bf7c9890f658a9bf05263c82b87a2d735dae0b3a6a40a450c82",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1cb93910479ee7147cf2cb687368e0144579a270bce4fce2e07028bb70a8655f"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Ramos, Dragon Engine",
+  "catalogue_id": 3361,
+  "oracle_id": "3ed41d2d-211b-4013-8562-8c64d54cc43a",
+  "facts_sha256": "ea773cc94d5a2afeecc3e0a359e67d28841428a1c3831709ab4ba0a97f46ead5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "928123af6153e97ea575e05c6004436a946276c51d9ca027d89b7b852f538842"
+  }
+}

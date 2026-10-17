@@ -1,0 +1,11 @@
+{
+  "name": "Crimestopper Sprite",
+  "catalogue_id": 890,
+  "oracle_id": "5e238e67-00f2-4656-bf69-0115e47321a5",
+  "facts_sha256": "73f3b995f879a3d73743ab224aed3ac970624aeb78e2f9e87a26c08bbc94e2d0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "94bd9fcb7c65c9ee1f488607882ebcb2a15f71443a343c87e74ae4c8b687664b"
+  }
+}

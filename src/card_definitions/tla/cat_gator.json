@@ -1,0 +1,11 @@
+{
+  "name": "Cat-Gator",
+  "catalogue_id": 678,
+  "oracle_id": "349e6b9e-40a8-49bc-9cd3-4a22f5363fa5",
+  "facts_sha256": "9f065805f6ce527077a860195a52122dffe7b2cabd34be39c1998d6ff550b6ed",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3a15a9c0e68ea26bf12a27538ba14980a8a85d930c411b1d027330c094a1c0ef"
+  }
+}

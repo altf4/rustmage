@@ -1,0 +1,11 @@
+{
+  "name": "Feed the Cycle",
+  "catalogue_id": 1480,
+  "oracle_id": "c338eedb-9b70-4b77-b5d6-8ea74b7bea3e",
+  "facts_sha256": "5d6a39f708c3d422b77499678f4a874705e511887e69dcb83fe8423b34570ec5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "57856fad0927f3e8b7a4e22cf15285d478957004053254bae279c59cd460b063"
+  }
+}

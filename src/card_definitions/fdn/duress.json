@@ -1,0 +1,11 @@
+{
+  "name": "Duress",
+  "catalogue_id": 1204,
+  "oracle_id": "33d405ea-7a9a-4970-b70f-9c05d90dd6f0",
+  "facts_sha256": "76de48c32a02b5ea4337d670ec88814c59b351ff0be265a13af4ae3a0cf0163b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ab03b272bc757e1234ceec7e3d9245aa094e1de680abce37acdd3d4213c8c06d"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Fear of Impostors",
+  "catalogue_id": 1467,
+  "oracle_id": "628ae0e4-5d54-48a1-a24c-b9c1d862df9d",
+  "facts_sha256": "9e228f3bedac8a714de2355706434a16c200feacf2fca81dc950dec2581222a9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "853228d63d3cfa2b2cb0ea1376b4727322b7295497297dbff496243f4379ee69"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Marauding Brinefang",
+  "catalogue_id": 2656,
+  "oracle_id": "cbbd507e-06da-4b47-befc-61db8c92539e",
+  "facts_sha256": "c4957ca6c86f281c213f46e9fb5f6389cd9316beb158b4d13372f235ff7accef",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ab68d0fb10686018aeaeb0d419b8159a73cfefb8ac0f16cd4377244d54fab8d9"
+  }
+}

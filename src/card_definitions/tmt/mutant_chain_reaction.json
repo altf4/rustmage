@@ -1,0 +1,11 @@
+{
+  "name": "Mutant Chain Reaction",
+  "catalogue_id": 2888,
+  "oracle_id": "ea9fc868-374b-4acc-be0d-4283907b4524",
+  "facts_sha256": "80df7ce71caba16c0fd8c64674cae7d935d90b43525b88ee6f152abcfa4ddfc0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3c1080dfffa7d6e52e6fbdaffc3ef380ddd7dae155de574460d0ab4efee1f95c"
+  }
+}

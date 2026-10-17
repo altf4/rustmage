@@ -1,0 +1,11 @@
+{
+  "name": "Maximum Carnage",
+  "catalogue_id": 2689,
+  "oracle_id": "7351fca5-8672-4ba3-a015-bd4b6b289efc",
+  "facts_sha256": "cbc1c7dc569ba0ee02137df0078474883a6f570659f289ae969cca50a6d8f696",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8d8ad0916403a247cc52c374a9dd6efb11beaebcfa9633f897111d043cd13dfe"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Honored Knight-Captain",
+  "catalogue_id": 2068,
+  "oracle_id": "69741d3b-1259-43f5-897f-6f4c3ca0844b",
+  "facts_sha256": "2044834043d738189d2d70ba9a2eba06a10711f004f6d8cc3d0a880ce00602ba",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1468274c99e3e6278ba2e0866788a933ef7de52d37a64caf091526b397cc5ed1"
+  }
+}

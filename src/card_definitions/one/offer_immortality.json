@@ -1,0 +1,11 @@
+{
+  "name": "Offer Immortality",
+  "catalogue_id": 2992,
+  "oracle_id": "be4499e6-616a-4c11-b37e-9201d2492682",
+  "facts_sha256": "127775d4a87b05606fd72997b40548f0c19c6dc03c27f8cee026602da02e730e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d3edb64a46717d6090460a983da14a211f5f8a35e127a0dba652fca14cd7aabd"
+  }
+}

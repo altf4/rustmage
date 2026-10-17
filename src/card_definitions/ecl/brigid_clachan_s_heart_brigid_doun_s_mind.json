@@ -1,0 +1,11 @@
+{
+  "name": "Brigid, Clachan's Heart // Brigid, Doun's Mind",
+  "catalogue_id": 552,
+  "oracle_id": "60fc89a1-cc6f-4a32-84c3-09abf7a4a1df",
+  "facts_sha256": "4a3472f348cd0abbfd1a0155920c84a66f8feed7f47233e4fe5de7bca19e312f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "39859ce9391d24f07df694a3fd81046b8fb7590388ac22bf5b79602c4646c9bd"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Fear of Immobility",
+  "catalogue_id": 1466,
+  "oracle_id": "fb2600a8-0ba6-4888-ac8a-f206469d4c71",
+  "facts_sha256": "13da5e1e2f69faefb829d7903c413e885c1436cf48ce4e9a1110d866c9bc44de",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "31b5d5560606f7ab9ce8de873e5c465a0934fe31a88a50cecfa2224c2fee9d7d"
+  }
+}

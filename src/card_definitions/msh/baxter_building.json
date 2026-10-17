@@ -1,0 +1,11 @@
+{
+  "name": "Baxter Building",
+  "catalogue_id": 352,
+  "oracle_id": "71bc69a5-7cec-4abd-b97d-13f8e1f9afac",
+  "facts_sha256": "5c23d5af0113c794e99ca2f6f3ffc1583975d11d07fb0a507fa4dba72e1d97c4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ae8f6fcb7dff39f2b561730c032934e4a81cbf00b286051e6409145cce042adf"
+  }
+}

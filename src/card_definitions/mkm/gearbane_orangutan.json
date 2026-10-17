@@ -1,0 +1,11 @@
+{
+  "name": "Gearbane Orangutan",
+  "catalogue_id": 1701,
+  "oracle_id": "1f3e7420-86aa-4847-bc2d-21f6bae470c8",
+  "facts_sha256": "7df81c6e46951e89cf02ebc4b87d34fd57342f23a2fff39792dd5d983aff6b3a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "33c3a7dd46b5d344dc7318d1eecf8edaced92413c7de19564432343b98790c55"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Frilled Cave-Wurm",
+  "catalogue_id": 1627,
+  "oracle_id": "ac5294c6-bc79-4a0f-b8b3-52b554561e38",
+  "facts_sha256": "7653fda0cff41affb3ae2e51a9d451e0bad136f3ad92eed1b83ca6f8a6ea910f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "92916cee43a09d6d68a3a54b451040fe9a563ef2b7ede11428ce50595428903a"
+  }
+}

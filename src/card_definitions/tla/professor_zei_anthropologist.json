@@ -1,0 +1,11 @@
+{
+  "name": "Professor Zei, Anthropologist",
+  "catalogue_id": 3250,
+  "oracle_id": "59a10335-72df-44a5-a514-5bac392cd282",
+  "facts_sha256": "1609452126fc3ff4262f44431e16d2aa59386ba9ba2c24685d23f3ee33ccff66",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "143a8de0c148a5b350cc8379a7315e4a8450b36cce461d03119a3dad28030a6d"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Rewrite Regrets",
+  "catalogue_id": 3512,
+  "oracle_id": "42565432-3a17-4274-87fc-016ab900e313",
+  "facts_sha256": "11b03026242b758c6aa0c4b0826a399c8985a9768e588ced6c372d24ed68b3f1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "011f090fe704c99fe32c3a78a736194051fc5123ead694b38afabc24f9f7181e"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Great Train Heist",
+  "catalogue_id": 1866,
+  "oracle_id": "afe2f7a4-9440-4d93-801f-a18b627efb21",
+  "facts_sha256": "e7117ffc23d54580159852f935fabc4489cb91c410cf5ed54c3788336c596b66",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aaccc9a614471cc6fc5f1f51935c04d27e20283a5b232ad0408a1c06e831b877"
+  }
+}

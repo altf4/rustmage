@@ -1,0 +1,11 @@
+{
+  "name": "Spirit Water Revival",
+  "catalogue_id": 4056,
+  "oracle_id": "68979160-b5ce-4787-8a1e-1f40e614c3b0",
+  "facts_sha256": "ccece5a5f8950bf1012eff42e9d3e7c524d1c574df9a90efb878b79155fb84d8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "868d3c0d373a6d835d0e3a00b66d9ff966b84db3e7686fb5722207c7fd04c5f4"
+  }
+}

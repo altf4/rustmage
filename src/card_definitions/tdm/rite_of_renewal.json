@@ -1,0 +1,11 @@
+{
+  "name": "Rite of Renewal",
+  "catalogue_id": 3544,
+  "oracle_id": "6512ddb8-0868-4d32-ab32-8a5250fc571b",
+  "facts_sha256": "e01f8b5a46aa733767c56fa7d3185d5d9a9b4f69353497f33b7ccf36e00b6c74",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ab3abeed88d79a6556786d9be9ac84155f2bd02493de7d05392d7ee6ec48f683"
+  }
+}

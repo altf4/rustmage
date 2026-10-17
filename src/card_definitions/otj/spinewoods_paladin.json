@@ -1,0 +1,11 @@
+{
+  "name": "Spinewoods Paladin",
+  "catalogue_id": 4049,
+  "oracle_id": "d2aa9649-8394-48ca-bee6-a044e5a86b38",
+  "facts_sha256": "81f127de7824b62b90ff2ac5e3d14fc8fd86d851b50ef3ae33e8f140015d3ea6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b05008dca35d855dc9e9c0a41b5e5624db4befdf09b3e85f9bb1e739ca0458ac"
+  }
+}

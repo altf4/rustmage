@@ -1,0 +1,11 @@
+{
+  "name": "Stormkeld Prowler",
+  "catalogue_id": 4174,
+  "oracle_id": "d9c0e089-92ca-4fbd-9ddd-1802ac3553c9",
+  "facts_sha256": "42168572c317ff744cd60e442beef75d84375aa6ee649e93c8abbe43e14de85c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0185816ce2a34dddc407edc10794740a124e08c1657ff90c35916044c1f6c43c"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Silvan Reveler",
+  "catalogue_id": 3869,
+  "oracle_id": "11932191-4b19-49b1-bfe4-abb7b83b2e59",
+  "facts_sha256": "27304a7d43d7af16c4b820d8880e7601637059122c2f0077979123e5fe9783fa",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "38531a458ddae0baf0133a1460d1c571cbe6788c0302df0190276352b12059f5"
+  }
+}

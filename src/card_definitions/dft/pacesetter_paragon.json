@@ -1,0 +1,11 @@
+{
+  "name": "Pacesetter Paragon",
+  "catalogue_id": 3085,
+  "oracle_id": "1acb289f-fb7f-4d83-aaef-4e7b9462c593",
+  "facts_sha256": "4875165362efe4eb0dcbbbbdb4e544d6bcfe98b2a0e01908f6b8557c155c9387",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a97c09e7f0aea45e1c96180ec4bcac840ec2c2f4454b10b6af8b66cb9a4a4d55"
+  }
+}

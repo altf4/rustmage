@@ -1,0 +1,11 @@
+{
+  "name": "Theorist's Sanctum",
+  "catalogue_id": 4523,
+  "oracle_id": "37513bd8-7303-4ac6-a7a7-224184faf758",
+  "facts_sha256": "ae4b99a3fa48cf2c88e7efd486341c3a8c129f6af414b8bb3a86a183cacfcbe3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7816644ac6e12a41ac36b74375546ad2addac2580fec5fca9f2b26b4e8c69d28"
+  }
+}

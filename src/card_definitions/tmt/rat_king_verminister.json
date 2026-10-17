@@ -1,0 +1,11 @@
+{
+  "name": "Rat King, Verminister",
+  "catalogue_id": 3385,
+  "oracle_id": "a5656dab-5ce6-48fd-9eae-2c06969bb8df",
+  "facts_sha256": "d8178153695019c98e26bbfa367ef7da003d317843fb8736e3a76b986ef5ca99",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f5d01549fa0aaa25a32e3ed9e03abbd73025156fc2dd731c1bbeca0a8fbf7db8"
+  }
+}

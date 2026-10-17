@@ -1,0 +1,11 @@
+{
+  "name": "Doc Ock's Henchmen",
+  "catalogue_id": 1114,
+  "oracle_id": "ae91c16c-5267-4957-b36c-5aa787fa6b5e",
+  "facts_sha256": "5821c40d02185a6b3b89635d64b9a8ebbb45384177fae83f76e1c2035c589beb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9b443334bea32d00904787b02f893fba52d800b6545616e0410714ffef9d7bc7"
+  }
+}

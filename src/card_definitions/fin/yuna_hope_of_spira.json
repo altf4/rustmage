@@ -1,0 +1,11 @@
+{
+  "name": "Yuna, Hope of Spira",
+  "catalogue_id": 5146,
+  "oracle_id": "3dee768a-612c-4960-bad2-2fe5b83a70c3",
+  "facts_sha256": "10ad4d1ec8896e3e5e7de2fdd0fceed4309f410ea9aa766d41d9532a9f470345",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e6393c6e570748b6f639e67dbc53f45d106afbb2e15e68c67c122c40b3f94f19"
+  }
+}

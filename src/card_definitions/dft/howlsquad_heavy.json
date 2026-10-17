@@ -1,0 +1,11 @@
+{
+  "name": "Howlsquad Heavy",
+  "catalogue_id": 2088,
+  "oracle_id": "cd45a29f-73bc-435c-9d50-09a4ecaa77be",
+  "facts_sha256": "c4e69625adc2af904ce0fa05a685cbe1771c124c057f2022eeddad2af4772a86",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "654a8a610ae701d61922cef03cae22406638dea24ca025fe22716c189891ca06"
+  }
+}

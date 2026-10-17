@@ -1,0 +1,11 @@
+{
+  "name": "Delta Bloodflies",
+  "catalogue_id": 1034,
+  "oracle_id": "8a64cf8e-ae7f-4697-93fc-9c946eb1088b",
+  "facts_sha256": "504651c6194ca07c2c222cc72667dca4ef931bc3d18eb129df6a2c72b9077b47",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2a00d1f3668239ecf63e3517a73ad8392230aa4545ef3548d3cf8426f96f9e0e"
+  }
+}

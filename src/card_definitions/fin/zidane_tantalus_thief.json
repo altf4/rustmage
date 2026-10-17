@@ -1,0 +1,11 @@
+{
+  "name": "Zidane, Tantalus Thief",
+  "catalogue_id": 5162,
+  "oracle_id": "f267fb54-1881-464c-81af-9e03c3f3b41d",
+  "facts_sha256": "5bd41ca062fad83814bedb8d1ed9d65fea617907499d684367850140f682a24b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f09dd438d7858f30907339a324b2bf7e75880d6e970d20a32e9c542f5461dabc"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Season of Gathering",
+  "catalogue_id": 3749,
+  "oracle_id": "3ea060d8-449c-4a5e-8883-b45bd7707b5b",
+  "facts_sha256": "8f4f1892571b6ccc19cf24bee1d50881a4fd3a37acf807e060b232014bd0ad21",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "67dd449dae5ab01c02f17cec6c8a54c5f0ee1b66dbb8db06ff2e6755e4cd0c3a"
+  }
+}

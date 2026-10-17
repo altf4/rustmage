@@ -1,0 +1,11 @@
+{
+  "name": "Lord Skitter's Butcher",
+  "catalogue_id": 2557,
+  "oracle_id": "467f756f-75db-4748-99d3-62651776adfe",
+  "facts_sha256": "6c7b3c1e37df3f00219a9d656bceb9fc2df0b1797313ab7efa4559aa241f9011",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "32b5900f35fc155d5db0b01170c97f124339936f1071807b17fc839b89b8b3bb"
+  }
+}

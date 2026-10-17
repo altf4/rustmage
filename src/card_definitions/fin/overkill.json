@@ -1,0 +1,11 @@
+{
+  "name": "Overkill",
+  "catalogue_id": 3069,
+  "oracle_id": "571cb4b6-b4e5-40a2-a970-42c1ab65c8a9",
+  "facts_sha256": "dcb8490a5803c04a148cbe5ab41d3dc81c1583f633c79c513e1ce09d2bad2989",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0287dc41d31df73e118a6e10d03e307b89269a19121e1fcbebff208f7c067fb7"
+  }
+}

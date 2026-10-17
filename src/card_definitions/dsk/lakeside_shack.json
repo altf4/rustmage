@@ -1,0 +1,11 @@
+{
+  "name": "Lakeside Shack",
+  "catalogue_id": 2442,
+  "oracle_id": "c56cd2ec-5907-4282-9162-d93b7dfd63b5",
+  "facts_sha256": "9e686248ae6f345f7358d1e24930d6e32e02116df437a53dfe7042aca2791839",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7b361452dc97e7859ef9b6d452a529614a7ecf5e53562f4dcd60f1bb7d1d901c"
+  }
+}

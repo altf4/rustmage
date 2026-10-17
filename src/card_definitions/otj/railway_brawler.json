@@ -1,0 +1,11 @@
+{
+  "name": "Railway Brawler",
+  "catalogue_id": 3347,
+  "oracle_id": "b653db44-ddae-44e8-8fa6-6af3232cd586",
+  "facts_sha256": "1b1d02f4449f1b3fb5f6eea423d4cae21df4bdb2c034739f76949ea7b20043bc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7227ace9f96b1bd90f7c977998e5bd3b6a05adfa610121f8236bfd9af8918ba5"
+  }
+}

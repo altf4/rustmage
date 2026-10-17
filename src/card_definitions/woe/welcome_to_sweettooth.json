@@ -1,0 +1,11 @@
+{
+  "name": "Welcome to Sweettooth",
+  "catalogue_id": 5033,
+  "oracle_id": "9760c396-fc7d-41bc-8f03-5ee359eaec00",
+  "facts_sha256": "67aa988e5a2aad2256a034b59934d9c3fbdb7268313930417d934c0c5cc0017c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7b7c4417a36cf165aa6c1941fa1fd4c4c845ac0c8ccb6c85008991223e63b9d6"
+  }
+}

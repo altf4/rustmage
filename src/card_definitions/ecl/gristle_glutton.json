@@ -1,0 +1,11 @@
+{
+  "name": "Gristle Glutton",
+  "catalogue_id": 1883,
+  "oracle_id": "b7163800-41fc-410a-9650-50ae90842170",
+  "facts_sha256": "42a39409338f071090e9556f8a90761be5c6be48bb841f8b29587cc2d05e57be",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b1bb34e4f0baa3a15f2f66025337301d3e7e380ffdb070b2885a86f3bb6267b7"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Sinkhole Surveyor",
+  "catalogue_id": 3884,
+  "oracle_id": "83a47724-b8d1-4884-9442-b62aa1510dc3",
+  "facts_sha256": "87adf8178ffed6409ccf425efa75f656c974016221173af222c63005110f6b18",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cd5b4c396a5399e9c9083c29c93a999d87140759b374449bd7d375ee1f36d547"
+  }
+}

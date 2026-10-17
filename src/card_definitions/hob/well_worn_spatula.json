@@ -1,0 +1,11 @@
+{
+  "name": "Well-Worn Spatula",
+  "catalogue_id": 5034,
+  "oracle_id": "3cc333a1-c854-4b7c-8002-910e48222371",
+  "facts_sha256": "6819af6ca34897da60b47a8cfdff4677d9596694df65841d9f3a7fa4d48e82aa",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9b333d10e07a0a639808c6c435ab6331ec6a65c41dc947829b836389783f94a9"
+  }
+}

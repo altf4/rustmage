@@ -1,0 +1,11 @@
+{
+  "name": "Cruel Alliance",
+  "catalogue_id": 901,
+  "oracle_id": "6897f9e0-f654-4c0a-9fda-2ad4e264bf9a",
+  "facts_sha256": "ce7f5fedb8e8274a5e2a86ef0f124131056c0e1db753a0c361c4fcedfb2ae10e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7f6b49aa325dcf070b34220f079d44f0e2d837bf7a5c10c6bc6f1fd9a3a57c36"
+  }
+}

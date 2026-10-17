@@ -1,0 +1,11 @@
+{
+  "name": "Tanglespan Lookout",
+  "catalogue_id": 4333,
+  "oracle_id": "d6a767c2-8bc8-4686-899a-0ba3a525977a",
+  "facts_sha256": "b25a11a2b851ef195865dfb448cecc21cf14d7c87527fddd5f1c3daf72bceba3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "753649b28a5296e723710f7fa4c7acc24bfbf93fc43e898f39b4e2e89d00ed42"
+  }
+}

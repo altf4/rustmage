@@ -1,0 +1,11 @@
+{
+  "name": "Mai, Scornful Striker",
+  "catalogue_id": 2631,
+  "oracle_id": "953a2bd3-5bca-41fc-8785-66b2d7fa381a",
+  "facts_sha256": "a6c3e4742a609b3570ba95cf184d16b1c7ad0ab8cc397c81c927f942da01e1db",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9887374ad0281ffe0cd8539fe413c2968ba9dba571a0ec5435bcf668d5d4bf32"
+  }
+}

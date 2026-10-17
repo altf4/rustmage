@@ -1,0 +1,11 @@
+{
+  "name": "Tiger-Seal",
+  "catalogue_id": 4599,
+  "oracle_id": "68f84643-c0f9-4d31-ba2e-38b65ab45d04",
+  "facts_sha256": "0bba71fd65aa79d49dc9dcab6c9a4de5b1703dc57fd811bfa650af5000f46bd6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5dd254d0ee3c4a7ee914b07c13bc5a7ed8c58625d6a720ff4b10d4d13fc71ad6"
+  }
+}

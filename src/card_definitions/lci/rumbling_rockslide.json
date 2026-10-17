@@ -1,0 +1,11 @@
+{
+  "name": "Rumbling Rockslide",
+  "catalogue_id": 3616,
+  "oracle_id": "0909cbce-b4a0-42bb-8a97-47eeb99606c0",
+  "facts_sha256": "6adf44e29fcce30954045de959134855972af6e81d5e1b5408889e2bfeeab0e3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5a4011e47dcd4c9e40669e4449ad27c66f3f0cafd209e88ddc4da7633217da9a"
+  }
+}

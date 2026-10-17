@@ -1,0 +1,11 @@
+{
+  "name": "Bard, King of Dale",
+  "catalogue_id": 328,
+  "oracle_id": "d05db2c1-a19a-4803-8e8a-fa2f9b798181",
+  "facts_sha256": "1e8081bec8f41115e0fa69ce5ebf27bfa850fb9c09d6cc014bdc257795b45c71",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b9c1cbb40fd50a17c0b68fdeea4e35b61b886aca82fa7a44f3b4be5510487ffa"
+  }
+}

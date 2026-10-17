@@ -1,0 +1,11 @@
+{
+  "name": "Queen's Bay Paladin",
+  "catalogue_id": 3309,
+  "oracle_id": "60b18d94-8ae5-4508-b4db-18f92c2d39fd",
+  "facts_sha256": "e7ed635a4ea6eb6281d163e95c62f88f87044dca34752c1e0a45bfb9a32e7079",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "919a882d34022adba43b3360b540f171788288f2024186924c666ff5fe1fb13d"
+  }
+}

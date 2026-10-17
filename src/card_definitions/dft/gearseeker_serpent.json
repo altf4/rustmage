@@ -1,0 +1,11 @@
+{
+  "name": "Gearseeker Serpent",
+  "catalogue_id": 1702,
+  "oracle_id": "fdbd8a95-1dc8-4df2-bab0-a93d1941a405",
+  "facts_sha256": "483375fc2cf9371a7a36d9f1bb44145e3fbf243749cc2113ec5d01ce48757761",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5e3293d461a958bafb6d8a0b101dc58c608cb917106efdd33a6af2055bda9766"
+  }
+}

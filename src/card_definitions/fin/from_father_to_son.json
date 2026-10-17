@@ -1,0 +1,11 @@
+{
+  "name": "From Father to Son",
+  "catalogue_id": 1631,
+  "oracle_id": "87864421-505c-4bdb-b1e3-3e44e05f2beb",
+  "facts_sha256": "d14a82e24bcd48ce9ef29a8192c5ef7a88b951ac2e5edcc0d5891d66cf435ddc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "64b3c7afd157523ccff9933b94fbcc1d33bb750995a32de51af804098dbbdd9f"
+  }
+}

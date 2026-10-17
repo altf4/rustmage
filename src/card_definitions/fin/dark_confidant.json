@@ -1,0 +1,11 @@
+{
+  "name": "Dark Confidant",
+  "catalogue_id": 963,
+  "oracle_id": "2068185c-1b50-47d0-aa3f-bf505d199428",
+  "facts_sha256": "7742cd431e1b4eba148664d2825932e24ee7fe4aff88f25fb8b9b84f5fb67ca5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "34acdaa307b18edefae8603868af14bfe104a92cb8db3f2edaa82ea88e89b71f"
+  }
+}

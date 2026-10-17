@@ -1,0 +1,11 @@
+{
+  "name": "The Huntsman's Redemption",
+  "catalogue_id": 4453,
+  "oracle_id": "ae63fd5c-46ff-41fb-a1f6-6259336525c1",
+  "facts_sha256": "b40789d1a8209d5461c05d57cd72c46639cb1a3a8f7562e06e2b237294a9e1da",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bfda9e18a1e411242661173842a58fb82de62fc948819d261a01b8185da3b58d"
+  }
+}

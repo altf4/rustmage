@@ -1,0 +1,11 @@
+{
+  "name": "Hardlight Containment",
+  "catalogue_id": 1946,
+  "oracle_id": "8054092a-1940-4f4b-991d-81f4d384cdb1",
+  "facts_sha256": "4a3a002e4f4b4f6992917776d95104bf2cc41725c8efbc659f7462ef936f91dd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3593685a59d4561da32d856d47c38fa86d1b8fad04d499c2d362bbc92b82959d"
+  }
+}

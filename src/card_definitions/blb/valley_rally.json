@@ -1,0 +1,11 @@
+{
+  "name": "Valley Rally",
+  "catalogue_id": 4833,
+  "oracle_id": "5b919920-b1b6-499b-a7fe-c630778a7831",
+  "facts_sha256": "47f96dad49c63feca0519ac01efba33846349bcd86813c411474df1decdbae98",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "47bc1ac0ff848980a5ff6b923d5626d07df328378615022ea482b324ad54d142"
+  }
+}

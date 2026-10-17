@@ -1,0 +1,11 @@
+{
+  "name": "Tetsuko Umezawa, Fugitive",
+  "catalogue_id": 4405,
+  "oracle_id": "ceeeacbc-01b0-4421-aaca-2ce6cdbe45d7",
+  "facts_sha256": "a809398b0a6f103801c1b8c7dd94a6bff4d77ada5ed24511f60429475b551b61",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "83a53627b45edf63e0e37061f6bfbac706630e190f07b60221e31a925671e196"
+  }
+}

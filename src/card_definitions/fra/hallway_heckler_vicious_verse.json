@@ -1,0 +1,11 @@
+{
+  "name": "Hallway Heckler // Vicious Verse",
+  "catalogue_id": 1932,
+  "oracle_id": "d1af8018-35b5-4b6f-93c8-1ed6bd8c92b1",
+  "facts_sha256": "0f069b9d74000f4e46d479b6d987340d63d109170da9ba165ba859820a254ce1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3f617a4861fae4d5e5be5c251a1ac8492c0069e036a1f9457c7324eab30cc28c"
+  }
+}

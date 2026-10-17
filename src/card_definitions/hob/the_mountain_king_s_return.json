@@ -1,0 +1,11 @@
+{
+  "name": "The Mountain-king's Return",
+  "catalogue_id": 4480,
+  "oracle_id": "32ad5b3e-92c0-45be-b2e4-6f1794552f36",
+  "facts_sha256": "28cd540cbea2327ac431e2e57cf2b084748c5b229fde49ad9191fa6b12dd7735",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c5a5f43208cdcda28bea947004be9545bd6646cb3e9fc0f92163f7bf0a6df1de"
+  }
+}

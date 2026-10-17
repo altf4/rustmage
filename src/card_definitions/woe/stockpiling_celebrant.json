@@ -1,0 +1,11 @@
+{
+  "name": "Stockpiling Celebrant",
+  "catalogue_id": 4155,
+  "oracle_id": "171150fb-dbe1-4a07-a7ac-5f45762a26b0",
+  "facts_sha256": "926debf9f15fdbcd1b26c8a1baf5f9af4beed01893917bc32660b316be35da01",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "71ac324ebd739809091e456c152d01b970afd7971fdcee86dbd9decc6f81a4b6"
+  }
+}

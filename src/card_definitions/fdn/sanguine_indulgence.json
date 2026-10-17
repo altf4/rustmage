@@ -1,0 +1,11 @@
+{
+  "name": "Sanguine Indulgence",
+  "catalogue_id": 3684,
+  "oracle_id": "010ec11a-0484-486d-b7c0-de65593bf457",
+  "facts_sha256": "98616033e18bbe7fe8e587f9c038f06d475373f8df2302801f70b7c0ffbfbaa5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bf63e171008eff5959219fad366cde23de4dc08631aa25ae8bef8db5f2098c4f"
+  }
+}

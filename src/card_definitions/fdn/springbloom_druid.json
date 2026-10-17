@@ -1,0 +1,11 @@
+{
+  "name": "Springbloom Druid",
+  "catalogue_id": 4073,
+  "oracle_id": "788a4896-3414-40bf-b391-d2efea2fb5f9",
+  "facts_sha256": "44973a936101ef0d0f1b83f4c77e6a459b6192bd5ebec1553f22c258d7503f97",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e04f6586edaf4e698447e6986b6eab4aafc5cfa211d1a1147a762994862c90aa"
+  }
+}

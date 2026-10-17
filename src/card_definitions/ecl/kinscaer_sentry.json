@@ -1,0 +1,11 @@
+{
+  "name": "Kinscaer Sentry",
+  "catalogue_id": 2365,
+  "oracle_id": "fdf0fba8-f335-419c-b96b-e99037727c43",
+  "facts_sha256": "7707f71ac0dc2d366e9aa91f04dc22ca9e4820e71e5276e5aec1acefe83c5ffb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "602917123d25b3bdd106ba1a9fe0e5ab7c4b2a4d3103a2d1a2347430f493bcbb"
+  }
+}

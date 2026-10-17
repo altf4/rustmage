@@ -1,0 +1,11 @@
+{
+  "name": "Terra, Magical Adept // Esper Terra",
+  "catalogue_id": 4389,
+  "oracle_id": "54ca5904-9099-497a-9684-101656025487",
+  "facts_sha256": "d122bdbfe15619c2442872944e3ad8af4f2640bc7aeb5c392d9dc92b80614940",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f573fa625c4341869acb40a57ef08b9a7de4b216e4976b2b8b85915bad20d682"
+  }
+}

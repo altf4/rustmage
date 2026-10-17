@@ -1,0 +1,11 @@
+{
+  "name": "Sanguine Savior",
+  "catalogue_id": 3685,
+  "oracle_id": "cc3a6c83-a671-4ce8-b98e-434989fb6778",
+  "facts_sha256": "48d357a7150acb75f2bb0d7f6a30f8bfcba3b603bc693e6c84dd53dbf4308837",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4770f7edbc0b2c8134ab88ff5e967b65f0a8d2e37e5be754da264894dc820896"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Koya, Death from Above",
+  "catalogue_id": 2402,
+  "oracle_id": "e7cd87d4-028c-49d9-9416-69f57e7dfec5",
+  "facts_sha256": "72054f906336efbfccdcdca90f37321d70c262054159be00584eee2181e90e01",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a04f73f3bc510e29ab6f9050beb5c971420fb3a8ee5bae9010d5200108d06315"
+  }
+}

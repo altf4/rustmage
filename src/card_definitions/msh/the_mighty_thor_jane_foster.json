@@ -1,0 +1,11 @@
+{
+  "name": "The Mighty Thor, Jane Foster",
+  "catalogue_id": 4475,
+  "oracle_id": "57d02dc8-e22e-4874-9f02-490a2528a28f",
+  "facts_sha256": "fa4fabd2eed45dca382afdbb477490704681a9ff42a2e42709e363c048d9882d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "12e33348d22c692177f14750167ee728a0b4e345445ed79f22113502bf6d3f10"
+  }
+}

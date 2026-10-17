@@ -1,0 +1,11 @@
+{
+  "name": "Road Rage",
+  "catalogue_id": 3556,
+  "oracle_id": "da052082-b440-4abb-9c69-05d4d13e5fd2",
+  "facts_sha256": "c0f3d6f895984ed1059e1a8f9954f6677ec802b1d595f9bc365677bd91506ade",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "65f036d134be4839a3d9ca4ba6944b7957f9329b57d381c1e8af2fddfe822b3a"
+  }
+}

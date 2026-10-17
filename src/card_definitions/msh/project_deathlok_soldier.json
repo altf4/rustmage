@@ -1,0 +1,11 @@
+{
+  "name": "Project Deathlok Soldier",
+  "catalogue_id": 3255,
+  "oracle_id": "d89aa87a-d59a-41e2-b92f-15c9bc6d3d13",
+  "facts_sha256": "8022544bbcbc01c133b5bdd45f83d3c4fc8ce7702a1af92a8046bf768121bf1a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f110a37251d90c81c5dc5e9cd4ccf55e5320d35f5668c715101df604025a81bf"
+  }
+}

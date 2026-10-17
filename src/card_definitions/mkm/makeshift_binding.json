@@ -1,0 +1,11 @@
+{
+  "name": "Makeshift Binding",
+  "catalogue_id": 2635,
+  "oracle_id": "942f3f06-1df0-40b4-8537-71cbec111852",
+  "facts_sha256": "8037ebc839ac9b4f1d732994f67ebce4337344c972ffdc9f72b79bba80a00c6b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "891221c9af8a67d453c09a9d227f8d9be4321c07a8f2756479300738bdb4a287"
+  }
+}

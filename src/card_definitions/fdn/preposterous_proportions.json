@@ -1,0 +1,11 @@
+{
+  "name": "Preposterous Proportions",
+  "catalogue_id": 3223,
+  "oracle_id": "1e03aad2-6426-4d18-a0e5-bc3d8e6b7b11",
+  "facts_sha256": "fea3a818ed07f74810914b5e0748b99bc919e6efbffbb83244088ae0f540d356",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1467ac3ed4fe14e7df8e7f591bf04f6bc025d25df7906b59e7be85abb9f66c1f"
+  }
+}

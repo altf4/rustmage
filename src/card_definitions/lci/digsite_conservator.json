@@ -1,0 +1,11 @@
+{
+  "name": "Digsite Conservator",
+  "catalogue_id": 1075,
+  "oracle_id": "ced2ae56-988a-4c60-93d0-85a2261be72c",
+  "facts_sha256": "f73964fdb39e24ad502815a9d8be8215957f779444db6ee8fa08ba0e36d58fae",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ba6c18d6ae7ece30755a3bc79505705f533d521ce6b3c381bee96f07ce4efd64"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Krang & Shredder",
+  "catalogue_id": 2403,
+  "oracle_id": "2385c8fb-9c38-4ff3-8f61-4e25a8c7d46b",
+  "facts_sha256": "ff930417f16d9c4f1a550a817b021d83456553b4e43ac05a2bd17a01cf09ffe1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7ef8822e757e327ca7b26bdceba9e3bc0bfc928d69ddd0594c4941fe329a7792"
+  }
+}

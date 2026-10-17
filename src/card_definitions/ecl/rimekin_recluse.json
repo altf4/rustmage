@@ -1,0 +1,11 @@
+{
+  "name": "Rimekin Recluse",
+  "catalogue_id": 3529,
+  "oracle_id": "ad99e430-e13f-4819-a2ee-bf3332ef517d",
+  "facts_sha256": "1b7712657ed1512c860cf47b420f593beadc22d1567e4aaee87cb017920fa632",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "80ad69f21b311530c9c7ddd619776483c9d6bae19bdbe9d8748bccd6f9c23b64"
+  }
+}

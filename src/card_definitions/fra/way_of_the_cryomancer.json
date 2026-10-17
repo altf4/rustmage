@@ -1,0 +1,11 @@
+{
+  "name": "Way of the Cryomancer",
+  "catalogue_id": 5007,
+  "oracle_id": "7d32c63d-aa9e-4f5d-a3e6-51377a786009",
+  "facts_sha256": "27ccbd4dad82ef5171cf12aabc4b806f95e5bbf424101a9985cb1981b757babb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ab88435d7b826f9a92065aaa3020d81cab958e205a38b51a362c6827f5187c30"
+  }
+}

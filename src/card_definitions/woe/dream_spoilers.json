@@ -1,0 +1,11 @@
+{
+  "name": "Dream Spoilers",
+  "catalogue_id": 1181,
+  "oracle_id": "07c3e91c-3593-4797-b7be-ef4fb2913cef",
+  "facts_sha256": "9e8088631b97ed753ef964179a2c0920aab141ff391ec8edbea14b7408e9fd66",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "84856cb4cf36f9a0996f8b40b31bb3d64d92b434d64fee94859d00bea45c94c7"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Eumidian Terrabotanist",
+  "catalogue_id": 1383,
+  "oracle_id": "92226fd2-ad93-4722-89a0-ca88ea03e1b4",
+  "facts_sha256": "f1649206d0d4df477f1b75913d04f5096c0d160e2658a5ebea16d11273769d4a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a5bec0b0f326d576d7b7034b4f38e10ade7afd80fc83d656550120dea11f1ed7"
+  }
+}

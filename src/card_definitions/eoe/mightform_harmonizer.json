@@ -1,0 +1,11 @@
+{
+  "name": "Mightform Harmonizer",
+  "catalogue_id": 2752,
+  "oracle_id": "8e025cda-71c5-4d06-8436-decd408667af",
+  "facts_sha256": "0812cc2542cadd1af7496668e743b45acad58de3905462a145d23572a8bcc1b5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4aa15741d746a5d5f46a18e926e53198bae6d87e3275629c612f5751593f199f"
+  }
+}

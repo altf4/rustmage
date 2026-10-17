@@ -1,0 +1,11 @@
+{
+  "name": "Bruce Banner // The Incredible Hulk",
+  "catalogue_id": 571,
+  "oracle_id": "b6c0ee14-2028-4e8b-9acd-ff78821bca9b",
+  "facts_sha256": "452ba06a5e9d2abdb5fe9626c7ebde2633461aa100fdeb37a1f10cc0987f9371",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "89417ffc401e8494466d2b13437042b43299c4dc76d8814947223522b6f0a836"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Gene Pollinator",
+  "catalogue_id": 1704,
+  "oracle_id": "0a356d04-2e86-435b-9766-27b93b468a61",
+  "facts_sha256": "bfb35b805526af199f7c0db8a008deb53ce3ab670264c6010b8a501a0b0867c2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "932056a2a48838a3ee6d5cd118c54e88e00b154e3b78068211159b2f9e469f67"
+  }
+}

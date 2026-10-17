@@ -1,0 +1,11 @@
+{
+  "name": "Divination",
+  "catalogue_id": 12,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ce005822c9eab4e2e930c6bdeaaf0ed6941f96ad1d734437cc0e5ac177d5d843"
+  }
+}

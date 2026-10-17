@@ -1,0 +1,11 @@
+{
+  "name": "Song of Totentanz",
+  "catalogue_id": 3966,
+  "oracle_id": "5f4d0c87-7d59-41d5-9910-86765a0c144b",
+  "facts_sha256": "1c79e20b96402846173ed06805397e17a1108461676349f5c2918c2ddb4cd3dc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "facf87c7a9bf5c37e2bcc459ae1ac41eac98eb1483f45d217a8d67fddf829b34"
+  }
+}

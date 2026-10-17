@@ -1,0 +1,11 @@
+{
+  "name": "Krenko, Mob Boss",
+  "catalogue_id": 2416,
+  "oracle_id": "68418069-f615-40ef-ae0d-764192acae00",
+  "facts_sha256": "996458b6af0a5d250a20f8f57b38f7019129569c155c8ec2873481e1eb0978b4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dfd51e76ff7175893cdd10f1b0a6c4b18ccfc32dc4c2236d66b82fd37e269394"
+  }
+}

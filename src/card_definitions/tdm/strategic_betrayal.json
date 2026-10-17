@@ -1,0 +1,11 @@
+{
+  "name": "Strategic Betrayal",
+  "catalogue_id": 4182,
+  "oracle_id": "0127c13f-7b0f-44c3-8b35-97f306c5f239",
+  "facts_sha256": "3a50f3b3c28dcb5a963bb4d77ca4076366e16b9795da79fae82a7812c7dd2772",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3327fdd40169f3f08c4b59f234a0a1badc0ecc1739edc527a8a966e582b21764"
+  }
+}

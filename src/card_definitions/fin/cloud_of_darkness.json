@@ -1,0 +1,11 @@
+{
+  "name": "Cloud of Darkness",
+  "catalogue_id": 776,
+  "oracle_id": "525f57df-7d4d-4089-9003-4b01005558dc",
+  "facts_sha256": "0a9acbf00cf7696a56defbccb6ddddad222233490c3666ca732b46a568af4d30",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f0cb32c359a4c8c6b7004f80ee1a53b181ec2434ea6ee43f2655b54e59632407"
+  }
+}

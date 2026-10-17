@@ -1,0 +1,11 @@
+{
+  "name": "Hare Apparent",
+  "catalogue_id": 1947,
+  "oracle_id": "3c1619bd-db5e-4df6-a196-0a9d62374f6d",
+  "facts_sha256": "4eb51b011ac181cd18203728a272be5810164fac8e4190f8215b35bd2632831e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5ac3b1a728500745a7dcaf2e1018dbfd352264b9f941ff361d5420c03c6b2f59"
+  }
+}

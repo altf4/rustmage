@@ -1,0 +1,11 @@
+{
+  "name": "Ravening Warg",
+  "catalogue_id": 3397,
+  "oracle_id": "8060d231-7477-441d-b249-8e75aa1d7791",
+  "facts_sha256": "5936e0d5227633f345c507c5d585e31fd5dc54706b4c1fd536d85eba9ce8eb60",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "54d2b8303f614fdf39f2004bc448f4fc98f885dbd3c621e2be04723849132de5"
+  }
+}

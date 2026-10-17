@@ -1,0 +1,11 @@
+{
+  "name": "Guru Pathik",
+  "catalogue_id": 1912,
+  "oracle_id": "4dcd7b78-ce5a-43eb-a16d-3b9ea411795d",
+  "facts_sha256": "2d22f992e850f1edb8a6e73c6602ca6a53c2df894c781a7d87c5fa2f2bc5f59e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e6934f50f469313414679173c564726afe62adea769d19b7202d888e49e02d70"
+  }
+}

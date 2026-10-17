@@ -1,0 +1,11 @@
+{
+  "name": "Raucous Carnival",
+  "catalogue_id": 3391,
+  "oracle_id": "24a97436-ba61-4ebc-a560-a6c027ccfdf3",
+  "facts_sha256": "e247d0cd023d01f18406b3c7df27026e363b87d6fc383fa220774d89f9c3e542",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1981d814242b92079f0767f0d60ec040760b1f513aa4ecc6fc14fb6d2927c163"
+  }
+}

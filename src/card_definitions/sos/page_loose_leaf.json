@@ -1,0 +1,11 @@
+{
+  "name": "Page, Loose Leaf",
+  "catalogue_id": 3088,
+  "oracle_id": "3bbad38b-7d88-4ff2-9fd3-5081536e7c56",
+  "facts_sha256": "387a742cde36ce9feb1ca06badb3e294418d0e8a837d97dc0778d036cc86593a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1dce9d94b425c0e8dc38b0281c4c8b74bde1a0fb2c342dc8bc1e5a5c213779e2"
+  }
+}

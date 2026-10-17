@@ -1,0 +1,11 @@
+{
+  "name": "Ominous Asylum",
+  "catalogue_id": 3016,
+  "oracle_id": "676141c3-a433-4aba-86fb-729628f96dfa",
+  "facts_sha256": "2d7f29b8d9c9a3224c7d23f26e9516d9a88f07d6e7bc1ca7e2975c675029344d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7e5abc578e0807d4651da5adfa59ae4960e8a1648758e8289df3479cf2a6a766"
+  }
+}

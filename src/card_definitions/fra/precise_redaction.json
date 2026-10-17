@@ -1,0 +1,11 @@
+{
+  "name": "Precise Redaction",
+  "catalogue_id": 3219,
+  "oracle_id": "c251b676-0e98-4047-bed1-d72c83aa8da0",
+  "facts_sha256": "d1983cb06e9af4a5505a360e44587c096319ea7f26b77fe32d07667878107197",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a2afdbe1615c3f41234e33659a6a1ac9bf8c704f62869b500b095d2dd9d699ac"
+  }
+}

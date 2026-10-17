@@ -1,0 +1,11 @@
+{
+  "name": "Shoot the Sheriff",
+  "catalogue_id": 3842,
+  "oracle_id": "2038138e-2e52-41e4-90fc-443fa054c5c0",
+  "facts_sha256": "42cda2044912c33129009b4fa20073125c64ecb018ea823f4e61917b5a9ad3e2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b14b6d792c233315e0c2c3e290e9d0ab5356fa260fd78ed0664f7fca45b03456"
+  }
+}

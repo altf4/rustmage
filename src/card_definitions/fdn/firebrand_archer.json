@@ -1,0 +1,11 @@
+{
+  "name": "Firebrand Archer",
+  "catalogue_id": 1531,
+  "oracle_id": "2e9289d6-dbc6-456d-88cf-d1f534e731d6",
+  "facts_sha256": "742708f42d6262692e6885400339497a1edb562098498d5570d41a9874d9afc6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cef6494878787e9be7842f18e236db130620351c2a52cf457fb1f9461eb1f4a9"
+  }
+}

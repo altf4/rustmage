@@ -1,0 +1,11 @@
+{
+  "name": "Stolen Stark Tech",
+  "catalogue_id": 4158,
+  "oracle_id": "51023277-5434-4913-b9dc-df2a3fde1652",
+  "facts_sha256": "b9edc08976b2e04bc5addcbc25e12efb252645b8d2f563715b6071a845aba292",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "960fea8e213d6a8e45c35f333c8a003898d6a045b573b7d0969a285638aab45b"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Dose of Dawnglow",
+  "catalogue_id": 1138,
+  "oracle_id": "f852bc33-e2f8-43be-9e6e-7badd1f894ef",
+  "facts_sha256": "8114d06c15922c3335069fadcaa12149885f0bb1ccf23f2398c399eb51dd94a1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4f6b902b0b31e549bd01b3723e57f4f5dd9319d18551d3e3dec5d36ced9319f8"
+  }
+}

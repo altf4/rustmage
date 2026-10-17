@@ -1,0 +1,11 @@
+{
+  "name": "Crossbones, Malicious Mercenary",
+  "catalogue_id": 892,
+  "oracle_id": "ac950d10-e373-42d3-907b-ee56e45a2084",
+  "facts_sha256": "6cb63ed502161f69c0c03fdc81d70453cba179e0fa8bfe369b434580b27b9bd8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e6c7482c9ab64cd2c131292afc5b965cb1b31dee873c8db2e88ffa1c02ccc117"
+  }
+}

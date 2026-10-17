@@ -1,0 +1,11 @@
+{
+  "name": "Innocent Bystander",
+  "catalogue_id": 2173,
+  "oracle_id": "c293f1c0-93de-4a73-aaf6-4e9f01e557ec",
+  "facts_sha256": "dd49f3e75796788a53bf5c509fb96071e6ff7210f2f5c72674d73234058f2d81",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eea1c7e4e2c3478628a354283cfba32a0c25dacb5624780a47e32992293cccdd"
+  }
+}

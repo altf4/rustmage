@@ -1,0 +1,11 @@
+{
+  "name": "Jace's Machinations",
+  "catalogue_id": 2248,
+  "oracle_id": "89bd056d-8f5b-4d0e-b80a-58a984e21100",
+  "facts_sha256": "aa52408958683ef81ce1586b9e6ff17840262f0afc83548161f8941f2507699c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "01bd90ec78caab1ed41ce72b4e62ed77f81622c72ad40ce44fb30c8f89c09fdb"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Gollum, Riddle Master",
+  "catalogue_id": 1828,
+  "oracle_id": "514b451b-814d-45fb-a2ba-8fe6f0bdad60",
+  "facts_sha256": "794e5512b3a2956c81d1cfd10da0127189125db784f4a02e62ce426e76ed0378",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c6dba137fddf1b0f956f26d8ca3a904375191206e85b55df07dce4a1683c1232"
+  }
+}

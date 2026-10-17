@@ -1,0 +1,11 @@
+{
+  "name": "Connecting the Dots",
+  "catalogue_id": 832,
+  "oracle_id": "a29e2c70-8909-465b-9cec-1a7037250313",
+  "facts_sha256": "e1bc57c78885b016d1675d48257106d02bc3a5d672013c1e04fd0ead439d30db",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0980ecac9f6d6a3810e0acdaed6683e5f4f9dc71f66c4a1e129b063cf789823b"
+  }
+}

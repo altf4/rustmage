@@ -1,0 +1,11 @@
+{
+  "name": "On the Job",
+  "catalogue_id": 3022,
+  "oracle_id": "e4733889-4d4c-4bf7-8a9b-fb5ad7a38395",
+  "facts_sha256": "eb206f944160c05b25084e949dbe11a4fdb8d442de78bcd1b6bb0fd3121d67b8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "557843767b45ed2f9ed4a99bd988844d99816b8a2dd89bd257e05453e90903a3"
+  }
+}

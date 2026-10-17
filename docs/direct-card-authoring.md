@@ -1,51 +1,48 @@
 # Direct Rust card authoring
 
-New cards are authored in `src/card_definitions/<slug>.rs`. Write their complete
-behavior using `CardRules`, existing typed instructions/targets/costs, and shared
-engine mechanics. Add a small typed effect when needed; bespoke effects are also
-appropriate. Gameplay never reads Oracle text or invokes an LLM.
+Card behavior lives in `src/card_definitions/<set>/<slug>.rs`, with a sibling
+provenance JSON. Use `CardRules`, typed instructions/targets/costs and shared
+mechanics. `CardExtras` exposes the existing immutable mechanics directly; add a
+shared field or a small bespoke effect when needed. No Oracle text or LLM is used
+at runtime. The English compiler and its parser-only tests have been removed.
 
-Each card has a sibling JSON provenance record: Oracle identity, hash of the full
-pinned physical facts, `complete`, and the Java revision/path/hash. The small
-`scripts/direct_cards.py` linker validates identity/facts, discovers files and emits
-module links. It does not translate behavior. Incomplete definitions stay gated.
-Existing working templates remain available for cards they already implement.
+Every existing physical card, alternate spell face, token and emblem now has an
+independently editable Rust definition. The migration mechanically relocated
+already typed behavior; it does not newly certify previously gated cards. Read
+the entire Oracle body and XMage implementation before changing a definition.
+Mark `complete` true only after every printed obligation works and is tested.
 
-For an authored card the catalogue generator supplies immutable physical metadata
-and links its Rust constants before reaching the English compiler. All selected
-mode combinations and their additional costs are explicit Rust. Rust compile-time
-checks reject Unsupported behavior and mismatched modal cost tables. Add fields to
-`CardRules` only when a shared mechanic actually needs them.
+A provenance record pins the Oracle identity/facts and, for new authored work,
+the Java revision, path and SHA. Migrated records additionally identify the source
+revision and original typed definition hash. Existing full-source audits remain
+in `docs/*admissions*.json` and parser-free provenance tests.
 
-Agents can edit disjoint paired files in separate worktrees. Regenerate derived
-files during integration rather than resolving generated text by hand. Add focused
-rules tests that exercise every printed obligation, legal/illegal actions, hidden
-views and owned branching/restore. Independent subagents review the complete card
-translations and interactions; coverage is not earned by partial bodies.
+`data/catalogue-identities.json` retains stable IDs, names, aliases, physical
+metadata, colors, synthetic recipes and creature-type ordering. It contains no
+executable card programs. `scripts/link_catalogue.py` validates pinned facts and
+canonical paths and emits only module links and catalogue tables. It never
+selects behavior from wording. The Rust compiler checks typed definitions and
+rejects complete cards with Unsupported behavior or mismatched modal-cost tables.
 
-Run `python3 scripts/generate_catalogue.py`, then
-`python3 scripts/validate.py --release`. The latter runs full native rules tests,
-Clippy/format/consistency and direct-definition/provenance checks; it also runs the
-existing native smoke benchmark. Each run reports commands, source stability,
-complete-card coverage, performance logs and cleanup in one JSON artifact. It
-retains shared-library paths/hashes and cleans terminal disposable build output.
-The smoke benchmark is a limited Freeform deck, not Standard-wide acceptance.
+The directory's set code identifies the canonical definition owner; a reprint
+shares that definition. Ownership counts in the coverage report do not prove
+complete membership of a set. Full-set acceptance must reconcile all printings,
+including supplementary Standard-legal cards, with the pinned source inventory.
 
-The representative batch directly implements Explosive Derailment, Jailbreak
-Scheme, Requisition Raid and Rustler Rampage (16 legal combinations, both seats).
-It adds selected-player creature counter and stun-aware untap batches; all other
-behavior reuses the existing engine. Main and candidate coverage are reported
-separately until final validation/review/merge. The all-Standard goal remains open.
+Agents edit disjoint paired files in isolated worktrees. The integrator runs
+`python3 scripts/link_catalogue.py` to regenerate derived artifacts. Add meaningful
+rules tests for whole-card behavior, legality/privacy, transactional failures,
+queued/source departure interactions and owned raw/index branching and restore.
+Require two independent nonauthor reviews of the final published PR.
 
+Run `python3 scripts/link_catalogue.py`, then
+`python3 scripts/validate.py --release`. The validator runs native rules tests,
+Clippy, format/link consistency and provenance tests, plus the existing native
+smoke benchmark. It reports fixed inputs, coverage and cleanup and preserves every
+shared library at its exact path/hash. The Freeform smoke benchmark is a limited
+regression workload, not full-set or all-Standard acceptance.
 
-Initial acceptance on actual land-entry main passes1,936 native tests, Clippy,
-format/generation checks, complete-source provenance and three public API methods.
-All947 tracked inputs stay fixed. The validator cleans543,899,648 bytes after its
-jobs close and preserves all shared libraries. The first development compile
-caught an include-file comment error; a later new fixture referenced a card name
-absent from the catalogue. Both are corrected before this passing run. Independent
-review additionally hardened cost-table shape and stale-facts rejection.
-[Machine-readable results](direct-authoring-results.json) record throughput,
-performance scope and strict preservation of every5,330 unrelated definition,
-930 inherited helper arms and97 token recipes. Final publication changes only
-instructions, documentation and reporting; independent final reviews gate merge.
+[Compiler-removal proof](compiler-removal-results.json) records exact equality of
+the compiled before/after definitions, all helper values and immutable globals.
+The all-Standard goal remains open; finish one complete set with full-game tests
+before advancing to the next set.

@@ -1,0 +1,11 @@
+{
+  "name": "Wreckage Wickerfolk",
+  "catalogue_id": 5122,
+  "oracle_id": "8ba5af76-2485-4fd6-bd2e-fe90d1f2691c",
+  "facts_sha256": "428cc54160ad50afff296de54eab441b80f1aa596a8b31fd9d4934f59213c34c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b7463607886ed95f0ed1566c1d8babb08b5a847d737c8cdd5725566666d98039"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Mephitic Draught",
+  "catalogue_id": 2721,
+  "oracle_id": "05da6b06-fb5f-41e8-b0a2-d949646e36d9",
+  "facts_sha256": "8a1403333618dad8609d71fb5f814c56e4ca9527640b51d7f8e172dff18a5e04",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7d3bf3b37a36e8edb411433dc570d4f355b330436d29ac6929093bc70e11efb5"
+  }
+}

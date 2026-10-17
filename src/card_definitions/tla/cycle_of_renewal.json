@@ -1,0 +1,11 @@
+{
+  "name": "Cycle of Renewal",
+  "catalogue_id": 942,
+  "oracle_id": "77eda626-5cef-496d-b291-cfa1ee6fc1fb",
+  "facts_sha256": "5a4dffa18b022be78d00f71bd418527b600cb888cf4bc6e9ccfed4d998060dd0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "01ddb548f1b3a6f922220c4f166c023669187bc2a6f291b922d45d32d0250ce8"
+  }
+}

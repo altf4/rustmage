@@ -1,0 +1,11 @@
+{
+  "name": "Adamant Will",
+  "catalogue_id": 54,
+  "oracle_id": "467e22c3-6107-40ff-afc7-5960710c970b",
+  "facts_sha256": "b1468a810a54c60a157fb3e55bc59d8787b6bae01294e2a34ef9b9e7d38a1ef6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8b4a81ba289b9751d08a668a9b8b6ea6060979765b0f60055c6b852428ceb1c9"
+  }
+}

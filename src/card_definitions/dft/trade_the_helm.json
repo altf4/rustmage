@@ -1,0 +1,11 @@
+{
+  "name": "Trade the Helm",
+  "catalogue_id": 4648,
+  "oracle_id": "c478fb5c-9fde-400d-a2cd-f8c4fa6b957a",
+  "facts_sha256": "ce47928e0c6ea94b5418ef82741b34ad33f0f6b14978742334e837a61877720b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "064dffe6294de78b6054e3bbde420293e0febf7581ce75c8ced6db183b7731fb"
+  }
+}

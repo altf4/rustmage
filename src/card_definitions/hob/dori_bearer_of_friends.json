@@ -1,0 +1,11 @@
+{
+  "name": "Dori, Bearer of Friends",
+  "catalogue_id": 1137,
+  "oracle_id": "58acd6b2-730c-4472-a34a-f2784977aca8",
+  "facts_sha256": "c453185b0569adb38ef27fee1b42923bc99b6c38e47fa94db85b8fc445740dc9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5b11bc5c79a5d4b120ad3e1e6a960ab225b5cd44d4725c8ee9248bf5549ee39a"
+  }
+}

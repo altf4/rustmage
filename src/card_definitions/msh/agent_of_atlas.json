@@ -1,0 +1,11 @@
+{
+  "name": "Agent of Atlas",
+  "catalogue_id": 92,
+  "oracle_id": "cd403866-bef1-413a-85e2-c86e295b3589",
+  "facts_sha256": "9fecf1b6bdde841e63903d25fbf1dec327d196db4cbc7437189a4c04ccbc975b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1485ffa2fc19b9abdd0a50117265ddd2a52958a88240b955b04a0d3d6347864e"
+  }
+}

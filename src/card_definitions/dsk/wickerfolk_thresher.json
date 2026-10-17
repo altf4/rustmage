@@ -1,0 +1,11 @@
+{
+  "name": "Wickerfolk Thresher",
+  "catalogue_id": 5055,
+  "oracle_id": "fa6d7d68-34e3-4ff6-ae6c-36848974555a",
+  "facts_sha256": "2db6b2d6d1036bae7650b361083af32f75dc89bcddd8a4aa05a78853b9c3fe74",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3f070c8da1b7516e0d15f959d2d6032a74f19f1eff1ea376cf10e74e569029bd"
+  }
+}

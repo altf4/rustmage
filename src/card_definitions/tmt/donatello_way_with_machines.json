@@ -1,0 +1,11 @@
+{
+  "name": "Donatello, Way with Machines",
+  "catalogue_id": 1131,
+  "oracle_id": "194af2be-50c7-484b-bdd3-402bad70335b",
+  "facts_sha256": "2ef66d865c8c88ce5fa092cf4fdbd7bb6110706bfeef96cfc2818be4f1b3a23d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "61671f677b8d8a298883d2aabec1b46c7863831b4b102db53ed51c86ac8078df"
+  }
+}

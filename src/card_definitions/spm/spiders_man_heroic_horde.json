@@ -1,0 +1,11 @@
+{
+  "name": "Spiders-Man, Heroic Horde",
+  "catalogue_id": 4043,
+  "oracle_id": "d21d7557-9702-46c1-8277-42a3442084c2",
+  "facts_sha256": "1bcb1cb45f6218fb09cf68a6517a676b02dec083f09445c9556f02a42caa1335",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c60c203637d7ac89954684c69b8840488f17987c6ff4044c4918985450f17576"
+  }
+}

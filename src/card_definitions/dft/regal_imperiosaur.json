@@ -1,0 +1,11 @@
+{
+  "name": "Regal Imperiosaur",
+  "catalogue_id": 3446,
+  "oracle_id": "83a76601-ef59-4888-af70-5088dd1f504c",
+  "facts_sha256": "07ad80bab34407a84dcfcb4e45643c41a01e64fbd0dd91d8297c9d68863033dd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "35b59365302ef7f932232f6ac94f8028b8e9e541a5990772ca0306362a11b1e7"
+  }
+}

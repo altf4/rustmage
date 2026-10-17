@@ -1,0 +1,11 @@
+{
+  "name": "Bothersome Noisemaker",
+  "catalogue_id": 511,
+  "oracle_id": "978e07fd-8b8c-4eab-850e-e4c0e712251e",
+  "facts_sha256": "95534c8dc7f2137cb193939fa07d72fede2c9ad1be283b6ea1100b514695b44d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ee64fdea210e740025cca61b6895432a2bb11364aa46e630d5737085efaa8cb2"
+  }
+}

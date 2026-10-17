@@ -1,0 +1,11 @@
+{
+  "name": "Oaken Siren",
+  "catalogue_id": 2981,
+  "oracle_id": "a06a35a9-a23e-4a0a-90bc-84e7a52d2cef",
+  "facts_sha256": "a307abc0cf268a380b285794182e2834c7a3a3bab6dd8c5c6dfa5f799b2a67b2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e16905c15bb2fec5f22cde27151f49040bc66aad4585f6e77b5b7cf3b2a13f62"
+  }
+}

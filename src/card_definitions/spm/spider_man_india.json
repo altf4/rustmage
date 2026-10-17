@@ -1,0 +1,11 @@
+{
+  "name": "Spider-Man India",
+  "catalogue_id": 4027,
+  "oracle_id": "8933297c-62f1-4df9-91b8-2d3481db77e5",
+  "facts_sha256": "af8b1adf1a4f0d5a9b1fcc4394cf19882d63074846f77a6927d00eeec99504bb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "314aab5391da20856a39d8fdc24fc5b596132c62d2939dc882e1da7c82098ad4"
+  }
+}

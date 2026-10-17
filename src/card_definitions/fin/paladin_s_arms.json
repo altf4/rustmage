@@ -1,0 +1,11 @@
+{
+  "name": "Paladin's Arms",
+  "catalogue_id": 3093,
+  "oracle_id": "22076484-e9d5-4f33-8cf3-b9b427436b05",
+  "facts_sha256": "36404d574c26ea0f192b1cd026e39b4feb10a8751e78379a798fc19dfcec6a5a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fb10d71a93319420de3085bb2113bb0d14aaf4e64d31af4fdbf54832ece6d8aa"
+  }
+}

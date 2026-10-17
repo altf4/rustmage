@@ -1,0 +1,11 @@
+{
+  "name": "Break Out",
+  "catalogue_id": 538,
+  "oracle_id": "99eaac39-28d4-4af7-984b-f75fd37902ed",
+  "facts_sha256": "dfde90a90ee0e3f2e7cbded7095cba99ecc9240ad34940f804b3e39877a13127",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4cbbfc8af601c3931d92acd1dcb3e0e917a625660f2660df00f056a29fd604bd"
+  }
+}

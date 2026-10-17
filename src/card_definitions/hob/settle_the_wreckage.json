@@ -1,0 +1,11 @@
+{
+  "name": "Settle the Wreckage",
+  "catalogue_id": 3800,
+  "oracle_id": "2a2ea189-b663-4f4a-bb23-ff7a4af25f71",
+  "facts_sha256": "f622c654553f4e85163160481b8378c3e807ceb8a9fcbc4f7a358168d8b6cd1b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aed98bbb3aed1e8c9d61c237bec2f7c3fa6dc5b372f6bf7c2574c8cc310f2944"
+  }
+}

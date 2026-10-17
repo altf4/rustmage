@@ -1,0 +1,11 @@
+{
+  "name": "Unwanted Remake",
+  "catalogue_id": 4808,
+  "oracle_id": "90aa9113-5148-486b-a1c6-b4230e6d3e41",
+  "facts_sha256": "c700f009eec44172433c9007b7d9fa64cb83ba6a9f10c027e7c8bbce584d53eb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5dad994d5d7b0816e056215a3f0e8146435e6f91279a3530262ca211de1e501d"
+  }
+}

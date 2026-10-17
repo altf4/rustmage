@@ -1,0 +1,11 @@
+{
+  "name": "Traveling Botanist",
+  "catalogue_id": 4665,
+  "oracle_id": "14934ab0-41ab-44f8-bb28-2b0457eb6f5f",
+  "facts_sha256": "0032fff0bcde35f23afe93aa1aa91d53a8035358e921d3a1709b7ed2f6ff726b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "564a6ac274b991a8dc841dc168c6d42780196e8004bf7451a513043154e1e575"
+  }
+}

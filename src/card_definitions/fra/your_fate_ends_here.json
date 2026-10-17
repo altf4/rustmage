@@ -1,0 +1,11 @@
+{
+  "name": "Your Fate Ends Here",
+  "catalogue_id": 5143,
+  "oracle_id": "28a362c2-0c99-48e0-b9cb-485a6c1f350b",
+  "facts_sha256": "4cd4127b151b646011b6513a24f1f903baec23c72b9bb81468125f47dd6126c0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ab21d7ef8094ce9f41f007118eb5ee9177e29715f08faa1decc43fc403a66d23"
+  }
+}

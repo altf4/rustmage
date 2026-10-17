@@ -1,0 +1,11 @@
+{
+  "name": "Ghostly Keybearer",
+  "catalogue_id": 1735,
+  "oracle_id": "ec86a45f-046c-4aab-9b82-422c6f39142e",
+  "facts_sha256": "e535a1e42d167c5594c0dbb12987a65e02d5637d835655eb593b8e72646d4a73",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ce6406aa9768fa9f86455d2a463cb8801df6d8f8142caeaec653ba40a9ece53c"
+  }
+}

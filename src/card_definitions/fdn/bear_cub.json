@@ -1,0 +1,11 @@
+{
+  "name": "Bear Cub",
+  "catalogue_id": 357,
+  "oracle_id": "ed206651-3d9b-4546-8d45-0682817192fd",
+  "facts_sha256": "15a145ca8bc759e691e843463dd068009d5e4a508b0dfa044fbfe1716ad7c287",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "798c67636fad886267bf090120029fc68684761d9f66b0bafa0c6c2f95ba3e1d"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Guttersnipe",
+  "catalogue_id": 1915,
+  "oracle_id": "c6bdaf76-6a03-4695-9c4b-f040e73435af",
+  "facts_sha256": "fc312b7ad109b4b02e997a8d9e45b23ac0c69c881ad2e8ca09c14c9adac3f3cf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "edef77ec39a077aa4a247f319217251b844c3509c40ec34507957f205e324138"
+  }
+}

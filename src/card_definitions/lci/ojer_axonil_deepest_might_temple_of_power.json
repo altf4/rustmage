@@ -1,0 +1,11 @@
+{
+  "name": "Ojer Axonil, Deepest Might // Temple of Power",
+  "catalogue_id": 2996,
+  "oracle_id": "d3b7b541-6f05-46c1-8031-c848c4bd4635",
+  "facts_sha256": "b6cceea5ae3c7e42617c38c6da1ece76b48cc40f61498da17e1de4c35970f2b8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b572e9bc1f19ee86442b158df2f30bc63e894d8848e9345fdaec1e2971c85c22"
+  }
+}

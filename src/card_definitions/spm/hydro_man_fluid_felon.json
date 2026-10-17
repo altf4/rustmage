@@ -1,0 +1,11 @@
+{
+  "name": "Hydro-Man, Fluid Felon",
+  "catalogue_id": 2113,
+  "oracle_id": "a93a8edf-2879-4cae-b3b9-b46298270823",
+  "facts_sha256": "289bf17a505967da65d3f293d831911363eaad18ddd4513aeeda2872446d4f4e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a5b95d222928f9069e2826fda2cefaa62bff0f2747bcc28bf45b92ed9953b7c6"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Dragonback Assault",
+  "catalogue_id": 1157,
+  "oracle_id": "413fb2db-f1a1-4d22-ac37-a52821d35ca2",
+  "facts_sha256": "df5df4cb227c5fd3c0bf7f8833e9a8d5e7479f5fd57d1cf59a29820bd3da14a1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "99668b604a6813fd76313785aa5917641b933b96fe077c560f7445c3c71e1e5e"
+  }
+}

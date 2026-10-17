@@ -1,0 +1,11 @@
+{
+  "name": "Woodland Weavemaster",
+  "catalogue_id": 5110,
+  "oracle_id": "28ffddca-a3c4-467d-a2dc-2c5e62393e11",
+  "facts_sha256": "4977283ae543887249ec936b85bfd797447b06f4cb5fed6c4343ba1c4170d186",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9ea41bc8a435e4fe0c06040689f1f280080b2f659a1bf8b06060a4fee484dfce"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Jasmine Dragon Tea Shop",
+  "catalogue_id": 2259,
+  "oracle_id": "d9a24444-289f-473f-9985-8df275257555",
+  "facts_sha256": "3bcf04f92c2bd4b23fd414e06a8dde415d2ffc7fd03436a5c179bba5b5ae140c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "224dd6adf1444d3c6cf3d8de36df546ca55313eed0d5047f4aeb8816ca3625f0"
+  }
+}

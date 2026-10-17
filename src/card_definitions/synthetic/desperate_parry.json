@@ -1,0 +1,11 @@
+{
+  "name": "Desperate Parry",
+  "catalogue_id": 5193,
+  "oracle_id": "396b088d-f9af-4ee1-843f-dbe1633f9cc8",
+  "facts_sha256": "eb32444003bbb41ff33a8b92fff11a46cf3098720368f17b1c5f5e144b6240ab",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9628521a478b3894c44231e7cef51726221c652797fa08db517515ed0d4e6901"
+  }
+}

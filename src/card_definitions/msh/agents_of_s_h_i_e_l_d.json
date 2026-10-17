@@ -1,0 +1,11 @@
+{
+  "name": "Agents of S.H.I.E.L.D.",
+  "catalogue_id": 95,
+  "oracle_id": "203b72d2-a273-49cc-bd10-2fbc07ed2fc8",
+  "facts_sha256": "3fb26e329eecf05b127dfe8f265baf74239ac2b9a87465243c2865dcfe5a2fad",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ed9a599471f4284e29acff4b2c582500250b824d8bbc7baff3099c7cd10e2c2e"
+  }
+}

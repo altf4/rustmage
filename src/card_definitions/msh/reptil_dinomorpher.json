@@ -1,0 +1,11 @@
+{
+  "name": "Reptil, Dinomorpher",
+  "catalogue_id": 3463,
+  "oracle_id": "c6284597-1983-4a21-a461-724135220e0d",
+  "facts_sha256": "1ec9d70eef75a027dda70b3f708a7c06755e3005924ea905d9161f16f0ffcb23",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6ec19a8aa595216ee67c0bd93cdb7e2e6b5f9a38e31fa86c22cde05fb9bc6c72"
+  }
+}

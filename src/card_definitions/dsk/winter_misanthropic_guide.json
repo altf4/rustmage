@@ -1,0 +1,11 @@
+{
+  "name": "Winter, Misanthropic Guide",
+  "catalogue_id": 5085,
+  "oracle_id": "5a9baafb-bffd-4e28-bbe1-b4154cd86bf3",
+  "facts_sha256": "3a9b1e34cf6b528c58289fe629c1249077038ba4ed28fc6400258d605e407018",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fbc837dc305681e04faf8e12f9f03e333a2e002db66c1d44347497c45a6940ea"
+  }
+}

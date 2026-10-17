@@ -1,0 +1,11 @@
+{
+  "name": "Soured Springs",
+  "catalogue_id": 3983,
+  "oracle_id": "e579edd7-4f6c-4f22-a72f-0a20d7a698a2",
+  "facts_sha256": "8e9e310a72fd248be90915fe5076e6683248c175fd57c606cc905863d57d2ade",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "683eeae874c22984cfc99c4669c589cb66f31f94924cbcac3ab7b1577da992fe"
+  }
+}

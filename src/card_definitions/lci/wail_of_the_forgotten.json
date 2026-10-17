@@ -1,0 +1,11 @@
+{
+  "name": "Wail of the Forgotten",
+  "catalogue_id": 4952,
+  "oracle_id": "030b5408-f216-43e4-8593-f78d22821876",
+  "facts_sha256": "36c7b57b40c421b278104c4eca154e6e7744cb9e3804a94005f00590f572f379",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f2bc94f92e87056395e09fff3f8beac7b32da7046e187e78597d841da194d24f"
+  }
+}

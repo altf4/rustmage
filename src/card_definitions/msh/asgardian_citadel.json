@@ -1,0 +1,11 @@
+{
+  "name": "Asgardian Citadel",
+  "catalogue_id": 237,
+  "oracle_id": "e3614df6-ce84-4180-ade1-a1751e8e3c9a",
+  "facts_sha256": "fbe041874ba1dbda4b7388e481ee2c77d306c39b274f6cc67fbcaa8c14140ba8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fa650ed2fb34b89da5acd063d800465b0fb510fcc56e8a43c31fb704af76b99a"
+  }
+}

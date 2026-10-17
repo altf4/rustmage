@@ -1,0 +1,11 @@
+{
+  "name": "Deadly Riposte",
+  "catalogue_id": 1000,
+  "oracle_id": "e341478e-c3f8-45d9-9430-abe3a58fa2fc",
+  "facts_sha256": "1cdff51838dac479a87c9547cc8d62a8316eb9dde292d8f8f17ca67285bf1fa1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a118d0c5d118bb6e464fd0306d621a195bd92df3ba6477a2646a3edb5bc8fda0"
+  }
+}

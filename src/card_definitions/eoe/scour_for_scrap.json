@@ -1,0 +1,11 @@
+{
+  "name": "Scour for Scrap",
+  "catalogue_id": 3730,
+  "oracle_id": "da422b3e-1092-47ad-97d6-a7a3ef060a53",
+  "facts_sha256": "39fdc42707c4a6819b5eef08a732639545fbe1d0d0ca030975c61517626740ab",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "75ba473430c4baff5a175889eb1addaabf64741e1372831afe02dff5d6423ffc"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Waylaying Pirates",
+  "catalogue_id": 5017,
+  "oracle_id": "5453e4fa-49ea-43fc-8de5-6873d29ef627",
+  "facts_sha256": "73165db503e27a286d57dcbeae38c56ead910825ca1c623457f7c109c3c8f203",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0baaa12f53e3c69929171a51af3466e71f2dc225ef5053822fc332c936a09bdf"
+  }
+}

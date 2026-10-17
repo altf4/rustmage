@@ -1,0 +1,11 @@
+{
+  "name": "Kona, Rescue Beastie",
+  "catalogue_id": 2394,
+  "oracle_id": "76372327-41ec-4516-abff-3b612e073629",
+  "facts_sha256": "4072258dc15047844ac6da0b8dbf840fa01d6261ae7f63b7a72c4ab8643ca2db",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "df9c83d6c54e7cf091f9e37ad92dc9a0491b5f0d6199d5b63186bf6e794acba0"
+  }
+}

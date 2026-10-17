@@ -1,0 +1,11 @@
+{
+  "name": "Vengeful Creeper",
+  "catalogue_id": 4863,
+  "oracle_id": "d5b7c283-357b-409f-9afc-985a3b89cc40",
+  "facts_sha256": "29024705094a6eaed191f28d5b8d72c816c19a31628bd99415899b1a6f4f2155",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "da1e5b27c3522bc8cd2d4d72ec3810405bb9dc9947a3dc9e955565de58b892d2"
+  }
+}

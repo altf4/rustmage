@@ -1,0 +1,11 @@
+{
+  "name": "Short Bow",
+  "catalogue_id": 3847,
+  "oracle_id": "ce5f5ff9-13f7-41eb-ada0-7f73de42acef",
+  "facts_sha256": "5dd8a03e31ef07ccc335273883e301363e1a7d37416355b55ff35bd6f65c12b0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f9d1c99a387d5ff35b5e225e8a3b49734186147ac167fa603b793652bd487d57"
+  }
+}

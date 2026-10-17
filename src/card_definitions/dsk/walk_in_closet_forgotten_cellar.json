@@ -1,0 +1,11 @@
+{
+  "name": "Walk-In Closet // Forgotten Cellar",
+  "catalogue_id": 4956,
+  "oracle_id": "52e77cc3-f8e9-4a20-811b-fe1e46a96ad7",
+  "facts_sha256": "8b0cf7ba90292f126baf164cdb8a4efef9d4a73de5d857f3d167ff2b9fd42340",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3c048bcba13b8855997ec4e06b438a2ea7300c53e89430ca1646a6cf7fe0f8ef"
+  }
+}

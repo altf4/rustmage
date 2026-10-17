@@ -1,0 +1,11 @@
+{
+  "name": "Midnight Mangler",
+  "catalogue_id": 2745,
+  "oracle_id": "c9f8651a-4118-4d80-902e-60473e81d3a9",
+  "facts_sha256": "a9aea994e0b07548dda4cb1871d40f58af4f81301430b06dbfa2447a4db98624",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "20203a07cca1e4c07dc7c019fb9665bd2831ab40bf88a762ae8454c239b14be4"
+  }
+}

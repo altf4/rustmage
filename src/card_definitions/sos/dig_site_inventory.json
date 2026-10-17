@@ -1,0 +1,11 @@
+{
+  "name": "Dig Site Inventory",
+  "catalogue_id": 1074,
+  "oracle_id": "96742ebc-10a6-49e6-812a-631e5a60847d",
+  "facts_sha256": "df84178ca0fccb241a909ba0c2b5c93bcde2ba56f0a43190054345d745332046",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0d99287ee416945410fb5331d39335c00bdd219c785ebcb0ffff88a4bb889310"
+  }
+}

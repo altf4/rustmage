@@ -1,0 +1,11 @@
+{
+  "name": "Fang Guardian",
+  "catalogue_id": 1442,
+  "oracle_id": "1e0b9767-8e51-4021-a8fb-22259e2f5347",
+  "facts_sha256": "847f94ae507bf2725cdb4e0b6abf9f5ab513ae2ec3c78a3e901dec535bd4325e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "68142e91f9341fd57cf66592725881583e4844f7673041754ef4aff78bf94ae0"
+  }
+}

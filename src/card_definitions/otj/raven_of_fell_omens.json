@@ -1,0 +1,11 @@
+{
+  "name": "Raven of Fell Omens",
+  "catalogue_id": 3395,
+  "oracle_id": "eec7d4f4-4141-49ed-8978-aefacc0a6609",
+  "facts_sha256": "f0138e87206bcedb8ab66d099e37dc5900746d81bf5fd93e3f8f10a023f8dc38",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7fb62ee820afc5b0c215b11c8239e85e16f2951dd538e459e97fe4cceebc220c"
+  }
+}

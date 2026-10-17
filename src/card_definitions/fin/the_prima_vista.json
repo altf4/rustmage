@@ -1,0 +1,11 @@
+{
+  "name": "The Prima Vista",
+  "catalogue_id": 4486,
+  "oracle_id": "a09d9754-a321-4018-a237-e613e915b642",
+  "facts_sha256": "ba18b310f9650b34be0afcae736e0afaebc6ae95b3e12095bc023b0e0a098871",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2fe3f02c787512d8a23d78fd4df2df95bb90ee2cc27f5a03a71533a6b9408155"
+  }
+}

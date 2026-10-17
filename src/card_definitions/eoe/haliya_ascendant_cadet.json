@@ -1,0 +1,11 @@
+{
+  "name": "Haliya, Ascendant Cadet",
+  "catalogue_id": 1928,
+  "oracle_id": "6846448b-d5a0-4ae0-bb11-ea7fa6ed2558",
+  "facts_sha256": "5a0bb88f527e5dd695b5fc857cfad797a0d23c328c2dcd6565f4306e40d995a0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8f840afa4e9b60440714c77b8e2aeadba6ffefce3325bfff145e0b161a6c6304"
+  }
+}

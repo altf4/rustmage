@@ -1,0 +1,11 @@
+{
+  "name": "Gallia, the Merrymaker",
+  "catalogue_id": 1671,
+  "oracle_id": "87f39199-3e4b-44fa-8406-62019eb43c10",
+  "facts_sha256": "096a861514b74ec8afb4614a0893d52b1311fc99cf75290b8b8b4914f886f5c7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1ad273baba0f2482a8017ba1f0ae644a9882108725577662ac16f74888a76d61"
+  }
+}

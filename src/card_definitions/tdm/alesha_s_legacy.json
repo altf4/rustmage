@@ -1,0 +1,11 @@
+{
+  "name": "Alesha's Legacy",
+  "catalogue_id": 127,
+  "oracle_id": "c4229cc8-11e5-4221-b00d-86969701e21b",
+  "facts_sha256": "16ebbabb3206b9a6577106b02cc274f6eea02303b9129b410b793db6460e9735",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a042e7be0f229c138a79ddcef377efbf407f00e2481b105bafabc832aa7d5d1b"
+  }
+}

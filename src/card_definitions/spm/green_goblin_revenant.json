@@ -1,0 +1,11 @@
+{
+  "name": "Green Goblin, Revenant",
+  "catalogue_id": 1870,
+  "oracle_id": "67175889-02f9-4ad8-a9ab-11db44328b67",
+  "facts_sha256": "9b6bffd5d986b486440cbf3c866dafa9e0c3d9bb8ac16c20d1f545ed517b1484",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8bbc771aa115d0d88377ff6c945c156487e9184084d754e1268c5ac5027f2575"
+  }
+}

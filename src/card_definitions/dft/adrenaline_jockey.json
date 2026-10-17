@@ -1,0 +1,11 @@
+{
+  "name": "Adrenaline Jockey",
+  "catalogue_id": 61,
+  "oracle_id": "c3dc6b0e-8790-4bd3-b166-63b2dc77488f",
+  "facts_sha256": "e037a194a38a4fca14ee93a13b32e9110442771b67609c12d62d72190c442fb5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ec112b911526ecafd7f525e67a90e7214371d4f50b6fc66d136a418c84e097a2"
+  }
+}

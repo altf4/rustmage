@@ -1,0 +1,11 @@
+{
+  "name": "Beorn's Hospitality",
+  "catalogue_id": 388,
+  "oracle_id": "d9ed7252-11d1-432b-9101-ac08cd28826d",
+  "facts_sha256": "d4023762910cf70f4bed2df240c7b183b0890dcd226bc2a6a1b7f104db7360c2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1ce3aec0f285336797686eabf5a61c9b13d85ca043240a9721bb1182e9822858"
+  }
+}

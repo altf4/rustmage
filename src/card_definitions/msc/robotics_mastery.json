@@ -1,0 +1,11 @@
+{
+  "name": "Robotics Mastery",
+  "catalogue_id": 3565,
+  "oracle_id": "855318cb-9382-4183-87c7-93bdfac86431",
+  "facts_sha256": "89e214104ad8c368d0fa5a92113a1b215bdb832183c6c74b732567be0273154d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6d5a31cd2e68304a8986a26d5784a3661c3e5c288119367c27bdc3989faf014a"
+  }
+}

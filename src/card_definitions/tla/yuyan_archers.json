@@ -1,0 +1,11 @@
+{
+  "name": "Yuyan Archers",
+  "catalogue_id": 5149,
+  "oracle_id": "63e5180f-16d0-4524-94bf-ecbf3c417814",
+  "facts_sha256": "4280c0589a891f2c7b1c2e627d4e052988b8476fd06f35adb60e75134df7c7c2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "99c6324fd64789dfdc040c953285fa9d4a452056d7da9a5ef76a34e7ecdc9c7f"
+  }
+}

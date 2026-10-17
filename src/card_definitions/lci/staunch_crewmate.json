@@ -1,0 +1,11 @@
+{
+  "name": "Staunch Crewmate",
+  "catalogue_id": 4121,
+  "oracle_id": "8ab49974-3f06-4b6b-a416-d6f872b3887f",
+  "facts_sha256": "87d37dd5ed0c4926b9106c51ee35db902d5e63c44542916cec05d2fe6fe9e7ac",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "85bacaba72dc6fe2b2dc944752f01a95dbc1c2457429ecfb2a0144ef33098368"
+  }
+}

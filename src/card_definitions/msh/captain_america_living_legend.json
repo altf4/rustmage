@@ -1,0 +1,11 @@
+{
+  "name": "Captain America, Living Legend",
+  "catalogue_id": 642,
+  "oracle_id": "67aa946d-e694-494e-ba0c-44880d5bc03e",
+  "facts_sha256": "f6e96b66ad2fa3287c8de171c5dfa0ac48935dbe243ce2b6e3f0e3d0a1300111",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4b8d222e580d31c691e73898ffc1699016a0b4d35686e2d0146f04c00d1d3a67"
+  }
+}

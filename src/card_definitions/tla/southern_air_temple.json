@@ -1,0 +1,11 @@
+{
+  "name": "Southern Air Temple",
+  "catalogue_id": 3986,
+  "oracle_id": "987c1144-69f6-4441-b0a4-d23f931df81f",
+  "facts_sha256": "828004020ee26a85e495b2080bb3c27adf023a2351a084c99a03d5b78b5376e8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3bdd01f125b40469b108d36f33a142a7b80b6db3b5001fa26a88445960c72b1e"
+  }
+}

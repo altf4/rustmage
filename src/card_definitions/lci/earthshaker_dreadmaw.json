@@ -1,0 +1,11 @@
+{
+  "name": "Earthshaker Dreadmaw",
+  "catalogue_id": 1245,
+  "oracle_id": "454cbc6a-b7f0-445e-842c-5db267917a18",
+  "facts_sha256": "7639d53c26c5f6dc159fef400932ea0e30f4681bd64e27548777c2ad205fa490",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6d8f9878cc656061706ca4bce277cc0f46458fea4d3b65f81e3681e3eacc57f9"
+  }
+}

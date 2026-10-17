@@ -1,0 +1,11 @@
+{
+  "name": "Swiftblade Vindicator",
+  "catalogue_id": 4291,
+  "oracle_id": "44240b1e-c104-4eb4-8ab9-0d56607ba241",
+  "facts_sha256": "58a9aa0cbab7cae86304bfe34f1c4695d513268f53e78a1b4340b69df6126f3e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "de19c4d125de4ef1e47348b52ef782e036010b7c6ef3082e17818ce220ac2a50"
+  }
+}

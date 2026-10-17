@@ -1,0 +1,11 @@
+{
+  "name": "Hellspur Posse Boss",
+  "catalogue_id": 2001,
+  "oracle_id": "15260fa6-6062-423a-a248-81292ea46178",
+  "facts_sha256": "ccd2150da2a47d53fc3fd20a724d4944a35a55c641bfa9bab2fe72c2f87ec9ff",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f16914541dde33c8b1d11318c8d9c67420d3f0a55cbd11d38eb6f7016d5b4499"
+  }
+}

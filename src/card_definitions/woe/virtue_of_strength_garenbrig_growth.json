@@ -1,0 +1,11 @@
+{
+  "name": "Virtue of Strength // Garenbrig Growth",
+  "catalogue_id": 4909,
+  "oracle_id": "31af78dd-e962-4d9a-b696-f3048be03486",
+  "facts_sha256": "5f5ab7083609ad370ff70476ac6df7888c962fd89b04f55cfd3e482a0679d618",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4f30b4e919d8e05df3570b8870d7e2b70f4d799a362d64b70ebea5fabc59916e"
+  }
+}

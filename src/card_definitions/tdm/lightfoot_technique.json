@@ -1,0 +1,11 @@
+{
+  "name": "Lightfoot Technique",
+  "catalogue_id": 2494,
+  "oracle_id": "601b7481-19fc-4779-950e-883a9a22aec3",
+  "facts_sha256": "f6ac94f943c4e33195ee49b203bb0bf0dcb70d097e1b3c30e1810bf4171c6f67",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8888c5ab0db89c81a7f8ef20fe4c0233413f258c0a6794e16aeebc983eb2003c"
+  }
+}

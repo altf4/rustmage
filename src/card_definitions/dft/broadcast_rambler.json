@@ -1,0 +1,11 @@
+{
+  "name": "Broadcast Rambler",
+  "catalogue_id": 563,
+  "oracle_id": "21aaecc7-b9ec-4068-8e47-4dffaa12f102",
+  "facts_sha256": "da4292852c5ff517b5ea7759a61f222a514fe092cbb0d1f8b1aa81bf73664a98",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1fa35a9ac48d6c8f2e8e1d3b371a94e9b71abf5c04f394add89884ba86573a0f"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Foot Ninjas",
+  "catalogue_id": 1588,
+  "oracle_id": "306652a8-9a9c-4b33-96d7-b59234d148e9",
+  "facts_sha256": "433274317c197bd60a81b92f1ca4ea6e4fff4e65d585688194cf449f2a1a4207",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e7e3570baece2e86f28b95d81c261c113fb4d446b3bc8f75358faa36979127c4"
+  }
+}

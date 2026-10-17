@@ -1,0 +1,11 @@
+{
+  "name": "Moment of Craving",
+  "catalogue_id": 2820,
+  "oracle_id": "1489551f-5714-471b-a0e6-f40bc3085afc",
+  "facts_sha256": "928d6f81914cb55e0a9ade66b924fb6be2a2caaf40f5a25d942404c55f9fa488",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "25c0a695cfc137a22bf1fcfe8d43302b24f51e4db7fea20b2a1abcfc5da0c553"
+  }
+}

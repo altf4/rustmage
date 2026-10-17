@@ -1,0 +1,11 @@
+{
+  "name": "Kaito, Bane of Nightmares",
+  "catalogue_id": 2306,
+  "oracle_id": "fa43077b-5d8b-4fb1-8dda-2a9185e6715e",
+  "facts_sha256": "25c5a340b7c1c712b10486ec992da224bd6c38ece230097afc9477c1a2222c1c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aed104fc772e50915dda9656653da3b6867eca128e57e612ffb98a8630b86e09"
+  }
+}

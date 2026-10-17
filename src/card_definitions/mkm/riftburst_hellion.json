@@ -1,0 +1,11 @@
+{
+  "name": "Riftburst Hellion",
+  "catalogue_id": 3522,
+  "oracle_id": "e121f9cb-ed25-4be1-9822-b68cce2f2623",
+  "facts_sha256": "18b72a57ce9a50f2ebc259963d6df7236fc974224fa33ef928ea7775855a48fc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8e570551fd8e87ed1ad674007672d4f4af60c8b0b4286943cf968319f09cb5fe"
+  }
+}

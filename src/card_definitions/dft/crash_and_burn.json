@@ -1,0 +1,11 @@
+{
+  "name": "Crash and Burn",
+  "catalogue_id": 879,
+  "oracle_id": "38405a37-921a-49ab-a95b-28eb8c26474a",
+  "facts_sha256": "a10eaa2d181529c70bb157a5b20d5e8383b1060530324e9815a09de9201a3e7f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3c568c0f151e0acea9cd80e2b38b5e734dd154123189244da14f589b9c85f970"
+  }
+}

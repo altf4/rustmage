@@ -1,0 +1,11 @@
+{
+  "name": "Shantotto, Tactician Magician",
+  "catalogue_id": 3811,
+  "oracle_id": "381df197-5fb7-44ab-a31f-96c4993a0e53",
+  "facts_sha256": "8202140eeb00fd61b3cfee8414ecfa26db9dcc74353a3c03d771ef6d9d662dd5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1af88a5b64ade20cd2dcdf878b9f5dd97cc2e8687c77c634e50f736baf9ba493"
+  }
+}

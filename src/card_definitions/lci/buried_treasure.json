@@ -1,0 +1,11 @@
+{
+  "name": "Buried Treasure",
+  "catalogue_id": 588,
+  "oracle_id": "56f5ed8d-ef53-4766-9ef3-1e24a10e267b",
+  "facts_sha256": "e33c5bf7f8840cd4f821f51de83e6f08fe22cf4f411183d33357cc2d4ed3234d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "42d269b776965aa7cca8a0522670ffa180580beb5a3732a07764bc3e6f142ee6"
+  }
+}

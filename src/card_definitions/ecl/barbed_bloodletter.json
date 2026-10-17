@@ -1,0 +1,11 @@
+{
+  "name": "Barbed Bloodletter",
+  "catalogue_id": 323,
+  "oracle_id": "15febce7-8320-4591-9535-ef11c8adecc2",
+  "facts_sha256": "95619543539d17e500d7003156bf0eb8ea003067096d4d64d5570ed87b8c5ed3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7fb932df4f1dd47e8122a23c9444ef26ed6aaa13443d030089962055cb034273"
+  }
+}

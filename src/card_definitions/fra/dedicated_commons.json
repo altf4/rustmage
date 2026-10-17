@@ -1,0 +1,11 @@
+{
+  "name": "Dedicated Commons",
+  "catalogue_id": 1017,
+  "oracle_id": "d4e0749a-e179-4c19-8536-bf8f1a198549",
+  "facts_sha256": "2368ec49b8ed6078b74531fcbed199a16edbb3d3d37c8029753c86552a1b713f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4d57c6965a59e6f3070fffd051f375d70b86f8fb9825775fe45d6d897aa0f063"
+  }
+}

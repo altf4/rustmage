@@ -1,0 +1,11 @@
+{
+  "name": "Plan the Heist",
+  "catalogue_id": 3179,
+  "oracle_id": "a9471b33-b5b0-408a-9900-6964e5fe42da",
+  "facts_sha256": "a2edeb9a347c115fb22d96858f47fc2617e99780d03bafe480177a7365e90013",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9babcc717b61434525504a7e12c9a9eeccbb3bf4c9cc149d8c211a88889dfab4"
+  }
+}

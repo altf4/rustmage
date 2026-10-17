@@ -1,0 +1,11 @@
+{
+  "name": "Electro, Assaulting Battery",
+  "catalogue_id": 1277,
+  "oracle_id": "3db16fb8-5650-4568-b975-42ad3d44ebcd",
+  "facts_sha256": "f5a827891eeac1699b2ed2f9b3d55ac333919ac9d865398e5dc51694d8db597b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bd0160bc93e90de2b1e4281c26a6f51391f97aed2491843b395bfaf26d15f8b6"
+  }
+}

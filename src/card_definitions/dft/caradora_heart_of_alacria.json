@@ -1,0 +1,11 @@
+{
+  "name": "Caradora, Heart of Alacria",
+  "catalogue_id": 650,
+  "oracle_id": "a9d60d80-bcef-45e0-8ded-d70bd3c2780f",
+  "facts_sha256": "634fb435308defb63d7e63bbd7934dba7319a34dcdc4227c15fff7621d3d2beb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2279e36f28b09236a9474c3d6ed078e7c18b376682edaf80df1334eb3fb4a5c3"
+  }
+}

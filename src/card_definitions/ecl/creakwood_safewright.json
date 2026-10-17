@@ -1,0 +1,11 @@
+{
+  "name": "Creakwood Safewright",
+  "catalogue_id": 884,
+  "oracle_id": "f9b7bbea-ea20-400b-a5b7-4d6993d8777b",
+  "facts_sha256": "3d59e3bd6decceca8a3e9707363a54a4bc2e3d40737c391f8e7b9abe2c6f136c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "09bc09a07157c961fbfd33c4e4a845a956b1758b7614969730f086206d3046df"
+  }
+}

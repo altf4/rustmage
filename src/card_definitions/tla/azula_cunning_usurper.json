@@ -1,0 +1,11 @@
+{
+  "name": "Azula, Cunning Usurper",
+  "catalogue_id": 297,
+  "oracle_id": "7c9e351d-2e6c-4050-9c3d-b15bb9255a4d",
+  "facts_sha256": "2966e10b9dc40f60c92e5d61b23d6c08d7c147b3b6ab28563243e8256034432b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1d14c775eb3e5c2903c60c7acc3142143ae2eea37a0f862e2567087ab058ac90"
+  }
+}

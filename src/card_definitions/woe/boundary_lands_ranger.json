@@ -1,0 +1,11 @@
+{
+  "name": "Boundary Lands Ranger",
+  "catalogue_id": 517,
+  "oracle_id": "1189b5d5-ca8f-4b4e-a5f1-91122a485cf3",
+  "facts_sha256": "028aead11c4d6d25d315f4d7ecc4140f5d341c5694614ed66454928fcbcbee56",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "99ea29d49e42ee0b737e59aac08ef13c6c2f140bfbd48e871cdf94411acefe27"
+  }
+}

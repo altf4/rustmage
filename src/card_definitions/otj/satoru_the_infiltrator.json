@@ -1,0 +1,11 @@
+{
+  "name": "Satoru, the Infiltrator",
+  "catalogue_id": 3691,
+  "oracle_id": "7555c429-5f2d-4171-b6b0-8e3c8da7f314",
+  "facts_sha256": "845e3bf70f1a216dbca1c426ad4c1f3fd481a4d467e0d92e31e1e01f06561e72",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3ba86a94765329ef5a349e31dda458d48c9b802b94fb5abc7134ada1a1134f8d"
+  }
+}

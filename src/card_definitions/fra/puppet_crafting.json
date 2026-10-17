@@ -1,0 +1,11 @@
+{
+  "name": "Puppet Crafting",
+  "catalogue_id": 3283,
+  "oracle_id": "d13c111a-ebfc-48ac-b734-f203c7c29d21",
+  "facts_sha256": "cf869bb5d964d6af85c7dc632d9bbc346fa9741af5b0e5c7f2b0660b17221ba2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "28228b6d857b7257eb32d3bb5bcd0c7b4ed056ea99c366b5eef974bcc924bd6d"
+  }
+}

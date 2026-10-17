@@ -1,0 +1,11 @@
+{
+  "name": "Hearthborn Battler",
+  "catalogue_id": 1981,
+  "oracle_id": "beb02f49-95a6-49bf-b176-4e4b2ab5b651",
+  "facts_sha256": "bc556d8a5cdce86764e186b36b12858311b48222e1ba37ceec275adee735e63a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "336e710f3652e0ba9e5ea7dd7291aa6d3894487f438d5372efa0d7a7631b82f3"
+  }
+}

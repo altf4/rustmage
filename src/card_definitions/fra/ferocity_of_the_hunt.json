@@ -1,0 +1,11 @@
+{
+  "name": "Ferocity of the Hunt",
+  "catalogue_id": 1498,
+  "oracle_id": "747a1b36-eb4f-44e6-9e5a-bb1a0259a471",
+  "facts_sha256": "990bc5e169baee663181d19fcd8fd036b5fa2840ea7a38cf95ada4a010937244",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "daf2769be28f12685814ced7a7be6529855b48dcb9d548956c7a36dd687886ca"
+  }
+}

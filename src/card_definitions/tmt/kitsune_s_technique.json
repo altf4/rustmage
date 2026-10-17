@@ -1,0 +1,11 @@
+{
+  "name": "Kitsune's Technique",
+  "catalogue_id": 2379,
+  "oracle_id": "3e0f8ab3-75a6-49a2-a228-fa720cbde3d8",
+  "facts_sha256": "fde81a1522412e649d99000d055570f547dc18cb5a4702a2bbf6c001ddb2bcc0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c7a1be8427abd033f8d73f8f1309013e1262b935fc5bc07cc7b05f4ffb7e4442"
+  }
+}

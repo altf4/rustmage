@@ -1,0 +1,11 @@
+{
+  "name": "Nimble Brigand",
+  "catalogue_id": 2942,
+  "oracle_id": "8b153452-b4f2-4310-99e2-c729f28be6b9",
+  "facts_sha256": "025fd10668314717dc45716ca48a26eadb027c7e226f47894938d341075dc847",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "26b2ee367d24736bd1477a56cb886212c277ed9213ce67add7f6f8fd06c152cb"
+  }
+}

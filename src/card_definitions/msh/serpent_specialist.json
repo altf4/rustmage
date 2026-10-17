@@ -1,0 +1,11 @@
+{
+  "name": "Serpent Specialist",
+  "catalogue_id": 3794,
+  "oracle_id": "556f127f-6131-4171-b1ed-11420c21d345",
+  "facts_sha256": "ede1c5ce4189e649f18c287a69b2de9870b0cf41e345bea1aedf73dda10eff1a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c2cfe5a47d80ba7ba742d88da5861674ed740780f5ebcc24ba8a05fe2381bc45"
+  }
+}

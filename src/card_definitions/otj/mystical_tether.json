@@ -1,0 +1,11 @@
+{
+  "name": "Mystical Tether",
+  "catalogue_id": 2901,
+  "oracle_id": "fb1a6986-39f7-4592-9039-7e30f5ccd009",
+  "facts_sha256": "341098b944a48862b1a577503715d5efdca69f60d89be9e0c16d42dcc6907bf0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9d2589852c50c61cb6721965bada06682e4c313159b89acee6e59899c0933e2c"
+  }
+}

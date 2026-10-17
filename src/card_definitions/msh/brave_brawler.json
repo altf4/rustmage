@@ -1,0 +1,11 @@
+{
+  "name": "Brave Brawler",
+  "catalogue_id": 529,
+  "oracle_id": "a1a791be-71e6-4c1f-8717-08ca62d40de2",
+  "facts_sha256": "c51ce2107b3e9b0c02e6f99dedf13932c06eaa6dee0cb72418d62eafa5eabc2c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "394c742494a2a1362b034d3b46a3d4f1f6060ef1f5fe7075d594aedb4d554d99"
+  }
+}

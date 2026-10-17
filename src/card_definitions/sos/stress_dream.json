@@ -1,0 +1,11 @@
+{
+  "name": "Stress Dream",
+  "catalogue_id": 4186,
+  "oracle_id": "52124954-b0b6-492c-8d03-fe54c220facc",
+  "facts_sha256": "98e835cd4f576dc6a1128676202d89bfd7bd929f6860348cad60129595059d27",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c58339c5709df26df5c2398ef23bb54299578a952e7a2c77a2dd39d4d923c992"
+  }
+}

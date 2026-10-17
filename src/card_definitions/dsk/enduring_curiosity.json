@@ -1,0 +1,11 @@
+{
+  "name": "Enduring Curiosity",
+  "catalogue_id": 1334,
+  "oracle_id": "9d2460c3-8eeb-4f35-b6f6-748c478664c7",
+  "facts_sha256": "78687bfb36f5d6612a745f3325d74c7b73aafe2d51144e62fff2811cc75d0990",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cb4302a766330f037c2cd9662fc302db95fa19c58ce067289792c5981cf77886"
+  }
+}

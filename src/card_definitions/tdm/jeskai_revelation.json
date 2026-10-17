@@ -1,0 +1,11 @@
+{
+  "name": "Jeskai Revelation",
+  "catalogue_id": 2272,
+  "oracle_id": "61b6b1d1-4350-41c1-ac47-835b2831f24a",
+  "facts_sha256": "e25772911df406ec463c3d0e47f1a58b2883de06d304b4b6c138d3f47c1d5038",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f029f63cbafe93b4623ff0ebbdf46ab695be62d32901a8f88a38cc2444413136"
+  }
+}

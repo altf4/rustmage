@@ -1,0 +1,11 @@
+{
+  "name": "Cosmium Blast",
+  "catalogue_id": 861,
+  "oracle_id": "52c96b5a-ce47-4bde-b530-0033b9bfd808",
+  "facts_sha256": "1db0526482f1f70b6f99da229b399d32a922aa3911bfb1a397667fd71cb83f3f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "65e136650ad61f317be21e5fb445007937034446aea04b6c4660fdb3a332dafa"
+  }
+}

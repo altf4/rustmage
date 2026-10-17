@@ -1,0 +1,11 @@
+{
+  "name": "Dauntless Dismantler",
+  "catalogue_id": 975,
+  "oracle_id": "7129bdec-83e0-4c1e-a87b-ac0da1a714b3",
+  "facts_sha256": "cb8634ae6a107ffa165e79404059fa4e4e2d9935e96c2befcc7eb3ccc8c382b9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c813f2b3d5c15502ed2eec631bb825aca22d427cb3143647bb411e49a837a7bf"
+  }
+}

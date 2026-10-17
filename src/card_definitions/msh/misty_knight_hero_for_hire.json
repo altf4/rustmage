@@ -1,0 +1,11 @@
+{
+  "name": "Misty Knight, Hero for Hire",
+  "catalogue_id": 2798,
+  "oracle_id": "5b090ba3-0ecb-4585-b5b7-9d6028c32487",
+  "facts_sha256": "04cf64c8d5f7dc572e21876baf1651484cdb83e4d48254af2eaf3d1e5db27697",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "32f7f5fe687137482f781a3d3528150873c0bfe27ca486d8c7b1372a91014d69"
+  }
+}

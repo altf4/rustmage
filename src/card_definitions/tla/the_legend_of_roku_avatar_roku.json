@@ -1,0 +1,11 @@
+{
+  "name": "The Legend of Roku // Avatar Roku",
+  "catalogue_id": 4465,
+  "oracle_id": "2f26f270-26d9-46d3-957f-19f52d51eb03",
+  "facts_sha256": "f2c36026e7a59126e899a51234931308e1351410fa3064547c7bde8641c30516",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c78712c40d2f08c6a9a088f49e205a69411f266eb0b0c3e76ed67ead19845613"
+  }
+}

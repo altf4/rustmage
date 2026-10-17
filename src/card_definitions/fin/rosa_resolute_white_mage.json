@@ -1,0 +1,11 @@
+{
+  "name": "Rosa, Resolute White Mage",
+  "catalogue_id": 3590,
+  "oracle_id": "9c4fdd20-0396-40b7-8687-43b1035b6956",
+  "facts_sha256": "e9746d4b77fcb0bd20a5525f7b3efe1493c03707f1c0154322c53b8329e6d9a7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "421d9ab566ea0d3c97b0aedcc6ba641cb4354f4f75fa25434e79963ed26a4b71"
+  }
+}

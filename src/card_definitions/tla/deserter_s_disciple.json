@@ -1,0 +1,11 @@
+{
+  "name": "Deserter's Disciple",
+  "catalogue_id": 1054,
+  "oracle_id": "73ca3132-d849-4cf9-beba-75ba09789332",
+  "facts_sha256": "b75eb34b5ac2f9bdaedc0e5720488f0752dedad152bad13b87ae3c5dba0a5d35",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5a4f541a922f06e7eb1ef1bfff9d37b51fce46ea596770ddfdf34145830d92bf"
+  }
+}

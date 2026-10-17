@@ -1,0 +1,11 @@
+{
+  "name": "Frostcliff Siege",
+  "catalogue_id": 1639,
+  "oracle_id": "e7af31ff-fa1b-4225-b3bc-fde80ac72d0a",
+  "facts_sha256": "b92ece994a7a1f3c5a4548f9a211a4a97bab643dd332cb59617953db998a75e4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bc7a3cd004c5fbbacbf66af35a64f4f3cda9230fcba0625ce9458ecf549d7b3f"
+  }
+}

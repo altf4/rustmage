@@ -1,0 +1,11 @@
+{
+  "name": "Brambleguard Captain",
+  "catalogue_id": 524,
+  "oracle_id": "104baa4e-a3f3-45dc-979d-4c58b659ba1a",
+  "facts_sha256": "84581bd65c80f693962a0604e012d99f1c9e3e8447fec80ab7e7534be1fd4b28",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d3b073c610099955727944d7b6495de15b4291993c3bbf4666d2e8fa4377bfc5"
+  }
+}

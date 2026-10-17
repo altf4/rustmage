@@ -1,0 +1,91 @@
+// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    triggers: &[],
+    activated: &[
+        ActivatedAbility {
+            exhaust: true,
+            guard: ActivationGuard::Always,
+            cycling: false,
+            origin: ActivationOrigin::Battlefield,
+            cost: ActivationCost {
+                colored: [0, 0, 0, 1, 0, 0],
+                generic: 0,
+                alternatives: &[],
+                additional: None,
+                mana_component: true,
+                tap: false,
+                sacrifice: false,
+                exile_self: false,
+                discard: false,
+                life: 0,
+                remove: None,
+                loyalty: None,
+            },
+            targets: TargetPlan::Single(TargetSpec::NONE),
+            program: &[
+                Instruction::GrantCreatures {
+                    filter: CreatureFilter {
+                        relation: 0,
+                        other: true,
+                        subtype: None,
+                        keyword: Keywords(0),
+                        attacking: false,
+                        tokens: None,
+                        artifact: false,
+                    },
+                    keywords: Keywords(4),
+                },
+                Instruction::PutCounters {
+                    subject: Subject::Source,
+                    kind: CounterKind::PlusOne,
+                    amount: 1,
+                },
+            ],
+            sorcery: false,
+            once_per_turn: false,
+        },
+        ActivatedAbility {
+            exhaust: true,
+            guard: ActivationGuard::Always,
+            cycling: false,
+            origin: ActivationOrigin::Battlefield,
+            cost: ActivationCost {
+                colored: [0, 0, 0, 1, 0, 0],
+                generic: 3,
+                alternatives: &[],
+                additional: None,
+                mana_component: true,
+                tap: false,
+                sacrifice: false,
+                exile_self: false,
+                discard: false,
+                life: 0,
+                remove: None,
+                loyalty: None,
+            },
+            targets: TargetPlan::Single(TargetSpec::NONE),
+            program: &[Instruction::CreateTokens {
+                token: Card(5279),
+                amount: 1,
+                tapped: false,
+            }],
+            sorcery: false,
+            once_per_turn: false,
+        },
+    ],
+    enters: Counters {
+        plus_one: 0,
+        minus_one: 0,
+        stun: 0,
+        loyalty: 0,
+        lore: 0,
+    },
+    entry: EntryTapped::Never,
+    keywords: Keywords(0),
+    extras: &CardExtras {
+        exhaust_mask: 3,
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};

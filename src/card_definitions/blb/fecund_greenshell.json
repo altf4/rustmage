@@ -1,0 +1,11 @@
+{
+  "name": "Fecund Greenshell",
+  "catalogue_id": 1478,
+  "oracle_id": "a090be5a-b0f2-4c17-8f7d-e742f9de8f6b",
+  "facts_sha256": "f2541dd7adfa6a9f3c6bab13f82f2096b7d86025ec5414a956e29e8647dfe90a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "47e88b3335c1a96eda679c38472195443a89bd18b857713aac3c713b199f4b37"
+  }
+}

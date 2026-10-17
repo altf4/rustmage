@@ -1,0 +1,11 @@
+{
+  "name": "Earth Kingdom Soldier",
+  "catalogue_id": 1236,
+  "oracle_id": "4289f2d4-3db2-4dd1-9c18-af3f78309844",
+  "facts_sha256": "ea696bb4d782e3529ccd96da9e10e510d291fac4ccf70c76c6c3fe2ea73f3628",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dea5f6fdd102712508380ce3d784bc0238e99ebf04adc7a4dac4e70bb5f44878"
+  }
+}

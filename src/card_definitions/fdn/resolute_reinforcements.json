@@ -1,0 +1,11 @@
+{
+  "name": "Resolute Reinforcements",
+  "catalogue_id": 3479,
+  "oracle_id": "eaaed253-9b11-47e2-8624-0340ab2207f6",
+  "facts_sha256": "589c2a1f1ee223220197a244be447f7866e5f6281dd186e67222f1bf70612dcf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b373800692db639fe03670e8db03f6243938e23fe56c3cfecd9438a1d326d896"
+  }
+}

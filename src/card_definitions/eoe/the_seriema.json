@@ -1,0 +1,11 @@
+{
+  "name": "The Seriema",
+  "catalogue_id": 4496,
+  "oracle_id": "a6bcec1f-f515-4e63-9e84-8eb04cc582ff",
+  "facts_sha256": "c25ac91ae14560f5bf85205763221b453679f34acf38544af84e22d81fb4f61f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4679d77864535abb9c17e1bc32363e5739462b947cb4b0b857a47e06dc3f0edd"
+  }
+}

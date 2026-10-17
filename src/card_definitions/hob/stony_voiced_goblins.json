@@ -1,0 +1,11 @@
+{
+  "name": "Stony-Voiced Goblins",
+  "catalogue_id": 4166,
+  "oracle_id": "d1dceaa7-d33e-4067-9e1b-8a8978a12933",
+  "facts_sha256": "4c17e7b6e8113f3d7dc790e56aa821fb3d3c52badcd26fae061120f2fa229a5e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d6aeb044c3e71596f35db9668e8d0c178a69a4dec00f6b55507799bbb0135518"
+  }
+}

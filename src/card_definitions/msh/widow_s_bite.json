@@ -1,0 +1,11 @@
+{
+  "name": "Widow's Bite",
+  "catalogue_id": 5056,
+  "oracle_id": "39f2a632-30d2-4b35-9e7f-fef27713a4f7",
+  "facts_sha256": "697fce471fea50d18059531f24e17213422d7c5125b4b9e18fab02eccb8910cd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c0137e970d018bd45e571273558c40841df50445d00403b0a093843dae8b891e"
+  }
+}

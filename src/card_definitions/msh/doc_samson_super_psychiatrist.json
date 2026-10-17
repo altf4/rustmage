@@ -1,0 +1,11 @@
+{
+  "name": "Doc Samson, Super Psychiatrist",
+  "catalogue_id": 1117,
+  "oracle_id": "699610c9-c991-4faf-b712-d015ef0799ad",
+  "facts_sha256": "1357bb7408752eec9325104de93717be0bb658dc93a6f87cf925f535e586e8b4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f9787b4fe492230ee599a4497df005c0d0394cf7ce51c62356cc88c4ffaa2102"
+  }
+}

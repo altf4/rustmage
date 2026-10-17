@@ -1,0 +1,11 @@
+{
+  "name": "Moogles' Valor",
+  "catalogue_id": 2839,
+  "oracle_id": "9627ed9a-5ade-412d-bf8d-f0705b1c9405",
+  "facts_sha256": "76c20c92f3c0cfd4e4d35561bdc00abd949023f3b7d79049d0db3b655fc6ee42",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "47ea09481f5c6e73212fd3c0aab8c1c4d93d1ff229ed6ed96d1acf90e9caf049"
+  }
+}

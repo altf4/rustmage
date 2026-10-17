@@ -1,0 +1,11 @@
+{
+  "name": "Moonlit Meditation",
+  "catalogue_id": 2844,
+  "oracle_id": "df702b0c-e011-497f-ae29-9876efac4a4c",
+  "facts_sha256": "d5a80b6a3b428feaab144262c7dd51cd109fd6d07a13cc7d7642231bea3671f7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e02be3fa8ca6f642bc31ba85a56ab0a3688efb77cfed541592739d958d44ee77"
+  }
+}

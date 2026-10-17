@@ -1,0 +1,11 @@
+{
+  "name": "Visionary's Dance",
+  "catalogue_id": 4917,
+  "oracle_id": "c9f35490-462a-4c8f-9d8b-d8abca6596f7",
+  "facts_sha256": "03f3b82eeb269774144d8e1833eaf0f1fc575312078cb835ce2e64a321fef537",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7ea338bb513e0e3151d1da5c5a71688d8ff1878940a103215d4d3539b24c5b5a"
+  }
+}

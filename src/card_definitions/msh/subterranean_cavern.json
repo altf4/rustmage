@@ -1,0 +1,11 @@
+{
+  "name": "Subterranean Cavern",
+  "catalogue_id": 4197,
+  "oracle_id": "d49a7525-eca5-48e1-b94b-d618a706fd02",
+  "facts_sha256": "a1449878f3c13a1d3ea4f0d27b467721129d4f6646b824937ded4e0cce24e694",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8abec785314b60862f7ffd2455163956ad1d1c88fdf45b7661a7eaa87ae7251a"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Cloud, Midgar Mercenary",
+  "catalogue_id": 777,
+  "oracle_id": "33d2584b-bf29-4c22-bd45-14ba2fb98c0e",
+  "facts_sha256": "9eabfd3d3d3ee547f12f1764a2b03bc99a1277feb0d5f586c5c393889f3da906",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "283ae199f64768ccea18b1a23c0da983a282493a3b13168fb54c06723a278568"
+  }
+}

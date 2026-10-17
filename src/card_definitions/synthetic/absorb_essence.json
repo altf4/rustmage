@@ -1,0 +1,11 @@
+{
+  "name": "Absorb Essence",
+  "catalogue_id": 5228,
+  "oracle_id": "5e8086d5-ea48-4555-b65a-a33d08ba4afd",
+  "facts_sha256": "1ec67c41a76b5d9c39c550c234b6c6b51985292ef25a5c2f7d54975b66502d30",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "37d8e26462fc265ea09575eef0e9aa2fae9f664b6ea95ee77390be3ab662c7d5"
+  }
+}

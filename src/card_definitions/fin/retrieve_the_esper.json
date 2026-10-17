@@ -1,0 +1,11 @@
+{
+  "name": "Retrieve the Esper",
+  "catalogue_id": 3500,
+  "oracle_id": "9d6fdbd4-ba51-4df1-b383-9b709b36a8d7",
+  "facts_sha256": "f4bab7a46061911b8a3b142a08ac85ff13dd58f12b14078cfae676095dc76842",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7f059a986ed431f85fa65ffb03a4c9f1187094b7a2bacae8932ec1c457693934"
+  }
+}

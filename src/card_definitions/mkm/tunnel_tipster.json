@@ -1,0 +1,11 @@
+{
+  "name": "Tunnel Tipster",
+  "catalogue_id": 4704,
+  "oracle_id": "8d0bf685-e521-4d72-acc6-86794f685ce2",
+  "facts_sha256": "a77738a3393b81666fef8520e4da4b16bb79545a9730259bb01be2b9d7d90ed2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3462db807c5d5ed24a5b79a2b60061f24908a9eb3e5c3ab3790cfe8d1712109e"
+  }
+}

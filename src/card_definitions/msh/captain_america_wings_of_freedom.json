@@ -1,0 +1,11 @@
+{
+  "name": "Captain America, Wings of Freedom",
+  "catalogue_id": 644,
+  "oracle_id": "942ac2ac-7528-4768-8398-8520a8ee15e5",
+  "facts_sha256": "5b766257335cc3f026a4ce5f0922fba60949067817f8d39bbf4f42fd42149fb4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c4e939e9822d37898c45eb58009eabe1742e781d99a8899f138004857d9a6eda"
+  }
+}

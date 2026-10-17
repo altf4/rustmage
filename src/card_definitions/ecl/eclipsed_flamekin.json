@@ -1,0 +1,11 @@
+{
+  "name": "Eclipsed Flamekin",
+  "catalogue_id": 1255,
+  "oracle_id": "48c641df-d511-4e35-b623-9d1fdb5240da",
+  "facts_sha256": "16f942c92f15806e2a11c23e31c133ec50a54d4a7296842d9666552630c4ab85",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1780cde7973bf73ebad18efbc5f85e18c9828945c096494c1679a7810c034a26"
+  }
+}

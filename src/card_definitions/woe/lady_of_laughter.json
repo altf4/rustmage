@@ -1,0 +1,11 @@
+{
+  "name": "Lady of Laughter",
+  "catalogue_id": 2435,
+  "oracle_id": "356a85d9-2570-448c-a455-f4ce915a604f",
+  "facts_sha256": "533bb5284756d9a1cb817d6f81ee414e27558dc0cec926d42618116723ae63a0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7283561df023a97a426eaec994bffc49a15573a70248220c876c6b7c423e82ff"
+  }
+}

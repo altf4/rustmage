@@ -1,0 +1,11 @@
+{
+  "name": "Itzquinth, Firstborn of Gishath",
+  "catalogue_id": 2242,
+  "oracle_id": "f976a244-1240-4430-9182-bb8d6d932ea0",
+  "facts_sha256": "fe4a2de53c28558420edc3600fc695d82d39bcb39c60b2d1f256f33dc435c99e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "48f18a7f7085e07c47b0cc608787c8b4ec4a25a896e10e8d02fa3898fbaa6936"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Ant-Man, Colony Commander",
+  "catalogue_id": 175,
+  "oracle_id": "b0ed9fbe-324d-467a-a326-c6f85a4c688a",
+  "facts_sha256": "d342fc1a63151543e48b83461895b24b8c5eeda33966f027ccc427797366d9e7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "65e2c7fe9e85b66d40eb8c566e554864ea35dae739e6fedae9bf66e6690ab58b"
+  }
+}

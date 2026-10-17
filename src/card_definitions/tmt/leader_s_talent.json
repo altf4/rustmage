@@ -1,0 +1,11 @@
+{
+  "name": "Leader's Talent",
+  "catalogue_id": 2462,
+  "oracle_id": "134430b7-d566-485a-bd5c-7db8a285f4ca",
+  "facts_sha256": "b4db3ef417946447099acfb0c536579f3f1f2f36b2881cf3a04df31fb4dedf11",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "595f4cfda12dea87e1210caa3464851b40e734bd0807b5ddea555388b8f52f73"
+  }
+}

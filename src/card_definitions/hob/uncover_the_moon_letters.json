@@ -1,0 +1,11 @@
+{
+  "name": "Uncover the Moon-Letters",
+  "catalogue_id": 4759,
+  "oracle_id": "4c67359d-5590-4eb0-827e-b411967ee238",
+  "facts_sha256": "8fc519f511a73c49c53fcd6e66e73f42bd9656e97222a979783cb3eb5933224f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ac4d72e3f258c5d24dda0bdd68fc48195b9e7ac7523fa51160f18da5e21d5c0a"
+  }
+}

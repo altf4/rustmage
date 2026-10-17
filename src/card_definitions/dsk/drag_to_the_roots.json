@@ -1,0 +1,11 @@
+{
+  "name": "Drag to the Roots",
+  "catalogue_id": 1151,
+  "oracle_id": "ef4c478c-7019-4ec0-8edf-2a3078a8e97a",
+  "facts_sha256": "b38afae9283ffe87faaaaef4067cb526b4293d5e607026449ba11685325a29b9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1d300527055501e6d0c96131122f4f4f8ce4468fc28b78805915bb300a6235d2"
+  }
+}

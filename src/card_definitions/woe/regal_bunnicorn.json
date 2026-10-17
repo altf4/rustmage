@@ -1,0 +1,11 @@
+{
+  "name": "Regal Bunnicorn",
+  "catalogue_id": 3444,
+  "oracle_id": "efd93428-88a5-4f7b-95f3-1d6eec069a4c",
+  "facts_sha256": "a68de4db27d08daa725d70e03dd4cd23b62ac8b4864e963aad590ed7d004b9c3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c921fa9147667afc5410353be298c4de7f84a1b1444c70c7b65053a89711e509"
+  }
+}

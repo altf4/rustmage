@@ -1,0 +1,11 @@
+{
+  "name": "Raging Goblinoids",
+  "catalogue_id": 3342,
+  "oracle_id": "c807b53f-2917-41a0-812c-57240b623365",
+  "facts_sha256": "266a6b902b5b7924827e0bbfa8ebd74127e18b7376bd3c721dfe5a2786c49b7e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2740970e39156ec7a8f49c981b007e680f1896603e7478733a6bdb4c41a77ee9"
+  }
+}

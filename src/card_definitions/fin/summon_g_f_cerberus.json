@@ -1,0 +1,11 @@
+{
+  "name": "Summon: G.F. Cerberus",
+  "catalogue_id": 4220,
+  "oracle_id": "b6b22bac-853a-45a8-a74d-9904ec2b34fd",
+  "facts_sha256": "0ad4855f1f98398ec5759374538cc8bf883de6700889b4a7aa1996d5ae9e4bb6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "96391ffe1cedcd19c689b76d063019d75c31861ead2bedd292d1cb5fded8dc28"
+  }
+}

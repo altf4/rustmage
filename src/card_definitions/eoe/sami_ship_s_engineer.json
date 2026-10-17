@@ -1,0 +1,11 @@
+{
+  "name": "Sami, Ship's Engineer",
+  "catalogue_id": 3663,
+  "oracle_id": "470c16c5-b078-47f5-89b0-42991e1f7157",
+  "facts_sha256": "6fb77d4c3ae36d8528489bd7f26f7659ca86a3f52354bb691449276f4dcabe6e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bd0b25ad4d171979da3c331319c9d3305aed166acf515befe149bc32033f6dee"
+  }
+}

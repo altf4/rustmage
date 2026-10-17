@@ -1,0 +1,11 @@
+{
+  "name": "Gollum, Silent Slinker",
+  "catalogue_id": 1829,
+  "oracle_id": "0296d57e-e5b9-456f-bb21-eb584adefb4c",
+  "facts_sha256": "c5f1490bfc18eed0bea3d8c5afdf257775688e94073ccefdfea8d5dbf1d00518",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "234e0b9e364874746935d4b0ddec3e50b1796ac146a8b6d0e619b82fbef5bc33"
+  }
+}

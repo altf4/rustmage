@@ -1,0 +1,11 @@
+{
+  "name": "Banishing Light",
+  "catalogue_id": 321,
+  "oracle_id": "f28b21a6-f7ce-437a-8c5b-0423cb55cefb",
+  "facts_sha256": "31ea8a2a063dfae36b0112f5fbfcc5885bd07c0a4dd265d120ece17f29bd8535",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0b5d86197608aca041ce413ac43bb2c810d19a3c522ebef23f14a3976c8bee17"
+  }
+}

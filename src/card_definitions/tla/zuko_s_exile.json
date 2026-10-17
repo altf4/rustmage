@@ -1,0 +1,11 @@
+{
+  "name": "Zuko's Exile",
+  "catalogue_id": 5176,
+  "oracle_id": "5cf18398-9552-415e-a61f-2c149e35ec3d",
+  "facts_sha256": "1a1fd5f75807e143d228a1b57701085783e0c44d287e69972aeb0d54fa6b368e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "31230264ff7b04a64c1c3bb4103e033acce4b9b20eafdad07506c5b07a26524f"
+  }
+}

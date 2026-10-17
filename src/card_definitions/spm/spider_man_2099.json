@@ -1,0 +1,11 @@
+{
+  "name": "Spider-Man 2099",
+  "catalogue_id": 4026,
+  "oracle_id": "19845456-3d96-48a4-89fa-9b8e583774c9",
+  "facts_sha256": "4e3f6b5fb8be139e50af056ab0ea9cd9ec5aded57d9e1f4710edead33c182185",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "07d9f89f7198f29a85c5f38f6e5e1614b01360d6e419710295c3c8d91d53d45c"
+  }
+}

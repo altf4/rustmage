@@ -1,0 +1,11 @@
+{
+  "name": "Thorin, Mountain-king",
+  "catalogue_id": 4541,
+  "oracle_id": "94917b80-ac32-45ab-b4ee-157ade024bcd",
+  "facts_sha256": "fe8e7f7186f1bae7334dfb79b5990bdf2e8d810292af18badcdd988f8fd5fccb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bc0418bf8f06d3477f594f247395eca23dd792f0f61b996debfd9dfdd13238d5"
+  }
+}

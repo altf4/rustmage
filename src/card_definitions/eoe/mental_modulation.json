@@ -1,0 +1,11 @@
+{
+  "name": "Mental Modulation",
+  "catalogue_id": 2719,
+  "oracle_id": "448d9391-9d15-4aa1-87b3-a1d755666c03",
+  "facts_sha256": "c63eb2825293514c56615f4f6650291d7659e30c46fd5e2fa2e26f399b0c2550",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9c919d3786e4588331066a6a3dcc2ab6c1d863f47be8fdc635152e709c76d417"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Way of the Mind Sculptor",
+  "catalogue_id": 5011,
+  "oracle_id": "94be2e86-ba0e-4b8d-9b9c-114adacb26db",
+  "facts_sha256": "47a5edd730834f2b7daaa15763d695cc0f0559dca67c73022b5e66e545f03781",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6762c187dcbd5415b57e801d748515565e80e66d9741382f76ee19aee91f075f"
+  }
+}

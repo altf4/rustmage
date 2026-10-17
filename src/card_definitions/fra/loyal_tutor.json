@@ -1,0 +1,11 @@
+{
+  "name": "Loyal Tutor",
+  "catalogue_id": 2573,
+  "oracle_id": "7e52f151-d1f6-4fcb-9b21-1baecae27da6",
+  "facts_sha256": "f6648436f9340bb37e596a74ee4c090b655056173a671d981829591a72aa29e3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2ecf47f7807f9f6fc91d86e1e2ef6df1d03a186323b920b723297908c1f91e9b"
+  }
+}

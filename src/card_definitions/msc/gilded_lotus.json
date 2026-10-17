@@ -1,0 +1,11 @@
+{
+  "name": "Gilded Lotus",
+  "catalogue_id": 1751,
+  "oracle_id": "9a02a9a7-39d9-4763-85d3-747a0540b60b",
+  "facts_sha256": "1fca539c35865a12364fa9cb062cc9492676e5d93191ccd298dcb0df18bea80a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d609ebc6d20ed0580e18bd81e22754591e8a5688cbeb0ca53c15877d9dce693d"
+  }
+}

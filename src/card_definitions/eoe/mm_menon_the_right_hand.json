@@ -1,0 +1,11 @@
+{
+  "name": "Mm'menon, the Right Hand",
+  "catalogue_id": 2803,
+  "oracle_id": "de58fa4b-eeeb-4dc8-aab9-6521b15678cc",
+  "facts_sha256": "2e74b004d22c7a14c550f56be4e16b3b8d06b4e5acfe75529fc930744ea75013",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1d682ea24c26900f05399f80d97c050d46f354b441987d6f0069c10e6f2439ef"
+  }
+}

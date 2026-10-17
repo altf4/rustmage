@@ -1,0 +1,11 @@
+{
+  "name": "Suspicious Shambler",
+  "catalogue_id": 4279,
+  "oracle_id": "ea6ee33f-0cba-4e96-817f-dc89c9064ead",
+  "facts_sha256": "754f57bd4a9964e36c6665f01c9b7972e13c67539be95f268f856e4b971775d9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e0bd664c50ae4f13527d3b35c367f7ee3ce634cfd3ee6f64147897c733894299"
+  }
+}

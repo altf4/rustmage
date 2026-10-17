@@ -1,0 +1,11 @@
+{
+  "name": "Ancestors' Aid",
+  "catalogue_id": 155,
+  "oracle_id": "a95a0b13-d50f-41cf-8668-de60d445e7b0",
+  "facts_sha256": "4c3e117af9fb503aaeeb4b4f010da0e93728bb1f0e590a16bfee7c3ae0617d31",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7fa8607b196d81914807287827393cc61dc0fc9fb0c4e33e9251b62f11506917"
+  }
+}

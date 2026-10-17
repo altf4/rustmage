@@ -1,0 +1,11 @@
+{
+  "name": "Boommobile",
+  "catalogue_id": 503,
+  "oracle_id": "cb3edb86-ddd5-461c-98b5-ffb4df437a39",
+  "facts_sha256": "0f532961506b5b62db96456fdafb0c2d9f36f7866dac9db9948e0fcf27b7cfcd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9bf08ad12fa6119e4b29d008673e8e058d7d9b3bbfb91aa475180d579e5cd51f"
+  }
+}

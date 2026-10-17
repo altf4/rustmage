@@ -1,0 +1,11 @@
+{
+  "name": "Zoyowa's Justice",
+  "catalogue_id": 5174,
+  "oracle_id": "17e11f0c-4ac7-4060-9e0b-27cd5c151e50",
+  "facts_sha256": "cca622e411f429aae788ccbbf3b2d049e12f0a1bc26542396e950e4f7e103171",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9478e4028900e68b879e32cb4a10ab59d1f48b01fcc8bc5038238d9c11f08d15"
+  }
+}

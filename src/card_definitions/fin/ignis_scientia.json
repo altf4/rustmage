@@ -1,0 +1,11 @@
+{
+  "name": "Ignis Scientia",
+  "catalogue_id": 2131,
+  "oracle_id": "23320d55-80cb-4da3-a53c-8c75abdc8c8f",
+  "facts_sha256": "0a2204a072857d249deabcb7a20b5969060c59d29d45eda0a56386eb918f5c9a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "40fe577e64d94c21930c817d86c2215e75428b9d8f7e68fc094b13918f03c55f"
+  }
+}

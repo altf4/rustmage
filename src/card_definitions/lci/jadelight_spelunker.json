@@ -1,0 +1,11 @@
+{
+  "name": "Jadelight Spelunker",
+  "catalogue_id": 2255,
+  "oracle_id": "0a72d6cd-b4a7-4c42-90ba-a14f1733d00e",
+  "facts_sha256": "7f157e7af6f98f50a69f290f1ae384982e647fb5d03f0e0d245fe3dedd5a9d40",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "79e81cd5da00cd575f135c0a408fa342081845755f09c811d9a2503f9c1b87f1"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Witherbloom Charm",
+  "catalogue_id": 5098,
+  "oracle_id": "ee1db746-f5c1-4dce-82eb-24b273cc9507",
+  "facts_sha256": "02c57411d9bb77db7aa11b5d280ea7f00afc14fdc1e88f7ea96d7f7679972e71",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "87e0dfde3017870f258640f86e6267e13d620ea14b666c7e8d6b281e5e6c4bdd"
+  }
+}

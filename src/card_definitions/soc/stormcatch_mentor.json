@@ -1,0 +1,11 @@
+{
+  "name": "Stormcatch Mentor",
+  "catalogue_id": 4172,
+  "oracle_id": "b2252471-01ca-4d58-aa99-4ab0aa5eae12",
+  "facts_sha256": "168b1f1f898c84bcacd9694e02012ab6b082bd5fe21209f5a8f0ffad03aea908",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a5222c84f910504c4c51ebfd7dc402e5fc8e60e8cc85072e969e5eddfc5f82c3"
+  }
+}

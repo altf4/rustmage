@@ -1,0 +1,11 @@
+{
+  "name": "Stalactite Dagger",
+  "catalogue_id": 4088,
+  "oracle_id": "064c3269-c012-4fc7-84c3-5f147a82a03c",
+  "facts_sha256": "01f523176ed003eb06c1cde13345426583381b6da9cd2d16ffa53b1282dd79a2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "715ee139c5fa579ded8d93ed9d09e108923d15962e3b420ebdaa5b59a08e0c80"
+  }
+}

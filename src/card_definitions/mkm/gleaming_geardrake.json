@@ -1,0 +1,11 @@
+{
+  "name": "Gleaming Geardrake",
+  "catalogue_id": 1772,
+  "oracle_id": "af294df7-f8a0-4d52-88cb-086678463970",
+  "facts_sha256": "efdf232533ba63a73086327352d84fe9bccc04ae9b63a362ae42530f98299f9a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "34646eb8c93c8a74c3d7213f2bd222461035420fbd52a4f72092e8f9d227bde8"
+  }
+}

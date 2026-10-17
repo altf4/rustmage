@@ -1,0 +1,11 @@
+{
+  "name": "Sultai Devotee",
+  "catalogue_id": 4208,
+  "oracle_id": "ee7b3fc0-6128-4bf6-b3e7-7371e6f93c4b",
+  "facts_sha256": "b15e50ce5f6a7c7a35bf85eb4a795757a40ef229dd5130b0e4e98e211b670e85",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6d25b52af074d05f40b3863b263538183276dcd29f28901c675a12f00cb4ba07"
+  }
+}

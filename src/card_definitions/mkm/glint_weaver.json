@@ -1,0 +1,11 @@
+{
+  "name": "Glint Weaver",
+  "catalogue_id": 1783,
+  "oracle_id": "eebe3fd6-afd0-4bb3-9e8f-c737497dae33",
+  "facts_sha256": "9c395793bcb51273c4eef4594dba70fe5e5f0b6b9a8d3b0b95af87018fe0fbdb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ae12701e11dc7ed022ab11ac3228fc3b2f728bef745a5b03aff0cdde7154b2aa"
+  }
+}

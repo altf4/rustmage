@@ -1,0 +1,11 @@
+{
+  "name": "Leyline of Mutation",
+  "catalogue_id": 2483,
+  "oracle_id": "caab67eb-65e7-4755-b116-6977e97f0844",
+  "facts_sha256": "9edb6fdce8ce62ab0f1251419406f577b715b2312ec9f1868164a1e9d8b7ac63",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "351c6d37b8ac2e8402523e7df1ddd9e4e42969953afd961b56d6ed3fc5e7537e"
+  }
+}

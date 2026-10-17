@@ -1,0 +1,11 @@
+{
+  "name": "Floodpits Drowner",
+  "catalogue_id": 1564,
+  "oracle_id": "43c69d19-c06c-470a-bdba-a0335ff2d655",
+  "facts_sha256": "edfcaa8e794521c3d0795e849e9a581f23aaec2c164af68d6ec303a0e3291d64",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "19565ad2937baa15618d118f1cea93a6b8cdb91a863a370a4db0ec595cd1f8e1"
+  }
+}

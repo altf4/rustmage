@@ -1,0 +1,11 @@
+{
+  "name": "Ambitious Augmenter",
+  "catalogue_id": 144,
+  "oracle_id": "d87f0e52-486e-49b4-9cf1-12e238857340",
+  "facts_sha256": "a9122f5e8721abf22fd274b460a530abd9e6105166d946d84c01a9d72da8814b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b7fa6b42dc9e057f0b631e93b9a2eb11c8ebd653a782f7cc0b67de0e6e2e7eb8"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Thornvault Forager",
+  "catalogue_id": 4545,
+  "oracle_id": "7b18cfad-a1cf-46c2-bcdd-7762c13d50e5",
+  "facts_sha256": "dd35ab0fb5c7660324a32efadb154f279665ac55d64f7fe6ed9408b8101c4b74",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bd9effccdc3f89487b673ae7c63f60df7df418ac4d87fca76f5aa84286098a4c"
+  }
+}

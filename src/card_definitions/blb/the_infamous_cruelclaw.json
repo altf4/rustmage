@@ -1,0 +1,11 @@
+{
+  "name": "The Infamous Cruelclaw",
+  "catalogue_id": 4454,
+  "oracle_id": "e229d55c-9513-437d-bd67-015ac46aaa18",
+  "facts_sha256": "ebe581bcd632a5e1c6b5c5159c565339220a8ef7abfd3551896ae4d70d49f417",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "41ccc8a3bf84ccc67910e20592fff97a36b3ccaceb652108aa6cd1782badea1e"
+  }
+}

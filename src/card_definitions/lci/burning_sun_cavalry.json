@@ -1,0 +1,11 @@
+{
+  "name": "Burning Sun Cavalry",
+  "catalogue_id": 593,
+  "oracle_id": "9da7e8b5-887d-4174-b7aa-982fd052fcd1",
+  "facts_sha256": "82b7f685246b73856b107cd0e47f85b6ec6ab902a2586dbee2990a4b39416d1b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "abdc9baf41827673862c0a0dc8e77d3fcc6528d6b1bb30577729265af1c4f9c5"
+  }
+}

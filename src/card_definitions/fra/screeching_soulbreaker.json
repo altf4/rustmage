@@ -1,0 +1,11 @@
+{
+  "name": "Screeching Soulbreaker",
+  "catalogue_id": 3741,
+  "oracle_id": "47e33aa1-2f54-471c-a484-de13bcd2dceb",
+  "facts_sha256": "821deeb9d7344c1e4030448703dca3bb8e47e65fd898d76c7cbf635d96da2e97",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c16029a085f86ea8d8b79df19973a5648577908e0a4b2af9c3b1d85af2c89dfb"
+  }
+}

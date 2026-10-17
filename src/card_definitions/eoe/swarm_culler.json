@@ -1,0 +1,11 @@
+{
+  "name": "Swarm Culler",
+  "catalogue_id": 4286,
+  "oracle_id": "a6c28bde-10d9-471b-acd0-32a1c6195805",
+  "facts_sha256": "f5bb02b077496997b96f1a3261cd0afa0d1a17a5a419501f6f4f78aff7a3fd0a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "458bb5f5d1757552a780b1a28c79af44613e0660108e5269f04f12f9f800dbc1"
+  }
+}

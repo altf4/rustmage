@@ -1,0 +1,11 @@
+{
+  "name": "Coeurl",
+  "catalogue_id": 790,
+  "oracle_id": "00d1596a-c3e2-4109-86da-388934a0c652",
+  "facts_sha256": "5d93389f85b88b94a7fd304f636e2f216a216d18d4f03483a4b709b3e05067ab",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d214aeb01a37b4b6d3bffb41a90209187658ab2d959639b674b663e1702be123"
+  }
+}

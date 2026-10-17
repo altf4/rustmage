@@ -1,0 +1,11 @@
+{
+  "name": "Hell to Pay",
+  "catalogue_id": 1996,
+  "oracle_id": "7dc7d90d-5979-4c4a-9183-392e0e0b878a",
+  "facts_sha256": "0d6c825f9b7a3e47d3c040c6d48e0d7b0988b16109a3d37bc813c3c9ecd1fb2d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "89089a8404fb69baa4a25080117fa9db39209ee0c048d86008458f0bb39f57ea"
+  }
+}

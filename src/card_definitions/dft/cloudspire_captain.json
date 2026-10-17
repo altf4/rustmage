@@ -1,0 +1,11 @@
+{
+  "name": "Cloudspire Captain",
+  "catalogue_id": 782,
+  "oracle_id": "c86bac69-96d6-4b9f-87e4-2d7faecaa112",
+  "facts_sha256": "964175a9f99421f71b3d3e430663b191fd415ac50b7761e21f7231a3c0674908",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8c55283a6de17db53acacca34cfb1d9592bb6bfec44265ca8a7fadd2a4f49208"
+  }
+}

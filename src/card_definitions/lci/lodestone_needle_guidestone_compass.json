@@ -1,0 +1,11 @@
+{
+  "name": "Lodestone Needle // Guidestone Compass",
+  "catalogue_id": 2536,
+  "oracle_id": "f429ca15-c578-4c1d-a604-fd5509c92dba",
+  "facts_sha256": "6e3c7009cc5ad1eac89e41a11798a849ddab0ef81f1433fa4f67954799a1b2fd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f0b0f47c03e19aba8da6dcf18a6b75fcf8981a6e5fd7436828c19d3113963fe6"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Summon: Knights of Round",
+  "catalogue_id": 4222,
+  "oracle_id": "73122880-d7f4-422f-a336-18773bcb7bfe",
+  "facts_sha256": "721fba13c8c941b5731b7e3d54482a6f95aba55a931b390dd0047baaf9557301",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7281b886c85db0a3957b7ba9214d5bc337285560324474136f4aef9b3c1d0146"
+  }
+}

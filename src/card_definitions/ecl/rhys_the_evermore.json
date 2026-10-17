@@ -1,0 +1,11 @@
+{
+  "name": "Rhys, the Evermore",
+  "catalogue_id": 3516,
+  "oracle_id": "9f013b5d-fff0-4c50-8621-158b6dc34834",
+  "facts_sha256": "266afa901f48d8c3342eb5a32743993245bb7c6a578f6db0f5de9026961ae753",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aff9844a02a86fab7e54af119c1f87c61853974e5fd59798a22fc5ee3529e325"
+  }
+}

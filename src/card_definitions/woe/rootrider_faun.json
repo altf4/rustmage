@@ -1,0 +1,11 @@
+{
+  "name": "Rootrider Faun",
+  "catalogue_id": 3587,
+  "oracle_id": "87bedc9b-b4d2-41b6-b9f1-e1aeb8e75ec3",
+  "facts_sha256": "81c6cf88a59eeb574044b114c7982b56d1c932d3d816c655d0dabab8a3595e69",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fba6a48ed5efd2ddc8e9bb6da4d45a6174592b85f105dff2248478fe80d2d27f"
+  }
+}

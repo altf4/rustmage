@@ -1,0 +1,11 @@
+{
+  "name": "Remnant Elemental",
+  "catalogue_id": 3456,
+  "oracle_id": "69e8333a-bddf-49e2-9c39-3dc46fec81e0",
+  "facts_sha256": "966f6a0d3b1300a480cf0a439c46e3e58e18c140e6eecad053d5de59d7fc2144",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "69e87ea75b15dda78a1a4dc2501fe40074e3a994d6f631e8a0b26ea1bea8b286"
+  }
+}

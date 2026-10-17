@@ -1,0 +1,11 @@
+{
+  "name": "Ancestral Reminiscence",
+  "catalogue_id": 157,
+  "oracle_id": "dbfa2743-34ff-40e3-81f7-740fc08cd18a",
+  "facts_sha256": "84c64c00e92dc5bad6330bba476acd0b1660951edc495c72d15ee1ab2e07a80a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ee648564fae328b8bd5bcb053a0fc85166a3de48449e23c60ef7b74e68681c30"
+  }
+}

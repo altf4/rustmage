@@ -1,0 +1,11 @@
+{
+  "name": "Awaken the Honored Dead",
+  "catalogue_id": 288,
+  "oracle_id": "5f694917-f434-4459-bc86-caf9ac1c80e7",
+  "facts_sha256": "91e5390e048268674705ad686feaff2c141563ea5ad3a9d161f76a2be77d020d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5c6b1c6fe73f3d521361d1f6e19e8bacda5f200d62f58297649ef23ec96034f7"
+  }
+}

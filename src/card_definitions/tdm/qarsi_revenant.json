@@ -1,0 +1,11 @@
+{
+  "name": "Qarsi Revenant",
+  "catalogue_id": 3298,
+  "oracle_id": "bbea79bc-71d4-4100-92f4-783c2c4b46da",
+  "facts_sha256": "7ccc9eb247aa9b8bb8a35e7dad36c0fccb5c35edd2b81e99f6b73bba8b6a52cd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e761c66889e360d1116a579adde49ab14dcd6cd30aca43779d821926348fe025"
+  }
+}

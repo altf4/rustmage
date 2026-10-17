@@ -1,0 +1,11 @@
+{
+  "name": "Fanatical Strength",
+  "catalogue_id": 1440,
+  "oracle_id": "b92e97f5-a307-471f-be06-afa4fcdab757",
+  "facts_sha256": "594ac45c8f4fcba8e1858eee56ca634646ffcaf6d5c9c22d5fec3f7ea1f9c43d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dea5083761943c668ae864e5b77b25037e1eb3fd6e03bdd2ab99c965eac968f0"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Stubborn Burrowfiend",
+  "catalogue_id": 4194,
+  "oracle_id": "24bc7bd5-f262-45a2-8e94-377fef2ba5d5",
+  "facts_sha256": "6388d2d3860b53b4c6fa506568c7cd7e0ebf1e48232e2c1261a663160aead1bd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cf885c484cbf97cfe0a36c1352d0c9513a91d15e93619587bd1f69331b71b15a"
+  }
+}

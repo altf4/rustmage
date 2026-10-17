@@ -1,0 +1,11 @@
+{
+  "name": "Shadowy Backstreet",
+  "catalogue_id": 3807,
+  "oracle_id": "216a2a92-9ca3-4ca3-8af7-686c13b04290",
+  "facts_sha256": "096dc1630fd5718c7999b56723c22384f865783bd8c385505f6306e4e011c4f0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ebd9103e5280e5c7cf6a040a955b3fad5a1f931137c8627ef81510724544fb6a"
+  }
+}

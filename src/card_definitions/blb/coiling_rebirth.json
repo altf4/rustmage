@@ -1,0 +1,11 @@
+{
+  "name": "Coiling Rebirth",
+  "catalogue_id": 792,
+  "oracle_id": "27a91ebd-39f4-432d-b6cc-cd86b4a3979a",
+  "facts_sha256": "ba9ad33e53cddf8758e90ecce07442f1dbffbe0796ff27a950f6c12c66caa7a2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "41131b94e373353e02d9220d06f3f8ecb5bbbd5fa5f3836f7ecec0ab147caf8b"
+  }
+}

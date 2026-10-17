@@ -1,0 +1,11 @@
+{
+  "name": "Afterburner Expert",
+  "catalogue_id": 77,
+  "oracle_id": "b4d19e3a-c2f8-4503-bcfa-1b46bde972e5",
+  "facts_sha256": "229ece4469c84d3c67633d7180059e58feda011b02fec8b687b4d9a2a3e6a73e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3896bbf0b636d6d5094b6ec51ca06fc9b149ba53f1c390b094655d4e95b3c430"
+  }
+}

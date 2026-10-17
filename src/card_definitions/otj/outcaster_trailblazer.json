@@ -1,0 +1,11 @@
+{
+  "name": "Outcaster Trailblazer",
+  "catalogue_id": 3059,
+  "oracle_id": "3b5ff623-c44e-4f2d-8ab7-ee6b11f1deee",
+  "facts_sha256": "1f3f93df083d4088a43f98df4dc5e6891f9c4148eb3c753f15bfd4fdda45638c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d986c3ae041c2616a1ad2bf989af1ed28533c532328c59aa33d04232be5b384b"
+  }
+}

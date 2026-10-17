@@ -1,0 +1,11 @@
+{
+  "name": "Burrog Banemaker",
+  "catalogue_id": 596,
+  "oracle_id": "c531801c-acf0-45ae-a112-054cc5ccb6ed",
+  "facts_sha256": "4ee8cc628052cee03d70878198f66b01a775e271f2a9c2dbc21427cc642bb499",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "99085bdfaecd8f384316b4e42f277203f6f15aa0f00cd36e4f74ca6abb553c09"
+  }
+}

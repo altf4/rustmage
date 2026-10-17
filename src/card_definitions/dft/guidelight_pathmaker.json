@@ -1,0 +1,11 @@
+{
+  "name": "Guidelight Pathmaker",
+  "catalogue_id": 1905,
+  "oracle_id": "f8103865-5086-4f16-a35a-a56acdab1547",
+  "facts_sha256": "fa99a9ccd3f1d040f5d904b8258c4fd61688ff8bffb68e84919ffef6028299f7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4259883029f8eeab89f4fbb061231f9cdeee40654a5b04796d0f8ada76fe9a2e"
+  }
+}

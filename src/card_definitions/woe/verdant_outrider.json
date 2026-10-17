@@ -1,0 +1,11 @@
+{
+  "name": "Verdant Outrider",
+  "catalogue_id": 4875,
+  "oracle_id": "8fc049e7-a16d-4b48-b930-5c346f6718b9",
+  "facts_sha256": "ebf1efeb71b32274dacb388c2083841d04ed734b19ce851787ec3fc2121dde33",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "feab17cd0f7c2548f0fdc48474de7287ae904aee4be99851ba4136d5cfd987f0"
+  }
+}

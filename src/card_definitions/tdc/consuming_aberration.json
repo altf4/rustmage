@@ -1,0 +1,11 @@
+{
+  "name": "Consuming Aberration",
+  "catalogue_id": 838,
+  "oracle_id": "9b55fb72-237d-4935-b645-8ebc6eb4140e",
+  "facts_sha256": "4da0c2370340a78493ac9a1f890717a9d0ae712653c6a5f9ef9a180e9632a9a5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8e8ee1767010b89b9c44641418d90a1b19aa90ac487e8721ab73aa159e7561aa"
+  }
+}

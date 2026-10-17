@@ -1,0 +1,11 @@
+{
+  "name": "Leonardo, Sewer Samurai",
+  "catalogue_id": 2475,
+  "oracle_id": "74e3243b-6707-4769-8767-7cf2ef71009a",
+  "facts_sha256": "8583e7431b82b8296ef6d835633002b10cdeec8e542104e32ca1ffcb81302f36",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c8f341e2dae78f9aa73f5c441067d7caf3d002c26ac1e49d3d0e1051a83cb2f2"
+  }
+}

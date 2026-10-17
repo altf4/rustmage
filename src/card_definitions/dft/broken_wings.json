@@ -1,0 +1,11 @@
+{
+  "name": "Broken Wings",
+  "catalogue_id": 566,
+  "oracle_id": "5e316864-d55c-496f-8f46-773567896864",
+  "facts_sha256": "79b557a28dda8ec34dde026adc0b79d30620ce8a17e91433db3c58e3ab219b4a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "112322ccf0ac067914f878acdcb60f2bbe19bec9c3b3d76b729d7071c8f6b72c"
+  }
+}

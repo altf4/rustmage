@@ -1,0 +1,11 @@
+{
+  "name": "Maha, Its Feathers Night",
+  "catalogue_id": 2629,
+  "oracle_id": "129476ae-9dab-4e04-8e8e-f249afd56ff9",
+  "facts_sha256": "ee720e631d20e0eea3ae3b770e382f2ed0dd4ed90975203cfd1c20f7608a16ec",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "852652eb8e96e5bcdfcbe55e59c07f618703291921f692c1a9cc3ccbdbe901c5"
+  }
+}

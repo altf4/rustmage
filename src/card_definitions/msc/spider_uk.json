@@ -1,0 +1,11 @@
+{
+  "name": "Spider-UK",
+  "catalogue_id": 4039,
+  "oracle_id": "ebf8d006-2997-431b-b4cb-9692741b45ca",
+  "facts_sha256": "79ac7089b5f819bcb92cc56ff5127e5e1ad672c6c8d04dd7120a8225af1347b1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b91b004ee653dc2c2941caef294d2a30a58a596052ea8e19ccea0b9f14c57297"
+  }
+}

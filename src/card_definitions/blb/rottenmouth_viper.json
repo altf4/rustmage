@@ -1,0 +1,11 @@
+{
+  "name": "Rottenmouth Viper",
+  "catalogue_id": 3594,
+  "oracle_id": "2c75623c-59f4-4449-ab43-9d1225185ad9",
+  "facts_sha256": "dad08ce7bab4bae1dff6c2a8cfa66c2fe6e58bccc7b2d7d6801cafef1ede9788",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "98d11013ceb796cee3babc4bd7ef396518b36d0341cfaa70aebe48b98e5df120"
+  }
+}

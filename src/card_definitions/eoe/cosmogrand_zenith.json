@@ -1,0 +1,11 @@
+{
+  "name": "Cosmogrand Zenith",
+  "catalogue_id": 864,
+  "oracle_id": "e2cd65f6-7cbc-497c-bdc9-698ff17da31e",
+  "facts_sha256": "e4093a5e2cd8705905fe6cc75a4c4d3ff524117fd075e7b8df1bf91f3bac1f94",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "878c6b87e7f57ae15be803c08d9256e48b2946d0a592f399321d97c713dad09d"
+  }
+}

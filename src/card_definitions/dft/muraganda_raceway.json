@@ -1,0 +1,11 @@
+{
+  "name": "Muraganda Raceway",
+  "catalogue_id": 2878,
+  "oracle_id": "b5fa5651-d714-44d6-867b-be0e3224b7ed",
+  "facts_sha256": "dd9a2932115764899bdaa20491f5e914695311d0b8647b19e798d21dc16273b9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9b69131e2940a1560bd909ee157fd2cff9b2ed80117ce6203ddc64228efa9cae"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Lluwen, Imperfect Naturalist",
+  "catalogue_id": 2529,
+  "oracle_id": "81ff5764-72ce-4b9a-a14f-07413700d935",
+  "facts_sha256": "abe78a58a9988c0a3bf1dadc5628a6b0b54d590b14d641fabb5677cb6c0476cb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9fd2da6a30b5d437330851e99215628e8d88ad5beb8b43e41c27e38212eaf5bc"
+  }
+}

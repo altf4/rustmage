@@ -1,0 +1,11 @@
+{
+  "name": "Overwhelming Surge",
+  "catalogue_id": 3077,
+  "oracle_id": "bc8a37f1-c36b-4d0f-82da-4558ff712565",
+  "facts_sha256": "c18737c46fb40b59d4daa6f4604593f4921d0eb20d16176b3c6afb5789adce23",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "80e2e32744dc985bee3551641e7f52d321677b207b760e34150c7154b0e7c25d"
+  }
+}

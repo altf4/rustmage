@@ -1,0 +1,11 @@
+{
+  "name": "Intrude on the Mind",
+  "catalogue_id": 2208,
+  "oracle_id": "eedb1527-548a-435a-a3e1-8ad7d9d6d8a9",
+  "facts_sha256": "96004dbd1cc44baf4445991dfb2bca83f4b41fb7fc3295e60b4e871289a7d54f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b7f80de8485f6caecbef647deb1889401c61cfd683f616a540301172083dadc9"
+  }
+}

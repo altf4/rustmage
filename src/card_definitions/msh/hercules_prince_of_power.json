@@ -1,0 +1,11 @@
+{
+  "name": "Hercules, Prince of Power",
+  "catalogue_id": 2009,
+  "oracle_id": "c3a8cc79-3771-484d-84dd-1a97f8bd12c2",
+  "facts_sha256": "6dc5499d15beedaf24e89bd41bc3be24ead3ea5192dfcaa77a5b3793e3caad77",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3e471330e7e2e5ae528a694b3b170fb9e7aeda529bf9407181ec3e355c0e6b61"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Cogwork Wrestler",
+  "catalogue_id": 791,
+  "oracle_id": "db27e3f0-5750-4c4b-9da9-70c3ab627f9c",
+  "facts_sha256": "e105f745f15239423af4f30743fb73a9966576c159262325a336b6b70893322b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "259c116cfcf9154750daa9be74f46f0cfe4f61335ebe04c233ac3092826b9a44"
+  }
+}

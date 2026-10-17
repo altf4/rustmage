@@ -1,0 +1,11 @@
+{
+  "name": "Ferocious Werefox",
+  "catalogue_id": 1497,
+  "oracle_id": "fef67393-9b7b-495d-8b03-865537386d42",
+  "facts_sha256": "f882cdf7d36ed70f20275409a8928ab356052d734fce10b73e030dbbc8413fb5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1a5ebd83f04d121192b35402422f5925e598acf442d4fb65416d2891a4000370"
+  }
+}

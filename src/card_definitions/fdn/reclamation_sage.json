@@ -1,0 +1,11 @@
+{
+  "name": "Reclamation Sage",
+  "catalogue_id": 3424,
+  "oracle_id": "032ec6e2-6cc3-4a97-9cc7-3233f5e11904",
+  "facts_sha256": "3d5d3b17900b1dacb2bf1278126f3a115fd768d5fb3a87f2c1fb0ca036c654d2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aa2e4cbd8a254a9e71ebf3d4769ae79bd2eaf37510cb67b8c99acbec4377bb3c"
+  }
+}

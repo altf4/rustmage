@@ -1,0 +1,11 @@
+{
+  "name": "Three Tree Rootweaver",
+  "catalogue_id": 4569,
+  "oracle_id": "d17d4003-e1c9-42be-ac76-3b5500fad485",
+  "facts_sha256": "35fc53ea18e68a4dfa8b31faf31adbb7cee4d6f4d85f9f1d874d48dfd2b359ca",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "03bb2f7f8e754d2de268d2c6f64116c0129355bd898d6a62854b766a1c98573c"
+  }
+}

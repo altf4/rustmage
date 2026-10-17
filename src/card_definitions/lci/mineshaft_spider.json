@@ -1,0 +1,11 @@
+{
+  "name": "Mineshaft Spider",
+  "catalogue_id": 2775,
+  "oracle_id": "e5aa32b6-2eaf-4b48-81cc-cd3db976513d",
+  "facts_sha256": "1dc6c99d09f8637e7bb8d83138a5c085bbec1d22ae7bf2e25f9a0f062e1f2e80",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "23cc40ffa8659af8316aef320b8bc81c84c0cd053fefc6073541157ccdbf6b6c"
+  }
+}

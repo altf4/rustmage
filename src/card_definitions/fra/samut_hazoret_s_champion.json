@@ -1,0 +1,11 @@
+{
+  "name": "Samut, Hazoret's Champion",
+  "catalogue_id": 3667,
+  "oracle_id": "add02a36-8811-438b-a8e1-f5c8a8146b4e",
+  "facts_sha256": "a42606a7f2c6ab22de51be860a82a142f3f116ec22f50acc4312e0716477284b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "becb0c76528009997d35b3fa3c4d213f13feff04b874c8dba5dc54a32203f19b"
+  }
+}

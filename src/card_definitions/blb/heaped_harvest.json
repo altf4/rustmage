@@ -1,0 +1,11 @@
+{
+  "name": "Heaped Harvest",
+  "catalogue_id": 1976,
+  "oracle_id": "bbfc5011-a9b7-442d-a443-974a5a64de46",
+  "facts_sha256": "301ff86de709004ba15f5c0fda6afb0e134c2839f4c78bd318bbd5f06ba5b5ee",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cffb24e23ed8e97e696d88207b3dedac342bab74fb26f05e3742f0bd0d32dc60"
+  }
+}

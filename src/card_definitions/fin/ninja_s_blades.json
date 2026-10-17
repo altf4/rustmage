@@ -1,0 +1,11 @@
+{
+  "name": "Ninja's Blades",
+  "catalogue_id": 2947,
+  "oracle_id": "cdaffb13-c2a4-4bc5-a9d6-c1a0d1686a81",
+  "facts_sha256": "4602e8779b68795a394868507970dcffdba8b009bef1954e240f93890e2650d5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ff96827a7da81c4961cc94c99f24cdcf5ccbbcc81d01251fe57b21f78754c904"
+  }
+}

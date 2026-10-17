@@ -1,0 +1,11 @@
+{
+  "name": "Wartime Protestors",
+  "catalogue_id": 4987,
+  "oracle_id": "6557813b-4ee7-4881-a37c-10c8ea097360",
+  "facts_sha256": "e443fe5588aae99ac3485ad56aa1f0659d53300032de0a11a2ce22160e6cc279",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f0ddb51f18e33a2991e7ba4d5da54a2abfe3d001f82476440d7a3cfc175d9fda"
+  }
+}

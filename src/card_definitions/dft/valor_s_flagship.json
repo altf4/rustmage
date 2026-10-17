@@ -1,0 +1,11 @@
+{
+  "name": "Valor's Flagship",
+  "catalogue_id": 4835,
+  "oracle_id": "a3023de2-61e7-4f46-aa4a-09d08ee7d939",
+  "facts_sha256": "a9f0c95e1a8ae63e5dd4b9dd02c29aefd209da712b755596b7eddfe3e357d946",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "695225cd724c2ad320aa294f491448794e86cf5b737dbce9ef36f8650859548f"
+  }
+}

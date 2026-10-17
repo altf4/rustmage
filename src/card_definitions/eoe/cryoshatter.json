@@ -1,0 +1,11 @@
+{
+  "name": "Cryoshatter",
+  "catalogue_id": 910,
+  "oracle_id": "865715e9-6759-4e01-803d-702c959e386e",
+  "facts_sha256": "b9e4ec8273d8fb3ee90412b12a089cf8a1111ebadb7a934fdb34f59025a86fad",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0105eb27ec201054bbec34c9c62199489a102105cf0c53aca9fa01fe43472400"
+  }
+}

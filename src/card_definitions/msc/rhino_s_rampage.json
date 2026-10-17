@@ -1,0 +1,11 @@
+{
+  "name": "Rhino's Rampage",
+  "catalogue_id": 3513,
+  "oracle_id": "0a744206-04c4-46cb-b64d-cf192c9324df",
+  "facts_sha256": "f8ee935512320a4dbf6f64bc1f4d94a8eceeee3fbbc5e74c4dfb9197c330f474",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b3c782e64ee56f3884dc2710c99cda2d8467f36b03d58b3cd1cdf80f145dc2f5"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Vein Ripper",
+  "catalogue_id": 4857,
+  "oracle_id": "f83a768c-162d-46f0-8ebd-d9c6b2c69322",
+  "facts_sha256": "ca50600573e8fc98faeab91401a6f56d321da3eae7c9833866798b859e67fdfd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "51a3b69f699f5a55fc1ef3b8483b56385ea87f505b25f76a2922eeb2ed508355"
+  }
+}

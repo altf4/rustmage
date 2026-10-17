@@ -1,0 +1,11 @@
+{
+  "name": "Goblin-town",
+  "catalogue_id": 1812,
+  "oracle_id": "98d20908-6d68-4d31-b719-207f93c9b402",
+  "facts_sha256": "7f0e0703ba6830e43ed0df36765683b5d9f241ee25eaf383451e3b0e0a9c8a8d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eb41bffff23a4dae3bc30068e04f4175138fa38e855782210d0018630bb3de77"
+  }
+}

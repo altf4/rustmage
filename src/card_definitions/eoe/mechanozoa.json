@@ -1,0 +1,11 @@
+{
+  "name": "Mechanozoa",
+  "catalogue_id": 2701,
+  "oracle_id": "1aeb43f7-4d8a-4648-9c13-fd101081b448",
+  "facts_sha256": "4fefb8211f1b9b78ad1d9e9fe17d627dd6edaf170d37cb03d27e111873b8258e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3583125e92b6eb2b00fe7180eab49e799b5972608f70d713c345d75b247922af"
+  }
+}

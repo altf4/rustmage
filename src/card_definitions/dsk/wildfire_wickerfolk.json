@@ -1,0 +1,11 @@
+{
+  "name": "Wildfire Wickerfolk",
+  "catalogue_id": 5065,
+  "oracle_id": "50c7b13d-f217-45de-837c-49f934840368",
+  "facts_sha256": "8850f0cc95b173c2547dd9bd2577ef509a604623d851386565e32aa70dc6d8b9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "02f18c1032cf616874dca00a03506fc6b38873d638bdf26054ecce495868f272"
+  }
+}

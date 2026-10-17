@@ -1,0 +1,11 @@
+{
+  "name": "Ball Lightning",
+  "catalogue_id": 313,
+  "oracle_id": "7485cf25-eb41-4397-be13-7f0b8c10c70a",
+  "facts_sha256": "e2342535788fee385f85aa6ba85c2cb563215b45a9df0748fa60253e67a47275",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0ece91e5ab260b0b06d908ae589a2ef235d21feb77e6638036bafd41ee3d23e3"
+  }
+}

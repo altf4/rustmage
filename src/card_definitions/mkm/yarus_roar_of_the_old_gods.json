@@ -1,0 +1,11 @@
+{
+  "name": "Yarus, Roar of the Old Gods",
+  "catalogue_id": 5133,
+  "oracle_id": "30fd6171-3e57-4c05-a86b-e1c0479ba236",
+  "facts_sha256": "3e0f74e7cdd5a17cbd4bc5a8eb5d754d9aefbb5e05e7fd69d4d56c2beb68a61b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "53728a580c5dc540662ad162bb32f708539de0d51fb2abff5965ff7281ee6a33"
+  }
+}

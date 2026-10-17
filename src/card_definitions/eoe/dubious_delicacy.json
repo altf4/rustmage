@@ -1,0 +1,11 @@
+{
+  "name": "Dubious Delicacy",
+  "catalogue_id": 1198,
+  "oracle_id": "697b8045-0edb-4f7b-a933-4d41ec2b53d5",
+  "facts_sha256": "608ff1e87dd62547b8e35ab560be9f12f0553fc580193c0f796354783c5a8054",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "357f98ad37993cb6b9a449cb92bc7eecee962ca3e47af07a23c478d6e3178218"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Avengers Tower",
+  "catalogue_id": 285,
+  "oracle_id": "c5fc8e7c-a87e-4586-a13c-d30e0a3aafbf",
+  "facts_sha256": "860c73eeba2fd7112ea19dc7c943d0534e7d6cde3c1ea9d9ad98cb877e62f298",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0c024ff5ad23519734fbf0be83e037337c5b4464344ecacf3dde7675d744e391"
+  }
+}

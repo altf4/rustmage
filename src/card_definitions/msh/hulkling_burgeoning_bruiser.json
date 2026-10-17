@@ -1,0 +1,11 @@
+{
+  "name": "Hulkling, Burgeoning Bruiser",
+  "catalogue_id": 2094,
+  "oracle_id": "03c934a6-be57-480d-8c84-4e46d9ccb406",
+  "facts_sha256": "eafcf2e539ba3f29d95dbd4c478e8d9097e449cc08feba51fb81d2afd3d57322",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "96fc269e0b095a795f449284b5948d34fe05dac3580ad3cd8f4de43a33838d7f"
+  }
+}

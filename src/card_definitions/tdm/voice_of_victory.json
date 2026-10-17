@@ -1,0 +1,11 @@
+{
+  "name": "Voice of Victory",
+  "catalogue_id": 4927,
+  "oracle_id": "b12cbda1-ac09-49eb-96b3-a4df27bc37ea",
+  "facts_sha256": "99372a3c093a7178395adb5b1a3cb65a5879dcc8e11e01744230d3cc4612738c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b50dd4b3cb86291854696e02ad7186e8c873927ea720bf612bd8e4a80228d96c"
+  }
+}

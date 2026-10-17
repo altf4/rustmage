@@ -1,0 +1,11 @@
+{
+  "name": "Sanar, Innovative First-Year",
+  "catalogue_id": 3670,
+  "oracle_id": "2676ba6d-e7a7-48cf-9c86-6e2a11f03096",
+  "facts_sha256": "a03338c2f68560c904373c240fa977b322ebbc834c130e28af5cda1dd7ddcf8a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ed50919318b533493bbcc27d4a4e5c2451ff43d0152ea9bb840c986a029240b7"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Omenpath Journey",
+  "catalogue_id": 3014,
+  "oracle_id": "8b067e44-2001-4b49-aa4a-2c86f8929751",
+  "facts_sha256": "8d70d6b16fc2eaa6ca37a52c690b05a6104da6b74efb8780b48dab67e2a3ace5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2fc629f1f99037eb2ade49ccf6533cd44310736a8bdb52659d9fa6b2f0961ea8"
+  }
+}

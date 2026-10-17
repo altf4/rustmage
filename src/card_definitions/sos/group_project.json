@@ -1,0 +1,11 @@
+{
+  "name": "Group Project",
+  "catalogue_id": 1886,
+  "oracle_id": "e1ce210e-2d1d-4ab4-bfb7-8e36884797fc",
+  "facts_sha256": "a8a771403a89518ec75e816a4b81fabcfefb8b4901bc1958cf212d249c45c9cb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4c3b9bcc933ef166a6f44cbe5440b1397465843aca68f35ca28055d754fe5fda"
+  }
+}

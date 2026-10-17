@@ -1,0 +1,11 @@
+{
+  "name": "Raccoon Rallier",
+  "catalogue_id": 3330,
+  "oracle_id": "50c038a4-6546-4a15-a117-176849edaa3d",
+  "facts_sha256": "1bba9c4f2b193f935e9df68978100ee1ec3ec8015463ae1ef9f2f5a5f4a656ea",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f0c89ea29581dbc87fe4628671f1977f8a1aecd8ed5d4a8b4d057a84c4ec9d8c"
+  }
+}

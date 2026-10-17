@@ -1,0 +1,11 @@
+{
+  "name": "Plumecreed Escort",
+  "catalogue_id": 3186,
+  "oracle_id": "04669a6f-6299-465b-a26e-6cae37cdc081",
+  "facts_sha256": "e639132183a22b68d0b8ae341f8b28e9ce9de054ecb09525bc8d12bca5da8f6c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a35e72da921fef3cdce09e41ecc3b5a5f3bfb1ecee7860f574150af2cfb06abe"
+  }
+}

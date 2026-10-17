@@ -1,0 +1,11 @@
+{
+  "name": "Lotuslight Dancers",
+  "catalogue_id": 2568,
+  "oracle_id": "83c8f1ca-194e-4cb6-9d5f-029133c1edbc",
+  "facts_sha256": "ca6d1256d7b1b0cf5c578b4903e5407eb673fd2497a173897af0fc4a4fb6c5dd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d1a9d65febdb6726b7d386b9a9596f2c7e11c9d9806303839ec19b8a0adb2b95"
+  }
+}

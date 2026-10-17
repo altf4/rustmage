@@ -1,0 +1,11 @@
+{
+  "name": "Dwarven Mattock",
+  "catalogue_id": 1214,
+  "oracle_id": "f75bb13b-41fc-4614-b35e-f456069ce9c6",
+  "facts_sha256": "7207c868610e018415ba0206916a083eb26c9c7b5495b085a5457a252d0f6931",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7b81663b25281e7369d2935207704844a7cbcec965fc7cfb54ef03b2978021b1"
+  }
+}

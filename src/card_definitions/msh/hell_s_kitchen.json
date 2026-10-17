@@ -1,0 +1,11 @@
+{
+  "name": "Hell's Kitchen",
+  "catalogue_id": 1997,
+  "oracle_id": "1337d89e-a883-4568-a14f-9ca3305cc3df",
+  "facts_sha256": "91cf4aef31379cf4419f3e08941227f6dde2bf19c2a84d85872652b1c81aeda7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ca2ad2b883d613e75cd574d145a91cca4b7c2250603916596214a6b36bf88051"
+  }
+}

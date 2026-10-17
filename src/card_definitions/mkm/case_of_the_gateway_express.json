@@ -1,0 +1,11 @@
+{
+  "name": "Case of the Gateway Express",
+  "catalogue_id": 664,
+  "oracle_id": "42a9aeac-5b9c-4675-8c96-7c8ce7e9098c",
+  "facts_sha256": "0de471f975818fdba0f6a1b8278d06685e95503b9641dcb987716cccc64179ad",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9b1abd695b5d28f7c335d4b9bc534a5be7571b7065bd0e4e557b881926f371b4"
+  }
+}

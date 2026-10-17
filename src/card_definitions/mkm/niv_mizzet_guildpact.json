@@ -1,0 +1,11 @@
+{
+  "name": "Niv-Mizzet, Guildpact",
+  "catalogue_id": 2949,
+  "oracle_id": "46570366-5e58-40b7-b725-833321a3b7b1",
+  "facts_sha256": "db2c779f5806fa48d52f730d8d22c6b334e8d19dd85fff2e9b826392dd56c088",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "77f70a90599c5e4d07547fe99ce3c4bb9f361c422338c538aa4f6a48d2c6dd53"
+  }
+}

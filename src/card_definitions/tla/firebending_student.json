@@ -1,0 +1,11 @@
+{
+  "name": "Firebending Student",
+  "catalogue_id": 1530,
+  "oracle_id": "1ad3be51-f68b-46d6-b58e-400b50e384f1",
+  "facts_sha256": "bc9aca79031420b1db65a3aa65fedd211bf74e1b67b6d68c2d91a64cad224996",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f14ce77773676dd9794a45da64b482fa63c5109bca5afb8ac90cbbeb5bf2c380"
+  }
+}

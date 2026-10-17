@@ -1,0 +1,11 @@
+{
+  "name": "Slice from the Shadows",
+  "catalogue_id": 3920,
+  "oracle_id": "4d31d3f4-4748-4713-808f-24699fcd7b10",
+  "facts_sha256": "c7613d856d7894802de3d7a39e82666219aa2148409166187596a80913366214",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "90a0c5b085382e216f8e47457ef402eb2e457d10189735dc29c4539f50f2a616"
+  }
+}

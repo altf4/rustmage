@@ -1,0 +1,11 @@
+{
+  "name": "Peter Parker // Amazing Spider-Man",
+  "catalogue_id": 3142,
+  "oracle_id": "f1b7488c-c675-42e9-818a-24a50347ec2c",
+  "facts_sha256": "b063b900fe5473bcc6fa193e5a58df41b87f798a88b5c2aec1aa3d57b53ea9d6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3fb72f5f36a1746b5904042b863c561aab8563a43873fedb667d116f88119a10"
+  }
+}

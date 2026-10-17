@@ -1,0 +1,11 @@
+{
+  "name": "Fblthp, Impossibly Lost",
+  "catalogue_id": 1457,
+  "oracle_id": "17e7212e-69d8-4014-af98-447baed2cae7",
+  "facts_sha256": "2687fd5fc43ec2e21e988e48884d50a8f182a38f1f4565ce91e6f02f59708967",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2cd3c8dee1be9e8117c61e1da138dbae9835d6df036f5d8affc55284ed2cfef3"
+  }
+}

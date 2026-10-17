@@ -1,0 +1,11 @@
+{
+  "name": "Prehistoric Pet",
+  "catalogue_id": 3222,
+  "oracle_id": "2519ccc0-c206-41fb-aa15-2ef88025ff96",
+  "facts_sha256": "41973db807d3a4e4bd9b1bc30e1a08166810974e58ce44e18d0cd57841996811",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cdf09aa456e0d67b4c1edfeda68b8965f1514723822a215affc320e12b172309"
+  }
+}

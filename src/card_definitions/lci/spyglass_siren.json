@@ -1,0 +1,11 @@
+{
+  "name": "Spyglass Siren",
+  "catalogue_id": 4076,
+  "oracle_id": "4ec9d9eb-14e2-47ea-88a2-d2394e363784",
+  "facts_sha256": "f31aacc4f90a4a19fc3a1c5ee3ee020f4462b21ebf9e58eb60e7e199a83f7a8b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1536988d40f8fe724c143de84a433b44c92edcdbdb266c330ff63d2aa90f77cc"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Silver Deputy",
+  "catalogue_id": 3870,
+  "oracle_id": "7bbede9a-8981-4435-9854-af61a18c6166",
+  "facts_sha256": "61ec1c89e4ad80b230372962a93e5d4f3a9c7aa559646b00d98e079e3c319900",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "61d94c5f747a1981e673dd732ce110245fcdd0d2f18cbbff096e31a61e7ac7c9"
+  }
+}

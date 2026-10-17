@@ -1,0 +1,11 @@
+{
+  "name": "Wild Hypothesis",
+  "catalogue_id": 5057,
+  "oracle_id": "2e56507d-af77-47c8-a29a-410cf14cfe20",
+  "facts_sha256": "2c94fe389655944178aee65ec6773dbe19b680b1d8dfd3b7f51182b9848fd41d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bec532853d0581e8d5d365d18d40239b7cf5a87e0e142ebc4947934ed617dc6e"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Canyon Vaulter",
+  "catalogue_id": 638,
+  "oracle_id": "829e121f-d2fa-40ef-afc7-9b2072a949d7",
+  "facts_sha256": "f991d1df5b1e21a145a7cc2272a9f40f29a937146c77c13ef637af6f4e4c39f2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "055a47949ae66d093224760a427fc3e71eae6e8b20ec669c4cbe006433c295d1"
+  }
+}

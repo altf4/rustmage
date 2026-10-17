@@ -1,0 +1,11 @@
+{
+  "name": "Case of the Gorgon's Kiss",
+  "catalogue_id": 665,
+  "oracle_id": "a89f9072-cf06-429f-a9b8-c11b5731ddd3",
+  "facts_sha256": "fc1d2fcd0710d973068ae444876e1fc2636fb316420d2f6cfca95b4be6901a59",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "42c5b57c5e09be49a2017efe62fe94655484383cfc38fba51537897dcda2920d"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Treetop Snarespinner",
+  "catalogue_id": 4675,
+  "oracle_id": "2f57a220-9f64-4143-979a-d6aaf63d49b2",
+  "facts_sha256": "cada7bb1b27464aa0407e2780a9ff263c2256be35d1a987ed836032200349036",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "197ef464d131bb54f4405024e14c560e240c7155b4a04d1a96867ee7bfb12555"
+  }
+}

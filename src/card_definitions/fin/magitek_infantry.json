@@ -1,0 +1,11 @@
+{
+  "name": "Magitek Infantry",
+  "catalogue_id": 2619,
+  "oracle_id": "563992ff-6fdf-45a0-afc2-7c73c2ec6f74",
+  "facts_sha256": "f036e94848e3c5648829356b59c1889b6003bc7becfe777f9ad1ae9bb0ccc919",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cc80c8cbf3ad03e1f70c0bff94390ab5f6256e7f2832301367d4a6097ffd9ca1"
+  }
+}

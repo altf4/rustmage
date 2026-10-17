@@ -1,0 +1,11 @@
+{
+  "name": "Coati Scavenger",
+  "catalogue_id": 786,
+  "oracle_id": "535f9bc6-9a07-4850-91eb-c00d06633e7e",
+  "facts_sha256": "858c92c4d4443dc11fc90de8e6d3ba7df68f3c00dad0b12b6c1d3378249e850b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f33d34f64569cff514fe2fca71e6105115982209958ce8184e78b6893b764d03"
+  }
+}

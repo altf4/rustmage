@@ -1,0 +1,11 @@
+{
+  "name": "Y'shtola Rhul",
+  "catalogue_id": 5130,
+  "oracle_id": "a6a7bf77-0560-4572-a826-3bc9df1f78d1",
+  "facts_sha256": "12f341247494f88e56ffdcacc2c652bcf71acc9063d5b817f9a2d9a92deb07e2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2969a1a0d50086b626afb9502217538561d04ef3b888674f6edc0aa4c7035ac1"
+  }
+}

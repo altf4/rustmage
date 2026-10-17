@@ -1,0 +1,11 @@
+{
+  "name": "Sinister Cryologist",
+  "catalogue_id": 3881,
+  "oracle_id": "be3038ff-b39e-4d2e-97ee-85de074ccfd3",
+  "facts_sha256": "2b6399cc963cb3d62a25f2c509b9c5bb5fa0b8dfbe6fd92044120a307c4d89ca",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4c35f4266298815b6412c53166c777feed5ce74ae1b1ce6ec9f0c4723592985c"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Super Strength",
+  "catalogue_id": 4255,
+  "oracle_id": "e1b577ad-1488-43b5-83d9-e40bd60c74be",
+  "facts_sha256": "39f511bf919a5c1a10ef8bb211bb6273eeccd455c5a05fec7a90d3fa8b80035c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a43b71ddb27b0675f46658ba713c6d5f694d7a73782add495bad4dbd391bd2e1"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Magebane Lizard",
+  "catalogue_id": 2615,
+  "oracle_id": "0c38f159-367b-4e4b-94cd-bf1b0721c3a8",
+  "facts_sha256": "cdd464ef1166ef43dfc6adb2385899c8bdcfc8ced29ababe9dda536cc385a593",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "73894d60e9def620e38a7227ae025fb79d61ddcf5cdec68ef8c364bd81bdd8a1"
+  }
+}

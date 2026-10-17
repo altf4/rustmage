@@ -1,0 +1,11 @@
+{
+  "name": "Truck Toss",
+  "catalogue_id": 4691,
+  "oracle_id": "7d765055-da62-43f7-9580-98e9d164753b",
+  "facts_sha256": "1039338a92856926e460a3e6bd6c2521a9168c83d6cdb2e679de06da84508bb9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b821313028dc526a8c24000119e55ceecef086fb1decccebb5f1a1e93159922c"
+  }
+}

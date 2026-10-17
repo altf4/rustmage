@@ -1,0 +1,11 @@
+{
+  "name": "Mirkwood Meditator",
+  "catalogue_id": 2781,
+  "oracle_id": "399cd159-7376-421c-b001-c26f1cbadced",
+  "facts_sha256": "d907bec725f192cf9b74198ed4dc101f57e9ea2d82d20d3f96597f484f747ae5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "defbfd9a365db4738d81a7a27b00295dd2442219c6f50ea860c15f46e0458f8c"
+  }
+}

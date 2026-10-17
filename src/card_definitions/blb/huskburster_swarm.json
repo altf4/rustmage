@@ -1,0 +1,11 @@
+{
+  "name": "Huskburster Swarm",
+  "catalogue_id": 2109,
+  "oracle_id": "faefb352-575c-49f7-9f7a-96f2279a077b",
+  "facts_sha256": "b86fb3e5f31a249ba08bac3228926d63478bf98eb22f14004baf5a37d0858211",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a8b83dd1400674f4244014d001b54f385aa1d90dd17aab3cfb88947994375f53"
+  }
+}

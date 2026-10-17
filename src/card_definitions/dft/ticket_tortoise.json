@@ -1,0 +1,11 @@
+{
+  "name": "Ticket Tortoise",
+  "catalogue_id": 4592,
+  "oracle_id": "952083c5-9ffa-4cd9-915f-b7de7f3e5326",
+  "facts_sha256": "754a47d230ab9681a8d4290d1205d970ab165ff92a85a014623e87e17fe5ae54",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9cb3635dca8d7786eb1ea96a8dc522d612d1e7f13058733136b8ffbded52cc9a"
+  }
+}

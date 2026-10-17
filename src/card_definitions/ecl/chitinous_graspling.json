@@ -1,0 +1,11 @@
+{
+  "name": "Chitinous Graspling",
+  "catalogue_id": 739,
+  "oracle_id": "930035c6-cde7-40ac-98ef-0840812037db",
+  "facts_sha256": "f9cf330393a2d12011771e64f27624953ae646e4118cb39ff10b7c499febf448",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "66355545087ee19345831d22640d7bb49bb8ff89b5e7387627a7e088818f596d"
+  }
+}

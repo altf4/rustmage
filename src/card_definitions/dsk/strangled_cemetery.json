@@ -1,0 +1,11 @@
+{
+  "name": "Strangled Cemetery",
+  "catalogue_id": 4181,
+  "oracle_id": "3a5b3405-a1e3-4aad-ab4e-1b8db2d1f3a8",
+  "facts_sha256": "29728630c6d0cb20389fcdd769b7a3705b923de12776ba05c76acc55bf209629",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "83c86822c101d51a9c4de374f8d1a2f1279eb7441d71761ccdfef4e039390ee9"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Daring Thunder-Thief",
+  "catalogue_id": 961,
+  "oracle_id": "0f5401c2-0189-4a07-8e7b-a765ccd7c954",
+  "facts_sha256": "6e783b89653bc899f585bfc7271ce8925c6e2a41fcaf0ff213c96b38b7526034",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "84c27f4e51c8ca27a02d42fbeebfb8cc06a3bb57986aeac9817032b9565ae89f"
+  }
+}

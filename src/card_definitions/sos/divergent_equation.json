@@ -1,0 +1,11 @@
+{
+  "name": "Divergent Equation",
+  "catalogue_id": 1105,
+  "oracle_id": "84681f12-2978-4f62-ab89-b579033c5192",
+  "facts_sha256": "c9c7ccc59f5213561ee2f5f67da06bcb657888c770a4e8ca6912ab8eba3c5d2f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8a29f2f746bb167dd17307a35c0d92acb2d8087d7a5ed19293d61c8dcd6a7762"
+  }
+}

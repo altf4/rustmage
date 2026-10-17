@@ -1,0 +1,11 @@
+{
+  "name": "Circle of Power",
+  "catalogue_id": 754,
+  "oracle_id": "2d41fd1f-4a98-45dd-a3c5-f7c5e0152109",
+  "facts_sha256": "bd3bdd3db41bdc5200362673b76e9681d4815574f5fba4f4dfeed480066e3f3f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "47146ccccce8c77ac368a336cb2c92fa540da3e9e649fb16e2cd66bea55a09bf"
+  }
+}

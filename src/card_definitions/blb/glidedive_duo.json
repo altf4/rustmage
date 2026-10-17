@@ -1,0 +1,11 @@
+{
+  "name": "Glidedive Duo",
+  "catalogue_id": 1776,
+  "oracle_id": "33c06c11-8d0a-45ce-adea-c9a7a8ac8779",
+  "facts_sha256": "9fd5cbb7d6208d76b510083bb5d3c05cd0942cb352df004e661bf7e3b83d7c30",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "de44500c4894d1500c3be10fa7f269b88c8f902562319ceaea8a821d05d65791"
+  }
+}

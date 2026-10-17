@@ -1,0 +1,11 @@
+{
+  "name": "Kin-Tree Severance",
+  "catalogue_id": 2354,
+  "oracle_id": "211d1c59-0111-48dd-9ff6-d03e7ff2ad5c",
+  "facts_sha256": "2209e22610c23094f34f8924204e88b058e86657ff38b491a572323e05ffa290",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "881794b01bf5561cd27c88de0725239dae2a20dbecad63d2bcb80a97159539d4"
+  }
+}

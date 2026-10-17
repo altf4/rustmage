@@ -1,0 +1,11 @@
+{
+  "name": "Brave the Wilds",
+  "catalogue_id": 530,
+  "oracle_id": "49d189dd-9ce7-434f-931b-7110cd5255e7",
+  "facts_sha256": "5b9668a3b97c6414685a5a042558617c4506745f795b758375c690edeb20381c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ec4684be312294b220d5b93257b48c6fdf065c15808ea6ca6d7ba4352b6ad3b4"
+  }
+}

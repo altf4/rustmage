@@ -1,0 +1,14 @@
+{
+  "name": "Jailbreak Scheme",
+  "catalogue_id": 2258,
+  "oracle_id": "bc7f39e1-97bf-4725-a84a-2a04121530c6",
+  "facts_sha256": "1f57e79d0218b802a5e816ea00cb3c8c864ab239c14d7788060e4a7da7c96397",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b0e565c826468ab157f75674d9f7e307e6627c85be4bc812cbb31350701cbf47"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JailbreakScheme.java",
+  "java_sha256": "b367e6a451638e92cad709d38a2560820319f8dd9aac37edeaeadb9cb316cb3c"
+}

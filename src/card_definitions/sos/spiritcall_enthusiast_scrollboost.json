@@ -1,0 +1,11 @@
+{
+  "name": "Spiritcall Enthusiast // Scrollboost",
+  "catalogue_id": 4057,
+  "oracle_id": "c77ddcac-ce54-4348-bde2-5d9caf3d5b04",
+  "facts_sha256": "418d5b39536af52c997ff3e1bebe5a8e2258e3f594b5598ae6fba031df8d1768",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "314c2ebbbe0ce2dd4545a245744428daa4219000ce0450800b055db743261403"
+  }
+}

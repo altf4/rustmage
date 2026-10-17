@@ -1,0 +1,11 @@
+{
+  "name": "Kirol, Attentive First-Year",
+  "catalogue_id": 2369,
+  "oracle_id": "3a272fa9-5f28-43a4-95de-10cb511f1b43",
+  "facts_sha256": "7b8176e4fce60eac4b1ee61f93192e5fd1a393d5d86b2858895ef687702f89b3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8f934754300b1f429fd4f6a389eae12eb9ac5a840f5a9872ac6902cbaa383886"
+  }
+}

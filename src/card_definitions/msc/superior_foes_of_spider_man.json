@@ -1,0 +1,11 @@
+{
+  "name": "Superior Foes of Spider-Man",
+  "catalogue_id": 4261,
+  "oracle_id": "a6a7af21-e52c-4f7f-a57f-bd365d075966",
+  "facts_sha256": "d27a13a6c3bd9f1694fdba84f7b38f4d701b6f7bb15a612a85bf586db3abc6c6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2337421d308037d6dc4137c94f82afb75cd15fd2f3f9ad0f89f23aa288a1b339"
+  }
+}

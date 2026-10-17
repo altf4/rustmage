@@ -1,0 +1,11 @@
+{
+  "name": "Rage into the Valley",
+  "catalogue_id": 3338,
+  "oracle_id": "8c7641b6-3a6c-4441-a98c-3b5d61d91f76",
+  "facts_sha256": "ff54a8dd4714204a0f859494b29a9cdfaff2501e5b080ff4a4a4060d3caa03ab",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f56e755c25b7de10989c2c79f08f72b088adc1e0b36f6d50b29796560fb2ea1d"
+  }
+}

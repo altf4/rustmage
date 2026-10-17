@@ -1,0 +1,11 @@
+{
+  "name": "Captain America's Shield",
+  "catalogue_id": 641,
+  "oracle_id": "8255a797-ddd3-4db0-a3f5-dd8f38c3b908",
+  "facts_sha256": "e51c24e10b822db7d6911fdaf6c8710015fff6f65ca0eaf10d2f9b8183fef51a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "14e18154c6a249e946bfbbdfce126b980f011a2a91585d155ac7ed906ad3a4d0"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Safewright Cavalry",
+  "catalogue_id": 3645,
+  "oracle_id": "6e04a375-303e-43ba-bca1-4e959711a7f6",
+  "facts_sha256": "71e26a35a1c935a0c997dd83ac7119959001a342376805567e322f29d086e5d9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f4892306e0d8e0abed1e07c28b78ce2d879211860f349587a016a9e61a78a841"
+  }
+}

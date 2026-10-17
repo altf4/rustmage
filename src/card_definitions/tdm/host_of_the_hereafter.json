@@ -1,0 +1,11 @@
+{
+  "name": "Host of the Hereafter",
+  "catalogue_id": 2075,
+  "oracle_id": "3431338b-928a-47f2-bc2f-f3c5d8eda8d0",
+  "facts_sha256": "6a6401429ccae4afb74fbbb828be0f11405682baca9c81a660914fbeeca3d7e0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4cb506d50641822474605f8e6bfa4b9261f61568d1f0bcee1a4e70e2349ade75"
+  }
+}

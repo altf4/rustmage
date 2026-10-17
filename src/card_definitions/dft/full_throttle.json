@@ -1,0 +1,11 @@
+{
+  "name": "Full Throttle",
+  "catalogue_id": 1646,
+  "oracle_id": "3c2f87eb-b0f4-4578-b143-6fba313a82ec",
+  "facts_sha256": "a280ba0d9106b7bce4b4a4dd0ffd500c3644c636a13f437b3164c2c036060d3d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2bbb8ad64a85e8b40eceeef128ba8b61927d48d5c2de859c06f923240da963bc"
+  }
+}

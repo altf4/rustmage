@@ -1,0 +1,11 @@
+{
+  "name": "Grim Reaper, Lethal Legionnaire",
+  "catalogue_id": 1881,
+  "oracle_id": "edf429a8-6a4d-4d2a-b0ca-c0c72a0698a3",
+  "facts_sha256": "d975bfd4a628fe19a04d4111c51a83137d07c9347e115e2d2d6622ff78d1b6d3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "91f538fd3d58926056f3751eb378f956ce600d13d6c5b16bddc0e262182d660d"
+  }
+}

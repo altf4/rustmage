@@ -1,0 +1,11 @@
+{
+  "name": "Fractal Mascot",
+  "catalogue_id": 1611,
+  "oracle_id": "cca3f3e8-15a7-4ad8-893a-d3570178a800",
+  "facts_sha256": "4eff0556c892f15b7ae4020c32465156313a11d2809880760d373b204a8d2704",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dc20c33b1eb36183ad3fcc0afd44a2e0a6682f2554cab38659e07ca3667d8d4c"
+  }
+}

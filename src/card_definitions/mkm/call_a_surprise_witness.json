@@ -1,0 +1,11 @@
+{
+  "name": "Call a Surprise Witness",
+  "catalogue_id": 620,
+  "oracle_id": "9038a457-ce01-4f6d-9e2b-5220f08b4290",
+  "facts_sha256": "ee171ab18aae1ee5d20c244cd6e165f6fdb12c0a35632d74b93b5b13a0274d7f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2e37b1759dce36f4a5225126c68d9051ad7e4b45b0d6efe4feff53a8f113033c"
+  }
+}

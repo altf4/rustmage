@@ -1,0 +1,11 @@
+{
+  "name": "Starlight Snare",
+  "catalogue_id": 4105,
+  "oracle_id": "f0691d46-5bf4-4617-8a0a-19d17afb7219",
+  "facts_sha256": "95490f8c542f4eaeb17f7dfa31ba8cb6f87e2c13dc918b4761a81537d7d6ece5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fa4f4071efd5c640ab8319ef3ba9c5cc6ba9e716b0b90dac0064dd6ade31487e"
+  }
+}

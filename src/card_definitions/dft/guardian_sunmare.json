@@ -1,0 +1,11 @@
+{
+  "name": "Guardian Sunmare",
+  "catalogue_id": 1899,
+  "oracle_id": "3b319540-4db1-43d3-8f4d-f5a276ad78e4",
+  "facts_sha256": "085a329fdc6c5bc9ae93cc5fd2712711e18721ac6dc79772ce11e538aae9d5b8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "61097ac8e071246f67c6cad3d9af0392f21f73f9ca527b0790939cee42cb3707"
+  }
+}

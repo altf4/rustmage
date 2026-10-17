@@ -1,0 +1,11 @@
+{
+  "name": "Fatehold Annex",
+  "catalogue_id": 1452,
+  "oracle_id": "d35876a3-e891-43d3-a50c-69e8469497e0",
+  "facts_sha256": "a6bbb9ef2ab95e3e223255ffb6f469e939099136f60f359c077928ad42a15999",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "12650fd6b611dde4729886f15de68b729ce2a898dbda0137772f54e38689d080"
+  }
+}

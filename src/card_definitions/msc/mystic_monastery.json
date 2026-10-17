@@ -1,0 +1,11 @@
+{
+  "name": "Mystic Monastery",
+  "catalogue_id": 2899,
+  "oracle_id": "834b8f71-9a45-42ae-9e99-e749fa6fb45e",
+  "facts_sha256": "fb92d769603155fc35367baf39e0beedfae14eddb0c8d5fefcb5aaf9a2caf295",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "867920f6eca25c10b8b6165946f36e10fc987fa51e1e4a4542d356b41d2fecfe"
+  }
+}

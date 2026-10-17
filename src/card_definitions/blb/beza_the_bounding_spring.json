@@ -1,0 +1,11 @@
+{
+  "name": "Beza, the Bounding Spring",
+  "catalogue_id": 403,
+  "oracle_id": "020de6d7-f5a2-4036-ad25-451e5977b4d4",
+  "facts_sha256": "cde962735f938e019cc2292dc4ee26b7bbc5d9878e94ffd45ff9c199686bde0c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "57fcd832f92e536e2eb3ca25428221383feabf14ad7314a07e3ecac7c784bf08"
+  }
+}

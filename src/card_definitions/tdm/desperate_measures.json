@@ -1,0 +1,11 @@
+{
+  "name": "Desperate Measures",
+  "catalogue_id": 1059,
+  "oracle_id": "f1f3df1c-5c51-445a-b66d-eee4aab23691",
+  "facts_sha256": "375abefcda5f744eefb466635c6b2365730f34302dc6284e3344e7897a3bc264",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "983aff80763bb0f92718bf307909460afa3e5f8cc7d217dd8224a92d7c9989df"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Mardu Monument",
+  "catalogue_id": 2662,
+  "oracle_id": "5f662383-1684-4bd3-be05-e696d301e26c",
+  "facts_sha256": "1b704b561ff9ba8379294c5c022122234a6fdc053f32059c11dfed460adb4953",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e127a1d5608ed924892090582a3a6db96733c1b4fd7ca9be4906af9ac7d41ebf"
+  }
+}

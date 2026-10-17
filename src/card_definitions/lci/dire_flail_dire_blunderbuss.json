@@ -1,0 +1,11 @@
+{
+  "name": "Dire Flail // Dire Blunderbuss",
+  "catalogue_id": 1086,
+  "oracle_id": "5a043512-fa56-4361-bb92-0a0f229f34d3",
+  "facts_sha256": "ef5fb4a3ff98f90080581c21f89ce0773901b4b9f45170312a33e00e0b340e55",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f252eece9dae2929ebaf4f791f2e60151d2bdab906df9a504dfa7aa633512891"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Loxodon Surveyor",
+  "catalogue_id": 2572,
+  "oracle_id": "970f26d4-c916-444a-a2d2-4c1f5bb5556b",
+  "facts_sha256": "bbab4bb4b699ef5ee5a0e8e8a454fe839f7fcb7e6311d93974ab5e23243a26ae",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1a9b03a3b8b7699ce6265062c17795740bb9f1547ec7d452273764bdcad89695"
+  }
+}

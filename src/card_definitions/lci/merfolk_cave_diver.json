@@ -1,0 +1,11 @@
+{
+  "name": "Merfolk Cave-Diver",
+  "catalogue_id": 2724,
+  "oracle_id": "2f1019df-3e76-446c-ba33-f9dfe56b10bf",
+  "facts_sha256": "317cebce1762384960b87656e842c51c4016909501c9871bd76596e3856a4f2e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e5551b886381210164ae9dc562a41fe8c5c758e311d23869b6d1680d0ae4c759"
+  }
+}

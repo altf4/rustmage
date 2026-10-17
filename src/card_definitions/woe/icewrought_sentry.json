@@ -1,0 +1,11 @@
+{
+  "name": "Icewrought Sentry",
+  "catalogue_id": 2127,
+  "oracle_id": "0828d891-f7c3-4e51-b42e-6ce88d48ac8b",
+  "facts_sha256": "20fc903d07adf3866b30b6fdb1d5c84d778ac08494ade7cecbaad03b288f111c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "098855762ccb8226ff7b755e3759222ff5e54730884bf74f26809b70819eec3f"
+  }
+}

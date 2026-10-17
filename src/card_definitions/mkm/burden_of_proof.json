@@ -1,0 +1,11 @@
+{
+  "name": "Burden of Proof",
+  "catalogue_id": 585,
+  "oracle_id": "d1767573-713d-4f63-a09d-e94150655093",
+  "facts_sha256": "f7ad9d5f62d2c77d86f024835373f8f4b2cb568a9ae51716d78bb847000c52cd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "71000ee89964136e990f569edbd61fb94d467aa8cf5ff9215da34a764ba01464"
+  }
+}

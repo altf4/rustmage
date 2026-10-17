@@ -1,0 +1,11 @@
+{
+  "name": "Orphans of the Wheat",
+  "catalogue_id": 3043,
+  "oracle_id": "f758bad0-8f36-4985-ad1d-66b695f3bbb6",
+  "facts_sha256": "76892ef2d040aaf4c88347a9f182cbd01e5f2da02c9639d995cc081a033ae856",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f660029fd961477a0aa8a93f9a5c5a2f45137343563987c4ddd147c04757645b"
+  }
+}

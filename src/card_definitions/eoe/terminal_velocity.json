@@ -1,0 +1,11 @@
+{
+  "name": "Terminal Velocity",
+  "catalogue_id": 4388,
+  "oracle_id": "cdda2f04-d59e-4ef8-a26d-964d80750940",
+  "facts_sha256": "9c490a1e077a073b42d4f77f8f24607c713ff904563b50f564b5eb1b8ffd6293",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7ccf344721b87e4785407a1f8ce0829b66ec256532e23cdb27987f4bac884aec"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Vito's Inquisitor",
+  "catalogue_id": 4919,
+  "oracle_id": "03ee49c9-95a3-44f1-b010-f7c4b2f86a7c",
+  "facts_sha256": "6a9ab2e81fdea2a68ff8375bbce3456cff843a08976d0c28a0f923e82f8d5a49",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "df7e47a0006b2e3b489863136dad1fccaf0adc3fd2700da694f21abd0ccdb9c3"
+  }
+}

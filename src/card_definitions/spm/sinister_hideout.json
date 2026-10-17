@@ -1,0 +1,11 @@
+{
+  "name": "Sinister Hideout",
+  "catalogue_id": 3882,
+  "oracle_id": "80f08b47-a237-4efd-8d86-dfe35a816b0e",
+  "facts_sha256": "fc66afc8728471052864da31e066c0cdb4549e1e51393f58e521414f022914c2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "800b32aa21ddda4e82d3dd06e07233c9c818f1a305324013b205321de4c0e499"
+  }
+}

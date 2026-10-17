@@ -1,0 +1,11 @@
+{
+  "name": "Cemetery Recruitment",
+  "catalogue_id": 697,
+  "oracle_id": "07792d72-d5db-41b9-871c-e720e12ce659",
+  "facts_sha256": "7b9e276886191bd8641e7bcc3f3c7355d6d77ef81c04e510e892aa3db0d074cc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ddaa587eb46963293d23bad570b8666267d539228f8ff41b7c451fe0d8ad087a"
+  }
+}

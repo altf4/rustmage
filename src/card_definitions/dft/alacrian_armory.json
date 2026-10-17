@@ -1,0 +1,11 @@
+{
+  "name": "Alacrian Armory",
+  "catalogue_id": 122,
+  "oracle_id": "3fa2d51c-d549-4287-ac3b-76bc72bcd8bc",
+  "facts_sha256": "87a9689b316ea914f9fd6d28b9ab4f9e4e5bfd2aaad5c2c1ba4926e15bc094b5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "37ff3335c35ba3710df7be1c28403d3e11d4065fda36be98f564bdd645a6bf73"
+  }
+}

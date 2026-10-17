@@ -1,0 +1,11 @@
+{
+  "name": "Tenured Concocter",
+  "catalogue_id": 4384,
+  "oracle_id": "0ecd4493-dfb4-4d56-a90e-08b74b474f39",
+  "facts_sha256": "bcd3bdfaea29fe33df2d8e100b4530facbca79f013eebed286cde7c76995c4b5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d133b74918a3b5e8b5962002ed839432583d4eb02318f2301a8789aade8be932"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Grappling Kraken",
+  "catalogue_id": 1848,
+  "oracle_id": "1ba99ade-df8d-4654-882a-a5f4256ada3d",
+  "facts_sha256": "0a527001aac5f7af5fa2aed906220c896123bc3b6d88323fe7c0d8d0f7afe31f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "84ba151b7c54d5a72d7e843bb830f468a15eb21ea9682368c6e254a5b070d4c2"
+  }
+}

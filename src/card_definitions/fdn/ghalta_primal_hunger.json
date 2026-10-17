@@ -1,0 +1,11 @@
+{
+  "name": "Ghalta, Primal Hunger",
+  "catalogue_id": 1728,
+  "oracle_id": "b0b6be0c-41cf-4757-9f0e-87227b6ba6b3",
+  "facts_sha256": "bd28399002b84d06ba27374ed7da6b336e7cc2bd25402b279671edbd00b2c845",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "96537b5dc4e6c184dc691ad4ad1d2f72af56ec858b3f12a28d63757ca62bfd24"
+  }
+}

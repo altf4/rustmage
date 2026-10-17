@@ -1,0 +1,11 @@
+{
+  "name": "Eriette, the Beguiler",
+  "catalogue_id": 1359,
+  "oracle_id": "710a3499-64f8-4d2c-8c9c-d58950e47ea7",
+  "facts_sha256": "12edf54b62233f93366c0d238f51473ceecaaae60c751561c4f183905b76af5d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bf04afbe76c7c6839c2d6a732108a86e87bd4b1b34e181c426cde425de31efe1"
+  }
+}

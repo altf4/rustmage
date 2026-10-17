@@ -1,0 +1,11 @@
+{
+  "name": "Surrak, Elusive Hunter",
+  "catalogue_id": 4271,
+  "oracle_id": "7a0fe73f-6e08-4c9a-80e1-c2ead6cebe06",
+  "facts_sha256": "c30463b91c9ea88cd98650db3a5754880cdc9f11ae047e10a920aa4df5d8a080",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8093735bd1a5c5533787cb2ce42179f8602aa4d20c77bbc8e1494cf632364132"
+  }
+}

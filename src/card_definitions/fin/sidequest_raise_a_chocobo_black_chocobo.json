@@ -1,0 +1,11 @@
+{
+  "name": "Sidequest: Raise a Chocobo // Black Chocobo",
+  "catalogue_id": 3863,
+  "oracle_id": "aebeaf0b-4df1-4c34-919b-740bfab19e56",
+  "facts_sha256": "48adc03c42e3847f3357a5d313e7109d161b393cc9ce603e58d5a5e8788ea060",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4d66fe91762f7aba832f426e65da43a59ce562da41dfdc8543b5457cc59352c8"
+  }
+}

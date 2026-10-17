@@ -1,0 +1,11 @@
+{
+  "name": "The Chase Is On",
+  "catalogue_id": 4426,
+  "oracle_id": "789899eb-3a33-4a41-b6b5-5e2f55a9af51",
+  "facts_sha256": "40139d3f99e35ce6beee9897476f56da07b5f3cbbc0260b96a0bcdf0d17dad91",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4783181853f40eebe72dbf0e2b5a952043dfb94721c5225518f8b0758c5075d7"
+  }
+}

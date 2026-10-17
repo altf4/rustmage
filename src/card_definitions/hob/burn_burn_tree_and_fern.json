@@ -1,0 +1,11 @@
+{
+  "name": "Burn, Burn, Tree and Fern",
+  "catalogue_id": 590,
+  "oracle_id": "a97d6c5c-1cff-442d-b535-fc8389160b0b",
+  "facts_sha256": "6e6400168a2053ce83d5b59ec8008fdfe2b0e08bb5d3fa5848b29eea094bba8c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ba6b6e2b1d0a0a0b07da7fe2d5b486589f4d31a8bdefb2f8b1642b833183d932"
+  }
+}

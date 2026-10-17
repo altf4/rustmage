@@ -1,0 +1,11 @@
+{
+  "name": "Squirrelanoids",
+  "catalogue_id": 4082,
+  "oracle_id": "315ddc7a-c39c-43d9-b134-23acbd865e3e",
+  "facts_sha256": "c260a2d1f6055f1fc77c29dd7be9f1a7fe76bdf705f31917e6dafd2a329950b2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "41a30585a5fde60baf28893ab7ea4a0a9ee6f6776ddcb357a804c843cda427e3"
+  }
+}

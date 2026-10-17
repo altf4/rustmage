@@ -1,0 +1,11 @@
+{
+  "name": "Channeled Dragonfire",
+  "catalogue_id": 719,
+  "oracle_id": "91179937-6f55-4d1b-8f06-2efe1c8fea7a",
+  "facts_sha256": "8396115ad1622571f8b956b13cff9188dd61de7b8cf39549028e60baafef2b24",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6aaa11b4056e60ad9e876c075b48eef6e41414adde48ceea4a5084c8446212ba"
+  }
+}

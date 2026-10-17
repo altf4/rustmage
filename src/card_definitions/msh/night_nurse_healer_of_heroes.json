@@ -1,0 +1,11 @@
+{
+  "name": "Night Nurse, Healer of Heroes",
+  "catalogue_id": 2934,
+  "oracle_id": "e3559565-0512-4525-addb-bf27903bcd13",
+  "facts_sha256": "2977171d7e7391c5f15a6870facc8920fe9e69a9db234524e9ba2e578fb62159",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "692b4acaeb10fd14044763ce69cd6acbfc6147da03543ea2a7e33aaaa95c2ff4"
+  }
+}

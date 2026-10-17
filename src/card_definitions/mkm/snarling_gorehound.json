@@ -1,0 +1,11 @@
+{
+  "name": "Snarling Gorehound",
+  "catalogue_id": 3943,
+  "oracle_id": "d2b1c5eb-06f0-4ec4-9446-791faac099a7",
+  "facts_sha256": "beef5abd05b1938a8d50fddce6468897a3e33022674234a314c215c7c4b9b8c8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ec706401887caddd25b5c6566e8b78b2372709c25eab90ffaf8dce72f16f07cd"
+  }
+}

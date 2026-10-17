@@ -1,0 +1,11 @@
+{
+  "name": "Long Lake Nuisance",
+  "catalogue_id": 2543,
+  "oracle_id": "a833fdf1-db0c-4846-8452-d3b2059c2355",
+  "facts_sha256": "81562a95b3d9f6a08d0473110a9e6cf6a6151eb4fb34fafb55cf96d887a27eeb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "75bb6543636c39e1bb92780d99861dd798494bdc6e8075c2dba24fb7f7ca3ddc"
+  }
+}

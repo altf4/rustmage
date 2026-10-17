@@ -1,0 +1,11 @@
+{
+  "name": "Forum of Amity",
+  "catalogue_id": 1605,
+  "oracle_id": "349ea6c7-6b3e-417f-b082-b712e2b1635b",
+  "facts_sha256": "8e41ba78a91ba11902dd1299c371db382d4f9f87da9d9e82f09b695d950f629d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1a54967a2a8e98e38298e6ceed31e02d0712f8b87a42d8f0a9236fb529b8612a"
+  }
+}

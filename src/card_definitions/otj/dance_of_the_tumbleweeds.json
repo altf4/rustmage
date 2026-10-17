@@ -1,0 +1,11 @@
+{
+  "name": "Dance of the Tumbleweeds",
+  "catalogue_id": 953,
+  "oracle_id": "7c57d4aa-d221-4b36-a544-9fa89d63ffbe",
+  "facts_sha256": "fd5864cd9df43e683313ab5ff66e555c381831572afdf964eb44370dad6f0e45",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2a639d72a725836747c17665bd45f8e8947ed00418215af56a95186582f5f798"
+  }
+}

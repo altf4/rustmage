@@ -1,0 +1,11 @@
+{
+  "name": "Mountain",
+  "catalogue_id": 3,
+  "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+  "facts_sha256": "dc8fd7c2b9340114200a1478f7e78bc91e28a0949ef1353a3bb0b2e39e65f366",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fd1e155f914490ff75e8cb6008ce167cbbfba1c763dced1a14bbe93f60fe47f9"
+  }
+}

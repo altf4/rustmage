@@ -1,0 +1,11 @@
+{
+  "name": "Wakandan Royal Guard",
+  "catalogue_id": 4954,
+  "oracle_id": "4ae15bd1-e0ea-4c1a-a311-dae421381ebc",
+  "facts_sha256": "82a1cec69f49e9f81ac92da62c004425dda5782b1c8db37a23bb1d8939984b49",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6a3ed0ba7b9ba912da70944099e45c3588ef15d8b10e4d1c7f746340e123ff80"
+  }
+}

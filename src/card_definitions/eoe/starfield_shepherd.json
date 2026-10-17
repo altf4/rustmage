@@ -1,0 +1,11 @@
+{
+  "name": "Starfield Shepherd",
+  "catalogue_id": 4098,
+  "oracle_id": "42fa99ab-d35f-4439-ab00-fe99bad626ac",
+  "facts_sha256": "9cc872dd24850e883f416f59fbd6fc0d1f2d666873430147d6771a2fab3bffcf",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9c3f808967f023269a8835d00436f9edf49e213f2aee86dcfff8d509e49e6861"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Elrond, Moon-Reader",
+  "catalogue_id": 1290,
+  "oracle_id": "3f4d6f91-95ad-4687-8899-5a21a0abb49e",
+  "facts_sha256": "d849d1d849c5971d1c441f8346fcd5a848760a7ade0868a2e70152812862ebc8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cb73a53956200015dd991238fe35fb25c84d6376fa04d00574e84ad4d8cede3a"
+  }
+}

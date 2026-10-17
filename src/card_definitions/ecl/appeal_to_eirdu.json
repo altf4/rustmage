@@ -1,0 +1,11 @@
+{
+  "name": "Appeal to Eirdu",
+  "catalogue_id": 188,
+  "oracle_id": "cea09261-41a2-43e5-bf43-c4097e6615c6",
+  "facts_sha256": "fd5db969f29f260df799b5dbf56827c011d0b7fab35d62604b5c47d7a9a4573e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fbb2f36a21f1ad0bc4de125bec4fe61d6373452f94e20a36f18a20b775120577"
+  }
+}

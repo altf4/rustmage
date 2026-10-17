@@ -1,0 +1,11 @@
+{
+  "name": "Goblin Tomb Raider",
+  "catalogue_id": 1811,
+  "oracle_id": "37ce95bb-8ff5-47b9-85e4-21be7a794940",
+  "facts_sha256": "dab088ff83855fb74606cb1fca85e442156dca723c09e7becfd01648bcf6da36",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f37830f49364d8cb08ac469fd1076c231666802d866da0f45bdbc549b6dcb2ec"
+  }
+}

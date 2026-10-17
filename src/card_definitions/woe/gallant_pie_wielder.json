@@ -1,0 +1,11 @@
+{
+  "name": "Gallant Pie-Wielder",
+  "catalogue_id": 1668,
+  "oracle_id": "fba2fa87-3f2a-4a9f-a19e-a1f9dada4118",
+  "facts_sha256": "33e0a50ec622b92458802e1934c6fa31e3a650e0c8c7a370664978512c03f5a5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bbf3642d0aa6aa66be243e5c622540e2eaea36ad5e1d925eec9470ab8713f2fb"
+  }
+}

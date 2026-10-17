@@ -1,0 +1,11 @@
+{
+  "name": "Reckless Detective",
+  "catalogue_id": 3420,
+  "oracle_id": "4debd0e4-3bb6-4dd1-addc-08e4bda69d11",
+  "facts_sha256": "3d3327e350d9644679df1f2299938f7598d5dec18d8a307a1707813e661e079d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "79d936beb58bdd3eb39143f0c07d3447afb0c86b3ae57bdebe910d095610589f"
+  }
+}

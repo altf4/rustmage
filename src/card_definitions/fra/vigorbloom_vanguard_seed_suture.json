@@ -1,0 +1,11 @@
+{
+  "name": "Vigorbloom Vanguard // Seed Suture",
+  "catalogue_id": 4891,
+  "oracle_id": "bd416426-d037-45e3-9647-816bf982cbea",
+  "facts_sha256": "76765959fd0d476206d1354adf8961128c5fdba4abeb59fa8c91955f461c55d1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bf875a7dc4a1d3dd5fbec5f9101ac26864153a2154f2452d4fa7d91d3ff54f4e"
+  }
+}

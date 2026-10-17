@@ -1,0 +1,11 @@
+{
+  "name": "Gingerbrute",
+  "catalogue_id": 1755,
+  "oracle_id": "10b8d4c7-7553-4d76-b643-d98b80701e13",
+  "facts_sha256": "27ab88780e472c46fc3d40926902e3ca37c079296fc8b5e34992172271100099",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b7d422b49cfc29448ee6a5c3f6e3a2c193b8a83ff079ae08619e7f4d0bbff5cd"
+  }
+}

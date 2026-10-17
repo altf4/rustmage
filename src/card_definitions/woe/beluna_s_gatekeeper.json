@@ -1,0 +1,11 @@
+{
+  "name": "Beluna's Gatekeeper",
+  "catalogue_id": 383,
+  "oracle_id": "52fd9309-b849-419a-8d19-5882c00a72b4",
+  "facts_sha256": "02a647bc38eca778390d9acfb34ad190706d1ec1274ac4bb036873a8abbd9ffb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aeeca0e5d5246af986ff849c477d27d8ba98ebf0adf2beddc0873b5c4443aa0a"
+  }
+}

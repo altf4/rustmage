@@ -1,0 +1,11 @@
+{
+  "name": "Raphael, the Nightwatcher",
+  "catalogue_id": 3381,
+  "oracle_id": "8c1e5b25-ee5a-4ea9-a715-08dd1a4f51c4",
+  "facts_sha256": "f7ae108cf2033ffb09655d8a2c50096158d8394e3713bcf0c27f295c74371483",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6c90a2b7db51ef5289b88287f9a82f8d7bc4df125bbf86a49f87109a5071bbf0"
+  }
+}

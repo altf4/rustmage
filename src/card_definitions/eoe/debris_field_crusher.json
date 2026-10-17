@@ -1,0 +1,11 @@
+{
+  "name": "Debris Field Crusher",
+  "catalogue_id": 1010,
+  "oracle_id": "db0894e1-2644-48d4-8de4-8cc43e940bc1",
+  "facts_sha256": "602db654dd39df9cd54509cc823a9773735c47b4c757eba020513b1da97773d4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fafab04f07475e3e871be8ee634955ab6e4d7a8804cde4bcc7a08d671a4aeb78"
+  }
+}

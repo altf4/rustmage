@@ -1,0 +1,11 @@
+{
+  "name": "Kutzil, Malamet Exemplar",
+  "catalogue_id": 2424,
+  "oracle_id": "3233af43-7826-4895-b67e-03c6102c2cd5",
+  "facts_sha256": "f0d12b90265f1197cd44e93520090130b5b070428f4214b0a01f9c237c77795c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aac667a7b3d38c256415ea8ddfc20f690af8a7adee6eed364bcb08d68243c480"
+  }
+}

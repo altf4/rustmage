@@ -1,0 +1,11 @@
+{
+  "name": "HYDRA Troopers",
+  "catalogue_id": 1924,
+  "oracle_id": "6de67fad-0d01-443d-9ae0-4126ae903069",
+  "facts_sha256": "5f0fe6c3989afec5b2e3f1dadbcaaf1c8431a4d4bc9eeeaa202f2c49223d2ff7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5ccecc84c1237e58e14a0511d64fad2ba7564b1fe7dbd0aa7324c3b7636ff233"
+  }
+}

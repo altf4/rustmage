@@ -1,0 +1,11 @@
+{
+  "name": "Suspend Aggression",
+  "catalogue_id": 4277,
+  "oracle_id": "883267f0-be7e-43c3-b7f8-82981f6d8c23",
+  "facts_sha256": "57d399c453893e764da5e420b52ec69d14dd6546ce9f403074470fae31eb7b55",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "773cb8996447b2deb957b65a000e1b38cf0ac024138d344c67331ef8edb4be08"
+  }
+}

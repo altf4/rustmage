@@ -1,0 +1,11 @@
+{
+  "name": "Steal the Show",
+  "catalogue_id": 4123,
+  "oracle_id": "de403543-e61a-44fc-85e1-1e621d90ca8b",
+  "facts_sha256": "2856b31393303f83624250017d7f1c5db910f5daf7b198bdb86bd5aac80f9f2a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ddc4e89c1f5d8f17c9024842fba3e930bcb66dde47e899b8f60bf3cdf05b53ad"
+  }
+}

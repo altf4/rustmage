@@ -1,0 +1,11 @@
+{
+  "name": "Firespitter Whelp",
+  "catalogue_id": 1534,
+  "oracle_id": "1cad92ce-55c8-4b78-8d8c-56645ef8e6ee",
+  "facts_sha256": "0b3dd9eb179f179befd615e29ee7cf47367567fe54e7f5b8a0fe720bd1d01b3b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2dde185a21c0cf351b48abcc8ac5dcba9f26c33bdd085bc3149ef0799d0948eb"
+  }
+}

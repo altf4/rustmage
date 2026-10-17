@@ -1,0 +1,11 @@
+{
+  "name": "Lightshield Parry",
+  "catalogue_id": 2501,
+  "oracle_id": "ecef9e3d-dce8-405f-bba3-14732444258f",
+  "facts_sha256": "93cc87cd83fc1090d4eb536c4478ce14edd096d0adcf7dd5eaa507e982095e6f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7c69caa61100572684ac4f0025338dd1645c2df75dd1ada73767b581fe7b975c"
+  }
+}

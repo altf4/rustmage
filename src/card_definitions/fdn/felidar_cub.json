@@ -1,0 +1,11 @@
+{
+  "name": "Felidar Cub",
+  "catalogue_id": 1485,
+  "oracle_id": "cae60cf8-cd64-4595-a4dd-946694cf2bb1",
+  "facts_sha256": "18c112e9af6384d6109ccf23da29936d7c300273cc53a555d90956c3a8c522de",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a826d578c7464b9bd946c42135064578ec684f72587c429873f2b0613e74f47d"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Redshift, Rocketeer Chief",
+  "catalogue_id": 3437,
+  "oracle_id": "582c7e54-d64c-4ffb-ae5f-d2752b3ed10b",
+  "facts_sha256": "a567c00c783bdc02674feb29cc9b14e18dd65b825925666cccfb81236a5f4c3e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9c11d45485bde1dce059f7d95ff94c9359d787f3ed7bae5a5892d0dd1d27b24a"
+  }
+}

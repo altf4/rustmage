@@ -1,0 +1,11 @@
+{
+  "name": "Wicked Visitor",
+  "catalogue_id": 5053,
+  "oracle_id": "10330a79-a416-40da-bf5a-8b7cbd9a0498",
+  "facts_sha256": "5d0940305978eb150d42387dae1af314a939d356d7d4bfb9e7a3a9c6b63e1f15",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ccdbd0416f9671999c5015a29087ece9980e78bfbf99ac1a55288bf58ee849d0"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Dusyut Earthcarver",
+  "catalogue_id": 1209,
+  "oracle_id": "387b12b1-d8f5-487b-972f-5303b23eed5a",
+  "facts_sha256": "57434e7406ca7cc045fe70591240d5f744c9d6e60c92b6bd11fa3b3ce99ac581",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5468fd8b6a48aaa615c27dd7b5ddf4a3c6cf7de48ce6f2b58eb6db7d0482ab4e"
+  }
+}

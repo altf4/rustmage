@@ -1,0 +1,11 @@
+{
+  "name": "Anzrag's Rampage",
+  "catalogue_id": 181,
+  "oracle_id": "ce690a21-8117-420e-be00-cd6d9923a812",
+  "facts_sha256": "4dbd2cd0d78b95e643cbb7d6766960346404e751ab32251de061acdd419f6fc7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4d3f2613fa69fbd1a507ffc6f9ed690cf7b102e4e04070c86019599bb1a8aefb"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Price of Beauty",
+  "catalogue_id": 5188,
+  "oracle_id": "1c751201-24ba-4e5c-bf44-71c3e4693a92",
+  "facts_sha256": "f3ebd275d3d5ea11c3ccac0d1157b156828e342e5129395537ac005cc09c578f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7f1e022633c635d28f61fc823cdc926be08928387293c2147ad943ad3741d526"
+  }
+}

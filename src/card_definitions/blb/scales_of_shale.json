@@ -1,0 +1,11 @@
+{
+  "name": "Scales of Shale",
+  "catalogue_id": 3708,
+  "oracle_id": "655a2b78-6a6c-4b9e-b7c0-48d3768978f5",
+  "facts_sha256": "165ebf6bcfa61b0a67ac5998544afc8f4c8a9dc3e1c9feb760849fdee7b70e84",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a28c9cf18b90b0b081570a780d61d3456432571dec3f3266eac3c483d1fb3ac1"
+  }
+}

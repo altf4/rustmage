@@ -1,0 +1,11 @@
+{
+  "name": "Bearer of Glory",
+  "catalogue_id": 359,
+  "oracle_id": "963947d5-5fe4-49cd-be0c-0bdb5f7bcbb6",
+  "facts_sha256": "7ee7127fde5a4fe8388519b75a91e89c5c17501db4d1cd3fa522cdef9aededf4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "86db7d65a68ed4e522aa50597140a3bde602718e1974589fbfe7cf23c7095461"
+  }
+}

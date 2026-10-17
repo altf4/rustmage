@@ -1,0 +1,11 @@
+{
+  "name": "Valorous Stance",
+  "catalogue_id": 4836,
+  "oracle_id": "1f938353-9081-4dc1-b8e7-d18ece038bd4",
+  "facts_sha256": "c0d866c6dfc1c2088ae663ec2363e6014c880e7e7aef8f24e7ab79b2162f46d2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6a33a30e64a13e071d4a3596b0658bbb1aab3a42092db11333a6990cc4ac07a2"
+  }
+}

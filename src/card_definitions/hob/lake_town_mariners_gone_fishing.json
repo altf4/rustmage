@@ -1,0 +1,11 @@
+{
+  "name": "Lake-town Mariners // Gone Fishing",
+  "catalogue_id": 2439,
+  "oracle_id": "dba1d231-6b03-44ad-ab8c-be0c8fe1b6db",
+  "facts_sha256": "037cff2f2ccc39d10c34374ed81c5d7f9c68c75467abd2f8f852433e3969f1bf",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6354cd6286e2dacb1c00e98e0f34603f764255602e1fb9037eee4402c4af90b2"
+  }
+}

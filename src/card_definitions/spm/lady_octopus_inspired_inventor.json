@@ -1,0 +1,11 @@
+{
+  "name": "Lady Octopus, Inspired Inventor",
+  "catalogue_id": 2434,
+  "oracle_id": "8e51fdb8-4f83-4e94-b36c-40a501075ecb",
+  "facts_sha256": "36fdd6a25af6a6a1b11d53d4f303f6861908fce946a58eb3cb6587f857fb5298",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4db072326371ff70f6dc3a808036bbb8c669fa2386a123a9c739fb3f72e4735f"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Elvenking's Harper",
+  "catalogue_id": 1298,
+  "oracle_id": "7d070a95-49ea-4aea-b512-dbb0006a00ee",
+  "facts_sha256": "02117ddea829459bba2a22c537b82bbce0f3ad6d5cc8ce5698f668509d453d97",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9db30039e6260ea4395edc670ac4eb227813ba0101d20b2bb1ac497bc778240e"
+  }
+}

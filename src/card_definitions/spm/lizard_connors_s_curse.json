@@ -1,0 +1,11 @@
+{
+  "name": "Lizard, Connors's Curse",
+  "catalogue_id": 2527,
+  "oracle_id": "48d1b217-b068-468c-bc6c-4bef9e44cc6e",
+  "facts_sha256": "1bab8010f089bc39dd5a15d65c26dd49202788e91fd8ba9bc5f8a68aebd56a83",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d036497298110d82f7398800b66bf9778d7ebc71e2037f4fc4b0d7f7482d6e46"
+  }
+}

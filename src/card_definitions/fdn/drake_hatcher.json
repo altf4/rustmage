@@ -1,0 +1,11 @@
+{
+  "name": "Drake Hatcher",
+  "catalogue_id": 1171,
+  "oracle_id": "4de0ccab-bb5d-4c7c-827e-36aa1d00b182",
+  "facts_sha256": "c0410adeebaf12a61da4735a5c5d4191f9d86481b3fcc6715f7a7ee6b30122e9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e9a1cddc20eeacd6e42dcfe8753bd2d76b0ba8e68e40cca65a3e2c2a9d42e47d"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Bishop's Soldier",
+  "catalogue_id": 422,
+  "oracle_id": "84487586-4f71-457a-b983-4f1f7a71deef",
+  "facts_sha256": "75f9b9bc7d03ec173adbcc8f8341cfd9077b36cabe9188d0bcf5059ef08f9b31",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e851363744f6cb6ad8116a3b91221acb1f2db9bd4816a55859778a554be11d55"
+  }
+}

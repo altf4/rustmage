@@ -1,0 +1,11 @@
+{
+  "name": "Raubahn, Bull of Ala Mhigo",
+  "catalogue_id": 3389,
+  "oracle_id": "d81d5749-ab4d-42c5-8903-0b400f10fe33",
+  "facts_sha256": "18a5fa58675681d7bc07f0a065822fe329b99c8ec04707dc3fb715d7aac60b24",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c34398b07e8ba90cc63e141abed3636536e5e7f68497ebf92cb8e2a27a53ba1e"
+  }
+}

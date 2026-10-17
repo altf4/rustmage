@@ -1,0 +1,11 @@
+{
+  "name": "Lord Dregg, Insect Invader",
+  "catalogue_id": 2555,
+  "oracle_id": "2db77e35-a54a-4e9c-8081-c97822515879",
+  "facts_sha256": "a292d14a1097acf281f64e1c164a73317226a82d64c6f52d3e171282aab13e04",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e8a7f15c524918485c8163f8115bf28ad58189a8f2dcaf5d763092fc2f178eac"
+  }
+}

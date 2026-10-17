@@ -1,0 +1,11 @@
+{
+  "name": "Snowslope Hunter",
+  "catalogue_id": 3948,
+  "oracle_id": "fdf7f144-56e4-4f88-b81a-b85473922355",
+  "facts_sha256": "9adf5f0941a9030ac40c07dc9b5aa7df87b122865a4818cb2047ad37a2eaa150",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "06cd1394921252b9e45e160f5cae51a3740f58c996c30b6eddbbb4a42d189f93"
+  }
+}

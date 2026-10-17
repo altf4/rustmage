@@ -1,0 +1,11 @@
+{
+  "name": "Betrayer's Bargain",
+  "catalogue_id": 400,
+  "oracle_id": "bfb3d862-d92d-4a4f-9a22-671b55d954fd",
+  "facts_sha256": "05a5179801ffadf2ca558375b1980d07bfa9de48d526793307a6b820a9fcdd9d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2bcd8ad4e142042d1592d948305abaf336d0fd876906f449b77605e2b84be750"
+  }
+}

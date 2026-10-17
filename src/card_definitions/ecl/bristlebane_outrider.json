@@ -1,0 +1,11 @@
+{
+  "name": "Bristlebane Outrider",
+  "catalogue_id": 558,
+  "oracle_id": "48f7217e-ae11-44bd-ac42-7c8d9dd5dc36",
+  "facts_sha256": "be47a3b5bca313ede91aac4d38ca275171f7d4f95f64c31e4c38d20ef7166cd0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "587b05f661ecd5316b65bcd9797b0020f0b2f0ba37442203114d0538518640fc"
+  }
+}

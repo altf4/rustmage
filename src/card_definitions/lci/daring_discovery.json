@@ -1,0 +1,11 @@
+{
+  "name": "Daring Discovery",
+  "catalogue_id": 959,
+  "oracle_id": "a9564593-b5a6-4a83-be1e-2af8caf647d7",
+  "facts_sha256": "8b51f20182e739328ca85d7e2994a84e71533e36ef016d8339cf5f9eb91008ae",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0a4433f95864d040d95d70dc3202be68d056149cdc220cc3630d16297ba6bd34"
+  }
+}

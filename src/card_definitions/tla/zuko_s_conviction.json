@@ -1,0 +1,11 @@
+{
+  "name": "Zuko's Conviction",
+  "catalogue_id": 5175,
+  "oracle_id": "f034e8a3-82f7-4c70-93ea-0bf2688f66e1",
+  "facts_sha256": "b3fed4fe6eaf8f1a617316c7179ef2525b92c763d482103cd8374d1dac247840",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a10b4ef5baac94b8116ec8bf69125a2eac6171afd08098f0eb1fe2da28186fbb"
+  }
+}

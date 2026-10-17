@@ -1,0 +1,11 @@
+{
+  "name": "Tunnel Rats",
+  "catalogue_id": 4702,
+  "oracle_id": "0a8e5c48-885d-4ea8-9c68-a3e9213d4289",
+  "facts_sha256": "9df8fe9624b12cbbb57fe2532bb24276c8b41df93ab8725834279d4a5c89d758",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2360ccc262b203eae2f0322baca6a08d1322820974dff940271ded5e23d69f63"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Pictures of Spider-Man",
+  "catalogue_id": 3157,
+  "oracle_id": "4fd74a8c-a4e7-4988-ae02-9a73ab6ec89e",
+  "facts_sha256": "1e92799b7b20feb84a93d3f0b0c3c904672e4a0e378910c653db4ddaa505331f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9fd516c4fedafe2f7bd75d66864ff7a32c71245b31f978ee49fd339e848d2c80"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Bartolomé del Presidio",
+  "catalogue_id": 340,
+  "oracle_id": "f47e4c56-0a0b-422d-bf3d-7a20ee289f15",
+  "facts_sha256": "bb25e3b5b00e9b4068e1f09f3852a479991c1e16678bffb72a13c890761163fa",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "edade3cf2f04e30ae79e097f28f79ca2361380141c9fe3244182af1b4c4f1c90"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Celestial Armor",
+  "catalogue_id": 695,
+  "oracle_id": "4f1b68d7-7d16-4bb1-af5f-f1708b23ca73",
+  "facts_sha256": "00fc4d4903b302685e671bef4447ba2eee1469850d4ef8dd33ac18dace237f44",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bd003cec0235a742b2794f4b748325e153f67392b93f4d7ce2ebd5d877e971c1"
+  }
+}

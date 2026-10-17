@@ -1,0 +1,11 @@
+{
+  "name": "Dyadrine, Synthesis Amalgam",
+  "catalogue_id": 1220,
+  "oracle_id": "618a2272-62e0-4d0e-834d-7b81719eba12",
+  "facts_sha256": "38d1dae691b223ebad14112a21fd4e024ef8a8404a1bf85f2b34466c0dc78725",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9ff4212741a6dc7bf8c34c66011313197673ffdc851f2dd331305f91fdbb9d89"
+  }
+}

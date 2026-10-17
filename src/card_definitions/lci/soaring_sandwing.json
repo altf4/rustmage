@@ -1,0 +1,11 @@
+{
+  "name": "Soaring Sandwing",
+  "catalogue_id": 3949,
+  "oracle_id": "5d840e49-3ca5-4e4f-9152-a365ad2b1773",
+  "facts_sha256": "e1375dde9863fae96529a3b9a675883e8c57677777849263dac207485603c763",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "940cf77cb4dbf0e7c3ee28ba22f00d952293b65b3b3b2e7a4a0be26a8e8063c7"
+  }
+}

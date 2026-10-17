@@ -1,0 +1,11 @@
+{
+  "name": "Temple of Triumph",
+  "catalogue_id": 4371,
+  "oracle_id": "6f0d94d9-64bb-4175-83bc-301e8f79f54f",
+  "facts_sha256": "fba068ea3e48be25acd1b24cfc19537e5e16d8f4972e14ee0bb7df7515e30945",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f570733817482c193299f54c702161824cf8805b326e4003a06299f2b5159290"
+  }
+}

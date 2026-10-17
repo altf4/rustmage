@@ -1,0 +1,11 @@
+{
+  "name": "Blight Rot",
+  "catalogue_id": 448,
+  "oracle_id": "cf5b1cf9-dcd3-44d1-b8b2-338651ebb2a1",
+  "facts_sha256": "78fd71cf7c98bc1dd9996a645f09314984ed54abf0972d1b4769e6e645fc1dbb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2348eca8247a092b14cde0934f6a9e38b984a21221a97aac48fb4e33eeb79f6a"
+  }
+}

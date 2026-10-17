@@ -1,0 +1,11 @@
+{
+  "name": "The Water Crystal",
+  "catalogue_id": 4517,
+  "oracle_id": "f8d2a94f-7be1-4b17-8556-398dde531360",
+  "facts_sha256": "bbe31cd6c967dff82436e2efd42a2f856f2cbe9e880b58bca60df146c6cf37ee",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e73f22c4ebc941f11b3e3181dc87c0a9c090ec8ccbd7f2f99947d034b23d91e3"
+  }
+}

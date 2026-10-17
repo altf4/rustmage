@@ -1,0 +1,11 @@
+{
+  "name": "Rime Chill",
+  "catalogue_id": 3526,
+  "oracle_id": "bad84deb-3f2c-46fd-9dcb-4e3ba9732769",
+  "facts_sha256": "c755d095f6379ff76bed65f89ef7b754180d7ecaa1bcdb636e7efa39b71ec0e2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "17d1d38f9a588afe0bde499b9ca6d4437dcd4ee2cf399161019dc88473260918"
+  }
+}

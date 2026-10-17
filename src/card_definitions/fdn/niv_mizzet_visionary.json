@@ -1,0 +1,11 @@
+{
+  "name": "Niv-Mizzet, Visionary",
+  "catalogue_id": 2950,
+  "oracle_id": "d9f1dc61-831e-4244-a2da-aa9da6fd5b50",
+  "facts_sha256": "2d8ff5f88e92c7d2038182113526e7fee68f21d23fa8d5ff32092d3efdf6b2b0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0e7f523affbb9593a57c64453f44d76ee339f3ef0ddb1de038c9f1b25b315af8"
+  }
+}

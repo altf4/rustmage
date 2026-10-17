@@ -1,0 +1,11 @@
+{
+  "name": "Kellan, Daring Traveler // Journey On",
+  "catalogue_id": 2339,
+  "oracle_id": "7af69a44-e958-42e5-9d65-75e53a601e96",
+  "facts_sha256": "aa45d0691f61dc33a93b93b147d3cd45d238b17ea5b90f73163375ddd3326cbf",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "91f9184ea610aa0141eb033b119b7b7e9702e3b4bf19ae6e8fc5a2aab1a04337"
+  }
+}

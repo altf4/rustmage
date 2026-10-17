@@ -1,0 +1,11 @@
+{
+  "name": "Wispdrinker Vampire",
+  "catalogue_id": 5093,
+  "oracle_id": "6317d45a-fe02-4879-b515-bc5327ecb5ae",
+  "facts_sha256": "398fc32f227a51e3981423251d968fb1ca183963acc7568a23adf5dfc67cf96c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7f9a7ecca0daad14a558d0783e2a385d90ac30760f162008d4ba9d055f52deac"
+  }
+}

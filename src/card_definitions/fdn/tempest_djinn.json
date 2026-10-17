@@ -1,0 +1,11 @@
+{
+  "name": "Tempest Djinn",
+  "catalogue_id": 4358,
+  "oracle_id": "b94c233e-11d3-4556-a1da-bd193e58b663",
+  "facts_sha256": "d132ba059a0c7ea5ca47755699e2bc423041e0914009320c113c7eac7533d152",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "473d0edea86f22dae676a719e1c5b2ae1d0bc57fea45ece5715206e9b24ee1e5"
+  }
+}

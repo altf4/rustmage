@@ -1,0 +1,11 @@
+{
+  "name": "Seek Thrills",
+  "catalogue_id": 5184,
+  "oracle_id": "06374e6d-62fa-4833-81cd-b4d0a35e7365",
+  "facts_sha256": "1780b73ce5b71b69d6a90e8005f6e977492d0d7e99a6946fd92d1b9469e58778",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0d1c8e239c4d7ac9509fe915f192712e069b63507a1429c6d513a0c2f585720a"
+  }
+}

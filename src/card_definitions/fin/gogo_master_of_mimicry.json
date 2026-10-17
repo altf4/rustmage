@@ -1,0 +1,11 @@
+{
+  "name": "Gogo, Master of Mimicry",
+  "catalogue_id": 1816,
+  "oracle_id": "61586052-7d69-489c-84c4-0359228d131b",
+  "facts_sha256": "196b5bce6a67d2daa6613b76475efd4e80bb3f191ca3c20f1ee2afef1691ea74",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e99dcc120cb45bbf6540a44652460d9f3a485dfb4c220c1ccb00a6f2a6ac4049"
+  }
+}

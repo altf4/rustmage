@@ -1,0 +1,11 @@
+{
+  "name": "Political Triumph",
+  "catalogue_id": 3197,
+  "oracle_id": "0bbceb51-1fb8-44d7-8afc-b4746d292262",
+  "facts_sha256": "6e05b071bdf80eaecb69853427470e80c0f74c83cb86bd14b3e81a030a333603",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dd85af865b106f4cf5e1cf8323f7c74e0be3a529e32a61a50628790435af795e"
+  }
+}

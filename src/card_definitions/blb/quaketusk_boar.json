@@ -1,0 +1,11 @@
+{
+  "name": "Quaketusk Boar",
+  "catalogue_id": 3303,
+  "oracle_id": "6fbaa853-48d4-4a3b-b22d-27415cc266d7",
+  "facts_sha256": "26034e99b1b6cfe87892ecb7ec909460fe5fa69b152dd813908c549e97156276",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "61b5745b690f8e1c2f15c6bf0609029d8c4ac24545a4ce2d86ec76d121c46162"
+  }
+}

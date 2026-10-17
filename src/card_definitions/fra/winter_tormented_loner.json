@@ -1,0 +1,11 @@
+{
+  "name": "Winter, Tormented Loner",
+  "catalogue_id": 5087,
+  "oracle_id": "84eaac2e-74ce-4a16-9faa-409df7c58eb3",
+  "facts_sha256": "afe4905c93940de09ccefb743fa3801e410d3c55c6db4abe63662669769e8aca",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "49b00423648597ab9c5b957f398d7de6345505583e4549ca2455109ea1b1b64b"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Darkness Descends",
+  "catalogue_id": 971,
+  "oracle_id": "a3435757-d049-4aaf-a2cb-897dd4940997",
+  "facts_sha256": "d8774ebfcf8fb66ab7e4660f3459f9a228b360b5c48641d071fe3f131a2f427c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "511359f88cea7d63960e1e3e2bfff30db7cd9cc6055783184bba80b648662ab7"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Rampart Hunter",
+  "catalogue_id": 3366,
+  "oracle_id": "0867755a-9fb9-42ad-897e-6206fbfbc1f8",
+  "facts_sha256": "2efaccf4579adb4e3b875c435891bc83491cafb434f5d9621a7efbf43e369a4f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2139153665843a1622d90c8cbdab2e04185c51ee26dbd6c090f7047ed3d189bd"
+  }
+}

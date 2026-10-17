@@ -1,0 +1,11 @@
+{
+  "name": "Homesickness",
+  "catalogue_id": 2060,
+  "oracle_id": "ee57fba8-e68b-4c52-8de7-9b9873d84506",
+  "facts_sha256": "e948dc072c2e614a7c019a8b2c6b5f7c554af85c892c54492a5a9cf3dc2ba544",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a5581073e9d5a093465bb54eb0b80ff3518124156b0ccb7af7c80717a52183ae"
+  }
+}

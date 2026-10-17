@@ -1,0 +1,11 @@
+{
+  "name": "Sandskitter Outrider",
+  "catalogue_id": 3678,
+  "oracle_id": "eae480fe-d9fe-4dbe-8b78-b65f398b0af3",
+  "facts_sha256": "935e0ca3f5901798d4544b65bcadcd5da1996771f7a56f8d43b0496736b9c270",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0282bb6ce48ff2fa5cfbfae3030cbaaf47d2b91fb2156a9cb87b24cae5eee3f2"
+  }
+}

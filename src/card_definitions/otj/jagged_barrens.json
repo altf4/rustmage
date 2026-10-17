@@ -1,0 +1,11 @@
+{
+  "name": "Jagged Barrens",
+  "catalogue_id": 2257,
+  "oracle_id": "64ee02f1-afdb-474b-a893-31538ad7219a",
+  "facts_sha256": "90664f6e2aee9190697badeb40302c0f3e6bd0f069710cd723bed8685576ff6c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2973eb0b4e3e86f150b4daab29d7fae85e2491f0261e8558abfb5c90c99e9b07"
+  }
+}

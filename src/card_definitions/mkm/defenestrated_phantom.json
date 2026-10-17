@@ -1,0 +1,11 @@
+{
+  "name": "Defenestrated Phantom",
+  "catalogue_id": 1027,
+  "oracle_id": "e73addfa-d18a-46f7-882e-7bc2f292230b",
+  "facts_sha256": "b16464b851b37954a556072262085fb7ce82d3ff1ff26e929bb858e5c20284b3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "014973bb9f33c37e5f50765bb1c10587c8f73f0a90ee1556d2a17de76797a099"
+  }
+}

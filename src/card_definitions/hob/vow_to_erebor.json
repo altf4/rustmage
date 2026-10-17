@@ -1,0 +1,11 @@
+{
+  "name": "Vow to Erebor",
+  "catalogue_id": 4940,
+  "oracle_id": "f8961618-ae68-4d13-84eb-8b5464ce4971",
+  "facts_sha256": "87422d5e2902466baf2373ddba08c6ce4e04b28696f6ae363de4da835a5b9a27",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6c20f07360e68ed6343d619b8fd820087f593afc5f2e9ea88913750e2c8372b9"
+  }
+}

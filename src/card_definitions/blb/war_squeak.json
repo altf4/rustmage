@@ -1,0 +1,11 @@
+{
+  "name": "War Squeak",
+  "catalogue_id": 4973,
+  "oracle_id": "54702a84-3125-41a7-a875-fe2ec870836d",
+  "facts_sha256": "ce5dcd0dd3e4b91dad1bd9e1feaf90447ae0809394720e4fab4996c49a37fd87",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4ee9472cf918bb664012f660648fc2d10316508dee06ae13c16e48d8c2d3d266"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "An Offer You Can't Refuse",
+  "catalogue_id": 150,
+  "oracle_id": "234a734b-ba28-4f1b-9d01-3c3e7d516590",
+  "facts_sha256": "bae6a2336e8b40bd2f91ba91c1fa31040e13aed06f28cbb609462afb7ee13766",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1fd92c493ea886ac3e75812e7a6c4090910a123a512929fbb3f236b499ba0ba2"
+  }
+}

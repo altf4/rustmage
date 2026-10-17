@@ -1,0 +1,11 @@
+{
+  "name": "Firebender Ascension",
+  "catalogue_id": 1528,
+  "oracle_id": "96cc63af-69d1-4493-b241-0cb244a9e48a",
+  "facts_sha256": "fcd8413f79108611a8a06c0dd2ae99abc64d5c9969dc3c7d4ea217a81bbf1550",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "50ed87ade5717419749de78ee73fcead92e8aa4a1283d2668d592400f46811ec"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Festerleech",
+  "catalogue_id": 1500,
+  "oracle_id": "d14fdc1d-62bc-4e9c-b79b-8c9c3232f0bc",
+  "facts_sha256": "ee772489478db76a0af2546a90be4b82e21067fbd54734204007b88c674577cd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9a61467b1fff7afadac376b10ccd2ee780ca1493f5b3674318fb00d261e85df6"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Eagle of the Great Shelf",
+  "catalogue_id": 1228,
+  "oracle_id": "cb4b4b63-682b-4439-9757-84cca7a27db2",
+  "facts_sha256": "4e2c5a93f3a06560f2706d9059b896bef08decf6678eb53befeec3db78c7f0aa",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c28e0d10c828239973e458a6ad0ee40448c8b0cf5b4c7d7f33e46f423c5c1ce0"
+  }
+}

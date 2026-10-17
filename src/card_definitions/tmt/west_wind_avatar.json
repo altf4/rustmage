@@ -1,0 +1,11 @@
+{
+  "name": "West Wind Avatar",
+  "catalogue_id": 5036,
+  "oracle_id": "92e45a8f-c582-45e1-9b7f-def219023ebf",
+  "facts_sha256": "b8e64ba517866c86660d31bea4de71c79b04d47d9d299226781a22d9ada06a90",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "085b84a16dbf2ca20a04d968787afff8826723f92087a63d43f11095c7b27688"
+  }
+}

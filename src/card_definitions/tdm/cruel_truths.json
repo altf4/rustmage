@@ -1,0 +1,11 @@
+{
+  "name": "Cruel Truths",
+  "catalogue_id": 904,
+  "oracle_id": "2e68e3f7-b168-4541-b8a0-791a8a6ebde8",
+  "facts_sha256": "3158be1e534810f6632954f877a576789354b571b8ce6eb41ddd4e3c2bd8ecfb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dfd48da5aa23d0bbf36a0746480695529458dfaa3e0d6561cc13a752ad6d802d"
+  }
+}

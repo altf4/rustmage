@@ -1,0 +1,11 @@
+{
+  "name": "Evershrike's Gift",
+  "catalogue_id": 1386,
+  "oracle_id": "b5bc4adf-9105-4901-989c-63612314af5c",
+  "facts_sha256": "0be0e66951776070effc7e8b875988434e34d6b319cf9f38754bee23b315f6eb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "74de187b55fefdaacb634c6a6d84381f0c19f942d002616f16eacd5d28d75ba2"
+  }
+}

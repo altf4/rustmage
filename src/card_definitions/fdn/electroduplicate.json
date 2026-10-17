@@ -1,0 +1,11 @@
+{
+  "name": "Electroduplicate",
+  "catalogue_id": 1278,
+  "oracle_id": "112f2b3f-32e7-40b1-b80e-0b99184a840c",
+  "facts_sha256": "557501fe1b1a9757c5ab4ff9a08a547a1f28b2656fb4f5593612d40bfc28529c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "69ab60f2d73af6817883b7f10c271238385fc4e21875db5b41dbf9801e18f5e6"
+  }
+}

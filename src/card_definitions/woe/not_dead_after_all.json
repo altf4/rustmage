@@ -1,0 +1,11 @@
+{
+  "name": "Not Dead After All",
+  "catalogue_id": 2968,
+  "oracle_id": "380c367f-73ea-485f-a37b-5af0ba160893",
+  "facts_sha256": "f9a9f84b7fb262dc13a191befb1f64eb5e70681fe6a256de5ac0adb6eef4159d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "059c21daec6604d9864c27423c82068c67aac547ae9af0dfecdd16ae9747eeb0"
+  }
+}

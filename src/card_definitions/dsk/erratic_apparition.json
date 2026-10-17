@@ -1,0 +1,11 @@
+{
+  "name": "Erratic Apparition",
+  "catalogue_id": 1362,
+  "oracle_id": "23d5d43c-ec78-42dd-a53e-a1ee91c94b1d",
+  "facts_sha256": "b659e3b8cf68b34af11480c5c46237a41d115909f289dc842b9e5bc49c004de9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "332df4a6a82fc5719363ffac39019005d3ec4d9004d865d6bfd52fd2086418f6"
+  }
+}

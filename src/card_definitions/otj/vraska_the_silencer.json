@@ -1,0 +1,11 @@
+{
+  "name": "Vraska, the Silencer",
+  "catalogue_id": 4948,
+  "oracle_id": "e7c5a568-3855-4a20-9edf-01a8a6a4ba97",
+  "facts_sha256": "846385ff9157782d3be81751e1c8bd5e245da625894f138a555da109a6580cb0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "149557b6cb9531f5b67dadad6c801e7d2c7a077e02ca548db9d7f67a547dc5ff"
+  }
+}

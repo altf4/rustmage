@@ -1,0 +1,11 @@
+{
+  "name": "Zealous Display",
+  "catalogue_id": 5154,
+  "oracle_id": "0ff3afba-7a90-4f62-a1b0-b553ad81c32b",
+  "facts_sha256": "6091c7865ab035cdb35865606530b56337e37928335dfd8969f7074828f65ea4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "50a1adca19bffa5ba8ebdf4bfaeba069fd73d097e099a889c4bc8ef985ace025"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Desculpting Blast",
+  "catalogue_id": 1049,
+  "oracle_id": "2d80ee9c-55d4-4115-8a58-63e8460f9795",
+  "facts_sha256": "de989e8a2d6e0a82f52dc274c7cc16a4d76aa46d9df74e85c5f2a72a3d2f383c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1cd2d611e89bcd88949df1282b7066aed6f8c2eee807767f692f54319f6b26ba"
+  }
+}

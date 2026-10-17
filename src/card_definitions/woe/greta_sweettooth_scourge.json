@@ -1,0 +1,11 @@
+{
+  "name": "Greta, Sweettooth Scourge",
+  "catalogue_id": 1876,
+  "oracle_id": "00173df7-a584-410c-af1d-ada9c791056a",
+  "facts_sha256": "16c3b889fcea0b30fec5b3ac1c5059e8502aa029e73dbe495039a21807bfff53",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dbf531328981eb32e60864f2e35c03811bb5d219333c7636dd3c69cdb155f436"
+  }
+}

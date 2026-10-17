@@ -1,0 +1,11 @@
+{
+  "name": "Sting, Bilbo's Sword",
+  "catalogue_id": 4139,
+  "oracle_id": "9779f32c-b1a2-42a3-8e78-14c28c3ad254",
+  "facts_sha256": "5ebe817b4486375ea09b41f8472a9fcf619270138afcf3113ea655aa478aa300",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "746ac6d5eb9acc113c5bcb5b75fa84afc2ac78af0a5ad136a2898a265bddd6d7"
+  }
+}

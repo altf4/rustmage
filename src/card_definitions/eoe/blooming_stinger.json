@@ -1,0 +1,11 @@
+{
+  "name": "Blooming Stinger",
+  "catalogue_id": 467,
+  "oracle_id": "ab282bb1-900e-40b8-9821-8e2de88927bc",
+  "facts_sha256": "17b342fffa5e1e5d2e5019072905128c49389eb688e2d9197112f19e85891eec",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "01e0185b117dcfa86971e866cab33d84e4911b4c52dc72c647861ae5bd7a44be"
+  }
+}

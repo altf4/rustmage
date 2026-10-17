@@ -1,0 +1,11 @@
+{
+  "name": "Michelangelo, Improviser",
+  "catalogue_id": 2740,
+  "oracle_id": "1939679b-ea2e-4a75-b3ce-d7af68437484",
+  "facts_sha256": "4dbd540abada0fdcd7e145a86e112892b27aad17033802e434c5cd25b73eb026",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4c83664fa23eb2638e4601a05c6978e91063dc6219e88da104a850af4bfd55aa"
+  }
+}

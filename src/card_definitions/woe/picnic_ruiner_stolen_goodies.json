@@ -1,0 +1,11 @@
+{
+  "name": "Picnic Ruiner // Stolen Goodies",
+  "catalogue_id": 3156,
+  "oracle_id": "334fba11-e500-40fd-a142-41ff553642b5",
+  "facts_sha256": "248658ef56d64d3f0c5359aaa0c1d4931ab372a7c938b7e3e6d6d05b332074d3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ce64b152b773d274cf5174e2a3d3af45b301bdde648a7cfe6a7fd7a87b20efce"
+  }
+}

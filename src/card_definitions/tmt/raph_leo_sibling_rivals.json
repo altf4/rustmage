@@ -1,0 +1,11 @@
+{
+  "name": "Raph & Leo, Sibling Rivals",
+  "catalogue_id": 3375,
+  "oracle_id": "57f39ce2-ecbb-4262-8140-03aba5c4303f",
+  "facts_sha256": "90a6e4cca39f04415b70ee854ba5e503047c0e57fac9d6ec503120ef980ab386",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "23ecaf64695ed41a63b1c9d166d2159f2184c1d8a102cc991c683d43a3722a6e"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Pillage the Bog",
+  "catalogue_id": 3163,
+  "oracle_id": "91740570-1a97-4513-8af9-b32c363daf15",
+  "facts_sha256": "3b86da5e54b0d79adc536bccbf05bffd777fd1accd30ac0a1c1e90ad73f36d1c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7854c56b37285c0c8a451c8c1b9e2786c12218a10ee2f98f51f469588b73cc8d"
+  }
+}

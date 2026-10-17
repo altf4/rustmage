@@ -1,0 +1,11 @@
+{
+  "name": "Earth Kingdom Protectors",
+  "catalogue_id": 1235,
+  "oracle_id": "3bfb3913-808d-444b-97c3-a90af3bc585b",
+  "facts_sha256": "e7fac64914a423890dc632e444935971f6d41073ec643028ac4cde6faf20d1df",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2772ccf47a44d40ce8d7e3d26e64866119f571bf53b6a114e1031c68e36bf5d4"
+  }
+}

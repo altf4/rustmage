@@ -1,0 +1,11 @@
+{
+  "name": "Extraordinary Journey",
+  "catalogue_id": 1415,
+  "oracle_id": "69288566-3015-45de-b391-6fe079865f0c",
+  "facts_sha256": "de7f8f93a238bda86c601749d26e4d68df9da66d9a63b1ee43fb3690458c98f3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bc6b4de9759b5d775e1f93f3dfb7cccb25446b0e779e1998ac25b92a1beaddd4"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Slumbering Keepguard",
+  "catalogue_id": 3930,
+  "oracle_id": "89078485-c438-4035-95dc-dbe37fb13e50",
+  "facts_sha256": "8ad3c1cbac377e59aff50e6f3c3eff36a88150a31eeadffac5da7e50a75fa71c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3e93ef7c1cad5719edb66b4844d237073c1e5dc1bb498ea6ff727ac8f3ff96be"
+  }
+}

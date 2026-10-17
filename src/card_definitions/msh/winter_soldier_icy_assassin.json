@@ -1,0 +1,11 @@
+{
+  "name": "Winter Soldier, Icy Assassin",
+  "catalogue_id": 5082,
+  "oracle_id": "6f4c94b6-f829-4646-a574-083997b78dfb",
+  "facts_sha256": "1fe7c689d946e3dbdfafadc5b71aeea1cc9e9b697dd3d24d1aa90e3b9fe8ca81",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "98b9a1437c41b8fe3bd671a12a5613063993233d322edc3cf44c8bf89aa923fe"
+  }
+}

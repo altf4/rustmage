@@ -1,0 +1,11 @@
+{
+  "name": "Mechan Shieldmate",
+  "catalogue_id": 2698,
+  "oracle_id": "d0025d29-d652-4af8-b367-13142d5532df",
+  "facts_sha256": "4405b971c15839a34940e7b505fbc749af1119c46f137fb3bc2b10dbac94954e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "00f89978b21ae92913eb4a505488eb43ff0cf526e7199bb1385490d55de56f4b"
+  }
+}

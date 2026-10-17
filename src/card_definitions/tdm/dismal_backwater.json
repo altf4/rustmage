@@ -1,0 +1,11 @@
+{
+  "name": "Dismal Backwater",
+  "catalogue_id": 1094,
+  "oracle_id": "865a2194-fca0-446e-aae3-ca475cd66e00",
+  "facts_sha256": "2818b0af8052055e32175a211055d43f9e1e1ce79c7d7aaa678c31ca55e48df7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cfc8e1b1d4d1e356664c53ae3a1c565043c3a59ec4070b735f38b7ce88132066"
+  }
+}

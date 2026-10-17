@@ -1,0 +1,11 @@
+{
+  "name": "Yue, the Moon Spirit",
+  "catalogue_id": 5145,
+  "oracle_id": "961f1883-2f97-4249-90f9-416279d7a9dd",
+  "facts_sha256": "58810ca47b42a29ab0f834896741a24f73ae58fb3cc75e0554dee58824c7470a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d606a2301c85f6ee672bbcb57ad232c837061a3c760786cc5fb21c832b984ce7"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Garnet, Princess of Alexandria",
+  "catalogue_id": 1684,
+  "oracle_id": "8c709873-84b5-46c2-bb29-85b041a6df88",
+  "facts_sha256": "f1201158b4e28d30475d96a35719ef2454c778975e6872a5be32d8ae9b5e195b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2ba8aacebd1566d4e98a6a0c77e049c576bef04d339bb729bd2191d7a27eb588"
+  }
+}

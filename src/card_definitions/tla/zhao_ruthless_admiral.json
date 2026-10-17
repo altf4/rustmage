@@ -1,0 +1,11 @@
+{
+  "name": "Zhao, Ruthless Admiral",
+  "catalogue_id": 5160,
+  "oracle_id": "d6b0198a-c1f2-4142-b5e2-8205adf14d0a",
+  "facts_sha256": "844f0c7fbebb544762d6467d7be85d14d00055f070745576916b68529c75dbe9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2537e961620c9eae25acf1905c54358bcf831cf49203552575dde41a9c164f76"
+  }
+}

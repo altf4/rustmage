@@ -1,0 +1,11 @@
+{
+  "name": "Resilient Roadrunner",
+  "catalogue_id": 3478,
+  "oracle_id": "78c7c73f-847d-43bf-9e02-cf85357453f4",
+  "facts_sha256": "db692cfc8aa681ba242708cd9354a1c10e95aa0105ae009d016637c583dec5bf",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a8eb38929d136acc8ef5f51b8b33b129985ae2f650d3976bdc62075aace864f8"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Mechan Navigator",
+  "catalogue_id": 2697,
+  "oracle_id": "fa72c607-7eb4-41b7-9af1-f3d6c69abf09",
+  "facts_sha256": "07dfc3a3cfe69d0d02e448f8380df593fa73cf810a4da6812253ff10b45f493c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "08cae32916415d9ef785fb9aade6b4f55db2247723d76f153d53eaaf02b4e730"
+  }
+}

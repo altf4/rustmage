@@ -1,0 +1,11 @@
+{
+  "name": "Malcolm, Alluring Scoundrel",
+  "catalogue_id": 2642,
+  "oracle_id": "3bba3b36-f8d7-4fd6-892a-797226210b6e",
+  "facts_sha256": "724ecdfc26be6231dd7288ea1d51e497b16c09836bb4bc251c8a50f6298267d6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "38be39b329f8b1ccf904325a861dedfb60acdcaf08e77ea26d1ddc38c75dbd85"
+  }
+}

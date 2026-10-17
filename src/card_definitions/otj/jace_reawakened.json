@@ -1,0 +1,11 @@
+{
+  "name": "Jace Reawakened",
+  "catalogue_id": 2247,
+  "oracle_id": "cbd483b5-5554-43ed-a729-535d01b0d5d3",
+  "facts_sha256": "51e8e23613399a6630d16e4bc1ee055b3c34bcec779cf2db8d236b8f2a3aaa5b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "23171be4fa4b9c5577c17879ac0a5e5561fabaec75dbf541412663f9f07fa6b9"
+  }
+}

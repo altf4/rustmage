@@ -1,0 +1,11 @@
+{
+  "name": "Gohn, Town of Ruin",
+  "catalogue_id": 1817,
+  "oracle_id": "13fbd525-c9ee-4bd6-b269-94fb264024b6",
+  "facts_sha256": "ac367df1d2abb3cd71c409146372125f3ff123547aaa5aa829e848fa4bd58018",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1738fb2f3bddf170a4ece943e4512a0c7688d079bb3f05d9abc50dde98fc2402"
+  }
+}

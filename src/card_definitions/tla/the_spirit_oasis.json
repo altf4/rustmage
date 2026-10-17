@@ -1,0 +1,11 @@
+{
+  "name": "The Spirit Oasis",
+  "catalogue_id": 4502,
+  "oracle_id": "b677a73c-f179-46bf-83ee-c2b05f9fca67",
+  "facts_sha256": "d14848a894d3f459a9da96ee91a2111d82745483a267e533fcc4d03e509cd6af",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "01a57bd40d1b071725b099c6b8924f4812ccef2898e4e2f8a1f6bcd523a46e1e"
+  }
+}

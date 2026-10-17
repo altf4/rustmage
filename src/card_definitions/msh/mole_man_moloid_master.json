@@ -1,0 +1,11 @@
+{
+  "name": "Mole Man, Moloid Master",
+  "catalogue_id": 2811,
+  "oracle_id": "34994475-b914-44f6-8ca1-c2747b6d5956",
+  "facts_sha256": "80ba1bb00f1b65f9aac025c8367fa30f0e38fc6eb41141420062f94d312d9bb7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "99d7f4d79a22baef1be6d07e683165b83a1608762f57930802ebf2803c3d62b0"
+  }
+}

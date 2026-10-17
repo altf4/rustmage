@@ -1,0 +1,11 @@
+{
+  "name": "Treasure Map // Treasure Cove",
+  "catalogue_id": 4671,
+  "oracle_id": "0b55eac6-a745-4bf4-8926-5ce83bc38d7d",
+  "facts_sha256": "33f85f087355f4ab54390f3b04e0b843c7f143dad313a506bda1ff84e0c54cb2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "877fd95c802bdc55a04d30ae3bcddeead622738cbde7bfcc5a3e257b70c38176"
+  }
+}

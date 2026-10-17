@@ -1,0 +1,11 @@
+{
+  "name": "Command Bridge",
+  "catalogue_id": 811,
+  "oracle_id": "87c8e1ed-258a-4a89-bcc6-211405e49692",
+  "facts_sha256": "7525ec2618ada75687a1dc1bac9a37722f94f40463e44c3c07c33f43c0fa7f04",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2a2db6f814797d3fe978853789d46e0b5752dc2c90cc95da8aadebc6afe0d435"
+  }
+}

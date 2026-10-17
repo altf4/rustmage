@@ -1,0 +1,11 @@
+{
+  "name": "Scrawling Crawler",
+  "catalogue_id": 3737,
+  "oracle_id": "1d60c80d-9a95-4051-bbf7-02ca51ee1be2",
+  "facts_sha256": "50bc06722bbe051f045d8beae1adb2123a124aaa3dfd78f810f0d5a63521c3f0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b561dd17977de013bf25365342417a1ee4de165a53b9b4e1a9223a3af7708664"
+  }
+}

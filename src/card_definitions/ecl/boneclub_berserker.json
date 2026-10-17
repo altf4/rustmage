@@ -1,0 +1,11 @@
+{
+  "name": "Boneclub Berserker",
+  "catalogue_id": 496,
+  "oracle_id": "a08f69f9-de48-46d6-8b75-31886159cf45",
+  "facts_sha256": "bba49a295c2ba105cddeb1075c13e761dfac662d827718175c1464a909b5bbc6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e88987af1dc3bd8ce586e3d8ea1269cf6c235b3808c9c63cd929ca8d27ab3d89"
+  }
+}

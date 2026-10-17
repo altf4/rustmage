@@ -1,0 +1,11 @@
+{
+  "name": "Kishla Skimmer",
+  "catalogue_id": 2371,
+  "oracle_id": "a3275d80-112b-4839-a014-e44ef48d2e6b",
+  "facts_sha256": "74eb2ff05b46aba7c20470e2c76b943552fa0543dccb84a2047d02417a0a6fed",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5404df6127ac7a81120afb1253b28c5d20232d1e25c9aa86aceda35f3f741af5"
+  }
+}

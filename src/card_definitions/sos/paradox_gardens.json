@@ -1,0 +1,11 @@
+{
+  "name": "Paradox Gardens",
+  "catalogue_id": 3097,
+  "oracle_id": "638ff242-63d5-457d-a7a6-40ad51052e2e",
+  "facts_sha256": "49f5188fe40cc726064c1005598e94f4d662858178a21ec2be04853f8ded337b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c5e1adf77ed1917b9dfaf48f4bc7bc0d37825e504ccbdbcd9d00fa148901d67b"
+  }
+}

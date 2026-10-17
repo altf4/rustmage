@@ -1,0 +1,11 @@
+{
+  "name": "Unauthorized Exit",
+  "catalogue_id": 4753,
+  "oracle_id": "3d145811-adb2-46a4-b173-bf8152e5de48",
+  "facts_sha256": "2b25e1409467b79e9f721f3ed322b769a529c67c745dcba68cc1d4d65436823d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "114b8a6ceecfb0c2043685536539b801f6adf86ab1d4661343b3bb65b53c45dc"
+  }
+}

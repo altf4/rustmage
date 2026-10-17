@@ -1,0 +1,11 @@
+{
+  "name": "Lumaret's Favor",
+  "catalogue_id": 2575,
+  "oracle_id": "d514704b-4055-48ed-9da3-e4397fca7576",
+  "facts_sha256": "90a826a487289255868303361bbbdb783c02604d48c8556c72a42da7988f271e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "70f8754d9681bae0d748287aa6b0b27fe8f1f72ff98649cf399e9a011ab3d5be"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Enterprising Scallywag",
+  "catalogue_id": 1346,
+  "oracle_id": "97607bf5-ca7b-4b1b-963e-390faf6e413e",
+  "facts_sha256": "b2e46f91d97ae32ec284e2f1ae1cfad0b2922580810e02462b6f58b1687a8bea",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "51602c943c8e0bdfa1e6c2b574a98079fec94623baf7464980d1a3500c012773"
+  }
+}

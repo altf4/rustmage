@@ -1,0 +1,11 @@
+{
+  "name": "Spirit Mascot",
+  "catalogue_id": 4055,
+  "oracle_id": "34c572b2-dccf-43d9-a9c4-846653ad22da",
+  "facts_sha256": "d85bf6de14f0177d23e3ff82ee45e8fa0b3ada24f0bdea8f568e1070898e9194",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d21ca76217a61a63e0fd539959460db8779aa4a7e71262ce8ed117e2ab16ea9f"
+  }
+}

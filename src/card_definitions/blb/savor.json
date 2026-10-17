@@ -1,0 +1,11 @@
+{
+  "name": "Savor",
+  "catalogue_id": 3700,
+  "oracle_id": "dfc1dc36-0cc2-47cc-b0dd-1cc7c31057aa",
+  "facts_sha256": "8bb0d8b745b228e97e0c0b6f70bc55d9e7c236b69cbe97ec51ec0acb2284b2df",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "03e26ae6d7bc1d79ea9172fde1bf7625154c74e4e4ed4b9836f1960f7493def0"
+  }
+}

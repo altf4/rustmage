@@ -1,0 +1,11 @@
+{
+  "name": "Ultimate Green Goblin",
+  "catalogue_id": 4744,
+  "oracle_id": "b5b43d01-fce6-4a00-9c19-7a7e2a09d833",
+  "facts_sha256": "fd804025437554e62865982858bfe4d8fe27028b7b6fc72516e9d94d06c8a8d2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8ece7930b5e6e469a7057174287fa90a7bcd9882d45490e2b52646298eeb447d"
+  }
+}

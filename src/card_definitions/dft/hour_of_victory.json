@@ -1,0 +1,11 @@
+{
+  "name": "Hour of Victory",
+  "catalogue_id": 2081,
+  "oracle_id": "eb100b3b-bc3f-48f3-8f28-bb2d80225ea9",
+  "facts_sha256": "355c941b9656410b67a85c018a153d38739932a765aac8bc903b5755ac1694de",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a58a8311a7166e93a5ba5c5ad218b8b0558bffa4b25ff3af92ce1acf2a55f683"
+  }
+}

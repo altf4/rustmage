@@ -1,0 +1,11 @@
+{
+  "name": "Prompto Argentum",
+  "catalogue_id": 3258,
+  "oracle_id": "e13d7600-0924-42eb-9d65-aa18548624a7",
+  "facts_sha256": "0a62ff6a3f27372f6dfbdaac2de195b405e1266c5b1122710aa4809069819de7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "795dc6c69e6a6cc88975db2accb5d9465b000d4f1edb04064a91bc5020bd0673"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Lively Dirge",
+  "catalogue_id": 2520,
+  "oracle_id": "0b23d9aa-d4ed-4ccf-8810-4a4d11d6fb9c",
+  "facts_sha256": "1035c5e3c45fc852bfcb2d42a3aebec71201ae003a13aa5096b9466dfd1feaf0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a2d6299ef19f6449e0b906352e8be1144882627ea4eca35102dd24e64f126a0f"
+  }
+}

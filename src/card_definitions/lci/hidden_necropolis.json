@@ -1,0 +1,11 @@
+{
+  "name": "Hidden Necropolis",
+  "catalogue_id": 2029,
+  "oracle_id": "f780ee53-62b0-4c32-b5b7-047651f48e5f",
+  "facts_sha256": "be9ac8e8b2625b89641bcc0088e3428bf82a80174cd97ebcf6c2946149e04f96",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "169a93fa80274cae2e99e1e1271d09e18ae61aae45df7f6030514e2e6549d83e"
+  }
+}

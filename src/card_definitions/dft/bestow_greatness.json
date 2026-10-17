@@ -1,0 +1,11 @@
+{
+  "name": "Bestow Greatness",
+  "catalogue_id": 397,
+  "oracle_id": "58a17110-b2a7-4dbc-bba5-5ed3728ad261",
+  "facts_sha256": "13d2f6b4258f1d2fbc428f5b059645b195fabe5c10d27b20e7c0677637abc572",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "20393f080ecfc3aa4717fb298f100366acab34fab18b23910f2a2dc5a02b6780"
+  }
+}

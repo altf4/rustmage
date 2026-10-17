@@ -1,0 +1,11 @@
+{
+  "name": "Diversion Unit",
+  "catalogue_id": 1107,
+  "oracle_id": "4d739edc-4e02-4b35-a2a0-e9685c6e2889",
+  "facts_sha256": "4783cc6c744fd1ece78a7d2cc37e5bf25edd613732aeaaaa794bdaf5102de449",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e475374b0917edbef6c3611282597029dce43f2ed2518d85f485e0cab93c77a1"
+  }
+}

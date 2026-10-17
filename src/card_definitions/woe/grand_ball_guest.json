@@ -1,0 +1,11 @@
+{
+  "name": "Grand Ball Guest",
+  "catalogue_id": 1844,
+  "oracle_id": "0b0fdb28-f7b1-4c30-9f2c-14a9074da22d",
+  "facts_sha256": "b54d123acd9525f049e5b13c77b532d27ab387d344a76e9f05508a4197b07179",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a62d2e7e36a3a1a5d6fc8aecf1629977d9ef76e869a1186c3736f4c1f04e2c32"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Encroaching Dragonstorm",
+  "catalogue_id": 1327,
+  "oracle_id": "1e95c273-7fec-4f8d-8be9-e21ad4b93717",
+  "facts_sha256": "f9b95a7aaba9d8fede6afda4324b31a187f0481206958f57ed5b91a676ee2ad1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dc84bf03eef761535654a9d0ece0dbe254143d8f203b8b95b8079e91fab61926"
+  }
+}

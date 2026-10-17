@@ -1,0 +1,11 @@
+{
+  "name": "Market Gnome",
+  "catalogue_id": 2666,
+  "oracle_id": "12fa17b2-158e-4d53-897f-81111f912b00",
+  "facts_sha256": "5c11d5d20edea651b028a7c572bd37f9a83356fbdc5849092cb11f71723ff995",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b1dacb419a308b3ed5fa3c3a6ebd404f967c8671a07d90b342f1437fbb28153c"
+  }
+}

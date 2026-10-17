@@ -1,0 +1,11 @@
+{
+  "name": "Semester Foreseer // Peer Review",
+  "catalogue_id": 3785,
+  "oracle_id": "21b8d59f-a90d-44ff-a2e3-9f439ac3e14a",
+  "facts_sha256": "213f2b2bc3ee193b10a2c0bd17ecdc0ce3aef76468db3c3fd41525bf43269b92",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1c629d4f3a9c1cd0f7dac792808415fae16740337f34a0d94047557e847de048"
+  }
+}

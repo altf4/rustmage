@@ -1,0 +1,11 @@
+{
+  "name": "Champion of Dusan",
+  "catalogue_id": 706,
+  "oracle_id": "0a427652-9745-4802-8c8f-5ae29a29b496",
+  "facts_sha256": "c70c8be8a71a666274e307c042484b5a5598ec54432f57d8260723ebf69eda91",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9030b45d4d9089f60e62238383a4c2282123a89c2e9e26052cf441caa50301c0"
+  }
+}

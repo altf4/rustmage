@@ -1,0 +1,11 @@
+{
+  "name": "Spider-Ham, Peter Porker",
+  "catalogue_id": 4024,
+  "oracle_id": "00b50215-e832-417f-9c80-2bc3050b6ebb",
+  "facts_sha256": "a70ec62ece91e647aeb89ea919605e6b0991dd46bbb861cfd7621d9eb75210b1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2bf37cbedba7c5275912be854c518666ffc82db3d804a23ef054fb206ea0963f"
+  }
+}

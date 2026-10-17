@@ -1,0 +1,11 @@
+{
+  "name": "Mechan Assembler",
+  "catalogue_id": 2696,
+  "oracle_id": "2c2ef1ed-2f93-48c5-bf86-e46318599aeb",
+  "facts_sha256": "b1b52c8f2c8148123a800b4227f8fbe3e7fceeb862ae6ffbf7f4e9f420922b35",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4735ae3df640e964485c18c2de55d9b22744b0141ebb18127cc60a47c5a2834d"
+  }
+}

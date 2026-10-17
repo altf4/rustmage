@@ -1,0 +1,11 @@
+{
+  "name": "Surveillance Phantasm",
+  "catalogue_id": 4274,
+  "oracle_id": "b97648b7-ae98-45c9-8f0f-a52d6faf2d2d",
+  "facts_sha256": "e9f7cb4d6cd48cd1b2debe04e40d4a251081253d4eee496bc8df48808a6250fd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5d105884ef516c8dd3f8f27e996c030e73d92cdb12336f3ec1899397bb997a01"
+  }
+}

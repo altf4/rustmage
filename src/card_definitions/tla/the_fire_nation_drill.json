@@ -1,0 +1,11 @@
+{
+  "name": "The Fire Nation Drill",
+  "catalogue_id": 4448,
+  "oracle_id": "3d4b9d71-4275-4c18-a4dc-9aad234eb92c",
+  "facts_sha256": "751c9664b756022da38e197cdce97e91e31bee28ae4c900d3ed7cbd95f964ba7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "27af5340397ee2390a1798672f5e0e8fd184ce8ba2cccd5d429915570b2c0928"
+  }
+}

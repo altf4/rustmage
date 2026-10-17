@@ -1,0 +1,11 @@
+{
+  "name": "Fear of Being Hunted",
+  "catalogue_id": 1461,
+  "oracle_id": "a23293cf-4352-4ce6-8a68-3b30f908e137",
+  "facts_sha256": "020c78be4bc48e2ff8c81af5b5850d45ce3aa37c342cf393de60c70810c312ba",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "77834ef5e7cc097a729a2f64d2a39c23ae473305ef897c24ba8bfda897804c4a"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Super Intelligence",
+  "catalogue_id": 4252,
+  "oracle_id": "d82929f2-57ad-45be-a834-984437046026",
+  "facts_sha256": "0a38d82d0698b9e67480118b4ccccec447227793966aa676a217ddd08bf02dcb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "896d256758da9db0861573ab852b1f66d48ad361b68203105d2c0c077dee2997"
+  }
+}

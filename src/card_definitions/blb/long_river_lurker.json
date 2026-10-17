@@ -1,0 +1,11 @@
+{
+  "name": "Long River Lurker",
+  "catalogue_id": 2544,
+  "oracle_id": "c65c4d01-29da-47e6-993c-a265cf1f198c",
+  "facts_sha256": "f3277a23505ee5f7069ba633c029da3912216add214ce75c5a25b99ad4145811",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6930e61323efa594c98ae7ffa737665a6fe12792a6ee1b9291960a03b849e322"
+  }
+}

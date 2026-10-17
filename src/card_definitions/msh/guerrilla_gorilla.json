@@ -1,0 +1,11 @@
+{
+  "name": "Guerrilla Gorilla",
+  "catalogue_id": 1902,
+  "oracle_id": "6cb65b68-91b2-45ba-867b-3b31d6dd5643",
+  "facts_sha256": "e8a7624b67e5ec65417a8d4c8f623b93c887e87cb5bef93853db31a439371150",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c578656def7c1f03d4f3a940122dc2810c6356b468087c8d12b74e921bde8d5f"
+  }
+}

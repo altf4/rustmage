@@ -1,0 +1,11 @@
+{
+  "name": "Uneasy Partings",
+  "catalogue_id": 4775,
+  "oracle_id": "15211eaa-d906-4b95-8942-2f49d3cb4b81",
+  "facts_sha256": "994ca86fad1e67906e087d92cbb8100d4e4d487a7b2f8a0a8a1b06fd7126eab7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0026ce1b757d72f09286e2f88ac824990335cad4396c542631bac8de18d460de"
+  }
+}

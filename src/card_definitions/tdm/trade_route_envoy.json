@@ -1,0 +1,11 @@
+{
+  "name": "Trade Route Envoy",
+  "catalogue_id": 4647,
+  "oracle_id": "95d51048-be32-4c5f-8b75-fca3a891c9d6",
+  "facts_sha256": "0a557ca987c01559f1b6b07cfad98b59cc01e2f8f0aab06e608796fd9dd831d3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ebebd36781ae2f8067101dd860a1aaa4dce151962517563de06b5596c86b9171"
+  }
+}

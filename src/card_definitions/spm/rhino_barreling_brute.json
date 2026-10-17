@@ -1,0 +1,11 @@
+{
+  "name": "Rhino, Barreling Brute",
+  "catalogue_id": 3514,
+  "oracle_id": "9a6bf8a3-7640-4890-ac62-d5028f41978b",
+  "facts_sha256": "e5a1354742887824ef663334027e3061f601868a9ccccc627465a8754485b085",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ceda4e52d22c930c1605b9a42444fc805f1b846279d0ff0be472882dd1b0ea0c"
+  }
+}

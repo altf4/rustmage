@@ -1,0 +1,11 @@
+{
+  "name": "Scolding Administrator",
+  "catalogue_id": 3724,
+  "oracle_id": "3b8240ad-71d3-4117-8531-6c8e79bffdb9",
+  "facts_sha256": "674cffd92fcaa350952b0ca2a8a122397ef1667709fa6b1f5ffce0946bcd6f91",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1125cb75284c63eebae51d4660c621e358240282bc9d5d30802dd98475f97dcc"
+  }
+}

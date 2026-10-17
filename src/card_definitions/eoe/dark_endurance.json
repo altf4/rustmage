@@ -1,0 +1,11 @@
+{
+  "name": "Dark Endurance",
+  "catalogue_id": 965,
+  "oracle_id": "ded4009d-be23-4e36-a7a3-9e07230712ee",
+  "facts_sha256": "ff029449f049f9f6d01a79371e06949fdc0ea2e8beb67ccffe1d26b42db01fb4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c541d49978e3d9ba44f5e6f3f4a70f1715cbd2329f5b4ca3a7b0c00f1bc8df4a"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Northern Air Temple",
+  "catalogue_id": 2967,
+  "oracle_id": "28a2ad5b-d637-4634-8d4b-889e1fc88319",
+  "facts_sha256": "0ab09c36c63a978501a824c0314504ddd2e26b6a029f7728cfd45ec3cdb3435a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f5f318e28582fa2208fc3274870f24deb998527a46789dfc2b9beeca21bcf7b5"
+  }
+}

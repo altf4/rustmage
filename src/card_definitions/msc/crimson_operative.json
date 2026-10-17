@@ -1,0 +1,11 @@
+{
+  "name": "Crimson Operative",
+  "catalogue_id": 891,
+  "oracle_id": "d8863742-6c1c-415a-ad27-7def6d119c6a",
+  "facts_sha256": "5b1fbae2b99cbcac41e7c08d41c94a07e20510260afcf1fe4d7b1bc65d8d3ccb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5c1cde7a5e3bbbacb5e55b71bc7c4d9deab9c540ddced58cf34f6403712be006"
+  }
+}

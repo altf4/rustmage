@@ -1,0 +1,11 @@
+{
+  "name": "Ultron, Artificial Malevolence",
+  "catalogue_id": 4748,
+  "oracle_id": "a8f25e67-2112-4355-9298-363ed04a5cb8",
+  "facts_sha256": "9b2d673916203f821b00aef54368aa5b6c524ecec737beb64a28bc2ff003db4f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7963af59a046e70f0bc8c91684c8cd1a26e1243b3b54230cd821c8728c070e29"
+  }
+}

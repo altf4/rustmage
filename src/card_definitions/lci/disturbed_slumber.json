@@ -1,0 +1,11 @@
+{
+  "name": "Disturbed Slumber",
+  "catalogue_id": 1102,
+  "oracle_id": "6a381297-ebce-403c-b1dc-b7405fa6902c",
+  "facts_sha256": "bfaa67ba28cf36f6e7dfba7efed90aa8350becb500b5be71964d6bd921a63460",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "501c7aed2e22f1eec16346e51b27fb2701eb03d8f79dab2df0279c9dcaa39671"
+  }
+}

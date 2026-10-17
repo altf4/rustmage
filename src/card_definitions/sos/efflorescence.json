@@ -1,0 +1,11 @@
+{
+  "name": "Efflorescence",
+  "catalogue_id": 1270,
+  "oracle_id": "181da74b-53fb-4e46-afc0-e7c990fda128",
+  "facts_sha256": "c158c34dbdc1b9436f9c6a593f1ecfa473f90fefb15f6360de35d119583ffe34",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c849eb9ac8203781fd49ded3a963634ab6045e48a65e1baf9739bba5c1e63b3b"
+  }
+}

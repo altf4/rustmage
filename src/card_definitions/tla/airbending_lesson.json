@@ -1,0 +1,11 @@
+{
+  "name": "Airbending Lesson",
+  "catalogue_id": 107,
+  "oracle_id": "e101b744-9175-4aa5-bf80-d6944359e538",
+  "facts_sha256": "3c20d036cdf06a3f48a9c7c9ffac8e976cd88cd5b7f39c89d662d4269289eb90",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0e45711a36fc8d6277f18f9834e1e3e46fad8237e83a1f9c67cdb6063bbc4c37"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Twinned Vision",
+  "catalogue_id": 4724,
+  "oracle_id": "fa1cc78f-26bc-4d5d-973b-7cb7d7490973",
+  "facts_sha256": "036a66a1d626d634425279cfb9a2d28471830df0be3377a8039c209d76589ba8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0b2dbdd03b6e07271143b7bba636c1b02cdec63458c3c15feac08dbea04cf1b0"
+  }
+}

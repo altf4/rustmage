@@ -1,0 +1,11 @@
+{
+  "name": "Leaves from the Vine",
+  "catalogue_id": 2466,
+  "oracle_id": "7c4abd72-29b0-4c82-9e67-b481cf7e8775",
+  "facts_sha256": "fcbf1568fdc14db8959dd7e499a2ee23762048e1ad23630b0dd8d5765ae7f526",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9f7e3f0c7a85e269788de1bdd02e0bc322be077250a4ae924d00f2dddc1762c2"
+  }
+}

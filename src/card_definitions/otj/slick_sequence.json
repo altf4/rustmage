@@ -1,0 +1,11 @@
+{
+  "name": "Slick Sequence",
+  "catalogue_id": 3922,
+  "oracle_id": "4ac8c118-3942-4c92-856c-20d764283650",
+  "facts_sha256": "1b818d8a306582503a1deade7f54dcf4ccb02c3f65eb9a77e06f1c73cc799a7a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b7d6916498cd23c1265b0b323246ef4c281dccf75d23ea97bbc709156b8ac804"
+  }
+}

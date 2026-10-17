@@ -1,0 +1,11 @@
+{
+  "name": "All-Fates Stalker",
+  "catalogue_id": 132,
+  "oracle_id": "da9ec010-8b42-4927-b602-4e96bced4e99",
+  "facts_sha256": "9fb3f63e3a38f870c154689cda3e7bf41a628393480242acd4d08f41a68086ea",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8d9a1b04c109730a2f40c34e7ffc0e877c08e5f5e0a9ae78521167879c90e522"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Manifest Dread",
+  "catalogue_id": 2650,
+  "oracle_id": "df5a66d1-61f6-44d9-b464-3ee739e78dce",
+  "facts_sha256": "f144fe3b93f06efe5f6c16f34b6de0c4c21e6610a660ae3b0f677f2adde0a140",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bbde91c6ef69aeb41668df109fc213c39fe9cff5ba4c043c84250f7cb0cd1ba2"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Glacial Dragonhunt",
+  "catalogue_id": 1760,
+  "oracle_id": "8f976399-29a9-4eb7-844d-3d3f2fdf6ea7",
+  "facts_sha256": "6b545fb1d8869e0cb0f96314822bc129a2e7e1d3e2ce6a9418cf3b176ae71c56",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5878d3f0ee86cecb0bc549f74b2f656254c99a81261ddcc1ee4407a4861be1ca"
+  }
+}

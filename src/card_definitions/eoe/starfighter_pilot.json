@@ -1,0 +1,11 @@
+{
+  "name": "Starfighter Pilot",
+  "catalogue_id": 4100,
+  "oracle_id": "fd6afb5e-d99a-44a7-9af4-9f064da95d63",
+  "facts_sha256": "0ea339cccdd8cdce1d4fe9949aab22c5d5ffd0d68e5900f9c26e36f18da4c691",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f9a0339786b5858b9bd264969eef33e3d3cc3604b2f04df22afbb8d8cc3d7915"
+  }
+}

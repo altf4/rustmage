@@ -1,0 +1,11 @@
+{
+  "name": "Underwater Tunnel // Slimy Aquarium",
+  "catalogue_id": 4771,
+  "oracle_id": "2b46394e-d337-4b1a-88e6-7fdac2ee4ac4",
+  "facts_sha256": "2d5c0ea75a25aca1c191d159c2ebc30aab357d908ef4ceda3374680775c174f8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bec91c2a897f524db3896029289a8bddbd794517c3e9ae86eb5bc61e60597c7b"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Haste Magic",
+  "catalogue_id": 1960,
+  "oracle_id": "5249dd0d-3bda-452e-ac6e-774c0ebc2e41",
+  "facts_sha256": "bcd683d8652e5c0cb8e1e40db249223180a2cb52e79a7ff9062b0dec65d90be0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "61eb08ba2c98131d44e524312921c3976061eb560b125d6e5da138f1489649ee"
+  }
+}

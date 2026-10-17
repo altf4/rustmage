@@ -1,0 +1,11 @@
+{
+  "name": "Black Widow, Double Agent",
+  "catalogue_id": 433,
+  "oracle_id": "e6c181f1-f4f7-4a96-b50c-717cf2a02098",
+  "facts_sha256": "1f846ea2dd144c0e95899a2be8f9f6416ed3c0148c5214ce54d110690d092cf4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c29b790c384692299e92111e9a5c5ac840bb1f81a7e5c5073109e547b122a5b2"
+  }
+}

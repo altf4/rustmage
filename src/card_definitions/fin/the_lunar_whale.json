@@ -1,0 +1,11 @@
+{
+  "name": "The Lunar Whale",
+  "catalogue_id": 4470,
+  "oracle_id": "13b4aeac-4530-4e09-a547-548b4884bb2f",
+  "facts_sha256": "ada48d0d7649d90892f1a76d57d16ba25c6a6797813a50b916e3cfb7f0fca5b7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7353a5e1ab78622578f74f8a4842e94b90d5f2bdcec3c0691dbb47bb638e4565"
+  }
+}

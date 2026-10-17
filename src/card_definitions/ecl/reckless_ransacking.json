@@ -1,0 +1,11 @@
+{
+  "name": "Reckless Ransacking",
+  "catalogue_id": 3422,
+  "oracle_id": "ebcd198e-7fbd-46e0-a6d9-ff499e541978",
+  "facts_sha256": "51895c9cb56c55cb5705965f1c048ecff35d37db352d5cbf53a1b45c53a98063",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "964777c0444315b170d13f104a9580aef1631ce19e1e4fa811992306a4f206dd"
+  }
+}

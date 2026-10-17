@@ -1,0 +1,11 @@
+{
+  "name": "Sunken Citadel",
+  "catalogue_id": 4242,
+  "oracle_id": "508189e1-9cef-4f9c-8ff1-078c99a0f603",
+  "facts_sha256": "7e6ac3e2a5f2a8ed8c5176794dc3135381de7a996c9888d9e29f99672d035235",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c2e5c04d9bf71b29376963eb95edfe6b78e7fbc93952bb60af579ef4d6e8eacf"
+  }
+}

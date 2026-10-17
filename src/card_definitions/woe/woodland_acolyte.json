@@ -1,0 +1,11 @@
+{
+  "name": "Woodland Acolyte",
+  "catalogue_id": 5109,
+  "oracle_id": "ba610f08-61a7-47fe-9a80-32b5ce51b118",
+  "facts_sha256": "9eea4ae811b6be9a0bde299f0c8155121c0aad41922d4d8b6fbb03b2265e0ca1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5fecb5c075914c34d026a693901922d33252b7ffffb110391f3540b41d53713e"
+  }
+}

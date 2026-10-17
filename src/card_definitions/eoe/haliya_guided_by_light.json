@@ -1,0 +1,11 @@
+{
+  "name": "Haliya, Guided by Light",
+  "catalogue_id": 1929,
+  "oracle_id": "9b0af3ad-1b4d-4480-af91-fe9baee5d1c5",
+  "facts_sha256": "b5eb01f8ca171ac537b866048098a1c1d912ca47c688798d59e7d876c413cf42",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e62ecdda4c05da082bfcd4f38382322091ecf9c38bb02d627dcee71fcc75b8b0"
+  }
+}

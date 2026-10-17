@@ -1,0 +1,11 @@
+{
+  "name": "Spider-Verse",
+  "catalogue_id": 4040,
+  "oracle_id": "7ef7d902-1f05-40b3-8997-dec197b0b678",
+  "facts_sha256": "79569ff459e7cdffe6b381b6ae35cef5469c72a0e862920382887c7e86567231",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2980673d2d17898f307496d4c325f4216daddc35887790304628852760bc0ac5"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Daggerfang Duo",
+  "catalogue_id": 944,
+  "oracle_id": "43ccc568-2509-49b6-99d7-c56900d1565a",
+  "facts_sha256": "87c70425449a841a0cf90205d193f2d8def8e6b3703b90edd8f8957123df0809",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cbb44d07265cecc893584fcccf2c08225dc915f145ad2288df13cf9eeec74612"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Medic's Kitesail",
+  "catalogue_id": 2703,
+  "oracle_id": "eacfe895-5106-437c-b8c1-2ff03c107744",
+  "facts_sha256": "0c36b5c170b9ab78bd3bf0f951914b0e4ab8e7cfc6ea9b0f9085219c710c1411",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "696ab7ab9a7526f5e11c28c791a91dbb02482d7b3f92b011128413b5c776f46c"
+  }
+}

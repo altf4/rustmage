@@ -1,0 +1,11 @@
+{
+  "name": "Artist's Talent",
+  "catalogue_id": 234,
+  "oracle_id": "ea734863-5793-49d6-b10e-109432aec0a3",
+  "facts_sha256": "a3e38d6bbb576f1aa5f04e3af7a3b6e0a8c7632de9f2f4a4dbaeebf3747b7031",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "37f223e426e09fb4d2ccc089dac7272805cadfc3cbf6f2ebe2614b2ea8b274cc"
+  }
+}

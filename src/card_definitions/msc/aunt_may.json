@@ -1,0 +1,11 @@
+{
+  "name": "Aunt May",
+  "catalogue_id": 263,
+  "oracle_id": "bdb769b5-c861-4ec1-ad6b-e2a56ca05fd1",
+  "facts_sha256": "f279413376850320e2bd87c2c1d8c9b0b5123bf4f23d0f9d0d2c5bc083bebb1b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3759374a4959b20a6f007ff4cd335afeea4f287897e12ac605e46b42650fd88a"
+  }
+}

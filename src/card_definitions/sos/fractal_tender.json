@@ -1,0 +1,11 @@
+{
+  "name": "Fractal Tender",
+  "catalogue_id": 1612,
+  "oracle_id": "cb45860a-1937-4803-b6d8-331a35be39fd",
+  "facts_sha256": "b16a10da44559c453140fd996d29b869a61dca86e19e5b876786ce05207ae3d0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6f2c8b20f1033efe57993e0f3f5a67a561873bbe78cb956348dda363ec592953"
+  }
+}

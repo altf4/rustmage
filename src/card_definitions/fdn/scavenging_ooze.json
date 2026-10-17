@@ -1,0 +1,11 @@
+{
+  "name": "Scavenging Ooze",
+  "catalogue_id": 3719,
+  "oracle_id": "1ff25f67-36a7-4cfa-a2b1-2135b5b6fb67",
+  "facts_sha256": "c829654b26b9f52ef27a19a766d6779c3bdabcb80882c9f3371703cc6501dccb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "72f8cae3ecfaef0faf1056053d64d06d92722154f330161bc174363619f47dc6"
+  }
+}

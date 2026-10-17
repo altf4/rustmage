@@ -1,0 +1,11 @@
+{
+  "name": "Aven Interrupter",
+  "catalogue_id": 280,
+  "oracle_id": "d31fd12f-b4dd-4bc3-ace4-703dabd0f607",
+  "facts_sha256": "f41b709af2d744c947f40643082339924e09c816ea3f5bf7e19204173b71e36a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "31806bc85931e6336e74a67fdad803338d1028cd9b742e3dae947bbbf37b5764"
+  }
+}

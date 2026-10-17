@@ -1,0 +1,11 @@
+{
+  "name": "Bloodthorn Flail",
+  "catalogue_id": 461,
+  "oracle_id": "01ab7724-1967-4da6-aebd-3729983d6a0e",
+  "facts_sha256": "66a6fad0f9cbe87d9888f8f96821c2f8433a55264ece36339e738d31ec2a0daa",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b0c205a66eb77176cc192cd3403a51e25c40c9b5057cbd5d8cf89631ca801055"
+  }
+}

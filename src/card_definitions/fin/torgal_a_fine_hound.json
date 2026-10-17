@@ -1,0 +1,11 @@
+{
+  "name": "Torgal, A Fine Hound",
+  "catalogue_id": 4640,
+  "oracle_id": "9d6ab594-aea9-4f13-8802-f3794ee45425",
+  "facts_sha256": "5cf7367d6113cd98c1de86141795f2918c7cac88e3bf461e55cd0f076ab6e2fc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6353db1bdaa2a27edd31ba1fd681fba90981687cee80f057e5d0210d36223a2c"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Dawnstrike Vanguard",
+  "catalogue_id": 984,
+  "oracle_id": "69892dc7-4087-447c-a41c-99cf3d5c0c12",
+  "facts_sha256": "c37a82fffda73f4c916f11dbc5063e95a6aa9c3f15d3d4091ac471264ea61e24",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3c92515c048eaf16049b7d824c0d0f2ce407afc328a4f634bfd3feecada2585c"
+  }
+}

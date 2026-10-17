@@ -1,0 +1,11 @@
+{
+  "name": "Barkform Harvester",
+  "catalogue_id": 331,
+  "oracle_id": "0339bd11-ad71-4998-9b5d-a32790f0e5e3",
+  "facts_sha256": "5a1bfac801d2d2cf6f7c6dfd7045f9e8a8b34d29c1ed898b042c45c15e1a18c6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f38cb62ddac8455b104739460e50e91f059aaf86fc8db8784714decc53a7a829"
+  }
+}

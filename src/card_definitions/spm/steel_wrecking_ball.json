@@ -1,0 +1,11 @@
+{
+  "name": "Steel Wrecking Ball",
+  "catalogue_id": 4128,
+  "oracle_id": "3a07e22c-71cd-4723-b07e-0ff02009a878",
+  "facts_sha256": "71fc593f511dc72aa6a1402d336d7190283f6d27e39d57cc83cceb4760f65c0a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d9b445d4d7be9798c8349b5868f778144a125ff135fdefa7f54f6c7800b4c8ba"
+  }
+}

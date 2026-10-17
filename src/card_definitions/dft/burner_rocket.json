@@ -1,0 +1,11 @@
+{
+  "name": "Burner Rocket",
+  "catalogue_id": 591,
+  "oracle_id": "0d07eb9f-46f4-466d-acb6-609437c34f13",
+  "facts_sha256": "fd9ee71fba97705f476a146558350a2adab09127881efc4ef22df115e3da9067",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6633d55d5b02c86db70728bccee346e533a4bb332ebbd05c4adbb831d5cd4c12"
+  }
+}

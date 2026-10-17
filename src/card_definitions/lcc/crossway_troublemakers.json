@@ -1,0 +1,11 @@
+{
+  "name": "Crossway Troublemakers",
+  "catalogue_id": 895,
+  "oracle_id": "1a362e4d-6c02-4b67-ab63-c6622e505195",
+  "facts_sha256": "d5ab01d22f3323506ff4132eae7884061a0838ea2475d4c872c1129622f865f4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d3aa1b166ccb7a0af9a85819fe95632cc608ac00f99a29b0087394f6b2cf55e1"
+  }
+}

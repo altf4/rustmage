@@ -1,0 +1,11 @@
+{
+  "name": "Dreadwing Scavenger",
+  "catalogue_id": 1177,
+  "oracle_id": "bbfd0de0-3558-4833-bae4-8efae44b7fff",
+  "facts_sha256": "dafaf6e5016878af70ac2659ee48915f881b747a9c41acf5140d80d20a1aa825",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cd3689ab4832fa48f631ad1b28fdd2a3c5f1375de8af87c6afeda71725dd6edf"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Basilica Stalker",
+  "catalogue_id": 344,
+  "oracle_id": "e335485a-80fc-40d4-8be6-7eabf2bab571",
+  "facts_sha256": "6d921a3eb0c2c64af0503913b7b03fe09e0e90b4c235c7058e52dfc2a5c5568f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "56c351144db179bcae4df1f47098bbafbcb0ca022a45e557f33167d8fd1e2dac"
+  }
+}

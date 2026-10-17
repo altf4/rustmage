@@ -1,0 +1,11 @@
+{
+  "name": "Collective Inferno",
+  "catalogue_id": 795,
+  "oracle_id": "649e4969-71d4-434f-85b0-205ec2c6b24f",
+  "facts_sha256": "5c0953f29381ba079e8fddc37d07074a60d69e2f0fd4d4f8571304e94283dabe",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "36eedba3b2a4aa6c516b144c8bbca7a22edf66c0bf275bca33861d911e38dc41"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Great Arashin City",
+  "catalogue_id": 1860,
+  "oracle_id": "f40f374b-acaf-459d-9ccd-b0b22d1a3f28",
+  "facts_sha256": "a3dd31e0d7bd6c3c55e3b600991789f3e3bda23c6af0e93bab17445d52c50e76",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3b481291663db795a127ee4d3cc40b5878eff372dafef7d6b73966b401e4d3c2"
+  }
+}

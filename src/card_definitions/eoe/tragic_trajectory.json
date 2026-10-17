@@ -1,0 +1,11 @@
+{
+  "name": "Tragic Trajectory",
+  "catalogue_id": 4651,
+  "oracle_id": "e5e19326-3e90-439c-a3b2-749d43a1af0c",
+  "facts_sha256": "4c87953e09df7f66014ea5bda4d170254a54f11afd5b3dbec1a181e04c667be1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c85ebaee89cb57d93531d6998052c24dd7c7f90bcf01cd4419fdca618e5323fa"
+  }
+}

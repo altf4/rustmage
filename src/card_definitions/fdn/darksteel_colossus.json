@@ -1,0 +1,11 @@
+{
+  "name": "Darksteel Colossus",
+  "catalogue_id": 973,
+  "oracle_id": "1b09d0cf-403c-4a15-aeee-602a1bdaf0c1",
+  "facts_sha256": "f4e15da43f05052c54da10d193c695f7aa7be8b5560af08f59ca629fee130ebb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9ca9cfed0e6ff2ec3a02611872d22fb2439f1a60a7530717e86dfbf0f4ade242"
+  }
+}

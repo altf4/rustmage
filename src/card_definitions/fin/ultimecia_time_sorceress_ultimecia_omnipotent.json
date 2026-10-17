@@ -1,0 +1,11 @@
+{
+  "name": "Ultimecia, Time Sorceress // Ultimecia, Omnipotent",
+  "catalogue_id": 4746,
+  "oracle_id": "70773879-b773-4e81-99ca-8f4bba478962",
+  "facts_sha256": "bd7cae53925fc595bab08d77b1c34e97d3a8a9d821a300edca91d4f373e1f33c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "41849970f8b5d1561238b4f0887b0320e73d683bed5a96705e4f4c07ee127c32"
+  }
+}

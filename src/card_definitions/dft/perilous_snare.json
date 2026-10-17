@@ -1,0 +1,11 @@
+{
+  "name": "Perilous Snare",
+  "catalogue_id": 3130,
+  "oracle_id": "cff7499a-44b0-4a2a-b96c-ed2cafb1a90d",
+  "facts_sha256": "4788bd893bde1c52d8ba5e9fa446f487f802264100e0dbe3203b0b0fa74f49f9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7a0c2f68fdc91c0099cfb7d4a1673607fc8adf848cdc28f60841d9cac733faea"
+  }
+}

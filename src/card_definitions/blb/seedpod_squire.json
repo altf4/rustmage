@@ -1,0 +1,11 @@
+{
+  "name": "Seedpod Squire",
+  "catalogue_id": 3764,
+  "oracle_id": "e2f57e48-ff5b-4a42-9b7c-1bd23b0d78ed",
+  "facts_sha256": "cb4c7c840a25bb0afafa4d43845ac94f11ebd7f242a19aadd7382e6b2364769d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "be3b215f98c6aa804d8bf4aa4738d1ffe8f02ad8b16eec1772e51c044eeff272"
+  }
+}

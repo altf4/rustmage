@@ -1,0 +1,11 @@
+{
+  "name": "Heroes' Bane",
+  "catalogue_id": 2016,
+  "oracle_id": "bccd722a-b610-4017-93bd-313f08448f5e",
+  "facts_sha256": "eaef2a6562cc7a54ed4c45c221a6468c2abf3b89e1a38da588422b7bb43267f2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6e7ce42be42fb3f092da5580e21af7c9efd03a85272542e9ad46180de9c50159"
+  }
+}

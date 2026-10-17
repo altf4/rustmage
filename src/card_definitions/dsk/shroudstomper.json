@@ -1,0 +1,11 @@
+{
+  "name": "Shroudstomper",
+  "catalogue_id": 3856,
+  "oracle_id": "36415fe3-6bf3-4fec-909c-6c16584c44eb",
+  "facts_sha256": "e754e922324f8bb931b9b30d330ae56208d22c10e05f8f5400afbdaf97ecb42c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cad6af290ffd8013b29559fe301b3c2dca55e6e42fcb162038f20c23e95e80bf"
+  }
+}

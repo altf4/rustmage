@@ -1,0 +1,11 @@
+{
+  "name": "Knowledge Seeker",
+  "catalogue_id": 2390,
+  "oracle_id": "bdc2d980-ca14-4040-a9a1-786d724dc65c",
+  "facts_sha256": "c1a4402fb9130f15c194ff395389e67a74dae6665ad7635ce967f6257a5efa5e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f9e24caa4316d535740e75721bed54437de322f1b814b668620588dca459abd6"
+  }
+}

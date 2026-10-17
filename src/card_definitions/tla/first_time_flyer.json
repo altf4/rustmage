@@ -1,0 +1,11 @@
+{
+  "name": "First-Time Flyer",
+  "catalogue_id": 1536,
+  "oracle_id": "cbbea4e2-4b36-4965-89b6-00d2a564f146",
+  "facts_sha256": "16c33ca923764d6db8ad79866b2b67dd4fd0276f7d02f21377840c72f9cd0455",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "077ed6d1cd922f1a66bc0e4136b4577e1c63acf6b30b37d58ec9c612071581e6"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Edgewall Inn",
+  "catalogue_id": 1266,
+  "oracle_id": "4dfd33e8-7e30-493b-8564-f7df5f0257aa",
+  "facts_sha256": "2f2bf0a67ea20b00c134dc4db1eb0ce469b7d388fdffe08290ee247c6942d2a4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eccaeb92e707dd76c82de894cfebf6719067a3a56c8a70e6a57f856333e242f9"
+  }
+}

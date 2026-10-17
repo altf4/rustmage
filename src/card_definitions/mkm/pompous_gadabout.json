@@ -1,0 +1,11 @@
+{
+  "name": "Pompous Gadabout",
+  "catalogue_id": 3202,
+  "oracle_id": "0361b9b7-9097-4aae-aa06-c63a5fb47a76",
+  "facts_sha256": "5e82942889c705f362b21367eea30a067aff8013235b0fa3aaeba979254381b0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d0626a753e1115f4c8c4ba60dc122502098b2938f156fd55a05c61b60c76f5e5"
+  }
+}

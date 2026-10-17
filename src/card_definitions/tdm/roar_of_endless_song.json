@@ -1,0 +1,11 @@
+{
+  "name": "Roar of Endless Song",
+  "catalogue_id": 3562,
+  "oracle_id": "a3570093-3c16-42e7-a83d-2ff611a891b5",
+  "facts_sha256": "4843ea21f24c49bfe2e94302cfa23c069f771acc4c0c91eb04106f442493e547",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a17615375b3e93d2ddf2028c7f4a4074615aa32f50131792b23d50465f524dee"
+  }
+}

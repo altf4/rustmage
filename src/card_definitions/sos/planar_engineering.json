@@ -1,0 +1,11 @@
+{
+  "name": "Planar Engineering",
+  "catalogue_id": 3180,
+  "oracle_id": "dc48079a-b1c4-4c43-a989-418c78a264ec",
+  "facts_sha256": "2c25025c427c7cc06e816dc88f0e951611bb2890342b412b01ae4aa817d2db7c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "35f2107f5fcb3b2f2b20bcf9ac3220e98eba1ae4c6989e82c6f2b2bb754fad14"
+  }
+}

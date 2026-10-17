@@ -1,0 +1,11 @@
+{
+  "name": "Dazzling Theater // Prop Room",
+  "catalogue_id": 991,
+  "oracle_id": "c46a02db-13d6-477f-9da0-822599470168",
+  "facts_sha256": "28a84da97fccda9a19930713fea7ede8d0ab383c7832615ca2a8660b96827ee9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4b620bdd4c1c0991b059a1789ae808b18d67d744adbb54efb8de1566bf9702ac"
+  }
+}

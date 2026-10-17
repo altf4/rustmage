@@ -1,0 +1,11 @@
+{
+  "name": "Ruthless Lawbringer",
+  "catalogue_id": 3631,
+  "oracle_id": "82b6a283-9897-4ce1-8de3-e7579cc9b75b",
+  "facts_sha256": "7cc4bd82b363ae45cf38b964cc8ef3dfba85a12fe9fb847d836f4a9588d728b6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "26797f96cd5c0668ea905bca936a83dc7f143e11d4dd85801d30c4ee4bb23e4f"
+  }
+}

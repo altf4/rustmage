@@ -1,0 +1,11 @@
+{
+  "name": "Patient Instructor",
+  "catalogue_id": 3112,
+  "oracle_id": "bddd7e99-ec74-4ca6-9137-155b85695a95",
+  "facts_sha256": "7f103b10deb2ab9cbef3d05470f511b53ab0cb9fab7575b4b9b2806012d9f17e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0c3255e8df354e024f818f5872fe19722655e524ec793fa1ce0aaf719d7a67bb"
+  }
+}

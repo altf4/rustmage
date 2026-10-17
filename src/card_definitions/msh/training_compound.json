@@ -1,0 +1,11 @@
+{
+  "name": "Training Compound",
+  "catalogue_id": 4653,
+  "oracle_id": "99c70f4e-de8a-426d-99aa-17b2f87625ba",
+  "facts_sha256": "b75a5b76540c873100eebe4239d12b221c099bca5a5723bfe1a77098b2c837de",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a821694b5f302ce821f54a2d014cc33f0504004598d0854880eaddb80d253971"
+  }
+}

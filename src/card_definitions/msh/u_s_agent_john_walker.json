@@ -1,0 +1,11 @@
+{
+  "name": "U.S.Agent, John Walker",
+  "catalogue_id": 4736,
+  "oracle_id": "2b6fa8b6-4865-4eb6-974b-00f6b16b6f0f",
+  "facts_sha256": "fcb91ce09c6e9237cb22dbba49a095bd4825d94d319b6f40a73da4d80a27c8dc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8f49263462b0c3682d0581c1e556e7d301c8a691dcea34fea1cf38187af0b8f7"
+  }
+}

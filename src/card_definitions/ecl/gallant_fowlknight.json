@@ -1,0 +1,11 @@
+{
+  "name": "Gallant Fowlknight",
+  "catalogue_id": 1667,
+  "oracle_id": "4e0ba9d5-4bd6-49a0-ae00-70818738d0ba",
+  "facts_sha256": "d0e94fc46286bb784eb7cb3b0328601f8a0367d53ee60daf4c03ecdb66bc2a93",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9799edda274bae4959ca10cfe946621107922060091551b982c5f114ae456afb"
+  }
+}

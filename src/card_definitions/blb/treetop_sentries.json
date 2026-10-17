@@ -1,0 +1,11 @@
+{
+  "name": "Treetop Sentries",
+  "catalogue_id": 4674,
+  "oracle_id": "5bf5739a-6322-4e6e-b41e-e7bdbb11b1ce",
+  "facts_sha256": "1bb376202e7710a025d2e736a894395a0b269c9bceed4096278cfcec278e47bf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b4eff4f88433a12a400e18171b1d39c937f74077de197a03e745c5243fe7b5ae"
+  }
+}

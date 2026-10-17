@@ -1,0 +1,11 @@
+{
+  "name": "Retro-Mutation",
+  "catalogue_id": 3501,
+  "oracle_id": "d8b5de6d-8654-4550-bccb-79de6cbef4d5",
+  "facts_sha256": "288d1f0bbf16203eab0925d83fc849677ad8cfbd6869dc337c7fb4ccbbfcde17",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "abae165687af38796993f1c2d041aa1341d639bd433129ef5d0ac1bfd68e2493"
+  }
+}

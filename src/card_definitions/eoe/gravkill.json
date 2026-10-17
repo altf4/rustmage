@@ -1,0 +1,11 @@
+{
+  "name": "Gravkill",
+  "catalogue_id": 1857,
+  "oracle_id": "15c6837c-775b-4b4a-a2f7-9fd79215fa05",
+  "facts_sha256": "9a50a9fd12cd979a2bc7defc951c00053b4abed89a99e22bfe45030a87bf8ef9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "33eeaf2242fb4986a08d05168097c3c49cbfa9ca2e009ba7e7d352ae35f1a14d"
+  }
+}

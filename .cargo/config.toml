@@ -1,0 +1,4 @@
+[build]
+jobs = 1
+# Refuse compilation outside the shared, memory-bounded build runner.
+rustc-wrapper = "scripts/rustc_guard.py"

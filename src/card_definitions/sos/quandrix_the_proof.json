@@ -1,0 +1,11 @@
+{
+  "name": "Quandrix, the Proof",
+  "catalogue_id": 3305,
+  "oracle_id": "2cbccc46-bdef-4dfb-90a4-0278c5c8488a",
+  "facts_sha256": "13290c6c3921f590c4d481eda72b8903b63bb85a1c4c5c01f334ce85e308939c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "48f0ced069cba8ee82993c5cabf1815dc0d9e75d7012516438f5c98f2f1a24f5"
+  }
+}

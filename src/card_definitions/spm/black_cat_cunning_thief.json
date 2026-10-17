@@ -1,0 +1,11 @@
+{
+  "name": "Black Cat, Cunning Thief",
+  "catalogue_id": 429,
+  "oracle_id": "f5cdb413-2b72-4dc6-b93d-2532ac2ae568",
+  "facts_sha256": "1e79ff924ddc1f73e916aa0407257e41aed04c86a5e5d10e8074ebdecb625b35",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "82ae46b62f4d153f6204d030b76632d2aa00913fed0db870e9f88c41fb921280"
+  }
+}

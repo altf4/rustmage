@@ -1,0 +1,11 @@
+{
+  "name": "Gruul Guildgate",
+  "catalogue_id": 1895,
+  "oracle_id": "d38476e9-2e47-4c0c-8129-483c0bd09ec0",
+  "facts_sha256": "6d3817a6d1f16b242f4aa2a5cc7d262ce6abee1b83cd88921b5aa33e0fabf183",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cbc11f7d62c694e2be43805067f33daccc9cb45899eeb7e7323ac5def177636a"
+  }
+}

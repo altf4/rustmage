@@ -1,0 +1,11 @@
+{
+  "name": "Impostor Syndrome",
+  "catalogue_id": 2150,
+  "oracle_id": "7be47440-b627-411e-a28f-d5a92e5e2fb7",
+  "facts_sha256": "d9916e5615a0986889c2265614e9c1fc128801f495140244f0cc31d935d49ada",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "41a10cf6d68fbba18c3a3bb8945fde59f35e2d1689c625ed1dd61f6cec732b59"
+  }
+}

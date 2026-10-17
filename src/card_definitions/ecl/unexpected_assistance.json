@@ -1,0 +1,11 @@
+{
+  "name": "Unexpected Assistance",
+  "catalogue_id": 4777,
+  "oracle_id": "c452e748-8a2a-4f68-8869-e294925a8b0b",
+  "facts_sha256": "aac0d1180f6c17c63d6d76a9db81e1cfdbbeba149a31ba99a5ae4fbd387559e2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "791b47fb1345a81c8c75284958bcf3718397e78b0338a3f3a928e7e1947b1da3"
+  }
+}

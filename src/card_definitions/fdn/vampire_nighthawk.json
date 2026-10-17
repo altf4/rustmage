@@ -1,0 +1,11 @@
+{
+  "name": "Vampire Nighthawk",
+  "catalogue_id": 4840,
+  "oracle_id": "feb244f8-bcb1-44cf-9940-2719221a7309",
+  "facts_sha256": "fd966c29f9042e00a018d3fdd5b7c6a7f8aa22f24086f20ac166d731fd4aca5d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4b85cc885f318d947714f692733b02201aad9c06e5922dcd3a2bdf9b279b5b2f"
+  }
+}

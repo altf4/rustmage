@@ -1,0 +1,11 @@
+{
+  "name": "Foot Mystic",
+  "catalogue_id": 1587,
+  "oracle_id": "2043fbde-48c4-4a77-8911-8991d77de1eb",
+  "facts_sha256": "04368d2240acedd5ce20d82cf2e8db44db2f6dce3fd40401da01b83ce9ee5081",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0f405f62ec4fe9615ee2149c1587ab37227094bff8e2858a579c159739db752e"
+  }
+}

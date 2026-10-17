@@ -1,0 +1,11 @@
+{
+  "name": "Derelict Attic // Widow's Walk",
+  "catalogue_id": 1047,
+  "oracle_id": "993b7b94-ed06-422d-9c7e-52a74ce9d045",
+  "facts_sha256": "2d1829741dccb4bffeca43c156b76af641ac5bcf5ffc380c19d120d7506475c9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "697be2a0665d9c8d4374cf893eaa2dec217c9128404b91dd14ef888c56c6efc4"
+  }
+}

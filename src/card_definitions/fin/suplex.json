@@ -1,0 +1,11 @@
+{
+  "name": "Suplex",
+  "catalogue_id": 4263,
+  "oracle_id": "2d1bbeda-2e81-4aaa-9494-094ec3dd6c3b",
+  "facts_sha256": "fbd71cc940fbb1df26b37b610272b4976a3560ef05394576a1baba1f20f5ad1a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "986831096ffb20d6e1a3806c39b00832080f2cda1809fc34bf03aab8ce0bc5ac"
+  }
+}

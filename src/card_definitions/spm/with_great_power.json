@@ -1,0 +1,11 @@
+{
+  "name": "With Great Power . . .",
+  "catalogue_id": 5097,
+  "oracle_id": "dfedb968-f27c-4117-aff6-da707dd43e82",
+  "facts_sha256": "7e379a45fdc5e72607d75eb88db58322da30397aa8e754bc3568c68a7f0f4e04",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "105a63492951367463ea5d8ad023933934d670c6e5e99594ff6c59ef7bd29bd1"
+  }
+}

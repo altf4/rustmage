@@ -1,0 +1,11 @@
+{
+  "name": "Divining Duelist",
+  "catalogue_id": 1111,
+  "oracle_id": "d0ce03fa-2284-4217-85b2-4db6b8a88c94",
+  "facts_sha256": "be2eacd02293fba007112749ccd998061c327a1f0a3da557258ca4525a546542",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "31709ff5d234b258abe658c77e1e2a88301f7ff8a5fd513aea9f7ed3540ef10a"
+  }
+}

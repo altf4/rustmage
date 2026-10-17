@@ -1,0 +1,11 @@
+{
+  "name": "Ghost, Spectral Saboteur",
+  "catalogue_id": 1733,
+  "oracle_id": "88f34d15-c338-40a7-b56c-c5b650847430",
+  "facts_sha256": "5555634b4879412f38b48bef6335a730fdf6ab512bcc946950611ffad1b55efb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cecf45ec697c8ef994cf19046cc508d1924a0148e28cc4a2732c25ddc891dcb3"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Huatli, Poet of Unity // Roar of the Fifth People",
+  "catalogue_id": 2090,
+  "oracle_id": "2e6ed3e6-d2b8-4b75-b7e1-0773da4987a1",
+  "facts_sha256": "c4ea6f22204bb2879cad776b4e1d7be8303551bf6d9fe12a31b6129f16749d02",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9a0a62731cc4a3d6844f7733a55e5152e294271acc2cb78ac7fa49f090c5d98d"
+  }
+}

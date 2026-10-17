@@ -1,0 +1,11 @@
+{
+  "name": "Reckless Lackey",
+  "catalogue_id": 3421,
+  "oracle_id": "73733fa5-d292-40ec-8f17-05ba5feb40ab",
+  "facts_sha256": "b1c656e7bc52246f871856ba11d17440d1a47b0796d9a02864008f57ab2a7e28",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c6634b00e17828a4cd0244776b50e98a1eb167df3fcc1e89b7219787f08ab82d"
+  }
+}

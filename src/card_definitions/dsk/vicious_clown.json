@@ -1,0 +1,11 @@
+{
+  "name": "Vicious Clown",
+  "catalogue_id": 4886,
+  "oracle_id": "e02abbc0-687b-4aef-95b8-bf18e199725a",
+  "facts_sha256": "aaa26f6f8352c63de3add96c395abdfdecd745d9b57be7f5ddddc09c26b2f8a8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "660fd83a5fd45fd3fa14cfa251e7eb648178ce84e747a9eea6240a9f3ba7f166"
+  }
+}

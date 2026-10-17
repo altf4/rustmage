@@ -1,0 +1,11 @@
+{
+  "name": "Spider-Rex, Daring Dino",
+  "catalogue_id": 4035,
+  "oracle_id": "58b771d4-dfaf-4189-a5f6-4bc0fb4c0fa3",
+  "facts_sha256": "a6a13b56f5d0e39c8877454641161d88f39c157c00095af13d22b44a7e97980b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4e98667e4f771e788e5d3cbec4114106fcfd86707f1caf8362b9acb02d83b1f4"
+  }
+}

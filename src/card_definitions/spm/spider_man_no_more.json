@@ -1,0 +1,11 @@
+{
+  "name": "Spider-Man No More",
+  "catalogue_id": 4028,
+  "oracle_id": "163f1fce-70c8-44e3-a679-f97d52cd1e9a",
+  "facts_sha256": "0a670c8caee1e88c67ff0ba5f61967bb93dd582ffc79cdb51d3ddfe14c6b7f06",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e4397bed1419ce9196a15d7967fd3efc56793f14a18f7442215cb929e313a761"
+  }
+}

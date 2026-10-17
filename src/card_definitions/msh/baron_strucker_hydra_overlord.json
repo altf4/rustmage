@@ -1,0 +1,11 @@
+{
+  "name": "Baron Strucker, HYDRA Overlord",
+  "catalogue_id": 334,
+  "oracle_id": "c91e64d4-e687-4ccd-a56e-796cff6e052c",
+  "facts_sha256": "a4c5a7352a06b64d84f342d8e7c336a829517b4f112cf03c749e0e29ea19e724",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4b1cc98e97ffb3cb3453f618c87dc0e313dcbe0e7f7aec76a498b1ed0c4c1fb6"
+  }
+}

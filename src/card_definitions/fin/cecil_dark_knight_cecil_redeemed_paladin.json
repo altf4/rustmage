@@ -1,0 +1,11 @@
+{
+  "name": "Cecil, Dark Knight // Cecil, Redeemed Paladin",
+  "catalogue_id": 693,
+  "oracle_id": "e4719557-d94e-490f-8a56-c1867a01d2ef",
+  "facts_sha256": "4b3d06186f8d58a98d14a587cd648a5107e76377f8f43281b2ca08b57af7493c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "22f2bc514b6ca31c731bf8a1237d3ad99ee9d7ca9c6ccbeb5e9712a3b58df810"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Grow from the Ashes",
+  "catalogue_id": 1888,
+  "oracle_id": "645ab3c7-ee1d-4dd0-811f-2dc7f7c7e792",
+  "facts_sha256": "9c74f0b8cb56d5364d255d49cb43e26d75fe32b70604c2ea84dd9c78ee04c356",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7c1b7922a14e8f0c506587e120d56c61e41d3b21bec6c0fe3ddb99f5adebfbee"
+  }
+}

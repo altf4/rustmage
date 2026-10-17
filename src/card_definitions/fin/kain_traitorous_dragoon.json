@@ -1,0 +1,11 @@
+{
+  "name": "Kain, Traitorous Dragoon",
+  "catalogue_id": 2305,
+  "oracle_id": "70fbb378-d905-47cf-8c54-cc166a7867b3",
+  "facts_sha256": "eb4991e85318485d3fa787176614ea20f71244c0567d4c2fe4d004f477b0e1c2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "454baef1853f9905040fd86fd7e33966f5125f48ff495fb8a79010026b67def0"
+  }
+}

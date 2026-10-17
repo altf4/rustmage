@@ -1,0 +1,11 @@
+{
+  "name": "Inspiring Overseer",
+  "catalogue_id": 2188,
+  "oracle_id": "d646e42b-5635-4798-b633-29c093b66a55",
+  "facts_sha256": "b9005357441d122c736a9c0b0bae684350fbef399b7601de9bf20efd1efa9236",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1dd9a7e6bcacc2556cb3b0e1f8136b1b1f9319f6cbaf3a664ce895e003e1c56d"
+  }
+}

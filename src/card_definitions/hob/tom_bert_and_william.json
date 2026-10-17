@@ -1,0 +1,11 @@
+{
+  "name": "Tom, Bert, and William",
+  "catalogue_id": 4623,
+  "oracle_id": "0ea58cfe-b37c-49a6-a3be-7e60065b8238",
+  "facts_sha256": "f4b07afc18f8db1fdaab1da2eb48aa39c05076bed914cf4d920bd44ee7125ca3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ba10b9d3f64fcce91f3be5a44847d42b1c51f5bd15ef1665f2c2feca7d5b33af"
+  }
+}

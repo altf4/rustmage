@@ -1,0 +1,11 @@
+{
+  "name": "Bonehoard Dracosaur",
+  "catalogue_id": 497,
+  "oracle_id": "7ba550a5-81fc-42c2-8df8-ad455d938605",
+  "facts_sha256": "9142adcd87f91d4265a85aabeacdb08bd080b3f386a5717b351c3d747c4e1b87",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6dc2fcdcec8f930f90f42d88c22f89a8b99bb38c29841af93dde00967cb8c10a"
+  }
+}

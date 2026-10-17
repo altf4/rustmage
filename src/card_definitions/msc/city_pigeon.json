@@ -1,0 +1,11 @@
+{
+  "name": "City Pigeon",
+  "catalogue_id": 756,
+  "oracle_id": "ac8cae63-270c-4f73-b29b-50f8f2395fd9",
+  "facts_sha256": "7fffc7d7ca52f931e2e8c9fdcae16fbdf0f6aed2d2575a772143b98faf8b87c0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d7204e6a4093a4c14ddd03f07d14e6b4fdaa8b79ff3e9b0bdf6363a4f801c7b2"
+  }
+}

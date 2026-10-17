@@ -1,0 +1,11 @@
+{
+  "name": "Summon: Brynhildr",
+  "catalogue_id": 4215,
+  "oracle_id": "bab5e9ce-6d55-4d1e-a9ac-c2b954191be9",
+  "facts_sha256": "905c2f950a2545463217f40467101f5d4f304b99379316f18bdb62f6a1b94897",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8790de352be5043c908d369916fcf3089a3b5b6ef9623f03f5149ca4e9286cdc"
+  }
+}

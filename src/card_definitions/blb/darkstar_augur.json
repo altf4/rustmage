@@ -1,0 +1,11 @@
+{
+  "name": "Darkstar Augur",
+  "catalogue_id": 972,
+  "oracle_id": "67d2a021-a042-4e5f-b6e4-39cb35514794",
+  "facts_sha256": "4e2464f5c0b033b12c98f718474f965df8f0b86d1c891b6a74725afe828c1f56",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "12bdb0c5947346c3ae325ee3998ba4fc98786a278d0a07943ab98e174bd5daf2"
+  }
+}

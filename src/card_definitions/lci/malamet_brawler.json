@@ -1,0 +1,11 @@
+{
+  "name": "Malamet Brawler",
+  "catalogue_id": 2637,
+  "oracle_id": "06905dfb-b2df-4849-8848-fd3c964aa8c9",
+  "facts_sha256": "8f99876ca03309dd3a7ead5a7a3659c6ff4064857fa620ee1f1f69dc93481000",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1ec9a95606fac497233bc9b001afa1ec7e03bd1ad1442dcb726744b8942915a7"
+  }
+}

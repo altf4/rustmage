@@ -1,0 +1,11 @@
+{
+  "name": "Sab-Sunen, Luxa Embodied",
+  "catalogue_id": 3640,
+  "oracle_id": "07e15387-f346-4fa0-b556-d1c52d4acc07",
+  "facts_sha256": "6b9c67463c857bd0061e7d7e621e3a0c2565b6466b7bd636ecb824472c421745",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "57d6c97d4f4ac73a3c32d2ad1cc64bb258649da52228163947998932f1889e3e"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Gurmag Rakshasa",
+  "catalogue_id": 1911,
+  "oracle_id": "2be43acc-a815-44bc-8803-d702e553fbc1",
+  "facts_sha256": "9134e60bb1249170752671432ad6f81a522ed0c69fe6cc5e74cae3e5ccef6016",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2ce40104854cad08f7e6d284fde91f3d760a2ff8fd589652a02d00ab4b09c6ad"
+  }
+}

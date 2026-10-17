@@ -1,0 +1,11 @@
+{
+  "name": "Eroded Canyon",
+  "catalogue_id": 1361,
+  "oracle_id": "852c6520-d148-4923-a312-05a9af821f24",
+  "facts_sha256": "d4a39569b88c7df4cecabe5e7b92472eaa48c36177c3d5a4f559d70e5e7d9c10",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5c24d747e3686ceaae43718e2e4a745886c4363f628aa82480cdf969e9fdf28f"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Polliwallop",
+  "catalogue_id": 3199,
+  "oracle_id": "efd2a4ca-1bd0-4762-a997-f099326b1746",
+  "facts_sha256": "7a977147927d04e5d2012140dc7f8a3c8e0d84e0a8d94e0bd5fb4d6bb5ea902f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "78d9148092aa83621e7d382f6e7e40ec7c4af9d0660e1338c8b444e6d1fc3465"
+  }
+}

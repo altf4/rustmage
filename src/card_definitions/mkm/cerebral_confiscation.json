@@ -1,0 +1,11 @@
+{
+  "name": "Cerebral Confiscation",
+  "catalogue_id": 701,
+  "oracle_id": "1ea71ea2-65ca-4907-b857-dbd1ba8efacd",
+  "facts_sha256": "1da181f9f4c268ef1507dfb04b00f4a01a9af7ba4751c4ceaf471c8658917815",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4f51788820ceb17ff189f3a9d51149c7d3d142c34056ac68e126d9f60430c878"
+  }
+}

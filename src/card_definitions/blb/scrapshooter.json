@@ -1,0 +1,11 @@
+{
+  "name": "Scrapshooter",
+  "catalogue_id": 3736,
+  "oracle_id": "235e3231-c5e5-4696-a867-705b2c4158fe",
+  "facts_sha256": "dd69c678cc87016b19e02cefc731201d5ae626810ad7b7bfcce7a7df808f6df4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a368e82de379672a04c3a9721ea5b416fc478706688302683ddbf452b80871f6"
+  }
+}

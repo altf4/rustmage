@@ -1,0 +1,11 @@
+{
+  "name": "Roughshod Duo",
+  "catalogue_id": 3596,
+  "oracle_id": "0cc89c15-5a48-4998-b6df-21791b6ed9a3",
+  "facts_sha256": "2bb8cbdf4c4e6b638a644075e01525694e71ad476639e4c7170bc8206fc44682",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "37832ab26ae29e1d9b078962096a4eccf6bbec27268adc9a3112b5612f2624d3"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Tributary Vaulter",
+  "catalogue_id": 4678,
+  "oracle_id": "991f4eec-cf3e-4554-ba88-c44bb0d255f0",
+  "facts_sha256": "d522a709b97adf41e00803e442ec47a56b141693a3fe0c5d13a12fd371168054",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c6c033661984d162efde7e65f96f8da07b02550c8e0fc8d0110735d19487c2bf"
+  }
+}

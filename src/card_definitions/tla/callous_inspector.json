@@ -1,0 +1,11 @@
+{
+  "name": "Callous Inspector",
+  "catalogue_id": 623,
+  "oracle_id": "5d950fd4-8956-4b1a-ab0f-ab31bcffce4e",
+  "facts_sha256": "5a2729787cc3bea3738eb3ee35a288321ad79b05b3274447d9f76414285e9192",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "32b98cb08fc2194d21c3eff0d7c4a7efabc11c1d30e526dbdf8cb7890556cdd9"
+  }
+}

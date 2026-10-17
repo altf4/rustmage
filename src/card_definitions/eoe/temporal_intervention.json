@@ -1,0 +1,11 @@
+{
+  "name": "Temporal Intervention",
+  "catalogue_id": 4373,
+  "oracle_id": "5e8a2416-e311-41ac-a3cd-be1c2441d542",
+  "facts_sha256": "027158f53c9d780e02d56bb5ff2de7f5f878edb0e4a596881a5bcb562e5053eb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e50b4828fcd94e410bfa6a464592138746741130c3d2d3d2307be2ff4f832190"
+  }
+}

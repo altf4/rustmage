@@ -1,0 +1,11 @@
+{
+  "name": "Uldaros Theorix",
+  "catalogue_id": 4739,
+  "oracle_id": "020d561b-2e5d-439e-9e6a-318d23e73542",
+  "facts_sha256": "c09a65786ae94da44321cd0daea19910a0b00a9faa4f58951a359bc94623dcf6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a7d2b19fcec887cd7354cad892aa449bdac38e44c0cd7d108647acdd095f8d15"
+  }
+}

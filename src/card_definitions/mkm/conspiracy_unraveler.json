@@ -1,0 +1,11 @@
+{
+  "name": "Conspiracy Unraveler",
+  "catalogue_id": 833,
+  "oracle_id": "e4541d02-2860-46ef-b630-1d6307b60766",
+  "facts_sha256": "e9600318ca1d5c0c5e6b53173726a6017305ec4fbccd11e3371877a60212892e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5a84d71434339eb69205f7d1b29a84a38fa9ce3d6667bfa3ee9b5b867894ee42"
+  }
+}

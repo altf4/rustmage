@@ -1,0 +1,11 @@
+{
+  "name": "Kinjalli's Dawnrunner",
+  "catalogue_id": 2363,
+  "oracle_id": "b6565da9-773c-49b1-85f5-e34f07ba84cb",
+  "facts_sha256": "a6a4178731a219f0bfd8bfe0f063237f2fbe6b287fb58bbb8a53a65f6f5c17ef",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b4021026382818cf7ba9a5b64ef4f2407bd78e339bfcec4fafc9a1e8d90652ba"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Ty Lee, Artful Acrobat",
+  "catalogue_id": 4732,
+  "oracle_id": "3726b9a0-67cb-4f45-ab50-62db50f93568",
+  "facts_sha256": "a66d39e037b06c28d47d21bea4b8f481d283f771d527109995adc86221e4dd70",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eb6c896a768841e0bbee0cba89dc1705312553a7caa76bff99a45a5cb0f9d6da"
+  }
+}

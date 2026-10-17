@@ -1,0 +1,11 @@
+{
+  "name": "Turtles in Time",
+  "catalogue_id": 4713,
+  "oracle_id": "803971e6-67f3-4fda-aeb6-69ef8ea4b54e",
+  "facts_sha256": "27195782c7846a8eebfeda3c965a1c341b9bbd90018cf8f2d46bcdfca6b68145",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b8c57fe90b303ffabb76848c5cb822e6ae25ce930845084959dcaa08de93aeeb"
+  }
+}

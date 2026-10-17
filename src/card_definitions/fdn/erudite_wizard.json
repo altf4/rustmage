@@ -1,0 +1,11 @@
+{
+  "name": "Erudite Wizard",
+  "catalogue_id": 1364,
+  "oracle_id": "7d4b6613-9000-4f53-9737-fe0338f3f629",
+  "facts_sha256": "a93972ece631baa787711ff473fe67464253f7bd08a88598b7678d0c848a8ee3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aefff92463e3347dd603b274f8a3f99d0037eff043ced7f180bb6d3ec4c62009"
+  }
+}

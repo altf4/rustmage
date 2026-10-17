@@ -1,0 +1,11 @@
+{
+  "name": "Formidable Speaker",
+  "catalogue_id": 1599,
+  "oracle_id": "5bd06f9e-9a42-455d-ad26-24bc04e51c7c",
+  "facts_sha256": "1ad150748d16b58b2d7704171392bb66198757ed71628cf072444a87f41adb62",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2a4ae3e83245cd4f87db98efea969d325a24df1a8f79a67f8f1df6d067ad905e"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Terror of the Peaks",
+  "catalogue_id": 4400,
+  "oracle_id": "f8e17f4f-080d-4bba-bd05-ca27e94ccecc",
+  "facts_sha256": "d0d9302a149061b890caadc706d514d497042154e55e95a007f2288d295ac2f3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "916c7e52000fc9c5d4bd3989003f09a582d98875afb38796d8c834e7447f15cf"
+  }
+}

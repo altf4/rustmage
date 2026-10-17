@@ -1,0 +1,11 @@
+{
+  "name": "Spider-Gwen, Free Spirit",
+  "catalogue_id": 4023,
+  "oracle_id": "2648559d-1d96-47d2-a769-cfa2cbca2be5",
+  "facts_sha256": "415e5b5dc8a445f1efc1fff0c489ac7e4798457450806491711a6ebd0d7387fb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4d476842777a39490527c25083755b102e11c9279ae835e7318ec93f1e3d770a"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Faerie Dreamthief",
+  "catalogue_id": 1426,
+  "oracle_id": "d6e68414-80cb-4e08-ae84-b084a3f4b6de",
+  "facts_sha256": "1fc35c79b4880260987dc361ddcc06cc4110f1007e9d77cd6ac150f06ccd1766",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5cf7bd13b3475ef50559fa4c7aa6dd4c02f26282f03e28df738c484e9af3c96b"
+  }
+}

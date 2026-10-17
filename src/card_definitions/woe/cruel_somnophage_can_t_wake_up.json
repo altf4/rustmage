@@ -1,0 +1,11 @@
+{
+  "name": "Cruel Somnophage // Can't Wake Up",
+  "catalogue_id": 903,
+  "oracle_id": "997bdec5-f67b-4822-a3ba-c636e2685e8a",
+  "facts_sha256": "5d275ff0f3fe2d605ce338b3f51220da1812e30f3224c1924c6cffa4b894d05a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "032c3fd3148d11038eeded48857ae20f87c62613c099d74b0e1caf72e7beb337"
+  }
+}

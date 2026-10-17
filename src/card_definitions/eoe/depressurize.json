@@ -1,0 +1,11 @@
+{
+  "name": "Depressurize",
+  "catalogue_id": 1046,
+  "oracle_id": "abcb5321-c295-4abf-8622-7de79679d27a",
+  "facts_sha256": "3c8e664906bdba19b1fe1f1811a1a24a18217471544c260038f576788fef9ee1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e51df8f8d2400cfc547a7cdc3b03422516469f38c1884280d00f006a41799175"
+  }
+}

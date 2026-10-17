@@ -1,0 +1,11 @@
+{
+  "name": "Flame-Chain Mauler",
+  "catalogue_id": 1541,
+  "oracle_id": "d6eef6a7-0cf4-4ee8-90e0-727a283c3be9",
+  "facts_sha256": "6541bc934744fc2c17b2aade00cfd4230f5d1a62bf67e0cfb430ac83c41deabb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2f9063e0b026c219ca4d0c46a49d07ff19e233172a042cd0b6a2adec84112775"
+  }
+}

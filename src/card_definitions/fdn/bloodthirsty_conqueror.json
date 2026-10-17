@@ -1,0 +1,11 @@
+{
+  "name": "Bloodthirsty Conqueror",
+  "catalogue_id": 460,
+  "oracle_id": "fd505c02-c59e-476d-8e88-35da862ddc23",
+  "facts_sha256": "54db42e6c8d7a6eafe3149d650998167c7dada38293001a262fd2f6fe8ea3d34",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "306809e806b59204b1199e1e5ce080f4128c6f67fce2a82e5d31298fc77a89ef"
+  }
+}

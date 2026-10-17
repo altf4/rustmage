@@ -1,0 +1,11 @@
+{
+  "name": "Zealous Lorecaster",
+  "catalogue_id": 5155,
+  "oracle_id": "f82265fd-e772-4347-a27f-37b00ccd416b",
+  "facts_sha256": "56b7bf9474703dd31a78d7a0bda9a3f37c345674d67582a0296ad34495c1749e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7f642507b31702f40a345235e30bc32e29bcb04f48531fd10d234e616095344a"
+  }
+}

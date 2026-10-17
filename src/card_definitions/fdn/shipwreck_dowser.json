@@ -1,0 +1,11 @@
+{
+  "name": "Shipwreck Dowser",
+  "catalogue_id": 3835,
+  "oracle_id": "dc3073fc-dc23-426e-b867-fee5dd99fe25",
+  "facts_sha256": "d82733ed8f07426c1c3468fbf6b389ab80b8ff7706c321ba1e525a683c3977b0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2fe00fa22db8963553b77a567e43e49b2cec751d9d73630148d8de6bebec7c28"
+  }
+}

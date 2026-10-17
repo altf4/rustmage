@@ -1,0 +1,11 @@
+{
+  "name": "Tune Up",
+  "catalogue_id": 4701,
+  "oracle_id": "aaa14260-2537-4668-8517-c825118777cc",
+  "facts_sha256": "2a221da87dd15d2b6dce55163c90b98357f03fd3aaede35cc8cc81448a77ab75",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "145289ebe4cd544b70a8d7e639e799d6ad3cccb321d0293461ce14ffa369ee4d"
+  }
+}

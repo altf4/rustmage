@@ -1,0 +1,11 @@
+{
+  "name": "Kutzil's Flanker",
+  "catalogue_id": 2423,
+  "oracle_id": "ba557e19-a409-4c02-a9ac-a8fb77762e43",
+  "facts_sha256": "e2672c6784d0a297c0d687579979e585b79f2891a6526cece2945fbd64611586",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6becf37755232f39f5abfef8d7dcc96f4c751476bb2978b5a7baa477e2907e09"
+  }
+}

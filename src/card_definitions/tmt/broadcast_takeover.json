@@ -1,0 +1,11 @@
+{
+  "name": "Broadcast Takeover",
+  "catalogue_id": 564,
+  "oracle_id": "e0d221da-16cd-4399-830f-eecc9a0912eb",
+  "facts_sha256": "62d09ee9900b7bb28cace88d57fb65e65c4793dee4d5d5895e0c4b06f16b7a0f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "067ebe7d787cc6c9a651bc97615348b1ad084d4e4380ef07588c73dc73239b6b"
+  }
+}

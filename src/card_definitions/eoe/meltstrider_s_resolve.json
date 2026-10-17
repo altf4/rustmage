@@ -1,0 +1,11 @@
+{
+  "name": "Meltstrider's Resolve",
+  "catalogue_id": 2711,
+  "oracle_id": "6f9bc0c6-1792-4771-a839-95a22d9c699a",
+  "facts_sha256": "4cb34caa729a9c5373f40a7dce3c73cdc3172d62b6bafcbfe0999e3e23602dcc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "762e71a364177dd76a792c3e9a5fc94f2b3465a5818c1dd6def93794de1aed3e"
+  }
+}

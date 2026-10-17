@@ -1,0 +1,11 @@
+{
+  "name": "Hermitic Nautilus",
+  "catalogue_id": 2013,
+  "oracle_id": "6bda307b-1508-4582-952b-c690db85e045",
+  "facts_sha256": "ccc8c3e4d1f9b2bbf4107b7f2beba20ad5c453df5e42260aca036ec5395c0929",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "01d893006ed2e12373f2ba049be559aa27587e4dc77c2831bf3d92a721506b30"
+  }
+}

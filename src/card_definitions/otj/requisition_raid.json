@@ -1,0 +1,14 @@
+{
+  "name": "Requisition Raid",
+  "catalogue_id": 3471,
+  "oracle_id": "09669283-eb14-46a2-b37a-51d7a52da891",
+  "facts_sha256": "162cbb10be05edfaeb8ffba04214e27d8fa7d0f46f12eb1faacc6f2f131ed8a2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "931f590c74b7279e75c04a58a3c0154d2f60728f2e18cc0040d008c9d2cadcb4"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RequisitionRaid.java",
+  "java_sha256": "0f4286fd6c6fc2e27a0acb08bc6aa42da9da29c6e39414b553727a5828073924"
+}

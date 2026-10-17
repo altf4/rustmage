@@ -1,0 +1,11 @@
+{
+  "name": "Spring Splasher",
+  "catalogue_id": 4071,
+  "oracle_id": "f1136a22-b202-4688-a44c-a9979c91261a",
+  "facts_sha256": "ff9ecfec3567a3e3371f6a279d830484f8f7b8e8f3c3e6ddef106d527d650fd7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7feea5184472c641c5a234dc92309da0be57edae5018cbe12178337cd2281a7f"
+  }
+}

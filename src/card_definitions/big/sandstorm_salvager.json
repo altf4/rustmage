@@ -1,0 +1,11 @@
+{
+  "name": "Sandstorm Salvager",
+  "catalogue_id": 3680,
+  "oracle_id": "ec19a9bc-6fc1-4150-976b-37a47b165016",
+  "facts_sha256": "962c358e30cfb2dd7b73df231381ba89fb1e7feb9cf7edff4d359683722abbfb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ae8e9957a37cd3dc9648ab71db09a36a349dbd398a46c9b50f98cc7819c09730"
+  }
+}

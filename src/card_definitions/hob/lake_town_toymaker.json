@@ -1,0 +1,11 @@
+{
+  "name": "Lake-town Toymaker",
+  "catalogue_id": 2440,
+  "oracle_id": "0f208cd3-7673-4380-9cb8-5b6f09966ebd",
+  "facts_sha256": "62f9c192790ec4d26e33641b2c3eaf7dac5a15cf1a9d846d3629ccc6aaf4ac6c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9474ab358257337381b8bfa784c0922190e4e405d53115f5b37ed5f25af755e0"
+  }
+}

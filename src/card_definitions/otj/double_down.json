@@ -1,0 +1,11 @@
+{
+  "name": "Double Down",
+  "catalogue_id": 1139,
+  "oracle_id": "60dd4233-ee50-42b8-88f5-ac5d105d83cd",
+  "facts_sha256": "4346c7086dcf00c23c44390c1476caca667f873e4a0ab9af5dc8da923b0a54fd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eb59f9a04cbe6a40922c5b152f042947bbb484f1424e5b61766b7c4347132cf1"
+  }
+}

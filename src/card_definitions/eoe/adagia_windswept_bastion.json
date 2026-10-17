@@ -1,0 +1,11 @@
+{
+  "name": "Adagia, Windswept Bastion",
+  "catalogue_id": 53,
+  "oracle_id": "70d35dbd-1d91-4a2a-a643-6870d168f4f5",
+  "facts_sha256": "20d8e2cf82da9525bfddcf2bb02f47e60a9379c23e4e6b8db5920738e206d307",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a9f64035cf06b73363a6bd5e6a5a1fed33a6d48a3eb283f7b4baee415bf12ea3"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Eriette's Tempting Apple",
+  "catalogue_id": 1357,
+  "oracle_id": "b26a2875-c704-491a-b82d-07c316e53611",
+  "facts_sha256": "2831b3f4137949070d48314ff21ea59777adcc2aca0ce9a367453e6d1206d240",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3392d98c6002300b2da91d6c41ffba70f8270a82fffde97c0d32b1aa19a5c9ee"
+  }
+}

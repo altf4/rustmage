@@ -1,0 +1,11 @@
+{
+  "name": "Dirgur Island Dragon",
+  "catalogue_id": 1089,
+  "oracle_id": "23cda76b-6e47-4922-a38d-93f7aae1eb00",
+  "facts_sha256": "694999bb9429fdb7e2646bf9936d01424d2239ffcf256be04f0d9e6c4e5884ce",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0a13602b0df838297d0c2bd1d4c3bb9ecdf9aa027584d7b6ba70d72188ae63f9"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Rise of the Varmints",
+  "catalogue_id": 3540,
+  "oracle_id": "d981977d-acfa-432a-b1d7-1808a89a5998",
+  "facts_sha256": "772831f63b4c9de8643e7bce6b0c36661ae2bec2d13ec4f32162700e12e02ed9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fa6a46b6ae67b75e0420d2b61d4c7e940b17f55b01757d9e0a4b20047010b48f"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Discerning Financier",
+  "catalogue_id": 1090,
+  "oracle_id": "734a5186-caa6-4811-b6d7-91b7b32fc403",
+  "facts_sha256": "98a9466b7a546fe7b50234f171a767742cf1be52f509ca92340a24727a968680",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0e70c002ec26360c00b07917fcac2b61e048d8ab03b3dd19c2286b413555c22f"
+  }
+}

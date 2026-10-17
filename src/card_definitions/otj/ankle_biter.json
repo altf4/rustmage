@@ -1,0 +1,11 @@
+{
+  "name": "Ankle Biter",
+  "catalogue_id": 168,
+  "oracle_id": "ee8f16ba-cbf0-4286-b26c-d78dd35bee17",
+  "facts_sha256": "a26f2e8df1f57fa68cd982877736d262bedfd6baa6fe76668125840c0968710c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "926f98045223678db29599a0887f1b2af8e588289d1f61ab7517960ecca979c3"
+  }
+}

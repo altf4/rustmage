@@ -1,0 +1,11 @@
+{
+  "name": "Titania, Rugged Rumbler",
+  "catalogue_id": 4613,
+  "oracle_id": "e380e37d-926b-4a4b-a275-7844bf4956d5",
+  "facts_sha256": "d76ccf9f1a39ba35d0d18f9a954f94cdb35320ca31877cda3dd8fea036c6fa88",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "102d9c53a35d489d93ab58cff3ee9e99bd40961c2dc2c2ef42739dce7f87d5b5"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Ozai, the Phoenix King",
+  "catalogue_id": 3084,
+  "oracle_id": "7472af8e-2e93-43b2-bc32-a3741f6d7502",
+  "facts_sha256": "b31fdd0700f50a922e14c8ab75e07766cddd332ce257cfdd90d7d3e6f8a4ac3c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0b101749f2981aac13a504b37a5c2c7d838914c91d4b5464beda88ebad8479bc"
+  }
+}

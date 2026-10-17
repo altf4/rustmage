@@ -1,0 +1,11 @@
+{
+  "name": "Crusader of Odric",
+  "catalogue_id": 907,
+  "oracle_id": "ea384b0d-3091-4d50-b15f-1f6763647b7c",
+  "facts_sha256": "9f5d51ccb684c7e2a47d8431682d10832fddb540f75b8d7ee839a75758edde70",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "54687706ec383bd2f450185937d8a067cd8e294d81cc395874541160a5667b28"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Oscorp Research Team",
+  "catalogue_id": 3047,
+  "oracle_id": "4d2e233c-0173-417f-82a0-1e692a400ae1",
+  "facts_sha256": "81f2a933e976ec21d0fcb21018907b8ab4755fb216967889971080d81acac664",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c8c0e31a18bb639358c8785f60cbcfa158d0525fe3f5cffaf22e9648278b79ed"
+  }
+}

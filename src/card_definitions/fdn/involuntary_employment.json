@@ -1,0 +1,11 @@
+{
+  "name": "Involuntary Employment",
+  "catalogue_id": 2217,
+  "oracle_id": "7e86fb1e-9987-43ba-b59e-0cb03bbdedb6",
+  "facts_sha256": "8b3caa02001a704f2046fa37359c06ace0b31ee1325ffa862f9e434c1aaa34d9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "681f6619e781e6d6a985cba9f905baaa5c383ef7dff5bbe3062316925b8c473e"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Ruinous Rampage",
+  "catalogue_id": 3613,
+  "oracle_id": "5020628c-5e47-4a83-89c3-7bf5726e69ad",
+  "facts_sha256": "24f5b2a84c94e96b803df1b1b5b79d141cd2571b97ef36f7c1db0a66f8901ce0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "38c896c88dc87ddcf5b7be40c13925bd5aa5220016d236c0fffddc6f959a7c1b"
+  }
+}

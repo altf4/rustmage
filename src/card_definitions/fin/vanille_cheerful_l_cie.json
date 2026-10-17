@@ -1,0 +1,11 @@
+{
+  "name": "Vanille, Cheerful l'Cie",
+  "catalogue_id": 4846,
+  "oracle_id": "577725ae-290f-4081-8352-3317521a096f",
+  "facts_sha256": "6040b0b4193b112ddc08a11a6b19e76c588d7f8b283cb63d7f30d8cb29536d28",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "98f17d7bce438d24884eea6639db4397691ef25e499efdb23f7ab6c245fa00b6"
+  }
+}

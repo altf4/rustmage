@@ -1,0 +1,11 @@
+{
+  "name": "Glamdring, Foe-hammer",
+  "catalogue_id": 1764,
+  "oracle_id": "2802069f-201e-43a7-b5d3-43a95951a2ec",
+  "facts_sha256": "acf37c9e612cba243f82d0ce1a325988a97d879e81a037abdeef266a6fb0d1d9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9e19506765fd62bf5e46a34b8730ed023ee52a38c4bbc2fc79fb694df8fe91e7"
+  }
+}

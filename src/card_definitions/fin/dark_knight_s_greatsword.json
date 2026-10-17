@@ -1,0 +1,11 @@
+{
+  "name": "Dark Knight's Greatsword",
+  "catalogue_id": 967,
+  "oracle_id": "eda09ed4-7509-4d1e-b169-2b7c1c87e936",
+  "facts_sha256": "d1ee2579a62fcfe60451767044b0ee55afdb8d961508b1f6c401f3f77af74601",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3b5167aa8b21e7acb9434a938f3a9f771be8459dfb758787a8be68f32a595d83"
+  }
+}

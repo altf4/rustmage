@@ -1,0 +1,11 @@
+{
+  "name": "Under the Skin",
+  "catalogue_id": 4761,
+  "oracle_id": "8e121178-e9e3-43a5-a174-ecbe47d759f9",
+  "facts_sha256": "27fae7cbe319c1f220d0517d36626c13bb3662bc707bc09378fdfb1745df4b4c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3f0b75ab8227240ec15500980bb9a3c65cb1a5407c1339f0251ccff49032e030"
+  }
+}

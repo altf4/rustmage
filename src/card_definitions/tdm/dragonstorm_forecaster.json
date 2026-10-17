@@ -1,0 +1,11 @@
+{
+  "name": "Dragonstorm Forecaster",
+  "catalogue_id": 1167,
+  "oracle_id": "02de8fa3-ac8d-47e5-b137-d5a0b7d8e951",
+  "facts_sha256": "9af5bbe1b4ca38697b801f3e63725136b3c7be5219e306a3a0cad90b2fc3bdb3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f488093c31ae8230a268b440591e7b4355270775f6740b8c6c217bd2219d54d5"
+  }
+}

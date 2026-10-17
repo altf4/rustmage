@@ -1,0 +1,11 @@
+{
+  "name": "Elvish Archdruid",
+  "catalogue_id": 1299,
+  "oracle_id": "6e2c2423-d854-4478-99e6-64f29851f026",
+  "facts_sha256": "3545a96efe123e994b056d6c54c8cb8da64ed4f05ca3e47acf8f4ea8cc96870d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c85fbf50554c3663b2b055fa5b4344f4094fbaa3f9262163746f72b5c0055742"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Restless Anchorage",
+  "catalogue_id": 3483,
+  "oracle_id": "91320daf-f69c-4350-b0fc-4bb37a6904b1",
+  "facts_sha256": "4f75b9dfaeecad9b871c326d1c2be3164964cc09f5eeecab397d73729aea6373",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1dbd4b317f9c8fc35b6603be174c486870a48e0ed00e142c33529c636acd5627"
+  }
+}

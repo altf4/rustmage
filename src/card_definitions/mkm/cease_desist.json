@@ -1,0 +1,11 @@
+{
+  "name": "Cease // Desist",
+  "catalogue_id": 692,
+  "oracle_id": "ba4d644f-1931-4fc4-aed5-681a476a5a58",
+  "facts_sha256": "b16267d1626b3f5bc0a29060bd1a625c8f898c1195dd960de471145408641483",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "383a2984903de506ab6eb544e572d812962aaaa2696d85a5b15889dbd71d7f9d"
+  }
+}

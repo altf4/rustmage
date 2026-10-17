@@ -1,0 +1,11 @@
+{
+  "name": "Talion's Messenger",
+  "catalogue_id": 4325,
+  "oracle_id": "3a721a4c-696b-44d1-858d-20040bd01909",
+  "facts_sha256": "59fa5054d0e90ae896add5f657912b170b14a9b821138b9eb666257a9c47baa0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bf9a62054648e290ea1ed7803602ec931adec5f61a812db41dc68fcac08b93b7"
+  }
+}

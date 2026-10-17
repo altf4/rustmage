@@ -1,0 +1,11 @@
+{
+  "name": "Turtle-Duck",
+  "catalogue_id": 4711,
+  "oracle_id": "e93782e3-1b93-459a-a7de-06c3b6591e6f",
+  "facts_sha256": "7f28130dd02ef45abd683513d3eb1f7076196a225d0e5dd5a928a46a814c232e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ac995e02efca101ecb4c8a991dafeb8d605469c404075aa5ca39c9e9b5b87738"
+  }
+}

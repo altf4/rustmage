@@ -1,0 +1,11 @@
+{
+  "name": "Icy Reception",
+  "catalogue_id": 2128,
+  "oracle_id": "612c7807-be70-4e2f-afd2-3d3c03eddbbe",
+  "facts_sha256": "dd2e2430f23704d7526d5651aa383480ded61045f7a86c7759d7fa724e03b0bf",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4d0aa5f1e6a790b67865ae21b847163613828211dbb27f89b20df0445b0f694a"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Baron Helmut Zemo",
+  "catalogue_id": 333,
+  "oracle_id": "0fe6c042-1182-4392-8938-fee36149d74f",
+  "facts_sha256": "015d5c5972dea39c6597840fffc0945fe86b3a13c14c4bf1fd87cd5d88af113b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d5a8cc6f2f5960e088b5509855a2dd26f49658bc3ff3ae59ed0f06337f665da5"
+  }
+}

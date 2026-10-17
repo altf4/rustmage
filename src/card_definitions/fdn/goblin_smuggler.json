@@ -1,0 +1,11 @@
+{
+  "name": "Goblin Smuggler",
+  "catalogue_id": 1808,
+  "oracle_id": "eae15f7d-1f6e-4dfc-afea-7698b93cd145",
+  "facts_sha256": "cee7dac11bda114f320abd1a4b223caa8a8053b26844b6723578d27a7200ca78",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "64dd10469a15f2ff395f5bd2dab635483a8bc00bdfba6229419e8189d3ca996e"
+  }
+}

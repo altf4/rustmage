@@ -1,0 +1,11 @@
+{
+  "name": "Starving Revenant",
+  "catalogue_id": 4115,
+  "oracle_id": "2ca969eb-3d79-4d1f-8d9d-7b8204ad166a",
+  "facts_sha256": "d4c66a3d7151ccfc06a90011ca40558a57a60a4c5cabe3f5bb61bf7536ce68b8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "56cbb2d5aedebf17aaa598e9e16a4ded0e819204c54fe106f1167d044a3fae5c"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Scorpion, Seething Striker",
+  "catalogue_id": 3729,
+  "oracle_id": "c357230a-afde-4c2a-b390-9f6928599236",
+  "facts_sha256": "58b8950785deb2200282ba367879f4f079d372530ff0295ef84af0271fd66109",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "899bba24f838fa53eebee002937dbf4bff8d47d7ff974d76cbdd3b9e0741ff9f"
+  }
+}

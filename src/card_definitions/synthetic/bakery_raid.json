@@ -1,0 +1,11 @@
+{
+  "name": "Bakery Raid",
+  "catalogue_id": 5197,
+  "oracle_id": "4fad3816-41af-4fa4-85b4-ba37614ec848",
+  "facts_sha256": "243f5ec3a1c151bc6bbd4f89a9b160b55294bbe313827f4058ebcc7da9c8e946",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a3c2118ea3836b56409aff681ad409f1381c1bab540094ad0479eb44b7e172eb"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Trystan, Callous Cultivator // Trystan, Penitent Culler",
+  "catalogue_id": 4697,
+  "oracle_id": "961d1128-a022-480c-918e-16ba0abf844b",
+  "facts_sha256": "62480c46385264cb8be6531d79d0f968414b4dbbd58120a3a4f6ad72edc5c293",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "675bd3a80657ca7208dca909f025be76ea60b0be06c9406ceb53591da30e9367"
+  }
+}

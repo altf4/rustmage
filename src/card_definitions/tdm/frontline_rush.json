@@ -1,0 +1,11 @@
+{
+  "name": "Frontline Rush",
+  "catalogue_id": 1635,
+  "oracle_id": "b80d21de-2ace-4e0d-92b2-6f0273512621",
+  "facts_sha256": "b325476bf726a3171e4a0e7975016e1b5d0500b50d4f3a0b1843d0392ab07cfd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "25a89ed0636a9ec18e6be3f66cffb05fc62d20a84a087185791af1bc3428eb9d"
+  }
+}

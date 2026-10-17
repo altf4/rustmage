@@ -1,0 +1,11 @@
+{
+  "name": "Wickerfolk Indomitable",
+  "catalogue_id": 5054,
+  "oracle_id": "730d02c7-2f8a-47d3-99f0-e4ada7f6255c",
+  "facts_sha256": "188061ef295d6b72db0cc46522dfcdec2578e1d8196419409018cafdbe1174bf",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "58ad6a71341aaefe218a7d7ad92618006d161865c118fa84e27080a8d930f34c"
+  }
+}

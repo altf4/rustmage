@@ -1,0 +1,11 @@
+{
+  "name": "Coral Sword",
+  "catalogue_id": 846,
+  "oracle_id": "d4f0dd14-bc2a-4c6d-bfd5-bc5838ab18a5",
+  "facts_sha256": "1899df74dc3e462ce98e453ec419afc00a9f2c258e3a99096eab1defc77cbc06",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "44d9a46d4594d5e3d04428ba86b58d2257f24022e59c143c08a924bc43c7bdbf"
+  }
+}

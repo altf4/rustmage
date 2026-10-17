@@ -1,0 +1,11 @@
+{
+  "name": "Interceptor Mechan",
+  "catalogue_id": 2193,
+  "oracle_id": "ded2b1b7-8c12-4f6f-a3be-a8f7b62b0819",
+  "facts_sha256": "b3dac5d5a293484297752b1b747c4c33a1a5c607412d14a5565c357f8e86466c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6d296c5503bdf8da5bfe26494881aa3046eadd062978417968f8385a2b117b22"
+  }
+}

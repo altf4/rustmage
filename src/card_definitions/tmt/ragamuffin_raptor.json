@@ -1,0 +1,11 @@
+{
+  "name": "Ragamuffin Raptor",
+  "catalogue_id": 3337,
+  "oracle_id": "71b81f3f-6092-4819-8529-e27bccfcf088",
+  "facts_sha256": "df47cf90c22fa3b54e251044bff4a5642d0991ada6e4424a1d2b6e982300295e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "38216a4f37d05715abe6479136daad6c5189f70e8882fd9d6d482fa98a98783b"
+  }
+}

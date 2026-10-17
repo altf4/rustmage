@@ -1,0 +1,11 @@
+{
+  "name": "Bitter Work",
+  "catalogue_id": 427,
+  "oracle_id": "e9a24ed8-e844-4c50-b386-bc28da9989b1",
+  "facts_sha256": "35bf6bd21205105448b5df9d48e9ac7783b40fbe854bccb8726f032b47d9ddac",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b7c152e5a5a11b18fdf323de8bb27bd526a00a5d090dce078f92f30c9ad9a275"
+  }
+}

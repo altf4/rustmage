@@ -1,0 +1,11 @@
+{
+  "name": "Sahagin",
+  "catalogue_id": 3652,
+  "oracle_id": "24310f49-2156-4c0d-b3b1-40ca3182474f",
+  "facts_sha256": "450ceec99a3c5fac31562db36ada7550c585e77df1977658a33a3e0c7126c4ab",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2b7a4329edde3829dc4b97dc908152c3848305889c3469dd32659876fdc2979d"
+  }
+}

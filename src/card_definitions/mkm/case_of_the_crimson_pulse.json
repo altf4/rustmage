@@ -1,0 +1,11 @@
+{
+  "name": "Case of the Crimson Pulse",
+  "catalogue_id": 662,
+  "oracle_id": "955504bc-050a-42a2-b2e4-ab213183b2be",
+  "facts_sha256": "78fef7817ce3f885854dab07fdf3c6a8886e19a805c86dab8ae560db894a6868",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "92784fd54a91524381c580535cfcffc14cbbad38a5c8e124c45db6f5c28f5d3f"
+  }
+}

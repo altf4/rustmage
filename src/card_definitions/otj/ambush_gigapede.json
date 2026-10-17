@@ -1,0 +1,11 @@
+{
+  "name": "Ambush Gigapede",
+  "catalogue_id": 147,
+  "oracle_id": "4faf62c3-3ba7-4540-be26-777305ef184e",
+  "facts_sha256": "501ffd570ea64189c0baec4cc0220e0e31ed186ccb34785ae0ff728e6e13decf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "795974bbb89f1656ed39ec7f380f1b5a44c4a5af25fb6945f19a211d9121f782"
+  }
+}

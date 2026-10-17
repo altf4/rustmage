@@ -1,0 +1,11 @@
+{
+  "name": "Resonating Lute",
+  "catalogue_id": 3480,
+  "oracle_id": "9263287d-f782-4318-9ab8-e2e5f8107f5e",
+  "facts_sha256": "c8aba5f1a0dbf44373eebe7aecf4fd00076d7cdd3081107e245af12f4dd0baeb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "048e1e3c4dfd6e7c3ad937f33f985d107b0703a108eb8b0f9659b510b040ddc0"
+  }
+}

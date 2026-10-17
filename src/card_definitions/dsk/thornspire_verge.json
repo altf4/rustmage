@@ -1,0 +1,11 @@
+{
+  "name": "Thornspire Verge",
+  "catalogue_id": 4544,
+  "oracle_id": "e861bc08-4f0b-4d22-9b85-9d20227fd5b4",
+  "facts_sha256": "5140d31241382db6e075be94467f50211e11df92e545a4f579f3c6048e13424c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "22ff7005716cab71be6e87a176864b2cc0e6212ef2415494c32c65ada669d0c7"
+  }
+}

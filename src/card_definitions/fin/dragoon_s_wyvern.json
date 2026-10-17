@@ -1,0 +1,11 @@
+{
+  "name": "Dragoon's Wyvern",
+  "catalogue_id": 1170,
+  "oracle_id": "f328012f-4696-47bb-ab43-247bdcb13f03",
+  "facts_sha256": "15d8a6a28a009fc59e0f92d16e250e65b2197289e92c3a18f233f5e3e88ac186",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "109b29334175cc7ccdbcb956b4684062a51883bed7ad0856498afcabd31fd5cb"
+  }
+}

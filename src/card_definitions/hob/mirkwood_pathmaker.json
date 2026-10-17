@@ -1,0 +1,11 @@
+{
+  "name": "Mirkwood Pathmaker",
+  "catalogue_id": 2783,
+  "oracle_id": "f1b36dde-9cde-46c8-8d5a-9ad93feba41f",
+  "facts_sha256": "75c519db925059b115cde8792518acf74057b144b032c03c9fea12da600802ae",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dab596f8d24042f447cf96dc0d3aa688b67357c9fe5d5aa795916f8516011a9b"
+  }
+}

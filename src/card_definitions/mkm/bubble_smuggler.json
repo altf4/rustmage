@@ -1,0 +1,11 @@
+{
+  "name": "Bubble Smuggler",
+  "catalogue_id": 574,
+  "oracle_id": "ca22fa33-5460-4d31-a9c8-4115d35b994c",
+  "facts_sha256": "d1e654769294c0d75fc153d34139ddf41dff0c505e73261019bfd55475137bd8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c08fea71878813aabae91f7430abefaa3209fe87976a4409d94e6206bceebcc5"
+  }
+}

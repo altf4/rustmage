@@ -1,0 +1,11 @@
+{
+  "name": "Slash of Light",
+  "catalogue_id": 3913,
+  "oracle_id": "3cc4d6f4-79b2-4210-84de-a0febf81eb67",
+  "facts_sha256": "08f3d82903b826b481f144cbf7a3312f66809d9b4bac29390545ea277e79fce9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1c19e058051a0aecb80aa473129eecd10a02b75ae480d7b01cd6f3b418627b72"
+  }
+}

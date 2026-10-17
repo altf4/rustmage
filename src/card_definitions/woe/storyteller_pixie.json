@@ -1,0 +1,11 @@
+{
+  "name": "Storyteller Pixie",
+  "catalogue_id": 4180,
+  "oracle_id": "51bb6d3b-be6a-435d-8a80-0c0f0161892d",
+  "facts_sha256": "cd03d229a9daf1c43f151f849b4adef095ea55812091c8997302d31659cc5e34",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5fd6733301c5e8d44edf7300fb06200c7fbd2d3a4c8a6b12e6779124bea3978f"
+  }
+}

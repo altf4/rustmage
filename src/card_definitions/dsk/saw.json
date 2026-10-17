@@ -1,0 +1,11 @@
+{
+  "name": "Saw",
+  "catalogue_id": 3701,
+  "oracle_id": "d88bfa98-6869-4d64-a9d2-07a308a67fe2",
+  "facts_sha256": "4352b4cab17bfaf4a9702185e7010b4ad646e1a76f3f48cadc3b0ee0f31a31b1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "39a396f14663a02214f1b0b8e854ee791d760730bdef7dc7d191556372c7afa5"
+  }
+}

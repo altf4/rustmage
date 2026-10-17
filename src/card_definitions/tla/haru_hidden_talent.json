@@ -1,0 +1,11 @@
+{
+  "name": "Haru, Hidden Talent",
+  "catalogue_id": 1957,
+  "oracle_id": "7488ce54-37c6-475c-b327-59f52f2b1424",
+  "facts_sha256": "75d8c0223e2a01677b77f619d99ca4a74405bad5f85fde2647496d3cc2211067",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "faee97b78fdbed54e3aab3f9bba32b25287f12478e20719c45a18d9507777e20"
+  }
+}

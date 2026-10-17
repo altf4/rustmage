@@ -1,0 +1,11 @@
+{
+  "name": "Squirming Emergence",
+  "catalogue_id": 4081,
+  "oracle_id": "e468f1fe-d99c-4034-a94f-91c41a129092",
+  "facts_sha256": "08aafdfd62d918fc70544e10f7fc9689b3efdaca79a72273f29d0e6afa526d1a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2970ccfe5b5c64d229f038b27b394051f5ebdda8da0fa7a201ba97cc392935ae"
+  }
+}

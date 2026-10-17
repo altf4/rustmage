@@ -1,0 +1,11 @@
+{
+  "name": "Stormsplitter",
+  "catalogue_id": 4179,
+  "oracle_id": "4a9ae0d9-5ee7-4289-9333-ef0bcc3079ca",
+  "facts_sha256": "201bd28a85984c49968f5720cc6b59cde5f0126c3bc05d9816f5e429fbb6688e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cbbedc5e0d32cec4f5f2d7c0467e533822c21d9de0832cce8a31ee4494b31fee"
+  }
+}

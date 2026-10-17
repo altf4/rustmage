@@ -1,0 +1,11 @@
+{
+  "name": "Atlantean Cavalry",
+  "catalogue_id": 253,
+  "oracle_id": "e929b730-9aa2-49e1-9a65-50afc0fbe3e0",
+  "facts_sha256": "f62d9af93a54e986ad0caf6f3e4d6328938857970f9de2f503785f189fdebe3c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fccffc0a38f7461ac9c9cf71c99198d36618a11ae6474f9dbeeebefb78b2e18b"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "The Legend of Kyoshi // Avatar Kyoshi",
+  "catalogue_id": 4464,
+  "oracle_id": "e41e8754-028c-4399-b530-de9e134d04b0",
+  "facts_sha256": "fb1f99cace059e0da18617aff43bbd965ca42b52f6f9574346fa6e06f85cbf04",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "83abada18d9f0d8fab7c45939d36df7e97c7f37ae606f419fce43a273aa025e3"
+  }
+}

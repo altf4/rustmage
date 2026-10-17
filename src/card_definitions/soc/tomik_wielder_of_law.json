@@ -1,0 +1,11 @@
+{
+  "name": "Tomik, Wielder of Law",
+  "catalogue_id": 4629,
+  "oracle_id": "2ef0961a-0543-4371-8c2a-333881b735e5",
+  "facts_sha256": "87e6426a25c1b5c3866d473c4721a830d5fbb6f8cf04201b80c1069138294818",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1543b91a3909b40333b5198c70f059e59683d6cb1889a58b2bd3bf13de55e0ab"
+  }
+}

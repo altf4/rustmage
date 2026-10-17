@@ -1,0 +1,11 @@
+{
+  "name": "Oasis Gardener",
+  "catalogue_id": 2983,
+  "oracle_id": "210a130c-d5d3-43bf-8a80-d796c37242e8",
+  "facts_sha256": "739fdb536aaa769f636eefad4501d1e4105081e08aa0a7717d50f843078c933a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c35c3a2ac51a26e60224fe0a986ff7e5e5b08c0050238a5bcd557db82cf361db"
+  }
+}

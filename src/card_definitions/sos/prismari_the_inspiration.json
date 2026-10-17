@@ -1,0 +1,11 @@
+{
+  "name": "Prismari, the Inspiration",
+  "catalogue_id": 3241,
+  "oracle_id": "258f5045-3aa7-4b95-a15f-3172577294a8",
+  "facts_sha256": "1d9353358a61a2f4c11152952ae4431876a3cbabff9317d8d05afe471862579e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "df53197604ca70830560e1059e27b4dcb3f1e0d20282ba8ede9cb83337738cee"
+  }
+}

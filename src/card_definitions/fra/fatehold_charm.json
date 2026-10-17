@@ -1,0 +1,11 @@
+{
+  "name": "Fatehold Charm",
+  "catalogue_id": 1453,
+  "oracle_id": "313aee0e-4090-4589-b323-a4edbda21c68",
+  "facts_sha256": "4d9751e2258908f1935c57c578dee454e02e5d348f570398a8c1692dffa603e4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "de6149f4489cf65bceb90a29a70b5946fdb2530bc93ce630ed43d07c49fe2b18"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Grab the Prize",
+  "catalogue_id": 1836,
+  "oracle_id": "a37387f0-9d57-49ff-aa38-2c6b359e8916",
+  "facts_sha256": "e88dfcbef5acd9206e8929b3ae6fa3ca96520ad8c92851b9b31f8bdc4745f523",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f84df87011a2dc552827d78769d29d4bb276079f987d99479320bd04be8881a1"
+  }
+}

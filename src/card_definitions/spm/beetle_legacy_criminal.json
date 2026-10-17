@@ -1,0 +1,11 @@
+{
+  "name": "Beetle, Legacy Criminal",
+  "catalogue_id": 371,
+  "oracle_id": "87972de1-c1d7-408e-8d56-995590f639b8",
+  "facts_sha256": "f86f41c0750e936dba73f5b4a0e6486eb8a74f1c90a458391e3587ac87f43ccb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "900a288a52eed957e74acf5868ddcbf5c1b0192cf8f79c5037f7f2c964995532"
+  }
+}

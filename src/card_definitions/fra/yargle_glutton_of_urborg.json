@@ -1,0 +1,11 @@
+{
+  "name": "Yargle, Glutton of Urborg",
+  "catalogue_id": 5131,
+  "oracle_id": "ed66cd31-958f-4b28-82a3-e04acc819afc",
+  "facts_sha256": "4b148c85b036325a5b6ac877ad98ad6a208a8d46617571100349d5fcc6f9711c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a89012695953d6ff92406154039fce6b1cd3c3c171c9006d51ca761fa0f319a6"
+  }
+}

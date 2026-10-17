@@ -1,0 +1,11 @@
+{
+  "name": "Stock Up",
+  "catalogue_id": 4152,
+  "oracle_id": "2251e34e-4ce8-4452-9dc6-d8cce8583996",
+  "facts_sha256": "df0711077dc2942c47763e3df726b56b0a3ea61a898949c604cd04619db3894c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1f38427fc7370f69e4ff6ff835b0787af0f79b92194d42468b858d93b8ff5813"
+  }
+}

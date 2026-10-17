@@ -1,0 +1,11 @@
+{
+  "name": "Mysterio's Phantasm",
+  "catalogue_id": 2896,
+  "oracle_id": "99419378-8a23-44f3-aebe-e62d6e20e877",
+  "facts_sha256": "40143fb1d89510e39dbf83f6cdcfd229cf026ad2009744ac633df475164675fe",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "21d7793b6de13211175c6a2781f9b41cedf15fc7994885fafa220a354cd21fa4"
+  }
+}

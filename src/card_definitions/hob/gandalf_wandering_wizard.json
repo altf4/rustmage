@@ -1,0 +1,11 @@
+{
+  "name": "Gandalf, Wandering Wizard",
+  "catalogue_id": 1678,
+  "oracle_id": "c996bc53-184d-4dc3-8244-e8d9528516a0",
+  "facts_sha256": "34251f4e08ad4e8e0a3641bfedbb62f5e05b53f1283ecb0f4130831bd8e10a53",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "37588b6fa3bda10c7e3db93ac7a757dcddb0cf87d2b2b3cc00a7e04daf9c1977"
+  }
+}

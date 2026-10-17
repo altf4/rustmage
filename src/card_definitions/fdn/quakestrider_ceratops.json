@@ -1,0 +1,11 @@
+{
+  "name": "Quakestrider Ceratops",
+  "catalogue_id": 3302,
+  "oracle_id": "e56629ba-82d4-470f-9a6b-40c29d835af2",
+  "facts_sha256": "eafd632eb690e8cab56f6f57c88b9de6ed97da061332968079b789ecca8fe3a4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d96b5018d9223bd95d4927bbc3fc00b17ff5301636112262bbf174eab8ae346a"
+  }
+}

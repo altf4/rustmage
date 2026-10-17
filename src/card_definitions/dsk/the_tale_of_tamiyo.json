@@ -1,0 +1,11 @@
+{
+  "name": "The Tale of Tamiyo",
+  "catalogue_id": 4507,
+  "oracle_id": "98a13f7b-ebe7-4a90-a0b9-95dccfff7fa6",
+  "facts_sha256": "c6980ebcc2996777d4aec1bfc0cc87b40fe7386b63b098a8141697a8bca2924b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3988a2ff22e997939a96497fb44bf8f1c14857247976d55b605c5f10ca7ebb36"
+  }
+}

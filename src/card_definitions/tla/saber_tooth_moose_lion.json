@@ -1,0 +1,11 @@
+{
+  "name": "Saber-Tooth Moose-Lion",
+  "catalogue_id": 3641,
+  "oracle_id": "7af493e3-15a1-42d6-a66c-82aacabe816f",
+  "facts_sha256": "bdcef0234a96d835e728ab98f304df370b884128033d40f95d309416f906d692",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fc2987a1cf061c0da9355eb59a978af77fcd72350fccc78a182fb538cafcba16"
+  }
+}

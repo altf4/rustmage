@@ -1,0 +1,11 @@
+{
+  "name": "Dwalin, Weaponmaster",
+  "catalogue_id": 1212,
+  "oracle_id": "cee583b7-7cc3-40ea-a227-b760839ec291",
+  "facts_sha256": "940d4b508bc4ff2151f6f784dd0a5d6a9f229a9ff4db5738ff2898cb3f30995e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a5ccf3875622f9f9dc8e8415d81b46bcb9de3dba550dcef0adbc3e48ed657272"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Desperate Futurescribe",
+  "catalogue_id": 1058,
+  "oracle_id": "83c12f50-e5a1-479d-afab-edb0b40412f2",
+  "facts_sha256": "a93ec28780c7a4613aa832b62e34291cb13507a6df16ce99163d23a1c47d2ff8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c8b086496e76511bfabcd78a234b47866a1861ca25ced0f5d10e1a8101ea9bba"
+  }
+}

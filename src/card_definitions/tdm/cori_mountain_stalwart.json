@@ -1,0 +1,11 @@
+{
+  "name": "Cori Mountain Stalwart",
+  "catalogue_id": 848,
+  "oracle_id": "322a2d97-cf71-4bfc-b52d-f642f2d0dcbd",
+  "facts_sha256": "64ea82641012785b144f6bc35f4f5fc48f2dae1b9ca7ea110e445cc9d1bcfb58",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "13d287c81b5517342b86844ebf1c67142ccdd36164d84dd66342f5e050cd0072"
+  }
+}

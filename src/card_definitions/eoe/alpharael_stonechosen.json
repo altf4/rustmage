@@ -1,0 +1,11 @@
+{
+  "name": "Alpharael, Stonechosen",
+  "catalogue_id": 139,
+  "oracle_id": "ed43f1f9-ef96-47bc-8a54-e59154319f9d",
+  "facts_sha256": "525810df41f4a869f401dd5b6eb476f97c60a5b8d1273d917648b2def3b4af0e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3a7e9c2a8254820afc7b13acfc71697efd68f4ddd80af574bb96e1de76349bc6"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Goblin Maskmaker",
+  "catalogue_id": 1804,
+  "oracle_id": "ff4b9723-d5f1-40d2-aa35-fa3d2a6f4b5c",
+  "facts_sha256": "545381bc074f9acf7b4c8ab954947dcad64ecd1daf5511ca61fe376321d63da3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7f32e30f46f2258ee85f97df889829d3091605e1d6a8784c6f5d1c6fa58437cf"
+  }
+}

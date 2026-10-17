@@ -1,0 +1,11 @@
+{
+  "name": "Absolute Virtue",
+  "catalogue_id": 36,
+  "oracle_id": "d4fddf20-6b3a-42c3-a245-002dacbb4725",
+  "facts_sha256": "78f4440bf20d96d65d8f42a9326139190cc885f7675504fa88d381eb8f72905d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "452c98d392fb13e450f8260c763ece0b776117c772dec40b952144feb1e9d045"
+  }
+}

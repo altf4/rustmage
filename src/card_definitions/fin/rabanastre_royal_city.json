@@ -1,0 +1,11 @@
+{
+  "name": "Rabanastre, Royal City",
+  "catalogue_id": 3324,
+  "oracle_id": "bd39e333-b0b8-4a85-8645-d77f4a3941db",
+  "facts_sha256": "128f4bf84ab3f037f343c3d7447352df83f6a19f24cf50c875d732c953c3e324",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e39e10b2fdcec1fc3022030bf7d60a03b56084a2e311ee39a4585a28532c699a"
+  }
+}

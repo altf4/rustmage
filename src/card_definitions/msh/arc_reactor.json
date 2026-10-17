@@ -1,0 +1,11 @@
+{
+  "name": "Arc Reactor",
+  "catalogue_id": 202,
+  "oracle_id": "55f7b005-31ea-4865-a8f3-460d15bed795",
+  "facts_sha256": "575bc86c583030420434419df1bb1c6294e6097369239c5a2913d74b19e88130",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aa099d01607582a4218377cb2cc959986d2cec49bb61f9cd33e7c7bb5b139441"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Terrapact Intimidator",
+  "catalogue_id": 4391,
+  "oracle_id": "c08e0958-8fa2-49c7-ab17-a70dfc1ef33a",
+  "facts_sha256": "57e5a443928e84acf1f90777d43b46b57e7da622b8047c48151bb302a303fe4d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "67e68c8674aa0c986dd26e41b5e90c030e0fb9b8e2f28b42fc602c1f8ef48798"
+  }
+}

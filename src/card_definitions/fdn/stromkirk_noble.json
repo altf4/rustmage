@@ -1,0 +1,11 @@
+{
+  "name": "Stromkirk Noble",
+  "catalogue_id": 4192,
+  "oracle_id": "c55909d3-1f67-4a4a-9d53-8513d6cf96d8",
+  "facts_sha256": "656a091ccd1b3c8079946f4fb65b5b089446ab0fbfb21f4d25575e9ff913b43d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1f773fdb2bc6a476febfe4b3120ae874813857c890b2676b5395838875d64aea"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Hungry Ghoul",
+  "catalogue_id": 2101,
+  "oracle_id": "4a7a55a3-568c-4c31-9460-5b94dc0121d8",
+  "facts_sha256": "1683d266c595ec0c7cba5ddf622004714137585e36a90616620ad6908d6cae14",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c83abfabef77442904a74ee2eb775cf57c1f04ee9e97f284fbddcb028d94c8dc"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Puca's Eye",
+  "catalogue_id": 3273,
+  "oracle_id": "499b4cf9-2aaa-45a0-8362-77b727b7f7cc",
+  "facts_sha256": "edd4df02ddb2faed1bc8fd4f776f9c629924197aa0ec5878335c143e6ad7a4a6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "04729b21316db4821c26ff125a393c5af1cceb6479da8314ba23e8fc6805b511"
+  }
+}

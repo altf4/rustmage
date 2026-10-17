@@ -1,0 +1,11 @@
+{
+  "name": "Basilisk Collar",
+  "catalogue_id": 345,
+  "oracle_id": "f5f4dd28-f4ae-4d39-b9b8-6ebfd63c93fe",
+  "facts_sha256": "3b9699feadc326ec1918f88f7f73b85f4be4c689b07aac4095f497acc8a46913",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d558efce7599d8373fb02135ca1e8fe9e64de142c720e57421962eb0fd582f1d"
+  }
+}

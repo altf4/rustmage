@@ -1,0 +1,11 @@
+{
+  "name": "Terrasymbiosis",
+  "catalogue_id": 4392,
+  "oracle_id": "4ac94586-3ac7-4ade-af31-ad0d0e3ffc4a",
+  "facts_sha256": "b8c7ea5a2f817265d5677e9a910f06db857fcb1ee67782979d93556e28548f7a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c36081b69dc110ee5e37fbe672d387e885bd3708fc7e10621076b16162c374c1"
+  }
+}

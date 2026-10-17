@@ -1,0 +1,11 @@
+{
+  "name": "Freeze in Place",
+  "catalogue_id": 1619,
+  "oracle_id": "8bf90bb0-f9c1-49c8-905e-32747e921e92",
+  "facts_sha256": "ba70600762f198ee4fe5c60727d17c412e7a0de814bedac44c8b8aea24668e35",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "289b59d6e89ef833fa452f4911e2f5f903c61b6048c18ffee53ef52e362ef96f"
+  }
+}

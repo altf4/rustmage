@@ -1,0 +1,11 @@
+{
+  "name": "Mirkwood Nurturer",
+  "catalogue_id": 2782,
+  "oracle_id": "66630640-9605-44da-afdf-eb9d458d056f",
+  "facts_sha256": "b83eee92cf8b1e981b74d1beac831ae63a2cdc7279fed7a32ac19beab3280549",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "649baeac46a10161313df6c03c6be70306cfcd12621ae00c97ef31c75d284eb2"
+  }
+}

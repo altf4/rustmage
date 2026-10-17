@@ -1,0 +1,11 @@
+{
+  "name": "Ordeal of Nylea",
+  "catalogue_id": 3034,
+  "oracle_id": "5fff2bf4-9e26-4815-9bf6-672ed7e55b96",
+  "facts_sha256": "5b841a92790d5a1a63ad7bb7f0a602a94698e7ed170129d460824eb94440c751",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e15d00a0be4187c742e8a8605de2e192425f4941f4efb10afad1686b9a67b3a4"
+  }
+}

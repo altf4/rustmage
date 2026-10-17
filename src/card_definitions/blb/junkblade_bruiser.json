@@ -1,0 +1,11 @@
+{
+  "name": "Junkblade Bruiser",
+  "catalogue_id": 2300,
+  "oracle_id": "0a2fbdd3-4940-4bbf-ae19-f6d00d7ff294",
+  "facts_sha256": "3ed83fa75efb5cc2ee2a50e67f69d40cff312281ea311cbf1b84dca70f446ebe",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c946b978136e38ee6eeed0be29a080ea9090053be6eba8c44edeb7d48fe5eb5c"
+  }
+}

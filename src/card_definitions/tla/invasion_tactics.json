@@ -1,0 +1,11 @@
+{
+  "name": "Invasion Tactics",
+  "catalogue_id": 2212,
+  "oracle_id": "eef63cb4-96de-4c9d-84aa-62a3b52a3c7f",
+  "facts_sha256": "ab163ff28019445edb1c2e78c283eab5b678b442fd86ce472a7bb7e6a28ffc41",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "15a74e69d708330f522b8c47fc4ab0346e71edcac686ab3e56f674c6bd1c7d08"
+  }
+}

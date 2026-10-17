@@ -1,0 +1,11 @@
+{
+  "name": "Out Cold",
+  "catalogue_id": 3056,
+  "oracle_id": "2d16d51b-47e0-4cdc-83dd-a805ba50bd83",
+  "facts_sha256": "4bed33f28d60584fcc5bf07f97f047098d61cb37d3474f02164b42fd5c5a83a2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9c1976742948529389e0b80921558f4faf4618b7c4ad0b8e84d3dacc3ba91567"
+  }
+}

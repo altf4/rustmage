@@ -1,0 +1,11 @@
+{
+  "name": "Fire Magic",
+  "catalogue_id": 1518,
+  "oracle_id": "c87db803-3490-41bc-af7a-78f99bcd77c8",
+  "facts_sha256": "6baebf5ae8dcb147ed2ee02007f3785fc405af2019fa80454ffb5eebd572469d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c7f6808d1a6708ef0c13c6945022abe1ceea669e649d24a609aebd52b8414dd2"
+  }
+}

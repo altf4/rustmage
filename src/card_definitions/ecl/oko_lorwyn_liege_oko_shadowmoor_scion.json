@@ -1,0 +1,11 @@
+{
+  "name": "Oko, Lorwyn Liege // Oko, Shadowmoor Scion",
+  "catalogue_id": 3000,
+  "oracle_id": "a0c956dc-d7de-4f11-b76f-7537fbee1731",
+  "facts_sha256": "0b298ab235d38a24c93c0d172827f51e3e6d778126ab1af57c29815b553791a7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ca51fbdc6762447dbdafcb681da87ffb19df23eccc2d892d017d80eb4528a716"
+  }
+}

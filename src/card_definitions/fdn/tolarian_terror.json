@@ -1,0 +1,11 @@
+{
+  "name": "Tolarian Terror",
+  "catalogue_id": 4620,
+  "oracle_id": "b9d0f2e1-62c2-44fd-ad38-471daf17bb0a",
+  "facts_sha256": "222eb88b75f37e1b25591b46c888891cb192ae83ec9ffc573d9ad80db5e288c4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2a4bb6010b87ea4f4407c9a15d3a7ea0f719885a9f13b130f270f850a24056d9"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Doran, Besieged by Time",
+  "catalogue_id": 1136,
+  "oracle_id": "dd35a377-0865-4b25-bd0f-aaead29a9f0e",
+  "facts_sha256": "2a5daeeea350f76fde9e28e381c2a61d5baab0d8caac57045348c88814a02c43",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1a310a3d2202512ccbca8f75d96f482929340a4e081ae2203695de08322d9711"
+  }
+}

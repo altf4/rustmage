@@ -1,0 +1,11 @@
+{
+  "name": "Gisa, the Hellraiser",
+  "catalogue_id": 1757,
+  "oracle_id": "696363c9-e8a7-4c65-b65c-4a94891ec43d",
+  "facts_sha256": "25d409e1d4831efb43692a0db70904f028c4321feff005d7cc0f6c031ac1acb4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "82c9b8679e7db99fea26400e513112a44768db9a079a0ad0fd42671aed7541de"
+  }
+}

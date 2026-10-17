@@ -1,0 +1,11 @@
+{
+  "name": "The Rollercrusher Ride",
+  "catalogue_id": 4491,
+  "oracle_id": "aed1f0cd-8df8-415f-afd6-ccfd12234334",
+  "facts_sha256": "210e9ce710cfe9d59735afbaff685d3904c300e6f260f83f161dff09f10c6996",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6aab2a8267ccee7f2702aaf39be1d89c482d97474a63c8231efb36018e2db716"
+  }
+}

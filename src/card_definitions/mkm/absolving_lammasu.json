@@ -1,0 +1,11 @@
+{
+  "name": "Absolving Lammasu",
+  "catalogue_id": 37,
+  "oracle_id": "dbedd45e-f76c-4be7-ad89-ff57bed6626f",
+  "facts_sha256": "cbefc78731230bbf65d165cb3fa6b1bd579cb31ccb2777a8b1be9fb251baebc5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a32631d700333bdc4a934947dc68f4195faabd33b48c6b2a14a7a5ed3e113b8f"
+  }
+}

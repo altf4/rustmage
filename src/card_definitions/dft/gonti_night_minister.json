@@ -1,0 +1,11 @@
+{
+  "name": "Gonti, Night Minister",
+  "catalogue_id": 1831,
+  "oracle_id": "e16f79c1-ffbb-4893-b62a-d4e9d15e2b16",
+  "facts_sha256": "489c5f9cf15f46cf8f12f91a54a1ca86d1c15a0193e679a59ca34f9c735cdbc1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e534d9a697163f6bf8994b6bb8ddda432f5ad941066f451ab930b1493600f0f3"
+  }
+}

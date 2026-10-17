@@ -1,0 +1,11 @@
+{
+  "name": "Icewind Elemental",
+  "catalogue_id": 2126,
+  "oracle_id": "5001bf21-9dbb-4229-aeef-25805e71b832",
+  "facts_sha256": "c66cbaad5f921981e8e44f108890cfc80061e2f69f90829c7b94132040b18b14",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "83f89623d26efff26b40a533093eaa583fa9b857281be08426aa559e74fb9ed2"
+  }
+}

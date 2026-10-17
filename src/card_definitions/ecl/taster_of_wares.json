@@ -1,0 +1,11 @@
+{
+  "name": "Taster of Wares",
+  "catalogue_id": 4343,
+  "oracle_id": "020aae46-cdba-4c37-9c54-283727c09994",
+  "facts_sha256": "9e6f0d1baf0da96c64651b600a044e16bcb5aaeaa03af19429bb31cf6cfc3238",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a15bb56a6feb49ad864518b1f5e551b17b6cd381069cf930c2f2277589357463"
+  }
+}

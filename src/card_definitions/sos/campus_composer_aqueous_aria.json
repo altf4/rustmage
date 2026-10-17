@@ -1,0 +1,11 @@
+{
+  "name": "Campus Composer // Aqueous Aria",
+  "catalogue_id": 627,
+  "oracle_id": "9b3155c1-c662-4ff1-80e2-4064e6233dc5",
+  "facts_sha256": "7065f71f12f7a2907c934bbc7ea2ef6468332f97f9e2431a8f310e57999e2b0f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0837d9b3a4fadc59b31c120afb3bc68ba054d398eab8374395d5a81e95df6a1e"
+  }
+}

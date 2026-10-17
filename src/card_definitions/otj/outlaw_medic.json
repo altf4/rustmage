@@ -1,0 +1,11 @@
+{
+  "name": "Outlaw Medic",
+  "catalogue_id": 3060,
+  "oracle_id": "637be5f7-ab39-4e3a-a5eb-c6e48fca00a9",
+  "facts_sha256": "7ceaec5c825093d5733b4e77655ec874e812287b9c2fe5746f852d5749ea1909",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c53fd66d496b69e47e2ab4a73a50ec6507f6803000cd35a46782be5a18bdcc6f"
+  }
+}

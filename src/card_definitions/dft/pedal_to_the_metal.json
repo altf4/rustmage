@@ -1,0 +1,11 @@
+{
+  "name": "Pedal to the Metal",
+  "catalogue_id": 3119,
+  "oracle_id": "22196948-9f30-4fcd-b43b-c7f81a0f4f36",
+  "facts_sha256": "1f0211f7879c340efa0e9b2f7241e72532fc9cc3f95d888ca7ada902b1f84b5c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aa442005c792d2e92862c7db973028f3d56d83beab49061979a8e57e7c8c49df"
+  }
+}

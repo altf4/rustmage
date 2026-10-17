@@ -1,0 +1,11 @@
+{
+  "name": "Kid Loki",
+  "catalogue_id": 2349,
+  "oracle_id": "19ef0329-08de-4835-8079-2e791e19f3a6",
+  "facts_sha256": "008de003c61e632f968b98f547916306c7baf2d949bcb917fa7a1b1df6c3ec58",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "64d9a34ec51fab491797fe6ec7f6f603bde950d8312b299caa6319be7ea898af"
+  }
+}

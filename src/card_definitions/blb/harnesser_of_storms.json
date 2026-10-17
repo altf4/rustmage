@@ -1,0 +1,11 @@
+{
+  "name": "Harnesser of Storms",
+  "catalogue_id": 1952,
+  "oracle_id": "fb8f7047-280b-464f-aca2-6add3e21df8f",
+  "facts_sha256": "ebe7c45021f762323ef86e6424ad651e1807e7c12e305a19867fc9c02c357387",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b805defda8c10112e591f297bea87818328c894e694e46d98c4e8258dc3c6f3f"
+  }
+}

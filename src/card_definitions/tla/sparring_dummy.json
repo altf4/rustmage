@@ -1,0 +1,11 @@
+{
+  "name": "Sparring Dummy",
+  "catalogue_id": 3991,
+  "oracle_id": "036b7b89-e49a-4560-9de9-1d4d71f3f666",
+  "facts_sha256": "6df195e6a7cf428b2738b8bf151347a8cd159c6af484da99369f5f7d5801d1d2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5858195066df65b8f99152944977d8b8f28daab0d2daf002510a32e581dddcc6"
+  }
+}

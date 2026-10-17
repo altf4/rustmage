@@ -1,0 +1,11 @@
+{
+  "name": "Infestation Sage",
+  "catalogue_id": 2161,
+  "oracle_id": "d398dca3-f3a5-44c9-998f-b4fce9e5c2bf",
+  "facts_sha256": "cf60afcfca1fcdf429b90c470869776299270f5a46f87f41aca864ef699b94c1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "50ae123d79492248f3c8d0cdcc4972639e8999be5a80864e1bd033a7f1f75f03"
+  }
+}

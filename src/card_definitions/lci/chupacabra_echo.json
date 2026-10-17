@@ -1,0 +1,11 @@
+{
+  "name": "Chupacabra Echo",
+  "catalogue_id": 750,
+  "oracle_id": "68c56db4-c97a-4c1b-a6f6-096392488e21",
+  "facts_sha256": "fd8625ffe143120770b503c310460191f7c4f16948894debfc549712139a7e98",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e3a48abc37577ce426c660608a0bda8e34100f7dc76fed43b65c0b0b18c2ce71"
+  }
+}

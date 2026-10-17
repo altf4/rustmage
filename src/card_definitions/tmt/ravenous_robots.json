@@ -1,0 +1,11 @@
+{
+  "name": "Ravenous Robots",
+  "catalogue_id": 3400,
+  "oracle_id": "45873747-f2a4-4d83-9492-bfc97df7b605",
+  "facts_sha256": "74f1e4f2cbb8c2d4e79b8ddd89110abdb0d1688b937c1a8538d38d094ea123f0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "975e2aea52c8c626dfa48833d2b078c4d3ff0fc45ffcf1beb904ae42b98579f8"
+  }
+}

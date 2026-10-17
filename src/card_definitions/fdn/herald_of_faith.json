@@ -1,0 +1,11 @@
+{
+  "name": "Herald of Faith",
+  "catalogue_id": 2007,
+  "oracle_id": "cb97da84-1d13-4795-b68a-2bf111a50067",
+  "facts_sha256": "c7f33502b3f0264c0979a5011358fae823b7d5796f0c0af0e6a1a542331a86f9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d860e7d3298d4f3e0c2d58ec48f2dce325e161970260e5ccb73a8858fe018762"
+  }
+}

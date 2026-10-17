@@ -1,0 +1,11 @@
+{
+  "name": "Spider-Bot",
+  "catalogue_id": 4020,
+  "oracle_id": "e4bb33b2-adde-4176-9274-7598b559aa6a",
+  "facts_sha256": "43ae0e2fcbcec2e13ace5fecccbf3265e571b4873f62fba81a95a6292e1c7bf9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0ecb4ceec8ba08e02680de4bfddbb597882e1c8745c256e7d8a8b2aff60a45d7"
+  }
+}

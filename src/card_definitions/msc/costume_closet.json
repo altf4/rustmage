@@ -1,0 +1,11 @@
+{
+  "name": "Costume Closet",
+  "catalogue_id": 866,
+  "oracle_id": "072d05c4-e0d7-47af-b2a9-16b90810fd30",
+  "facts_sha256": "2c8945a95e2c385b4000fe545125e24a03e1f69882de9798ba6975aa23334315",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3015a32c27baeb66f6e06996ca2ab4a35a0a6b44b4240ad13596cfa76694f0ee"
+  }
+}

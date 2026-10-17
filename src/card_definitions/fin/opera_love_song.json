@@ -1,0 +1,11 @@
+{
+  "name": "Opera Love Song",
+  "catalogue_id": 3026,
+  "oracle_id": "22f259b3-9de1-44a1-a89d-f2f1b1249d4d",
+  "facts_sha256": "97aeee8fda42999c3c990603454144ed6c1cfe5cbb68af6c63a858a3b78ee867",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2570b52cfccc5d513013fd0393f2d1f01a954381f2bdc9a2b955d310b508c2a1"
+  }
+}

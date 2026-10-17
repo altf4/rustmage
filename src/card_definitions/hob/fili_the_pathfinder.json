@@ -1,0 +1,11 @@
+{
+  "name": "Fíli the Pathfinder",
+  "catalogue_id": 1657,
+  "oracle_id": "c91c7d6b-a502-4b66-9509-3c1eda00e763",
+  "facts_sha256": "f4bf5fb42e5f4361e27ae47d81f718c5d5a75a0bfddd8c2a2afea33d6dfc22cc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "19f683983565c35a78f215ed66283d5ca9c6c0b82a80ab2a60d240d64265aaf3"
+  }
+}

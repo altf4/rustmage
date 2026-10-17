@@ -1,0 +1,11 @@
+{
+  "name": "Memorial Vault",
+  "catalogue_id": 2713,
+  "oracle_id": "10dda10f-2549-47e5-9a8b-fb414cf38d3f",
+  "facts_sha256": "beeaa18a12d94432f1c56451fcfda6fcff2af9c00cf8743e8dfffea5cc339c20",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "727e0d2643248a9f4df85c7494d8a1e3de2a149f324e1c65bce9f00b1fc8a327"
+  }
+}

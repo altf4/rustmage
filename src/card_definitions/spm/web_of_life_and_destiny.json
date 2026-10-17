@@ -1,0 +1,11 @@
+{
+  "name": "Web of Life and Destiny",
+  "catalogue_id": 5025,
+  "oracle_id": "33d556c5-1bb4-49bb-88c2-627311eb8c9b",
+  "facts_sha256": "51853d258240f800b477dc00127f7169f14e07eb6af3986e0fb3d04c424365d3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fa538560d6f4a2e99fb91015bb131e9c2c6ebcc5e1dba511761e0eca943ff3ca"
+  }
+}

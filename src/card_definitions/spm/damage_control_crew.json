@@ -1,0 +1,11 @@
+{
+  "name": "Damage Control Crew",
+  "catalogue_id": 952,
+  "oracle_id": "c0f9e604-a8bf-4c7d-8480-487e8076e1d8",
+  "facts_sha256": "6117e398a11ba1e23886250b4777509214cc78e1428e1ebd4410751e7134e77e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7cf0b0750fb04338852e268b87540c1b90a5736a7a17ddb55fb8e2ffbe21f975"
+  }
+}

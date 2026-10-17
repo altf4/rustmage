@@ -1,0 +1,11 @@
+{
+  "name": "Essence Anchor",
+  "catalogue_id": 1370,
+  "oracle_id": "e28a3f0e-40bd-4293-b5eb-ec9d185c1e1c",
+  "facts_sha256": "7cebd444695ddcf5f73ef198977ed31281663372d3605110cf6d2ee986573ae0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e8678e83364f8470348e75cb2f51a2141da6f70fe9980fec1aee2ad7aaffdc1b"
+  }
+}

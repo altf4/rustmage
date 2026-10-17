@@ -1,0 +1,11 @@
+{
+  "name": "Valley Mightcaller",
+  "catalogue_id": 4831,
+  "oracle_id": "16e9c452-6288-4da8-813d-2eb6b7a538c3",
+  "facts_sha256": "40e2dbe3a67598c2628c35e56804da6bf9a094f25c40b060deee26b760fcec13",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "17ba35247fb8d356cf656cebcf94b4eaf828fa77a76da899939545440fd0e7d5"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Grievous Wound",
+  "catalogue_id": 1877,
+  "oracle_id": "4d97b9d1-1138-40da-b593-8065ea6ed7b3",
+  "facts_sha256": "a5b51e666c68d5c9dd6ec37373e000fc36ad3e4f3bb60d8ba279322630a14ed2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "793635e8a94c935f3e1aeb8a8356d896d57517b1588a9d17d072a64358f7edb7"
+  }
+}

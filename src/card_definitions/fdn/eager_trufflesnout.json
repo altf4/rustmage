@@ -1,0 +1,11 @@
+{
+  "name": "Eager Trufflesnout",
+  "catalogue_id": 1227,
+  "oracle_id": "7f2ba562-8d5e-4915-967e-54916c3c5876",
+  "facts_sha256": "7d979c8fde842d2c046e90d3ee0ee8e970e2f4997fcdca15d3ebcd23c3ac862d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f6ce1f74137b06dc6e75b6b78182c6e51c6f6452942333fbbfb96f77e4916c14"
+  }
+}

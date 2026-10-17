@@ -1,0 +1,11 @@
+{
+  "name": "Anzrag, the Quake-Mole",
+  "catalogue_id": 182,
+  "oracle_id": "4adcd967-9ff7-4940-b8b9-0c4215bbcb75",
+  "facts_sha256": "bf9a46e462ea9d39b5118a3143c0892c3ba61e24eab45a979c86a6724229a93f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "acd406d6e51e1654b10236bf78818cf8769270a6da213519ac53e059f1d4ee82"
+  }
+}

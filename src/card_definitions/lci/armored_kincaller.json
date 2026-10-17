@@ -1,0 +1,11 @@
+{
+  "name": "Armored Kincaller",
+  "catalogue_id": 227,
+  "oracle_id": "6aad6906-96ec-4994-bfc3-9a76f893bc8c",
+  "facts_sha256": "1be00970aa6df4298febac77f27efdcd718e563ff31bde7c4bd98145bc580261",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e6c43b41a2395d25fbf26f8c24fabc4e4e9791be6ddcbd891f2dfef8df3166a0"
+  }
+}

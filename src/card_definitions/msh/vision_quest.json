@@ -1,0 +1,11 @@
+{
+  "name": "Vision Quest",
+  "catalogue_id": 4915,
+  "oracle_id": "240410a0-3288-4336-b1ad-34936e64ccf2",
+  "facts_sha256": "50fc23f339b55d251d38903f00dca45b449ce70b14063668b4f239092ff4fa88",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a16d3ac0ef6f5bec5fae68c2d4143278acadd206bf94875726c8aa956433d6a0"
+  }
+}

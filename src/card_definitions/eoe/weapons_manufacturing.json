@@ -1,0 +1,11 @@
+{
+  "name": "Weapons Manufacturing",
+  "catalogue_id": 5020,
+  "oracle_id": "e48a8160-cffe-4e00-a3e9-a59d7fc7b3a2",
+  "facts_sha256": "fcee3464c98b88bff6f84152b7bcaed6c2219e325c0802a6579f1b5d42de7cce",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a2ec9a8e85647042bc4bfa6dccd18fe50bf2b163f28efeb4a9bb7e313852d7f2"
+  }
+}

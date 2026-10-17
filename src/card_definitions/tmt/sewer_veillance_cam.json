@@ -1,0 +1,11 @@
+{
+  "name": "Sewer-veillance Cam",
+  "catalogue_id": 3802,
+  "oracle_id": "25c83d45-581f-48ba-b6bb-feb66e8a65c7",
+  "facts_sha256": "646097210bb881e56793e3abdb15337a18ffe8d475142eabc91da2d52cd6ddac",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6e941b6e76f2c4d5f2214a44a519fbe827bc9d0dd666c1ceec7b079c22a9affd"
+  }
+}

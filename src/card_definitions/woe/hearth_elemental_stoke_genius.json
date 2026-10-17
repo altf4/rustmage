@@ -1,0 +1,11 @@
+{
+  "name": "Hearth Elemental // Stoke Genius",
+  "catalogue_id": 1980,
+  "oracle_id": "f01cf0c5-0ac6-4ad3-8642-dd21c8e8563e",
+  "facts_sha256": "fd79aba74b94b76af573b89fd4621707182c79d400fe25cff69369a7adff3cb3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9bd3f82c4e0637f1011f1a488920b4a065649312ca68640aefa1570841f0e348"
+  }
+}

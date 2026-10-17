@@ -1,0 +1,11 @@
+{
+  "name": "Defend the Rider",
+  "catalogue_id": 1026,
+  "oracle_id": "561af57d-d43d-4d98-9ef6-18a0843f22ae",
+  "facts_sha256": "e8cbf0b99160cfcab79b0732769b58152fc414f604a53cd352f8bcb6815b0120",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2a5494265730c18e7a514c64242e528a5e8c8581dc91939bd3ddc5559298ae07"
+  }
+}

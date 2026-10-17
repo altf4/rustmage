@@ -1,0 +1,11 @@
+{
+  "name": "Harvester of Misery",
+  "catalogue_id": 1958,
+  "oracle_id": "a0d3bb63-2977-41b2-bcc3-2488e6696cb8",
+  "facts_sha256": "dd2239d6624e1695bdfb01b473dd50ad9c0205a0133dc64833251ae27ffcef88",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a1d966caddf184e1463893df148201abdc93aac8aaaec874d870fa9082466d22"
+  }
+}

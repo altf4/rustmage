@@ -1,0 +1,11 @@
+{
+  "name": "High Fae Trickster",
+  "catalogue_id": 2036,
+  "oracle_id": "28c1a4a0-f58c-4d07-a918-51ff8a74f050",
+  "facts_sha256": "0498578bacb0dcf42264dc15d29e32e93e4bae19eaf4e1da0a275ccf908c2708",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "09441050ee3346c82ea3a9518cca20ca8adb4ea9360c4f426cc72fa6e8e5a438"
+  }
+}

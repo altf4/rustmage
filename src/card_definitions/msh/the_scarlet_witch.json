@@ -1,0 +1,11 @@
+{
+  "name": "The Scarlet Witch",
+  "catalogue_id": 4494,
+  "oracle_id": "d8ae8c38-501e-44ea-9faf-cf9d11ba6616",
+  "facts_sha256": "25e09ddcf5650d79dc4c129e9c790c4c0f0dc62e0ac6c5991b884b37ecafb306",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e75e762323049b5669d30210f4a2a94e8755351448d22efe2b52ccee949f95b9"
+  }
+}

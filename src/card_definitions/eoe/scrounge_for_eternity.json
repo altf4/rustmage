@@ -1,0 +1,11 @@
+{
+  "name": "Scrounge for Eternity",
+  "catalogue_id": 3742,
+  "oracle_id": "71982b17-1d9a-4f98-b8b5-d232e3a8cf1d",
+  "facts_sha256": "03869af08109e23945398a6848ebf71e918f91dbdcfa0eda67ecfb39c429e219",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8987f21628b8d91913e50fcc496f08d864fd5eaf26fe65ee6b5960a96b90e1c2"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Saved by the Shell",
+  "catalogue_id": 3697,
+  "oracle_id": "7ef5c812-ad7d-4d6c-8ee5-68561e7e4bd7",
+  "facts_sha256": "58614e66274423d04ecd6ecff033a3daf3792372cb978e3ef64055b367db0ee7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1b77ce2d70dc7be44a998cf5c015abacfb69ede503e87040cba1cfc80be27fb0"
+  }
+}

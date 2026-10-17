@@ -1,0 +1,11 @@
+{
+  "name": "Fire Nation Attacks",
+  "catalogue_id": 1519,
+  "oracle_id": "399fba23-fc13-440b-ab67-192eede6ecab",
+  "facts_sha256": "9243763e98c0b1c15ac23f2ed633f0bfe614b4ecbaddee63c83be89724b01766",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f46b5b8c3850debd7a06080f64d3b7d649d66a095593148bdf53182ef222cb98"
+  }
+}

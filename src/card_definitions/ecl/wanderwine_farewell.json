@@ -1,0 +1,11 @@
+{
+  "name": "Wanderwine Farewell",
+  "catalogue_id": 4968,
+  "oracle_id": "7e1da4a1-5922-4a2e-8bbc-25fbcbf20935",
+  "facts_sha256": "028b0e8b77948aaa2fcfbca00f28e03385971d26d6e877ecbdfb1d3ab01ce140",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cb49ee0b6a15ffb28a3ea46c38cf142832a62aa8a6bae0637f78705f295553ad"
+  }
+}

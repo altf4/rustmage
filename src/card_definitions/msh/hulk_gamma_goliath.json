@@ -1,0 +1,11 @@
+{
+  "name": "Hulk, Gamma Goliath",
+  "catalogue_id": 2092,
+  "oracle_id": "3508fd7d-ca02-47f9-8b0a-525f7bde4f57",
+  "facts_sha256": "7cb10d9647fc41aa316d55897f7db5e01d21f60ff39c5fa30f9bf7d538677387",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a7b7dca425c9ae1792ae95a20a3978a18050f7bbd05bfc9fa88a8eb4a0c1d6a1"
+  }
+}

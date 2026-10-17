@@ -1,0 +1,11 @@
+{
+  "name": "Shambling Cie'th",
+  "catalogue_id": 3809,
+  "oracle_id": "d3f4aa87-a89e-43f8-abc3-712e6bf08889",
+  "facts_sha256": "04cda6ca832ac2cf78e39ad6bdf3eff00d565dce3ffd4b8be3d6c5b1ea73a018",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "007416234e48843dbb2678b065e44aed3a3cfd7a503077151e883a334d053d2c"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Gnarlid Colony",
+  "catalogue_id": 1795,
+  "oracle_id": "e5481431-c952-4ad9-94fe-355076ef632b",
+  "facts_sha256": "e91e6457821e0313a8f32b0a822d0bafddb95fd1d6bdfeca924661e34077679e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b8bf6c8112c97cb51b5b2435465db987f6027215fbd06cb4ad3f47f843fb6b22"
+  }
+}

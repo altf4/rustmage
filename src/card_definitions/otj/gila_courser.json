@@ -1,0 +1,11 @@
+{
+  "name": "Gila Courser",
+  "catalogue_id": 1749,
+  "oracle_id": "bc983c67-eb5d-4a85-a12e-a410f85e949e",
+  "facts_sha256": "4e299a97adb3095a80da02c0394a6a2bb6def96df6864ab0fa73428541cdedb9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9ff699d43a0b5153488650ec5f745c1fd5c02952f3f1cb2990f8c5aba6dda78b"
+  }
+}

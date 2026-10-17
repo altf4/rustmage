@@ -1,0 +1,11 @@
+{
+  "name": "Reassembling Skeleton",
+  "catalogue_id": 3417,
+  "oracle_id": "9dbc3530-b278-4c8d-b2cc-a09dfac9d5e5",
+  "facts_sha256": "fc3651135d137ecbd315ce39e526eca38c4b5d1de591aed5a3b359b5dd87bbe2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b8902e59b9b449ea35766d920c94596f7a2c7beff4b0a1b4f70c76d75719a8e0"
+  }
+}

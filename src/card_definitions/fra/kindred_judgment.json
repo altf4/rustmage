@@ -1,0 +1,11 @@
+{
+  "name": "Kindred Judgment",
+  "catalogue_id": 2360,
+  "oracle_id": "b5dce42a-a769-4d7d-b29e-8722f79d4092",
+  "facts_sha256": "4f523c9a5334f90a18b48732b132d78209ab3f6f4e9f9cbc841bee6e4cfdd919",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bf06f0612efc6e9d75ac3ff93b93370c96c09831529d2469f5ccad8b56a0fd58"
+  }
+}

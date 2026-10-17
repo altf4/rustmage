@@ -1,0 +1,11 @@
+{
+  "name": "Bard's Bow",
+  "catalogue_id": 326,
+  "oracle_id": "4aceb786-960d-4719-9de8-79dffd491a51",
+  "facts_sha256": "b64c498931346ca6d7d6064938a5ae5b2fe51d7d8f410fae5945143ce6203cc8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ec4da07457d826e9bca0291ba2b6dc29d7719037c842d5289aa3c9af4e32b95f"
+  }
+}

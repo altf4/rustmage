@@ -1,0 +1,11 @@
+{
+  "name": "Pawpatch Formation",
+  "catalogue_id": 3115,
+  "oracle_id": "fa99cf82-ebf1-4526-ab9c-b24eb2970f2a",
+  "facts_sha256": "3dc26c78f884040347a285b0ba9868b8a911d91886e2ea8de38029c1f1226db9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fbc0ee0144a97e0059579e515511fae0d5300d3aca8d264554035e447f8ea801"
+  }
+}

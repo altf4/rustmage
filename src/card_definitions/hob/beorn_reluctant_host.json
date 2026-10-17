@@ -1,0 +1,11 @@
+{
+  "name": "Beorn, Reluctant Host",
+  "catalogue_id": 389,
+  "oracle_id": "288da486-393c-4995-ad02-c5093a71970d",
+  "facts_sha256": "8f0d7aa7f190be93f5ffff4482d9d05dfc76b35c6c5462b657049ee2d0617560",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f5851b1e29a2984230dc14a40439b15630d71b0f6449d2b352d32eff7e314a3e"
+  }
+}

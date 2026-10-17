@@ -1,0 +1,11 @@
+{
+  "name": "Honest Rutstein",
+  "catalogue_id": 2063,
+  "oracle_id": "439bf6d1-bd65-474b-a70c-7fdd446de4bb",
+  "facts_sha256": "284ab3e61f7e295cbf03bd20ee3c045f386a1633d65b7189fb2ebd9cd5218487",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1ed8c61c42e4d15be89b3bc97efa220d3c8b54f15d83fd233144e65c828d50c6"
+  }
+}

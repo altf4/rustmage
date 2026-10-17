@@ -1,0 +1,11 @@
+{
+  "name": "Seedglaive Mentor",
+  "catalogue_id": 3763,
+  "oracle_id": "f50bbe5e-a839-40e1-ba79-1e96f91bd218",
+  "facts_sha256": "8a09756e7fd3db7ac31cbef41fca0d710b8087657b871ec38aee61455e3d00ad",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "50694cb61fefbf421c0dde3c326abfbc505b50f338b62cad01159c0e287a770c"
+  }
+}

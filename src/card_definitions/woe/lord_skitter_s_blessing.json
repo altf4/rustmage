@@ -1,0 +1,11 @@
+{
+  "name": "Lord Skitter's Blessing",
+  "catalogue_id": 2556,
+  "oracle_id": "d5bd40fc-6138-4752-b3ff-b1e5fa269214",
+  "facts_sha256": "5be724cb7243e1b4929585d3ebdbeeb89d89732d12effcffa6cf2a66719a2cfd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "445a9d0f037cab76a1a148a4da3d650dfb0c08e3ce567909cbb1769c2318486f"
+  }
+}

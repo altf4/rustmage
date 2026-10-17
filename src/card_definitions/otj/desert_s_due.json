@@ -1,0 +1,11 @@
+{
+  "name": "Desert's Due",
+  "catalogue_id": 1052,
+  "oracle_id": "909eacf3-05ce-4c2b-97a8-49b6ea597b64",
+  "facts_sha256": "23a0d6469e0fc6fdfcd4b16d53b66599d36362901d5b5fe12806de408b718b6e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6715ddc73f96510b28ca10d815d3fca6972ee7798d3e7b6e579b93f197b1291c"
+  }
+}

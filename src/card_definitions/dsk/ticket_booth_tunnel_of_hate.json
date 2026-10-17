@@ -1,0 +1,11 @@
+{
+  "name": "Ticket Booth // Tunnel of Hate",
+  "catalogue_id": 4591,
+  "oracle_id": "4d01b62b-b924-4da5-8ff5-b2f29d7f19b2",
+  "facts_sha256": "e65900870765995324c32f4c4355828405237260e341c3d866a07c1b0e6be80e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e84ac12e6559be4c4e90d582d2283579b770a05a21377eeed4df0b6422acfe5e"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Dynamite Diver",
+  "catalogue_id": 1221,
+  "oracle_id": "5f9ef763-22aa-4d43-b084-ef02465b489c",
+  "facts_sha256": "35e0c8a782e5a1f1c8d3b95100fe5f3d2368f4dc88176ed1d5a44a1e8adf8c4e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7a59c24b93124133118447ec23fe4533e4961e960ed86897bd235009dd1a1cca"
+  }
+}

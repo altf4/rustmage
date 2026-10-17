@@ -1,0 +1,11 @@
+{
+  "name": "Earthbending Lesson",
+  "catalogue_id": 1242,
+  "oracle_id": "5e113f0f-4469-4276-82e1-0a804f3de444",
+  "facts_sha256": "a07ba21e425a548423019d77d8879e51e1e1735e658be8057a4dcf4ca013fe66",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "11e4050a330f510fe8e59f819302e2a472257b2df36a72cd4e1da54fa1964ce2"
+  }
+}

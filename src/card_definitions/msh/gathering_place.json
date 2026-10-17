@@ -1,0 +1,11 @@
+{
+  "name": "Gathering Place",
+  "catalogue_id": 1698,
+  "oracle_id": "36b58705-c5a5-4547-8d8b-a7c35e1f69ae",
+  "facts_sha256": "64ffa5407cabac1fccb47dead5918f72177bb6814a29c51f8d8356347c871017",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1d0358901ae001d80e86d4c305194c5d50ec3ea59aefa38b1c1b82213c7732a0"
+  }
+}

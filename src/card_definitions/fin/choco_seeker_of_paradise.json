@@ -1,0 +1,11 @@
+{
+  "name": "Choco, Seeker of Paradise",
+  "catalogue_id": 740,
+  "oracle_id": "7979bf83-5091-4e62-8885-ca1833a97306",
+  "facts_sha256": "1cd7f612fd80312831cbfd63681bd7d8f4e86ce61a3142ceee05c41eafe1e3d8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e438641614931a3b2ee7875704cd71cd6e5556e9e03be605aee85430c3583c58"
+  }
+}

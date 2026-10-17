@@ -1,0 +1,11 @@
+{
+  "name": "Shinestriker",
+  "catalogue_id": 3833,
+  "oracle_id": "1b94ee87-a2f4-47f1-9fc7-4a167cad1b3b",
+  "facts_sha256": "e371c435b84ccdbf6cf4f7f6045e2e405f8da02a68eb6378b499aee5ddf0e9ee",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "56312b58214513dd7f189f162fd622e1ea7e2276a9ea8ba68549ff56cd5852b2"
+  }
+}

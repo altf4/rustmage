@@ -1,0 +1,11 @@
+{
+  "name": "Cosmic Spider-Man",
+  "catalogue_id": 860,
+  "oracle_id": "0334a2f8-a74a-44c9-ba64-d9b7fabe160c",
+  "facts_sha256": "159a2e2a1de16167b043b5b45d67bfa09a15e76806304258771257923a256f72",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9f8f05cb0d7b35cbc9e9c7bb6096be08c58a661956f7e045b23acf8a0e209f85"
+  }
+}

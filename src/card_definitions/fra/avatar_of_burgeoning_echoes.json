@@ -1,0 +1,11 @@
+{
+  "name": "Avatar of Burgeoning Echoes",
+  "catalogue_id": 278,
+  "oracle_id": "08e8a63c-9fcc-48cf-a9af-15cbaeec943f",
+  "facts_sha256": "e5211e7373b8bdb6c2b81418970e2c1a259342aafbcecdc455fb4a207459fdc1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e204c4a3fe0b21013ef7e691a6047d44148a0d05dbe1a305434dfb54f959cf23"
+  }
+}

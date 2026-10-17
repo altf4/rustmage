@@ -1,0 +1,11 @@
+{
+  "name": "Wingspan Stride",
+  "catalogue_id": 5080,
+  "oracle_id": "e75cee5d-ab02-4227-b36e-61c5d2f564a8",
+  "facts_sha256": "53e4892ce8d32057efa638b83aa20307f3d02735a5239571b6c93b693c2474b3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1dce6ccb490916cc7875920359ee32a08ac63a9c8d7b4df818a2797bf2799b13"
+  }
+}

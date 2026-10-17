@@ -1,0 +1,11 @@
+{
+  "name": "Presumed Dead",
+  "catalogue_id": 3224,
+  "oracle_id": "a2d3e3f0-7399-4eb9-a0cf-831710c3d431",
+  "facts_sha256": "ff37614684f1378517a00861eca35fecab12acea6490fa56de526940ba8afc64",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fab7c7b43cc4ef24dc52aa6d8a4189ab5990dc4d4a348da2dbdc3a3019f67e8d"
+  }
+}

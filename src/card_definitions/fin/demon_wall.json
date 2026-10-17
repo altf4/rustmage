@@ -1,0 +1,11 @@
+{
+  "name": "Demon Wall",
+  "catalogue_id": 1038,
+  "oracle_id": "077b5ed2-05c2-4a16-b5eb-794884ee1c21",
+  "facts_sha256": "a4d0dff102fb4f2692779c5072b60526b0f74c00efb8d60a45350d8e95516b6e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fc44ccc1749a4dafedd7bc690b74370b0700143d77cd560bef1d32f2a4324ff9"
+  }
+}

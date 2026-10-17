@@ -1,0 +1,11 @@
+{
+  "name": "Talion, the Kindly Lord",
+  "catalogue_id": 4326,
+  "oracle_id": "a019e34d-00c4-4687-9d41-fe550bf1dbdc",
+  "facts_sha256": "be9cfb3da9dbd3eec506391534f58effa47d0f8a44dd6abb95ec86a87aac8db5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "65b874199a8bfd24b7cd85de645695709bab8bcfb599afae0a27567cb15d62fc"
+  }
+}

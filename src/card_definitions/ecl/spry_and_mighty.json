@@ -1,0 +1,11 @@
+{
+  "name": "Spry and Mighty",
+  "catalogue_id": 4075,
+  "oracle_id": "04cc9177-1ffc-4ac8-a64d-7995b4f33d23",
+  "facts_sha256": "c15d77614fe83a7362f93c179543f47ad9ea7cdae9ebde09c037d13e836039fd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "46a7c202e5e088949319bff41979767c678d9075ef00b1c1b303ad73e9eef03d"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Cloudbound Moogle",
+  "catalogue_id": 780,
+  "oracle_id": "f718b520-d79d-4b91-9d85-de1f1c90c176",
+  "facts_sha256": "3d0031755579dceabdfd6f90677c881bf65e48b90d0f87b73e3f86dbf9b25835",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eb549b3caf33e0ef781e37c9b1fcc5a303b111e267adcf29272e2ba671978dcf"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Sygg's Command",
+  "catalogue_id": 4298,
+  "oracle_id": "7fe5baab-b182-4cd9-bea5-912ce9b1464a",
+  "facts_sha256": "c5fcd7273760c58916cfd17bd769323869b593e8e6c52951a5fa93bdc13212b6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "66cd26eceb7778af0f6cc5af309479fb21046dfc6c2e64ea576ed16e2967a4f2"
+  }
+}

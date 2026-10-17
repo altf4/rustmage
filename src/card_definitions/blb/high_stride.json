@@ -1,0 +1,11 @@
+{
+  "name": "High Stride",
+  "catalogue_id": 2039,
+  "oracle_id": "ab0aea13-1dbc-424a-ab7e-cdb303036a56",
+  "facts_sha256": "443c8e41d5573a8eb447dffb919d523207f27d0ab6b5fd730f49f1afa62ddab9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "64c5cc0428842dfd792310266f2abeca25f85bb7e1083b121460341c864b0dad"
+  }
+}

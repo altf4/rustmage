@@ -1,0 +1,11 @@
+{
+  "name": "Jet's Brainwashing",
+  "catalogue_id": 2275,
+  "oracle_id": "5cca85e0-43e8-4b97-a43b-1b8f23f541d1",
+  "facts_sha256": "9a2edc48bd10dc19778b982a8ee171314d737556b6e078303ad43a2d1c89f916",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "39488df2a39a77bdea62955d3e2d89414893b03598fa27d9bd1d1c57f884ef1f"
+  }
+}

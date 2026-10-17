@@ -1,0 +1,11 @@
+{
+  "name": "Team Avatar",
+  "catalogue_id": 4350,
+  "oracle_id": "f95f7b0c-2dd6-46e1-ae02-f51d275e7120",
+  "facts_sha256": "7a7f12b1f8325730b4347dd4fd3e8e657ea20dfd7691bd679266ed9ee9fb0512",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "147e14601c2c74a8f5934300e1d004aab79d1f5d66cfba27cf89dab9ffbef948"
+  }
+}

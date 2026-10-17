@@ -1,0 +1,11 @@
+{
+  "name": "Hexing Squelcher",
+  "catalogue_id": 2024,
+  "oracle_id": "96c2d71e-0fc9-42aa-bc6b-6d0ae3f66f8b",
+  "facts_sha256": "a6847700487285d45654ace59c60e45f0ac13911e2c979c836d2b997f0261466",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2dac8d41e1f23cdfae1f27e592c8a91cbf103d1487d8fd24242fe8652123123b"
+  }
+}

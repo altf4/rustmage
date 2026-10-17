@@ -1,0 +1,11 @@
+{
+  "name": "White Lotus Tile",
+  "catalogue_id": 5045,
+  "oracle_id": "f8a5e009-45b7-4e62-a494-1579f5fc0ba6",
+  "facts_sha256": "ae0f68230c391616817ec4c8d82114b7677ca8ef41716a00add6c3bc55d2d997",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2a5429593d3d0225d3c525d99e2c3e806a86ac88693c4c80eb2edd1dc1db0461"
+  }
+}

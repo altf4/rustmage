@@ -1,0 +1,11 @@
+{
+  "name": "Cartographer's Companion",
+  "catalogue_id": 659,
+  "oracle_id": "460c0f0b-bbf4-4307-9b44-350175d83bfe",
+  "facts_sha256": "ebd3334fdd2584f1c4a8b40610203852c0eab50b3c92a205604fb349bea5a8ac",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cd3955dc9bda4dd891d8221dadf5fac6fb804328fc1773ac476c4328f8f296bd"
+  }
+}

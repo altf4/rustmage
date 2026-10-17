@@ -1,0 +1,11 @@
+{
+  "name": "Gaius van Baelsar",
+  "catalogue_id": 1662,
+  "oracle_id": "86d2a45a-e452-4241-8ab4-28a2bb808ffa",
+  "facts_sha256": "abedde2db6d450ac3de858d589604e44e0f3e42c2391cdde8a1e76291f3165be",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "02e91233d58cc92de510fda55e3c7f21f5623b9aef18db37f9de29f78df4ee70"
+  }
+}

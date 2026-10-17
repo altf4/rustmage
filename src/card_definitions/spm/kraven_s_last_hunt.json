@@ -1,0 +1,11 @@
+{
+  "name": "Kraven's Last Hunt",
+  "catalogue_id": 2410,
+  "oracle_id": "e74efcf2-d77f-4fb5-9027-77e462ec829e",
+  "facts_sha256": "9ffbe7b9266c04ca68ed0e00071b289482f8e1cf6c007cc001b46c61f3ef89f8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "edcb8a60006fff12d88a84510d9c56099d39a2f442844c1dc3400c9420649268"
+  }
+}

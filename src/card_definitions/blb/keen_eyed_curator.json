@@ -1,0 +1,11 @@
+{
+  "name": "Keen-Eyed Curator",
+  "catalogue_id": 2333,
+  "oracle_id": "46ce3698-e4e6-44e9-8b99-2b12a703e91e",
+  "facts_sha256": "faeed34c2ba52c60be09271a10612a5d83b23b8c2ad7dd6d46a4dffa3f5f6899",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9802848728c205e9ae39af9967c813d181b4d147436b03e3133912f9c599a67f"
+  }
+}

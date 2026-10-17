@@ -1,0 +1,11 @@
+{
+  "name": "Judgment Bolt",
+  "catalogue_id": 2293,
+  "oracle_id": "aad9f9f2-4c6b-48d0-80bd-77b73a9ea5f1",
+  "facts_sha256": "682a27858383c062a104bbd44a407b6cf3690d0243e19dabf1e4d8be4fce705c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0f91594b3a42ccd8ee7d7f199a072541275e8a90b377b428d72bc8fee4c60778"
+  }
+}

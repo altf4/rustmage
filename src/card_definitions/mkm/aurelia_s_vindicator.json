@@ -1,0 +1,11 @@
+{
+  "name": "Aurelia's Vindicator",
+  "catalogue_id": 265,
+  "oracle_id": "4f452ce7-1166-4810-afed-ea5e156a6f52",
+  "facts_sha256": "9ec372812be4bbdd2beb375f41a3ee8a2d0b84b0e8fa5a705f947d1318832c1c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b012891bd49c95bf6fedb391aef16aa1fc5df3cba154513bb19f74aa36d9ecad"
+  }
+}

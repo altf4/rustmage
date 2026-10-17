@@ -1,0 +1,11 @@
+{
+  "name": "Interjection",
+  "catalogue_id": 2196,
+  "oracle_id": "47bbadcf-11c6-4a4d-9575-1eb8284a174c",
+  "facts_sha256": "687c00228ae1f9effb9ea5c40d28ca4ab252aa53d5a44398bde97447bee0d269",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2db432805fb19f571583e65840bf0d7e96b8404bd2b46ea52f693c37659efc38"
+  }
+}

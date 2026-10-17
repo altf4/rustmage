@@ -1,0 +1,11 @@
+{
+  "name": "Moldering Gym // Weight Room",
+  "catalogue_id": 2810,
+  "oracle_id": "34d0d070-fcaf-410e-a002-012cbe104fb7",
+  "facts_sha256": "14b58ed85a635f9c76215146b4a71e75a107840c0752ca92cb931027d1f915bb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "489ac732e8cc8af45f403795909f46e0df46cc6512ff5ce00ef5831ee4d43e51"
+  }
+}

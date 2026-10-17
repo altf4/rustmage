@@ -1,0 +1,11 @@
+{
+  "name": "Justice, Vance Astrovik",
+  "catalogue_id": 2301,
+  "oracle_id": "184dba74-63ed-4820-9174-68adf26bfabf",
+  "facts_sha256": "dd280756055552b0f9f12ac51904714237ecc02edffa8be6f788c355c27d1f3b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a73c0124012ff9440fcc66ed4a2191424d3920cc0036daf59fbba74ebaf5920a"
+  }
+}

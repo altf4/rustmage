@@ -1,0 +1,11 @@
+{
+  "name": "Primordial Gnawer",
+  "catalogue_id": 3236,
+  "oracle_id": "80ca6596-9763-4310-b30b-7153ade9f567",
+  "facts_sha256": "1e8fbf047ede1f4f843845e19412b2e06ab64e8bd3b62f168960f4e673718dde",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1af522062411ac0f9540114183cdffcc456ff382e27d7825336eaf6abc5ed9f2"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Superior Spider-Man",
+  "catalogue_id": 4262,
+  "oracle_id": "636cc915-9d1b-4ffe-9e74-795b78663911",
+  "facts_sha256": "8cce80be7ee7a4a6a113e9537f1a9c30f480d406b0e174ea82fb5c03edb0e7ce",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c5c6e2e5ae8307d134261173854be0d8a484f5d96488101c59b6cf899d5dcb5e"
+  }
+}

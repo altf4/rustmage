@@ -1,0 +1,11 @@
+{
+  "name": "The Ruinous Wrecking Crew",
+  "catalogue_id": 4492,
+  "oracle_id": "0ff9c0cc-4fb3-4117-9a8e-5b51f62306c4",
+  "facts_sha256": "2aa3df1f0d9507f970071a62ae1a0a37af54e1e68125adeb2c9eb5282cfcdeb9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1f79165ef5d3744a40b8425442982651421ec9fe6e146666910a8343c0de326a"
+  }
+}

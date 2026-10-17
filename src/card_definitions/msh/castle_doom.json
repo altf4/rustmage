@@ -1,0 +1,11 @@
+{
+  "name": "Castle Doom",
+  "catalogue_id": 676,
+  "oracle_id": "9bd013df-ad75-4099-940b-1765c58faf26",
+  "facts_sha256": "633f4f91e56c724f4b036d25a063e76621beb3af5becb5295faa98b4ad488912",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2ae70526c12d46c5ccf0047670ab9f3cdcdd238e4f235fc5f71a68a0ecea809a"
+  }
+}

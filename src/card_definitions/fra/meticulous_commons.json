@@ -1,0 +1,11 @@
+{
+  "name": "Meticulous Commons",
+  "catalogue_id": 2735,
+  "oracle_id": "7fdd471f-ec95-4aa7-8f8a-ad8946de5ab4",
+  "facts_sha256": "f438c0effa2fef7ef6fe3ed20f7d615b35431e33d6f23f442c8e24ebb6d0417d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c0eaadce3faa49f4bfe6f6c6fa063168c757b646b78759dad04c53fdbd42f98b"
+  }
+}

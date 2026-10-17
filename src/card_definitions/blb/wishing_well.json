@@ -1,0 +1,11 @@
+{
+  "name": "Wishing Well",
+  "catalogue_id": 5092,
+  "oracle_id": "78dbbc15-9304-4178-b9b2-1db6c64ca11a",
+  "facts_sha256": "0bb6d55992d25c4549403510df6a2f1e359b6484eb422a4860c787da02584f34",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d1f82ac30c7321f4553c1cbfe51c32c9fc746c48cd40e84793cdb4eedb7c10ff"
+  }
+}

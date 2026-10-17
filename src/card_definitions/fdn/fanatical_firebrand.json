@@ -1,0 +1,11 @@
+{
+  "name": "Fanatical Firebrand",
+  "catalogue_id": 1438,
+  "oracle_id": "d36e11f1-6ab3-4273-8114-a8fbbe21c1c3",
+  "facts_sha256": "187203e29f0efca165ab9c1d3caa992c32d6dcbb36ac147491370b3a6c1ce064",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "96907c997dd2e20c033b1ede69f2fbd366023eb8ab9d22b7cc86c396c618fbea"
+  }
+}

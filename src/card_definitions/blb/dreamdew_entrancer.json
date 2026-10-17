@@ -1,0 +1,11 @@
+{
+  "name": "Dreamdew Entrancer",
+  "catalogue_id": 1182,
+  "oracle_id": "b6b2d63f-5b8c-47ee-8712-58596e0e9e94",
+  "facts_sha256": "29bb41ec5d95aa6d97b795d2939498b97b6e2d99abaeb6c2134013906c8d8e5b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "453e7ef0199e72253095928a0cf77c12a5fc59bab4d26f60e538cce152fe1d1f"
+  }
+}

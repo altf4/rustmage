@@ -1,0 +1,11 @@
+{
+  "name": "Public Thoroughfare",
+  "catalogue_id": 3272,
+  "oracle_id": "de5b995c-9691-4555-9070-66bcbc29f955",
+  "facts_sha256": "0394452e4e5c3deb7f06dec9736f334891614952a5e48b16e1aa19203710bdf6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "62384ff0fbafc54bb52b219027b59b2b7416d92e167875321defb6231e608902"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Exclusion Mage",
+  "catalogue_id": 1394,
+  "oracle_id": "fd28fe55-36cd-4242-8dd4-edb58fbb9895",
+  "facts_sha256": "215811784c7cb9a11e0faedf1a7ed89f1b6071f7b9c4fd1e909ed5d19a057cdd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c20b816f1911e96348627c6d2944ab765306d960ba1ac6f7fce8c71e37f48eb9"
+  }
+}

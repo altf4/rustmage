@@ -1,0 +1,11 @@
+{
+  "name": "Wanderbrine Preacher",
+  "catalogue_id": 4963,
+  "oracle_id": "4b4dcdb1-0017-494f-8d83-6706b188e575",
+  "facts_sha256": "ee3a4f7e46fdd5bbb77d26987408eb87d673748e3133834c0d4e591867943ffe",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "42116c34e54dc38653c5a1e0919b207f5697ea29685079a8b62b0d51c6c070e2"
+  }
+}

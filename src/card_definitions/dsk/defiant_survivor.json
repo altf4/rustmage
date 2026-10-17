@@ -1,0 +1,11 @@
+{
+  "name": "Defiant Survivor",
+  "catalogue_id": 1028,
+  "oracle_id": "7b62c53a-46a2-4c57-9eab-0c6706795b4e",
+  "facts_sha256": "8db01e7f98a06cf4fb180f27832cad94f97fd96569959eda58ad649faeb7e612",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "038e9936866e96b5e5f59ffd88e721ea6c0d09d0473d8e0d1f192528f9faaf06"
+  }
+}

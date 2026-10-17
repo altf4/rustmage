@@ -1,0 +1,11 @@
+{
+  "name": "Seymour Flux",
+  "catalogue_id": 3803,
+  "oracle_id": "7312efc2-8a02-47cd-874b-c3338241435e",
+  "facts_sha256": "60e071d7bff50214b0b2197ac04e1ad5c13cf2ff7a1c1d1060e998c1826a7b30",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bd0f1e61b2a5f032ded47522d65a7cd78ca40935e697bb9611382b66817f71cc"
+  }
+}

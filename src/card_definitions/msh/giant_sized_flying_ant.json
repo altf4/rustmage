@@ -1,0 +1,11 @@
+{
+  "name": "Giant-Sized Flying Ant",
+  "catalogue_id": 1741,
+  "oracle_id": "233e3b4b-faaf-451d-8a2e-e9f5a6ced671",
+  "facts_sha256": "559815180565d4945a022d074ccbc550f3538b27a80044d44344dfe4bd97b1f4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3cee23f33132626b57d7d8b895f94776f472487527f542f4861efe25ffd04600"
+  }
+}

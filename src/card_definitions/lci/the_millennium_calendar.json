@@ -1,0 +1,11 @@
+{
+  "name": "The Millennium Calendar",
+  "catalogue_id": 4476,
+  "oracle_id": "1f250443-8d5e-46c9-920e-8e9373780e32",
+  "facts_sha256": "1056bb85f78d961fad03c9953f40dc13f59d7d754b0ca8abde6cf94f35bd318b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d097f01c0ba71f2be406f18d010503d40825900012250e2eb752d4b4bfa60d38"
+  }
+}

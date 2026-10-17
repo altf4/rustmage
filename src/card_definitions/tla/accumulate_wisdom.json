@@ -1,0 +1,11 @@
+{
+  "name": "Accumulate Wisdom",
+  "catalogue_id": 47,
+  "oracle_id": "a63eb744-71c4-447d-9372-c3a734f022c5",
+  "facts_sha256": "409c013d342a491194ecfffa6efe7d5d8b253121521367633ca012d2e9402404",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5da173b11d9fe9d74fac7a4ec877515c894c571463a71988c0aa991e71127b47"
+  }
+}

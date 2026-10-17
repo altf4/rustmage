@@ -1,0 +1,11 @@
+{
+  "name": "Machinist's Arsenal",
+  "catalogue_id": 2605,
+  "oracle_id": "e7fff34e-9b80-4a67-a917-fd9efddb5a1f",
+  "facts_sha256": "58abac055d29de41c6e3ec5f2bbb56064e28c4a9a37666d3d1bf234517331cbd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "66af616524eeb2c186a80ba69246d1dd9ce8fd96976036990d8139f76a9a75a1"
+  }
+}

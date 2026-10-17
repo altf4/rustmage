@@ -1,0 +1,11 @@
+{
+  "name": "Barbed Servitor",
+  "catalogue_id": 324,
+  "oracle_id": "e3d82066-d8b9-47bf-8821-1370c506970b",
+  "facts_sha256": "bc5a706b185c26afe0a50da9d619ba4738e07da955a9015971c001d5d52f6bf4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f34f3a4faa53308a637c1a25d610373915943f27e1bb71129f56b0b9be2a0923"
+  }
+}

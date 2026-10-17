@@ -1,0 +1,11 @@
+{
+  "name": "Smuggler's Surprise",
+  "catalogue_id": 3939,
+  "oracle_id": "605f719d-01f8-406c-9d4c-3f4992c6a69f",
+  "facts_sha256": "f1702babfe3bee9e3fc0586b1f3a60e518224b684507bf81a863e6476dc7b020",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c0931b7541fce09a2fd46cb46d1d809d0ccbfff33c4e17354d7085fc32eaf810"
+  }
+}

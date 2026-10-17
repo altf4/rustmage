@@ -1,0 +1,11 @@
+{
+  "name": "Illvoi Light Jammer",
+  "catalogue_id": 2140,
+  "oracle_id": "cbc0b136-544d-45a6-be3e-cd21a573bf19",
+  "facts_sha256": "5be62aea469cec4f1b4f789a150777c957ece7c9fd1a356239de869f01a25d75",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "77023cc29a29efcbc30b5e036a3f37581c43190d033ed9d3693f35d630801dda"
+  }
+}

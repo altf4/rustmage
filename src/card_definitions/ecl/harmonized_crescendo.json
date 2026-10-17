@@ -1,0 +1,11 @@
+{
+  "name": "Harmonized Crescendo",
+  "catalogue_id": 1950,
+  "oracle_id": "b93cd38a-1d0c-40e6-aaf1-621a2c88bf46",
+  "facts_sha256": "3ed685d2dc1b5b6d91cd67928b2b452cf367da64580f3c45b3e960572ce021d4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b750cc26f727f86954395523c50762fe5a045d63529042a0bf17a43eb31463d5"
+  }
+}

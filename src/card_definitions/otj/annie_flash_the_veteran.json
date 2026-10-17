@@ -1,0 +1,11 @@
+{
+  "name": "Annie Flash, the Veteran",
+  "catalogue_id": 169,
+  "oracle_id": "858067f9-eb1f-4569-9831-30441cba5f90",
+  "facts_sha256": "31d2480cc20b85975bef5bdecca4d7e2e99b8e9ede0c16267ff259e91e2d7ca8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8063274402fe72d6261f9a31d6a3feab2ccca48a21a643a04bb0a2ae0364b1e7"
+  }
+}

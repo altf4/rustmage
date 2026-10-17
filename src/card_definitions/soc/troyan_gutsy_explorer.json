@@ -1,0 +1,11 @@
+{
+  "name": "Troyan, Gutsy Explorer",
+  "catalogue_id": 4690,
+  "oracle_id": "1135ebc3-9537-4341-956b-6e22d8be5f20",
+  "facts_sha256": "f7ccb00262eeb34d00cf9c186a39d41bcbf9e994b973ef8c482b3c721387ae63",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fa939fe34b1f7dc8dd50c2758bea956b31bf0a88d03df4a110e02beb3f7b03a3"
+  }
+}

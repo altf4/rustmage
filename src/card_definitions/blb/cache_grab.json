@@ -1,0 +1,11 @@
+{
+  "name": "Cache Grab",
+  "catalogue_id": 609,
+  "oracle_id": "06ccec61-27d2-4079-80b5-29ebd3a980ee",
+  "facts_sha256": "d867f2df32a588e8430c57fcc090da37334bc1a246677c271f623f4761f3e40c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2ee9c690428ffd1b0028023d2ce1cca868f068976037228c810a075f5778570c"
+  }
+}

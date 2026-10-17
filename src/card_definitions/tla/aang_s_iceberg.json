@@ -1,0 +1,11 @@
+{
+  "name": "Aang's Iceberg",
+  "catalogue_id": 20,
+  "oracle_id": "646f9ad8-9d18-4b42-954a-e21a62e9f0e8",
+  "facts_sha256": "ab0cc169697cdd2786ceb0c262dff54b3c31379bb30cfe747ce904a1a8995c3b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b0ec597119e3785dddb5a941be1bb889dadd0a03a2b3fa3d35682d1c4cfab77f"
+  }
+}

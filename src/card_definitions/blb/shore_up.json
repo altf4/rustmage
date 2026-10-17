@@ -1,0 +1,11 @@
+{
+  "name": "Shore Up",
+  "catalogue_id": 3845,
+  "oracle_id": "c9d8c983-2845-42e6-b6b8-bf7cf2729b23",
+  "facts_sha256": "18acda5458192cd033678a37395a16f64055341dac384cf2fcdaf3e3f470cf4f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c21dcc892352df2538ff95134e653477bf3b75fd512e4acec3bce9a11979b2fd"
+  }
+}

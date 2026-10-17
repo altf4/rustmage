@@ -1,0 +1,11 @@
+{
+  "name": "Serpent of the Pass",
+  "catalogue_id": 3795,
+  "oracle_id": "98e36c6e-a868-4679-a5b5-6f02097f560b",
+  "facts_sha256": "3bfd7d776d15194c7cbb22db4e8614c2b0c7705049be02170d7487082e33ee25",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c254127e8d4683ae4e47c753b00f63a5a9125014c1f0e940f25b305578d2d5fb"
+  }
+}

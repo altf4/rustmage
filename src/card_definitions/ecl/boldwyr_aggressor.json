@@ -1,0 +1,11 @@
+{
+  "name": "Boldwyr Aggressor",
+  "catalogue_id": 485,
+  "oracle_id": "ab32c671-7686-435b-a987-14a08f6790eb",
+  "facts_sha256": "42ded40424944ad37988eb70184e810b90606a969794b8c68b92add43d5fe386",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "350f3f013def4ce0db1276f45d7353f3d004422721a3af9f7e6c0177e03377b2"
+  }
+}

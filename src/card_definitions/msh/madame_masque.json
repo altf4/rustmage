@@ -1,0 +1,11 @@
+{
+  "name": "Madame Masque",
+  "catalogue_id": 2607,
+  "oracle_id": "b5b0e85f-6651-4667-829c-2253ff8b130d",
+  "facts_sha256": "9c725f20079d191e8cb40ac7d02a8d71ceb959b5f1320bcc77044e7bd0325dd3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f43d618bd4cb3fb32d4fa81258d7c86faa7a4c2e5e774a36baac1b2531eb24e6"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Ashling's Command",
+  "catalogue_id": 242,
+  "oracle_id": "9651d197-a408-4665-a292-58d5471f4ffc",
+  "facts_sha256": "fc6708195a0442492d6bbc9255cd3c22246745e21b2ae02f0e6ba29f275350bf",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4ab1adfe2f8d7dfd92998961c0fec08f7b0af225a8f5df8a57792caa84cb342b"
+  }
+}

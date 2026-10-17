@@ -1,0 +1,11 @@
+{
+  "name": "Rip, Spawn Hunter",
+  "catalogue_id": 3533,
+  "oracle_id": "c027f369-e445-46a8-94ad-93396321295a",
+  "facts_sha256": "70af8f1bf497a31f8ef5a1e3e2b146b1ba92acd31f00ff377e890ed672b26f93",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9882b1f6790dfc1e5be86228b452e720a09805020d805e9356742f18c4ab424c"
+  }
+}

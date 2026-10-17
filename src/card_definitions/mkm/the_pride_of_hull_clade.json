@@ -1,0 +1,11 @@
+{
+  "name": "The Pride of Hull Clade",
+  "catalogue_id": 4485,
+  "oracle_id": "bbd7b756-bbee-451e-9446-06019791cb36",
+  "facts_sha256": "c94d2c5de12153c142c4f9f64c643382270859bd51a723b3abf26e2df649ee73",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "966ade4e8cd7d9ca661fd0024012102a1b8bad1c7d7a2e47cf485eb4f139303b"
+  }
+}

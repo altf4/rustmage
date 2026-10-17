@@ -1,0 +1,11 @@
+{
+  "name": "The Everflowing Well // The Myriad Pools",
+  "catalogue_id": 4445,
+  "oracle_id": "1f57a9f1-6b95-4395-bdf0-c5289b786ab1",
+  "facts_sha256": "0638e2e0063d74e7836e9d11a2f20e161e289a97d799c54ee8c8b8586199ffe6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9852f9715e02a760c68a5bc3c9eecbf7a6997057348011213f25e2d8ce6830c6"
+  }
+}

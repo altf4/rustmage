@@ -1,0 +1,11 @@
+{
+  "name": "Radagast of Rhosgobel",
+  "catalogue_id": 3332,
+  "oracle_id": "84d648c7-655e-4590-a3e0-366a8a4a4cb3",
+  "facts_sha256": "89a007902c5372fdf92ce279c959090908bd0b86e87c184e8bc4b68cd29dd67f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "093af3e5b43286fa93494b917e9c76e4d2611df6a25e2833acb3d5178fb1d3d8"
+  }
+}

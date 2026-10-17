@@ -1,0 +1,11 @@
+{
+  "name": "Fireglass Mentor",
+  "catalogue_id": 1532,
+  "oracle_id": "b173245e-2009-48ff-ac42-5f28d12aec79",
+  "facts_sha256": "57ce47c6391350f40d37433e85d12d699115d124c0ac85271351b4e0ba63764f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b7cdde2dc8d46021c820e3f26f0e58494ce0ed3d6c8afe5413d40b849508d492"
+  }
+}

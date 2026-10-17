@@ -1,0 +1,11 @@
+{
+  "name": "Winnowing",
+  "catalogue_id": 5081,
+  "oracle_id": "8b834f83-951b-4b5c-b9f1-3d860baa3c0e",
+  "facts_sha256": "bafb5098ecdefad552847666327737e1df24ee01bf6f7d43e013c79a1353e14c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "89823a2f5d300921dbcdd716471cad7173626878ae62e58eda12a73fc6315ebd"
+  }
+}

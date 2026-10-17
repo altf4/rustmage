@@ -1,0 +1,11 @@
+{
+  "name": "Bristlebane Battler",
+  "catalogue_id": 557,
+  "oracle_id": "592689f2-f17c-40d6-b880-431f4b6a6b0c",
+  "facts_sha256": "bbeb55215e9f522f3ab142a451931c194d7e9e2225517c3f9bf458fdf52410e5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "040b30d163c630e1adcf973ef9c109f9b364510d0884791f211b7fb5c32945a3"
+  }
+}

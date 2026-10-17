@@ -1,0 +1,11 @@
+{
+  "name": "Room of Refuge",
+  "catalogue_id": 3585,
+  "oracle_id": "27d5b2eb-94fe-45fb-806c-354044de7ba5",
+  "facts_sha256": "b3089a6226cac800b6f72b61051942f4751b85bba285e25ca6d76b1c3c5a4eca",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e0120bbb36dcf2303f498ad4a944ba88ff3a23644475f85ca92ff14eb9c3c9df"
+  }
+}

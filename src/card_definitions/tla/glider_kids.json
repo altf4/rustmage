@@ -1,0 +1,11 @@
+{
+  "name": "Glider Kids",
+  "catalogue_id": 1777,
+  "oracle_id": "ff5ce28b-25be-4136-a7b2-8f25c08a6455",
+  "facts_sha256": "920a587defb51c4430c66368a9c880a7b689593a8fb80e089c8a465fa3681ce1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a7218f5c4c9cdd98efe7a4475e063f17f5c4785b76d922c65a0c9368121c5f55"
+  }
+}

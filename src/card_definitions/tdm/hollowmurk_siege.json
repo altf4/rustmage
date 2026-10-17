@@ -1,0 +1,11 @@
+{
+  "name": "Hollowmurk Siege",
+  "catalogue_id": 2058,
+  "oracle_id": "31061e34-042e-40c3-99ab-752795ab4324",
+  "facts_sha256": "263df2cef6c48c199008d8fcfa88dc3ab0da2a6c0caf2c08d5aa37a72683eacb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f5cc694d4bbf45d452ac5d754ccc485b6bf0834a5b83be89694fc162bf75f92a"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Aether Syphon",
+  "catalogue_id": 72,
+  "oracle_id": "d8956775-fda8-475d-9e8a-b61196a958ea",
+  "facts_sha256": "797ebac9bdd09862bef15ff6c76b49b7501c714ba2e4ae95b09ce3863080531d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4e12ab4bf48a5c1b3923e57437ac114ef3e46108108c99db02c823690797d9e2"
+  }
+}

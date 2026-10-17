@@ -1,0 +1,11 @@
+{
+  "name": "Outlaw Stitcher",
+  "catalogue_id": 3061,
+  "oracle_id": "9fda1239-97ca-41f0-8bfa-040484769396",
+  "facts_sha256": "d06777269b50f81154659f70755b878048a713f0b539b35c0a8b8b609400dc39",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "26fccaa307785dacf193a0c5931b1b8c3b34ebe3c4cc1c8b51a0c3dc69477c1f"
+  }
+}

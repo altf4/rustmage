@@ -1,0 +1,11 @@
+{
+  "name": "Fishing Pole",
+  "catalogue_id": 1537,
+  "oracle_id": "2c1d3e9e-213e-492a-ad5a-91139d70bc0f",
+  "facts_sha256": "b120e70441c0056ea56b554a85db8041a70238673f1cb5cca44ef48c28dd322e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "822d2c32c7616e27f627d7f3e1f571a91ea2e9d46bc61e62deaa8d0449ed7487"
+  }
+}

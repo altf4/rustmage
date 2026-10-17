@@ -1,0 +1,11 @@
+{
+  "name": "Saheeli's Lattice // Mastercraft Raptor",
+  "catalogue_id": 3653,
+  "oracle_id": "ef8df503-6160-4e40-a689-49e97fd56cd0",
+  "facts_sha256": "1025c84745c3c9b03a9fe6607c7e9083eb5a0c49119bd430ee539330d55b5bdd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "265814f33cb162c2f73e1e6c6cc738193071f71a39c86dcbbfcb4e66d9074473"
+  }
+}

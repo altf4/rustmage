@@ -1,0 +1,11 @@
+{
+  "name": "Friendly Ghost",
+  "catalogue_id": 1624,
+  "oracle_id": "e6a93240-8578-479e-b5e7-73f51b141cc8",
+  "facts_sha256": "4c7329c9e29755003b3e5537b7f1b31950cb043ed4c3f19e0eb17c1d602b5582",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "07c96ec9618a627ade1267b8bff725fa624ad8107b54ad55d235a1f387b3d04c"
+  }
+}

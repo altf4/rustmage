@@ -1,0 +1,11 @@
+{
+  "name": "Neutralize the Guards",
+  "catalogue_id": 2922,
+  "oracle_id": "b793141d-581c-4cc7-b09f-1fe8bd5536c5",
+  "facts_sha256": "fb2554c02245cbc88f496b7ecd2e3e1fec85fca03944f308ad63ed374ef1328d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cccfac0c80988278aeb01192898aeb63d0b28771b27b57ae402e45cf91ea4fc9"
+  }
+}

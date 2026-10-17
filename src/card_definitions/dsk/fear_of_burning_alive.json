@@ -1,0 +1,11 @@
+{
+  "name": "Fear of Burning Alive",
+  "catalogue_id": 1462,
+  "oracle_id": "0ae74149-60fc-407a-8782-8865458606b5",
+  "facts_sha256": "eb130abdb73ac0aac770170a378bbf865e2f52a8f5082d619d209f81fe1db36f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2aa525e6f2972fa8c7ebb8ba775b271d82f3b0f538e4811f12086f0ebde975ab"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Twisted Fealty",
+  "catalogue_id": 4727,
+  "oracle_id": "a5ae75de-0dff-44bf-9dc6-5895ab3ae731",
+  "facts_sha256": "81cb7f43602e0f44985fe01cf35169a3eda037dd7dd744f518ab3907948653ec",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b98b3a2606a05ce1395571e802c3481b4212c5921727c6950531a2c8804636e5"
+  }
+}

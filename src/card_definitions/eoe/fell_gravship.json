@@ -1,0 +1,11 @@
+{
+  "name": "Fell Gravship",
+  "catalogue_id": 1489,
+  "oracle_id": "1a82be68-3b74-4dfc-9068-3abea61db709",
+  "facts_sha256": "d9c44b2a74f6b0609447543b85966a796976f624e17e81a219ad86688da27cdf",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "82f0a2fabfa38ff2847cf2f0569cde0d190bec04aafe626556338a186e6c3276"
+  }
+}

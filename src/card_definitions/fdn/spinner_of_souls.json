@@ -1,0 +1,11 @@
+{
+  "name": "Spinner of Souls",
+  "catalogue_id": 4050,
+  "oracle_id": "6883e79e-0b4f-4fb8-aee3-a3905246a408",
+  "facts_sha256": "b355e9d0289427f3a563add28de8d02c09e89233696d5d35ae15d476f780921b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a08896f2cb7f2421657a3ad04a924b0ee824a1d16861a76f29d2ca2823dc8a18"
+  }
+}

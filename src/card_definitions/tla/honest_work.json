@@ -1,0 +1,11 @@
+{
+  "name": "Honest Work",
+  "catalogue_id": 2064,
+  "oracle_id": "12956c07-e679-471b-8dcb-2a2d15b0be55",
+  "facts_sha256": "f2f7d1ed463f5f679717a728fe4e4210ebcbbe42e8fbd22a47494ef9b0be7b3b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4935497024c2a0b3e2417fb18b19a102cc00f0294a825ff0d26666168784a147"
+  }
+}

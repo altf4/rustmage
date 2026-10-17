@@ -1,0 +1,11 @@
+{
+  "name": "Pox Plague",
+  "catalogue_id": 3213,
+  "oracle_id": "c505d304-9428-4532-87a2-167c69f16969",
+  "facts_sha256": "1132dade3f9e6b30d2c7e278dcd2ec58fd13febcea497fff22dfb0260c0e0a3a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5e553de7a32ac2c2c506118af4d689d3d491b140218095f9d972160532c1545a"
+  }
+}

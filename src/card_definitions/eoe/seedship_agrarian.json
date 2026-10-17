@@ -1,0 +1,11 @@
+{
+  "name": "Seedship Agrarian",
+  "catalogue_id": 3765,
+  "oracle_id": "003d9c17-5d5c-469f-ad87-d78faf55e025",
+  "facts_sha256": "69154be41f3018aa89d5e922513a260b9f14a25a6795a05e9ce465ddc27832ae",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cd4735b7ccd88d465c61d20ee2afb6068b73675f7e163a16421b99f6f3b590e3"
+  }
+}

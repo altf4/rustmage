@@ -1,0 +1,11 @@
+{
+  "name": "Gadget Technician",
+  "catalogue_id": 1659,
+  "oracle_id": "d7f777ae-6122-4af9-b962-7574bc8e2691",
+  "facts_sha256": "7f537d94286ebb14576b0f52b82502c03ce0f20016524ab4707af08e78f7cf04",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a1f750d8fa42857cdfd89046bb748825d994cc62c3a06f82344c1d8318e63e85"
+  }
+}

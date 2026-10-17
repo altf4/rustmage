@@ -1,0 +1,11 @@
+{
+  "name": "Manifold Mouse",
+  "catalogue_id": 2651,
+  "oracle_id": "b254ca74-2a96-4590-91bc-650f407daf5d",
+  "facts_sha256": "ced3775fc2d30a7046b979b9df98267b56b88638dbe850686140e0d746af3419",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "10f10a17ad720ebcf2039ff744010aea2b937d5223c2c46a0d85a164c748a575"
+  }
+}

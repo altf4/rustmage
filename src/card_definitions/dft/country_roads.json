@@ -1,0 +1,11 @@
+{
+  "name": "Country Roads",
+  "catalogue_id": 870,
+  "oracle_id": "c5a39f76-dd1b-442c-9f52-08561ecb91ad",
+  "facts_sha256": "c1b2e42e23d92ce7cd4b47d2426a8eaef26bbc7ff9b043f1575b24c016796142",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "12e219c8a105447561e8c3e99f6edbabddc4de43bcb68d42be1ab430e4ddf95e"
+  }
+}

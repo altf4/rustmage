@@ -1,0 +1,11 @@
+{
+  "name": "Tidings of War",
+  "catalogue_id": 4594,
+  "oracle_id": "5753f4d6-08d0-4e12-85c5-875ee6441626",
+  "facts_sha256": "ebd18fb89241902111bba0a81d989879ac1f533b966db96010ee8cd4ebcc3a74",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "781e7b5e6d54880bda3f9acb90d898b58eb2313373128dcd19a157ca6af45666"
+  }
+}

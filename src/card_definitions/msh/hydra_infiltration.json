@@ -1,0 +1,11 @@
+{
+  "name": "HYDRA Infiltration",
+  "catalogue_id": 1923,
+  "oracle_id": "27692079-a517-4d38-b452-7409980b5912",
+  "facts_sha256": "00c3bfc177b476f16e6911d4610f378dd483910232b41fd02ef7e9839a0b728b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f2fdb25d0fbbabe6f966c25158e97fd6290b8fd3d858c45da20c5771831aa201"
+  }
+}

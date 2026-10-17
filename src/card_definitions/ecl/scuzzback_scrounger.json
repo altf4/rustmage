@@ -1,0 +1,11 @@
+{
+  "name": "Scuzzback Scrounger",
+  "catalogue_id": 3744,
+  "oracle_id": "af38d683-77a3-4599-ad2a-1c293ae01d45",
+  "facts_sha256": "933007ece0d5a2eb93d6940e55e1f9e7660bd97fb1f3e0e4144b6a5690cabf25",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "203f5f5670ee8a3f173f27798823f31e395d6b85c52af3e2b7ca736aafc0b07c"
+  }
+}

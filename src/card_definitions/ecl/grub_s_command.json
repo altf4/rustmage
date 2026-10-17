@@ -1,0 +1,11 @@
+{
+  "name": "Grub's Command",
+  "catalogue_id": 1892,
+  "oracle_id": "8173e160-9a22-43f7-90d1-9ada043bc1b7",
+  "facts_sha256": "9f0a5d8ee915330f2acabde5a0c79e0cdcab80ed6e239eedd4376ac6121f5ab6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "77e7812b6bb789fa6ba59730fc5b24ad15330cdc9e534dc6d8f953dfb9bd23a9"
+  }
+}

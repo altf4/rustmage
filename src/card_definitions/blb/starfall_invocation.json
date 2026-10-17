@@ -1,0 +1,11 @@
+{
+  "name": "Starfall Invocation",
+  "catalogue_id": 4097,
+  "oracle_id": "7024532b-f99b-43a7-b0ed-5b3e7ec7592b",
+  "facts_sha256": "94f74949e7359158fbb340bcd57ebc4a9e38db73a3baca3df733d1d300e1e612",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "672c5286016a9fe8f1c6d25686d707be82926f0609b3cdb93a851cb523995e28"
+  }
+}

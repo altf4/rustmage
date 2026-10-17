@@ -1,0 +1,11 @@
+{
+  "name": "Fear of Abduction",
+  "catalogue_id": 1460,
+  "oracle_id": "8f5495d7-ac44-47cd-aa39-48a35034b390",
+  "facts_sha256": "e59f988e08614769b992d9e14765ef6ee813212e2f57836b0411b04011e8554a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0a79196c6aefb8b248837b1a9d1bf465fe859a2da4e929334ba4a6af261ec2fe"
+  }
+}

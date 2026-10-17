@@ -1,0 +1,11 @@
+{
+  "name": "Lindblum, Industrial Regency // Mage Siege",
+  "catalogue_id": 2512,
+  "oracle_id": "4cc014f3-05e0-442e-9dee-03eab1aa65a3",
+  "facts_sha256": "226f8c52e558e7409217cfb8e6b730c5864548fa7aede3ff93c7676dbeb29cc1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4a95a7197e33098fb5f29b692136c33cf1128110602c388e49f6f1fdd2b3342b"
+  }
+}

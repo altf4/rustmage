@@ -1,0 +1,11 @@
+{
+  "name": "Ms. Marvel, Kamala Khan",
+  "catalogue_id": 2869,
+  "oracle_id": "ebedff30-ae43-4861-aab2-afe1fc88337e",
+  "facts_sha256": "390bf275eb11a5365be36e30bd4c2848f809c85b243f21d559fe2af7ccb79983",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ea6afe93d8d1ddcb7c2969e6900367b32e4dd839d7a463d881d530590e12950e"
+  }
+}

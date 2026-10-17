@@ -1,0 +1,11 @@
+{
+  "name": "Iroh, Tea Master",
+  "catalogue_id": 2223,
+  "oracle_id": "87adda41-113b-4126-8978-25a258b31bdd",
+  "facts_sha256": "ec410038357a0cecb58c72d48365632668089758c061ae0f2334bd46f4f1afb9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e753af4bc01e0839fddc03962f40e1c7a73e4b2a2ed32d335d02c6d81c1a21b2"
+  }
+}

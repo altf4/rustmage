@@ -1,0 +1,11 @@
+{
+  "name": "Iridescent Tiger",
+  "catalogue_id": 2219,
+  "oracle_id": "ce09c5b0-9dd4-4f73-9f3f-dfbd829813e4",
+  "facts_sha256": "64e45ad3110e929cdc904744698910b1e6cf3fec7a17b016b973ecf5de7106ff",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b58578d0befd9c53eb9c970b4908064a5b49180bd9777bf4ad81bf8fc5b4b044"
+  }
+}

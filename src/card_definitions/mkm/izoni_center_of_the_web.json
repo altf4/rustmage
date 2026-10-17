@@ -1,0 +1,11 @@
+{
+  "name": "Izoni, Center of the Web",
+  "catalogue_id": 2244,
+  "oracle_id": "8074afbf-190b-4a24-b939-cc559bdffe38",
+  "facts_sha256": "a69cd413fe56f5f0f87c72b262044c46a1adc81663b8ac0979a365b5784eca26",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "917496348dfc47208476a74391bcfc9527e20671e7fd950bf38588e2321fa65f"
+  }
+}

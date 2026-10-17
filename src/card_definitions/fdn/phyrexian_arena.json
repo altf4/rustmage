@@ -1,0 +1,11 @@
+{
+  "name": "Phyrexian Arena",
+  "catalogue_id": 3151,
+  "oracle_id": "ee579a32-a048-4335-b966-231ba731cdea",
+  "facts_sha256": "0cf272217cdb4cd41c47f701a2bfbcb21d45bba31fdcfa3f23351fdc1dafd141",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2151924c22eb7a4b0155ca47b84ea81f1750433ff5dbdff0b170d961f84b71c8"
+  }
+}

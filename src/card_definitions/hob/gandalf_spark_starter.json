@@ -1,0 +1,11 @@
+{
+  "name": "Gandalf, Spark Starter",
+  "catalogue_id": 1677,
+  "oracle_id": "cd1a9d87-4c91-4456-8d88-19e0d6e0b200",
+  "facts_sha256": "eeb59dc874ef78975caafdcb1c1ccb2a380fddceac8d82b148459ce7ca107d80",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7c2320d60903b90bf810fb6b876393b507bf1ef03e451d7eee8ef739ce861624"
+  }
+}

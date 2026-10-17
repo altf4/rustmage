@@ -1,0 +1,11 @@
+{
+  "name": "Photon Blast Barrage",
+  "catalogue_id": 3150,
+  "oracle_id": "a5424e33-ff4e-4c82-8aa9-9d25ced7830a",
+  "facts_sha256": "ce0a32d3c6998b31c3d03f94378fad6e59798e2474d180c1442fb4303100d3d6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "39c8b61e12041023b30e66aec5c119bae62012f7d6f1f293f8a887ed26a3cc85"
+  }
+}

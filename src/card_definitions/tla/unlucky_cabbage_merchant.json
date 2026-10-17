@@ -1,0 +1,11 @@
+{
+  "name": "Unlucky Cabbage Merchant",
+  "catalogue_id": 4789,
+  "oracle_id": "d8f7d4c8-bc50-4bcf-b930-797dcb3c2a21",
+  "facts_sha256": "ff22b9b5bb9eb9933b5defd3723f35b8907f6daf6d38adbd74526794a79e96b4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3379e09e247f0f4b1379c40729dee42cb8964b79d22fc6d7767dedf77113dc3c"
+  }
+}

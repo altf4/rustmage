@@ -1,0 +1,11 @@
+{
+  "name": "Vinelasher Adept",
+  "catalogue_id": 4901,
+  "oracle_id": "b5918fb0-c33f-4e33-ac6d-8f94723d4296",
+  "facts_sha256": "3bc1cbc3ce828dbad2db2673ee248c540e1c3cad5c4e7ed2e8a43c914d666259",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c7c0e86461bcc5d34063ea748ce4ad198c9c19e7c511ed119fa6df7b2bbce5c5"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Otterball Antics",
+  "catalogue_id": 3054,
+  "oracle_id": "43a6de3e-152e-4af1-acec-53405742425c",
+  "facts_sha256": "41b3de0b97275da4c264df642ddab279fd7e193719645e4b9c30667139ab2c22",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "10f776c7236587a6b8230e0e1e0e63ab870143575c4b20b37a53a740d83de78d"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Summon: Titan",
+  "catalogue_id": 4227,
+  "oracle_id": "66ce0c60-f406-4ece-915f-675da4e8b16d",
+  "facts_sha256": "d2f22f64b58d937db36a8042d732cd99228c4b4019a2ef661c7cd0e24afda13a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d0e1f307cb2f14951d536fe2bb685d64c4ce0ebcc79c8800e64480c74f9b1968"
+  }
+}

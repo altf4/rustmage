@@ -1,0 +1,11 @@
+{
+  "name": "Progenitus",
+  "catalogue_id": 3254,
+  "oracle_id": "2d7e00b6-12f0-4b03-82a6-50e3d1b5395e",
+  "facts_sha256": "dbbe7400e73c34942030c13072f62fd8cebc17b286fed969d3770a31a276a7b4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f0d48c9d636974f548544162480628e07cfb47ccd9123dc05b9864e1a300fdc0"
+  }
+}

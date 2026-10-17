@@ -1,0 +1,11 @@
+{
+  "name": "Feldon's Cane",
+  "catalogue_id": 1484,
+  "oracle_id": "9b884dfd-59f4-45c0-bf1e-6ad9f5b58895",
+  "facts_sha256": "6f5629d990a81bc127d071ba4f324c0e54d234ba55ac838e15c8a47c2838f38d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ea6b6964691b944a90409230b0e988c5e59c87e69cf5ff24b0a3a54531b4ca02"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Sunstar Chaplain",
+  "catalogue_id": 4249,
+  "oracle_id": "de6b26e4-8700-490f-9df2-dac430463274",
+  "facts_sha256": "a45003683341f146b57294fd3a3d63961d37df466273482eec2d7bb19299951d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d2a2a0816e13038a6ba2d1c9cd3bfaa7f53c62c41e886938925ec683ded3516f"
+  }
+}

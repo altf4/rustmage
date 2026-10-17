@@ -1,0 +1,11 @@
+{
+  "name": "Grand Entryway // Elegant Rotunda",
+  "catalogue_id": 1845,
+  "oracle_id": "f7574379-d10e-4bbf-b0b1-13feee753d8b",
+  "facts_sha256": "12e79dcc2a3c09e021391e28c2fafe72c828643837afdf4ff8df54872417d444",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a9b39c2f623d55d8d732a8703b170b2615b4d49307a4becd97267ec4117dfaa7"
+  }
+}

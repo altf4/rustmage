@@ -1,0 +1,11 @@
+{
+  "name": "Interdimensional Web Watch",
+  "catalogue_id": 2194,
+  "oracle_id": "456dbec4-1b0e-48c4-abae-5c8205651872",
+  "facts_sha256": "d905dc068976610f2fd835a3eaf122f445d2ac65faf90f8df86b1b518a8e28a7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a93da4212a2dd19db2d7a727f0a057ef6de7e66420e1de2bc7fef8e5b4ec3678"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Arcanis the Omnipotent",
+  "catalogue_id": 206,
+  "oracle_id": "8a7183cc-161c-444d-a889-a17519c8061b",
+  "facts_sha256": "504b31cd2172e26828cff04730e25b0a251f43dc3ce1e336693def0945654639",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "02cbc2cee893e549ae2adc445051570f072930e147dd038593d6b2a146f0c88a"
+  }
+}

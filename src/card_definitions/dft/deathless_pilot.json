@@ -1,0 +1,11 @@
+{
+  "name": "Deathless Pilot",
+  "catalogue_id": 1007,
+  "oracle_id": "31284a0b-9bd5-4186-bd27-6b16a3597e27",
+  "facts_sha256": "5838a13d0cedd09d87f1aafc74666f4a0eb4bbb0bade155dd686e45c9530a4fc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ca158076b9b0c823e1259e7222c27a22557127454246591fff33e7de2e6c0a83"
+  }
+}

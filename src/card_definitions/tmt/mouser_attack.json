@@ -1,0 +1,11 @@
+{
+  "name": "Mouser Attack!",
+  "catalogue_id": 2864,
+  "oracle_id": "bae5dc68-1fd1-428d-bee7-c238e07b21ea",
+  "facts_sha256": "87e46002493698a323e5bcef96d9340f0d22aa15347a2a23565e40a0445611f3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d77ae0cd020b46f3084ecfc7fdf48c6ccd6f1cc66290610167ff21ca2830413b"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Dawnhand Eulogist",
+  "catalogue_id": 982,
+  "oracle_id": "57bbd80b-290f-461e-8dc6-26ba4d673fa9",
+  "facts_sha256": "f9001e21dd2c3f8680fee8f2114ffeaff9ba92301d515ec7eb2e3618bd160c82",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9bf8c1b59db67c1896480c36f1e32933956dd11ad6c841f131b1a2df18194c31"
+  }
+}

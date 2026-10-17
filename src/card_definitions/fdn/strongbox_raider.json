@@ -1,0 +1,11 @@
+{
+  "name": "Strongbox Raider",
+  "catalogue_id": 4193,
+  "oracle_id": "ba5a2689-3578-4b1a-99d6-6b6d2356330e",
+  "facts_sha256": "375b4fed05d73e3408ab8291a473b9e9b42e4476692429daf603262c2edf1ffb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ac4b34c23dd17182556bce0ead507cccbb65e705c6189a4595554df5db0b7454"
+  }
+}

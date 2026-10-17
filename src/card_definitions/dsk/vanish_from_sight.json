@@ -1,0 +1,11 @@
+{
+  "name": "Vanish from Sight",
+  "catalogue_id": 4847,
+  "oracle_id": "1056b27c-125c-4daa-a0c8-533efc9ccc32",
+  "facts_sha256": "27ba5ad8bad58c281a59b16e63c0d10d8e23bdbc33fcb4e2fc4a83a185c2b3d9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "379b1643561360dd0892cefc489f7dd728bd156d64dbd1b5dedd62854029c418"
+  }
+}

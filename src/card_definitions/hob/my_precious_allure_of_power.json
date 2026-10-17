@@ -1,0 +1,11 @@
+{
+  "name": "My Precious // Allure of Power",
+  "catalogue_id": 2893,
+  "oracle_id": "2e728381-6db0-4c66-883d-82d718fef833",
+  "facts_sha256": "d2f08e85f47b8e68d0314b5796c44606a36ea20396e88d260ad5db153c0f9175",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "561cfc5309cd7a46710bc430a8f0ce76cba485e9477a1a68cede2dbc41a0755e"
+  }
+}

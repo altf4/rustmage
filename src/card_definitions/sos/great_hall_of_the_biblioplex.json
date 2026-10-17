@@ -1,0 +1,11 @@
+{
+  "name": "Great Hall of the Biblioplex",
+  "catalogue_id": 1865,
+  "oracle_id": "a8c70dab-1e27-4a9c-bd2d-910d5720d02d",
+  "facts_sha256": "0c5070e42b7d8b77d067ec2ef17b2516b3930e52984df2606a2ac3df658bfe8a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cb32559c91dbf5863e5cf8b7501280ff2e999d866a090b89dd42cb4edad1ef29"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Marauding Blight-Priest",
+  "catalogue_id": 2655,
+  "oracle_id": "814b87fe-2a75-4ff2-8637-7e69e3fb285b",
+  "facts_sha256": "69fe583dcf8391cd7b1b4311245f1af3e986b8f74984cf9522092b63f47da4fc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "51637456ec2408e3599641fbd2692ec077791a798fda64f3fa151767b1a451f3"
+  }
+}

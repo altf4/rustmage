@@ -1,0 +1,11 @@
+{
+  "name": "Dragonfire Blade",
+  "catalogue_id": 1161,
+  "oracle_id": "e809b847-b712-4558-95ea-9bb7356cde91",
+  "facts_sha256": "daecb2935cc94eed40794d9a4cc007d769b331b32a73f8fa8c5e19c0352cee8d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4d2253a38c5bad89a64ecbab3f8c14959d4c3fbab214d4e937d341810694c262"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Lyra Dawnbringer",
+  "catalogue_id": 2591,
+  "oracle_id": "592c91fc-6430-4c76-9460-65f047350f67",
+  "facts_sha256": "a19b6ddc3f93075e2fb52945283d3e7a45ea35282a4597e7fb9197fdf5a7c9d1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0365a906488de091f7376e29aa860825c5696aaa451d260f939cb33e3a30bb44"
+  }
+}

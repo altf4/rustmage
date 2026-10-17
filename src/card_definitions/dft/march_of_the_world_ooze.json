@@ -1,0 +1,11 @@
+{
+  "name": "March of the World Ooze",
+  "catalogue_id": 2659,
+  "oracle_id": "a04696c4-4138-47e2-8da4-81d61748519f",
+  "facts_sha256": "5c59733d6090fd40b178f4616f290e095cb6129f49ae08388fab81e8800ac499",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c93b729a159027fd12f1a7841108685404856a521c609dbbf52da250c01c4c09"
+  }
+}

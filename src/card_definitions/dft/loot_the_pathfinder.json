@@ -1,0 +1,11 @@
+{
+  "name": "Loot, the Pathfinder",
+  "catalogue_id": 2553,
+  "oracle_id": "68c7e459-0932-4644-a3c0-9a1eae1db7a3",
+  "facts_sha256": "b8bd5375d90aeeed53762ed169e3eff99d5130b5c9d28513d1f97bc90be7e040",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "abd0a42bbc0f094134de76e8b752d3379edd7eed02ee7d5ab4eccd3b4dd62703"
+  }
+}

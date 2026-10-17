@@ -1,0 +1,11 @@
+{
+  "name": "Hall of Echoes",
+  "catalogue_id": 1930,
+  "oracle_id": "dc0a51d4-5b7e-4987-b1fe-349fd118a625",
+  "facts_sha256": "349db203ba56d7fa79836a8e63f8682f14d711b948aed0a703eadecabfba9ef3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9cede81be01e9e674f4036a22b21f158ee85722738abeccecbf5e9db1889f81a"
+  }
+}

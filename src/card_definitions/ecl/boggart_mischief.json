@@ -1,0 +1,11 @@
+{
+  "name": "Boggart Mischief",
+  "catalogue_id": 477,
+  "oracle_id": "ac65ed8c-abe8-4044-9ce5-70b1370d0e19",
+  "facts_sha256": "af0741bcba4d02c520252849b608fa4af4fef645c27e5d08ba1862e35fa7c3d0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b4b12eac3597247146fc34b16da95996c128b1e431a80fb773a8f8cde97fc693"
+  }
+}

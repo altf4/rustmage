@@ -1,0 +1,11 @@
+{
+  "name": "Infernal Vessel",
+  "catalogue_id": 2160,
+  "oracle_id": "0e13c283-f462-441f-a8a5-0c75a59ff1d9",
+  "facts_sha256": "079c142666a65e8a5d07d2ff666df2ff2109825ae9757c7abc07b5d622bc7a17",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "acf18d3b00baed80da1e9ed485c4e9af339f5d13bfbcee3d479fe6d35aced1d8"
+  }
+}

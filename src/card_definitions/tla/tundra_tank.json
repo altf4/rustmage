@@ -1,0 +1,11 @@
+{
+  "name": "Tundra Tank",
+  "catalogue_id": 4700,
+  "oracle_id": "2ded4b02-7aa4-46a1-b10f-8480eb942cd4",
+  "facts_sha256": "d3672f0154be66ad7a2a91c1515b761939caf58dc68810bf8eeb6a203e66f7ff",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3f022ef918a6d79751c97481b721e4efada8a164368eb4e7d2cdbc1d3e3c0883"
+  }
+}

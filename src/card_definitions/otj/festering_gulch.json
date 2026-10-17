@@ -1,0 +1,11 @@
+{
+  "name": "Festering Gulch",
+  "catalogue_id": 1499,
+  "oracle_id": "9d3b60af-3e38-4d36-95fc-11b31c38f955",
+  "facts_sha256": "f63556ffffc8c3a70608801b1e2b993693dda7691828368a191415fc67711c75",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "499b9cf83be1d53ce08ec77d48f693e885a1356be35c11aed7ef03bcf1ad4646"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Incinerator of the Guilty",
+  "catalogue_id": 2157,
+  "oracle_id": "9b7d037f-3269-4e3b-9744-a977acb69c67",
+  "facts_sha256": "fa132af4224b8b6054b5868b734001650d08de63a5462c21b8feea0da408945d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "783d1335041f960a742d3a2fc32456969f0537adb6b101b3dec83771cef0e0f3"
+  }
+}

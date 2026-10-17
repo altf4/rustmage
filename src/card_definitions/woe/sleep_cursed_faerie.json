@@ -1,0 +1,11 @@
+{
+  "name": "Sleep-Cursed Faerie",
+  "catalogue_id": 3918,
+  "oracle_id": "a17633aa-b1a7-4ae5-b051-6747975d8a2f",
+  "facts_sha256": "506429921541ff960669535d1965af4c75e7a98afe0c4c468ab444eb871110e3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e57072c37a64d28ccdc730535b31fc4ba1124f0946dfcd0430952f4338ea5bf0"
+  }
+}

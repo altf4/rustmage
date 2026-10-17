@@ -1,0 +1,11 @@
+{
+  "name": "Zoyowa Lava-Tongue",
+  "catalogue_id": 5173,
+  "oracle_id": "e90f298f-c54b-4fe8-82db-5b9153a57712",
+  "facts_sha256": "e71a1cc4b0c2ff72c3857ad7cdda03990cbde5cbe41b8086eaab6e012a16d6a8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "66ffa5a0d6ec91a5b45f5a0dcd7b6ec78af6586021d8c6e2e4cf643612b4d21d"
+  }
+}

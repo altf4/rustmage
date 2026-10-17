@@ -1,0 +1,11 @@
+{
+  "name": "Shady Informant",
+  "catalogue_id": 3808,
+  "oracle_id": "5cf3727b-eb7b-414e-982c-3acf4c05ddf1",
+  "facts_sha256": "a3637b7753c987b96e788b15f6028a5586974101d5c1ed127f18c8f01d84fd1f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "75d40cd4bdde6924da034f3c72de5edd5f5c4e532b6629a921f6bcfed090a911"
+  }
+}

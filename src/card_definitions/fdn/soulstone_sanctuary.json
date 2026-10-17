@@ -1,0 +1,11 @@
+{
+  "name": "Soulstone Sanctuary",
+  "catalogue_id": 3980,
+  "oracle_id": "3c0f99b8-0222-4fac-932a-eb5d77826564",
+  "facts_sha256": "065b5cd402da78470a9e886477e8b71d585619216dfa20f69f80dfd6e6eb6427",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9cb41a461847d1d14f7035940382e2282a99963689f1e82e459e5b1ef791ec54"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Fanatic of the Harrowing",
+  "catalogue_id": 1437,
+  "oracle_id": "878e5e0d-beb9-4f8d-a640-62140c907e52",
+  "facts_sha256": "4c78b43ea5dde9de484b5283687c70ccb329941908f024778cb762b2a628480c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e9a6d1eab572e16c2cbfc72e2ba62301f4a4098967dec21916010986dc132e17"
+  }
+}

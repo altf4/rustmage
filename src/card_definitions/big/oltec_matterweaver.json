@@ -1,0 +1,11 @@
+{
+  "name": "Oltec Matterweaver",
+  "catalogue_id": 3011,
+  "oracle_id": "3cb91696-242f-4e91-806b-61b1bb45a20c",
+  "facts_sha256": "2010ea6013adc1be5515380765d5b98eb122b1fc5ef473d4f37fa651b54d9026",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7851909d5574a5ea845a1889f95bcbfdccc942741eaa73df61f0a6376ac6ac92"
+  }
+}

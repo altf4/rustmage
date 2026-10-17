@@ -1,0 +1,11 @@
+{
+  "name": "Bruse Tarl, Roving Rancher",
+  "catalogue_id": 572,
+  "oracle_id": "c22589e1-1721-43a3-897e-990af6ebcffa",
+  "facts_sha256": "eb2232f15dac5ae3002de9feb06faa90c1e8cb9ef5dcd5cbd51699060a08fc31",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6d80a307d12dca355f16bf04aded574d5f591115f620fc683264f6ec5be52179"
+  }
+}

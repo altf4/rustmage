@@ -1,0 +1,11 @@
+{
+  "name": "Putrid Pals",
+  "catalogue_id": 3289,
+  "oracle_id": "3aa3b908-e8d3-4944-8ced-5219d4129594",
+  "facts_sha256": "8c0fa28536e89f2a41d9414f17a3280ea26dec74c26e713f64b4a66894230eb3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6417b176591e60330ab87ed3236dfbee38f76b658fc28863005ec72af98094c8"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Caretaker's Talent",
+  "catalogue_id": 652,
+  "oracle_id": "c97957a2-8310-4cff-8aad-871b7901d124",
+  "facts_sha256": "da8250cc44c9f3b010475cc6e6d5e4514dd1a50cfbcf80520f18c85b30ea09ff",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3aeb349792c3c4a86a0d8cbd1c7766c0f1bd48f3e768056fff1cd6cc3bcf608a"
+  }
+}

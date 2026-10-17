@@ -1,0 +1,11 @@
+{
+  "name": "Sunfire Torch",
+  "catalogue_id": 4241,
+  "oracle_id": "d2da26d6-b0f7-4af0-9ce8-fb8d82fe2d85",
+  "facts_sha256": "f828b38213ba4e0127d3254503990485148a2e14d496f2b7ac9e918a90454598",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0f808398c29699fa6fc67af65c650fce9e2af655ef522d8f938d231e8c6f3698"
+  }
+}

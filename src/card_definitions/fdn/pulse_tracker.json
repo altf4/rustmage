@@ -1,0 +1,11 @@
+{
+  "name": "Pulse Tracker",
+  "catalogue_id": 3278,
+  "oracle_id": "f916f689-a314-4952-8107-41c4c2f2e811",
+  "facts_sha256": "775e8b5216c482275b04fba537dcc63f99978be2ce836fcded6ee4d464f069cd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "12fa1c304e486e2189b3eebbaad04e3df8dfdff7c1ebac5f33bee7c54b42bc62"
+  }
+}

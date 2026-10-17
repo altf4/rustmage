@@ -1,0 +1,11 @@
+{
+  "name": "Fortune, Loyal Steed",
+  "catalogue_id": 1602,
+  "oracle_id": "dc440b62-0bf0-4f23-9210-3550ff0a8d4d",
+  "facts_sha256": "4a963903fed216d3b752a845715879a95635b45b29eacc06c8cc872111582dfb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "19a266b64f38b436939330928b8b31d5341d91a78bf744a795092f9a68dc0115"
+  }
+}

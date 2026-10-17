@@ -1,0 +1,11 @@
+{
+  "name": "Drover Grizzly",
+  "catalogue_id": 1192,
+  "oracle_id": "290fe09e-04ab-48d1-a60e-db47ea8c4d00",
+  "facts_sha256": "1c60ecf6310f28b94f6c1679fead51f1a831cfe5979c118aa32af7ef5b9b24e4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dec26f753eb41f98817ca61719aee3ee2732574a6c586273108af0d1f1fa4276"
+  }
+}

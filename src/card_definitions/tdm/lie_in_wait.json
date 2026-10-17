@@ -1,0 +1,11 @@
+{
+  "name": "Lie in Wait",
+  "catalogue_id": 2490,
+  "oracle_id": "4dc0831a-0eb1-4f7d-9591-6e670e180116",
+  "facts_sha256": "034b695cb5efbe29c66de3187bef9030a4fc083baa9a95204613a2ff797aaf86",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "53eabc05b826b6178ef1de9e88d7193d2d29601824bab01221b5cceeb133d60e"
+  }
+}

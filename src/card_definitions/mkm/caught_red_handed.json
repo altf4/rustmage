@@ -1,0 +1,11 @@
+{
+  "name": "Caught Red-Handed",
+  "catalogue_id": 683,
+  "oracle_id": "484b3586-c0ed-4793-a3c0-e99f265e092d",
+  "facts_sha256": "f0aa06b3ccf31bf31d9774b87df97ac8d07df16377460d98be90d43d99e24a92",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8500b120841d22e9880b14ac6ae1ddf5553cf6d8cbacb413063ee35fc7e1626b"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Early Winter",
+  "catalogue_id": 1231,
+  "oracle_id": "fbf2653e-9cc4-442f-bc73-6e2ba6e067cb",
+  "facts_sha256": "a383db48665744739ea14e7ce46b5b3968972fde9451d0e47a1a1f8b60b4cfd0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "117dff6be29abd56e07f1fcbe5ab330f7c5e9e19e96c58b172e7fad00a5b4343"
+  }
+}

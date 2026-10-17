@@ -1,0 +1,11 @@
+{
+  "name": "Rooftop Assassin",
+  "catalogue_id": 3582,
+  "oracle_id": "f3baef8c-f8d7-4cb2-b5cc-b889a991e4e8",
+  "facts_sha256": "26c67157cebc184c76ad5bb0f3a4c3d204750cda3ace0f12854221c6b9bca315",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "751847490ae8fc8a877b83aa92e483e1f3324c02bcd0501cc8886608e5da9194"
+  }
+}

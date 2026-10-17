@@ -1,0 +1,11 @@
+{
+  "name": "Boughside Wanderers",
+  "catalogue_id": 513,
+  "oracle_id": "dc788b66-d03d-4066-be35-481be96ed2f7",
+  "facts_sha256": "8b3c1234e79e1b119d8528f30188eddc3a2bb3aa85f7447fc21399c650261868",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "268e9b31bbf908491f08d1c6c258301b5d48f4e7f91bddbe4812be9241bd36c9"
+  }
+}

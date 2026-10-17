@@ -1,0 +1,11 @@
+{
+  "name": "Brazen Scourge",
+  "catalogue_id": 534,
+  "oracle_id": "422ef4ec-863a-450e-9577-a0707bc16532",
+  "facts_sha256": "f67aae3a8ea260eead1dc586ef733caa5649032c076f236b7680e6b1c12f8acc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2ba8087b776e999ef235e0bfbe924addae09bcb2d07560d7d8b3ea2f0b927779"
+  }
+}

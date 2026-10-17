@@ -1,0 +1,11 @@
+{
+  "name": "Malamet Scythe",
+  "catalogue_id": 2638,
+  "oracle_id": "99c5630e-cc04-4203-9006-3bc6a6807762",
+  "facts_sha256": "cb33b9c8cdaf172b235a5ff6bd91b19f694f47414565c732ce635ad6d20018a9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ec9ec99035820bcf69bb4764dc67c638fd188299ab78352ab7913aebc61abc75"
+  }
+}

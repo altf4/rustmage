@@ -1,0 +1,11 @@
+{
+  "name": "Balthier and Fran",
+  "catalogue_id": 316,
+  "oracle_id": "570cb560-c246-4652-b230-ab34f966c78a",
+  "facts_sha256": "98f67582a94dc0e7500866ff6f07a39db8cd34d9e7b5cbb9db239239f9b311b8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "670bca226f1fd04323f5eff8c1ca6adb1b28650d1872598ce7d5615bb7beeb64"
+  }
+}

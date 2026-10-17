@@ -1,0 +1,11 @@
+{
+  "name": "Mobile Homestead",
+  "catalogue_id": 2805,
+  "oracle_id": "b71239fb-d7dc-4bac-b8aa-26b454409344",
+  "facts_sha256": "c347746c723153382504c1b2161eeb9a15febd36eff8dfeeb4b75b7b9d02ddc4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3cc612cf247fa0c2be7b2151aecf92d36b6ef775c770cea402310ff5745ca8c4"
+  }
+}

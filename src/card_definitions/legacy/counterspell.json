@@ -1,0 +1,11 @@
+{
+  "name": "Counterspell",
+  "catalogue_id": 13,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3b9f8131f57dbb92a55358bf4f31896369eed04ef1e3d878b80a840c5f8da91f"
+  }
+}

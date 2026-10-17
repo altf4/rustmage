@@ -1,0 +1,11 @@
+{
+  "name": "Sally Pride, Lioness Leader",
+  "catalogue_id": 3657,
+  "oracle_id": "b529f6b0-c6b2-4eb3-bb48-178e1eda75f3",
+  "facts_sha256": "80c038aa877d7fab44b1874f61369a25b4f59ba881624209af9fc7725ac20f5d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0f8097180a003050b298f5275b7837eba42632b4fd6f061a67de3af92d8bb508"
+  }
+}

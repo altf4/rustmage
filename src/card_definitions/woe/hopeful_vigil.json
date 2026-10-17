@@ -1,0 +1,11 @@
+{
+  "name": "Hopeful Vigil",
+  "catalogue_id": 2071,
+  "oracle_id": "33fff722-5cc5-4d0e-b788-166b3edb1223",
+  "facts_sha256": "4380ffe79b93258bea9143c5689f57b2be90a39a8b47c8d8ccfaac21fd163cae",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7e2488d9491340b251d94910e13e526aa33dc2aa6471aabd86a3c2047b1a2608"
+  }
+}

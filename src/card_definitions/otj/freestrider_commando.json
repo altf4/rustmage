@@ -1,0 +1,11 @@
+{
+  "name": "Freestrider Commando",
+  "catalogue_id": 1617,
+  "oracle_id": "09117016-5fd1-4590-9867-aad65d3097e3",
+  "facts_sha256": "05ff0d0512a197948a4caf800a6fa083c270c38b5a951eebf8e1ff4d43278888",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d9f7cdfef474dbd9b6fe8943f3dd12d6dad1c85297f3e08fa666ca167ee7c397"
+  }
+}

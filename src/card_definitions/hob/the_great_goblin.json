@@ -1,0 +1,11 @@
+{
+  "name": "The Great Goblin",
+  "catalogue_id": 4452,
+  "oracle_id": "83dcfac0-6efd-4e37-9402-15f9889e84e1",
+  "facts_sha256": "c5f4f62e011c8203ffc4fc6429e37ed12a6d21d24879832634c38a253a887b41",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e0f92d13ee16f05f3faabe2565f64e57456c93badcd597b028bd53f173de1de2"
+  }
+}

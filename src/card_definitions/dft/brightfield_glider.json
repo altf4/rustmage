@@ -1,0 +1,11 @@
+{
+  "name": "Brightfield Glider",
+  "catalogue_id": 547,
+  "oracle_id": "acff6e5c-7f25-4ae1-8672-8672450ad844",
+  "facts_sha256": "281aae77aee6c039f3582c6895f3abfe430cc34c60e07be212afa36edb3e074b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "65a13eebef3b9717bd8605aa4873814cf16a811d3e3ff3001c9248f81b945bba"
+  }
+}

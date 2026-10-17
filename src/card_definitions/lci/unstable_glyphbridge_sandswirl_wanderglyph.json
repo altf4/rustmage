@@ -1,0 +1,11 @@
+{
+  "name": "Unstable Glyphbridge // Sandswirl Wanderglyph",
+  "catalogue_id": 4800,
+  "oracle_id": "fcd54631-ea47-49a7-ad5f-9a9a51a815ba",
+  "facts_sha256": "a42a2fe7eea45d6f6958b9f04cbef9b9702be2d3dd5d3c6fe0822f2fd858e9a6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0fa496d520b9c8eb49e46fc20d3b7f11c349329207b140736583d0df0802aa82"
+  }
+}

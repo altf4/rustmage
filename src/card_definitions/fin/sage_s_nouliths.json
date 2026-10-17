@@ -1,0 +1,11 @@
+{
+  "name": "Sage's Nouliths",
+  "catalogue_id": 3649,
+  "oracle_id": "97248734-6e99-42a2-8f11-f3337b25f8ab",
+  "facts_sha256": "21c6778b63eaf5d3b51bf1ee1384b4efc3bc51daa1ec771816c3377556d2e533",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bc351ce59273a2adedfb3b740dbed7daa2d3b60be1d1feca83f764dd6f75b8b0"
+  }
+}

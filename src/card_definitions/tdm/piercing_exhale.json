@@ -1,0 +1,11 @@
+{
+  "name": "Piercing Exhale",
+  "catalogue_id": 3158,
+  "oracle_id": "ea96fe35-88ed-432b-a495-08e787d23d0b",
+  "facts_sha256": "9fcbdb76e403d1ec465a474e5c55b71b47a57ae9be837064879983877b8b8714",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b39355fcaa9b1ff4d7354aa9a7a63decdb8117ae57b0508e33742a33dbb5f278"
+  }
+}

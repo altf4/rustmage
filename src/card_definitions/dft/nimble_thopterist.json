@@ -1,0 +1,11 @@
+{
+  "name": "Nimble Thopterist",
+  "catalogue_id": 2943,
+  "oracle_id": "01813091-75e8-431b-ba3f-b1ea1ba20a3b",
+  "facts_sha256": "120306d0f0d5907ea193890dd9d04f4f8ec422528f999234e748fdbc974af5c4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bd0d98504093a52b38546b3a51ef0d32e21f14c07eaa198c8bfa393bc9843393"
+  }
+}

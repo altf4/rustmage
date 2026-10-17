@@ -1,0 +1,11 @@
+{
+  "name": "Rowan's Grim Search",
+  "catalogue_id": 3599,
+  "oracle_id": "f60234e4-9b53-47a5-a21a-82c80b5af072",
+  "facts_sha256": "ebc3ef6a70bc2dcc25d38478cf6cd285aac8c67c6d5397e153129394c59fb432",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "99f52ed421004c7447cbdc2ce1bea9cd5ad4c9e331058a85ed0de27770c8c09d"
+  }
+}

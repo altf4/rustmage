@@ -1,0 +1,11 @@
+{
+  "name": "South Wind Avatar",
+  "catalogue_id": 3985,
+  "oracle_id": "003e5dc6-8b26-4a0a-a50b-5f0806a7bacd",
+  "facts_sha256": "a656895e95e445539a80a61b62e74d0f7e476ec4fc3ba50b50db74c6363102ce",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c4375b2781eeb659c28661f0d709042d7eceabfe04349d873dd0adc3f4237fbb"
+  }
+}

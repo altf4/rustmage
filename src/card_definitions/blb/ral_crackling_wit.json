@@ -1,0 +1,11 @@
+{
+  "name": "Ral, Crackling Wit",
+  "catalogue_id": 3358,
+  "oracle_id": "3c970f43-17da-4187-a084-efd53b579067",
+  "facts_sha256": "8f9479cff442ebf27e5e5a751b584a8471c68d7ce7aa2c545e6608cfaf40b636",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5ccc756795d37ee3520df76c280a99ab9af7d4e72bbdb7f5c82a136d3223abc7"
+  }
+}

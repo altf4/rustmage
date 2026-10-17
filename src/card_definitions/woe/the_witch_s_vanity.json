@@ -1,0 +1,11 @@
+{
+  "name": "The Witch's Vanity",
+  "catalogue_id": 4519,
+  "oracle_id": "ad2793f3-a36f-4a09-a38f-eb98ce0a2b79",
+  "facts_sha256": "ed1fed7ce535d71c88e5fb3143f5a01f6f0b3b7f4bedf7c99689a0f1aa59f44f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a40279c4c90756884749b677740d7fc265221d29648c182ec2a8bc2eb84957b5"
+  }
+}

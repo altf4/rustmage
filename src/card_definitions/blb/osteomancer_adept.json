@@ -1,0 +1,11 @@
+{
+  "name": "Osteomancer Adept",
+  "catalogue_id": 3050,
+  "oracle_id": "791cbb7c-7935-4902-b050-9ea9d030e9fa",
+  "facts_sha256": "62fb2420865f9989725997811d8c2c99947cec6ea2f35f82178244856ce5a5f0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5bcb6c83a08f1b781b2394a8e36992c9df6ba17542f5b69d937440c803d6aacc"
+  }
+}

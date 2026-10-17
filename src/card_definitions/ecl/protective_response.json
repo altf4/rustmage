@@ -1,0 +1,11 @@
+{
+  "name": "Protective Response",
+  "catalogue_id": 3263,
+  "oracle_id": "c840b89b-81be-4644-8bb5-35d14b1bc620",
+  "facts_sha256": "4916bbe5a829ddc80c1cbea5e82024e42459ab6791a5b8787a8d1986908c5978",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3dc18f2c97ec2f5ae8687f40f14236b5162e06e368af8752b42409a2df5a0e01"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Cursed Recording",
+  "catalogue_id": 938,
+  "oracle_id": "9adc3750-0ddb-4f2c-a0e7-131e59d4cba5",
+  "facts_sha256": "1bbb191560c7da9ea1276107792a791c10afe3ae0fceba47b1c5c0d7bb24e9ae",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b1b4c79e499fa2104ab9e079b2be20ce04a60a1475a6e9a9263c5d6f0c5f6096"
+  }
+}

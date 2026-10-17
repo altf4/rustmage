@@ -1,0 +1,11 @@
+{
+  "name": "Sinister Monolith",
+  "catalogue_id": 3883,
+  "oracle_id": "ae8003eb-9f19-4f23-be3b-0ac3ddc03a72",
+  "facts_sha256": "b851fe9ad10b40a3ff425a3e3b2c7947bcf226ea74e8c65f9e3e6a5c7d3fc67a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "19eea410b76d774b4f3ba2728ad7b162a473540f3082fc700b1d2cff4be09c5b"
+  }
+}

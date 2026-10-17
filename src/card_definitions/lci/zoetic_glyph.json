@@ -1,0 +1,11 @@
+{
+  "name": "Zoetic Glyph",
+  "catalogue_id": 5167,
+  "oracle_id": "1c21efcf-1007-45bb-ba21-ac33c2a8d751",
+  "facts_sha256": "7c164794e411abaee5490bf590fbb4acb654038e0fcc3132174ded6f8a5901e8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "681af10179522e6b2ddf3e6752db5404515886b0c0a30296ea39846ee2a84f06"
+  }
+}

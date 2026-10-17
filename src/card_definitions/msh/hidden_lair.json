@@ -1,0 +1,11 @@
+{
+  "name": "Hidden Lair",
+  "catalogue_id": 2028,
+  "oracle_id": "7069d241-4e66-40bf-afd1-551a4a5457f0",
+  "facts_sha256": "749a2af6ad2a59c7107320bf2b9599c89a35b4b578f7f6fb4dedb903a1cd57e7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d049235a672d47653f46f89fa78c6be3bf752d2615f62fc937e13a99bb91d6a6"
+  }
+}

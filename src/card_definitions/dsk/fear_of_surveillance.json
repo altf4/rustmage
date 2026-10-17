@@ -1,0 +1,11 @@
+{
+  "name": "Fear of Surveillance",
+  "catalogue_id": 1472,
+  "oracle_id": "52478437-bb6c-48bb-855d-54a8a4d42d18",
+  "facts_sha256": "da986454a9268c7348a95c62fcf038acf02abfbef45a895d72b3506235f257df",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fd10aac35348c025d4dc709d180e7955d9740c36452f44f7f46768f238dcb49c"
+  }
+}

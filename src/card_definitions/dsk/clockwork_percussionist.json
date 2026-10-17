@@ -1,0 +1,11 @@
+{
+  "name": "Clockwork Percussionist",
+  "catalogue_id": 774,
+  "oracle_id": "3b74c8ac-9c19-45b0-935f-8630b8da4543",
+  "facts_sha256": "52080998f1eee1915485ca06c9dcf83a78971b6d8ebd0accd7ff2215792b5ad2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "19a1fd07220a530d6c008984a0e2c1e533e291b643fef22b294b9b382105633a"
+  }
+}

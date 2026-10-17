@@ -1,0 +1,11 @@
+{
+  "name": "Redcap Thief",
+  "catalogue_id": 3433,
+  "oracle_id": "e055bc6d-d395-4f85-8e15-3bce65b7fcca",
+  "facts_sha256": "6e8ad71a7cb399e1ddc4d53fcba1c6cc9d8bddec982497de2124fe06a55bd859",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e3813300f540ef58c687fc904fb2453001ac604ab59f0802a5c342465ace527a"
+  }
+}

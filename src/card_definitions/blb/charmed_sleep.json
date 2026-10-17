@@ -1,0 +1,11 @@
+{
+  "name": "Charmed Sleep",
+  "catalogue_id": 725,
+  "oracle_id": "cb33edaf-b604-48b8-8b9c-d6e462a8bebb",
+  "facts_sha256": "fd7c44cad1e517a5f84586fc057f606c1c78bf4980a4d240d55bac4988863849",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6813069fcedd095df7b8118dbfffc097e12b3655ea3ed6ee8b10a7cb3d5be5d5"
+  }
+}

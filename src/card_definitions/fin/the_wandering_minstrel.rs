@@ -1,0 +1,96 @@
+// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Creature(1, 3),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::AtStep {
+            step: TriggerStep::BeginCombat,
+            relation: CastRelation::You,
+            guard: StepGuard::Expression {
+                value: StatValue::Count(CountFilter {
+                    zone: CountZone::Battlefield,
+                    relation: 0,
+                    kind: 0,
+                    exclude: 0,
+                    subtype: Some("Town"),
+                    basic: false,
+                    other: false,
+                    cards_only: false,
+                }),
+                minimum: Some(5),
+                maximum: None,
+            },
+        },
+        targets: TargetPlan::Single(TargetSpec::NONE),
+        program: &[Instruction::CreateTokens {
+            token: Card(5307),
+            amount: 1,
+            tapped: false,
+        }],
+    }],
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        cycling: false,
+        origin: ActivationOrigin::Battlefield,
+        cost: ActivationCost {
+            colored: [1, 1, 1, 1, 1, 0],
+            generic: 3,
+            alternatives: &[],
+            additional: None,
+            mana_component: true,
+            tap: false,
+            sacrifice: false,
+            exile_self: false,
+            discard: false,
+            life: 0,
+            remove: None,
+            loyalty: None,
+        },
+        targets: TargetPlan::Single(TargetSpec::NONE),
+        program: &[Instruction::GrowCreaturesScaled {
+            filter: CreatureFilter {
+                relation: 0,
+                other: true,
+                subtype: None,
+                keyword: Keywords(0),
+                attacking: false,
+                tokens: None,
+                artifact: false,
+            },
+            excluding_subtype: None,
+            amount: AmountValue::Stat(StatValue::Count(CountFilter {
+                zone: CountZone::Battlefield,
+                relation: 0,
+                kind: 0,
+                exclude: 0,
+                subtype: Some("Town"),
+                basic: false,
+                other: false,
+                cards_only: false,
+            })),
+            power: 1,
+            toughness: 1,
+        }],
+        sorcery: false,
+        once_per_turn: false,
+    }],
+    enters: Counters {
+        plus_one: 0,
+        minus_one: 0,
+        stun: 0,
+        loyalty: 0,
+        lore: 0,
+    },
+    entry: EntryTapped::Never,
+    keywords: Keywords(0),
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::ControlledEntryUntapped],
+    }],
+    extras: &CardExtras {
+        controlled_entry_untapped: 2,
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};

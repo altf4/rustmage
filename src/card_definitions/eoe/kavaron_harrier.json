@@ -1,0 +1,11 @@
+{
+  "name": "Kavaron Harrier",
+  "catalogue_id": 2327,
+  "oracle_id": "1972e0db-e595-4ec2-b97c-902561bb275b",
+  "facts_sha256": "740131817a59188fd92ea3ea3c3e64dd7da7ccdaf017132fef3178bcff01ccae",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b15642c5ff1c85f5404bbc0672984d74ee49c9276b84f9b994e5904b0e6041f2"
+  }
+}

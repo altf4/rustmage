@@ -1,0 +1,11 @@
+{
+  "name": "Sage of the Fang",
+  "catalogue_id": 3647,
+  "oracle_id": "d6eb2bfc-1e86-4e36-9d48-12de16955b98",
+  "facts_sha256": "3d9eed32b30449a5c3a7d3c32ca0c9a0c2ead04ce90a9bfb0d4148690f23937c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "93ce2894da69a518bb2c4ea8c840b2f4bfdae15756b5674caa510b2ad335e300"
+  }
+}

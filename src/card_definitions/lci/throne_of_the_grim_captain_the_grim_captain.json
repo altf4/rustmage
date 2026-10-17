@@ -1,0 +1,11 @@
+{
+  "name": "Throne of the Grim Captain // The Grim Captain",
+  "catalogue_id": 4573,
+  "oracle_id": "a7c96442-706b-4fd8-9b38-052872dafe58",
+  "facts_sha256": "d0d8dbbba385b434d53cbda056ad29bf68ecab2f60c25f25f1dd5c0f5d175e46",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5da8079ce6c5ea504c9569d33aad68cfe828be2929cbe9d75302d2e5be64da92"
+  }
+}

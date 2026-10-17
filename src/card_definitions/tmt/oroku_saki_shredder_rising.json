@@ -1,0 +1,11 @@
+{
+  "name": "Oroku Saki, Shredder Rising",
+  "catalogue_id": 3042,
+  "oracle_id": "d14f620c-0fbd-485c-9fe4-34949e742147",
+  "facts_sha256": "9ca8661a60cbd47e73f711154fcc47a014fa3cf538c2a9225e6e78e187627c10",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ff4a34069c0827aa55db045858f865e16786766b8b6e04a774f8d9d8088dd6e8"
+  }
+}

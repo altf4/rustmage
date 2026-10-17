@@ -1,0 +1,11 @@
+{
+  "name": "Seize the Spoils",
+  "catalogue_id": 3776,
+  "oracle_id": "58f83528-9110-4895-b5ea-51b90af30a8d",
+  "facts_sha256": "7db99485ff70f4996b9094bc11089495ede73a09de83de183be9b4b338673cf2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e3c926e817ef3ac6195578fcf4c37c0d24dbf43240e12485d7982f63bb454790"
+  }
+}

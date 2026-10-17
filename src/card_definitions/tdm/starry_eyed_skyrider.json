@@ -1,0 +1,11 @@
+{
+  "name": "Starry-Eyed Skyrider",
+  "catalogue_id": 4109,
+  "oracle_id": "04e615e6-4088-4170-904c-f2d4bcebed59",
+  "facts_sha256": "225cb8766ecea98582ca2d80641c9e9dfbe42fd892753e56580750781016a05c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a2d9b9825a8075c718015891ea2c1965b7ba43968bad722299be020c9fe403c1"
+  }
+}

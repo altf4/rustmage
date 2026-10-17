@@ -1,0 +1,11 @@
+{
+  "name": "Lumbering Worldwagon",
+  "catalogue_id": 2577,
+  "oracle_id": "7e60a641-1f2d-45ff-b3f2-d389be938b22",
+  "facts_sha256": "8f63c415bb3cd9b7edb85165a02adc64a447ccfdeea9470315f443830a848189",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bc3d2ab42bad4fb8119da6aadbb969b4aec69449bcb10f00392fe552df74d17d"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Afterthought Sentry",
+  "catalogue_id": 79,
+  "oracle_id": "f0c533a2-751a-4c5a-8cec-b83da3c8c62f",
+  "facts_sha256": "34508da5c4e0e9942af2bb372682b81e0bc74f3d39b94273c6452d899cdb4df9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ae307fa515ba3a79d23eb0f0ee70ada2a7b952010d838e9333d19e2c6b15df96"
+  }
+}

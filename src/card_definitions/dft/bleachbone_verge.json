@@ -1,0 +1,11 @@
+{
+  "name": "Bleachbone Verge",
+  "catalogue_id": 444,
+  "oracle_id": "2b8144a0-08d2-4c28-9fd7-5d90f90105e4",
+  "facts_sha256": "6aa5d7f46dd76c54a7313f190c1eda121070580e1732cd05a10153b023fe2107",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "646ea2b8f4e11cf88a942316a273f0cea6e6f45338770733db2754838a3a5db5"
+  }
+}

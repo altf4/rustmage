@@ -1,0 +1,11 @@
+{
+  "name": "Everything Pizza",
+  "catalogue_id": 1387,
+  "oracle_id": "aa481983-8f1a-4519-9371-5e7edcd3274f",
+  "facts_sha256": "b1b04d3c4fe9f363b538b2781a2f972e2bdf78e690219342e19a31206ac2585f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1088fe093ce063f8c8ffb5c03f8838eaac53dd77e3c380f353ffdac75248898b"
+  }
+}

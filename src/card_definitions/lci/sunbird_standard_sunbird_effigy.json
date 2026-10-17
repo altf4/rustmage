@@ -1,0 +1,11 @@
+{
+  "name": "Sunbird Standard // Sunbird Effigy",
+  "catalogue_id": 4236,
+  "oracle_id": "c69742bf-f0f5-4216-a602-c21f9c5a6501",
+  "facts_sha256": "ef4b224cef1bea401c06e4a300c3c234464bd3a736aed2069e168243eac7ae1b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "38b5dd83626757d3e292df1c66e1f5e3c2cd2c4477343c5e44afceb7dd961e05"
+  }
+}

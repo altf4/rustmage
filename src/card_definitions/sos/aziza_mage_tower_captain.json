@@ -1,0 +1,11 @@
+{
+  "name": "Aziza, Mage Tower Captain",
+  "catalogue_id": 293,
+  "oracle_id": "70e10cb9-ae27-4dba-9a0d-34a78f924774",
+  "facts_sha256": "a66ef3f7bd11c3d085ade8e51c3f4ac63bb3a402828392e2fb8525e8a62ae3fb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "25fc0211b9c9d38f577ca7c4e9a4a1bc91c7c5a4a61c09789a5100254c2cc4b7"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Valgavoth, Terror Eater",
+  "catalogue_id": 4826,
+  "oracle_id": "cae3ec72-436d-4086-9dcb-17b3d92ad5c4",
+  "facts_sha256": "b863ef921f110b0dbe34391b6031d877d7d0ca502b73f386cb9dbe9e31fbac03",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a52ee698cddde110090c80833e64e9899acf4efa19b7782e02073a1fdea3dda4"
+  }
+}

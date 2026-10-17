@@ -1,0 +1,11 @@
+{
+  "name": "Shared Roots",
+  "catalogue_id": 3814,
+  "oracle_id": "9e0fd3bf-f47a-4f06-8ff1-73f6bf5d1e03",
+  "facts_sha256": "4687f309648c3cc63c890cf53dcd5223f48542feecacca3b657419cdd457f871",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0d213cf11bede6c6c8c1ba079cb02d0c3ae9f073c93a1573f280762fcfc841ab"
+  }
+}

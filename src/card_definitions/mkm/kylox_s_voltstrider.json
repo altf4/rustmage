@@ -1,0 +1,11 @@
+{
+  "name": "Kylox's Voltstrider",
+  "catalogue_id": 2427,
+  "oracle_id": "e7b746c8-1b32-42ed-8328-4e16274209d8",
+  "facts_sha256": "3a3c61790f81156de02e11294492c75ae3a24be2a203b5fd67b52316e91f1dbd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1b3f928e9444311c99fd2ac1c7274fb42f741f2acac2a0876b62c10e9ecf8c40"
+  }
+}

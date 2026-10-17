@@ -1,0 +1,11 @@
+{
+  "name": "Gigantoad",
+  "catalogue_id": 1746,
+  "oracle_id": "fa5e4aa5-e2cb-4c8c-91cb-554bec0f21d4",
+  "facts_sha256": "61cfa6a9717846643ddd2c939568ae1d5600834fa8c9a7a1416bebe2554e513e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d23dbb0a245856c731fff99d4723e6dcb5d40e39f076e68003f0605a26328325"
+  }
+}

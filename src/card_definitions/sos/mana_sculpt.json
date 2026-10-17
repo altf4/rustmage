@@ -1,0 +1,11 @@
+{
+  "name": "Mana Sculpt",
+  "catalogue_id": 2648,
+  "oracle_id": "35e2f82e-7ca3-4a92-9134-b7999eef5337",
+  "facts_sha256": "0ffdb75ba2688ffb359a6ea18fc97f46605768b8f624c64707a0ffa76bad33ad",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c7481ddf10acdaa67c89902f245c3485f27b9d12215bd70a1c4780585450bffe"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Tackle Artist",
+  "catalogue_id": 4315,
+  "oracle_id": "2e80d632-cf84-4562-8c93-5850cceb5bec",
+  "facts_sha256": "dcae85cdb4247528e23800992ae03c71d5dff29f44b580899cb67152d4664301",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6fbc5475710348856438237b8bab55ce217d53f9eeb8a30bffdcd6cbe2825a2d"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Keep Out",
+  "catalogue_id": 2334,
+  "oracle_id": "61cb927a-4cf8-49d6-ab4b-9e882bc08774",
+  "facts_sha256": "8851d2cca086f46064230981f5a68226fb727827276fbe824d22793a1eacb69d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1171f6783a6c5f66281658bc18751ca896f5886d01bb6348c605bca1a19c9a57"
+  }
+}

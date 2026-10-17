@@ -1,0 +1,11 @@
+{
+  "name": "Marina Vendrell's Grimoire",
+  "catalogue_id": 2665,
+  "oracle_id": "096eac52-00c2-4439-b2f3-ff555d15ec88",
+  "facts_sha256": "33723f9c4e03e28e7f2409cb72c36151dfadd4d42301c6ed64c036c024428cb3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4cc81283da4ebe4358530408c63579bb20eb7a2121e5ff52f90e2af6ee8f2f4a"
+  }
+}

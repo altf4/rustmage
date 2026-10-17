@@ -1,0 +1,11 @@
+{
+  "name": "Compel Brutality",
+  "catalogue_id": 820,
+  "oracle_id": "3a9059ac-c595-4e71-b704-b04d2d47db70",
+  "facts_sha256": "11b0ab9b1621449746a18153e9cec0401aa7c02e121d3f5a7c18fcae6a87c398",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dd82f19ad1b2afb6c80045e0a8cf8a87150402697b3b2fe511b8aae125d567b7"
+  }
+}

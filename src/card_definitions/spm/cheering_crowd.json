@@ -1,0 +1,11 @@
+{
+  "name": "Cheering Crowd",
+  "catalogue_id": 733,
+  "oracle_id": "e11839d5-99fe-4cc8-802e-be669ad274ee",
+  "facts_sha256": "6746a6f695af2cae379c2dcc22637e8a5e377e8e7fc64b28d09411ff3c180c7b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d4e29e5ce703dd5d20cf2678ce2254f3e9fb9ad391c6f9536f25c7c304b2b64f"
+  }
+}

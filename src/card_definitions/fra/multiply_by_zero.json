@@ -1,0 +1,11 @@
+{
+  "name": "Multiply by Zero",
+  "catalogue_id": 2875,
+  "oracle_id": "d940611f-f84d-43fa-82d6-eecb4fb54164",
+  "facts_sha256": "51fe4ab985bc1da0130f792820892cfd0794d13e93a25f8aea102b9ee4206da7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ff5930bbce1c24e0c9cf6f9c4d75a71459c14e93aa1f7ca178bd97f0aab63086"
+  }
+}

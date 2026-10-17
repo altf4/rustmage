@@ -1,0 +1,11 @@
+{
+  "name": "Skycrash",
+  "catalogue_id": 3901,
+  "oracle_id": "2343ebff-edf4-4132-ad9e-7800f8014072",
+  "facts_sha256": "f072537d49b6e572b55fb13f5f4d06c443fb5412b6b5f98790c3004d4825fc9f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "04f59a8fa9088fe96b70a9936de2dfd12e370af69a33d7ac8c063e17d674a2d7"
+  }
+}

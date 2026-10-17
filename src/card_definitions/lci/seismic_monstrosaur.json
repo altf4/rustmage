@@ -1,0 +1,11 @@
+{
+  "name": "Seismic Monstrosaur",
+  "catalogue_id": 3771,
+  "oracle_id": "3b66d2c2-be7a-4296-9888-f0cfb2975e89",
+  "facts_sha256": "ebf0ea320fd31b46a1b77784c2c3f960132873fdeda6a536d48e9347a97dfce9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "51d17d0e3b04fd988448a3854071f95d1a4c3f71fdfe0366754a1e1b525da9c9"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Genghis Frog",
+  "catalogue_id": 1710,
+  "oracle_id": "1d6d0348-46ad-46ed-ae7b-d7510f0ebe70",
+  "facts_sha256": "3236a016c3dd01d351285eb087d7152dd5f60c839a3fa0d7f9298812bc7b7103",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "22fe6f42e7194ea8d46a0bb4390f9354aab76a0b6c5cd746d016c49d718c542b"
+  }
+}

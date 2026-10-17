@@ -1,0 +1,11 @@
+{
+  "name": "Beat a Path",
+  "catalogue_id": 5213,
+  "oracle_id": "cdb84830-faf2-4beb-8d57-ad696d75876b",
+  "facts_sha256": "254d01ee6186486f5a51dcf4e81012e8fd53caea553dcbb45027e77f4d3e8a26",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "724b648894b9f7676c04acb89b4c393ab3aa843eb0002902e5c351760c02ff4d"
+  }
+}

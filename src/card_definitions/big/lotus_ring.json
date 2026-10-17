@@ -1,0 +1,11 @@
+{
+  "name": "Lotus Ring",
+  "catalogue_id": 2566,
+  "oracle_id": "ca4d3d27-ea3a-44ac-96e9-b52b563129f8",
+  "facts_sha256": "149cbab9977f3ab60e78b41cc8db68a3b66fcec046fefd5f5e03e024f221149d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0705d247879612e20d9844788b940e8445f3180e6c3bd8dacaf1464e3900de61"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Sephiroth's Intervention",
+  "catalogue_id": 3789,
+  "oracle_id": "94ac2990-58a5-43d4-bdac-ec2f6daf0b51",
+  "facts_sha256": "182673fc01dbf62ae75e37dd23600eac63b48d44b17de19f25fa36032d5abb03",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2addce9eb72fc8ec27f6b833211bdbf50b2be40e51f629f6db9a69a17a08f8d2"
+  }
+}

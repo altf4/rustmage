@@ -1,0 +1,11 @@
+{
+  "name": "Obyra, Dreaming Duelist",
+  "catalogue_id": 2989,
+  "oracle_id": "4162e60f-9d70-4b8c-a838-df57b83c208d",
+  "facts_sha256": "958b9da076700722e80ea1b16b0b32e4565eb205cd91f84b0c528d6f4c728192",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7210af3856dd3b6f576a06b9e49f1f886b9d1a50dcb1dbc4aa8c5d5a97fbaccf"
+  }
+}

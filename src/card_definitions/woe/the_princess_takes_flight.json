@@ -1,0 +1,11 @@
+{
+  "name": "The Princess Takes Flight",
+  "catalogue_id": 4487,
+  "oracle_id": "70d52457-1867-482c-ba7a-1f7dacc4514f",
+  "facts_sha256": "99718f4dedb065bfe42cb467a044dafd9ec7f120eb11025d934ab32d0867034e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aef252fe5f2a055d687431a974c96d5f104224ccf30546bf5a389b4f3c709624"
+  }
+}

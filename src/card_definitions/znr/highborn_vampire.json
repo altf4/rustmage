@@ -1,0 +1,11 @@
+{
+  "name": "Highborn Vampire",
+  "catalogue_id": 2042,
+  "oracle_id": "1adcf587-9035-4299-a2bd-62f805fdd897",
+  "facts_sha256": "2ee6755d5eaae6935e15f7017395e1cbdb932dff24bef0f4c21d3e7f265e0062",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "927cd638ea9d54b8d048fdb6ab41c635f0c99b4d6c6399a1d762a00fa87c51b3"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Drag the Canal",
+  "catalogue_id": 1150,
+  "oracle_id": "0c0ffb66-94db-4ba9-afde-c5b4fbf09578",
+  "facts_sha256": "42f2520d77ec8fe51aa4f3e48da05b2cbe4b6b917932ba082668a1a2c7018617",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b216d89e6d687a2100dde409ff570130f554b9be0b8ee1cf65870adeb5c3249f"
+  }
+}

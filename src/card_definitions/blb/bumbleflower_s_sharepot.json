@@ -1,0 +1,11 @@
+{
+  "name": "Bumbleflower's Sharepot",
+  "catalogue_id": 581,
+  "oracle_id": "6e152529-64b4-472c-8e50-99095af6af99",
+  "facts_sha256": "35b1f51bcec9c593f945db3fa16faddd701a840b41d6856cc36b3f119f0b49f3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "83d8c1e62de368816d2f9518ae588a9b5f1dc02e031fdb93b7349b8ca33d6b59"
+  }
+}

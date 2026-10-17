@@ -1,0 +1,11 @@
+{
+  "name": "Karai's Technique",
+  "catalogue_id": 2314,
+  "oracle_id": "e53fb128-bf90-4af6-b998-ef9c250001cb",
+  "facts_sha256": "c9db609f2c8f36f94b07290a73595d7b23d27db84a8847da6e746b1a743f0a54",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "264086be17b0c157249349903ad0e363691943b041a734a0f67d2a08a7655d33"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Horrid Vigor",
+  "catalogue_id": 2074,
+  "oracle_id": "bef3f0a9-4d5c-4469-81df-adbeedeed768",
+  "facts_sha256": "fba8f5d8754896fb0d4ae87fe0edecbd309cd14f7ce92692385618a70b1d0a55",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "018012229ce1b43ab612fb82493cc3fdf78645a8c12fea952f11db61ad847175"
+  }
+}

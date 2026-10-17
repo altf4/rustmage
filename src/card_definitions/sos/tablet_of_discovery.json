@@ -1,0 +1,11 @@
+{
+  "name": "Tablet of Discovery",
+  "catalogue_id": 4314,
+  "oracle_id": "19cf5798-4600-4a66-b1c7-de77bde157d0",
+  "facts_sha256": "4023cee42481c351403e956a7ac0e447117144d5413f8f2e26519a3c9535154f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ac0d3bded0b36f1a55bae478c02da9d96f826c2338ac4dd77a0b65e950cfc08c"
+  }
+}

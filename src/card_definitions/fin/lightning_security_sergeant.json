@@ -1,0 +1,11 @@
+{
+  "name": "Lightning, Security Sergeant",
+  "catalogue_id": 2499,
+  "oracle_id": "e1626880-0fa3-441a-9978-b293fc87c418",
+  "facts_sha256": "9b8372092f5e74726189b2e0de79afd074adab906db6a5590acc228f489e679e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "74394c443f0caa3808cdc32bf1b44ebb8ec84f076378359476968127bc99f734"
+  }
+}

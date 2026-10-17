@@ -1,0 +1,11 @@
+{
+  "name": "Biosynthic Burst",
+  "catalogue_id": 419,
+  "oracle_id": "3abd2342-f783-4871-ac78-1a54b35722c2",
+  "facts_sha256": "9ae79762f26f16577708df75a5651e219b9fa9c86c08539eb78d3c21d37bba15",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "844e8e25988205e2e7f16247b1b536ad40ba9c8a68cc24d143ee4f3652c7f936"
+  }
+}

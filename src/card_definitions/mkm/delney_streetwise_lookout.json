@@ -1,0 +1,11 @@
+{
+  "name": "Delney, Streetwise Lookout",
+  "catalogue_id": 1033,
+  "oracle_id": "245d0ccf-87b6-460a-8b99-9e2079f2d375",
+  "facts_sha256": "f2b0cd1bd5bdd0e68d5c6124b0aed463f81708e90fbb10dd849e9b2f8fa0c796",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "595bcf14cac238cef8930f2088d10d0f01f3bc0fe3559e3b07235a5f5bb62f5f"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Ultros, Obnoxious Octopus",
+  "catalogue_id": 4749,
+  "oracle_id": "b6f4b524-1081-4263-b7e4-9aee93131b31",
+  "facts_sha256": "03bd29a90dbcbe560d67f48a54148e385474b8208e3176cbb5b4ea811828edbc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d8966eb1f157efbd01c13058fc461490fa9e9e3efdaf78c1c9e7f18caab98427"
+  }
+}

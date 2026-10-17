@@ -1,0 +1,11 @@
+{
+  "name": "Scorching Dragonfire",
+  "catalogue_id": 3725,
+  "oracle_id": "d14f313c-fea6-49c4-8197-5b74ee584a6b",
+  "facts_sha256": "613197dd43d01bda21ca3296e4a2ea395bc7afa100e5a5cb558301a4064b2591",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6e7f0e294dc0a15fabb08122aecce980d3d966a7c6a3522fb35633cfc2f7f898"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Confounding Riddle",
+  "catalogue_id": 829,
+  "oracle_id": "3df49c4d-a285-4826-824e-b742b0deed3a",
+  "facts_sha256": "b880456f5fbaf2af936b064fb0a3b09b0b1c15dc1a3e0307df75145f376caf1e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "edc18663d38ff2c09b29c7a027c3757e96dd72b2c1e246c10a3547e75c57a808"
+  }
+}

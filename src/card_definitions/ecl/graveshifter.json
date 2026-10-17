@@ -1,0 +1,11 @@
+{
+  "name": "Graveshifter",
+  "catalogue_id": 1855,
+  "oracle_id": "1eebc02a-9a64-49b0-8322-c5ce671457ce",
+  "facts_sha256": "e22dcad29e344fee74b1af92eb667073b8c4adc2fff94bb36d56ca7aa5ea2fdf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2c9d797a752adfdb288162e66fa9bb3d517f7a02e2037aded78fa0037fb39c36"
+  }
+}

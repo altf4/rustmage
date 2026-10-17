@@ -1,0 +1,11 @@
+{
+  "name": "Hedge Shredder",
+  "catalogue_id": 1988,
+  "oracle_id": "f22665cd-4710-48df-83c1-3c9081097cb5",
+  "facts_sha256": "4f745a3ebf1ff01d5ef65799b1866bdbd8316a3cd2dc4a03a45bae0c3b938037",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b968f1137732ba0da2c124f5a58ce060941870c5d060c397b71759b4b6c7e03d"
+  }
+}

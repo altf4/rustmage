@@ -1,0 +1,11 @@
+{
+  "name": "Boom Box",
+  "catalogue_id": 500,
+  "oracle_id": "b0fdf2e0-3025-4919-a9dc-d33100e487fd",
+  "facts_sha256": "d68ab87029028eedc090198aecbeb8a20a34a96e476e630f51c5b698f60d2892",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "135bf0992aba5e83449bb77343b8e77c00824abae7a1c06b82e2fd12ee734ce1"
+  }
+}

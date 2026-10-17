@@ -1,0 +1,11 @@
+{
+  "name": "Lamplight Phoenix",
+  "catalogue_id": 2443,
+  "oracle_id": "c6f7efad-381c-45ba-9976-159b7e78f7ed",
+  "facts_sha256": "b0ab1bdc10d506077a813f9edf29db3666f1b903ee3fd0e54ae60874517880ad",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2bbe6555314d49a5bafb8c6f9e8b43e37255b780b1f9bfd480d9776cf0b8f419"
+  }
+}

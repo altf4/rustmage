@@ -1,0 +1,11 @@
+{
+  "name": "Paranormal Analyst",
+  "catalogue_id": 3101,
+  "oracle_id": "8cbe71d3-b77b-49a7-9c51-ed308011b8b0",
+  "facts_sha256": "6e1680c729a3c2e88481bc7639cd750aee1f97dda6effedc7c6a10847cf605f7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "50e45e65407587e2bb3180e8947a9798213e818748723e2533279bf0a36965cf"
+  }
+}

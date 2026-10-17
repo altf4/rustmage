@@ -1,0 +1,11 @@
+{
+  "name": "Barrow Naughty",
+  "catalogue_id": 339,
+  "oracle_id": "95664c29-9801-4dfc-9dbd-465abf6bb4ee",
+  "facts_sha256": "52f8f918bf7e13de74b26118d8f26718aa09d4438fef48c13e11ceb26f8c00c4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "51ac929483abf5246f297e486992070eb1b575392c3cc26fc7e3f3e78b1a455e"
+  }
+}

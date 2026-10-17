@@ -1,0 +1,11 @@
+{
+  "name": "Grim Bauble",
+  "catalogue_id": 1879,
+  "oracle_id": "431d6a2b-e22c-4921-a5f1-dd672f764f78",
+  "facts_sha256": "5ecab8c6907fa63f327a0394d09b1d48fa7de6843a3bdc02e2f80e88969cc4d1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "76e381e624e8841bda66ed191ffadc93b4d6fee71ee18b28040cea3cbb87bce2"
+  }
+}

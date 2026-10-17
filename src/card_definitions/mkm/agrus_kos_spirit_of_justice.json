@@ -1,0 +1,11 @@
+{
+  "name": "Agrus Kos, Spirit of Justice",
+  "catalogue_id": 100,
+  "oracle_id": "11b7ee78-fca6-4b34-93e4-e60492583d50",
+  "facts_sha256": "73e38f3b271a526beab9aefaa744b2f7a3a1182624bf59766331bd8c95f8d443",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6198f2b12ec57af3625b851821438e563ad4eacc4e8c041c1b0c19698f6adb99"
+  }
+}

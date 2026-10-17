@@ -1,0 +1,11 @@
+{
+  "name": "Troop of Ponies",
+  "catalogue_id": 4687,
+  "oracle_id": "bb52b3c3-09f0-4506-b7c0-250ab0b91866",
+  "facts_sha256": "8e86f934e55976d3ab262605a82b4a00b90b03ee08fe3b7fee7fbf7881a40d89",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e4d7816bcea9c6da143f90ff6075b35f49b8590e83139776e9402cd22cbcaa12"
+  }
+}

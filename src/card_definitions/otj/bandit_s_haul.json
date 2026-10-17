@@ -1,0 +1,11 @@
+{
+  "name": "Bandit's Haul",
+  "catalogue_id": 318,
+  "oracle_id": "84b08b55-0623-4202-98c6-1756d3c1bb8f",
+  "facts_sha256": "b2e04d6a1ef4fa645436c39eb7b2160898c302a53aa8bb1904b155837a8c56e9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b44e54352cfbebf9215fbbca60e45983db929bd71572c703a2ceb474ba30bd22"
+  }
+}

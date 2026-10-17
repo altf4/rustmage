@@ -1,0 +1,11 @@
+{
+  "name": "Ghalta the Immovable",
+  "catalogue_id": 1726,
+  "oracle_id": "0d496c6e-8f7b-420f-9197-dacd2feb528f",
+  "facts_sha256": "6deb9ba1829ccb45d46abb39c86804399fd54a4e1f9eff81e6407015198cbc85",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c773b27a2780cca6efdc3a0b7b4d358c58df0db99bf37dcfc9520bde3a4a12b3"
+  }
+}

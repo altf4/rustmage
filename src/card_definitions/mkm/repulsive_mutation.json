@@ -1,0 +1,11 @@
+{
+  "name": "Repulsive Mutation",
+  "catalogue_id": 3465,
+  "oracle_id": "611bfaa6-b098-48d9-9e49-1e7dc8687f15",
+  "facts_sha256": "3208169308fce7839cb82ad873cb5cad0116b5cc8c7a6f420df65eeb4f66a7d5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7af1b29b57e10bfd01309c56edf714af5dceb4e0b2bfff587b97b3a3f6cd97fb"
+  }
+}

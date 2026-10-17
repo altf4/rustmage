@@ -1,0 +1,11 @@
+{
+  "name": "Hostile Investigator",
+  "catalogue_id": 2076,
+  "oracle_id": "de83b1a4-0ce0-4cc1-aff3-6d0239d92302",
+  "facts_sha256": "21949449cab069b6d73a3d58abf623e2724c0d94521ee002c632d59982b9e5f7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "78ee553175fe409d7455a27b840a89f60287cb9bf700ebd08c4b463235ee1e29"
+  }
+}

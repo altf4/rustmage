@@ -1,0 +1,11 @@
+{
+  "name": "Academic Ascent",
+  "catalogue_id": 46,
+  "oracle_id": "406e853b-713f-4c89-9efb-aca74a11183f",
+  "facts_sha256": "ea2c5de4b698edc5c025c76b73ff6db6410cd123b35f31267a4b425a69fffdfb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "760279808f5b8b14417229e791fa997ca31e6d6fa36043e95483ac1a7098297d"
+  }
+}

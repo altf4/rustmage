@@ -1,0 +1,11 @@
+{
+  "name": "Magmatic Galleon",
+  "catalogue_id": 2623,
+  "oracle_id": "59322432-591a-4e8d-aff5-12ca1feb1028",
+  "facts_sha256": "d85417e65c0fe24548eef9991cbaee97447aeff9df523780f172ab826def7e3f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cbbf2c063a231711a5694f119f4aa13bec6b5584b32c3ee9c4430592d24bf58d"
+  }
+}

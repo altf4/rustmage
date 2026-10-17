@@ -1,0 +1,11 @@
+{
+  "name": "Omashu City",
+  "catalogue_id": 3012,
+  "oracle_id": "6f9a4bb2-5959-4a5c-83af-c2729e6673df",
+  "facts_sha256": "eaa0431bfe349ac0519b10a70d92a24e57d18c96fd1c4bc66f2bf3de5e988d92",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "87718be4855368077d06e20d3d76070f62a32f359d71cdadde6bc170034260dd"
+  }
+}

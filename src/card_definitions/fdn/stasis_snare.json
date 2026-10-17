@@ -1,0 +1,11 @@
+{
+  "name": "Stasis Snare",
+  "catalogue_id": 4117,
+  "oracle_id": "6a83768e-672e-4fec-8931-853f5e96d43d",
+  "facts_sha256": "6d94dc70dbcf773d0f00d8a981228f2c69c3b7810ee6110b3b3befc064c2902d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "79b9409f887fbb1fa7a611f2525e98d9929c1e388fd583c544b60124c17a218a"
+  }
+}

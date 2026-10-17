@@ -1,0 +1,11 @@
+{
+  "name": "Deathcap Marionette",
+  "catalogue_id": 1006,
+  "oracle_id": "6c4247d0-6dc8-4139-bbf5-c83dfdc7be1f",
+  "facts_sha256": "db4c5e72bc5df8611e8203470dc4deae12b4515c68a2382f0f9916208a13627c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5fdf0fc070c1d6685f511b50e288bbe4bdb9fa4710657a05f704110fcd8edc29"
+  }
+}

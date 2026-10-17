@@ -1,0 +1,11 @@
+{
+  "name": "Rope",
+  "catalogue_id": 3589,
+  "oracle_id": "a3f09898-6c77-4d68-8d10-8440c75f884c",
+  "facts_sha256": "e2541a57b71d7284b548239dd3c88fd075c55a8185ce4a3a556eac1fde5ce644",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eed6dd34f08810444f18138b54013f6e570d993d5252d03f4a57d04749867943"
+  }
+}

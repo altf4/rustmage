@@ -1,0 +1,11 @@
+{
+  "name": "Spicy Oatmeal Pizza",
+  "catalogue_id": 4017,
+  "oracle_id": "9665f940-c0a4-4d3e-b889-8049cf549a4f",
+  "facts_sha256": "b90c648a0486eb4f01e10d8830f0662aac6807e74945a8b08a1e5968d71a1e10",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d4280736d8ab312317fcb43f8ee67f3842d3daf6a5eb5fea414e309712cc71e3"
+  }
+}

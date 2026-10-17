@@ -1,0 +1,11 @@
+{
+  "name": "Muse's Encouragement",
+  "catalogue_id": 2884,
+  "oracle_id": "62421084-96e6-40dd-8d34-7c8c1091d4a4",
+  "facts_sha256": "dab050e3a55164ed6efd031a82774a9de094fc242d54c94171d6f4f98138ceef",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d7e8ef672b0b8b0f69ca8e0e3e3959d5ea0f927c3d5f450c1a8cf84eb8ff609e"
+  }
+}

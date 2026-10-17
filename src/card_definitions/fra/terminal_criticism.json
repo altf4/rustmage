@@ -1,0 +1,11 @@
+{
+  "name": "Terminal Criticism",
+  "catalogue_id": 4387,
+  "oracle_id": "213b0814-f768-4408-9cb7-6f5960bcbb7a",
+  "facts_sha256": "78e375acfd8093207573fa3307c673f55849baacaab15fac2428629a2e3ed42f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "50867d965b428587a61734fe0b2766874efb82b5a979f4be0aa6f53e1bf80ec6"
+  }
+}

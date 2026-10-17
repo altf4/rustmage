@@ -1,0 +1,11 @@
+{
+  "name": "Loxodon Eavesdropper",
+  "catalogue_id": 2571,
+  "oracle_id": "141a2757-8f20-4e10-9866-bb5d612ed62d",
+  "facts_sha256": "702fbb9df7fb2777ac1cc3de0fb5d8ce50d63d84e6ae8cff44a10676c8b4291e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e7b12ccbd02e2c0eb13a714e2daf81a19e4603064dd1f416b375f3ac60f74cda"
+  }
+}

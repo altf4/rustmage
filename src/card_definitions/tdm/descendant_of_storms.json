@@ -1,0 +1,11 @@
+{
+  "name": "Descendant of Storms",
+  "catalogue_id": 1048,
+  "oracle_id": "ca773c52-ca64-463c-99cf-e71b59d2cff7",
+  "facts_sha256": "8b06c9b62ee057f8023399b0a41d0796a137d49b8080bf58c370cd2823a65fbb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4cd8457ac2f7093898f8508fdd648c345cd089703eaec03089b8f2246f9201ea"
+  }
+}

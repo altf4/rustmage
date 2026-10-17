@@ -1,0 +1,11 @@
+{
+  "name": "Leonardo's Technique",
+  "catalogue_id": 2471,
+  "oracle_id": "e98c2af9-1393-487d-b8e9-f49a67bb7296",
+  "facts_sha256": "84bfc1d00f2fa3c351731d5d4840eca423cf110b9be19f8cfaa7eab879c8dac1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "38988573c0c30ec91841ef3bc32619840cf7e4465b5ce9ca373483200ae541dd"
+  }
+}

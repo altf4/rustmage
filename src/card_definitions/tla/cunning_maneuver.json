@@ -1,0 +1,11 @@
+{
+  "name": "Cunning Maneuver",
+  "catalogue_id": 926,
+  "oracle_id": "96335212-ec57-4beb-bab1-11c8eaa62119",
+  "facts_sha256": "8a71646043873cf980b84a89e35d9311d1b272c59d9b555991b43013e7db4d5d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fe5891c4ddc75194cb6a416a404996a04b464eb96281be39eacf3142ca7210ec"
+  }
+}

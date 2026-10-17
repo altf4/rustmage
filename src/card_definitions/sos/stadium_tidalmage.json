@@ -1,0 +1,11 @@
+{
+  "name": "Stadium Tidalmage",
+  "catalogue_id": 4085,
+  "oracle_id": "1c45e872-3af8-47a4-9dc7-a99c293338f8",
+  "facts_sha256": "d37151c10b2490cbeb8c4c8de176350f92a605f18ef1c46cd968512c44216b46",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f7a4e16e02b6e6147706d255736b806ebd03f503b80cb6cd9dd36c7a930a3593"
+  }
+}

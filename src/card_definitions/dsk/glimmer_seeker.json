@@ -1,0 +1,11 @@
+{
+  "name": "Glimmer Seeker",
+  "catalogue_id": 1779,
+  "oracle_id": "cbb5526b-3aa1-43d9-acdb-bd230ce3fe63",
+  "facts_sha256": "d6411611338d6ee0b9d98b4a53065453cb8faf50a676e7f4a7390b916c66b772",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "74588b359fe9ee90a3c2b36a3a4ff9fa252ae94a8f294a11b82d0b8b48a4f456"
+  }
+}

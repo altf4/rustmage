@@ -1,0 +1,11 @@
+{
+  "name": "Threats Around Every Corner",
+  "catalogue_id": 4563,
+  "oracle_id": "5c104ac8-738a-4a9d-a68b-5706018d2061",
+  "facts_sha256": "a0ee5059675088dc7667505cdd1040bb90cff830624af201dc7d42a39fd117b6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a475cc012b70a2ef8f1bc468fe7f10f85f05da0b1832d82c4f2ce86799673862"
+  }
+}

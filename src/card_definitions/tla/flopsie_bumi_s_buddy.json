@@ -1,0 +1,11 @@
+{
+  "name": "Flopsie, Bumi's Buddy",
+  "catalogue_id": 1565,
+  "oracle_id": "a8966245-501c-47e4-8ce0-849dcb532eb2",
+  "facts_sha256": "2c5c623aeb506fd208de698f9b1e8cd37c42db5ccdce9a73b97dc8b79b28a7b8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d949aef011d3a1d101f3e194fc27d6b164f08c4034fb24858b2d3ba2282ce37f"
+  }
+}

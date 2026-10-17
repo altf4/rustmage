@@ -1,0 +1,11 @@
+{
+  "name": "Balmor, Battlemage Captain",
+  "catalogue_id": 315,
+  "oracle_id": "7da19fc5-cb85-4ec7-beea-95210378bbfe",
+  "facts_sha256": "56e3c953a41515dda1423037e80b9872c4b25248246389ad9676837a0b1be5ff",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "450c345adbc47cf93f961acd165ea38913c1a8dbc17dbfb0485022b8a11b3ff3"
+  }
+}

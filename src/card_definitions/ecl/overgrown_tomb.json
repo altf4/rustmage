@@ -1,0 +1,11 @@
+{
+  "name": "Overgrown Tomb",
+  "catalogue_id": 3067,
+  "oracle_id": "975ec9a3-6f20-4177-8211-82526e092538",
+  "facts_sha256": "e77aa4fe8c76763c03ace02b24bdf50b4603c659bd2b80f64f8add462c1b64ed",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1cc3260961007cc495a48dd06450c6b9fe1860d39fa8559bcecd104811359f0f"
+  }
+}

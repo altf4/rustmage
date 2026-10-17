@@ -1,0 +1,11 @@
+{
+  "name": "Eerie Gravestone",
+  "catalogue_id": 1268,
+  "oracle_id": "cbf5bd0a-20ef-4dce-9f70-13339d438ff7",
+  "facts_sha256": "168a6cdae14c4893b651752d69992ba81741883be31039fdce455983a58e2d2d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c9602df4cf992ec0174358da989f41e5366715364a4f3ed482f8743453adf1db"
+  }
+}

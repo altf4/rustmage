@@ -1,0 +1,11 @@
+{
+  "name": "Shredder's Revenge",
+  "catalogue_id": 3849,
+  "oracle_id": "5dd31fcd-72db-4daf-b127-ceb27bf25a94",
+  "facts_sha256": "a920f569b5aa2a7ff215682ba895b83707684a3fc792ba6f79a1b1e90c068742",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "56ad83cad50524be790cf379676853479d5eaf75f140f4ef1dd98861d62f0e9f"
+  }
+}

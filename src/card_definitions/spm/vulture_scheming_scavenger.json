@@ -1,0 +1,11 @@
+{
+  "name": "Vulture, Scheming Scavenger",
+  "catalogue_id": 4950,
+  "oracle_id": "0409765a-bbb4-465e-99b3-3687bffc3cf9",
+  "facts_sha256": "87b3cc675f640881d423849ea592700c556992d6ba4a9e9be2c8a42c02c75803",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a28bdf08807ae0cdf7336a31313a17977d53c414a0134cc6d63329ba687020c1"
+  }
+}

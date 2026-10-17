@@ -1,0 +1,11 @@
+{
+  "name": "Tithing Blade // Consuming Sepulcher",
+  "catalogue_id": 4615,
+  "oracle_id": "883a4180-9ede-4249-a4b8-3a29c998fb63",
+  "facts_sha256": "0f6a672e1853d74ae61dc49be3c3ea4b8f87f86270d7d69021c48f24a544d21a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "adefe846877eefc56ccd85d1670295f829f01f16061e232fa4f3a3da3d472762"
+  }
+}

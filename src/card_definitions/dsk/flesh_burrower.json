@@ -1,0 +1,11 @@
+{
+  "name": "Flesh Burrower",
+  "catalogue_id": 1555,
+  "oracle_id": "04c4250e-014a-4067-80e8-4134069354f7",
+  "facts_sha256": "1f321f2ae963aa06c5f49aa662f7815dbae478b787cd0af1e4ce0fc9cb390c9e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2fd44a7e37a00c67dadf47dd5316ae6078d8b3bd195927f7ec59011cb287252d"
+  }
+}

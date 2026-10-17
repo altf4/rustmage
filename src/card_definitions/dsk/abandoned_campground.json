@@ -1,0 +1,11 @@
+{
+  "name": "Abandoned Campground",
+  "catalogue_id": 28,
+  "oracle_id": "0eec9984-cd11-4a52-9234-469c6a5fb9aa",
+  "facts_sha256": "cf369b92cd5a9cb5a5c4a130422f778074395093747efa18b19270384f636227",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "21c30f31f05361fd11d2c6a309783c817d7e518ced67ed089ea78988f3ba1c52"
+  }
+}

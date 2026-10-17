@@ -1,0 +1,11 @@
+{
+  "name": "Lasyd Prowler",
+  "catalogue_id": 2452,
+  "oracle_id": "f780d6f6-540b-4773-8a48-e56e95c2d39e",
+  "facts_sha256": "add910a179bf5eeb3e4e74199269d8b14c5995fafe04c349983144dec1299100",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ff9d62a169a5bd802343fa1ba102d4e257fc8f676da8818c9dd750b3aa3eb742"
+  }
+}

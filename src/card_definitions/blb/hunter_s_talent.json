@@ -1,0 +1,11 @@
+{
+  "name": "Hunter's Talent",
+  "catalogue_id": 2106,
+  "oracle_id": "a8a9b103-0cb8-4810-a2d7-42f6a10f80bd",
+  "facts_sha256": "e0b119804bd4df7b52510c80203cccefc4f53a193f116bdb4f0b9264af5b6c9a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8931923006551ef1f574b86480ecbb601e307bc74a6c8cb5e1d0a46c0883bd11"
+  }
+}

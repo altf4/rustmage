@@ -1,0 +1,11 @@
+{
+  "name": "Billowing Shriekmass",
+  "catalogue_id": 413,
+  "oracle_id": "ce45d6bd-74e3-401b-983d-028d3fb942da",
+  "facts_sha256": "f7bb110aed1c6c05287fa9af55bbf169649238a44078c042ecb070e04930c6d5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e52097eee4cfd2136573914421961125d7472b0c5558b6cfeb80601bf3ced491"
+  }
+}

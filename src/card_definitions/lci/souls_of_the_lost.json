@@ -1,0 +1,11 @@
+{
+  "name": "Souls of the Lost",
+  "catalogue_id": 3979,
+  "oracle_id": "c05d5a51-8e39-4475-9743-1adc60283c5a",
+  "facts_sha256": "53bbdc4a4c8509bee6c9b2e487b4d19c1779596de40b0f18af5211d2e0e11487",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2d648e2d09d2498803668e77b3bc489a72bd5fc65647f062f641a71c0b73073c"
+  }
+}

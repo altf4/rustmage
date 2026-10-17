@@ -1,0 +1,11 @@
+{
+  "name": "Mind Drill Assailant",
+  "catalogue_id": 2760,
+  "oracle_id": "3b10ab39-3050-475c-af8b-f293794d498c",
+  "facts_sha256": "b0816038d3f64ae3554d86001068cc9ff8a1da3457b212d544978187ad198e90",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3ffe5ba26dff7f6a02d4092c5cbe8b4550da9dba1dabcad3a9512a9c4a9beabf"
+  }
+}

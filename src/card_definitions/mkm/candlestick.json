@@ -1,0 +1,11 @@
+{
+  "name": "Candlestick",
+  "catalogue_id": 631,
+  "oracle_id": "2f7b46c1-3d82-4fd9-9882-589315cab47b",
+  "facts_sha256": "1efb353445e791ade7e0fb45d349a2e54b85523b4a9801dbd09df6a5e2cf7025",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d1d659af1d77930516568dae221113b0e2e45d60329ca0c8c1aae5c1d394e00a"
+  }
+}

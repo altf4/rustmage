@@ -1,0 +1,11 @@
+{
+  "name": "Jeong Jeong, the Deserter",
+  "catalogue_id": 2268,
+  "oracle_id": "2158c73d-421b-4c94-af06-dd89cb8d3126",
+  "facts_sha256": "c12920aa13039214d156e23e6dff14d71d0934f42f2f8c645af9911b80ad61b7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "038ad3d107d8e1587571fb8f1871a96706b14765697bceb86d0b8d618b595762"
+  }
+}

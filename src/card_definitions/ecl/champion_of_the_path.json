@@ -1,0 +1,11 @@
+{
+  "name": "Champion of the Path",
+  "catalogue_id": 708,
+  "oracle_id": "b326ccd5-8ad2-441c-9d73-82ee6390dd36",
+  "facts_sha256": "8a3e00601e6e45666b6e05fb1a5c7b355327bac22fc47c741c9f8bac9ef54cbd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1754a0d4a932d61a7e8908c3ac9c470378ed045c6cfe1dec67e71c256882dfc9"
+  }
+}

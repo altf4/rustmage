@@ -1,0 +1,11 @@
+{
+  "name": "Elvish Archivist",
+  "catalogue_id": 1300,
+  "oracle_id": "d7035db0-4bde-4ba3-9028-dd14191c8126",
+  "facts_sha256": "268732b242caf969561e927d202974ae47e479b2e169b1cb0a2fd65bd738048a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "636b0d6a0aef5ef39a94238fa827f42bc659b494ee2ccc147cf3bf705caae7d5"
+  }
+}

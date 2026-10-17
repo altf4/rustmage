@@ -1,0 +1,11 @@
+{
+  "name": "Lorehold, the Historian",
+  "catalogue_id": 2560,
+  "oracle_id": "61a41cf1-60cc-45ba-aa98-493c14e87d9d",
+  "facts_sha256": "d33350768b5ecb3cda236f58d66b6180c2a5a9c73fe4bc07069ae40ccc7f36b2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "430b20731b04122e348f27159d935fb1c658387600405230b3e8051bf952a9e3"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Taken by Nightmares",
+  "catalogue_id": 4324,
+  "oracle_id": "e5557c9f-e4c2-41af-9fcc-371409e1dec6",
+  "facts_sha256": "0fadfb7956c51b14a33e4190c5eb1f678e1344d722be1b1fe630c676655e3641",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e98c7c8f67e75023abfa95a750290f50f7577534967eac1104d4fdbcf0a18e06"
+  }
+}

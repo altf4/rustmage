@@ -1,0 +1,11 @@
+{
+  "name": "Ares, God of War",
+  "catalogue_id": 219,
+  "oracle_id": "8a09d4a2-4796-4a15-ab75-a3a0b717f62d",
+  "facts_sha256": "329424453f5ff1f2aeb167f157b3ae778ef4714e36bb2dbf4509ba0fe781b700",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d9ee258aebbe14fe952bbd262f0a08560471806396f3f57303a7926c7479c21f"
+  }
+}

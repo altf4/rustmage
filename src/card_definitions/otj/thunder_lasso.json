@@ -1,0 +1,11 @@
+{
+  "name": "Thunder Lasso",
+  "catalogue_id": 4578,
+  "oracle_id": "d98cc18b-6ebb-4f55-9d0d-b8fbe9a92bc1",
+  "facts_sha256": "0eff016c76432759d97b0d467bbaecb4345209d1fcdb802a49a33c72e5cd958f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a478145ebc6e2a2413068b1a1eb465a7f0c3b050419054017df782df34c78bd6"
+  }
+}

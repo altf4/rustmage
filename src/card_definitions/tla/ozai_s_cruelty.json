@@ -1,0 +1,11 @@
+{
+  "name": "Ozai's Cruelty",
+  "catalogue_id": 3083,
+  "oracle_id": "aba5c046-2f8c-4749-b347-9a7d8cb1c865",
+  "facts_sha256": "b59932346cb5db7628e2ff4a54e037caaf72a48d619947a2cd2f342feb962831",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a35cd73f8ba50664edc56c0cd82a7e8172484781a83f7258495a571b88d96e7e"
+  }
+}

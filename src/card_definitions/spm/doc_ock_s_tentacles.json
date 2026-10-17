@@ -1,0 +1,11 @@
+{
+  "name": "Doc Ock's Tentacles",
+  "catalogue_id": 1115,
+  "oracle_id": "a5a18764-eb29-4bd8-a2e9-0ce55f4f6c88",
+  "facts_sha256": "feb052953331eaa1b61211b76980e2f59f7d96cb2892467e68d38b035c33dc19",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e505d080ae17bdc8c8e63ab1848e29c161f7b1c0ee95cc2273517f01be200ea3"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Three Tree Mascot",
+  "catalogue_id": 4568,
+  "oracle_id": "6cb9d153-4eaa-4f32-8930-bd68cd99c128",
+  "facts_sha256": "66a02ed46c9d5b5a0f3610a25a245e28a789d5251b557c18f3ebd62d10edd909",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "21b83242844d70685f2a84fee085cfa13041943e25ffce9b4637883aff09f4f4"
+  }
+}

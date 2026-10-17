@@ -1,0 +1,11 @@
+{
+  "name": "Bandit's Talent",
+  "catalogue_id": 319,
+  "oracle_id": "bcbe879a-4609-4493-bd7d-47c26d27e83c",
+  "facts_sha256": "0bd62dad875e2aa4b82806a2e9de015bf5336d15ba6bf734c00d0597c3b9d093",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "81724d9dbcc0f380125c0b527ffc23ede8a2cc87bffac2f9c73f032eb97e2c4c"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Devoted Duelist",
+  "catalogue_id": 1064,
+  "oracle_id": "f7620c46-b3d8-4694-ac7c-a43933c86c22",
+  "facts_sha256": "5abe13498f7eced5d3802f7cfd4c4a028d28506ddd99d298b326dd3e2e25acae",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c56b6c8ae611b46ff9c6fbfa9dd248130bceb91dd6636530cfc2f4dc6e0a7a36"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Intimidation Campaign",
+  "catalogue_id": 2198,
+  "oracle_id": "5915039b-3dbd-4a49-8bd3-23ff0fd9c90a",
+  "facts_sha256": "25cad225cfe57edf10c88c9cacc9640448eb3f73c52c847d33c83b6b49311c6c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "74164c98bd7c878100a7c482aefa92c5d8e477b9450debd6fb871bbefd9975b2"
+  }
+}

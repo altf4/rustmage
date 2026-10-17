@@ -1,0 +1,11 @@
+{
+  "name": "Whiplash, Vengeful Engineer",
+  "catalogue_id": 5038,
+  "oracle_id": "00ed7aca-b3c1-4d48-acd5-b1596daeb4c3",
+  "facts_sha256": "de6b32c7a897c7d86fe63f43336cec59693e3e34748cba94a1bf2ee3e71b4f29",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6ddb5974cfa937a0b452cdb07c1e85da61cd903d91f73d644f2eb24cc32bcbca"
+  }
+}

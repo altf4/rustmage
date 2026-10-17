@@ -1,0 +1,11 @@
+{
+  "name": "Earth Rumble",
+  "catalogue_id": 1237,
+  "oracle_id": "f04a7763-5fba-42e5-a45a-b3dc2daba902",
+  "facts_sha256": "2a35ca4139e6e3067febf466ab7079491daf86188115727c2843c617b559a962",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4fd838f13aa167a49beb2db41b0736da13349f630381c624131bbff3ec9f8a0b"
+  }
+}

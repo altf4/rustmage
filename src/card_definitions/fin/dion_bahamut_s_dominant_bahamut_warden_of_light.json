@@ -1,0 +1,11 @@
+{
+  "name": "Dion, Bahamut's Dominant // Bahamut, Warden of Light",
+  "catalogue_id": 1083,
+  "oracle_id": "4a0cc2a2-3711-473a-b2c5-b1e52b34e4fb",
+  "facts_sha256": "1a2954b32b5e442734df593a779d76645fce8daf6fc6505b8294293c6a1feab6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "86ec872a046a920c68bd7b544d5868c5135a71e8afad869d0e89103d90e47f5b"
+  }
+}

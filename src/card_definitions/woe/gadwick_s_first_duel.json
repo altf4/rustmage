@@ -1,0 +1,11 @@
+{
+  "name": "Gadwick's First Duel",
+  "catalogue_id": 1660,
+  "oracle_id": "322e3bc1-2dfa-4d5f-848f-a82d9ce02a67",
+  "facts_sha256": "94bab5a82d8b9ef21dade69984ce3586cedee8c55d1575f7d7cfcf19990fef03",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "06450610cc72170808203bcb864f7539c6a1d48c520f3e0a0b5f3a3700b46876"
+  }
+}

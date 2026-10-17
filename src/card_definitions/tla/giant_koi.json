@@ -1,0 +1,11 @@
+{
+  "name": "Giant Koi",
+  "catalogue_id": 1739,
+  "oracle_id": "c93bb65a-a74a-499b-a538-65272079aab8",
+  "facts_sha256": "9052c9ba32bd378a0adb09ffbccf5a38bdb43e16c33887918d19f29b5858c5be",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "31e41d2cb772f70b52a07252d8da1c35a52c1f148deb5cd3a9882de97f634e4c"
+  }
+}

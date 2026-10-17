@@ -1,0 +1,11 @@
+{
+  "name": "Colossus of the Blood Age",
+  "catalogue_id": 804,
+  "oracle_id": "0788fdd2-6fab-460c-b054-a736df670f96",
+  "facts_sha256": "ba3678f9901c51486eb0045516d893d44da9e9ebfc2d46076aa14731b87793c7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "33740ca0c80a7c7cc2b15bba80d6944959dbe460d80f660dd10b98fc17e95f3f"
+  }
+}

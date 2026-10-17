@@ -1,0 +1,11 @@
+{
+  "name": "Eriette's Whisper",
+  "catalogue_id": 1358,
+  "oracle_id": "27ca3201-a374-4a9d-b0ba-93b391f36844",
+  "facts_sha256": "f77e468317971d3ae1a1298b29be19816e5e0e59d896c1f2039bd1b0f82507f1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "84d3dd8b76cbad05008dee2fa5cc334c106384072446980a36ccb2e977d3d5be"
+  }
+}

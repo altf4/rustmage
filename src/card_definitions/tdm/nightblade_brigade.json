@@ -1,0 +1,11 @@
+{
+  "name": "Nightblade Brigade",
+  "catalogue_id": 2936,
+  "oracle_id": "36d04190-7ce3-431a-b18e-3a1895ec6fc7",
+  "facts_sha256": "77aeaf649373d38735175e0054703fe58dca5cca7461d43a6f0bb5995d4f7dc1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "810c84a496d795dac0a4de888d7e077a8485d2273bde37b61b28a9c75997ef1e"
+  }
+}

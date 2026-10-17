@@ -1,0 +1,11 @@
+{
+  "name": "Relive the Past",
+  "catalogue_id": 3452,
+  "oracle_id": "dcc51bcb-a61e-471f-8a01-7fcbc069fcba",
+  "facts_sha256": "84d6c6a7d02b88365456ea8302e9837000c51d5464b2ca246a50dedbae6d5a23",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "87c57d2fb13e1e0e502ab7572787a171523c7b8e4877b18fc0908156d2eb0b1e"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Tinybones, Pocket Nuisance",
+  "catalogue_id": 4608,
+  "oracle_id": "97dcf9fb-3f2f-4aa6-959a-e3c4889c1673",
+  "facts_sha256": "48fe1073f754acf2d1572bc9f3a68eed12b0917da89cd03fbb27b64bec056669",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f9e993a71bb37dd7b3daef3e52072617ad408eefa44856bf25b475aa57cb328e"
+  }
+}

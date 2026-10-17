@@ -1,0 +1,11 @@
+{
+  "name": "Solstice Revelations",
+  "catalogue_id": 3961,
+  "oracle_id": "310c1280-dee8-426f-8440-6132a634a1e0",
+  "facts_sha256": "66cbdd7da61b6af2920ed2cc61de9cda7dd70e7a92bd5d242d9e183d47adcee8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c460ef66e16bea4dbbcce3465c056673a9c25f95412428d68cd0eabc15900b5c"
+  }
+}

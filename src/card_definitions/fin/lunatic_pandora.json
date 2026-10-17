@@ -1,0 +1,11 @@
+{
+  "name": "Lunatic Pandora",
+  "catalogue_id": 2584,
+  "oracle_id": "34c65c7f-33ab-4f91-84ce-d0c8f4fc5832",
+  "facts_sha256": "10ff35a305ba822f020ad3d8b27e3a501e528e1031766b2bc3191576d57c7b46",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "86ce312c337aab9ca6f44215bd056e77870452d82c9cdbc333e3e0933fa142b3"
+  }
+}

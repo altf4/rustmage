@@ -1,0 +1,11 @@
+{
+  "name": "Hidden Volcano",
+  "catalogue_id": 2031,
+  "oracle_id": "a1c7cd7a-0795-4135-b787-effeb981d95b",
+  "facts_sha256": "36186670556122a8f832ea26699e67570f5c8d0096410790a161dc2c734ef9e5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "278fdd6e759c44b4287beb5a412e322bc13f1ff23f9dd3247d97e9069f5a77d3"
+  }
+}

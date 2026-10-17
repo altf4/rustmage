@@ -1,0 +1,11 @@
+{
+  "name": "Don & Leo, Problem Solvers",
+  "catalogue_id": 1124,
+  "oracle_id": "a4ae71c8-ea1b-4fa4-9e47-cf00ab60c5ee",
+  "facts_sha256": "0b7f117139410056eb01f868c494c46bfed8f23a0d34517d68dd5b4ef29dad24",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "772dba54e54a7c444fe1875477ce57311b4da743e9f0701ed98786ae11380874"
+  }
+}

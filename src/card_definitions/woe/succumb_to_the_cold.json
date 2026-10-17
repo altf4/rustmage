@@ -1,0 +1,11 @@
+{
+  "name": "Succumb to the Cold",
+  "catalogue_id": 4201,
+  "oracle_id": "73992788-8084-459c-8375-9ccc8579c5d7",
+  "facts_sha256": "8581cc4820eb42b051fedd815125a484662da5ab6a0d413875946d9f73b84a1b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fc4e6e907ab9557beec26948f5581838cc79adca311612ea4608566cd5f02afd"
+  }
+}

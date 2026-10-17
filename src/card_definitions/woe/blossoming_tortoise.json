@@ -1,0 +1,11 @@
+{
+  "name": "Blossoming Tortoise",
+  "catalogue_id": 473,
+  "oracle_id": "5e1bf23b-7fb0-45ff-8544-fce9fa3eba00",
+  "facts_sha256": "64c358d03a74719e271456e741963698655ae61fcd25f60c5671a4717a5fbb16",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4c0d1c9ab0c32afd505f4691806cc7400c13fe98570abb2ec41ddac6ee0dc189"
+  }
+}

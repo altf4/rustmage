@@ -1,0 +1,11 @@
+{
+  "name": "Morcant's Loyalist",
+  "catalogue_id": 2852,
+  "oracle_id": "b2c30683-cc7f-4341-add1-b08cb9b93eeb",
+  "facts_sha256": "81a0c8e843366b883d1b23b5ec3990baaa6a07b257b1f1a1e3c54666b891acfe",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b126b9440dc9816a3ba32bf2201ad34cbd35eaade3a3bdbf346017b7ec990a32"
+  }
+}

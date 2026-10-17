@@ -1,0 +1,11 @@
+{
+  "name": "Postmortem Professor",
+  "catalogue_id": 3209,
+  "oracle_id": "0859d16e-2a1f-4b48-8687-99af8a8bdb38",
+  "facts_sha256": "22872dec73d3ff39988e4ebc8fb317a1a9e02de2a018fffd2129943a36f8cda5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "30a6756a3f52cdd5c3cbee200c97a1f18d87c8c781e004f1f6bb6cd6a5b053f3"
+  }
+}

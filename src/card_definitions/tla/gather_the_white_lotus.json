@@ -1,0 +1,11 @@
+{
+  "name": "Gather the White Lotus",
+  "catalogue_id": 1697,
+  "oracle_id": "db69c3c9-d809-4361-8055-8c2dd4c6dd67",
+  "facts_sha256": "8060e406987784aa3cc9e0f20a2cf203510bbf5c5f6d095da2f59cf9ca520e30",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "551c20db141c060ee50608f562b7ad126b4fa47508288ebf3a3befc6d8237438"
+  }
+}

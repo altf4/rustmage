@@ -1,0 +1,11 @@
+{
+  "name": "Ether",
+  "catalogue_id": 1380,
+  "oracle_id": "566533af-5e67-463f-ac33-dfcf1ec735c9",
+  "facts_sha256": "21bb6dc5b38b9bb62edf2dfa75734d44d97ad4f689007ef5d4f512e43e2be6d1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b1727d245bf26602c94898aac77688a43df0492cf931c970706bd693b578f3f8"
+  }
+}

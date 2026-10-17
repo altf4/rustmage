@@ -1,0 +1,11 @@
+{
+  "name": "Stiltzkin, Moogle Merchant",
+  "catalogue_id": 4138,
+  "oracle_id": "958c2a27-9fb1-42b4-a0ef-296584763a98",
+  "facts_sha256": "5cdc89045202f2bdc0998d3bca4e01f76d4cb4e06b666a51f9a9dbe5e73d87cb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1f6a1a94f1f6f7864368c41e63f107af7fc8deb9823cb7bf76d97792bb24c1d6"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Rabaroo Troop",
+  "catalogue_id": 3325,
+  "oracle_id": "48252207-d345-455c-b655-c2027664e6a6",
+  "facts_sha256": "f9de0e75381ddf9c7b1ddc75e491944a2d81a882e37222f3aba0cc2e36245e6e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5e17915709437b4ccb78b7b5562590db1b269ba3860aa516df62490e32522108"
+  }
+}

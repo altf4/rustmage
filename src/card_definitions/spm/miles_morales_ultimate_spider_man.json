@@ -1,0 +1,11 @@
+{
+  "name": "Miles Morales // Ultimate Spider-Man",
+  "catalogue_id": 2758,
+  "oracle_id": "be48c721-bdc6-4f2c-96d6-82d934b31615",
+  "facts_sha256": "f1f7061de6e34f340725ed8ac84d587440932d244cfeacb94dd4dd588cc861dc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6ac108a5bd8e5ae4ee1da9cba39580c266e4794cb1ee6afd9e346e2225ec0796"
+  }
+}

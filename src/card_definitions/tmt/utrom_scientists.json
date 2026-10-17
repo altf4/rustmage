@@ -1,0 +1,11 @@
+{
+  "name": "Utrom Scientists",
+  "catalogue_id": 4820,
+  "oracle_id": "89793c8c-98a3-4621-ad3d-cfc5949c65da",
+  "facts_sha256": "ddf50de758c8f395b11a37223f7a03cdbfa5db936e4116879c7cded9a3ec3dd7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "045643f2d0981a55322cac749b3c6c7739bf06c475bc9145807af2c79c0887e1"
+  }
+}

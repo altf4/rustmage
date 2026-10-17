@@ -1,0 +1,11 @@
+{
+  "name": "Get Lost",
+  "catalogue_id": 1718,
+  "oracle_id": "522dd417-364b-44ab-8ca9-fb55db5f26a6",
+  "facts_sha256": "e8ea3d49f105e8fe392b04ba7cb12923169538b88b85888653c94c4cf86a7a64",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "943b81ecb41dcd12f365b4b5d04ec06d3b3379a379ba21b23f6b35b6d500e305"
+  }
+}

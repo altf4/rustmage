@@ -1,0 +1,11 @@
+{
+  "name": "Rig for War",
+  "catalogue_id": 3523,
+  "oracle_id": "05bbd557-e2c0-4855-8fe6-00527fa39878",
+  "facts_sha256": "7b06841bacd8342d42e859eb624f9ed60462db30379da9825125779af1d2d9f1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "02181a450fcb5ef03ff5e80e9027ff6247054b86c66d20fb7afe0285c590962f"
+  }
+}

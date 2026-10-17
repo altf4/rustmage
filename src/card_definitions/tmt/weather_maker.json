@@ -1,0 +1,11 @@
+{
+  "name": "Weather Maker",
+  "catalogue_id": 5023,
+  "oracle_id": "4097fea2-ae34-4b99-ab7e-a276d608b489",
+  "facts_sha256": "99b5f08cd9c1f0f63cae3c83dc2a0ac1890a7fd2fd5d36821c30a36cf4cd1212",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a255f4ef0016af28527f2a4fd6cda2374bb5c0252202c5d5f9962283352c9c7d"
+  }
+}

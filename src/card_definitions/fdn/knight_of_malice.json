@@ -1,0 +1,11 @@
+{
+  "name": "Knight of Malice",
+  "catalogue_id": 2386,
+  "oracle_id": "b89d912a-65a0-4bc9-9e1d-ff8317458a72",
+  "facts_sha256": "92a02c9924d17da414d25e900f5c879deb1c2ba4980bca73fa6ebe21fb82ce4c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "152b86bfad2af04df49bcd7b45c6dd22726e8de4a50b91c64100d8d130e13456"
+  }
+}

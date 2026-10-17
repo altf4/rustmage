@@ -1,0 +1,11 @@
+{
+  "name": "Avengers: Under Siege",
+  "catalogue_id": 286,
+  "oracle_id": "d911cf65-7273-4162-a766-7d4107699dc2",
+  "facts_sha256": "ddfb4b7ffbb58cdd956f8c9b7d47572f2737a298ce4ceee42e75bbc256664a67",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "38c8d51193ae33e45f459e6c98466b061fea8bbe31ff95b924c06cc8e63852b8"
+  }
+}

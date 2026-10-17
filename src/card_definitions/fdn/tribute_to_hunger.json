@@ -1,0 +1,11 @@
+{
+  "name": "Tribute to Hunger",
+  "catalogue_id": 4679,
+  "oracle_id": "dc5a501c-e16c-4d4b-a510-70a14272473e",
+  "facts_sha256": "aaf4df7fb786fc03fc8a3d7aff92e4715c33f51064b9c71667a09c5b0bede237",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "82b67f856d8e02837d21041f0cb27a9e6c945b22e6372af31e0f9d26ee810388"
+  }
+}

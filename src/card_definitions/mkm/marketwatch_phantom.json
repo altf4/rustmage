@@ -1,0 +1,11 @@
+{
+  "name": "Marketwatch Phantom",
+  "catalogue_id": 2668,
+  "oracle_id": "6b0d4192-bc76-4ef1-92b2-b5fca81970bd",
+  "facts_sha256": "01ba8b8259c12a7aba5aa182c948caa78022e6a93dca78527bdbc5d668f4eae1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8e2affaeee9782939e0cd87436515af3c9cff8fb9ca0ead9e8033c5f69e4877d"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Magnifying Glass",
+  "catalogue_id": 2627,
+  "oracle_id": "f2ce9e55-07c0-4f36-a59e-127693fc0f62",
+  "facts_sha256": "bbec9947138a118f7f6037fc766f1a6d36ffd693686164c1abfd8227034a4aba",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6e287c7a42232245a60314490b611045e414f129157571fa013ccc6e57582546"
+  }
+}

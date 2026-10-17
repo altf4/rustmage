@@ -1,0 +1,11 @@
+{
+  "name": "Sunshot Militia",
+  "catalogue_id": 4246,
+  "oracle_id": "19afaf35-b420-49e0-bddf-3180bf1dc30f",
+  "facts_sha256": "de5a8bb7725534ecf40b1bb16ab2aa3a80d3ed2b3079be5c9f0b5267d45dd4a6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "85e9035629ad98f3d62925d7b7d319af5a195475a40650c1f2612d3279062580"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Goblin Surprise",
+  "catalogue_id": 1809,
+  "oracle_id": "79cd09e8-d738-47c0-9473-b6281bec6935",
+  "facts_sha256": "1eec7b07bc37e2b9cd50df03c14c4a4834bec57637713038a10cfabdd2b5927b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "21390b8c771e0c6b4997df43e850bb89f1761c5454d56fd353289259df04fcf1"
+  }
+}

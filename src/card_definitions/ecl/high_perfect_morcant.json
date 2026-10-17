@@ -1,0 +1,11 @@
+{
+  "name": "High Perfect Morcant",
+  "catalogue_id": 2038,
+  "oracle_id": "dd27c5fa-4355-4e5c-8219-b74cfe209da0",
+  "facts_sha256": "419803a690e338aec0c78e20a0a83eea865987627209b526d1c1eada43a0d8ee",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "49a0f26e9a53e412907398505d59f3275ef125a6d1e29d16270a51b9da301d20"
+  }
+}

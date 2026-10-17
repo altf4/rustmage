@@ -1,0 +1,11 @@
+{
+  "name": "Akul the Unrepentant",
+  "catalogue_id": 120,
+  "oracle_id": "d6b56d6d-e2f6-47f5-a9d1-cd0e17f94a0d",
+  "facts_sha256": "4164091491259b345209116f85858da4e425d5028248292070c45cb1e6b00802",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a858fd44093e847eaad967d35369fcc5d252f4c365ac1f944612bf914ee3f151"
+  }
+}

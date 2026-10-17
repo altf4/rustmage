@@ -1,0 +1,11 @@
+{
+  "name": "Dwarven Mauler",
+  "catalogue_id": 1215,
+  "oracle_id": "70538676-2ffb-4cad-827e-b55e81088678",
+  "facts_sha256": "04f693609a04245ba2ab760b95b9027e8303d18de078065c01c8844748f97724",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5cb63867f3520f7074797402511831de1ee619042bf2eb055302e9f485f7f69b"
+  }
+}

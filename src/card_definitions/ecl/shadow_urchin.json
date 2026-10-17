@@ -1,0 +1,11 @@
+{
+  "name": "Shadow Urchin",
+  "catalogue_id": 3805,
+  "oracle_id": "86bd332f-ba61-49a4-ad31-de4d7e3638c6",
+  "facts_sha256": "153180216293ddfbbf62a413a2c5ec3743a0a31027acce73356f2752ac2d1322",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "62f09f1c7f318029b9bb611897799c116733f1ca4ddbc91a786c04741d306146"
+  }
+}

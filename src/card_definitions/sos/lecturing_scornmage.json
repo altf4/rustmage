@@ -1,0 +1,11 @@
+{
+  "name": "Lecturing Scornmage",
+  "catalogue_id": 2467,
+  "oracle_id": "29c23fd7-0ac4-46af-8ecd-92b726575252",
+  "facts_sha256": "dff977f5bfe084a95ef0556b63d82eb05a60b927f40843aee6ceeee4558f385e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8d2b310f14f601c8d579d9567ae5f7a00046b3d568ca12b1850de60b7fb35255"
+  }
+}

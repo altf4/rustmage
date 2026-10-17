@@ -1,0 +1,11 @@
+{
+  "name": "Funeral Room // Awakening Hall",
+  "catalogue_id": 1649,
+  "oracle_id": "a39d541e-86c1-4595-a2e9-f107def5bbc6",
+  "facts_sha256": "203257b110e7f17a416febe0c065768f8270495a4f46ef3801b56d9cfa1c8968",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3066ef98328cf5025dd94a6fcb7b0d199388e436cd50f019c1072cc806608476"
+  }
+}

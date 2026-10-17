@@ -1,0 +1,11 @@
+{
+  "name": "Two-Headed Hunter",
+  "catalogue_id": 4731,
+  "oracle_id": "0f222f3d-f02b-42b9-aedf-fb7ed92d4889",
+  "facts_sha256": "c085a96d9160b49348ae497aa3d9a074d6daf1400b8841c568c1cf49e296aa53",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "31a90d1f1d66f896aa9fb8bfdd838520db35366f601f8ccf3abe1a23defcab5a"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Burning Curiosity",
+  "catalogue_id": 592,
+  "oracle_id": "7f420633-901d-47f9-ae0f-0f5b0ea8359c",
+  "facts_sha256": "4266bd28f2640dc72831791a628a62ac307c53d6deb738dafc32e28690f7d9fc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dc0a3239e04c3c3103f759640d07681f48836f91c2dc501dd4eb6b9d7db360d8"
+  }
+}

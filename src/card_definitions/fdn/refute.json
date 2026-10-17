@@ -1,0 +1,11 @@
+{
+  "name": "Refute",
+  "catalogue_id": 3442,
+  "oracle_id": "eb1dfa29-7371-4cb6-bfa2-16f7820b69be",
+  "facts_sha256": "bc870800d727c484f38d06c57c47c34b0c2cdd6448d263de24ccba5459ba087e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c3a53300a6171abff40139378507bdaf8587082f5eeb6bb960963236523895f8"
+  }
+}

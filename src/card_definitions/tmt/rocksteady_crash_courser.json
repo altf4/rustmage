@@ -1,0 +1,11 @@
+{
+  "name": "Rocksteady, Crash Courser",
+  "catalogue_id": 3572,
+  "oracle_id": "f9330a7b-8a65-4e04-a777-bf6512332850",
+  "facts_sha256": "742b9e4eb64558b15290a23f6bf81d57a456936e6e43cea307dac221194ac0ae",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "55d6d74686012df42d363943279b429327812fb6fc2aa0d34ce0b13440a32dae"
+  }
+}

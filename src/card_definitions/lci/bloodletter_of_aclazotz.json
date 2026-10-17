@@ -1,0 +1,11 @@
+{
+  "name": "Bloodletter of Aclazotz",
+  "catalogue_id": 457,
+  "oracle_id": "469956a2-7cd4-4695-b8f4-c841526f160d",
+  "facts_sha256": "a8a3157cf4d26653bb59eaaf6f79cea9e0c24dd51ba3352e04519b996f2853dc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "539ff82bda922bf898198f46537545ccaff30bfeaeeb91788f963fe9522c2c32"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Smaug, the Great Calamity",
+  "catalogue_id": 3936,
+  "oracle_id": "fc75cfec-e1f6-4cb5-8a3c-2f7b2c39c03f",
+  "facts_sha256": "d69d75f5b443f163289f0a8e19002a991b8a818a02daa0dd2da0fceb1a0ec66a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0f892b40706ba9e81522c77297daf68ab00885c98ffae4694dfb38f42d9ffdd8"
+  }
+}

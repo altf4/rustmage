@@ -1,0 +1,11 @@
+{
+  "name": "The Wondrous Wasp",
+  "catalogue_id": 4520,
+  "oracle_id": "5ad8963b-8091-4787-9147-20a1fe7bf0fb",
+  "facts_sha256": "2dde2fe81e0f3b894439f4c041cbce943b1e753540ac166e1a859c52e8d47915",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9a6c572d087802fda42a908d8ced8058a794b0a41454cc86fe7005009dda083e"
+  }
+}

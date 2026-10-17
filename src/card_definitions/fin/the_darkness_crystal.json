@@ -1,0 +1,11 @@
+{
+  "name": "The Darkness Crystal",
+  "catalogue_id": 4432,
+  "oracle_id": "660f370a-b25b-4ea5-b765-7abf96899c1c",
+  "facts_sha256": "76606c9541758a224da343c8bc58e526b9c96706ec0e3426d66795667548e50a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "17a6cc8907db1c84c5b01cc45b5acfafcba077db523b5c2cfe7f830acdf4dc26"
+  }
+}

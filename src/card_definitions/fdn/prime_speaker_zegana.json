@@ -1,0 +1,11 @@
+{
+  "name": "Prime Speaker Zegana",
+  "catalogue_id": 3234,
+  "oracle_id": "311e9368-696a-47e7-aa2f-3ef1b1a92e2b",
+  "facts_sha256": "467863150090099cbcc297525345de768daa87d93cb47f17df1998f8193edafc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "87507848024b70e2b33ab2e08b808a0fc33db0a87f10ffd1ca7267ae2e2946bd"
+  }
+}

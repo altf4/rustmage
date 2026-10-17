@@ -1,0 +1,11 @@
+{
+  "name": "Withering Torment",
+  "catalogue_id": 5101,
+  "oracle_id": "ffce81c5-1b58-4882-a4e7-6f8d7cb170de",
+  "facts_sha256": "db9142539a00147406f9435715f0a081a476c09c0e6fc031b08d1b35e968d762",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1f97fd91b45170b3edfebc065e96f5d51947a231894b30f2f6c168dca182076d"
+  }
+}

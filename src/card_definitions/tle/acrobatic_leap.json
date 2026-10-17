@@ -1,0 +1,11 @@
+{
+  "name": "Acrobatic Leap",
+  "catalogue_id": 51,
+  "oracle_id": "1347224f-421e-4270-8e50-cf25c875909c",
+  "facts_sha256": "ba148f330994131cef544d6269b4f6cf9b923ede74547b42c978a5bc39ba2f41",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a6991c7d0e571ef5f3f161bc71ce38d302f0f1857b35ec60829a59854110f3c0"
+  }
+}

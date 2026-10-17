@@ -1,0 +1,11 @@
+{
+  "name": "Master of Barbs",
+  "catalogue_id": 2681,
+  "oracle_id": "e8c36337-135c-460d-a1da-cc01743dda71",
+  "facts_sha256": "0d2d19346b044aad923785c3af0d10447aca818957a65e6e8f10bf41b8dc4318",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bf8dcc09bb10dd0416f353155e45dbe6be2f3ae3e6439af6fa779a6af7037d6b"
+  }
+}

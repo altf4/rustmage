@@ -1,0 +1,11 @@
+{
+  "name": "Luke Cage, Power Man",
+  "catalogue_id": 2574,
+  "oracle_id": "c95d1558-09a4-4dbc-b08a-fe21b47bc5d2",
+  "facts_sha256": "713e2043e78d8878ed321a1726edd0a2647b6b3b75cb3b743d19497e8e70c405",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bbb4048823aa1d2b114a1159a1d9cb8ef27921b479498880a53ac05dfa3b065a"
+  }
+}

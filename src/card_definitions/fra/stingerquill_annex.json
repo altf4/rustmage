@@ -1,0 +1,11 @@
+{
+  "name": "Stingerquill Annex",
+  "catalogue_id": 4144,
+  "oracle_id": "26e20ae5-4059-4d63-9db5-6e12421d1aba",
+  "facts_sha256": "039a83cfb588bfae43ea70211bdfb4921e0cc7c75ee8e997427359a0c44b604d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "08b3472890a3cd9f69bb9094a70c2fe796ec685139b7feb6392024c9c1137a14"
+  }
+}

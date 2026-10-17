@@ -1,0 +1,11 @@
+{
+  "name": "Elenda, Saint of Dusk",
+  "catalogue_id": 1285,
+  "oracle_id": "bfd614d5-4c7f-416b-9cb2-bb167c0893a0",
+  "facts_sha256": "057a5a5083c3f2889d8032b58a1e4a7488b97f264f50ccdc9acaa109a2104d2b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "65db8db3f62090c8605f8a5e139b59206a81975abf3c9dcecaf9f506b8442918"
+  }
+}

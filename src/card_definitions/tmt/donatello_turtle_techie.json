@@ -1,0 +1,11 @@
+{
+  "name": "Donatello, Turtle Techie",
+  "catalogue_id": 1130,
+  "oracle_id": "f84850bc-6348-449e-bd82-bb39e2119bec",
+  "facts_sha256": "bbb00925a5678c92cb2e51ea211cd6c40eb06f55f8ac7ebeca45ce042835bcf7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a6829125d524be8518370994b34bab265c4b60cb591945e6aadc99cd57d43c16"
+  }
+}

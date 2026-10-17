@@ -1,0 +1,11 @@
+{
+  "name": "Bitter Chill",
+  "catalogue_id": 425,
+  "oracle_id": "be0dcad2-8e84-4e9f-b69c-837b40b8fb83",
+  "facts_sha256": "7190d1c979cc0bf29c5e65c65047c6ccc7fa380ca5be407b4ee40ef82cf8936b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1ecaa6e00d9d97dae6007da3e4a11daf55e1c5c59fae251f132b81d052ee1df2"
+  }
+}

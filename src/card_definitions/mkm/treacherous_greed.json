@@ -1,0 +1,11 @@
+{
+  "name": "Treacherous Greed",
+  "catalogue_id": 4669,
+  "oracle_id": "5483f787-7aca-4efe-a39a-ea29f8c07f0d",
+  "facts_sha256": "0945851bce4763545efb74a728d3c8749024d69563a3fcd5a23e1bdfd1e9e248",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1e409f968a300bbc81443db2815069ff7e237ddf36107b47088aeb8bc8048128"
+  }
+}

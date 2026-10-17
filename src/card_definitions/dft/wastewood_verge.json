@@ -1,0 +1,11 @@
+{
+  "name": "Wastewood Verge",
+  "catalogue_id": 4992,
+  "oracle_id": "c6e0574c-3e2b-4c40-b17a-05bce3d49309",
+  "facts_sha256": "3c1f05b1073c467a0149817c08bda12fce59f93c884765032a60894da1a0ad19",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c24d57ef6496d4e658e5594e93365d2f4c901ab30f6325a4ede7181aadb13192"
+  }
+}

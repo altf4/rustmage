@@ -1,0 +1,11 @@
+{
+  "name": "Heartflame Duelist // Heartflame Slash",
+  "catalogue_id": 1979,
+  "oracle_id": "3ca07da2-29a1-40ce-a7f3-4838e95ca1d9",
+  "facts_sha256": "45d95419d4b5e017f27a7c6d3e89f380b6599563c01cac9252a8edb3a859a19e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "33c1688a2ae73edd37f0d66ac492c781a85574931fcf3b818e608924ed29add3"
+  }
+}

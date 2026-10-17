@@ -1,0 +1,11 @@
+{
+  "name": "Madame Null, Power Broker",
+  "catalogue_id": 2608,
+  "oracle_id": "73413bd5-8c40-4d45-8f05-c20c39ee4017",
+  "facts_sha256": "175a666c07b81b85469d08b83a9936a450b2ac7d7f31cdfdf27ff30ebac88cfe",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f24e015d1a79806787a033550b6e0c64f08b0d5a3b5d7983affd9c26148b183d"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Kellan, the Kid",
+  "catalogue_id": 2343,
+  "oracle_id": "afacc200-16ff-40f3-9d43-268438131d24",
+  "facts_sha256": "76d54f20b448e3edfd9f5b2292d1dbe0353bff18661eeb7ac2e6391c8d764059",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "900f725ec59f92b8ec9717fcdc23b51c2d106d290675182fe85a085409391e57"
+  }
+}

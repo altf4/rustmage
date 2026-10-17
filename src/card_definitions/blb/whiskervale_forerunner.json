@@ -1,0 +1,11 @@
+{
+  "name": "Whiskervale Forerunner",
+  "catalogue_id": 5041,
+  "oracle_id": "861e427f-cbb4-4ed5-8356-747ac638ac34",
+  "facts_sha256": "e8e3c108ba649c2851476cc8811a2d08ac86ab0bb8c44ce40315348ee1f0b886",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4f2a406a55129aa40a96b004f8dafa7e8e4cb1aa5ddb9f7ea7f05632633ec617"
+  }
+}

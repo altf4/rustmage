@@ -1,0 +1,11 @@
+{
+  "name": "Run Away Together",
+  "catalogue_id": 3617,
+  "oracle_id": "290faa28-450e-4797-9a8f-642d8af3f82a",
+  "facts_sha256": "0aa9f746940b62ebe58e319e330a89b40f205c066cd6459049152164b3cfb189",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "946001183e98e867fb7a17acebfe6958991e58e02310038baf0727efc587bd62"
+  }
+}

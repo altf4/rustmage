@@ -1,0 +1,11 @@
+{
+  "name": "Scalding Viper",
+  "catalogue_id": 3707,
+  "oracle_id": "12c71296-1243-49e6-a196-8b016a7b635c",
+  "facts_sha256": "bd742c1cac407d3c3497c79984d203b4b12dccf5a4f5f88048b016f0b3557788",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b536c91f36793ce35ee8c3498b1ed95f277e118e8d90fa424cc564998756087b"
+  }
+}

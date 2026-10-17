@@ -1,0 +1,11 @@
+{
+  "name": "Go Ninja Go",
+  "catalogue_id": 1798,
+  "oracle_id": "46f77c8c-6817-4aea-a80a-d91f508ccbd0",
+  "facts_sha256": "af8c626471ff7044f0363383858bcb0b9c85cc6906a05ef9cf36874ccd87eed8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "909b49a02a2a33c517aae322df189cc28b52217cdaeed19e8875ca6d7a5bfed8"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Aberrant Manawurm",
+  "catalogue_id": 29,
+  "oracle_id": "a0657586-0404-4bb0-a92d-25f040d560c1",
+  "facts_sha256": "03c97f6d2e1449f9c7604a6236d9550cb9cf61b508b1d3da871dfa7c489f7d7b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "38ddb3e9af3a832520160084bc4549e42df28159ed7dc9030e32a7cad7149fc5"
+  }
+}

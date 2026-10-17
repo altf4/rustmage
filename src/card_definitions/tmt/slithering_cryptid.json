@@ -1,0 +1,11 @@
+{
+  "name": "Slithering Cryptid",
+  "catalogue_id": 3928,
+  "oracle_id": "f570bac8-9987-4963-af02-476d18abc847",
+  "facts_sha256": "453f78249d1be6f8b5a059d3a3302c75b6a8e9ddff2ba63e117bce58b715ea89",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fed6f641efdee3ec61f048e73ac6a02227ebb71ff527561253292b1e47246107"
+  }
+}

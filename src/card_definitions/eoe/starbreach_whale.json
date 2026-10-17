@@ -1,0 +1,11 @@
+{
+  "name": "Starbreach Whale",
+  "catalogue_id": 4096,
+  "oracle_id": "076865e9-ee10-4a87-9180-4274202d37c1",
+  "facts_sha256": "7854f149ac44b31e109c7a0696b5f6fb129377c934cea2e34c343bd540a2f20d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "646d5275c5dd4b12859ac211a50b8bb62a5847655b1ced6a84c6e0d8db016e84"
+  }
+}

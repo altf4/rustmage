@@ -1,0 +1,11 @@
+{
+  "name": "Thunder Salvo",
+  "catalogue_id": 4580,
+  "oracle_id": "d3ce7c83-986f-410a-ae00-6c1c1f918a2b",
+  "facts_sha256": "2e0a6e549e3325c53da88e65d0b799003371a830adaea88d792ec0d162e82d72",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dc7f74318c7bac7379595f390a546ea198cf0c2f41a4d0f3811d09c4dde39cac"
+  }
+}

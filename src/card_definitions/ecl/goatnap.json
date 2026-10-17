@@ -1,0 +1,11 @@
+{
+  "name": "Goatnap",
+  "catalogue_id": 1800,
+  "oracle_id": "060e7187-0c7d-4022-9a1f-36a6f75314ca",
+  "facts_sha256": "dd8bc23d8d3a913d20aee67024bd508f337acc49cd087c59e3c018bd41df90fa",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "70e0582c647fca51f28a02b16619707389f3c435950391508ac6901fe7631e60"
+  }
+}

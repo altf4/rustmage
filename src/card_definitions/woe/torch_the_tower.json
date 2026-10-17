@@ -1,0 +1,11 @@
+{
+  "name": "Torch the Tower",
+  "catalogue_id": 4638,
+  "oracle_id": "10d33e95-3e5d-447e-ba4a-acd3c33b4045",
+  "facts_sha256": "e08ecc80dcf269dfc8697bd20b9ad335fa529673f8104cccb83064aa7bef4733",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2c2680807aae630d0a0a850e00ca90e5d2a4b7754ba9c6f0ddc9eeca4b0bdbc9"
+  }
+}

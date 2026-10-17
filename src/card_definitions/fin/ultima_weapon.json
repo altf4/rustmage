@@ -1,0 +1,11 @@
+{
+  "name": "Ultima Weapon",
+  "catalogue_id": 4742,
+  "oracle_id": "0dc4bf39-67d6-44e5-8993-dd18b20cfdee",
+  "facts_sha256": "689c737f3f986e2a7fdb345edaff786f2accb3f2d5cddca9056b71aba242cf89",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7219831c1e01c87fe0c3085515a60ec3e387677c1577d5407cab06e762295ed2"
+  }
+}

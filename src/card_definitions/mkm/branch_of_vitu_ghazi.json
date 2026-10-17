@@ -1,0 +1,11 @@
+{
+  "name": "Branch of Vitu-Ghazi",
+  "catalogue_id": 526,
+  "oracle_id": "7a30316b-dcd5-4a4b-b959-eecde7ca92e7",
+  "facts_sha256": "63fc30c0bdcab9f2d3cd8ed44de5c7be27d103d1c5f6a13a4e0177cdccc09360",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9f3f7b3911760ece0f037eb10162f1fcceffd2d63d500dd57b2cefb2c9c2e28a"
+  }
+}

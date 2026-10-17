@@ -1,0 +1,11 @@
+{
+  "name": "Party Dude",
+  "catalogue_id": 3105,
+  "oracle_id": "8df7a58c-053f-4ead-a778-2747718e5f10",
+  "facts_sha256": "3948af7bfbe05bc8233323d4ef5ebeb1504155039ed720703e0d415cae3d1b5e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b7502e6e302b02a828ceafb3da7a7dd41550d8a281a9815153500a9256360c54"
+  }
+}

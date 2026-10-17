@@ -1,0 +1,11 @@
+{
+  "name": "Hexhaven Battalion",
+  "catalogue_id": 2021,
+  "oracle_id": "158823ed-6015-437a-82b0-8dadb1e9aab2",
+  "facts_sha256": "5623d228820f4eb51e454ee747e825684aad926cf93f2a0cca4ac5fcfa631bea",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7e3200344c66d4c2bc860d82c55cb1b40b2cd890c0ddece775c0fbfbcf2b3c16"
+  }
+}

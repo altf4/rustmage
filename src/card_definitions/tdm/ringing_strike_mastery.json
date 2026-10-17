@@ -1,0 +1,11 @@
+{
+  "name": "Ringing Strike Mastery",
+  "catalogue_id": 3531,
+  "oracle_id": "334ffdc4-9fe6-4a7f-bf5d-bcd88adab715",
+  "facts_sha256": "a1c8d71f6b689280ca74cd8f4f4f55921287cfeab82a1fc940250d1eff14378c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cd6023f3f7685d8c9f03530dd4a6a3a363843c412624525644fab3e834bacda6"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Springleaf Drum",
+  "catalogue_id": 4074,
+  "oracle_id": "bdeb440d-a714-40e8-9038-f651e6ae45fb",
+  "facts_sha256": "db9a444437466fc4b2e17466d0ddc9dd9905bcd009157cc3c3b6421597164633",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9756325271ca0772136b4eb22972c9f729b16be7bddd7ecc6ad963433bbdca30"
+  }
+}

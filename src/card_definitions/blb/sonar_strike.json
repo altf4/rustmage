@@ -1,0 +1,11 @@
+{
+  "name": "Sonar Strike",
+  "catalogue_id": 3964,
+  "oracle_id": "d8c582bc-47de-47ec-8bf9-b2c848e27ab8",
+  "facts_sha256": "d40289f36e0e32708b1970c372ed4961d54ed769140f877049dfce8a33383ac2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "10e11d087df5477e97db5859e4ef4c47de151065778ee5dbe432df85d181142e"
+  }
+}

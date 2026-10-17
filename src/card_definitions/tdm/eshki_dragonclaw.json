@@ -1,0 +1,11 @@
+{
+  "name": "Eshki Dragonclaw",
+  "catalogue_id": 1367,
+  "oracle_id": "85d87087-48ee-4dc8-a1c0-9c9ccb885adc",
+  "facts_sha256": "d90e59544285af24177f484f730f5234d444f5dad06dee64e7d1bcb52a79e930",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "02b212b43e26315a90da1c2737b9b64fd9ea17b77ad8395d695f9b8fed1ca364"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Tinker's Tote",
+  "catalogue_id": 4605,
+  "oracle_id": "cd1e6225-31b7-4a70-81ab-681abe860328",
+  "facts_sha256": "cc272964f9f84e4207b6b80c5e7b9c7c6abf28604499bad96c207a3dac6459b4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "20a42b193b44b91a8fe5319e5d6609f82c31d18c49ea0a0ad8f9d22b96d08fc2"
+  }
+}

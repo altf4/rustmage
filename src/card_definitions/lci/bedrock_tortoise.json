@@ -1,0 +1,11 @@
+{
+  "name": "Bedrock Tortoise",
+  "catalogue_id": 370,
+  "oracle_id": "d9c2e674-11a9-47f0-8790-a53b62c43fe6",
+  "facts_sha256": "0be9ad9d8db2b0b659dc4ec90020f7ba8412f927056227111791965fc1a98545",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "82eeecbeba7e2593ea3c4aeac0977bf74b1bea13d13950941f3ac235279896fb"
+  }
+}

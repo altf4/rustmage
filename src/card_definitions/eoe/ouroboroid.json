@@ -1,0 +1,11 @@
+{
+  "name": "Ouroboroid",
+  "catalogue_id": 3055,
+  "oracle_id": "50d6fd91-23d3-4d32-804f-6233e4386904",
+  "facts_sha256": "81381883a9825d5f4ed0fda6cac644f039075dba4f9666ba92e02542860bdde4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "663a75f7b7d18190386e0a0e6f7edbba3f8f481dfe72354ea0be06afacb28423"
+  }
+}

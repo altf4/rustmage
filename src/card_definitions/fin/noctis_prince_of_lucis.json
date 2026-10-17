@@ -1,0 +1,11 @@
+{
+  "name": "Noctis, Prince of Lucis",
+  "catalogue_id": 2955,
+  "oracle_id": "2d44bdd2-aa31-415a-be71-d9e98ef12334",
+  "facts_sha256": "b9d397b44885f10a29f04d0483d70072a1f52a75de7b5ecf9054f92aa692f0aa",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0c42eab2aef75d2808798a48c1c61edcb515400e5121cec5d15eddee5e1c1ace"
+  }
+}

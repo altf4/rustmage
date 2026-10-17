@@ -1,0 +1,11 @@
+{
+  "name": "Thawbringer",
+  "catalogue_id": 4416,
+  "oracle_id": "0863c4bc-1e3e-4ff9-8877-88d4021c85e5",
+  "facts_sha256": "4cbf2b099e091e7169b6b1b7d3081d8b293e368649106900d4b0b2f20eb151e1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "14437c14fa3df19f3d60e339ce959f50497eb67ea4848044c2f9595c3c209949"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Stillness in Motion",
+  "catalogue_id": 4137,
+  "oracle_id": "d73913ea-44d0-408f-9f8b-8e91843f2826",
+  "facts_sha256": "56f06bfb35efadb52836bd2022a0c60f4720b856a25bd4ca3839889fa8f3e231",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "01310e867d9af5bbab958ad76ee7fdf4b14f4f3a4dfdbcf4cb73f914d7c77612"
+  }
+}

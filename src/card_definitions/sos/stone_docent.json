@@ -1,0 +1,11 @@
+{
+  "name": "Stone Docent",
+  "catalogue_id": 4162,
+  "oracle_id": "dbb1690a-f6f5-459c-9d7f-cb6541fb6688",
+  "facts_sha256": "fabb3bec6c19e971d95d5d2d040ed148b08b0c752a0efd76aa9895ea3ce12b9e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "78bf8a142a09bfb8f1499feaf0ae6d37e3b59fbfe152ff68503352302993770a"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Turncoat Kunoichi",
+  "catalogue_id": 4706,
+  "oracle_id": "0f35cf85-6783-4d69-b5e6-a81f7c1f21e7",
+  "facts_sha256": "fbefe19b3579bcd88b3f6e1b808858934d0916bb1efaf3d274b90d8376947a00",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b9ad124898971d614c91cf6c5826aaa794608903afe3addbed62b32fdd766c0f"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Suki, Kyoshi Warrior",
+  "catalogue_id": 4207,
+  "oracle_id": "9223488e-5206-4d43-90ef-387189dcee16",
+  "facts_sha256": "ccdba15119aa0b8465ee1da9507dd23a9b6df1292a2edc42b24aaabdb8130c0f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "776b4aeaaf97a9e9f32aafcc7c948ca1122cdfcc72de119c67e0a30cfc80afa9"
+  }
+}

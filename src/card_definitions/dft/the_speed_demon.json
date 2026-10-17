@@ -1,0 +1,11 @@
+{
+  "name": "The Speed Demon",
+  "catalogue_id": 4501,
+  "oracle_id": "c9fb22b4-dc22-4291-91f2-89c07cee7569",
+  "facts_sha256": "d432ad9a576ec403cd0e799df6bb34140d32fff7096b62765149f1409b090f97",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0d4d0bb33ac7df0fa0dadb05cbc9daa4178d4f9c6ba28e527194d32105e87009"
+  }
+}

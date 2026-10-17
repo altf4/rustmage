@@ -1,0 +1,11 @@
+{
+  "name": "Felidar Retreat",
+  "catalogue_id": 1486,
+  "oracle_id": "16629f59-bae8-4c19-bf50-443eb0ed6856",
+  "facts_sha256": "7cd8461c105e9c3cdba1933200d865c44e27c01f936c533681ab51e212b69fd2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "21a4b65d6a1e94d9b7f59e6e5a63a08fb58982d843bef0f8531a2b7a955d82ec"
+  }
+}

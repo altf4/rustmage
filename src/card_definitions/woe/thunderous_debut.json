@@ -1,0 +1,11 @@
+{
+  "name": "Thunderous Debut",
+  "catalogue_id": 4587,
+  "oracle_id": "07995092-af6c-43b8-b30b-17e020ead37c",
+  "facts_sha256": "1401489bb0f442f03deeb905bc641a865375d29b2de5c253cd158e61bbe475ec",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "998fd9ba858b29453469fb83a1047467980fe2f8aa23fc626f669969fc73982e"
+  }
+}

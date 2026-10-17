@@ -1,0 +1,11 @@
+{
+  "name": "Family Reunion",
+  "catalogue_id": 1435,
+  "oracle_id": "8972de18-2c49-4162-a285-264a44c0e675",
+  "facts_sha256": "53093a886f53d0c5757b0c931fe57a93e257eaf875ed90f4752e34894bc42e47",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f7a0550a656acbf38d7451f88f7f65e87c2c774acc179c5912f90b650bb38962"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Lo and Li, Twin Tutors",
+  "catalogue_id": 2530,
+  "oracle_id": "ad643992-eb9f-4a4a-9b74-a5aee2337f30",
+  "facts_sha256": "5145c76af0a2ce9f1f57f58d03d827446e235cb597969d9185f74f7973178545",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8931d731987641ac1c66fcdd13709c101de68f6537e6ecf306a4d4ddefd7a37b"
+  }
+}

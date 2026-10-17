@@ -1,0 +1,11 @@
+{
+  "name": "Bofur, Reliable Guardian",
+  "catalogue_id": 475,
+  "oracle_id": "8a0e35ac-6c03-4922-b3b4-e419419fe3d7",
+  "facts_sha256": "bb7a9438759865dcc3896e7a5f3126c3af890c30168ccc951d40ed90b2fa032f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cca23de85d5d4aa1954365e4f13f1413e596d47570f21d480b00edd2e48f1487"
+  }
+}

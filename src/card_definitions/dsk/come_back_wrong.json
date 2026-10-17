@@ -1,0 +1,11 @@
+{
+  "name": "Come Back Wrong",
+  "catalogue_id": 808,
+  "oracle_id": "2a9783c5-084b-4cd3-b7fa-ae9d7fed51d1",
+  "facts_sha256": "07b7bea1e60491b9a0d498054d37b563eaa9e8c771a10f1774d0d1d82371bf64",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ef49a7195a968b9d55332aa8cb32cc0ba46a7bb72c433de9295a7c4e696ed573"
+  }
+}

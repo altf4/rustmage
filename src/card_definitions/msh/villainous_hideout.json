@@ -1,0 +1,11 @@
+{
+  "name": "Villainous Hideout",
+  "catalogue_id": 4894,
+  "oracle_id": "cd2888aa-71f3-47ee-ba33-7bb95d5bc836",
+  "facts_sha256": "8e3407755aa35bfe41104e49560b68a87c1201f8d826757a636b73a739890837",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d8d395bd6d6009d5a65e48438a5bdb9d17fa48afde1c2bf4f93a25ff84365c5a"
+  }
+}

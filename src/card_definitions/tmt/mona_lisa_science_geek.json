@@ -1,0 +1,11 @@
+{
+  "name": "Mona Lisa, Science Geek",
+  "catalogue_id": 2828,
+  "oracle_id": "e6490e98-37a9-4a8b-a04c-cceeb22b0c35",
+  "facts_sha256": "f3e4fcdfebeda03f3a97d5872c2f654f550a8746757623dff96af43410485fd8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "984988f48681d208f775a6ffe6c2c682a8b442d2a8e068d8b5df3db414efaf74"
+  }
+}

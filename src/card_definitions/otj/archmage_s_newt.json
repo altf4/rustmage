@@ -1,0 +1,11 @@
+{
+  "name": "Archmage's Newt",
+  "catalogue_id": 214,
+  "oracle_id": "75ffebc4-8db9-4de6-a330-e3f41cdccecc",
+  "facts_sha256": "130081806eea81f05fb806510dafe0c6f9ff409765906c0c2e6ed0256471c835",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5439f35e49db7251703b24fcb43e347b4047f9d91663a03381d535e6bdd00c2e"
+  }
+}

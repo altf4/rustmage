@@ -1,0 +1,11 @@
+{
+  "name": "Firebending Lesson",
+  "catalogue_id": 1529,
+  "oracle_id": "a9282f91-638e-414b-8b3d-9a99e30aec96",
+  "facts_sha256": "eab1a23e161713cf5d47c9f7e6519f66fde6d08d032f578b5f99f0bf89b0e73b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8656cb7ebc99d33ee0c2f3a6f9d7f0ae1aee70695c635efd83b8be41e5cc46cd"
+  }
+}

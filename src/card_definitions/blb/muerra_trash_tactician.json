@@ -1,0 +1,11 @@
+{
+  "name": "Muerra, Trash Tactician",
+  "catalogue_id": 2873,
+  "oracle_id": "c115159c-6991-4812-b3b6-6ed80221cab4",
+  "facts_sha256": "13a2d6612dce1b614f19900a1b99fb22edde169c9fbdc9226678243dce88ae97",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "52e5856e7f8ecbae8942a681a06d18a13b02117479a4acaf2efc551a545c210b"
+  }
+}

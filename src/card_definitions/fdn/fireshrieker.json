@@ -1,0 +1,11 @@
+{
+  "name": "Fireshrieker",
+  "catalogue_id": 1533,
+  "oracle_id": "a02e1ca7-23c5-41e3-a744-72fc9e9dd8ba",
+  "facts_sha256": "4ee0a24214c18a2d7930bf0070bedf880a56825e57d9c869125b655e6b662d0d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0632b99cb85bc98e36de7563de221b5c23111d098bb388cc4555fdfd03c974f0"
+  }
+}

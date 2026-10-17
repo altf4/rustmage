@@ -1,0 +1,11 @@
+{
+  "name": "Hellspur Brute",
+  "catalogue_id": 2000,
+  "oracle_id": "81e5c62c-5aed-41e2-8bd1-610022e880bd",
+  "facts_sha256": "251068b163cb0c0119ae2a86699dfe698c72219f8df294431df9275f3a8a44f3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f7d509b716adf22119d82c23481d36c7a1932292f5c19df6d280da73c13bafa0"
+  }
+}

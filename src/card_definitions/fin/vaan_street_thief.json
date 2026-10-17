@@ -1,0 +1,11 @@
+{
+  "name": "Vaan, Street Thief",
+  "catalogue_id": 4821,
+  "oracle_id": "24fd1f47-bb15-45c6-a7b1-ba8eb3bb8b1d",
+  "facts_sha256": "bb92dc00a72cf72e50915b04b8a791d683db287b55059fda8a1e658f0f351574",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0ecd887fa6a64a0bf93ec65b71f9b367f485e22b381a8df096c7128dcb979de1"
+  }
+}

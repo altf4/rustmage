@@ -1,0 +1,11 @@
+{
+  "name": "Proctor of Potential",
+  "catalogue_id": 3246,
+  "oracle_id": "c612ba0a-5134-45fa-a762-f4621bda4f83",
+  "facts_sha256": "66b59d1a11ce438db439dbdb43aeeacc97ea24d540e2185b0768a54820d414f6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "be70c3c88564bfb5fbb9212d23b4dafef839a16b583a86d77b072a00dc18b551"
+  }
+}

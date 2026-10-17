@@ -1,0 +1,11 @@
+{
+  "name": "Break Under Pressure",
+  "catalogue_id": 539,
+  "oracle_id": "8dd23c50-cc84-4064-89cd-8d52fbfbd4ab",
+  "facts_sha256": "0bf7a99c0faf9fc5fc5ffd21a32706230f3cf0a1671c57de4bfd447175da27a0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d7da46695f2f2721783d09be1c4a1fe13fde3a7e8f343779b7a92e1a0b8770ad"
+  }
+}

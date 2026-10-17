@@ -1,0 +1,11 @@
+{
+  "name": "Cori Mountain Monastery",
+  "catalogue_id": 847,
+  "oracle_id": "35c60b66-8c85-432e-90fe-99c19d21ed15",
+  "facts_sha256": "48583ac5f70562440bee8cd5ab011c33b268b910d2497b2f518f75ba4af56fbd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8292c381f9b5d0aa91d1ef18f2280d84f59e1a69a0ea2bc6225d52476896614f"
+  }
+}

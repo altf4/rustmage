@@ -1,0 +1,11 @@
+{
+  "name": "Preacher of the Schism",
+  "catalogue_id": 3218,
+  "oracle_id": "74947e47-c4ff-4f47-9845-befa7403cbde",
+  "facts_sha256": "05d36cd3867065193438fa6f71eac467cd5606f9616d7eb0951a98860cc51cb0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0bd262d67a5988a60fb964015081bd66907e91ba968a6c8b0b15d23fa67bf987"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Rotisserie Elemental",
+  "catalogue_id": 3593,
+  "oracle_id": "e33c1744-843f-438f-a8c3-2d9f60120776",
+  "facts_sha256": "25c536af52e8d1cd7d308cbec3ee29e48a82b829f6f3c0480d2fbd5cb6749840",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "202ae33a920748be0f5b3e152e873f8574ba44c2a59387b4a11a623a9d2398ab"
+  }
+}

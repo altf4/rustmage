@@ -1,0 +1,11 @@
+{
+  "name": "Harbinger of the Tides",
+  "catalogue_id": 1939,
+  "oracle_id": "9f5277e8-1cbe-478c-a8bc-ac028f13305e",
+  "facts_sha256": "9b99dee90646384154ed74e28e4b49ed95ab6bd66791857ce309cfee8c9c95a4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4840e673b03310ea9fe7122f2e690c0bde2b73a2a39f430614021437ef9cc47e"
+  }
+}

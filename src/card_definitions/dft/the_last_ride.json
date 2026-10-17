@@ -1,0 +1,11 @@
+{
+  "name": "The Last Ride",
+  "catalogue_id": 4460,
+  "oracle_id": "3ef03540-b538-466d-aa3c-da6750117ba4",
+  "facts_sha256": "bad908abbfd9ca6706de9838f42ccf06d7dd26b2cacbf29e8b16acaf41762f93",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b9209180526a72c856bc668f87f1ec3a0d0d36e08a868542567a7e131763f424"
+  }
+}

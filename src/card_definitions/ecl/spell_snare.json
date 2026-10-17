@@ -1,0 +1,11 @@
+{
+  "name": "Spell Snare",
+  "catalogue_id": 4006,
+  "oracle_id": "38877c68-b69b-4ee1-8e8f-5137a184a8f7",
+  "facts_sha256": "a023e101fc8907709f4475d1af937a3354a68ff06e7e486f607dee81c663bd4a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "223961c4c48d79f6a9ad6229f3b507ea4d43baf40677c5a4623d780ccc7b658f"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Gorehorn Raider",
+  "catalogue_id": 1834,
+  "oracle_id": "41699d92-c209-4fcb-bbd6-685b3437d0c2",
+  "facts_sha256": "0948541426e79beaeef7ea969ad6ceae188faa1cfecc450a1de355284e7a83e4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "998f62002482d43caa5c762a91231b9ed1a9f0a508a29c12c16469dfcc559625"
+  }
+}

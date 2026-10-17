@@ -1,0 +1,11 @@
+{
+  "name": "Suspicious Detonation",
+  "catalogue_id": 4278,
+  "oracle_id": "91f7672c-3090-48f4-8586-0426341c3159",
+  "facts_sha256": "8acbf5a250d48b533eff85b5b1c811d8a4d1054d628a401fafcc3dd502a890bd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7c32b71365e7f9495286d21fa5a28011e534728d9109fd052c8fa67a3acf8858"
+  }
+}

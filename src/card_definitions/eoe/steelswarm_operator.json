@@ -1,0 +1,11 @@
+{
+  "name": "Steelswarm Operator",
+  "catalogue_id": 4129,
+  "oracle_id": "770b2097-5178-42d2-be6c-393b4bfe3727",
+  "facts_sha256": "6b4f4c8b4146fede701f6f9d75d79a20ce149c1fca7d9ad856e5c8e207075339",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ac13b3f7facac03d8ec3d2f2739e425afbc6b551d8910836a3dd55f5f5fb6c64"
+  }
+}

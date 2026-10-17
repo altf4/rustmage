@@ -1,0 +1,11 @@
+{
+  "name": "In the Presence of Ages",
+  "catalogue_id": 2155,
+  "oracle_id": "142a960c-4d8e-4b3b-a0db-435c22df8f92",
+  "facts_sha256": "95b36177c3435c18454c9c971db17e59ec777550f7eb24fc85c32dcccce8adc3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d61b54dc6767660b33c4b82b078488b9107139f942c92f68fee33544eb50864d"
+  }
+}

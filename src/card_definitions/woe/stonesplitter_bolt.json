@@ -1,0 +1,11 @@
+{
+  "name": "Stonesplitter Bolt",
+  "catalogue_id": 4165,
+  "oracle_id": "1322734c-3c3e-4885-a6d2-d6460a16fca2",
+  "facts_sha256": "e3eb85c2c6c70fbbc313f007f15a5341904d261d3cfc7e1c6e409a1bf1bfc0a4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e14124cb167ddb6806e8e6753b7c76161cee3091362fb9175a7330d073887290"
+  }
+}

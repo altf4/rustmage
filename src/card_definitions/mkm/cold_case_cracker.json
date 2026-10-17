@@ -1,0 +1,11 @@
+{
+  "name": "Cold Case Cracker",
+  "catalogue_id": 793,
+  "oracle_id": "2e18ee5b-cda3-428b-be91-939c410256ac",
+  "facts_sha256": "124a977e7af100c1092ecee0dbfdccf589d9423448882ba2b1a91cd6d366debf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e0f8c9218001f2be476118f7efe5934d914aa02170f40c65353b9c9495714f26"
+  }
+}

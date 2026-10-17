@@ -1,0 +1,11 @@
+{
+  "name": "Risky Research",
+  "catalogue_id": 3542,
+  "oracle_id": "47d52cd7-d72f-455f-aad3-70f08d54691f",
+  "facts_sha256": "2e6cef92830308b06f1fb27f65cab879301ca87543454b7b75ba9f5a3fadc7e1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5780e6196e469ec7ae5d7b142fb689d568e6d15548da02ff8dc95c032f1930e8"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Oteclan Landmark // Oteclan Levitator",
+  "catalogue_id": 3052,
+  "oracle_id": "2420828e-b886-42d3-81ba-8ee81b6e1eb8",
+  "facts_sha256": "9cb598d113cd50bff323f4a1b3e1e28e2b40cca35241479b7a0aad188cb8e331",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "13094cb0fa4871c11222470bc96e678d5fe4a736ee450f01ebbe59ed955003c6"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Michelangelo, Weirdness to 11",
+  "catalogue_id": 2742,
+  "oracle_id": "170ab932-9d50-4ce7-9a42-08e1edce7e7c",
+  "facts_sha256": "abd1022f3e4d6b5594110de712516682b96c72b3a73150eddad45112c8311917",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "165540812e7b82b71da94b92c986adda3c91c2b6d81999be4c0c317d38c32fd6"
+  }
+}

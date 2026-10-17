@@ -1,0 +1,11 @@
+{
+  "name": "Inspiring Vantage",
+  "catalogue_id": 2190,
+  "oracle_id": "3f17c60e-923a-4392-9da8-87d9ded009b7",
+  "facts_sha256": "6c1ad762fb80232f781b9c9eae092af39380ac9ba650e3cf4827cc1b8e7dae81",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c46c190318b8fa430c8cb7cf8a514098ea961159a14b6e04fb95bfcc30dbc1d8"
+  }
+}

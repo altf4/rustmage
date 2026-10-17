@@ -1,0 +1,11 @@
+{
+  "name": "Corrupt Court Official",
+  "catalogue_id": 855,
+  "oracle_id": "ec84201d-757f-4a7a-b3a2-85ccd5ee81ae",
+  "facts_sha256": "559ffaa61c4588d2ab91062a49e922d8fb36c220075677d07a5d12f8fad7c7e7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7185ddbc53e000e7a14f95f8328240c90656315c2f86496fed8c223269ae933d"
+  }
+}

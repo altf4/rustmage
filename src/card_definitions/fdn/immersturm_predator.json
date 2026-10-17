@@ -1,0 +1,11 @@
+{
+  "name": "Immersturm Predator",
+  "catalogue_id": 2142,
+  "oracle_id": "fcb6c6d4-ea8d-49cf-b6df-377084bdb757",
+  "facts_sha256": "ea6b5f0d9303c82cd5b59082fcd81a2cfc9940737f4e4a89cb178ff0706ad2b2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c357912c1092ae56ea5ff6e66b9f5e6fd3272acdb8c9dbf4223b588be32ea03a"
+  }
+}

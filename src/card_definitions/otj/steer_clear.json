@@ -1,0 +1,11 @@
+{
+  "name": "Steer Clear",
+  "catalogue_id": 4130,
+  "oracle_id": "2c22af49-c6ef-4de6-bb84-6b3e99879148",
+  "facts_sha256": "2204067421887ede4d866a907197ddfa88427a19061cd6819a8918ec17d8f662",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "234155cf39f774f2fae04055a5a5d6090b3a33591292bb8b446365213664da43"
+  }
+}

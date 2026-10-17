@@ -1,0 +1,11 @@
+{
+  "name": "Encumbered Reejerey",
+  "catalogue_id": 1328,
+  "oracle_id": "7668f7bc-9a43-4024-87c3-995aa0a65aaa",
+  "facts_sha256": "fabf47ff8599b8b0f6175420c74db8aa733e0ced1087f270cb837248dcb64d58",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e8f8223a562b083209a1abe5b66abcc13c954963f5b9c6387c71cf24c4a3734e"
+  }
+}

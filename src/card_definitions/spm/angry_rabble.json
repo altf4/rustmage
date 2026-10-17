@@ -1,0 +1,11 @@
+{
+  "name": "Angry Rabble",
+  "catalogue_id": 166,
+  "oracle_id": "cf6dc79e-840c-4d47-8f94-c8623528acd2",
+  "facts_sha256": "c40e99407162272ce87875ea6e60a48e263ae06d30efdcd7aaa23b6e6f45275b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "df7fde3c2e77b4fba7436183e91a154d2a62032c5d7e46a62996eb1236d8b61c"
+  }
+}

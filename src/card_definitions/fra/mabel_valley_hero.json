@@ -1,0 +1,11 @@
+{
+  "name": "Mabel, Valley Hero",
+  "catalogue_id": 2601,
+  "oracle_id": "ab56f7cf-9538-45b5-a657-1e2ebef1e92b",
+  "facts_sha256": "2e5796f5bebfeb03f7abf5c21b6ede6b628bbb56ac8ad36e757d6f90a6f49f46",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2d6e8c95f3a19278f369cf5849707e3a572ec0264c2cd9c9badc49537160d11c"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Shocker, Unshakable",
+  "catalogue_id": 3840,
+  "oracle_id": "564dac59-97f7-4988-9f30-d82a891e29ef",
+  "facts_sha256": "456ff63bba825dcda950bb185d51b40ad309117e42f49a32d02bba093724587a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "336c59322230efd327010f0628aff7374a3d997ce1730a3b5b7cfa669b39040a"
+  }
+}

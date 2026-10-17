@@ -1,0 +1,11 @@
+{
+  "name": "Stab",
+  "catalogue_id": 4083,
+  "oracle_id": "b4ee6843-bb79-4665-9763-83f656863dc5",
+  "facts_sha256": "72bb64c5dd07df797eb3987d247774d41607b925d7014c27d50acb39b5f65462",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7aa914413f9c2a424d40c9992ec867678f41220ece5020ffae22a26bf7d3b6a2"
+  }
+}

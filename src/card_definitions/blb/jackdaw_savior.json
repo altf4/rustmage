@@ -1,0 +1,11 @@
+{
+  "name": "Jackdaw Savior",
+  "catalogue_id": 2251,
+  "oracle_id": "9e31ef54-b2f2-4f3f-9779-151b74470ce4",
+  "facts_sha256": "242ed0071820bd47fedf27cc64d0d93afb04632f7c112c714f0bc55bdca49ba6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c4f805f379b4a41019a3373974314cf70c8f8614da250e096b7eab20ce2b7b3b"
+  }
+}

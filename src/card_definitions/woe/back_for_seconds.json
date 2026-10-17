@@ -1,0 +1,11 @@
+{
+  "name": "Back for Seconds",
+  "catalogue_id": 301,
+  "oracle_id": "ee3d21b9-58b4-480c-bae3-26de50f1a5c6",
+  "facts_sha256": "8b48517379da1dd0d3abf0339b7a3d2a7e61122c2994c89e6dee62f592ac2724",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0b32df5ceea0e83c61025b35a6b1259ac03696352efd32c6ed9a2df15cca7900"
+  }
+}

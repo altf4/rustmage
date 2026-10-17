@@ -1,0 +1,11 @@
+{
+  "name": "Lassoed by the Law",
+  "catalogue_id": 2448,
+  "oracle_id": "9457f3c1-a087-46cd-a8be-cf665466b77c",
+  "facts_sha256": "1c0b948d32f20ed4862c7ab9360c74781d044aff5a15123ba61fc100c167c0ef",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "792a45df471a52fd3df5279c34d8e568d01fca85fc56ecd77d93e7ae881d86b1"
+  }
+}

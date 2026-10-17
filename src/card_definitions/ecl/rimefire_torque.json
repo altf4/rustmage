@@ -1,0 +1,11 @@
+{
+  "name": "Rimefire Torque",
+  "catalogue_id": 3527,
+  "oracle_id": "c33e99c6-189e-4dcf-8b6a-64937dbad361",
+  "facts_sha256": "1aa3f81585162febb18ba48453f055760c80d2698fd12925bc0d6c5ffedd7854",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7bd819376eec0b43b6dca9a135be100cc19461282427ed2b88011b446b07335e"
+  }
+}

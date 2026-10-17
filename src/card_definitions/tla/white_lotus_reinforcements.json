@@ -1,0 +1,11 @@
+{
+  "name": "White Lotus Reinforcements",
+  "catalogue_id": 5044,
+  "oracle_id": "c55a4b25-ccc4-49de-9f98-a829c547a64d",
+  "facts_sha256": "212543b9281ef6b8c8a38396942481f591185940f03c0853bc3eeaaa26da6a2a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "064934e9674c4e2c39ab5d96e4487bc130ac401ce540ab09abb7d4b7f1fbb71d"
+  }
+}

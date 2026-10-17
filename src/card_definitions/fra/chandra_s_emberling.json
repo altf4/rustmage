@@ -1,0 +1,11 @@
+{
+  "name": "Chandra's Emberling",
+  "catalogue_id": 713,
+  "oracle_id": "d3576617-7867-4c3d-aa31-d6742483465b",
+  "facts_sha256": "e58881723bd6f5a235c61bde17c10aef8738a93c70ea01c03874939128902131",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eb27a160e92965b853d34ef6c87c7a344793a4a37ac8a8beab93b075f65fc643"
+  }
+}

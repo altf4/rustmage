@@ -1,0 +1,11 @@
+{
+  "name": "Vivien Reid",
+  "catalogue_id": 4924,
+  "oracle_id": "b5f20a6d-8c3e-452f-9d98-4886f0fa052a",
+  "facts_sha256": "2d2e847895c4ee3326304e4afcab3a9fb9aa7054f970fa090d412e49385687d2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "623f66b186a485c7d5fa60dfdb3c674dc17f6fba661d3a8196dbde6ba9b20225"
+  }
+}

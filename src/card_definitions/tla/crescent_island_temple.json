@@ -1,0 +1,11 @@
+{
+  "name": "Crescent Island Temple",
+  "catalogue_id": 887,
+  "oracle_id": "2886f95e-c4e8-4770-b7de-40985f336cfb",
+  "facts_sha256": "17177d3ddc45216ee2e1a0ae3bd66c113c88f651da6c1a4ecf05c78af1b3dfb7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a9f940acab414278d9a66863c586a56892b5773b72e6ff4b1b948869758c5350"
+  }
+}

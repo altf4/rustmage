@@ -1,0 +1,11 @@
+{
+  "name": "A.I.M. Scientists",
+  "catalogue_id": 18,
+  "oracle_id": "fa732888-5b7d-4087-a6e5-1db1c98fbd4c",
+  "facts_sha256": "044b0458a3a2340577a89fd4b5083ea8616d867c89c00b35290d21185bbf302a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a432eca439b2b8c53ba2b52328580b1b9c8e86041a2ed84b4425dd075161ae43"
+  }
+}

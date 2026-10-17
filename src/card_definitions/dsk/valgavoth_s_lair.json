@@ -1,0 +1,11 @@
+{
+  "name": "Valgavoth's Lair",
+  "catalogue_id": 4824,
+  "oracle_id": "660d44a2-391a-416c-b46c-ddcc3739f527",
+  "facts_sha256": "259ce9a1808f19896b9bbd3b977fd7f3ddcc4d0936896765a8818c900e73204e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f36aa169e05f7a53becf6acf39ca54dd3f1dd816c6037c04309a36d0ce0f26dd"
+  }
+}

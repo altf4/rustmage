@@ -1,0 +1,11 @@
+{
+  "name": "Momentum Breaker",
+  "catalogue_id": 2825,
+  "oracle_id": "087d2e42-c69f-4cd2-b2e3-e0b64ac2893b",
+  "facts_sha256": "d4506c062cd1aed9f27e7a38924480d935754edfebbab1e5a234b02a27f544c5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8bb5ab29e3dc7bba7f87a9d615997cc3fd65997a1f671427f0db4ac4ccc50d3d"
+  }
+}

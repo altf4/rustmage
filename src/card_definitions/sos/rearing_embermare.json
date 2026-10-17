@@ -1,0 +1,11 @@
+{
+  "name": "Rearing Embermare",
+  "catalogue_id": 3415,
+  "oracle_id": "95f20067-4471-4bfa-952d-dbbfbb2c2178",
+  "facts_sha256": "7addc463b61bd68c7608d76aa3195bc049c4cabc258d20a1e219ea5cd68539e8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f8f8567990573c7d192b0d361832a0eacfc4e5cf10735f1b5c74d6404ec907e5"
+  }
+}

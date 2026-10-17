@@ -1,0 +1,11 @@
+{
+  "name": "Playful Shove",
+  "catalogue_id": 3184,
+  "oracle_id": "2094fb68-3859-401f-97f2-c8bae64a4822",
+  "facts_sha256": "8995513ba5392d02b303b1e6e69c83c6fb903c35198129e0a3cda94b2a7f5571",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f4221fd894a35ba2cf5c971b29a9c817d84e007eed4ddab185f30f73413c738b"
+  }
+}

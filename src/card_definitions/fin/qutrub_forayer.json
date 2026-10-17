@@ -1,0 +1,11 @@
+{
+  "name": "Qutrub Forayer",
+  "catalogue_id": 3323,
+  "oracle_id": "500ccb61-83b0-4b1f-ada6-65850ed5a825",
+  "facts_sha256": "705b7f8d702b77e60f4d846551f39f01909de7505127c881a6537aa31ee9aa0d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5e883acbc3defe428a859716d082b3bc3ff18238111bbfc7bc70e94de8b9ef7d"
+  }
+}

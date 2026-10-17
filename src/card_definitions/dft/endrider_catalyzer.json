@@ -1,0 +1,11 @@
+{
+  "name": "Endrider Catalyzer",
+  "catalogue_id": 1331,
+  "oracle_id": "b4d970ed-f332-440c-8c2f-8a8a0191410b",
+  "facts_sha256": "908b65e50c95229874db55be2d29e02fec5d8adaae7f7b0b7ce8ecedb36c0cc8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c9fde5c7dbffdaf0d6a50ee8c76a498cee47207aaedc085406d2492f44509f19"
+  }
+}

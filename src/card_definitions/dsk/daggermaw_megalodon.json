@@ -1,0 +1,11 @@
+{
+  "name": "Daggermaw Megalodon",
+  "catalogue_id": 945,
+  "oracle_id": "dc638413-c4f8-4f6a-a003-5ce8a10a8f94",
+  "facts_sha256": "4d6b8b1277ca7de0f6fe706b795111931a85b3dd832ecde457b61c6287353e4b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7e6f8f401766865fc2c3b202da11c5746a6134854d4aa72ab28c93db36129bc1"
+  }
+}

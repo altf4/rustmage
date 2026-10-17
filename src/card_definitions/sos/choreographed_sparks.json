@@ -1,0 +1,11 @@
+{
+  "name": "Choreographed Sparks",
+  "catalogue_id": 746,
+  "oracle_id": "61495793-b0c7-40a5-ad3e-9df8e2b8096b",
+  "facts_sha256": "76495d41fd2a2d55599df7a55b0fcb703f65b13f121769914102edac6bfe8bb4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b13d33a05ce926b32c984ce3b1a6bb353d82b34edf4a6fd7291b55486d3c8084"
+  }
+}

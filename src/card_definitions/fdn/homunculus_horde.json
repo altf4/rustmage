@@ -1,0 +1,11 @@
+{
+  "name": "Homunculus Horde",
+  "catalogue_id": 2062,
+  "oracle_id": "b3c69bf4-880f-4198-a67c-87d23d9c3d41",
+  "facts_sha256": "08d9be8ab0c8c553e5442bd4c1b92cd9ea9cd3ec287e7408fb3c62db28e32738",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "796cc8bce43d8b27414436dac173eb761a30385c3b67b34d06b41ff94ac90114"
+  }
+}

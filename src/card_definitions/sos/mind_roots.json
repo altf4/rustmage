@@ -1,0 +1,11 @@
+{
+  "name": "Mind Roots",
+  "catalogue_id": 2762,
+  "oracle_id": "5d32dbf3-c157-4543-8813-da88f463de0e",
+  "facts_sha256": "7d87df6a7d86b09013e801e7f5ca62097801387ba99f83dd56ada1ead130752d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4a6917b16584a7ab41e062a4c1f14955b4c5592486594c14a4e80ca40323521a"
+  }
+}

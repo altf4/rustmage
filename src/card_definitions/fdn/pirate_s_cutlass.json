@@ -1,0 +1,11 @@
+{
+  "name": "Pirate's Cutlass",
+  "catalogue_id": 3172,
+  "oracle_id": "ac77591c-39d7-4fd1-a6e9-805f57c6614a",
+  "facts_sha256": "ed18f47ba9b6db2d92ced1487104ca5ce9aa470cc66af92f15654ea15a193e26",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ace52434f909cb5e7be3a678cfbe74c680175f9fe93cbb122156b63142acbcd8"
+  }
+}

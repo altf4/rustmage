@@ -1,0 +1,11 @@
+{
+  "name": "Karlov Watchdog",
+  "catalogue_id": 2318,
+  "oracle_id": "73f44500-fe83-40fa-b6f2-ed5673d0edcc",
+  "facts_sha256": "6a35f2f098b0cb8bcc2d87ad92f6204d5102339ff9a546030c277c52c86e002c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "53840e875d3bbe46b16431adb3109c2edad76dea4e5b8356a2ca166140454cd3"
+  }
+}

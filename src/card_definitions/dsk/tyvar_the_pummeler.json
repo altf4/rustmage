@@ -1,0 +1,11 @@
+{
+  "name": "Tyvar, the Pummeler",
+  "catalogue_id": 4735,
+  "oracle_id": "5a242eab-204c-4411-860f-c0f3582a8f38",
+  "facts_sha256": "340c27a20944826ab3485708ba215f9a8c64946831f3ecb4cfc1c4c9e096b9b7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dfeb896c0108cd5a522d9ba22be72f872c4b0014ba17d63991e75bd9ea949c80"
+  }
+}

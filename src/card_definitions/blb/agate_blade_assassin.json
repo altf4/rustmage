@@ -1,0 +1,11 @@
+{
+  "name": "Agate-Blade Assassin",
+  "catalogue_id": 81,
+  "oracle_id": "381a3e8e-71dd-48e4-ab62-53478bde4a14",
+  "facts_sha256": "112c86ae2f985b8505e48de51f6857a705fa5ca693ef549f5ba3899ceec29131",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "11dc5c46d77b15f662599aacdb3ca28efbdad80079264cbe9711b539a021a972"
+  }
+}

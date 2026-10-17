@@ -1,0 +1,11 @@
+{
+  "name": "Sunshower Druid",
+  "catalogue_id": 4247,
+  "oracle_id": "7a70faf5-cc04-402b-92e3-67746788f510",
+  "facts_sha256": "26cfc85f465bcabc6da294b78a906c8e5f05f8de006dd22f2c8a8f8c911b1e66",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5c092f8464afb6dba4d1c3c9c3ae2970e36d5a21ea5ed0d6635acbb8afca59ed"
+  }
+}

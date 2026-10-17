@@ -1,0 +1,11 @@
+{
+  "name": "Camera Launcher",
+  "catalogue_id": 626,
+  "oracle_id": "b46bac37-5b45-4be5-93d0-76e48dbd9f74",
+  "facts_sha256": "5f6d80cd86185f24c237cdddf3ca7260dd0c0bcefcc88da6a324191be7a603d1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ba650ab852b3aac4e7f48b16f32a850a5abfd44e16d45f6820aa862b0d80bc56"
+  }
+}

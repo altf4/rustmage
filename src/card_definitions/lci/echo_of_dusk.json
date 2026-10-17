@@ -1,0 +1,11 @@
+{
+  "name": "Echo of Dusk",
+  "catalogue_id": 1249,
+  "oracle_id": "fd0980ae-eabf-45da-98e7-23d81bfa185a",
+  "facts_sha256": "298f2d4ede877cf72c3c686771243af2247c64093157a455041601a49acd96b2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c2a75947e0f15530f49745ee45dbe920e29f51acf0154184350259bb84aeea4e"
+  }
+}

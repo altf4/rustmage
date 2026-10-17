@@ -1,0 +1,11 @@
+{
+  "name": "Chandra, Chill of Compliance",
+  "catalogue_id": 714,
+  "oracle_id": "c3dfa1e2-6785-49a0-a194-fb842a8eb63c",
+  "facts_sha256": "e4b423b3afc45eb158c79399dc62035288140a392d95726118abb09d18dd66ab",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a6f79e5779dddc68c82f71106630c298fca00ed4b7b71cf863f007081cd22687"
+  }
+}

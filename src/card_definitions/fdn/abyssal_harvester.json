@@ -1,0 +1,11 @@
+{
+  "name": "Abyssal Harvester",
+  "catalogue_id": 43,
+  "oracle_id": "68cc5065-0514-4adf-885f-da554e1db00a",
+  "facts_sha256": "144d0407e41ec789951dc3b583484993b4fa89c45381988596d2a6916523c8b7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4df92f62a58ec952c5e2733bccb46bd2274ffd7b50916b117073d3fb4dd34845"
+  }
+}

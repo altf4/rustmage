@@ -1,0 +1,11 @@
+{
+  "name": "Seam Rip",
+  "catalogue_id": 3746,
+  "oracle_id": "dfd5939e-a71a-4e16-9b93-752162be4ccd",
+  "facts_sha256": "0cbc01b5bfd9408d07f33402389933d62327c8603471f0b3a2aada5124b14400",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "29f6f1738a5a97b603b7efad1149d8a52c2edc5d58687d73fc0fb3a2521104ac"
+  }
+}

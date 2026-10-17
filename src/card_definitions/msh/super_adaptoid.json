@@ -1,0 +1,11 @@
+{
+  "name": "Super-Adaptoid",
+  "catalogue_id": 4258,
+  "oracle_id": "f93fa6ec-1f13-4109-aa60-11e148f7ba88",
+  "facts_sha256": "0481bc192f440a63fa0e81d0c71ea9a76c1868ad22a83019af960e6ab30eb75e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "69b45fc3b364489de500374eba09a3ff0528c1d68ab1645b2633a1f1ad3ea461"
+  }
+}

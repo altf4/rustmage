@@ -1,0 +1,11 @@
+{
+  "name": "Macabre Waltz",
+  "catalogue_id": 2603,
+  "oracle_id": "cf75dbd8-b65a-48d9-b96b-4afb43f336d1",
+  "facts_sha256": "627d74e336715a476ba7b9e2dde3ae4edf8b8be61cbdda9ec1a275be868f313d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dee13e238d837883b5e6c3d324ecdb43b2b17a5eec1643c1d49dafb63a3a2304"
+  }
+}

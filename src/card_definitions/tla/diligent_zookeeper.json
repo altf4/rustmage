@@ -1,0 +1,11 @@
+{
+  "name": "Diligent Zookeeper",
+  "catalogue_id": 1076,
+  "oracle_id": "6a84a8a4-c8b0-45ce-af6f-605fcffc395b",
+  "facts_sha256": "e1c84b9c69dbc5b3c98dbee1c30b0779220c4266143917ab06366ad04c3c000a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3a0f298e751027ae985c48b822f10387b7a2ecfbdab7f17c30671cb9c98bec55"
+  }
+}

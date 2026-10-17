@@ -1,0 +1,11 @@
+{
+  "name": "Frostbridge Guard",
+  "catalogue_id": 1638,
+  "oracle_id": "515c1604-59f0-45b4-91be-d2f20fdd3e1e",
+  "facts_sha256": "d2e44c1a9c7f026993e9e774ef227c06991f21266e248281e4c6c344f3702fa4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4a034b760fd2dd6ee8cd4de65878a8fe311b2df20c877756c414818e40806a60"
+  }
+}

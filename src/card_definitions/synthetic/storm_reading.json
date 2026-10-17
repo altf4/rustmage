@@ -1,0 +1,11 @@
+{
+  "name": "Storm Reading",
+  "catalogue_id": 5194,
+  "oracle_id": "48ab8ba0-0e85-4656-a798-ceb961fb02ce",
+  "facts_sha256": "149f3eb14226a5a3c87fb3dd632c9a307167e5bdc1980da07975cb8cdbbc5273",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3702f18aa34c9cd82d2498db888739ab7e1667c156daaa57c88ad93bc8534752"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Vraska Joins Up",
+  "catalogue_id": 4944,
+  "oracle_id": "c91b0dd5-4c63-49a5-95bf-c342b6ff2076",
+  "facts_sha256": "7abd5cbc1205ebf38b3a3020021d06af7f455271fcfef2396de0df8ad6e460ce",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ffebfb38eb005c773402ccb8a4d6975ce6e0e29be4c9a7ee1acd90d1c4f28339"
+  }
+}

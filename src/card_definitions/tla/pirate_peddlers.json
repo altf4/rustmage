@@ -1,0 +1,11 @@
+{
+  "name": "Pirate Peddlers",
+  "catalogue_id": 3171,
+  "oracle_id": "4771a871-576e-4a14-92f0-b5b41c63d615",
+  "facts_sha256": "ea5a3b4e6932389f4f17ea4e9ee2f14a4cbe3a5cee3a55661849075b6d60f578",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b6635a40517a3d440121c7571f9b57b824dba03e7b2979c08c43fec1fe1b79ac"
+  }
+}

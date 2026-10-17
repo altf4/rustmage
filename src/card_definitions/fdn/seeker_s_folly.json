@@ -1,0 +1,11 @@
+{
+  "name": "Seeker's Folly",
+  "catalogue_id": 3769,
+  "oracle_id": "223794f2-67a3-4ab5-81c5-046c63307c6c",
+  "facts_sha256": "7f6fea6f234a6306279ea7239df74f01e7f1fa9fc724e2c9b15945ff9391f6fe",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0d02732835e5d974c8ab48665ad888c6f2ea54a7d7b14eb6a6c1719a1bc5416a"
+  }
+}

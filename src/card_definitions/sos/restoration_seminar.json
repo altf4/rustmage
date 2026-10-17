@@ -1,0 +1,11 @@
+{
+  "name": "Restoration Seminar",
+  "catalogue_id": 3494,
+  "oracle_id": "fd0a27a9-7d7e-4a16-9dd0-0715e6c97b36",
+  "facts_sha256": "c30832e412af98a6ac11f420a2228d7e7b0d5254bfc9e01a212e8ad1bab72025",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "16acaa3cea3de71cfd0f567b75f3c926f243da823c2c57cafb977164d38136bc"
+  }
+}

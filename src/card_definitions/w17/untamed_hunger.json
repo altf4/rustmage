@@ -1,0 +1,11 @@
+{
+  "name": "Untamed Hunger",
+  "catalogue_id": 4806,
+  "oracle_id": "550abd9b-9aae-4812-9bc0-7f131d6dcde8",
+  "facts_sha256": "5e129b045db461c069cfcde92d6375190283badd7287b73e4c69f2c5c5f8ee0a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "912fde0f103fb5aa80f359f4c23619fdc3298557f25e5aa3c9ebc1d747ede192"
+  }
+}

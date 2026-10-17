@@ -1,0 +1,11 @@
+{
+  "name": "Bigfin Bouncer",
+  "catalogue_id": 406,
+  "oracle_id": "4e473298-0b67-42b8-90a8-3bcdd73da473",
+  "facts_sha256": "f282713b5c6adfe9757aa4290707186ac256df8c9b3c82c6bcd45be441cd87b4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6e681cd9c211ebb606799c95cdb336385e34bdc5571768d580fa61a1ef6dc4ea"
+  }
+}

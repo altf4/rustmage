@@ -1,0 +1,11 @@
+{
+  "name": "Crashing Wave",
+  "catalogue_id": 880,
+  "oracle_id": "c8d3936f-4c08-4ffe-83c9-7ed26fb8f9cd",
+  "facts_sha256": "956ea0b41391575c80c71d8962afe2969e1d8f75dad81006dd2430b2fbb7daf4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3f8d3f5f355256305eb9bc7861594e76011abac9b8ca15718e868c2f0a55a7dc"
+  }
+}

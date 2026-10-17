@@ -1,0 +1,11 @@
+{
+  "name": "Invasion Submersible",
+  "catalogue_id": 2211,
+  "oracle_id": "97369152-3b85-4cf1-aeb9-b3a8f1c37611",
+  "facts_sha256": "6e880beb12c2b15f8bcb7e17aac5fe95a5fd17b708a204ba23aca222d6b8cdbb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a66342ba8201a8a16905ae415f0802fec5f56302d6d745e63a8162b3b698bdad"
+  }
+}

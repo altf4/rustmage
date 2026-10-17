@@ -1,0 +1,11 @@
+{
+  "name": "Tempest Hawk",
+  "catalogue_id": 4360,
+  "oracle_id": "7423b3b9-56eb-4cf2-8ada-135918219c4b",
+  "facts_sha256": "f1d12e38ae5e581cb88808218491c3dbab69034fddddaad8285038c93d8f7fa9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4c89a89f4369dc41f8a23c58ca37f8e463dd0e23a1a282b1cbba2e9030a47882"
+  }
+}

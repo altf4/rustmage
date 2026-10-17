@@ -1,0 +1,11 @@
+{
+  "name": "Final Vengeance",
+  "catalogue_id": 1510,
+  "oracle_id": "cdba7f43-df9e-4bfb-9480-721c787ad051",
+  "facts_sha256": "831339a57102d87b2053d28644392bef2b26ec8e066427fb2067b4e6f41321f8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "24e7ff3ded1acf9cfe4599c5bf14f773898f9009ef49a1993eb2e0c8fb722112"
+  }
+}

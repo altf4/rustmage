@@ -1,0 +1,11 @@
+{
+  "name": "Deepway Navigator",
+  "catalogue_id": 1025,
+  "oracle_id": "812df594-75af-494f-be09-5f9633aca46a",
+  "facts_sha256": "76349ff79e5806969b19c1c18390c7a3a08a121ab9e92a60997545080e09efdd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f71a2db12c0e15bc6f0830e30078538da5451c73dcf4b47033c4382aaf7997f1"
+  }
+}

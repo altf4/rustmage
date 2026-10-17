@@ -1,0 +1,11 @@
+{
+  "name": "Shocking Sharpshooter",
+  "catalogue_id": 3841,
+  "oracle_id": "fbb7735f-ec91-4ed4-b735-d94a76e68a80",
+  "facts_sha256": "07db6f64b9bcd46ca4244e5d1fe292cdb1edc592ce5c35faed71b66d076f3821",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e6b140211e00a3ca7c28a65674062f4a61dfb34c7f7d8484c4b7d3436ecfc1d8"
+  }
+}

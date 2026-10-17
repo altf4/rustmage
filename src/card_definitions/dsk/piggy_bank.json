@@ -1,0 +1,11 @@
+{
+  "name": "Piggy Bank",
+  "catalogue_id": 3159,
+  "oracle_id": "a13f4095-300b-434f-aa9a-3608aaae5163",
+  "facts_sha256": "9a645b1941fb073b898093adbed8dec3f4e8923bc44ccfc3146710c8c5aff1b0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6af815e4f85cf170e0259d9fbd6794dd13796d849dbe0a52adb6c3f7afbc3f30"
+  }
+}

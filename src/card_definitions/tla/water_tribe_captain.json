@@ -1,0 +1,11 @@
+{
+  "name": "Water Tribe Captain",
+  "catalogue_id": 4994,
+  "oracle_id": "0c6c4921-c6cb-4b4b-ac9d-10ccc89a5d1d",
+  "facts_sha256": "09570764582b7931f438786bf77eac1ba6736a13ec44ad9ff1197bd4a1d6e78e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1c6f3005c17646b7a7165428c56164a94d942743c0e56ebea965b34beecaaa8b"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Syncopate",
+  "catalogue_id": 4304,
+  "oracle_id": "318f7f70-e374-40ef-8afb-3389c10461d8",
+  "facts_sha256": "32d850964588debe4f57a49c59647c54d4a25b76eb4a99ce46e67ce50658da54",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6f43790c9d6e2dd15830cad76737246428b0762e7fbfe2ced3157c8047310230"
+  }
+}

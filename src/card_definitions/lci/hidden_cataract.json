@@ -1,0 +1,11 @@
+{
+  "name": "Hidden Cataract",
+  "catalogue_id": 2025,
+  "oracle_id": "927979d7-9b5c-4448-aef0-baf2907a89f1",
+  "facts_sha256": "030af041cfc2b28674b888b0a9e6a0d7f34b10a34b5c98b963ab80b5be954fdc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "61d5f1f81b0da867411c4ac3a7914cd3992f62c40a88123793a6c1e9f45c0c18"
+  }
+}

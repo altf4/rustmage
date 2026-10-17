@@ -1,0 +1,11 @@
+{
+  "name": "Growth Curve",
+  "catalogue_id": 1891,
+  "oracle_id": "1efd6082-15a8-4322-892d-02d01e381e2a",
+  "facts_sha256": "206bc7371aa1dc8922bbe17ea7b35c3251b7d72a5e512bc414b49cf6f5835033",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "44dfdf09e90bb84649bc9bb92c19ce11770ccd8648bbcf90a05cdea2fe9c8ed3"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Sunbillow Verge",
+  "catalogue_id": 4235,
+  "oracle_id": "a202276b-1f1b-4277-95ee-26877a204f5e",
+  "facts_sha256": "3705f1ca8c1b9e069e7c0cb5c41326f2be02c1c348106267f303b414c4cc9f17",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ea9943356fa2464d17fde7569d069dc32e0529dcaa191ac2d3654d9cbf9f3457"
+  }
+}

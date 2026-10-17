@@ -1,0 +1,11 @@
+{
+  "name": "Path to Redemption",
+  "catalogue_id": 3110,
+  "oracle_id": "ac94860b-70b8-4624-9758-4bb024a56f60",
+  "facts_sha256": "c60c12c30169d0e1875b6bb39a82ab36d3a1d2cd7a5ea729328c738a9e6f2699",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "115add46966be259552c8d0cf5d5a493451e90236e8ffa9964d9c6f457fb5ac1"
+  }
+}

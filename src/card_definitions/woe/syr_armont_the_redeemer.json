@@ -1,0 +1,11 @@
+{
+  "name": "Syr Armont, the Redeemer",
+  "catalogue_id": 4308,
+  "oracle_id": "53fc09e1-1e5d-4f22-b623-2c5c770183ab",
+  "facts_sha256": "7e1e2bb719ce5ad391fa4f2bb8587fb6ff20b76e8c13bdc957a8281b3457f3c1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dd4390b8d6573b8fdc74b50a54b6cff12553e293cd0133a38f49704c75492f2f"
+  }
+}

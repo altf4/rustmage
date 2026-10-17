@@ -1,0 +1,11 @@
+{
+  "name": "Ragnarok, Divine Deliverance",
+  "catalogue_id": 3344,
+  "oracle_id": "14b839ef-80b1-4e7d-b2fd-38e973899cde",
+  "facts_sha256": "6250a54ec3c988fb68cea91c1eb98b59677229a1e3877cf28ef642e38d3623cc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "220002e748855e6354c9ef133724b3bd5d0a1e0d3b6164b93606e509ea99325c"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Mutable Explorer",
+  "catalogue_id": 2886,
+  "oracle_id": "34b93a66-de1e-4133-a479-e0d90ba94a3a",
+  "facts_sha256": "8655e55294f0a02c76f63a2c38344b5e74984ab2522ef4bd42a5b359fee69464",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7f7c200e087080e87e2590a8aa8d1354b08f3f92cb5b61f40a2a33b96f7eb617"
+  }
+}

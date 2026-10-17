@@ -1,0 +1,11 @@
+{
+  "name": "Make Your Move",
+  "catalogue_id": 2632,
+  "oracle_id": "8226f31d-6f51-49c3-87f7-0c68f7f4f9ce",
+  "facts_sha256": "3dfcd0e25488caa6142411793c83604bc36992fe2b4ba3a53bc5e46a1b4efcdf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "27b386423243090264750bd7fedbcb3780b774f3e0ebcba155e42c5951bcd0c9"
+  }
+}

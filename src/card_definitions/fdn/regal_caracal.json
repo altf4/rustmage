@@ -1,0 +1,11 @@
+{
+  "name": "Regal Caracal",
+  "catalogue_id": 3445,
+  "oracle_id": "aa571676-b390-4b8a-baea-4c4cd60c01f6",
+  "facts_sha256": "3ea9070525925f21f0e43f1b9c9213ffb194fd8b3bc830cb582d8becd864d517",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "45750284e08d0816f40cad59c1374d88ec79fa2b866b85d98995d6a170e430c4"
+  }
+}

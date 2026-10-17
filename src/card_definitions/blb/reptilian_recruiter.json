@@ -1,0 +1,11 @@
+{
+  "name": "Reptilian Recruiter",
+  "catalogue_id": 3464,
+  "oracle_id": "a12a66b5-ea4a-4a58-b0f0-13152598b7e6",
+  "facts_sha256": "acacd974316aca5ccbb371a121c32ee4d3cbd30c6f22897799a6ef5fa37df291",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c1786f4480f4a22cc7e7210399e1d5cc41199ba00a2e0f9a48f5306bd81f8767"
+  }
+}

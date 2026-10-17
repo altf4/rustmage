@@ -1,0 +1,11 @@
+{
+  "name": "Raphael's Technique",
+  "catalogue_id": 3377,
+  "oracle_id": "f58a5f8b-254c-4206-bdbe-55a23798ed2d",
+  "facts_sha256": "8fefda7a25709c6bc1248ed1d18778efb3e51b0e777df8ff1bdefef9c9473b87",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a77f1aba48e631eb01852249b67e1074d95df0bed5252dc18b6ddc17fe907f40"
+  }
+}

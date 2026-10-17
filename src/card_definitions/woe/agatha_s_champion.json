@@ -1,0 +1,11 @@
+{
+  "name": "Agatha's Champion",
+  "catalogue_id": 83,
+  "oracle_id": "debdfab7-454f-4fec-9ee8-aa5b570ea7fb",
+  "facts_sha256": "52a4d7823587ad2930f5304ab443d8dd3aa5e17b60bb29d605a6879833ac1ced",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "08b175e296218673f3ea0bf547b6a06e77e2f48bcc36f0cdbe0e9b06270c978c"
+  }
+}

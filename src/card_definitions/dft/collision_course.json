@@ -1,0 +1,11 @@
+{
+  "name": "Collision Course",
+  "catalogue_id": 799,
+  "oracle_id": "49ca0ca8-0733-4aa9-bd0c-1c661725b81b",
+  "facts_sha256": "30f3b1d75af22f26fb885019e8377763150ab01fc873683ff8b1469a8b07cee3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d44f3211e352de49164b9baea8f2cd69d15c567964cc24828a1e1015b77aaf2f"
+  }
+}

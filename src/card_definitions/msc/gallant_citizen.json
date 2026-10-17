@@ -1,0 +1,11 @@
+{
+  "name": "Gallant Citizen",
+  "catalogue_id": 1666,
+  "oracle_id": "2fcb1c1c-6157-4955-b899-e8a8b337d188",
+  "facts_sha256": "db33361cbf072e5c21b47512a5750b1b1d0e8f062bf8db48a508bf3fe40542c8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b0bed375b217ebd0c6ed2cd6c1d74522a7a28cd9aebec022227a826bd39e835b"
+  }
+}

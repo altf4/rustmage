@@ -1,0 +1,11 @@
+{
+  "name": "Inevitable Defeat",
+  "catalogue_id": 2158,
+  "oracle_id": "d68439b5-7011-4b1d-a7da-14ef0f4d9994",
+  "facts_sha256": "54e0d72b483962b5ee17d43888465c0f0f42255d0da29d73ab31f8ddf9364b67",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a7cd5637e8e87e589e5de0a696b6e4dafa0a09fd8ef56e933922b8f7b7d62a86"
+  }
+}

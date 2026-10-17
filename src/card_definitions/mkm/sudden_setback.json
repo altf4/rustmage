@@ -1,0 +1,11 @@
+{
+  "name": "Sudden Setback",
+  "catalogue_id": 4202,
+  "oracle_id": "565ba85c-bad8-4cbd-a2ff-b4384b886308",
+  "facts_sha256": "8083beab77e81d8bf31294a0fb824c769c9f267724959138c7507e2ee46eb0b5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "71030bcb27fb35e6060935fce9943815cb9c03b4c0d2bea694fd6a117a464dc3"
+  }
+}

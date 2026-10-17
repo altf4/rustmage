@@ -1,0 +1,11 @@
+{
+  "name": "Abomination, Terrifying Titan",
+  "catalogue_id": 33,
+  "oracle_id": "72101185-4336-480a-b4d7-f8ceb0007a51",
+  "facts_sha256": "d817593065523c6c082d432b2df091fb6e9ef05f2555e184c35e3db629bef2ac",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6d40bec523067218ea53cccbd4c479d2a27c335928ee649df73517e6910ba7d0"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Compassionate Healer",
+  "catalogue_id": 819,
+  "oracle_id": "6ef464bd-2ed0-4f99-af4a-ebf276f55384",
+  "facts_sha256": "077e0d6818c6c710889c14412f496da61d4d1d362c17eb735552b8936c406600",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "37beb0ba187810b6f62a2e8643fa52901051cde9f340465ff701ad92e1c08b16"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Bejeweled Warg",
+  "catalogue_id": 376,
+  "oracle_id": "051ff7e0-dd00-4467-8796-a5d1c21934ed",
+  "facts_sha256": "b3accdfb4b9647a58931ff6a33da1fa3d3eca851e01c73304f1907253d904228",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "df532ce146502571751551becd3c5874b33e852117e14eddf6eb7d009db63dbf"
+  }
+}

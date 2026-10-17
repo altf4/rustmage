@@ -1,0 +1,11 @@
+{
+  "name": "A.I.M. Labs",
+  "catalogue_id": 17,
+  "oracle_id": "8417f2d5-93c9-474a-a143-5c4e17097a88",
+  "facts_sha256": "6d413be4399ee179e20f10e5f45caa74200e5bf9fd717fdf0a020e97de9f15b2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "358b5167565b7229cecd5db93de12cea04338980d28dcec1e295a304b2990096"
+  }
+}

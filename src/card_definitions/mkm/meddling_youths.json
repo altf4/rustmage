@@ -1,0 +1,11 @@
+{
+  "name": "Meddling Youths",
+  "catalogue_id": 2702,
+  "oracle_id": "9acb74a9-f372-43ad-a80d-4f8d52236eb8",
+  "facts_sha256": "6b0e0c1aa8eeef4b76a164d467ed9b3081a07bbb937b83bc433465055adb6ee3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9a3c1589d23e26fd6e8a9b0254f49a5eff1997d6bf552f2a94d90413b5517ef3"
+  }
+}

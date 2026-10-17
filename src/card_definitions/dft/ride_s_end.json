@@ -1,0 +1,11 @@
+{
+  "name": "Ride's End",
+  "catalogue_id": 3521,
+  "oracle_id": "89e209f3-c474-453f-9659-ccebfc88bc0f",
+  "facts_sha256": "0d7022fa7be9ea5ff1335b42e9a84b2ebcc647af20cff6617a09ae1c77d90941",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cd5d58b98cda4ee344ac0942a14bd6efe5ef625c094386175c07e948337fb6c1"
+  }
+}

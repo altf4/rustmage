@@ -1,0 +1,11 @@
+{
+  "name": "Black Widow, Super Spy",
+  "catalogue_id": 434,
+  "oracle_id": "579f9a86-a1af-4c2a-a7e5-8fea0bd0eb61",
+  "facts_sha256": "575a5b0db0130243fcdd4122f1c86bac4713b65b635d068d67b6834e6d23cf8d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e1961324ca31ffb9ecf329b0fb602709afea2eaab0fb924bff9ad15133d74487"
+  }
+}

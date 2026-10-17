@@ -1,0 +1,11 @@
+{
+  "name": "Zenos yae Galvus // Shinryu, Transcendent Rival",
+  "catalogue_id": 5157,
+  "oracle_id": "8f52fc65-a914-421a-9426-21eb520d55d5",
+  "facts_sha256": "1af3d3340a00c7b840bab900742343265cde0b12ddefce62cf0ae8d33b65b577",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2fe8bcd886a38664c7fd73ac11ce0a00f185706dbc5fcb961b052d6f1d34ba7d"
+  }
+}

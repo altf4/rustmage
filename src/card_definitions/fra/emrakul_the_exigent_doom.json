@@ -1,0 +1,11 @@
+{
+  "name": "Emrakul, the Exigent Doom",
+  "catalogue_id": 1324,
+  "oracle_id": "4421ab7d-6d9b-4edd-b5a0-53a8ed84da6f",
+  "facts_sha256": "7268288aa2deba8e63c64b6c1ca47f9b6f86c7ee845f27189657dd237ad22aa8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ded7230c9d7cd9335eb2eb525caa2ccaf4a555fc236c29fd5b064cab2e4c6b6e"
+  }
+}

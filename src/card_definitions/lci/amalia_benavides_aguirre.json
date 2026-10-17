@@ -1,0 +1,11 @@
+{
+  "name": "Amalia Benavides Aguirre",
+  "catalogue_id": 142,
+  "oracle_id": "85eefda9-4aab-467d-a08c-be026cb8ff42",
+  "facts_sha256": "08464713637c628fc80869a445f7ba54396a0dd9d98d63c09d8739d2a03f399e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f54733a3c591461a816f4e596e5e8fdd2dc48ba7ad1f3350cd5963a00291029c"
+  }
+}

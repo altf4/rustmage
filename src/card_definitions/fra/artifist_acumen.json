@@ -1,0 +1,11 @@
+{
+  "name": "Artifist Acumen",
+  "catalogue_id": 233,
+  "oracle_id": "129b41cf-8327-42f0-b186-1111b42c08ab",
+  "facts_sha256": "27be8d3f5aa4b41ee5eba8bca07556b0c52ca614e97f5b9abda42ad1058cd5e3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "37f42c3f26720178e87ca17a16f8830461edc31b5e1c6062ff62a17e32c2cba0"
+  }
+}

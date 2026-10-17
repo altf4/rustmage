@@ -1,0 +1,11 @@
+{
+  "name": "Snaremaster Sprite",
+  "catalogue_id": 3941,
+  "oracle_id": "b0632f1b-14e5-4534-b2c5-af9d557fdcc0",
+  "facts_sha256": "6709b2f8ecf2df80fd571c5ee82180f78740926cc80a8d55486ade89368c09bb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "402d7d5f808d163bd656ab75379ad9e0f97fd70b17133b047d3ec1159d093665"
+  }
+}

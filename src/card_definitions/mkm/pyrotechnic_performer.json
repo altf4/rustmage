@@ -1,0 +1,11 @@
+{
+  "name": "Pyrotechnic Performer",
+  "catalogue_id": 3296,
+  "oracle_id": "78f9ec0f-6015-4024-aca6-9a14cba373fa",
+  "facts_sha256": "d736f20acb016f861d505a77fc62c3456027e05b68367e81c08bf73b62c6d146",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f2aed8946a37884c80c6d8032c0644a2a5e6f5babab90fa8f842ea78602cad57"
+  }
+}

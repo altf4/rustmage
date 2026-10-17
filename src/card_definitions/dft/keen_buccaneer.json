@@ -1,0 +1,11 @@
+{
+  "name": "Keen Buccaneer",
+  "catalogue_id": 2332,
+  "oracle_id": "8cadf9c0-9a63-4cde-a6be-0ae86890c831",
+  "facts_sha256": "fbb352906659a423d0977004cae0f3b957dd858e0dc438ec6a4af03c791fa5c0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2737a460a3f7038d387c26712eaba63fb3311c58639be7d83c76854fd7202610"
+  }
+}

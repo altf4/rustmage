@@ -1,0 +1,11 @@
+{
+  "name": "Scarlet Spider, Ben Reilly",
+  "catalogue_id": 3714,
+  "oracle_id": "13ab2f3f-f65e-42b5-b743-39b30a4c4751",
+  "facts_sha256": "0ec831d7a59fc7caf2a909744044a5f71b11b6d33e7c81995d763b4c80d8bdb6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ce87e69f9a65166372af6734a601e794e6af93ca743c263fd7cb4f18603d2f35"
+  }
+}

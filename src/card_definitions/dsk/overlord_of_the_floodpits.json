@@ -1,0 +1,11 @@
+{
+  "name": "Overlord of the Floodpits",
+  "catalogue_id": 3072,
+  "oracle_id": "31196f0b-33ee-4981-ac97-24226e8b405f",
+  "facts_sha256": "0d12d114105ffa0e206dda0f8ba5650ed4a5c3c831c66c6597761aff831a90c5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "823e6e51105aca2dc7d8845d469b2e7ec4caecdbd411136f0e142d054c2719a3"
+  }
+}

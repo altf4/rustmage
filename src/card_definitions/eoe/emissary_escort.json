@@ -1,0 +1,11 @@
+{
+  "name": "Emissary Escort",
+  "catalogue_id": 1321,
+  "oracle_id": "7d8b53f4-bdb5-4ba1-b6c0-f4846d8d3565",
+  "facts_sha256": "031d73976c1ed00c768b7753b2052da2341564429a2012b9b392bc98de75310e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b62d731336c89635192ab71886ae2bbb8e18a5bdda38163df53afd48ca4b216c"
+  }
+}

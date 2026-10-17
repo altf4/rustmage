@@ -1,0 +1,11 @@
+{
+  "name": "Ray Fillet, Man Ray",
+  "catalogue_id": 3402,
+  "oracle_id": "698098b8-b8e4-4e88-b13a-6b039579d192",
+  "facts_sha256": "6aff604d0328ab3c2ec0128105d1dbd367ca56f68125dd79528b76e746a9d947",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4e5cf6674a0348f42d1f81887c70d3d6a30b885056811f9ad330c8514dfc7b8f"
+  }
+}

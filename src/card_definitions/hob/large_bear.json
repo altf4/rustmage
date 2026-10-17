@@ -1,0 +1,11 @@
+{
+  "name": "Large Bear",
+  "catalogue_id": 2445,
+  "oracle_id": "73346137-3117-4dc3-b5a4-1aca1da54548",
+  "facts_sha256": "3ba109962335112c7dc6a582e00ba57c297a05e8ff540fa29e310a6d8f5dd44d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cfd268e3abddde8f56e1e1a7551ef7d421f137d30708f76917ab94a2ddf72f62"
+  }
+}

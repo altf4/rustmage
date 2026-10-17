@@ -1,0 +1,11 @@
+{
+  "name": "Human Torch, Johnny Storm",
+  "catalogue_id": 2097,
+  "oracle_id": "5b6f2770-e774-4a77-801f-a3fda093c3dd",
+  "facts_sha256": "9a1a8beb6d64b9a61b23c032db1cd070aa0c97188a746a095c8ce1c30483ddd1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "13dd7e2fd3f8d913e1dbdd4c1e62eeb53f8ee9d66a6d7b45f519da43f056a0c6"
+  }
+}

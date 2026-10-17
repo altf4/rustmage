@@ -1,0 +1,11 @@
+{
+  "name": "Wary Watchdog",
+  "catalogue_id": 4990,
+  "oracle_id": "7e063f60-876a-48fe-8bc6-9888180176d1",
+  "facts_sha256": "3465a070977eaf0b3e5c71eddeb636cb4565e24db692384b0a274d1fac239d39",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "72b2152602f778f03b9e178f4b8c89afd9ca6bddefe9532ae49c55ada43d6464"
+  }
+}

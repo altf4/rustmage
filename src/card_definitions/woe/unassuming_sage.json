@@ -1,0 +1,11 @@
+{
+  "name": "Unassuming Sage",
+  "catalogue_id": 4752,
+  "oracle_id": "1cf4e16b-2273-41c7-9bcd-0cdc78e12198",
+  "facts_sha256": "4cd587a578c786c0e764c73cac168d1c850b2315263392c1b74258953c279808",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d2f8eed3ee1c6e3fca12e34e660241dae42682bbdfbeae8a500e92c95440fec2"
+  }
+}

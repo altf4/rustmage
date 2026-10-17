@@ -1,0 +1,11 @@
+{
+  "name": "Prismabasher",
+  "catalogue_id": 3239,
+  "oracle_id": "f75be4f2-d1a7-40c7-a0e4-ba8b03556ac6",
+  "facts_sha256": "d80d5d629bc46d11de0127a82dba2642883ba7c6da5970a43d0f043d02fe8658",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5e1f29c54fb8c735a30139197179a5fda4113dcf00cb57be736c8b0be0e0bba3"
+  }
+}

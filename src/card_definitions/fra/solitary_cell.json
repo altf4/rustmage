@@ -1,0 +1,11 @@
+{
+  "name": "Solitary Cell",
+  "catalogue_id": 3959,
+  "oracle_id": "66a22b35-3dc0-4a74-8474-e73293403de6",
+  "facts_sha256": "3d2edf25a27ac71da1e54eb6d53dd97db9abeddfe1fbe98267f45a6f1df2834c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b55c6b5d98167196d4ab7b14c16412bb18c65d5bbd63b8a82949421c789e1699"
+  }
+}

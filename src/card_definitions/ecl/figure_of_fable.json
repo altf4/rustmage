@@ -1,0 +1,11 @@
+{
+  "name": "Figure of Fable",
+  "catalogue_id": 1507,
+  "oracle_id": "5d4ea910-3b16-4f98-89be-c1b2cfff4bf0",
+  "facts_sha256": "0ce8f2a8432d6cfaeb03d6d772a612744e5df4da3c92dbe656377b669698056f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "84e336020a0c46f4cb0f9a4cb96a8924edb29b7e5ea800fc50ac310d679c46f0"
+  }
+}

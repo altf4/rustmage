@@ -1,0 +1,11 @@
+{
+  "name": "Toph, Hardheaded Teacher",
+  "catalogue_id": 4633,
+  "oracle_id": "8c1c0117-6fc0-43c5-a4c8-6472de6503d9",
+  "facts_sha256": "db9a279d48acdbfc809681a0846b05480ba45e06b744a47129bc6f0a163c50e5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "86e97d2152d9eb59759897fcecfe8fe329d39974b92ba535308cc627b2d7487f"
+  }
+}

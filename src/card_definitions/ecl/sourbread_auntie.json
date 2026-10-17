@@ -1,0 +1,11 @@
+{
+  "name": "Sourbread Auntie",
+  "catalogue_id": 3982,
+  "oracle_id": "6b087ae1-1412-4dd9-9b96-3b45be52d386",
+  "facts_sha256": "6ec243cd5d213929fd18d0fb5beb67241747b68fc250ed4279f64520db09cdc5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2d75d3ffe2a5a95acbcc990d06f2f4d835cb83e0c8b358e0edf93a911b8cd817"
+  }
+}

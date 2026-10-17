@@ -1,0 +1,11 @@
+{
+  "name": "Serah Farron // Crystallized Serah",
+  "catalogue_id": 3792,
+  "oracle_id": "a8a7a3b7-015c-4fbd-8b90-e0ddf71663e4",
+  "facts_sha256": "8f428ed4d1775efed12a3ff6387e747235f64a4010811bff05f805f8c45477fd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a8201305f46aad2ce47d14e50d530126b660a0ff9372f1782731e3ff32931a4e"
+  }
+}

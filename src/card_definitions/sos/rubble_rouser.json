@@ -1,0 +1,11 @@
+{
+  "name": "Rubble Rouser",
+  "catalogue_id": 3606,
+  "oracle_id": "f35aa497-bd0f-4642-8713-820b9f014da5",
+  "facts_sha256": "e7231e8954759349bf851a2cdf27d6792e665260ecd36b9fbfb7c4d84a6cd4a4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bd04b644a6772e23005a828b61334801810469be60bb59f0bf1e21a1b10e6eb3"
+  }
+}

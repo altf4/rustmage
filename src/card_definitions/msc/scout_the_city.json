@@ -1,0 +1,11 @@
+{
+  "name": "Scout the City",
+  "catalogue_id": 3733,
+  "oracle_id": "ecb8e283-5cdb-4e6a-bdff-546c1617363c",
+  "facts_sha256": "f37c984b35489c157d0046b0ffaecaa22aea3b2cfca1a0aeaf4c52ee1ce6ed83",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d974dd12d8f6758d8775b345e00957027f0b22db2adf7afa52cb8d09c68f2543"
+  }
+}

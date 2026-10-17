@@ -1,0 +1,11 @@
+{
+  "name": "Mirkwood",
+  "catalogue_id": 2780,
+  "oracle_id": "cd49aa99-bf84-4edd-aecc-6dae78b73412",
+  "facts_sha256": "82b3847c538d1c0c6ec55ed9adffe85678fc37a0c7346339067f58d88d43e72c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ecd920a9ff19db057ae9b5c9b0b0e8733ff9ba4aeae26acadcc5479d435334e7"
+  }
+}

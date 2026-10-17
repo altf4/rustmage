@@ -1,0 +1,11 @@
+{
+  "name": "Soul Enervation",
+  "catalogue_id": 3972,
+  "oracle_id": "5b4508a3-1d21-46ec-8a50-cd3171a7348a",
+  "facts_sha256": "0c7814c57f1c38e3f307e7449c97e8ebe39e77a4049f343745d06cb6f9bab53b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "422a644ebacf2f090ff6764d1a7c0560f955cc0984589e77d55a61f12270956c"
+  }
+}

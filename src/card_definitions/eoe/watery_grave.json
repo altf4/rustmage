@@ -1,0 +1,11 @@
+{
+  "name": "Watery Grave",
+  "catalogue_id": 5004,
+  "oracle_id": "fc9ec820-4245-4a96-b009-5308a818ca58",
+  "facts_sha256": "ad004df70ec1081cd176f13b13a634fe0ff63756c652d9fa6e705f2c55a60c1a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8a2a423ba5070b71cb9276cc3873a6731621fe771d72824654ff91408ac82186"
+  }
+}

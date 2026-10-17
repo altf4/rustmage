@@ -1,0 +1,11 @@
+{
+  "name": "Sidisi, Regent of the Mire",
+  "catalogue_id": 3864,
+  "oracle_id": "72074972-418d-4dce-83cf-ce8cf310fc42",
+  "facts_sha256": "f7fedf7ab4e6618ace33a5618b7dc30c84bb2c51a2c1be989f0aa0dc651c7e06",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "22cd5b51f490ab6859df047210b281b167c629ef9db1d498e75e0242a7810e79"
+  }
+}

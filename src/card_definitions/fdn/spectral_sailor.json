@@ -1,0 +1,11 @@
+{
+  "name": "Spectral Sailor",
+  "catalogue_id": 4001,
+  "oracle_id": "a8fdbcdf-479d-4582-9ad5-9fbd4c740c29",
+  "facts_sha256": "9a4988e63763cd1e9da186bf6f34a77e94b7674789c8bfbf51c1b261819ae036",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d11934a9e57dd2af8b79ab6015af0f21c5dc29dc25ddd600648b338a06c5e405"
+  }
+}

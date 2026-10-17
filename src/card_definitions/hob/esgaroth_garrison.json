@@ -1,0 +1,11 @@
+{
+  "name": "Esgaroth Garrison",
+  "catalogue_id": 1366,
+  "oracle_id": "84597236-2cfc-4654-b126-a8ee252f4d14",
+  "facts_sha256": "db96847ff6f0bf05cdd000268a01fc6b38bd8b513f99d616f319e68399712a6a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0697fa293d02f0c94d26a8240b485daa1b800a5144f8faa5e8d83460728386cf"
+  }
+}

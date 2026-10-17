@@ -1,0 +1,11 @@
+{
+  "name": "Madame Hydra",
+  "catalogue_id": 2606,
+  "oracle_id": "d812c8e3-a475-4ad2-a93f-7208ad873676",
+  "facts_sha256": "2259c00b78b2cd0814c12a79ac487abb87c73bcfbb011cc84073475b45fbcc9c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "780bec75b8b68fa476914fc28202c710ddd473c28ef2a5bad58fc431dad279d3"
+  }
+}

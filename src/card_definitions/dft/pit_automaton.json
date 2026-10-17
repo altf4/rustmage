@@ -1,0 +1,11 @@
+{
+  "name": "Pit Automaton",
+  "catalogue_id": 3173,
+  "oracle_id": "49bfecc3-6258-454e-a8fd-fc49098a0898",
+  "facts_sha256": "d314d021684ed5230621b1c7afe2a43ad4bafb92fb5ea666332cc9a5b22f90b3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "45816b89f47e80961ee42722e6ac7d89748e5d086f96fa5c1c39504279ba6083"
+  }
+}

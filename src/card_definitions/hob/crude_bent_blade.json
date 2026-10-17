@@ -1,0 +1,11 @@
+{
+  "name": "Crude Bent Blade",
+  "catalogue_id": 899,
+  "oracle_id": "eec81460-899d-4b4c-b33c-ce2ca704df17",
+  "facts_sha256": "542d7259214cbbb85df22f00fcc80f684c3bc1c9de982fab42572672c7f6c994",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e9f0835fd63e96705fda6d534e602e0d4e44fcf8e666659d63a1cb9c56b8d62c"
+  }
+}

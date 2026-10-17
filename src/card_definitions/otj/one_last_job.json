@@ -1,0 +1,11 @@
+{
+  "name": "One Last Job",
+  "catalogue_id": 3023,
+  "oracle_id": "55cba59c-932c-4295-87dc-9179fbdfbd53",
+  "facts_sha256": "1ddb6178cef097f71ea27099e3b1c5b2cceb06c865ea51ecd521daa8c7844cf9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7dc5779bf8f58705d362ecf09357df4cdb6d726e976ddbe11b97261055d80034"
+  }
+}

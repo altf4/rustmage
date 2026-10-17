@@ -1,0 +1,11 @@
+{
+  "name": "Adaptive Automaton",
+  "catalogue_id": 55,
+  "oracle_id": "53c730c6-2f8c-4af8-b400-b9d573a71e60",
+  "facts_sha256": "1c4bb431a50cd68d991e0069cd16e3a9d061ebe6ae6992a1a80d3e673f65be74",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a6ed32b8020696c1241163a7b5f3b90e0203091df2e3945bde5ffa4861d7879e"
+  }
+}

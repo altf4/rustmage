@@ -1,0 +1,11 @@
+{
+  "name": "Agency Outfitter",
+  "catalogue_id": 86,
+  "oracle_id": "23b2de61-a29c-4a32-b38c-408c723727ce",
+  "facts_sha256": "dad95635c92371411ebc912f8c09e2b7bc3044e07bbe878f819b13a0d0c5b2ed",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7c5d3bc8265aedd9a47eb0d1b2f9ef2b314d6b23703d784fd20f8d77cedc982a"
+  }
+}

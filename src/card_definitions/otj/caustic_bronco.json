@@ -1,0 +1,11 @@
+{
+  "name": "Caustic Bronco",
+  "catalogue_id": 686,
+  "oracle_id": "165bdc68-1da0-47db-a069-978fc4c04b3f",
+  "facts_sha256": "9d41633a6fb3d531c486364607a0c30b60b188a53f3801d761727e11c01ce1f1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c456273a63c1e120aee9de2f11295804ba995f9203b83bbcbde23f050a91b2f2"
+  }
+}

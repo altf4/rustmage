@@ -1,0 +1,11 @@
+{
+  "name": "Archive Dragon",
+  "catalogue_id": 212,
+  "oracle_id": "cddbd819-4895-4712-b44b-d6b51f3d8646",
+  "facts_sha256": "5d9a20742dde197c1eb19f845b18cbd53da39ef6fb0385631ba6490a9ec9e392",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c36b41e9b10a21dc4b060433e409b6550c1c98bfde966ab7e18b004f9c4ba808"
+  }
+}

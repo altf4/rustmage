@@ -1,0 +1,11 @@
+{
+  "name": "Frantic Strength",
+  "catalogue_id": 1616,
+  "oracle_id": "5dbe4648-f4c9-4d26-98f5-58a7e53b149d",
+  "facts_sha256": "922236c82ca92231790d5c8723879ef332cd4e9bc7dbb046726b0fbaa77d455e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "841419bdb6da77329744b133272e8740d3a3ecd6da3849fc3c0dcd2d9a348645"
+  }
+}

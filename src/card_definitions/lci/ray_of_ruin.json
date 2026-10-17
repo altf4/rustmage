@@ -1,0 +1,11 @@
+{
+  "name": "Ray of Ruin",
+  "catalogue_id": 3403,
+  "oracle_id": "e36b78ed-4e3e-406d-85b3-fe0deb493418",
+  "facts_sha256": "2db73c8fa76d2fb32c6c45c27b81a0867a947dd13033014abf1c10723af04298",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5f7c53fee3d09babb0330921f4c7209e88d24c8366734246044c5ee764cc3813"
+  }
+}

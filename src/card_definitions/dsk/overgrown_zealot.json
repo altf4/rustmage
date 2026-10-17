@@ -1,0 +1,11 @@
+{
+  "name": "Overgrown Zealot",
+  "catalogue_id": 3068,
+  "oracle_id": "5146b291-1170-481f-a4b9-709dd5c4b09c",
+  "facts_sha256": "ccf7c081459ce0a3c8edd752d4d652b904d135e036242f3345a3f84211c8e25b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0211a4c23230c84f58d7f4be5d99ce930ac72437025b9b84771ddc4dad54ab60"
+  }
+}

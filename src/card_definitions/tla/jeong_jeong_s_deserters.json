@@ -1,0 +1,11 @@
+{
+  "name": "Jeong Jeong's Deserters",
+  "catalogue_id": 2267,
+  "oracle_id": "6a06d281-3ca2-498f-91d0-e13e7b0869f9",
+  "facts_sha256": "d7a73b59a844195be0a8f54445c3b2d33787406052dd67e5201e26afbebaa3f4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "df63e979f58adf0b84221e79032af28dc8e294c3d558fced4137d2f6d6749b6f"
+  }
+}

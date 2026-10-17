@@ -1,0 +1,11 @@
+{
+  "name": "Samut, the Driving Force",
+  "catalogue_id": 3669,
+  "oracle_id": "ee89c719-5ae8-4316-bfd0-cfe3684b5859",
+  "facts_sha256": "fbe5653dd80e783c082bfcca8ec0ab663850eec4cc1e572a9e2c0775e5b4c270",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cfd78c4ded3f649c9687fdbf64d9dad973a82c5dce964e580bbfaa4b32ef25b6"
+  }
+}

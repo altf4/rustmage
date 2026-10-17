@@ -1,0 +1,11 @@
+{
+  "name": "Daring Waverider",
+  "catalogue_id": 962,
+  "oracle_id": "e4d52559-7624-48b2-96ba-e52ada6c507a",
+  "facts_sha256": "96b31ce630670677e14af9b6f88dc44f81f75b9d65e957ae1d02852b2adb92d7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3cf780ddb6d9a0f1dcc9f7c957b9931c3d05b4d6bf4d20ac24d73c75ac2bd3b2"
+  }
+}

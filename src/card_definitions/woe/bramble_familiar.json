@@ -1,0 +1,11 @@
+{
+  "name": "Bramble Familiar",
+  "catalogue_id": 522,
+  "oracle_id": "68f36dfa-bbd2-4860-b09b-37e35136be72",
+  "facts_sha256": "a629f31c158441429a7032d7f337cd39b65f3299a0ed1c89a1da44fa1fdd80d2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "474b682958f8537a6d55d62b1c5987a66dc29673e58b768d47953f1ac8021ad0"
+  }
+}

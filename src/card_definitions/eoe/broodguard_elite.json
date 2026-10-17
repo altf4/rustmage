@@ -1,0 +1,11 @@
+{
+  "name": "Broodguard Elite",
+  "catalogue_id": 567,
+  "oracle_id": "c90da077-de8c-4402-abfc-b63dd15853da",
+  "facts_sha256": "dedecc34f47b2d9886669a74cb5ceb0f5fba1d0a13eda3b5736d081d13ec327b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7dc935f2d489c18da444729e6943cf8367f27740d974e80f62748f9452531551"
+  }
+}

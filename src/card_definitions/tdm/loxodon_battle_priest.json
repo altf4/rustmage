@@ -1,0 +1,11 @@
+{
+  "name": "Loxodon Battle Priest",
+  "catalogue_id": 2570,
+  "oracle_id": "8cf4ddb0-2a83-4d8f-b636-7ba3c81ea4ca",
+  "facts_sha256": "643fec69f3472613476a034f83703fd95e9c604822108390f3fe2f6c3c5ad7c3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "87b447e6b4c466c040552210003b05b577e6b8ecd9c971876d695483dd8cec2c"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Haunted Hellride",
+  "catalogue_id": 1962,
+  "oracle_id": "47944bf1-b954-4143-b479-45c10071e35a",
+  "facts_sha256": "7b2fca4a367b0988238e48e871f3216dc6810bc4abd8a4de5a3a1e6a8d5a8a2a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a28822a1ab356fe8743584d3e27151883d884a84ad8c9d9040e20fedf5769529"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Dread Summons",
+  "catalogue_id": 1174,
+  "oracle_id": "642fa01d-025e-44dd-8360-5325e5a28282",
+  "facts_sha256": "cf293e51995d8ee427a46887c3209619806ace44b584c3288fc31d7465127d11",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ad77e7e9c4b490b50e09aa9a640b1c26bbc43b50e53ef644f2c3827d9f59809e"
+  }
+}

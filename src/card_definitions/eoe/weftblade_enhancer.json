@@ -1,0 +1,11 @@
+{
+  "name": "Weftblade Enhancer",
+  "catalogue_id": 5030,
+  "oracle_id": "4d8ee903-17b3-43c9-9637-ee596955a9f4",
+  "facts_sha256": "f487d0cc8c140ec0401b05ada0ba83174b9a819b6ece2f894bdcf98377936d8a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "19675f50f9695a6b5751b349a5bbf59a360b427c7d11e107c47ac7bd49221533"
+  }
+}

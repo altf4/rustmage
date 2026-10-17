@@ -1,0 +1,11 @@
+{
+  "name": "Cut In",
+  "catalogue_id": 940,
+  "oracle_id": "9b205900-ec39-455e-900b-615ece08a07f",
+  "facts_sha256": "d3d502d092ca677b4647c37ee890ec1337eb91d24047a24927c8e9a1bce14940",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a9e6c88ab2f278e497defe62f5ea603b0739e7978e513ae7a0572ebb7c7c976d"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Virtue of Persistence // Locthwain Scorn",
+  "catalogue_id": 4908,
+  "oracle_id": "fae36da0-bf9c-484f-b2fe-dd8ab2effc5c",
+  "facts_sha256": "e58ab9f3c9b5c38bebb5cbd05502fc2dbe8de740aa4cb05fff95cc017c5478d8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "937ad0224c57f1e8d427bc8904acef67b01c1b7c17501ce521bcaf3c7adacb25"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Dawn's Light Archer",
+  "catalogue_id": 978,
+  "oracle_id": "1f2d1de6-42e0-4f45-b43d-ce4980146469",
+  "facts_sha256": "178bc5cace608c6248b588b9becbf335fada7156202237b1c3b82f7e1965f4fe",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fb720e9f177201934ba62e09e93a73999068d33eb994efe19b552afc84bf308d"
+  }
+}

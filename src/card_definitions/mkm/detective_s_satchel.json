@@ -1,0 +1,11 @@
+{
+  "name": "Detective's Satchel",
+  "catalogue_id": 1061,
+  "oracle_id": "e4ecfccd-b8b4-4b18-b989-30de79b4971e",
+  "facts_sha256": "8cbde7a806ba78b72f502c951bf597c36d62df468514a01d53e3c0c315f9a5f4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "72a136100daf9eb56f30049677f1448d2da3527d01626972197395f6bbddd73f"
+  }
+}

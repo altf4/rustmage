@@ -1,0 +1,11 @@
+{
+  "name": "The Swarmweaver",
+  "catalogue_id": 4506,
+  "oracle_id": "50120e90-2fdf-43c1-93e2-2230ee4e63fc",
+  "facts_sha256": "c0169b4c86913b7d29138e595a8faf0ab06755d7e2ed1253171e42238146339c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7674cae471f05c1e0db9deb08b80eb6a30377be2b139d10703d15497301bfd62"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Capital City",
+  "catalogue_id": 640,
+  "oracle_id": "2c96ab90-155b-4bf4-acc9-65a2f0cd3189",
+  "facts_sha256": "191c39a862169e4d73cd2b5d5ce66e4eb68e778b1f809e9b131d41aa5b74812b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f7d8499d7874d56e61427de53464519dfb7ee3d360de344f0722174bdc4ac9a4"
+  }
+}

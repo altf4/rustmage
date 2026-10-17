@@ -1,0 +1,11 @@
+{
+  "name": "Impact Tremors",
+  "catalogue_id": 2145,
+  "oracle_id": "9242cd3e-1a71-4700-8182-9c1005616033",
+  "facts_sha256": "93afd0bd74a6c33c341fb75e5e9b4cc014ca564ed597c5d702c95338a45e84fa",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0072b9d0a77f7e6a774b7abec4891f182b2dacc62edefdbbf057dd3b2ca967a6"
+  }
+}

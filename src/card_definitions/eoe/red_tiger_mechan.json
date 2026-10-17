@@ -1,0 +1,11 @@
+{
+  "name": "Red Tiger Mechan",
+  "catalogue_id": 3431,
+  "oracle_id": "94c9aea7-564d-4fc8-ae14-7b22cba18b95",
+  "facts_sha256": "1debcd9b1bd5fa3ce16f1e80047f713f6f1dec19e5646669b2d154463f224036",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fb4f77762544e906fcad0aaf69f5d94c0a2509d2d82cb971e0b38365129faad4"
+  }
+}

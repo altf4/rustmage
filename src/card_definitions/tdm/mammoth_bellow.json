@@ -1,0 +1,11 @@
+{
+  "name": "Mammoth Bellow",
+  "catalogue_id": 2647,
+  "oracle_id": "6f2e4607-bece-42ba-a2a3-5dc50f246793",
+  "facts_sha256": "dd7d7f2bcf761ae97b314cb5be68344885b614033f8788de8b789392bf601812",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3a28d45fc91c3e21f292f18667f65e7e5bc2fa448ac65f03c25aba627ed6c1cf"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Overwrite the Multiverse",
+  "catalogue_id": 3078,
+  "oracle_id": "d0372cde-bf30-4a1b-93bb-9ff4ac1c116d",
+  "facts_sha256": "a5f56ae933a5335703e483234749c285e83cd15600c36a7e3d143af4894deb4a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "850fc6b3d6405ac5174fbe7ff7fca50a1a51af10eed8f4c0179ae0b65abf8941"
+  }
+}

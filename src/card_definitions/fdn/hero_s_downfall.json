@@ -1,0 +1,11 @@
+{
+  "name": "Hero's Downfall",
+  "catalogue_id": 2015,
+  "oracle_id": "03df6a57-37c9-46d3-83b3-4a6240100714",
+  "facts_sha256": "7fb92379fa90ca48849c980c7a8fc2cdebfc32124e2cbe4822eb7d451b466556",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "de154d61120f39010021ac762381606c6fe3582a1b0031f80d2a1a160eb440c3"
+  }
+}

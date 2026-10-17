@@ -1,0 +1,11 @@
+{
+  "name": "Skeleton Archer",
+  "catalogue_id": 3890,
+  "oracle_id": "3792763c-7aa0-4055-b8a1-3257e0443ef1",
+  "facts_sha256": "0ede09e5d647ad2bcfdb8bc8dbae2a5dd7ae8ef2fe45e394b5c2895abdf22b99",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "15630918cb5037b155fa34d4e16539e1312dba6c4da6af17dc08269ca1e29d4e"
+  }
+}

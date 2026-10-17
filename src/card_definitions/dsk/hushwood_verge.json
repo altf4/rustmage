@@ -1,0 +1,11 @@
+{
+  "name": "Hushwood Verge",
+  "catalogue_id": 2108,
+  "oracle_id": "cce328b9-6100-417e-9ddf-808bbe3e3bc5",
+  "facts_sha256": "fc9c73c6dcd497a9358da0966f8f8bf6849147b9804248f7b7bbf7d7c1c00edd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f93f651a5e64bf39efe72ee9aa7b53c34bdf3947bb5f5e3209495e498d578f2d"
+  }
+}

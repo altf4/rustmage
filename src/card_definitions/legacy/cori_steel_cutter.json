@@ -1,0 +1,11 @@
+{
+  "name": "Cori-Steel Cutter",
+  "catalogue_id": 849,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "809370d6edbe6f4d77b7a20f7ddc702ff4eb85a6acdfe036ab4d5b0b065e4264"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Tractor Beam",
+  "catalogue_id": 4646,
+  "oracle_id": "ed99a0b8-d82d-4c80-af97-cabd333620df",
+  "facts_sha256": "c034a06dd38cde8b53acc396ea4a49d3d67343f929237b3acc79a1cd375303ea",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c7834f2706323aa98d689f8e42de955c7af771ee970b9ec3d9f4a9d41272dd47"
+  }
+}

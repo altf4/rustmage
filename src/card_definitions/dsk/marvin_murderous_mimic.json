@@ -1,0 +1,11 @@
+{
+  "name": "Marvin, Murderous Mimic",
+  "catalogue_id": 2671,
+  "oracle_id": "22f0dbbb-9d8d-42bc-8903-fc0b65e00952",
+  "facts_sha256": "9e056c2d244a2429f13dd59ffa5e46825753317584adcc432f1b8e1a8fa3606a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "db6aac7be75ede972755c2130924bcb9a050f947c020726cb3270a769de5ea33"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Gateway Sneak",
+  "catalogue_id": 1696,
+  "oracle_id": "66c227f2-0e74-43e2-ab24-3866d15c5eef",
+  "facts_sha256": "31df8473084864466de35bf04ba30e41f908e16c7737bc4a0ad6838670b76cb9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f0e429afc8fc44d596d70e3e2eb77c4f213d6384ede2e31da1baef38d322e967"
+  }
+}

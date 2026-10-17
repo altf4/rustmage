@@ -1,0 +1,11 @@
+{
+  "name": "Boosted Sloop",
+  "catalogue_id": 504,
+  "oracle_id": "cec10abd-2a2d-4d89-9ecc-ea50c2ac1538",
+  "facts_sha256": "a8e3b63a7d7b9431dce1eee34029f063e029ba94df67cbac51d00e62a5ec7889",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "32574bf408ed63de3cf15f7efbe93c71bb3d33407dd7325632022bf704b36380"
+  }
+}

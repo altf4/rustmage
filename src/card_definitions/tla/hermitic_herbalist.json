@@ -1,0 +1,11 @@
+{
+  "name": "Hermitic Herbalist",
+  "catalogue_id": 2012,
+  "oracle_id": "9928773d-3f35-4b0e-965d-4233e04398fb",
+  "facts_sha256": "baa3f3f4543f945491fdebbe0ae33e70272afae8d7aa621645cedab0fd980f8c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "106db368b68b97a9fa585c2715db81e9821569538a193ff905f909e9f1d6e7b3"
+  }
+}

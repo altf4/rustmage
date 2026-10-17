@@ -1,0 +1,11 @@
+{
+  "name": "Shepherd of the Clouds",
+  "catalogue_id": 3826,
+  "oracle_id": "c0535854-e4e7-43e4-bc5c-7cc95fb17929",
+  "facts_sha256": "4ad806b6ad369afbceda9d3940a0ad5bcc8c628805398c4bd692bf6ca869ad3b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8423abe584637e95a4ebafa89f05c10c833200e199c88e8101c952327c4bc37f"
+  }
+}

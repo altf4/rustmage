@@ -1,0 +1,11 @@
+{
+  "name": "Pompous Battlemage // Improvised Act",
+  "catalogue_id": 3201,
+  "oracle_id": "33e3793c-098f-4897-88f3-9f9ce9081e0f",
+  "facts_sha256": "5bba04b9b754ade0b0e8dd93ddafc186ecee2f856c256c39f1ceb563e24eec16",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9fa3295093a509d37680ceaeece31d960ed13fb969c2c4d870cd61c3163d4fa0"
+  }
+}

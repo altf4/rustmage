@@ -1,0 +1,11 @@
+{
+  "name": "Summit Sentinel",
+  "catalogue_id": 4212,
+  "oracle_id": "e7b88da3-7dd1-45f8-b555-98ad838b2917",
+  "facts_sha256": "5347bb62cb38f275468da1d70e459a52f340d4780e8b52ea9688543fae939ad2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eb3dd672949ce99180a5ec52b555809adb017c24c65bdadfe53ad931885084b8"
+  }
+}

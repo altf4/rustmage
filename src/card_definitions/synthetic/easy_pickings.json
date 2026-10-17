@@ -1,0 +1,11 @@
+{
+  "name": "Easy Pickings",
+  "catalogue_id": 5201,
+  "oracle_id": "6505a53b-00db-44c4-8eaa-09a1a01451a4",
+  "facts_sha256": "84eb45bcbe2c3b9618862efd10f7b1428b1e3aec3294c49ebf49388a58f4ca70",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "61042c4f6ef44fb61827d6acd9b4c7c2ad86326390c5fdfff5d4a1189f23f581"
+  }
+}

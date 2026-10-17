@@ -1,0 +1,11 @@
+{
+  "name": "Winter, Team Player",
+  "catalogue_id": 5086,
+  "oracle_id": "254f133a-eee5-48b9-b19f-110555e49300",
+  "facts_sha256": "6df7c94f350b227f73343aaa8726930ecb2e98815bf652d62e4d74470a6c020d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "00b3fb6c55992406c092737e5d075e92f833dd890efcb70bb8bfdde68edee75a"
+  }
+}

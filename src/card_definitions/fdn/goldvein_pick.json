@@ -1,0 +1,11 @@
+{
+  "name": "Goldvein Pick",
+  "catalogue_id": 1824,
+  "oracle_id": "c1624d10-8838-4af8-aea1-a96c0fe6fd6b",
+  "facts_sha256": "61c82d45ca0e20d04ca293b1450b91546fd5924148a336adc80e6952182522f6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1954ef771fc359c1db9bf2beadd5bf8f6dd0d9e6dceeab2d0a08c7516d11e23c"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Winter's Intervention",
+  "catalogue_id": 5083,
+  "oracle_id": "91967284-6711-4ef3-bb9b-5ba873da8bb2",
+  "facts_sha256": "aa0e513270aac7b99f796813c9da820c58c779c5b0c1228e37be1ee87739b280",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0b09084522459f32433f1f591661a10c8ed17b3b8cfa5a0d63f5421854636eb0"
+  }
+}

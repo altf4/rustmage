@@ -1,0 +1,11 @@
+{
+  "name": "Vaultguard Trooper",
+  "catalogue_id": 4854,
+  "oracle_id": "e15c78d4-6fb1-4bd3-8219-c66b83fcaba1",
+  "facts_sha256": "8056c94ac5b6589c857f981c90acf76fd5292c748d1b94302aaebeeb2f30dbff",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "662db58316e42dfeaa01862bfe7e23fdbe7123a18719010e95134ce3a86a5b41"
+  }
+}

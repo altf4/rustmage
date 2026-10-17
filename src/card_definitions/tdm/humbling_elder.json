@@ -1,0 +1,11 @@
+{
+  "name": "Humbling Elder",
+  "catalogue_id": 2098,
+  "oracle_id": "013bcab8-e527-4700-82c9-4cb9cb8a4807",
+  "facts_sha256": "8b0b43040a6230ead448facac6a672a075f79ba591dde17cc740cc2a4169c4cd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "230a006107c6e8698d77d6685a3eebfdabd5d2e2634dfc0f0a5487fa025216a7"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Gwen Stacy // Ghost-Spider",
+  "catalogue_id": 1917,
+  "oracle_id": "5f143d87-35fb-40e3-94ae-f85cfff9adb5",
+  "facts_sha256": "0104afdce4d342e45061b68a1991dfe24a986176309e233d9bb520137b6a3d48",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3e10c08303d0e4171cda7b1012efedce059fa9ccc62dc6ae8b3142d4dad82b8f"
+  }
+}

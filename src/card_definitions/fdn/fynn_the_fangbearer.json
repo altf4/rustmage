@@ -1,0 +1,11 @@
+{
+  "name": "Fynn, the Fangbearer",
+  "catalogue_id": 1656,
+  "oracle_id": "c0b1fba1-4338-4671-934b-098689ad2085",
+  "facts_sha256": "67a498ec6b7ffd6f84ae93e3f578066a2e3615afa6f41bc461b9bd5f90ff3718",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cc720681bbaea25adf6deb8e72ea696840184718ed64a36c840f8b364177643b"
+  }
+}

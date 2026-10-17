@@ -1,0 +1,11 @@
+{
+  "name": "Molten Exhale",
+  "catalogue_id": 2816,
+  "oracle_id": "82aa1402-4b1c-4343-aba5-dd3271cc1ac5",
+  "facts_sha256": "6715e70c77dafe545b04a3e7576fb3e2fb71a303614fa32597205c8e13f11a4b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "82f591519e5ec27f70745652bcc28c72d9bf2a8ae6317a620c76c877ea8b2fa5"
+  }
+}

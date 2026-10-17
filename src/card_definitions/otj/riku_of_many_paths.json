@@ -1,0 +1,11 @@
+{
+  "name": "Riku of Many Paths",
+  "catalogue_id": 3524,
+  "oracle_id": "1cfe6e3a-f8c9-4105-ad03-0faf1fcc4626",
+  "facts_sha256": "5262f1b45ced3847c2a14ea0c8913e33bca28990381d4c7787a63d4b28b499e5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aaa04ab9dcc8af8cd06e5794e75e46d52262002b3ff49bd740f75b977455c3a0"
+  }
+}

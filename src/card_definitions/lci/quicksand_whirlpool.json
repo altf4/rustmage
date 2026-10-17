@@ -1,0 +1,11 @@
+{
+  "name": "Quicksand Whirlpool",
+  "catalogue_id": 3314,
+  "oracle_id": "43fb0f35-8eea-4344-9415-6ecb8aa46491",
+  "facts_sha256": "d478af3d1dc91340e4ceeadb6132151bd80d02fd7c701563c2cea98edd4e553e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "17bc3d17e00979aa70c3e5d1d12029390f7bd0efe67cbd1342adcf84691997a7"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Bristling Backwoods",
+  "catalogue_id": 561,
+  "oracle_id": "9cbc9f83-8979-42a5-a466-a8d89c8e6de8",
+  "facts_sha256": "654bef4d2007566bbde822c4fd3d10d7a15d3ab3bb8956ef8f7ec50af1ce633e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6d41f6c364c44600159326d6d5bb31bc44c2dcb1f75554284bb746a4193dd895"
+  }
+}

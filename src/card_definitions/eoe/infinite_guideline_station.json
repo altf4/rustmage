@@ -1,0 +1,11 @@
+{
+  "name": "Infinite Guideline Station",
+  "catalogue_id": 2163,
+  "oracle_id": "cda39514-86c9-483e-8d95-fd08138ce33a",
+  "facts_sha256": "50cab4a0f538c89b4534975cd5a1e5c8197ce80a475d182282bcf50ac174c793",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7bb077acd81297fae1a29e268989093e8814c0b9e056e0d4183ea695419cb755"
+  }
+}

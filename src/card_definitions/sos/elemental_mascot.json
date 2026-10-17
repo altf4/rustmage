@@ -1,0 +1,11 @@
+{
+  "name": "Elemental Mascot",
+  "catalogue_id": 1282,
+  "oracle_id": "882f30e4-4ce1-4581-8d2d-d763aa13befe",
+  "facts_sha256": "129108893cd851c158b68db3dcb855b0783d9ac78fb8e4203bc69cc16b46f605",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6d212aa6c8a7a890d802b7e73e7b1522f61138f26d8f33524dfdfd47b3b1c9d8"
+  }
+}

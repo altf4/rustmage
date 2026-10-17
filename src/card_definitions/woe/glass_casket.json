@@ -1,0 +1,11 @@
+{
+  "name": "Glass Casket",
+  "catalogue_id": 1768,
+  "oracle_id": "d9167046-7908-4d16-8cc1-3eb02d1ba547",
+  "facts_sha256": "3a575bd7d8801307ef1ff37aff78a260f9880cc43d0f1f8120455fa6f946ec51",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ed20a8517d0c29cb0f490daccd37a7120d96dcc2d7e11ebb60176b523f049d7e"
+  }
+}

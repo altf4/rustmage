@@ -1,0 +1,11 @@
+{
+  "name": "The Wind Crystal",
+  "catalogue_id": 4518,
+  "oracle_id": "240f0835-36af-4ad8-9336-d6d3d816d293",
+  "facts_sha256": "2fdd0e3e2e01fe04923f3c8035d001cdfe242b984caebb82b0fcc6b3d16f9c75",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "db00f7331ac37b683bafdf7f2247c8b9e7d6f337a63111aec2a40a0c8060be22"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Zack Fair",
+  "catalogue_id": 5150,
+  "oracle_id": "e84d146a-1c67-49df-b062-622794e45c42",
+  "facts_sha256": "5611951fa8e08aafb89cff67c9efd8decb6f79aad0882209aad66c74adeaaec2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a3a609296fa6c9b3d70518562834df0ecf4229c62c4e0eeaac15c1c408e5f554"
+  }
+}

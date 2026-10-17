@@ -1,0 +1,11 @@
+{
+  "name": "Eject",
+  "catalogue_id": 1274,
+  "oracle_id": "9a18fb98-796a-43b1-8157-e3afca53a1c0",
+  "facts_sha256": "2f236f0fe85f1ca2c3883187ee46a7789c0db32332b6c732aed3e97b468543f5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8303d28964b568d19b7f86f0957d6080a58b7302aa7a33b4406d8e9d83b9dce0"
+  }
+}

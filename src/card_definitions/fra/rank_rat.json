@@ -1,0 +1,11 @@
+{
+  "name": "Rank Rat",
+  "catalogue_id": 3372,
+  "oracle_id": "64e7ef06-ba30-4b19-9d44-ca77944cc930",
+  "facts_sha256": "435468acc62a2bb674e2d80df0d63c63c720082c6d7b31045fd9f2d1717b6431",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "630123d2d76f8e3447e875a1273c25a788670bbbfa7f03c55031fe8a2f10217d"
+  }
+}

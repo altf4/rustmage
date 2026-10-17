@@ -1,0 +1,11 @@
+{
+  "name": "Pothole Mole",
+  "catalogue_id": 3210,
+  "oracle_id": "8a8bc537-b69f-441d-a10e-d7f17f2f75bb",
+  "facts_sha256": "b7ab134bc7ae09f3d4421824cec75d49534247f4bf5a0952bd138aef1067249d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "15319fa1e5697a6f980094657872b31078acf00ceb301857bf277023a01da437"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Agent Phil Coulson",
+  "catalogue_id": 90,
+  "oracle_id": "dae20bcd-dc24-4f9d-9400-a6f013b49f14",
+  "facts_sha256": "b00a1f3fb8fe722a2bb275f784b76821fda5224731ac183edd8b46c9bc9a1776",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "423d174426147d1a9763b0bf6537845ab76fa70d1dec29f2572cc4d1b950b9c9"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Edge Rover",
+  "catalogue_id": 1265,
+  "oracle_id": "b907d375-b715-446b-8966-79959feb9f58",
+  "facts_sha256": "32d4b948e704518b1334a4256d9e747e24323687235e62c50047b4e9bf3c72be",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8dee09536001a5ac406d59e1ce53278bbfb4ada67e5316de77521a1cde9c1542"
+  }
+}

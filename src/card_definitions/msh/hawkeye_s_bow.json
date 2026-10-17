@@ -1,0 +1,11 @@
+{
+  "name": "Hawkeye's Bow",
+  "catalogue_id": 1966,
+  "oracle_id": "83798eb8-b14f-4620-bce2-1a6804a24dc7",
+  "facts_sha256": "6af74fbe1f8acbe69601148914ca117d03a622e0966ae14af9e3aadc32b63b82",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "af109207526dcaca4b402d63abc5cfeb2187e22bbd16654f279b8af03438a42a"
+  }
+}

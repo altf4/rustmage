@@ -1,0 +1,11 @@
+{
+  "name": "Forecasting Fortune Teller",
+  "catalogue_id": 1591,
+  "oracle_id": "a5a05edd-2a30-414b-b766-f0651d5783f5",
+  "facts_sha256": "943da70bf89684913f20476d54a4da0864c062d4b153cd10668b977142932ace",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "647553489b587278ece7fa471900508c437c70bb31190437484b09b6d0dc6f7c"
+  }
+}

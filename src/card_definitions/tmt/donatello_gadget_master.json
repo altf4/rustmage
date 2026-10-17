@@ -1,0 +1,11 @@
+{
+  "name": "Donatello, Gadget Master",
+  "catalogue_id": 1128,
+  "oracle_id": "bb6aef0d-052b-44e6-b4cd-2d2eafd84969",
+  "facts_sha256": "6d464c135e93b9548ad4a8f1589b477b7ad26c0530c111bbf3b443c4f35f290a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c57c605cc114451e5a7227ec0fc5925e7038f405d4d874b38de938d693489bbd"
+  }
+}

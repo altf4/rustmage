@@ -1,0 +1,11 @@
+{
+  "name": "Kalastria Highborn",
+  "catalogue_id": 2309,
+  "oracle_id": "77e319da-d782-4258-bf0e-626755e5adc9",
+  "facts_sha256": "4c65dc37f488397bbf1db685494839db39b9e0a1db3fb90d6a1fda3504ef2d5b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7f857cf24751e44e5ed451a33be7c3561e0fa5fce655bf4baf8c726f7f5c4532"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Aettir and Priwen",
+  "catalogue_id": 75,
+  "oracle_id": "19d8937e-23fb-4758-a306-0e7af9bb44c4",
+  "facts_sha256": "0b4d63caaecab8f909ba4f09b1fed75ec0df035d44a96e2b4e2ab23ae6e546a4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1c84f60de8c7a4d5a098c42c4d7d3e537927b1f542234ec6ec2371d01337a075"
+  }
+}

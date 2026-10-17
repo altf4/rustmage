@@ -1,0 +1,11 @@
+{
+  "name": "Zurgo's Vanguard",
+  "catalogue_id": 5180,
+  "oracle_id": "d6fdfd94-cef5-482c-83ed-11c5ba40abe9",
+  "facts_sha256": "8bf37b9634fa8569f14aa2788934e15d15f589628d46751e44d940d6ac26a048",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e66c0085b2ef701201225a258136b4b9699cb68dc25d369e5befe001daa1c431"
+  }
+}

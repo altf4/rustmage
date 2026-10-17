@@ -1,0 +1,11 @@
+{
+  "name": "Demand Answers",
+  "catalogue_id": 1036,
+  "oracle_id": "c11e84a1-dbda-429b-8cd6-fd0deaefc689",
+  "facts_sha256": "3fa20ce435eb3d1d552c79ffc8035a4b0cf9df7b3c5b5b95572f08a630a4f70b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8857832607e0460f74e1e3fca90888f97807996f8cd9e4df7f11e0b6c86888aa"
+  }
+}

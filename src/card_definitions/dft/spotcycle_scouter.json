@@ -1,0 +1,11 @@
+{
+  "name": "Spotcycle Scouter",
+  "catalogue_id": 4070,
+  "oracle_id": "0f1ada92-538b-40cb-9bf3-5c415f5325e6",
+  "facts_sha256": "3b3aafaa95882d511cc463fddbb1f6a2052e8e8ee02242a9f28ce77ae3c2e6d1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "48ba0e971db4bd4a69361820947c87be65cae926bb0fc5bdcdc9f88618502030"
+  }
+}

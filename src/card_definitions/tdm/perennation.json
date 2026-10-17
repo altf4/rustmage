@@ -1,0 +1,11 @@
+{
+  "name": "Perennation",
+  "catalogue_id": 3125,
+  "oracle_id": "be5138fd-3e92-42b9-93c5-311e66bd443f",
+  "facts_sha256": "1f109dda82b214e06089b22368a43b683e9ef27b1227151a6310a993d4382fdc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "96609068b2ea6a19d95cb18509ea70c2fe92675cee682a74ad1d88e23b1cf6a0"
+  }
+}

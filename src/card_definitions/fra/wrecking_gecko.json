@@ -1,0 +1,11 @@
+{
+  "name": "Wrecking Gecko",
+  "catalogue_id": 5123,
+  "oracle_id": "4a9e0294-c967-4e90-b776-6d3195034a23",
+  "facts_sha256": "6183e68325b8eb65153a5083d45a4510ba990860b5ad7a567b624b936471ff6b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c11c410feb2f110f5e9b72ed2b0edc1ec7b5bcc29111e5bc3524ddc6fdf861c2"
+  }
+}

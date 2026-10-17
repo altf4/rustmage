@@ -1,0 +1,11 @@
+{
+  "name": "Granite Witness",
+  "catalogue_id": 1846,
+  "oracle_id": "37f2ec12-d703-40cd-a155-053ae2e4ddcc",
+  "facts_sha256": "2d4731dcfd9e88fc0a43a6a78b994fee767ce831f1742d6dfe201bb6f146a700",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c312026d19fd4560af253492c905fed75a69edda6aef4ae5e1ea669fe79d43cf"
+  }
+}

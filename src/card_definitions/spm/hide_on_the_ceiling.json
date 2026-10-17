@@ -1,0 +1,11 @@
+{
+  "name": "Hide on the Ceiling",
+  "catalogue_id": 2033,
+  "oracle_id": "376fa374-ead1-4728-ab8b-aca230b72031",
+  "facts_sha256": "132e5b0f3572770bc646c228bdba85c7ccd04e43a1415b4291d18c3ebac1236f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "82a88875c6d15c7b81461ed910cd84b04841fb3f98e0a41bd55f693462e2dd39"
+  }
+}

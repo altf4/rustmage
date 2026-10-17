@@ -1,0 +1,11 @@
+{
+  "name": "Shrike Force",
+  "catalogue_id": 3854,
+  "oracle_id": "d014b02f-a8b8-4b97-96e0-f588792069f0",
+  "facts_sha256": "4bb14fdc61c24c7d233479f3b3a0b06343a18173f0964ddc459704a692a71b34",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "35caf99d810d53ffd70a420f574aceec8e1b4b8924e201709210160d048ed89d"
+  }
+}

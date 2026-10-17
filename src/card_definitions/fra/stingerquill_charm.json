@@ -1,0 +1,11 @@
+{
+  "name": "Stingerquill Charm",
+  "catalogue_id": 4145,
+  "oracle_id": "987aadac-d6a6-4e50-9468-9e8e53cc5529",
+  "facts_sha256": "4dc9b7026597c7e5e34fa0a402041333fbdb005e2194591961626330006cca2a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5b1ecb522b63abc583cf31640e9cbe96ce90200de82dc84f1feebd44753ada28"
+  }
+}

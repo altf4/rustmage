@@ -1,0 +1,11 @@
+{
+  "name": "Rewrite History",
+  "catalogue_id": 3511,
+  "oracle_id": "f91c860e-3feb-4a5a-b7ef-4e7d38d61c75",
+  "facts_sha256": "f72a6c9e403fee0f616989b216c0da4515bbc79204ab333fcfd76c403585e97e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7e51855c3bf76f6e7f792c2ed161711be84272ede51bee36db3555524b478b2d"
+  }
+}

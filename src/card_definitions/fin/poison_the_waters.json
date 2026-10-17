@@ -1,0 +1,11 @@
+{
+  "name": "Poison the Waters",
+  "catalogue_id": 3195,
+  "oracle_id": "2c9bf40b-ddcb-4f46-a81e-56b91dfc784f",
+  "facts_sha256": "fe518158db5156c2a0d6baeb310d4eeb7e2f3f2ed9389c0f8f34a6e1ed486ae9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1b0f0f5a463cf54df5565a638a7c120e992b491514fd33f3c85db22f79b2257b"
+  }
+}

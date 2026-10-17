@@ -1,0 +1,11 @@
+{
+  "name": "Micromancer",
+  "catalogue_id": 2743,
+  "oracle_id": "d2605782-09f1-4d52-b3e7-5ec1442bd9b5",
+  "facts_sha256": "66413e006d805447af589190bfe5611225bd39d6115b247d8d0a89ff6590ebe6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e93c64234e835e87a79fcde5bb43beca402c7294149167116c084399ec7aed45"
+  }
+}

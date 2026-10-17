@@ -1,0 +1,11 @@
+{
+  "name": "Futurist Forge",
+  "catalogue_id": 1655,
+  "oracle_id": "0e5f97b5-bb8c-4688-a141-5db4d4eeccf0",
+  "facts_sha256": "1d1ea51b0eefec2313bc3d3f3fc9797998e7ec99c184e1fc836c661f0fe257e3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8935460beeb99d5610c1ec385e18d9c3f7d2bfa5dbc60538eb1ef3ff0334717c"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "A Tale for the Ages",
+  "catalogue_id": 16,
+  "oracle_id": "682a0770-8fe0-4142-aa0c-b60af3628a33",
+  "facts_sha256": "51bd14bded37799ace26796b8959ff9455d15a5e1a47b701fdfd407328fcaa95",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "275a9d4bee73b6ee8c92e4a74cd49bc3fb3e28eb5eb47e6802debb096d271ce7"
+  }
+}

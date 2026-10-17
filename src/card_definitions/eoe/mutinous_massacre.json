@@ -1,0 +1,11 @@
+{
+  "name": "Mutinous Massacre",
+  "catalogue_id": 2892,
+  "oracle_id": "9fdd445a-c8e1-4309-9d74-374676fcac1d",
+  "facts_sha256": "5d67f96229429a7bf149d61179830ecaa6f2573edbab0fd4973a08d9367fd283",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eb80b12e92dd6d1b6b6a33526d1bf8e9a0b6af9e81b3b1b108aaa2502d557ad6"
+  }
+}

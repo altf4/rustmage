@@ -1,0 +1,11 @@
+{
+  "name": "Waxen Shapethief",
+  "catalogue_id": 5006,
+  "oracle_id": "6c540822-4ceb-4ebf-b777-da172ada3f1b",
+  "facts_sha256": "fed3ccdbfd4e550c75a5e5b4fc4b8e39379e655581c8af3ee12d8edfdc021f2e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5d05888e9f7fc2e970f72390f27a8077cb74eae051fd364f68e6780a0b4da421"
+  }
+}

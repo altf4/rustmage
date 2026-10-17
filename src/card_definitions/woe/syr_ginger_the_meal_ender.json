@@ -1,0 +1,11 @@
+{
+  "name": "Syr Ginger, the Meal Ender",
+  "catalogue_id": 4309,
+  "oracle_id": "2eb16535-718f-4b88-92bc-96429d796327",
+  "facts_sha256": "28016d9d3c7bfcee6aad6d95d688d8b02f2c5eac80a201292b1f004a5532c136",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c7463bd850c2ba15fc04fe10acdee57dc5e50ef22ca5b459598da97dd82891e0"
+  }
+}

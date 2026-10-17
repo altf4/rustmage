@@ -1,0 +1,11 @@
+{
+  "name": "Personify",
+  "catalogue_id": 3134,
+  "oracle_id": "e1708ad9-35d4-4243-92ca-ddf9d129aa32",
+  "facts_sha256": "fab3aea0e2f620929af05ba2f8a8171979f2df581b451d636357204b17e67fe8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "72a0e37fba94edd3cade2ff1ad4bf380561992bc8dd627c382917b2e27895b20"
+  }
+}

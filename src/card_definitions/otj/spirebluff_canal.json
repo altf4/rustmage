@@ -1,0 +1,11 @@
+{
+  "name": "Spirebluff Canal",
+  "catalogue_id": 4054,
+  "oracle_id": "eb0d8093-5f93-4b25-9384-08f9731bfb28",
+  "facts_sha256": "fcd022ee7a8e3fd6cd01cf422db7efc37801fb8a80aa0d3906041b77ca29cef6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8fc5e5c0a4737b7601ac2e57736bb254276561443b7f75a649a756c4ffe398ee"
+  }
+}

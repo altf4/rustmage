@@ -1,0 +1,11 @@
+{
+  "name": "Blossombind",
+  "catalogue_id": 470,
+  "oracle_id": "0ecb35b3-5bd1-4467-a4a3-ce468023ced2",
+  "facts_sha256": "45f3abd236bd84f818b7c17e69ef13a81bc4ba52c23d294d069c188a0e18d85f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aa1af528a415fdfa6254ee5acd51e99aa9fd6a8596b6747e6a14a4ab39e6305c"
+  }
+}

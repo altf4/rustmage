@@ -1,0 +1,11 @@
+{
+  "name": "Agent of Kotis",
+  "catalogue_id": 93,
+  "oracle_id": "584fe1e4-029d-43fe-8c9e-6995dd392d65",
+  "facts_sha256": "ab287a6bbdaf2958dce77eafe89029fd6796be96cda14ff968c988cb1239908e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b8e51af450c41b411dc74dddc703cd0092369aa0ec437e6dc4c5549074257bb4"
+  }
+}

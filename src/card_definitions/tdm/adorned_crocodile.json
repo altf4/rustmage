@@ -1,0 +1,11 @@
+{
+  "name": "Adorned Crocodile",
+  "catalogue_id": 60,
+  "oracle_id": "fb49c7d2-d750-4676-b90e-76e7fae70a25",
+  "facts_sha256": "2c70390a1584c51af9258f1956b0c65f447be6a1511c6d571da048b0dca12ad7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a219d06dd92538b424eb7c36daa2e9646ddf3b7d52205cc0a570263970184197"
+  }
+}

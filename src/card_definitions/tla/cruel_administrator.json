@@ -1,0 +1,11 @@
+{
+  "name": "Cruel Administrator",
+  "catalogue_id": 900,
+  "oracle_id": "24a691f3-88dc-47a5-b5cd-e02bb8026470",
+  "facts_sha256": "62a6e17943d986b54a662c467063a34bc839ad73d040aa12b9319ff7d81bf6c9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5593813606d81edcd9fed706950e28d3710bad6f8288e05e6073fbb045558784"
+  }
+}

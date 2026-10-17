@@ -1,0 +1,11 @@
+{
+  "name": "Hog-Monkey",
+  "catalogue_id": 2055,
+  "oracle_id": "e11591ee-7074-488e-8d2f-f8c89e385a55",
+  "facts_sha256": "e20571c8507b0ce05dc7073e3d5adbc07964de6955dcb0d6c346aec72166b615",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "85b59f61a5c8f58d428301167b0903f0a5293564d21c1a720b1f4c287575db17"
+  }
+}

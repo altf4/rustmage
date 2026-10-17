@@ -1,0 +1,11 @@
+{
+  "name": "Tectonic Hazard",
+  "catalogue_id": 4354,
+  "oracle_id": "9097243a-39fa-4e18-8316-c0e57699c783",
+  "facts_sha256": "d97ba9979f7232592582d6066a002e09da289d2a375d9a4e792f052ade04c3ff",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4fedeacede01418218f610c4287048c327e53274db79310ac68ba140e2b76822"
+  }
+}

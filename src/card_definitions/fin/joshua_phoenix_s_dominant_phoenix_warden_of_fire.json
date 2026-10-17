@@ -1,0 +1,11 @@
+{
+  "name": "Joshua, Phoenix's Dominant // Phoenix, Warden of Fire",
+  "catalogue_id": 2290,
+  "oracle_id": "f4629329-a79b-4460-a1bc-9ae0f59adf5a",
+  "facts_sha256": "7aa7574ccead851e54e3e091d0b9eb7bf772bd9b2930cc2879443c1bb5aede51",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8b442fc82ab1696cb142685fe96c0d5dcfff9dfb6fb0dd44f1223f9885cea499"
+  }
+}

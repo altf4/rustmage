@@ -1,0 +1,11 @@
+{
+  "name": "Unholy Annex // Ritual Chamber",
+  "catalogue_id": 4783,
+  "oracle_id": "bd388ad9-a47b-4b0b-b94a-8e4343cd3de5",
+  "facts_sha256": "7cb6ff1136187b89668bbdc696844ddd17d23b44518716ee78b5fb9e26edfec7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f07fdb283d3e821da3132f98c680e1cacf816f3a0cbdb6f0dbcf8c23c26ae958"
+  }
+}

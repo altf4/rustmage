@@ -1,0 +1,11 @@
+{
+  "name": "Bashful Beastie",
+  "catalogue_id": 343,
+  "oracle_id": "e7aeabd9-a72c-47ee-b275-b025d7142766",
+  "facts_sha256": "aa9a205824d361adf886c8477fbf0e3afb32019f210f89281ddd939cb979c284",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "23240a0f876f500d3b8b88777fc4dfc5e35d3ea6aaac12fed8fb75f96cfc7ea5"
+  }
+}

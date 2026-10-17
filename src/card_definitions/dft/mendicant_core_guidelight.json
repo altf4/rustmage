@@ -1,0 +1,11 @@
+{
+  "name": "Mendicant Core, Guidelight",
+  "catalogue_id": 2718,
+  "oracle_id": "b20d74a4-0e08-4779-972a-499f1a2be15a",
+  "facts_sha256": "d2503d271839f5d811d524f9281df43bb2d3595968e5ea4aeba94e911ed210a3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0732a1f80f9ce15195f33b50e7bb518fe62445439c4e172d4121337b9d5ae320"
+  }
+}

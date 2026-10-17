@@ -1,0 +1,11 @@
+{
+  "name": "Dragonback Lancer",
+  "catalogue_id": 1158,
+  "oracle_id": "7875c063-19c3-4e6e-81d8-1a378a4e16e5",
+  "facts_sha256": "77e148fd78f138e20ac2fbb34e2c9ccf2a311590cb6f7ae2ba357a6903ad2cfa",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "25583b9d92b1ecfb450be647de05970b5ca061c82b237fb2c60d273251a74079"
+  }
+}

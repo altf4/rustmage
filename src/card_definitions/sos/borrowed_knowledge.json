@@ -1,0 +1,11 @@
+{
+  "name": "Borrowed Knowledge",
+  "catalogue_id": 508,
+  "oracle_id": "0d6507b0-c986-49d1-aea3-77b2cf2a7433",
+  "facts_sha256": "53425521909044bbce833e6953ca31a7a7d5d8dd56983b79acbae91ecd8a15e1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d634ac16fea9de1a6d5e394ff925a4cca88ff7d55866ceba6ce1e01f7325b246"
+  }
+}

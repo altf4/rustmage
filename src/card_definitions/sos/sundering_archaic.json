@@ -1,0 +1,11 @@
+{
+  "name": "Sundering Archaic",
+  "catalogue_id": 4238,
+  "oracle_id": "b095526e-94a4-416b-83de-d6271804ccf3",
+  "facts_sha256": "24dcf5b8f98b3ef3d87dccd97aa41d0346f0df1945d1f064aea4585fa75620ca",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a033b13e8f5a7bb50126766b2efa809b6948cad7fb64ff2be2e8c1e4727c8f64"
+  }
+}

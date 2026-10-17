@@ -1,0 +1,11 @@
+{
+  "name": "Badlands Revival",
+  "catalogue_id": 305,
+  "oracle_id": "a61267d2-2cc7-4208-a365-581d56b92e1c",
+  "facts_sha256": "949657d35efb937e5dc2060e9c9f7cb7de2759acd917e5ab9a1aaef63d17e6c3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c92f990c75b7c8a33c2bda49c76dcdd764658ee16b6d583b592162734489be40"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Waterspout Warden",
+  "catalogue_id": 5001,
+  "oracle_id": "5e11386f-4667-47f7-b280-eabd927e4a46",
+  "facts_sha256": "f925abd0d837c8c37d35098a24db4090ff01c17935ee67b2499bb851b35da06e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "27625dbb35de39fb50e64106abfbcc95d0ff5187fda311b70cc7f9b6d152d61e"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Chitin Gravestalker",
+  "catalogue_id": 738,
+  "oracle_id": "acac15c8-877d-49d4-9b42-90181c05a684",
+  "facts_sha256": "9913e44c44a0e1b9cf66c02f236a634ba07862dfd2a175d2a48b94e7c7e3f378",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "15bf2d8d276e8cba85017f49d1237d56b74ce6ff6154ca057efe796cabefab63"
+  }
+}

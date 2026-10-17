@@ -1,0 +1,11 @@
+{
+  "name": "Garna, Bloodfist of Keld",
+  "catalogue_id": 1683,
+  "oracle_id": "3fb83218-e18d-405d-91c8-46b5e4e672a9",
+  "facts_sha256": "d527eb7e321c09d3c22a916a3323b8b5695e4c74b459990d7d6b129a833ed0d0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "52e83d9c5fdffa29d897bfde63ddc28475999c9d51eb179e04c53c4c11b99e69"
+  }
+}

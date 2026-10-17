@@ -1,0 +1,11 @@
+{
+  "name": "Abyssal Gorestalker",
+  "catalogue_id": 42,
+  "oracle_id": "465cda20-c8f3-4a7c-a250-875877bce21d",
+  "facts_sha256": "83497b13dba7df2206b659bdf98bdbaa729e0dc296eb39c1371fa154dc914433",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e799691e40b73f3426f08230ca96d03f2b789f0f64a374b454d0ea460c46b20b"
+  }
+}

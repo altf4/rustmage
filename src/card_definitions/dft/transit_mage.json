@@ -1,0 +1,11 @@
+{
+  "name": "Transit Mage",
+  "catalogue_id": 4659,
+  "oracle_id": "991efbf1-299d-4892-aeab-8ff9827f7168",
+  "facts_sha256": "ca4751725801a9066c2e6d495c06ab61dac4c9e0df1797dc690edda6110837d2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a0467ca1f7f1acdbdb5d60f77b1c475933b57b8a3eb54363538b0ccec7631d59"
+  }
+}

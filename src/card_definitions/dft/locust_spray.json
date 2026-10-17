@@ -1,0 +1,11 @@
+{
+  "name": "Locust Spray",
+  "catalogue_id": 2535,
+  "oracle_id": "f9dce026-2653-4793-b949-357b08a936ea",
+  "facts_sha256": "918d1ac64f340df53298608849b1b71f52fa3e34c374a63d68c5befac9e39229",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "839c3e389c4bb356fd8b01f236562e072c61bc8eeffe0a1f7691fcd38a5511ce"
+  }
+}

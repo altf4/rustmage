@@ -1,0 +1,11 @@
+{
+  "name": "Volley Veteran",
+  "catalogue_id": 4934,
+  "oracle_id": "bf4268e6-170a-445b-b215-718f7494ae28",
+  "facts_sha256": "b791406f463dc10b0dee92cde163e523eee8d6c2730bcaedf7c11c64246030f0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8f60eebe630eb11503d8da56f279b8563065645820749aa334305dfa9f03abd2"
+  }
+}

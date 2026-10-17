@@ -1,0 +1,11 @@
+{
+  "name": "Old Fat Spider",
+  "catalogue_id": 3003,
+  "oracle_id": "8790f842-e842-4bed-adf4-5b3cc5fd68a9",
+  "facts_sha256": "4ac49ab4d72f34cd4fed48be24f828fc2e7f4e25f2768ba1d333769d4a58c4d7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4cf4c6bcd084a8c066e916b955e7d62c3c84fcde8c9eea9fed7b25f02ae7268f"
+  }
+}

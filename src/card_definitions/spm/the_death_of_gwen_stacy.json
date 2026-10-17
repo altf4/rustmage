@@ -1,0 +1,11 @@
+{
+  "name": "The Death of Gwen Stacy",
+  "catalogue_id": 4434,
+  "oracle_id": "2624b5c5-ba59-4e20-8e66-e463268366e4",
+  "facts_sha256": "696f497e8aec6d353c91b3434a98ccc29bf0cf216a0f3cda6c76cdc822fbbc6a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ccbd37de34ee34be74a8b8ed9017a2d796bc2a4e5fb8e95885cf84387401f417"
+  }
+}

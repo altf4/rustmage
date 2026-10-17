@@ -1,0 +1,11 @@
+{
+  "name": "Stalked Researcher",
+  "catalogue_id": 4090,
+  "oracle_id": "8ec3c334-8a53-46d8-8cfb-c647c3a1ef74",
+  "facts_sha256": "3a0db5f8c2382114e8ca4f9ea0973398dc662295fc829c2a422ef6d14d2e753a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e6017388935e07b6b356659f2f31af17cb38ab7d22821aaf01575a6a81044284"
+  }
+}

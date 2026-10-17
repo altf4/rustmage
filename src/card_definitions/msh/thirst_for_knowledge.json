@@ -1,0 +1,11 @@
+{
+  "name": "Thirst for Knowledge",
+  "catalogue_id": 4533,
+  "oracle_id": "939e6f71-185e-41f2-9d54-72cce06f1dce",
+  "facts_sha256": "5a4e57579954b73ef132eec595039926c6128f151accad586d9930a018aa6941",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "defad2bd4f4f99765f03a776e882a07dc2414a4ef352ebb83c48ec76c0b602ad"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Skullcap Snail",
+  "catalogue_id": 3895,
+  "oracle_id": "6420e8a0-3ef4-4f95-bb6a-12409eef4d48",
+  "facts_sha256": "8bd4c33c268f0090456540fa762063d3a510bf4551449e8490b470bc8f191f26",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cdf1c9ecc1289be9c8f5a43dcef14c70ceb09bd59d522e67911e9eb13ed812fa"
+  }
+}

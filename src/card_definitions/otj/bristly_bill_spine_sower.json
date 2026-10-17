@@ -1,0 +1,11 @@
+{
+  "name": "Bristly Bill, Spine Sower",
+  "catalogue_id": 562,
+  "oracle_id": "d3b2d8a2-d3bc-448c-9cf6-6bead6010c28",
+  "facts_sha256": "d123c79399042d5e486d48565faee85b4f585ff726860a8ec7123f9a732c4262",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a0e38ebe8b734a2d73fb375401a11fbbe2551493e154eef2ff81ddde3ada4e11"
+  }
+}

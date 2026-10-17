@@ -1,0 +1,11 @@
+{
+  "name": "Bark-Knuckle Boxer",
+  "catalogue_id": 330,
+  "oracle_id": "08e173e3-4c28-49d2-bb57-ccf533f20daf",
+  "facts_sha256": "e2e3667022fdfd6700e7389536e18a1670879892c58308d035695f3eed832712",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ca12a33b530366c47746239bb3ed22b7795f8bb9692cb9002d6e5f08e6c26e65"
+  }
+}

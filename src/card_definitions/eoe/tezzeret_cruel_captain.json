@@ -1,0 +1,11 @@
+{
+  "name": "Tezzeret, Cruel Captain",
+  "catalogue_id": 4412,
+  "oracle_id": "0eb11b2d-a397-48da-a0f3-9f0f83f42282",
+  "facts_sha256": "e03ed91efeceff67780bf18b2e7125d79db19620f29f94f94cb9d6c03c9e294c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b8ab2b9eb2f09cf1f4aa87c8e87cc69834c2530fe4e01f1f76f65968af96b9d6"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Hidden Nursery",
+  "catalogue_id": 2030,
+  "oracle_id": "1a26e2d6-6bfc-4cdc-9bd6-8b37a9be2961",
+  "facts_sha256": "837e5ae6f801aac1ef23b8a649f045e5baafb94156ea4a1ce9c178f98b49602a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "56b30b623f52464b7d57013daa593e8a98d6a3ecc5e6f577df85805845a2b130"
+  }
+}

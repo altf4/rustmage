@@ -1,0 +1,11 @@
+{
+  "name": "Nowhere to Run",
+  "catalogue_id": 2973,
+  "oracle_id": "da82ca96-a613-4d00-9e6b-1fece4fc23d0",
+  "facts_sha256": "f76669c62259be52b7771223080417072249f006af697332f2ebea73f3d42936",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cae8f11c8d180ac19e0d0cff65aa5523e9efffdefbcdfe1c3921ee5c271261b9"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Origin of Metalbending",
+  "catalogue_id": 3038,
+  "oracle_id": "177113f8-1188-4e5e-8ad7-34a7bb8ca7f1",
+  "facts_sha256": "e9ce086d888851bbb90a89a8ff16b8eb46813723b2640732a67b8a1db9d33c4b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "23656a8d2f1213e20a06d6fe5048114296390ea1710085737f89453fb3f915fd"
+  }
+}

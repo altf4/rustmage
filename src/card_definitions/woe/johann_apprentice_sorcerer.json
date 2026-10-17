@@ -1,0 +1,11 @@
+{
+  "name": "Johann, Apprentice Sorcerer",
+  "catalogue_id": 2283,
+  "oracle_id": "8068f80f-88ee-4c0b-a0fb-3a6337f83f22",
+  "facts_sha256": "7dbf55d02fa09e88c34aa223f0965acc12aadd8a17d95ee19908eccd34fa6524",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "347040785e7a1302e1de832d82f123d7da671c585a82909a09b65d3e33c9dcbb"
+  }
+}

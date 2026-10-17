@@ -1,0 +1,11 @@
+{
+  "name": "Thaumaton Torpedo",
+  "catalogue_id": 4415,
+  "oracle_id": "9f9ae015-dc59-4ecb-a2bb-668496b48a48",
+  "facts_sha256": "dc1df715bdf275e3a054ccebb724d4be7021a05142721033271590822b893596",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8fc020a9fe53e5b0c487a8c972e0cfd5787f33154fdb4fd01fcdece3651a959c"
+  }
+}

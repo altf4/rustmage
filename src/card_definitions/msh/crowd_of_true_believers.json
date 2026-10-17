@@ -1,0 +1,11 @@
+{
+  "name": "Crowd of True Believers",
+  "catalogue_id": 897,
+  "oracle_id": "06296d4d-a1b3-4e9a-a2fd-a0183bb892a1",
+  "facts_sha256": "0cd6186904f3f0e66bf7aec917c1accd9235f1ebbc0cdc87e5924b1e569920a9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ae6bd8f73808147d9093b5a0178a02d62d94c0efa5039f0a50c0307cdd38543e"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Rakdos Guildgate",
+  "catalogue_id": 3350,
+  "oracle_id": "361f534b-39d1-4421-b5a8-d3813c62f86d",
+  "facts_sha256": "48e7cc0a8d3ef6343b163c29012da155c51fe0afecb1df56534a323e380d6216",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3236271e428686462193a102bc7476330f087df6c2debf16f85fa858aaa0d3c3"
+  }
+}

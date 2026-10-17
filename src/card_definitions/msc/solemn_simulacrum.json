@@ -1,0 +1,11 @@
+{
+  "name": "Solemn Simulacrum",
+  "catalogue_id": 3958,
+  "oracle_id": "00c0543c-2a1f-4425-8283-4062d74a1637",
+  "facts_sha256": "beb3b7b69b0f39fd6457dd3f673ddeb30df904626f96edf366b4acf20b7e95f8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1250f528e66a447e7db405373f17818fe294ba550beecf007564b3b661a3ca55"
+  }
+}

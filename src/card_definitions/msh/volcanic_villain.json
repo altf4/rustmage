@@ -1,0 +1,11 @@
+{
+  "name": "Volcanic Villain",
+  "catalogue_id": 4933,
+  "oracle_id": "a257426d-70c9-4d58-bd8b-97ec38f6e133",
+  "facts_sha256": "b973f1554f5444eb2fd0fdca5d4afda0b8210fe9eadd0df87e05d999974a23a7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "736b5873d1d1c8f8db72f8dca3f85af8d30173fdd3a8720e5b39c39fd917312c"
+  }
+}

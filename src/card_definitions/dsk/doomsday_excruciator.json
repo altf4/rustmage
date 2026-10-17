@@ -1,0 +1,11 @@
+{
+  "name": "Doomsday Excruciator",
+  "catalogue_id": 1133,
+  "oracle_id": "ad0db433-a406-4ef0-8ffa-416af610c4e7",
+  "facts_sha256": "8c9c1868b653ea687aa8118cce72591c435bf2f06d3cb7883698e2093276e41f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a9a0c6d125ce63f2aca2bb7b174c6890d8e83ad53e2424fd72b76cc2234dce26"
+  }
+}

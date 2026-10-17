@@ -1,0 +1,11 @@
+{
+  "name": "Rover Blades",
+  "catalogue_id": 3597,
+  "oracle_id": "0394846e-bc27-4d67-988e-b08a389690de",
+  "facts_sha256": "6938b36c126ce26221575baad32749d614ac992a8678aab8c4feba2f8e0ca247",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7c5516346958a4c3559629f518e3fd2c767ae776452752f708ffc7c8f121d494"
+  }
+}

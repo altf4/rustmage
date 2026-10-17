@@ -1,0 +1,11 @@
+{
+  "name": "Seismic Rupture",
+  "catalogue_id": 3772,
+  "oracle_id": "3b1f1a57-d83a-443f-b190-03df63d2bfe6",
+  "facts_sha256": "aa21ddb28a32279ffdba45ac477e463456049d00ab66e543c8701de4b9c60105",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e7323cf2616bb69389152b6e834246abfccc3d5bacd5f8421ff0d393a0130d05"
+  }
+}

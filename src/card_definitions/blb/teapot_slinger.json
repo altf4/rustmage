@@ -1,0 +1,11 @@
+{
+  "name": "Teapot Slinger",
+  "catalogue_id": 4352,
+  "oracle_id": "5ba19dbe-9dbb-4cc9-81a3-18c26f27bd0f",
+  "facts_sha256": "d04bc0bcf1c6517d6afea0c8bc31d4b4b0eda2e30478b59e513b601d8f999a50",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "baaae7c489f47159c53c191656083fbc79b7b81368871cd2f2e2ca1136a4e0d8"
+  }
+}

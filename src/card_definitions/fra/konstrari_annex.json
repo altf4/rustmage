@@ -1,0 +1,11 @@
+{
+  "name": "Konstrari Annex",
+  "catalogue_id": 2395,
+  "oracle_id": "31ea4f3f-392a-4319-a95b-eb28790a80e6",
+  "facts_sha256": "4bcb3d364993d0da5e288cf88b12f2df799b7974e360a6ef3a7cefd24fc3187d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "38360f5457fffc3019a2658563cda486ce85ea9a2d2c22990cb667119ce35a4b"
+  }
+}

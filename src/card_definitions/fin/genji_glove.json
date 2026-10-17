@@ -1,0 +1,11 @@
+{
+  "name": "Genji Glove",
+  "catalogue_id": 1711,
+  "oracle_id": "8242cd78-6675-43b5-8924-0a88c3aa6f76",
+  "facts_sha256": "3c2f665edbf1df12061b53177a5fb425103a912955117d32b130b2f1e73cbfe7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1cf508dcf57297485f46f623773dc20981946050102a25adc1927237a85369e6"
+  }
+}

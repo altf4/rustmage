@@ -1,0 +1,11 @@
+{
+  "name": "Ooze Spill",
+  "catalogue_id": 3025,
+  "oracle_id": "c1c5f9da-1396-4406-b803-b64f66b8e49d",
+  "facts_sha256": "fdd335fa2bb23992951915c3a8994d03df145b409e3ce1f7084b495b51eb163c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "611efa0e55df9088ba86580dd430bd550640cd64554bd11abd26547f39230834"
+  }
+}

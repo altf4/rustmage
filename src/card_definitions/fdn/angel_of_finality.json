@@ -1,0 +1,11 @@
+{
+  "name": "Angel of Finality",
+  "catalogue_id": 162,
+  "oracle_id": "48d14b5c-711a-4f8a-9de5-55415cb7a79a",
+  "facts_sha256": "b1d7bab83fec11b8a2f4381b355b9393d486ac08c204affb0bf69d27f71ff778",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c26b7c37dcf8b5b2deed88e8d3d54e16deffae582c60a44c4bf5d2a19be7a5a1"
+  }
+}

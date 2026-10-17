@@ -1,0 +1,11 @@
+{
+  "name": "Unsparing Boltcaster",
+  "catalogue_id": 4798,
+  "oracle_id": "0a56a33b-033f-4398-8dc1-e531be059710",
+  "facts_sha256": "43b919e17c2a61e1eba7f98c7cbf209d463e0e477b339e6edba16a2d338ec781",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "11e9a4c2d72570abd3c579a4e71353515a3d777395b794ff94b5121eedecc191"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Hazardroot Herbalist",
+  "catalogue_id": 1970,
+  "oracle_id": "f40cb1af-3db6-4e90-830f-86ff4b60e239",
+  "facts_sha256": "ba20bfdddae5b1c8d67f2b6a2267f5107298a3cf10417e92084942fd416cc822",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4511e12f07354bbc1f510ea1c62b26aae870b1455d57d22c46323df48c7c0eeb"
+  }
+}

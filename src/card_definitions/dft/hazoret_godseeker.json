@@ -1,0 +1,11 @@
+{
+  "name": "Hazoret, Godseeker",
+  "catalogue_id": 1972,
+  "oracle_id": "6c5d8599-75ca-4479-a02b-1b257b7aea57",
+  "facts_sha256": "51c8e5e75a98e8ffaa56e44d6b4e2f46627172a508ca83627449379a5b52ad91",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8c1aac0980a52049b1192c00ad715807c7a9e47a277b528d0e1def139b227ca6"
+  }
+}

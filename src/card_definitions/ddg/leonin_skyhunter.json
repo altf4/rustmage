@@ -1,0 +1,11 @@
+{
+  "name": "Leonin Skyhunter",
+  "catalogue_id": 2476,
+  "oracle_id": "517c7295-8ba2-47a6-a1c6-aee722f8ca88",
+  "facts_sha256": "736c135236db68eb66d0205dbafa8395b0481f3c8c9b60820703229294e23e00",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5b70624fca786be64039bf3f3862cfc05b39ca23887e39acf9e1e9f8fe3ccf23"
+  }
+}

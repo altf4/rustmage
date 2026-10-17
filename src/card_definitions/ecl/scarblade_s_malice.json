@@ -1,0 +1,11 @@
+{
+  "name": "Scarblade's Malice",
+  "catalogue_id": 3712,
+  "oracle_id": "66d57851-2844-4b9d-be78-e90fc620b750",
+  "facts_sha256": "df74429aa4b6567ee30e09184bc9aebf9d4a2dd1934a657784ce2ef23219259d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "16373e71c363453a1908b1ca5e88dccae0d68e6dc1f6f41de80650b82eaceaf8"
+  }
+}

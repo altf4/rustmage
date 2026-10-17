@@ -1,0 +1,11 @@
+{
+  "name": "Molten Collapse",
+  "catalogue_id": 2814,
+  "oracle_id": "f0d1636e-6f80-44fe-869a-1749ab249815",
+  "facts_sha256": "7fd26b4f1971223b0085ee8662992d29f2d0a97e02c3bc43433c60e896259004",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9272015ae66231f948664f93ee95d2d97eb71f8e55d0c2434665111553e77b91"
+  }
+}

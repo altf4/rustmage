@@ -1,0 +1,11 @@
+{
+  "name": "Sandsteppe Citadel",
+  "catalogue_id": 3679,
+  "oracle_id": "544dbabd-cbfc-40da-a5ba-2fea9cddb453",
+  "facts_sha256": "fd0ff010a36e91f4312441d7703f1bfa67819ba5cd26e294d8b6e3ffacb5e086",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a9988e6b5d828ef13688087f303f83e60b9da2f182fd3d38b62da6cf13320660"
+  }
+}

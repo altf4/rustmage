@@ -1,0 +1,11 @@
+{
+  "name": "Opt",
+  "catalogue_id": 3027,
+  "oracle_id": "713332c1-5bd8-400f-bfff-c1ca0697a043",
+  "facts_sha256": "c4c8d95f00e0a4b8b322c31ef9ce66f88731236a8a4be5025c28772483a1b784",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "38a3fb480432348cee685f792a4f4b274a193dbce724748ea88d17d73a3013c4"
+  }
+}

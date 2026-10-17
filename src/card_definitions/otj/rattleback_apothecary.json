@@ -1,0 +1,11 @@
+{
+  "name": "Rattleback Apothecary",
+  "catalogue_id": 3388,
+  "oracle_id": "5538d4cf-98eb-4e20-a9c1-42c7cdcad194",
+  "facts_sha256": "05c355fcd91ebcca434a904121b4a3fac64b6c6a99217bff41f9b6b7907b6a10",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4265e1a0955fe29cae0ba1c7e0dd32ad0ffaf416ddf40ca8d4e272d88c6ed0ea"
+  }
+}

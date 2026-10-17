@@ -1,0 +1,11 @@
+{
+  "name": "Avenger of the Fallen",
+  "catalogue_id": 281,
+  "oracle_id": "158d0272-a850-4399-8afa-d0caa143c3cb",
+  "facts_sha256": "2af266e857b5196d5b60af059c643bfaff411633620af84c461c1001cf5fc595",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "20f149af2730d4706990dbd73f0d6c26db644c81f3e3fb9b5cab6db8baf32e81"
+  }
+}

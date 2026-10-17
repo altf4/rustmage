@@ -1,0 +1,11 @@
+{
+  "name": "Nine-Lives Familiar",
+  "catalogue_id": 2944,
+  "oracle_id": "5049da27-f38b-4fe6-a387-51510bd1f44e",
+  "facts_sha256": "9439a619714bdedf673d9e8b5c80b3b7c6ba1c901760e06920cb5f62558732dc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "86f7c6762828a0a94c5fadfaedf0f300a5b20f36f5ac2fe66dd6c0f8fe0a1a8b"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Mistrise Village",
+  "catalogue_id": 2796,
+  "oracle_id": "339f5334-b65a-445a-a016-20e997e0b4bb",
+  "facts_sha256": "66760c140fda5f827348f8b40d4e830040266f4a4bff5fac9e98bb08f46e07b3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "943d55354f1a2b06cc7b8531473da88a89bf06b4b4ec65977ca4b46b014bb79d"
+  }
+}

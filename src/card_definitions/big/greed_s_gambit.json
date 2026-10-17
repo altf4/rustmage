@@ -1,0 +1,11 @@
+{
+  "name": "Greed's Gambit",
+  "catalogue_id": 1868,
+  "oracle_id": "0868ebbb-2fe9-4f53-9697-acad8cda5ec1",
+  "facts_sha256": "b128e3f40eb4a08a9db16783112fa186916d03095ef7dc9a74437973c3dc464d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "849a72a7d94350be8aac33548ed5a6f00246a3bcb3acf152f4386a9a5d34379d"
+  }
+}

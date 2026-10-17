@@ -1,0 +1,11 @@
+{
+  "name": "Agency Coroner",
+  "catalogue_id": 85,
+  "oracle_id": "3686fd97-49ff-4a92-9cb2-7d8e9438d945",
+  "facts_sha256": "3d22e5be7c675371384cb88e9affd2b068dc0bd88ac1bbdd93243522af8de68f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b1ec425af01fe21727b4c022946a1fbb4ca41e91f3b2b55441bf5e8546484797"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Eye of Jace",
+  "catalogue_id": 1418,
+  "oracle_id": "c8f802ad-4621-4f71-b52d-fbc55853dc88",
+  "facts_sha256": "fe08f811537c966990eba25c6626f7a183912cf5e36e939c2f148e812c543fb7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a58584daa7af6f34a0f1966ed6e7547546e6b391e1c4621d7ee2ed19468b7e7a"
+  }
+}

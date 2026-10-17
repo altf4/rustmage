@@ -1,0 +1,11 @@
+{
+  "name": "Untimely Malfunction",
+  "catalogue_id": 4807,
+  "oracle_id": "2c49d24a-98a4-43c2-bb59-1ef13d4214c2",
+  "facts_sha256": "75f6bb3f725284f9f63dda4f7020ca160c20e5493ae6bd5693a56bba25f3e70a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "46f72bf51ee2b7ffc36530ad94f7b0d5a42e2b8a5d07e1685f8da632219f4353"
+  }
+}

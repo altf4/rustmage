@@ -1,0 +1,11 @@
+{
+  "name": "Muldrotha, the Gravetide",
+  "catalogue_id": 2874,
+  "oracle_id": "e4625704-1d52-44e4-804f-2f45644d76ac",
+  "facts_sha256": "96ff1c21837d616e8afc0ac304910ee6ce75aef15cf2bda02b6211eef5ab9c9c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "11ec4b2d626c3a9a7e165b91f19150a8e21635d956f881333c5679ba8cc6e795"
+  }
+}

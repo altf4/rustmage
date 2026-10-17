@@ -1,0 +1,11 @@
+{
+  "name": "Trostani, Three Whispers",
+  "catalogue_id": 4688,
+  "oracle_id": "5c90b951-826e-4595-aacc-958904f3f794",
+  "facts_sha256": "c432cd5d1f497d23e55d2d1aa60f3fa6e06c3dd75653633b7eca50b54082edbf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3a0a444c2226333f3ce80cdf4247ced270b067627f14d380714b760a485827f0"
+  }
+}

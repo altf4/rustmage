@@ -1,0 +1,11 @@
+{
+  "name": "Star Charter",
+  "catalogue_id": 4095,
+  "oracle_id": "578ddb51-e128-43e5-a115-471f0cae1222",
+  "facts_sha256": "fd22ed99b8c1d8a2ee855c6df82ad357223b2656b7febb18495d1f9b73e19c9c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5eaa62c60b9e72e620115ee32cbe0c1d082e7c9f6367ef3024c15adf72e6d584"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Raucous Entertainer",
+  "catalogue_id": 3392,
+  "oracle_id": "534e74f6-52f4-4824-9178-cce5e4bcbcc2",
+  "facts_sha256": "624741be3d3c585ad9bf2769f43371b322c9386945de349dcf212fc2990636c1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "276e5b6319d34285729be4caad223679752d5777e7e436cf7f7244a5a703f1a1"
+  }
+}

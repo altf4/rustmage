@@ -1,0 +1,11 @@
+{
+  "name": "Kirol, History Buff // Pack a Punch",
+  "catalogue_id": 2370,
+  "oracle_id": "df1c0d06-2109-4297-9271-8a003fc892bc",
+  "facts_sha256": "a7ec270956ece201f4d0a74856dd039207fcc7c1ccf8848e8909ed11a96041b2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "34a3d2349d417e35de9ffc032b737eef08a2dc306e5dda50a8cf324d4c4f6248"
+  }
+}

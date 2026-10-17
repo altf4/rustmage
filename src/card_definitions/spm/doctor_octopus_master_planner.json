@@ -1,0 +1,11 @@
+{
+  "name": "Doctor Octopus, Master Planner",
+  "catalogue_id": 1120,
+  "oracle_id": "2fecfbef-e521-4025-94ea-451c9abde3de",
+  "facts_sha256": "8b998c205169f39e078283dc0873fefe3749f3a57895c3a914ac56e162685f8e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "98bb33dad5bf4233b2d49f4d465a6557b86622e52dd0ae6e3bc63d1f29652694"
+  }
+}

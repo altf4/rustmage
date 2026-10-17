@@ -1,0 +1,11 @@
+{
+  "name": "Yip Yip!",
+  "catalogue_id": 5139,
+  "oracle_id": "5453550f-9136-4568-baf8-c3d20e33fbb6",
+  "facts_sha256": "7cd96d058a5cb5fa0107540d798b2ca70a892ab31edaea5ac624ac5386bb2ad2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ad81e93372bd849179f21d73675da9a73b5fe3a1bbb6b4eeca6b9c0a02e853cb"
+  }
+}

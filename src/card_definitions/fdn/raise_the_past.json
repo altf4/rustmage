@@ -1,0 +1,11 @@
+{
+  "name": "Raise the Past",
+  "catalogue_id": 3349,
+  "oracle_id": "a69a24d0-ca58-4a44-8af1-a3bd1608d2f9",
+  "facts_sha256": "9ee4bfaf1e8b622f5cc1f7bbf47eccc5f56658488570f54d8d6c02678a0c8e9f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "358d2ae2bf3719faa6dbf3b8926b75609b0ce23b80f85d87e236a59c2e404903"
+  }
+}

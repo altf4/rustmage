@@ -1,0 +1,11 @@
+{
+  "name": "Watcher of the Wayside",
+  "catalogue_id": 4993,
+  "oracle_id": "b30eafed-2755-4423-9592-c8b83c68804b",
+  "facts_sha256": "178cacfda6463b4fa1ff911f2ae3e42de88af161b8012cb2f6ed8db856959c9d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7b714b4c63ca31183e4bb7f80a5e646c45f30b89f6f67e3d8b77a917e9854a19"
+  }
+}

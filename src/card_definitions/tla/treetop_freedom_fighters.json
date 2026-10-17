@@ -1,0 +1,11 @@
+{
+  "name": "Treetop Freedom Fighters",
+  "catalogue_id": 4673,
+  "oracle_id": "922176b8-7174-4248-92fb-b196ceb802c7",
+  "facts_sha256": "ae6475a93f3f5f27d6982893e677a0da5ddc501e3ba3427bc2ae2594eef75305",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fa34656f26ae0dea842064632dfa0c07eac1ad61416b6551698a08e8839ef9fd"
+  }
+}

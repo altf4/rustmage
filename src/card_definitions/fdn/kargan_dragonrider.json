@@ -1,0 +1,11 @@
+{
+  "name": "Kargan Dragonrider",
+  "catalogue_id": 2317,
+  "oracle_id": "df366871-8ed7-4183-8b0c-414ca361a711",
+  "facts_sha256": "bf138f0440d4e93932ee8cb0040ac84e72bb10d2218285e272b2de12684519f3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ee68bf1e8264da42eceeaf76b20c35e588b90c3bc0949220e23111be28338504"
+  }
+}

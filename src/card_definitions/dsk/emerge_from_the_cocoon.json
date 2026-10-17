@@ -1,0 +1,11 @@
+{
+  "name": "Emerge from the Cocoon",
+  "catalogue_id": 1310,
+  "oracle_id": "fed2127c-7174-4863-ad6a-1847c96bbd3f",
+  "facts_sha256": "cdf0b01f64d075ea7a6ba142a174fbdb7d1588331772886ed54bb2863bf970bf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d434ec65c436b514a747f6a44de6905da551df875476a648e0ef73c5611b8ad8"
+  }
+}

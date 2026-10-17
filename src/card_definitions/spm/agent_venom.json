@@ -1,0 +1,11 @@
+{
+  "name": "Agent Venom",
+  "catalogue_id": 91,
+  "oracle_id": "14c356aa-178d-4c14-a88e-fbe92ee6d89f",
+  "facts_sha256": "8c935ee291ce8c960c2d100ff3008b1301e5eb005e4c83059b29e3f67cd71a98",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "855c9e6dc610f91fb0bdf6a917d1bd5a80b58d26ca8fadd79d26a429b68c9426"
+  }
+}

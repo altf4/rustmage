@@ -1,0 +1,11 @@
+{
+  "name": "Breeding Pool",
+  "catalogue_id": 543,
+  "oracle_id": "20283c4a-f1f0-42f0-bc08-6da87474426b",
+  "facts_sha256": "753394be5f8c6dafbf99efd606caafafc04a420276f0b264ad17ff217ba9cbba",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f31b2fbb9bb128d43dc0658dc0a098e631943c0bc38678ce9fe030e08b73b9c1"
+  }
+}

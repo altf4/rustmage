@@ -1,0 +1,11 @@
+{
+  "name": "Faerie Fencing",
+  "catalogue_id": 1427,
+  "oracle_id": "450a9b73-9024-4103-b9f9-216a2f395cff",
+  "facts_sha256": "f7b022978afffc4b9e5414cc9a235d02ded614aa3fb25c2fd244e6628ffeec55",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b3b5c86fd265cc2c91e99b16cc9ebd04589a34daf934dcd71939984ec2500f0f"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Nexus of Becoming",
+  "catalogue_id": 2928,
+  "oracle_id": "07142ee9-dc2c-4b33-ad20-2f5285225e86",
+  "facts_sha256": "14dc42e07756f8c7a1f5ff43a042bd87c6f9e688e321d4be9786eb1ea1f56c40",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7870999f0da4a4ef1afa8626b2a5066f71eeee45a5e1aa8d212ff25f9187a8c8"
+  }
+}

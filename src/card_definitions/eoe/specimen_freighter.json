@@ -1,0 +1,11 @@
+{
+  "name": "Specimen Freighter",
+  "catalogue_id": 3992,
+  "oracle_id": "fb84b94c-dc8c-4182-9b96-abd092b20981",
+  "facts_sha256": "2c63a0cd772ad54ef8419c4ca8b6ac9d6008bce49db164720882f6a0e7c0068c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9909865a0e6ec37ec188d49b9ab7eed4372dc4a9564be83e8a60d058366db029"
+  }
+}

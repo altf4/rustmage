@@ -1,0 +1,11 @@
+{
+  "name": "Earth King's Lieutenant",
+  "catalogue_id": 1232,
+  "oracle_id": "9da9248d-1201-447f-b6c2-2b64af4f71c4",
+  "facts_sha256": "b73af7b25972f83b13e51c717b5d996c87b383f6eae3ca89245c8b1e9f536b79",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0045ac359a455b4680d6b53c8fd6c3e6eae88803c20c08a8d2b7165bd6ab7f20"
+  }
+}

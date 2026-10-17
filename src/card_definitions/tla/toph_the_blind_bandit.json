@@ -1,0 +1,11 @@
+{
+  "name": "Toph, the Blind Bandit",
+  "catalogue_id": 4634,
+  "oracle_id": "2ce20f43-9357-448f-bb40-7315feb08433",
+  "facts_sha256": "15938021a439cb34e26f6a9bd52755addf3cd34c826f1d4a61d65f8b5e2c9d78",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "031d00783e3511725ca34bdaa8f88b4a394f63918fa5135a8a1ef210db801993"
+  }
+}

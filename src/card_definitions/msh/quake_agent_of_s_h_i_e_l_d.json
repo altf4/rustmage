@@ -1,0 +1,11 @@
+{
+  "name": "Quake, Agent of S.H.I.E.L.D.",
+  "catalogue_id": 3301,
+  "oracle_id": "3966c94b-e597-4b3f-a4f5-001d52fff9fe",
+  "facts_sha256": "1e855e31361e25109b0d198aad1e971a63037e5f82e0d4f3308bf4e5a85d26ba",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2616b29f820e38ab72d5a4831680c52b17c1c9c9d96aee224a722268becedbf6"
+  }
+}

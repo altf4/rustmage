@@ -1,0 +1,11 @@
+{
+  "name": "Stratosoarer",
+  "catalogue_id": 4183,
+  "oracle_id": "36ab41b7-bcfb-4618-bbfb-70d608dba15a",
+  "facts_sha256": "8213b148a7129c3655b5e35842ebcd0629a9457dd3b0052ddbeddab0dc2955ca",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cf2e5cd7b9db00f2138b292d8ea020505f299182752a2ceb88587214dd4c9326"
+  }
+}

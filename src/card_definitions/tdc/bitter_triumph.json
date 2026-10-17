@@ -1,0 +1,11 @@
+{
+  "name": "Bitter Triumph",
+  "catalogue_id": 426,
+  "oracle_id": "776341cb-d2ec-423f-9250-92dc8bd8d503",
+  "facts_sha256": "531c9676262179770c55c57f1a68d7df51d0d3493895ada4ada1b6794c28584e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4f4699ac4d825e8df5d582a779c0938b30a26829927ca0fd475dc90727937a73"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Ennis, Debate Moderator",
+  "catalogue_id": 1342,
+  "oracle_id": "97e1fcdf-04e8-40cf-b04a-8505d9b7cecc",
+  "facts_sha256": "182ccb8858285512570ca44263f9a07b4094834c6024c0795a2d1e9baa2800c0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fcf911931b2849c7519fe51b656a9463ee95f49fb872358c5a1a4f619d2071c1"
+  }
+}

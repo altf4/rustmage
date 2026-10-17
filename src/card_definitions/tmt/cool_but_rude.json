@@ -1,0 +1,11 @@
+{
+  "name": "Cool but Rude",
+  "catalogue_id": 842,
+  "oracle_id": "1f076303-d160-4e02-aa1e-9ed6040c3735",
+  "facts_sha256": "0df36191b1bc121f7b348c847b430f07535af0dddf5e26541ebb418f1edb3dd5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "12e207a2c747351d515b2740016b447dc863786742343d6d5762dbb1519738ab"
+  }
+}

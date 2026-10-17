@@ -1,0 +1,11 @@
+{
+  "name": "The Mechanist, Aerial Artisan",
+  "catalogue_id": 4474,
+  "oracle_id": "bad27b43-7716-4ce1-82ba-2a6d437363e7",
+  "facts_sha256": "ddbf5e745ceae935242000283eab781d815d69e3c03e62e8985da73fc54b6406",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "59b647a2c31fa6ecb1ec00e09d84459c4076b44202ebeae1c8d33b22f5e0525a"
+  }
+}

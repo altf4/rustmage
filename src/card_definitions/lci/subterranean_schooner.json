@@ -1,0 +1,11 @@
+{
+  "name": "Subterranean Schooner",
+  "catalogue_id": 4198,
+  "oracle_id": "7f82bae3-feaa-4967-a843-32a4f72806d5",
+  "facts_sha256": "345bd41b8808937d5658c091205a45915b60d40c5d1b31c8aecf8b82758abac0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fd511518089ccaf119a422d2c53b5a2db51d175eed14f3f50a384dada53bda15"
+  }
+}

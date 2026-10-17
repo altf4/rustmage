@@ -1,0 +1,11 @@
+{
+  "name": "The Dominion Bracelet",
+  "catalogue_id": 4435,
+  "oracle_id": "c017f8ae-9103-4965-a07a-f259f44a157d",
+  "facts_sha256": "0dd27943ef9e5ea8770e7a55627b08395569231880f5848147a0a6d568f19bd1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "82be4ffe535d1c2da2118f42c34e40b0b7b689dd84d806e8e488a0a774da9c98"
+  }
+}

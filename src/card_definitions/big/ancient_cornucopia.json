@@ -1,0 +1,11 @@
+{
+  "name": "Ancient Cornucopia",
+  "catalogue_id": 160,
+  "oracle_id": "f0950c95-a297-489d-b166-74bba6af5376",
+  "facts_sha256": "c5ce32184db9b6b89ca220f8b341dea265cdc787ae600ec94b376aaad6f77bb9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9e76cf4cf5b9594407d733f23aa3a5544cf42497a95d304557de1990bbb4f4b9"
+  }
+}

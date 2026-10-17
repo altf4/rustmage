@@ -1,0 +1,11 @@
+{
+  "name": "Tidecaller Mentor",
+  "catalogue_id": 4593,
+  "oracle_id": "e75e40a5-a9ae-4789-96c1-0e19d1ce59c5",
+  "facts_sha256": "8736ce6ad481c51946677153f75da2631bd07a1746a51ab605849d1c52cb06ae",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "af4133597d5272ad94f89a225bf9be140f7f4146fe0dd36231476cd5bd06048c"
+  }
+}

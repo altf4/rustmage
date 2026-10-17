@@ -1,0 +1,11 @@
+{
+  "name": "Fateful Discovery",
+  "catalogue_id": 1451,
+  "oracle_id": "72c6174c-fa2c-4ff2-b76e-eb6e890e97c9",
+  "facts_sha256": "9aa1a0ed1210938d59ede6e0235b4400c4285d7cc4fcf1787bdf9f1c7d62cbbe",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5e387b6da2fbc74c34c8e12701ad5629572bf30ec2e5efbe11feb109ac507cec"
+  }
+}

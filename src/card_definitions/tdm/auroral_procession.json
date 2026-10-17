@@ -1,0 +1,11 @@
+{
+  "name": "Auroral Procession",
+  "catalogue_id": 270,
+  "oracle_id": "511d3de9-076b-4811-bddf-00623f98993f",
+  "facts_sha256": "2a320ef1830a229f0581631377abf4bf914d87cf21605637cdffdd5a4d673d94",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6428f4a8e7663047d478af42bac71769b5f4ad6348fbe33ae932aabe13603dd7"
+  }
+}

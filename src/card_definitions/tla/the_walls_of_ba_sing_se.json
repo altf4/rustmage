@@ -1,0 +1,11 @@
+{
+  "name": "The Walls of Ba Sing Se",
+  "catalogue_id": 4514,
+  "oracle_id": "af7d7da5-aff5-48e1-901a-f81257a85f71",
+  "facts_sha256": "0dd5cbfe3915e482bb167ec378b6705e6dc48325049b58c47096c9e4b9fde202",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ccd441995b5d5d9eb3d37ae28fa95158e6af12822c0b073fa15179fb3bbb1ec1"
+  }
+}

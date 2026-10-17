@@ -1,0 +1,11 @@
+{
+  "name": "Selfcraft Mechan",
+  "catalogue_id": 3781,
+  "oracle_id": "4ba4cb4b-f421-4abd-8fcf-a01174447790",
+  "facts_sha256": "984c171e8d5a5fc8d4d08d565e943fa5222ed705b07b96a2b325f04e9fd3cb00",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ebe78e044000e77f06ce2733f09ba7ec5ac824215e9a072cf1430abc4a2d3ddb"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Blazing Bomb",
+  "catalogue_id": 441,
+  "oracle_id": "088acd15-029b-4091-960a-d5060a364ca9",
+  "facts_sha256": "161ba8f954ca7fd2a1f2c5372fb28787086cf5e9d20aa18ddec77a5faa4ed4ce",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4434f4865ca6e664582f71a24361bd05b819a8ba5ccdc1129081426360e4ccb0"
+  }
+}

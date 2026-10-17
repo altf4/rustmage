@@ -1,0 +1,11 @@
+{
+  "name": "HYDRA Assault Robot",
+  "catalogue_id": 1922,
+  "oracle_id": "a2558476-5506-4a09-93fc-b8ab33c98985",
+  "facts_sha256": "ce537e25b56a28f071b7b707dfde99946f00c168b38b3dc4c938c55ae9c988cc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "56af04340e7da697a364fdf3c858c45c9e3dcd099ef60dac07d6513a0a35bb50"
+  }
+}

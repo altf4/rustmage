@@ -1,0 +1,11 @@
+{
+  "name": "Thopter Fabricator",
+  "catalogue_id": 4536,
+  "oracle_id": "8aab9181-c306-471a-8061-9a7a7654dab5",
+  "facts_sha256": "398da327b425428a9e7fc04ab9e08360f95ac96e39112a36ab10b961595fa493",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fa1066f21fe917d1a51a490b29df047f4ad272836124c8518174489fe0c8f606"
+  }
+}

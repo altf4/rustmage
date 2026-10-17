@@ -1,0 +1,11 @@
+{
+  "name": "Shimmercreep",
+  "catalogue_id": 3831,
+  "oracle_id": "52244c23-7680-4bed-8ef8-8d10e289d3f7",
+  "facts_sha256": "d4c7ce90ebd1d8196d0f594927977c1216a662740f0f793a3b94d31fdb079649",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7c2956c9e40b71a341e8bcecc0332d2c7dda9dfbee6fba80d92a532810ce7625"
+  }
+}

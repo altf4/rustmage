@@ -1,0 +1,11 @@
+{
+  "name": "Airship Engine Room",
+  "catalogue_id": 109,
+  "oracle_id": "01ed9139-293d-4477-a145-3c6fe59266c7",
+  "facts_sha256": "ce34439950ffc399d1c2e0ec50da2bf8ab3c43aaab43e478aaf37d198dae3dba",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e7eec8bf52037e5c80547bde1631f7f03728aecdafd6e888ef1bd6aae3452260"
+  }
+}

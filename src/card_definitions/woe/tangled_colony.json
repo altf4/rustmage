@@ -1,0 +1,11 @@
+{
+  "name": "Tangled Colony",
+  "catalogue_id": 4332,
+  "oracle_id": "3f01c327-ba50-4fc3-a930-fa1fb02e34b9",
+  "facts_sha256": "8c4166c89f25a2ec50e132737e568db54206179deaa68b289bc0dff829941dd1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "682eff8bc4e56cb66418d53a1416c7496feb5d73b8a58d4b8aa47659f671303c"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Overlord of the Balemurk",
+  "catalogue_id": 3070,
+  "oracle_id": "652e87af-7cf0-407f-9fb7-1a630fb8dd47",
+  "facts_sha256": "b51b93a849081b613e0f8c23e7292b5e5f461bf3cb57f49b93ee7487fa454cb1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6f6212062a26073e8fa57c2a3fb3fdf387a18630d74fb49ed68f41b94a298d05"
+  }
+}

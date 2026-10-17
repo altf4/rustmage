@@ -1,0 +1,11 @@
+{
+  "name": "Fire Lord Azula",
+  "catalogue_id": 1516,
+  "oracle_id": "2631130e-63e2-43a3-914a-648e76722203",
+  "facts_sha256": "89fd04ad99ae1da2cd21c5bfab1a83de8dec5888937964bf4eaad34cca2829f6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c3ff44d636af064042305a1c9f58cadb738d6ffddb4c07e0b60ad06b56990fdb"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Mob Lookout",
+  "catalogue_id": 2804,
+  "oracle_id": "47654b36-b215-4333-aa70-d88d627447e3",
+  "facts_sha256": "f564ac31268db3f46e0eaef0837e19ef260b3d6c0c90c6cb0bae077f6847aff4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "af265d1aa5db709b647665a7ba2bf961ff51a6fe21058502029879c4c7dd9dad"
+  }
+}

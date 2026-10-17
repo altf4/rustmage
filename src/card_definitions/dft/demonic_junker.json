@@ -1,0 +1,11 @@
+{
+  "name": "Demonic Junker",
+  "catalogue_id": 1040,
+  "oracle_id": "88075828-a76e-412d-b738-182f50e3a133",
+  "facts_sha256": "fb5a2dd11c17e7337869c99c1d4fe064643509fab87561c683f241562133bbcb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fd294e99ded4d0c743c701bb500d7b3e11a4dc4dbef77139d7620f395df492fa"
+  }
+}

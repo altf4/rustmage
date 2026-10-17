@@ -1,0 +1,11 @@
+{
+  "name": "Aftermath Analyst",
+  "catalogue_id": 78,
+  "oracle_id": "374e54d8-8e73-4268-9dde-c28c77bbbf32",
+  "facts_sha256": "31d640e53021f5423abdebe5db96eae68d77e069f01169213ef3d15852e94c7b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "87573b9f1993adec55140d2193450312a51ff04be8e6bb9b2f4afa89e740e755"
+  }
+}

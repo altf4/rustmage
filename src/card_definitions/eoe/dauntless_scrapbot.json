@@ -1,0 +1,11 @@
+{
+  "name": "Dauntless Scrapbot",
+  "catalogue_id": 976,
+  "oracle_id": "b75ca527-4494-4957-b2e3-8c590df42e95",
+  "facts_sha256": "50f6af50e93867b9f5e90d74d1e70348988a9caa5747673a88a110ddf36db094",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d9d2a81e1f60fff942b5c1b848adf5bc0e3c5cd5a5ac78775987122e8662826d"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Dwarven Shortsword",
+  "catalogue_id": 1217,
+  "oracle_id": "9cc52afb-9788-46f6-9f9b-347513f8a64f",
+  "facts_sha256": "9b57ffbf4ad526fb0dfdb33618d9b294849a65a945e02d368e72f145b4790c9b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4becf0b96fab5534e63d0a26698dcbc27a6c083dd2cc6721d908e5ebb57a7180"
+  }
+}

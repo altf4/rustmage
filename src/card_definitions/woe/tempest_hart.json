@@ -1,0 +1,11 @@
+{
+  "name": "Tempest Hart",
+  "catalogue_id": 4359,
+  "oracle_id": "5005df36-a100-492d-89b9-e221793cfb56",
+  "facts_sha256": "32a420e34e187a4a29619c9586569f3d3a0029920a4da6783eb5a094aceb02c7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "632fc6a42a98ddb86b870e33d73a1edbefd16d8c7b3c82eb59c621872cf00252"
+  }
+}

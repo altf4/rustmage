@@ -1,0 +1,11 @@
+{
+  "name": "It'll Quench Ya!",
+  "catalogue_id": 2240,
+  "oracle_id": "cb184995-700f-4900-994a-4ce7fd12f942",
+  "facts_sha256": "de794487342e61fd05fde89849aad87fc12cefcc599ecdab6b9237b33c218061",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7e0cdbd4de8a8a6bf331531c95c5287eaf22a0ec57c8223e2977dce6e3ddee29"
+  }
+}

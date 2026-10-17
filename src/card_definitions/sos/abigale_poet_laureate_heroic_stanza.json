@@ -1,0 +1,11 @@
+{
+  "name": "Abigale, Poet Laureate // Heroic Stanza",
+  "catalogue_id": 32,
+  "oracle_id": "2f5f46ed-b8aa-4864-bd20-17281d4632bf",
+  "facts_sha256": "d577d4c8670f8c1936351024f84619536ce3bb5d2b2c4bf2b7127b8f107f4d34",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b7c53b86fbce641d70c1b0e926605ffac7a797f3b88dd628ce896663f64514a3"
+  }
+}

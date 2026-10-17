@@ -1,0 +1,11 @@
+{
+  "name": "Hill Giant",
+  "catalogue_id": 7,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "07d5a98f4da208ad050146cbc7e4520821052149684e263d4438c8f7b51eab31"
+  }
+}

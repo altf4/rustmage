@@ -1,0 +1,11 @@
+{
+  "name": "Pest Mascot",
+  "catalogue_id": 3137,
+  "oracle_id": "b8ecddf7-ba89-40dd-9f63-5bad27dd850d",
+  "facts_sha256": "dac68e0cd323abacff6b9f7c18624b67fed94f0880ac5e23780888747bdf9a9e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a14b52a1a1b5e16bd677958b83ac3646f7901efc12267971fb9fe8be7a920793"
+  }
+}

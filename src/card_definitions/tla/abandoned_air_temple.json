@@ -1,0 +1,11 @@
+{
+  "name": "Abandoned Air Temple",
+  "catalogue_id": 27,
+  "oracle_id": "9575d7ce-f26d-4b90-87a3-6329e9799572",
+  "facts_sha256": "146cad49e337b1873923cefa6f37652585a0fa740f48476045cdff4bb0d20ab1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4f5d63c91d2c8caab73839b628103449a45cfd9b54ffdf6d977f489c03aae8d7"
+  }
+}

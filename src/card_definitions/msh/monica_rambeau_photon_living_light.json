@@ -1,0 +1,11 @@
+{
+  "name": "Monica Rambeau // Photon, Living Light",
+  "catalogue_id": 2832,
+  "oracle_id": "8dd929cb-0fe1-4cb3-bc8d-96ca37f194f3",
+  "facts_sha256": "83ebf6f346f7a62b11963c3ede985c67f59ae9af9d2051ea6f8a7f23b714a97b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a8141ffd49e293cbf18e9e53d6624b11edb062b03e290f0cd8ef8d4c9051ec06"
+  }
+}

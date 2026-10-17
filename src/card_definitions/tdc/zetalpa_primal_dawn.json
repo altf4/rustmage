@@ -1,0 +1,11 @@
+{
+  "name": "Zetalpa, Primal Dawn",
+  "catalogue_id": 5159,
+  "oracle_id": "7da0e5de-3e4c-420a-8685-991206100b9d",
+  "facts_sha256": "ebddedd731cbc51953ec35fdee620c9c44820d121c2fd6f9a9ff50b522a883ca",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3089001e06ac060e84758c54105e3e146cc7d1888c822cf785263afc6e14e7d3"
+  }
+}

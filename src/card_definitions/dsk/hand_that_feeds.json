@@ -1,0 +1,11 @@
+{
+  "name": "Hand That Feeds",
+  "catalogue_id": 1936,
+  "oracle_id": "6b348051-3ba8-4aa0-b337-b42d8ef8cbba",
+  "facts_sha256": "a5bce35c68bd8e5cfc5728a6d05dfad922581a6de736f79814594eef2d6e2cae",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "74bec6d9781f0c051680dfba5dcd82268351abd17ea08154a1df4acd23c62959"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Koth, the Geomancer",
+  "catalogue_id": 2400,
+  "oracle_id": "3b17da84-ae4d-4fc1-a327-85e54e6156c6",
+  "facts_sha256": "b8a80867bf13272b1b36dbfa5d686282f460b4e9b0daf3595f0f779e2a783999",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5a1b2fc7a60181263babdbb642f41b2845a0d23dce00515cd28f7367b21124cd"
+  }
+}

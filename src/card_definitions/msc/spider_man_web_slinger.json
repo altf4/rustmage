@@ -1,0 +1,11 @@
+{
+  "name": "Spider-Man, Web-Slinger",
+  "catalogue_id": 4032,
+  "oracle_id": "505231d8-714f-4c5b-a635-d1662bd18a78",
+  "facts_sha256": "0d0859afc15d4f42acfe49aea395c34afd7f3ae502771840037ac96ba2b617e9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "40217ce9ab4ba3411a5cd8c08a06159d6183cc2716fbaa804486fd6d4dd772b1"
+  }
+}

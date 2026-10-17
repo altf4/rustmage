@@ -1,0 +1,11 @@
+{
+  "name": "Memory Trap",
+  "catalogue_id": 2716,
+  "oracle_id": "70616a8c-9b6c-408e-8f3e-2c348ec136d8",
+  "facts_sha256": "3e71a0a9c0548e7376a9c21226f9aa9c8cb861c2d83efbc8a7bfab39dccb3fd3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "67aabf16dc5c1c73041806f8fe9120a1f372952a73229db6f19f54dc175e09d5"
+  }
+}

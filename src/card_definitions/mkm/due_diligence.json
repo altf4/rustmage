@@ -1,0 +1,11 @@
+{
+  "name": "Due Diligence",
+  "catalogue_id": 1199,
+  "oracle_id": "d412150d-3c70-44cf-97cd-965c438e7303",
+  "facts_sha256": "16200955f1ad9b033f13fe98088c8721de159d8434112ee39992b6a24450c717",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "42c860b9ed7a7b1df85bc73d18b49ca593fed2fa70042484a24c291dac4f6f1e"
+  }
+}

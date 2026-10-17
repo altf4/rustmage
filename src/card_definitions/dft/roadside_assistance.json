@@ -1,0 +1,11 @@
+{
+  "name": "Roadside Assistance",
+  "catalogue_id": 3558,
+  "oracle_id": "814f30a1-c0d6-4243-839d-0645d7bcbe4c",
+  "facts_sha256": "8a14077bf87d068e382c9b69829e7e1d631f2be5309155424f8a7a0906015662",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3a7ef4321262edc8eaa2ede17e4b8032bffac65be3b7fefa39a9274c659ee091"
+  }
+}

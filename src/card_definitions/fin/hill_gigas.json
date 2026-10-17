@@ -1,0 +1,11 @@
+{
+  "name": "Hill Gigas",
+  "catalogue_id": 2045,
+  "oracle_id": "137594f7-2422-461b-a3ae-7ce3c135e0c7",
+  "facts_sha256": "fddd6dd151a0bcd22aa191dc0facf1a353ca801b479a2d12d4b443e280df425b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f3999fc3707b8924d71f5a28be40bef33fbc6007f3939e991e3d4bfe48eb4bce"
+  }
+}

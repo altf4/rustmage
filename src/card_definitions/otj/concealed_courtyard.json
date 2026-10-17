@@ -1,0 +1,11 @@
+{
+  "name": "Concealed Courtyard",
+  "catalogue_id": 821,
+  "oracle_id": "2d899466-b1eb-4901-b626-1f2fb09b786d",
+  "facts_sha256": "67e973dc6e57c9e716380b8c7f73ed610c34df07fc02f4ded3d70c8c62eca9b6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f20c7fd3ddda5677645d9fe6874539282d67501032bce96d27f4eb1f61bef40d"
+  }
+}

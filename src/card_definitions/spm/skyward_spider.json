@@ -1,0 +1,11 @@
+{
+  "name": "Skyward Spider",
+  "catalogue_id": 3910,
+  "oracle_id": "d6ba76fa-441c-4a74-bfea-8ae2a2c9e391",
+  "facts_sha256": "3eaca69d73209d3dc90e0625b30d2c2ce1cc9c1cb1f16dc338725d0e797f84a3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2aaaa879d9aeb405af287c62979554b14fe37c17fe855faf67c67a6916f690d7"
+  }
+}

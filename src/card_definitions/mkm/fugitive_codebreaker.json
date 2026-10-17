@@ -1,0 +1,11 @@
+{
+  "name": "Fugitive Codebreaker",
+  "catalogue_id": 1642,
+  "oracle_id": "af2b36ee-2945-41d3-a186-8fd28f3cde16",
+  "facts_sha256": "30cbeebc5837710603881ebe818748897276ae5fade381759a03a3b9a193ca0d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "91e329eafc8195ef0a1a2856c7d14dc280d2fdf3d37c801f925d6ec16d972ef5"
+  }
+}

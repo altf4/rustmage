@@ -1,0 +1,11 @@
+{
+  "name": "Anim Pakal, Thousandth Moon",
+  "catalogue_id": 167,
+  "oracle_id": "05551d91-50c6-46d1-86a4-cd3d177d0923",
+  "facts_sha256": "c4c7d964d090777bde050bbc7b7b671e5a68962d3d4d7358c9d9c1529eab1247",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c51709c26c3cadf5a832c238d5353bf0e559d1868d9839dc6617e11fe2c791fc"
+  }
+}

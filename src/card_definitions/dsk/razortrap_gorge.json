@@ -1,0 +1,11 @@
+{
+  "name": "Razortrap Gorge",
+  "catalogue_id": 3408,
+  "oracle_id": "8f69bd3a-244e-42d8-bfac-5a426f4b54b4",
+  "facts_sha256": "88b2d2571d26bd94a2d332785b517f9033b6b3c1916a3f2e0892120fcca0dcb9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "93124ec8a7354c01a5d83b6ffdda4b24937f67e3951d18bd74d7cd9588fc7568"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Candy Grapple",
+  "catalogue_id": 632,
+  "oracle_id": "9588a7fd-bbe5-4a81-9a7e-d8e8f6c0537d",
+  "facts_sha256": "77e0c5cf40461698c538ab94afae1d425f2aace127141fbcf3e7b5bebc1bd51d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ce1b11a3ce7aef6b5c3c63157812cd6b28bf281d7bec848729a8c313c22249aa"
+  }
+}

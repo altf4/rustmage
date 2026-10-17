@@ -1,0 +1,11 @@
+{
+  "name": "Elvenking's Halls",
+  "catalogue_id": 1297,
+  "oracle_id": "a91e0154-14a9-4681-8236-04db231592a4",
+  "facts_sha256": "2c1a40c6b05dfc40ba923462163dac35cdc672416de2738cdb3187030f9c2bf9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b7401704c3148997847bdac2f61d1b31da8cef107a63dceb12bc3dc3d69d1bc3"
+  }
+}

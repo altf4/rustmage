@@ -1,0 +1,11 @@
+{
+  "name": "Flamecache Gecko",
+  "catalogue_id": 1543,
+  "oracle_id": "d767463b-0fc9-43fc-a85f-e60f030f9b96",
+  "facts_sha256": "dbd4b4cf9117d6913d3f4fc2ee255974cde693c847524bde2d5a0d37b103b182",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "75ad6e67c09c9bfb755713212578344cae0771b7116a5f6e542b786098599c6e"
+  }
+}

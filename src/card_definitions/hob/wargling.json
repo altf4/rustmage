@@ -1,0 +1,11 @@
+{
+  "name": "Wargling",
+  "catalogue_id": 4979,
+  "oracle_id": "ce107656-f222-4d9a-9ba2-b33b4d47bdb5",
+  "facts_sha256": "134d42b35cb83dd323ff84503182add55d4aebdfc383f70a03acfd9a05bba5af",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1ff27d05dbe5f87672c12832420cf840cfbb50740c340b28264d8d8556e96f28"
+  }
+}

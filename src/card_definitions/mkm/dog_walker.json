@@ -1,0 +1,11 @@
+{
+  "name": "Dog Walker",
+  "catalogue_id": 1122,
+  "oracle_id": "10d24900-cd40-4c98-bb1e-b9e66113f703",
+  "facts_sha256": "ab6edc7123582acbb04b4ca348d7b0e99c8ed91bc58a0a37e54617e0cd232632",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0b75c971031bac712f3c7bb777fd2e2e5cbb54a284eafb944d05b075830862a7"
+  }
+}

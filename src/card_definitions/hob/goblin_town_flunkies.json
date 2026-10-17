@@ -1,0 +1,11 @@
+{
+  "name": "Goblin-town Flunkies",
+  "catalogue_id": 1813,
+  "oracle_id": "85ceb4ac-7a1c-4c7e-95a3-515a5b5d6116",
+  "facts_sha256": "726a14ee1ab06d1f9044120db20e67e5075b7fbe9a56cfecc85d7857597d9c3b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "11a0e7b4abd0283b36c066bbf75aae0d512cf21a9ac8e5dff4d48322fa8aa636"
+  }
+}

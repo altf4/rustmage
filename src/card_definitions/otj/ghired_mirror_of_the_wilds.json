@@ -1,0 +1,11 @@
+{
+  "name": "Ghired, Mirror of the Wilds",
+  "catalogue_id": 1730,
+  "oracle_id": "34b36022-0d93-48cc-a2cc-90ca4d65dc31",
+  "facts_sha256": "d14378835c744caf401a86b246df14ccc0d0072ca7f045c0bbbb4e09eab9a2f8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "784ccb450cb94e2bd142e7234b87b9958d7dabe56483ac1477d297faded9fd5b"
+  }
+}

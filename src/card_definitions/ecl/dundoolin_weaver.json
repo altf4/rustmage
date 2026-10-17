@@ -1,0 +1,11 @@
+{
+  "name": "Dundoolin Weaver",
+  "catalogue_id": 1202,
+  "oracle_id": "28564d10-bfc5-4beb-b0e2-b9aa5c03f740",
+  "facts_sha256": "8f60f2b0eb7559c56dd87e4418c5eadb81ed59d2d3650866173733d282960e7c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7fc31f6d2656937ea5b216b983d444712c38844690301373e78cebafd4adf811"
+  }
+}

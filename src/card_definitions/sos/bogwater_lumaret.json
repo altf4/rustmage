@@ -1,0 +1,11 @@
+{
+  "name": "Bogwater Lumaret",
+  "catalogue_id": 480,
+  "oracle_id": "0109432d-5a2a-456f-ad39-b75cb4c73420",
+  "facts_sha256": "1119b2fe0421f1ff37636545da90cc270239c5671f94282aee624d58088b1fb6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "57c3a6b96e4fda672b1cd98162988c891966809f99769c560a22ca532408a35f"
+  }
+}

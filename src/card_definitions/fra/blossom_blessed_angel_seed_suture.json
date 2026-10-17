@@ -1,0 +1,11 @@
+{
+  "name": "Blossom-Blessed Angel // Seed Suture",
+  "catalogue_id": 469,
+  "oracle_id": "cd61c26b-8d3c-4730-92f2-0d94d961bafd",
+  "facts_sha256": "be99db63295e45ecf8b3affd702dc26689070b42513320af2d98c848a93c161c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "db18b095f45614a8f7d6f8883f89793b04f489ae480a1034c303cf3a14e3c066"
+  }
+}

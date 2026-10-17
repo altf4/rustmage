@@ -1,0 +1,11 @@
+{
+  "name": "Greenhouse Propagator",
+  "catalogue_id": 1874,
+  "oracle_id": "b6b77cb9-49a5-4d1a-ae2d-02ae176dc1fa",
+  "facts_sha256": "adcb59dd3026046ab600650df7672512271f678286c9ec734835d55a2baa500d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5bb33ad2b0d7ab65f412d8ab591ea2ae8bb087446c363222141d074fa510a4b0"
+  }
+}

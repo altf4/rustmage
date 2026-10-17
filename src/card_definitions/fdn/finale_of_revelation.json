@@ -1,0 +1,11 @@
+{
+  "name": "Finale of Revelation",
+  "catalogue_id": 1511,
+  "oracle_id": "755bd5d8-67f1-4f24-a4e8-d98edf2f2e03",
+  "facts_sha256": "f410618fe77637027cf54a59a1e9328b5eb73f7cad920de17ce6b5c8bb5b8b9b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "30f13e4a251ea82214974572dc1360727e91acaaa28e27956a277aab82ad1304"
+  }
+}

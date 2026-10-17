@@ -1,0 +1,14 @@
+{
+  "name": "Frozen in Ice",
+  "catalogue_id": 1640,
+  "oracle_id": "82fa14d8-5019-4e1b-a86c-923d9292b87a",
+  "facts_sha256": "49e47f3903cca8b2c52ab0b11c62b3ca332d42539781fc12f2ef17c55fbad7c4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "601be33a7592626fbcb0c810b3b7dbbe2cb094044ef8652e8c8b0cd59d034900"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FrozenInIce.java",
+  "java_sha256": "fea8383c8dbaaa9192f10511e8cf2a5dcde43f29a66904099932de63f09d52d4"
+}

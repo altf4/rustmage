@@ -1,0 +1,11 @@
+{
+  "name": "The Thing, Ben Grimm",
+  "catalogue_id": 4510,
+  "oracle_id": "d566d5f1-5abd-405b-8553-d267ecbe72ab",
+  "facts_sha256": "c394539d0cb7a7542e5219e8c57d0c4a9c89740c192c5abda21b9d9435becc3f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a0fdb9839abcd66dcc5881cb8344644d926b91c49d64b28aeec5b02ebd39f99b"
+  }
+}

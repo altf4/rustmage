@@ -1,0 +1,11 @@
+{
+  "name": "Fugitive Droid",
+  "catalogue_id": 1643,
+  "oracle_id": "c04d4fd4-e5aa-431d-824b-8bc94245f103",
+  "facts_sha256": "d65b981615bee0e276a24cd95c729029a3398e1b1b880224b49b2c98844ccd11",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "055b687d09856d429ab7fcb09186412fdb5e3e1500291c2cc0d6998f775ca900"
+  }
+}

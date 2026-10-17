@@ -1,0 +1,11 @@
+{
+  "name": "Smaug, Wicked Worm",
+  "catalogue_id": 3935,
+  "oracle_id": "20535126-f811-4386-bdce-d73f30691724",
+  "facts_sha256": "193fb25cf3ebc384db9ab8d63e214f92324d5c50945122268874a9b91c890f3b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ba5a5bef2014c9e62abd26243afab853d3f8f60fc968a11905808082cf8ff48d"
+  }
+}

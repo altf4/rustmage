@@ -1,0 +1,11 @@
+{
+  "name": "Final Showdown",
+  "catalogue_id": 1509,
+  "oracle_id": "7e7ec3d6-a84f-4cc3-93f4-4d181d41e126",
+  "facts_sha256": "7dd320838431a178e0a5c580ea9c5ee53bdb32df2ffea01c8117e45df5bd36b1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "222ab47bb5ed1c58dc246d02c9157def4d6931d9de0d7d8c6e88650ddd722223"
+  }
+}

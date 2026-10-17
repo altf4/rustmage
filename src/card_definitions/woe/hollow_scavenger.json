@@ -1,0 +1,11 @@
+{
+  "name": "Hollow Scavenger",
+  "catalogue_id": 2057,
+  "oracle_id": "4fad3816-41af-4fa4-85b4-ba37614ec848",
+  "facts_sha256": "243f5ec3a1c151bc6bbd4f89a9b160b55294bbe313827f4058ebcc7da9c8e946",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3191dc43cf67ee8cb039205bd8ec9423ab7db3d072b350d50334a5195eccce0e"
+  }
+}

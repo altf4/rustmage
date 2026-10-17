@@ -1,0 +1,11 @@
+{
+  "name": "Adelbert Steiner",
+  "catalogue_id": 58,
+  "oracle_id": "657a4500-4b47-4c78-945b-a7791af7d10e",
+  "facts_sha256": "5bfc1e8770a5a4e5c8494ba57fca9e5b95525618dace29a61b0a511eae9cdbde",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5e5905751bf5512588611ecf873c850456c546d3f58b3c55a61a8d617aea8689"
+  }
+}

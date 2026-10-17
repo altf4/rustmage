@@ -1,0 +1,11 @@
+{
+  "name": "Pugnacious Hammerskull",
+  "catalogue_id": 3274,
+  "oracle_id": "da989677-3647-46b8-aa56-b2cfb60f7a2a",
+  "facts_sha256": "1c92276c4745893c966d1e0dbfc2afbf078d05ad3a6002916ab1272730fa4d2a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7f551c23649c3fb986aa582fa387f4e38e838856cfdad647f3a2a52fc55c026a"
+  }
+}

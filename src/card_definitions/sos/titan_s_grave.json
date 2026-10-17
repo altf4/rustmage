@@ -1,0 +1,11 @@
+{
+  "name": "Titan's Grave",
+  "catalogue_id": 4611,
+  "oracle_id": "595f0eb5-f521-4174-9c48-b89e85ea907c",
+  "facts_sha256": "d0c45b99c4ede4cf8f0000591a3187a25ce0dcc11af9a35cbc783399fb1ada8e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9a11fd5d35ef91549306a7cb71940619c762a84c26ebca637e8023c8f7b40630"
+  }
+}

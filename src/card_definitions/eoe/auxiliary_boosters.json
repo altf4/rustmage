@@ -1,0 +1,11 @@
+{
+  "name": "Auxiliary Boosters",
+  "catalogue_id": 274,
+  "oracle_id": "ffa3b20b-d77b-43d5-86ac-6a591df1877f",
+  "facts_sha256": "00471fd4d26cdf30e9ee518a1da5ba455fc2ae4cc4a538893e3b7fda413069ea",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d9566839b7e67c834ffaf888c7a33f94897d567a112e27c0e1c7380196273fd8"
+  }
+}

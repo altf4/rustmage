@@ -1,0 +1,11 @@
+{
+  "name": "Loading Zone",
+  "catalogue_id": 2531,
+  "oracle_id": "16156274-8dc0-439c-94c4-e8c89bbb5687",
+  "facts_sha256": "cf64d8cab422f7955c0c1b7e687fc459731c02968323f5079d6951d0112be6ee",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7a81803a53fed0b369240a5d091b87b57fca1118146e103c85c8ad0c6416c2fd"
+  }
+}

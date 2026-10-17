@@ -1,0 +1,11 @@
+{
+  "name": "S.H.I.E.L.D. Flying Car",
+  "catalogue_id": 3636,
+  "oracle_id": "12d51534-a98d-487b-9ba9-c10861dff992",
+  "facts_sha256": "ef75a9c27e869eb5aa7e16918d2575ad493f2da0c2a40b1ddd7f1f5a4a157598",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4ea579cf5478ba64c687992b6c7c094fb956edfeec61e863941a494f3a6cf085"
+  }
+}

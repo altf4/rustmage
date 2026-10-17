@@ -1,0 +1,11 @@
+{
+  "name": "Chainsaw",
+  "catalogue_id": 703,
+  "oracle_id": "3db40361-5f55-417e-a7cd-7e360cc91b4d",
+  "facts_sha256": "b220728d479ab6b6e90c10be4153120793ed07d0bc5e5c3c56b9df1ad0d7c022",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3b3e41d00b1659364004b920b6abda1fe615ca1ee8cb985550fa68d7f5ccfe1d"
+  }
+}

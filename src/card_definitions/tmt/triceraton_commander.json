@@ -1,0 +1,11 @@
+{
+  "name": "Triceraton Commander",
+  "catalogue_id": 4680,
+  "oracle_id": "45d40cdb-21cc-4569-a894-83dd3026c947",
+  "facts_sha256": "a44fc742f6b4688c45fa8217562b76cad682e5f544128201b1849b5bc94a792c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "64e1232e02250a2401c58874ede421133c757e3a48a49c1fb60c7dc0e4d2f8cb"
+  }
+}

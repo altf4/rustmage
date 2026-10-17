@@ -1,0 +1,11 @@
+{
+  "name": "Theorix Annex",
+  "catalogue_id": 4524,
+  "oracle_id": "00ad5200-5179-4d1b-8bb3-a09e1b31be58",
+  "facts_sha256": "a6b181066fea8f47ce5703ba2d91bf8ce10ad0d2a494809cd2ae82d370fa6324",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d4d22c90af7a55ebbc4550dcb1c0af44e9fcc3efa45bcd3253e655a191477a3d"
+  }
+}

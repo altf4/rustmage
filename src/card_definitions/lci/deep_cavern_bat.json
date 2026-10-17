@@ -1,0 +1,11 @@
+{
+  "name": "Deep-Cavern Bat",
+  "catalogue_id": 1020,
+  "oracle_id": "e46f6644-6bf1-47b1-817c-906bd3eca99f",
+  "facts_sha256": "f91b6427252026cb04d1ac9bf3e8c7bca7936e6f7dfd765b71bf451cde7e9cd2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "21a077772714ce58bd91bab38977ff75bf6fa9acdc627161c294929015feefb4"
+  }
+}

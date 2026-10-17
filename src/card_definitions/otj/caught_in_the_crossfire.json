@@ -1,0 +1,11 @@
+{
+  "name": "Caught in the Crossfire",
+  "catalogue_id": 684,
+  "oracle_id": "d262f3e1-b5bc-4dab-86c2-cd89c2419e54",
+  "facts_sha256": "3392e385b3d48f528d162e5a41dddc840793321605c75390a39e4088e3bd98ff",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fbffa0eca3b9bbda85d7811e5764cd5525e7c16c4d81e05be0826c91e9e95bc8"
+  }
+}

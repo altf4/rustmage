@@ -1,0 +1,11 @@
+{
+  "name": "The Ancient One",
+  "catalogue_id": 4418,
+  "oracle_id": "6615f881-960c-4216-a32a-63856bc3afd0",
+  "facts_sha256": "02ea519befe7c41ea07630f50dae4dd081b3c2ba495543e7101bcac3302c3f4e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5b147660bc019cd867200cdb0f1ceffda57605752a9c7984b3a5581409b581f3"
+  }
+}

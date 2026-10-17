@@ -1,0 +1,11 @@
+{
+  "name": "Swashbuckler's Whip",
+  "catalogue_id": 4288,
+  "oracle_id": "5cdb69e5-9395-4ef6-be18-71e3dd70df66",
+  "facts_sha256": "560cfb7ef48a63fafd8d4b6fb07c7d4d33d15ab54362946256e547eef22e629a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b454b3f89ee89566d6450708676b80689c0784fec596a3e275de7ff74f6979a6"
+  }
+}

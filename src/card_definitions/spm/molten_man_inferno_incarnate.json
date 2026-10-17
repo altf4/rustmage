@@ -1,0 +1,11 @@
+{
+  "name": "Molten Man, Inferno Incarnate",
+  "catalogue_id": 2817,
+  "oracle_id": "c6fcf3c1-0626-4d53-92c0-caa22fa61e9a",
+  "facts_sha256": "d2a39ae763c03bde5da9cac15b4a82789c013f7e0cd62c47b28b3f27727aed5f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0f284a1e987ea7f873f9e103a283d2b6f5571fefd2f4708c19bc79995813d226"
+  }
+}

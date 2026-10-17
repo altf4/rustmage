@@ -1,0 +1,11 @@
+{
+  "name": "True Ancestry",
+  "catalogue_id": 4692,
+  "oracle_id": "26c2dd96-07e7-4294-9431-96d5aeff3761",
+  "facts_sha256": "989192ef5ef6c69e0682a0a18fe4217478e4022b953cd23e9c270305aaf56c13",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4735d5d890cc61082f8ee0b8114e3dd9480b393a4deaba0b65133c1464e8907b"
+  }
+}

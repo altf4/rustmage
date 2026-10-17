@@ -1,0 +1,11 @@
+{
+  "name": "Sandworm",
+  "catalogue_id": 3682,
+  "oracle_id": "e92185f8-579c-4645-9cb8-ef5deb9eebc8",
+  "facts_sha256": "ab67032362837db20819ac26752ad265266cd421fa72bd4fffc78fba73993ca9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "beb45c1430672a3085e3ebceb2797e868b0fe03672fac21e347907b28e2399d5"
+  }
+}

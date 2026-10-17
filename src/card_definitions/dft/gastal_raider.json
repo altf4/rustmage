@@ -1,0 +1,11 @@
+{
+  "name": "Gastal Raider",
+  "catalogue_id": 1691,
+  "oracle_id": "26c09127-8225-4ba2-9f97-f5558b1c41b5",
+  "facts_sha256": "039cab49c48c6a8f3eb93273fa0e9c9dfa0eb119393309414024d7aa74138702",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3a73a1a862374571350f9df3cdfd2c4c9f54734d136d7381dde33d04cf799085"
+  }
+}

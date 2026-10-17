@@ -1,0 +1,11 @@
+{
+  "name": "Serra Angel",
+  "catalogue_id": 3797,
+  "oracle_id": "4b7ac066-e5c7-43e6-9e7e-2739b24a905d",
+  "facts_sha256": "861657fcfbff1769c71390e7df6d3203fb32fe88b49cbdefda8b3a3663f16330",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c89f710cb99e10522e4e5a8d8808d2cb10b658b94640938c3d29e3366ac113d0"
+  }
+}

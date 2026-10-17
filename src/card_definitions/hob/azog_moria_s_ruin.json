@@ -1,0 +1,11 @@
+{
+  "name": "Azog, Moria's Ruin",
+  "catalogue_id": 294,
+  "oracle_id": "a8b018a7-0350-4ee0-9582-8d391018bdee",
+  "facts_sha256": "751370bccab21de132fa088befaa0c1d1181de964203f084d3a25539fc895d25",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5cfaa6a694fd73e2e9d64fb198ef085bc6e4bb09a7bc16ac9ed115258cdf8674"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Tenacious Tomeseeker",
+  "catalogue_id": 4378,
+  "oracle_id": "b07bf08b-d9ec-429f-be6d-a7afa27c60c4",
+  "facts_sha256": "4e7281e3414cf928b1153755e640e637f20f9f9cc21d89c184672232bc1f9aa0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "94743efeafec822e80522e163232d75ecb33627c1b1884e92c3abd168a235706"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Voracious Varmint",
+  "catalogue_id": 4937,
+  "oracle_id": "bd785a7e-df65-48e6-843b-7831f3c1e5d3",
+  "facts_sha256": "970db94ce5ce67ea58bc9aa0f15712e8334cab3d8d76ae721cb50226605a8a2b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2141bfc51d8c9f80f215b09cbedf6cd4f1b81615a9f51bec171f2b210b4d5e96"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Ring of the Lucii",
+  "catalogue_id": 3530,
+  "oracle_id": "d37e595f-afe7-4ad9-87db-b9ceb3f435e8",
+  "facts_sha256": "4682fa29641a1a5ef2abf8e59209c31d9bd79aa7aba26c604a8562e215390f04",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6fce4bb7c8bcae2e4bdbe5b448187bbc1b5d66ed5d6acac48882a28f03e3a1e5"
+  }
+}

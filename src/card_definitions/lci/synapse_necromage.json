@@ -1,0 +1,11 @@
+{
+  "name": "Synapse Necromage",
+  "catalogue_id": 4302,
+  "oracle_id": "f5eace41-0f53-4084-8bec-1e079c04287b",
+  "facts_sha256": "8dc9f080c0deb3b77ecd819962585b8056268d49c8739453ab362650b82430ef",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9987df6544041e516a11cbcc0d49f56ffa1e3173b6e6dc3777872392a09b3511"
+  }
+}

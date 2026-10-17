@@ -1,0 +1,11 @@
+{
+  "name": "Skyseer's Chariot",
+  "catalogue_id": 3904,
+  "oracle_id": "92d28545-4403-4c24-8547-efab4dde6a53",
+  "facts_sha256": "ed52aeaeb3e26e2a769eb73bc34f8c38e3ba14d62b628ac6b5ba2fdbe49c3ec4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "36bfc21d1f72399ff9b65481414f3a55a9468e8b1e983b2e0503e8f6fe84d694"
+  }
+}

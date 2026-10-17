@@ -1,0 +1,11 @@
+{
+  "name": "Forest",
+  "catalogue_id": 4,
+  "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+  "facts_sha256": "191d17171bc11d7b26d625ceb8f828799439304fc668127c733de3e0f65bdbd6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b9cc4953af7b7c675b92bcdd1ce82fa93315b8eb4463676837a2ce18de2b8d88"
+  }
+}

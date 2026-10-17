@@ -1,0 +1,11 @@
+{
+  "name": "Midnight Snack",
+  "catalogue_id": 2748,
+  "oracle_id": "3ddcaee9-a11e-477a-bd19-f5ee10512549",
+  "facts_sha256": "a903b6c52121d270ad12209757e238572321b2429b3bf39113a680078387dd08",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2bdec0f4b319e543d46420332bffb33e658a885ce2d3beb42a9eb4527c7a42bf"
+  }
+}

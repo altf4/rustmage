@@ -1,0 +1,11 @@
+{
+  "name": "Undergrowth Leopard",
+  "catalogue_id": 4769,
+  "oracle_id": "511fa8a3-0a65-47fc-9f3b-57eaef2698cd",
+  "facts_sha256": "b1862fb8168addcdb32368438072834077a70b34d1b9ba5321e1e4eab62c6106",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6a4500faad17ea7fec49d654c4008cdafb4b158966ef6a723c38e54bc1ca81ad"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Corsair Captain",
+  "catalogue_id": 857,
+  "oracle_id": "a7ec13c6-7ade-433a-b5a2-047854eef486",
+  "facts_sha256": "9d0113149aff92197121a54eaed1d11f865525fe3d0f58a3c157b8d42e595efe",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2977405855c67a1f6e7787c371db4286d421c8708d368db22eebad7631013ec4"
+  }
+}

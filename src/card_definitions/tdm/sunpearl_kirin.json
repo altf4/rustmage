@@ -1,0 +1,11 @@
+{
+  "name": "Sunpearl Kirin",
+  "catalogue_id": 4243,
+  "oracle_id": "f17b9356-a329-4f89-b690-afc2eaff4977",
+  "facts_sha256": "66b0b2d879bb013013e880c252b8bec9fb0307c79410411352d4a46b2ab7aa41",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d98db86117f432111518ad016e9307ee96b7596d8a6e3f63bed9410e10c21085"
+  }
+}

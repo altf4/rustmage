@@ -1,0 +1,11 @@
+{
+  "name": "Madame Web, Clairvoyant",
+  "catalogue_id": 2609,
+  "oracle_id": "b1e0841d-b004-40f9-a644-aecb422f6ad5",
+  "facts_sha256": "157273900f063d0e4e1a7343ea61d34b76162a1d6d8cf46771d4f041f4e315ff",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e7b5b52cb14509169552933fab125ef8a16f0342255c8a62b1757dcd6c864fdf"
+  }
+}

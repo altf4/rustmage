@@ -1,0 +1,11 @@
+{
+  "name": "Down, Down to Goblin-town",
+  "catalogue_id": 1143,
+  "oracle_id": "e01860cd-0aa1-435a-9ef9-ee412bc458cd",
+  "facts_sha256": "491abcdddec03bdb63015ea2db9d0d894aa7ff85daa12c0e8e8034138d9aa263",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d36bdcd13d663c8af64ab71d8759baf788569921cce3cf70028aac95db46149e"
+  }
+}

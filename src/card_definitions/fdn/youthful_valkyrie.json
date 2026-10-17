@@ -1,0 +1,11 @@
+{
+  "name": "Youthful Valkyrie",
+  "catalogue_id": 5144,
+  "oracle_id": "6d37ba4b-ff56-4eec-9dc2-2d7f357dc9c9",
+  "facts_sha256": "5dc731a89f2fae862b83d09247c8e9eaa5620e04bc5bd775492d4347e3ced3f4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f3ae9a543f011fe374a84889841fa981c7f81b0eec862c022a3a62f81be56833"
+  }
+}

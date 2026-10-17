@@ -1,0 +1,11 @@
+{
+  "name": "Seedship Broodtender",
+  "catalogue_id": 3766,
+  "oracle_id": "15c994b9-901a-46d6-804b-24560a14a481",
+  "facts_sha256": "a2d9de01338198648d29f622483bc0e09e8f3288459f92c5785edf8f19625da3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "614a9018f45a70e85fc53b460ac30586a9eb07d1a81bd2e764cb9530dc47abf5"
+  }
+}

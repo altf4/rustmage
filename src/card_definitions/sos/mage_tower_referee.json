@@ -1,0 +1,11 @@
+{
+  "name": "Mage Tower Referee",
+  "catalogue_id": 2614,
+  "oracle_id": "3f27988b-0863-4cc1-8eb9-83bd0cd8561c",
+  "facts_sha256": "9d772ae68058cab0891ec68c4f9827c909f58d0d82218a41d7d78eed1cac8149",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "68a6056fff06493cc70101209b82c1d90a2e91fa1095866d200b7e129c7ea82d"
+  }
+}

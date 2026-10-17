@@ -1,0 +1,11 @@
+{
+  "name": "Marang River Regent",
+  "catalogue_id": 2654,
+  "oracle_id": "099b8d2c-b482-48dd-b6bc-dedf546d66c5",
+  "facts_sha256": "953cf9ea45b0bf86aa0797abfa2153f8f310d37f49632b58374ca6cefeff3926",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f5bad01c350de0f246c36347dda320cf1ee9b7487cd63ffc8ef5ad70bc3f284b"
+  }
+}

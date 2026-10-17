@@ -1,0 +1,11 @@
+{
+  "name": "Summon: Primal Garuda",
+  "catalogue_id": 4224,
+  "oracle_id": "aaf9e711-94e1-4869-81b0-baa6380ee873",
+  "facts_sha256": "828990085ad442810b17ce403ac48385c9e018d75ee0df9fb00a16d1aaad2e95",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "853a161438ae256b142efc19aac6ea73549b59a7edde5e5dbfa415b43137cec7"
+  }
+}

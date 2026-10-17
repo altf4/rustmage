@@ -1,0 +1,11 @@
+{
+  "name": "The Earth King",
+  "catalogue_id": 4438,
+  "oracle_id": "d5770b0f-4493-42e9-a2d7-0e74a28da4ba",
+  "facts_sha256": "e7809d4980ba90d65bd40acbaf5dc53588837fe2c315ad6c5430a0ed24ceedc4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1f1e43e838d2b1fe744d4ccd9b02bc134eeeeeab953b759733dd12e492af215e"
+  }
+}

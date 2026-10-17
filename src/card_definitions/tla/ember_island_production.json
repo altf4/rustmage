@@ -1,0 +1,11 @@
+{
+  "name": "Ember Island Production",
+  "catalogue_id": 1304,
+  "oracle_id": "0b786547-67ed-49fa-9981-35c4c2175f62",
+  "facts_sha256": "1629aa4064837c1bb2a3f34e9e31f03ee3a187e20a81e94b1c23f2483c9fc65d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ba12fad080ec35555850a25d9abf495b3c9df8533d305aeaf088c2fccf3eb4e2"
+  }
+}

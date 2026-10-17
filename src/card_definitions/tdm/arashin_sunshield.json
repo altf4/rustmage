@@ -1,0 +1,11 @@
+{
+  "name": "Arashin Sunshield",
+  "catalogue_id": 199,
+  "oracle_id": "1175d482-d8a2-467f-bc50-2f4b241966bb",
+  "facts_sha256": "f6ab749b513c91165a53e877fb76a0cadc0d4af0a0089ae114adf1a5bd6340af",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d748f1db31253aec5a8217f013844612f135da6fb5271e454e6671ab56bfc77e"
+  }
+}

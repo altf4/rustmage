@@ -1,0 +1,11 @@
+{
+  "name": "Maralen, Fae Ascendant",
+  "catalogue_id": 2653,
+  "oracle_id": "114e1d2c-cefc-4e2a-922e-3b2ceed1871d",
+  "facts_sha256": "817721d08d4f41479697b3ee3701e00fbb0f037f928c54cf193abed0b33dd379",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7aa70546cbd524eacc08203a86bf89e57cc0cf8608f68c32c529015677447db1"
+  }
+}

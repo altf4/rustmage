@@ -1,0 +1,11 @@
+{
+  "name": "Battlesong Berserker",
+  "catalogue_id": 351,
+  "oracle_id": "396cc8ce-9efa-4fc7-90a6-b439b2b021db",
+  "facts_sha256": "bde0acde02e90b0efdb750f522469c1163438481c6a0c74636a82c3240067325",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6d599645fc37f3488ccf52260fd165265ded90acba0ad1e0cca5612dfd7737f3"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Patchwork Beastie",
+  "catalogue_id": 3109,
+  "oracle_id": "6cf995e9-115a-4659-bace-9fbe75898b48",
+  "facts_sha256": "a760f229497b14bed26edfebe0bde8de9915e1527a1c47d6c390ba58ef0a9b3e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "517255898c6925bbccb8f934368f0b13832c235f5aa35fcbc32212345aaf289f"
+  }
+}

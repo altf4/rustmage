@@ -1,0 +1,11 @@
+{
+  "name": "Anafenza, Unyielding Lineage",
+  "catalogue_id": 152,
+  "oracle_id": "659bc01c-fa60-4d00-bdad-5bca1d2a978f",
+  "facts_sha256": "bee58602f0ba1f5d6a48799dcb36b8636678d3e3b98830c38e4cc2cf5b40ac14",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "315d591d97e53e66abeba8d55cad6641f5ddf87520ddd1d48cbea4e79eb0977e"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Theoretical Necromancer",
+  "catalogue_id": 4521,
+  "oracle_id": "6c5ed756-b999-49f7-9a52-fb8196202f0f",
+  "facts_sha256": "61ef2910728bd825c28b0dbf35031c3c213176502158923f34d7acec8db53b36",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "780fc566d0750daf41d91bde72e9c244dc2fea147318323b64a854b3deca72b4"
+  }
+}

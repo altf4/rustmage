@@ -1,0 +1,11 @@
+{
+  "name": "Lilysplash Mentor",
+  "catalogue_id": 2510,
+  "oracle_id": "20194297-f2a4-4473-95bc-7c6835e5b6b3",
+  "facts_sha256": "1005bf4462214f03a3f12ec1e2e98fc5a12c507941dbd18b4fed6ec295664cc0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d30c1e5a2e6cdbdd926c162dc174604fb299bc448973dd1a150cb1cec89cc67b"
+  }
+}

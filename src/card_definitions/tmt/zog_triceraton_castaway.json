@@ -1,0 +1,11 @@
+{
+  "name": "Zog, Triceraton Castaway",
+  "catalogue_id": 5168,
+  "oracle_id": "d944d33d-0a95-4d0d-96ce-49d02500227d",
+  "facts_sha256": "60bc8687c17d93320830012a33c80ca0eaa4870951d4d78a90f0cc99084adc27",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "473c08dc9bd7dea0d1f0d6d3dbd156ca3c513d96013985f53cd307107e1069da"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Chief Warg's Company",
+  "catalogue_id": 735,
+  "oracle_id": "372d7086-b7dc-4b6d-bdf6-e9ed9c995456",
+  "facts_sha256": "91683a41027172f8028ddf6da9f078430fedc0912a5be09b6e41ff680516f40d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e11a7d95883677e180651d9eb78b7435963ff4be9fc76c832b8bd165cec7833d"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Realm-Scorcher Hellkite",
+  "catalogue_id": 3413,
+  "oracle_id": "50ace222-57f1-477f-9e06-155d7b403512",
+  "facts_sha256": "888046cecdd6f8a0cb0cf9771da9780271ce525f30aaf5c3964ae9a74ef58f02",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "28b37c9e4b80f71badb709c59f3ae40d7887d1570dea48fd6596367bfab78f13"
+  }
+}

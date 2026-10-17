@@ -1,0 +1,11 @@
+{
+  "name": "Cathartic Parting",
+  "catalogue_id": 682,
+  "oracle_id": "0ea80bd9-ab7e-4a8f-85b0-167fe7fae43a",
+  "facts_sha256": "f2c167148e6f2f054fad71bc85201029151531e709016045958841b16198eaef",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "87b68bd7f93dd3676777c6c041e921b0fb7718586e0036288e19cc8ba600fc54"
+  }
+}

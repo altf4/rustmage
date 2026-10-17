@@ -1,0 +1,11 @@
+{
+  "name": "Dawnwing Marshal",
+  "catalogue_id": 985,
+  "oracle_id": "6640c234-8863-4670-a61f-ba6f59b60d69",
+  "facts_sha256": "17f12e576f5be61d3f98114aef3a23612a6247236d48178e5f63ad6c5251e2bf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c063121be1bbbed6f82c34147781df2b2ccc500380363002bd26f160d74b8d0e"
+  }
+}

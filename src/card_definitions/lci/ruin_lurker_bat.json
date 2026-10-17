@@ -1,0 +1,11 @@
+{
+  "name": "Ruin-Lurker Bat",
+  "catalogue_id": 3612,
+  "oracle_id": "e6f379ad-96b1-46c3-bbc6-a8cb57156a7f",
+  "facts_sha256": "acae7d96c82a783f428179ba118600b69034a46727e5419a9367d544c1204c8b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "32c4f85a111640f30d53cf7a14b36cead3e7c23d33f8f967d37dc30a2d900ad3"
+  }
+}

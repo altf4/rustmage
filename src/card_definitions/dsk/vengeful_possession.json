@@ -1,0 +1,11 @@
+{
+  "name": "Vengeful Possession",
+  "catalogue_id": 4864,
+  "oracle_id": "1afb9ce6-658e-40e4-a4a2-9a68182a1e73",
+  "facts_sha256": "b3de5e01f1f4ca7af46dc7724cee8d431f383ecfa09bc3d49b902c95624f5e19",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b80b0ee39beed9aaaef8fe6a113853100551c17fa1390d73210cbfaefc66d159"
+  }
+}

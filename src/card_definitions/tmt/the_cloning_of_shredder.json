@@ -1,0 +1,11 @@
+{
+  "name": "The Cloning of Shredder",
+  "catalogue_id": 4429,
+  "oracle_id": "bd768e8f-8f04-487e-85e9-2828d6fd8745",
+  "facts_sha256": "2a0b2b352d1f1542068aaee2dbec5968b3a3abfc974e5ca3dbebcf176ff54e69",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8a1df96c0e2a397f4a24deea9a0696d98d651ac1e39cd9a13fcbc68a974e64a6"
+  }
+}

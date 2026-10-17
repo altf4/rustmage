@@ -1,0 +1,11 @@
+{
+  "name": "Commercial District",
+  "catalogue_id": 813,
+  "oracle_id": "b33656ae-3473-4223-845f-f9147f87678b",
+  "facts_sha256": "0b8e9a348577c9efcbb44b7b32adc308ccce72dec55f188e612f8265893ff5fe",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7104f24175d84091f2438cd2bf21657b290d92969d281707cb8beb31db7dade5"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Expedition Map",
+  "catalogue_id": 1402,
+  "oracle_id": "8fcf50cd-e6d0-4516-850f-d42ee75dcc3a",
+  "facts_sha256": "f3e62e4a5683439ad3fdcd511bb30346f5d43eb23d9359f1408b19984b9130da",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ba84cdeb8edf03f7ca6aa0a10f47f9e05a4665d79540118eb6a67cd204b3fda4"
+  }
+}

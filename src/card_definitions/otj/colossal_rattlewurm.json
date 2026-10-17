@@ -1,0 +1,11 @@
+{
+  "name": "Colossal Rattlewurm",
+  "catalogue_id": 802,
+  "oracle_id": "510659d6-69b4-4b04-8836-08b76213954e",
+  "facts_sha256": "75bcd1ee60b18e2ccf33fcbd80006353cd3337b84d45da0ca9f97053a4200fe8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2f1bcc1a817f1e676c5895c58d413228459349ad6586407fe15ae01018fa8920"
+  }
+}

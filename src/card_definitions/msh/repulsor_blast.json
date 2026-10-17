@@ -1,0 +1,11 @@
+{
+  "name": "Repulsor Blast",
+  "catalogue_id": 3466,
+  "oracle_id": "150f920c-c942-4feb-824f-79dd9b531687",
+  "facts_sha256": "bc4c2238e50941759c8edf757ad8dde56f85e7bd9a4c01c1042f34837f07dd8b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6f7b358a4b6b20701f5ba821135cc4e5d7fddb180edb9180ae14d85061a4573e"
+  }
+}

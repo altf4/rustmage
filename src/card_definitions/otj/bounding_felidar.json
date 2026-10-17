@@ -1,0 +1,11 @@
+{
+  "name": "Bounding Felidar",
+  "catalogue_id": 518,
+  "oracle_id": "b00f316d-7c82-40e6-80e5-9f36434590a3",
+  "facts_sha256": "bdaa5eb9c9c5e242ee17b194208caf578a6fd0f68030ce908eea752aafa8ef29",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6cc7b813623fbb54f4b6412cb31f2cc8b356899b534dca03b9a1fae6caa58666"
+  }
+}

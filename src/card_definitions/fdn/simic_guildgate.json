@@ -1,0 +1,11 @@
+{
+  "name": "Simic Guildgate",
+  "catalogue_id": 3876,
+  "oracle_id": "e8705df9-6439-4930-91b6-229f818559af",
+  "facts_sha256": "7c5d570c5e06b10198518ff9c0d2987ce34aed00a675ffdfe85a5c2749802629",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "763ed8eb42706703ea1974c5b6f22a5adb1aee64847c5545803429f689f12583"
+  }
+}

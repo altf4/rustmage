@@ -1,0 +1,11 @@
+{
+  "name": "Bumi Bash",
+  "catalogue_id": 582,
+  "oracle_id": "629f247c-1e64-4c32-8892-0716ed469d1c",
+  "facts_sha256": "654797d2af7d071f3ef3117a768e2d53d9b5128c2f0de01e725847c00ce1c957",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c590ffa3af97185bf5c98e607da766904bbaad149283a24e8b7a221ae35d3844"
+  }
+}

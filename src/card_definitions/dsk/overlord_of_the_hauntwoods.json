@@ -1,0 +1,11 @@
+{
+  "name": "Overlord of the Hauntwoods",
+  "catalogue_id": 3073,
+  "oracle_id": "4669e8c7-fc37-4b97-9cb7-8d29b43d9176",
+  "facts_sha256": "62a611c99f764954cdb1899cb9e08ef00c461bf696da0d107136d1b3a4e3ec23",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "98980c71d1fa8093cb462138dd5f0ae84b08c113f9d7588ef920e0065dde0484"
+  }
+}

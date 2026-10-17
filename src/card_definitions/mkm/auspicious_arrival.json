@@ -1,0 +1,11 @@
+{
+  "name": "Auspicious Arrival",
+  "catalogue_id": 271,
+  "oracle_id": "b25d5b06-44cf-42bc-90dd-3b238f702361",
+  "facts_sha256": "737ebeeebc401af24e345f2549d7bd63b603b7a505b2377edf5ca183beeffedb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fb0fcfec40ebfcb7d64486716e9881f537999f0a63869b8efc0a9f8599c4f669"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Fated Firepower",
+  "catalogue_id": 1450,
+  "oracle_id": "13daa21c-278d-45bd-9a6e-a77d6a558453",
+  "facts_sha256": "af550421f03965feeb53012b698f42fd575cf25205d9a6f08d6cffea28ad6218",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3aa64b550e4d5bdc2e30aaa0442758688469b53fe67d2c5c85bd4ee8210848f4"
+  }
+}

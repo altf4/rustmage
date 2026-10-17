@@ -1,0 +1,11 @@
+{
+  "name": "Quina, Qu Gourmet",
+  "catalogue_id": 3319,
+  "oracle_id": "2acb15bd-6c89-4ff3-ab32-beac67e9c88a",
+  "facts_sha256": "5e161534582e985fbf10461bfdfe32335277586689709258aa9ce4f441fe3c24",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f99042fc5c19e2d0a38c1361c6373db0681e48c063a1e6942b98334d223bd03a"
+  }
+}

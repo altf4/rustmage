@@ -1,0 +1,11 @@
+{
+  "name": "Deadly Cover-Up",
+  "catalogue_id": 996,
+  "oracle_id": "04e2afbe-0c08-42bc-93e6-662066a958bf",
+  "facts_sha256": "cd91980772203eefae3e04c058330170d564e54c021a16b948f4c79094930535",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d92e7ed0d583a2716a2a48d16dc8118cb51541bbb5c0025e9eeb16de3ef167c7"
+  }
+}

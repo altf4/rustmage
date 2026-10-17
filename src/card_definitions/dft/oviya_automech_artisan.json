@@ -1,0 +1,11 @@
+{
+  "name": "Oviya, Automech Artisan",
+  "catalogue_id": 3081,
+  "oracle_id": "b01649b8-b0b5-4cf6-aea7-291f3407859e",
+  "facts_sha256": "9f090aed37b8221c145ee4c2b9f8465a6a7a45c59c35dce8ad57e267423971e2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cec927a42d78379fc8bef8826baafd186038d7fe93908eb68d6de1dabb541cc6"
+  }
+}

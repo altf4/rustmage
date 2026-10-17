@@ -1,0 +1,11 @@
+{
+  "name": "Cursed Courtier",
+  "catalogue_id": 937,
+  "oracle_id": "17916cf9-1e6c-41bd-96ce-2b050d828838",
+  "facts_sha256": "f4b6038c77a35c3c053238edf135999f6a6602eaea91d54177c0f6a458cc525d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e8e0452cdaa34fe1e559a3c94afbc64e7b998a3f72ce47d4b22fbcb9275f08a8"
+  }
+}

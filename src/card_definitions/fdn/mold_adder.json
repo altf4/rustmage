@@ -1,0 +1,11 @@
+{
+  "name": "Mold Adder",
+  "catalogue_id": 2809,
+  "oracle_id": "2091eb7e-2357-4ef8-b15e-1e6f82176340",
+  "facts_sha256": "caa771f61c519576e15156e23cf682b2f964acde863fb3ca3f44405af6b7b5f0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "730b9f1edddf8ad6db438e79f8b8d912d731e3aac8f82efbba20894c2c8a194c"
+  }
+}

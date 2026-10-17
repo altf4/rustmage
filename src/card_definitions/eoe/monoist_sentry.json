@@ -1,0 +1,11 @@
+{
+  "name": "Monoist Sentry",
+  "catalogue_id": 2835,
+  "oracle_id": "0b4cb111-ecf7-4ff7-a9e3-c944054f3370",
+  "facts_sha256": "54e37b68458eda6a9c2132dea2e599754646c5e8d74d1da02d9a0590f2caa142",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ccdcd4031ec454a986afbdbdeb3e0ce31335f2a7459dbfbaed0a4ffa01fd8487"
+  }
+}

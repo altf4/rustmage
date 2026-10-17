@@ -1,0 +1,11 @@
+{
+  "name": "Dimensional Exile",
+  "catalogue_id": 1078,
+  "oracle_id": "8f0777bc-4fca-4601-beed-1fd060f28075",
+  "facts_sha256": "9f9be69247ec50f71304d494f8dfe8049efdcb2084a0c03143268e8a138bdcaa",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c15cb4031bde2c87ef3c1777100d0f1a621e0a2fe7b5c8b3e004a9e0d404cb4f"
+  }
+}

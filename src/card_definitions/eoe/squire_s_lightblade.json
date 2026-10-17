@@ -1,0 +1,11 @@
+{
+  "name": "Squire's Lightblade",
+  "catalogue_id": 4080,
+  "oracle_id": "0ea2a099-7c81-4012-8148-4d377f2d64e1",
+  "facts_sha256": "d15f37db66f6adc59c6dd3d344d29268db9851926135fedac28ec719149653ee",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7bc5a5cbf7e57e474a3a1b54cb366ecde5d89838f3a818ac3b17bc88f6e8c00a"
+  }
+}

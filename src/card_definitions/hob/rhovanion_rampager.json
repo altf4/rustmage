@@ -1,0 +1,11 @@
+{
+  "name": "Rhovanion Rampager",
+  "catalogue_id": 3515,
+  "oracle_id": "008a11c1-d283-49fe-abd7-ff4fe8b1fe79",
+  "facts_sha256": "8ba5cf3992af8a2f7ba083d30dd68dee611aa52e51726c7d26504d2ba93fe1a6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "40f47fe5f954e547d1bef5e1732db49c64ad39a0545297e534b8a62233c7fedd"
+  }
+}

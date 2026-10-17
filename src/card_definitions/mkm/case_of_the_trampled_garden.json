@@ -1,0 +1,11 @@
+{
+  "name": "Case of the Trampled Garden",
+  "catalogue_id": 671,
+  "oracle_id": "575a0dc2-206a-406a-90b3-72a92f2ea87a",
+  "facts_sha256": "a9ca77688904b2e532d5db7cde077554b4863f226d6a9c3bccfdd2f1921aa122",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eb7938ed3d4b8efe2a6089680d15ec2b015e0b96d5a23ce243e12d4865086697"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Vengeful Bloodwitch",
+  "catalogue_id": 4862,
+  "oracle_id": "4cdbc466-42fc-471f-beab-397caec18101",
+  "facts_sha256": "986d0bc52f7dc4174ff4ca8f4ffe8072d35b62a94b6f515e5403f95e39de0a12",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e177d0cdf6739ab81b75ff81ae596105ad1c1cd78b1d7cf2dc6fc8b15d71f83a"
+  }
+}

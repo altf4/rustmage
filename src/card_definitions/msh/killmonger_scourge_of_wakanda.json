@@ -1,0 +1,11 @@
+{
+  "name": "Killmonger, Scourge of Wakanda",
+  "catalogue_id": 2352,
+  "oracle_id": "1c3ba54a-a8ef-4838-b3aa-cb6df827a619",
+  "facts_sha256": "ff2823648a8a8f78e75e422b52bb55d8bc92712c1318d2b6043163045aa4a2ee",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d03903b5a6c962ad111e154433e882279fc373c3304f0c048bb29de7fe1ca13d"
+  }
+}

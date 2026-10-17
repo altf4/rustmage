@@ -1,0 +1,11 @@
+{
+  "name": "River's Rebuke",
+  "catalogue_id": 3550,
+  "oracle_id": "c52cfb41-18f3-4e73-b5e7-d75baf74e578",
+  "facts_sha256": "8f5a226e0f876ad523245cd7f1f363b206f337b214e8d4456d507513dc0ee9cc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a539b13f0184142fdc92d7bc63b27979910d0167cf057b588193659145cfb4e2"
+  }
+}

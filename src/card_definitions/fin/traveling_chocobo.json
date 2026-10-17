@@ -1,0 +1,11 @@
+{
+  "name": "Traveling Chocobo",
+  "catalogue_id": 4666,
+  "oracle_id": "2e5675d3-3fb0-43b5-a65c-95aacbe48bf9",
+  "facts_sha256": "595b73aa409a5c8f43c7f69687066bbfc407c2d9adbd794eb92beedc984d41d6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c223d50f1dafc8cd40e43b0feb1b9f7cf661173f31fbda2c8f7d14bea49c602c"
+  }
+}

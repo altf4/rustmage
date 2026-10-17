@@ -1,0 +1,11 @@
+{
+  "name": "Primal Witchstalker",
+  "catalogue_id": 3232,
+  "oracle_id": "c21fafaf-4510-4752-a501-606ae68e6699",
+  "facts_sha256": "81b2940b268302e2e6fd666194deb663a618f4511eeda9b7c0f2c9b6403b297e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9ebedfd80e1b1d682766af542ea2c4aa15808c1d5e7f2c70aa13797651bb9715"
+  }
+}

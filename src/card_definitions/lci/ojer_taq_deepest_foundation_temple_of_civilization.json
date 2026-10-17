@@ -1,0 +1,11 @@
+{
+  "name": "Ojer Taq, Deepest Foundation // Temple of Civilization",
+  "catalogue_id": 2999,
+  "oracle_id": "486bb9a5-73f1-4cec-b097-fb07ac80b72e",
+  "facts_sha256": "9e6dfa869afd0d6e61967bff0369f16de9a1f302eae76e0d40c563e6f2b287ba",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fd5932d5e23391d7e6c89aedc252a839130b6613d1b66616eea0ac3313223ff4"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Temur Tawnyback",
+  "catalogue_id": 4377,
+  "oracle_id": "889d26d6-9e6c-4cc0-8e8e-dd932f705a20",
+  "facts_sha256": "96362293448aa582f6f0fe0a081ef684fb81ed629c3b3dd2c6a8434480020863",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fdc806d8d1b444db5893c4c69cb815c94fc657d3c61c22cab717eaba339ef3b0"
+  }
+}

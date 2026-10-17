@@ -1,0 +1,11 @@
+{
+  "name": "Step Between Worlds",
+  "catalogue_id": 4132,
+  "oracle_id": "48b43d53-9a8a-47a2-8610-a54d276d7be7",
+  "facts_sha256": "54835982c5560fa62b152f224e11d2e07c8b6746f95547de1ca5be9f72ead31e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5b82dac33cee57492a20d4c2f0b764c085eb668af54409c2d27d484427e5e836"
+  }
+}

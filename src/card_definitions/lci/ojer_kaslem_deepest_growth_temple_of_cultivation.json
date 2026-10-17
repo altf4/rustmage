@@ -1,0 +1,11 @@
+{
+  "name": "Ojer Kaslem, Deepest Growth // Temple of Cultivation",
+  "catalogue_id": 2997,
+  "oracle_id": "eda11077-b2ce-408b-b982-def2da8fe599",
+  "facts_sha256": "f2fc79c7fb6bf1292d1db9e2ddfa08ca52f080043cb0b280201ad267f35c2713",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9e359f3f6afab5cf5850dc39e3caf724223041b21a1a7af73bfebc854b604d37"
+  }
+}

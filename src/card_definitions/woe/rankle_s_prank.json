@@ -1,0 +1,11 @@
+{
+  "name": "Rankle's Prank",
+  "catalogue_id": 3373,
+  "oracle_id": "052e8e1c-d006-4c9f-90da-deafbbf7fed3",
+  "facts_sha256": "3eea71fcd0980996976751c0a34f6385cf076e409f31b5833d0f673f60cd8cc6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9c046eacaebc2fd626708a4625342ed4f4eba18406d71a71900c16e82b2d1f9e"
+  }
+}

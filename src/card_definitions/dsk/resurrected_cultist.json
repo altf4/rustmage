@@ -1,0 +1,11 @@
+{
+  "name": "Resurrected Cultist",
+  "catalogue_id": 3498,
+  "oracle_id": "8b6d37a7-a88e-45dd-b45e-642a44caaf05",
+  "facts_sha256": "01915aaad64b66881b5d655e4017d36b5ab283d7eea48a88ff064c3960477885",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f30c939675b150c647602cde5cf26288229b9bde4e3eec2f532af3f278b74093"
+  }
+}

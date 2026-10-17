@@ -1,0 +1,11 @@
+{
+  "name": "The Wandering Rescuer",
+  "catalogue_id": 4516,
+  "oracle_id": "b8ef65df-f8e7-44e3-9864-9c127232a2b6",
+  "facts_sha256": "347536da22182ad5054f67ec48d554f343ac9474df0ed796cbe0eee43f172dc8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0fa3c86bae1b1bb2929a88be6170654cd0b4aa41ab063c6d4da873c868c17b3c"
+  }
+}

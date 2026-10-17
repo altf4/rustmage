@@ -1,0 +1,11 @@
+{
+  "name": "Paradox Surveyor",
+  "catalogue_id": 3099,
+  "oracle_id": "247cc471-fed5-41e3-8b6a-a10bbc129b36",
+  "facts_sha256": "0e41e02c4b70b217df7ca4503c3828ac11cd304b9466601a843c663b0e7553ad",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a24b6b8331329a5f3fddb2fbe6cda672ede13ca03a9f15ea0057486e30929f45"
+  }
+}

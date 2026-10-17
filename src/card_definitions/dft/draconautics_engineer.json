@@ -1,0 +1,11 @@
+{
+  "name": "Draconautics Engineer",
+  "catalogue_id": 1147,
+  "oracle_id": "380d8d64-9aec-4656-b5b8-d336ebf803c8",
+  "facts_sha256": "7e5f9c3286dfaca50159b5292f751a7c31c5377e1bdfa0c2b2985732d8e7bddc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "800b2c82e2447328c52e8e4ca9227630211886f8d2873dd5827dd2981ca60d27"
+  }
+}

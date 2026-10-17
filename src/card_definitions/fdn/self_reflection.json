@@ -1,0 +1,11 @@
+{
+  "name": "Self-Reflection",
+  "catalogue_id": 3780,
+  "oracle_id": "5c68853e-4fb8-465e-b262-e6dbaf972533",
+  "facts_sha256": "d26d808457ca721297d33d84b3a144e68208e65e5807fc1ea78a44b47d57d1fd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ae13987684d3ac15252faee8143c7c038cc622b15248ae1b96e9585dc38bee0f"
+  }
+}

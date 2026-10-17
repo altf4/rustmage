@@ -1,0 +1,11 @@
+{
+  "name": "Polygraph Orb",
+  "catalogue_id": 3200,
+  "oracle_id": "bb039957-9e88-48cf-b41c-38d42eb87251",
+  "facts_sha256": "6ad0fea9fc4b6d73d7521d98c6c533bffc26c174ea6d1aca8d5c029093b28b2c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bb2fd66ec975dee880ff3d00c5a0803493d132933d4fb8013053ff557e5ba460"
+  }
+}

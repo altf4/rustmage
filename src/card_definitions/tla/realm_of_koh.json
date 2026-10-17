@@ -1,0 +1,11 @@
+{
+  "name": "Realm of Koh",
+  "catalogue_id": 3412,
+  "oracle_id": "bb9ce416-eef1-49e8-89a0-2b6837505070",
+  "facts_sha256": "f86a5dcfb9a43b0003bfc640f72153e13126057bb675a11f72651036dfaee038",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "71d41eab04133dd2dbfa1450f2b0e50fa54c51c0985953616bc47ccde65d4ffa"
+  }
+}

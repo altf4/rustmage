@@ -1,0 +1,11 @@
+{
+  "name": "Web-Warriors",
+  "catalogue_id": 5027,
+  "oracle_id": "3b23e4f8-882d-4cce-9b61-171ae2cc3a18",
+  "facts_sha256": "0b2a28347f5d22896a473b371f06bdc89ff4176ab4afebbe605f01057ef9570d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "affdf928b98256f5339962e9acfaad749377e9fb3300dd835fb115d5551a371f"
+  }
+}

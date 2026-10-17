@@ -1,0 +1,11 @@
+{
+  "name": "Mindspring Merfolk",
+  "catalogue_id": 2770,
+  "oracle_id": "35142b01-4b8d-4335-a943-a3172fa04573",
+  "facts_sha256": "57ea2cc46cfbc766d50ac84ced2d557a9eac8a4b9b2666644aa166fb8ccca975",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f96937eb2ab45a906900c7df3e51e565f05a3f4001a0f97bfa434a41a41db3a0"
+  }
+}

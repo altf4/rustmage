@@ -1,0 +1,11 @@
+{
+  "name": "Quilled Charger",
+  "catalogue_id": 3317,
+  "oracle_id": "6498e3e9-1a7b-4b47-9e7c-cdbd8928c9c8",
+  "facts_sha256": "35219caef92cab0c9a146c23bfc7334d88b46c9b747d1f6609b439016f9f3fc6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a3a85c5d773561c2c95466de689a3281143dff1e7bf220400023821fe6e90a0e"
+  }
+}

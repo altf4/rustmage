@@ -1,0 +1,11 @@
+{
+  "name": "Goblin Piker",
+  "catalogue_id": 6,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9ec73f2638da05c201b543412a94204f655578f37e789cce95ff35e4bc64ca4e"
+  }
+}

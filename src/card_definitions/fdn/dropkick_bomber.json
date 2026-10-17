@@ -1,0 +1,11 @@
+{
+  "name": "Dropkick Bomber",
+  "catalogue_id": 1191,
+  "oracle_id": "c394d4b6-cfb8-4639-90cb-a322a25c0a2f",
+  "facts_sha256": "7bd892d93a343e77fac8c3541d00eef58359c95c3bc43671471408658a4c81bc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "da6e0dd776354dbd48ac3ca63b8ea4844acc65eeed54b2dc2bbade8a6679d673"
+  }
+}

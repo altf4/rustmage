@@ -1,0 +1,11 @@
+{
+  "name": "Katara, Water Tribe's Hope",
+  "catalogue_id": 2324,
+  "oracle_id": "234fb291-0b62-4092-9071-81311c71bd53",
+  "facts_sha256": "da460474d3728f4047d40570f244919e44c953540b18cb11da621d8aef98d6a9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "33e4e1c306dae11d80ace899a5248eea69df8fd3ad498b34fbb9672809e17348"
+  }
+}

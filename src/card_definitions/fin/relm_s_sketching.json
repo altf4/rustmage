@@ -1,0 +1,11 @@
+{
+  "name": "Relm's Sketching",
+  "catalogue_id": 3453,
+  "oracle_id": "dd6601c6-810d-4883-89d2-5d31419fb1cc",
+  "facts_sha256": "9d63007b23e76cb47d13aaa2cc656e7fa363603271576aeb57126ee416d6a292",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "69926dd901736fe52ccaefc59ff1e45437e6740b77c61624124eecfce37899a8"
+  }
+}

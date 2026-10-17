@@ -1,0 +1,11 @@
+{
+  "name": "Hotshot Investigators",
+  "catalogue_id": 2079,
+  "oracle_id": "288fcf5c-f5aa-4f62-9dd8-ba295df48f7a",
+  "facts_sha256": "5572e44a79a115f52fda4bf3d41e4a606a4c4d15dbf2c5e1f61173c8de24154d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6077f3e31ae3c93ed4bde13d0608c5f0ef14e8c1ea1f67cfc807817ddbe69677"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Temple of Abandon",
+  "catalogue_id": 4362,
+  "oracle_id": "3baa8e38-ef93-435d-b63e-f781d5bfcc68",
+  "facts_sha256": "a908a5ef4d3bbcfa2f13a784800c4d63a2eece6835917cbe43ced2d226bdb03e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2100dc260ae378d5889e346baa6307f51cf38b4350d4ffd5188208f09292f84b"
+  }
+}

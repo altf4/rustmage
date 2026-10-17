@@ -1,0 +1,11 @@
+{
+  "name": "Thunderbolts Conspiracy",
+  "catalogue_id": 4582,
+  "oracle_id": "d90a5213-3363-4cd1-97d6-4fc057f78b2a",
+  "facts_sha256": "e2b5edbe99dd5fca5216887116076e5348200423f1b636aa6c22b54cde6b6809",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c361b6b3c22196238e6b37061364a2fce4dfa6facc92cbd69f1025b41e2f7d52"
+  }
+}

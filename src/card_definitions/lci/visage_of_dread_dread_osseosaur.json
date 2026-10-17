@@ -1,0 +1,11 @@
+{
+  "name": "Visage of Dread // Dread Osseosaur",
+  "catalogue_id": 4914,
+  "oracle_id": "7cad43df-31c9-47b5-bc05-4a0f6544b396",
+  "facts_sha256": "8680b965c292e0fdc694c63dbd1d09fbefe3c2c36c1ec3c8662829b1a9255f50",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7fbf56f99e68d1570543265d185c9059f799b6b8718ef65690ae13d36adf008c"
+  }
+}

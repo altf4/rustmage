@@ -1,0 +1,11 @@
+{
+  "name": "Courier of Comestibles",
+  "catalogue_id": 872,
+  "oracle_id": "049d8b06-db90-4b9c-8195-d987b3ef1005",
+  "facts_sha256": "cab31da08edfaa5236c62f810a4d5cc0e4a78b77ba697a7c4145ea8356c6fb34",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "663b4fe6cd61af7cebb428e3e25650c3510ff16684381161f471769cfbdfb0eb"
+  }
+}

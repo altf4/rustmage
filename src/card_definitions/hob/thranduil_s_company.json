@@ -1,0 +1,11 @@
+{
+  "name": "Thranduil's Company",
+  "catalogue_id": 4557,
+  "oracle_id": "2c195485-83f9-424f-854a-50c4f5b04182",
+  "facts_sha256": "7b7a2c5ef3fc4680b460455749110811b4ee4985a2b41f9550c9529be6426cfb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d89fb5d03e3a9b38a3a4704ba8a47a1e589f607ba0d501b16786fe6ef364b4fb"
+  }
+}

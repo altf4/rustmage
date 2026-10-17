@@ -1,0 +1,11 @@
+{
+  "name": "Karn, Gilded Guardian",
+  "catalogue_id": 2320,
+  "oracle_id": "20b90a18-ff62-4995-b0d6-fbef44dca357",
+  "facts_sha256": "35836e10023e59395240067c8b9e45ef830f1092b295b9ef8f04ca68c5ba1994",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d23539d4548fc3ffdce55360b445417930b2b7d6cf9f171d0ad1902c1f4586de"
+  }
+}

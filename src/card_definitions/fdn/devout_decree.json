@@ -1,0 +1,11 @@
+{
+  "name": "Devout Decree",
+  "catalogue_id": 1066,
+  "oracle_id": "92f8c8b1-1fd5-4e80-b8a9-51671937aaf2",
+  "facts_sha256": "aff33b16d3cfe88f950c8b81a81e1d39ab8755428ba3b690a96e0f9e36f72b3c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3acc590e52a3880d9604f5a1ef8068fc2c17f92f951353d44ff3102932903f6f"
+  }
+}

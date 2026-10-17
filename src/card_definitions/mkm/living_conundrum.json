@@ -1,0 +1,11 @@
+{
+  "name": "Living Conundrum",
+  "catalogue_id": 2522,
+  "oracle_id": "378ae023-04d3-44cc-9248-3d787796ed6c",
+  "facts_sha256": "0af2fd724facfd6cf8001746d865a7e899d8af65c50078602e09046dba0219eb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2555a9858d9e31d058b536aeb511c5a28a02adc543e5264f6b805f2ba876eb82"
+  }
+}

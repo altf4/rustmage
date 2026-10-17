@@ -1,0 +1,11 @@
+{
+  "name": "Epic Fight",
+  "catalogue_id": 1353,
+  "oracle_id": "4bdfc580-de51-445b-b170-8c6832e44704",
+  "facts_sha256": "c8ba003afb90015ddd66d8067cdc461ad5d668dd564813e8e1bfe2b5a4fe6321",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5cbad502055ecd941b4dff7357c1933dba252e0bdf434a4359b68b1b731e9370"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Exit Specialist",
+  "catalogue_id": 1398,
+  "oracle_id": "79d2efb2-145d-4377-a4e2-832ff2cb5677",
+  "facts_sha256": "968fd1e6aa134c9d1357c9ed89dab10c3825a7c6dab351d36ee012aa4a71d668",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "45267859634470082b27c5f85d96e283eab08edf345d90a7912ed0776c309487"
+  }
+}

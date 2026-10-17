@@ -1,0 +1,11 @@
+{
+  "name": "Mentor of the Meek",
+  "catalogue_id": 2720,
+  "oracle_id": "b9f4f96b-6e54-4fe6-8df7-623e0fc72409",
+  "facts_sha256": "393be7e4b9c3d4d8960a455cdbc7bfc85f3ca065e829aaabd02dad4fa0781d52",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "197b56f58a79c0c9dd78343a4ff1c91a2b93b552486ced88922f49655fab653a"
+  }
+}

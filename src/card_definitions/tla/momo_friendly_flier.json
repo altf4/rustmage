@@ -1,0 +1,11 @@
+{
+  "name": "Momo, Friendly Flier",
+  "catalogue_id": 2826,
+  "oracle_id": "a3c56e71-0de6-447a-a9b4-0971f56c2362",
+  "facts_sha256": "8b2f7fe4186e5f6e19d3d57b828928948ec9db66756d1f09ded225d6efb77660",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "209f7bdd14af35c8169e6c644029573c274aa64bab4f9c74a382cf910ea5417f"
+  }
+}

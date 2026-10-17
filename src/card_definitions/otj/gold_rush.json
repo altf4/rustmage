@@ -1,0 +1,11 @@
+{
+  "name": "Gold Rush",
+  "catalogue_id": 1820,
+  "oracle_id": "45687a24-e8cb-4864-8721-410eb8320aab",
+  "facts_sha256": "9c4b8e4a49c3bf5c18f1bda93bedd53594ee4371d2d8af3bbd7957c56898d78d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "04f6bb6d8072c6a0253f7333f81bb48b344028016f0500ad9e67352449713a84"
+  }
+}

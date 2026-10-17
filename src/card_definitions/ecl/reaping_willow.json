@@ -1,0 +1,11 @@
+{
+  "name": "Reaping Willow",
+  "catalogue_id": 3414,
+  "oracle_id": "ce60402c-34cd-44fe-ae1d-4a5404298f5b",
+  "facts_sha256": "9d0edcdcc3463ba90cc7699d07ce4c6fbfd489e24d6799622f1f6f341d9d0115",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d34c609ef38c886ec114a1d9c0eb41290fddf3949a3783d53156ad4938283b84"
+  }
+}

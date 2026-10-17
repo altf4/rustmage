@@ -1,0 +1,11 @@
+{
+  "name": "Exosuit Savior",
+  "catalogue_id": 1400,
+  "oracle_id": "8b13ec4d-812a-48b0-8a64-6847a694a03a",
+  "facts_sha256": "6d4d535c67538042ceb6416af3aca20bb506f8caf7f02c792d64d235d12ffcaf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2ae8862305dc5143928262f5e2c6fd53432297b1cc2d43a7f1427b5676dca146"
+  }
+}

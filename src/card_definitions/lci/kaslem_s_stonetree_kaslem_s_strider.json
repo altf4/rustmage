@@ -1,0 +1,11 @@
+{
+  "name": "Kaslem's Stonetree // Kaslem's Strider",
+  "catalogue_id": 2321,
+  "oracle_id": "1ac3e4bc-1678-4280-a071-3dbc8ef4a2bf",
+  "facts_sha256": "5380902b4c6ff5eca628f979ee4baa9258bf98395a4916f0c0311d3536534511",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "12d68550ec063b179ccd67ce201ba0d80cc1372372bc2cc3e1b9f8b3b806b3a6"
+  }
+}

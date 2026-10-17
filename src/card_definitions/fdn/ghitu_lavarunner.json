@@ -1,0 +1,11 @@
+{
+  "name": "Ghitu Lavarunner",
+  "catalogue_id": 1731,
+  "oracle_id": "8e3f4987-6f31-4bc5-8bcd-6adb0440ee7c",
+  "facts_sha256": "161a8a09e1d457b64bcd557b0b5ee1395db006e1ca84a36f0494518975d0a896",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3d33b35ca0e5c0203a9ba94d72bc86baac8ab5337b920ed53477b5f82f65cbb4"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Underfoot Underdogs",
+  "catalogue_id": 4767,
+  "oracle_id": "3740b86d-b0e6-4837-b408-e7f62b95c787",
+  "facts_sha256": "0f0401592217c821169e41e9285f382c293df263c557e6858c84f28fffe7352a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1a3b8c12431a9864a0d02f873e70942c7dd64d989e2b0d75f69fe559e8d502bc"
+  }
+}

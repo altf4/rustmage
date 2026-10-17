@@ -1,0 +1,11 @@
+{
+  "name": "Yathan Tombguard",
+  "catalogue_id": 5135,
+  "oracle_id": "2321b4fc-6b73-4d1a-84cc-13524adb0899",
+  "facts_sha256": "925cd7c6a9f929ebf8bd9e59d05fb33518bcffa86089f6eb66de8f79254d2756",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1b5acd76e22001dd31df6deb2edaf99a8140c429031449595279dc5df32e851b"
+  }
+}

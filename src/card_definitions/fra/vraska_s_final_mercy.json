@@ -1,0 +1,11 @@
+{
+  "name": "Vraska's Final Mercy",
+  "catalogue_id": 4945,
+  "oracle_id": "7799413d-e313-4a05-ad28-f4c926c26d28",
+  "facts_sha256": "124892ef37c722966cd7d0bf94e080f234487f213892f348cb82449eff07cc29",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5012bcfa7c1dff3b1b444442a02b98023f33192055867d73a4d6fe05582f677d"
+  }
+}

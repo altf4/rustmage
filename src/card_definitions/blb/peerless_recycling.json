@@ -1,0 +1,11 @@
+{
+  "name": "Peerless Recycling",
+  "catalogue_id": 3121,
+  "oracle_id": "938c03fc-8adf-4c7a-8ae1-eca8401f7a83",
+  "facts_sha256": "4011606465fee39da0bbb68b885ddea4975d1d097428fc382def1c4927ca9d3d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f10bbfee7552c6cc1599621eca893478cfacac021e8aa52980de6353d8fa3ba4"
+  }
+}

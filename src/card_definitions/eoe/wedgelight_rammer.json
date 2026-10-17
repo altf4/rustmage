@@ -1,0 +1,11 @@
+{
+  "name": "Wedgelight Rammer",
+  "catalogue_id": 5029,
+  "oracle_id": "03259ab0-caa8-4620-b070-127e2c712252",
+  "facts_sha256": "2f31176788c73f4a7c07e9039d10f117792a341981cdbaf22d6763d0981b17b8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b2d8dfbc7baae105bcc2438ec39c5a5b8108dd2b2c54424b838fef8f7c8e5017"
+  }
+}

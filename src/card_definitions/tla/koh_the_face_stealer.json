@@ -1,0 +1,11 @@
+{
+  "name": "Koh, the Face Stealer",
+  "catalogue_id": 2391,
+  "oracle_id": "2bbb33e3-7d03-457c-92bb-b0c943615fa1",
+  "facts_sha256": "81e73ea687b82f7d728396f3b40ef02e172a0feb11aae320616d6d98c0f5a122",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e9d40679d4b88e16701badeb4f42093ec7083b59bb64dcfcacab10a004228148"
+  }
+}

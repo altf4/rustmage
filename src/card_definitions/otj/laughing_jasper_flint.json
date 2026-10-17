@@ -1,0 +1,11 @@
+{
+  "name": "Laughing Jasper Flint",
+  "catalogue_id": 2455,
+  "oracle_id": "bd7c5a8b-cf62-41e1-a664-b16e3e5d142b",
+  "facts_sha256": "e8ba334cffd81ed30ec4336b5929dc40404a2e6682b964b3634552a22111e03f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fad9b9d855d6c6cc119ebb421bc70b4668b2f68f5b5c2bbfd7c89626c905ca39"
+  }
+}

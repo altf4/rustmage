@@ -1,0 +1,11 @@
+{
+  "name": "Cosmic Cube",
+  "catalogue_id": 859,
+  "oracle_id": "0866a630-d962-4aa9-a15f-08b2947540ef",
+  "facts_sha256": "f3b3951097db43a25a7f2cd687afc36e7b2be782c205664f59164a7cf2c2bc5d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7fcf2e1aa9dbc3e7e82cb4c2728fecdaf10186de69024a8d777ec44f04ca5cb8"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Romantic Rendezvous",
+  "catalogue_id": 3580,
+  "oracle_id": "8ca585b5-25c4-41cc-a0b9-dc66ae803d04",
+  "facts_sha256": "6bdf8c4f6a53528d264587f721d6a1e9ba9fdc29567db851271d1907f369837f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3668592dc7e683eea6e9b77dd1b62b059abd4ace8cd3b1ec2e82817ab9ac2e93"
+  }
+}

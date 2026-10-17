@@ -1,0 +1,11 @@
+{
+  "name": "Gardenize",
+  "catalogue_id": 1680,
+  "oracle_id": "e74a2a4c-ca3c-49e8-9b0f-b4d1bb91fb54",
+  "facts_sha256": "56b2271542f4857db1517e21f339503ac804581c22d29f708e573a481e569ea7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7c4c5166b4276bea53a278206d288cf263c56a8fe173c89389efe5f733a98671"
+  }
+}

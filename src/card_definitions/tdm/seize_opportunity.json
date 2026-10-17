@@ -1,0 +1,11 @@
+{
+  "name": "Seize Opportunity",
+  "catalogue_id": 3774,
+  "oracle_id": "d0458ffe-9a61-443f-8e80-3d2dde224a4d",
+  "facts_sha256": "1866f1d069c3b78fb1b8a5eb92dc1cafc7c7d83abaed76a77d5fab6e710b6422",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b01c1149d1edafb92005057d826419d4b25a9a3ceb40c61c836f0ac69cb4dd84"
+  }
+}

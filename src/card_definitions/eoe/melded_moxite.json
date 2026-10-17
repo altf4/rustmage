@@ -1,0 +1,11 @@
+{
+  "name": "Melded Moxite",
+  "catalogue_id": 2707,
+  "oracle_id": "86e0e718-82b5-4c99-9837-1b4d8729a27e",
+  "facts_sha256": "4972e96d0a13b1f5f6ffbace24d4133b6b8f31906b6709e7838c4d7f063c1aa0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a6a8bf099389f5de4e58725930639f0ccfb1888a866ec878c102be7d7d8e50d4"
+  }
+}

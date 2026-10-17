@@ -1,0 +1,11 @@
+{
+  "name": "Reactor Raid",
+  "catalogue_id": 5195,
+  "oracle_id": "4e34a49d-f031-48ac-a458-97b79124b76c",
+  "facts_sha256": "dafcac34c6d5bb3d88d7ae82c40dec77d17c39478db2c977e668677349c16c79",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8819c94c855ee69ce55eda6848791e1dbbf28023c4b5671deab16eb2fffc21e3"
+  }
+}

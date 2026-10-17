@@ -1,0 +1,11 @@
+{
+  "name": "Karakyk Guardian",
+  "catalogue_id": 2316,
+  "oracle_id": "41129dc1-be88-4198-94f9-032817a79bc7",
+  "facts_sha256": "01639decfe7c7f250dc42274e0a07e86fc995283f088f769bd6a988bf043921c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4fb9fd0939984dba9479ff37c3d05b677a6873953a896537933d7e343f80e9b1"
+  }
+}

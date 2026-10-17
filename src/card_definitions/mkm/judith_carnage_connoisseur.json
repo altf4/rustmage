@@ -1,0 +1,11 @@
+{
+  "name": "Judith, Carnage Connoisseur",
+  "catalogue_id": 2294,
+  "oracle_id": "e86c965b-ac10-4fff-b682-dddd6d9747c6",
+  "facts_sha256": "cb496ff340ffee777c4ee39b68af7bcd6e7ffdb8698547efa852dac360ab9525",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3e32dbd258e3b311fdd0eebfe741452f728864aeb56282b937a25bfd453a0e52"
+  }
+}

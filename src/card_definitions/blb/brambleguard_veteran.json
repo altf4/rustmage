@@ -1,0 +1,11 @@
+{
+  "name": "Brambleguard Veteran",
+  "catalogue_id": 525,
+  "oracle_id": "bc9c7e1a-5155-431a-be21-fcbd18718980",
+  "facts_sha256": "108269f5c7de03cb3670f07cb26ff524a3f3531eb9a4a14d6a86e8e370383bf2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e2943fe59f959666a13fccd33b5bf779ba3fd2fd313f1e55a4d67e719a0966c8"
+  }
+}

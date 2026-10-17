@@ -1,0 +1,11 @@
+{
+  "name": "Glacierwood Siege",
+  "catalogue_id": 1762,
+  "oracle_id": "295a831c-490e-42ba-afc1-dab3524a4f0c",
+  "facts_sha256": "ac9aac1c4a13dbe00f9a46c0d7be0c023c18ff24e765e83ecffe51aa6090ba1b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "abbb1672cabb18e9f72b169557954d84029095ae3f06ec3a1d0955417e8db245"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Stadium Headliner",
+  "catalogue_id": 4084,
+  "oracle_id": "d8cfa20a-343e-4661-9f5a-a8265f6917a8",
+  "facts_sha256": "671db9b3d5a1f28ffc162dd2250b307f1f8ddae4e3fe582bf18fdc8a1fce606a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4aef6291317beaf4a54c5eb5de1be3e79bb41b5d1962111e79a66778925cb62f"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Gas Guzzler",
+  "catalogue_id": 1689,
+  "oracle_id": "7c98626b-ba97-4d1e-9be7-291480ae8d22",
+  "facts_sha256": "309247665a70593494395b7c87c9308cadd3437f241a2831bc2c3f67ca1ffafb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "180130a8fb85d0666d16be7e77af7bb9b9a6217be86814fe9a66093708553405"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Violent Urge",
+  "catalogue_id": 4904,
+  "oracle_id": "0ef80a38-f464-4d1f-9e81-d4087d6ecc9b",
+  "facts_sha256": "7795bda866144bd6314fc4b61aa95978f45fb186b6004ee1aaa144c05c93bb39",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dae4a2b251da35f8c346463fc7d1613f228fd982546f39d082ee579291ffd78f"
+  }
+}

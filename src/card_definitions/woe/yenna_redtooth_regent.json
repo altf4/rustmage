@@ -1,0 +1,11 @@
+{
+  "name": "Yenna, Redtooth Regent",
+  "catalogue_id": 5137,
+  "oracle_id": "0adede77-5181-4190-8066-4797cefe0189",
+  "facts_sha256": "aa6c646a58ccb18588442bdd6dc91a2b62cfe79bcc1aae3551cacbbe186eb381",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2676075c8e987944b5568e6a1c688a1529152e1bd84aa3bec0a4a12227a40c1a"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Claim Territory",
+  "catalogue_id": 5232,
+  "oracle_id": "da1e019c-2ffb-412d-90d7-f2e5e5c44c4b",
+  "facts_sha256": "6eb5d75cc21daad767e42d6b91d908420b998ce80c88d109642f4b855c65683e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0dfe6cd344273e8aeef392d7bda10763ff8d297f40bdab1a073e69a3516ef3c2"
+  }
+}

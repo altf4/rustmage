@@ -1,0 +1,11 @@
+{
+  "name": "Kolodin, Triumph Caster",
+  "catalogue_id": 2392,
+  "oracle_id": "45682055-d02a-450c-a41d-aa67162ff015",
+  "facts_sha256": "32f189c01b0af050e2e96d4e1f87904ba6f69a419296b82d48433735d1691923",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fb674cef7a33ea273010e5442f9c17f764509e7fd52296853cd7e1a14ccfe3d5"
+  }
+}

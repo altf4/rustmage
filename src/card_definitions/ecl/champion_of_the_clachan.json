@@ -1,0 +1,11 @@
+{
+  "name": "Champion of the Clachan",
+  "catalogue_id": 707,
+  "oracle_id": "4a220e0c-e463-4264-9a96-658cf842b82e",
+  "facts_sha256": "585c3143b0bd04bfb1da882d4d8c0461498d9562969b3570fa82da4dad4f0ebf",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0186fc4007a8dbb5b79bc17eb0dd1225a3b9d02f24ef67d28bcc15e395a645ca"
+  }
+}

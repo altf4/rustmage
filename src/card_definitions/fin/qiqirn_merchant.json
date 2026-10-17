@@ -1,0 +1,11 @@
+{
+  "name": "Qiqirn Merchant",
+  "catalogue_id": 3299,
+  "oracle_id": "560cb970-1c1b-4ba7-8352-bc67b4ea7843",
+  "facts_sha256": "70e6a6388437715cf51521ca5bce87c00e366bd33c20148a6c25e5570d172423",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cb0f596fa2602ff976afedf09341af07987f33b84a770f821b1484d5adf4abae"
+  }
+}

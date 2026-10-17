@@ -1,0 +1,11 @@
+{
+  "name": "Tethermage's Advantage",
+  "catalogue_id": 4404,
+  "oracle_id": "b4f89885-eeb9-46c7-9820-9758b624ca24",
+  "facts_sha256": "3fbe91b9c4399b296f08bb642a3ad21669d1b138fc162a0399919c7e6d39ba83",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "25875ffd54964711857e1f0338a42714c880959fc0b3c9352bd3dc255e534f5a"
+  }
+}

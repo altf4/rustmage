@@ -1,0 +1,11 @@
+{
+  "name": "Stone-Giant of High Pass",
+  "catalogue_id": 4164,
+  "oracle_id": "cfaa8b7b-7bfc-4660-bbc7-a717e05df6ef",
+  "facts_sha256": "7b8bb2f2a358e3c99f29edf7130d8153a1f2dadbe3c00992bdee5c1e68366de5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e994e65894ab779cc93fb4d24301c5a93fa557aaeb42f63d4a994e060a60ec31"
+  }
+}

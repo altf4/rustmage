@@ -1,0 +1,11 @@
+{
+  "name": "Spiteful Hexmage",
+  "catalogue_id": 4058,
+  "oracle_id": "d07e0d88-8b7f-423d-97b7-cf7b80d8924c",
+  "facts_sha256": "81229f2969dcbdff96362d71064dfe2a6b2ab327724de3ae21ed88cfa85ce9a4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9d653668f2145a243aa87079b137fd003cb681c4b7e1eb10276a8200d3ee5c4b"
+  }
+}

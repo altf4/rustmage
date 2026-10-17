@@ -1,0 +1,11 @@
+{
+  "name": "Broodrage Mycoid",
+  "catalogue_id": 569,
+  "oracle_id": "eeba4706-b4f2-48f9-bcb1-e42a5fc68c40",
+  "facts_sha256": "5e9677a17d1179ba42f940da13edcb1d53bf5d0959adea4f335d2586393cd446",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3b2385df41ac6e8383008af47cb6a3c1fecee17f5e25bae864c6666ed992600f"
+  }
+}

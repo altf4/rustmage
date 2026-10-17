@@ -1,0 +1,11 @@
+{
+  "name": "Knight of Grace",
+  "catalogue_id": 2385,
+  "oracle_id": "7b51a979-47e0-4b98-8ec5-8064c83422e1",
+  "facts_sha256": "1d37d1a057c518972342c0f31b934e539a9dc1903633600123c3c9377423573c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "54f3cd7d0ad252c81aa9c6b36bd1aa55a34730f0c8de696644c52ad761a8d13a"
+  }
+}

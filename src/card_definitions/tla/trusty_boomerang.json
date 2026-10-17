@@ -1,0 +1,11 @@
+{
+  "name": "Trusty Boomerang",
+  "catalogue_id": 4694,
+  "oracle_id": "3c032e74-69c6-48ca-95d4-51aa3d894c14",
+  "facts_sha256": "6a954b60e91321181e75d02526f2bcc338848b3a86bbcf1cd2ab724786acd018",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fda632a2ad03cb9a3c076b30b91a91cc9171263d82edf861460fa91df0e7d15b"
+  }
+}

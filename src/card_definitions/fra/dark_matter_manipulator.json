@@ -1,0 +1,11 @@
+{
+  "name": "Dark Matter Manipulator",
+  "catalogue_id": 969,
+  "oracle_id": "6a3862f0-8dfc-4ac9-8eb9-faefcad685d4",
+  "facts_sha256": "46a12923e9e6964b2da9660fc6711f6f0f9b1f63e78afc14068adc02cfcefd00",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "54f50fda03eefb8a7ba3a240a1c30c1ab170b12e88dd44fcac5cc245ee6231e5"
+  }
+}

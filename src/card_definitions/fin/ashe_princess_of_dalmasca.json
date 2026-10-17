@@ -1,0 +1,11 @@
+{
+  "name": "Ashe, Princess of Dalmasca",
+  "catalogue_id": 239,
+  "oracle_id": "db75577d-1001-4088-999f-40684218a07f",
+  "facts_sha256": "89f58dd5299d26022793fbcc578b0a454685baf458b04418c60b297c55fbc6d7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ad4eb193ec09b0418478f323ce99febd28a4b94e2a2c615309bc4b1f4658ccc1"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Scrounging Skyray",
+  "catalogue_id": 3743,
+  "oracle_id": "3a46d85b-ce1a-4842-a342-92a5bddb1053",
+  "facts_sha256": "7f453c0c509724e9996144356f5c719ca5807410c2f7e4e646d1a71737cfa379",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "006a1985e7c8c0b425476d9ed97ce6a96d01c6d3d10fc30fc1012ca5466c84f2"
+  }
+}

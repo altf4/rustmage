@@ -1,0 +1,11 @@
+{
+  "name": "Terramorphic Expanse",
+  "catalogue_id": 4390,
+  "oracle_id": "1bd3e453-aa21-4ee6-95c2-d6d920ee8e7a",
+  "facts_sha256": "2544a17b2d607ca2b5c5f6a4fced60f01ea8fc9e9c2672750334a01bec368e48",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "54ce173f7520cf9f68dfd8049e5ce72cee8e0482e4be2b84f280a723d4fafd20"
+  }
+}

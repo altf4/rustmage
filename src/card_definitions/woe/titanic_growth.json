@@ -1,0 +1,11 @@
+{
+  "name": "Titanic Growth",
+  "catalogue_id": 4614,
+  "oracle_id": "61e09dd9-7870-48c2-9177-d6abc3162692",
+  "facts_sha256": "e59d6dec169af2744eb03d743379d433ec9d4621992fd655e6192504a8d6ed2d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fae078d629fce1643c05aabee24834684049d9d87c16b46e33adb694d9de5b21"
+  }
+}

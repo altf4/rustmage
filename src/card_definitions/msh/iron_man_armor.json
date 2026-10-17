@@ -1,0 +1,11 @@
+{
+  "name": "Iron Man Armor",
+  "catalogue_id": 2230,
+  "oracle_id": "958d81c2-ca09-4275-890e-3bb595317325",
+  "facts_sha256": "1653254302ec981c0945e17d2ba5f3e5c4a3a2df56e7ce58406c90648262059b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5d2ca4ddcd6b107e6e36b321c45b66313aeda91767ff8510a6a3f3d48551cbec"
+  }
+}

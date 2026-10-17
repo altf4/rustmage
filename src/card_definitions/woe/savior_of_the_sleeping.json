@@ -1,0 +1,11 @@
+{
+  "name": "Savior of the Sleeping",
+  "catalogue_id": 3698,
+  "oracle_id": "412eb5ec-bf13-45fb-94b3-c41e62b19d1d",
+  "facts_sha256": "1e1975d9c1933ff051a4307d7323260139a902cf7dc5521d449841249b7a56bb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a3913c2d46e4dc45b4cd2d6ee37b100db366a1cacd6984b8ec1a170c4df0a58a"
+  }
+}

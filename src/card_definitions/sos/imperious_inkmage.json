@@ -1,0 +1,11 @@
+{
+  "name": "Imperious Inkmage",
+  "catalogue_id": 2146,
+  "oracle_id": "fcd31653-4964-46a6-820c-f17e8cbaa1fa",
+  "facts_sha256": "05933bf4d44546c3fe2857a304325c0871f642ba57f10d040cebeb7dc0f2d6c2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c1d2af74a2aece969646c196f1417d343d8fd9120e2b8bf9772c382331a76988"
+  }
+}

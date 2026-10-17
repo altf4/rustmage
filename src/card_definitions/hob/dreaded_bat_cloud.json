@@ -1,0 +1,11 @@
+{
+  "name": "Dreaded Bat-Cloud",
+  "catalogue_id": 1175,
+  "oracle_id": "3cc64ce6-45e2-4dc3-9b28-d7206a131873",
+  "facts_sha256": "52e97727df4ac1f87297f2c538405b205744f3aa165e844664a941572c601ad2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5e404225a7f5f535c179e30b3ef1d641571719c8cb0bfa018f3536a5e00b025f"
+  }
+}

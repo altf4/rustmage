@@ -1,0 +1,11 @@
+{
+  "name": "Pilfer",
+  "catalogue_id": 3162,
+  "oracle_id": "d13f0907-de39-4a90-940a-831740d7aa9b",
+  "facts_sha256": "44fcfae21c7f9fee177283ab12a3b84d9cc882828d9cbeced59cd728b7b9fe35",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "224f469a67ca24eee65206e24c056f554c6c59eae39982e70a7385ca0457e6e0"
+  }
+}

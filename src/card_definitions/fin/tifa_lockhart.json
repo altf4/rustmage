@@ -1,0 +1,11 @@
+{
+  "name": "Tifa Lockhart",
+  "catalogue_id": 4596,
+  "oracle_id": "878df304-9d6d-4ce9-b65b-1439c251f3e0",
+  "facts_sha256": "32ff6d9ee0194743359a7a21d6dca8f545dfbaa1d8513a07f1dd8f04762c8e7a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c1984986f841d85525b6b631a3c64abaca937bb156e8225371a0757a9db62263"
+  }
+}

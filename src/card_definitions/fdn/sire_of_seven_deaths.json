@@ -1,0 +1,11 @@
+{
+  "name": "Sire of Seven Deaths",
+  "catalogue_id": 3886,
+  "oracle_id": "a15547d0-bbcb-41ee-a9ae-8325a9e7fe1f",
+  "facts_sha256": "350c391a4de206db9ffe4c9c16bebb610e1f9190fefcd6ff4e009ba8a159d5ce",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "259f8076957a28e459ae699365aff6500d519d6c716dae456965a7456498b0c2"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Waterlogged Hulk // Watertight Gondola",
+  "catalogue_id": 5000,
+  "oracle_id": "30820f71-9fd4-453c-b377-c2e0b01c07a7",
+  "facts_sha256": "2ca150a837c6c7464c41736e01ca2016e562b47b4c6f7ef8953ea4b03cf6c728",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "898ec1a6b961cf856b61703e37ff4c46bae4287c39eaf58fafcf4693fa7f050d"
+  }
+}

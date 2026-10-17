@@ -1,0 +1,11 @@
+{
+  "name": "Celebrate the Mountain-king",
+  "catalogue_id": 694,
+  "oracle_id": "d51136fa-3c13-48a5-83fd-51fe00010a4b",
+  "facts_sha256": "36fb51173c0adb3455236360b371ab46fcd8ee02915ef1e531e5261e2510b056",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "87d38b67193fbdc34bf03bd8e555ce9358bf25a78f0eeb496cb86c3a87aa586d"
+  }
+}

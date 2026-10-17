@@ -1,0 +1,11 @@
+{
+  "name": "Death Baron",
+  "catalogue_id": 1001,
+  "oracle_id": "99024aa8-5687-4d38-8a4b-feef42d6c1ff",
+  "facts_sha256": "48dbba3070b4b59458977c9bd178cd97ffc7d31024a534fbbc133b2c51d87e69",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1ed02c0874acf4bdd32139055dc9cbcdc9cd929e69c681f7857321bd88f37e35"
+  }
+}

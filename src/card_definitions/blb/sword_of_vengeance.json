@@ -1,0 +1,11 @@
+{
+  "name": "Sword of Vengeance",
+  "catalogue_id": 4295,
+  "oracle_id": "e366afb3-c447-4bde-b358-41c8568142d5",
+  "facts_sha256": "ef612c6c406970c4e90b3776e2bf263b73e4695814cc3333b06e64e830ba6728",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "789a232942a511170c6d6d00ef0b4f3d03723276f13045113c6df5f093cf3a30"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Agna Qel'a",
+  "catalogue_id": 98,
+  "oracle_id": "22d0a848-2126-48f0-9050-38daaf93b1d0",
+  "facts_sha256": "3c5c6f7707911f01ceb532aa9621cf92a563906d10b8af17d55a47cd8f10995a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "054e9adb4b7b92472226cb94bd09d23d946d19a87d76c6d3f8db03a2ef438397"
+  }
+}

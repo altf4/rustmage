@@ -1,0 +1,11 @@
+{
+  "name": "Enduring Innocence",
+  "catalogue_id": 1335,
+  "oracle_id": "98a389f4-2905-47f3-b60e-3d4afb3e5cb0",
+  "facts_sha256": "54cbf575a2d1473a5ce2331ac0c5387124ba5607f0b9d775c619f8c3f0cfa376",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "98f46fb9f87da8b92c1ed92deb8cb9c706630f39ea0ad64a2359b1668cfb6ed3"
+  }
+}

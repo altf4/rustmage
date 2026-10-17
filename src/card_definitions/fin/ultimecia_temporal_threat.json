@@ -1,0 +1,11 @@
+{
+  "name": "Ultimecia, Temporal Threat",
+  "catalogue_id": 4745,
+  "oracle_id": "5a8e7e35-e9ea-4808-8aa7-7580a23b9d9d",
+  "facts_sha256": "3f2718c72222c70e43d53c309a28f407e4513d00fd321a371cadd17b9c778964",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "13330bcf1e3fda74e81569ed2aa463d4abc6fc5c6e58b3cc15056d393bcd498c"
+  }
+}

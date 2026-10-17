@@ -1,0 +1,11 @@
+{
+  "name": "Imodane's Recruiter",
+  "catalogue_id": 2143,
+  "oracle_id": "50bee80e-89df-48c2-b608-ba66ff3e794a",
+  "facts_sha256": "e1d4899936408cf72fa9ef81f38d5d7501226d792a4efa571232643ce58ca7be",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9a35761efb48da177c29860f3485037a060e5e164f4c1f85843fdaad806d5139"
+  }
+}

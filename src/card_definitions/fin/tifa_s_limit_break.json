@@ -1,0 +1,11 @@
+{
+  "name": "Tifa's Limit Break",
+  "catalogue_id": 4597,
+  "oracle_id": "d0d90dd8-0642-489f-9afc-11c307f258f2",
+  "facts_sha256": "e0a5fbb9fecadcd7c3118cfca43bf22f3631baa411fbe969d0a3c8ecf018edc2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "91b4defad8d34178fa056833b37a05f4ddc44bf5258a9cf9d19e8c33cf4ce56d"
+  }
+}

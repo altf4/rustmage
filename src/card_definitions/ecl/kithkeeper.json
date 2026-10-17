@@ -1,0 +1,11 @@
+{
+  "name": "Kithkeeper",
+  "catalogue_id": 2376,
+  "oracle_id": "5c5766f9-befd-4426-9527-d50af0699ca1",
+  "facts_sha256": "f01b79df402d94deb4cb22be304dbd18ed275e698fdeef36d44a6a1d60705b8d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c610cff81cdca0d3becab645bd7965b80e44075ea547dbabf9679adf383da798"
+  }
+}

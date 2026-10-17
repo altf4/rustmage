@@ -1,0 +1,11 @@
+{
+  "name": "Wildwood Scourge",
+  "catalogue_id": 5070,
+  "oracle_id": "b9dec104-c636-4770-a7fc-7a3331face15",
+  "facts_sha256": "e52c45d5f5bf08277be5b1299966e82c6d4676496bf65bfb3b846b5bfb06865c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9a715cf58dc3653241295568d8085c16d45832bfc3426acf90cf67d9ba1a4951"
+  }
+}

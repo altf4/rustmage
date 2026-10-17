@@ -1,0 +1,11 @@
+{
+  "name": "Rock Soldiers",
+  "catalogue_id": 3566,
+  "oracle_id": "0217da8e-e74f-4f5c-ab75-f17600f94405",
+  "facts_sha256": "036b3f186c1d2d23da121c13620a305bea2df924a54c6ccc2ccddecd844f76fd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d44c69e8b48780fcd112b8c2f478c735b340ff2d5ebceb39fffcef944a8cbb89"
+  }
+}

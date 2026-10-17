@@ -1,0 +1,11 @@
+{
+  "name": "Lita, Little Orphan Amphibian",
+  "catalogue_id": 2516,
+  "oracle_id": "212fdb7c-1c7e-4eed-b1ed-bcc14a425da8",
+  "facts_sha256": "184a3ec7e10a74c551383523249b6ebea6e3efcbd330e40572bf4c792d78b8f7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "738b54f2e04edf537b5b6342043a21f4d880942e975ee53210dacd68b99da353"
+  }
+}

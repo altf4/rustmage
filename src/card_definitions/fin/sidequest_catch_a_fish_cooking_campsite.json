@@ -1,0 +1,11 @@
+{
+  "name": "Sidequest: Catch a Fish // Cooking Campsite",
+  "catalogue_id": 3860,
+  "oracle_id": "bd7c328e-0380-46f8-bb85-7bf4e201b7ac",
+  "facts_sha256": "cabab541ea790ff33aa368f8c5cccdf0d0b8a80634a8bcedbf19eb86edef1c8a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "756273f49e46b29f63a66bf3ca19edab141cee7ff02a7b494746ab9b0be1eb8b"
+  }
+}

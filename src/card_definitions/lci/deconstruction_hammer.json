@@ -1,0 +1,11 @@
+{
+  "name": "Deconstruction Hammer",
+  "catalogue_id": 1014,
+  "oracle_id": "ccc2eb6d-21cf-45cf-b4e4-4b2a2517136a",
+  "facts_sha256": "350d75840bfadd4a1d96bc0bfe9ad1cceaa3c36d4c8a03e6d8cabd04529fe0f5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a061f03920b68cb6d9a178dd8c547d473c6318985b13984107adbd20f632ce8d"
+  }
+}

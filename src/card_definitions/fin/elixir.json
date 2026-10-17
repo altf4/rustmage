@@ -1,0 +1,11 @@
+{
+  "name": "Elixir",
+  "catalogue_id": 1289,
+  "oracle_id": "3e978db3-77ef-4b93-8f8f-e414e27254bd",
+  "facts_sha256": "c4f4907c229e448b08dd8419ea27c605f51aa9e8cbb10a5c4fa6435ce491a424",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "899af828be578cef84e3c1e1cc3617dd5b17299cf2b7f51ec16bb0d40c4ed085"
+  }
+}

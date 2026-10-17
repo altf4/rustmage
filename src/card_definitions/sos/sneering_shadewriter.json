@@ -1,0 +1,11 @@
+{
+  "name": "Sneering Shadewriter",
+  "catalogue_id": 3944,
+  "oracle_id": "21a094d6-de3d-48d4-a35d-b99617da55db",
+  "facts_sha256": "74131c19c417ba83ec1f9a6791ed399e7c71d2d92538ed9ff9ebd2bcfc816ac1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bbdd13f368d34151f9de255622647b9806a0ddec0bbdb9cfde79e4d7783ee20f"
+  }
+}

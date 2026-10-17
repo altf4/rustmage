@@ -1,0 +1,11 @@
+{
+  "name": "Ingenious Prodigy",
+  "catalogue_id": 2167,
+  "oracle_id": "6f498ff7-38c9-44ea-9cb5-994a003825ee",
+  "facts_sha256": "013a550e7dfe58f81e3318cdd6bf15d5e09af4bd52a16197dec3398e83c7ce42",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e18612acbfe3062fc0006cc11a21461020a5d98b1065e85cb2961b3b400aead6"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "The Misty Mountains Cold",
+  "catalogue_id": 4479,
+  "oracle_id": "c50282bd-4b57-4c7b-9598-ea67ba49248b",
+  "facts_sha256": "0b8963b232a78e06846719c520d45ad729dcaeb731a5444ef95ec20eda6cfa7f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8b5831ce808733649de253ca2f4cfc1d6e640345d18f82524ccf5b07e7147e1e"
+  }
+}

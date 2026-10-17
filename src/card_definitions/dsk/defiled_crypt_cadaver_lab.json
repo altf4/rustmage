@@ -1,0 +1,11 @@
+{
+  "name": "Defiled Crypt // Cadaver Lab",
+  "catalogue_id": 1030,
+  "oracle_id": "f97de425-c7ab-4688-8606-159370d179ee",
+  "facts_sha256": "10c73b92929d1cbfbd77e8b639d6269bb8e6f6f7f13edb4a24dc0d1a63f67de4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "def92079c4de58bceaaf45f9320fbec3cc393f14291a001513432fc87f78bec0"
+  }
+}

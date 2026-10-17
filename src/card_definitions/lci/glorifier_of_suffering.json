@@ -1,0 +1,11 @@
+{
+  "name": "Glorifier of Suffering",
+  "catalogue_id": 1788,
+  "oracle_id": "07a8ca73-9890-4c87-8b39-fd9eaea5ef45",
+  "facts_sha256": "9c82437c7d7b262e02e6f33e9a98a01391a463ebefe9a7fdb76a4bad2749ad36",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e4db227bff9571ccc0d515130c972ad64db6599aa3e064a9438949aa76385abf"
+  }
+}

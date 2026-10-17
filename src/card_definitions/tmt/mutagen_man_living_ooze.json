@@ -1,0 +1,11 @@
+{
+  "name": "Mutagen Man, Living Ooze",
+  "catalogue_id": 2887,
+  "oracle_id": "472d9a18-19a0-46c0-a4bf-328ebec7ce41",
+  "facts_sha256": "f93577abd6118c3dbb20ad4380cbece8d103d75461868598d3176c9c8fd42ac2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8528797591a16e621d13114e1f92efcf8465b3f141eb992e67b7e93f4365ff6e"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Cryotheory Adept",
+  "catalogue_id": 911,
+  "oracle_id": "a9b3ee21-1af1-4e7e-8e48-d7c90d056f5c",
+  "facts_sha256": "3506c63e1a8757549364a2834d09d34f0236011635857709686de8850cfa9e94",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b257f66cf7632fd662ecb176d67a45a2f3c0785c63d85239c25c04d6f45ea147"
+  }
+}

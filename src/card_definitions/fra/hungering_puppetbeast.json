@@ -1,0 +1,11 @@
+{
+  "name": "Hungering Puppetbeast",
+  "catalogue_id": 2100,
+  "oracle_id": "690ae865-87bd-46b2-8e65-c53bd80c1a18",
+  "facts_sha256": "3a6b0f955864f844dd08eac39917521824e673d0b1e23d294e2010ec4536ae7a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "332c8b17be89ef5590f0b239954691519d890c92e52315645f7332df8a5512b7"
+  }
+}

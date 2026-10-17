@@ -1,0 +1,11 @@
+{
+  "name": "Gratuitous Violence",
+  "catalogue_id": 1851,
+  "oracle_id": "7c340a39-4ee0-4ba1-bb66-6674f8020fda",
+  "facts_sha256": "aac20475e41f31f49dc75e60cbbe5e2079f43135c93485b48e7cd06202e1b20b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9d3336b5650a50aa63fb3a4436d83a79af9728acbe70c5a48e6dc5f3921fc932"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Elemental Teachings",
+  "catalogue_id": 1283,
+  "oracle_id": "7255705c-b788-4bb1-824a-9262f4a0864e",
+  "facts_sha256": "65ab8070a2bd60145225f28e376764fe48a0c060b9c422ec9a84279d1c33cb5e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "97ccb1fd1deed1242c2cf399de6892d65bd99663c154dcc1b89e01127ea7f097"
+  }
+}

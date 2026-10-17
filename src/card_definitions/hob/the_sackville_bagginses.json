@@ -1,0 +1,11 @@
+{
+  "name": "The Sackville-Bagginses",
+  "catalogue_id": 4493,
+  "oracle_id": "e3a665f9-6e51-4e0d-923b-e9552d5978a4",
+  "facts_sha256": "337b4e1b0b829849e76553386272e661ce715ea585deda47d75e2472ae6429f4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "39509ca3d87627d687b2bf48fd4a8a3a7fdf2e6ef44d7823c052a50f7c83f34e"
+  }
+}

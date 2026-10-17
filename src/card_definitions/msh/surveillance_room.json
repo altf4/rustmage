@@ -1,0 +1,11 @@
+{
+  "name": "Surveillance Room",
+  "catalogue_id": 4275,
+  "oracle_id": "a3648376-dc8b-409b-b2d1-c29e326a059c",
+  "facts_sha256": "a91be81461f88cd35a36442500a4e425a69b351cf30a56777aae51befdcc5c18",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "31bba621ad839e33571ebe2e0cb249222e1b5da2e2b85c88498a8c8995834326"
+  }
+}

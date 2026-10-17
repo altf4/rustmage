@@ -1,0 +1,11 @@
+{
+  "name": "EPF Point Squad",
+  "catalogue_id": 1225,
+  "oracle_id": "2dea1935-c227-46d5-9d98-e7d2cd612f98",
+  "facts_sha256": "599b7d4987e68dcb834930abfa432e1efdda31195f69b1754e7330bcae9ae2ee",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8b153212e38e5a3621ba12d052e35b37fa3305500079461402da94075c7e43cf"
+  }
+}

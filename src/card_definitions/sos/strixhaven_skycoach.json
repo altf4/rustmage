@@ -1,0 +1,11 @@
+{
+  "name": "Strixhaven Skycoach",
+  "catalogue_id": 4189,
+  "oracle_id": "e286a191-39d4-4073-b844-11d2aba911b4",
+  "facts_sha256": "e97cb9d9b19930a0f49dbb152c10cfb737c5cd9412a917f5a9385a69088a0c67",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "702cbaa6e2db682bf202fd942ce075073d0a414ce7d8d572656baa4663ed8e01"
+  }
+}

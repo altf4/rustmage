@@ -1,0 +1,11 @@
+{
+  "name": "Budding Insurgent",
+  "catalogue_id": 576,
+  "oracle_id": "723669e0-4a04-45ec-8c76-b1a369aa6892",
+  "facts_sha256": "062f19ff4e484f4054470fd4b52d7c412b6d9812094e88046dc84a9d0a3d0e46",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c1b4740092c917fe5a7824ab318551d3ce1a8487286d7ab28eea16611870c1ab"
+  }
+}

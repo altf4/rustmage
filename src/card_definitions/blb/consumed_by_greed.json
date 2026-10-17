@@ -1,0 +1,11 @@
+{
+  "name": "Consumed by Greed",
+  "catalogue_id": 837,
+  "oracle_id": "b548578c-4910-402c-8e78-498924e0a9be",
+  "facts_sha256": "f8b1ec84ac3fa7d074f2f0f3f490c70652d336ff7c16ef189686da08fe76dbb7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eddadc67f09ec84749b51834d1d33bd629a293991b6040cd95deb60280482771"
+  }
+}

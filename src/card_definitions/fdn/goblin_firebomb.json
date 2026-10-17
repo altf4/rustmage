@@ -1,0 +1,11 @@
+{
+  "name": "Goblin Firebomb",
+  "catalogue_id": 1802,
+  "oracle_id": "2625fa9c-638c-46d3-966b-1166f440186f",
+  "facts_sha256": "9451676d9426acb3287898e1f7c392cb128679823750c5ff4787a37bf27d4d75",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "566374be0154818ebc6a5e620b9c1e20066d77e41ab7d8c334c8a57660d0e44e"
+  }
+}

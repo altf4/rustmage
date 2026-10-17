@@ -1,0 +1,11 @@
+{
+  "name": "Aerith Rescue Mission",
+  "catalogue_id": 71,
+  "oracle_id": "14c3e48b-4c4e-4787-8c50-0e3aee19aa23",
+  "facts_sha256": "00df6a12f84e063533783ac889dca4e08b089208a3fe43ae3300cf965c35166f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "98737858711a342c8085d52ed81a49fc25a26134032d3f7ffd5aff63e890002c"
+  }
+}

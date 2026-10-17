@@ -1,0 +1,11 @@
+{
+  "name": "Matzalantli, the Great Door // The Core",
+  "catalogue_id": 2688,
+  "oracle_id": "16182e01-22ff-4786-985d-919b47c4aa4d",
+  "facts_sha256": "8ee493a14932f8abd98d17a852a7f16b04b2ff4d27020572ddedd16152627a88",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5c5fa1e906d373ea81b6a5b578eea4200c3f95b0979d85ee99062e589de2e594"
+  }
+}

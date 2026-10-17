@@ -1,0 +1,11 @@
+{
+  "name": "Graceful Takedown",
+  "catalogue_id": 1838,
+  "oracle_id": "b580c6d8-f501-4623-843a-5bb2b638a339",
+  "facts_sha256": "73b7b7edb1107b065350f9b454d3bd805ecbc5022653a6017923cc69786a7fc5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "040dcbc8e5b6fc599e4fe305cd2bfd5a71755a544181540db13a12128f96daac"
+  }
+}

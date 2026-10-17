@@ -1,0 +1,11 @@
+{
+  "name": "Way of the Paradox",
+  "catalogue_id": 5013,
+  "oracle_id": "76771cd1-6b74-49bb-9421-8845fe344567",
+  "facts_sha256": "1aab6f671b5fdb15ee25588ef755d6416d642fe1d8d51292a4566181554f9f61",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bb402d06187bc67d3e9aa2041bf5f6de39d499761f569c9982e516687ccfc329"
+  }
+}

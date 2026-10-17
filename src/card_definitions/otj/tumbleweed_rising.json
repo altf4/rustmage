@@ -1,0 +1,11 @@
+{
+  "name": "Tumbleweed Rising",
+  "catalogue_id": 4699,
+  "oracle_id": "ef574346-1d98-447d-acb6-4d8d53c5f651",
+  "facts_sha256": "70c03c65861b31e021120e299416447290dab2cd34e29b185bb282e9a45aa7ff",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c8a708179419d8937012008ec0091f37d14766755213c1739536c64b0910dbac"
+  }
+}

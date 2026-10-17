@@ -1,0 +1,11 @@
+{
+  "name": "Kree Sentinel",
+  "catalogue_id": 2413,
+  "oracle_id": "3c2b9bb2-8201-47e8-84d5-f3518cac03cb",
+  "facts_sha256": "71752f0fe7fe0a00f2c045ad7aa03cde0ee9b4e1099da060c7ca6f1309638851",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "627379ba78bd5f7a3428c3e4739128930cc634ea3cdd842d58f65d58aa93078f"
+  }
+}

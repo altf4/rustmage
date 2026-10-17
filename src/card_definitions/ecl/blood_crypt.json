@@ -1,0 +1,11 @@
+{
+  "name": "Blood Crypt",
+  "catalogue_id": 452,
+  "oracle_id": "43985bbc-a0f6-4812-984e-392bc8562633",
+  "facts_sha256": "1bc72e10ad9c905a4dbf9e57a15aadd8207490f2ab1ef961d4c597bbbbbfe072",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1625dc21020ff405268649307d84f861db74f48681ae24bd65869fb728c3d6b2"
+  }
+}

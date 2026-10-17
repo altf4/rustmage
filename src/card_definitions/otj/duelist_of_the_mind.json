@@ -1,0 +1,11 @@
+{
+  "name": "Duelist of the Mind",
+  "catalogue_id": 1201,
+  "oracle_id": "ff78f166-cca2-44bc-abe3-3a338bf543be",
+  "facts_sha256": "d8a2f9ba6b93a681436b9fcc685dfef35428c40054d6e5ed3da9dd3cb3ecdd5d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d6282baecf47d28a3fcc24e99bab0e6fc990e4ff468ac26e4a92248d06f891aa"
+  }
+}

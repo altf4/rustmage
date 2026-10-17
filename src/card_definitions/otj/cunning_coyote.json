@@ -1,0 +1,11 @@
+{
+  "name": "Cunning Coyote",
+  "catalogue_id": 925,
+  "oracle_id": "a38eba6a-db90-48ac-bb49-889a7fd90ce9",
+  "facts_sha256": "bc9c9aa470ca5924999394f680e1fadf43ef3435b87cfc8bf7806ade97a45cac",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8b2dab6504be3afb2201a3a1229d9f3bbdbff1dae4f6bd514fc4511672d79329"
+  }
+}

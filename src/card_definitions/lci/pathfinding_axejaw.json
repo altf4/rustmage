@@ -1,0 +1,11 @@
+{
+  "name": "Pathfinding Axejaw",
+  "catalogue_id": 3111,
+  "oracle_id": "54452df0-560c-4561-9dd2-3903ae49c91b",
+  "facts_sha256": "5beac92c2fb6b6cca5fcd55dc481ac5cdc0b0cce3a05dedafdf3cf528882be56",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d1a349cacf6b90ea5edf0fe981a9e7a0778649cc9f0254c603fbda8bc3f6e494"
+  }
+}

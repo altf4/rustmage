@@ -1,0 +1,11 @@
+{
+  "name": "Gnarlbark Elm",
+  "catalogue_id": 1794,
+  "oracle_id": "a848ea46-347d-49c7-85c8-023cf836d0b3",
+  "facts_sha256": "0a7b134b3b10dae66932cb5ac4d409d49ed5e4e6f5c5ea93a87b600b5c5f7b73",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bfd526e76e83454794cb180e93dbae9b874100cbc38ebd86bf55c6ded81d9ea1"
+  }
+}

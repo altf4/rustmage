@@ -1,0 +1,11 @@
+{
+  "name": "Echoing Deeps",
+  "catalogue_id": 1252,
+  "oracle_id": "2ef88214-f46d-473e-a55b-795a647e2f03",
+  "facts_sha256": "66b877bb6ea1df2e9f9ea6fea37c0c6bbd98d9462473ddff82773ae341fbb2cc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1f7d2867f673be3e6876072830b7f7678978b687798279db9e2f81f1eca00912"
+  }
+}

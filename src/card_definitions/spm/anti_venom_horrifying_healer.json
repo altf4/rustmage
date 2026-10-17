@@ -1,0 +1,11 @@
+{
+  "name": "Anti-Venom, Horrifying Healer",
+  "catalogue_id": 178,
+  "oracle_id": "3c7bafe9-80cd-48d0-bcae-e7910c9fb83b",
+  "facts_sha256": "1d5e9faa37db5e0f392c31821eadb3004353a953d46429b292b5a0ba5963c8ba",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b1182afd45c8edf36d1715e68bea116fd52c9f1b655b62fa974511f7b895074e"
+  }
+}

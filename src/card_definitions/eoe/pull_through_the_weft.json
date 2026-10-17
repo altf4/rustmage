@@ -1,0 +1,11 @@
+{
+  "name": "Pull Through the Weft",
+  "catalogue_id": 3275,
+  "oracle_id": "37bd9e54-c93e-4fec-9b21-6940da75ab7a",
+  "facts_sha256": "793639765e8627a206ff2aa4f7518bff76d6134c72cf410808810bb248e88053",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "56f514e8191e833921444ee932a046b9be17d29e4ed034be13b7ddc89989a9f5"
+  }
+}

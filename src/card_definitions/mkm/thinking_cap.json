@@ -1,0 +1,11 @@
+{
+  "name": "Thinking Cap",
+  "catalogue_id": 4531,
+  "oracle_id": "a54fb3de-0581-461e-be33-dc4f4d16a33e",
+  "facts_sha256": "8529ef811d0ddcc80abcd3cf930e99b620654ca2d1e246cfa1cdc63712d93978",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5f3d80a2f26e7b16679152938be629060d5db9de56bc85f69f533dbe6c9e090b"
+  }
+}

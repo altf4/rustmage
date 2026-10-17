@@ -1,0 +1,11 @@
+{
+  "name": "Wretched Doll",
+  "catalogue_id": 5125,
+  "oracle_id": "628cf9ab-8f8b-49b6-b761-2450088ad03b",
+  "facts_sha256": "fe9529a19571e261f6a0da113dcbeef180093ace1d92484da569a725d3f65e87",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aa18eafe20d1cf19b7a14323b40f69598ab0d14049bbde58bddea76adecfa453"
+  }
+}

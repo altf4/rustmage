@@ -1,0 +1,11 @@
+{
+  "name": "Sporogenic Infection",
+  "catalogue_id": 4069,
+  "oracle_id": "659a259d-f75e-4af3-b568-c63225e647de",
+  "facts_sha256": "660d91004d8e4dad693e1de521b840603ff5e2af499fba0cd052dfaa9d8ea06f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8b351b543a450602e3ec8ee44ee4aaa94f299a0d1ef3c1207c3b5d466831e300"
+  }
+}

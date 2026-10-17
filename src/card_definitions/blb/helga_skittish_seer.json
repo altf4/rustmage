@@ -1,0 +1,11 @@
+{
+  "name": "Helga, Skittish Seer",
+  "catalogue_id": 1994,
+  "oracle_id": "0a0d25a8-4f28-453b-9270-4d449fe0ca65",
+  "facts_sha256": "afd7e99890790f9e1d2adf12e0590360c82359a7c828ec1fbd4cf649c192944d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a68165cd1b4c6c189a06f81e85255b6b848524345442e0b9510cbc8b27b51a94"
+  }
+}

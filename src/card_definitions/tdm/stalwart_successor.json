@@ -1,0 +1,11 @@
+{
+  "name": "Stalwart Successor",
+  "catalogue_id": 4092,
+  "oracle_id": "45392882-e4b9-4c74-a10f-985c2b4e2be9",
+  "facts_sha256": "710cb2c1f467a798d27734501b30c77152e6238976b72dcda56d99a81a1303b0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fe71ceaf58fa9944747d2d506872309e644ba985dc0aadac9540f702d9773275"
+  }
+}

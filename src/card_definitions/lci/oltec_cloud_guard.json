@@ -1,0 +1,11 @@
+{
+  "name": "Oltec Cloud Guard",
+  "catalogue_id": 3010,
+  "oracle_id": "922a8e27-a367-40c6-84df-86ed32f71c7c",
+  "facts_sha256": "7872655aa5f7093a225567cd7e0dba52affcfdac56be9e8bf8450124dd5e6699",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d0536ebde4ad4ebff80303011ca9a074453875e3e44806e733ac3106d12ef97d"
+  }
+}

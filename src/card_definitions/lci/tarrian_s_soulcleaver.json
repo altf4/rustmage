@@ -1,0 +1,11 @@
+{
+  "name": "Tarrian's Soulcleaver",
+  "catalogue_id": 4341,
+  "oracle_id": "2ffb38ec-5852-4e91-85a5-cfccd1f23556",
+  "facts_sha256": "45c8adb94c05caab3be93700033321d3af6823fe3f44909c68997babe36f5479",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0e498d4f0ee85b6a79f5828ab0867f2953ec02e79f13387aeddff9736b0cf7aa"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Bespoke Battlegarb",
+  "catalogue_id": 393,
+  "oracle_id": "b2ff15b8-1be4-4f94-b4cc-aa959a50288e",
+  "facts_sha256": "6d812da74e74621cb1a3484a47e9fd8c27676cdbdbdc9ae684fc41fefb8595f7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "51e51a9e1ce6b21980a1e7673653c67ccaf364bce7392483eb94c7460c12b08f"
+  }
+}

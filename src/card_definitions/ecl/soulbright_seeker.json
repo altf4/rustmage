@@ -1,0 +1,11 @@
+{
+  "name": "Soulbright Seeker",
+  "catalogue_id": 3977,
+  "oracle_id": "762679dd-4345-43c3-929b-15959443aeb0",
+  "facts_sha256": "8ef607e1697b00b7e65a9753a479d413b03dd6d7e2649a57a8ae35f41071da1f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7f36d579f7537e3e13d7ffb5f93580a05ba7afe6225a67a67c0a1ca0bd72d2aa"
+  }
+}

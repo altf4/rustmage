@@ -1,0 +1,11 @@
+{
+  "name": "Narset, Jeskai Waymaster",
+  "catalogue_id": 2908,
+  "oracle_id": "1a2a74b8-0689-4959-9348-02cc832194cf",
+  "facts_sha256": "22baebf2826574b262298964ce677ddfe0ccd1bc7f66762cbc0ecd768068fbe0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f196a811dcb1ae7a06ea6717b10fcbbff0328de4a66fe040e16a0fc9d1d10940"
+  }
+}

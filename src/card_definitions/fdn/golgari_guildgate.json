@@ -1,0 +1,11 @@
+{
+  "name": "Golgari Guildgate",
+  "catalogue_id": 1825,
+  "oracle_id": "fa2da325-6859-45bb-b185-35526b01bcc1",
+  "facts_sha256": "42fb5b95a5d4a7248018701391c0e087c77fee6dc48570a3bfef624a2e604fe4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e43426f07b4595d7fe8655ec8c8bb1cabf942970f3a0b04e28c33e1d15839c3c"
+  }
+}

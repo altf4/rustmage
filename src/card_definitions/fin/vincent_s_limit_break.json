@@ -1,0 +1,11 @@
+{
+  "name": "Vincent's Limit Break",
+  "catalogue_id": 4897,
+  "oracle_id": "814679b4-51bd-4b07-a7b8-d3375d36ff45",
+  "facts_sha256": "f63ad431cfdf83a4e1cd5d33dcf9324e934c5a1be9b229770c3a5482b847b7ea",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1951eaca6fa8e6bb5dbcf0af0c2931fc457c2a73ccfac8a2b7f3d5e56c1e8a6f"
+  }
+}

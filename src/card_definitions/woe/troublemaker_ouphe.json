@@ -1,0 +1,11 @@
+{
+  "name": "Troublemaker Ouphe",
+  "catalogue_id": 4689,
+  "oracle_id": "16cdba97-73cf-44ba-9d64-f27009b829f8",
+  "facts_sha256": "f0a92c9f4a545e0604028fead38ac26fbeaf0de73dc5e73c662872e77b748be1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "67e88034b1eb85e317c93cdf7e2d0bc56035a27c6c3fb98679b44f08a93766cd"
+  }
+}

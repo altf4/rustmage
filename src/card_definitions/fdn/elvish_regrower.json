@@ -1,0 +1,11 @@
+{
+  "name": "Elvish Regrower",
+  "catalogue_id": 1302,
+  "oracle_id": "adac526d-1a85-431a-a302-0a4b8f4a0c44",
+  "facts_sha256": "b41ffc398b196cd62c43bce0c915c46a9e3bed8c4660bc1f968f42714fc2aece",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f9aaef1f85afbeba3276cbabadd3d6278e8a4813808962dccc0e9d08187e10b2"
+  }
+}

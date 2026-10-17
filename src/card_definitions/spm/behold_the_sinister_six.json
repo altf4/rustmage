@@ -1,0 +1,11 @@
+{
+  "name": "Behold the Sinister Six!",
+  "catalogue_id": 374,
+  "oracle_id": "6fa27f8a-bade-460f-853a-abc1c05c946a",
+  "facts_sha256": "76f99b4fc6c1f05234893afba1d6239eef212d03279faf0994b1e5ae94cf517f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "89a3b9a1cbe303a4afee6a4e861a32d17fb0474f359893d8c37c867319a4bf0c"
+  }
+}

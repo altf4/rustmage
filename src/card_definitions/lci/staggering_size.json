@@ -1,0 +1,11 @@
+{
+  "name": "Staggering Size",
+  "catalogue_id": 4087,
+  "oracle_id": "57bda813-ad4b-40ab-aa35-3f8343ff8668",
+  "facts_sha256": "edfa5fc653b6c34bcd034b234d44da8cb97c4afeed3adb22c62b5d294d39e278",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c80d87a862a53b0339d0fd48c90bb609298a12066301d0cea0b8485c024eb9c5"
+  }
+}

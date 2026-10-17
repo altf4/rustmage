@@ -1,0 +1,11 @@
+{
+  "name": "Might of the Ancestors",
+  "catalogue_id": 2750,
+  "oracle_id": "5e4107ce-8450-4501-9cb3-a6344ef320f1",
+  "facts_sha256": "70643ed36f9026b746e983e0303d8b87ddfc0d8460a329a93ec6223ee22350f7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "749af5fa21a7be4b44e59f99abc71d8da4fc2ffe8bbbf1b71de86af420b91cc6"
+  }
+}

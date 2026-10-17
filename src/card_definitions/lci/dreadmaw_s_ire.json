@@ -1,0 +1,11 @@
+{
+  "name": "Dreadmaw's Ire",
+  "catalogue_id": 1176,
+  "oracle_id": "781d6981-d389-4677-9eaf-9c46c9192ed6",
+  "facts_sha256": "cd088c0e72bb7f5313055f73e21ea5c554264af2f64f6aa77323a4e9884810ad",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a05f2b49cf9aa611199e110ce1f1e956c8ef6462ddabfcbdae09b3673f120828"
+  }
+}

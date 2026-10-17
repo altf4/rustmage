@@ -1,0 +1,11 @@
+{
+  "name": "Swiftwing Assailant",
+  "catalogue_id": 4294,
+  "oracle_id": "46b36d25-25bd-48c5-9a53-75230bb27dee",
+  "facts_sha256": "365901cab73188839ce755556f2dbbd1cfc7ab50d4706802777edcf05e736097",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fc10964186788361ef7d58745b2634e073a048a8ff187ad022316d34525f70ca"
+  }
+}

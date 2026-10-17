@@ -1,0 +1,11 @@
+{
+  "name": "Feed the Flames",
+  "catalogue_id": 1481,
+  "oracle_id": "f474d244-d9be-4580-bf62-f97660e9c1a3",
+  "facts_sha256": "0d5e87cb5609ae0fddbffb8c1ee293ce11be74b1717838d2444ece123acdbb48",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "49bbb204d59d15ef14f962b948eb7233dedee0c9ab9c21a3b289847e28190f89"
+  }
+}

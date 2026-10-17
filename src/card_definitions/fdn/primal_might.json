@@ -1,0 +1,11 @@
+{
+  "name": "Primal Might",
+  "catalogue_id": 3231,
+  "oracle_id": "58d7b8b3-ac47-4805-8259-4ba8e70d7dc3",
+  "facts_sha256": "2373c1f26d9d9a50a15436c4bad5062a151c73aa4546a55b9fa71ad7eb59ae72",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f8422388d1446c19338ab6a3eb1616c3a13f9cf556a84e71040bef2053cf8f0f"
+  }
+}

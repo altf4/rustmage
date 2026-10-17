@@ -1,0 +1,11 @@
+{
+  "name": "Bebop & Rocksteady",
+  "catalogue_id": 366,
+  "oracle_id": "a08b0a07-6da2-4ff6-88e5-88355dd84589",
+  "facts_sha256": "09479ceb12c05e276a66ebf11eecae9eb74a6cadca9926abec40c79c55e696e0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "47e197b8736a65ea06f438f14fa6cbe9d656f7d1a0fce411f03ac0fd7e88947f"
+  }
+}

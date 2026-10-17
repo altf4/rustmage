@@ -1,0 +1,11 @@
+{
+  "name": "Specter of Mortality",
+  "catalogue_id": 3998,
+  "oracle_id": "caff40b1-28d1-4ef6-90d1-51a1dc06cbcd",
+  "facts_sha256": "a8345e53cc105cce7004d3c33db6ab7723e56e6e7157e96af67165ef38269b72",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5ed4094817c4e94fe9594cb05001cb863015968a92ce068daaf97870fefeb965"
+  }
+}

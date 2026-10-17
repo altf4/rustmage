@@ -1,0 +1,11 @@
+{
+  "name": "Agent 13, Sharon Carter",
+  "catalogue_id": 87,
+  "oracle_id": "ddf7201a-6672-416d-be6b-202dafbeccab",
+  "facts_sha256": "4b920a78bca5151b9378513d6cba2b3d42f9fc1d0164d1a6b1a1974cd940ee46",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "61412e1c573810558ac7c55949ebb7fb6510239f73209effa8004d82b61bc2b3"
+  }
+}

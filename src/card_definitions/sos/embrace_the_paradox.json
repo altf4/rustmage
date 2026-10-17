@@ -1,0 +1,11 @@
+{
+  "name": "Embrace the Paradox",
+  "catalogue_id": 1309,
+  "oracle_id": "b9110be0-3f0c-449b-8baf-689e92fdb8f0",
+  "facts_sha256": "e1515b4288078627ede3083ef15f22474daaae1d32c898efb73d368df5117c9f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "02f88513857a65f2fe88c056415be6769671fcbc2f02babab78c457236e587af"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Pelakka Wurm",
+  "catalogue_id": 3123,
+  "oracle_id": "d36075c2-de66-4202-9217-b1102a2bc14b",
+  "facts_sha256": "eb141dd0c6a60d70e113ecea86cade4a7a846e8181707496d2b8c591d44512c5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9cbeaa4faa4cc68c153e04380878c5c22e16a9341092b96da49d5c4d0ae98bed"
+  }
+}

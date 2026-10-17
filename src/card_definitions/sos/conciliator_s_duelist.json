@@ -1,0 +1,11 @@
+{
+  "name": "Conciliator's Duelist",
+  "catalogue_id": 824,
+  "oracle_id": "d6ea0e58-7b14-425b-9135-57e149c0e47e",
+  "facts_sha256": "ad82b0c6f3f3790e7ab692df6411abbed2d21a084b17c9e1214fc07877d2f945",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "079ccc54fa539789f3b5261073e44d74c3c9eec2b4bf930e8d6f9dff8702f327"
+  }
+}

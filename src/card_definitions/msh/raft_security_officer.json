@@ -1,0 +1,11 @@
+{
+  "name": "Raft Security Officer",
+  "catalogue_id": 3336,
+  "oracle_id": "60754d4b-2add-4928-8d30-8ce9c0f54f91",
+  "facts_sha256": "850d44b58c667a0610cc5f2c46b130f58111f8d17ff552f990abb3ca774f8a1d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "abeb93148b28d84b2073d159652430ee9bd2797ab2767310987efd8eb0d29d0b"
+  }
+}

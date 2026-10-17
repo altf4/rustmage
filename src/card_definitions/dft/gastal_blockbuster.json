@@ -1,0 +1,11 @@
+{
+  "name": "Gastal Blockbuster",
+  "catalogue_id": 1690,
+  "oracle_id": "3b601721-90ca-45d3-9a3a-19c719799bfa",
+  "facts_sha256": "d4ac6b012e3368daf426888bb6b48a7906ab299421f9783a00e39679d73bcaee",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eb1445d289032e21ff9bf2974e4e5d1330f24b435199cdef29d8bb7eee5f6321"
+  }
+}

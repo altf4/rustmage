@@ -1,0 +1,11 @@
+{
+  "name": "Draconic Visitor",
+  "catalogue_id": 1148,
+  "oracle_id": "6745e850-68f6-480b-a1e0-e06180dde169",
+  "facts_sha256": "3071fc5cd63256f47bacf0bc3f11168bd01d6f55e798431e22cb2933e4f30aa6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8f9a6cf6ed5387e83afd5597ae3c1f537ffbbeeeb575f193e9151bebcb61610d"
+  }
+}

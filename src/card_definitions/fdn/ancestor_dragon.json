@@ -1,0 +1,11 @@
+{
+  "name": "Ancestor Dragon",
+  "catalogue_id": 154,
+  "oracle_id": "60b03a44-a7bd-48fa-8c8f-1704aed02cd7",
+  "facts_sha256": "6e9fc0c22af225112da87588d2fb4661cf2f08636f1ddb13765da25c1fd3adab",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "92d281fb9be62910742a05e470db3fafc7a2e9c412bef73087d930a9e709e275"
+  }
+}

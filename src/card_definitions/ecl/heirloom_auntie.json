@@ -1,0 +1,11 @@
+{
+  "name": "Heirloom Auntie",
+  "catalogue_id": 1992,
+  "oracle_id": "cc9523da-f48e-49ab-9989-a4031dafb426",
+  "facts_sha256": "b5096c8d96a8be563aaad1ca76e20dcaa9e29b6379ca07e8b6a8847a813d71bc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c0c233ccb99f45813838beb1f026ca001d3a7484910134faaceda93336d2501e"
+  }
+}

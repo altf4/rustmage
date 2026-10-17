@@ -1,0 +1,11 @@
+{
+  "name": "Gravestone Strider",
+  "catalogue_id": 1856,
+  "oracle_id": "9ea58a77-9b2e-4ae2-8a31-a51804900a3b",
+  "facts_sha256": "e439b77ce9f6c8dbe22e59d07fd217c932e8394e6673c8a6998e875cfdc91781",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f933c4618000db90badecda5cb5846ef2170dfed9e128819417f7a382ca6b6c7"
+  }
+}

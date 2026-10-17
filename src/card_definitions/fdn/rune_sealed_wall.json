@@ -1,0 +1,11 @@
+{
+  "name": "Rune-Sealed Wall",
+  "catalogue_id": 3623,
+  "oracle_id": "74d31e99-ab48-483a-a62e-5b424b27d017",
+  "facts_sha256": "71d9ebf60e411ec01cd5da496456641146059a9acbbceb46ddf42f2de3d8bd27",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c8bdf7759d445d04b7a456b814cc8e0270a6104a6054c99e5af309c2d0b9df7c"
+  }
+}

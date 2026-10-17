@@ -1,0 +1,11 @@
+{
+  "name": "Inventive Wingsmith",
+  "catalogue_id": 2214,
+  "oracle_id": "96186b7e-3dd3-44e7-ad23-79638787004c",
+  "facts_sha256": "a70754f0132960b5bf9eb54686f9e73a8d54e2e6afbe43104c454cd42bb344a5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6fe21fb3ee0dfdddc52b152b7c4344bb753d1df08c51a68b39b1ebb145a2444f"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Adaptive Gemguard",
+  "catalogue_id": 56,
+  "oracle_id": "2fdc0d15-ecb4-4a6d-be77-7a3fca188c9c",
+  "facts_sha256": "669685a4cac5cb5578a82714f776b365a8f29acffa14104da4e395c5e418cd4d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c1921ced67209f0ff46815dbdf859f3a9d42c2baad08674bc43c47ea2b6be79e"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Honorbound Page // Forum's Favor",
+  "catalogue_id": 2066,
+  "oracle_id": "66ee56b9-aca8-4efa-b9b5-50717e0784a7",
+  "facts_sha256": "e4f4dcd60051c5b382dd5b92c3e5940a7ccd285888fdf1fd430575e3f7ecc76c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a1594e6bff3deb1c8fc46756ebdb280f3a73010c188d50f6ad3bb7ce35347569"
+  }
+}

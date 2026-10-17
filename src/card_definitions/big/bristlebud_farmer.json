@@ -1,0 +1,11 @@
+{
+  "name": "Bristlebud Farmer",
+  "catalogue_id": 559,
+  "oracle_id": "3e44226b-51a2-4099-aff8-a5befab720cb",
+  "facts_sha256": "4b442d92272bb2bf246475a47079b357f3c977f8c60f99230b9562f47a62e33d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4868c8c3f6331c3d8b1f8ab0bfa56a3f47e3fd3337a6ecdc094fdcf2a9fca8d3"
+  }
+}

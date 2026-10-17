@@ -1,0 +1,11 @@
+{
+  "name": "Giant Beaver",
+  "catalogue_id": 1737,
+  "oracle_id": "2a4b42b3-6a95-41e1-9741-b35723d8da73",
+  "facts_sha256": "359d1fc16aa867634d17d331271bcc8bed993b3545ea4a393eeb956fc6524418",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3e38b2ebcd97ca31bb452610d6bea2eb87ec34f022d29fd6401e288442bfd9e7"
+  }
+}

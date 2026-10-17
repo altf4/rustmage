@@ -1,0 +1,11 @@
+{
+  "name": "Legion Extruder",
+  "catalogue_id": 2470,
+  "oracle_id": "c77dc11e-d95d-4e7e-bb24-d971c179e9b0",
+  "facts_sha256": "a229a4e09fe5cade50e84a606091ff6117f827978a213f5a6c4af79ede8651fe",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "23181af7981689c34f6a0d8ced8319d61ee83bd043cbdfde0154521c99ec367c"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Tranquil Cove",
+  "catalogue_id": 4655,
+  "oracle_id": "5d641bf6-0f93-4189-8dc1-ec7ea446dade",
+  "facts_sha256": "33707136abf946fdc5c10d480652b62b961fccec48c57a41771dfcb384edc8ab",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ea889faaae0f4a2d840fce2a903a83ba9466975647753236bfbe54d148109e52"
+  }
+}

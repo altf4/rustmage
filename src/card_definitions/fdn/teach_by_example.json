@@ -1,0 +1,11 @@
+{
+  "name": "Teach by Example",
+  "catalogue_id": 4348,
+  "oracle_id": "d85ba214-fa05-44ca-a7f9-ab2c5dc07962",
+  "facts_sha256": "50d2783fd181b676c62ec3ac2e44e81fb0adabef0097b6051641cba18ddaef8f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "11000aa1d924f469d5981d2cd64398cde168b78586c4cc6447ea557c7bdbfdc4"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Archaic's Agony",
+  "catalogue_id": 207,
+  "oracle_id": "55d1a788-fe9a-4e19-a524-6709f728ea28",
+  "facts_sha256": "e3fa9d361fa451537760b28db89854eb1841fc2c1d8d58c74d64fd203243d87d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "02aa1ed57462029f7dbf4a5b917dcac34cfdd9a5862e06d332a48cba1bbd747f"
+  }
+}

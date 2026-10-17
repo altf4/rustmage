@@ -1,0 +1,11 @@
+{
+  "name": "All-Out Assault",
+  "catalogue_id": 133,
+  "oracle_id": "de8c0e2d-3207-4bc6-83ef-91e33b26a981",
+  "facts_sha256": "f5d8ba603ce276e093a0de80cd480486e6625be70a69780d751e5bd537090ee0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f774e8a6a420386aaf049968021c72ea34709af4af6be6dd6ec8fd6b182adda1"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Salvation Engine",
+  "catalogue_id": 3660,
+  "oracle_id": "7903666e-7803-4cfc-9ed9-482a6b577c96",
+  "facts_sha256": "c2345c0486461861bb72d80fef9418045d495af001114e3cf2475701aa2ec572",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c089a79a5b61822756384f5489d46a5bfb8189e4304bf02a7fd88d5ba2e083c1"
+  }
+}

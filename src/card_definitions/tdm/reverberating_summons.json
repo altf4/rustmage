@@ -1,0 +1,11 @@
+{
+  "name": "Reverberating Summons",
+  "catalogue_id": 3508,
+  "oracle_id": "1fd78bf7-43ba-4e09-834b-14bfc1fd9d0d",
+  "facts_sha256": "f26817b160b9ee4925188c4a68ba5e7bdc1b61faea7bca997d109c8fc3c4ecd6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9831265c1cc0d4cdf5e648b746804952ca1ebd59247bea754fd8bdf1e55e17b0"
+  }
+}

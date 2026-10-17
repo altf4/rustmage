@@ -1,0 +1,11 @@
+{
+  "name": "Dramatic Accusation",
+  "catalogue_id": 1173,
+  "oracle_id": "677b9c19-4886-4e06-88f8-9afa94e58aa8",
+  "facts_sha256": "97be0a53c8c16684897d2d6bb16bb7113bce03bc6f01ab1f24df4459005b2f5b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e2094a5694c6a07d5fa1010a0f997d1ce99722529f9630e906053438d7eea50d"
+  }
+}

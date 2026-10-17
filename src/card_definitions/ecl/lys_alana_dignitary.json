@@ -1,0 +1,11 @@
+{
+  "name": "Lys Alana Dignitary",
+  "catalogue_id": 2594,
+  "oracle_id": "ce7582a2-e014-41fb-8753-00d29cffc81a",
+  "facts_sha256": "e73597e1a9019b4df8429f38a3ab72df0f5bff04b26a15f62f5e03ad62093046",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "95fdd24f9f27ee0caec0d397b7f2d9cb0f773dd42d3837f783dede0db81ae3ad"
+  }
+}

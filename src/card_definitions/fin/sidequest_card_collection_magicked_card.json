@@ -1,0 +1,11 @@
+{
+  "name": "Sidequest: Card Collection // Magicked Card",
+  "catalogue_id": 3859,
+  "oracle_id": "0c2095b0-478d-45b4-a34d-b19eb77cea4c",
+  "facts_sha256": "08c97aca7e8f1a40f2c21442d3129a024b69e634ba4469c545f07a015bf528c0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8cd734bbbfeb805d17fe8fc9960f2f39a3fcbc80a103d3b49fb2f14d0c4e5a07"
+  }
+}

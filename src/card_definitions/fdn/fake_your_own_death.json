@@ -1,0 +1,11 @@
+{
+  "name": "Fake Your Own Death",
+  "catalogue_id": 1431,
+  "oracle_id": "ad01df89-29fe-44c7-a133-91425f8ff09c",
+  "facts_sha256": "371fd51d98f1d2a1b84afbd766e6f042ee6c7a9cd86b2c90176e99539eef73a5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a3b54623844a4ad70696524aac1164d2b7ce7cf691a9c976d12f3900b8a8ac3d"
+  }
+}

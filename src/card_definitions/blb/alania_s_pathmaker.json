@@ -1,0 +1,11 @@
+{
+  "name": "Alania's Pathmaker",
+  "catalogue_id": 124,
+  "oracle_id": "ce36a450-68a6-4519-a9f0-0e3b772054eb",
+  "facts_sha256": "e1b3c990da8b088da2ac5b35ffbb325bb2f3fcb87295055374b719ece800bcee",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b206e932a52d02d09a489fee30146ac55fdea95c02cfb30115e11ff5b67794d9"
+  }
+}

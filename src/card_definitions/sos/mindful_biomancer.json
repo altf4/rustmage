@@ -1,0 +1,11 @@
+{
+  "name": "Mindful Biomancer",
+  "catalogue_id": 2767,
+  "oracle_id": "03af9d24-2df6-4318-82f2-8abdd22206f1",
+  "facts_sha256": "e34a59749135bfb6e5f754a553ee0245d544e68e77031d542470c05c26ac691e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "775e7cede6c532283da6812fc7828344eb2785149da16b30206a731c17e83841"
+  }
+}

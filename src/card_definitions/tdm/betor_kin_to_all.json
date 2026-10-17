@@ -1,0 +1,11 @@
+{
+  "name": "Betor, Kin to All",
+  "catalogue_id": 398,
+  "oracle_id": "826a0db6-195a-4697-9bd6-f544b279e3cf",
+  "facts_sha256": "3bf07ab93631658817efcac0d1394a86b292a77df95331c93ebd145163fc4e40",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a6871c6feca744dc89c1068fe1aa66e8c662fb9a9f207d1200b5a17dccea1def"
+  }
+}

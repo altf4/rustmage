@@ -1,0 +1,11 @@
+{
+  "name": "Burglar Rat",
+  "catalogue_id": 587,
+  "oracle_id": "2f807301-37df-4724-871a-08e3512b07b3",
+  "facts_sha256": "c74524cd94635ba2be0f50a40799699be1047f89d118af17c1b70e2aef958a05",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b5486e84b9706cbc6d73dfeaa4799ec7055666726e69a12194893db5f927d8e7"
+  }
+}

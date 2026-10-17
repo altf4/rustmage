@@ -1,0 +1,11 @@
+{
+  "name": "Cloudsculpt Technician",
+  "catalogue_id": 781,
+  "oracle_id": "7c5183be-cddf-48fb-a4b5-dc5f6faf26de",
+  "facts_sha256": "0824bff95c7af7dd2d7a96ce30705f8ca1eebbb2476c74b138bb5651b08334f2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3e45d2ee30bb48e0d144c4539122e0c74da41bae1f94f18611ee6bf5be8be11e"
+  }
+}

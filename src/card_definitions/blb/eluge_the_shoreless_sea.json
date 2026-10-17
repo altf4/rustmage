@@ -1,0 +1,11 @@
+{
+  "name": "Eluge, the Shoreless Sea",
+  "catalogue_id": 1293,
+  "oracle_id": "027989e7-20c4-4773-b6b4-20337cc5fe8c",
+  "facts_sha256": "65eb57efefba175b91dfa2ae5482ac48d2f4c321b262ac52d34e9d1d5e634874",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3892ea196899d0b6bcd2f64e8d35931ede800b6c4f9b07430e1dc94895e3616c"
+  }
+}

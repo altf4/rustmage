@@ -1,0 +1,11 @@
+{
+  "name": "Thousand Moons Smithy // Barracks of the Thousand",
+  "catalogue_id": 4555,
+  "oracle_id": "32af5f7b-a970-484a-9aff-226749551d32",
+  "facts_sha256": "53a71c243175f1d4c38b9585b1e7eca960adfdfa6acf1b2a6a1ba11ce1fb4fea",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f86387ccb99a905cd978075b3aca4ed7a7d2659a9ccae2654b0de097eec1617b"
+  }
+}

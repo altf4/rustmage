@@ -1,0 +1,11 @@
+{
+  "name": "Glimmerlight",
+  "catalogue_id": 1781,
+  "oracle_id": "8fd88b98-9899-4bc0-a4b7-7ef6fba36dfd",
+  "facts_sha256": "20cc87e988b980ec44734b6baea293dcba88ce2bf74aedae74ae72ccaa5b8f74",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9368668a9a39931bb6fdeca46d812149b7882f272c31c799cda62c58e461b08a"
+  }
+}

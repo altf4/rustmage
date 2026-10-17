@@ -1,0 +1,11 @@
+{
+  "name": "Plains",
+  "catalogue_id": 0,
+  "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+  "facts_sha256": "a46fdb7aed01739b4f3c48497e4bf8b5ded78b5a5cf67d3fe57a045f47ee35c1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "81efbbbe17dbe0b33d90d9e29b0a9045188d67b1cc089b2e93c734e54ac02528"
+  }
+}

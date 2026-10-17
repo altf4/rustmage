@@ -1,0 +1,11 @@
+{
+  "name": "Shattered Acolyte",
+  "catalogue_id": 3819,
+  "oracle_id": "57f58d52-0014-4cac-94fc-668063cc147a",
+  "facts_sha256": "d5a078f2a0be9f6f4c8768f9278622f57bc25e1949355cefb76b7181abbb1330",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "256814b826919986532637f56a9a47f8d54777d319c2abfa24106b505bb3cb39"
+  }
+}

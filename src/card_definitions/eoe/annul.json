@@ -1,0 +1,11 @@
+{
+  "name": "Annul",
+  "catalogue_id": 171,
+  "oracle_id": "d08e9784-75f7-4164-ac48-d06160f8c56b",
+  "facts_sha256": "d6dc243c7610eee341910db10378a29614d6e904bdbf8884475c0e882fed3574",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "143e994d931886f2014ec7d40c55d8b8e17e695df02e72fe2ce9c62a3f55c52a"
+  }
+}

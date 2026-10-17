@@ -1,0 +1,11 @@
+{
+  "name": "Gastal Thrillroller",
+  "catalogue_id": 1692,
+  "oracle_id": "86d67952-19b8-4bb8-b7d7-b2751e86591c",
+  "facts_sha256": "0d0891e7d13bd895a1b65cac550c55769fd7a9cf75443142a8d8076a752e7941",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1a17fc305ed62fb199be4a55d59b5638016b22a7b2d3b1fbd0ec3b3a7ef06daa"
+  }
+}

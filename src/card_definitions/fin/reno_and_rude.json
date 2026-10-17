@@ -1,0 +1,11 @@
+{
+  "name": "Reno and Rude",
+  "catalogue_id": 3459,
+  "oracle_id": "f749a6d6-2c55-439f-bb02-e95fa54c2ef3",
+  "facts_sha256": "04754d94e64f60e56fea7dea7464a014ba85b8d9d9eafeb1ca88b1c5db93f202",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "320393e27c883977d299a63ad2b3ff100e36db1b501754cf58fea69239d96332"
+  }
+}

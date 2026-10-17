@@ -1,0 +1,11 @@
+{
+  "name": "Triple Triad",
+  "catalogue_id": 4684,
+  "oracle_id": "9567d963-4815-466b-a319-6d138b6a0cd2",
+  "facts_sha256": "d14603d29abc3668375c34020fc6c8973604971313c905c67bb8bb0bad7537af",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "10dd4b1d26b9b1dbd20730f8cfcb01b71551781b25b22c8e54ed049f5c28f623"
+  }
+}

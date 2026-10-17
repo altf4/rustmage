@@ -1,0 +1,11 @@
+{
+  "name": "Thoughtweft Lieutenant",
+  "catalogue_id": 4552,
+  "oracle_id": "50dd9e17-6dae-4ff6-8a38-50088c71283f",
+  "facts_sha256": "7733b577de200df6aa5378da773eb25075ca0c8d37ad6c248480ad7584e0798c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b5f868357bf610935502e5dd9c67e5361aac5fdc4f7ab326bba31cda74e1decf"
+  }
+}

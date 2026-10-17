@@ -1,0 +1,11 @@
+{
+  "name": "Let's Play a Game",
+  "catalogue_id": 2480,
+  "oracle_id": "dd893746-e8bd-49fa-a1ce-755d5bd4f513",
+  "facts_sha256": "508afc05cefbcea324967ef32e4a447a25527cbcc506fcf1d58d0dc1c840dae6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1b7c54bb183a48a48a4b2fc1e2eb0cbfe5b646e06fdd93c83a7501d409cb0152"
+  }
+}

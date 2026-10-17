@@ -1,0 +1,11 @@
+{
+  "name": "Lightning Helix",
+  "catalogue_id": 2496,
+  "oracle_id": "800c258a-cfc4-4a54-a667-065ea8dea69e",
+  "facts_sha256": "fa37161f958380f2328ecb9abefa6f43d99269dae4768071c135d9ecf41fed1f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b0c3ebaed18d0d8441fdc315a05d38bd01e253652062eb3073b57a7e4b839190"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Ice Flan",
+  "catalogue_id": 2120,
+  "oracle_id": "3b7120a6-700b-4c61-bea4-a835f0cc0bcb",
+  "facts_sha256": "687d40089e80db907b794da0bda83a5bffe0c86548b3ca1f70ec3f2e40c5680b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "540580c856fc2841e84e9b29cd8816a7b020a80752ed5add132c9b2188106833"
+  }
+}

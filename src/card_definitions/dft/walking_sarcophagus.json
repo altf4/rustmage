@@ -1,0 +1,11 @@
+{
+  "name": "Walking Sarcophagus",
+  "catalogue_id": 4957,
+  "oracle_id": "791b8ac8-8db8-44b4-8c85-fcc9017c17ef",
+  "facts_sha256": "6f3f7df865dcd31690a811f1767ee3a7f13046965f308a7273b4f17f97df9424",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "530f503d91ec0041d6e094759692e7146e6e1ac38a2162087d1e543b1e546dda"
+  }
+}

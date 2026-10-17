@@ -1,0 +1,11 @@
+{
+  "name": "Donatello, Mutant Mechanic",
+  "catalogue_id": 1129,
+  "oracle_id": "f6a7838d-380f-4752-a647-c55c2a0eb6e2",
+  "facts_sha256": "42275a57c231656c5d22faaa3bf8732aba8a64452b2c3fa3d744292e8f95dbe7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2702efee78e40628bac516a0a6a69084114b0be52de3e5b3ea409873fbce205e"
+  }
+}

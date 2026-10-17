@@ -1,0 +1,11 @@
+{
+  "name": "Chorale of the Void",
+  "catalogue_id": 745,
+  "oracle_id": "cd50bff0-c461-4023-b62a-6746eaaeab0e",
+  "facts_sha256": "690c4175f9a37cb6f636f41d73e258afec77bce70e0d924f5b24bd3d93dbca3d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d9cf5eeec4668519f512bd8eebcb9ea5bd7cb7abb34fb018e483cf4046eab6d3"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Restorative Technique",
+  "catalogue_id": 3495,
+  "oracle_id": "f7b2606c-42b8-46d6-bcaa-8d4506b348eb",
+  "facts_sha256": "c7f3cbe4c270e8fc93eb441d0613e363293dbefdfdb7bea4c352bef760c736ed",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f5047b4b6f966c39db76262fe573c6b4d8b01c7553a455165826fef522597bca"
+  }
+}

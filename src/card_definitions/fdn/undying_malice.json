@@ -1,0 +1,11 @@
+{
+  "name": "Undying Malice",
+  "catalogue_id": 4773,
+  "oracle_id": "8b061702-1bc3-45aa-a758-446b25034801",
+  "facts_sha256": "de38ce054e03e57e905f48378a477d6910cce6f0bacff23de17000ed16b52340",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "169561135507be3957b9791c3972e92955a35c9006d921ff250694175b7e372b"
+  }
+}

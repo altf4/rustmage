@@ -1,0 +1,11 @@
+{
+  "name": "Agate Assault",
+  "catalogue_id": 80,
+  "oracle_id": "7b89b7d2-c724-4d5d-9f0b-7d3302ad1168",
+  "facts_sha256": "74525df1f80faf6580d8af0ba61245ad2bd456b3a692b397602bbdf35b655d0e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2e01e5ebb3f44185b7bb0fb787a8f7ef690898a5b37a04317fa5307eae593587"
+  }
+}

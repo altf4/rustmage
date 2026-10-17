@@ -1,0 +1,11 @@
+{
+  "name": "K'un-Lun Warrior",
+  "catalogue_id": 2302,
+  "oracle_id": "0618a217-2a6e-4fa1-bfe6-89c6612a594d",
+  "facts_sha256": "95a60a4f0bb751bd3d8f149111cdfffcec974e1d86273ff356d255216323b3e8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "58f003dc96ce62be21ecd7d4433b70aff6b1210d9164f842af917c3fcb011290"
+  }
+}

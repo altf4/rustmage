@@ -1,0 +1,11 @@
+{
+  "name": "Foggy Swamp Spirit Keeper",
+  "catalogue_id": 1577,
+  "oracle_id": "faecfb8d-2f63-4b98-a842-b11448f0d538",
+  "facts_sha256": "b5313fdc0b2d9ce03edff9c1a21cd2047c2f8454e01165bf941aad35ef7bced9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "79683599c84ed2c40343372aa0227802c7aebf3cff0dc76429f66b6293f751d2"
+  }
+}

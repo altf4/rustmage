@@ -1,0 +1,11 @@
+{
+  "name": "Tinybones, Bauble Burglar",
+  "catalogue_id": 4607,
+  "oracle_id": "fd335b2f-e6a2-45ac-949e-a67278b21cb6",
+  "facts_sha256": "39aa7c493aa4176379bc1509adca1374a98c0a2ac76133fc4a9713c241c5739a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d11ad8374a13a20cb385f0f9a37562dff5870e28b68a57d215fe3fdedb5e077e"
+  }
+}

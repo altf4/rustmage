@@ -1,0 +1,11 @@
+{
+  "name": "The Last Ronin",
+  "catalogue_id": 4461,
+  "oracle_id": "e1865bec-1744-40c2-9031-7d6363be5333",
+  "facts_sha256": "50b0ed64016570af13282090503928ae448c39efd419c8bd76822548055a3f88",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a3e433189b7823fe79972d4ba764fbbe84766c1c115f4fb181505f82713faa18"
+  }
+}

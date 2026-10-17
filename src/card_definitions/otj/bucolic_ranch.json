@@ -1,0 +1,11 @@
+{
+  "name": "Bucolic Ranch",
+  "catalogue_id": 575,
+  "oracle_id": "8f5902bf-4bc4-4d0c-84ea-a425307a4eb2",
+  "facts_sha256": "69ad278bc9714de73a1e9e8bce286e7255ef48f89959f35688b86ea14d75ff89",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bc51110ab39ea3f2f16dd1cebed65ae52f2ffcaec4d40265423949ac2a1724ae"
+  }
+}

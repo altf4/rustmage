@@ -1,0 +1,11 @@
+{
+  "name": "Hedron Archive",
+  "catalogue_id": 1990,
+  "oracle_id": "32263baa-d3f0-463f-92b3-4e9938476add",
+  "facts_sha256": "a64f921fb2f107e9dcfee53e013378c8445fc19bb9188e95c8db7e8ec1b7e9cf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "632ff1ba0e44c95c98753d6c239284870d2a51181304746ce54d27b6f5ca73de"
+  }
+}

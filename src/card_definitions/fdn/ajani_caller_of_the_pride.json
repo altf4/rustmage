@@ -1,0 +1,11 @@
+{
+  "name": "Ajani, Caller of the Pride",
+  "catalogue_id": 116,
+  "oracle_id": "1d5ff280-7f4d-4801-aefd-9b6e6b1f2818",
+  "facts_sha256": "d95846189db81f7bb016772caa42ba774096b25a9037aef681dc22f667cce7d1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "62e998783cfc440f073e0adaa2929390d669b229224dd69df2611853a5a0349f"
+  }
+}

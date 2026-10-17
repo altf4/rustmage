@@ -1,0 +1,11 @@
+{
+  "name": "Goblin Surveyor",
+  "catalogue_id": 1810,
+  "oracle_id": "237758f3-84b2-4e5b-a2c7-b28c893e2790",
+  "facts_sha256": "5696acd43c19a1a133efd1ab28fb7caa0b0ef9cf118ee146c0c741313ff98d32",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "51e60ce05cc193fb4f6378d7e05f6f5855d827d7fa1ee29c58cf89ab293ec1e7"
+  }
+}

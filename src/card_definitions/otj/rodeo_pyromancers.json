@@ -1,0 +1,11 @@
+{
+  "name": "Rodeo Pyromancers",
+  "catalogue_id": 3575,
+  "oracle_id": "82debe1c-31cb-411f-a353-98a952180666",
+  "facts_sha256": "9ca1b6a4fc4712e6445765fcdcbce08cb8649721d2429c2e616a7fcdb41796b3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1ae7c6e612b81f93b06d84a3ad6fb1b84016fd89c1e78527b753ca337eeb7c2f"
+  }
+}

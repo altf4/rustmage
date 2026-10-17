@@ -1,0 +1,11 @@
+{
+  "name": "Marwyn, the Clearcutter",
+  "catalogue_id": 2672,
+  "oracle_id": "aff4e43d-cafa-47de-8e39-011f9254a26a",
+  "facts_sha256": "94a161bfb01a7c698d162eb7f1f6b7838296e1cb5a20456c61e6cefccf96b8a6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "875bc9fd28750cf2dbc65d7120688ea6ed06382a5b6b709f1986e0a014d98935"
+  }
+}

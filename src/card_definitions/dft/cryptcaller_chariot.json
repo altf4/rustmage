@@ -1,0 +1,11 @@
+{
+  "name": "Cryptcaller Chariot",
+  "catalogue_id": 913,
+  "oracle_id": "2bdd0bcb-6cfb-48e7-972e-355ff46621a4",
+  "facts_sha256": "7e73144418e6c37734dd7864caead918be56cf6188d6c26935d130d96bde8120",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bf05b2a6514fd6989229b686a80eb1258d74616d827fb4a8711282a83302e5d8"
+  }
+}

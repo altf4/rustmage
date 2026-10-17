@@ -1,0 +1,11 @@
+{
+  "name": "Shredder's Technique",
+  "catalogue_id": 3850,
+  "oracle_id": "d92714c0-4e22-47f9-a4d4-405894e734d0",
+  "facts_sha256": "5e2000d7a7736a768981be1b11d963aee9302e03ae1b13900248039129752595",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b0e51b92131937701163f71d33b4a6aa7fa932d09a24310a9e0db499421aff30"
+  }
+}

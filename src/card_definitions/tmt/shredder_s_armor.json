@@ -1,0 +1,11 @@
+{
+  "name": "Shredder's Armor",
+  "catalogue_id": 3848,
+  "oracle_id": "bda5d0aa-3ed0-4f8c-80ae-f9cb8ed0ac82",
+  "facts_sha256": "d2d04335efc02cd808441876203bf62797842713f9b12e86826301b1cdac3978",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "56f25272c5bdffcbbd60ca523e1cca601a94782e10619a3f682283df8a73f51b"
+  }
+}

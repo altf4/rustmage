@@ -1,0 +1,11 @@
+{
+  "name": "Charging Hooligan",
+  "catalogue_id": 722,
+  "oracle_id": "c808892a-83d5-4b09-b0da-118b0d6fe58e",
+  "facts_sha256": "1cbc3bcd40f733a4d9b026c1f68451c40bfbd5a69ee2e83ca3af5c8020666bfc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7acae903a65720549a46c8cff1450d8948e5432e62dad710d4c13993c8b5cc8a"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Glassworks // Shattered Yard",
+  "catalogue_id": 1769,
+  "oracle_id": "4122720b-cad9-4ebb-b458-be71411c21e3",
+  "facts_sha256": "14bf9a3184415518bcb78b886e8488ff0b031b3ef91ab202b061588a54ad239e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "45ee6f6c0bce8802137d65fdf2ab37c3faf2db794fc4a202a3f12a36c934ccba"
+  }
+}

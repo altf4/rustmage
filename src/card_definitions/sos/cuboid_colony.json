@@ -1,0 +1,11 @@
+{
+  "name": "Cuboid Colony",
+  "catalogue_id": 921,
+  "oracle_id": "20f3388f-0931-4a09-bcda-96deb01e1787",
+  "facts_sha256": "6e9513bb4e9c90e49f90a9c97bfaf915e10794f51b34f488918cab86fcd2f043",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1592670d459c01aa4996192385bf5a1bb534643967170e13c2c97a5f1677895a"
+  }
+}

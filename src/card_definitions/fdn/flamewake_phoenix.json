@@ -1,0 +1,11 @@
+{
+  "name": "Flamewake Phoenix",
+  "catalogue_id": 1546,
+  "oracle_id": "9e43805d-3576-47d4-9331-524869ab99d0",
+  "facts_sha256": "8187ff1a0dda527d84a9f86f467b85deb059679bba3a2269f44f13c9db003d51",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dd4def8281d0aa30832a37ec402ef403ace5dc0b0af9d5e7524649a596e6c388"
+  }
+}

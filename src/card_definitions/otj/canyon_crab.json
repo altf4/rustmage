@@ -1,0 +1,11 @@
+{
+  "name": "Canyon Crab",
+  "catalogue_id": 636,
+  "oracle_id": "4681facf-21ca-4118-a827-0e3d4233d8e6",
+  "facts_sha256": "1965ee885c32548ca31546e4194ed9a8518022fba50028557d87175e9c5c57aa",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "df7c6a5806b8ce4519fd22bc97e511b5df69c87779c2a672b562d5edf2838b3b"
+  }
+}

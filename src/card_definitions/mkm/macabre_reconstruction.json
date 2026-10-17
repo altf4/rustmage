@@ -1,0 +1,11 @@
+{
+  "name": "Macabre Reconstruction",
+  "catalogue_id": 2602,
+  "oracle_id": "04633ecd-eac0-426a-83a5-8e88262fca30",
+  "facts_sha256": "8edbf5a300365873b6efafb0e8a462868fceeb2fb8c3675aa87ad7ed0199d55b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c9eec14cd4afcdd11bda48ed52e5cc7dd2fe48784de19a41308bb28cc2544e09"
+  }
+}

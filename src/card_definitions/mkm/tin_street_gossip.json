@@ -1,0 +1,11 @@
+{
+  "name": "Tin Street Gossip",
+  "catalogue_id": 4604,
+  "oracle_id": "19dc29a7-8ccc-4e54-829b-86cc102b082d",
+  "facts_sha256": "55ce5493cb740fa18bfde952f1d0d8738cabd0b3b6ba1fc921af2b59cfb30f96",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "88a02776974ac2356e58c23ed243a5b2d34b2dedae9bbb5519727cdade675398"
+  }
+}

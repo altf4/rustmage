@@ -1,0 +1,11 @@
+{
+  "name": "Lumra, Bellow of the Woods",
+  "catalogue_id": 2581,
+  "oracle_id": "97a84e9d-bfc4-4ca2-b1e8-908dba56ccdb",
+  "facts_sha256": "6f18b02f1046a9d82a27eb375d174ccbe8c1784625face6a3d216bea38b3736e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ada1ab03b39d56b4ec02c5acca32df92c6f9af22c0893cd5e52f2dfa3aa69605"
+  }
+}

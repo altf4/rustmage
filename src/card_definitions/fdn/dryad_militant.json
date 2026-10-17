@@ -1,0 +1,11 @@
+{
+  "name": "Dryad Militant",
+  "catalogue_id": 1195,
+  "oracle_id": "b8ca5877-ac9e-4b15-8c23-c70f61b01895",
+  "facts_sha256": "a95ff387c01df6d19adbd87a05703d8e325759b609e5b551f8aa26ff805e1269",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fdcc365cc8bb62ed82626248c8741e1a53bf35382eaf7045344de38f0fa71427"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Blood Spatter Analysis",
+  "catalogue_id": 454,
+  "oracle_id": "aa929252-5dcc-4c9b-9e7c-61d0bef98d6d",
+  "facts_sha256": "185033ebee32e8b83b76d13148e9268cf8ee9a9a0c15d0cb63413ad2020786b1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "be2d9363a0ad0ecf3f1086c13aa0f59a4f4fb2e83c6284eae892b62bdc4fc215"
+  }
+}

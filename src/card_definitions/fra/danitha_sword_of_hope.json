@@ -1,0 +1,11 @@
+{
+  "name": "Danitha, Sword of Hope",
+  "catalogue_id": 956,
+  "oracle_id": "f7b754d3-9863-420d-895d-00e70b8b078a",
+  "facts_sha256": "00b0a0cd6f41a2bb864aad2cb3327d3bff1ae6ce49ecc904133eb121205a1b5f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "910b52f37ce3dfbd761d0d86350455ca10407db57848586f674e2e57fd291c13"
+  }
+}

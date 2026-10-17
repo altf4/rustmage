@@ -1,0 +1,11 @@
+{
+  "name": "Ratcatcher Trainee",
+  "catalogue_id": 3387,
+  "oracle_id": "ecc91e38-90fa-4d89-b262-d5f36dce5be4",
+  "facts_sha256": "a151cbb95be3fe242e8c9dcd69def4f4f7ff0c33365b9030dc839dfb6c944654",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "339276df2554ad1d36f0231a8833e5b53730afc5c572622065546214543e4d28"
+  }
+}

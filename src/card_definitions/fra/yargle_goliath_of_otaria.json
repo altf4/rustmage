@@ -1,0 +1,11 @@
+{
+  "name": "Yargle, Goliath of Otaria",
+  "catalogue_id": 5132,
+  "oracle_id": "014d0bcd-b80f-4c43-8f00-f4c31e8f3370",
+  "facts_sha256": "e7ebef110331e6b469c4304b14c5c4b511dc5a28c26e2813f99b6f44129a3988",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "436b7b416a11ea8ee622c4c77bc270de54ce43bdb3b5563f98e18a7d994dac39"
+  }
+}

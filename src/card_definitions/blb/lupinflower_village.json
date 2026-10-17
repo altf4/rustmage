@@ -1,0 +1,11 @@
+{
+  "name": "Lupinflower Village",
+  "catalogue_id": 2585,
+  "oracle_id": "b6c7c708-5212-4100-b954-b77855b27915",
+  "facts_sha256": "f5e7e8abff4a5abac7d2d05ee524681408a6839cfd5af5ac29743921b44d9c5c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "05fd3b12c67a028aeb11c86a9f5807046271353b34a157acda024dcf2e3338db"
+  }
+}

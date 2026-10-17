@@ -1,0 +1,11 @@
+{
+  "name": "Patchwork Banner",
+  "catalogue_id": 3108,
+  "oracle_id": "4fb00dbe-1f82-4ba6-b18c-97e816d10d3a",
+  "facts_sha256": "df4cd31133b824cd775e73a36d1681b7eedc271840d387c2100a9dd6dffd98c7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c1f3d82b683fefe604570872912ef08f7e0e601a0d601872e7f33ea651f6fb2e"
+  }
+}

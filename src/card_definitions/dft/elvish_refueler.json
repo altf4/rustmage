@@ -1,0 +1,11 @@
+{
+  "name": "Elvish Refueler",
+  "catalogue_id": 1301,
+  "oracle_id": "4b62f9fe-e3f4-4a21-aa6b-4dbd411d0c44",
+  "facts_sha256": "9ae9679a86cd7e18cd56d753e941daf0a96f10d7eb6fd638d57f095df7cbfd41",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ea8cd216933893287ffd1b5b79525e033418ee822527b542324d96c396e1cbb7"
+  }
+}

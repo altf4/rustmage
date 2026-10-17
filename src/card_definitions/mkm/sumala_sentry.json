@@ -1,0 +1,11 @@
+{
+  "name": "Sumala Sentry",
+  "catalogue_id": 4210,
+  "oracle_id": "6b869c33-a77c-4eb7-9df9-9815d70f7444",
+  "facts_sha256": "cf5178b5a601b6e2dbc060cb89b83dfa3fd33bad4469b7532260f5b2b94406fe",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "048f8672b9598c22969bf844f725b412f5df3170830dd40b3352ac4c6511a94e"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Eaten by Piranhas",
+  "catalogue_id": 1248,
+  "oracle_id": "c37eae65-1afe-4242-b677-24dd40e6f401",
+  "facts_sha256": "512def26c00ccfeda17cac18a4a1a98168d4d9144ddb1ff4b42c63c57fca572b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "943e2425a34a13fc2a1e1fe40e3437b141aa35e706b81695b690f1569a6a79b5"
+  }
+}

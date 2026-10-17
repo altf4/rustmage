@@ -1,0 +1,11 @@
+{
+  "name": "Master's Guide-Mural // Master's Manufactory",
+  "catalogue_id": 2683,
+  "oracle_id": "2dfdd358-e3cd-4bf5-871b-37689b7951e9",
+  "facts_sha256": "2625ae116fc2e5d40510103520b4cb16fc2ec864b6c6e36ed5f6247afac653fc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fd690c2079d3511b274af7f7bf41723ec09bc73a606e9ee6536e09289264d712"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Rook Turret",
+  "catalogue_id": 3584,
+  "oracle_id": "c5a6d752-9975-4059-8552-55c6ffb3ab68",
+  "facts_sha256": "1a725c85b4a6857117ede048cb032a3bb0338c0a08e2e5584eecc1fed43cdd45",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "686a4f347820e5766be0d95195460ab52f6aeecc1544163697786d948b8e325f"
+  }
+}

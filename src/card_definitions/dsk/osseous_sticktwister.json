@@ -1,0 +1,11 @@
+{
+  "name": "Osseous Sticktwister",
+  "catalogue_id": 3049,
+  "oracle_id": "33c3a81a-6cea-48c9-b966-67084d96e74f",
+  "facts_sha256": "3320bf4a4c9c81a0f0b6c817c67d66d163c6bada817bd1d2507c8ad1f95c0836",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e1f18cb3738a86aaeff9e88db2dc97242e3285debd595bc2e76b29d9984420d5"
+  }
+}

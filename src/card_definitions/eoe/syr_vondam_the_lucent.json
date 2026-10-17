@@ -1,0 +1,11 @@
+{
+  "name": "Syr Vondam, the Lucent",
+  "catalogue_id": 4311,
+  "oracle_id": "28225bae-2d96-4352-b256-0c2ff4ef65e9",
+  "facts_sha256": "af8c834286fee56dc0e956a4b8537792b1267320498b9358fdf43afdb7fae5e3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "54587cee7bd1eb2d4a10410b322acf490a43280ff2ebc86f9993b7bdbc199b25"
+  }
+}

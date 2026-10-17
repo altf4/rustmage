@@ -1,0 +1,11 @@
+{
+  "name": "Beifong's Bounty Hunters",
+  "catalogue_id": 375,
+  "oracle_id": "8561b088-56b3-4732-82e9-8da1e3affd55",
+  "facts_sha256": "6f72e5cbf33d24f5bf55a6b3c5360c72f5381b113ea4ead720fbdc2f00cc780b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c0951187d880fc59b9da742a9f1638436e055035bdf4cc6f9f6187c52cf4fff4"
+  }
+}

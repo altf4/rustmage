@@ -1,0 +1,11 @@
+{
+  "name": "Inspirited Vanguard",
+  "catalogue_id": 2191,
+  "oracle_id": "db756a16-3db6-4bde-bbc2-ecee3ee9d9d3",
+  "facts_sha256": "c8c64f4734110dabec4e4eae31eeec2b8fbde59f54046e773c17e6666c149234",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "73fa03e4c23f7f9515a346f40be09e0c834f6ac51ac895983b8aaa9ae3f3a042"
+  }
+}

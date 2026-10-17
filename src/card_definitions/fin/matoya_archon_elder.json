@@ -1,0 +1,11 @@
+{
+  "name": "Matoya, Archon Elder",
+  "catalogue_id": 2686,
+  "oracle_id": "ef6c0054-3a89-4fac-b822-37c7d2514489",
+  "facts_sha256": "c1ba3b5957db683795604948bf61d9ab28fb74808dd530d73dd353e4c10bc595",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6512f86841e48fd80fc2f5c5dbd437471e81d402b121c94d33f829a91b688ddd"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Howling Galefang",
+  "catalogue_id": 2087,
+  "oracle_id": "f12c2b65-4a04-4fab-ae77-973fe5cc823d",
+  "facts_sha256": "ab27de79407a1c0d55679db1c510b76fcae39af1a7ec642b4225bbe5f4c2e7d8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1242506ff6095fda140ca17404350745fa85a8df04d1f96add259cb422099e31"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "The Belligerent",
+  "catalogue_id": 4422,
+  "oracle_id": "9a0c9023-9431-4f98-b167-ab4c7215319c",
+  "facts_sha256": "c9b60aef34035b098e682cbad8b7b0763495cdd17d38661b5c3e036d5cef9e16",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b567fb41786a8e3d68ff3313e446deb2265af59e97fbdb7ccc50e457e9b4fb4f"
+  }
+}

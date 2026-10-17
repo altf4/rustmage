@@ -1,0 +1,11 @@
+{
+  "name": "The Crystal's Chosen",
+  "catalogue_id": 4431,
+  "oracle_id": "df4ef2f8-2591-4be3-b905-4f9ff9c538ea",
+  "facts_sha256": "93a50195946a419f51d08ef0cd08fbbfb82792f5002dd69e06cb97da227c6ef0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "737b7509857d9faf476bd58a8723f71022420f2b088e2ccb3c8ca0034b6fa87e"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Murmuring Volume",
+  "catalogue_id": 2882,
+  "oracle_id": "4baa7847-dfcc-4aa3-aa64-2deeaa3f013b",
+  "facts_sha256": "3d5329fb65ef15aee85eef4151748bf04fa64ef9a2d7b449cbb4446b0317bb73",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "13f7851bfe0b7906f5d1f190de77aaeb6b0416b7e2108547c8d44296308fcbee"
+  }
+}

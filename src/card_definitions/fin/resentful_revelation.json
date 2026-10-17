@@ -1,0 +1,11 @@
+{
+  "name": "Resentful Revelation",
+  "catalogue_id": 3477,
+  "oracle_id": "71d6aa12-4888-458d-9dc8-9954b247a246",
+  "facts_sha256": "730172d4c2e11c583cbad6b49a347c0cffb626fd64a222ddb229df60b6b5d5e2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aeae32b50e0ab24da18f5f54598f905d31a7375ebd9252a431da89491ea88dce"
+  }
+}

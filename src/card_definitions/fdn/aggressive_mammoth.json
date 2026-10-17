@@ -1,0 +1,11 @@
+{
+  "name": "Aggressive Mammoth",
+  "catalogue_id": 96,
+  "oracle_id": "032b5fc4-5aca-41b6-9bf6-2c1ed0018968",
+  "facts_sha256": "9fc571b67dca557f31d8afa5b62147be5f09d48bd875d0ce2f3b56c56ad69370",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "38791ecbe49cd3b8ae737f265b9fb34f0d2544873e9d6eeb9747306d2b3a31bf"
+  }
+}

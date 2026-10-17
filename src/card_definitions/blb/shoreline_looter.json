@@ -1,0 +1,11 @@
+{
+  "name": "Shoreline Looter",
+  "catalogue_id": 3846,
+  "oracle_id": "c15cad77-e70f-42cc-a9f5-50e1fd8c9c96",
+  "facts_sha256": "7ee4fac944f3b8a0571bd42405689f6cbb559c6f15ba7ae2c05e4406a4680a05",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d06c0abf71a9c62300942645a1ba5c3cb5932c00ca4df0f76772dc895c05d2a5"
+  }
+}

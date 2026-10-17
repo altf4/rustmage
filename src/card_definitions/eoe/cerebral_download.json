@@ -1,0 +1,11 @@
+{
+  "name": "Cerebral Download",
+  "catalogue_id": 702,
+  "oracle_id": "f27889b9-40d9-4cc7-b8af-8716c53c44f5",
+  "facts_sha256": "eeb7f1ddab99e5473011b86bef127bfcc2554265bdf46c8925b9117b8c685041",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a409c915ad5cda28b91a6698578b037d9a42e8caf8a794dc262e616e90dd76a2"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Inner Demons Gangsters",
+  "catalogue_id": 2171,
+  "oracle_id": "40b43763-3fbf-4ecd-8187-5d2c2c9cda82",
+  "facts_sha256": "9e7e83abca2bfd79269dda9b2fa8014172309188f7949bc6ce70f59df6a5710f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cb8de2c79d9b44cd77247edc15c5c7844c3fa5ce1949788d91783211b81a30f7"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Master's Councillors",
+  "catalogue_id": 2682,
+  "oracle_id": "b9079564-5c86-4765-988a-f2334e016fa6",
+  "facts_sha256": "fca95d6a6996220d867d2b341ebdf0949db71c3c3d3f55e45afadbf4c4c4f9a0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b2698fd179de90fb060c67efe922b666cb50b09adf35bbb5eb9206999eee4ac3"
+  }
+}

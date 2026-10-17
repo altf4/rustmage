@@ -1,0 +1,11 @@
+{
+  "name": "Cautious Survivor",
+  "catalogue_id": 688,
+  "oracle_id": "28eb696f-a42c-4444-8139-dfd62029e020",
+  "facts_sha256": "0e053ac831021909ba111d370332f5ef2b7ba922392c338ab7f0b7b17235614e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3ea4cd5e8f6a3a2ba410614de0c5fe16b4e31d10e3ccfe942b7ff1fa7f4842e7"
+  }
+}

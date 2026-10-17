@@ -1,0 +1,11 @@
+{
+  "name": "Fell Horseman // Deathly Ride",
+  "catalogue_id": 1490,
+  "oracle_id": "fab8d954-807b-426f-8057-99a5d2fec618",
+  "facts_sha256": "513db6199ecea0c340aa64f095a5a8fd678f8badf165c253dc384790ab628926",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3091917832c79fe225f55c35785384c8f8ec233d140b59dfbb1ad7e09fa99782"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Azorius Guildgate",
+  "catalogue_id": 295,
+  "oracle_id": "ad1712d8-809f-410c-8b91-ffe6fb8a69a1",
+  "facts_sha256": "28d74ea7bc90987a9fe90bae09458c8791a693a575959c357174541d188e8f85",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1d0877278dd1ff0abfc1497831b715314584ee8c4244a3c388c29946dabe8154"
+  }
+}

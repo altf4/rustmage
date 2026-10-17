@@ -1,0 +1,11 @@
+{
+  "name": "Waterbending Scroll",
+  "catalogue_id": 4999,
+  "oracle_id": "882d032b-db36-401a-8075-a9fabc90c53d",
+  "facts_sha256": "d32a35c7be708b80affa5badea780c3ec812905ad0394abc7535fadeffa74899",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f18cb81eac3fe1b9ae945a25c556f5d41ab821b21513588fe522cd48dbda118f"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Goldmeadow Nomad",
+  "catalogue_id": 1822,
+  "oracle_id": "79dfe2eb-82b9-4dae-95c8-58fdf9006bc7",
+  "facts_sha256": "119ad8800bef4b3abce35c65e4e9e9ae4c957d6e9b22ff3233ba4b5421e379ba",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "350a6fcbc32ba21357471562beed19429db62b4d8ec52f4fb5a15ff7829487f8"
+  }
+}

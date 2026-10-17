@@ -1,0 +1,11 @@
+{
+  "name": "Narset's Rebuke",
+  "catalogue_id": 2907,
+  "oracle_id": "247075c5-62f8-41a1-91b3-562ff0aabb30",
+  "facts_sha256": "ca57d1c33bd0bafafb6c71ad50a3064c85ccbe4d47cadb29828fedf2e81363fe",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ee5868a9f4b3ce67f9c6dbd9cd8b3f1562fe1105698722f73466b9f3c6daf779"
+  }
+}

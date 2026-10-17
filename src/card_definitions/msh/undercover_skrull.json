@@ -1,0 +1,11 @@
+{
+  "name": "Undercover Skrull",
+  "catalogue_id": 4766,
+  "oracle_id": "33b1379f-b329-42cd-92ed-4811d44ed8dd",
+  "facts_sha256": "cafb8f1655e076a95f6e96ac9604375352b921d7b3d215b102dfdefb1649e1a1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b711b323f8516484247f34112eeb3cf2f6d80c43aae42815bd70d4977a0fd721"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Knight of Wundagore",
+  "catalogue_id": 2387,
+  "oracle_id": "39145960-a212-46b4-addb-4b187f6bf6fd",
+  "facts_sha256": "bb27576241568055e56eb1ade2ffa80b2d13729b7face7009da05b24b1b64d70",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b9aa345eaf97d7f5b139358f255010fefb85b600e723a0f6120a4056be3f9e15"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Liminal Hold",
+  "catalogue_id": 2511,
+  "oracle_id": "101407b4-e7e8-4aff-84a2-a97947358b88",
+  "facts_sha256": "2d492c3c799cc20f9c47c754b66fafc910f064583570c060306a78fa8f3845a7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "29c397d42b0f034f9d5eaaed72febef8f6793ade82f39db38051e6f7f0124573"
+  }
+}

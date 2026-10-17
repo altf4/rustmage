@@ -1,0 +1,11 @@
+{
+  "name": "Pyrrhic Strike",
+  "catalogue_id": 3297,
+  "oracle_id": "5ea1d89c-8650-4373-9835-e369587020ef",
+  "facts_sha256": "4d4bcba511f3a2c404431fb2e6148c05490542141b0b7271934cf72e3a4137f6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5fc69d781369df0bbe8d61d830c140ba85b11eb24713e06ff0a6924cafd3f5e1"
+  }
+}

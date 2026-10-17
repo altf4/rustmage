@@ -1,0 +1,11 @@
+{
+  "name": "Muse Seeker",
+  "catalogue_id": 2883,
+  "oracle_id": "31f3d37f-e613-427f-b34c-cc87611ea078",
+  "facts_sha256": "6c9a9002d86b941cea15a4ab92d03816c7bfddd2e70ffa32f561d0d9d16f9d15",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "afbc5d19aa0c7dc3b139328e1123b117ab65eb7b46f31c6a631fec608f351210"
+  }
+}

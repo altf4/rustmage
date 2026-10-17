@@ -1,0 +1,11 @@
+{
+  "name": "Ultima, Origin of Oblivion",
+  "catalogue_id": 4743,
+  "oracle_id": "baa337ce-edc6-4ee5-a898-68e9dbb4ab93",
+  "facts_sha256": "f903361b2e0fd25fd26a27bdd6d5a7a12bba4bc0028fb497eb51a73abee224a2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6794e0116705b0aaaccc1303272d60856c1f9ca7e92b57e94188d6319f22378b"
+  }
+}

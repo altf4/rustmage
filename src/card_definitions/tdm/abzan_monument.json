@@ -1,0 +1,11 @@
+{
+  "name": "Abzan Monument",
+  "catalogue_id": 45,
+  "oracle_id": "93563b7b-5685-4832-b164-0701dbf3cf18",
+  "facts_sha256": "d9971b4ced79cd6ccff45cff6791e8ff1c301c1ff6107ade314d1b48c21c2784",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0885666a6702f113d8773a04d5c2369d9202822709de7d2414566a1e3865b3d1"
+  }
+}

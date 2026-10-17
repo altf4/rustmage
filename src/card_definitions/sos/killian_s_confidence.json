@@ -1,0 +1,11 @@
+{
+  "name": "Killian's Confidence",
+  "catalogue_id": 2351,
+  "oracle_id": "c17f0e65-e5a3-4113-b782-0b192ab52046",
+  "facts_sha256": "eb02e3732a1338f93e313cc0ffb9bb6cc5f2a98a2469239c26e02538e5ec64eb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "548d35868c982c3b9d78fd106ef167b2e9d90acbc81c69985930ff65c6077094"
+  }
+}

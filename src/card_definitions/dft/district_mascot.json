@@ -1,0 +1,11 @@
+{
+  "name": "District Mascot",
+  "catalogue_id": 1101,
+  "oracle_id": "5fa7cf3a-2a4d-4dd7-890b-49c497570b16",
+  "facts_sha256": "46562f70875dc5a6ae39f6e7096cc7483d010353fa87d785e415860f8a3abdc6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e7bd011949170def64ba4bb8aaf88959d111a2252244d8f0b2b092a9dcf2cd3d"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Wastes",
+  "catalogue_id": 4991,
+  "oracle_id": "05d24b0c-904a-46b6-b42a-96a4d91a0dd4",
+  "facts_sha256": "90beb0469a99b1f2fac342de16c1d718c7b1820d30bb340c53fad787a7194e75",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "317e6924137f8da02e9be9915756e6be99d2004b0e0a1cd9e1536f443298d465"
+  }
+}

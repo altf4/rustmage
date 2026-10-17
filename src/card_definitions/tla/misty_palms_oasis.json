@@ -1,0 +1,11 @@
+{
+  "name": "Misty Palms Oasis",
+  "catalogue_id": 2800,
+  "oracle_id": "dfd2c57a-4557-4df1-8f6f-da2cbd317f12",
+  "facts_sha256": "83554a4b0f920d89dfc1a8a7028c57801f4396982f05a9d0284dc6cba67b1dfe",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "abb829165d0179514b8c3ad0bdbdfce6ff959141fb01f9b21875e53ea1fca323"
+  }
+}

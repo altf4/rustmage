@@ -1,0 +1,11 @@
+{
+  "name": "Emergent Haunting",
+  "catalogue_id": 1313,
+  "oracle_id": "9f4d0133-0ecc-4498-8a47-4906321faae2",
+  "facts_sha256": "fcb04559b50c9132daf7ec22bb7715a02b0bd3ffb34a008ee31358d022051c7d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2aca8ad9c7740fd32bc4928e51a5f075c5ddb76f95007d8083bdc0327c80652e"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Bumi, Unleashed",
+  "catalogue_id": 584,
+  "oracle_id": "1fef13d8-5da2-46a6-91ed-7a31bd46e538",
+  "facts_sha256": "c0fa3cc54535fde5bdf653baf607e33e5c789466f2986e502183cdb46208d851",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e3cba409555d81e90de4ae430913d5d1558b9d0d0cf1f336b948c27a9b3b6cc6"
+  }
+}

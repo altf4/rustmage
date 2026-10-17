@@ -1,0 +1,11 @@
+{
+  "name": "Hellish Sideswipe",
+  "catalogue_id": 1999,
+  "oracle_id": "d919d8e9-d1ba-42de-9884-12e38dca78ac",
+  "facts_sha256": "6f1f534230bbcbe77bd4bd498b1ee899e4305b2e9d5b5bc0356e77da20d4100c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "28fee6f49183c00fab85e7a6879060fb5bb9660e6a0b27a3d8d4b19986609310"
+  }
+}

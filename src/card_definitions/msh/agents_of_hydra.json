@@ -1,0 +1,11 @@
+{
+  "name": "Agents of HYDRA",
+  "catalogue_id": 94,
+  "oracle_id": "31816924-1430-4581-86e8-325e2ca16217",
+  "facts_sha256": "03b42bf378498227822b2f8dfa23ac1a5a6a4b6c9498b7332b41735d153707e2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d2a9c9aed617e03b2902929edaac57612c34b3f686f94d85df336a4a228fed26"
+  }
+}

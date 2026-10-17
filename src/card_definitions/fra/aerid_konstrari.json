@@ -1,0 +1,11 @@
+{
+  "name": "Aerid Konstrari",
+  "catalogue_id": 69,
+  "oracle_id": "172a8f58-c420-4497-b962-c5853f923667",
+  "facts_sha256": "d867d991764db5b454243528ed037f7b738dc2395dee4836c9e7ce50280a2323",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d9a2a90d600ff5fd2788ade5ca7af35fa39f2c227c0f8dd0717a4597a81b83d2"
+  }
+}

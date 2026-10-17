@@ -1,0 +1,11 @@
+{
+  "name": "Meanders Guide",
+  "catalogue_id": 2693,
+  "oracle_id": "8229954b-e1ef-4503-8443-2356e2a87663",
+  "facts_sha256": "2df06db01bc9fddd020c2c2365c01a9a0c324c2e45556687ee48e0d9e406b1a7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "45e84a4a92302ead3407b30c5452b29c67fdeea1803602e2c15b5cbf3552711a"
+  }
+}

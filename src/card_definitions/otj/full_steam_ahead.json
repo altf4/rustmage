@@ -1,0 +1,11 @@
+{
+  "name": "Full Steam Ahead",
+  "catalogue_id": 1645,
+  "oracle_id": "65e64c50-4757-4e8e-8043-bc61a5f21750",
+  "facts_sha256": "1ecb1d3dbc8b2b598c41ffd05c127b9985a939a8232887552e16b4fe13e1d64c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ed334772035405f9401fc04308d5c6bc4360b9d50f85f5f5ef62ab88204d727f"
+  }
+}

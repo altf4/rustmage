@@ -1,0 +1,11 @@
+{
+  "name": "Mouser Mark III",
+  "catalogue_id": 2866,
+  "oracle_id": "ad0c6d46-a1ca-4a9f-93f0-4a4dc31868e6",
+  "facts_sha256": "ad6a9f03dc3b55075b0f461006af144a40ffcbd34b03aeeff6aa0c7ab3da6625",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cdcc68d5edd446d2f900cd4d11b9be27a70612cb2656544dbdb21d65675fb092"
+  }
+}

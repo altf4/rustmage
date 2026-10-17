@@ -1,0 +1,11 @@
+{
+  "name": "Gnarlback Rhino",
+  "catalogue_id": 1793,
+  "oracle_id": "1ae339fd-8e64-4e3a-8e27-e4993932ba62",
+  "facts_sha256": "5511ad8feb1cab9de8fef371831b3639c229b17429768fdca8b609a6ea2f5587",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6f58ec94cf818e396852319298add2d48392b14ee92f4b00b3a705d6da46ceff"
+  }
+}

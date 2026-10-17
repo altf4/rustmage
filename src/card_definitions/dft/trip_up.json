@@ -1,0 +1,11 @@
+{
+  "name": "Trip Up",
+  "catalogue_id": 4683,
+  "oracle_id": "bac52ae6-24ee-4c4f-a32c-3eb9859dc025",
+  "facts_sha256": "8643742027312a9c670cac939eebdb24d55a81d42a989b80311b2a2dff3da1a3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e218ab6edbc9b448b236dc574849e27c444610c5a75b4b78c675e2cdf3015489"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "HULK SMASH!",
+  "catalogue_id": 1921,
+  "oracle_id": "5f97d49c-d0fa-4776-9455-93c1a172cd83",
+  "facts_sha256": "45ead20a818d016e5d35aea29e433f896691b55389810a160120a8d662360c54",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9b8b0267f29f57895f6c9598246ac8afc91048d30984ade3ab3b2c2fbaa140e2"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Kyoshi Island Plaza",
+  "catalogue_id": 2430,
+  "oracle_id": "c0cdc333-6c5a-401c-9810-220d2027f2fe",
+  "facts_sha256": "8a00b5df3768b62b92fbbf80aa347649b715c51b96ef01575c7ed716f9b5b82c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "83a5d6ab139e08105c2aa15e8bdb956b010b3dad56632145e064cd050856dcb4"
+  }
+}

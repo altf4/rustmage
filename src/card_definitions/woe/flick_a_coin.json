@@ -1,0 +1,11 @@
+{
+  "name": "Flick a Coin",
+  "catalogue_id": 1557,
+  "oracle_id": "990583ef-5bf4-4e14-a8f1-61d32c6a75df",
+  "facts_sha256": "92e11098490c2adddc9d366b86e17d52c66de1e9e425cb91c0bcc094b482d3d2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8c7ffd771e2d87647797ce455cb75499630db5de7e8df9a4fa5b87a66582751b"
+  }
+}

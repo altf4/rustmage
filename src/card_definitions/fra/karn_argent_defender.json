@@ -1,0 +1,11 @@
+{
+  "name": "Karn, Argent Defender",
+  "catalogue_id": 2319,
+  "oracle_id": "aecc621f-67da-41a7-9d47-05ded302ae35",
+  "facts_sha256": "11f4b04f26bb874b2a1794e7823e083b02520873ded668b723ec5ba85768652d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "318923acd6c55856930af392f619de22c79a06f4f7668d207ec3500a3708d1eb"
+  }
+}

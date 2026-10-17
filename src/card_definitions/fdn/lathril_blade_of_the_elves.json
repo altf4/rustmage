@@ -1,0 +1,11 @@
+{
+  "name": "Lathril, Blade of the Elves",
+  "catalogue_id": 2454,
+  "oracle_id": "9b568c34-ba0a-44a7-a0ee-bee3a37b3396",
+  "facts_sha256": "40ffaed40878b32837438ca76d5d116f5e5c60685b6b46a923cfa12e831fe7ce",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c5332c5a1597c8dd2769902ddddc1ae3569de61ef0204cc36130ceb9b8d10ff9"
+  }
+}

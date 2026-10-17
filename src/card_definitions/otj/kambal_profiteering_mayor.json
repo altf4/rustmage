@@ -1,0 +1,11 @@
+{
+  "name": "Kambal, Profiteering Mayor",
+  "catalogue_id": 2310,
+  "oracle_id": "619e0686-e88c-4238-8364-75395e733533",
+  "facts_sha256": "80d94ad543daee0fcb9a0bc52ff71dd337a2ae8b70b8854fdfdfefc31f4d284f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "208fc383247c77123ded66dd6dc7aad1a9dc99468a463d38abcb4df7a080a104"
+  }
+}

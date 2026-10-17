@@ -1,0 +1,11 @@
+{
+  "name": "Foot Headquarters",
+  "catalogue_id": 1586,
+  "oracle_id": "063dd25b-d4b4-4e09-acae-8c52dcb40803",
+  "facts_sha256": "4110cc8a0365b8a77418cb02d3553eacf3eb1169cd12b4e4e5da65a89f535921",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8fc89a5f1c43da93d4eda58eb0b06c555ea08e41a154981a93c365bf8e848c7c"
+  }
+}

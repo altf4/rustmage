@@ -1,0 +1,11 @@
+{
+  "name": "Ezekiel Sims, Spider-Totem",
+  "catalogue_id": 1419,
+  "oracle_id": "4074e897-82a4-4f57-86c2-4aab3f29ef9b",
+  "facts_sha256": "6d72b88a4cabaab5a8262f1b78ce8c5d37dbfdf3078965a3d9a6c93d805908c8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "647b1f165c2111e3308343a3713ade3fa9752868c6d2fe8b116216c8185e6249"
+  }
+}

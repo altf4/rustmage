@@ -1,0 +1,11 @@
+{
+  "name": "Deepchannel Duelist",
+  "catalogue_id": 1021,
+  "oracle_id": "c892d28c-4a78-4a7f-b8d5-c3663b819c5e",
+  "facts_sha256": "468e300a738bce3f7a9ba4ea52fdcdce9d552bf6b12efcbc7ce3e6192ecd7bcf",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aab22c8e05e586065c687e7e6a0ed623384bffd426d5e036bfece4715664d7aa"
+  }
+}

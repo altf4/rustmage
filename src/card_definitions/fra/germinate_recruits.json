@@ -1,0 +1,11 @@
+{
+  "name": "Germinate Recruits",
+  "catalogue_id": 1715,
+  "oracle_id": "2c3a1313-a66e-4317-9732-e4ff9288b0db",
+  "facts_sha256": "6d72db688ab3de7007ff673452d7f22322a1404d5cfa88644f36a4320fe5b252",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "02c8031fb32b5da5c424e8286cb115f574f0de08fd2e166c1ee1f8cc3d2fb2ad"
+  }
+}

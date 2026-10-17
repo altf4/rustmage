@@ -1,0 +1,11 @@
+{
+  "name": "Auntie's Sentence",
+  "catalogue_id": 264,
+  "oracle_id": "406e6db7-6e31-44b9-a793-57ee10688f71",
+  "facts_sha256": "06d14c58683811ee0165f503dbe3e482166644f2355250c2a12237678eedd353",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "52ce484aea782e6f930301426b2a88c563b8926ff9b46d70cf6254c558337887"
+  }
+}

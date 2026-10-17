@@ -1,0 +1,11 @@
+{
+  "name": "Baron Bertram Graywater",
+  "catalogue_id": 332,
+  "oracle_id": "e25b516c-bf95-42bc-8b1e-04617a3d28df",
+  "facts_sha256": "b42388fa615abd6d7b1b52dfa6ab75956acf17aad8f6b6352dbee8b90c050b14",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "489b666ea65cf70a1bfd8f652713528567cd02413f9b9aba75985ad1fc2605ff"
+  }
+}

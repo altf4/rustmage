@@ -1,0 +1,11 @@
+{
+  "name": "Spectacular Spider-Man",
+  "catalogue_id": 3996,
+  "oracle_id": "eed5e0cc-8f88-4779-bf10-6a823c72df7f",
+  "facts_sha256": "df154587016ae0d5ceda015ee968b608f23e2fe5b05bb9208657810e124e6ea2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4bd74dce46d9428fbacb1114d96425143b5d2d305d1578805086a2f7450348c7"
+  }
+}

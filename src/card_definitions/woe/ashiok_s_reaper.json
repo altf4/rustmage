@@ -1,0 +1,11 @@
+{
+  "name": "Ashiok's Reaper",
+  "catalogue_id": 240,
+  "oracle_id": "6f1e5571-ddda-4cea-84ef-36a571d8fd51",
+  "facts_sha256": "505a6e095e3cbe35d5bf97a15e707d002989cc9b2db6c26b6a37471412711336",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a21bb593512fda989942107cc59f719cc4fe6f10bbd8e262466ad57f360359f9"
+  }
+}

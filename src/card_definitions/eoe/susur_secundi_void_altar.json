@@ -1,0 +1,11 @@
+{
+  "name": "Susur Secundi, Void Altar",
+  "catalogue_id": 4280,
+  "oracle_id": "50d6cadc-07e4-479e-90f4-e3a20f769bab",
+  "facts_sha256": "1fb0ad95183947bdd9c2b0dcb3e519f397768a14b7cb12b9aec03193242766c4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e1b50aec87305e3c0c268682af8c5865b134953922dc5dd0d87a355896c576b4"
+  }
+}

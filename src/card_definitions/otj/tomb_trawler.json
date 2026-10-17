@@ -1,0 +1,11 @@
+{
+  "name": "Tomb Trawler",
+  "catalogue_id": 4624,
+  "oracle_id": "d22d3934-8437-4a18-81c1-4e9c501846ca",
+  "facts_sha256": "9fcb5a90f5067c83984e4c1a6d1e337579004705b9aa8e00e8eed95384cd557e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8e19195554afb81bb1f44a3d4cd6d2fad20f42c14a91fa8f64ad7281cd5a7f6f"
+  }
+}

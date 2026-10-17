@@ -1,0 +1,11 @@
+{
+  "name": "Wrangler of the Damned",
+  "catalogue_id": 5119,
+  "oracle_id": "0d8fded4-0393-43c2-82a1-383f29de65ce",
+  "facts_sha256": "d8c229f8b87eced150a4bb35a4859d4aa0e96bda52560f58ff25492c3c8fb522",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b0beaca933daf5d228c8615a057533e56286d87dea188e6a5dd2824eb75a2bc2"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Flush Out",
+  "catalogue_id": 5233,
+  "oracle_id": "e24916ff-7566-4f27-8e31-732311a4a88c",
+  "facts_sha256": "ae4bb85cb77ba5efb4a9bd6bf566c098f518489a606764afa4d39d400390e485",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5681f00b863d6a62cbc498392f0157780f57b458a494d9562a2344e6aa671e8d"
+  }
+}

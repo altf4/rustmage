@@ -1,0 +1,11 @@
+{
+  "name": "Furtive Courier",
+  "catalogue_id": 1653,
+  "oracle_id": "92d24b75-419b-4068-89c1-db9945f74972",
+  "facts_sha256": "9b67cc3f13dadbedb4f1bdc555d426de701762c3b39b550ec3c9b4325e5415ea",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "43dfbe3e69401fffa80d652b390a3c485b77dbb4975858813e782987a6ca7157"
+  }
+}

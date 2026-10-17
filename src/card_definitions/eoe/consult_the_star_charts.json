@@ -1,0 +1,11 @@
+{
+  "name": "Consult the Star Charts",
+  "catalogue_id": 836,
+  "oracle_id": "e921839f-9d91-41a9-bc89-016af3c757aa",
+  "facts_sha256": "a6c6279ebc82a44d02379bf1d64524e5efec00d0ec35d004fc8e96ea209337c3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2a8df7e85f2df9f8996a978504a899cf94486a703485c60d21ff2a056e8dfe0c"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Go Nuts!",
+  "catalogue_id": 1799,
+  "oracle_id": "0efe1357-bfbb-42c0-9cc9-6a919d686c66",
+  "facts_sha256": "dc8107b623452443e99c4dde4b910dcbf4a3741e109252bcd3d1f35882dc827d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4d5a48cfe49541bf4e76db35afbc957bc1e3ca17d24b10d55b7f07fd3b1e9cf1"
+  }
+}

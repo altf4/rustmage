@@ -1,0 +1,11 @@
+{
+  "name": "Boom Scholar",
+  "catalogue_id": 501,
+  "oracle_id": "48296cc0-0141-47c6-9ec8-ada6171fee6f",
+  "facts_sha256": "908a073c32ee034a3d404220c815cf97bcb6eab8fc6077b0557e47113ff5ef71",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "84079b83ff9326c5494e0cc8623f1047d94adec56a9749565e5f93406cef27fa"
+  }
+}

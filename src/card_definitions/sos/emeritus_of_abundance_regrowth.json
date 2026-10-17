@@ -1,0 +1,11 @@
+{
+  "name": "Emeritus of Abundance // Regrowth",
+  "catalogue_id": 1314,
+  "oracle_id": "e5152e8d-9f55-493d-a0fc-753cc72ee299",
+  "facts_sha256": "85e797bbfb9ca42a496ff910862faf5c0a5a16a116c7f3459cab72ff0caa8dd9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "874ab7af1ae36fefbb6152808c4c412043b981de2797fa26ff9015da178ab610"
+  }
+}

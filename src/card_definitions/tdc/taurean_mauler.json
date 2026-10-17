@@ -1,0 +1,11 @@
+{
+  "name": "Taurean Mauler",
+  "catalogue_id": 4346,
+  "oracle_id": "fd5ee26c-cc54-4dc0-b611-5cda14354a5e",
+  "facts_sha256": "2634a06e8640365f096763b6554829d7a296cc29e386c0062b8621b1a23e9c3d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7b2e375a776bff10ae1976cb037be0aaaddc982655aa9f7a3441cd803a2c775b"
+  }
+}

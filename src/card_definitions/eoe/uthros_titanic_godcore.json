@@ -1,0 +1,11 @@
+{
+  "name": "Uthros, Titanic Godcore",
+  "catalogue_id": 4819,
+  "oracle_id": "df08ac72-010f-42f8-beb3-6d645c638e1e",
+  "facts_sha256": "3f1d8ec0d0058e10147cadb3dd7ed514cf06b66e4b2fc4cbd21b976ceb93422b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "48941cd39fbf6699bed7fcc1cb2720ca699a7396ca9a221a1ef9d586157bd376"
+  }
+}

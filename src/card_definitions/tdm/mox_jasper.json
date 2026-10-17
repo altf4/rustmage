@@ -1,0 +1,11 @@
+{
+  "name": "Mox Jasper",
+  "catalogue_id": 2868,
+  "oracle_id": "d5fca77c-377f-41b4-a9e9-e91a89d351cc",
+  "facts_sha256": "1145563b27b060bb75c1822f863f5312f0cb4105cbe25f264898f323bf46cbb8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1c47d3f2af3ebcbd4a75eafa66c6d61d206abffc0eef8832449e62e46fd35ecd"
+  }
+}

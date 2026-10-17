@@ -1,0 +1,11 @@
+{
+  "name": "Melancholic Poet",
+  "catalogue_id": 2706,
+  "oracle_id": "37731c49-1238-4e0e-8993-204e36c1f4ee",
+  "facts_sha256": "5cb9d0f2c498d08f4b8a76ade32d077300321ce966e4c3546828f52a378f5c18",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8f7f5e992ed20ceaf22b66dc55c578eee1cf36ee39562e7ef157cf4ebcbc10a4"
+  }
+}

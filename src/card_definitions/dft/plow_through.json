@@ -1,0 +1,11 @@
+{
+  "name": "Plow Through",
+  "catalogue_id": 3185,
+  "oracle_id": "a5492d28-b1bf-408d-a048-8f200158d6b1",
+  "facts_sha256": "67d7b7cb809b7ae79ee7ac5afdc2961b7542fb535105c8536321def8ec5c5361",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3c3b19f087bf831d65c1d77fe345b1f6d49ea9126bfdf97773b31e3278d5a43c"
+  }
+}

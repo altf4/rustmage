@@ -1,0 +1,11 @@
+{
+  "name": "Sheltered by Ghosts",
+  "catalogue_id": 3825,
+  "oracle_id": "d13fc657-c6fc-4394-bc70-691050550226",
+  "facts_sha256": "e9805d14f25d244674715fdd42bf0c9e18921ee16a767310541a5eb207556d9b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "60f651e35f2f24f06c268dd2adc6d17382fa99e6f314cd6ee38572835fdabd1d"
+  }
+}

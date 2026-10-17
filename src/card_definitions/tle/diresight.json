@@ -1,0 +1,11 @@
+{
+  "name": "Diresight",
+  "catalogue_id": 1088,
+  "oracle_id": "a7b12df9-fddd-4cd4-8c09-d54a47867ab6",
+  "facts_sha256": "c0d9c2fe2103d30263c7d36100be106ab06dd61d314efe4da87c8d16caab1532",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "86ebb2292cedad6dfecad6567fce24ed89c3d968b1a295b307554b7728613e6a"
+  }
+}

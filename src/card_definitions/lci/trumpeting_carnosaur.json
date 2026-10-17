@@ -1,0 +1,11 @@
+{
+  "name": "Trumpeting Carnosaur",
+  "catalogue_id": 4693,
+  "oracle_id": "f2ef8bda-373d-4387-900d-0f1b6ccf72e9",
+  "facts_sha256": "0cce6868dc36c75c68b943438c619c0d295fabf9cc3b8138ee986497d2e752c5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4cd67563551983e3d452bebde90c696888ceca9e253878608043e05dc0a0acd5"
+  }
+}

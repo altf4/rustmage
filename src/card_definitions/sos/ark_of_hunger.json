@@ -1,0 +1,11 @@
+{
+  "name": "Ark of Hunger",
+  "catalogue_id": 221,
+  "oracle_id": "2c654772-c786-4966-a46e-9556bbf31d7c",
+  "facts_sha256": "3aca4ae4fae5192ad0638910e2bdf60ef19a0a2dc20689f5191ccf7e926b6f82",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "993b740b8b730ff9f835657f045cab464bfa7af14648f7c668d2ef900a4a708d"
+  }
+}

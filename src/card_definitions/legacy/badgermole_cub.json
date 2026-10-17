@@ -1,0 +1,11 @@
+{
+  "name": "Badgermole Cub",
+  "catalogue_id": 304,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "da6650310769e5e391d477b06e1390d6ea1e5aad038a8b6c314e35bb1937a77d"
+  }
+}

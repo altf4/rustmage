@@ -1,0 +1,11 @@
+{
+  "name": "Fractal Anomaly",
+  "catalogue_id": 1610,
+  "oracle_id": "644379e7-782e-48e1-9b47-c4dc62e62d85",
+  "facts_sha256": "cf5b96cd6a1027d448161cd9e7bfd2bf07f83d3f00d8d401f937c33e201628fc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0257e446e430ce3461ae97039fc433c48bf4ca7774f7cac25755c5c1e35a9811"
+  }
+}

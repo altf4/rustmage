@@ -1,0 +1,11 @@
+{
+  "name": "Cat Collector",
+  "catalogue_id": 677,
+  "oracle_id": "52f1b5a4-62ff-44de-80da-503d4e52d312",
+  "facts_sha256": "bb020af3bbf91a6d0c1452642eacce8b593c79eef7e6b66ffe42118daeb81694",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "003e72bc0aaf425d574ab1a43ba291077e98d9c107794bcbbd0e8cdec33895f5"
+  }
+}

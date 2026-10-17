@@ -1,0 +1,11 @@
+{
+  "name": "Trick Shot",
+  "catalogue_id": 4681,
+  "oracle_id": "843c8485-21b8-45ef-9a0c-4967f07278bb",
+  "facts_sha256": "4c3c03ba9bd0c88ab25f0ba841dcd793f33dc4f940b82be2a8ee0f0f3f467405",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eb4e3b90a495ce340d8c13e11ed8af8b5666d45db534e611a42cf485dfff1da5"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Lightning, Army of One",
+  "catalogue_id": 2498,
+  "oracle_id": "585eb5bc-5a3d-44d8-b593-1ff0d67f96a7",
+  "facts_sha256": "453d6da476b665d66fad826dc5e23f666edc2401b172d1968b1bcb44726278ef",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ea4600af1cfe4c281435b0030c27d9f7ce3ec0d7c7554bdb73804277a1d1aaff"
+  }
+}

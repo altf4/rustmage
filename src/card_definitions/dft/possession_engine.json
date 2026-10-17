@@ -1,0 +1,11 @@
+{
+  "name": "Possession Engine",
+  "catalogue_id": 3207,
+  "oracle_id": "ab7c0256-eea9-4e0d-932d-c25460eed836",
+  "facts_sha256": "de4ccaaab66cc00316a2dc807a2f27234f47a21728a27989bbe6eee4c0fb09a9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e9e156aed288b2b8ec0c880b4ff0035aae498fdb9110bdd07b3c58f377a6debe"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Kiora, the Rising Tide",
+  "catalogue_id": 2368,
+  "oracle_id": "5d748bce-dff8-46fa-a3d1-633863b7bbff",
+  "facts_sha256": "624cdd80a9dd46e8322c4d6f915bf6a7e38052fbd8cbde8afb9a46f2dc022365",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "95851cf6d6c1260cf9faf0936dd6b82de4036aae27a89f6221db5f0a58cca3df"
+  }
+}

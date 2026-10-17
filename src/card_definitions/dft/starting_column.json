@@ -1,0 +1,11 @@
+{
+  "name": "Starting Column",
+  "catalogue_id": 4112,
+  "oracle_id": "d608a3fa-faee-44a4-9ab6-be701d3b7a49",
+  "facts_sha256": "6509a39f472f216927ec72cf3e569a96ff7cc57dbb3084df3f8c03b9daf70534",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "81ad23ac5192a4f0a9a0f742ad8e0cf3abba1d69bced772796989362025c815d"
+  }
+}

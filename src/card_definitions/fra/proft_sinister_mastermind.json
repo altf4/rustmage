@@ -1,0 +1,11 @@
+{
+  "name": "Proft, Sinister Mastermind",
+  "catalogue_id": 3253,
+  "oracle_id": "a350856c-87f2-4605-999f-4e26aa362a55",
+  "facts_sha256": "7c64558a6624f7096038373d7deaed34995dff7980b1ee9d346ad2a476268534",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "26f97a25ce2b0dc457204edfd8bd65162a579e798f0ec0d256b07122692b9331"
+  }
+}

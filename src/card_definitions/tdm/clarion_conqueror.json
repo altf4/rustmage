@@ -1,0 +1,11 @@
+{
+  "name": "Clarion Conqueror",
+  "catalogue_id": 763,
+  "oracle_id": "f1266a1b-bae6-4ded-b4d5-7586a5b6c5d0",
+  "facts_sha256": "a95ee21c843f74c85d9f3793857861541e04ae0129e484efea7c615f72745572",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "64ad57ca25847c4750bd6f731e8c78ff58da2019f37bdf8e295bff1e2a3d3487"
+  }
+}

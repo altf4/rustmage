@@ -1,0 +1,11 @@
+{
+  "name": "The Eternity Elevator",
+  "catalogue_id": 4444,
+  "oracle_id": "11323af4-b8b8-4ca9-932f-377c7fd77dea",
+  "facts_sha256": "eb6bd7b36020d6467de972a118d081f0d2c9da7b2b202e804ea940e3e6daa358",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ead5a87081b1204c1c3ae0334ee4d1d299661ebfeedfc15e03c446c046a4b935"
+  }
+}

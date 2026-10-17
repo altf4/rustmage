@@ -1,0 +1,11 @@
+{
+  "name": "Might of the Meek",
+  "catalogue_id": 2751,
+  "oracle_id": "19b5c94b-b4fa-41a9-b649-51c4e6f03602",
+  "facts_sha256": "5ca2d2eae25b15342901807d4c9833119207b07d93b1cef92a0694102fbb2e9e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2d56e38f3764363f72c386d860f8ffbd8f04cd998c9195f18da6f4a43d8b6d93"
+  }
+}

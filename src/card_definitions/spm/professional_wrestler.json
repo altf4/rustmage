@@ -1,0 +1,11 @@
+{
+  "name": "Professional Wrestler",
+  "catalogue_id": 3248,
+  "oracle_id": "3dd92eea-02ca-4e55-8f69-8c8059dd7ee6",
+  "facts_sha256": "26f99c2dadb2e7f6e65ce9c2f3aaac35913dfef6f051a9f3d942bd501266cc9b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "05018414d9919f18000cd6b10fffde43bfdb857acde1de0ce76d62e413589001"
+  }
+}

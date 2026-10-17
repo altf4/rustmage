@@ -1,0 +1,11 @@
+{
+  "name": "Berta, Wise Extrapolator",
+  "catalogue_id": 390,
+  "oracle_id": "715f0832-696c-4111-b418-d9b6da403159",
+  "facts_sha256": "8df26f394bc87a28e713f0d60b0422b7490f0585abc1286865e4f30c157e9eb5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "75d6e889852155ea448fa0cfc365fdceaff02a7d907521d637fc0741af1a6740"
+  }
+}

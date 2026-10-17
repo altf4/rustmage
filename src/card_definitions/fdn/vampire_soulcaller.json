@@ -1,0 +1,11 @@
+{
+  "name": "Vampire Soulcaller",
+  "catalogue_id": 4841,
+  "oracle_id": "bbea8ade-a641-4132-b306-f39fe2f14311",
+  "facts_sha256": "61c8ad530e27d64aef15f480a9d3166e465209da61cea14153e55c86ed2e8321",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "095112ba843d28f16067d8bbac22617a2ba9eceb9e773086643aace492be83b1"
+  }
+}

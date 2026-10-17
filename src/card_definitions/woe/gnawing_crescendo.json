@@ -1,0 +1,11 @@
+{
+  "name": "Gnawing Crescendo",
+  "catalogue_id": 1797,
+  "oracle_id": "0332f7b5-dad3-4fd0-b86c-78bd8301f59d",
+  "facts_sha256": "a1d8b6c2dc5ef465e5ae36f064cfabee29fcb5775116547b817449b5bd2f1b69",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ed3841368e5ea5b08e1fa77992c56c034c84332eb32c87b5da216a27b9d3476d"
+  }
+}

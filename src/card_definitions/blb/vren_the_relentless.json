@@ -1,0 +1,11 @@
+{
+  "name": "Vren, the Relentless",
+  "catalogue_id": 4949,
+  "oracle_id": "1216900e-93e3-41a4-b354-9c81938639c2",
+  "facts_sha256": "5f9584e585749c20931b3358504000e62d24c7790b525691aa48292bfae4dec6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "55f88836541c4abe393aac3062719f141eab5f823ecc746fa76fb6ba12ad07e7"
+  }
+}

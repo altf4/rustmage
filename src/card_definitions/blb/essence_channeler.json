@@ -1,0 +1,11 @@
+{
+  "name": "Essence Channeler",
+  "catalogue_id": 1372,
+  "oracle_id": "1473580d-7cb2-48f5-a77d-08f49244c5e8",
+  "facts_sha256": "61ab8f7f21ead38e0b0447e3120590f345d35d5eef4adefb4b975ede97d99a9e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "26f7bab298b093790c6273f02ad609158f67ce9002bab96bed165a9a43ede7b2"
+  }
+}

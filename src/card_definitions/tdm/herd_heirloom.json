@@ -1,0 +1,11 @@
+{
+  "name": "Herd Heirloom",
+  "catalogue_id": 2010,
+  "oracle_id": "78b6dd40-c182-4037-a4d3-9fd012b2c584",
+  "facts_sha256": "7397636919d3567ce134fdc9d5621001613b72cfd066f295feef4ad291410fd3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4b87f385072f7217fb24143da68310b21e90f79a648463f9c1578dc179c7690a"
+  }
+}

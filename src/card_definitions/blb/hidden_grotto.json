@@ -1,0 +1,11 @@
+{
+  "name": "Hidden Grotto",
+  "catalogue_id": 2027,
+  "oracle_id": "382d18a2-438e-4ae7-a83f-1658ef1f9b07",
+  "facts_sha256": "50d5402d4318bfc95459f2c101bdfd775b07e550b78f584dd6eb0b8e18495550",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "75d5b3d6ef52ca99e9725f5de2333ae40a9087e94d76082410df53e90857165f"
+  }
+}

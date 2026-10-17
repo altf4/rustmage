@@ -1,0 +1,11 @@
+{
+  "name": "Fuel the Flames",
+  "catalogue_id": 1641,
+  "oracle_id": "e7d4e952-d7b9-489d-a9a7-c61d08bf17cc",
+  "facts_sha256": "6d23fa9d99de61c3f7a380e06185bc129ce42a84e9a06e58b7627771c6a0a9fc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c6a9f51e9725e4a35f25f106a015a0dd07a4df819c2799c68e321e9b7cb45172"
+  }
+}

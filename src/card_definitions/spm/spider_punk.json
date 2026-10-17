@@ -1,0 +1,11 @@
+{
+  "name": "Spider-Punk",
+  "catalogue_id": 4034,
+  "oracle_id": "03bf7a90-78c1-4e83-8553-e22d85e49876",
+  "facts_sha256": "3bac2c0f5ffc975083d12bd8f7958c899a943ddab3cb1854d389dc2cb3e40a63",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "003124fcd20617b25293854837f8b19fd5135cf951c7cb701d438a02b1871cac"
+  }
+}

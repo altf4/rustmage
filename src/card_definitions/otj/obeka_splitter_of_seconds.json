@@ -1,0 +1,11 @@
+{
+  "name": "Obeka, Splitter of Seconds",
+  "catalogue_id": 2984,
+  "oracle_id": "1d15a06f-5471-48f2-8c4a-9b0886bef5af",
+  "facts_sha256": "aa7527e34006d363ada392bc6952ca5961dc5eb8ba8daea6afb7b8a419c155f6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "79401bdea0a061906cfa44d1feb3124dee85dcc53ddf173476ea40e854a95c59"
+  }
+}

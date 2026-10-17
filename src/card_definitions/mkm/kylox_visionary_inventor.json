@@ -1,0 +1,11 @@
+{
+  "name": "Kylox, Visionary Inventor",
+  "catalogue_id": 2428,
+  "oracle_id": "37f6bbb8-2136-4f03-966c-85d72180e71f",
+  "facts_sha256": "46f8bef4a2982f25c41f308836075565a5028be35beba18b01a32e6ac5556dbf",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "622ebd60d429b145ba91b94c0e98e221256be7f8423fbcfdcebed6047fcfa0ee"
+  }
+}

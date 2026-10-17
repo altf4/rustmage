@@ -1,0 +1,11 @@
+{
+  "name": "Extinguisher Battleship",
+  "catalogue_id": 1413,
+  "oracle_id": "cce3dcc3-57bb-4b95-8b70-337c67bb3c4e",
+  "facts_sha256": "417391bdffe04b4e9163ac144bb8081cdf3c55df54d6aa4389ec9c93cf9fd9c0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cf2f36ae3a44ffcb3673626ec578ad94b5038fc2e39d40472540bdedf2f6b9c0"
+  }
+}

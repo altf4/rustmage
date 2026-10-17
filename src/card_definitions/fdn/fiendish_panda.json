@@ -1,0 +1,11 @@
+{
+  "name": "Fiendish Panda",
+  "catalogue_id": 1503,
+  "oracle_id": "b5d64271-4478-4c55-8c71-ba8f02b47fac",
+  "facts_sha256": "497962866d41e1639a5bd6a40a2e201d086708759b7c2d4e22c494fcad94ce10",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "030af898e38aef06d324bfa5e37997deaae9f8e57b44e527ed83d859e2ecacdc"
+  }
+}

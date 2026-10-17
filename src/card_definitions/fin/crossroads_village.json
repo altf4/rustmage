@@ -1,0 +1,11 @@
+{
+  "name": "Crossroads Village",
+  "catalogue_id": 893,
+  "oracle_id": "b26cfeb0-7bbe-4d93-8eed-e832f175a80c",
+  "facts_sha256": "80c2ee53705b1483b3cf775b11de5f248326df038e8f0724673d9ba68055bfaf",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1006fc66817a4ca49b44dcaa3c3f63ceca5c7ce1efdebb292800ea4ea9f94695"
+  }
+}

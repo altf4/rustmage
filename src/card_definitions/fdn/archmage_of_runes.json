@@ -1,0 +1,11 @@
+{
+  "name": "Archmage of Runes",
+  "catalogue_id": 213,
+  "oracle_id": "28045b32-4c1a-40e5-a15d-524d0f8fe6ec",
+  "facts_sha256": "023228530adc6b75ffca4240a20204472d83c10e71288c1580290f22b3b27e22",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "962e76ce1c5b8c9bed6c9f19ba24edf376bac7b6abf257ee627b8d224dadf308"
+  }
+}

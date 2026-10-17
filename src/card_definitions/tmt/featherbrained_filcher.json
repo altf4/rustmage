@@ -1,0 +1,11 @@
+{
+  "name": "Featherbrained Filcher",
+  "catalogue_id": 1477,
+  "oracle_id": "79a9fc1c-a6a9-483a-9ba7-d09fe41760c3",
+  "facts_sha256": "519776dfe332d1dccda8c9c72700a7267fb6e62aae5eadf1ac6773568f63019b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d3d88a9ddc688b0face8bfcf50d5816b41f06fcbb81f59d80e10f43e2df8fa3e"
+  }
+}

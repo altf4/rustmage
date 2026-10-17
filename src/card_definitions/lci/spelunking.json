@@ -1,0 +1,11 @@
+{
+  "name": "Spelunking",
+  "catalogue_id": 4012,
+  "oracle_id": "2962fe4c-bf48-454b-8a6b-0f8253352ae8",
+  "facts_sha256": "5d2d2ce1b5fccd7bb6e872b21c6b1cf424dd13a5fecfdfe89b638598163ef04e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "212b0116c6800152b0accc0231263b12f1c27c2a429fa225796b4a5d6ecea090"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Moseo, Vein's New Dean",
+  "catalogue_id": 2857,
+  "oracle_id": "c2e2f21a-0338-44d7-96a5-5a277f0ec419",
+  "facts_sha256": "c436276154b61a12533beede649ab8c937bfc1d03354d005c9def44a6c1b6859",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ac6a92b729917a03549f2503e93205d7394af35d25c2005d2360e01c2916df26"
+  }
+}

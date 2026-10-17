@@ -1,0 +1,11 @@
+{
+  "name": "Bygone Colossus",
+  "catalogue_id": 606,
+  "oracle_id": "1bd584d5-4e11-428c-b51e-462e4292b07f",
+  "facts_sha256": "4488b134fa512eba1f49283d04fceebf1608c95b30ffbc2cea468f699c01f2a8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e0bc188c51df97de373c35d02e12e286ee5dcd1b70cd7a888d523e9152e37625"
+  }
+}

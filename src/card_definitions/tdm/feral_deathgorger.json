@@ -1,0 +1,11 @@
+{
+  "name": "Feral Deathgorger",
+  "catalogue_id": 1494,
+  "oracle_id": "1722f814-2d4e-4d59-9b74-10ef8e89def9",
+  "facts_sha256": "dc38c809fe39c2730c30d3a3731d970ae327f2137359c467578bf65fb886ff81",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "db178c3af83017a58410ba8b714b562f6224c4a772a3b07133a766c4212793fa"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Enlightened Confidant",
+  "catalogue_id": 1341,
+  "oracle_id": "a139eb7f-3853-490c-a839-35d0e5aed7b5",
+  "facts_sha256": "59180c40d507c827fea171967f3a5404ba582799c5ad030171713c30196d3a0c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d7e713a07809670a3101edaec207b010773deb0062ec7740885690e2c954a5a8"
+  }
+}

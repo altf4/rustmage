@@ -1,0 +1,11 @@
+{
+  "name": "Killer's Mask",
+  "catalogue_id": 2350,
+  "oracle_id": "93a04ce0-9b8e-4d69-82bf-d4c89a9856a9",
+  "facts_sha256": "a4ce2bd9b37ace6729723b805b62d27b8970aaa44c74d093aad8802a3787bace",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6f041174f8105d30be149364e57dffbfc6ed8885a0417d4afd6bbb83a85095df"
+  }
+}

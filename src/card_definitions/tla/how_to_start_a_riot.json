@@ -1,0 +1,11 @@
+{
+  "name": "How to Start a Riot",
+  "catalogue_id": 2085,
+  "oracle_id": "268d0056-0d3e-438a-ab17-625a6f5ec68a",
+  "facts_sha256": "282b279d41188027fe50dbc8a44d4362a30d05eb143b6a0f16c84d96f162509e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cd9e5bf23bb0d8f5eae90e3c3cf80b74c47a85422703dd7c7ae03b06873646b3"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Startled Relic Sloth",
+  "catalogue_id": 4114,
+  "oracle_id": "5d46e85f-4a04-48b1-afe9-3a47678041d4",
+  "facts_sha256": "b187fe814bb922057131cc2cfd646cf199812eaad2013e72a79616b42c7aa69d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fe11c82c68d59216e62c5df1b7050fd10b169d42ea7377b31204fec2f5184a8f"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Faller's Faithful",
+  "catalogue_id": 1434,
+  "oracle_id": "df7500e8-76b4-49b3-a427-9a28ffa14637",
+  "facts_sha256": "df895e7704a153714cbb65cdf20418b5b1177646da567840882afb35b9ff225c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f87f35aeb86db976a6f447639e634c67e6b26d3321a91baa71fa3072fc51080a"
+  }
+}

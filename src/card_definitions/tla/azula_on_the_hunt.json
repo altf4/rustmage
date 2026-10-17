@@ -1,0 +1,11 @@
+{
+  "name": "Azula, On the Hunt",
+  "catalogue_id": 298,
+  "oracle_id": "89f96032-5cba-404d-82b0-38d2be963e4b",
+  "facts_sha256": "21eb5132ba8f90d008c5185b839c1435d06670f17b454e7c79f64a897e7798af",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d30b310c290fd3c9350016227247eb0c8dbdca3acd200d130fada472016c7976"
+  }
+}

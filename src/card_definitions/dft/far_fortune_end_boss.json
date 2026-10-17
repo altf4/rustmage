@@ -1,0 +1,11 @@
+{
+  "name": "Far Fortune, End Boss",
+  "catalogue_id": 1446,
+  "oracle_id": "8b9734c1-7185-40f6-8582-9f87109e3a09",
+  "facts_sha256": "6e97ff26dc7ffeb2a569e1eeabffb1263d6d7f5679e7f88c543ef689fac94dd1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e964e95eeac6a4fc892a413d96bbfe99f0df3fcadabd74882320886876429474"
+  }
+}

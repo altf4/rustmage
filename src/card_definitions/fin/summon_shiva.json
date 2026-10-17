@@ -1,0 +1,11 @@
+{
+  "name": "Summon: Shiva",
+  "catalogue_id": 4226,
+  "oracle_id": "5846718c-7d31-4d2c-80a2-b1534e2aebc1",
+  "facts_sha256": "9c225e5a1185d4507d4a0624e54363ea1c347aa0618722994777c6ec996dc572",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ba83a2bd4fbbf4eb87d6f2ac9350c7afe76645185bbb7e0b9cd6ee0d9c0e9d3f"
+  }
+}

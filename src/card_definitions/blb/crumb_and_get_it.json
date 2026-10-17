@@ -1,0 +1,11 @@
+{
+  "name": "Crumb and Get It",
+  "catalogue_id": 906,
+  "oracle_id": "93596258-bb44-4aa3-833d-9a0ab16b5ec1",
+  "facts_sha256": "328bccffdbfdca2718b888ba1a261958f99fa9023633a871c6148807cccdb319",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9a88841277ab059a35179618faae8e5e9f9e73b969e80fd6de4ca533f9f457ca"
+  }
+}

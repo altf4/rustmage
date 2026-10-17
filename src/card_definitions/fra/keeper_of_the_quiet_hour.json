@@ -1,0 +1,11 @@
+{
+  "name": "Keeper of the Quiet Hour",
+  "catalogue_id": 2335,
+  "oracle_id": "ecdfee75-15fd-41ea-89d4-4bfc1fa4d032",
+  "facts_sha256": "96b60868e3374ca5fba910b8340dc39ece03c16691eb0640faa553ba5d57c9aa",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9754dbcb1dbca5de9f6dd1d9fb31434b5a46757fa81bbd7dc6a07f28c39247d6"
+  }
+}

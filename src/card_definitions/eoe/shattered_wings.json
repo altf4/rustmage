@@ -1,0 +1,11 @@
+{
+  "name": "Shattered Wings",
+  "catalogue_id": 3821,
+  "oracle_id": "709b9f76-0ea5-456c-b1db-2cf517370fde",
+  "facts_sha256": "03e5024555982eb74f1edc576a544fa288db3f649a85c2277c447578d92208ce",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "91f18bbeee0f6de611ad882bc0a39fa214eb08af96b7b7cbba6fe90e9baef068"
+  }
+}

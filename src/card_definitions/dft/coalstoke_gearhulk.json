@@ -1,0 +1,11 @@
+{
+  "name": "Coalstoke Gearhulk",
+  "catalogue_id": 785,
+  "oracle_id": "2cdbaa4e-8907-49dc-9fa9-0df70db3bf23",
+  "facts_sha256": "87db31853697cec56e087d3516a2e8605b01c03e8e94f99b5a1796930690c409",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c793b2be7b6134baab0693490ec47c617af8b62e372b683903ed10e1d7b57217"
+  }
+}

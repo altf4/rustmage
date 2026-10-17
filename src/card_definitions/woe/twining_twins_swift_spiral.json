@@ -1,0 +1,11 @@
+{
+  "name": "Twining Twins // Swift Spiral",
+  "catalogue_id": 4722,
+  "oracle_id": "105aea98-8eb9-4fb2-a0cb-7c7513317c5b",
+  "facts_sha256": "456c70268ee6171d6761327dc7fed5141248f3237f610683567e9bc8820bd29f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d4d2dbf05f94cb1f459a22e43f845af21b90826768b0e498e959738be023f03b"
+  }
+}

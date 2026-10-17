@@ -1,0 +1,11 @@
+{
+  "name": "Momo, Playful Pet",
+  "catalogue_id": 2827,
+  "oracle_id": "85ee8ab6-8db5-45d7-85ae-64838771146a",
+  "facts_sha256": "738fe1542c3e0c88f5bd5bb5308cf3f5d841c2269b821b55deaae2dd760c914f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "86b94f4b4a095ec9e08ce61a1a7fb2ea0f944eaf440d7a3182fe281c117f7892"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Wilderland Scrounger",
+  "catalogue_id": 5063,
+  "oracle_id": "8a2946ad-7a7b-4cda-8591-da8c7da5e072",
+  "facts_sha256": "76f7ad5c0cd0c4f329aaca7eee9f980198e653661e9415515ec84425009790ed",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "50e24ddbc0ba5277ca393f5c04eaba0ff12624aeb45fdae27b6e6545dc04b196"
+  }
+}

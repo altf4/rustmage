@@ -1,0 +1,11 @@
+{
+  "name": "Gangly Stompling",
+  "catalogue_id": 1679,
+  "oracle_id": "60206d4e-4301-4d7a-a68e-46a2ad9fc407",
+  "facts_sha256": "4a904dd655a4b94dc162e5bac5be34916d6035edc2de330af5fdd2a3cbd04ec3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "124bd0e4d2a564f1261272016cfb3d0bb17ad9eecfb77b61f2f1569877859608"
+  }
+}

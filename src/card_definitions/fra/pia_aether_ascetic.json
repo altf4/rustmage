@@ -1,0 +1,11 @@
+{
+  "name": "Pia, Aether Ascetic",
+  "catalogue_id": 3152,
+  "oracle_id": "6519dc16-4960-4220-aaa8-7e4279743714",
+  "facts_sha256": "79dedcf9cee92b6bb80b44451df5f527f86133e50d4d60c40434471e433331bf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "205b3d1fb1e77c3721ca661a647089f0248da60a194a3b1e4037c7a2116fda8e"
+  }
+}

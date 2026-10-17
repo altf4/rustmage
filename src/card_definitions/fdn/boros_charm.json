@@ -1,0 +1,11 @@
+{
+  "name": "Boros Charm",
+  "catalogue_id": 505,
+  "oracle_id": "2679d0dd-ba30-4a1c-b6a0-b3ac6c790496",
+  "facts_sha256": "40306d82e1fe6eb386c489132f706e5a08d92980a85d46c0800ce0ec028871eb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fdfd5ece501bfea02bf9c465ebcecb5495027194d65ad1ff7f163b0d05894336"
+  }
+}

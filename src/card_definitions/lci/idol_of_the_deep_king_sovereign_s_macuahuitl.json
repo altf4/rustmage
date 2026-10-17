@@ -1,0 +1,11 @@
+{
+  "name": "Idol of the Deep King // Sovereign's Macuahuitl",
+  "catalogue_id": 2130,
+  "oracle_id": "e7ba349e-b9c1-4373-b79f-755688138b7c",
+  "facts_sha256": "d86367fb0fa2195b385eb02ec27382c9ae0e9add2fe908c089b0cbdf38e8fecc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "77dc4eec1ad106482ba8f755cb82fc995925928f88cb1ba840f1fd7477d82a82"
+  }
+}

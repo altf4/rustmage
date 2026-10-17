@@ -1,0 +1,11 @@
+{
+  "name": "Return from the Wilds",
+  "catalogue_id": 3503,
+  "oracle_id": "541adb13-1277-4c9e-ae1e-976f7aac1c72",
+  "facts_sha256": "94385e3f9f5ce22156c147246c26cc2aaf4aa3314897b79341cec8c68c5c3d92",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "57bfccdfb29f4d00243bd57d673d7b3f247ed531c0ed35c52dd4291a1e8687fd"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Vraska, Soul of Stone",
+  "catalogue_id": 4946,
+  "oracle_id": "cad63b31-667b-4518-bc49-be4ffb82bc63",
+  "facts_sha256": "40ab9a4d1bb24138fcbabcc87e63a3ac0935bd4cbc1658b0dd0da11bf3cde641",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "90482fb16187ba04ebb86e70aa2f86337f523e267589d4390fed8657f1d99de5"
+  }
+}

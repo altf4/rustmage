@@ -1,0 +1,11 @@
+{
+  "name": "Dual-Sun Technique",
+  "catalogue_id": 1197,
+  "oracle_id": "89ec0f03-47d0-4657-8987-95e680404f24",
+  "facts_sha256": "6d457021ca5e81889172d1fc6aa1d8fd57a7d5fc259c583d1cf525aaa6053724",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "231a20dfc7d46a9d79de3d9e38e5855427d658abb7f5b4dc97f45dd461f87b33"
+  }
+}

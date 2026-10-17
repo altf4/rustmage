@@ -1,0 +1,11 @@
+{
+  "name": "Conduct Electricity",
+  "catalogue_id": 825,
+  "oracle_id": "0369627e-3b83-4e5b-a8af-a99f944443b3",
+  "facts_sha256": "3e09a2e643bbf38597ad1c11b6f362fa4405caab3c5097b2d2041ad46774e00f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d1440a5365b927bc083190bba6c0112216724f9dbda445e2eb6c39b1b9516932"
+  }
+}

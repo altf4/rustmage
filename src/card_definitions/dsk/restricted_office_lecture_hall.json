@@ -1,0 +1,11 @@
+{
+  "name": "Restricted Office // Lecture Hall",
+  "catalogue_id": 3497,
+  "oracle_id": "b36286fa-4007-4276-af9c-d8f0da9e94d1",
+  "facts_sha256": "28a8f0078f5428be5bd39c3ff93b6c05d1ebfe2aa95439db3a24419c29d9125d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6777ddf772cea910b5c491abee6bf60a11f2d3a7287791916af9e2f27135cab6"
+  }
+}

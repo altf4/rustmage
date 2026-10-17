@@ -1,0 +1,11 @@
+{
+  "name": "Lush Portico",
+  "catalogue_id": 2588,
+  "oracle_id": "d51831b1-7394-456e-a1de-6787a59f5932",
+  "facts_sha256": "ebe5e33e810ca07d8bce54e27224de8692cb03a2cd655211b4ec9fc3e34a83d6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9ae8cc8ae9cec5f2e9d154c846e05b0091a60f153f80db34cea2c0cc48d87e4d"
+  }
+}

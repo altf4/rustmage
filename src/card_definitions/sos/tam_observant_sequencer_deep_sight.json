@@ -1,0 +1,11 @@
+{
+  "name": "Tam, Observant Sequencer // Deep Sight",
+  "catalogue_id": 4329,
+  "oracle_id": "702e871d-90d8-4468-8f69-5ae42af2c9d3",
+  "facts_sha256": "90b876b052ad4362f1460b2d6356ffe4773de386e566fe15d2b1d0c507e7cdef",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c50a75c0005124c5ccff083dace8f735b8e07e37520333cdd31de0e567124cd8"
+  }
+}

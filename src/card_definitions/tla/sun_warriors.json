@@ -1,0 +1,11 @@
+{
+  "name": "Sun Warriors",
+  "catalogue_id": 4230,
+  "oracle_id": "513a2fca-fea4-434e-9b25-b0c0d7f322b2",
+  "facts_sha256": "24d54035ffd70405f9d5fec4fa6945672e896427001e6421079428a106b01b31",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "608b8a208a7b4763cbab93f505325cc48544ee9f733628fa2dc977ebc28c2520"
+  }
+}

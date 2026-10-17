@@ -1,0 +1,11 @@
+{
+  "name": "Warren Warleader",
+  "catalogue_id": 4984,
+  "oracle_id": "a7e7059e-83f8-4124-9cc0-64ba150b5d96",
+  "facts_sha256": "50a17cea0f986564a64e2e8c980659b965834b2681a22fd5d9619daee15a1f8a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5b575afa0f8cd8a94e7b2a89ee54c82ba515eb3162b6497c07bbc424f2b2afdf"
+  }
+}

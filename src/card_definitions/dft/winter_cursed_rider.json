@@ -1,0 +1,11 @@
+{
+  "name": "Winter, Cursed Rider",
+  "catalogue_id": 5084,
+  "oracle_id": "343833c1-19fd-4e8f-b82e-0f20903caaff",
+  "facts_sha256": "35d8f6b33fb4a5a7d6888a76ad557aa5a27fc55a9b0fdeef4194c005dbe6537e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bfa67425067d5913551ba3f4eba3fe267042c34d98ce3347e6d7a0dc5bb6d890"
+  }
+}

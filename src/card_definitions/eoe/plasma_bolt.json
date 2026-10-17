@@ -1,0 +1,11 @@
+{
+  "name": "Plasma Bolt",
+  "catalogue_id": 3182,
+  "oracle_id": "ac5258c1-5b46-4892-a445-bfd56875f039",
+  "facts_sha256": "0dd3e319262681be0726f15c1c2c34c9e5ba247a89e5fe12fca6623612a93130",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c5ee9b5d9e5fa7c11c78abf5ffab96ac2796a651a6b7795aa8f1c6abf214284f"
+  }
+}

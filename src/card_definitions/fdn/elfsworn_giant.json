@@ -1,0 +1,11 @@
+{
+  "name": "Elfsworn Giant",
+  "catalogue_id": 1286,
+  "oracle_id": "f6abdf34-cfdc-465c-b067-cdebb659406e",
+  "facts_sha256": "4e693a25f63f250eafdb0256b3db9ab8c4dc7732c7be4b3a41d3cb567f1c338a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "94bb181622dc940c927e6a7fd70beaf44c4c5fd444785d767a6c311d0bc17318"
+  }
+}

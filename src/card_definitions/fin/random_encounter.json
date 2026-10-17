@@ -1,0 +1,11 @@
+{
+  "name": "Random Encounter",
+  "catalogue_id": 3369,
+  "oracle_id": "324493fc-a205-4177-aa94-cf4672844c81",
+  "facts_sha256": "f159dd440d52150f11c8a13e9f26156e72227f7e858aa54c4e38272c00865246",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dc20d260d1baeb970f9a57e2c6ae83b2988173665a8c0d03db6bdb894f295d7d"
+  }
+}

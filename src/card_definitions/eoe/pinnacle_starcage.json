@@ -1,0 +1,11 @@
+{
+  "name": "Pinnacle Starcage",
+  "catalogue_id": 3168,
+  "oracle_id": "10e0b563-4dfc-4530-a010-0ba40bdf02ac",
+  "facts_sha256": "9dca33b42abe669bcc82c58324c4581386bd5175261aba291eca1f55d57ad864",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d79a844fbace5a4b07416dae2a275a36948a8f5a84ccebbde7d85755a7271ae3"
+  }
+}

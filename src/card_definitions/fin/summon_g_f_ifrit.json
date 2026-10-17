@@ -1,0 +1,11 @@
+{
+  "name": "Summon: G.F. Ifrit",
+  "catalogue_id": 4221,
+  "oracle_id": "96d1bfc1-b80f-466f-b07d-df1ab361e8e0",
+  "facts_sha256": "1a9a0a10b818c0220df1af3895146d10d240185e0a05e1e5b6bea1815d839150",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cefd1036b4cc6063ce07a628d6b64dc241f3009d8d843a5d741d4584a51c73ba"
+  }
+}

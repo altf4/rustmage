@@ -1,0 +1,11 @@
+{
+  "name": "Gnashing of Teeth",
+  "catalogue_id": 1796,
+  "oracle_id": "188a3f61-3f7c-450d-8ee7-e12ad13b86c6",
+  "facts_sha256": "3b741f09985bb6e3afe9608fcac4f543a82cc610f57fccc4f32ef94deb85fad5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fce52579f8b30565ddc8117e6d426942fb7947312d3edb75aa7610b49d3b0b60"
+  }
+}

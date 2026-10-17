@@ -1,0 +1,11 @@
+{
+  "name": "The Spot, Living Portal",
+  "catalogue_id": 4504,
+  "oracle_id": "a5dfa7ad-9637-4da8-9ed2-0ac863617d9a",
+  "facts_sha256": "7d9bb662dd470e207c446bc216200c065bd8fa6e11f369beda5889f6868477e1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4fb4a54bc8e84ffbd7a40e5b9195e853eeebc2ab37d756cc206e942511bf109a"
+  }
+}

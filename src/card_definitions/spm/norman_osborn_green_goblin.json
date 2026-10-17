@@ -1,0 +1,11 @@
+{
+  "name": "Norman Osborn // Green Goblin",
+  "catalogue_id": 2962,
+  "oracle_id": "aa5b06a4-90c3-45e7-ab83-cb5c96ded21d",
+  "facts_sha256": "bbe068cdfefa3d23035b976cf312be97e493938f52dbe747ecd697e2b5e1972d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ea23bcbcea7fd282795d1f73f0c52fc55c3fc2fce39030357a73b4f99430e22a"
+  }
+}

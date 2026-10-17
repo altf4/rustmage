@@ -1,0 +1,11 @@
+{
+  "name": "Appendage Amalgam",
+  "catalogue_id": 189,
+  "oracle_id": "9fb95813-05e5-4aa0-bab9-53d8a071fe6a",
+  "facts_sha256": "23298cbef0c43eec23dceb43582d945df63e47bfb4a3dc5a1c815ae5c2d3b0fb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e0b58610cdf40eefa086c324c5c8fc470ee47d45ddc2d0e936d2e1383297d7bf"
+  }
+}

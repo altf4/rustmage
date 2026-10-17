@@ -1,0 +1,11 @@
+{
+  "name": "Storm Fleet Spy",
+  "catalogue_id": 4168,
+  "oracle_id": "42081a57-b521-45c2-928d-0a0a4641818d",
+  "facts_sha256": "c3c127fb2c5236aec9ad3e561b3b13796972410e18f91bd4f987752404b95541",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d1ddd995c391213c1360417ca70d28f04867fe46489e9ae189d24903ee1270f4"
+  }
+}

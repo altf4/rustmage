@@ -1,0 +1,11 @@
+{
+  "name": "Overzealous Muscle",
+  "catalogue_id": 3079,
+  "oracle_id": "4cb63198-29b5-4607-bd4a-f449807fb764",
+  "facts_sha256": "63cf58edf40790d4614311b9c8c3312703318a06f3129b4bdab5760c5bb58c13",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d8e5b4f0be278e90e7f509a00871e059fc5001172a5904169e22741626ad7aa7"
+  }
+}

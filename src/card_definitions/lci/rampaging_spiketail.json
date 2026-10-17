@@ -1,0 +1,11 @@
+{
+  "name": "Rampaging Spiketail",
+  "catalogue_id": 3365,
+  "oracle_id": "41f6d6d9-3fe5-44b0-904d-1cb90d36f2b6",
+  "facts_sha256": "8ed820321be776db04869fd50e21d4e5172fc570b5965b9331b3597fe40a620c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b0cb201b319364ff1d0093e8e84016069b6432f84d1ad2d44bd5eb8a64b96223"
+  }
+}

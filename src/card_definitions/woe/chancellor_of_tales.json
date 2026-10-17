@@ -1,0 +1,11 @@
+{
+  "name": "Chancellor of Tales",
+  "catalogue_id": 712,
+  "oracle_id": "529f259a-df66-4283-bc28-de3933c42e67",
+  "facts_sha256": "59e4c53ccf32a4b17a59f5cd78b7cea45912c2f809b1a373927866e927c1213e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1022c75f5ab3548d5c4eca3de1f3e6c118bc6c146a3007db3e0cab48533ff20b"
+  }
+}

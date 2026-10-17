@@ -1,0 +1,11 @@
+{
+  "name": "Rapier Wit",
+  "catalogue_id": 3383,
+  "oracle_id": "cf43518b-bfec-443d-a6c0-f2d848dc5fa8",
+  "facts_sha256": "ad97644ac676219788966e5a189423d5a025f58860ce81540c8778b17cc89272",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ce1fe9dcc5f566748751faee9906ca0c5a8f56cc0453c07c847ae20ead89331c"
+  }
+}

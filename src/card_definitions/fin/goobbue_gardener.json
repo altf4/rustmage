@@ -1,0 +1,11 @@
+{
+  "name": "Goobbue Gardener",
+  "catalogue_id": 1832,
+  "oracle_id": "b5c64331-2ba5-43ad-b77c-979875cc39e3",
+  "facts_sha256": "383b6d964b1448c25c8e5ecbf80b3dfe45e22a877da572daae334e97ffc7bafa",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8e9c88462efde70981d60aa782543631dda1eb90b1e1a10668a1fb51dd47313f"
+  }
+}

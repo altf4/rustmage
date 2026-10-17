@@ -1,0 +1,11 @@
+{
+  "name": "Blazing Crescendo",
+  "catalogue_id": 442,
+  "oracle_id": "6344c96a-efa5-4125-8219-d333228391cf",
+  "facts_sha256": "f077669de13212b0e8a71496885e4a4ff86937b36c16f5f32b2f139bd5925f43",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b3c8d181e0df7aed8090feaf3f14c93d5898d92be640a68c20889ea70e457a2f"
+  }
+}

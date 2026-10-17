@@ -1,0 +1,11 @@
+{
+  "name": "Graft Surgeon",
+  "catalogue_id": 1840,
+  "oracle_id": "fe7938ce-6289-4bf8-a8f5-85ecccbb7f86",
+  "facts_sha256": "5b48e7453d0623e8cf1b4e5e7381e89c7802f1b8733df100fc6723bd84340e8f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4d85f91a01ae22f0b22b973bb713d2b397f752308adc96b773eb640076c3ecdc"
+  }
+}

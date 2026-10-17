@@ -1,0 +1,11 @@
+{
+  "name": "Getaway Barrel",
+  "catalogue_id": 1721,
+  "oracle_id": "7ddbf891-7f80-44e9-b94c-70c1da0b91ed",
+  "facts_sha256": "f0ec80f791217631680c62e4c5216ecef5342c76076c9fc9905e17ca46ab1e77",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "88fd6ac8e05c34bde39f28b7845b207314387a3812cea3b824c0e53e41132596"
+  }
+}

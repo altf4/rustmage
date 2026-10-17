@@ -1,0 +1,11 @@
+{
+  "name": "Web-Shooters",
+  "catalogue_id": 5026,
+  "oracle_id": "ec528198-a38a-4ef7-9804-78a25c94ecc1",
+  "facts_sha256": "edd3bb20bf172f63fbc170576018c19739db1efc2fa7f1286841b9fbb67e2159",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c9df6f062c471761645e5a8efb606b981b0122bfbdb54a73c8ef223025ecc2fa"
+  }
+}

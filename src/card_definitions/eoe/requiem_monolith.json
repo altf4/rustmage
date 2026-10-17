@@ -1,0 +1,11 @@
+{
+  "name": "Requiem Monolith",
+  "catalogue_id": 3470,
+  "oracle_id": "13a8b19b-23bd-4e45-81ff-23371665e4fc",
+  "facts_sha256": "3da888ca9e42c687c2d950bc90d5a0573b9a1f4fd8d2ae8c864d006275317f5c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fb8261c976897c7f022022e75a236b0bf20a8e521ae9d1491b3037b7fb003889"
+  }
+}

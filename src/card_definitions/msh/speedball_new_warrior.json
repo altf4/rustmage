@@ -1,0 +1,11 @@
+{
+  "name": "Speedball, New Warrior",
+  "catalogue_id": 4004,
+  "oracle_id": "53d3ef8f-8e0f-4119-8cdc-a0bf076b4e91",
+  "facts_sha256": "54099ee6b2d3a836aa845d263654fbb103bb7b45de8f41993ec0e2992c5b14c1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dd36f17e4bf737440fc0c1df965c01426d9bdaadd52b4c4217109da7eac0f27b"
+  }
+}

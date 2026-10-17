@@ -1,0 +1,11 @@
+{
+  "name": "Unliving Legionnaire",
+  "catalogue_id": 4788,
+  "oracle_id": "0edaf433-4ded-4841-bc86-136780c0767f",
+  "facts_sha256": "243260add64b3ea97b2d28f582c3e0a9efd3916c2e207964f18e5b85aad77d6c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fdf644ab6bc1e459c8f90c924f1a6919e915c01b434ed29e7db1424117d5b7b9"
+  }
+}

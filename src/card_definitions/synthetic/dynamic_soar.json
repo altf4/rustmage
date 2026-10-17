@@ -1,0 +1,11 @@
+{
+  "name": "Dynamic Soar",
+  "catalogue_id": 5227,
+  "oracle_id": "4fbfc814-df10-4d61-ada9-c96cc8ee8d8c",
+  "facts_sha256": "901be646c24b84f4c8850a8d3c484fc0c0f80c047c8041392fde08ecbed49727",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "01cb0eca9d86ca8124a71e9dd8935a5c0cdf137541744d45c97be827133bdf1d"
+  }
+}

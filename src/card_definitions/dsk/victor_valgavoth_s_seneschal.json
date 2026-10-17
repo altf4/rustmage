@@ -1,0 +1,11 @@
+{
+  "name": "Victor, Valgavoth's Seneschal",
+  "catalogue_id": 4888,
+  "oracle_id": "92bf8f05-cbfd-42d8-8bc1-d7f2e46f9872",
+  "facts_sha256": "33b356c07c3cacf78b60a64d28ae69faf478319af3217b2ec32b2ade7b89aec4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "281dd0b5ee61c59071451c468522a0b7b1ea7681af3b0b3d7ea3e4fc50b613d7"
+  }
+}

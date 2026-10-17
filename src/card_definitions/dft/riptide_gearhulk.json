@@ -1,0 +1,11 @@
+{
+  "name": "Riptide Gearhulk",
+  "catalogue_id": 3536,
+  "oracle_id": "f3838ff1-5403-4f3f-8531-36029c13fcfc",
+  "facts_sha256": "3b3ea07d3591d8c26dcaf0af432422493e4311325f05cf93fd95de625ba0e5fb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3103c51b8eb2b9374954078b4aefbad1b662c086412ccc763533a296f0f65e1f"
+  }
+}

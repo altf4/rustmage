@@ -1,0 +1,11 @@
+{
+  "name": "Embermouth Sentinel",
+  "catalogue_id": 1307,
+  "oracle_id": "b5208c2c-b839-42f6-8717-ee4bbaf1385b",
+  "facts_sha256": "fd9de131af69107cba50cb34422c99102b7e94f15b80fd9b2504a8d1b9ea0e69",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "87ca22eefb866d992ab021b827741a0203de674353fb03fff15e5144582a1388"
+  }
+}

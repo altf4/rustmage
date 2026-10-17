@@ -1,0 +1,11 @@
+{
+  "name": "Sizzling Changeling",
+  "catalogue_id": 3888,
+  "oracle_id": "60ad7aaa-8ce6-4449-8e8d-4ccf925010db",
+  "facts_sha256": "2bef4491f385e5dcc40884c1eb0f939033447874c98d9563e3bdafb455ef7635",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d0d2050b28340a62cdbc114dee9f32361bb54d62c3671dc3689546c54d29bb9c"
+  }
+}

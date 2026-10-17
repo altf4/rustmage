@@ -1,0 +1,11 @@
+{
+  "name": "Supportive Parents",
+  "catalogue_id": 4265,
+  "oracle_id": "b1266feb-516e-4b44-b750-7988ca6e6e55",
+  "facts_sha256": "acdf335ec1cde2ade840d31c2eb8f5be0c2a7f58d0e132d0c32ca0a3321ab9c5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b9d9f66cdafd51a8831ad32497d8afd5d31de709a7279cdfc4f736554bf9cffa"
+  }
+}

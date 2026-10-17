@@ -1,0 +1,11 @@
+{
+  "name": "Innocuous Rat",
+  "catalogue_id": 2174,
+  "oracle_id": "114725ef-ac81-4d13-9153-0a303c3ce9c4",
+  "facts_sha256": "94ebd747bcdadd6bdf044dff2da6092ccaa6707beaa94221bb795a038fe4e6a4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1abb650be10238cb548d9784316dda95993a30f07d7e52cc05109dcd6cf14f90"
+  }
+}

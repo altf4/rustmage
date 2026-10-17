@@ -1,0 +1,11 @@
+{
+  "name": "Maalfeld Twins",
+  "catalogue_id": 2597,
+  "oracle_id": "dda4b515-49c0-43fe-9f6a-36defa326bb1",
+  "facts_sha256": "68033cf079cb49d3043a8aed0266f61b023d78980d67647b127850c89668b10d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0824c50245cf76d9bbc2c8b64a55096e9570b00e6d0649ddc578c62b8b88224f"
+  }
+}

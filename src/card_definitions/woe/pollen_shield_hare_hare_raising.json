@@ -1,0 +1,11 @@
+{
+  "name": "Pollen-Shield Hare // Hare Raising",
+  "catalogue_id": 3198,
+  "oracle_id": "3ef02f2b-b611-40c3-a1d5-8b34989643cf",
+  "facts_sha256": "5cc74307175cbfa9e162911f35df6774470947a2ef0e2909b7420476c5a07561",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e544b557e123219d3aa9f895406e739bedf9329b66ef7c288b82b0d1b5ea44dd"
+  }
+}

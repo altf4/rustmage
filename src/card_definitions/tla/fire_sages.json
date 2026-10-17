@@ -1,0 +1,11 @@
+{
+  "name": "Fire Sages",
+  "catalogue_id": 1526,
+  "oracle_id": "08d1940a-ddc6-4b6d-b6c9-9d2aa470b906",
+  "facts_sha256": "c187a176a06ffacdda8d7947bbc8bf8a9d3a5946b54763564d2ce62ee763ff3f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a31394b910244dfeec5fe9c5e7a7684cb39a3e66c16b506eb97013b0d7f3e7f4"
+  }
+}

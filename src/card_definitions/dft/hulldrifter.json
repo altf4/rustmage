@@ -1,0 +1,11 @@
+{
+  "name": "Hulldrifter",
+  "catalogue_id": 2096,
+  "oracle_id": "a0a7319d-9441-4aed-a351-9ff3fb3b1d9e",
+  "facts_sha256": "ff59f914a23039bad45e8cb92333ff4fd03d02c058eefceac6b8d51d8a362fca",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f352037e886816b1c479ccda8ee8fb06b9ca221e67da6417e5da0990cbc92601"
+  }
+}

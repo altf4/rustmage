@@ -1,0 +1,11 @@
+{
+  "name": "Prismari Charm",
+  "catalogue_id": 3240,
+  "oracle_id": "c3c25a2c-f71c-4cb7-9117-0bcda9248bfd",
+  "facts_sha256": "6aedab9645447a21ec8783630112240f9c2bc13b7f5734103b6ccf7b059f4c4b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cbbd368a87978d8919b0b9481eab6eab6743883946d6d0cbff6ca7be302f4a2c"
+  }
+}

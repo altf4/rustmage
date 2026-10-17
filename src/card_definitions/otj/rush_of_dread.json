@@ -1,0 +1,11 @@
+{
+  "name": "Rush of Dread",
+  "catalogue_id": 3627,
+  "oracle_id": "0dfe6ec6-a0df-41c8-90dd-1ddf0417700a",
+  "facts_sha256": "cbd9a8a2712627d9698f855e1ac085256d947a4deea90aa7dc86414227946936",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eb2c507dbbcac9dc0b2907a4874fca4123fb65112d212e94e9c038760f94f226"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Bolt Bend",
+  "catalogue_id": 489,
+  "oracle_id": "c20a96f7-aa5a-4c15-b8b1-806685c99b27",
+  "facts_sha256": "875dbe3c909e16fd6a8248a84dd2f2aa9333c89f78405532d5df220c0e51cd40",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1e23d69d1685fc8d898e96bedb2be2dc53d0dcfe8d8e7e0773bf47370d5b3f51"
+  }
+}

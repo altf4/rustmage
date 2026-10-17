@@ -1,0 +1,11 @@
+{
+  "name": "Louisoix's Sacrifice",
+  "catalogue_id": 2569,
+  "oracle_id": "42d8ab49-703a-4fd3-84d0-0a3ac1eafca8",
+  "facts_sha256": "6e51d104f3cce853e4696b41f819825b63220f3f9e35c7b905b8098779a70f8f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "25bef37b1271d1dcba018013ce6e1ac0d9f1f44263502a3123c521f1e55c0f4a"
+  }
+}

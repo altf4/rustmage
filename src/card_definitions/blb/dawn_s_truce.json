@@ -1,0 +1,11 @@
+{
+  "name": "Dawn's Truce",
+  "catalogue_id": 979,
+  "oracle_id": "37c06f89-db36-4937-9404-2b07cd22e1a6",
+  "facts_sha256": "1802b0534100aeda9c2fd255ca55d795dc87a719231a4cab54faf73034e14fd4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ad13918b70f050a20c40e11c899d8a50135255a9b0da633c9e1698247b6bfc6d"
+  }
+}

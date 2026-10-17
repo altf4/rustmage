@@ -1,0 +1,11 @@
+{
+  "name": "Reputable Merchant",
+  "catalogue_id": 3469,
+  "oracle_id": "62f09a5b-d7fb-44f4-9fab-719185b735ab",
+  "facts_sha256": "634a3b1f887b43cadff3dc2f9d8c2940e00b279a3895a02473a2a743053b8560",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "37403e3045719eb71c4d350fb4f5c6da72c50cac6cda6623b5e5138038080eaa"
+  }
+}

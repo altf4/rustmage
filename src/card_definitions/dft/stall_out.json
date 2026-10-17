@@ -1,0 +1,11 @@
+{
+  "name": "Stall Out",
+  "catalogue_id": 4091,
+  "oracle_id": "ce55c0a9-3334-440e-ae1b-c04a9e1c3d87",
+  "facts_sha256": "c0b1d32058f77b2dfa8ca45790b32297b5a308ddc851c3574cf09b289fe2ad10",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c9e74d29d4afa66b5e5c5631ae7dd953be1536b331428ce8247c2f63a0338934"
+  }
+}

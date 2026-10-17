@@ -1,0 +1,11 @@
+{
+  "name": "Dragonmaster Outcast",
+  "catalogue_id": 1165,
+  "oracle_id": "b6fb79c3-cd32-4045-8177-e52841eea65b",
+  "facts_sha256": "76d5c17ae1570038a2f3f07756a9b1c06ae1089c57bfe9fc70863b3c57d042dc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "da74ff6751d8ad2a5233b2275fedb9105582d04b847d4f387f4387b8844430da"
+  }
+}

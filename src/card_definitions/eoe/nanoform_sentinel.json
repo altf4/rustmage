@@ -1,0 +1,11 @@
+{
+  "name": "Nanoform Sentinel",
+  "catalogue_id": 2906,
+  "oracle_id": "07155470-c5ab-41ae-ade3-bdc06d357379",
+  "facts_sha256": "591e648ba99d981f3746ca7d560434364f81d0188c70faa6cd113348b0a4d9ff",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "81d4e84e9c70d6b9618f2c054eb6cdf315d765fb3131440691aab88ad7c04442"
+  }
+}

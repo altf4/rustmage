@@ -1,0 +1,11 @@
+{
+  "name": "Callous Sell-Sword // Burn Together",
+  "catalogue_id": 624,
+  "oracle_id": "0e7405e3-e9e6-4213-a73f-e0c01a7d6721",
+  "facts_sha256": "37a0cee9f396a904a0e9a90309751f48c91ca0d261ff07613aeb09445ba4413a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "756dd7867e4f1f84a795fc5762aef9b0837c6d3cfa97a5617bad08ac3cec5dd2"
+  }
+}

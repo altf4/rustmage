@@ -1,0 +1,11 @@
+{
+  "name": "Vinereap Mentor",
+  "catalogue_id": 4902,
+  "oracle_id": "db649e15-24ca-4fd8-9f0b-f1df28c9c57d",
+  "facts_sha256": "4cf8b238379b4a6b3e105a916ad21e69910d6ed6358d109b208bc385637ae4cf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e7664a4060e77311b8fd1c622e76b9be230a91889beb30cccd04f20b3d711d6b"
+  }
+}

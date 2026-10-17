@@ -1,0 +1,11 @@
+{
+  "name": "Edgar, King of Figaro",
+  "catalogue_id": 1263,
+  "oracle_id": "264efed9-65ab-40ad-877f-c6c25ca0281e",
+  "facts_sha256": "cbb915123134a4d3cc24a8b47d7b5a43904c1082f72cab317debd36637462367",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6facd351198643f6c78c855696f4cdffbe17c1e97fb0ae2459b68af7a6922d42"
+  }
+}

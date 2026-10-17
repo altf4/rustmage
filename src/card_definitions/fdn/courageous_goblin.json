@@ -1,0 +1,11 @@
+{
+  "name": "Courageous Goblin",
+  "catalogue_id": 871,
+  "oracle_id": "c107e271-5741-4a84-bfc4-3bc322972d0d",
+  "facts_sha256": "f958f0ec727eced33bc78fbbdf5631ad12b5f1bf6db14098bc327f49cfe31f17",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "845a4a8f4bc9775ea7ad79922a96a4aabebb81a35e50a15fd99874abc166ba97"
+  }
+}

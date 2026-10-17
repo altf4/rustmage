@@ -1,0 +1,11 @@
+{
+  "name": "Giant's Boulder",
+  "catalogue_id": 1740,
+  "oracle_id": "80433c2c-5196-42e0-b9fa-d7b12783f5fd",
+  "facts_sha256": "26b2d6f39f06906af9843fd99293bb7a3564817e89fce29b44d1db1840e3fed2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "55dc3ce35135b24f4476b4c1d49c4d48148ee856b33d14eab953ca7cb33c0ac3"
+  }
+}

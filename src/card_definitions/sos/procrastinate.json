@@ -1,0 +1,11 @@
+{
+  "name": "Procrastinate",
+  "catalogue_id": 3245,
+  "oracle_id": "6f8fa68e-e961-4ae1-b27d-22d87e90f26b",
+  "facts_sha256": "bc828feb9dc9c73938d60a1d1292a9ec19530bf583d76e53158ecc5ba230722a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a72cb21d5cc2d8528ceae022dbfb395a6ccde594330cad2518a7f5166cb5babd"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Map the Frontier",
+  "catalogue_id": 2652,
+  "oracle_id": "11a46cb6-ab01-4630-9541-782db2ef3b91",
+  "facts_sha256": "c393b4fef414e76d619cbe21aa68d0f7caa0edff8de17a6a18b72370fe9c7b73",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a8424985ddaa42853bc29239fca5800ae533b600fbc81e784138f4531bf378fb"
+  }
+}

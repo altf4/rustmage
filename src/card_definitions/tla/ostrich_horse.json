@@ -1,0 +1,11 @@
+{
+  "name": "Ostrich-Horse",
+  "catalogue_id": 3051,
+  "oracle_id": "2b6cb199-1564-4214-b24f-624dc962c907",
+  "facts_sha256": "82f790e91538130dbf2f0a5b0ec8fc3fe063d8d7707bcacc374756f180ba17c8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "52725ad98e4954488c3b8ebbce575653d65d86142fa52cf38df6764a452e6447"
+  }
+}

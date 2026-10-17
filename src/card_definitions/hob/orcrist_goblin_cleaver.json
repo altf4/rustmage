@@ -1,0 +1,11 @@
+{
+  "name": "Orcrist, Goblin-cleaver",
+  "catalogue_id": 3033,
+  "oracle_id": "cc65821a-1893-4087-b461-35cf9fd26c71",
+  "facts_sha256": "05abdd982129b91b2374cf228d0488e932fd24902c1717e3dc4fd0cfdf040bd1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cef6515cddd47c01dddf6306f82e31ff36abfd95b74d3d765bdbb3c6a70ec692"
+  }
+}

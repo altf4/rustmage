@@ -1,0 +1,11 @@
+{
+  "name": "Temple of Malice",
+  "catalogue_id": 4367,
+  "oracle_id": "7c439c18-31dc-41fe-b03d-3fca06e6fc0b",
+  "facts_sha256": "ffd2d8b4e65f7cf5ced0a2faafb91c48b050c3f617b2607619ad7bb04e58a680",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "302eee390ad5a79a201dfb110783760abc8255c70bb6cd80fbc63cf9259b2449"
+  }
+}

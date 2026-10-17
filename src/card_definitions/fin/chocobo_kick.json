@@ -1,0 +1,11 @@
+{
+  "name": "Chocobo Kick",
+  "catalogue_id": 742,
+  "oracle_id": "aa00c18b-8719-4095-940a-8e35a57b46c2",
+  "facts_sha256": "70211b29ad0da0a08fd8ab5f87a9629a05896c1912e7dc696b7e229bc400f24f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "84fa6128fb9ccb187ef47989754caaac1e684bd9b22a409b61e84df58b8b5bdd"
+  }
+}

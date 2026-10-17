@@ -1,0 +1,11 @@
+{
+  "name": "Gravelgill Scoundrel",
+  "catalogue_id": 1854,
+  "oracle_id": "6d7f7e6e-5076-4af7-afe3-3e500835c4aa",
+  "facts_sha256": "45add1c81e6ca1bf0c83cce6d3741738a81ae8b6ff8393a0a91d2f2a2235cc3e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0af97b1ddf4f733f28d7a330977bcebe3473dfa024427d45a8370b8e3d166b41"
+  }
+}

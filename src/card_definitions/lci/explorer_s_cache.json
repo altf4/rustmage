@@ -1,0 +1,11 @@
+{
+  "name": "Explorer's Cache",
+  "catalogue_id": 1405,
+  "oracle_id": "9fa0c9d1-2a63-41a8-8733-39bfaee4eb0a",
+  "facts_sha256": "e48e85bfab3f70049931d59b08bd8f83e4f4e75029f22496b5a555760d3c8e8b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2cb423209d7d6249c7acf1443389f13a443b2ede490d70dd69052d84215a75f1"
+  }
+}

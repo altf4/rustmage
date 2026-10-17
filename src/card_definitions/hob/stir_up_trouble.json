@@ -1,0 +1,11 @@
+{
+  "name": "Stir Up Trouble",
+  "catalogue_id": 4149,
+  "oracle_id": "dda607bd-f419-4b7f-b052-a5ce6ce22bfe",
+  "facts_sha256": "21d0623afaea62d3ebd2e94548e024d3095f1b3052ec41cb5991f789398a587f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "502056782c8e7a48774f6e282adafd88cf9d99289b566d6ac8adc176008e2926"
+  }
+}

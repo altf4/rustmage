@@ -1,0 +1,11 @@
+{
+  "name": "Food Coma",
+  "catalogue_id": 1582,
+  "oracle_id": "aab3774c-4ec3-4946-a09b-af0fab7cacb7",
+  "facts_sha256": "5518211157d834e5e281f53ae1af7e48611429b6d88e65f14ed1c5f58971b790",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7a5f30bca10bd656d4ede8de7e194d3a3b452965c9389f76153cd599ab6147e1"
+  }
+}

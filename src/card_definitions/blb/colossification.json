@@ -1,0 +1,11 @@
+{
+  "name": "Colossification",
+  "catalogue_id": 803,
+  "oracle_id": "05c5ee65-651b-4bfb-b57f-305026507135",
+  "facts_sha256": "4fd8f8546a217a24d5cd0a06c9a08cc39127d6d04b6267a4d47cc69171c2846a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f0ef832b5173628140bed7ca5b7a8a7a099836687f777fed4ba29f1f582bfcea"
+  }
+}

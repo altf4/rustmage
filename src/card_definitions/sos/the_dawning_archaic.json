@@ -1,0 +1,11 @@
+{
+  "name": "The Dawning Archaic",
+  "catalogue_id": 4433,
+  "oracle_id": "a3e10b9b-9349-4b44-a46c-c825293dbd05",
+  "facts_sha256": "0125a581db846ac6ff8e5317ee01aaf981f2f381a4fda5c8b253d5f46e9a5d34",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b6d4eef29e3e5b853ef2d309f6caaa5cc4ff1e7196bad706da3f13cde706c169"
+  }
+}
