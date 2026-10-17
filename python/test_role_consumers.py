@@ -36,7 +36,7 @@ class RoleConsumerTests(unittest.TestCase):
     o=g.observe('P0')
     if o['outcome'] is not None:
      self.assertEqual(stage,'finish',(name,p,seed,stage,iteration));self.assertTrue(role_seen);self.assertTrue(attacked,(name,p,seed,'no actual recipient/normal attack'));return frames
-    o=g.observe(o['actor']);actor=o['actor'];self.assertEqual(o['schema'],96);objects={v['id']:v for v in o['objects']};mine=g.observe(p);hand=[v for v in mine['objects'] if v['zone']=='Hand'];own=[v for v in objects.values() if v['controller']==p and v['zone']=='Battlefield'];enemy=[v for v in objects.values() if v['controller']==q and v['zone']=='Battlefield'];ally=next((v for v in own if v['card']=='Bear Cub'),None);foe=next((v for v in enemy if v['card']=='Bear Cub'),None);lands=[v for v in own if v['card'] in BASICS and not v['tapped']];quiet=o['decision']=='priority' and not o['stack'] and not o['announcing'] and not o['resolving']
+    o=g.observe(o['actor']);actor=o['actor'];self.assertEqual(o['schema'],97);objects={v['id']:v for v in o['objects']};mine=g.observe(p);hand=[v for v in mine['objects'] if v['zone']=='Hand'];own=[v for v in objects.values() if v['controller']==p and v['zone']=='Battlefield'];enemy=[v for v in objects.values() if v['controller']==q and v['zone']=='Battlefield'];ally=next((v for v in own if v['card']=='Bear Cub'),None);foe=next((v for v in enemy if v['card']=='Bear Cub'),None);lands=[v for v in own if v['card'] in BASICS and not v['tapped']];quiet=o['decision']=='priority' and not o['stack'] and not o['announcing'] and not o['resolving']
     for d in o['spell_characteristics']:
      if d['object']['card']==source:spell_faces.add(d['face'])
     if quiet and stage in ['wait_role','wait_activation','wait_feed','wait_inset']:
