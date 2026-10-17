@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "cdf3fac02f6090a40e50240720eb0d719ba6e4c35e9c303f60492a7225c6a1a7",
+  "catalogue_version": "5ac3c5f833f62e5079027c3e312de06c2a49fe5df5096fb783ae53b2abd01155",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1875,
-  "implemented_total": 1881,
+  "implemented_standard_cards": 1876,
+  "implemented_total": 1882,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -15346,8 +15346,8 @@
     {
       "name": "Lord Skitter's Blessing",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Lord Skitter's Butcher",

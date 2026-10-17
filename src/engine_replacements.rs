@@ -21,6 +21,9 @@ pub struct ReplacementChoiceView {
     pub object: Option<ObjectRef>,
     pub counters: Option<Counters>,
     pub tokens: Vec<TokenGroupView>,
+    /// Parallel to tokens for Role events; None denotes an unbound replacement addition.
+    /// Ordinary token and counter events use an empty vector.
+    pub role_attachments: Vec<Option<ObjectRef>>,
     pub effects: Vec<ReplacementEffectView>,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -813,6 +816,7 @@ impl Game {
                     object: Some(p.object),
                     counters: Some(p.amount),
                     tokens: Vec::new(),
+                    role_attachments: Vec::new(),
                     effects: self.counter_replacements(p, &batch.used),
                 })
             }
@@ -821,6 +825,22 @@ impl Game {
                 object: None,
                 counters: None,
                 tokens: batch.groups.clone(),
+                role_attachments: match &batch.completion {
+                    TokenCompletion::RoleAttach(recipient) => batch
+                        .groups
+                        .iter()
+                        .map(|g| g.token.role().map(|_| *recipient))
+                        .collect(),
+                    TokenCompletion::RoleAttachMany(recipients) => batch
+                        .groups
+                        .iter()
+                        .enumerate()
+                        .map(|(index, g)| {
+                            g.token.role().and_then(|_| recipients.get(index).copied())
+                        })
+                        .collect(),
+                    _ => Vec::new(),
+                },
                 effects: self.token_replacements(batch),
             }),
         }

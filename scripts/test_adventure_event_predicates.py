@@ -30,7 +30,7 @@ class AdventureEventCompilerTests(unittest.TestCase):
  def test_event_predicates_bind_typed_history_caster_and_declaration(self):
   for i,expected in enumerate(['InstantSorceryOrdinal(1)','CastingPlayer','SelfAttacksAlone']):
    c=self.rows[NAMES[i]];report=g.compile_catalogue(dict(cards=[c],card_count=1,cards_sha256=hashlib.sha256(json.dumps([c],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()),dict(banned_card_names=[]));self.assertIn(expected,report[0])
- def test_exact_merged_parent_union_preserves_every_unrelated_program_and_factory(self):
+ def test_historical_merged_event_union_preserves_every_unrelated_program_and_factory(self):
   import subprocess
   from catalogue_preservation import canonical, assert_union
   parent='ce9a90a1867ce741387d3ed0a1aac0aa1592ca08'
@@ -43,7 +43,7 @@ class AdventureEventCompilerTests(unittest.TestCase):
   aliases={'@adventure/'+self.rows[name]['oracle_id']:self.rows[name]['card_faces'][1]['name']+'#0' for name in NAMES}
   aliases.update({self.rows[name]['card_faces'][1]['name']:self.rows[name]['card_faces'][1]['name']+'#0' for name in NAMES})
   aliases.update({self.rows[name]['card_faces'][0]['name']:name+'#0' for name in NAMES})
-  before=canonical(old,physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  before=canonical(old,physical);after=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','804f539567d2f50b27c801915a3eb5afd7f8d692:src/generated/catalogue.rs'],text=True),physical)
   report=assert_union(before,after,changed=changed,added=insets,helpers=helpers,aliases=aliases)
   # An unrelated admission, changed old helper, factory or inline flag must fail.
   for section,key in [('definitions','Plains#0'),('helpers',next(iter(before['helpers']))),('tokens',next(iter(before['tokens']))),('flags',next(iter(before['flags'])))]:

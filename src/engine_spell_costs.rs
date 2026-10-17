@@ -83,11 +83,16 @@ impl Game {
         flashback: bool,
     ) -> bool {
         let definition = self.state.objects[card as usize].card;
-        let plan = match definition.effect() {
-            Effect::Spell(plan, _) | Effect::Aura(plan) => Some(plan),
-            _ => None,
+        let available = match definition.effect() {
+            Effect::Modal(modes) => modes.iter().any(|mode| {
+                self.cast_targets_available(mode.targets, actor, self.object_ref(card))
+            }),
+            Effect::Spell(plan, _) | Effect::Aura(plan) => {
+                self.cast_targets_available(plan, actor, self.object_ref(card))
+            }
+            _ => true,
         };
-        if plan.is_some_and(|p| !self.cast_targets_available(p, actor, self.object_ref(card))) {
+        if !available {
             return false;
         }
         let costs = if flashback {

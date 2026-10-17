@@ -54,7 +54,8 @@ class RoleCompilerTests(unittest.TestCase):
   manifest=json.loads((g.ROOT/'docs/role-admissions.json').read_text())
   expected={n for n,c in self.cards.items() if 'Role token' in c.get('oracle_text','')+' '.join(f.get('oracle_text','') for f in c.get('card_faces',[]))}
   self.assertEqual({r['name'] for r in manifest['cards']},expected)
-  self.assertEqual({r['name'] for r in manifest['cards'] if r['status']=='implemented'},set(NAMES))
+  _,coverage=metadata.LegacyMetadataTests.compile([self.cards[n] for n in expected])
+  self.assertEqual({r['name'] for r in manifest['cards'] if r['status']=='implemented'},{r['name'] for r in coverage['cards'] if r['implemented'] and r['name'] in expected})
   source=Path(os.environ.get('RUSTMAGE_XMAGE_SOURCE','/home/altf4/Code/mage'))
   records=manifest['shared_sources']+[v for c in manifest['cards'] for v in c['sources']]
   for record in {v['java_source']:v for v in records}.values():
