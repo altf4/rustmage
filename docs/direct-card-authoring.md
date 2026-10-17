@@ -36,3 +36,16 @@ Scheme, Requisition Raid and Rustler Rampage (16 legal combinations, both seats)
 It adds selected-player creature counter and stun-aware untap batches; all other
 behavior reuses the existing engine. Main and candidate coverage are reported
 separately until final validation/review/merge. The all-Standard goal remains open.
+
+
+Initial acceptance on actual land-entry main passes1,936 native tests, Clippy,
+format/generation checks, complete-source provenance and three public API methods.
+All947 tracked inputs stay fixed. The validator cleans543,899,648 bytes after its
+jobs close and preserves all shared libraries. The first development compile
+caught an include-file comment error; a later new fixture referenced a card name
+absent from the catalogue. Both are corrected before this passing run. Independent
+review additionally hardened cost-table shape and stale-facts rejection.
+[Machine-readable results](direct-authoring-results.json) record throughput,
+performance scope and strict preservation of every5,330 unrelated definition,
+930 inherited helper arms and97 token recipes. Final publication changes only
+instructions, documentation and reporting; independent final reviews gate merge.

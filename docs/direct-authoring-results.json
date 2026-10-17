@@ -1,0 +1,136 @@
+{
+  "complete_cards_added": 4,
+  "parent_complete_cards": 1979,
+  "candidate_complete_cards": 1983,
+  "total_standard_cards": 5164,
+  "remaining": 3181,
+  "production_head": "9bea4cab0fe88693947f2f78b51817e2d9b4a28c",
+  "schema": 105,
+  "native_tests": 1936,
+  "paid_mode_combinations_both_seats": 32,
+  "public_api_methods": 3,
+  "validation_seconds": 88.00112151302164,
+  "implementation_and_initial_validation_seconds": 674.2786490917206,
+  "throughput_scope": "First direct-authoring implementation plus validation; includes shared authoring path and parent integration, excludes subsequent final-review/merge. One small batch, not a steady-state rate.",
+  "benchmark": {
+    "clone_ns": 258.70652,
+    "decisions": 55333,
+    "decisions_per_second": 289072.52616166964,
+    "games": 100,
+    "games_per_second": 522.4233751317832,
+    "initial_state_bytes_excluding_capacity_and_allocator": 20408,
+    "max_decisions_per_game": 1389,
+    "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+    "restore_ns": 110.51577,
+    "seconds": 0.191415631
+  },
+  "cleaned_allocated_bytes": 543899648,
+  "library_sha256": "66d2a495e8873863ae203c41311d276eb89c83fd01a0ec71a5bb0f7fb48e8763",
+  "preservation": {
+    "prior_definitions": 5334,
+    "current_definitions": 5334,
+    "changed_definitions": [
+      "Explosive Derailment#0",
+      "Jailbreak Scheme#0",
+      "Requisition Raid#0",
+      "Rustler Rampage#0"
+    ],
+    "added_definitions": [],
+    "preserved_definitions": 5330,
+    "prior_helpers": 930,
+    "new_helpers": [],
+    "prior_colors": 5334,
+    "inline_flag_tables": 3,
+    "token_recipes": 97,
+    "emblem_recipes": 1,
+    "prior_aliases": 5440,
+    "result": "PASS"
+  },
+  "validation_phases": [
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--all-targets"
+      ],
+      "exit": 0,
+      "seconds": 27.422391550964676
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "seconds": 14.013094360008836
+    },
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--check"
+      ],
+      "exit": 0,
+      "seconds": 1.30730595899513
+    },
+    {
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "/home/altf4/.codex/worktrees/role-aura-kernels/rustmage/src/card_definitions/explosive_derailment.rs",
+        "/home/altf4/.codex/worktrees/role-aura-kernels/rustmage/src/card_definitions/jailbreak_scheme.rs",
+        "/home/altf4/.codex/worktrees/role-aura-kernels/rustmage/src/card_definitions/mod.rs",
+        "/home/altf4/.codex/worktrees/role-aura-kernels/rustmage/src/card_definitions/requisition_raid.rs",
+        "/home/altf4/.codex/worktrees/role-aura-kernels/rustmage/src/card_definitions/rustler_rampage.rs"
+      ],
+      "exit": 0,
+      "seconds": 0.013777680054772645
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/generate_catalogue.py",
+        "--check"
+      ],
+      "exit": 0,
+      "seconds": 6.159159364993684
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "scripts.test_direct_cards"
+      ],
+      "exit": 0,
+      "seconds": 0.23881207103841007
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "--release",
+        "--lib",
+        "--bin",
+        "benchmark"
+      ],
+      "exit": 0,
+      "seconds": 38.589833081990946
+    },
+    {
+      "command": [
+        "/home/altf4/.cache/rustmage-validation-506w6noa/release/benchmark",
+        "100"
+      ],
+      "exit": 0,
+      "seconds": 0.23320655594579875
+    }
+  ]
+}
