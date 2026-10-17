@@ -1565,11 +1565,12 @@ pub(crate) enum ActivationGuard {
     Always,
     OwnTurn,
     ControlSubtypeAny(&'static [&'static str]),
+    ControlLandsAtLeast(u16),
 }
 impl ActivationGuard {
     pub(crate) fn subtypes(self) -> &'static [&'static str] {
         match self {
-            Self::Always | Self::OwnTurn => &[],
+            Self::Always | Self::OwnTurn | Self::ControlLandsAtLeast(_) => &[],
             Self::ControlSubtypeAny(types) => types,
         }
     }

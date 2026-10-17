@@ -233,6 +233,16 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             }
             Action::FinishTargets => 0,
             Action::ChooseMana { production } => mana_score(&observation, *production),
+            Action::TapGrantedMana { production, .. } => {
+                if observation.resolution_payment.is_some() {
+                    return resolution_mana_score([0; 6], *production);
+                }
+                if tap_for_main {
+                    20 + mana_score(&observation, *production)
+                } else {
+                    -5
+                }
+            }
             Action::ActivateMana {
                 production,
                 payment,
