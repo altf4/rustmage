@@ -4,7 +4,7 @@ from scripts import generate_catalogue as g
 from scripts.catalogue_preservation import canonical,assert_union
 NAMES={'Doc Ock, Sinister Scientist','Mirkwood Meditator','Multiply by Zero','Perfected Theory','Quandrix Charm','Snowmelt Stag','Turtle-Duck','Water Wings','Gateway Sneak','Snooping Page'}
 PARENT='5d103e7a3172e4742687d3f77f3ed814264b1532'
-DELIVERED='4b309a0'
+DELIVERED='4b309a0763b4e8d12ebdb750ea098458f5f2c961'
 COMPOSED_PARENT='c0c25197ce1fce2b8973c538455d49e2ffa46b23'
 class BaseStatTests(unittest.TestCase):
  @classmethod
