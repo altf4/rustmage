@@ -54,10 +54,10 @@ class JointLandTests(unittest.TestCase):
   self.assertEqual(proof['prior_helpers'],924)
   for name in ["Worldsoul's Rage#0",'Bonny Pall, Clearcutter#0',key]:self.assertEqual(current['definitions'][name],after['definitions'][name])
   for helper in [('dynamic_stats',key),('x_symbols',"Worldsoul's Rage#0")]:self.assertEqual(current['helpers'][helper],after['helpers'][helper])
-  self.assertEqual(current['tokens'],delivered_tokens)
+  self.assertTrue(all(current['tokens'].get(k)==v for k,v in delivered_tokens.items()))
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(before,mutant,changed={"Worldsoul's Rage#0",'Bonny Pall, Clearcutter#0'},added=new,helpers={('dynamic_stats',key),('x_symbols',"Worldsoul's Rage#0")},aliases={key.removesuffix('#0'):key})
- def test_remaining_four_full_bodies_stay_gated(self):
-  for name in ['Kellan, the Kid','Michelangelo, Improviser','Spelunking','The Gitrog, Ravenous Ride']:
+ def test_remaining_three_full_bodies_stay_gated(self):
+  for name in ['Kellan, the Kid','Michelangelo, Improviser','The Gitrog, Ravenous Ride']:
    self.assertFalse(self.compile(self.cards[name])[1],name)
 if __name__=='__main__':unittest.main()

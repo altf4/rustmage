@@ -96,8 +96,7 @@ impl Game {
                 let mut movement = self.entry_move(
                     id,
                     destination,
-                    destination == Zone::Battlefield
-                        && (choice.spec.tapped || self.enters_tapped(id)),
+                    destination == Zone::Battlefield && choice.spec.tapped,
                 );
                 movement.reveal_hand = choice.spec.reveal && destination == Zone::Hand;
                 movement
