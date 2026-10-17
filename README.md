@@ -9,9 +9,9 @@ using reusable engine effects and independent per-card files. Existing templates
 remain available; English rules parsing is not required for new definitions.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,983 have executable rules so far,
-with 3,181 still gated. The catalogue includes 97 token recipes and one emblem;
-observations use schema 105.
+knows all 5,164 pinned Standard identities; 1,987 have executable rules so far,
+with 3,177 still gated. The catalogue includes 97 token recipes and one emblem;
+observations use schema 106.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).

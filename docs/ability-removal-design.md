@@ -1,4 +1,52 @@
-# Ordered ability removal: architecture audit
+# Ordered ability removal
+## Delivered core and complete definitions
+
+Four complete cards are directly authored in paired Rust/provenance files:
+Fresh Start, Frozen in Ice, Stop Cold, and Enchanted River's Grasp. The current
+composition uses observation schema 106 from the shared schema file and retains
+all previously implemented behavior. Coverage is 1,987 of 5,164 Standard identities;
+the remaining twenty inventoried ability-loss bodies retain their explicit
+dependencies. This work does not complete the overall migration.
+
+The shared layer-six evaluator orders loss and gains by dependency and timestamps,
+retains effects that began in earlier layers, and preserves captured queued
+abilities. It consults a borrowed actual or mana-overlay world rather than storing
+mutable derived characteristics in each object. Sparse source/effect chronology
+is owned across clone, restore and branch operations. External blocking rules are
+separate from removable granted abilities. Counter reset and untap instructions
+use exact attached objects; prohibitions apply before Stun counters are consumed.
+Both entry replacement paths test the effective provider ability. The existing
+controlled-untapped helper receives a typed source-local identity without English
+parsing, card-name dispatch or physical-ID cases. The direct registry migration
+must preserve this getter supplement as well as the original origin table.
+
+Corrected core validation: 1,939 unit and 12 integration tests pass, followed by
+all-target Clippy with warnings denied. Seven actual paid groups run in both seats
+with wrong-actor and stale-action denials, raw/index equivalence, owned parent-drop
+branches, restore/replay and both-view checks. These cover all four printed bodies,
+all supported counter kinds, Stun-preserving prohibited untaps, effect versus
+controller-step untaps, lost mana abilities, Equipment earlier-layer continuation,
+external blocking rules, old and later grants, multipart Archon and later-layer
+Maha suppression/restoration, queued Alchemist programs, and actual Minstrel
+entry-tap suppression followed by Disenchant and natural-turn restoration.
+
+After composing the shared-schema parent, four focused Python provenance/wire
+checks and one native wire check pass. A fresh optimized library builds and two
+release wire checks pass. The only production change from the full-tested core
+is selecting the same schema value through the parent's shared include parser;
+the source and policies remain frozen for every consuming run.
+
+Historical failures are retained rather than relabeled: the first authored build
+had Rust string/include encoding errors; the next three new tests exposed omitted
+Aura spell target plans in the direct definitions. A later test wrongly expected
+an Alchemist counter instead of its printed temporary +2/+0 effect. All were
+corrected before the passing full core run. An eight-case natural-game diagnostic
+was explicitly terminated when the missing controlled-entry provider gate was
+found, then the gate was fixed and the real paid regression added. No passing
+natural-game workload is claimed. Repeated evaluation during observations needs
+profiling and reuse of a coherent ephemeral world (issue #354).
+
+## Historical architecture checkpoints
 
 Issue [337](https://github.com/altf4/rustmage/issues/337). Foundation `61a7d0cef4b10591958cea4391c553db4c2c07ff`; schema102 reserved. This is a source/architecture checkpoint, **no new card admitted and no runtime changes**. Final implementation must compose live-static100 and hand/grave101 before freezing.
 

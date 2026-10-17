@@ -3,7 +3,7 @@
   "issue": 337,
   "parent": "61a7d0cef4b10591958cea4391c553db4c2c07ff",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-  "reserved_observation_schema": 102,
+  "reserved_observation_schema": 106,
   "scope": "24 complete physical bodies matching lose/loses all abilities; explicit resolvable single-class imports plus full card roots, not transitive closure or an admission whitelist",
   "source_records": 410,
   "unique_sources": [
@@ -1081,7 +1081,7 @@
           "released_at": "2026-08-14"
         }
       },
-      "status": "inventoried_priority_not_implemented",
+      "status": "implemented_direct_rust",
       "required_semantics": "layer6 removal plus controller-step prohibition; ETB tap and remove ALL counters",
       "sources": [
         {
@@ -1512,7 +1512,7 @@
           "released_at": "2025-04-11"
         }
       },
-      "status": "inventoried_priority_not_implemented",
+      "status": "implemented_direct_rust",
       "required_semantics": "layer6 complete removal plus existing -5/-0/Flash/Aura support",
       "sources": [
         {
@@ -1606,7 +1606,7 @@
           "released_at": "2026-06-26"
         }
       },
-      "status": "inventoried_priority_not_implemented",
+      "status": "implemented_direct_rust",
       "required_semantics": "layer6 removal plus generic ALL-attempt untap prohibition and ETB tap",
       "sources": [
         {
@@ -2402,7 +2402,7 @@
           "released_at": "2024-04-19"
         }
       },
-      "status": "inventoried_priority_not_implemented",
+      "status": "implemented_direct_rust",
       "required_semantics": "layer6 removal plus controller-untap-step prohibition; artifact or creature recipient",
       "sources": [
         {
@@ -2849,5 +2849,6 @@
         }
       ]
     }
-  ]
+  ],
+  "delivery_parent": "361285a34c6ab5dc3a511a2f9a024ee5dcaf0abf"
 }

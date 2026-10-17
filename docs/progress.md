@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,983 executable Standard identities | 3,181 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,987 executable Standard identities | 3,177 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -418,3 +418,23 @@ payment and owned replay. The existing100-game native smoke benchmark passes;
 its scope and measured implementation/validation throughput are in
 [the automated results](direct-authoring-results.json). This is partial progress;
 full Standard rules/interactions and broad simulation/search performance remain open.
+
+### Ordered ability removal and four directly authored Auras
+
+PR #338 implements Fresh Start, Frozen in Ice, Stop Cold, and Enchanted River’s
+Grasp as independent typed Rust definitions. Layer-six evaluation preserves
+source identities, earlier-layer continuations and later grants; queued triggers
+keep their captured programs. Actual and speculative mana legality share borrowed
+characteristic facts. Untap prohibitions distinguish all attempts from controller
+untap steps and apply before Stun replacements. Entry providers are suppressed in
+both replacement paths and restore when removal ends.
+
+The corrected core passes 1,939 unit tests, 12 integration tests and strict
+all-target Clippy. Seven paid, both-seat groups cover the complete Aura bodies,
+Equipment effects, grant order, live providers, queued triggers and Minstrel entry
+replacement restoration. Shared-schema composition passes four focused Python
+checks, a native wire check and an optimized build; two fresh release wire checks
+pass. Observation schema is 106. The natural-game diagnostic was explicitly
+canceled after discovering the corrected entry-provider omission; it is not a
+passing gameplay workload. Repeated ephemeral evaluation during observations is
+tracked as core performance issue #354. Full Standard remains incomplete.
