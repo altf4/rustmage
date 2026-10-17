@@ -50,13 +50,17 @@ fn ability_removal_paid_all_four_complete_bodies_counters_untap_and_real_activat
             let researcher = named(&mut g, p, "Forensic Researcher", Zone::Battlefield);
             g.state.objects[researcher as usize].summoning_sick = false;
             if name == "Enchanted River's Grasp" {
-                g.state.objects[elf as usize].counters = Counters {
-                    plus_one: 4,
-                    minus_one: 1,
-                    stun: 3,
-                    lore: 4,
-                    loyalty: 5,
-                };
+                g.set_counters(
+                    elf,
+                    Counters {
+                        plus_one: 4,
+                        minus_one: 1,
+                        stun: 3,
+                        lore: 4,
+                        loyalty: 5,
+                        ..Counters::default()
+                    },
+                );
             } else if name == "Frozen in Ice" {
                 g.state.objects[elf as usize].counters.stun = 3;
             }
@@ -78,7 +82,7 @@ fn ability_removal_paid_all_four_complete_bodies_counters_untap_and_real_activat
                 "{name}"
             );
             if name == "Enchanted River's Grasp" {
-                assert_eq!(g.state.objects[elf as usize].counters, Counters::default());
+                assert_eq!(g.object_view(elf).counters, Counters::default());
             }
             assert_eq!(g.object_view(elf).tapped, name != "Fresh Start", "{name}");
             assert!(!g.legal_actions().iter().any(|action| matches!(action,

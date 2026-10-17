@@ -168,7 +168,7 @@ fn funding_reserves_tap_source_and_exact_hand_incarnation() {
     announce(&mut g, volume, 1);
     choose(&mut g, discard);
     let goal = g.funding_goal(g.state.announcing.as_ref().unwrap());
-    assert!(g.can_fund(goal));
+    assert!(g.can_fund(goal.clone()));
     assert!(
         !g.legal_actions()
             .iter()
@@ -188,9 +188,9 @@ fn funding_reserves_tap_source_and_exact_hand_incarnation() {
     replay(&mut g, a);
     let s = g.snapshot();
     g.move_object(discard, Zone::Graveyard);
-    assert!(!g.can_fund(goal));
+    assert!(!g.can_fund(goal.clone()));
     g.move_object(discard, Zone::Hand);
-    assert!(!g.can_fund(goal));
+    assert!(!g.can_fund(goal.clone()));
     g.restore(&s).unwrap();
     pay(&mut g);
     assert!(g.object_view(volume).tapped);

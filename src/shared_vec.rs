@@ -56,3 +56,9 @@ impl<T: Clone> IntoIterator for SharedVec<T> {
         Arc::unwrap_or_clone(self.0).into_iter()
     }
 }
+
+impl<T: std::hash::Hash> std::hash::Hash for SharedVec<T> {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.0.hash(state);
+    }
+}

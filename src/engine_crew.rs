@@ -586,7 +586,7 @@ mod core_tests {
                     reserve: None,
                     source: None,
                 };
-                assert!(g.can_fund(goal));
+                assert!(g.can_fund(goal.clone()));
                 assert!(
                     g.legal_actions()
                         .iter()
@@ -605,19 +605,19 @@ mod core_tests {
                 replay(&mut g, Action::FinishCrew);
                 settle(&mut g);
                 g.state.priority = actor;
-                assert!(!g.can_fund(goal));
+                assert!(!g.can_fund(goal.clone()));
                 assert!(
                     !g.legal_actions()
                         .iter()
                         .any(|a| matches!(a,Action::ActivateMana{card,..} if *card==source))
                 );
                 g.state.objects[source as usize].gained_keywords = Keywords::HASTE;
-                assert!(g.can_fund(goal));
+                assert!(g.can_fund(goal.clone()));
                 g.state.objects[source as usize].gained_keywords = Keywords::NONE;
                 g.state.objects[source as usize].summoning_sick = false;
-                assert!(g.can_fund(goal));
+                assert!(g.can_fund(goal.clone()));
                 g.state.objects[source as usize].tapped = true;
-                assert!(!g.can_fund(goal));
+                assert!(!g.can_fund(goal.clone()));
             }
         }
     }

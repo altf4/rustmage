@@ -30,6 +30,8 @@ impl Card {
                     matches!(
                         fragment,
                         StaticAbilityFragment::RemoveAttachedAbilities
+                            | StaticAbilityFragment::SourceCounterSubtype { .. }
+                            | StaticAbilityFragment::AttachedSubtype(..)
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::AttachmentKeywords(..)
                             | StaticAbilityFragment::AttachedTurnKeywords(..)

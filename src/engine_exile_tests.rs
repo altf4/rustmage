@@ -48,10 +48,7 @@ fn linked_exile_is_public_owned_and_returns_fresh_incarnation_with_etb() {
     g.move_object(source, Zone::Hand);
     assert_eq!(g.state.objects[target as usize].zone, Zone::Battlefield);
     assert!(g.state.objects[target as usize].summoning_sick);
-    assert_eq!(
-        g.state.objects[target as usize].counters,
-        Counters::default()
-    );
+    assert_eq!(g.object_view(target).counters, Counters::default());
     assert_eq!(g.state.objects[target as usize].damage, 0);
     assert!(g.state.exile_links.is_empty());
     assert_eq!(g.state.pending_triggers.len(), 1);

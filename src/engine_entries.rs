@@ -53,6 +53,11 @@ impl EntryBatch {
         std::mem::size_of::<Self>()
             + self.moves.len() * std::mem::size_of::<EntryMove>()
             + self
+                .moves
+                .iter()
+                .map(|m| m.counters.owned_bytes() + m.before.counters.owned_bytes())
+                .sum::<usize>()
+            + self
                 .tap_events
                 .iter()
                 .map(EntryTapEvent::bytes)
@@ -274,7 +279,7 @@ impl Game {
         let mut counter_order = moves
             .iter()
             .enumerate()
-            .filter(|(_, m)| m.destination == Zone::Battlefield && m.counters.total() > 0)
+            .filter(|(_, m)| m.destination == Zone::Battlefield && m.counters.has_any())
             .map(|(i, _)| i)
             .collect::<Vec<_>>();
         counter_order.sort_by_key(|&i| (moves[i].controller != self.state.active, i));
@@ -294,7 +299,7 @@ impl Game {
         };
         let counter_replacements = batch.moves.iter().any(|m| {
             m.destination == Zone::Battlefield
-                && m.counters.total() > 0
+                && m.counters.has_any()
                 && (!m.before.card.replacement_effects().is_empty()
                     || self.state.static_sources.iter().any(|&id| {
                         self.state.objects[id as usize]
@@ -409,7 +414,7 @@ impl Game {
             .map(|m| {
                 // Impossible Aura entry can redirect an already staged move.
                 let counters = if m.destination == Zone::Battlefield {
-                    m.counters
+                    m.counters.clone()
                 } else {
                     Counters::default()
                 };
@@ -593,7 +598,7 @@ impl Game {
                 let index = batch.counter_order[batch.counter_next];
                 batch.counter_next += 1;
                 let m = &batch.moves[index];
-                if m.destination != Zone::Battlefield || m.skipped || m.counters.total() == 0 {
+                if m.destination != Zone::Battlefield || m.skipped || m.counters.is_empty() {
                     continue;
                 }
                 let p = replacements::CounterPlacement {
@@ -604,7 +609,7 @@ impl Game {
                     controller: m.controller,
                     subtypes: GrantedSubtypes::default(),
                     kind: m.before.card.kind_mask(),
-                    amount: m.counters,
+                    amount: m.counters.clone(),
                     effect: true,
                     entry_index: Some(index),
                     private: !visible(m, m.before.owner.other(), &self.state.known_hand),

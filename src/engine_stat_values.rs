@@ -35,9 +35,7 @@ impl Game {
             && (!filter.cards_only || !o.card.is_token())
             && (filter.kind == 0 || kinds(id, o) & filter.kind != 0)
             && kinds(id, o) & filter.exclude == 0
-            && filter
-                .subtype
-                .is_none_or(|s| o.card.has_subtype(s) || subtypes(id).contains(s))
+            && filter.subtype.is_none_or(|s| subtypes(id).has(o.card, s))
             && (!filter.basic || o.card.is_basic_land())
     }
     pub(super) fn stat_value(&self, value: StatValue, source: ObjectRef, owner: Player) -> i128 {
@@ -67,6 +65,7 @@ impl Game {
             &|id| self.granted_subtypes(id),
             &|id, o| self.object_kinds(id, o),
             &|id| self.object_name(id),
+            &|id| self.counter_amounts(id).has_any(),
             self.state.players[owner.index()].life,
             self.state.attack_declared
                 && self.state.attackers.iter().any(|a| a.card == source.card),
@@ -84,6 +83,7 @@ impl Game {
         subtypes: &impl Fn(CardId) -> GrantedSubtypes,
         kinds: &impl Fn(CardId, &Object) -> u16,
         names: &impl Fn(CardId) -> &'static str,
+        has_counters: &impl Fn(CardId) -> bool,
         life: i128,
         attacking: bool,
     ) -> i128
@@ -101,7 +101,16 @@ impl Game {
                 .count() as i128,
             StatValue::Not(value) => i128::from(
                 self.stat_value_with(
-                    *value, source, owner, objects, subtypes, kinds, names, life, attacking,
+                    *value,
+                    source,
+                    owner,
+                    objects,
+                    subtypes,
+                    kinds,
+                    names,
+                    has_counters,
+                    life,
+                    attacking,
                 ) == 0,
             ),
             StatValue::ControllerHandSize => objects()
@@ -125,7 +134,7 @@ impl Game {
                 .filter(|(id, o)| {
                     o.controller == owner
                         && o.zone == Zone::Battlefield
-                        && (o.card.has_subtype(subtype) || subtypes(*id).contains(subtype))
+                        && (subtypes(*id).has(o.card, subtype))
                         && self.state.attackers.iter().any(|a| a.card == *id)
                 })
                 .count() as i128,
@@ -157,7 +166,12 @@ impl Game {
                 objects()
                     .find(|(id, o)| *id == source.card && o.generation == source.generation)
                     .is_some_and(|(_, o)| {
-                        Self::object_modified_with(source, o, objects().map(|(_, o)| o))
+                        Self::object_modified_with(
+                            source,
+                            o,
+                            has_counters(source.card),
+                            objects().map(|(_, o)| o),
+                        )
                     }),
             ),
             StatValue::Tokens(filter) => objects()
@@ -168,7 +182,16 @@ impl Game {
                 .count() as i128,
             StatValue::AtLeast { value, minimum } => i128::from(
                 self.stat_value_with(
-                    *value, source, owner, objects, subtypes, kinds, names, life, attacking,
+                    *value,
+                    source,
+                    owner,
+                    objects,
+                    subtypes,
+                    kinds,
+                    names,
+                    has_counters,
+                    life,
+                    attacking,
                 ) >= i128::from(minimum),
             ),
             StatValue::SpellsCastThisTurn => {
@@ -249,7 +272,16 @@ impl Game {
                 .iter()
                 .map(|&value| {
                     self.stat_value_with(
-                        value, source, owner, objects, subtypes, kinds, names, life, attacking,
+                        value,
+                        source,
+                        owner,
+                        objects,
+                        subtypes,
+                        kinds,
+                        names,
+                        has_counters,
+                        life,
+                        attacking,
                     )
                 })
                 .try_fold(0i128, i128::checked_add)

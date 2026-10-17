@@ -124,6 +124,10 @@ impl ReplacementState {
     pub fn bytes(&self) -> usize {
         let counter_bytes = |b: &CounterBatch| {
             b.placements.len() * std::mem::size_of::<CounterPlacement>()
+                + b.placements
+                    .iter()
+                    .map(|p| p.amount.owned_bytes())
+                    .sum::<usize>()
                 + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
         };
         let token_bytes = |b: &TokenBatch| {
@@ -178,7 +182,7 @@ impl ReplacementState {
     }
 }
 fn matches_filter(filter: ReplacementFilter, p: &CounterPlacement) -> bool {
-    let subtype = |s| p.card.has_subtype(s) || p.subtypes.contains(s);
+    let subtype = |s| p.subtypes.has(p.card, s);
     match filter {
         ReplacementFilter::Permanent => true,
         ReplacementFilter::Creature => p.kind & 1 != 0,
@@ -200,7 +204,7 @@ fn counter_applies(spec: ReplacementSpec, p: &CounterPlacement) -> bool {
     };
     matches_filter(filter, p)
         && (!effects_only || p.effect)
-        && kind.map_or_else(|| p.amount.total() > 0, |k| p.amount.get(k) > 0)
+        && kind.map_or_else(|| p.amount.has_any(), |k| p.amount.get(k) > 0)
 }
 fn modify_counter(spec: ReplacementSpec, p: &mut CounterPlacement) {
     let ReplacementSpec::Counters {
@@ -394,15 +398,13 @@ impl Game {
                     .as_mut()
                     .expect("owned entry counter batch")
                     .moves[index]
-                    .counters = p.amount;
+                    .counters = p.amount.clone();
             } else if self.on_battlefield(p.object.card)
                 && self.object_ref(p.object.card) == p.object
             {
                 let before = self.state.objects[p.object.card as usize].counters.lore;
                 for kind in CounterKind::ALL {
-                    self.state.objects[p.object.card as usize]
-                        .counters
-                        .add(kind, p.amount.get(kind));
+                    self.add_counter(p.object.card, kind, p.amount.get(kind));
                 }
                 for kind in CounterKind::ALL {
                     self.self_counters_added(p.object, kind, p.amount.get(kind), p.placed_by);
@@ -421,7 +423,7 @@ impl Game {
         mut placements: Vec<CounterPlacement>,
         mode: ResumeMode,
     ) {
-        placements.retain(|p| p.amount.total() > 0);
+        placements.retain(|p| p.amount.has_any());
         if placements.is_empty() {
             return;
         }
@@ -506,7 +508,7 @@ impl Game {
             })
         {
             let before = self.state.objects[id as usize].counters.lore;
-            self.state.objects[id as usize].counters.add(kind, amount);
+            self.add_counter(id, kind, amount);
             let placed_by = self
                 .state
                 .resolving
@@ -1071,7 +1073,7 @@ impl Game {
                     damage: None,
                     kind: "Counters",
                     object: Some(p.object),
-                    counters: Some(p.amount),
+                    counters: Some(p.amount.clone()),
                     tokens: Vec::new(),
                     role_attachments: Vec::new(),
                     effects: self.counter_replacements(p, &batch.used),

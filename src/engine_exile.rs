@@ -209,7 +209,7 @@ impl Game {
                     .resolving
                     .as_ref()
                     .map_or(event.before.controller, |r| r.item.controller);
-                let counters = self.state.objects[event.after.card as usize].counters;
+                let counters = self.counter_amounts(event.after.card).to_owned();
                 for kind in CounterKind::ALL {
                     self.self_counters_added(event.after, kind, counters.get(kind), placed_by);
                 }

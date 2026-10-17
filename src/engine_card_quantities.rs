@@ -86,7 +86,6 @@ impl SpellView {
 }
 
 impl Game {
-    // Replaced by the shared sidecar-aware counter_count query at integration.
     pub(super) fn source_counter_quantity_live(
         &self,
         source: ObjectRef,
@@ -96,7 +95,7 @@ impl Game {
             .objects
             .get(source.card as usize)
             .filter(|object| object.generation == source.generation)
-            .map(|object| object.counters.get(kind))
+            .map(|_| self.counter_count(source.card, kind))
     }
     pub(super) fn refresh_local_source_counter_quantities(&self, item: &mut SpellView) {
         if item.source_counter_lki.is_some()

@@ -1006,7 +1006,7 @@ impl Game {
                 self.pay_activation(
                     &mut announcement.item,
                     payment,
-                    announcement.counter_payment,
+                    announcement.counter_payment.clone(),
                 );
             }
             self.pay_additional_cost(&mut announcement);
@@ -1017,7 +1017,7 @@ impl Game {
                 self.pay_activation(
                     &mut announcement.item,
                     payment,
-                    announcement.counter_payment,
+                    announcement.counter_payment.clone(),
                 );
             } else {
                 self.spend_mana(announcement.item.controller, payment);

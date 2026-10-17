@@ -66,7 +66,7 @@ impl Game {
             && keywords.contains(f.keywords)
             && f.tokens.is_none_or(|token| o.card.is_token() == token)
             && f.subtype
-                .is_none_or(|subtype| o.card.has_subtype(subtype) || subtypes.contains(subtype))
+                .is_none_or(|subtype| subtypes.has(o.card, subtype))
     }
 
     pub(super) fn spell_can_fund(&self, actor: Player, card: CardId, cost: ManaCost) -> bool {
@@ -132,7 +132,7 @@ impl Game {
             self.additional_candidate(spec, actor, self.object_ref(card), object)
                 && self.can_fund(FundingGoal {
                     reserve: Some((object, spec)),
-                    ..base
+                    ..base.clone()
                 })
         })
     }
@@ -144,7 +144,7 @@ impl Game {
         let Some(spec) = spec else {
             return self.can_fund(goal);
         };
-        let source = goal.source.expect("activation source").0;
+        let source = goal.source.as_ref().expect("activation source").0;
         if let Some(n) = evidence::threshold(spec) {
             return self.can_collect_evidence(goal.actor, n) && self.can_fund(goal);
         }
@@ -156,7 +156,7 @@ impl Game {
             self.additional_candidate(spec, goal.actor, source, object)
                 && self.can_fund(FundingGoal {
                     reserve: Some((object, spec)),
-                    ..goal
+                    ..goal.clone()
                 })
         })
     }

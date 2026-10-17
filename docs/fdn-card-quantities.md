@@ -31,6 +31,8 @@ previous attack requirement.
 
 The bounded core scenarios use ordinary typed instructions and the actual shared
 payment routine. They do not install synthetic printed abilities on supported
-cards. Final validation and performance measurements follow integration of the
-counter-sidecar and subtype-layer parent cores. Complete consumer bodies and
+cards. The parent counter sidecar and subtype-layer core are integrated here; quantities
+use the shared allocation-free counter query, including Soul and exile Stash
+counts. Schema 117 adds the optional selected-counter packet payload. Final
+validation and performance measurements follow the reviewed parent merge. Complete consumer bodies and
 independent reviews remain required before any support count changes.
