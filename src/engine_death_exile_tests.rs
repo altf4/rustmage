@@ -351,11 +351,11 @@ fn all_eleven_paid_whole_bodies_every_mode_both_seats_and_foreign_spell_ownershi
                     targets.push(Target::Card(treasure));
                 }
                 let before = g.state.players[p.index()].mana.iter().sum::<u32>();
-                let mv = g.object_view(spell).card.mana_value();
+                let mv = g.object_view(spell).card.fixed_mana_value();
                 paid_cast(&mut g, spell, mode, &targets);
                 assert_eq!(
                     before - g.state.players[p.index()].mana.iter().sum::<u32>(),
-                    u32::from(mv),
+                    u32::try_from(mv).unwrap(),
                     "{name}"
                 );
                 let after_paid = g.state.players[p.index()].mana;
