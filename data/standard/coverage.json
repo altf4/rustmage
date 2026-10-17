@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "faedeae28a8f0b8f8bf717c0fa58a71c98d729647153da1be9fc765644249602",
+  "catalogue_version": "d00f8ecbff8352215ec973b0c05680aeb899c7323fb944091e8d6919691f1c54",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1905,
-  "implemented_total": 1911,
+  "implemented_standard_cards": 1912,
+  "implemented_total": 1918,
   "token_definitions": 95,
   "emblem_definitions": 1,
   "cards": [
@@ -448,8 +448,8 @@
     {
       "name": "Aetherize",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Aetherjacket",
@@ -17206,8 +17206,8 @@
     {
       "name": "Mouser Mark III",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Mouth of the Storm",
@@ -18526,8 +18526,8 @@
     {
       "name": "Pacifism",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Pactdoll Terror",
@@ -21310,8 +21310,8 @@
     {
       "name": "River's Rebuke",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Riverchurn Monument",
@@ -26128,8 +26128,8 @@
     {
       "name": "Technodrome",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Tectonic Hazard",
@@ -26812,8 +26812,8 @@
     {
       "name": "The Lion-Turtle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "The Lonely Mountain",
@@ -27598,8 +27598,8 @@
     {
       "name": "Tiger-Dillo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Tiger-Seal",

@@ -5,8 +5,8 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,896 have executable rules so far,
-with 3,268 still gated. The catalogue includes 94 token recipes and one emblem;
+knows all 5,164 pinned Standard identities; 1,903 have executable rules so far,
+with 3,261 still gated. The catalogue includes 94 token recipes and one emblem;
 observations use schema 89.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
