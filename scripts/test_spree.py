@@ -29,4 +29,36 @@ class SpreeCompilerTests(unittest.TestCase):
     self.assertIsNone(g.spree_spell_template(dict(card,oracle_text=raw.replace(line,line+' (Draw seven cards.)'))))
    for cost in ['{X}','{Q}','{W/P}']:
     self.assertIsNone(g.spree_spell_template(dict(card,oracle_text=raw.replace('+ {', '+ '+cost+'{',1))))
+ def test_complete_inventory_facts_and_every_pinned_java_byte(self):
+  import hashlib,subprocess
+  from pathlib import Path
+  audit=json.loads((g.ROOT/'docs/spree-admissions.json').read_text())
+  self.assertEqual(audit['java_revision'],'492369c7844b8d76479f0393ff9eb6b0b0cf30d7')
+  self.assertEqual(audit['physical_cards'],21);self.assertEqual(audit['unique_source_count'],134)
+  facts={c['name']:c for c in self.rows}
+  self.assertEqual({c['name']:c['facts']for c in audit['cards']},facts)
+  for record in audit['cards']:self.assertEqual(record['unresolved_imports'],[])
+  seen=set()
+  for record in audit['unique_sources']:
+   path=record['path'];self.assertNotIn(path,seen);seen.add(path)
+   blob=subprocess.check_output(['git','-C','/home/altf4/Code/mage','show',audit['java_revision']+':'+path])
+   self.assertEqual(len(blob),record['bytes']);self.assertEqual(hashlib.sha256(blob).hexdigest(),record['sha256'])
+   self.assertEqual((Path('/home/altf4/Code/mage')/path).read_bytes(),blob)
+ def test_strict_actual_parent_two_complete_bodies_and_unrelated_mutation(self):
+  import subprocess
+  from scripts.catalogue_preservation import canonical,assert_union
+  physical={c['oracle_id']:c['name']for c in json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards']}
+  before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','2812c749b63b38d10572bf96baacd527464852de:src/generated/catalogue.rs'],text=True),physical)
+  after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  names={'Explosive Derailment','Phantom Interference'}
+  args=dict(changed={n+'#0'for n in names},added={'@token/2b2fa37913ce33dcd173c4f3#0'},helpers={('tiered_costs',n+'#0')for n in names},aliases={'@token/2b2fa37913ce33dcd173c4f3':'@token/2b2fa37913ce33dcd173c4f3#0'})
+  self.assertEqual(set(after['tokens'])-set(before['tokens']),{'@token/2b2fa37913ce33dcd173c4f3'})
+  self.assertEqual(len(after['tokens']),97)
+  for key,value in before['tokens'].items():self.assertEqual(after['tokens'][key],value)
+  self.assertIn('subtypes: \"Spirit\", colors: 1',after['tokens']['@token/2b2fa37913ce33dcd173c4f3'])
+  after=copy.deepcopy(after);after['tokens']=copy.deepcopy(before['tokens'])
+  proof=assert_union(before,after,**args)
+  self.assertEqual(proof['preserved_definitions'],5331);self.assertEqual(proof['prior_helpers'],928);self.assertEqual(proof['token_recipes'],96)
+  mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
+  with self.assertRaises(AssertionError):assert_union(before,mutant,**args)
 if __name__=='__main__':unittest.main()

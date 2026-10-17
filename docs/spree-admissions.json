@@ -6866,7 +6866,51 @@
           "wildcard_imports": []
         }
       ],
-      "unresolved_imports": []
+      "unresolved_imports": [],
+      "referenced_wildcard_type_sources": [
+        {
+          "path": "Mage/src/main/java/mage/constants/CardType.java",
+          "sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45",
+          "bytes": 2985,
+          "explicit_imports": [
+            "mage.MageObject",
+            "mage.filter.predicate.Predicate",
+            "mage.game.Game",
+            "java.util.ArrayList",
+            "java.util.Arrays",
+            "java.util.List"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "path": "Mage/src/main/java/mage/constants/ComparisonType.java",
+          "sha256": "33b0abc2b4214ece7d2f842b9f000d967dd8fb4e6cb073cb34eeab7e304731ef",
+          "bytes": 972,
+          "explicit_imports": [],
+          "wildcard_imports": []
+        },
+        {
+          "path": "Mage/src/main/java/mage/constants/Duration.java",
+          "sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747",
+          "bytes": 1880,
+          "explicit_imports": [],
+          "wildcard_imports": []
+        },
+        {
+          "path": "Mage/src/main/java/mage/constants/Outcome.java",
+          "sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2",
+          "bytes": 1970,
+          "explicit_imports": [],
+          "wildcard_imports": []
+        },
+        {
+          "path": "Mage/src/main/java/mage/constants/Zone.java",
+          "sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e",
+          "bytes": 683,
+          "explicit_imports": [],
+          "wildcard_imports": []
+        }
+      ]
     },
     {
       "name": "Three Steps Ahead",
@@ -9453,6 +9497,13 @@
       "wildcard_imports": []
     },
     {
+      "path": "Mage/src/main/java/mage/constants/ComparisonType.java",
+      "sha256": "33b0abc2b4214ece7d2f842b9f000d967dd8fb4e6cb073cb34eeab7e304731ef",
+      "bytes": 972,
+      "explicit_imports": [],
+      "wildcard_imports": []
+    },
+    {
       "path": "Mage/src/main/java/mage/constants/Duration.java",
       "sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747",
       "bytes": 1880,
@@ -10320,6 +10371,6 @@
       "wildcard_imports": []
     }
   ],
-  "unique_source_count": 133,
+  "unique_source_count": 134,
   "physical_cards": 21
 }
