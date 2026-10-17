@@ -185,6 +185,49 @@ fn source_obligations(
     }
 }
 
+/// Upper bound on total mana gained by all remaining uses of one pure mana
+/// ability. Converters may improve colors but cannot create spendable quantity.
+/// Overlapping resource/life/counter costs across abilities are deliberately
+/// counted independently: this can only overestimate what a legal path gains.
+fn activation_gain_upper(ability: &ActivatedAbility, counters: Counters, life: i128) -> u128 {
+    let Some(production) = ability.mana_production() else {
+        return 0;
+    };
+    let mut produced = 0;
+    production.visit(|mana| {
+        produced = produced.max(mana.into_iter().map(u128::from).sum::<u128>());
+        false
+    });
+    let cost = ability.cost;
+    let paid = cost
+        .mana_options()
+        .map(|option| {
+            u128::from(option.generic) + option.colored.into_iter().map(u128::from).sum::<u128>()
+        })
+        .min()
+        .unwrap(); // mana_options always includes the primary cost.
+    let gain = produced.saturating_sub(paid);
+    if gain == 0 {
+        return 0;
+    }
+    // A true repeatable positive engine keeps an unbounded upper bound. Exact
+    // reachability still determines whether its seed cost/colors are attainable.
+    let mut uses = if cost.tap || cost.sacrifice || ability.once_per_turn || ability.exhaust {
+        1
+    } else {
+        u128::MAX
+    };
+    if cost.life > 0 {
+        uses = uses.min(life.max(0) as u128 / u128::from(cost.life));
+    }
+    if let Some((kind, amount)) = cost.remove {
+        if amount > 0 {
+            uses = uses.min(counters.available(kind) / u128::from(amount));
+        }
+    }
+    uses.saturating_mul(gain)
+}
+
 impl<'g> FundingState<'g> {
     fn from_game(game: &'g Game, goal: FundingGoal) -> Self {
         Self::from_game_with_convoke(game, goal, false)
@@ -565,7 +608,43 @@ impl<'g> FundingState<'g> {
             resources,
         }
     }
+    /// Pure funding moves never create new resources, untap them, restore
+    /// counters, or gain life. Sum maximum *net* gains before considering colors.
+    /// Ignore guards, sickness, reservations and shared costs here, since those
+    /// restrictions can only lower the amount attainable. Convoke is similarly
+    /// overcounted alongside any mana the same creature might produce.
+    fn total_mana_upper(&self) -> u128 {
+        let mut total = self.mana.into_iter().fold(0u128, u128::saturating_add);
+        for resource in &self.resources {
+            let object = &resource.object;
+            if object.zone != Zone::Battlefield || object.owner != self.actor {
+                continue;
+            }
+            if !object.tapped {
+                total = total.saturating_add(u128::from(object.card.mana_color().is_some()));
+                if self.convoke && self.kinds(resource) & 1 != 0 {
+                    total = total.saturating_add(1);
+                }
+            }
+            for ability in object.card.activations() {
+                // Tapped objects cannot pay tap costs in this closed search.
+                if !object.tapped || !ability.cost.tap {
+                    total = total.saturating_add(activation_gain_upper(
+                        ability,
+                        object.counters,
+                        self.life,
+                    ));
+                }
+            }
+        }
+        total
+    }
     fn optimistic(&self, goal: FundingGoal) -> bool {
+        let required =
+            u128::from(goal.generic) + goal.required.into_iter().map(u128::from).sum::<u128>();
+        if self.total_mana_upper() < required {
+            return false;
+        }
         let mut upper = self.mana;
         for resource in &self.resources {
             let object = &resource.object;
@@ -1897,3 +1976,7 @@ mod job_subtype_tests {
         assert!(g.has_subtype(bear, "Warrior"));
     }
 }
+
+#[cfg(test)]
+#[path = "engine_funding_total_tests.rs"]
+mod total_tests;
