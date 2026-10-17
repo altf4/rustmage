@@ -1,6 +1,6 @@
 # PR 293: exact public trigger-source binding
 
-Issue287 completes the exact source-identity dependency that kept Morcant's Loyalist gated. The delivery retains all six predefined Role kernels, twelve Role consumers, eighteen other recovery bodies, 37 Adventure pairs, thirteen Omen pairs, 94 token factories and one emblem. Coverage is 1,863/5,164 executable Standard identities; 3,301 remain gated. The all-Standard, rules and RL/search goal remains incomplete.
+Issue #287 completes the exact source-identity dependency that kept Morcant's Loyalist gated. The delivery retains all six predefined Role kernels, twelve Role consumers, eighteen other recovery bodies, 37 Adventure pairs, thirteen Omen pairs, 94 token factories and one emblem. Coverage is 1,863/5,164 executable Standard identities; 3,301 remain gated. The all-Standard, rules and RL/search goal remains incomplete.
 
 ## Source and composition
 
@@ -10,7 +10,7 @@ A generated-code preservation assertion compares against Role parent `0f15430`: 
 
 Immutable optimized library:
 
-- File: `/home/altf4/.cache/rustmage-immutable/trigger287-a1c950e-1286-schema86-c2dca4f0fa50.so`
+- File: `/home/altf4/.cache/rustmage-immutable/trigger287-a1c950e-1286-schema 86-c2dca4f0fa50.so`
 - SHA256: `c2dca4f0fa50a92a0f97191f3134ba8b96d8e84973810ec498f9f8e767ed348d`
 - Catalogue: `1286b67491500df6c3b26a0f381c26cffcfc5dcf6fc38661c395a9ddc299055c`
 - Observation schema:86. Public constructors/subprocesses explicitly pin this file and assert the complete schema/fingerprint.
@@ -25,19 +25,19 @@ Morcant's entire normal Elf lord and SelfDies recovery body is admitted. Its own
 
 ## Completed validation and exact scopes
 
-- Fresh `c5f860e` full native:1,743 unit +12 integration =1,755 tests, all-target Clippy, formatting. All795 tracked files remain unchanged through these gates.
-- Full `a1c950e` compiler collection:423 unique methods,572.799s;421 execute/pass and two opt-in Java provenance methods skip because the source environment was omitted. The exact two skipped methods subsequently execute/pass with `/home/altf4/Code/mage`,0.130s and no skips. Together all423 unique methods execute/pass. This is not relabeled as one no-skip full run. All794 original checkpoint files were unchanged until the full run and focused provenance completion ended.
-- Twelve focused compiler/provenance methods pass1.122s, including full nineteen-card recovery/name independence, typed `other`+Elf filtering and unknown/infix/nested reminder rejection. The Morcant manifest authenticates the full pinned record and sixteen directly imported Java files, without claiming all transitive Java rewriting.
-- Fresh public source-binding smoke:three methods/six paid Standard cases pass10.371s from an immutable794-file `a1c950e` export. Each seat exercises a real paid Morcant and two paid Corrupted Conviction sacrifices; victims are an Elf, a Changeling or a non-Elf. No scenario edits or seed substitution were needed.
-- After inherited Tombstone tests compose, four fresh methods pass12.057s from an immutable795-file `c5f860e` export on the same library. Six source-binding cases produce5,097 owned frames and10,194 wrong-actor/stale denials. The Tombstone method adds1,003 owned frames and2,010 denials, proving actual controller-only Villain/Changeling reduction, colored-cost floor and rejected underpayment. This is separately scoped from the broad public checkpoint.
+- Fresh `c5f860e` full native: 1,743 unit +12 integration = 1,755 tests, all-target Clippy, formatting. All 795 tracked files remain unchanged through these gates.
+- Full `a1c950e` compiler collection: 423 unique methods in 572.799 seconds; 421 execute/pass and two opt-in Java provenance methods skip because the source environment was omitted. The exact two skipped methods subsequently execute/pass with `/home/altf4/Code/mage`, 0.130 seconds and no skips. Together all 423 unique methods execute/pass. This is not relabeled as one no-skip full run. All 794 original checkpoint files were unchanged until the full run and focused provenance completion ended.
+- Twelve focused compiler/provenance methods pass in 1.122 seconds, including full nineteen-card recovery/name independence, typed `other`+Elf filtering and unknown/infix/nested reminder rejection. The Morcant manifest authenticates the full pinned record and sixteen directly imported Java files, without claiming all transitive Java rewriting.
+- Fresh public source-binding smoke:three methods/six paid Standard cases pass in 10.371 seconds from an immutable 794-file `a1c950e` export. Each seat exercises a real paid Morcant and two paid Corrupted Conviction sacrifices; victims are an Elf, a Changeling or a non-Elf. No scenario edits or seed substitution were needed.
+- After inherited Tombstone tests compose, four fresh methods pass in 12.057 seconds from an immutable 795-file `c5f860e` export on the same library. Six source-binding cases produce 5,097 owned frames and 10,194 wrong-actor/stale denials. The Tombstone method adds 1,003 owned frames and 2,010 denials, proving actual controller-only Villain/Changeling reduction, colored-cost floor and rejected underpayment. This is separately scoped from the broad public checkpoint.
 - Seven new native groups cover complete paid source casting and lord effects; exact source exclusion with simultaneous Elf/Changeling deaths; subsequent source/target incarnations; foreign ownership with captured controller and owner-grave routing; an unrelated observer dying simultaneously; no eligible other target; reannouncement; owned branch/restore/revision checks; and sparse-context memory accounting. Simultaneous moves and foreign-controller setup use native fixtures; the public paid cases independently cover real spell payments/sacrifices.
 
-The initial composed native run passed1,741 tests and failed the parent's obsolete assertion that Morcant was unsupported. The expectation was corrected only after the frozen compiler job ended; fresh full native/Clippy above pass. An initial two-method provenance command used the wrong Python import path and failed imports before executing tests; the corrected bare-module command passes. These failures remain in retained logs and are not passing checkpoints.
+The initial composed native run passed 1,741 tests and failed the parent's obsolete assertion that Morcant was unsupported. The expectation was corrected only after the frozen compiler job ended; fresh full native/Clippy above pass. An initial two-method provenance command used the wrong Python import path and failed imports before executing tests; the corrected bare-module command passes. These failures remain in retained logs and are not passing checkpoints.
 
-Broad public checkpoint: all257 unique methods pass1007.310s, no failures/errors/skips, from the immutable794-file `a1c950e` export. Every source file remains unchanged through terminal completion. The subsequently inherited Tombstone method remains a separately executed addition, not a relabeled258-method full suite.
+Broad public checkpoint: all 257 unique methods pass in 1007.310 seconds, no failures/errors/skips, from the immutable 794-file `a1c950e` export. Every source file remains unchanged through terminal completion. The subsequently inherited Tombstone method remains a separately executed addition, not a relabeled 258-method full suite.
 
 ## Review and remaining work
 
 The PR stays draft pending two independent NONAUTHOR exact-head reviews. A preliminary nonauthor paid Day of Judgment probe uses two actual paid Loyalists: each trigger binds its own after-source, each selects the other, and both return to hand even after the first source has left the graveyard. Both seats retain owned clone/parent-drop/restore, revision/actor and both-view checks. Final reviewer approvals are recorded on the exact published PR head. Parent Role approvals remain scoped to that separate authored delivery; they do not approve these source-binding changes. All completed Cargo targets have non-library artifacts cleaned; every shared object retains its exact path and hash. There are no active Cargo builds.
 
-Rules: [pinned CR400.7e/603.6c](https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf) and the official [Workshop Assistant simultaneous-death ruling](https://magic.wizards.com/en/news/feature/commander-legends-release-notes-2020-11-06). Wider trigger consumers, all remaining Standard semantics, changing-control layers and the final training/performance interface remain required.
+Rules: [pinned CR 400.7e/603.6c](https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf) and the official [Workshop Assistant simultaneous-death ruling](https://magic.wizards.com/en/news/feature/commander-legends-release-notes-2020-11-06). Wider trigger consumers, all remaining Standard semantics, changing-control layers and the final training/performance interface remain required.
