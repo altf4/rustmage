@@ -43,10 +43,10 @@ fn phantom_targetless_counter_and_combined_subsets_are_complete_both_seats() {
             let targets = if mode == 0 { vec![] } else { vec![target] };
             cast(&mut g, id, Some(mode), &targets);
             let item = g.state.stack.last().unwrap();
-            assert_eq!(item.mana_value(), 2);
+            assert_eq!(item.mana_value(), 1);
             assert_eq!(
                 mana_sum(item.cast.unwrap().payment),
-                [5, 3, 6][mode as usize]
+                [4, 2, 5][mode as usize]
             );
             g.state.players[p.index()].mana = [0; 6];
             settle(&mut g);
@@ -110,7 +110,9 @@ fn free_base_spree_still_requires_nonempty_distinct_subsets_and_additional_payme
                 target: Target::Card(target),
             },
         );
-        checked(&mut g, Action::FinishTargets);
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            checked(&mut g, Action::FinishTargets);
+        }
         checked(
             &mut g,
             Action::ChooseTarget {

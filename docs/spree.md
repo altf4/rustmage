@@ -20,3 +20,12 @@ Authoritative [Wizards release notes](https://magic.wizards.com/en/news/feature/
 require chosen additional costs even when the base mana cost is waived. Actual
 native/public acceptance has not run yet. Three compiler methods pass against
 the first prototype; this is not gameplay acceptance or a merged coverage claim.
+
+
+The first frozen native prototype4e2d01b passed14/16 focused groups. Two new
+fixtures failed: Phantom Interference was assigned mana value2 instead of its
+actual printed{U}, and a target-group fixture requested FinishTargets after the
+engine had automatically advanced to the next mandatory group. Corrected fixture
+assertions use the actual printed mana value/payment and only finish optional
+windows. All930 tracked inputs stayed fixed, the job closed and its disposable
+outputs were cleaned before this edit. No gameplay acceptance is claimed yet.
