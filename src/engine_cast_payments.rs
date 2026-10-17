@@ -231,3 +231,159 @@ mod payment_regressions {
         }
     }
 }
+
+#[cfg(test)]
+mod root_adverse_payment_review {
+    use super::super::tests::{scenario, spawn};
+    use super::*;
+    fn named(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
+        spawn(g, p, Card::from_name(name).unwrap(), zone)
+    }
+    fn ready(p: Player) -> Game {
+        let mut g = scenario();
+        g.state.active = p;
+        g.state.priority = p;
+        g
+    }
+    fn run(g: &mut Game, p: Player, a: Action) {
+        g.apply(p, a).unwrap();
+    }
+    #[test]
+    fn additional_cost_exact_incarnation_controls_numeric_domain() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = ready(p);
+            let spell = named(&mut g, p, "Thrill of Possibility", Zone::Hand);
+            let discard = named(&mut g, p, "Forest", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 1, 0, 1, 0, 0];
+            run(&mut g, p, Action::AnnounceCast { card: spell });
+            assert!(g.mana_payment_domain().is_none());
+            let old = g.object_ref(discard);
+            run(&mut g, p, Action::ChooseAdditionalCost { object: old });
+            let payment = [0, 1, 0, 1, 0, 0];
+            assert!(g.mana_payment_domain().unwrap().contains(payment));
+            let valid = g.snapshot();
+            let mut fork = g.clone();
+            run(&mut fork, p, Action::PayCosts { payment });
+            assert_eq!(fork.state.stack[0].cast.unwrap().payment, payment);
+            assert_eq!(fork.state.players[p.index()].spells_cast_this_turn, 1);
+            assert_eq!(fork.state.players[p.index()].cards_discarded_this_turn, 1);
+            assert_eq!(g.snapshot(), valid);
+            // Native adversarial invalidation: same card, different Hand incarnation.
+            g.move_object(discard, Zone::Graveyard);
+            g.move_object(discard, Zone::Hand);
+            assert_ne!(g.object_ref(discard), old);
+            assert!(g.mana_payment_domain().is_none());
+            let invalid = g.snapshot();
+            let revision = g.revision();
+            assert_eq!(
+                g.apply(p, Action::PayCosts { payment }),
+                Err(Error::IllegalAction)
+            );
+            assert_eq!(g.snapshot(), invalid);
+            assert_eq!(g.revision(), revision);
+        }
+    }
+    #[test]
+    fn late_sacrifice_capacity_restores_payment_and_uncast_announcement() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = ready(p);
+            let spell = named(&mut g, p, "Corrupted Conviction", Zone::Hand);
+            let bear = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+            g.state.objects[bear as usize].generation = u64::MAX;
+            g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 0];
+            run(&mut g, p, Action::AnnounceCast { card: spell });
+            let object = g.object_ref(bear);
+            run(&mut g, p, Action::ChooseAdditionalCost { object });
+            let payment = [0, 0, 1, 0, 0, 0];
+            assert!(g.mana_payment_domain().unwrap().contains(payment));
+            let saved = g.snapshot();
+            let revision = g.revision();
+            let views =
+                [Player::P0, Player::P1].map(|v| serde_json::to_value(g.observe(v)).unwrap());
+            let parent = g.clone();
+            let mut child = parent.clone();
+            drop(parent);
+            for game in [&mut g, &mut child] {
+                assert_eq!(
+                    game.apply(p, Action::PayCosts { payment }),
+                    Err(Error::CapacityExceeded(crate::CapacityExceeded {
+                        resource: "object generation exhausted"
+                    }))
+                );
+                assert_eq!(game.snapshot(), saved);
+                assert_eq!(game.revision(), revision);
+                assert_eq!(
+                    game.state
+                        .announcing
+                        .as_ref()
+                        .unwrap()
+                        .item
+                        .cast
+                        .unwrap()
+                        .payment,
+                    [0; 6]
+                );
+                assert_eq!(game.state.players[p.index()].spells_cast_this_turn, 0);
+                for (i, v) in [Player::P0, Player::P1].into_iter().enumerate() {
+                    assert_eq!(serde_json::to_value(game.observe(v)).unwrap(), views[i]);
+                }
+            }
+        }
+    }
+    #[test]
+    fn spent_mana_survives_cost_entry_pause_and_life_is_not_mana() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = ready(p);
+            let spell = named(&mut g, p, "Final Vengeance", Zone::Hand);
+            let light = named(&mut g, p, "Banishing Light", Zone::Battlefield);
+            let held = named(&mut g, p, "Temple Garden", Zone::Exile);
+            let target = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+            // Deliberately synthetic link to exercise a returned-land private entry pause.
+            g.state.exile_links.push(ExileLink {
+                source: g.object_ref(light),
+                exiled: g.object_ref(held),
+                return_zone: Zone::Battlefield,
+            });
+            g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 0];
+            run(&mut g, p, Action::AnnounceCast { card: spell });
+            run(
+                &mut g,
+                p,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            let object = g.object_ref(light);
+            run(&mut g, p, Action::ChooseAdditionalCost { object });
+            let payment = [0, 0, 1, 0, 0, 0];
+            run(&mut g, p, Action::PayCosts { payment });
+            assert_eq!(g.observe(p).decision, "entry_life");
+            assert_eq!(
+                g.state
+                    .announcing
+                    .as_ref()
+                    .unwrap()
+                    .item
+                    .cast
+                    .unwrap()
+                    .payment,
+                payment
+            );
+            assert!(g.mana_payment_domain().is_none());
+            assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 0);
+            let parent = g.clone();
+            let mut child = parent.clone();
+            drop(parent);
+            run(&mut g, p, Action::ChooseEntryLife { pay: true });
+            run(&mut child, p, Action::ChooseEntryLife { pay: true });
+            assert_eq!(g.snapshot(), child.snapshot());
+            let c = g.state.stack[0].cast.unwrap();
+            assert_eq!(c.payment, payment);
+            assert_eq!(c.mana_spent(), 1);
+            assert_eq!(c.colors_spent(), 1);
+            assert_eq!(g.state.players[p.index()].life, 18);
+            assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        }
+    }
+}
