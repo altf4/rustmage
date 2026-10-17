@@ -2049,7 +2049,8 @@ impl Card {
     pub(crate) fn x_entry_counters(self) -> bool {
         generated::x_entry_counters(self)
     }
-    pub(crate) fn fixed_mana_value(self) -> u64 {
+    /// Intrinsic mana value of the represented face; X is zero outside the stack.
+    pub fn fixed_mana_value(self) -> u64 {
         // The canonical equivalent takes every two-brid symbol's generic side;
         // a cheaper chosen payment never changes the printed mana value.
         let (colored, generic) = self.cost();
