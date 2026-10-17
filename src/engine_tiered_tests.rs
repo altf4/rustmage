@@ -9,7 +9,17 @@ fn named(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
 fn checked(g: &mut Game, action: Action) {
     let actor = g.actor().unwrap();
     let revision = g.revision();
-    let index = g.legal_actions().iter().position(|a| *a == action).unwrap();
+    let index = g
+        .legal_actions()
+        .iter()
+        .position(|a| *a == action)
+        .unwrap_or_else(|| {
+            panic!(
+                "illegal fixture {action:?} at {:?}; legal {:?}",
+                g.state.pending,
+                g.legal_actions()
+            )
+        });
     let before = g.snapshot();
     assert_eq!(
         g.apply(actor.other(), action.clone()),
@@ -702,5 +712,218 @@ fn all_targets_illegal_never_shuffle_and_multiplier_overflow_is_atomic() {
         ));
         assert_eq!(g.snapshot(), before);
         assert_eq!(g.revision(), rev);
+    }
+}
+#[test]
+fn vincent_foreign_owner_duplicate_grants_replacements_and_cleanup_keep_exact_incarnations() {
+    for p in [Player::P0, Player::P1] {
+        for exile in [false, true] {
+            let mut g = setup(p);
+            let q = p.other();
+            let bear = named(&mut g, q, "Grizzly Bears", Zone::Battlefield);
+            g.state.objects[bear as usize].controller = p;
+            for mode in [2, 0] {
+                let spell = named(&mut g, p, "Vincent's Limit Break", Zone::Hand);
+                cast(&mut g, spell, Some(mode), &[Target::Card(bear)]);
+                settle(&mut g);
+            }
+            assert_eq!(
+                g.stats(bear),
+                Stats {
+                    power: 3,
+                    toughness: 2
+                }
+            );
+            assert_eq!(g.observe(p).temporary_abilities.len(), 2);
+            let old = g.object_ref(bear);
+            g.state.priority = q;
+            let removal = named(
+                &mut g,
+                q,
+                if exile { "Pinecone Strike" } else { "Murder" },
+                Zone::Hand,
+            );
+            cast(&mut g, removal, exile.then_some(0), &[Target::Card(bear)]);
+            settle(&mut g);
+            assert_ne!(g.object_ref(bear), old);
+            assert!(g.observe(p).temporary_abilities.is_empty());
+            if exile {
+                assert_eq!(g.state.objects[bear as usize].zone, Zone::Exile);
+            } else {
+                assert!(g.on_battlefield(bear));
+                assert_eq!(g.state.objects[bear as usize].owner, q);
+                assert_eq!(g.state.objects[bear as usize].controller, q);
+                assert!(g.state.objects[bear as usize].tapped);
+                assert_eq!(
+                    g.stats(bear),
+                    Stats {
+                        power: 2,
+                        toughness: 2
+                    }
+                );
+                g.state.priority = p;
+                let again = named(&mut g, p, "Murder", Zone::Hand);
+                cast(&mut g, again, None, &[Target::Card(bear)]);
+                settle(&mut g);
+                assert_eq!(g.state.objects[bear as usize].zone, Zone::Graveyard);
+            }
+        }
+        let mut g = setup(p);
+        let bear = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let spell = named(&mut g, p, "Vincent's Limit Break", Zone::Hand);
+        cast(&mut g, spell, Some(2), &[Target::Card(bear)]);
+        settle(&mut g);
+        g.finish_cleanup();
+        assert_eq!(
+            g.stats(bear),
+            Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+        assert!(g.observe(p).temporary_abilities.is_empty());
+        let next = p.other();
+        assert_eq!(g.actor(), Some(next));
+        g.state.players[next.index()].mana = [30; 6];
+        let kill = named(&mut g, next, "Murder", Zone::Hand);
+        cast(&mut g, kill, None, &[Target::Card(bear)]);
+        settle(&mut g);
+        assert_eq!(g.state.objects[bear as usize].zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn real_paid_korvold_foreign_tiered_sources_charge_actual_caster_all_six_bodies() {
+    for p in [Player::P0, Player::P1] {
+        let q = p.other();
+        for name in [
+            "Fire Magic",
+            "Ice Magic",
+            "Restoration Magic",
+            "Thunder Magic",
+            "Tifa's Limit Break",
+            "Vincent's Limit Break",
+        ] {
+            let mut g = setup(p);
+            let sources = [0; 3].map(|_| named(&mut g, q, name, Zone::Library));
+            for _ in 0..2 {
+                named(&mut g, q, "Forest", Zone::Library);
+            }
+            let saga = named(&mut g, p, "Korvold and the Noble Thief", Zone::Hand);
+            cast(&mut g, saga, None, &[]);
+            settle(&mut g);
+            for _ in 0..1500 {
+                if sources.iter().all(|&id| g.can_play_exiled(p, id)) {
+                    break;
+                }
+                let actions = g.legal_actions();
+                let action = actions
+                    .iter()
+                    .find(|a| matches!(a, Action::Pass | Action::FinishTargets))
+                    .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
+                    .unwrap()
+                    .clone();
+                checked(&mut g, action);
+            }
+            assert_eq!(g.state.objects[saga as usize].zone, Zone::Graveyard);
+            assert!(
+                sources
+                    .iter()
+                    .all(|&id| g.can_play_exiled(p, id) && !g.can_play_exiled(q, id))
+            );
+            for state in &mut g.state.players {
+                state.mana = [30; 6];
+            }
+            let ally = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+            let enemy = named(&mut g, q, "Grizzly Bears", Zone::Battlefield);
+            let q_mana = g.state.players[q.index()].mana;
+            let source = sources[0];
+            checked(&mut g, Action::AnnounceExile { card: source });
+            checked(&mut g, Action::ChooseMode { mode: 2 });
+            let target = match name {
+                "Fire Magic" | "Restoration Magic" => None,
+                "Ice Magic" | "Thunder Magic" => Some(enemy),
+                _ => Some(ally),
+            };
+            if let Some(id) = target {
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(id),
+                    },
+                );
+            }
+            for _ in 0..8 {
+                if g.state.announcing.is_none() {
+                    break;
+                }
+                let actions = g.legal_actions();
+                let action = actions
+                    .iter()
+                    .find(|a| matches!(a, Action::FinishTargets))
+                    .or_else(|| {
+                        actions
+                            .iter()
+                            .find(|a| matches!(a, Action::PayCosts { .. }))
+                    })
+                    .unwrap()
+                    .clone();
+                checked(&mut g, action);
+            }
+            let item = g.state.stack.last().unwrap();
+            assert_eq!(item.controller, p);
+            assert_eq!(item.mode, Some(2));
+            assert_eq!(g.state.objects[source as usize].owner, q);
+            assert!(mana_sum(item.cast.unwrap().payment) > 0);
+            settle(&mut g);
+            assert_eq!(g.state.objects[source as usize].zone, Zone::Graveyard);
+            assert_eq!(g.state.objects[source as usize].owner, q);
+            assert_eq!(g.state.players[q.index()].mana, q_mana);
+            if name == "Vincent's Limit Break" {
+                assert_eq!(
+                    g.stats(ally),
+                    Stats {
+                        power: 7,
+                        toughness: 2
+                    }
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn mode_funding_never_pairs_an_unfunded_nontargeted_tier_with_cheaper_missing_targets() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Restoration Magic", Zone::Hand);
+        g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 0];
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: source })
+        );
+        reject(&mut g, Action::AnnounceCast { card: source });
+        g.state.players[p.index()].mana = [2, 0, 0, 0, 0, 3];
+        checked(&mut g, Action::AnnounceCast { card: source });
+        assert_eq!(
+            g.observe(p)
+                .mode_choices
+                .iter()
+                .map(|v| v.mode)
+                .collect::<Vec<_>>(),
+            vec![2]
+        );
+        reject(&mut g, Action::ChooseMode { mode: 0 });
+        checked(&mut g, Action::ChooseMode { mode: 2 });
+        let request = g.observe(p).payment_request.unwrap();
+        assert_eq!(request.required, [2, 0, 0, 0, 0, 0]);
+        assert_eq!(request.generic, 3);
+        let action = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, action);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 26);
     }
 }

@@ -24,10 +24,11 @@ class TemporaryDeathConsumerTests(unittest.TestCase):
     for text in cases:self.assertFalse(self.compile(dict(d,oracle_text=text))[1],(name,alias,text))
    for bad in ['{X}{B}','{1}{Q}','{999999999999999999999}{B}']:
     self.assertFalse(self.compile(dict(c,mana_cost=bad))[1],(name,bad))
- def test_no_partial_suspect_or_tiered_admission(self):
+ def test_only_complete_tiered_followup_changes_previous_gated_inventory(self):
   m=json.loads((g.ROOT/'docs/temporary-death-consumers.json').read_text())
   for row in m['cards']:
-   if row['name'] not in NAMES:self.assertFalse(self.compile(self.cards[row['name']])[1],row['name'])
+   if row['name']=="Vincent's Limit Break":self.assertTrue(self.compile(self.cards[row['name']])[1]);self.assertEqual(row['status'],'implemented_complete_body')
+   elif row['name'] not in NAMES:self.assertFalse(self.compile(self.cards[row['name']])[1],row['name'])
  def test_historical_nine_delivery_and_current_owned_programs(self):
   from scripts.catalogue_preservation import canonical,assert_union
   physical={c['oracle_id']:c['name'] for c in self.cards.values()}

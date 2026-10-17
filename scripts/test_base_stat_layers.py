@@ -38,7 +38,7 @@ class BaseStatTests(unittest.TestCase):
    for suffix in ['\nYou win the game.','\n(Draw seven cards.)']:self.assertFalse(self.compile(dict(c,oracle_text=c['oracle_text']+suffix))[1],c['name'])
    for layout in ['transform','modal_dfc','split']:self.assertFalse(self.compile(dict(c,layout=layout))[1],(c['name'],layout))
   for c in self.all:
-   if c['name'] in ['Vincent\'s Limit Break','Eaten by Piranhas','Witness Protection','Atomic Microsizer','Archon of the Wild Rose','Unable to Scream','Aettir and Priwen']:self.assertFalse(self.compile(c)[1],c['name'])
+   if c['name'] in ['Eaten by Piranhas','Witness Protection','Atomic Microsizer','Archon of the Wild Rose','Unable to Scream','Aettir and Priwen']:self.assertFalse(self.compile(c)[1],c['name'])
   card=dict(self.cards['Multiply by Zero'])
   for value in [str(2**127),str(-(2**127)-1)]:self.assertFalse(self.compile(dict(card,oracle_text='Target creature has base power '+value+' until end of turn.'))[1])
  def test_historical_ten_body_preservation_and_current_programs(self):
@@ -48,8 +48,9 @@ class BaseStatTests(unittest.TestCase):
   for helper in helpers:self.assertEqual(current['helpers'][helper],after['helpers'][helper])
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(before,mutant,changed={n+'#0' for n in NAMES},added=set(),helpers=helpers,aliases={})
- def test_actual_composed_parent_changes_only_ten_bodies(self):
-  physical={c['oracle_id']:c['name'] for c in self.all};before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',COMPOSED_PARENT+':src/generated/catalogue.rs'],text=True),physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+ def test_historical_actual_composed_parent_changes_only_ten_bodies_and_current_owned_programs(self):
+  physical={c['oracle_id']:c['name'] for c in self.all};before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',COMPOSED_PARENT+':src/generated/catalogue.rs'],text=True),physical);after=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','17d100bc39114551fdd677b215535622b2a11393:src/generated/catalogue.rs'],text=True),physical);current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  for name in NAMES:self.assertEqual(current['definitions'][name+'#0'],after['definitions'][name+'#0'])
   helpers={('base_stat_setter',n+'#0') for n in ['Doc Ock, Sinister Scientist','Snowmelt Stag']}|{('keyword_grants','Doc Ock, Sinister Scientist#0')};proof=assert_union(before,after,changed={n+'#0' for n in NAMES},added=set(),helpers=helpers,aliases={});self.assertEqual(proof['preserved_definitions'],5322)
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(before,mutant,changed={n+'#0' for n in NAMES},added=set(),helpers=helpers,aliases={})

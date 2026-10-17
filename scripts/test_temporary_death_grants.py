@@ -76,9 +76,9 @@ class TemporaryDeathGrantCompilerTests(unittest.TestCase):
      variants.append(raw[:index]+extra+raw[index:])
    for text in variants:
     self.assertFalse(self.compile(dict(c,name='Independent raw grant',oracle_text=text))[1]['implemented'],(name,text))
- def test_malformed_metadata_and_remaining_tiered_whole_body_stays_gated(self):
+ def test_malformed_metadata_and_complete_tiered_followup(self):
   manifest=json.loads((ROOT/'docs/temporary-death-admissions.json').read_text())
-  initial=set(manifest['initial_consumers'])|{"Galuf's Final Act",'Rabid Attack','Perigee Beckoner','Presumed Dead'}
+  initial=set(manifest['initial_consumers'])|{"Galuf's Final Act",'Rabid Attack','Perigee Beckoner','Presumed Dead',"Vincent's Limit Break"}
   self.assertEqual({r['name'] for r in manifest['cards'] if r['status']=='implemented_complete_body'},initial)
   for row in manifest['cards']:
    c=self.cards[row['name']]
