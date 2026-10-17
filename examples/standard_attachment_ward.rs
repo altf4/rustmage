@@ -41,7 +41,7 @@ fn count(o: &Value, owner: &str, name: &str, zone: &str) -> usize {
         .filter(|v| text(v, "owner") == owner && text(v, "card") == name && text(v, "zone") == zone)
         .count()
 }
-#[derive(Default)]
+#[derive(Default, Debug)]
 struct Progress {
     source: Option<u64>,
     target: Value,
@@ -306,15 +306,6 @@ fn score(
                 -1000
             }
         }
-        "ActivateMana" => {
-            if text(o, "decision") == "pay_costs"
-                || !o["resolution_payment"].is_null() && ward == Some(true)
-            {
-                2400
-            } else {
-                -1000
-            }
-        }
         "TapMana" => {
             if !(text(o, "decision") == "pay_costs"
                 || !o["resolution_payment"].is_null() && ward == Some(true))
@@ -370,7 +361,7 @@ fn score(
                 if field(o, actor, n).is_some() || copies > 1 {
                     2200
                 } else {
-                    200
+                    -300
                 }
             } else if BASICS.contains(&n) {
                 1800
@@ -427,7 +418,11 @@ fn main() {
     let mut private = 0u64;
     let mut max_bytes = 0;
     let mut initial = 0;
-    for game in 0..games {
+    let start = std::env::args()
+        .nth(2)
+        .map(|v| v.parse::<usize>().unwrap())
+        .unwrap_or(0);
+    for game in start..start + games {
         let i = game % 10;
         let seat = (game / 10) % 2;
         let p = if seat == 0 { Player::P0 } else { Player::P1 };
@@ -668,7 +663,16 @@ fn main() {
             max_bytes = max_bytes.max(g.state_bytes());
         }
         assert!(g.outcome().is_some(), "no terminal {game}");
-        assert!(s.done, "incomplete {} {ps} {:?}", NAMES[i], ward);
+        assert!(
+            s.done,
+            "incomplete game={game} {} {ps} {ward:?} {s:?} outcome={:?}",
+            NAMES[i],
+            g.outcome()
+        );
+        eprintln!(
+            "completed game={game} card={} seat={ps} ward={ward:?}",
+            NAMES[i]
+        );
     }
     if games >= 60 {
         assert!(effects.iter().flatten().all(|&v| v > 0));
