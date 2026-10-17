@@ -994,3 +994,6 @@ fn paid_genemorph_resolution_setter_and_tiered_multiply_vincent_return_compose()
         );
     }
 }
+
+#[path = "engine_direct_cards_tests.rs"]
+mod direct_cards;
