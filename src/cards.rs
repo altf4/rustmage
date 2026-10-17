@@ -775,6 +775,10 @@ pub(crate) enum Instruction {
         toughness: i32,
     },
     /// Replace creature types until the affected permanent changes zones.
+    #[allow(
+        dead_code,
+        reason = "Core instruction is scenario-tested while complete-card consumers remain gated"
+    )]
     SetCreatureTypes {
         subject: Subject,
         types: &'static [&'static str],
