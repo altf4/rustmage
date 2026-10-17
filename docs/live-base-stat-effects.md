@@ -128,3 +128,11 @@ unsupported bodies. Raw simultaneous entry with more than one timestamp source
 must use the staged transaction, including opposing controllers; no hidden helper
 may silently choose vector order. No new composed runtime test has run yet, and
 final actual schema99 composition remains required before full gates.
+
+The first composed compiler gate atc86f75e ran27 methods:26PASS/one historical
+comparison failure. The inherited resolved-stat proof compared its old parent
+with all subsequent catalogue admissions. It now pins the reviewed delivered
+five-body head b7e053d for that historical exact-diff proof, retains its unrelated
+mutation control, and separately requires all five current programs plus Atomic's
+helper to stay identical. This does not weaken the new actual-parent four-body
+proof or permit unrelated current changes.
