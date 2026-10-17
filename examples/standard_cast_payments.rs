@@ -168,6 +168,29 @@ fn score(o: &Observation, a: &Action, p: Player, i: usize, s: &Pilot, high: bool
             if s.stage == 2
                 && n == if high { "Mind Spring" } else { "Shock" }
                 && lands(o, p, None) >= if high && i == 17 { 8 } else { 5 }
+                && o.objects
+                    .iter()
+                    .filter(|v| {
+                        v.owner == p && v.zone == Zone::Battlefield && v.card.is_land() && !v.tapped
+                    })
+                    .count()
+                    >= if high && i == 17 {
+                        8
+                    } else if high {
+                        5
+                    } else {
+                        1
+                    }
+                && o.objects
+                    .iter()
+                    .filter(|v| {
+                        v.owner == p
+                            && v.zone == Zone::Battlefield
+                            && !v.tapped
+                            && v.card.name() == if high { "Island" } else { "Mountain" }
+                    })
+                    .count()
+                    >= if high { 2 } else { 1 }
             {
                 return 1850;
             }
