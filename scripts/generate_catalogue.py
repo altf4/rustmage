@@ -337,7 +337,7 @@ def amount_value(text):
     if text == 'the amount of life you gained this turn': return 'AmountValue::LifeGainedThisTurn'
     if ' plus the number of ' in text:
         parts=text.split(' plus the number of ')
-        values=[stat_value(part.removeprefix('the number of ')) for part in parts]
+        values=[f'StatValue::Fixed({int(part)})' if re.fullmatch(r'[0-9]+',part) and int(part)<=65535 else stat_value(part.removeprefix('the number of ')) for part in parts]
         return 'AmountValue::Stat(StatValue::Sum(&['+', '.join(values)+']))' if all(values) else None
     if text.startswith('the number of '):text=text[len('the number of '):]
     value=stat_value(text)
@@ -2187,7 +2187,11 @@ for _name, _members in [
 ]:
     TARGET_RULES[_name] = 'TargetRule::Union(&[' + ', '.join(TARGET_RULES[member] for member in _members) + '])'
 
+TARGET_RULES['BlackGreenCreaturePlaneswalker'] = 'TargetRule::Filtered { base: &'+TARGET_RULES['CreaturePlaneswalker']+', predicate: TargetPredicate::Colors(20) }'
+TARGET_RULES['ArtifactToken'] = 'TargetRule::Filtered { base: &'+TARGET_RULES['Artifact']+', predicate: TargetPredicate::Token }'
+
 FIXED_DAMAGE_SUBJECTS = {
+    'target black or green creature or planeswalker':'BlackGreenCreaturePlaneswalker',
     'target creature without flying':'CreatureWithoutFlying',
     'any target':'Any',
     'target creature':'Creature',
@@ -2201,6 +2205,7 @@ FIXED_DAMAGE_SUBJECTS = {
 }
 
 REMOVAL_SUBJECTS = dict(EXILE_SUBJECTS, **{
+    'target artifact token': 'ArtifactToken',
     'target permanent': 'Permanent',
     'target creature or Vehicle': 'CreatureVehicle',
     'target creature or Spacecraft': 'CreatureSpacecraft',
@@ -2508,6 +2513,48 @@ def target_exclusion_program(text):
     return ((key,0,1) if optional else key),[verb.capitalize()]
 
 
+def death_exile_reminders_valid(card):
+    """Authenticate untouched raw input for every newly opened production.
+
+    Erasure is detection only, including split words and explicit source aliases.
+    Even generic callers without a replacement clause retain this closure.
+    """
+    raw=card.get('oracle_text','')
+    if not isinstance(raw,str):return True
+    surface=raw;seen=False
+    while True:
+        normalized=' '.join(surface.casefold().split())
+        seen |= re.search(r'\bwould die this turn\b|\btarget artifact token\b|\btarget black or green creature or planeswalker\b|\b[0-9]+ plus the number of\b',normalized) is not None
+        stripped=re.sub(r'\([^()]*\)','',surface)
+        if stripped==surface:break
+        surface=stripped
+    if not seen:return True
+    # New bodies have no mechanic-specific reminder grammar. Ordinary complete
+    # intrinsic keyword lines are authenticated with their existing grammar.
+    return all(intrinsic_reminder_line_valid(line)
+               for line in raw.splitlines() if any(c in line for c in '()'))
+
+
+def damage_death_exile_program(text):
+    """Bind a singular still-present damage target, never a moved/new object.
+
+    The complete prefix must be existing damage plus optional fixed mana. This
+    deliberately excludes actual-damage observers, pronoun movement, targeting a
+    later group, and prospective global replacement predicates.
+    """
+    match=re.fullmatch(r'(.+\.) If that (creature|creature or planeswalker|permanent) would die this turn, exile it instead\.',text)
+    if match is None:return None
+    prefix,noun=match.groups()
+    result=targeted_program(prefix)
+    if result is None or not isinstance(result[0],str):return None
+    rule,program=result
+    creature_rules={'Creature','CreatureOpponent','CreatureTapped','CreatureAttackingBlocking','CreatureWithoutFlying'}
+    allowed=creature_rules if noun=='creature' else {'CreaturePlaneswalker'} if noun=='creature or planeswalker' else creature_rules|{'CreaturePlaneswalker','BlackGreenCreaturePlaneswalker'}
+    if rule not in allowed or not program or not program[0].startswith(('Damage(','DamageScaled(')):return None
+    if any(not instruction.startswith('AddMana(') for instruction in program[1:]):return None
+    return rule,[*program,'ExileIfDiesThisTurn']
+
+
 def targeted_program(text):
     """Complete target occurrences with independent predicates and effect focus."""
     if not isinstance(text, str) or not text.endswith('.'):
@@ -2520,6 +2567,7 @@ def targeted_program(text):
     if 'another target attacking creature you control' in text:
         result=targeted_program(text.replace('another target attacking creature you control','another target creature you control',1))
         return ('OtherCreatureAttackingYou',result[1]) if result and result[0]=='OtherCreatureYou' else None
+    if result:=damage_death_exile_program(text):return result
     if result:=role_return_program(text):return result
     returned=battlefield_return_program(text)
     if returned and returned[0]!='None':return returned
@@ -2776,6 +2824,12 @@ def targeted_program(text):
     # A targeted clause followed by wholly non-targeted instructions is supported.
     if '. ' in text:
         first, rest = text.split('. ', 1)
+        # A target-local replacement belongs to the preceding damage occurrence.
+        # Keep that entire typed group together when a later independent target
+        # follows (including a combined choose-both modal program).
+        paired=re.fullmatch(r'(.+\. If that (?:creature|creature or planeswalker|permanent) would die this turn, exile it instead\.) (.+)',text)
+        if paired and damage_death_exile_program(paired[1]):
+            first,rest=paired[1][:-1],paired[2]
         result = targeted_program(first + '.')
         tail = statement_program(rest)
         if result:
@@ -4916,6 +4970,8 @@ def compile_catalogue(snapshot, target):
         if not target_exclusion_reminders_valid(original):
             effect='Unsupported'
         if not enchanted_draw_reminders_valid(original):
+            effect = 'Unsupported'
+        if not death_exile_reminders_valid(original):
             effect = 'Unsupported'
         if not quoted_creature_token_reminders_valid(original):
             effect = 'Unsupported'
