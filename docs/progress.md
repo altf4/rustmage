@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,801 executable Standard identities | 3,363 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,811 executable Standard identities | 3,353 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -16,7 +16,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Fair observations | Hidden-hand/library projection and privacy tests; catalogue fingerprint | New private choices/zones; belief sampling and neural encoders |
 | Reviewed delivery | Saga PR #259 has two independent nonauthor approvals of the complete authored batch and durable scoped evidence in the [Saga review record](review-pr-259.md). Crew PR #253 and earlier milestones retain their own feature/review records. | Continue issue-managed, reviewed PRs through complete acceptance |
 
-The current composition adds nineteen complete [Adventure pairs](adventure.md)
+The merged Saga/Adventure/Ward baseline adds nineteen complete [Adventure pairs](adventure.md)
 and ten complete [attachment/Ward bodies](attachment-ward.md) to merged Saga
 main. Coverage is 1,801/5,164, with 3,363 identities still gated, 86 token factories,
 one emblem and observation schema 78. All 1,659 combined native tests and all-target
@@ -27,7 +27,15 @@ fresh public methods pass in 712.402 seconds. The
 [composition record](review-pr-258.md) tracks exact source/library identities,
 canonical preservation, meaningful cross-mechanic cases and current gate status.
 
-The other 56 true Adventure parents, thirteen Omen parents and 54 Saga parents
+The current candidate adds ten complete Omen pairs, including Whirlwing's
+chosen-spell timing permissions, to that baseline: 1,811/5,164 identities,
+3,353 gated, 87 token recipes, one emblem, nineteen Adventure and ten Omen helpers,
+observation schema79. The strict combined compiler controls and both-parent
+canonical/provenance checks pass. Full runtime/compiler/public/100-game validation
+and two independent final-head reviews are tracked in [the timing record](cast-timing.md)
+and dependent PRs #263/#268; pending gates are not reported as complete.
+
+The other 56 true Adventure parents, three Omen parents and 54 Saga parents
 remain part of the full goal, alongside wider Ward/Role/disguise/cloak/control
 and other required semantics. Full rules enforcement across Standard, efficient
 training interfaces and full-deck performance remain incomplete.

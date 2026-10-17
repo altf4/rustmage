@@ -16,7 +16,7 @@ The first training target is [current Standard, pinned to October 15, 2026](docs
 [Crew and Vehicles](docs/crew-vehicles.md) add24 complete bodies with private exact power costs, live battlefield animation, printed spell identity and sparse owned rollback state.
 [Single-face Sagas](docs/sagas.md) add twelve complete bodies with typed lore counters, ordinary chapter packets and exact-incarnation final-chapter sacrifice.
 [Adventure faces](docs/adventure.md) add nineteen complete pairs with paid inset casts and owned normal-play exile permissions; [typed attachment Ward](docs/attachment-ward.md) adds ten complete bodies. Their [composition record](docs/review-pr-258.md) tracks combined validation.
-[Omen spell faces](docs/omens.md) add nine complete pairs with chosen characteristics and owner-library shuffle completion; four Omen parents remain gated.
+[Omen spell faces](docs/omens.md) add ten complete pairs with chosen characteristics and owner-library shuffle completion. [Chosen-spell timing](docs/cast-timing.md) completes Whirlwing; three Omen parents remain gated.
 [Job Select](docs/job-select.md) adds all sixteen complete Equipment bodies with live subtype grants,
 recipient-owned abilities and private Ninja/Summoner continuations.
 [Plot](docs/plot.md) adds thirteen complete bodies with paid special actions and exact later-turn free casting.
