@@ -246,7 +246,7 @@ class TargetCostTests(unittest.TestCase):
                     self.assertIsNotNone(locked); self.assertTrue(locked[2]); payment = action['payment']
                     self.assertTrue(all(p >= c for p, c in zip(payment, locked[0])))
                     self.assertEqual(sum(payment), sum(locked[0]) + locked[1]); paid = True
-                    self.assertEqual(announcing['cast'], {'physical_card': None, 'face': 'Normal', 'payment': [0]*6, 'origin': origin, 'method': 'Normal', 'offspring': None, 'kicker': None, 'bargain': None, 'evidence': None})
+                    self.assertEqual(announcing['cast'], {'physical_card': None, 'face': 'Normal', 'payment': [0]*6, 'origin': origin, 'method': 'Normal', 'offspring': None, 'kicker': None, 'bargain': None, 'evidence': None, 'flash_surcharge': False})
                 if action['kind'] == 'Pass' and obs['stack'] and obs['stack'][-1]['source_card'] == name and obs['stack'][-1]['kind'] == 'Spell':
                     packet = obs['stack'][-1]; baseline = obs
                 after = self.replay(game, obs, j); replays += 1

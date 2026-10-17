@@ -153,7 +153,7 @@ class AttachmentAttackTests(unittest.TestCase):
                     if action['kind'] == 'PayCosts':
                         self.assertEqual(sum(action['payment']), sum(want[0]) + want[1])
                         if ann['kind'] == 'Spell':
-                            self.assertEqual(ann['cast'], {'physical_card': None, 'face': 'Normal', 'payment': [0]*6, 'origin': 'Hand', 'method': 'Normal', 'offspring': None, 'kicker': None, 'bargain': None, 'evidence': None})
+                            self.assertEqual(ann['cast'], {'physical_card': None, 'face': 'Normal', 'payment': [0]*6, 'origin': 'Hand', 'method': 'Normal', 'offspring': None, 'kicker': None, 'bargain': None, 'evidence': None, 'flash_surcharge': False})
                             cast_paid = True
                         elif not (i == 5 and ann['kind']['ActivatedAbility']['ability'] == 0): equip_paid = True
                 if obs['decision'] == 'targets':
