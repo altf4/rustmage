@@ -14,6 +14,7 @@ from test_adventure import AdventureTests
 BLOOM='Bloomvine Regent // Claim Territory'
 TROOP='Troop of Ponies'
 SAGU='Sagu Wildling // Roost Seek'
+EXPECTED_CATALOGUE=json.loads((Path(__file__).resolve().parents[1]/'data/standard/coverage.json').read_text())['catalogue_version']
 FACTS={c['name']:c for c in json.loads((Path(__file__).resolve().parents[1]/'data/standard/cards.json').read_text())['cards']}
 class SplitStandard(unittest.TestCase):
  replay=AdventureTests.replay
@@ -23,6 +24,7 @@ class SplitStandard(unittest.TestCase):
   deck=['Forest']*32+sum(([n]*4 for n in [name,'Bear Cub','Chrome Companion',SAGU,'Bygone Colossus','Snakeskin Veil','Thrill of Possibility']),[])
   self.assertEqual(len(deck),60)
   with Game([deck,deck],seed=seed,starting_player=p,deck_rules='Standard',library=library)as g:
+   self.assertEqual(g.observe('P0')['catalogue'],EXPECTED_CATALOGUE);self.assertEqual(g.observe('P0')['schema'],80)
    stage='setup';source=None;descriptor=False;base=None;chosen=[];destination=None;attacked=False;private=0;reveals=0;dragon=None;opponent_dragon=None
    for iteration in range(30000):
     o=g.observe('P0')
