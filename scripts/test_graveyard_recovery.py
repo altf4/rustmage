@@ -141,10 +141,10 @@ class GraveyardRecoveryTests(unittest.TestCase):
         new=(g.ROOT/'src/generated/catalogue.rs').read_text()
         definitions=lambda text:[line for line in text.splitlines() if line.lstrip().startswith('Definition {')]
         before,after=definitions(old),definitions(new)
-        expected=set(NAMES)-{"Morcant's Loyalist"}
+        expected=set(NAMES)-{"Morcant's Loyalist"}|{'Unassuming Sage', 'Diminisher Witch', 'Protective Parents', "Witch's Mark", "Eriette's Whisper", 'Cursed Courtier', 'Merry Bards', 'Spellbook Vendor', "The Witch's Vanity", 'Become Brutes', 'Shatter the Oath', 'Cut In'}
         self.assertEqual(len(before),5328);self.assertEqual(len(after),5328)
         changed=[(a,b) for a,b in zip(before,after) if a!=b]
-        self.assertEqual(len(changed),18)
+        self.assertEqual(len(changed),30)
         changed_names={json.loads(re.search(r'name: ("(?:[^"\\]|\\.)*")',b)[1]) for _,b in changed}
         self.assertEqual(changed_names,expected)
         for a,b in changed:self.assertIn('effect: Effect::Unsupported',a)
@@ -152,7 +152,7 @@ class GraveyardRecoveryTests(unittest.TestCase):
         # admitted Tombstone reducer adds a helper entry. Loyalist stays gated.
         import difflib
         removed=[l[2:] for l in difflib.ndiff(old.splitlines(),new.splitlines()) if l.startswith('- ')]
-        self.assertEqual(len(removed),20) # 18 definition rows, fingerprint, ALL.
+        self.assertEqual(len(removed),32) # 18 recovery + 12 Role rows, fingerprint, ALL.
         self.assertTrue(all(l.startswith(('    Definition {','pub const CATALOGUE_VERSION:','    pub const ALL:')) for l in removed))
 
 

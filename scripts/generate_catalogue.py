@@ -416,6 +416,7 @@ def role_reminder_text(text):
         # These two printed presentations describe the same predefined Role.
         bodies = [body, prefix + body]
         if kind == 'Wicked':
+            bodies += [v.replace('When this Aura is put into a graveyard from the battlefield', 'When this token is put into a graveyard') for v in bodies]
             bodies += [v.replace('this Aura', 'this enchantment') for v in bodies]
         for accepted in bodies:
             pattern = r'(' + re.escape(kind) + r' Role token attached to [^.]+\.)( Activate only as a sorcery\.)? \(' + re.escape(accepted) + r'\)'
@@ -435,11 +436,17 @@ def role_program(text):
         before = [f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({KEYWORDS["hexproof"]}) }}']; fixed_rule = 'CreatureYou'
     elif body.startswith('draw a card. '):
         body = body[len('draw a card. '):]; before = ['Draw(PlayerSet::Controller, 1)']
+    if body.startswith('one or two target creatures each gain haste until end of turn. For each of those creatures, '):
+        tail=body[len('one or two target creatures each gain haste until end of turn. For each of those creatures, '):]
+        result=role_program(tail.replace('attached to it.','attached to target creature.'))
+        if result is not None and result[0]=='Creature':
+            return ('Creature',1,2),[f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({KEYWORDS["haste"]}) }}',*result[1]]
+        return None
     body = body[0].lower() + body[1:] if body else body
-    m = re.fullmatch(r'create a (Cursed|Monster|Royal|Sorcerer|Wicked|Young Hero) Role token attached to (target creature(?: you control)?|another target creature(?: you control)?|up to one other target creature you control|it|that creature)\.', body)
+    m = re.fullmatch(r'create a (Cursed|Monster|Royal|Sorcerer|Wicked|Young Hero) Role token attached to (target creature(?: you control| an opponent controls)?|another target creature(?: you control)?|up to one (?:other )?target creature you control|it|that creature)\.', body)
     if not m:return None
     kind, recipient = m.groups()
-    rules = {'target creature':'Creature','target creature you control':'CreatureYou','another target creature':'OtherCreature','another target creature you control':'OtherCreatureYou','up to one other target creature you control':('OtherCreatureYou',0,1)}
+    rules = {'target creature':'Creature','target creature you control':'CreatureYou','target creature an opponent controls':'CreatureOpponent','another target creature':'OtherCreature','another target creature you control':'OtherCreatureYou','up to one other target creature you control':('OtherCreatureYou',0,1),'up to one target creature you control':('CreatureYou',0,1)}
     rule = rules.get(recipient)
     if rule is None:
         if fixed_rule is None:return None
@@ -450,6 +457,23 @@ def role_program(text):
     if key in TOKEN_DEFS and TOKEN_DEFS[key] != factory:raise ValueError('token factory collision')
     TOKEN_DEFS[key] = factory
     return rule, [*before, f'CreateRole {{ token: __TOKEN_{key}__, subject: Subject::Targets }}']
+
+
+
+def source_role_program(text, condition):
+    """Only a complete self-event clause proves the recipient is this source."""
+    if condition not in ('SelfEnters','SelfAttacks','SelfEntersOrAttacks'):return None
+    pay=None
+    if match:=re.fullmatch(r'you may pay ((?:\{[0-9WUBRGC]+\})+)\. If you do, (.+)',text):
+        pay=mana_cost_spec(match[1])
+        if pay is None or spell_cost_options(match[1]) is None:return None
+        text=match[2]
+    match=re.fullmatch(r'[Cc]reate a (Cursed|Monster|Royal|Sorcerer|Wicked|Young Hero) Role token attached to (?:it|this creature)\.',text)
+    if match is None:return None
+    result=role_program('create a '+match[1]+' Role token attached to target creature.')
+    assert result is not None
+    program=[v.replace('Subject::Targets','Subject::Source') for v in result[1]]
+    return 'None',([f'MayPayMana {{ cost: {pay}, skip: {len(program)} }}'] if pay else [])+program
 
 
 def token_program(text):
@@ -1138,7 +1162,7 @@ def extract_bargain(card):
 
 
 def fixed_bargain_body(card):
-    """Ten closed complete bodies; no partial parsing of unknown bargain tails."""
+    """Complete Bargain bodies; generic creature fallback authenticates raw reminders."""
     cost=card.get('mana_cost','')
     if fixed_cost(cost) is None or spell_cost_options(cost) is None:return None
     text=card.get('oracle_text','')
@@ -1164,7 +1188,11 @@ def fixed_bargain_body(card):
       'When this creature enters, if it was bargained, return target instant or sorcery card from your graveyard to your hand.':(0,[('SelfBargained',['ReturnToHand'],'InstantSorceryGraveYou')],0),
       'When this creature enters, if it was bargained, exile target artifact or enchantment an opponent controls.':(0,[('SelfBargained',['Exile'],'ArtifactEnchantmentOpponent')],0),
     }
-    if text not in creatures:return None
+    if text not in creatures:
+        raw=role_reminder_text(text)
+        if '(' in raw or ')' in raw:return None
+        parsed=trigger_creature_template(dict(card,oracle_text=raw))
+        return (parsed[0],parsed[1],parsed[2],None,0) if parsed else None
     keywords,triggers,reduction=creatures[text]
     return effect,keywords,triggers,None,reduction
 
@@ -2230,6 +2258,16 @@ def targeted_program(text):
         result=targeted_program(text.replace('another target attacking creature you control','another target creature you control',1))
         return ('OtherCreatureAttackingYou',result[1]) if result and result[0]=='OtherCreatureYou' else None
     if result:=role_program(text):return result
+    if match:=re.fullmatch(r'destroy target creature an opponent controls with mana value ([0-9]+) or less\.',text):
+        maximum=int(match[1])
+        if maximum>4294967295:return None
+        key='CreatureOpponentMax'+str(maximum)
+        TARGET_RULES[key]=f'TargetRule::Object {{ zone: TargetZone::Battlefield, kinds: 1, relation: 1, other: false, nonland: false, tapped: false, min_mana: 0, max_mana: {maximum} }}'
+        return key,['Destroy']
+    if match:=re.fullmatch(r'(you may discard (?:a card|two cards|three cards)\. If you do, [^.]+\.) ([Cc]reate a .+ Role token attached to .+\.)',text):
+        prefix=statement_program(match[1]);tail=role_program(match[2])
+        if prefix and tail:return tail[0],[*prefix,*tail[1]]
+        return None
     if result:=target_subject_conditional(text):return result
     for subject,rule in [('another target attacking creature you control','OtherCreatureAttackingYou'),('target attacking creature','CreatureAttacking'),('target attacking Goblin you control','GoblinAttackingYou')]:
         if text.startswith(subject+' '):
@@ -2415,6 +2453,7 @@ def targeted_program(text):
         'destroy target creature.': ('Creature', ['Destroy']),
         'destroy target artifact.': ('Artifact', ['Destroy']),
         'destroy target enchantment.': ('Enchantment', ['Destroy']),
+        'destroy target creature or enchantment.': ('CreatureEnchantment', ['Destroy']),
         'destroy target artifact or enchantment.': ('ArtifactEnchantment', ['Destroy']),
         'destroy up to one target artifact or enchantment.': (('ArtifactEnchantment',0,1),['Destroy']),
         "return up to one other target creature you control to its owner's hand.": (('OtherCreatureYou',0,1),['ReturnToHand']),
@@ -2834,6 +2873,7 @@ def trigger_creature_template(card):
         'Whenever a player casts a spell, ': cast_condition(relation='Any'),
         'Whenever you cast your second spell each turn, ': cast_condition(ordinal=2),
         'Flurry — Whenever you cast your second spell each turn, ': cast_condition(ordinal=2),
+        'When this creature enters, if it was bargained, ': 'SelfBargained',
         'When this creature enters, ': 'SelfEnters',
         'When this creature dies, ': 'SelfDies',
         'When this creature enters or dies, ': 'SelfEntersOrDies',
@@ -3024,8 +3064,22 @@ def trigger_creature_template(card):
                     break
                 if condition=='SelfEnters' and effect_text=='you may forage. If you do, put two +1/+1 counters on it.':
                     effect_text=effect_text.replace(' on it.',' on this creature.')
+                # 'When you do' queues a separate targeted reflexive ability;
+                # target selection must not occur before the optional payment.
+                role_payment=re.fullmatch(r'you may pay ((?:\{[0-9WUBRGC]+\})+)\. When you do, (.+)',effect_text)
+                if role_payment and (result:=role_program(role_payment[2])):
+                    if limited or intervening is not None:return None
+                    cost=mana_cost_spec(role_payment[1])
+                    if cost is None or spell_cost_options(role_payment[1]) is None:return None
+                    targets,body=result;index=len(abilities)+1
+                    abilities.append((condition,[f'MayPayMana {{ cost: {cost}, skip: 1 }}',f'Reflexive {{ ability: {index} }}'],'None'))
+                    abilities.append(('Reflexive',body,targets))
+                    break
+                source_role=source_role_program(effect_text,condition)
                 entering_program=entering_object_program(effect_text,condition)
-                if entering_program is not None:
+                if source_role is not None:
+                    targets,program=source_role
+                elif entering_program is not None:
                     targets,program=entering_program
                 elif condition.startswith('CardDrawn {'):
                     result=draw_event_program(effect_text)
@@ -4116,6 +4170,7 @@ def saga_body(card):
             # Unknown parenthesized text is executable residual, never harmless prose.
             reminders = {
                 'Create a Treasure token. (It\'s an artifact with "{T}, Sacrifice this token: Add one mana of any color.")': 'Create a Treasure token.',
+                'Create a Food token. (It\'s an artifact with "{2}, {T}, Sacrifice this token: You gain 3 life.")': 'Create a Food token.',
                 'Mill three cards, then create a Food token. (It\'s an artifact with "{2}, {T}, Sacrifice this token: You gain 3 life.")': 'Mill three cards, then create a Food token.',
                 'Tap target creature an opponent controls. Put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)': 'Tap target creature an opponent controls. Put a stun counter on it.',
             }
@@ -4427,6 +4482,10 @@ def compile_catalogue(snapshot, target):
         role_raw = original.get('oracle_text','')
         if role_route(role_raw):
             checked_role = role_reminder_text(role_raw)
+            checked_role = checked_role.replace('Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)', 'Bargain')
+            checked_role = checked_role.replace('Create a Food token. (It\'s an artifact with "{2}, {T}, Sacrifice this token: You gain 3 life.")', 'Create a Food token.')
+            if original.get('layout')=='saga':
+                checked_role=re.sub(r'^\(As this Saga enters and after your draw step, add a lore counter\. Sacrifice after (?:I|II|III|IV|V)\.\)\n','',checked_role)
             checked_role = checked_role.replace("Menace (This creature can't be blocked except by two or more creatures.)", 'Menace')
             if '(' in checked_role or ')' in checked_role: effect='Unsupported'
         if attachment_ward_route(original) and not attachment_ward_reminders_valid(original):
