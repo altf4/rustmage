@@ -1,0 +1,17 @@
+# Enchanted creature draw-step condition
+
+Issue [296](https://github.com/altf4/rustmage/issues/296) implements complete Lord Skitter's Blessing on merged source-binding main. This draft candidate supports 1,864/5,164 Standard identities, with 3,300 still gated. The full goal remains incomplete.
+
+Its real paid enchantment spell creates the predefined Wicked Role on a legal controlled creature. The draw-step ability checks whether its captured controller controls an enchanted creature both at triggering and resolution. This uses the shared exact-incarnation Aura attachment predicate: either player's Aura qualifies, Equipment does not, and an old attachment cannot qualify a later incarnation. No mutable registration or continuation is added. Existing step-value threshold machinery counts qualifying creatures; the normal draw happens independently before priority. Source departure alone does not counter the ability. Life loss and the additional draw use existing event machinery.
+
+The generic complete additional-card/life-loss clause and enchanted condition authenticate raw text before presentation erasure. Exact predefined Role and intrinsic keyword reminders can be authenticated; unknown suffixes, nested or infix prose fail closed. No identity inventory enables execution. The full pinned card record and nineteen directly imported Java sources are hashed; this does not claim a transitive Java port.
+
+Rules: CR303.4b defines enchanted through Aura attachment; CR603.4 requires intervening-if checks both times; CR504.1 makes the normal draw a turn action. See the [pinned comprehensive rules](https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf).
+
+Prototype validation: four new native groups pass in 0.07 seconds, covering actual paid complete casting in both seats, normal/additional draw ordering, paid Disenchant removing either Role or source between trigger and resolution, Aura-controller independence, Equipment and opposing-recipient exclusion, ordinary Aura qualification, exact incarnations and owned clone/restore/action-index replay with wrong-actor/stale denials. Native fixture setup supplies mana and edge-case attachments; it is not represented as naturally drawn Standard gameplay.
+
+Fresh full native validation subsequently passes 1,747 unit plus twelve integration tests (1,759 total), formatting and all-target Clippy (11.17 seconds). Eight focused compiler/provenance methods pass in 0.550 seconds. Exact generated-parent comparison preserves 5,327 prior definitions and every unrelated generated line, excluding the catalogue fingerprint and the supported enumeration; only the complete Blessing definition changes.
+
+Early test-only mistakes remain diagnostic failures: the first native compile used the wrong numeric summation type; the first provenance count expected twenty-one rather than the actual twenty source files. Both were corrected before the successful runs. An initial manifest-building command used the wrong Java source directory and stopped before writing that manifest; the corrected command verifies actual pinned paths.
+
+Public paid Standard acceptance, full deduplicated compiler/public suites, workload performance, final composed gates and two independent nonauthor exact-head reviews remain pending. This draft is not merge-ready. Every completed build target is cleaned of disposable outputs while preserving all shared-library paths/content and evidence.

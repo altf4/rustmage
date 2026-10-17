@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "scope": "Complete Lord Skitter’s Blessing, generic enchanted-creature intervening guard and exact additional-card clause; directly imported sources authenticated, not a transitive Java port",
+  "cards": [
+    {
+      "name": "Lord Skitter's Blessing",
+      "oracle_id": "d5bd40fc-6138-4752-b3ff-b1e5fa269214",
+      "mana_cost": "{1}{B}",
+      "type_line": "Enchantment",
+      "oracle_text": "When this enchantment enters, create a Wicked Role token attached to target creature you control. (Enchanted creature gets +1/+1. When this token is put into a graveyard, each opponent loses 1 life.)\nAt the beginning of your draw step, if you control an enchanted creature, you lose 1 life and you draw an additional card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LordSkittersBlessing.java",
+          "java_sha256": "a28ca516e77a6ba4bd264822a625c72f8863b77574da6b9b4be004cb65c3f178"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+          "java_sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateRoleAttachedTargetEffect.java",
+          "java_sha256": "2a528a7a2d1e4a1c369adcc6b28b1761c279b3dfbfd922df38b53b1ac090adb3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+          "java_sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/ConditionHint.java",
+          "java_sha256": "272def725fb6168ac551239c85a0c7b4908d18ac1f51092cd7a5fd2e77e6d6ce"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+          "java_sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/triggers/BeginningOfDrawTriggeredAbility.java",
+          "java_sha256": "523dd4efb5e2b9b87196c19d00a10fad8d6ea5f1d996023974ccf545f59148fc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RoleType.java",
+          "java_sha256": "dbf5a947685f6d81c10d8f4245efd85bd2ff637851682abf5a361f5b84744d1d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TargetController.java",
+          "java_sha256": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+          "java_sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/EnchantedPredicate.java",
+          "java_sha256": "a7b45550142e17e80f25dfcb21e0381076c50e8f131b988e97195914e021469c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        }
+      ]
+    }
+  ]
+}

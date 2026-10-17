@@ -416,11 +416,34 @@ def role_reminder_text(text):
         # These two printed presentations describe the same predefined Role.
         bodies = [body, prefix + body]
         if kind == 'Wicked':
+            bodies += [v.replace('When this Aura is put into a graveyard from the battlefield', 'When this token is put into a graveyard') for v in bodies]
             bodies += [v.replace('this Aura', 'this enchantment') for v in bodies]
         for accepted in bodies:
             pattern = r'(' + re.escape(kind) + r' Role token attached to [^.]+\.)( Activate only as a sorcery\.)? \(' + re.escape(accepted) + r'\)'
             text = re.sub(pattern, r'\1\2', text)
     return text
+
+
+
+def enchanted_draw_reminders_valid(card):
+    """New generic guard/draw routes authenticate raw input before erasure."""
+    raw=card.get('oracle_text','')
+    if not isinstance(raw,str):return True
+    surface=raw;seen=False
+    while True:
+        normalized=' '.join(surface.casefold().split())
+        seen |= re.search(r'\byou control an enchanted creature\b|\byou lose [0-9]+ life and you draw an additional card\b',normalized) is not None
+        stripped=re.sub(r'\([^()]*\)','',surface)
+        if stripped==surface:break
+        surface=stripped
+    if not seen:return True
+    for line in role_reminder_text(raw).splitlines():
+        if '(' not in line and ')' not in line:continue
+        bare=re.sub(r'\([^()]*\)','',line).strip()
+        proxy=dict(card,oracle_text=bare)
+        if creature_template(proxy) is None or not intrinsic_reminders_valid(dict(card,oracle_text=line)):
+            return False
+    return True
 
 
 def role_program(text):
@@ -1594,6 +1617,9 @@ def statement_program(text):
     text = strip_rule_label(text)
     if not text:return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if m:=re.fullmatch(r'you lose ([0-9]+) life and you draw an additional card\.',text):
+        amount=int(m[1])
+        return [f'LoseLife(PlayerSet::Controller, {amount})','Draw(PlayerSet::Controller, 1)'] if amount<=65535 else None
     if text=='you may play an additional land this turn.':
         return ['AdditionalLandPlays(1)']
     if text=='discard a card. If you do, draw two cards.':
@@ -2551,6 +2577,8 @@ def step_guard(text):
     if text == 'a creature died this turn': return 'StepGuard::CreatureDied'
     if text == 'an opponent lost life this turn': return 'StepGuard::OpponentLostLife'
     if text == 'this creature is tapped': return 'StepGuard::SourceTapped'
+    if text == 'you control an enchanted creature':
+        return 'StepGuard::Threshold { value: StepValue::EnchantedCreatures, minimum: Some(1), maximum: None }'
     def threshold(value, minimum=None, maximum=None):
         lo = 'None' if minimum is None else f'Some({minimum})'
         hi = 'None' if maximum is None else f'Some({maximum})'
@@ -4452,6 +4480,8 @@ def compile_catalogue(snapshot, target):
         if not recovery_reminders_valid(original):
             effect = 'Unsupported'
         if not intrinsic_reminders_valid(original):
+            effect = 'Unsupported'
+        if not enchanted_draw_reminders_valid(original):
             effect = 'Unsupported'
         # Rejected timing syntax/source shapes must not be revived by legacy selectors.
         if timing_seen and not timing_grants:

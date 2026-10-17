@@ -350,7 +350,7 @@
     {
       "name": "Lord Skitter's Blessing",
       "oracle_id": "d5bd40fc-6138-4752-b3ff-b1e5fa269214",
-      "status": "gated_incomplete_body",
+      "status": "implemented",
       "faces": [
         {
           "name": "Lord Skitter's Blessing",

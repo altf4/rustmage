@@ -1073,6 +1073,7 @@ pub(crate) enum CastRelation {
 #[allow(dead_code)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepValue {
+    EnchantedCreatures,
     Life,
     Hand,
     Creatures,
