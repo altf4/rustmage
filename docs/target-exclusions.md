@@ -1,27 +1,89 @@
 # Live target exclusions and complete two-mode combinations
 
-Issue300 implements seven complete bodies on mainc41c060: Coeurl, Sterling Keykeeper, Rock Soldiers, Guerrilla Gorilla, Overwhelming Surge, Amazing Acrobatics and Decoy Ploy. Prototype coverage is1,874/5,164 Standard identities,3,290 gated. This candidate is not merge-ready; the all-Standard RL/search goal remains incomplete.
+Issue #300 adds seven complete bodies to actual main `ce4b0c1`: Coeurl,
+Sterling Keykeeper, Rock Soldiers, Guerrilla Gorilla, Overwhelming Surge,
+Amazing Acrobatics and Decoy Ploy. Coverage is **1,886/5,164** Standard identities,
+with **3,278 gated**, 40 Adventure/13 Omen, 94 token recipes, one emblem and
+observation schema86. Full Standard support and the RL/search goal remain incomplete.
 
-Read-only target predicates exclude current kinds or effective subtypes at both admission and resolution. Animated artifacts stop satisfying noncreature restrictions. Mount exclusion includes printed Changeling. No new mutable state, heap allocation per object, or observation schema change is introduced.
+Read-only target predicates exclude current kinds or effective subtypes at
+admission and resolution. Animated artifacts stop satisfying noncreature
+restrictions; Mount exclusion includes Changeling. No new mutable state or
+per-object allocation is introduced.
 
-For exactly two complete printed modes, “Choose one or both” lowers to the three legal combinations. The combined choice retains printed order, independent target groups and rebased group selection. Each original mode must compile completely, as must their concatenation; unsupported instructions never disappear. This also naturally admits Amazing Acrobatics and Decoy Ploy; both are included in the complete source and validation scope. Zero modes and repeated modes have no legal option. More than two printed modes remain gated by this initial grammar.
+Exactly two complete printed “Choose one or both” modes produce three legal
+combinations. The combined program preserves printed order, independent target
+groups and rebased selections. Each original and combined program must compile
+completely. Zero/repeated modes have no legal option; more than two remain gated.
+Raw rules are authenticated before parenthetical erasure for every new generic
+caller, including modal routes without exclusions. The inherited intrinsic
+reminder validator permits exact keyword reminders on artifact/enchantment hosts;
+copied, nested and unknown prose fails closed. Source records and explicit direct
+Java imports are audit evidence, never an execution whitelist.
 
-Raw rules are authenticated before any parenthetical erasure across every new generic caller, including modal routes that do not use the new exclusions. Unknown suffix, infix and nested prose fails closed; exact separately proven intrinsic keyword reminders remain available. The pinned manifest contains all seven full source records and explicit direct Java imports. It is audit evidence, not an execution whitelist or a transitive Java port.
+The exact `ce4b0c1` comparison preserves 5,324 of 5,331 definitions and every
+helper, color, alias, recipe and flag; only the seven complete bodies change.
+All seven programs equal the independently reviewed initial implementation.
+Reserved-name controls compare entire symbolically normalized definitions,
+including modal programs, target plans and printed characteristics.
 
-Prototype compiler validation passes five methods in0.528seconds, covering every complete body under all reserved fixture names, each raw rule boundary, the three combinations and exact current-parent preservation. All5,324 prior definitions and every helper/color/alias/recipe/flag remain unchanged. Six new paid native groups pass in0.08seconds: both seats; actual complete casts/activations and all modal combinations; noncreature artifact animation between admission/resolution; stale incarnations; Changeling Mount exclusion; independent partial modal resolution; same Changeling targeted by both Decoy modes; source sacrifice and sorcery timing; opponent hexproof and actual target owner; exact underpayment rejection. Every applied action checks owned raw/index forks after parent drop, restore, both observations, wrong actor and stale revision.
+Six new native groups exercise both seats, paid casts/activations, every modal
+combination, actual Crew animation between admission/resolution, stale object
+incarnations, Changeling exclusion, partial modal resolution, shared Decoy
+targets, source sacrifice, sorcery timing, hexproof, ownership and underpayment.
+Every applied action checks owned raw/index forks after parent drop, restore,
+both observations and actor/revision rejection.
 
-Diagnostic failures remain scoped: the first native compile omitted the module path attribute; the second run passed four groups and failed one fixture because it used an unsupported enchantment creature. The corrected test uses supported Fear of Surveillance. Neither failure required a production runtime change.
+## Frozen actual-parent validation
 
-Full native/Clippy/compiler/public gates, fresh naturally paid Standard workloads, independent nonauthor reviews and final exact-head confirmations remain pending. Completed disposable build outputs are cleaned while every shared-library path/hash is preserved.
+Production/test source `07086ff00dd2424f772db2dddd4d5895660d6d2c` passes all
+1,781 native tests, all-target Clippy with warnings denied, formatting and 27
+affected compiler/provenance methods. The fresh optimized immutable library is
+`targets301-07086ff-7435-schema86-5b6bb1d476ef.so`, SHA256
+`5b6bb1d476ef148ea6e0fba57b8f5420ccefdd1d25c96b195b2d96fbbc3c27a0`,
+catalogue fingerprint
+`7435d4dee1e84a7345dc91812ac8583eae8dccd3c37658ca42fb29211bc9a62d`.
 
-Frozen source `edeb64b` passes all1,772 native tests, all-target Clippy and formatting with all813 tracked inputs unchanged. Its optimized immutable schema86 library has SHA256 `47c2687e7d62d32f684f5ec4a566fef17a13f65bfc50f36f85c28dee03354224`, catalogue fingerprint `09d48f636ea8c4c5dea22bba908db188d7a1222a053af91d47ee0d91737469a3`. The full439-method compiler and263-method existing public API collections run from an independent frozen Git export; they do not read later worktree policy changes.
+Five unique fresh public methods pass in 163.736 seconds: the two new family
+methods cover 26 complete body/mode/seat cells; three retain the parent Role
+follow-up acceptance. Two fixed, unretried natural Standard workloads pass:
 
-Fresh public acceptance against that exact production passes eight filter cases (one method,29.518seconds) and eighteen modal cases (one method,51.301seconds), every body/mode/seat cell. All26 games finish naturally with per-action owned replay and illegal-actor/revision denials. The first modal policy run passes17cases and fails one because it unnecessarily waits for an enemy spell for the tap-only mode. The corrected policy tests tap-only without a counter target, and reserves a real enemy spell until counterspell mana is available; the same seeds and unchanged runtime pass. No seed substitution was used.
+| Workload | Games | Owned frames | Actor/revision denials | Seconds |
+| --- | ---: | ---: | ---: | ---: |
+| Seven target/modal bodies, all 26 vectors | 100 | 89,935 | 179,870 | 251.566 |
+| Twelve parent Role bodies | 100 | 82,514 | 165,028 | 223.722 |
 
-One inherited compiler test explicitly rejected every “choose one or both” spell. Its new positive assertion checks exactly three complete combinations, including the combined draw-and-life program; all other unsupported headers/modes remain rejected. The original frozen broad run retains its original fixture and expected diagnostic failure; its later outcome will be recorded honestly. The corrected method plus current focused family/provenance tests pass10methods in1.392seconds on unchanged production.
+All 820 tracked inputs and the immutable library hash remain unchanged throughout
+each gate. Completed expanded exports are hash-verified in compressed archives;
+logs/status reports remain available and every shared-library path/hash is retained.
 
-The original frozen439-method compiler collection finishes with438passes, one inherited modal-rejection fixture failure, and zero errors/skips in676.392seconds; all813 files remain unchanged. A fresh full run from the corrected8991fb0 export is underway rather than relabeling that diagnostic run green. Both current public methods pass together in62.805seconds with26naturally terminal cases, no errors/failures/skips, all815 inputs and library hash unchanged.
+## Earlier validation and diagnostic scope
 
-The first fixed100-game workload completes67games and then fails its policy witness at game67, Amazing Acrobatics/P1/counter-only/seed3213. The diagnostic trace proves the opponent discarded its three spare Bears on turns48/54/56 while the caster still had only one untapped Island; the second Island became available on turn57. The policy now retains its last spare Bear until the counterspell can be demonstrated. The exact failed seed passes with1,263 owned frames on unchanged runtime and unchanged decks/seeds. A new unretried100-game run starts from game0; the failed earlier workload remains a failure, not a completed acceptance run.
+The independently frozen initial production `edeb64b`, based on `c41c060`, passes
+1,772 native tests, Clippy, formatting and all 263 unique existing public methods
+(1,269.884 wrapper seconds). Its first full compiler run passes 438/439, with one
+obsolete fixture rejecting every “choose one or both” spell. The corrected
+fixture positively verifies all three complete combinations while preserving
+other unsupported cases. Fresh `8991fb0` passes all 439 unique compiler methods
+(627.483 seconds). These broad runs retain their earlier source scope; they are
+not represented as full fresh `07086ff` runs. The actual Role parent separately
+passes all 441 compiler and 266 public methods.
 
-The reserved-name proof is subsequently strengthened to compare the entire symbolically normalized generated definition under every fixture name, including all modal programs, target plans and printed characteristics; all five focused family methods pass in0.848seconds. This is a test-only strengthening on unchanged production. The revised two public methods pass all26cases in67.870seconds with every frozen input and immutable-library hash verified. The revised100-game workload is still pending.
+Initial native diagnostics exposed a missing test module path and an unsupported
+fixture card; both were corrected without a runtime change. Initial public
+policy passed 17/18 modal cases, then was corrected to avoid waiting for a
+counter target in tap-only mode. A first 100-game run failed after 67 games:
+the opponent discarded its last counterable creature before the caster drew its
+second Island. The policy now reserves that last creature. The identical failed
+seed passes with 1,263 owned frames, and the subsequent entire fixed workload
+passes without retries or changed seeds/decks. Those initial runs remain failures.
+
+Two independent nonauthor reviews cover the complete authored batch, excluding
+their own ancestors. Compiler review independently passes 64 positives and 256 raw
+negatives on the composed source; events review adds 16 artifact/enchantment
+positives and 32 adverse raw cases. Their novel paid native probes independently
+exercise Crew target invalidation, stolen graveyard-exile/Changeling targets and
+counter-target departure with the other modal group still resolving. Those native
+probes ran on the reviewed initial runtime; unchanged production/program comparison
+carries their conclusions without claiming fresh composed native reruns. Exact
+final published-head confirmations are required before delivery.

@@ -39,26 +39,69 @@ at `492369c7844b8d76479f0393ff9eb6b0b0cf30d7`. Shared Role factory sources are
 included. This does not claim all transitive Java dependencies were rewritten.
 No provenance inventory or name grants runtime permission.
 
-Validation remains in progress. Focused native cases cover both seats, actual
-payments, foreign ownership/control, timing, reductions, insufficient costs,
-stale targets, successful entry results, mass replacement ordering and owned
-rollback. Ten focused compiler/provenance methods pass. The exact six-card
-comparison preserves all other parent definitions, helpers, colors and recipes.
+The new quoted creature-token wording authenticates original raw text for every
+generic caller, including spells, permanent triggers, activations, whole Sagas
+and both Adventure/Omen faces. Parenthetical erasure detects the route only;
+unknown, nested, infix and copied reminders cannot authorize a body. Own compiler
+controls cover 314 clean and 1,530 adverse cases. The two independent reviewers
+add 48/288 and 24/168 clean/adverse controls, plus paid cross-layer, foreign-return
+and resolution-time recipient/control/permission-loss probes.
 
-At production checkpoint `69c16d3`, a focused public policy run passed 16
-naturally terminal Standard games: 14,033 owned frames and 28,066 illegal-action
-denials. It includes both seats, cheaper normal timing routes, Young Hero attack
-counters, Wicked death life loss and paid off-turn Asinine with opposing Royal
-Roles. A later policy assertion requires hexproof to remain active at casting.
-Immutable library SHA256:
-`c3613807780ab01e4e7be2ded4a7ece6edfa7a8c327229f5e77daa0169d2305c`.
-This is checkpoint evidence: later Role observation and compiler closure changes
-require fresh native/library/public validation before final delivery.
+The final candidate completes 1,892/5,164 pinned Standard identities (3,272 remain
+gated), schema87. Against actual main `8108a6f`, exactly these six definitions and
+four required helper entries change; all 5,325 other definitions, 878 existing
+helpers, 5,331 colors, 94 recipes, one emblem, three flags and 5,437 aliases remain
+identical. The reverse comparison against fully tested `c5af333` changes only the
+seven separately reviewed parent target-exclusion definitions, retaining every
+one of the six authored programs and all 882 existing helper entries unchanged.
+No unsupported partial body was admitted.
 
-Prototype policy failures were scoring issues: finishing attacker selection
-outranked selecting attackers, and mana filtering excluded Three Tree Mascot's
-legal conversion. Both were corrected before the 16-game pass. Failed runs are
-not final evidence. Full native/Clippy/compiler/API gates and two independent
-NONAUTHOR final-head reviews remain required. Every completed build target is
-immediately cleaned of non-SO outputs; every shared library retains its exact
-original path and hash.
+Full gates at frozen composition `c5af333` pass 1,784 native tests, all-target
+Clippy, all 448 unique compiler/provenance methods (555.847 seconds, no skips),
+and all 268 unique public API methods (1469.336 seconds, no skips). All 819 tracked
+inputs remain identical through those runs. Its 100 fixed naturally terminal
+Standard games pass in 263.838 seconds, with 84,835 owned frames and 169,670
+wrong-actor/stale-revision denials. Its exact library SHA256 is
+`c19a7a43fd584752759a86efc12bda44ff63c9e647f4b03f4730588cb681cdce`, schema87,
+fingerprint `77c138c7c7ec750f0bdc30e74a7c74d6791480af9a47ab8cca89f22ee8f9ec3d`.
+The complete paid sixteen-case policy, including live opposing hexproof at the
+actual Asinine cast, passes within that fresh API suite.
+
+The actual-main composition `3e681b6` separately passes 1,790 native tests
+(1,778 unit plus 12 integration), all-target Clippy with warnings rejected,
+formatting, deterministic generation and 36 affected compiler/provenance/raw
+methods (29.583 seconds). All 825 tracked inputs remain identical through its
+fresh native/library/public gates. Four fresh public methods pass all 42
+naturally terminal Standard body/mode/seat cases: the sixteen six-body cases
+in 45.842 seconds and all 26 parent target-exclusion cases in 63.146 seconds.
+
+The final immutable library is
+`/home/altf4/.cache/rustmage-immutable/roles295-3e681b6-aaf3-schema87-5ba70b459597.so`,
+SHA256 `5ba70b459597fda7f99649187cd7d358a757d772fe92c7f1db6e54fe74e8830b`,
+schema87, fingerprint
+`aaf3add17ed8e6e8421a93e7beaa4314a35ff3244378a9384a323b010cc09bdc`.
+Both independent reviewers rechecked this final production; one also reran the
+paid Tale/Syr/Asinine layered interaction in both seats, including actual removal
+and state-based deaths, on the final source. Review scopes exclude authored
+ancestors and cover all six additions. Final published-head confirmations are
+still the merge gate.
+
+These final composition checks and strict equivalence carry the earlier full
+suite evidence forward with its stated source scope; the 448/268 suites and
+100-game workload are not described as fresh runs of the later composition.
+
+Earlier attempts remain diagnostics. The quoted-token generic raw bypass found
+at `3ace7b8` was corrected at `fb56027`; genuine generated programs stayed equal
+except fingerprint. That checkpoint's full compiler run passed 440 methods and
+failed one obsolete assertion that assumed uncounterable was the last helper.
+Its public run was explicitly canceled after old exact CastInfo expectations
+omitted the new false surcharge field. Both fixtures were corrected before the
+complete passing `c5af333` runs. Earlier policy and missing example-field failures
+are not counted as passes.
+
+Every applied public action checks owned raw/index branches after parent
+destruction, restore, both observations, wrong-actor rejection and stale-revision
+rejection. Completed targets are cleaned of non-SO files immediately, retaining
+every shared library at its exact original path and hash. Full Standard remains
+incomplete. Two independent NONAUTHOR final published-head approvals are required
+before merge.

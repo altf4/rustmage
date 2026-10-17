@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,895 executable Standard identities | 3,269 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,886 executable Standard identities | 3,278 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -121,3 +121,26 @@ produce 82,514 owned frames and 165,028 actor/revision denials. Both independent
 reviewers cleared corrected production using their own raw and adverse gameplay
 controls; exact final published-head confirmations remain the delivery gate.
 The full Standard and training/search goal remains incomplete.
+
+The [target exclusions and two-mode combinations](target-exclusions.md) add seven
+complete bodies on actual Role main ce4b0c1: 1,886/5,164 Standard identities,
+3,278 gated, schema86. Exact-parent comparison retains all 5,324 other definitions
+and all helpers/colors/aliases/recipes/flags. Fresh composed validation passes
+1,781 native tests, all-target Clippy, 27 affected compiler/provenance methods,
+five unique public methods and two 100-game workloads with 172,449 owned frames
+and 344,898 actor/revision denials. Earlier frozen branches retain their own full
+439/263 and 441/266 compiler/public scope; these are not fresh composed broad runs.
+Two exact final-head independent nonauthor confirmations are the delivery gate.
+
+The [Role move-result and paid-flash batch](role-semantic-kernels.md) completes
+six bodies on actual main8108: 1,892/5,164 Standard identities, 3,272 gated,
+schema87. Strict comparisons preserve all 5,325 other main definitions and every
+parent helper/color/recipe/alias/flag. Frozen c5af333 passes 1,784 native tests,
+all-target Clippy, 448 unique compiler/provenance methods and 268 fresh API
+methods with no skips; 100 natural Standard games produce 84,835 owned frames
+and 169,670 actor/revision denials. Later actual-main composition3e681b6 passes
+fresh 1,790 native tests, Clippy, 36 affected compiler methods and 42 paid natural
+Standard cases, retaining all authored six and seven parent programs exactly.
+The broad 448/268 and 100-game evidence keeps its c5 source scope. Two independent
+NONAUTHOR final-head confirmations remain required before merge; full Standard
+and the wider training/search goal remain incomplete.
