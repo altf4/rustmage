@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c91cf8f092c87cc96e295f0dfae61353130ec628a1eb0fb841d5a797c2dc757a",
+  "catalogue_version": "84d4be55aa3bb1d32353177cbedca07b753ed1819d82422cc4186df266ad5c2a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1772,
-  "implemented_total": 1778,
+  "implemented_standard_cards": 1801,
+  "implemented_total": 1807,
   "token_definitions": 86,
   "emblem_definitions": 1,
   "cards": [
@@ -2452,8 +2452,8 @@
     {
       "name": "Bilbo Baggins, Burglar // Take a Glance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Bilbo's Deadly Slice",
@@ -6382,7 +6382,7 @@
     {
       "name": "Detention Chariot",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -7240,8 +7240,8 @@
     {
       "name": "Dusk Rose Reliquary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Duskmourn's Domination",
@@ -7294,8 +7294,8 @@
     {
       "name": "Dwarven Mattock",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Dwarven Mauler",
@@ -8602,8 +8602,8 @@
     {
       "name": "Falcon's Wing Harness",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Falcon, Winged Wonder",
@@ -9790,8 +9790,8 @@
     {
       "name": "Frolicking Familiar // Blow Off Steam",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "From Father to Son",
@@ -10048,8 +10048,8 @@
     {
       "name": "Galvanic Giant // Storm Reading",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Galvanize",
@@ -10534,8 +10534,8 @@
     {
       "name": "Gingerbread Hunter // Puny Snack",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Gingerbrute",
@@ -10762,8 +10762,8 @@
     {
       "name": "Glóin the Mighty // Easy Pickings",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Gnarlback Rhino",
@@ -10984,8 +10984,8 @@
     {
       "name": "Gollum, Silent Slinker // Meager Meal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Gongaga, Reactor Town",
@@ -11032,8 +11032,8 @@
     {
       "name": "Grabby Giant // That's Mine",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Graceful Takedown",
@@ -11686,8 +11686,8 @@
     {
       "name": "Hardlight Containment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Hare Apparent",
@@ -12352,8 +12352,8 @@
     {
       "name": "Hollow Scavenger // Bakery Raid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Hollowmurk Siege",
@@ -12868,8 +12868,8 @@
     {
       "name": "Imodane's Recruiter // Train Troops",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Imodane, the Pyrohammer",
@@ -14758,8 +14758,8 @@
     {
       "name": "Lavaspur Boots",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Lazav, Familiar Stranger",
@@ -16474,8 +16474,8 @@
     {
       "name": "Midgar, City of Mako // Reactor Raid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Midnight Mangler",
@@ -16648,8 +16648,8 @@
     {
       "name": "Minecart Daredevil // Ride the Rails",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Miner's Guidewing",
@@ -17938,8 +17938,8 @@
     {
       "name": "Obyra's Attendants // Desperate Parry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Obyra, Dreaming Duelist",
@@ -20332,8 +20332,8 @@
     {
       "name": "Ratcatcher Trainee // Pest Problem",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Rattleback Apothecary",
@@ -22960,8 +22960,8 @@
     {
       "name": "Sheltered by Ghosts",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Shepherd of the Clouds",
@@ -23140,8 +23140,8 @@
     {
       "name": "Shrouded Shepherd // Cleave Shadows",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Shroudstomper",
@@ -23626,8 +23626,8 @@
     {
       "name": "Smaug, the Great Calamity // Spew Flame",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Smile at Death",
@@ -24718,8 +24718,8 @@
     {
       "name": "Static Snare",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Station Monitor",
@@ -25060,8 +25060,8 @@
     {
       "name": "Stormkeld Vanguard // Bear Down",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Stormplain Detainment",
@@ -25540,8 +25540,8 @@
     {
       "name": "Super Strength",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Super Suit",
@@ -26164,8 +26164,8 @@
     {
       "name": "Tempest Hart // Scan the Clouds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Tempest Hawk",
@@ -27382,8 +27382,8 @@
     {
       "name": "Threadbind Clique // Rip the Seams",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Threats Around Every Corner",
@@ -27976,8 +27976,8 @@
     {
       "name": "Trapped in the Screen",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Trash the Town",
@@ -28396,8 +28396,8 @@
     {
       "name": "Two-Headed Hunter // Twice the Rage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Ty Lee, Artful Acrobat",
@@ -31105,5 +31105,6 @@
       "implemented": false,
       "implementation": null
     }
-  ]
+  ],
+  "adventure_definitions": 19
 }

@@ -1,0 +1,2914 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-16",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+  "scope": "All88 snapshot adventure-layout records;19 admitted true Adventure pairs;56 other Adventure and13 distinct Omen gated. Full files hashed. Admitted entries include direct imported abilities/effects/filters/targets/watchers/token dependencies; shared sources are the audited face/permission infrastructure. This records pinned provenance, not a claim that every transitive Java dependency was rewritten.",
+  "cards": [
+    {
+      "name": "An Unexpected Party // At the Door",
+      "oracle_id": "38503d34-f4f9-4eeb-9b1e-4fec1df921b3",
+      "faces": [
+        {
+          "name": "An Unexpected Party",
+          "mana_cost": "{2}{W}{W}",
+          "type_line": "Enchantment",
+          "oracle_text": "As this enchantment enters, choose a creature type.\nCreatures you control of the chosen type get +2/+2."
+        },
+        {
+          "name": "At the Door",
+          "mana_cost": "{X}{2}{W}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Create X 2/2 red Dwarf creature tokens. (Then exile this card. You may cast the enchantment later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AnUnexpectedParty.java",
+          "java_sha256": "ad890fee8e1919e54b5916bc0589dc37af1465a62106ce5bae936fe21b7ea7de"
+        }
+      ]
+    },
+    {
+      "name": "Aquatic Alchemist // Bubble Up",
+      "oracle_id": "a78b063a-7f74-465a-9670-34f927f4bfe9",
+      "faces": [
+        {
+          "name": "Aquatic Alchemist",
+          "mana_cost": "{1}{U}",
+          "type_line": "Creature — Elemental",
+          "oracle_text": "Whenever you cast your first instant or sorcery spell each turn, this creature gets +2/+0 until end of turn.",
+          "power": "1",
+          "toughness": "3"
+        },
+        {
+          "name": "Bubble Up",
+          "mana_cost": "{2}{U}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Put target instant or sorcery card from your graveyard on top of your library. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AquaticAlchemist.java",
+          "java_sha256": "1e5c1edc5ef464d8a91aaee0a37e9b7e782a0bbb90ec91f3a7bcbc86c1d9bd82"
+        }
+      ]
+    },
+    {
+      "name": "Beanstalk Wurm // Plant Beans",
+      "oracle_id": "a2192c80-c48f-44e2-807c-2f9ee1aa1152",
+      "faces": [
+        {
+          "name": "Beanstalk Wurm",
+          "mana_cost": "{4}{G}",
+          "type_line": "Creature — Plant Wurm",
+          "oracle_text": "Reach",
+          "power": "5",
+          "toughness": "4"
+        },
+        {
+          "name": "Plant Beans",
+          "mana_cost": "{1}{G}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "You may play an additional land this turn. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BeanstalkWurm.java",
+          "java_sha256": "1380b6a84e387a5ae700923e35707457c96f6165fdbc16321110c8a6ddb80a61"
+        }
+      ]
+    },
+    {
+      "name": "Bellowing Bruiser // Beat a Path",
+      "oracle_id": "cdb84830-faf2-4beb-8d57-ad696d75876b",
+      "faces": [
+        {
+          "name": "Bellowing Bruiser",
+          "mana_cost": "{4}{R}",
+          "type_line": "Creature — Ogre",
+          "oracle_text": "Haste",
+          "power": "4",
+          "toughness": "4"
+        },
+        {
+          "name": "Beat a Path",
+          "mana_cost": "{2}{R}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Up to two target creatures can't block this turn. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BellowingBruiser.java",
+          "java_sha256": "2497f2d14d5baf7e20f8701084045a45f65bc41d67814df5427feb745dfe13ec"
+        }
+      ]
+    },
+    {
+      "name": "Beluna Grandsquall // Seek Thrills",
+      "oracle_id": "06374e6d-62fa-4833-81cd-b4d0a35e7365",
+      "faces": [
+        {
+          "name": "Beluna Grandsquall",
+          "mana_cost": "{G}{U}{R}",
+          "type_line": "Legendary Creature — Giant Noble",
+          "oracle_text": "Trample\nPermanent spells you cast that have an Adventure cost {1} less to cast.",
+          "power": "4",
+          "toughness": "4"
+        },
+        {
+          "name": "Seek Thrills",
+          "mana_cost": "{2}{G}{U}{R}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Mill seven cards. Then put all cards that have an Adventure from among the milled cards into your hand."
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BelunaGrandsquall.java",
+          "java_sha256": "cd4078205d2b10779bd96759d5bc34d44dd17fa4ee5d4e7508500aa60995e518"
+        }
+      ]
+    },
+    {
+      "name": "Beluna's Gatekeeper // Entry Denied",
+      "oracle_id": "52fd9309-b849-419a-8d19-5882c00a72b4",
+      "faces": [
+        {
+          "name": "Beluna's Gatekeeper",
+          "mana_cost": "{5}{U}",
+          "type_line": "Creature — Giant Soldier",
+          "oracle_text": "",
+          "power": "6",
+          "toughness": "5"
+        },
+        {
+          "name": "Entry Denied",
+          "mana_cost": "{1}{U}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Return target creature you don't control with mana value 3 or less to its owner's hand. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BelunasGatekeeper.java",
+          "java_sha256": "03c9284a7cce76b03df7bd4867d9b505955e90293abae680d76304ec2111f2a1"
+        }
+      ]
+    },
+    {
+      "name": "Beorn, Reluctant Host // Till and Tend",
+      "oracle_id": "288da486-393c-4995-ad02-c5093a71970d",
+      "faces": [
+        {
+          "name": "Beorn, Reluctant Host",
+          "mana_cost": "{4}{G}",
+          "type_line": "Legendary Creature — Human Bear Shapeshifter",
+          "oracle_text": "Trample",
+          "power": "5",
+          "toughness": "5"
+        },
+        {
+          "name": "Till and Tend",
+          "mana_cost": "{1}{G}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "You may play an additional land this turn. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BeornReluctantHost.java",
+          "java_sha256": "5cbbb3fe97356d0884a43722dc5f2718e0dc270604d847f51ab7d222e94193fc"
+        }
+      ]
+    },
+    {
+      "name": "Besotted Knight // Betroth the Beast",
+      "oracle_id": "c7b6d2cd-9105-404b-88f0-a67037fb2120",
+      "faces": [
+        {
+          "name": "Besotted Knight",
+          "mana_cost": "{3}{W}",
+          "type_line": "Creature — Human Knight",
+          "oracle_text": "",
+          "power": "3",
+          "toughness": "3"
+        },
+        {
+          "name": "Betroth the Beast",
+          "mana_cost": "{W}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Create a Royal Role token attached to target creature you control. (Enchanted creature gets +1/+1 and has ward {1}.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BesottedKnight.java",
+          "java_sha256": "0c406c2316696e82f2d9784db9ed2d495596de5d38013bf6f03a4a4182a2092f"
+        }
+      ]
+    },
+    {
+      "name": "Bilbo Baggins, Burglar // Take a Glance",
+      "oracle_id": "fa85f9e6-69ff-4669-b70a-440aa7b16c97",
+      "faces": [
+        {
+          "name": "Bilbo Baggins, Burglar",
+          "mana_cost": "{2}{U}",
+          "type_line": "Legendary Creature — Halfling Rogue",
+          "oracle_text": "When Bilbo Baggins enters, draw a card.",
+          "power": "2",
+          "toughness": "1"
+        },
+        {
+          "name": "Take a Glance",
+          "mana_cost": "{U}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Scry 2. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "complete_pair_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BilboBagginsBurglar.java",
+          "java_sha256": "040a0f1e43f32974be58a92f463cb7c8fb3af88df46c3c95e57d545b4cbce081"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+          "java_sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+        }
+      ]
+    },
+    {
+      "name": "Bilbo, Luckwearer // Burglar's Plot",
+      "oracle_id": "a73d9109-36e0-40ea-ab06-5c5f7eb4ac54",
+      "faces": [
+        {
+          "name": "Bilbo, Luckwearer",
+          "mana_cost": "{1}{U}",
+          "type_line": "Legendary Creature — Halfling Rogue",
+          "oracle_text": "Bilbo can't be blocked.\nWhenever Bilbo deals combat damage to a player, draw a card, then discard a card.",
+          "power": "1",
+          "toughness": "1"
+        },
+        {
+          "name": "Burglar's Plot",
+          "mana_cost": "{4}{U}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Exchange control of two target nonland permanents that share a card type. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BilboLuckwearer.java",
+          "java_sha256": "03e6c1d23b79918fbf82b2d5f9a445232733df91d3fe316229aa4c8cc1bae820"
+        }
+      ]
+    },
+    {
+      "name": "Bloomvine Regent // Claim Territory",
+      "oracle_id": "da1e019c-2ffb-412d-90d7-f2e5e5c44c4b",
+      "faces": [
+        {
+          "name": "Bloomvine Regent",
+          "mana_cost": "{3}{G}{G}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying\nWhenever this creature or another Dragon you control enters, you gain 3 life.",
+          "power": "4",
+          "toughness": "5"
+        },
+        {
+          "name": "Claim Territory",
+          "mana_cost": "{2}{G}",
+          "type_line": "Sorcery — Omen",
+          "oracle_text": "Search your library for up to two basic Forest cards, reveal them, put one onto the battlefield tapped and the other into your hand, then shuffle. (Also shuffle this card.)"
+        }
+      ],
+      "mechanic": "Omen",
+      "status": "gated_omen_distinct_wrapper",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BloomvineRegent.java",
+          "java_sha256": "7a36e59dd50cd9161518ac579e34488148efc9f523df194a7a967d16ad7d94e1"
+        }
+      ]
+    },
+    {
+      "name": "Bofur, Reliable Guardian // Concerted Care",
+      "oracle_id": "8a0e35ac-6c03-4922-b3b4-e419419fe3d7",
+      "faces": [
+        {
+          "name": "Bofur, Reliable Guardian",
+          "mana_cost": "{W}",
+          "type_line": "Legendary Creature — Dwarf Scout",
+          "oracle_text": "Lifelink",
+          "power": "1",
+          "toughness": "1"
+        },
+        {
+          "name": "Concerted Care",
+          "mana_cost": "{1}{W}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Target artifact or creature you control gains hexproof and indestructible until end of turn. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BofurReliableGuardian.java",
+          "java_sha256": "bbf1a624add927215db4ff74ee6ea10ac1f51f27019c45076cfa0d85d658f623"
+        }
+      ]
+    },
+    {
+      "name": "Bramble Familiar // Fetch Quest",
+      "oracle_id": "68f36dfa-bbd2-4860-b09b-37e35136be72",
+      "faces": [
+        {
+          "name": "Bramble Familiar",
+          "mana_cost": "{1}{G}",
+          "type_line": "Creature — Elemental Raccoon",
+          "oracle_text": "{T}: Add {G}.\n{1}{G}, {T}, Discard a card: Return this creature to its owner's hand.",
+          "power": "2",
+          "toughness": "2"
+        },
+        {
+          "name": "Fetch Quest",
+          "mana_cost": "{5}{G}{G}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Mill seven cards. Then put a creature, enchantment, or land card from among the milled cards onto the battlefield."
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BrambleFamiliar.java",
+          "java_sha256": "c56bd2e92f2df5d93a9a3d636b6569fe1f56f62155e5a526df2c080a694f1e52"
+        }
+      ]
+    },
+    {
+      "name": "Callous Sell-Sword // Burn Together",
+      "oracle_id": "0e7405e3-e9e6-4213-a73f-e0c01a7d6721",
+      "faces": [
+        {
+          "name": "Callous Sell-Sword",
+          "mana_cost": "{1}{B}",
+          "type_line": "Creature — Human Soldier",
+          "oracle_text": "This creature enters with a +1/+1 counter on it for each creature that died under your control this turn.",
+          "power": "2",
+          "toughness": "2"
+        },
+        {
+          "name": "Burn Together",
+          "mana_cost": "{R}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Target creature you control deals damage equal to its power to any other target. Then sacrifice it."
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CallousSellSword.java",
+          "java_sha256": "3154fb9546fc851459bd0e694c3386ac9102ad89b055e2cbb6da999e751174c8"
+        }
+      ]
+    },
+    {
+      "name": "Cheeky House-Mouse // Squeak By",
+      "oracle_id": "db70ddae-0ac1-47f2-9158-8448e337a08f",
+      "faces": [
+        {
+          "name": "Cheeky House-Mouse",
+          "mana_cost": "{W}",
+          "type_line": "Creature — Mouse",
+          "oracle_text": "",
+          "power": "2",
+          "toughness": "1"
+        },
+        {
+          "name": "Squeak By",
+          "mana_cost": "{W}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Target creature you control gets +1/+1 until end of turn. It can't be blocked by creatures with power 3 or greater this turn."
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CheekyHouseMouse.java",
+          "java_sha256": "5e43016d18f7bce69264519d375610252d7c495fdf197a59b93bd4e3be63263d"
+        }
+      ]
+    },
+    {
+      "name": "Conceited Witch // Price of Beauty",
+      "oracle_id": "1c751201-24ba-4e5c-bf44-71c3e4693a92",
+      "faces": [
+        {
+          "name": "Conceited Witch",
+          "mana_cost": "{2}{B}",
+          "type_line": "Creature — Human Warlock",
+          "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)",
+          "power": "2",
+          "toughness": "3"
+        },
+        {
+          "name": "Price of Beauty",
+          "mana_cost": "{B}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Create a Wicked Role token attached to target creature you control. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/ConceitedWitch.java",
+          "java_sha256": "cb760bc93dd220c70eaa755781c42fde16423174d8108d2d8d712736aa6553ee"
+        }
+      ]
+    },
+    {
+      "name": "Cruel Somnophage // Can't Wake Up",
+      "oracle_id": "997bdec5-f67b-4822-a3ba-c636e2685e8a",
+      "faces": [
+        {
+          "name": "Cruel Somnophage",
+          "mana_cost": "{1}{B}",
+          "type_line": "Creature — Nightmare",
+          "oracle_text": "Cruel Somnophage's power and toughness are each equal to the number of creature cards in all graveyards.",
+          "power": "*",
+          "toughness": "*"
+        },
+        {
+          "name": "Can't Wake Up",
+          "mana_cost": "{1}{U}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Target player mills four cards. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CruelSomnophage.java",
+          "java_sha256": "5c1a743aeb81c18195677e9af2fccd4a91810c8db3f63e6a3d2525a2706c077c"
+        }
+      ]
+    },
+    {
+      "name": "Decadent Dragon // Expensive Taste",
+      "oracle_id": "5df44b8d-b337-49d8-8427-34253f52cb47",
+      "faces": [
+        {
+          "name": "Decadent Dragon",
+          "mana_cost": "{2}{R}{R}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying, trample\nWhenever this creature attacks, create a Treasure token.",
+          "power": "4",
+          "toughness": "4"
+        },
+        {
+          "name": "Expensive Taste",
+          "mana_cost": "{2}{B}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Exile the top two cards of target opponent's library face down. You may look at and play those cards for as long as they remain exiled."
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DecadentDragon.java",
+          "java_sha256": "58ec1b42365b23d518d5853be84741627044fd203fcdeb90b79ca74b38890a18"
+        }
+      ]
+    },
+    {
+      "name": "Devouring Sugarmaw // Have for Dinner",
+      "oracle_id": "c8bc28ea-5630-49d5-963a-5789fa83f3c7",
+      "faces": [
+        {
+          "name": "Devouring Sugarmaw",
+          "mana_cost": "{2}{B}{B}",
+          "type_line": "Creature — Horror",
+          "oracle_text": "Menace, trample\nAt the beginning of your upkeep, you may sacrifice an artifact, enchantment, or token. If you don't, tap this creature.",
+          "power": "6",
+          "toughness": "6"
+        },
+        {
+          "name": "Have for Dinner",
+          "mana_cost": "{1}{W}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Create a 1/1 white Human creature token and a Food token. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DevouringSugarmaw.java",
+          "java_sha256": "f2ba91d8d5df437acfddc9b4f8d6d7fedc0fc542ffd12105e248b34d5210da28"
+        }
+      ]
+    },
+    {
+      "name": "Dirgur Island Dragon // Skimming Strike",
+      "oracle_id": "23cda76b-6e47-4922-a38d-93f7aae1eb00",
+      "faces": [
+        {
+          "name": "Dirgur Island Dragon",
+          "mana_cost": "{5}{U}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying\nWard {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)",
+          "power": "4",
+          "toughness": "4"
+        },
+        {
+          "name": "Skimming Strike",
+          "mana_cost": "{1}{U}",
+          "type_line": "Instant — Omen",
+          "oracle_text": "Tap up to one target creature. Draw a card. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "mechanic": "Omen",
+      "status": "gated_omen_distinct_wrapper",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DirgurIslandDragon.java",
+          "java_sha256": "a888868c75f1f0565b9b65c0f3a41c148d3645c79a30f2ea0b6e4b400d9b6dca"
+        }
+      ]
+    },
+    {
+      "name": "Disruptive Stormbrood // Petty Revenge",
+      "oracle_id": "ec74ae5d-1284-443c-9842-18954f8cf5a8",
+      "faces": [
+        {
+          "name": "Disruptive Stormbrood",
+          "mana_cost": "{4}{G}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying\nWhen this creature enters, destroy up to one target artifact or enchantment.",
+          "power": "3",
+          "toughness": "3"
+        },
+        {
+          "name": "Petty Revenge",
+          "mana_cost": "{1}{B}",
+          "type_line": "Sorcery — Omen",
+          "oracle_text": "Destroy target creature with power 3 or less. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "mechanic": "Omen",
+      "status": "gated_omen_distinct_wrapper",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DisruptiveStormbrood.java",
+          "java_sha256": "ccfe1e86ddbfcb236c3d2f88fd97a47ae8c7d7375dd8ddf5353279a3f4e03241"
+        }
+      ]
+    },
+    {
+      "name": "Elusive Otter // Grove's Bounty",
+      "oracle_id": "54175132-2c44-4749-8dfd-d08dcc63e4b3",
+      "faces": [
+        {
+          "name": "Elusive Otter",
+          "mana_cost": "{U}",
+          "type_line": "Creature — Otter",
+          "oracle_text": "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)\nCreatures with power less than this creature's power can't block it.",
+          "power": "1",
+          "toughness": "1"
+        },
+        {
+          "name": "Grove's Bounty",
+          "mana_cost": "{X}{G}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Distribute X +1/+1 counters among any number of target creatures you control. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/ElusiveOtter.java",
+          "java_sha256": "1d9c0450c2250a191318f58336bf19bec6390b4e9084d4379b580405adf15aa3"
+        }
+      ]
+    },
+    {
+      "name": "Fell Horseman // Deathly Ride",
+      "oracle_id": "fab8d954-807b-426f-8057-99a5d2fec618",
+      "faces": [
+        {
+          "name": "Fell Horseman",
+          "mana_cost": "{3}{B}",
+          "type_line": "Creature — Zombie Knight",
+          "oracle_text": "When this creature dies, put it on the bottom of its owner's library.",
+          "power": "3",
+          "toughness": "3"
+        },
+        {
+          "name": "Deathly Ride",
+          "mana_cost": "{1}{B}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Return target creature card from your graveyard to your hand. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FellHorseman.java",
+          "java_sha256": "1d8c0365e08a8c95c82303d223c5017a687ce550f880996af0ed6aacf0041b25"
+        }
+      ]
+    },
+    {
+      "name": "Feral Deathgorger // Dusk Sight",
+      "oracle_id": "1722f814-2d4e-4d59-9b74-10ef8e89def9",
+      "faces": [
+        {
+          "name": "Feral Deathgorger",
+          "mana_cost": "{5}{B}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying, deathtouch\nWhen this creature enters, exile up to two target cards from a single graveyard.",
+          "power": "3",
+          "toughness": "5"
+        },
+        {
+          "name": "Dusk Sight",
+          "mana_cost": "{1}{B}",
+          "type_line": "Sorcery — Omen",
+          "oracle_text": "Put a +1/+1 counter on up to one target creature. Draw a card. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "mechanic": "Omen",
+      "status": "gated_omen_distinct_wrapper",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FeralDeathgorger.java",
+          "java_sha256": "67ca8948aed368fd3d7a725393531fc49312b5d045c394a6520d9d74639b26a1"
+        }
+      ]
+    },
+    {
+      "name": "Ferocious Werefox // Guard Change",
+      "oracle_id": "fef67393-9b7b-495d-8b03-865537386d42",
+      "faces": [
+        {
+          "name": "Ferocious Werefox",
+          "mana_cost": "{3}{G}",
+          "type_line": "Creature — Elf Fox Warrior",
+          "oracle_text": "Trample",
+          "power": "4",
+          "toughness": "3"
+        },
+        {
+          "name": "Guard Change",
+          "mana_cost": "{1}{G}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Create a Monster Role token attached to target creature you control. (Enchanted creature gets +1/+1 and has trample.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FerociousWerefox.java",
+          "java_sha256": "7dd81e3c51cd943d715b9a444f72eddfe0961a9e81c130b56b541b8edc53dbdc"
+        }
+      ]
+    },
+    {
+      "name": "Frolicking Familiar // Blow Off Steam",
+      "oracle_id": "bbb6867f-7186-41de-9828-21be469178c1",
+      "faces": [
+        {
+          "name": "Frolicking Familiar",
+          "mana_cost": "{2}{U}",
+          "type_line": "Creature — Otter Wizard",
+          "oracle_text": "Flying\nWhenever you cast an instant or sorcery spell, this creature gets +1/+1 until end of turn.",
+          "power": "2",
+          "toughness": "2"
+        },
+        {
+          "name": "Blow Off Steam",
+          "mana_cost": "{R}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Blow Off Steam deals 1 damage to any target. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "complete_pair_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FrolickingFamiliar.java",
+          "java_sha256": "6a67f163e4c5fc323e2fd040e7f1474d358c3d381b32832fbb4f8f6065a06aa8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+          "java_sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetAnyTarget.java",
+          "java_sha256": "94f28b8a4a9908ef9b7599805c0ac39faf0aae249231969cd51373db206ebf34"
+        }
+      ]
+    },
+    {
+      "name": "Galvanic Giant // Storm Reading",
+      "oracle_id": "48ab8ba0-0e85-4656-a798-ceb961fb02ce",
+      "faces": [
+        {
+          "name": "Galvanic Giant",
+          "mana_cost": "{3}{U}",
+          "type_line": "Creature — Giant Wizard",
+          "oracle_text": "Whenever you cast a spell with mana value 5 or greater, tap target creature an opponent controls and put a stun counter on it.",
+          "power": "3",
+          "toughness": "3"
+        },
+        {
+          "name": "Storm Reading",
+          "mana_cost": "{5}{U}{U}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Draw four cards, then discard two cards. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "complete_pair_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GalvanicGiant.java",
+          "java_sha256": "e1e2bf67405d6f9041de796a2187ab24ff40a7ed9f867d9c6cb7c9a9cb40a54b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+          "java_sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+          "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterSpell.java",
+          "java_sha256": "50fd3169b7ed9ae7f81bce450a44155f4326c657186c1ba6713e2d0f8c3e3a6c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+          "java_sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+          "java_sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+        }
+      ]
+    },
+    {
+      "name": "Gandalf, Goblins' Bane // Flameshape",
+      "oracle_id": "f48f2a9b-4ba5-4984-8180-3950889bba65",
+      "faces": [
+        {
+          "name": "Gandalf, Goblins' Bane",
+          "mana_cost": "{2}{R}",
+          "type_line": "Legendary Creature — Avatar Wizard",
+          "oracle_text": "Whenever you cast a noncreature spell, Gandalf gets +1/+1 until end of turn and deals 1 damage to each opponent.",
+          "power": "2",
+          "toughness": "3"
+        },
+        {
+          "name": "Flameshape",
+          "mana_cost": "{1}{R}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Look at the top two cards of your library and exile them face down. For as long as they remain exiled, you may play them if you control a Wizard."
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GandalfGoblinsBane.java",
+          "java_sha256": "b52c904efbb7fc5d193453aedbac3177a96ef7e30d759af0221b5a240663ae71"
+        }
+      ]
+    },
+    {
+      "name": "Gingerbread Hunter // Puny Snack",
+      "oracle_id": "f762c225-1c8c-4f12-aa88-c8c89e0a7185",
+      "faces": [
+        {
+          "name": "Gingerbread Hunter",
+          "mana_cost": "{4}{G}",
+          "type_line": "Creature — Giant",
+          "oracle_text": "When this creature enters, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")",
+          "power": "5",
+          "toughness": "5"
+        },
+        {
+          "name": "Puny Snack",
+          "mana_cost": "{2}{B}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Target creature gets -2/-2 until end of turn. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "complete_pair_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GingerbreadHunter.java",
+          "java_sha256": "ba8ddb387ccdb27704530556bdd4735d07d06907ad84d2c3441baafcbc1230f9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/FoodToken.java",
+          "java_sha256": "67fca2eef5afc92dc08eefebb5d25489a0ab37ac22ab3b1b06556b17e5f0b53a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Glamdring, Foe-hammer // Gleam of Death",
+      "oracle_id": "2802069f-201e-43a7-b5d3-43a95951a2ec",
+      "faces": [
+        {
+          "name": "Glamdring, Foe-hammer",
+          "mana_cost": "{2}",
+          "type_line": "Legendary Artifact — Equipment",
+          "oracle_text": "Instant and sorcery spells you cast cost {X} less to cast, where X is equipped creature's power.\nEquip {2}"
+        },
+        {
+          "name": "Gleam of Death",
+          "mana_cost": "{3}{U}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Mill six cards, then put all instant and sorcery cards from among them into your hand. (Then exile this card. You may cast the artifact later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GlamdringFoeHammer.java",
+          "java_sha256": "9cc8debce73787b81e3564a48539d6710a3dbde634a5e3c56f2a4a3da3676526"
+        }
+      ]
+    },
+    {
+      "name": "Glóin the Mighty // Easy Pickings",
+      "oracle_id": "6505a53b-00db-44c4-8eaa-09a1a01451a4",
+      "faces": [
+        {
+          "name": "Glóin the Mighty",
+          "mana_cost": "{3}{R}",
+          "type_line": "Legendary Creature — Dwarf Warrior",
+          "oracle_text": "At the beginning of your first main phase, add {R}{R}.",
+          "power": "4",
+          "toughness": "3"
+        },
+        {
+          "name": "Easy Pickings",
+          "mana_cost": "{2}{R}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Easy Pickings deals 1 damage to each creature your opponents control. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "complete_pair_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GloinTheMighty.java",
+          "java_sha256": "7ff00b5d9199d60d5bf1e283e18289cb7d4d8ddfbadea45d39d5ea219f3de723"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageAllEffect.java",
+          "java_sha256": "0b4150468bb32f733a8cbc6485ae511b5141e87a1efc8b744911d62a7648c313"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/mana/AddManaToManaPoolSourceControllerEffect.java",
+          "java_sha256": "945e599b5ae2bd4f6bf6f96361ee12b7c9f2fc681847c0e6f18f98aefe8f4fc5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/triggers/BeginningOfFirstMainTriggeredAbility.java",
+          "java_sha256": "8ae6196917d9e2e958cd19a7a009d89c0462a680be928b607658ce76526eb93b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterOpponentsCreaturePermanent.java",
+          "java_sha256": "9e64645fa99f5e9c77a41dd9490e629a050201ee2fb8cb973bebdef3a3914942"
+        }
+      ]
+    },
+    {
+      "name": "Gollum, Silent Slinker // Meager Meal",
+      "oracle_id": "0296d57e-e5b9-456f-bb21-eb584adefb4c",
+      "faces": [
+        {
+          "name": "Gollum, Silent Slinker",
+          "mana_cost": "{3}{B}",
+          "type_line": "Legendary Creature — Halfling Horror",
+          "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)",
+          "power": "4",
+          "toughness": "3"
+        },
+        {
+          "name": "Meager Meal",
+          "mana_cost": "{B}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Put a +1/+1 counter on up to one target creature. Target player gains 2 life. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "complete_pair_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GollumSilentSlinker.java",
+          "java_sha256": "f4417e3d4e173f5af7b0573f807cf8a2ff57532095b08c60133a0beeb6f59e33"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeTargetEffect.java",
+          "java_sha256": "9f89eae0cab67d969113091a50272e8b91503ec438466324e3790bbe8ac54b65"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+          "java_sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPlayer.java",
+          "java_sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/SecondTargetPointer.java",
+          "java_sha256": "135cc53e0202fad251c5902855c6001ba5de1d05fb4dd4341c7f8a17ecec4ef2"
+        }
+      ]
+    },
+    {
+      "name": "Grabby Giant // That's Mine",
+      "oracle_id": "e6f59807-eaf6-4889-8c89-2ac915afefff",
+      "faces": [
+        {
+          "name": "Grabby Giant",
+          "mana_cost": "{3}{R}",
+          "type_line": "Creature — Giant",
+          "oracle_text": "Reach\n{2}{R}, Sacrifice an artifact or land: Draw a card.",
+          "power": "4",
+          "toughness": "3"
+        },
+        {
+          "name": "That's Mine",
+          "mana_cost": "{1}{R}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Create a Treasure token. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "complete_pair_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GrabbyGiant.java",
+          "java_sha256": "8f78be76fa5b0292187034415fc07c70f9c121edf9fb65c87bb9e0d328320f77"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+          "java_sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+        }
+      ]
+    },
+    {
+      "name": "Great Ugly-Looking Goblin // Clap! Snap!",
+      "oracle_id": "27e17542-549b-4c05-8091-c10a245c916b",
+      "faces": [
+        {
+          "name": "Great Ugly-Looking Goblin",
+          "mana_cost": "{5}{B}",
+          "type_line": "Creature — Goblin Soldier",
+          "oracle_text": "Each creature you control with a +1/+1 counter on it has menace. (It can't be blocked except by two or more creatures.)",
+          "power": "4",
+          "toughness": "4"
+        },
+        {
+          "name": "Clap! Snap!",
+          "mana_cost": "{1}{B}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Amass Goblins 2. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GreatUglyLookingGoblin.java",
+          "java_sha256": "e49845f38a94f4fe8da9cd8d3e969194435cfe58283fd1f0d9e17e995d4134a0"
+        }
+      ]
+    },
+    {
+      "name": "Gumdrop Poisoner // Tempt with Treats",
+      "oracle_id": "4f5ebbb8-f49b-488f-bb85-888aaa918bdd",
+      "faces": [
+        {
+          "name": "Gumdrop Poisoner",
+          "mana_cost": "{2}{B}",
+          "type_line": "Creature — Human Warlock",
+          "oracle_text": "Lifelink\nWhen this creature enters, up to one target creature gets -X/-X until end of turn, where X is the amount of life you gained this turn.",
+          "power": "3",
+          "toughness": "2"
+        },
+        {
+          "name": "Tempt with Treats",
+          "mana_cost": "{B}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Create a Food token. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GumdropPoisoner.java",
+          "java_sha256": "5add957716e356a99e6060629107576c8218e584ab372866bf0fff24161b4128"
+        }
+      ]
+    },
+    {
+      "name": "Heartflame Duelist // Heartflame Slash",
+      "oracle_id": "3ca07da2-29a1-40ce-a7f3-4838e95ca1d9",
+      "faces": [
+        {
+          "name": "Heartflame Duelist",
+          "mana_cost": "{1}{W}",
+          "type_line": "Creature — Human Knight",
+          "oracle_text": "Instant and sorcery spells you control have lifelink.",
+          "power": "3",
+          "toughness": "1"
+        },
+        {
+          "name": "Heartflame Slash",
+          "mana_cost": "{2}{R}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Heartflame Slash deals 3 damage to any target. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HeartflameDuelist.java",
+          "java_sha256": "36e5a17518a7731dd76385e1e81e70c421842ce8919a9d4a13854f75840d5091"
+        }
+      ]
+    },
+    {
+      "name": "Hearth Elemental // Stoke Genius",
+      "oracle_id": "f01cf0c5-0ac6-4ad3-8642-dd21c8e8563e",
+      "faces": [
+        {
+          "name": "Hearth Elemental",
+          "mana_cost": "{5}{R}",
+          "type_line": "Creature — Elemental",
+          "oracle_text": "This spell costs {X} less to cast, where X is the number of cards in your graveyard that are instant cards, sorcery cards, and/or have an Adventure.",
+          "power": "4",
+          "toughness": "5"
+        },
+        {
+          "name": "Stoke Genius",
+          "mana_cost": "{1}{R}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Discard your hand, then draw two cards. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HearthElemental.java",
+          "java_sha256": "39eb7286cada22ff3ad381b1196a646468c56ca15daebf39e4ef80d26607c1a6"
+        }
+      ]
+    },
+    {
+      "name": "Hollow Scavenger // Bakery Raid",
+      "oracle_id": "4fad3816-41af-4fa4-85b4-ba37614ec848",
+      "faces": [
+        {
+          "name": "Hollow Scavenger",
+          "mana_cost": "{2}{G}",
+          "type_line": "Creature — Wolf",
+          "oracle_text": "{1}, Sacrifice a Food: This creature gets +2/+2 until end of turn. Activate only once each turn.",
+          "power": "3",
+          "toughness": "2"
+        },
+        {
+          "name": "Bakery Raid",
+          "mana_cost": "{G}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Create a Food token. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "complete_pair_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HollowScavenger.java",
+          "java_sha256": "47524fd3f221fabb689283e8fad7f22b5e90ea1f375df8db31e2b499d3f34385"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/LimitedTimesPerTurnActivatedAbility.java",
+          "java_sha256": "11b6039cca03fb60836b3339e38e2b2dccfb7a47bfa599964d14ebf12696cdf7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+          "java_sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/FoodToken.java",
+          "java_sha256": "67fca2eef5afc92dc08eefebb5d25489a0ab37ac22ab3b1b06556b17e5f0b53a"
+        }
+      ]
+    },
+    {
+      "name": "Horned Loch-Whale // Lagoon Breach",
+      "oracle_id": "adca3929-4ecc-45bc-932e-604bcc32550a",
+      "faces": [
+        {
+          "name": "Horned Loch-Whale",
+          "mana_cost": "{4}{U}{U}",
+          "type_line": "Creature — Whale",
+          "oracle_text": "Flash\nWard {2}\nThis creature enters tapped unless it's your turn.",
+          "power": "6",
+          "toughness": "6"
+        },
+        {
+          "name": "Lagoon Breach",
+          "mana_cost": "{1}{U}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "The owner of target attacking creature you don't control puts it on their choice of the top or bottom of their library."
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HornedLochWhale.java",
+          "java_sha256": "4a4a416bc90e2a17916dd21d9d9b5f6f9cd1226e29cfeb03f833ed67c2e80a5f"
+        }
+      ]
+    },
+    {
+      "name": "Imodane's Recruiter // Train Troops",
+      "oracle_id": "50bee80e-89df-48c2-b608-ba66ff3e794a",
+      "faces": [
+        {
+          "name": "Imodane's Recruiter",
+          "mana_cost": "{2}{R}",
+          "type_line": "Creature — Human Knight",
+          "oracle_text": "When this creature enters, creatures you control get +1/+0 and gain haste until end of turn.",
+          "power": "2",
+          "toughness": "2"
+        },
+        {
+          "name": "Train Troops",
+          "mana_cost": "{4}{W}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Create two 2/2 white Knight creature tokens with vigilance. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "complete_pair_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/i/ImodanesRecruiter.java",
+          "java_sha256": "a1813f1ce65d62ff55e48f54db756a17fbf6f7d2abfbc65f7a4c56bdb7836085"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+          "java_sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+          "java_sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/KnightToken.java",
+          "java_sha256": "eabedaf281de48b7cf2444ff3d93ef89085ed74a6dd2f4f269834a6f97502062"
+        }
+      ]
+    },
+    {
+      "name": "Intrepid Trufflesnout // Go Hog Wild",
+      "oracle_id": "147d1e5c-fcfd-4115-a2f9-bea9b7ad7bb6",
+      "faces": [
+        {
+          "name": "Intrepid Trufflesnout",
+          "mana_cost": "{1}{G}",
+          "type_line": "Creature — Boar",
+          "oracle_text": "Whenever this creature attacks alone, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")",
+          "power": "3",
+          "toughness": "1"
+        },
+        {
+          "name": "Go Hog Wild",
+          "mana_cost": "{1}{G}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Target creature gets +2/+2 until end of turn. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/i/IntrepidTrufflesnout.java",
+          "java_sha256": "75886d51933b3578f90b325bb10725af627e905892a933cbcd88174c5cbaf21f"
+        }
+      ]
+    },
+    {
+      "name": "Ishgard, the Holy See // Faith & Grief",
+      "oracle_id": "4f4358cb-59df-46d9-be27-69929f5a615c",
+      "faces": [
+        {
+          "name": "Ishgard, the Holy See",
+          "mana_cost": "",
+          "type_line": "Land — Town",
+          "oracle_text": "This land enters tapped.\n{T}: Add {W}."
+        },
+        {
+          "name": "Faith & Grief",
+          "mana_cost": "{3}{W}{W}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Return up to two target artifact and/or enchantment cards from your graveyard to your hand. (Then exile this card. You may play the land later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/i/IshgardTheHolySee.java",
+          "java_sha256": "cfbbccb2118bee289498a57d26a0416f4353bfabcfaa03a0fb769da7bb7f1be2"
+        }
+      ]
+    },
+    {
+      "name": "Jidoor, Aristocratic Capital // Overture",
+      "oracle_id": "bd513d9d-5aa2-4860-bd86-8b5d9430f133",
+      "faces": [
+        {
+          "name": "Jidoor, Aristocratic Capital",
+          "mana_cost": "",
+          "type_line": "Land — Town",
+          "oracle_text": "This land enters tapped.\n{T}: Add {U}."
+        },
+        {
+          "name": "Overture",
+          "mana_cost": "{4}{U}{U}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Target opponent mills half their library, rounded down. (Then exile this card. You may play the land later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/j/JidoorAristocraticCapital.java",
+          "java_sha256": "00ee72128bb9589f27e6bcb4b24827491462eff9caa632219ced51bb24b4fe98"
+        }
+      ]
+    },
+    {
+      "name": "Kellan, Daring Traveler // Journey On",
+      "oracle_id": "7af69a44-e958-42e5-9d65-75e53a601e96",
+      "faces": [
+        {
+          "name": "Kellan, Daring Traveler",
+          "mana_cost": "{1}{W}",
+          "type_line": "Legendary Creature — Human Faerie Scout",
+          "oracle_text": "Whenever Kellan attacks, reveal the top card of your library. If it's a creature card with mana value 3 or less, put it into your hand. Otherwise, you may put it into your graveyard.",
+          "power": "2",
+          "toughness": "3"
+        },
+        {
+          "name": "Journey On",
+          "mana_cost": "{G}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Create X Map tokens, where X is one plus the number of opponents who control an artifact. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KellanDaringTraveler.java",
+          "java_sha256": "818fd0d7dbb3043794be1ce244a45f917d6ebaa4b2c59c5707be4b79782e372a"
+        }
+      ]
+    },
+    {
+      "name": "Kellan, Inquisitive Prodigy // Tail the Suspect",
+      "oracle_id": "2f2d75a0-d751-4c74-b357-8f92a992447f",
+      "faces": [
+        {
+          "name": "Kellan, Inquisitive Prodigy",
+          "mana_cost": "{2}{G}{U}",
+          "type_line": "Legendary Creature — Human Faerie Detective",
+          "oracle_text": "Flying, vigilance\nWhenever Kellan attacks, destroy up to one target artifact. If you controlled that permanent, draw a card.",
+          "power": "3",
+          "toughness": "4"
+        },
+        {
+          "name": "Tail the Suspect",
+          "mana_cost": "{G}{U}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Investigate. You may play an additional land this turn. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KellanInquisitiveProdigy.java",
+          "java_sha256": "4c4db9f98ee637afbc9fe610e34867363987b7ed5dfe39ef4c9af1504585a494"
+        }
+      ]
+    },
+    {
+      "name": "Kellan, the Fae-Blooded // Birthright Boon",
+      "oracle_id": "10c48d19-d91f-4674-b186-477acaf08e5a",
+      "faces": [
+        {
+          "name": "Kellan, the Fae-Blooded",
+          "mana_cost": "{2}{R}",
+          "type_line": "Legendary Creature — Human Faerie",
+          "oracle_text": "Double strike\nOther creatures you control get +1/+0 for each Aura and Equipment attached to Kellan.",
+          "power": "2",
+          "toughness": "2"
+        },
+        {
+          "name": "Birthright Boon",
+          "mana_cost": "{1}{W}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Search your library for an Aura or Equipment card, reveal it, put it into your hand, then shuffle."
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KellanTheFaeBlooded.java",
+          "java_sha256": "07d49ae0a33e97b2f8f4b11511339fab769cc6a51e5474201d5dc60c368f42f7"
+        }
+      ]
+    },
+    {
+      "name": "Lake-town Mariners // Gone Fishing",
+      "oracle_id": "dba1d231-6b03-44ad-ab8c-be0c8fe1b6db",
+      "faces": [
+        {
+          "name": "Lake-town Mariners",
+          "mana_cost": "{4}{U}{U}",
+          "type_line": "Creature — Human Citizen",
+          "oracle_text": "Vigilance\nWard {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)",
+          "power": "6",
+          "toughness": "5"
+        },
+        {
+          "name": "Gone Fishing",
+          "mana_cost": "{3}{U}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Exile two target creatures and/or lands you control, then return them to the battlefield under their owner's control."
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LakeTownMariners.java",
+          "java_sha256": "723f54f6bc183981012a9c7edb652c0c968c0e45d03c9f0fdbdf461e05b63085"
+        }
+      ]
+    },
+    {
+      "name": "Lindblum, Industrial Regency // Mage Siege",
+      "oracle_id": "4cc014f3-05e0-442e-9dee-03eab1aa65a3",
+      "faces": [
+        {
+          "name": "Lindblum, Industrial Regency",
+          "mana_cost": "",
+          "type_line": "Land — Town",
+          "oracle_text": "This land enters tapped.\n{T}: Add {R}."
+        },
+        {
+          "name": "Mage Siege",
+          "mana_cost": "{2}{R}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Create a 0/1 black Wizard creature token with \"Whenever you cast a noncreature spell, this token deals 1 damage to each opponent.\""
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LindblumIndustrialRegency.java",
+          "java_sha256": "b16fc4f006e81f119dc69467e6c52da1b7e4700d9d1aadc051907f93720acc0f"
+        }
+      ]
+    },
+    {
+      "name": "Marang River Regent // Coil and Catch",
+      "oracle_id": "099b8d2c-b482-48dd-b6bc-dedf546d66c5",
+      "faces": [
+        {
+          "name": "Marang River Regent",
+          "mana_cost": "{4}{U}{U}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying\nWhen this creature enters, return up to two other target nonland permanents to their owners' hands.",
+          "power": "6",
+          "toughness": "7"
+        },
+        {
+          "name": "Coil and Catch",
+          "mana_cost": "{3}{U}",
+          "type_line": "Instant — Omen",
+          "oracle_text": "Draw three cards, then discard a card. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "mechanic": "Omen",
+      "status": "gated_omen_distinct_wrapper",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MarangRiverRegent.java",
+          "java_sha256": "94ad25920e5284672b8d1ed3adb4994ac690d7cff87493f4161ddf844fd86992"
+        }
+      ]
+    },
+    {
+      "name": "Midgar, City of Mako // Reactor Raid",
+      "oracle_id": "4e34a49d-f031-48ac-a458-97b79124b76c",
+      "faces": [
+        {
+          "name": "Midgar, City of Mako",
+          "mana_cost": "",
+          "type_line": "Land — Town",
+          "oracle_text": "This land enters tapped.\n{T}: Add {B}."
+        },
+        {
+          "name": "Reactor Raid",
+          "mana_cost": "{2}{B}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "You may sacrifice an artifact or creature. If you do, draw two cards. (Then exile this card. You may play the land later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "complete_pair_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MidgarCityOfMako.java",
+          "java_sha256": "a19ca14dab1c433277c6c7357c8273f542a063467a793c19687fedff92c36fda"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
+          "java_sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+          "java_sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/mana/BlackManaAbility.java",
+          "java_sha256": "c7c69b99a3cc42aa1be3926c5f631440e6a34cb0156dd5065ab32204e954d28f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        }
+      ]
+    },
+    {
+      "name": "Minecart Daredevil // Ride the Rails",
+      "oracle_id": "df555f60-2164-49dc-be67-00aca9eb0d45",
+      "faces": [
+        {
+          "name": "Minecart Daredevil",
+          "mana_cost": "{2}{R}",
+          "type_line": "Creature — Dwarf Knight",
+          "oracle_text": "",
+          "power": "4",
+          "toughness": "2"
+        },
+        {
+          "name": "Ride the Rails",
+          "mana_cost": "{1}{R}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Target creature gets +2/+1 until end of turn. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "complete_pair_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MinecartDaredevil.java",
+          "java_sha256": "e6342c55abc841579334cdce4ee5a9b22a209dadea2d1a051ade09f6291bf080"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Mosswood Dreadknight // Dread Whispers",
+      "oracle_id": "5783facf-d26e-4aae-a753-b9dc553361c1",
+      "faces": [
+        {
+          "name": "Mosswood Dreadknight",
+          "mana_cost": "{1}{G}",
+          "type_line": "Creature — Human Knight",
+          "oracle_text": "Trample\nWhen this creature dies, you may cast it from your graveyard as an Adventure until the end of your next turn.",
+          "power": "3",
+          "toughness": "2"
+        },
+        {
+          "name": "Dread Whispers",
+          "mana_cost": "{1}{B}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "You draw a card and you lose 1 life. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MosswoodDreadknight.java",
+          "java_sha256": "a814f451efacf3af6c5ef960af98d6260c77fd50e1c9206d9ab682eb0f843c4e"
+        }
+      ]
+    },
+    {
+      "name": "Most Decrepit Old Bird // Speak Secrets",
+      "oracle_id": "34d34f2c-06ff-4acf-8f2f-ff867774b777",
+      "faces": [
+        {
+          "name": "Most Decrepit Old Bird",
+          "mana_cost": "{U}",
+          "type_line": "Creature — Bird",
+          "oracle_text": "Flying\nThreshold — This creature gets +1/+1 as long as there are seven or more cards in your graveyard.",
+          "power": "1",
+          "toughness": "1"
+        },
+        {
+          "name": "Speak Secrets",
+          "mana_cost": "{1}{U}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Mill four cards, then put an instant or sorcery card from among them into your hand."
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MostDecrepitOldBird.java",
+          "java_sha256": "4d125953e8b3a776ddaec6c2eb8f6f092f1a5877c62694f6effb4e2e1c5fcbc7"
+        }
+      ]
+    },
+    {
+      "name": "My Precious // Allure of Power",
+      "oracle_id": "2e728381-6db0-4c66-883d-82d718fef833",
+      "faces": [
+        {
+          "name": "My Precious",
+          "mana_cost": "{3}",
+          "type_line": "Legendary Artifact — Equipment",
+          "oracle_text": "Equipped creature has hexproof and can't be blocked.\nEquip—{2}, Pay 2 life."
+        },
+        {
+          "name": "Allure of Power",
+          "mana_cost": "{1}{B}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "As an additional cost to cast this spell, sacrifice a creature.\nDraw two cards."
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MyPrecious.java",
+          "java_sha256": "7f5cddecee448a985b443e953bf7a0d90373f0ffd5847acd93a227790d2bb849"
+        }
+      ]
+    },
+    {
+      "name": "Obyra's Attendants // Desperate Parry",
+      "oracle_id": "396b088d-f9af-4ee1-843f-dbe1633f9cc8",
+      "faces": [
+        {
+          "name": "Obyra's Attendants",
+          "mana_cost": "{4}{U}",
+          "type_line": "Creature — Faerie Wizard",
+          "oracle_text": "Flying",
+          "power": "3",
+          "toughness": "4"
+        },
+        {
+          "name": "Desperate Parry",
+          "mana_cost": "{1}{U}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Target creature gets -4/-0 until end of turn. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "complete_pair_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/o/ObyrasAttendants.java",
+          "java_sha256": "905ed3d8123f93814bf814190c21bd72770627d42bc87819bdda1f6ee9786e5b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Picklock Prankster // Free the Fae",
+      "oracle_id": "22d82f4c-2896-477e-8d20-8fe43acd4ba2",
+      "faces": [
+        {
+          "name": "Picklock Prankster",
+          "mana_cost": "{1}{U}",
+          "type_line": "Creature — Faerie Rogue",
+          "oracle_text": "Flying, vigilance",
+          "power": "1",
+          "toughness": "3"
+        },
+        {
+          "name": "Free the Fae",
+          "mana_cost": "{1}{U}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Mill four cards. Then put an instant, sorcery, or Faerie card from among the milled cards into your hand."
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PicklockPrankster.java",
+          "java_sha256": "fdbcbd0c35b09faeaf2b6b1dea0efdd6213daf5888f4ae69492adf213d9a3531"
+        }
+      ]
+    },
+    {
+      "name": "Picnic Ruiner // Stolen Goodies",
+      "oracle_id": "334fba11-e500-40fd-a142-41ff553642b5",
+      "faces": [
+        {
+          "name": "Picnic Ruiner",
+          "mana_cost": "{1}{R}",
+          "type_line": "Creature — Goblin Rogue",
+          "oracle_text": "Whenever this creature attacks while you control a creature with power 4 or greater, this creature gains double strike until end of turn.",
+          "power": "2",
+          "toughness": "2"
+        },
+        {
+          "name": "Stolen Goodies",
+          "mana_cost": "{3}{G}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Distribute three +1/+1 counters among any number of target creatures you control."
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PicnicRuiner.java",
+          "java_sha256": "023d74c0ec45bd13aaf9a9923ad025cb07d2a838dba129cd6db3c0dd3918bdcc"
+        }
+      ]
+    },
+    {
+      "name": "Pollen-Shield Hare // Hare Raising",
+      "oracle_id": "3ef02f2b-b611-40c3-a1d5-8b34989643cf",
+      "faces": [
+        {
+          "name": "Pollen-Shield Hare",
+          "mana_cost": "{1}{W}",
+          "type_line": "Creature — Rabbit",
+          "oracle_text": "Creature tokens you control get +1/+1.",
+          "power": "2",
+          "toughness": "2"
+        },
+        {
+          "name": "Hare Raising",
+          "mana_cost": "{G}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Target creature you control gains vigilance and gets +X/+X until end of turn, where X is the number of creatures you control."
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PollenShieldHare.java",
+          "java_sha256": "4fbe4e20ae0aeb99303ed46a7e3c69ba7e32f2b538275c857b934f4cf9715c7d"
+        }
+      ]
+    },
+    {
+      "name": "Purging Stormbrood // Absorb Essence",
+      "oracle_id": "5e8086d5-ea48-4555-b65a-a33d08ba4afd",
+      "faces": [
+        {
+          "name": "Purging Stormbrood",
+          "mana_cost": "{4}{B}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying\nWard—Pay 2 life.\nWhen this creature enters, remove all counters from up to one target creature.",
+          "power": "4",
+          "toughness": "4"
+        },
+        {
+          "name": "Absorb Essence",
+          "mana_cost": "{1}{W}",
+          "type_line": "Instant — Omen",
+          "oracle_text": "Target creature gets +2/+2 and gains lifelink and hexproof until end of turn. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "mechanic": "Omen",
+      "status": "gated_omen_distinct_wrapper",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PurgingStormbrood.java",
+          "java_sha256": "418e347baeadfc0f82b0adee281f9ea8b47a164dd4abd41e2a24b0996978c8aa"
+        }
+      ]
+    },
+    {
+      "name": "Questing Druid // Seek the Beast",
+      "oracle_id": "555df32f-f8e9-49af-bc4a-1194ea325a97",
+      "faces": [
+        {
+          "name": "Questing Druid",
+          "mana_cost": "{1}{G}",
+          "type_line": "Creature — Human Druid",
+          "oracle_text": "Whenever you cast a spell that's white, blue, black, or red, put a +1/+1 counter on this creature.",
+          "power": "1",
+          "toughness": "1"
+        },
+        {
+          "name": "Seek the Beast",
+          "mana_cost": "{1}{R}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Exile the top two cards of your library. Until your next end step, you may play those cards."
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/q/QuestingDruid.java",
+          "java_sha256": "8f20bfc1ecfb965aab13b6c6b2cf57fda2f5942fe58f20e445ad90a42ca27a4f"
+        }
+      ]
+    },
+    {
+      "name": "Ratcatcher Trainee // Pest Problem",
+      "oracle_id": "ecc91e38-90fa-4d89-b262-d5f36dce5be4",
+      "faces": [
+        {
+          "name": "Ratcatcher Trainee",
+          "mana_cost": "{1}{R}",
+          "type_line": "Creature — Human Peasant",
+          "oracle_text": "During your turn, this creature has first strike.",
+          "power": "2",
+          "toughness": "1"
+        },
+        {
+          "name": "Pest Problem",
+          "mana_cost": "{2}{R}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Create two 1/1 black Rat creature tokens with \"This token can't block.\" (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "complete_pair_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RatcatcherTrainee.java",
+          "java_sha256": "81567521eaba843e067616c7eff726d47e1138c2a9b21bd458f183a617cb4a10"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/MyTurnCondition.java",
+          "java_sha256": "a6c7cf96d2fdec34c9c999ad4b486627d257eeac9b7e7de139f104ac1ef45d90"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+          "java_sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+          "java_sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/common/MyTurnHint.java",
+          "java_sha256": "f7c87179904c10772686ee1f9b4d7a61c9ac0fa996e97455e0ba06eabb59aa77"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+          "java_sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/RatCantBlockToken.java",
+          "java_sha256": "aab83bf3ec8d02a815343fe29084d4c4476a37f088e7a16f47209e1d8ef2e65b"
+        }
+      ]
+    },
+    {
+      "name": "Riling Dawnbreaker // Signaling Roar",
+      "oracle_id": "1fc31651-70fe-4a58-9b7e-7359510bba51",
+      "faces": [
+        {
+          "name": "Riling Dawnbreaker",
+          "mana_cost": "{4}{W}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying, vigilance\nAt the beginning of combat on your turn, another target creature you control gets +1/+0 until end of turn.",
+          "power": "3",
+          "toughness": "4"
+        },
+        {
+          "name": "Signaling Roar",
+          "mana_cost": "{1}{W}",
+          "type_line": "Sorcery — Omen",
+          "oracle_text": "Create a 2/2 white Soldier creature token. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "mechanic": "Omen",
+      "status": "gated_omen_distinct_wrapper",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RilingDawnbreaker.java",
+          "java_sha256": "e16b2ea54d5352c7b3438a56bc7e4a49b5bc3f751c3fbc8bb933c409bfea1b51"
+        }
+      ]
+    },
+    {
+      "name": "Runescale Stormbrood // Chilling Screech",
+      "oracle_id": "af7db15c-93af-4c7e-a028-42181d91a923",
+      "faces": [
+        {
+          "name": "Runescale Stormbrood",
+          "mana_cost": "{3}{R}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying\nWhenever you cast a noncreature spell or a Dragon spell, this creature gets +2/+0 until end of turn.",
+          "power": "2",
+          "toughness": "4"
+        },
+        {
+          "name": "Chilling Screech",
+          "mana_cost": "{1}{U}",
+          "type_line": "Instant — Omen",
+          "oracle_text": "Counter target spell with mana value 2 or less. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "mechanic": "Omen",
+      "status": "gated_omen_distinct_wrapper",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RunescaleStormbrood.java",
+          "java_sha256": "c1fa56dbb0bd524b95ff0e038144578d1f8375a898a843908490e7f02eda48db"
+        }
+      ]
+    },
+    {
+      "name": "Sagu Wildling // Roost Seek",
+      "oracle_id": "7cee6d43-5dec-4989-85ec-c635ec783ec7",
+      "faces": [
+        {
+          "name": "Sagu Wildling",
+          "mana_cost": "{4}{G}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying\nWhen this creature enters, you gain 3 life.",
+          "power": "3",
+          "toughness": "3"
+        },
+        {
+          "name": "Roost Seek",
+          "mana_cost": "{G}",
+          "type_line": "Sorcery — Omen",
+          "oracle_text": "Search your library for a basic land card, reveal it, put it into your hand, then shuffle. (Also shuffle this card.)"
+        }
+      ],
+      "mechanic": "Omen",
+      "status": "gated_omen_distinct_wrapper",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SaguWildling.java",
+          "java_sha256": "2fc511fb2a772c8c164c0919bc686f3559d027a13c84f6c2000f9cac0deba18f"
+        }
+      ]
+    },
+    {
+      "name": "Scalding Viper // Steam Clean",
+      "oracle_id": "12c71296-1243-49e6-a196-8b016a7b635c",
+      "faces": [
+        {
+          "name": "Scalding Viper",
+          "mana_cost": "{1}{R}",
+          "type_line": "Creature — Elemental Snake",
+          "oracle_text": "Whenever an opponent casts a spell with mana value 3 or less, this creature deals 1 damage to that player.",
+          "power": "2",
+          "toughness": "1"
+        },
+        {
+          "name": "Steam Clean",
+          "mana_cost": "{1}{U}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Return target nonland permanent to its owner's hand. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/ScaldingViper.java",
+          "java_sha256": "827b5e7aa3adcee06f6ece4ee52432838e7197040b706e59bbf16d6a5e691647"
+        }
+      ]
+    },
+    {
+      "name": "Scavenger Regent // Exude Toxin",
+      "oracle_id": "7e97a242-0bac-4f18-9228-e98ecca36254",
+      "faces": [
+        {
+          "name": "Scavenger Regent",
+          "mana_cost": "{3}{B}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying\nWard—Discard a card.",
+          "power": "4",
+          "toughness": "4"
+        },
+        {
+          "name": "Exude Toxin",
+          "mana_cost": "{X}{B}{B}",
+          "type_line": "Sorcery — Omen",
+          "oracle_text": "Each non-Dragon creature gets -X/-X until end of turn. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "mechanic": "Omen",
+      "status": "gated_omen_distinct_wrapper",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/ScavengerRegent.java",
+          "java_sha256": "5bffc5cb08aac47fe16661cedbbeb02501048f20ef56f9737beaa4211978c43a"
+        }
+      ]
+    },
+    {
+      "name": "Shrouded Shepherd // Cleave Shadows",
+      "oracle_id": "de52b262-418e-418c-b2aa-8d5a776e3a75",
+      "faces": [
+        {
+          "name": "Shrouded Shepherd",
+          "mana_cost": "{1}{W}",
+          "type_line": "Creature — Spirit Warrior",
+          "oracle_text": "When this creature enters, target creature you control gets +2/+2 until end of turn.",
+          "power": "2",
+          "toughness": "2"
+        },
+        {
+          "name": "Cleave Shadows",
+          "mana_cost": "{1}{B}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Creatures your opponents control get -1/-1 until end of turn. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "complete_pair_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/ShroudedShepherd.java",
+          "java_sha256": "0ac9dbc279c82b53d96d3e614235393de351ddc89004de594606a52c043e37ab"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+          "java_sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        }
+      ]
+    },
+    {
+      "name": "Smaug, the Great Calamity // Spew Flame",
+      "oracle_id": "fc75cfec-e1f6-4cb5-8a3c-2f7b2c39c03f",
+      "faces": [
+        {
+          "name": "Smaug, the Great Calamity",
+          "mana_cost": "{5}{R}{R}",
+          "type_line": "Legendary Creature — Dragon",
+          "oracle_text": "Flying",
+          "power": "5",
+          "toughness": "5"
+        },
+        {
+          "name": "Spew Flame",
+          "mana_cost": "{4}{R}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Spew Flame deals 5 damage to target creature. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "complete_pair_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SmaugTheGreatCalamity.java",
+          "java_sha256": "395723e1d4dd888b9f266c069ec1e2aaabd30439fd4377745005055b05dc74d8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Spellscorn Coven // Take It Back",
+      "oracle_id": "9357fc7f-c9d0-4ce2-a6dd-0ff1f24bfc56",
+      "faces": [
+        {
+          "name": "Spellscorn Coven",
+          "mana_cost": "{3}{B}",
+          "type_line": "Creature — Faerie Warlock",
+          "oracle_text": "Flying\nWhen this creature enters, each opponent discards a card.",
+          "power": "2",
+          "toughness": "3"
+        },
+        {
+          "name": "Take It Back",
+          "mana_cost": "{2}{U}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Return target spell to its owner's hand. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SpellscornCoven.java",
+          "java_sha256": "55b7d53b28954a5a1ccd205680616278ca50ab229694e620c58391851203aefc"
+        }
+      ]
+    },
+    {
+      "name": "Stormkeld Vanguard // Bear Down",
+      "oracle_id": "8a31c49f-5b3f-4f84-a08e-58b30a6bff7c",
+      "faces": [
+        {
+          "name": "Stormkeld Vanguard",
+          "mana_cost": "{4}{G}{G}",
+          "type_line": "Creature — Giant Warrior",
+          "oracle_text": "This creature can't be blocked by creatures with power 2 or less.",
+          "power": "6",
+          "toughness": "7"
+        },
+        {
+          "name": "Bear Down",
+          "mana_cost": "{1}{G}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Destroy target artifact or enchantment. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "complete_pair_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StormkeldVanguard.java",
+          "java_sha256": "cf86ecc925b439e507e766dd8ffd7b2a18dae69d729451c8fe3a66cb03bd5db2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+          "java_sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/DauntAbility.java",
+          "java_sha256": "c993aad0af01a2479b23a8752136b1fda361fc28da3e1b921be9d6d945906a02"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ]
+    },
+    {
+      "name": "Stormshriek Feral // Flush Out",
+      "oracle_id": "e24916ff-7566-4f27-8e31-732311a4a88c",
+      "faces": [
+        {
+          "name": "Stormshriek Feral",
+          "mana_cost": "{4}{R}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying, haste\n{1}{R}: This creature gets +1/+0 until end of turn.",
+          "power": "3",
+          "toughness": "3"
+        },
+        {
+          "name": "Flush Out",
+          "mana_cost": "{1}{R}",
+          "type_line": "Sorcery — Omen",
+          "oracle_text": "Discard a card. If you do, draw two cards. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "mechanic": "Omen",
+      "status": "gated_omen_distinct_wrapper",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StormshriekFeral.java",
+          "java_sha256": "ff9fb245334dc2d3cef7e6bfcfb3e8d933a5bfcf9733ab055b53bcb5f377a0e1"
+        }
+      ]
+    },
+    {
+      "name": "Tempest Hart // Scan the Clouds",
+      "oracle_id": "5005df36-a100-492d-89b9-e221793cfb56",
+      "faces": [
+        {
+          "name": "Tempest Hart",
+          "mana_cost": "{3}{G}",
+          "type_line": "Creature — Elemental Elk",
+          "oracle_text": "Trample\nWhenever you cast a spell with mana value 5 or greater, put a +1/+1 counter on this creature.",
+          "power": "3",
+          "toughness": "4"
+        },
+        {
+          "name": "Scan the Clouds",
+          "mana_cost": "{1}{U}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Draw two cards, then discard two cards. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "complete_pair_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TempestHart.java",
+          "java_sha256": "86d6a598c2e24beab05a03bd7b170f737d518c7c68ae4a6aba0e8687349bd2a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+          "java_sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterSpell.java",
+          "java_sha256": "50fd3169b7ed9ae7f81bce450a44155f4326c657186c1ba6713e2d0f8c3e3a6c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+          "java_sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+        }
+      ]
+    },
+    {
+      "name": "The Arkenstone // Seek the Heart",
+      "oracle_id": "09f09d0a-6054-4545-b81e-0295773cc5f0",
+      "faces": [
+        {
+          "name": "The Arkenstone",
+          "mana_cost": "{5}",
+          "type_line": "Legendary Artifact",
+          "oracle_text": "Creatures you control get +1/+1.\nAt the beginning of your end step, draw a card."
+        },
+        {
+          "name": "Seek the Heart",
+          "mana_cost": "{2}{W}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Search your library for a legendary creature card, reveal it, put it into your hand, then shuffle. (Then exile this card. You may cast the artifact later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TheArkenstone.java",
+          "java_sha256": "f5df22e19c8669aed70bbd60a2df47269fb17e27a1f8474b98a0dcc3fee96daa"
+        }
+      ]
+    },
+    {
+      "name": "Thranduil, Sindarin Liege // Silvan Rally",
+      "oracle_id": "f6771d32-395e-4832-b33d-cbc12dff1516",
+      "faces": [
+        {
+          "name": "Thranduil, Sindarin Liege",
+          "mana_cost": "{2}{G/U}{G/U}",
+          "type_line": "Legendary Creature — Elf Noble",
+          "oracle_text": "Other Elves you control get +1/+1.\nLandfall — Whenever a land you control enters, create a 1/1 green Elf creature token.",
+          "power": "2",
+          "toughness": "3"
+        },
+        {
+          "name": "Silvan Rally",
+          "mana_cost": "{1}{G/U}{G/U}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Mill four cards, then put up to two land cards from among them into your hand. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/ThranduilSindarinLiege.java",
+          "java_sha256": "d640618c431f3c7684a6f6ea5f4090772927e5b08ff3c0434f283315c4c4bc07"
+        }
+      ]
+    },
+    {
+      "name": "Threadbind Clique // Rip the Seams",
+      "oracle_id": "bd575e82-99e7-44c7-ab93-d33f5678e1ad",
+      "faces": [
+        {
+          "name": "Threadbind Clique",
+          "mana_cost": "{3}{U}",
+          "type_line": "Creature — Faerie",
+          "oracle_text": "Flying",
+          "power": "3",
+          "toughness": "3"
+        },
+        {
+          "name": "Rip the Seams",
+          "mana_cost": "{2}{W}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Destroy target tapped creature. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "complete_pair_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/ThreadbindClique.java",
+          "java_sha256": "e7e628e650a4f726609af66ebbc6abdc48bd326fbeb0fbdcbce743895fdb9675"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+          "java_sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TappedPredicate.java",
+          "java_sha256": "71eabf46dc3838343404e9d40c88835361370549c67e42e8c694082ecd050436"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ]
+    },
+    {
+      "name": "Twining Twins // Swift Spiral",
+      "oracle_id": "105aea98-8eb9-4fb2-a0cb-7c7513317c5b",
+      "faces": [
+        {
+          "name": "Twining Twins",
+          "mana_cost": "{2}{U}{U}",
+          "type_line": "Creature — Faerie Wizard",
+          "oracle_text": "Flying, vigilance, ward {1}",
+          "power": "4",
+          "toughness": "4"
+        },
+        {
+          "name": "Swift Spiral",
+          "mana_cost": "{1}{W}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Exile target nontoken creature. Return it to the battlefield under its owner's control at the beginning of the next end step."
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TwiningTwins.java",
+          "java_sha256": "e803fb0cc2c2e190e9bc3752ab9c204855c961c587c448b481d62c04afdf0eb5"
+        }
+      ]
+    },
+    {
+      "name": "Twinmaw Stormbrood // Charring Bite",
+      "oracle_id": "ff812a78-3fe7-47bc-9984-1c2380cff5b1",
+      "faces": [
+        {
+          "name": "Twinmaw Stormbrood",
+          "mana_cost": "{5}{W}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying\nWhen this creature enters, you gain 5 life.",
+          "power": "5",
+          "toughness": "4"
+        },
+        {
+          "name": "Charring Bite",
+          "mana_cost": "{1}{R}",
+          "type_line": "Sorcery — Omen",
+          "oracle_text": "Charring Bite deals 5 damage to target creature without flying. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "mechanic": "Omen",
+      "status": "gated_omen_distinct_wrapper",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TwinmawStormbrood.java",
+          "java_sha256": "02813a5921b06a87adea75cd7e7c9d21f36dff61fd8222d9af244158ab21679d"
+        }
+      ]
+    },
+    {
+      "name": "Two-Headed Hunter // Twice the Rage",
+      "oracle_id": "0f222f3d-f02b-42b9-aedf-fb7ed92d4889",
+      "faces": [
+        {
+          "name": "Two-Headed Hunter",
+          "mana_cost": "{4}{R}",
+          "type_line": "Creature — Giant",
+          "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)",
+          "power": "5",
+          "toughness": "4"
+        },
+        {
+          "name": "Twice the Rage",
+          "mana_cost": "{1}{R}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Target creature gains double strike until end of turn. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "complete_pair_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TwoHeadedHunter.java",
+          "java_sha256": "f9f14490f87aa207157daed9f47db963f74fefad01b63ff9c1508f861b1f4a80"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+          "java_sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+          "java_sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Vantress Transmuter // Croaking Curse",
+      "oracle_id": "89ae3475-9063-4700-a7bd-47d5dcd43a3b",
+      "faces": [
+        {
+          "name": "Vantress Transmuter",
+          "mana_cost": "{3}{U}",
+          "type_line": "Creature — Human Wizard",
+          "oracle_text": "",
+          "power": "3",
+          "toughness": "4"
+        },
+        {
+          "name": "Croaking Curse",
+          "mana_cost": "{1}{U}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Tap target creature. Create a Cursed Role token attached to it. (Enchanted creature is 1/1.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VantressTransmuter.java",
+          "java_sha256": "0dcefad8542436c67f6b10608fc78923c836a5e33f868ee44ba01d3f565f21c0"
+        }
+      ]
+    },
+    {
+      "name": "Velvetwing Butterflies // Gaze in Wonder",
+      "oracle_id": "70a702fe-1dd6-4d7b-a85a-45744ecad741",
+      "faces": [
+        {
+          "name": "Velvetwing Butterflies",
+          "mana_cost": "{2}{W}",
+          "type_line": "Creature — Insect",
+          "oracle_text": "Flying",
+          "power": "2",
+          "toughness": "2"
+        },
+        {
+          "name": "Gaze in Wonder",
+          "mana_cost": "{1}{W}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Tap one or two target creatures. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VelvetwingButterflies.java",
+          "java_sha256": "f785d3fb2c7dcb583d7642bf62ed3ccd5f250ce2a8d72871d47e68843d18355d"
+        }
+      ]
+    },
+    {
+      "name": "Virtue of Courage // Embereth Blaze",
+      "oracle_id": "af6438b9-3fde-45c9-af69-dff686c1e0de",
+      "faces": [
+        {
+          "name": "Virtue of Courage",
+          "mana_cost": "{3}{R}{R}",
+          "type_line": "Enchantment",
+          "oracle_text": "Whenever a source you control deals noncombat damage to an opponent, you may exile that many cards from the top of your library. You may play those cards this turn."
+        },
+        {
+          "name": "Embereth Blaze",
+          "mana_cost": "{1}{R}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Embereth Blaze deals 2 damage to any target. (Then exile this card. You may cast the enchantment later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VirtueOfCourage.java",
+          "java_sha256": "df454bea03f835c5d3ae0697cc47f518a9f047a48ca554a498df70ca34aa059e"
+        }
+      ]
+    },
+    {
+      "name": "Virtue of Knowledge // Vantress Visions",
+      "oracle_id": "f0bbcabf-29e7-4c7e-893f-86b64d3620a9",
+      "faces": [
+        {
+          "name": "Virtue of Knowledge",
+          "mana_cost": "{4}{U}",
+          "type_line": "Enchantment",
+          "oracle_text": "If a permanent entering causes a triggered ability of a permanent you control to trigger, that ability triggers an additional time."
+        },
+        {
+          "name": "Vantress Visions",
+          "mana_cost": "{1}{U}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Copy target activated or triggered ability you control. You may choose new targets for the copy."
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VirtueOfKnowledge.java",
+          "java_sha256": "cf63251c6ddde1e2f3319ef55b767dfd5acc90d90ef7b4aa304340ac58fed5da"
+        }
+      ]
+    },
+    {
+      "name": "Virtue of Loyalty // Ardenvale Fealty",
+      "oracle_id": "f61f4307-4eec-476a-97e5-d4d3da2b54c3",
+      "faces": [
+        {
+          "name": "Virtue of Loyalty",
+          "mana_cost": "{3}{W}{W}",
+          "type_line": "Enchantment",
+          "oracle_text": "At the beginning of your end step, put a +1/+1 counter on each creature you control. Untap those creatures."
+        },
+        {
+          "name": "Ardenvale Fealty",
+          "mana_cost": "{1}{W}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Create a 2/2 white Knight creature token with vigilance. (Then exile this card. You may cast the enchantment later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VirtueOfLoyalty.java",
+          "java_sha256": "8ebf79cb20b57afa030218fbf631b880accb8d8aa1d99fdd67198309ccc57adb"
+        }
+      ]
+    },
+    {
+      "name": "Virtue of Persistence // Locthwain Scorn",
+      "oracle_id": "fae36da0-bf9c-484f-b2fe-dd8ab2effc5c",
+      "faces": [
+        {
+          "name": "Virtue of Persistence",
+          "mana_cost": "{5}{B}{B}",
+          "type_line": "Enchantment",
+          "oracle_text": "At the beginning of your upkeep, put target creature card from a graveyard onto the battlefield under your control."
+        },
+        {
+          "name": "Locthwain Scorn",
+          "mana_cost": "{1}{B}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Target creature gets -3/-3 until end of turn. You gain 2 life."
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VirtueOfPersistence.java",
+          "java_sha256": "aed3b7a5524d3c351be4b15def39da1eb5b575c3ed3e7ce7eab118c7177cda58"
+        }
+      ]
+    },
+    {
+      "name": "Virtue of Strength // Garenbrig Growth",
+      "oracle_id": "31af78dd-e962-4d9a-b696-f3048be03486",
+      "faces": [
+        {
+          "name": "Virtue of Strength",
+          "mana_cost": "{5}{G}{G}",
+          "type_line": "Enchantment",
+          "oracle_text": "If you tap a basic land for mana, it produces three times as much of that mana instead."
+        },
+        {
+          "name": "Garenbrig Growth",
+          "mana_cost": "{G}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Return target creature or land card from your graveyard to your hand. (Then exile this card. You may cast the enchantment later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VirtueOfStrength.java",
+          "java_sha256": "05e72e388bc32e4a0609aec1ae8feb02d90c78ea55921b45b556884b45e87e4d"
+        }
+      ]
+    },
+    {
+      "name": "Whirlwing Stormbrood // Dynamic Soar",
+      "oracle_id": "4fbfc814-df10-4d61-ada9-c96cc8ee8d8c",
+      "faces": [
+        {
+          "name": "Whirlwing Stormbrood",
+          "mana_cost": "{4}{U}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flash\nFlying\nYou may cast sorcery spells and Dragon spells as though they had flash.",
+          "power": "4",
+          "toughness": "3"
+        },
+        {
+          "name": "Dynamic Soar",
+          "mana_cost": "{2}{G}",
+          "type_line": "Sorcery — Omen",
+          "oracle_text": "Put three +1/+1 counters on target creature you control. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "mechanic": "Omen",
+      "status": "gated_omen_distinct_wrapper",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WhirlwingStormbrood.java",
+          "java_sha256": "3a3232054edaf9ef684006db5bb3ae2026dd6170d9f71951fcf4a3a02d8ed8bb"
+        }
+      ]
+    },
+    {
+      "name": "Woodland Acolyte // Mend the Wilds",
+      "oracle_id": "ba610f08-61a7-47fe-9a80-32b5ce51b118",
+      "faces": [
+        {
+          "name": "Woodland Acolyte",
+          "mana_cost": "{2}{W}",
+          "type_line": "Creature — Human Cleric",
+          "oracle_text": "When this creature enters, draw a card.",
+          "power": "2",
+          "toughness": "2"
+        },
+        {
+          "name": "Mend the Wilds",
+          "mana_cost": "{G}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Put target permanent card from your graveyard on top of your library. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WoodlandAcolyte.java",
+          "java_sha256": "9fc8aa140c17e4d5f32affb13b4089010547e6bb84afe4d3734fa88189e7052b"
+        }
+      ]
+    },
+    {
+      "name": "Zanarkand, Ancient Metropolis // Lasting Fayth",
+      "oracle_id": "5f2b3ea8-99ee-47a4-8a1c-4b27478d524c",
+      "faces": [
+        {
+          "name": "Zanarkand, Ancient Metropolis",
+          "mana_cost": "",
+          "type_line": "Land — Town",
+          "oracle_text": "This land enters tapped.\n{T}: Add {G}."
+        },
+        {
+          "name": "Lasting Fayth",
+          "mana_cost": "{4}{G}{G}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Create a 1/1 colorless Hero creature token. Put a +1/+1 counter on it for each land you control. (Then exile this card. You may play the land later from exile.)"
+        }
+      ],
+      "mechanic": "Adventure",
+      "status": "gated_incomplete_residual",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/z/ZanarkandAncientMetropolis.java",
+          "java_sha256": "c53519073c3ce2b844166b008330752e2c46320ed57f06c6a9ae36b4de6c3a8f"
+        }
+      ]
+    }
+  ],
+  "shared_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/cards/AdventureCard.java",
+      "java_sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/AdventureSpellCard.java",
+      "java_sha256": "0267f0994ee62c311d6d160c9709f110715cd736f1528429cbb3de6fff03c592"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/CardWithSpellOption.java",
+      "java_sha256": "370a50d75c092a9cb5b0f3111af32fc2895479fb3f14f656267685bc9d09dea0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/SpellOptionCard.java",
+      "java_sha256": "f5ff4b85e6a90c3a131c70c3bc5b9f77bddc4290fd6c2d24723b8497cd716dc0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/SpellOptionCardSpellAbility.java",
+      "java_sha256": "f5f7a36e1184ee08bce58dd3f61a9f83375b6c597a5aedae4a37ef64a35131a5"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileAdventureSpellEffect.java",
+      "java_sha256": "1179b3251b410c7eec5e191159cf7e870e28a4839a833cb30fc4d829985c33c3"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/asthought/MayCastFromGraveyardAsAdventureEffect.java",
+      "java_sha256": "d64196e1f92b59143ed931906ee8879ed456e69198fe2eb5339c25eafc112ed3"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/OmenCard.java",
+      "java_sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/OmenSpellCard.java",
+      "java_sha256": "a103edc55f20408a67f69a0be9d1c5d5d08133c3b25d43fde7614bee966678ba"
+    }
+  ],
+  "counts": {
+    "admitted": 19,
+    "gated_adventure": 56,
+    "gated_omen": 13,
+    "source_records": 203,
+    "unique_java_files": 160
+  }
+}

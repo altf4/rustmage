@@ -52,7 +52,11 @@ impl Game {
                 0
             },
             granted_subtypes: self.granted_subtypes(id),
-            card: object.card,
+            card: if object.zone == Zone::Stack {
+                self.effective_spell_card(id)
+            } else {
+                object.card
+            },
             battlefield: object.zone == Zone::Battlefield,
             counter: object.counters.plus_one > 0
                 || object.counters.minus_one > 0

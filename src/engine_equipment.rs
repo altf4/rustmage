@@ -36,6 +36,12 @@ impl Game {
     }
 
     pub(super) fn keywords(&self, id: CardId) -> Keywords {
+        if self.state.objects[id as usize].zone == Zone::Stack {
+            let definition = self.effective_spell_card(id);
+            if definition.adventure_parent().is_some() {
+                return definition.info().keywords;
+            }
+        }
         let target = &self.state.objects[id as usize];
         let mut keywords = target.keywords().union(self.attachment_bonus(id).1);
         if target.zone != Zone::Battlefield {

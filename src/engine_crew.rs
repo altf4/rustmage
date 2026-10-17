@@ -76,7 +76,11 @@ impl ActivatedAbility {
 impl Game {
     /// One borrowed query serves real objects and speculative funding overlays.
     pub(super) fn object_kinds(&self, id: CardId, object: &Object) -> u16 {
-        let mut kinds = object.card.kind_mask();
+        let mut kinds = if object.zone == Zone::Stack {
+            self.effective_spell_card(id).kind_mask()
+        } else {
+            object.card.kind_mask()
+        };
         if object.zone == Zone::Battlefield
             && self.state.crew.as_ref().is_some_and(|c| {
                 c.animated

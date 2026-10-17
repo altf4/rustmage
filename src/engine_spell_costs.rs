@@ -106,7 +106,7 @@ impl Game {
         u32::try_from(self.spell_reduction_at_mana_value(
             actor,
             id,
-            self.state.objects[id as usize].card.fixed_mana_value(),
+            self.effective_spell_card(id).fixed_mana_value(),
         ))
         .unwrap_or(u32::MAX)
     }
@@ -116,11 +116,20 @@ impl Game {
         id: CardId,
         mana_value: u64,
     ) -> u64 {
+        self.spell_reduction_for_definition(actor, id, mana_value, self.effective_spell_card(id))
+    }
+    pub(super) fn spell_reduction_for_definition(
+        &self,
+        actor: Player,
+        id: CardId,
+        mana_value: u64,
+        definition: Card,
+    ) -> u64 {
         let recipient = &self.state.objects[id as usize];
         let departing = (recipient.zone == Zone::Hand).then_some(id);
         let applies = |rule: &crate::cards::SpellReduction, source: CardId| {
             let object = &self.state.objects[source as usize];
-            rule.filter.matches_mana_value(recipient.card, mana_value)
+            rule.filter.matches_mana_value(definition, mana_value)
                 && match rule.turn {
                     CostTurn::Any => true,
                     CostTurn::Own => self.state.active == actor,
@@ -194,7 +203,7 @@ impl Game {
         // Raw scalar requirements fit u64; discounts above u64::MAX are
         // equivalent and impose no artificial reducer-count limit.
         let mut reduction = 0u64;
-        for rule in recipient.card.cost_reductions() {
+        for rule in definition.cost_reductions() {
             if rule.source_only && applies(rule, id) {
                 reduction = reduction.saturating_add(amount(rule, id));
             }

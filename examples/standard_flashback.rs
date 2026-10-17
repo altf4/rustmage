@@ -1,7 +1,7 @@
 //! Reproducible Standard games with public, effect-specific flashback witnesses.
 use rustmage::{
-    Action, Card, CastInfo, CastMethod, Config, DeckRules, Error, Game, Keywords, ObjectView,
-    Observation, Player, SpellView, StackKind, Target, Zone,
+    Action, Card, CastFace, CastInfo, CastMethod, Config, DeckRules, Error, Game, Keywords,
+    ObjectView, Observation, Player, SpellView, StackKind, Target, Zone,
 };
 use std::collections::{BTreeMap, BTreeSet};
 const NAMES: [&str; 9] = [
@@ -308,6 +308,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     assert_eq!(
                         info,
                         CastInfo {
+                            physical_card: None,
+                            face: CastFace::Normal,
                             payment: info.payment,
                             offspring: None,
                             kicker: None,

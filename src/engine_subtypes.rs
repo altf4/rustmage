@@ -96,7 +96,13 @@ impl Game {
     }
     pub(super) fn has_subtype(&self, id: CardId, subtype: &str) -> bool {
         self.state.objects.get(id as usize).is_some_and(|o| {
-            o.card.has_subtype(subtype) || self.granted_subtypes(id).contains(subtype)
+            (if o.zone == Zone::Stack {
+                self.effective_spell_card(id)
+            } else {
+                o.card
+            })
+            .has_subtype(subtype)
+                || self.granted_subtypes(id).contains(subtype)
         })
     }
 }

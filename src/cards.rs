@@ -657,6 +657,8 @@ pub(crate) enum StatValue {
     NonlandEntriesThisTurn,
     SourceAttacking,
     AttackingCreatures,
+    /// Unqualified all-player count; distinct from controller-owned attackers.
+    AllAttackingCreatures,
     SourceModified,
     Tokens(CountFilter),
     AtLeast {
@@ -782,6 +784,8 @@ pub(crate) struct EquipmentSpec {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct AuraSpec {
+    /// Enchant object-kind union, evaluated using live characteristics.
+    pub kinds: u8,
     pub relation: i8,
     pub bonus: EquipmentSpec,
 }
@@ -1512,8 +1516,10 @@ impl Card {
     }
     /// Stable catalogue lookup/serialization identity, distinct from a token copy's printed name.
     pub fn identity(self) -> &'static str {
-        self.token_info()
-            .map_or(self.name(), |token| token.factory_identity)
+        generated::adventure_identity(self).unwrap_or_else(|| {
+            self.token_info()
+                .map_or(self.name(), |token| token.factory_identity)
+        })
     }
     pub fn name(self) -> &'static str {
         self.info().name
@@ -1565,6 +1571,14 @@ impl Card {
     }
     pub fn vehicle_stats(self) -> Option<(i128, i128)> {
         generated::vehicle_stats(self).map(|s| (s.power, s.toughness))
+    }
+    /// Immutable inset spell definition; never a second physical deck card.
+    pub fn adventure_spell(self) -> Option<Card> {
+        generated::adventure_spell(self)
+    }
+    /// Physical parent of an internal Adventure spell definition.
+    pub fn adventure_parent(self) -> Option<Card> {
+        generated::adventure_parent(self)
     }
     pub fn warp_cost(self) -> Option<ManaCost> {
         generated::warp_cost(self)
