@@ -14,7 +14,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
 | Fast simulation | Reproducible initial Freeform benchmark and compact state | Profile full Standard decks as mechanics expand, including inference/encoding; optimize atomic checkpoint overhead |
 | Fair observations | Hidden-hand/library projection and privacy tests; catalogue fingerprint | New private choices/zones; belief sampling and neural encoders |
-| Reviewed delivery | Job Select PR #246, Warp PR #247, actual-payment PR #251 and replacement PR #252 have two independent nonauthor reviews and durable scoped validation records; [replacement review](review-pr-252.md). Earlier milestones remain documented in their feature/review pages. | Continue issue-managed, reviewed PRs through complete acceptance |
+| Reviewed delivery | Saga PR #259 has two independent nonauthor approvals of the complete authored batch and durable scoped evidence in the [Saga review record](review-pr-259.md). Crew PR #253 and earlier milestones retain their own feature/review records. | Continue issue-managed, reviewed PRs through complete acceptance |
 
 The Saga batch adds twelve complete [single-face Saga bodies](sagas.md) to the
 reviewed Crew, actual-payment and replacement foundations. Coverage is
@@ -30,7 +30,9 @@ and actual creature-Saga attacks. It checks 102,849 owned replays and dropped-pa
 children, 205,698 wrong-actor/stale-revision denials and 36 private choice frames.
 Initial logical state is 20,312 bytes; maximum is 21,192. The complete 226-method public baseline passes in 792.491s on the earlier
 immutable fingerprint; all 24 paid Saga cases also pass in 65.999s on the final
-metadata-only fingerprint. Independent exact-head confirmations remain pending.
+metadata-only fingerprint. Two independent nonauthor reviewers approved the
+complete authored batch at e0afa05; the final published head is checked again
+before guarded merge, as recorded in the [Saga review record](review-pr-259.md).
 These workloads do not prove complete Standard rules or full-deck performance.
 
 [Adventure spell faces and owned normal-play exile permissions (#254)](https://github.com/altf4/rustmage/issues/254)
