@@ -1,0 +1,9 @@
+{
+  "name": "Armaggon, Future Shark",
+  "oracle_id": "e2a35850-92c5-40ab-8697-2e995819d7ac",
+  "facts_sha256": "2afa612ec6d6774e9e67f1e273b154cb3a0cd16448c2a4e981574e71be80cabb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/ArmaggonFutureShark.java",
+  "java_sha256": "a4f6d4ef6479a409415d7b73f3cd9ed0f58b972d351260ae2fb270c7a8f0a213",
+  "complete": true
+}

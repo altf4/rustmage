@@ -1,0 +1,9 @@
+{
+  "name": "Jumbo Cactuar",
+  "oracle_id": "e0bdfbb4-3060-4492-bd9b-0c47e719400a",
+  "facts_sha256": "0f8ba740cf92970998ff6f76eac9a8d534ff5573e4e832ad37e1c1d2be861f3e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JumboCactuar.java",
+  "java_sha256": "f0f5fe44abeb66900dd2e738fdb9d06c4c2b9b64655073e938b9136f2c421192",
+  "complete": true
+}

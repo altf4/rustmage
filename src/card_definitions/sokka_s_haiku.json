@@ -1,0 +1,9 @@
+{
+  "name": "Sokka's Haiku",
+  "oracle_id": "87a97c72-143d-48a8-a1c5-3c44aa8e5a86",
+  "facts_sha256": "d474e0d1f919398ad71177419d634af76cc9c022297204ed77b4ccbf675b0d4b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SokkasHaiku.java",
+  "java_sha256": "b5eb989becb7bde2c12a82c0975a11c542fef36c81d16d0b81562da7c2c5ceb0",
+  "complete": true
+}

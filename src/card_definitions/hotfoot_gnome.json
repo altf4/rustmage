@@ -1,0 +1,9 @@
+{
+  "name": "Hotfoot Gnome",
+  "oracle_id": "3efb64a4-04f6-4b78-be1c-5b6320c02a71",
+  "facts_sha256": "833ac1f2557b41eeaa54aa7664553e443ff669144e8f9602edccc87206bbc9af",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HotfootGnome.java",
+  "java_sha256": "ea679ad0e870e965d49b056b2c24c522c82a4ab485bfb57cb2e7dd2842f66e2a",
+  "complete": true
+}
