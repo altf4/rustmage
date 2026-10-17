@@ -68,7 +68,9 @@ class ResolvedBasePublicTests(unittest.TestCase):
      if k=='ChooseTarget':return 4000 if a['target'].get('Card')==subject else -1000
      if k=='ChooseOptional':return 4000 if a['accept']==accept else -1000
      if k=='PlayLand':
-      if actor==p and name=='Genemorph Imago'and not low and lands>=4 and stage not in ['land','finish']:return -1000
+      if actor==p and name=='Genemorph Imago'and not low and stage not in ['land','finish']:
+       if n in ['Forest','Island']and any(v['card']==n for v in mine):return -1000
+       if n in ['Mountain','Swamp']and sum(v['card']in ['Mountain','Swamp']for v in mine)>=2:return -1000
       if actor==p and name=='Genemorph Imago'and stage=='land':return 4200
       field_count=sum(v['card']==n and v['controller']==actor for v in field)
       return 2200-30*field_count
