@@ -1050,6 +1050,42 @@ def stat_value(text):
     return f'StatValue::Count({filt})' if filt else None
 
 
+def extract_static_cast_restriction(card):
+    """A complete battlefield rule, with the entire residual body preserved."""
+    if (card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str)
+            or permanent_type(card) not in ('Creature','Artifact Creature','Enchantment Creature','Artifact','Enchantment')
+            or spell_cost_options(card.get('mana_cost','')) is None):
+        return card, 0
+    residual=[]; mask=0
+    for line in card['oracle_text'].splitlines():
+        if line == "Your opponents can't cast spells during your turn.":
+            if mask: return card, 0
+            mask=1
+        else: residual.append(line)
+    return dict(card,oracle_text='\n'.join(residual)),mask
+
+
+def static_cast_reminders_valid(card):
+    raw=card.get('oracle_text','')
+    if not isinstance(raw,str): return True
+    surface=raw;seen=False
+    while True:
+        text=' '.join(surface.casefold().split())
+        seen |= "opponents can't cast spells during your turn" in text
+        stripped=re.sub(r'\([^()]*\)','',surface)
+        if stripped==surface: break
+        surface=stripped
+    def valid(line):
+        if intrinsic_reminder_line_valid(line): return True
+        m=re.fullmatch(r'Mobilize ([0-9]+) \(Whenever this creature attacks, create ([a-z0-9]+) tapped and attacking 1/1 red Warrior creature tokens?\. Sacrifice (it|them) at the beginning of the next end step\.\)',line)
+        if not m:return False
+        amount=int(m[2]) if m[2].isdigit() else TOKEN_COUNTS.get(m[2])
+        if amount != int(m[1]):return False
+        singular=amount==1
+        return (' creature token.' in line)==singular and (m[3]=='it')==singular
+    return not seen or all(valid(line) for line in raw.splitlines() if '(' in line or ')' in line)
+
+
 def extract_uncounterable(card):
     """Only a standalone self-spell prohibition; retain the whole residual body."""
     if card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str):
@@ -2152,6 +2188,9 @@ def statement_program(text):
             head=statement_program(first);tail=statement_program(rest)
             if head and tail:return head+tail
 
+    if m:=re.fullmatch(r"for each (creature you control|creature your opponents control|creature) with power greater than that creature's base power, put a number of \+1/\+1 counters on that creature equal to the difference\.",text):
+        filt=creature_filter(m[1].replace('creature','creatures',1))
+        return [f'PutPowerExcessCounters {{ filter: {filt} }}'] if filt else None
     if text=='you may forage.': return ['Forage { skip: 0 }']
     if m:=re.fullmatch(r'you may forage\. If you do, ([^.]+)\.',text):
         body=statement_program(m[1]+'.')
@@ -3377,7 +3416,7 @@ def player_damage_prefix(line):
         elif not one: return None
         if descriptor.startswith('modified creatures '):
             qualification='Modified';descriptor=descriptor[len('modified '):]
-        for suffix,kind in [(' with a counter on it','Counter'),(' with counters on them','Counter'),
+        for suffix,kind in [(' each with power greater than its base power','PowerAboveBase'),(' with a counter on it','Counter'),(' with counters on them','Counter'),
                             (' with +1/+1 counters on them','PlusOne')]:
             if descriptor.endswith(suffix):
                 if qualification!='Any': return None
@@ -5438,6 +5477,7 @@ def compile_catalogue(snapshot, target):
     color_masks = []
     exhaust_rows = []
     uncounterable_rows = []
+    static_cast_rows = []
     entry_suppression_rows = []
     opponent_entry_tapped_rows = []
     controlled_entry_untapped_rows = []
@@ -5519,6 +5559,7 @@ def compile_catalogue(snapshot, target):
         # Detection never authenticates or changes the raw validation body.
         gift_card, gift_kind = extract_gift(original)
         card, timing_grants = extract_cast_timing_grants(gift_card)
+        card, static_cast = extract_static_cast_restriction(card)
         card, live_static = extract_live_static_stats(card)
         card, base_set = extract_base_stat_setter(card)
         card, combat = extract_combat_restriction(card)
@@ -5742,6 +5783,7 @@ def compile_catalogue(snapshot, target):
         # A rejected modal raw body cannot be revived by another selector.
         if modal_clean is None and modal_route(original.get('oracle_text')): effect='Unsupported'
         # A later generic selector cannot revive rejected intrinsic reminder text.
+        if not static_cast_reminders_valid(original): effect='Unsupported'
         if not suspect_reminders_valid(original):
             effect='Unsupported'
         if temporary_death_route(original.get('oracle_text', '')) and temporary_death is None and temporary_consumer is None and tiered is None:
@@ -5938,6 +5980,7 @@ def compile_catalogue(snapshot, target):
         definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(card.get('name', name))}, oracle_id: {oracle_id}, mana_cost: {quote(card.get("mana_cost",cost) if scalar is not None else cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in standard_names).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]}, loyalty: 0, lore: 0 }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         if offspring_key is not None:
             offspring_factories[offspring_key]=(index,definitions[-1],color_mask,card.get('type_line','').split(' — ')[-1])
+        if static_cast and effect != 'Unsupported': static_cast_rows.append(f'        {index} => {static_cast},')
         if uncounterable and effect != 'Unsupported': uncounterable_rows.append(str(index))
         exhaust_mask=sum(1<<i for i,a in enumerate(activations) if a[0].get('exhaust',False))
         if exhaust_mask and effect!='Unsupported':exhaust_rows.append(f'        {index} => {exhaust_mask},')
@@ -5965,7 +6008,7 @@ def compile_catalogue(snapshot, target):
             color_masks.append(color)
             # Clone every compiled property table for the immutable copy; no
             # mutable copy/type-changing engine or runtime card-name dispatch.
-            for table in [live_static_rows,base_set_rows,combat_rows,static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,cast_timing_rows,target_reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,controlled_entry_untapped_rows,offspring_rows]:
+            for table in [static_cast_rows,live_static_rows,base_set_rows,combat_rows,static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,cast_timing_rows,target_reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,controlled_entry_untapped_rows,offspring_rows]:
                 prefix=f'        {source_index} =>'
                 table.extend(row.replace(prefix,f'        {index} =>',1) for row in list(table) if row.startswith(prefix))
             offspring_copy_rows.append(f'        {index} => Some(__TOKEN_{key}__),')
@@ -6103,6 +6146,7 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', 'pub(super) fn exhaust_mask(card: Card) -> u64 {', '    match card.0 {', *exhaust_rows, '        _ => 0,', '    }', '}', '']
     convoke_match = 'matches!(card.0, ' + ' | '.join(convoke_rows) + ')' if convoke_rows else 'false'
     lines += ['#[rustfmt::skip]', 'pub(super) fn has_convoke(card: Card) -> bool {', '    '+convoke_match, '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn static_cast_restriction(card: Card) -> u8 {', '    match card.0 {', *static_cast_rows, '        _ => 0,', '    }', '}', '']
     protection = 'matches!(card.0, ' + ' | '.join(uncounterable_rows) + ')' if uncounterable_rows else 'false'
     lines += ['#[rustfmt::skip]', 'pub(super) fn uncounterable(card: Card) -> bool {', '    ' + protection, '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn enchanted_modifiers(card: Card) -> &'static [EnchantedModifier] {", '    match card.0 {', *enchanted_rows, '        _ => &[],', '    }', '}', '']

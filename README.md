@@ -5,9 +5,9 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,974 have executable rules so far,
-with 3,190 still gated. The catalogue includes 96 token recipes and one emblem;
-observations use schema 101.
+knows all 5,164 pinned Standard identities; 1,977 have executable rules so far,
+with 3,187 still gated. The catalogue includes 96 token recipes and one emblem;
+observations use schema 103.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
@@ -106,6 +106,10 @@ announcements, source independence and full private-choice rollback.
 costs, targets and shared funding rules. [Firebending](docs/firebending.md) and
 [poison](docs/poison.md) also support deterministic native replay.
 Full Standard rules remain in progress.
+
+[Effective base-power consumers](docs/base-power-qualification.md) add complete
+Sovereign Okinec Ahau, Kutzil, Malamet Exemplar and Voice of Victory, with captured
+combat qualification, current-controller casting restrictions and Mobilize.
 
 ## Build and use
 

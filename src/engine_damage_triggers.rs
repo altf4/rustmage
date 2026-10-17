@@ -44,13 +44,16 @@ impl Game {
 
     pub(super) fn damage_facts(&self, id: CardId) -> DamageFacts {
         let object = &self.state.objects[id as usize];
+        let creature = object.zone == Zone::Battlefield && self.is_creature(id);
+        let (base, stats) = if creature {
+            self.layered_stats_without_hand(id, None)
+        } else {
+            (Stats::default(), Stats::default())
+        };
         DamageFacts {
             kinds: self.current_kinds(id),
-            power: if object.zone == Zone::Battlefield && self.is_creature(id) {
-                self.stats(id).power
-            } else {
-                0
-            },
+            power: stats.power,
+            power_above_base: creature && stats.power > base.power,
             granted_subtypes: self.granted_subtypes(id),
             card: if object.zone == Zone::Stack {
                 self.effective_spell_card(id)
@@ -106,6 +109,7 @@ impl Game {
                     && (!filter.artifact || facts.card.is_artifact())
                     && match qualification {
                         DamageQualification::Any => true,
+                        DamageQualification::PowerAboveBase => facts.power_above_base,
                         DamageQualification::Counter => facts.counter,
                         DamageQualification::PlusOne => facts.plus_one,
                         DamageQualification::Modified => facts.modified,
