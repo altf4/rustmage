@@ -73,7 +73,24 @@ frame checks owned raw/index replay, restore and actor/revision rejection. Its
 policy reserves still-legal discard candidates during batched cleanup and waits
 for the responding spell to be drawn before consuming a required opposing spell.
 
-Full compiler, public API and fixed100-game acceptance remain in progress.
+The full compiler suite at `c8c8596` passes all 482 unique methods with zero
+failures, errors or skips in 816.061s and unchanged frozen inputs. At `82f4b81`,
+all 30 naturally drawn paid cases pass in 89.210s with 25,868 owned frames and
+51,736 actor/revision denials. The fixed, unretried 100-game example passes all
+30 vectors in 247.543s: 81,625 owned frames and 163,250 denials, with unchanged
+859 source inputs, driver/manifest/library metadata and optimized library hash.
+These are test workloads with repeated owned checks and Python/JSON overhead,
+not native engine speed measurements. The 275 existing public API methods are
+still running separately against the explicit fresh library and schema93.
+The first API harness failed to redirect default library paths and was interrupted;
+its failed partial scope is preserved separately and is not a suite result.
+Two earlier paid-policy runs reached 14 cases before consuming opposing Opts
+before a responding Charm had been drawn; the corrected readiness and discard
+policies retain that failed scope and do not change engine production behavior.
+All 48 remaining base-stat family bodies are tracked in
+[issue324](https://github.com/altf4/rustmage/issues/324), including the eventual
+Oracle/rules-based implementation of the source-absent Galion.
+
 Independent whole-batch preliminary reviews found no production issues; final
 published-head confirmations and the final composed evidence are still required.
 Terminal outputs are cleaned automatically; shared libraries retain exact paths
