@@ -251,6 +251,64 @@ def creature_template(card):
 
 
 
+def intrinsic_reminders_valid(card):
+    """Authenticate complete intrinsic bodies before any generic text extraction.
+
+    Erased text detects the semantic route only. It never becomes executable
+    text: the original body must prove every reminder in its own grammar slot.
+    Other whole-body families have separate reminder audits.
+    """
+    raw = card.get('oracle_text')
+    if not isinstance(raw, str) or not any(c in raw for c in '()'):
+        return True
+    bare = raw
+    while True:
+        stripped = re.sub(r'\([^()]*\)', '', bare)
+        if stripped == bare:
+            break
+        bare = stripped
+    if creature_template(dict(card, oracle_text=bare)) is not None:
+        # These are semantic keyword productions, anchored to the final keyword
+        # on the same intrinsic line. Matching prose elsewhere proves nothing.
+        grammar = {
+            'changeling': r'This card is every creature type\.',
+            'deathtouch': r'Any amount of damage this deals to a creature is enough to destroy it\.',
+            'defender': r"This creature can't attack\.",
+            'double strike': r'This creature deals both first-strike and regular combat damage\.',
+            'first strike': r'This creature deals combat damage before creatures without first strike\.',
+            'flash': r'You may cast this spell any time you could cast an instant\.',
+            'flying': r"This creature can't be blocked except by creatures with flying or reach\.",
+            'haste': r'This creature can attack and \{T\} as soon as it comes under your control\.',
+            'hexproof': r"It can't be the target of spells or abilities your opponents control\.",
+            'indestructible': r'''Damage and effects that say "destroy" don't destroy it\.(?: If its toughness is 0 or less, it still dies\.)?''',
+            'lifelink': r'Damage dealt by this creature also causes you to gain that much life\.',
+            'menace': r"This creature can't be blocked except by two or more creatures\.",
+            'reach': r'This creature can block creatures with flying\.',
+            'skulk': r"This creature can't be blocked by creatures with greater power\.",
+            'trample': r"This creature can deal excess combat damage to the player or planeswalker it's attacking\.",
+            'vigilance': r"Attacking doesn't cause this creature to tap\.",
+        }
+        for line in raw.splitlines():
+            if not any(c in line for c in '()'):
+                continue
+            match = re.fullmatch(r'([^()]+) \(([^()]+)\)', line)
+            if match is None:
+                return False
+            words = [word.strip().casefold() for word in match[1].split(',')]
+            if (not words or any(word not in INTRINSIC_KEYWORDS for word in words)
+                    or words[-1] not in grammar
+                    or re.fullmatch(grammar[words[-1]], match[2]) is None):
+                return False
+        return True
+    if (card.get('layout') == 'normal' and card.get('mana_cost', '') == ''
+            and permanent_type(card) in ('Land', 'Basic Land') and not bare.strip()):
+        # The complete intrinsic land grammar includes its actual basic subtypes
+        # and matching mana production. No other reminder is discarded.
+        return (re.fullmatch(r'\(\{T\}: Add \{[WUBRG]\}(?: or \{[WUBRG]\})?\.\)', raw) is not None
+                and land_template(card) is not None)
+    return True
+
+
 def spell_template(card):
     if (card.get('layout') != 'normal' or card.get('type_line', '').split(' — ')[0] not in ('Instant', 'Sorcery')
             or spell_cost_options(card.get('mana_cost', '')) is None):
@@ -4088,7 +4146,9 @@ def compile_catalogue(snapshot, target):
         abilities = []
         entry = 'Never'
         land = land_template(card)
-        use_legacy = name in legacy and not (timing_seen or scalar_mass_seen or graveyard_route_seen or split_search_route_text(original.get('oracle_text', ''), include_other_search=True))
+        # Reserved IDs retain absent demonstration fixtures. Supplied facts must
+        # compile generically: a familiar name authenticates no rules or costs.
+        use_legacy = name in legacy and name not in cards
         if use_legacy:
             effect, fallback_cost, color = legacy[name]
             # Lands have no mana cost. Their legacy cost token encodes colour only.
@@ -4217,6 +4277,9 @@ def compile_catalogue(snapshot, target):
             if creature_entry != 'Never':entry=creature_entry
             activations = [*activations, *cycling]
             if len(activations) > 64: effect = 'Unsupported'; activations = []
+        # A later generic selector cannot revive rejected intrinsic reminder text.
+        if not intrinsic_reminders_valid(original):
+            effect = 'Unsupported'
         # Rejected timing syntax/source shapes must not be revived by legacy selectors.
         if timing_seen and not timing_grants:
             effect = 'Unsupported'
@@ -4247,6 +4310,20 @@ def compile_catalogue(snapshot, target):
             offspring_key=hashlib.sha256(json.dumps(factory,sort_keys=True).encode()).hexdigest()[:24]
             TOKEN_DEFS[offspring_key]=factory
             abilities=[('SelfOffspring',[f'CreateTokens {{ token: __TOKEN_{offspring_key}__, amount: 1, tapped: false }}'],'None'),*abilities]
+        # The compact mana action is an ABI choice, never an admission route.
+        # A supplied definition reaches it only after complete generic compilation
+        # proves the exact same one-mana tap ability, with no additional ability.
+        if name in legacy and name in cards and effect != 'Unsupported':
+            old_effect, _, old_color = legacy[name]
+            if old_color is not None and effect == old_effect and not abilities and len(activations) == 1:
+                activation = activations[0]
+                cost_spec, targets, instructions, sorcery_only, once = activation
+                expected_cost = dict(activation_cost('{T}'), exhaust=False)
+                mana = [int(i == old_color) for i in range(6)]
+                if (cost_spec == expected_cost and targets == 'None'
+                        and instructions == [f'AddMana(ManaProduction::Fixed({mana}))']
+                        and not sorcery_only and not once):
+                    color, activations = old_color, []
         triggers_rust = '&[' + ', '.join(f'TriggeredAbility {{ condition: TriggerCondition::{condition}, targets: {rust_targets(targets)}, program: {rust_program(program)} }}' for condition, program, targets in abilities) + ']'
 
         if kind & 64:
@@ -4289,7 +4366,7 @@ def compile_catalogue(snapshot, target):
             if target_reduction: target_reduction_rows.append(f'        {index} => Some(&{target_reduction}),')
             if reductions: reduction_rows.append(f'        {index} => &[{", ".join(reductions)}],')
             if additional is not None: additional_rows.append(f'        {index} => Some({additional}),')
-        basic = name in {'Plains', 'Island', 'Swamp', 'Mountain', 'Forest'} or card.get('type_line', '').split(' — ')[0] == 'Basic Land'
+        basic = (not card and name in {'Plains', 'Island', 'Swamp', 'Mountain', 'Forest'}) or card.get('type_line', '').split(' — ')[0] == 'Basic Land'
         costs = spell_cost_options(cost) or [([0] * 6, 0)]
         colored, generic = costs[0]
         if len(costs)>1:
