@@ -57,3 +57,26 @@ existing strict base-stat authentication. Two10-method runs each had one inherit
 live-stat exact-union context failure; that historical proof now pins its actual
 delivered main plus current owned bindings, as in the adjacent land-selection
 branch. These failed attempts are not passing gate claims.
+
+## First complete-body native checkpoint
+
+At b45eb98 all27 focused native rules groups PASS0.36s, all-target Clippy
+PASS13.241s, fmt and generator consistency PASS, with918 tracked inputs fixed.
+This includes all six new paid/capacity groups in both seats and the inherited
+base-stat interactions. No final full-native or public workload is claimed yet.
+The unique target is terminal and SO-preserving cleanup completed.
+
+At68a9de2,25/27native groups passed; the other tests assumed a default token
+name without “Token” and a fixed sequence of combat windows. At432b0d9,26/27
+passed; the remaining response had no mana after a real step transition. A
+real Island mana action corrects that fixture. These failures remain separate
+from the passing b45 checkpoint. Its generated coverage content was stable but
+not included in the first prototype commit; b45 includes the report explicitly.
+The capacity assertion is subsequently tightened to require the exact counter
+capacity error; it will execute at final actual-parent native validation.
+
+Eight paid natural Standard policy vectors and a fixed100-game runner are now
+written and syntax-checked. Their first syntax check caught a missing space in
+a conditional expression, corrected before publication. No public success is
+claimed before execution. Final composition will include merged joint-land main
+so the final optimized library and broad gates exercise the latest rules kernel.

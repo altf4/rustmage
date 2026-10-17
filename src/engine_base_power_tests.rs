@@ -293,7 +293,12 @@ fn power_excess_signed_counter_capacity_failure_rolls_back_complete_resolution()
         let before = g.snapshot();
         let revision = g.revision();
         let actor = g.actor().unwrap();
-        assert!(g.apply(actor, Action::Pass).is_err());
+        assert_eq!(
+            g.apply(actor, Action::Pass),
+            Err(Error::CapacityExceeded(crate::CapacityExceeded {
+                resource: "counter amount exhausted"
+            }))
+        );
         assert_eq!(g.snapshot(), before);
         assert_eq!(g.revision(), revision);
         assert_eq!(g.state.objects[bear as usize].counters.plus_one, 0);
