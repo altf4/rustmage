@@ -337,9 +337,13 @@ mod tests {
             assert_eq!((g.stats(target).power, g.stats(target).toughness), (2, 2)); // 1/1 base plus Pick.
             let detective = named(&mut g, p.other(), "Person of Interest");
             assert!(!g.live_static_forbids_block(target, detective));
-            g.state.objects[detective as usize].card = Card::from_name("Detective Token").unwrap();
+            g.state.objects[detective as usize].card = Card::catalogue()
+                .find(|card| card.name() == "Detective Token")
+                .unwrap();
             assert!(g.live_static_forbids_block(target, detective));
-            g.state.objects[target as usize].card = Card::from_name("Detective Token").unwrap();
+            g.state.objects[target as usize].card = Card::catalogue()
+                .find(|card| card.name() == "Detective Token")
+                .unwrap();
             assert_eq!(g.stats(target).power, 5); // 2 printed +2 conditional +1 Pick.
             assert!(!g.live_static_forbids_block(target, detective));
             g.state.objects[aura as usize].controller = p.other();

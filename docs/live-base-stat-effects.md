@@ -51,3 +51,9 @@ The catalogue method intentionally returns an empty slice for every card. These
 are primitive tests using synthetic effect specifications, not paid execution of
 the four audited card bodies. Whole-body lowering and simultaneous timestamp
 choices remain pending; no runtime validation has yet been claimed.
+
+The first focused run at3aaf30f compiled successfully: two primitive tests passed
+and the third stopped on a test-only lookup error (token names use catalogue
+identities rather than the normal card-name alias index). The fixture now selects
+the existing Detective token from the catalogue. This is not a runtime fix or an
+admission, and the failed run remains in the delivery evidence.
