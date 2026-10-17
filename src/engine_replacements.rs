@@ -935,6 +935,8 @@ mod owned_memory_tests {
             next: 0,
             counter_next: 0,
             counter_order: Vec::new(),
+            timestamp_order: Vec::new(),
+            timestamps_ready: false,
             resume: None,
             shuffle_after: None,
             replacement_resume: None,

@@ -68,7 +68,9 @@ class TieredCompilerTests(unittest.TestCase):
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(before,mutant,changed={n+'#0'for n in NAMES},added=set(),helpers=helpers,aliases={})
  def test_actual_schema98_parent_has_exactly_eight_complete_body_changes(self):
-  physical={c['oracle_id']:c['name']for c in self.all};before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',COMPOSED_PARENT+':src/generated/catalogue.rs'],text=True),physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical);helpers={('tiered_costs',n+'#0')for n in NAMES if n not in ['Boros Charm','Epic Fight']};proof=assert_union(before,after,changed={n+'#0'for n in NAMES},added=set(),helpers=helpers,aliases={});self.assertEqual(proof['preserved_definitions'],5324);self.assertEqual(proof['prior_helpers'],912)
+  physical={c['oracle_id']:c['name']for c in self.all};before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',COMPOSED_PARENT+':src/generated/catalogue.rs'],text=True),physical);after=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','61a7d0cef4b10591958cea4391c553db4c2c07ff:src/generated/catalogue.rs'],text=True),physical);current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical);helpers={('tiered_costs',n+'#0')for n in NAMES if n not in ['Boros Charm','Epic Fight']};proof=assert_union(before,after,changed={n+'#0'for n in NAMES},added=set(),helpers=helpers,aliases={});self.assertEqual(proof['preserved_definitions'],5324);self.assertEqual(proof['prior_helpers'],912)
+  for name in NAMES:self.assertEqual(current['definitions'][name+'#0'],after['definitions'][name+'#0'])
+  for helper in helpers:self.assertEqual(current['helpers'][helper],after['helpers'][helper])
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(before,mutant,changed={n+'#0'for n in NAMES},added=set(),helpers=helpers,aliases={})
 if __name__=='__main__':unittest.main()
