@@ -263,6 +263,10 @@ fn entry_choices_simultaneous_apnap_private_bounds_and_preentry_counts() {
         assert_eq!(g.object_view(incoming).zone, Zone::Graveyard);
         assert_eq!(g.object_view(banner).zone, Zone::Graveyard);
         choose(&mut g, color(ChoiceColor::White));
+        assert!(
+            !matches!(g.state.pending, Pending::EntryTimestamp { .. }),
+            "commuting layer-seven choice bonuses need no timeline registration"
+        );
         settle(&mut g);
         assert_eq!(
             g.counter_count(banner, CounterKind::Fellowship),
