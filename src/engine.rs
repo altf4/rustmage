@@ -2087,7 +2087,7 @@ impl Game {
                                 return true;
                             }
                             if spec.max > 0
-                                && self.visit_targets(
+                                && self.visit_cast_targets(
                                     spec.rule,
                                     actor,
                                     self.object_ref(card),
@@ -2125,7 +2125,7 @@ impl Game {
                                 _ => TargetPlan::NONE,
                             };
                             let Some(spec) = plan.single() else {
-                                if self.targets_available(plan, actor, self.object_ref(card)) {
+                                if self.cast_targets_available(plan, actor, self.object_ref(card)) {
                                     done = emit(Action::BeginCast { card, payment });
                                 }
                                 return;
@@ -2133,7 +2133,7 @@ impl Game {
                             let source = self.object_ref(card);
                             if spec.max > 1 {
                                 let mut count = 0;
-                                self.visit_targets(spec.rule, actor, source, |_| {
+                                self.visit_cast_targets(spec.rule, actor, source, |_| {
                                     count += 1;
                                     false
                                 });
@@ -2151,13 +2151,18 @@ impl Game {
                                     done = true;
                                 }
                                 if !done && spec.max > 0 {
-                                    done = self.visit_targets(spec.rule, actor, source, |target| {
-                                        emit(Action::Cast {
-                                            card,
-                                            target: Some(target),
-                                            payment,
-                                        })
-                                    });
+                                    done = self.visit_cast_targets(
+                                        spec.rule,
+                                        actor,
+                                        source,
+                                        |target| {
+                                            emit(Action::Cast {
+                                                card,
+                                                target: Some(target),
+                                                payment,
+                                            })
+                                        },
+                                    );
                                 }
                             }
                         },
