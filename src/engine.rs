@@ -5715,3 +5715,7 @@ mod fdn_power_damage_tests;
 #[cfg(test)]
 #[path = "engine_fdn_tutor_tests.rs"]
 mod fdn_tutor_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_life_graveyard_tests.rs"]
+mod fdn_life_graveyard_tests;

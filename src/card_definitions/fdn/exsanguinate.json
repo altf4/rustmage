@@ -3,10 +3,25 @@
   "catalogue_id": 1411,
   "oracle_id": "8164b1e8-3350-465e-8a17-75f57d326344",
   "facts_sha256": "130c519807bca429c58eb8652b095db381f7124917825dde5124c48de6861b10",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "27d92feac3c4ff42e7366bb1540f0b9a6d6ac8e302aa27aba3d4567fad07a946"
   },
-  "physical_metadata_sha256": "4fb610f3b24dfd7694d0e092d62e0e99355c1dc0ddbad43b7ece6112f1d4f2d8"
+  "physical_metadata_sha256": "4fb610f3b24dfd7694d0e092d62e0e99355c1dc0ddbad43b7ece6112f1d4f2d8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/Exsanguinate.java",
+  "java_sha256": "1cf55855924d227ea8aacba92c4fa0dd16edc300186b0a3fe3e6650897b51dc7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsYouGainLifeLostEffect.java",
+      "sha256": "0bc4e167abed12a009bde329338859618b81ee78330d68ab6a3f73bc2aced224"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+    }
+  ]
 }

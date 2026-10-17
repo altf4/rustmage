@@ -721,6 +721,8 @@ pub(crate) enum Instruction {
     ExileUntilSourceLeaves,
     ExileGraveyard(PlayerSet),
     ReturnToHand,
+    /// Capture a legal graveyard target's subtype, return it, then draw for a match.
+    ReturnToHandDrawForSubtype(&'static str),
     BottomLibrary,
     TopLibrary,
     AdditionalLandPlays(u64),
@@ -899,6 +901,7 @@ pub(crate) enum StatValue {
     },
     SpellsCastThisTurn,
     LifeGainOccurredThisTurn,
+    LifeGainedThisTurn,
     ControllerLife,
     Count(CountFilter),
     GreatestManaValue(CountFilter),

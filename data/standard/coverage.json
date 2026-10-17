@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "68eb99862df3328a98120da19e511d3b5bbb2b85b538ee98ca4008ae93b06779",
+  "catalogue_version": "4aacaf98d2d8b7f5d2a1aab952a153aada6d7442b2907048746faca0f71dd7a6",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1996,
-  "implemented_total": 2002,
+  "implemented_standard_cards": 1999,
+  "implemented_total": 2005,
   "token_definitions": 97,
   "emblem_definitions": 1,
   "adventure_definitions": 40,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 256,
-      "gated": 171
+      "complete": 259,
+      "gated": 168
     },
     "fin": {
       "total": 305,
@@ -5787,8 +5787,8 @@
     {
       "name": "Cemetery Recruitment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/cemetery_recruitment.rs",
       "set": "fdn"
     },
@@ -11499,8 +11499,8 @@
     {
       "name": "Exsanguinate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/exsanguinate.rs",
       "set": "fdn"
     },
@@ -29683,8 +29683,8 @@
     {
       "name": "Sanguine Indulgence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/sanguine_indulgence.rs",
       "set": "fdn"
     },
