@@ -93,6 +93,8 @@ pub(crate) enum TargetPredicate {
     Colors(u8),
     Keyword(Keywords),
     WithoutKeyword(Keywords),
+    WithoutKinds(u16),
+    WithoutSubtype(&'static str),
     Token,
     Subtype(&'static str),
     Nonbasic,

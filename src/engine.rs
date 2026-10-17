@@ -5414,3 +5414,7 @@ mod role_followup_tests;
 #[cfg(test)]
 #[path = "engine_temporary_death_grants_tests.rs"]
 mod temporary_death_grants_tests;
+
+#[cfg(test)]
+#[path = "engine_target_exclusion_tests.rs"]
+mod target_exclusion_tests;
