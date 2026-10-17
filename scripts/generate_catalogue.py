@@ -78,6 +78,10 @@ def base_stat_program(text):
     """Whole constant 7b setters; each axis is independent of additive bonuses."""
     if not isinstance(text,str) or not text:return None
     text=normalize_duration(text[0].lower()+text[1:])
+    if m:=re.fullmatch(r"choose up to one target creature\. That creature can't be blocked this turn and has base power and toughness (-?[0-9]+)/(-?[0-9]+) until end of turn\.",text):
+        p,t=int(m[1]),int(m[2])
+        if any(not -(2**127)<=v<2**127 for v in (p,t)):return None
+        return ('Creature',0,1),['GrantKeywords { subject: Subject::Targets, keywords: Keywords(16384) }',f'SetBaseStats {{ subject: Subject::Targets, power: Some({p}), toughness: Some({t}) }}']
     if m:=re.fullmatch(r"this creature's base (power|toughness) becomes equal to (?:the number of )?(.+) until end of turn\.",text):
         value=stat_value(m[2])
         if value is None:return None
