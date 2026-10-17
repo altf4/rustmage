@@ -658,14 +658,14 @@ impl Game {
                                         capture,
                                     ),
                                 };
-                                if let TokenCompletion::RoleReflexive(c) = &batch.completion {
-                                    if created.iter().any(|r| {
+                                if let TokenCompletion::RoleReflexive(c) = &batch.completion
+                                    && created.iter().any(|r| {
                                         self.object_view(r.card).card == c.token
                                             && self.object_view(r.card).attached_to
                                                 == Some(c.recipient)
-                                    }) {
-                                        self.queue_reflexive(&c.item, c.ability, Some(c.recipient));
-                                    }
+                                    })
+                                {
+                                    self.queue_reflexive(&c.item, c.ability, Some(c.recipient));
                                 }
                                 if let TokenCompletion::JobAttach(source) = batch.completion {
                                     let eligible = created

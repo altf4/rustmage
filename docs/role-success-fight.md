@@ -47,6 +47,13 @@ ordinary players cannot act during a replacement choice. Each offered action
 checks owned raw/index branches after parent destruction, restore, both views,
 wrong actor and stale revisions.
 
-Public paid-game policies, full native/Clippy/compiler/API checks, optimized
-library validation and a fixed 100-game natural Standard workload remain pending.
+Two initial public methods pass all eight complete paid cases: both seats and
+fight/decline in naturally terminal Standard games, plus four real foreign Korvold
+Freeform witnesses. Foreign cases stop after full Saga/Role/fight/attack obligations
+and are not counted as natural Standard terminals. Runtime d378 passes all 1,782
+native tests; its initial Clippy attempt identifies one collapsible-if style issue,
+which is corrected without changing execution. The immutable initial library is
+werefox304-d3785cc-e938-schema89-e13cc4239d7c.so. These are initial checkpoint scopes,
+not final composed broad gates. Full corrected/composed Clippy/compiler/API gates
+and the fixed 100-game natural Standard workload remain pending.
 Two independent nonauthor exact-final-head reviews are required before merge.
