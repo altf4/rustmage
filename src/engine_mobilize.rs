@@ -199,6 +199,7 @@ impl Game {
             let card = b.view.source_card;
             let controller = b.view.controller;
             self.state.pending_triggers.push(SpellView {
+                cast_event: None,
                 delayed_sacrifice: Some(Box::new(b.view)),
                 delayed_warp_exile: None,
                 x: None,

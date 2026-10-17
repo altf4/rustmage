@@ -594,9 +594,15 @@ fn all_three_new_flashback_bodies_use_real_graveyard_costs_and_exile_on_completi
                 continuation(&mut g, None, 0);
             }
             let item = g.state.stack.last().unwrap();
+            let cost = item.source_card.flashback_cost().unwrap();
+            assert_eq!(
+                item.cast.unwrap().mana_spent(),
+                cost.colored.into_iter().map(u64::from).sum::<u64>() + u64::from(cost.generic)
+            );
             assert_eq!(
                 item.cast,
                 Some(CastInfo {
+                    payment: item.cast.unwrap().payment,
                     origin: Zone::Graveyard,
                     method: CastMethod::Flashback,
                     offspring: None,

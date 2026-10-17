@@ -525,11 +525,13 @@ impl Game {
         let object = self.move_object(card, Zone::Stack).after;
         let id = self.next_stack_id();
         SpellView {
+            cast_event: None,
             delayed_sacrifice: None,
             delayed_warp_exile: None,
             x: None,
             attachment_trigger: None,
             cast: Some(CastInfo {
+                payment,
                 origin,
                 method: CastMethod::Normal,
                 offspring: None,
@@ -750,6 +752,7 @@ impl Game {
                 self.pay_activation(&announcement.item, payment, announcement.counter_payment);
             } else {
                 self.spend_mana(announcement.item.controller, payment);
+                announcement.item.cast.as_mut().unwrap().payment = payment;
             }
         }
         // Costs may synchronously return exiled Auras/lands. Finish their entry

@@ -44,6 +44,11 @@ impl Game {
     pub(super) fn damage_facts(&self, id: CardId) -> DamageFacts {
         let object = &self.state.objects[id as usize];
         DamageFacts {
+            power: if object.zone == Zone::Battlefield && object.card.is_creature() {
+                self.stats(id).power
+            } else {
+                0
+            },
             granted_subtypes: self.granted_subtypes(id),
             card: object.card,
             battlefield: object.zone == Zone::Battlefield,

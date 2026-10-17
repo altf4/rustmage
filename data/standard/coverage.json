@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "04450a31dfe73372198aeb0a5107a9413a2a4eb0d5769f9ae11f42a265c2c75e",
+  "catalogue_version": "be6169819957cf30fd86024ad448da49156b4c18103335337f7df568479bdfe8",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1716,
-  "implemented_total": 1722,
+  "implemented_standard_cards": 1736,
+  "implemented_total": 1742,
   "token_definitions": 84,
   "emblem_definitions": 1,
   "cards": [
@@ -184,7 +184,7 @@
     {
       "name": "Aberrant Manawurm",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -1240,8 +1240,8 @@
     {
       "name": "Arcane Omens",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Arcanis the Omnipotent",
@@ -2656,7 +2656,7 @@
     {
       "name": "Blazing Bomb",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -5536,7 +5536,7 @@
     {
       "name": "Cuboid Colony",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -6220,7 +6220,7 @@
     {
       "name": "Deluge Virtuoso",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -8392,7 +8392,7 @@
     {
       "name": "Exhibition Tidecaller",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -8470,7 +8470,7 @@
     {
       "name": "Expressive Firedancer",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -9712,8 +9712,8 @@
     {
       "name": "Freestrider Commando",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Freestrider Lookout",
@@ -12622,7 +12622,7 @@
     {
       "name": "Hungry Graffalon",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -17308,7 +17308,7 @@
     {
       "name": "Muse Seeker",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -19558,7 +19558,7 @@
     {
       "name": "Prompto Argentum",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -20218,8 +20218,8 @@
     {
       "name": "Rancorous Archaic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Random Encounter",
@@ -21922,7 +21922,7 @@
     {
       "name": "Sahagin",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -22876,7 +22876,7 @@
     {
       "name": "Shantotto, Tactician Magician",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -23980,7 +23980,7 @@
     {
       "name": "Spectacular Skywhale",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -25900,7 +25900,7 @@
     {
       "name": "Tackle Artist",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -26458,7 +26458,7 @@
     {
       "name": "Textbook Tabulator",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -27508,7 +27508,7 @@
     {
       "name": "Thunderdrum Soloist",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -28504,7 +28504,7 @@
     {
       "name": "Ultros, Obnoxious Octopus",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -28762,8 +28762,8 @@
     {
       "name": "Unravel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Unrooted Ancestor",

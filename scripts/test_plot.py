@@ -23,8 +23,11 @@ class PlotCompilerTests(unittest.TestCase):
    with self.subTest(name=name):
     self.assertTrue(self.admitted(self.rows[name]))
     self.assertFalse(self.admitted(dict(self.rows[name],oracle_text=self.rows[name]['oracle_text']+'\nDiscover 3.')))
+  free = self.rows['Freestrider Commando']
+  self.assertTrue(self.admitted(free))
+  self.assertFalse(self.admitted(dict(free, oracle_text=free['oracle_text']+'\nDiscover 3.')))
   for card in self.snapshot['cards']:
-   if any(l.startswith('Plot ') for l in card.get('oracle_text','').splitlines()) and card['name'] not in NAMES:
+   if any(l.startswith('Plot ') for l in card.get('oracle_text','').splitlines()) and card['name'] not in NAMES+['Freestrider Commando']:
     self.assertFalse(self.admitted(card),card['name'])
  def test_costs_reminder_duplicates_and_selector_revival(self):
   base=self.rows["Djinn of Fool's Fall"]

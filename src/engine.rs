@@ -12,13 +12,16 @@ use crate::cards::{
 mod saddle;
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 74;
+pub const OBSERVATION_SCHEMA: u32 = 75;
+#[path = "engine_cast_payments.rs"]
+mod cast_payments;
 #[path = "engine_mobilize.rs"]
 mod mobilize;
 #[path = "engine_plot.rs"]
 mod plot;
 #[path = "engine_warp.rs"]
 mod warp;
+pub use cast_payments::{CastPaymentEvent, ManaPaymentDomain};
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
 pub use plot::{PlotPaymentView, PlottedCard};
 pub use warp::{DelayedWarpExileView, WarpedCard};
@@ -602,6 +605,8 @@ pub enum CastMethod {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CastInfo {
+    /// Actual mana spent on this cast, including additional mana costs.
+    pub payment: Mana,
     pub origin: Zone,
     pub method: CastMethod,
     /// Explicit optional additional cost, declared before targets; None until chosen.
@@ -627,6 +632,7 @@ pub struct AttachmentTriggerView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    pub cast_event: Option<Box<CastPaymentEvent>>,
     pub delayed_sacrifice: Option<Box<DelayedSacrificeView>>,
     pub delayed_warp_exile: Option<Box<DelayedWarpExileView>>,
     /// Chosen X, retained independently by a spell and its own entry-trigger packets.
@@ -799,6 +805,7 @@ struct DamageChoice {
 /// that deal damage from their hand or as spells.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 pub struct DamageFacts {
+    pub power: i128,
     pub granted_subtypes: GrantedSubtypes,
     pub card: Card,
     pub battlefield: bool,
@@ -810,6 +817,7 @@ pub struct DamageFacts {
 impl DamageFacts {
     fn from_view(view: &ObjectView) -> Self {
         Self {
+            power: view.power,
             granted_subtypes: view.granted_subtypes,
             card: view.card,
             battlefield: view.zone == Zone::Battlefield,
@@ -1266,6 +1274,7 @@ impl XChoiceView {
 /// Complete action space: concrete choices, damage bounds and scalar intervals.
 #[derive(Clone, Debug, Serialize)]
 pub struct LegalActionSpace {
+    pub mana_payment: Option<ManaPaymentDomain>,
     pub choices: Vec<Action>,
     pub x_choice: Option<XChoiceView>,
     pub damage_assignment: Option<DamageAssignmentRange>,
@@ -1275,6 +1284,8 @@ pub struct LegalActionSpace {
 pub struct Observation {
     pub replacement_choice: Option<ReplacementChoiceView>,
     pub created_token_choice: Option<CreatedTokenChoiceView>,
+    /// Complete exact numeric cost-payment space, visible only to its actor.
+    pub mana_payment: Option<ManaPaymentDomain>,
     pub endure_choice: Option<EndureChoiceView>,
     pub convoke_choice: Option<ConvokeChoiceView>,
     pub delayed_sacrifices: Vec<DelayedSacrificeView>,
@@ -1586,6 +1597,7 @@ impl Game {
     /// Complete legal space, including damage assignments and scalar-X intervals.
     pub fn legal_action_space(&self) -> LegalActionSpace {
         LegalActionSpace {
+            mana_payment: self.mana_payment_domain(),
             choices: self.legal_actions(),
             x_choice: self.x_choice(),
             damage_assignment: self.damage_assignment_range(),
@@ -1701,7 +1713,10 @@ impl Game {
             if self.actor() != Some(actor) {
                 return Err(Error::WrongActor);
             }
-            let legal = if let Action::ChooseX { value } = &action {
+            let legal = if let Action::PayCosts { payment } = &action {
+                self.mana_payment_domain()
+                    .is_some_and(|d| d.contains(*payment))
+            } else if let Action::ChooseX { value } = &action {
                 self.x_choice()
                     .is_some_and(|domain| domain.contains(*value))
             } else if let Action::AssignDamage { target, amount } = &action {
@@ -2823,6 +2838,14 @@ impl Game {
                     self.state.announcing.as_mut().unwrap().payment = Some(payment);
                 } else {
                     self.spend_mana(actor, payment);
+                    self.state
+                        .stack
+                        .last_mut()
+                        .unwrap()
+                        .cast
+                        .as_mut()
+                        .unwrap()
+                        .payment = payment;
                     self.record_cast(
                         actor,
                         self.state.objects[card as usize].card,
@@ -3957,6 +3980,7 @@ impl Game {
         Observation {
             replacement_choice: self.replacement_choice(viewer),
             created_token_choice: self.created_token_choice(),
+            mana_payment: owns_choice.then(|| self.mana_payment_domain()).flatten(),
             endure_choice: if owns_choice {
                 match s.pending {
                     Pending::Endure {
@@ -4458,7 +4482,10 @@ impl Game {
                 .chain(s.resolving.iter().map(|resolution| &resolution.item))
                 .chain(s.announcing.iter().map(|announcement| &announcement.item))
                 .map(|item| {
-                    item.delayed_sacrifice.as_ref().map_or(0, |d| d.bytes())
+                    item.cast_event
+                        .as_ref()
+                        .map_or(0, |_| std::mem::size_of::<CastPaymentEvent>())
+                        + item.delayed_sacrifice.as_ref().map_or(0, |d| d.bytes())
                         + item
                             .delayed_warp_exile
                             .as_ref()
@@ -4912,3 +4939,34 @@ mod job_select_tests;
 
 #[path = "engine_granted_abilities.rs"]
 mod granted_abilities;
+
+#[cfg(test)]
+#[path = "engine_cast_payment_body_tests.rs"]
+mod cast_payment_body_tests;
+
+#[cfg(test)]
+mod cast_payment_layout_probe {
+    use super::*;
+    #[test]
+    fn layout_probe() {
+        println!(
+            "LAYOUT State={} Object={} SpellView={} Announcement={} Resolution={} CastInfo={} DamageFacts={} DamageEvent={}",
+            std::mem::size_of::<State>(),
+            std::mem::size_of::<Object>(),
+            std::mem::size_of::<SpellView>(),
+            std::mem::size_of::<Announcement>(),
+            std::mem::size_of::<Resolution>(),
+            std::mem::size_of::<CastInfo>(),
+            std::mem::size_of::<DamageFacts>(),
+            std::mem::size_of::<DamageEvent>()
+        );
+        let g = Game::new(Config {
+            decks: [vec![Card::Forest; 60], vec![Card::Forest; 60]],
+            seed: 249,
+            starting_player: Player::P0,
+            deck_rules: DeckRules::Standard,
+        })
+        .unwrap();
+        println!("LAYOUT initial_logical_bytes={}", g.state_bytes());
+    }
+}

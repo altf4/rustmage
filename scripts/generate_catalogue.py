@@ -531,7 +531,11 @@ def extract_entry_counters(card):
         return card, []
     body, rules = [], []
     for line in card['oracle_text'].split('\n'):
-        if line == 'Raid — This creature enters with a +1/+1 counter on it if you attacked this turn.':
+        if line == 'Converge — This creature enters with a +1/+1 counter on it for each color of mana spent to cast it.':
+            rules.append('EntryCounterRule { guard: StepGuard::Always, amount: EntryCounterAmount::ColorsSpent }')
+        elif line == "This creature enters with two +1/+1 counters on it if it wasn't cast or no mana was spent to cast it.":
+            rules.append('EntryCounterRule { guard: StepGuard::Always, amount: EntryCounterAmount::IfNotCastOrZero(2) }')
+        elif line == 'Raid — This creature enters with a +1/+1 counter on it if you attacked this turn.':
             rules.append('EntryCounterRule { guard: StepGuard::Attacked, amount: EntryCounterAmount::Fixed(1) }')
         elif line == 'This creature enters with a +1/+1 counter on it if an opponent lost life this turn.':
             rules.append('EntryCounterRule { guard: StepGuard::OpponentLostLife, amount: EntryCounterAmount::Fixed(1) }')
@@ -2722,6 +2726,12 @@ def trigger_creature_template(card):
 
 
 def spell_program_template(card):
+    if card.get('layout')=='normal' and spell_cost_options(card.get('mana_cost','')) is not None and card.get('type_line','').split(' — ')[0] in ('Instant','Sorcery'):
+        if card.get('oracle_text')=='Counter target spell. If the amount of mana spent to cast that spell was less than its mana value, you draw a card.':
+            return 'Spell',['CounterThenDrawIfDiscounted']
+        if card.get('oracle_text')=='Converge — Target player discards X cards, where X is the number of colors of mana spent to cast this spell.':
+            return 'Player',['DiscardScaled(PlayerSet::Targeted, AmountValue::ColorsSpent)']
+
     old = spell_template(card)
     if old:
         return 'Creature', [old]
@@ -3049,7 +3059,7 @@ def permanent_program_template(card):
     for line in text.split('\n'):
         # Removing a reminder can leave trailing spaces before a newline.
         line=line.strip()
-        for label in ('Do You Like Squirrels? — ', 'I LOVE Squirrels! — ', 'Fateful Bite — '):
+        for label in ('Do You Like Squirrels? — ', 'I LOVE Squirrels! — ', 'Fateful Bite — ', 'Blow Up — '):
             if line.startswith(label):line=line[len(label):]
         # These aliases denote the source only, not any arbitrary mentioned name.
         line = line.replace('When this artifact enters, ', 'When this creature enters, ').replace('When this enchantment enters, ', 'When this creature enters, ')
@@ -3139,9 +3149,12 @@ def permanent_program_template(card):
             cost['origin'] = origin
             targets = 'None'
         else:
-            targeted = targeted_program(effect_text)
-            if targeted: targets, program = targeted
-            else: targets, program = 'None', statement_program(effect_text)
+            if effect_text == 'this permanent deals damage equal to its power to target creature.' and creature and cost['tap'] and cost['sacrifice'] and cost['additional'] is None:
+                targets,program='Creature',['DamageScaled(AmountValue::SourcePower)']
+            else:
+                targeted = targeted_program(effect_text)
+                if targeted: targets, program = targeted
+                else: targets, program = 'None', statement_program(effect_text)
         if program is None: return None
         if any(instruction.startswith('AddMana') for instruction in program) and (len(program) != 1 or targets != 'None'):
             return None
@@ -3427,6 +3440,82 @@ def saddle_body(card):
     return effect,keywords,[*abilities,*triggers],[*activations,(cost,'None',[f'BecomeSaddled {{ minimum: {minimum} }}'],True,False)],enters
 
 
+def actual_mana_body(card):
+    """Complete bounded payment-dependent cast listeners with typed event provenance."""
+    if (card.get('layout')!='normal' or creature_template(dict(card,oracle_text='')) is None
+            or not isinstance(card.get('oracle_text'),str)):return None
+    residual,triggers=[],[]
+    increment='Increment (Whenever you cast a spell, if the amount of mana you spent is greater than this creature\'s power or toughness, put a +1/+1 counter on this creature.)'
+    def counter(n):return f'PutCounters {{ subject: Subject::Source, kind: CounterKind::PlusOne, amount: {n} }}'
+    def paid_condition(filter_,minimum=0,increment=False):
+        return 'ManaSpent { minimum: '+str(minimum)+', increment: '+str(increment).lower()+', event: &TriggerCondition::'+cast_condition(filter_=filter_)+' }'
+    def block(program,minimum=None,maximum=None):
+        return ['IfManaSpent { minimum: '+('None' if minimum is None else f'Some({minimum})')+', maximum: '+('None' if maximum is None else f'Some({maximum})')+', skip: '+str(len(program))+' }',*program]
+    for original in card['oracle_text'].splitlines():
+        if original in ('Increment',increment):
+            triggers.append((paid_condition('Any',increment=True),[counter(1)],'None'));continue
+        if original.startswith('Increment'):return None
+        line=original.removesuffix(' (If a permanent with a stun counter would become untapped, remove one from it instead.)')
+        for label in ('Opus — ', 'Selfie Shot — '):
+            if line.startswith(label):line=line[len(label):]
+        match=re.fullmatch(r'Whenever you cast (an instant or sorcery spell|a noncreature spell), (.+)',line)
+        if not match:residual.append(original);continue
+        filter_='InstantSorcery' if match[1].startswith('an instant') else 'Noncreature'
+        body=match[2]
+        if not any(phrase in body.casefold() for phrase in ('mana was spent', 'mana spent')):
+            residual.append(original);continue
+        # Authenticate only the source's complete names before normalization.
+        aliases=[card.get('name','')]
+        if card.get('type_line','').startswith('Legendary '):aliases.append(card['name'].split(',')[0])
+        for alias in aliases:
+            if alias and body.startswith(alias+' gets '):body='this creature gets '+body[len(alias+' gets '):]
+            if alias:body=body.replace(' on '+alias+'.',' on this creature.')
+        body=body.casefold()
+        minimum=0
+        if m:=re.fullmatch(r'if at least (four|eight) mana was spent to cast it, (.+)',body):
+            minimum={'four':4,'eight':8}[m[1]];body=m[2]
+        target,program='None',None
+        branches={
+          'this creature gets +1/+1 until end of turn. if five or more mana was spent to cast that spell, this creature gets +2/+2 until end of turn instead.':('None',[grow_instruction('Source',1,1)],[grow_instruction('Source',2,2)]),
+          'target player mills three cards. if five or more mana was spent to cast that spell, that player mills ten cards instead.':('Player',['Mill(PlayerSet::Targeted, MillAmount::Fixed(3))'],['Mill(PlayerSet::Targeted, MillAmount::Fixed(10))']),
+          'draw a card. then discard a card unless five or more mana was spent to cast that spell.':('None',['Draw(PlayerSet::Controller, 1)','Discard(PlayerSet::Controller, 1)'],['Draw(PlayerSet::Controller, 1)']),
+          'this creature gets +3/+0 until end of turn. if five or more mana was spent to cast that spell, put three +1/+1 counters on this creature instead.':('None',[grow_instruction('Source',3,0)],[counter(3)]),
+          'put a +1/+1 counter on this creature. if five or more mana was spent to cast that spell, put two +1/+1 counters on this creature instead.':('None',[counter(1)],[counter(2)]),
+          'this creature deals 1 damage to each opponent. if five or more mana was spent to cast that spell, this creature deals 3 damage to each opponent instead.':('None',['DamagePlayers(PlayerSet::Opponent, 1)'],['DamagePlayers(PlayerSet::Opponent, 3)']),
+        }
+        if body in branches:
+            target,low,high=branches[body];program=[*block(low,maximum=4),*block(high,minimum=5)]
+        elif body=="this creature gets +1/+1 until end of turn. if five or more mana was spent to cast that spell, this creature also gains double strike until end of turn.":
+            program=[grow_instruction('Source',1,1),*block(['GrantKeywords { subject: Subject::Source, keywords: Keywords(1024) }'],minimum=5)]
+        elif body in ('this creature gets +x/+0 until end of turn, where x is the amount of mana spent to cast that spell.', 'this creature gets +x/+0 until end of turn, where x is the amount of mana spent to cast that spell. if x is 4 or more, draw a card.'):
+            program=['GrowScaled { subject: Subject::Source, amount: AmountValue::ManaSpent, power: 1, toughness: 0 }']
+            if 'if x is' in body:program+=block(['Draw(PlayerSet::Controller, 1)'],minimum=4)
+        elif body=='create a treasure token.':
+            program=predefined_program('create a Treasure token.')
+        elif body=='put eight +1/+1 counters on this creature.':
+            program=[counter(8)]
+        elif body=="put a +1/+1 counter on this creature and it can't be blocked this turn.":
+            program=[counter(1),'GrantKeywords { subject: Subject::Source, keywords: Keywords(16384) }']
+        else:
+            result=targeted_program(body)
+            if result:target,program=result
+            else:program=statement_program(body)
+        if program is None:return None
+        triggers.append((paid_condition(filter_,minimum),program,target))
+    if not triggers:return None
+    proxy=dict(card,oracle_text='\n'.join(residual))
+    base=permanent_program_template(proxy)
+    if base is None:
+        trigger=trigger_creature_template(proxy)
+        if trigger:base=(*trigger,[],[0,0,0])
+    if base is None:
+        intrinsic=creature_template(proxy)
+        if intrinsic:base=(*intrinsic,[],[],[0,0,0])
+    if base is None:return None
+    effect,keywords,abilities,activations,enters=base
+    return effect,keywords,[*abilities,*triggers],activations,enters
+
+
 def rust_activations(abilities):
     rows = []
     for cost, targets, program, sorcery, once in abilities:
@@ -3641,6 +3730,9 @@ def compile_catalogue(snapshot, target):
             mobilize=mobilize_body(card) if not convoke and evidence is None and not cycling and all(v is None for v in (flashback,offspring,kicker,additional,target_reduction)) and not bargain and not reductions else None
             if mobilize is None:effect='Unsupported'
             else:effect,keywords,abilities,activations,enters=mobilize
+        paid_body=actual_mana_body(card) if (plot is None and warp is None and not convoke and not cycling and not bargain and evidence is None and all(v is None for v in (flashback,offspring,kicker,additional,target_reduction)) and not reductions and not dynamic and not scaling) else None
+        if paid_body is not None:
+            effect,keywords,abilities,activations,enters=paid_body
         # Convoke applies only to complete fixed intrinsic bodies. No selector may
         # silently combine an unimplemented additional/alternative payment recipe.
         if convoke and (bargain or evidence is not None or cycling or any(v is not None for v in (flashback,offspring,kicker,additional,target_reduction)) or '{X}' in card.get('mana_cost','') or any(line.startswith(('Saddle ', 'Mobilize ')) for line in card.get('oracle_text','').splitlines())):

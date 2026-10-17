@@ -353,6 +353,13 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    IfManaSpent {
+        minimum: Option<u64>,
+        maximum: Option<u64>,
+        skip: usize,
+    },
+    CounterThenDrawIfDiscounted,
+    DiscardScaled(PlayerSet, AmountValue),
     DiscardManaValueLifeLoss,
     PutHandCreature,
     JobSelect {
@@ -622,6 +629,9 @@ pub(crate) struct CountFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum AmountValue {
+    ManaSpent,
+    ColorsSpent,
+    SourcePower,
     Fixed(u16),
     /// Explicit immutable parameter of the resolving spell or its exact ETB packet.
     ChosenX,
@@ -777,6 +787,8 @@ pub(crate) enum Subject {
 /// Immutable +1/+1 counter replacements evaluated against the pre-entry world.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum EntryCounterAmount {
+    ColorsSpent,
+    IfNotCastOrZero(u16),
     Fixed(u16),
     Stat(StatValue),
 }
@@ -1045,6 +1057,11 @@ pub(crate) enum EntryPredicate {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    ManaSpent {
+        minimum: u64,
+        increment: bool,
+        event: &'static TriggerCondition,
+    },
     /// Immutable Equipment program, with the exact recipient as ability source.
     Granted(&'static TriggerCondition),
     SelfAttacksWhileSaddled,
@@ -1156,21 +1173,36 @@ pub(crate) enum TriggerCondition {
 }
 
 impl TriggerCondition {
+    pub(crate) fn mana_spent_rule(self) -> Option<(u64, bool)> {
+        match self {
+            Self::ManaSpent {
+                minimum, increment, ..
+            } => Some((minimum, increment)),
+            Self::Granted(e)
+            | Self::OncePerTurn(e)
+            | Self::DuringOpponentsTurn(e)
+            | Self::InterveningIf { event: e, .. } => e.mana_spent_rule(),
+            _ => None,
+        }
+    }
+
     pub(crate) fn is_granted(self) -> bool {
         match self {
             Self::Granted(_) | Self::GrantedAttacks => true,
             Self::OncePerTurn(e)
             | Self::DuringOpponentsTurn(e)
-            | Self::InterveningIf { event: e, .. } => e.is_granted(),
+            | Self::InterveningIf { event: e, .. }
+            | Self::ManaSpent { event: e, .. } => e.is_granted(),
             _ => false,
         }
     }
     pub(crate) fn requires_opponents_turn(self) -> bool {
         match self {
             Self::DuringOpponentsTurn(_) => true,
-            Self::Granted(event) | Self::OncePerTurn(event) | Self::InterveningIf { event, .. } => {
-                event.requires_opponents_turn()
-            }
+            Self::Granted(event)
+            | Self::OncePerTurn(event)
+            | Self::ManaSpent { event, .. }
+            | Self::InterveningIf { event, .. } => event.requires_opponents_turn(),
             _ => false,
         }
     }
@@ -1179,7 +1211,8 @@ impl TriggerCondition {
             Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
-            | Self::InterveningIf { event, .. } => event.event(),
+            | Self::InterveningIf { event, .. }
+            | Self::ManaSpent { event, .. } => event.event(),
             event => event,
         }
     }
@@ -1188,6 +1221,7 @@ impl TriggerCondition {
             Self::OncePerTurn(_) => true,
             Self::Granted(event)
             | Self::InterveningIf { event, .. }
+            | Self::ManaSpent { event, .. }
             | Self::DuringOpponentsTurn(event) => event.once_per_turn(),
             _ => false,
         }
