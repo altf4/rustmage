@@ -1,0 +1,74 @@
+{
+  "parent": "f35e95302aad7924be38def41598dcf9013c0fb7",
+  "validated_source": "d53ecba414f8d99cba9d07aadad89408cad6e243",
+  "preservation": {
+    "prior_definitions": 5333,
+    "current_definitions": 5333,
+    "changed_definitions": [
+      "Kutzil, Malamet Exemplar#0",
+      "Sovereign Okinec Ahau#0",
+      "Voice of Victory#0"
+    ],
+    "added_definitions": [],
+    "preserved_definitions": 5330,
+    "prior_helpers": 926,
+    "new_helpers": [
+      [
+        "static_cast_restriction",
+        "Kutzil, Malamet Exemplar#0"
+      ],
+      [
+        "static_cast_restriction",
+        "Voice of Victory#0"
+      ]
+    ],
+    "prior_colors": 5333,
+    "inline_flag_tables": 3,
+    "token_recipes": 96,
+    "emblem_recipes": 1,
+    "prior_aliases": 5439,
+    "result": "PASS"
+  },
+  "unrelated_mutation_rejected": true,
+  "prototype_programs_and_helpers_identical": true,
+  "inherited_policy_ast_equal_except_schema_101_to_103": [
+    "examples/standard_omens.py",
+    "examples/standard_split_search.py",
+    "python/test_attachment_attacks.py",
+    "python/test_bargain.py",
+    "python/test_base_stat_layers.py",
+    "python/test_battlefield_returns.py",
+    "python/test_binding.py",
+    "python/test_combat_restrictions.py",
+    "python/test_convoke.py",
+    "python/test_death_exile.py",
+    "python/test_enchanted_draw.py",
+    "python/test_endure.py",
+    "python/test_exact_search.py",
+    "python/test_fixed_kicker.py",
+    "python/test_gift.py",
+    "python/test_hand_land.py",
+    "python/test_joint_land.py",
+    "python/test_library_tuck.py",
+    "python/test_live_static_stats.py",
+    "python/test_omen.py",
+    "python/test_ownership_control.py",
+    "python/test_replacements.py",
+    "python/test_resolved_base_stats.py",
+    "python/test_role_consumers.py",
+    "python/test_role_semantic_kernels.py",
+    "python/test_sagas.py",
+    "python/test_selected_x.py",
+    "python/test_subject_conditions.py",
+    "python/test_target_exclusions.py",
+    "python/test_temporary_death_consumers.py",
+    "python/test_temporary_death_grants.py",
+    "python/test_tiered.py",
+    "python/test_trigger_source_binding.py"
+  ],
+  "coverage": 1977,
+  "total_standard": 5164,
+  "gated": 3187,
+  "observation_schema": 103,
+  "helper_arms": 928
+}

@@ -1,6 +1,6 @@
 # Effective base-power qualification — issue340
 
-This isolated phase starts from merged live-static main356d798, coverage1,972/5,164,
+Historical query-only checkpoint: this isolated phase starts from merged live-static main356d798, coverage1,972/5,164,
 schema100. No new card is executable yet. Two full Java roots have been read and
 all direct-import pins verified; the inventory contains complete physical metadata.
 
@@ -107,3 +107,54 @@ The layered query now returns before modifiers for a noncreature Vehicle, retain
 its actual counters. The existing Crew assertion is unchanged. The0922 optimized
 library built successfully but is not represented as accepted public/final output.
 All925inputs stayed fixed and both jobs closed/SO-cleaned before this correction.
+
+
+## Final corrected actual-parent acceptance
+
+Production d53ecba414f8d99cba9d07aadad89408cad6e243 composes actual
+f35e95302aad7924be38def41598dcf9013c0fb7. The final catalogue is1,977/5,164
+(3,187 gated),5,333 definitions,928 helper arms,96 token recipes, one emblem,
+40 Adventure/13 Omen pairs and observation schema103. Fingerprint:
+`e41c4e6943ee0ce775170a27b148256fb9adadcddcd314e4f3c20a3d1fcd08cb`.
+Optimized library SHA256:
+`a3b13e11d99690c7fd0d361264a29961cb8fb93d425aed65717b5f69c491a5f2`.
+The failed0922 library remains preserved with its original failed scope.
+
+Every925 tracked execution input stayed fixed across these corrected runs:
+
+- Full native:1,913 unit plus12 integration tests PASS; all-target driver31.063s.
+- All-target Clippy PASS16.206s, fmt PASS1.337s, generator consistency PASS4.675s.
+- 69 affected compiler/provenance methods PASS17.382s unittest time, no skips.
+- Optimized release build PASS36.852s.
+- First public workload:all eight naturally drawn/paid Standard vectors PASS8.789s,
+  4,890 owned frames and9,780 wrong-actor/stale denials.
+- 100 fixed unretried natural Standard games PASS125.374s, all eight route/seat
+  vectors,67,204 owned frames and134,408 wrong-actor/stale denials. No policy
+  retry or seed replacement was used for these passing workloads.
+- Three parent public methods PASS:14 joint-land Standard cases,12 live-static
+  Standard cases and48 paid Crew Freeform API cases. Their exact unchanged
+  policies are tested against the same optimized library. Crew's default library
+  argument is supplied explicitly by the external driver; no engine or policy
+  logic is changed. This48-case scope does not assert Standard terminal games.
+
+The [machine-readable preservation proof](base-power-main-preservation.json)
+retains every unrelated5,330 definition, all926 inherited helpers,96 recipes,
+colors, aliases, inline flags and emblem. Only the three complete bodies and two
+casting-rule helper arms change. An unrelated Plains mutation rejects. All three
+programs and both new helper arms equal the original aab3560 prototype. All33
+changed inherited Python/example policies are AST-identical after schema101→103
+normalization. Historical broad compiler/API suites retain their historical scopes.
+
+Independent nonauthor review adds damage-time Kutzil tests after genuine lethal
+combat/source departure and recipient changes; separate paid tests cover foreign
+ownership/current control after real reanimation, and Beau's changing layer7a
+base before Sovereign resolution with counter replacement. Each covers both seats
+and owned raw/index replay, parent-drop, restore and denials. Those independent
+paid probes ran on0922 before the narrow noncreature-Vehicle correction; both
+reviewers inspect that correction and final corrected author gates separately.
+Two independent whole-three-body exact-final-published-head approvals are required
+before merge, excluding each reviewer's authored ancestor. Final documentation
+changes do not change execution sources. Completed targets are cleaned only after
+all consuming jobs close, retaining every shared library's exact path and hash.
+
+Parent public driver elapsed: 77.380s, three methods, zero failures/errors/skips.

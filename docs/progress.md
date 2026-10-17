@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,974 executable Standard identities | 3,190 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,977 executable Standard identities | 3,187 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -364,3 +364,27 @@ and the immutable library remain fixed; policy-only setup corrections and earlie
 failed scopes remain explicit in [the delivery record](joint-land-selection.md).
 All jobs are closed and non-SO build outputs cleaned. Two independent exact-final
 reviews gate merging; the full Standard migration remains incomplete.
+
+
+## Effective base-power consumers — PR #341 / issue #340
+
+Three complete bodies compose actual joint-land main: Sovereign Okinec Ahau,
+Kutzil, Malamet Exemplar and Voice of Victory. Coverage is 1,977/5,164,
+3,187 gated, schema103, with all96 token recipes and one emblem retained.
+The single shared statistics pass exposes the CR208.4b base boundary; damage
+qualification captures that boundary at damage time, Sovereign snapshots all
+recipient differences before counter replacements, and generic spell restrictions
+use the source's current controller. Mobilize2 and Ward2 remain complete.
+
+Frozen d53ecba passes1,925 native tests, all-target Clippy/fmt/generator,
+69 affected compiler/provenance methods, eight naturally paid Standard vectors,
+and100 fixed unretried natural games (125.374s;67,204 owned frames/134,408 denials).
+Three parent public methods also pass:14 joint-land Standard cases,12 live-static
+Standard cases and48 paid Crew Freeform cases. The latter is API regression scope,
+not an additional Standard terminal-game claim. All925 inputs and the exact library
+stay fixed. Strict actual-parent preservation retains5,330 other definitions,
+926 inherited helper arms and96 recipes; two casting helpers are added.
+The existing uncrewed Vehicle test caught a real query-extraction regression;
+the corrected full run and unchanged paid Crew policies pass. Exact evidence,
+historical failures and independent-review requirements are in the
+[delivery record](base-power-qualification.md). Full Standard remains incomplete.

@@ -1,7 +1,7 @@
 {
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-  "parent": "356d79880dbae6bdcbda600dadb1bef6da16c18c",
-  "status": "Three generic complete-body prototype candidates on actual dff main; native/paid/public gates and final reviews required before merge.",
+  "parent": "f35e95302aad7924be38def41598dcf9013c0fb7",
+  "status": "Three complete bodies validated on actual joint-land parent; final published-head independent reviews gate merge.",
   "proposed_complete": [
     "Kutzil, Malamet Exemplar",
     "Sovereign Okinec Ahau",
