@@ -1,0 +1,134 @@
+"""Source-preserving continuous-effect groups for the characteristic evaluator.
+
+This projection does not authorize text or admit cards. Callers must compile and
+raw-authenticate the COMPLETE body first; fragments retain the original line.
+The current module is not yet connected to catalogue emission.
+"""
+from dataclasses import dataclass
+from enum import IntEnum
+import re
+
+
+class Layer(IntEnum):
+    TYPE = 4
+    COLOR = 5
+    ABILITY = 6
+    CDA = 70
+    BASE = 71
+    MODIFY = 72
+
+
+@dataclass(frozen=True)
+class Fragment:
+    kind: str
+    layer: Layer
+    payload: object
+
+
+@dataclass(frozen=True)
+class StaticGroup:
+    line: int
+    raw: str
+    fragments: tuple[Fragment, ...]
+
+    @property
+    def first_layer(self):
+        return min(f.layer for f in self.fragments)
+
+
+def continuous_groups(card, parser):
+    """Preserve clause identity while existing extractors split its fragments.
+
+    Every payload is the existing immutable executable recipe. The projection
+    neither erases raw reminders for authentication nor changes admission.
+    """
+    raw = card.get('oracle_text')
+    if not isinstance(raw, str):
+        return ()
+    lines = raw.splitlines()
+    if len(lines) > 65535:
+        raise ValueError('static source line identity exhausted')
+    equipment = 'Equipment' in card.get('type_line', '').split(' — ')[-1].split()
+    aura = card.get('type_line', '').split(' — ')[-1] == 'Aura'
+    # Use the card's actual context/costs, never a fabricated admission body.
+    equips = [s for s in lines if re.search(r'(?:^| — )Equip(?: |—)', s)]
+    enchant = [s for s in lines if s.startswith('Enchant ')]
+    job_header = lines[:1] if lines[:1] and lines[0] in ('Job select', parser.JOB_REMINDER) else []
+    groups = []
+    for index, original in enumerate(lines):
+        fragments = []
+        one = dict(card, oracle_text=original)
+        # Changeling contributes types before ability removal. Keep that CDA
+        # distinct from separate later static abilities on this same card.
+        surface = original
+        if '(' in surface or ')' in surface:
+            surface = surface.split(' (', 1)[0] if parser.intrinsic_reminder_line_valid(surface) else ''
+        words = {word.strip().casefold() for word in surface.split(',') if word.strip()}
+        if words and words <= parser.INTRINSIC_KEYWORDS.keys():
+            mask = sum(parser.INTRINSIC_KEYWORDS[word] for word in words)
+            changeling = parser.INTRINSIC_KEYWORDS['changeling']
+            if mask & changeling:
+                fragments.append(Fragment('changeling', Layer.TYPE, changeling))
+            if mask & ~changeling:
+                fragments.append(Fragment('intrinsic_keywords', Layer.ABILITY, mask & ~changeling))
+        # These extractors may rewrite a combined stats/keyword clause. Pass the
+        # residual onward WITH the same origin, never assign a new synthetic ID.
+        residual, dynamic, scaling = parser.extract_stat_rules(one)
+        if dynamic is not None:
+            fragments.append(Fragment('dynamic_stats', Layer.CDA, dynamic))
+        fragments.extend(Fragment('scaling_modifiers', Layer.MODIFY, s) for s in scaling)
+        residual, base = parser.extract_base_stat_setter(residual)
+        if base is not None:
+            fragments.append(Fragment('base_stat_setter', Layer.BASE, base))
+        residual, enchanted = parser.extract_enchanted_modifiers(residual)
+        fragments.extend(Fragment('enchanted_modifiers', Layer.MODIFY, s) for s in enchanted)
+        residual, counter_grants = parser.extract_counter_grants(residual)
+        fragments.extend(Fragment('counter_keyword_grants', Layer.ABILITY, s) for s in counter_grants)
+        static = parser.static_permanent_template(residual)
+        if static is not None:
+            fragments.extend(Fragment('static_modifiers', Layer.MODIFY, s) for s in static[-2])
+            fragments.extend(Fragment('keyword_grants', Layer.ABILITY, s) for s in static[-1])
+        if equipment and original not in equips and original not in job_header:
+            if job_header and 'in addition to its other types' in original:
+                # Job parsing allocates immutable token factories. Projection
+                # must not change the caller's factory registry or its order.
+                tokens = dict(parser.TOKEN_DEFS)
+                try:
+                    job = parser.job_select_template(dict(card, oracle_text='\n'.join([*job_header, original, *equips])))
+                finally:
+                    parser.TOKEN_DEFS.clear()
+                    parser.TOKEN_DEFS.update(tokens)
+                if job is not None:
+                    body, subtype, _, scales = job
+                    fragments.append(Fragment('attached_subtype', Layer.TYPE, subtype))
+                    if body[5] or body[6]:
+                        fragments.append(Fragment('attachment_stats', Layer.MODIFY, (body[5], body[6])))
+                    if body[7]:
+                        fragments.append(Fragment('attachment_keywords', Layer.ABILITY, body[7]))
+                    for condition, program, targets in body[2]:
+                        if condition.startswith('Granted('):
+                            fragments.append(Fragment('attachment_trigger', Layer.ABILITY, (condition, tuple(program), targets)))
+                    fragments.extend(Fragment('scaling_modifiers', Layer.MODIFY, s) for s in scales)
+            else:
+                body = parser.equipment_template(dict(card, oracle_text='\n'.join([residual.get('oracle_text', ''), *equips])))
+                if body is not None:
+                    if body[5] or body[6]:
+                        fragments.append(Fragment('attachment_stats', Layer.MODIFY, (body[5], body[6])))
+                    if body[7]:
+                        fragments.append(Fragment('attachment_keywords', Layer.ABILITY, body[7]))
+                    for condition, program, targets in body[2]:
+                        if condition in ('GrantedAttacks',) or condition.startswith('Granted('):
+                            fragments.append(Fragment('attachment_trigger', Layer.ABILITY, (condition, tuple(program), targets)))
+        elif aura and original not in enchant:
+            body = parser.aura_template(dict(card, oracle_text='\n'.join([*enchant, residual.get('oracle_text', '')])))
+            if body is not None:
+                if body[7] or body[8]:
+                    fragments.append(Fragment('attachment_stats', Layer.MODIFY, (body[7], body[8])))
+                if body[9]:
+                    fragments.append(Fragment('attachment_keywords', Layer.ABILITY, body[9]))
+                for condition, program, targets in body[2]:
+                    if condition.startswith('Granted('):
+                        fragments.append(Fragment('attachment_trigger', Layer.ABILITY, (condition, tuple(program), targets)))
+        if fragments:
+            groups.append(StaticGroup(index, original, tuple(fragments)))
+    return tuple(groups)
