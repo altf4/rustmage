@@ -3,10 +3,41 @@
   "catalogue_id": 1553,
   "oracle_id": "6336401f-4e2d-4ebe-8c5b-24aa6f516abf",
   "facts_sha256": "e0aeae6ee6ad24f609ddf9f0f0cda3e33974cf91e1edde6b45877e0cb861d375",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "59b141244fb70f627a934e42f280f217bac3d48f08325b8855be1e4ca1f42a18"
   },
-  "physical_metadata_sha256": "686e35d208da148314e1ff8150d990bf76c941624467e66030ea98aca1de2c15"
+  "physical_metadata_sha256": "686e35d208da148314e1ff8150d990bf76c941624467e66030ea98aca1de2c15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FleetingFlight.java",
+  "java_sha256": "94ab8e84a913b4ac5ad42fa72ab6a915c4dcb7cc0bfe22dad6a337cee2d459b2",
+  "implementation": "Direct typed complete printed behavior; focused utility/protection interaction tests.",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PreventDamageToTargetEffect.java",
+      "sha256": "26543ea6d43812062dc3980d021300f29a1eec9f847b130a8a0d3ae000f95847"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/PreventionEffectImpl.java",
+      "sha256": "35c73be2ddcb40be12bc5a1ca2d11a654436c7b6b0c4ae1e37cb18383a97daf5"
+    }
+  ]
 }

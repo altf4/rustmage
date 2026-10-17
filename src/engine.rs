@@ -4294,6 +4294,20 @@ impl Game {
     }
 
     fn apply_damage_batch(&mut self, events: &[DamageEvent]) -> Vec<LifeGainEvent> {
+        // Avoid allocating on the ordinary, unprevented damage path.
+        let prevented = |event: &DamageEvent| {
+            event.combat
+                && (event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY)
+                    || matches!(event.target, Target::Card(id) if self.keywords(id).contains(Keywords::PREVENT_COMBAT_TO)))
+        };
+        let dealt = events.iter().any(prevented).then(|| {
+            events
+                .iter()
+                .copied()
+                .filter(|event| !prevented(event))
+                .collect::<Vec<_>>()
+        });
+        let events = dealt.as_deref().unwrap_or(events);
         let mut gains: Vec<LifeGainEvent> = Vec::new();
         let mut gain_indices: std::collections::BTreeMap<DamageSource, usize> =
             std::collections::BTreeMap::new();
@@ -5741,3 +5755,7 @@ mod fdn_lords_six_tests;
 #[cfg(test)]
 #[path = "engine_fdn_attachments_six_tests.rs"]
 mod fdn_attachments_six_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_utility_seven_tests.rs"]
+mod fdn_utility_seven_tests;

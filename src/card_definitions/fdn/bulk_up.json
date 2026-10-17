@@ -3,10 +3,31 @@
   "catalogue_id": 578,
   "oracle_id": "fade8af0-5fdb-4237-9dd6-48bfd1d62767",
   "facts_sha256": "b032aee7c90475bca671770058390281674703efa68d1839ad74673c1656c25b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7e34900e7bfb147c5c0ffd6727bd13c8e936ab5575fda89c26e6e28cc9b85ab4"
   },
-  "physical_metadata_sha256": "2354ceacecd253fcea927b09baf68aaf5afee9ab361a05a89efd3cde7f30087d"
+  "physical_metadata_sha256": "2354ceacecd253fcea927b09baf68aaf5afee9ab361a05a89efd3cde7f30087d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BulkUp.java",
+  "java_sha256": "f7e427245cd5dc14bda81ef8bc62d20e511d5e73463a22ebdd79ee5b85758c81",
+  "implementation": "Direct typed complete printed behavior; focused utility/protection interaction tests.",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashbackAbility.java",
+      "sha256": "6a3cea9f6a49b61f425bf267cc280a991d4d1315322b11059cd0604e0dd76e87"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CastFromGraveyardAbility.java",
+      "sha256": "d960ebf54f87db2baf2a23785c181bdfea863a60d493eb66707ba64becc77be9"
+    }
+  ]
 }

@@ -3,10 +3,36 @@
   "catalogue_id": 2187,
   "oracle_id": "9b9a10ff-5a5d-4df8-88aa-18d84ff9117c",
   "facts_sha256": "aa69794a4c36f13bcb163af9c9e4e044b9e7c078d53d8b3de1267fe77b2f671d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f145af87bda22463e46c7a0c08f96c0a94ceb6a122b743bfba6395f2541c9fb2"
   },
-  "physical_metadata_sha256": "623e65d4aeb5cc41a0ec1776f50e805f4fedba9337e78996b0cee849df521da8"
+  "physical_metadata_sha256": "623e65d4aeb5cc41a0ec1776f50e805f4fedba9337e78996b0cee849df521da8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InspiringCall.java",
+  "java_sha256": "40f69b6080eb26558465fbb1ad00e0926f555cdf9bff35c8230696248e051b6a",
+  "implementation": "Direct typed complete printed behavior; focused utility/protection interaction tests.",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    }
+  ]
 }
