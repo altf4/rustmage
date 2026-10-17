@@ -76,6 +76,40 @@ impl Game {
                 });
             }
         }
+        if source.owner != item.controller {
+            let grants: Vec<_> = self
+                .state
+                .attachment_sources
+                .iter()
+                .filter(|&&id| self.attachment_recipient(id) == Some(reference))
+                .map(|&id| self.object_view(id))
+                .collect();
+            for giver in grants {
+                for (index, ability) in giver.card.triggers().iter().enumerate() {
+                    if ability.condition.is_granted()
+                        && ability.condition.event() == TriggerCondition::Ward
+                    {
+                        let grant = Box::new(AttachmentTriggerView {
+                            grantor: giver.reference,
+                            granting_card: giver.card,
+                            recipient: reference,
+                            defender: None,
+                            granted: true,
+                        });
+                        if self.queue_trigger_from(&source, index, Some(grant)) {
+                            self.state
+                                .pending_triggers
+                                .last_mut()
+                                .unwrap()
+                                .related_stack = Some(StackLink {
+                                id: item.id,
+                                controller: item.controller,
+                            });
+                        }
+                    }
+                }
+            }
+        }
     }
     pub(super) fn start_resolution_payment(
         &mut self,

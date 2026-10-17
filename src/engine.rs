@@ -267,6 +267,9 @@ define_actions! {
     BeginConvoke,
     ChooseConvoker { object: ObjectRef, contribution: ConvokeContribution },
     ChooseMobilizeDefender { defender: CombatDefender },
+    PutHandCreature { object: ObjectRef },
+    DeclineHandEntry,
+    ChooseHandDefender { defender: CombatDefender },
     ChooseSaddler { object: ObjectRef },
     FinishSaddle,
     ChooseLibraryDestination { object: ObjectRef, destination: LibraryDestination },
@@ -588,13 +591,14 @@ pub struct CastInfo {
     pub evidence: Option<bool>,
 }
 
-/// Frozen attack and immutable program provenance, independent of later attachments.
-#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+/// Frozen recipient and immutable program provenance, independent of later attachments.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct AttachmentTriggerView {
     pub grantor: ObjectRef,
     pub granting_card: Card,
-    pub attacker: ObjectRef,
-    pub defender: Player,
+    pub recipient: ObjectRef,
+    /// Present only for an attack-declaration event.
+    pub defender: Option<Player>,
     /// True when the actual creature owns an ability granted by the Equipment.
     pub granted: bool,
 }
@@ -679,7 +683,7 @@ impl SpellView {
                             spec.rule = TargetRule::Object {
                                 zone: TargetZone::Battlefield,
                                 kinds: 1,
-                                relation: if event.defender == self.controller {
+                                relation: if event.defender == Some(self.controller) {
                                     0
                                 } else {
                                     1
@@ -933,6 +937,9 @@ enum Pending {
     EffectChoice {
         player: Player,
     },
+    HandDefender {
+        player: Player,
+    },
     EffectDiscard {
         player: Player,
         remaining: usize,
@@ -1161,6 +1168,7 @@ pub struct EffectChoiceView {
     pub required: [u16; 2],
     pub selected: [Vec<ObjectRef>; 2],
     pub candidates: Vec<ObjectRef>,
+    pub defender_choice: bool,
 }
 
 /// Public state-based choices; earlier APNAP choices stay visible to later players.
@@ -1500,6 +1508,7 @@ impl Game {
             | Pending::EntryLife { player }
             | Pending::AuraEntry { player }
             | Pending::EffectChoice { player }
+            | Pending::HandDefender { player }
             | Pending::Legend { player }
             | Pending::RecoverMilled { player, .. }
             | Pending::EffectSearch { player }
@@ -1789,15 +1798,27 @@ impl Game {
                     }
                 }
             }
+            Pending::HandDefender { .. } => {
+                if self.visit_hand_defenders(&mut emit) {
+                    return true;
+                }
+            }
             Pending::EffectChoice { player } => {
                 let choice = s.resolving.as_ref().unwrap().choice.as_ref().unwrap();
-                if choice.skip_to.is_some() && emit(Action::DeclineEffectPayment) {
+                if choice.skip_to.is_some()
+                    && emit(if choice.kind == EffectChoiceKind::HandCreature {
+                        Action::DeclineHandEntry
+                    } else {
+                        Action::DeclineEffectPayment
+                    })
+                {
                     return true;
                 }
                 for (index, _) in s.objects.iter().enumerate() {
                     let object = self.object_ref(index as CardId);
                     if self.effect_choice_candidate(choice, player, object) {
                         let action = match choice.kind {
+                            EffectChoiceKind::HandCreature => Action::PutHandCreature { object },
                             EffectChoiceKind::Sacrifice => Action::Sacrifice { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             _ => unreachable!("forage has its own choice"),
@@ -2811,6 +2832,9 @@ impl Game {
                 }
                 self.advance_damage_choices();
             }
+            Action::PutHandCreature { object } => self.choose_effect_object(actor, object),
+            Action::DeclineHandEntry => self.decline_effect_payment(),
+            Action::ChooseHandDefender { defender } => self.choose_hand_defender(defender),
             Action::Sacrifice { object } => self.choose_effect_object(actor, object),
             Action::DeclineEffectPayment => self.decline_effect_payment(),
             Action::Discard { card } => {
@@ -3881,6 +3905,7 @@ impl Game {
                 Pending::RecoverMilled { .. } => "recover_milled",
                 Pending::EffectSearch { .. } => "library_search",
                 Pending::EffectDiscard { .. } => "effect_discard",
+                Pending::HandDefender { .. } => "hand_defender",
                 Pending::EffectChoice { .. } => "effect_choice",
                 Pending::EntryLife { .. } => "entry_life",
                 Pending::AuraEntry { .. } => "aura_entry",
@@ -4721,3 +4746,6 @@ mod mobilize_tests;
 #[cfg(test)]
 #[path = "engine_job_select_tests.rs"]
 mod job_select_tests;
+
+#[path = "engine_granted_abilities.rs"]
+mod granted_abilities;

@@ -123,14 +123,10 @@ impl Game {
                 .checked_add(u128::try_from(event.amount).expect("positive damage"))
                 .capacity("damage amount exhausted");
         }
-        let sources: Vec<_> = self
-            .state
-            .damage_sources
-            .iter()
-            .map(|&id| self.object_view(id))
-            .collect();
-        for source in sources {
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+        let sources = self.indexed_trigger_sources(&self.state.damage_sources);
+        for (source, grant) in sources {
+            let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
+            for (index, ability) in definition.triggers().iter().enumerate() {
                 let TriggerCondition::PlayerDamaged {
                     subject,
                     combat_only,
@@ -159,6 +155,7 @@ impl Game {
                         self.queue_damage_trigger(
                             &source,
                             index,
+                            grant,
                             DamageTriggerView {
                                 dealer: Some(dealer.reference),
                                 player,
@@ -172,6 +169,7 @@ impl Game {
                     self.queue_damage_trigger(
                         &source,
                         index,
+                        grant,
                         DamageTriggerView {
                             dealer: None,
                             player,
@@ -188,9 +186,10 @@ impl Game {
         &mut self,
         source: &ObjectView,
         index: usize,
+        grant: Option<AttachmentTriggerView>,
         event: DamageTriggerView,
     ) {
-        if !self.queue_trigger(source, index) {
+        if !self.queue_trigger_from(source, index, grant.map(Box::new)) {
             return;
         }
         self.state.pending_triggers.last_mut().unwrap().damage_event = Some(event);

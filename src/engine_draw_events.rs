@@ -13,14 +13,10 @@ impl Game {
             player,
             ordinal: *count,
         };
-        let sources: Vec<_> = self
-            .state
-            .draw_sources
-            .iter()
-            .map(|&id| self.object_view(id))
-            .collect();
-        for source in sources {
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+        let sources = self.indexed_trigger_sources(&self.state.draw_sources);
+        for (source, grant) in sources {
+            let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
+            for (index, ability) in definition.triggers().iter().enumerate() {
                 let TriggerCondition::CardDrawn { relation, ordinal } = ability.condition.event()
                 else {
                     continue;
@@ -31,7 +27,7 @@ impl Game {
                         CastRelation::Opponent => source.owner != player,
                         CastRelation::Any => true,
                     }
-                    && self.queue_trigger(&source, index)
+                    && self.queue_trigger_from(&source, index, grant.map(Box::new))
                 {
                     self.state.pending_triggers.last_mut().unwrap().draw_event = Some(event);
                 }

@@ -171,7 +171,8 @@ impl Game {
         );
         a.additional_paid = true;
         match spec.kind {
-            EffectChoiceKind::CollectEvidence(_)
+            EffectChoiceKind::HandCreature
+            | EffectChoiceKind::CollectEvidence(_)
             | EffectChoiceKind::Forage
             | EffectChoiceKind::ForageOrBlack => unreachable!(),
             EffectChoiceKind::Discard => self.discard_batch(&[object.card], None),

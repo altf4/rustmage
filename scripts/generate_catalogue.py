@@ -1866,6 +1866,7 @@ def targeted_program(text):
     if not isinstance(text, str) or not text.endswith('.'):
         return None
     text = strip_rule_label(text)
+    if text.casefold()=='untap target attacking creature.':return 'CreatureAttacking',['Untap']
     text = normalize_duration(text[0].lower() + text[1:])
     if 'another target attacking creature you control' in text:
         result=targeted_program(text.replace('another target attacking creature you control','another target creature you control',1))
@@ -2871,6 +2872,46 @@ def equipment_template(card):
 JOB_TYPES = {'Artificer','Bard','Cleric','Knight','Monk','Ninja','Rogue','Samurai','Shaman','Warrior','Wizard'}
 JOB_REMINDER = 'Job select (When this Equipment enters, create a 1/1 colorless Hero creature token, then attach this to it.)'
 
+def job_granted_abilities(card, text):
+    """The quoted ability belongs to the recipient; no leftover text is erased."""
+    text=text.rstrip(',')
+    if not text.endswith('.'):text+='.'
+    if text=='Whenever this creature attacks, you may put a creature card from your hand onto the battlefield. If that card is an enchantment card, it enters tapped and attacking.':
+        return [('Granted(&TriggerCondition::SelfAttacks)',['PutHandCreature'],'None')]
+    ninja="Whenever this creature deals combat damage to a player, draw a card, then discard a card. That player loses life equal to the discarded card's mana value."
+    if text==ninja:
+        return [('Granted(&TriggerCondition::'+player_damage_prefix(text)[1]+')',['Draw(PlayerSet::Controller, 1)','DiscardManaValueLifeLoss'],'None')]
+    prefix='Whenever you cast a noncreature spell and whenever you draw your third card each turn, '
+    if text.startswith(prefix):
+        program=statement_program(text[len(prefix):])
+        if program is None:return None
+        result=[(cast_condition(filter_='Noncreature'),program,'None'),(draw_condition(ordinal=3),program,'None')]
+    else:
+        result=trigger_creature_template(dict(card,type_line='Creature',power='0',toughness='1',oracle_text=text))
+        if result is None or result[1] != 0:return None
+        result=result[2]
+    if not result:return None
+    # Only event collectors with real recipient provenance are implemented.
+    # Other intrinsic trigger grammar must not silently revive a granted ability.
+    if any(not (condition=='SelfAttacks' or condition.startswith(('SpellCast {','CardDrawn {','PlayerDamaged { subject: DamageSubject::Source,'))) for condition,_,_ in result):return None
+    return [('Granted(&TriggerCondition::'+condition+')',program,targets) for condition,program,targets in result]
+
+def job_granted_line(line):
+    # Exact grammatical arrangements in the snapshot, retaining every quoted clause.
+    patterns=[
+      r'Equipped creature gets ([+][0-9]+)/([+][0-9]+), has "(.+)"(?:,)? and is (?:a|an) ([A-Z][a-z]+) in addition to its other types\.',
+      r'Equipped creature gets ([+][0-9]+)/([+][0-9]+), is (?:a|an) ([A-Z][a-z]+) in addition to its other types, and has "(.+)"',
+      r'Equipped creature is (?:a|an) ([A-Z][a-z]+) in addition to its other types and has "(.+)"',
+      r'Equipped creature has "(.+)" and is (?:a|an) ([A-Z][a-z]+) in addition to its other types\.',
+    ]
+    for i,pattern in enumerate(patterns):
+        if m:=re.fullmatch(pattern,line):
+            if i==0:return int(m[1]),int(m[2]),m[4],m[3]
+            if i==1:return int(m[1]),int(m[2]),m[3],m[4]
+            if i==2:return 0,0,m[1],m[2]
+            return 0,0,m[2],m[1]
+    return None
+
 def job_select_template(card):
     """Closed full Job Select Equipment bodies; subtype/turn grants are immutable."""
     if (card.get('layout') != 'normal' or permanent_type(card) != 'Artifact'
@@ -2878,15 +2919,35 @@ def job_select_template(card):
             or spell_cost_options(card.get('mana_cost','')) is None):return None
     lines=card.get('oracle_text','').split('\n')
     if not lines or lines[0] not in ('Job select', JOB_REMINDER):return None
-    lines=[re.sub(r'\([^()]*\)', '',line).strip() for line in lines[1:]]
-    subtype=None;power=toughness=keywords=turn_keywords=0;scales=[];equip=None
+    body=[]
+    for line in lines[1:]:
+        line=line.strip()
+        if m:=re.fullmatch(r'(.+ Equip (\{[^}]+\}(?:\{[^}]+\})*)) \((.+)\)',line):
+            if m[3] != m[2]+': Attach to target creature you control. Equip only as a sorcery.':return None
+            line=m[1]
+        elif m:=re.fullmatch(r'(Equip (\{[^}]+\}(?:\{[^}]+\})*)) \((.+)\)',line):
+            if m[3] != m[2]+': Attach to target creature you control. Equip only as a sorcery.':return None
+            line=m[1]
+        body.append(line)
+    lines=body
+    subtype=None;power=toughness=keywords=turn_keywords=0;scales=[];equip=None;granted=[]
     for line in lines:
-        if m:=re.fullmatch(r'Equipped creature gets ([+][0-9]+)/([+][0-9]+)(?:, has ([a-z ]+),)? and is (?:a|an) ([A-Z][a-z]+) in addition to its other types\.',line):
+        if parsed:=job_granted_line(line):
+            if subtype is not None:return None
+            power,toughness,subtype,quoted=parsed
+            if subtype not in JOB_TYPES or max(power,toughness)>32767:return None
+            granted=job_granted_abilities(card,quoted)
+            if granted is None:return None
+        elif m:=re.fullmatch(r'Equipped creature gets ([+][0-9]+)/([+][0-9]+)(?:, has ([a-z {}0-9]+),)? and is (?:a|an) ([A-Z][a-z]+) in addition to its other types\.',line):
             if subtype is not None or m[4] not in JOB_TYPES:return None
             power,toughness=int(m[1]),int(m[2]);subtype=m[4]
             if max(power,toughness)>32767:return None
-            keywords=keyword_list(m[3]) if m[3] else 0
-            if keywords is None:return None
+            if m[3] and (ward:=ward_word(m[3])) is not None:
+                granted=[('Granted(&TriggerCondition::Ward)',[counter_unless(ward,'Related')],'None')]
+                keywords=0
+            else:
+                keywords=keyword_list(m[3]) if m[3] else 0
+                if keywords is None:return None
         elif m:=re.fullmatch(r'Equipped creature gets ([+][0-9]+)/([+][0-9]+) for each artifact you control and is (?:a|an) ([A-Z][a-z]+) in addition to its other types\.',line):
             if subtype is not None or m[3] not in JOB_TYPES:return None
             a,b=int(m[1]),int(m[2]);subtype=m[3]
@@ -2912,7 +2973,7 @@ def job_select_template(card):
         effect,intrinsic,abilities,activations,enters,_,_,_=result
     token=token_program('create a 1/1 colorless Hero creature token.')[0]
     token=re.search(r'token: ([^,]+),',token)[1]
-    abilities=[('SelfEnters',[f'JobSelect {{ token: {token} }}'],'None'),*abilities]
+    abilities=[('SelfEnters',[f'JobSelect {{ token: {token} }}'],'None'),*abilities,*granted]
     return (effect,intrinsic,abilities,activations,enters,power,toughness,keywords),subtype,turn_keywords,scales
 
 def source_return_program(text):

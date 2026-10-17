@@ -292,7 +292,8 @@ impl Game {
             let yours = source.owner == entered.owner;
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 let matched = match ability.condition.event() {
-                    TriggerCondition::OncePerTurn(_)
+                    TriggerCondition::Granted(_)
+                    | TriggerCondition::OncePerTurn(_)
                     | TriggerCondition::DuringOpponentsTurn(_)
                     | TriggerCondition::InterveningIf { .. } => {
                         unreachable!("unwrapped event")
@@ -415,7 +416,7 @@ impl Game {
         self.queue_trigger_from(source, index, None)
     }
 
-    fn queue_trigger_from(
+    pub(super) fn queue_trigger_from(
         &mut self,
         source: &ObjectView,
         index: usize,
@@ -426,6 +427,10 @@ impl Game {
             .filter(|event| event.granted)
             .map_or(source.card, |event| event.granting_card);
         let condition = definition.triggers()[index].condition;
+        if condition.is_granted() != event.as_ref().is_some_and(|e| e.granted) {
+            return false;
+        }
+
         if !self.trigger_guards_hold(condition, source.owner, source.reference, source.tapped) {
             return false;
         }
@@ -559,14 +564,10 @@ impl Game {
         let count = &mut self.state.players[caster.index()].spells_cast_this_turn;
         *count = count.checked_add(1).capacity("spell count exhausted");
         let ordinal = *count;
-        let sources: Vec<_> = self
-            .state
-            .cast_sources
-            .iter()
-            .map(|&id| self.object_view(id))
-            .collect();
-        for source in sources {
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+        let sources = self.indexed_trigger_sources(&self.state.cast_sources);
+        for (source, grant) in sources {
+            let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
+            for (index, ability) in definition.triggers().iter().enumerate() {
                 if let TriggerCondition::SpellCast {
                     relation,
                     filter,
@@ -594,7 +595,7 @@ impl Game {
                         )
                         && wanted.is_none_or(|wanted| wanted == ordinal)
                     {
-                        self.queue_trigger(&source, index);
+                        self.queue_trigger_from(&source, index, grant.map(Box::new));
                     }
                 }
             }
@@ -731,6 +732,7 @@ impl Game {
                 let granted = match ability.condition.event() {
                     TriggerCondition::EquippedAttacks => false,
                     TriggerCondition::GrantedAttacks => true,
+                    TriggerCondition::SelfAttacks if ability.condition.is_granted() => true,
                     _ => continue,
                 };
                 // Supported games have two players, owner==controller, and only
@@ -738,8 +740,8 @@ impl Game {
                 let event = Box::new(AttachmentTriggerView {
                     grantor: giver.reference,
                     granting_card: giver.card,
-                    attacker: recipient,
-                    defender: actor.other(),
+                    recipient,
+                    defender: Some(actor.other()),
                     granted,
                 });
                 let source = if granted {
@@ -1402,6 +1404,16 @@ impl Game {
                 } => {
                     let amount = self.item_amount(amount, &item);
                     self.create_tokens(item.controller, token, amount, tapped);
+                }
+                Instruction::PutHandCreature => {
+                    if self.start_hand_creature(&item) {
+                        return;
+                    }
+                }
+                Instruction::DiscardManaValueLifeLoss => {
+                    if self.start_discard_mana_value_life(&item) {
+                        return;
+                    }
                 }
                 Instruction::JobSelect { token } => {
                     let created = self.create_token_batch_capture(
