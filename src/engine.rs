@@ -21,7 +21,7 @@ pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 82;
+pub const OBSERVATION_SCHEMA: u32 = 84;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -107,8 +107,11 @@ mod explore;
 mod fight;
 #[path = "engine_milling.rs"]
 mod milling;
+#[path = "engine_roles.rs"]
+mod roles;
 #[path = "engine_sba.rs"]
 mod sba;
+pub use roles::{RoleGroupView, RoleTimestampView};
 #[path = "engine_search.rs"]
 mod search;
 pub use explore::{ExploreChoiceView, ExploreEventView, ExplorerView, RevealedLibraryCard};
@@ -468,6 +471,7 @@ define_actions! {
         object: ObjectRef,
     },
     DeclineEffectPayment,
+    KeepRole { object: ObjectRef },
     KeepLegend {
         object: ObjectRef,
     },
@@ -979,6 +983,9 @@ enum Pending {
         remaining: u8,
     },
     Priority,
+    Role {
+        player: Player,
+    },
     Legend {
         player: Player,
     },
@@ -1035,6 +1042,7 @@ enum Pending {
 /// Card definitions are enum/static data, never cloned object graphs or trait objects.
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    roles: Option<Box<roles::RoleState>>,
     replacements: Option<Box<replacements::ReplacementState>>,
     // Sparse registry: keep an eight-byte pointer in the common empty state
     // rather than an inline Vec header for games with no delayed obligation.
@@ -1369,6 +1377,8 @@ pub struct Observation {
     pub delayed_warp_exiles: Vec<DelayedWarpExileView>,
     pub plot_payment: Option<PlotPaymentView>,
     pub triggered_this_turn: Vec<TriggerUse>,
+    pub role_choices: Vec<RoleGroupView>,
+    pub role_timestamps: Vec<RoleTimestampView>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
@@ -1536,6 +1546,7 @@ impl Game {
                 attachment_sources: Vec::new(),
                 exile_links: Vec::new(),
                 exile_permissions: Vec::new(),
+                roles: None,
                 adventures: None,
                 plot: None,
                 warp: None,
@@ -1635,6 +1646,7 @@ impl Game {
             | Pending::AuraEntry { player }
             | Pending::EffectChoice { player }
             | Pending::HandDefender { player }
+            | Pending::Role { player }
             | Pending::Legend { player }
             | Pending::RecoverMilled { player, .. }
             | Pending::EffectSearch { player }
@@ -1978,6 +1990,17 @@ impl Game {
                         };
                         if emit(action) {
                             return true;
+                        }
+                    }
+                }
+            }
+            Pending::Role { player } => {
+                for group in &s.sba_batch.as_ref().unwrap().roles {
+                    if group.controller == player && group.keep.is_none() {
+                        for &object in &group.objects {
+                            if emit(Action::KeepRole { object }) {
+                                return true;
+                            }
                         }
                     }
                 }
@@ -3005,6 +3028,7 @@ impl Game {
                     );
                 }
             }
+            Action::KeepRole { object } => self.keep_role(object),
             Action::KeepLegend { object } => self.keep_legend(object),
             Action::ChooseCollectEvidence { collect } => {
                 self.state
@@ -3614,6 +3638,7 @@ impl Game {
                 .retain(|spell| spell.kind != StackKind::Spell || spell.object != before.reference);
         }
         if before.zone == Zone::Battlefield {
+            self.forget_role(before.reference);
             // Abilities use the source's actual last-known keywords if it leaves,
             // including gains made after that ability was announced.
             for item in self
@@ -4241,6 +4266,7 @@ impl Game {
                 Pending::Bottom { .. } => "bottom",
                 Pending::Priority => "priority",
                 Pending::PlotPayment { .. } => "plot_payment",
+                Pending::Role { .. } => "role_rule",
                 Pending::Legend { .. } => "legend_rule",
                 Pending::Targets { .. } => "targets",
                 Pending::Offspring { .. } => "offspring",
@@ -4355,6 +4381,14 @@ impl Game {
                 .filter(|p| p.controller == viewer)
                 .copied(),
             triggered_this_turn: s.triggered_this_turn.clone(),
+            role_choices: s
+                .sba_batch
+                .as_ref()
+                .map_or_else(Vec::new, |b| b.roles.clone()),
+            role_timestamps: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.attached.clone()),
             legend_choices: s
                 .sba_batch
                 .as_ref()
@@ -4637,6 +4671,7 @@ impl Game {
             + s.warp.as_ref().map_or(0, |w| w.bytes())
             + s.triggered_this_turn.len() * std::mem::size_of::<TriggerUse>()
             + s.replacements.as_ref().map_or(0, |f| f.bytes())
+            + s.roles.as_ref().map_or(0, |r| r.bytes())
             + s.sba_batch.as_ref().map(|batch| batch.bytes()).unwrap_or(0)
             + s.entry_batch
                 .as_ref()

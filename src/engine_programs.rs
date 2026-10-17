@@ -1531,6 +1531,9 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::CreateRole { token, subject } => {
+                    self.resolve_role(&item, token, subject);
+                }
                 Instruction::JobSelect { token } => {
                     self.stage_token_creation(
                         item.controller,

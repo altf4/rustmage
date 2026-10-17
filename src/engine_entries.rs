@@ -348,6 +348,14 @@ impl Game {
         // Continuous attachment effects already exist when entry events inspect the world.
         for (source, target) in attachments {
             self.state.objects[source.card as usize].attached_to = Some(target);
+            if self.state.objects[source.card as usize]
+                .card
+                .role()
+                .is_some()
+            {
+                let timestamp = self.next_role_timestamp();
+                self.record_role(source, target, timestamp);
+            }
         }
         self.finish_zone_events(&events, &[]);
         if let Some(player) = batch.shuffle_after {

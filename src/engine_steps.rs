@@ -92,6 +92,12 @@ impl Game {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
             StepGuard::Always => return true,
+            StepGuard::SourceToughnessAtMost(maximum) => {
+                return self.on_battlefield(source.card)
+                    && self.object_ref(source.card) == source
+                    && self.stats_without_hand(source.card, departing).toughness
+                        <= i128::from(maximum);
+            }
             StepGuard::Outlaw => {
                 return self.state.objects.iter().enumerate().any(|(id, o)| {
                     o.controller == player

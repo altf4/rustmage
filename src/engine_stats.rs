@@ -224,6 +224,19 @@ impl Game {
         if object.zone != Zone::Battlefield || !self.is_creature(id) {
             return stats;
         }
+        // Base-setting effects apply after CDAs and before all layer-7c additions.
+        if self.has_cursed_role(self.object_ref(id)) {
+            stats = Stats {
+                power: 1i128
+                    .checked_add(object.growth.power)
+                    .and_then(|v| v.checked_add(object.counter_delta()))
+                    .capacity("Cursed power exhausted"),
+                toughness: 1i128
+                    .checked_add(object.growth.toughness)
+                    .and_then(|v| v.checked_add(object.counter_delta()))
+                    .capacity("Cursed toughness exhausted"),
+            };
+        }
         stats += self.attachment_bonus(id).0;
         // Only the small live-source index is traversed. Central zone transitions
         // maintain it, and snapshots own it; no derived stat cache needs invalidation.
