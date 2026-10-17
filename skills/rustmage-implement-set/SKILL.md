@@ -20,9 +20,16 @@ is integrated, not when its happy path compiles. Keep the all-Standard goal open
 
 ## Select complete-card work
 
-Use the pinned Standard pool and coverage report to choose a set or coherent
-batch. Rank batches by complete cards unlocked per shared mechanic, not number
-of text patterns matched. Keep merged, candidate and gated counts separate.
+Complete one full set at a time. Foundations (FDN) is the first milestone; finish
+it before selecting the next set. Freeze full set membership by Oracle identity,
+including reprints and starter products, and count cosmetic printings once. Source
+file ownership by set is separate from membership: a reprint shares one behavior.
+Use `data/sets/<code>.json` and `python3 -m scripts.set_status <CODE>` to track the
+full denominator and gated cards. Do not choose a draft subset or a small bonus
+product to make a full set appear complete. Within the selected set, rank batches
+by whole cards unlocked per shared mechanic. Keep merged, candidate, gated and
+independently verified counts separate. Existing admission flags also require
+rules evidence before declaring set acceptance.
 Read each card's full Oracle body, faces and authoritative rulings where needed,
 plus the complete XMage class and referenced reusable abilities/effects/costs.
 Treat XMage as executable evidence; resolve discrepancies using authoritative
@@ -37,7 +44,7 @@ remaining engine blockers; do not equate catalogue metadata with support.
 
 ## Author ordinary typed Rust
 
-Author independently editable card definitions in `src/card_definitions/` with
+Author independently editable definitions in `src/card_definitions/<set_code>/` with
 their provenance records, following current checked examples. Reuse typed
 instructions, targets, costs and shared rules machinery. Add a generic mechanic
 when it serves a real shared rule; a small bespoke typed effect is appropriate
@@ -83,5 +90,11 @@ refresh reviews when substantive changes invalidate them, then integrate.
 Report merged complete supported cards, shared mechanics unlocked, remaining
 blockers, and measured card implementation throughput with elapsed interval and
 scope. Label simulation benchmarks by workload; do not extrapolate a small
-Freeform smoke benchmark into all-Standard performance. Apply the skill to the
-next ready batch once its core dependencies are integrated.
+Freeform smoke benchmark into all-Standard performance. For set acceptance, require every printed obligation of every member card to be
+implemented and tested, plus complete games with set-only legal decks. Exercise
+all colors and the set's mechanics, interactions, legal choices and terminal
+outcomes; retain deterministic replay and owned search checks. A smoke deck or
+coverage manifest alone cannot certify a set. Record remaining obligations and
+game coverage in its tracking issue. Only after full-set acceptance, use this
+skill again to select the next full set by existing coverage and reusable
+mechanics. Keep the all-Standard goal active throughout those milestones.
