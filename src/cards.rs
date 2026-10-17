@@ -2551,6 +2551,9 @@ impl Card {
         let mut counters: Counters = generated::DEFINITIONS[self.0 as usize].enters.into();
         counters.loyalty = self.starting_loyalty();
         counters.lore = u64::from(self.saga_final_chapter().is_some());
+        for &(kind, amount) in authored::RULES[self.index()].extras.fixed_entry_counters {
+            counters.add(kind, amount);
+        }
         counters
     }
     pub(crate) fn entry_choice(self) -> Option<EntryChoiceKind> {
