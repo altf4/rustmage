@@ -3,10 +3,35 @@
   "catalogue_id": 4346,
   "oracle_id": "fd5ee26c-cc54-4dc0-b611-5cda14354a5e",
   "facts_sha256": "2634a06e8640365f096763b6554829d7a296cc29e386c0062b8621b1a23e9c3d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7b2e375a776bff10ae1976cb037be0aaaddc982655aa9f7a3441cd803a2c775b"
   },
-  "physical_metadata_sha256": "6efd4d783a09980f3645c06dbf7e715b1fae0c6bf66ac532e2dd3b2e605d93b7"
+  "physical_metadata_sha256": "6efd4d783a09980f3645c06dbf7e715b1fae0c6bf66ac532e2dd3b2e605d93b7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TaureanMauler.java",
+  "java_sha256": "64c58276348f0b18cef44fdb1ed27faaa9f7f1823c688623ec5644e2c42df560",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastOpponentTriggeredAbility.java",
+      "sha256": "84626f91214806489e0cd62e2dfae9fb0f0e510af41d84ca8bdd20d94ca9d9f3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ChangelingAbility.java",
+      "sha256": "2a5c6f3233f1edbd054fad23cc7103334aa5bff6702da1f1e42ceb3a0cb8c177"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/IsAllCreatureTypesSourceEffect.java",
+      "sha256": "6c340da9dc171835b171f118084f41d65fcbcdc629b20c0d0c14f5c2bd727cd1"
+    }
+  ]
 }

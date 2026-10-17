@@ -754,6 +754,7 @@ impl Game {
             discard_event: None,
             draw_event: None,
             life_event: None,
+            sacrificed_toughness: None,
             source_attachment: self.state.objects[card as usize].attached_to,
             card,
             object,
@@ -776,7 +777,11 @@ impl Game {
         }
         let plan = self.target_spec(&item);
         if !self.targets_available(plan, item.controller, item.target_source()) {
-            assert!(trigger, "validated spell announcement");
+            assert!(
+                trigger,
+                "validated spell announcement: {} ({plan:?})",
+                item.source_card.name()
+            );
             return false;
         }
         let has_choice = needs_mode

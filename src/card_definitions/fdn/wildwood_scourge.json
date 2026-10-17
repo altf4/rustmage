@@ -3,10 +3,25 @@
   "catalogue_id": 5070,
   "oracle_id": "b9dec104-c636-4770-a7fc-7a3331face15",
   "facts_sha256": "e52c45d5f5bf08277be5b1299966e82c6d4676496bf65bfb3b846b5bfb06865c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9a715cf58dc3653241295568d8085c16d45832bfc3426acf90cf67d9ba1a4951"
   },
-  "physical_metadata_sha256": "60efc2eeb5ad002e551c4316943e4e21c53fb5e28a3f6d6a9f7ecc63ce790de3"
+  "physical_metadata_sha256": "cb29a94eebd3490495d68fd8ccbd3d978f431bca43dba68f41c83def2572a26f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WildwoodScourge.java",
+  "java_sha256": "b62da3d7c0f930f6713c9c298a016a87ea5a3cda80805b7ad9a043f14b5e9c4a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/EntersBattlefieldWithXCountersEffect.java",
+      "sha256": "b4aae4bf8b6f794367dbed4450268a52dd4c494c8fd6aa6e7d62a14eacab30d7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ]
 }

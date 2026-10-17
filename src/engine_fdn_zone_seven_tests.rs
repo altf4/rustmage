@@ -460,3 +460,54 @@ fn fdn_zone_pulse_illegal_target_does_not_destroy_other_same_named_permanents() 
         assert_eq!(g.object_view(b).zone, Zone::Battlefield);
     }
 }
+
+#[test]
+fn fdn_zone_run_away_prefunded_cast_enforces_controller_relation_before_announcement() {
+    for p in [Player::P0, Player::P1] {
+        for controller in [p, p.other()] {
+            for prefunded in [false, true] {
+                let mut g = setup(p);
+                let spell = named(&mut g, p, "Run Away Together", Zone::Hand);
+                let first = named(&mut g, controller, "Bear Cub", Zone::Battlefield);
+                named(&mut g, controller, "Grizzly Bears", Zone::Battlefield);
+                let payment = [0, 1, 0, 0, 0, 1];
+                g.state.players[p.index()].mana = if prefunded { payment } else { [0; 6] };
+                if !prefunded {
+                    named(&mut g, p, "Island", Zone::Battlefield);
+                    named(&mut g, p, "Forest", Zone::Battlefield);
+                }
+                let begin = Action::BeginCast {
+                    card: spell,
+                    payment,
+                };
+                let announce = Action::AnnounceCast { card: spell };
+                assert!(!g.legal_actions().contains(&begin));
+                assert!(!g.legal_actions().contains(&announce));
+                reject(&mut g, begin.clone());
+                reject(&mut g, announce.clone());
+                let other = named(&mut g, controller.other(), "Bear Cub", Zone::Battlefield);
+                assert!(g.legal_actions().contains(&announce));
+                if prefunded {
+                    checked(&mut g, begin);
+                    checked(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(first),
+                        },
+                    );
+                    checked(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(other),
+                        },
+                    );
+                    pay(&mut g);
+                    settle(&mut g);
+                    assert_eq!(g.object_view(first).zone, Zone::Hand);
+                    assert_eq!(g.object_view(other).zone, Zone::Hand);
+                    assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+                }
+            }
+        }
+    }
+}

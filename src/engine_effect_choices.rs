@@ -424,6 +424,32 @@ impl Game {
                 })
                 .collect();
             if !sacrifices.is_empty() {
+                if self
+                    .state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .program
+                    .iter()
+                    .any(|i| {
+                        matches!(
+                            i,
+                            Instruction::GainLifeScaled(_, AmountValue::SacrificedToughness)
+                        )
+                    })
+                {
+                    let toughness = sacrifices
+                        .iter()
+                        .map(|&(_, id)| self.stats(id).toughness)
+                        .try_fold(0i128, |sum, n| sum.checked_add(n))
+                        .capacity("sacrificed toughness exhausted");
+                    self.state
+                        .resolving
+                        .as_mut()
+                        .unwrap()
+                        .item
+                        .sacrificed_toughness = Some(Box::new(toughness));
+                }
                 self.sacrifice_batch(&sacrifices);
             }
         }

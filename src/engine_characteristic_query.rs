@@ -264,6 +264,11 @@ impl CharacteristicQuery<'_> {
                         for fragment in group.fragments {
                             match *fragment {
                                 StaticAbilityFragment::AttachmentStats(value) => stats += value,
+                                StaticAbilityFragment::AttachmentTurnStats(value)
+                                    if object.controller == self.state.active =>
+                                {
+                                    stats += value
+                                }
                                 StaticAbilityFragment::AttachmentKeywords(value) => {
                                     keywords = keywords.union(value)
                                 }
@@ -283,6 +288,13 @@ impl CharacteristicQuery<'_> {
                 keywords = keywords.union(spec.keywords);
                 if object.controller == self.state.active {
                     keywords = keywords.union(object.card.attached_turn_keywords());
+                    for group in object.card.static_ability_groups() {
+                        for fragment in group.fragments {
+                            if let StaticAbilityFragment::AttachmentTurnStats(value) = *fragment {
+                                stats += value;
+                            }
+                        }
+                    }
                 }
             }
         }

@@ -1,3 +1,4 @@
+const STARTING_LIFE: i128 = 20;
 use crate::capacity::{CapacityExt, CapacitySignal};
 use crate::cards::{
     ActivatedAbility, ActivationCost, ActivationGuard, ActivationOrigin, AdditionalCost,
@@ -775,6 +776,8 @@ pub struct SpellView {
     pub discard_event: Option<DiscardTriggerView>,
     pub draw_event: Option<DrawTriggerView>,
     pub life_event: Option<LifeTriggerView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sacrificed_toughness: Option<Box<i128>>,
     pub source_facts: DamageFacts,
     pub related_stack: Option<StackLink>,
     pub card: CardId,
@@ -850,6 +853,10 @@ impl SpellView {
                 .delayed_warp_exile
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<DelayedWarpExileView>())
+            + self
+                .sacrificed_toughness
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<i128>())
             + self.targets.len() * std::mem::size_of::<BoundTarget>()
             + self
                 .attachment_trigger
@@ -1323,6 +1330,7 @@ struct State {
     triggered_this_turn: Vec<TriggerUse>,
     step_sources: Vec<CardId>,
     life_sources: Vec<CardId>,
+    counter_sources: Vec<CardId>,
     death_sources: Vec<CardId>,
     attachment_sources: Vec<CardId>,
     exile_links: Vec<ExileLink>,
@@ -1770,7 +1778,7 @@ impl Game {
             life_gained_this_turn: 0,
             life_lost_this_turn: 0,
             attacked_this_turn: false,
-            life: 20,
+            life: STARTING_LIFE,
             poison_counters: 0,
             mana: [0; 6],
             library: SharedVec::default(),
@@ -1826,6 +1834,7 @@ impl Game {
                 triggered_this_turn: Vec::new(),
                 step_sources: Vec::new(),
                 life_sources: Vec::new(),
+                counter_sources: Vec::new(),
                 death_sources: Vec::new(),
                 attachment_sources: Vec::new(),
                 exile_links: Vec::new(),
@@ -2724,12 +2733,7 @@ impl Game {
                             };
                             let source = self.object_ref(card);
                             if spec.max > 1 {
-                                let mut count = 0;
-                                self.visit_cast_targets(spec.rule, actor, source, |_| {
-                                    count += 1;
-                                    false
-                                });
-                                if count >= usize::from(spec.min) {
+                                if self.cast_targets_available(plan, actor, source) {
                                     done = emit(Action::BeginCast { card, payment });
                                 }
                             } else {
@@ -4097,6 +4101,7 @@ impl Game {
             self.state.draw_sources.retain(|&source| source != id);
             self.state.step_sources.retain(|&source| source != id);
             self.state.life_sources.retain(|&source| source != id);
+            self.state.counter_sources.retain(|&source| source != id);
             self.state.death_sources.retain(|&source| source != id);
             self.state.attachment_sources.retain(|&source| source != id);
             self.state.attackers.retain(|attacker| attacker.card != id);
@@ -5198,6 +5203,7 @@ impl Game {
                 + s.cleanup_discards.len()
                 + s.step_sources.len()
                 + s.life_sources.len()
+                + s.counter_sources.len()
                 + s.death_sources.len()
                 + s.attachment_sources.len())
                 * std::mem::size_of::<CardId>()
@@ -5928,5 +5934,15 @@ mod fdn_life_seven_tests;
 mod fdn_private_seven_tests;
 
 #[cfg(test)]
+#[path = "engine_fdn_counter_grave_eight_tests.rs"]
+mod fdn_counter_grave_eight_tests;
+#[cfg(test)]
 #[path = "engine_fdn_zone_seven_tests.rs"]
 mod fdn_zone_seven_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_cast_combat_eight_tests.rs"]
+mod fdn_cast_combat_eight_tests;
+#[cfg(test)]
+#[path = "engine_fdn_program_seven_tests.rs"]
+mod fdn_program_seven_tests;

@@ -780,6 +780,14 @@ pub(crate) enum Instruction {
         amount: u32,
     },
     DoubleCounters,
+    DoubleCounterKind {
+        subject: Subject,
+        kind: CounterKind,
+    },
+    ExileGraveTargets,
+    IfExiledCreature {
+        skip: usize,
+    },
     RemoveAllCounters,
     RemoveAllCountersFrom(Subject),
     SnapshotDoubleCreatures(CreatureFilter),
@@ -894,7 +902,9 @@ pub(crate) struct CountFilter {
 pub(crate) enum AmountValue {
     ManaSpent,
     ColorsSpent,
+    SpellColors,
     SourcePower,
+    SacrificedToughness,
     Fixed(u16),
     /// Explicit immutable parameter of the resolving spell or its exact ETB packet.
     ChosenX,
@@ -949,6 +959,7 @@ pub(crate) enum StatValue {
     Count(CountFilter),
     GreatestManaValue(CountFilter),
     DistinctNames(CountFilter),
+    DistinctManaValues(CountFilter),
     CountUnion(&'static [CountFilter]),
     Colors(CountFilter),
     CardTypes(CountFilter),
@@ -1092,6 +1103,7 @@ pub(crate) enum Subject {
 /// Immutable +1/+1 counter replacements evaluated against the pre-entry world.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum EntryCounterAmount {
+    GreatestOtherCreaturePower,
     ColorsSpent,
     IfNotCastOrZero(u16),
     Fixed(u16),
@@ -1214,6 +1226,10 @@ pub(crate) enum CastFilter {
     Subtype(&'static str),
     AnyOf(&'static [CastFilter]),
     Multicolored,
+    Colors {
+        filter: &'static CastFilter,
+        mask: u8,
+    },
     Targeted {
         filter: &'static CastFilter,
         target: CastTarget,
@@ -1241,6 +1257,9 @@ impl CastFilter {
             // Contextual cast observers use Game::cast_filter_matches instead.
             Self::Targeted { .. } | Self::InstantSorceryOrdinal(_) => false,
             Self::Multicolored => card.colors().count_ones() >= 2,
+            Self::Colors { filter, mask } => {
+                card.colors() & mask != 0 && filter.matches_mana_value(card, mana_value)
+            }
             Self::ManaValueMaximum { filter, maximum } => {
                 filter.matches_mana_value(card, mana_value) && mana_value <= maximum
             }
@@ -1452,6 +1471,10 @@ pub(crate) enum TriggerCondition {
     LifeLost {
         relation: CastRelation,
     },
+    OtherCreatureCountersAdded {
+        kind: CounterKind,
+        excluded_subtype: &'static str,
+    },
     SelfCountersAdded {
         kind: CounterKind,
         controller_only: bool,
@@ -1501,6 +1524,9 @@ pub(crate) enum TriggerCondition {
     SelfDies,
     SelfEntersOrDies,
     SelfAttacks,
+    CreatureAttacksYou {
+        colors: u8,
+    },
     /// Declaration-time condition; not a resolution-time intervening if.
     SelfAttacksAlone,
     EquippedAttacks,
@@ -1641,11 +1667,15 @@ pub(crate) enum ActivationGuard {
     OwnTurn,
     ControlSubtypeAny(&'static [&'static str]),
     ControlLandsAtLeast(u16),
+    LifeAboveStarting(u16),
 }
 impl ActivationGuard {
     pub(crate) fn subtypes(self) -> &'static [&'static str] {
         match self {
-            Self::Always | Self::OwnTurn | Self::ControlLandsAtLeast(_) => &[],
+            Self::Always
+            | Self::OwnTurn
+            | Self::ControlLandsAtLeast(_)
+            | Self::LifeAboveStarting(_) => &[],
             Self::ControlSubtypeAny(types) => types,
         }
     }
@@ -1709,6 +1739,7 @@ impl Keywords {
     pub const NO_GREATER_POWER_BLOCKERS: Self = Self(8388608);
     pub const PREVENT_COMBAT_TO: Self = Self(16777216);
     pub const PREVENT_COMBAT_BY: Self = Self(33554432);
+    pub const NO_HUMAN_BLOCKERS: Self = Self(67108864);
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
     }
@@ -1904,9 +1935,7 @@ impl Card {
         self.info().standard_legal
     }
     pub fn token_info(self) -> Option<&'static TokenInfo> {
-        self.index()
-            .checked_sub(generated::TOKEN_BASE)
-            .and_then(|offset| generated::TOKENS.get(offset))
+        generated::token_info(self)
     }
     pub fn emblem_info(self) -> Option<&'static EmblemInfo> {
         self.index()

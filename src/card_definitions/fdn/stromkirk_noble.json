@@ -3,10 +3,35 @@
   "catalogue_id": 4192,
   "oracle_id": "c55909d3-1f67-4a4a-9d53-8513d6cf96d8",
   "facts_sha256": "656a091ccd1b3c8079946f4fb65b5b089446ab0fbfb21f4d25575e9ff913b43d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1f773fdb2bc6a476febfe4b3120ae874813857c890b2676b5395838875d64aea"
   },
-  "physical_metadata_sha256": "376860598a7e6be15917fdd7c3d431c2b435e657f14822756af4894fb36a64e9"
+  "physical_metadata_sha256": "376860598a7e6be15917fdd7c3d431c2b435e657f14822756af4894fb36a64e9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StromkirkNoble.java",
+  "java_sha256": "5bf0201e9192775d8306db79dccee41695472341dfedd9f69735df2df96ebaf4",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByCreaturesSourceEffect.java",
+      "sha256": "db532584552c032f8fed7fb9a2cb025e45f58c4710c0d3bb1406f6aab7a338f5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleEvasionAbility.java",
+      "sha256": "5aaef4e966ea819bfaf53e40490349a2fc58cb94378c34fefc316404db189c9b"
+    }
+  ]
 }

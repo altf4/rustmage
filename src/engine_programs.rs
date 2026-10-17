@@ -189,6 +189,32 @@ impl Game {
         {
             return;
         }
+        if !self.state.counter_sources.is_empty() {
+            let recipient = self.object_view(object.card);
+            let observers: Vec<_> = self
+                .state
+                .counter_sources
+                .iter()
+                .copied()
+                .filter(|&id| id != object.card)
+                .map(|id| self.object_view(id))
+                .collect();
+            for source in observers {
+                for (index, ability) in source.card.triggers().iter().enumerate() {
+                    if let TriggerCondition::OtherCreatureCountersAdded {
+                        kind: expected,
+                        excluded_subtype,
+                    } = ability.condition.event()
+                        && expected == kind
+                        && recipient.controller == source.controller
+                        && recipient.is_creature()
+                        && !recipient.has_subtype(excluded_subtype)
+                    {
+                        self.queue_trigger(&source, index);
+                    }
+                }
+            }
+        }
         if !self.state.objects[object.card as usize].card.triggers().iter().any(|a| matches!(a.condition.event(), TriggerCondition::SelfCountersAdded { kind: expected, .. } if expected == kind)) { return; }
         let source = self.object_view(object.card);
         for (index, ability) in source.card.triggers().iter().enumerate() {
@@ -438,6 +464,8 @@ impl Game {
                     | TriggerCondition::LifeGained { .. }
                     | TriggerCondition::LifeLost { .. }
                     | TriggerCondition::SelfCountersAdded { .. }
+                    | TriggerCondition::CreatureAttacksYou { .. }
+                    | TriggerCondition::OtherCreatureCountersAdded { .. }
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SelfAttacksAlone
@@ -507,7 +535,7 @@ impl Game {
                     TriggerCondition::ArtifactEntersYou => yours && entered.card.is_artifact(),
                     TriggerCondition::EnchantmentEntersYou => yours && entered.kinds & 32 != 0,
                     TriggerCondition::CreatureEntersYou => yours && entered.is_creature(),
-                    TriggerCondition::LandEntersYou => yours && entered.card.is_land(),
+                    TriggerCondition::LandEntersYou => yours && entered.kinds & 2 != 0,
                     TriggerCondition::OtherArtifactEntersYou => {
                         yours && !same && entered.card.is_artifact()
                     }
@@ -665,6 +693,7 @@ impl Game {
             discard_event: None,
             draw_event: None,
             life_event: None,
+            sacrificed_toughness: None,
             source_attachment: source.attached_to,
             card: source.id,
             object: source.reference,
@@ -721,6 +750,12 @@ impl Game {
             CastFilter::InstantSorceryOrdinal(wanted) => {
                 CastFilter::InstantSorcery.matches(card)
                     && self.state.players[caster.index()].instant_sorcery_cast_this_turn == wanted
+            }
+            CastFilter::Colors { filter, mask } => {
+                card.colors() & mask != 0
+                    && self.cast_filter_matches_value(
+                        *filter, card, mana_value, caster, source, targets,
+                    )
             }
             CastFilter::AnyOf(filters) => filters.iter().any(|f| {
                 self.cast_filter_matches_value(*f, card, mana_value, caster, source, targets)
@@ -839,6 +874,10 @@ impl Game {
                                 matches!(
                                     instruction,
                                     Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
+                                        | Instruction::PutCountersScaled {
+                                            amount: AmountValue::SpellColors,
+                                            ..
+                                        }
                                 )
                             }))
                     {
@@ -921,6 +960,21 @@ impl Game {
             .collect();
         for source in sources {
             for (index, ability) in source.card.triggers().iter().enumerate() {
+                if let TriggerCondition::CreatureAttacksYou { colors } = ability.condition.event() {
+                    let count = self
+                        .state
+                        .attackers
+                        .iter()
+                        .filter(|attacker| {
+                            self.state.objects[attacker.card as usize].controller == actor
+                                && self.state.objects[attacker.card as usize].card.colors() & colors
+                                    != 0
+                        })
+                        .count();
+                    for _ in 0..count {
+                        self.queue_trigger(&source, index);
+                    }
+                }
                 if let TriggerCondition::AttackDeclared {
                     minimum,
                     power_min,
@@ -2461,6 +2515,65 @@ impl Game {
                 }
                 Instruction::PutPowerExcessCounters { filter } => {
                     self.put_power_excess_counters(&item, filter);
+                }
+                Instruction::DoubleCounterKind { subject, kind } => {
+                    let changes = self
+                        .keyword_subjects(&item, subject)
+                        .into_iter()
+                        .map(|id| {
+                            let mut counters = Counters::default();
+                            counters.add(kind, self.state.objects[id as usize].counters.get(kind));
+                            (self.object_ref(id), counters)
+                        })
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
+                }
+                Instruction::ExileGraveTargets => {
+                    let ids: Vec<_> = item
+                        .targets
+                        .iter()
+                        .filter(|b| self.same_target_object(**b))
+                        .filter_map(|b| match b.target {
+                            Target::Card(id)
+                                if self.state.objects[id as usize].zone == Zone::Graveyard =>
+                            {
+                                Some(id)
+                            }
+                            _ => None,
+                        })
+                        .collect();
+                    let creatures: Vec<_> = ids
+                        .iter()
+                        .copied()
+                        .filter(|&id| {
+                            self.state.objects[id as usize].card.is_creature()
+                                && !self.state.objects[id as usize].card.is_token()
+                        })
+                        .collect();
+                    let events = self.move_objects_raw(&ids, Zone::Exile);
+                    let count = events
+                        .iter()
+                        .filter(|e| {
+                            e.moved
+                                && e.destination == Zone::Exile
+                                && creatures.contains(&e.before.id)
+                        })
+                        .count();
+                    self.state.resolving.as_mut().unwrap().moved_count = Some(count as u64);
+                    self.finish_zone_events(&events, &[]);
+                }
+                Instruction::IfExiledCreature { skip } => {
+                    if self
+                        .state
+                        .resolving
+                        .as_ref()
+                        .unwrap()
+                        .moved_count
+                        .unwrap_or(0)
+                        == 0
+                    {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
                 }
                 Instruction::DoubleCounters => {
                     // Doubling puts the existing quantity of each kind on the object.

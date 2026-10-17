@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "854e5582aef2de73c2b336873a5763932b38c6fd8cf10aeead9130b77eb259ef",
+  "catalogue_version": "7441c24da5c95eb1958ecdbbd2810da76f7f5c49db0016f6e19f76907284afb1",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2053,
-  "implemented_total": 2059,
-  "token_definitions": 97,
+  "implemented_standard_cards": 2076,
+  "implemented_total": 2082,
+  "token_definitions": 100,
   "emblem_definitions": 1,
   "adventure_definitions": 40,
   "omen_definitions": 13,
@@ -25,7 +25,7 @@
     },
     "cmm": {
       "total": 1,
-      "gated": 1
+      "complete": 1
     },
     "ddg": {
       "total": 1,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 305,
-      "gated": 122
+      "complete": 325,
+      "gated": 102
     },
     "fin": {
       "total": 305,
@@ -88,8 +88,7 @@
     },
     "hoc": {
       "total": 5,
-      "complete": 4,
-      "gated": 1
+      "complete": 5
     },
     "inr": {
       "total": 4,
@@ -166,8 +165,8 @@
     },
     "tdc": {
       "total": 15,
-      "gated": 5,
-      "complete": 10
+      "gated": 4,
+      "complete": 11
     },
     "tdm": {
       "total": 264,
@@ -2163,8 +2162,8 @@
     {
       "name": "Ashroot Animist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/ashroot_animist.rs",
       "set": "fdn"
     },
@@ -2547,8 +2546,8 @@
     {
       "name": "Ayli, Eternal Pilgrim",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/ayli_eternal_pilgrim.rs",
       "set": "fdn"
     },
@@ -13179,8 +13178,8 @@
     {
       "name": "Frenzied Goblin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/frenzied_goblin.rs",
       "set": "fdn"
     },
@@ -18291,8 +18290,8 @@
     {
       "name": "Jazal Goldmane",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/cmm/jazal_goldmane.rs",
       "set": "cmm"
     },
@@ -19155,8 +19154,8 @@
     {
       "name": "Kiora, the Rising Tide",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/kiora_the_rising_tide.rs",
       "set": "fdn"
     },
@@ -19355,8 +19354,8 @@
     {
       "name": "Koma, World-Eater",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/koma_world_eater.rs",
       "set": "fdn"
     },
@@ -20315,8 +20314,8 @@
     {
       "name": "Linden, the Steadfast Queen",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/linden_the_steadfast_queen.rs",
       "set": "fdn"
     },
@@ -20875,8 +20874,8 @@
     {
       "name": "Lunar Insight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/lunar_insight.rs",
       "set": "fdn"
     },
@@ -21971,8 +21970,8 @@
     {
       "name": "Mentor of the Meek",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hoc/mentor_of_the_meek.rs",
       "set": "hoc"
     },
@@ -22363,8 +22362,8 @@
     {
       "name": "Mindsparker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/mindsparker.rs",
       "set": "fdn"
     },
@@ -22683,8 +22682,8 @@
     {
       "name": "Mold Adder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/mold_adder.rs",
       "set": "fdn"
     },
@@ -23075,8 +23074,8 @@
     {
       "name": "Mossborn Hydra",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/mossborn_hydra.rs",
       "set": "fdn"
     },
@@ -26083,8 +26082,8 @@
     {
       "name": "Prime Speaker Zegana",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/prime_speaker_zegana.rs",
       "set": "fdn"
     },
@@ -26715,8 +26714,8 @@
     {
       "name": "Quick-Draw Katana",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/quick_draw_katana.rs",
       "set": "fdn"
     },
@@ -27099,8 +27098,8 @@
     {
       "name": "Ramos, Dragon Engine",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/ramos_dragon_engine.rs",
       "set": "fdn"
     },
@@ -29963,8 +29962,8 @@
     {
       "name": "Scavenging Ooze",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/scavenging_ooze.rs",
       "set": "fdn"
     },
@@ -31643,8 +31642,8 @@
     {
       "name": "Slumbering Cerberus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/slumbering_cerberus.rs",
       "set": "fdn"
     },
@@ -32019,8 +32018,8 @@
     {
       "name": "Soul-Shackled Zombie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/soul_shackled_zombie.rs",
       "set": "fdn"
     },
@@ -33747,8 +33746,8 @@
     {
       "name": "Stromkirk Noble",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/stromkirk_noble.rs",
       "set": "fdn"
     },
@@ -34611,8 +34610,8 @@
     {
       "name": "Sylvan Scavenging",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/sylvan_scavenging.rs",
       "set": "fdn"
     },
@@ -34979,8 +34978,8 @@
     {
       "name": "Taurean Mauler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdc/taurean_mauler.rs",
       "set": "tdc"
     },
@@ -37643,8 +37642,8 @@
     {
       "name": "Tribute to Hunger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/tribute_to_hunger.rs",
       "set": "fdn"
     },
@@ -40771,8 +40770,8 @@
     {
       "name": "Wildwood Scourge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/wildwood_scourge.rs",
       "set": "fdn"
     },

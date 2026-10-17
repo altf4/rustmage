@@ -23,7 +23,9 @@ class DirectCardTests(unittest.TestCase):
             record = records[card['index']]
             self.assertEqual(Path(record['relative']).parts[2], card['set'])
             self.assertEqual(record['catalogue_id'], card['index'])
-            self.assertIn('typed_lift', record)
+            self.assertTrue('typed_lift' in record or all(record.get(key) for key in
+                ('java_revision', 'java_source', 'java_sha256')),
+                'definition needs historical typed-lift or direct source provenance')
         outputs = linker.render(metadata, records, version)
         for path, value in outputs.items():
             self.assertEqual(path.read_text(), value, str(path))

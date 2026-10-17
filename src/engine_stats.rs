@@ -16,6 +16,14 @@ impl Game {
             self.state.attachment_sources.push(id);
         }
         let triggers = self.state.objects[id as usize].card.triggers();
+        if triggers.iter().any(|a| {
+            matches!(
+                a.condition.event(),
+                TriggerCondition::OtherCreatureCountersAdded { .. }
+            )
+        }) {
+            self.state.counter_sources.push(id);
+        }
         if triggers
             .iter()
             .any(|a| a.condition.event() == TriggerCondition::EvidenceCollected)
@@ -34,7 +42,8 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),
-                TriggerCondition::AttackDeclared { .. }
+                TriggerCondition::CreatureAttacksYou { .. }
+                    | TriggerCondition::AttackDeclared { .. }
             )
         }) {
             self.state.attack_sources.push(id);
@@ -119,7 +128,8 @@ impl Game {
                 group.fragments.iter().any(|fragment| {
                     matches!(
                         fragment,
-                        crate::cards::StaticAbilityFragment::LifeGainAdditional(_)
+                        crate::cards::StaticAbilityFragment::SelfUntap(_)
+                            | crate::cards::StaticAbilityFragment::LifeGainAdditional(_)
                             | crate::cards::StaticAbilityFragment::CantGainLife
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..)

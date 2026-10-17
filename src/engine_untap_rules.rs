@@ -10,22 +10,50 @@ pub(super) enum UntapCause {
 }
 impl Game {
     fn has_untap_rules(&self) -> bool {
-        self.state.attachment_sources.iter().any(|&id| {
-            self.state.objects[id as usize]
-                .card
-                .static_ability_groups()
-                .iter()
-                .any(|group| {
-                    group
-                        .fragments
-                        .iter()
-                        .any(|fragment| matches!(fragment, StaticAbilityFragment::AttachedUntap(_)))
-                })
-        })
+        self.state
+            .static_sources
+            .iter()
+            .chain(&self.state.attachment_sources)
+            .any(|&id| {
+                self.state.objects[id as usize]
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| {
+                        group.fragments.iter().any(|fragment| {
+                            matches!(
+                                fragment,
+                                StaticAbilityFragment::AttachedUntap(_)
+                                    | StaticAbilityFragment::SelfUntap(_)
+                            )
+                        })
+                    })
+            })
     }
     pub(super) fn untap_allowed(&self, id: CardId, cause: UntapCause) -> bool {
         let recipient = self.object_ref(id);
         let evaluation = self.evaluated_abilities();
+        let object = &self.state.objects[id as usize];
+        for (index, group) in object.card.static_ability_groups().iter().enumerate() {
+            if evaluation
+                .as_ref()
+                .is_some_and(|evaluation| !evaluation.group_available(recipient, index))
+            {
+                continue;
+            }
+            for fragment in group.fragments {
+                if matches!(
+                    fragment,
+                    StaticAbilityFragment::SelfUntap(UntapRestriction::All)
+                ) || matches!(
+                    fragment,
+                    StaticAbilityFragment::SelfUntap(UntapRestriction::ControllerStep)
+                ) && matches!(cause, UntapCause::ControllerStep(player) if player == object.controller)
+                {
+                    return false;
+                }
+            }
+        }
         for &source in &self.state.attachment_sources {
             let object = &self.state.objects[source as usize];
             if object.zone != Zone::Battlefield || object.attached_to != Some(recipient) {
