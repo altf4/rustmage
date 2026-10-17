@@ -418,6 +418,7 @@ def role_reminder_text(text):
         if kind == 'Young Hero':
             bodies += [body + ' If you put another Role on the creature later, put this one into the graveyard.']
         if kind == 'Wicked':
+            bodies += [v.replace('When this Aura is put into a graveyard from the battlefield', 'When this token is put into a graveyard') for v in bodies]
             bodies += [v.replace('this Aura', 'this enchantment') for v in bodies]
         for accepted in bodies:
             pattern = r'(' + re.escape(kind) + r' Role token attached to [^.]+\.)( Activate only as a sorcery\.)? \(' + re.escape(accepted) + r'\)'
@@ -441,6 +442,22 @@ def role_return_program(text):
     key = 'ReturnRole' + hashlib.sha256(rule.encode()).hexdigest()
     TARGET_RULES[key] = rule
     return key, [f'ReturnToBattlefieldWithRole {{ token: {role_factory(match[2])} }}']
+
+
+def mass_role_program(text):
+    """One creation event whose original groups each bind one exact creature."""
+    before = []
+    if ' Then for each ' in text:
+        prefix, text = text.split(' Then ', 1)
+        before = token_program(prefix) or predefined_program(prefix)
+        if not before: return None
+    match = re.fullmatch(r'for each (.+) (you control|your opponents control), create a (Cursed|Monster|Royal|Sorcerer|Wicked|Young Hero) Role token attached to that (.+)\.', text)
+    if not match or match[1] != match[4]: return None
+    noun, relation, kind, _ = match.groups()
+    if noun != 'creature' and noun not in CREATURE_TYPE_NAMES: return None
+    filt = creature_filter('creatures ' + relation)
+    if noun != 'creature': filt = filt.replace('subtype: None', 'subtype: Some(' + json.dumps(noun) + ')')
+    return [*before, f'CreateRolesMatching {{ token: {role_factory(kind)}, filter: {filt} }}']
 
 
 def role_program(text):
@@ -502,8 +519,8 @@ def token_program(text):
     if suffix != '.':
         if not suffix.startswith(' with '): return None
         ability = suffix[len(' with '):]
-        if ability in ('"This token can\'t block."', '"This token can\'t be blocked."'):
-            keywords = 2048 if ability == '"This token can\'t block."' else 16384
+        if ability in ('"This token can\'t block."', '"This token can\'t be blocked."', '"This creature can\'t block."', '"This creature can\'t be blocked."'):
+            keywords = 2048 if "can't block." in ability else 16384
         elif ability=='"Whenever a land you control enters, this token gets +1/+0 until end of turn."':
             landfall_growth=[1,0]
         else:
@@ -1636,6 +1653,7 @@ def statement_program(text):
     text = strip_rule_label(text)
     if not text:return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if mass_roles := mass_role_program(text): return mass_roles
     if text=='you may play an additional land this turn.':
         return ['AdditionalLandPlays(1)']
     if text=='discard a card. If you do, draw two cards.':

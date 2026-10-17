@@ -1569,6 +1569,9 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::CreateRolesMatching { token, filter } => {
+                    self.resolve_roles_matching(&item, token, filter);
+                }
                 Instruction::CreateRole { token, subject } => {
                     self.resolve_role(&item, token, subject);
                 }

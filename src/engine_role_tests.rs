@@ -714,3 +714,166 @@ fn role_move_completion_requires_actual_successful_battlefield_destination() {
         }
     }
 }
+
+fn role295_rat(g: &mut Game, owner: Player) -> CardId {
+    let card = Card::catalogue()
+        .find(|c| {
+            c.is_token() && c.has_subtype("Rat") && c.info().keywords.contains(Keywords::CANT_BLOCK)
+        })
+        .unwrap();
+    spawn(g, owner, card, Zone::Battlefield)
+}
+fn role295_frogs(g: &Game, p: Player) -> Vec<CardId> {
+    g.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter_map(|(id, o)| {
+            (o.zone == Zone::Battlefield
+                && o.controller == p
+                && o.card.is_token()
+                && o.card.has_subtype("Frog"))
+            .then_some(id as CardId)
+        })
+        .collect()
+}
+#[test]
+fn paid_sewer_witch_mass_role_event_binds_all_actual_rats_and_adds_only_one_extra_frog() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        named(&mut g, p, "Quina, Qu Gourmet", Zone::Battlefield);
+        let rat = role295_rat(&mut g, p.other());
+        g.state.objects[rat as usize].controller = p;
+        let mascot = named(&mut g, p, "Three Tree Mascot", Zone::Battlefield);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let foe = role295_rat(&mut g, p.other());
+        let source = named(&mut g, p, "Twisted Sewer-Witch", Zone::Hand);
+        let before = g.state.players[p.index()].mana;
+        act(&mut g, Action::AnnounceCast { card: source });
+        settle(&mut g);
+        assert_eq!(
+            before.iter().sum::<u32>() - g.state.players[p.index()].mana.iter().sum::<u32>(),
+            5
+        );
+        assert!(before[2] - g.state.players[p.index()].mana[2] >= 2);
+        let roles = &g.state.roles.as_ref().unwrap().attached;
+        assert_eq!(roles.len(), 3);
+        for id in [rat, mascot] {
+            assert!(roles.iter().any(|r| r.recipient == g.object_ref(id)));
+        }
+        assert!(
+            !roles
+                .iter()
+                .any(|r| [bear, foe, source].contains(&r.recipient.card))
+        );
+        assert!(
+            roles.iter().all(
+                |r| g.state.objects[r.aura.card as usize].card.role() == Some(RoleKind::Wicked)
+            )
+        );
+        assert!(roles.iter().all(|r| r.timestamp == roles[0].timestamp));
+        let frogs = role295_frogs(&g, p);
+        assert_eq!(frogs.len(), 2); // Rat event + ONE mass Role event.
+        assert!(
+            frogs
+                .iter()
+                .all(|id| g.object_view(*id).attached_to.is_none())
+        );
+    }
+}
+#[test]
+fn paid_mass_roles_preserve_group_indices_through_doubling_and_partial_or_all_stale_recipients() {
+    for p in [Player::P0, Player::P1] {
+        for all_stale in [false, true] {
+            let mut g = setup(p);
+            let mascot = named(&mut g, p, "Three Tree Mascot", Zone::Battlefield);
+            role295_rat(&mut g, p);
+            let doubling = named(&mut g, p, "Doubling Season", Zone::Battlefield);
+            named(&mut g, p, "Quina, Qu Gourmet", Zone::Battlefield);
+            let source = named(&mut g, p, "Twisted Sewer-Witch", Zone::Hand);
+            act(&mut g, Action::AnnounceCast { card: source });
+            let mut frozen = Vec::new();
+            for _ in 0..180 {
+                if let Some(choice) = g.observe(p).replacement_choice
+                    && choice.tokens.iter().any(|t| t.token.role().is_some())
+                {
+                    frozen = g
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter_map(|(id, o)| {
+                            (o.zone == Zone::Battlefield
+                                && o.controller == p
+                                && g.has_subtype(id as CardId, "Rat"))
+                            .then_some(g.object_ref(id as CardId))
+                        })
+                        .collect();
+                    break;
+                }
+                let actions = g.legal_actions();
+                let a = if g.state.pending == Pending::Priority {
+                    Action::Pass
+                } else {
+                    actions.iter().find(|a|matches!(a,Action::ChooseReplacement{source,..}if source.card==doubling))
+                        .or_else(||actions.iter().find(|a|!matches!(a,Action::Concede))).unwrap().clone()
+                };
+                act(&mut g, a);
+            }
+            assert_eq!(frozen.len(), 4);
+            let old_mascot = g.object_ref(mascot);
+            if all_stale {
+                for r in &frozen {
+                    g.move_object(r.card, Zone::Exile);
+                }
+            } else {
+                g.move_object(mascot, Zone::Graveyard);
+                g.move_object(mascot, Zone::Battlefield);
+                assert_ne!(g.object_ref(mascot), old_mascot);
+            }
+            for _ in 0..180 {
+                if g.state.pending == Pending::Priority
+                    && g.state.stack.is_empty()
+                    && g.state.resolving.is_none()
+                    && g.state.pending_triggers.is_empty()
+                {
+                    break;
+                }
+                let actions = g.legal_actions();
+                let a = if g.state.pending == Pending::Priority {
+                    Action::Pass
+                } else {
+                    actions.iter().find(|a|matches!(a,Action::ChooseReplacement{source,..}if source.card==doubling))
+                        .or_else(||actions.iter().find(|a|!matches!(a,Action::Concede))).unwrap().clone()
+                };
+                act(&mut g, a);
+            }
+            let roles = g
+                .state
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.attached.clone());
+            assert_eq!(roles.len(), if all_stale { 0 } else { 3 });
+            assert!(
+                roles
+                    .iter()
+                    .all(|r| frozen.contains(&r.recipient) && r.recipient != old_mascot)
+            );
+            if !all_stale {
+                for recipient in frozen.iter().filter(|r| **r != old_mascot) {
+                    assert_eq!(
+                        roles.iter().filter(|r| r.recipient == *recipient).count(),
+                        1
+                    );
+                }
+            }
+            let frogs = role295_frogs(&g, p);
+            assert_eq!(frogs.len(), 2);
+            assert!(
+                frogs
+                    .iter()
+                    .all(|id| g.object_view(*id).attached_to.is_none())
+            );
+        }
+    }
+}

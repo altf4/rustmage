@@ -12,6 +12,24 @@ class RoleSemanticCompilerTests(unittest.TestCase):
     def setUpClass(cls):
         cls.cards={c['name']:c for c in json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards']}
 
+    def test_complete_mass_role_body_keeps_token_prefix_and_exact_recipient_filter(self):
+        original=self.cards['Twisted Sewer-Witch']
+        before,row=metadata.LegacyMetadataTests().definition(original)
+        self.assertTrue(row['implemented'])
+        self.assertIn('Instruction::CreateRolesMatching',before)
+        self.assertIn('subtype: Some("Rat")',before)
+        self.assertIn('relation: 0',before)
+        renamed=dict(original,name='Independent Mass Role Subject')
+        after,row=metadata.LegacyMetadataTests().definition(renamed)
+        self.assertTrue(row['implemented'])
+        self.assertEqual(before.replace(json.dumps(original['name']),json.dumps(renamed['name'])),after)
+        for text in [original['oracle_text']+'\nDiscover 4.',
+                     original['oracle_text']+' (Draw seven cards.)',
+                     original['oracle_text'].replace('attached to that Rat','attached to that Elf'),
+                     original['oracle_text'].replace('loses 1 life','loses 2 life'),
+                     original['oracle_text'].replace('for each Rat','for each (Draw seven cards.) Rat')]:
+            self.assertFalse(metadata.LegacyMetadataTests().definition(dict(original,oracle_text=text))[1]['implemented'],text)
+
     def test_complete_return_binds_successful_entry_and_authenticates_young_hero_reminder(self):
         original=self.cards['Return Triumphant']
         before,row=metadata.LegacyMetadataTests().definition(original)
