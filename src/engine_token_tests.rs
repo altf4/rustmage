@@ -258,7 +258,7 @@ fn lethal_token_damage_ceases_and_reclaims_in_the_same_sba_fixed_point() {
     game.create_tokens(Player::P0, factory("Soldier Token"), 2, false);
     let created = tokens(&game);
     for &id in &created {
-        game.state.objects[id as usize].damage = 1;
+        game.state.objects[id as usize].damage = game.stats(id).toughness;
     }
     let before = game.snapshot();
     game.state_based_actions();

@@ -382,7 +382,7 @@ fn admitted_factory_closure_has_no_nested_entry_counter_event_including_offsprin
     let factories = Card::catalogue()
         .filter(|c| c.is_token())
         .collect::<Vec<_>>();
-    assert_eq!(factories.len(), 84);
+    assert_eq!(factories.len(), 85);
     for card in factories {
         assert_eq!(
             card.enters_counters(),
