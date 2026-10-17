@@ -1,7 +1,7 @@
-# Predefined Role Auras — issue 282 (draft)
+# Predefined Role Auras — issue 282
 
 This branch adds the six Standard Role factories and twelve complete consumers,
-stacked on the ownership/controller work in PR284. It is not merge-ready.
+composed with the ownership/controller, mill/recovery Adventure and graveyard recovery deliveries.
 The remaining 22 Role consumers retain their whole-body gates.
 
 The runtime stores Role timestamps in sparse owned game state. Token replacement
@@ -14,26 +14,26 @@ Roles controlled by different players coexist. A controller keeps their newest
 Role; simultaneous newest Roles require a public, exact-reference choice.
 Role and legend choices use the same frozen APNAP state-based event, preserving
 simultaneous lethal deaths, counter cancellation and immutable trigger provenance.
-The choice and timestamp records are included in snapshots and schema 84 observations.
+The choice and timestamp records are included in snapshots and schema 85 observations.
 
 Royal Ward, Sorcerer scry and Young Hero's intervening-if trigger belong to the
 enchanted creature's controller. Wicked's graveyard trigger belongs to the Aura's
 controller. Existing immutable granted-ability packets survive grantor departure.
 
-Validation so far: nine native groups pass for all six factories, both-controller
-coexistence, timestamp replacement and simultaneous choice, real Doubling Season,
-paid Adventure spell/normal-face casts, Ward payment/decline and detached-source
-attack triggers with privacy and intervening-if checks. The ninth group passes the eight ordinary consumers through paid casts and activations.
-The complete native suite passes 1,721 unit tests plus 12 integration tests. Compiler controls
-cover renamed whole programs, authenticated raw reminders and unknown residuals.
-The semantic catalogue proof preserves 5,299 prior definitions, all 817 prior helper
-arms and all 5,311 prior color facts; twelve complete definitions change, four
-Adventure helpers and six token recipes are added. Prior token IDs can shift.
+Validation passes: 1,748 native tests and all-target Clippy; all 420 unique
+compiler/provenance methods; a 254-method fresh public checkpoint plus the newly
+added actual Tombstone-payment method run separately on identical production;
+and 100 natural Standard games with all 24 Role body/seat vectors, 81,882 owned
+replays and 163,764 wrong-actor/stale denials. The canonical composition preserves
+5,306 prior definitions, all 843 prior helper arms and all 5,318 prior color facts.
+Twelve complete definitions change; four Adventure helpers and six factories are
+added. The [review record](review-pr-289.md) identifies exact runtime, policy and
+test-source scopes, historical failed attempts, independent adversarial probes
+and required final exact-head approvals.
 
-Pending: broad compiler/API gates, fresh public Standard
-acceptance, remaining layering/illegal-attachment boundaries, final provenance
-review, and two independent nonauthor exact-head reviews. This does not claim that
-all Standard rules, control-changing effects or all Role consumers are complete.
+This is 1,862/5,164 executable Standard identities, with 3,302 still gated. It does
+not complete all Standard rules, all Role consumers, changing-control effects or
+the full RL/search interface and workload-performance requirements.
 
 Sources: [official WOE release notes](https://magic.wizards.com/en/news/feature/wilds-of-eldraine-release-notes),
 [pinned comprehensive rules](https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf)
