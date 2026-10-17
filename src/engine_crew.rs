@@ -707,6 +707,130 @@ mod core_tests {
         assert_eq!(g.stats(source).power, 5);
     }
     #[test]
+    fn animated_death_lki_is_creature_but_intrinsic_graveyard_and_uncrewed_death_are_not() {
+        for animated in [false, true] {
+            for actor in [Player::P0, Player::P1] {
+                let mut g = scenario();
+                g.state.active = actor;
+                g.state.priority = actor;
+                let source = spawn(
+                    &mut g,
+                    actor,
+                    Card::from_name("Fire Nation Warship").unwrap(),
+                    Zone::Battlefield,
+                );
+                if animated {
+                    let contributor = spawn(&mut g, actor, Card::GrizzlyBears, Zone::Battlefield);
+                    begin(&mut g, source);
+                    contribute(&mut g, contributor);
+                    replay(&mut g, Action::FinishCrew);
+                    settle(&mut g);
+                }
+                let captured = g.object_view(source);
+                assert_eq!(captured.is_creature(), animated);
+                let before = g.state.creatures_died_this_turn;
+                let enemy = actor.other();
+                g.state.priority = enemy;
+                g.state.players[enemy.index()].mana = [8; 6];
+                let card = Card::from_name(if animated { "Murder" } else { "Disenchant" }).unwrap();
+                let spell = spawn(&mut g, enemy, card, Zone::Hand);
+                let a=g.legal_actions().into_iter().find(|a|matches!(a,Action::Cast{card,target:Some(Target::Card(t)),..} if *card==spell&&*t==source)).unwrap();
+                replay(&mut g, a);
+                settle(&mut g);
+                assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+                assert!(!g.object_view(source).is_creature());
+                assert_eq!(
+                    g.state.creatures_died_this_turn,
+                    before + u64::from(animated)
+                );
+                assert_eq!(
+                    g.state
+                        .objects
+                        .iter()
+                        .filter(|o| o.owner == actor
+                            && o.zone == Zone::Battlefield
+                            && o.card.is_token()
+                            && o.card.has_subtype("Clue"))
+                        .count(),
+                    1
+                );
+                assert_eq!(captured.kinds & 1, u16::from(animated));
+                assert_eq!(g.object_view(source).kinds, 16);
+            }
+        }
+    }
+    #[test]
+    fn exact_wide_crew_sum_and_late_capacity_restore_paid_history_taps_and_private_frame() {
+        let mut g = scenario();
+        let source = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Air Response Unit").unwrap(),
+            Zone::Battlefield,
+        );
+        let mut high = Vec::new();
+        for _ in 0..2 {
+            let id = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+            g.state.objects[id as usize].growth.power = i128::MAX - 2;
+            high.push(id);
+        }
+        let negative = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+        g.state.objects[negative as usize].growth.power = i128::MIN;
+        let observer = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Attentive Sunscribe").unwrap(),
+            Zone::Battlefield,
+        );
+        g.state.objects[observer as usize].growth.power = -g.stats(observer).power;
+        begin(&mut g, source);
+        contribute(&mut g, negative);
+        assert!(!g.legal_actions().contains(&Action::FinishCrew));
+        contribute(&mut g, high[0]);
+        assert_eq!(
+            g.observe(Player::P0).crew_choice.unwrap().selected_power,
+            Some(1)
+        );
+        contribute(&mut g, high[1]);
+        let frame = g.observe(Player::P0).crew_choice.unwrap();
+        assert_eq!(frame.selected_power, None);
+        assert!(frame.can_finish);
+        contribute(&mut g, observer);
+        // Actual tap-trigger allocation fails only after the cost batch taps.
+        let original = g.state.next_stack_id;
+        g.state.next_stack_id = u64::MAX;
+        let before = g.snapshot();
+        let revision = g.revision();
+        let views = [Player::P0, Player::P1].map(|p| serde_json::to_value(g.observe(p)).unwrap());
+        assert!(matches!(
+            g.apply(Player::P0, Action::FinishCrew),
+            Err(Error::CapacityExceeded(_))
+        ));
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(g.revision(), revision);
+        for (n, p) in [Player::P0, Player::P1].into_iter().enumerate() {
+            assert_eq!(serde_json::to_value(g.observe(p)).unwrap(), views[n]);
+        }
+        assert!(!g.state.objects[negative as usize].tapped);
+        assert!(g.observe(Player::P0).crewed_vehicles.is_empty());
+        g.state.next_stack_id = original;
+        replay(&mut g, Action::FinishCrew);
+        assert_eq!(
+            g.state
+                .stack
+                .iter()
+                .find(|item| item.crew.is_some())
+                .unwrap()
+                .crew
+                .as_ref()
+                .unwrap()
+                .paid_power,
+            None
+        );
+        settle(&mut g);
+        assert!(g.is_creature(source));
+    }
+    #[test]
     fn core_live_kind_is_exact_and_printed_vehicle_identity_is_immutable() {
         let mut g = scenario();
         let card = Card::from_name("Air Response Unit").unwrap();

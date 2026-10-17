@@ -908,10 +908,10 @@ class CatalogueCompilerTests(unittest.TestCase):
     def test_firebending_migration_admits_eight_complete_bodies_and_gates_power_copy_flashback(self):
         import json
         rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());_,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
-        for name in ['Azula, On the Hunt','Fire Sages','Namazu Trader','Rough Rhino Cavalry','Sun Warriors','Uncle Iroh','Vindictive Warden','Zhao, Ruthless Admiral']:
+        for name in ['Azula, On the Hunt','Fire Sages','Namazu Trader','Rough Rhino Cavalry','Sun Warriors','Uncle Iroh','Vindictive Warden','Zhao, Ruthless Admiral','Tundra Tank']:
             self.assertIn(name,supported);c=next(c for c in rows['cards'] if c['name']==name);bad=dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.')
             for compiler in [generate.permanent_program_template,generate.trigger_creature_template]:self.assertIsNone(compiler(bad),name)
-        for name in ['Firebending Student','Fire Lord Azula','Fire Lord Zuko','Iroh, Grand Lotus','Tundra Tank','Jeong Jeong, the Deserter']:
+        for name in ['Firebending Student','Fire Lord Azula','Fire Lord Zuko','Iroh, Grand Lotus','Jeong Jeong, the Deserter']:
             self.assertNotIn(name,supported)
 
     def test_poison_effects_bind_only_explicit_target_or_damage_recipient(self):
@@ -2506,12 +2506,12 @@ class CatalogueCompilerTests(unittest.TestCase):
         supported={c['name'] for c in coverage['cards'] if c['implemented']}
         for name in ['Atlantean Cavalry','Bard the Bowman','Clinquant Skymage','Erudite Wizard','Gleaming Splendor',
                      'Knowledge Seeker','Lakeshore Apothecary','Lightfoot Technique','Loxodon Eavesdropper','Maximum Overdrive',
-                     'Mischievous Mystic','Otter-Penguin','Ravenhill Flock','Roxxon Brutes','Scrawling Crawler','Take Up the Shield','Tiger-Seal']:
+                     'Mischievous Mystic','Otter-Penguin','Ravenhill Flock','Roxxon Brutes','Scrawling Crawler','Take Up the Shield','Tiger-Seal','Thopter Fabricator']:
             self.assertIn(name,supported)
         for name in ['Aether Syphon','Construct a Cosmic Cube','Foggy Swamp Spirit Keeper','Homunculus Horde','Human Torch, Johnny Storm',
                      'Jaded Analyst','Kid Loki','Lady Octopus, Inspired Inventor',
                      "Master's Councillors",'Moon Girl and Devil Dinosaur','Private Eye','Raven Eagle','Razorkin Needlehead',
-                     'Starving Revenant','The Astonishing Ant-Man','The Unagi of Kyoshi Island','Thopter Fabricator','Wolfbat']:
+                     'Starving Revenant','The Astonishing Ant-Man','The Unagi of Kyoshi Island','Wolfbat']:
             self.assertNotIn(name,supported)
 
     def test_counter_then_target_keywords_and_two_distinct_player_draws_require_complete_text(self):
@@ -2607,9 +2607,9 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Kree Sentinel','Lightshield Parry','Locust Spray','Marauding Brinefang','Migrating Ketradon','Mongoose Lizard',
                      'Nurturing Bristleback','Rampaging Spiketail','Saber-Tooth Moose-Lion','Savage Land Dinosaur','Shefet Archfiend',
                      'Shepherding Spirits','Skycrash','Slavering Branchsnapper','Soaring Sandwing','Stockman, Mad Fly-entist',
-                     'Stratosoarer','Topiary Panther','Undulating Witness','Vinelasher Adept']:
+                     'Stratosoarer','Topiary Panther','Undulating Witness','Vinelasher Adept','Clamorous Ironclad','Skybox Ferry']:
             self.assertIn(name,supported)
-        for name in ["Basri, Tomorrow's Champion",'Webstrike Elite',"Valor's Flagship",'Night Market','Clamorous Ironclad']:
+        for name in ["Basri, Tomorrow's Champion",'Webstrike Elite',"Valor's Flagship",'Night Market']:
             self.assertNotIn(name,supported)
 
     def test_cycling_combines_with_battlefield_abilities_without_overflowing_slots(self):
