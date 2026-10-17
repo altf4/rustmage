@@ -160,7 +160,7 @@ impl Game {
             .map(|&id| self.object_view(id))
             .collect();
         for source in sources {
-            if source.owner != player {
+            if source.controller != player {
                 continue;
             }
             for (index, ability) in source.card.triggers().iter().enumerate() {
@@ -213,8 +213,10 @@ impl Game {
                             subtype,
                         } => {
                             let related = match relation {
-                                CastRelation::You => source.owner == event.before.owner,
-                                CastRelation::Opponent => source.owner != event.before.owner,
+                                CastRelation::You => source.controller == event.before.controller,
+                                CastRelation::Opponent => {
+                                    source.controller != event.before.controller
+                                }
                                 CastRelation::Any => true,
                             };
                             event.before.is_creature()
@@ -227,8 +229,8 @@ impl Game {
                             filter: f,
                             own_turn,
                         } => {
-                            event.sacrificed_by == Some(source.owner)
-                                && (!own_turn || self.state.active == source.owner)
+                            event.sacrificed_by == Some(source.controller)
+                                && (!own_turn || self.state.active == source.controller)
                                 && (!f.source_only || source.reference == event.before.reference)
                                 && (!f.other || source.reference != event.before.reference)
                                 && (f.kinds == 0 || event.before.kinds & u16::from(f.kinds) != 0)
@@ -245,7 +247,7 @@ impl Game {
                                     event.before.card,
                                     event.before.kinds,
                                     event.before.granted_subtypes,
-                                    event.before.owner == source.owner,
+                                    event.before.controller == source.controller,
                                     event.before.reference == source.reference,
                                     event.before.attacking,
                                 )
@@ -257,8 +259,10 @@ impl Game {
                             exclude_source_kinds,
                         } => {
                             let related = match relation {
-                                CastRelation::You => source.owner == event.before.owner,
-                                CastRelation::Opponent => source.owner != event.before.owner,
+                                CastRelation::You => source.controller == event.before.controller,
+                                CastRelation::Opponent => {
+                                    source.controller != event.before.controller
+                                }
                                 CastRelation::Any => true,
                             };
                             event.before.kinds & kinds != 0
@@ -289,7 +293,7 @@ impl Game {
         }
         for source in sources {
             let same = source.reference == event.after;
-            let yours = source.owner == entered.owner;
+            let yours = source.controller == entered.controller;
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 let matched = match ability.condition.event() {
                     TriggerCondition::ManaSpent { .. }
@@ -428,7 +432,12 @@ impl Game {
             return false;
         }
 
-        if !self.trigger_guards_hold(condition, source.owner, source.reference, source.tapped) {
+        if !self.trigger_guards_hold(
+            condition,
+            source.controller,
+            source.reference,
+            source.tapped,
+        ) {
             return false;
         }
         if condition.once_per_turn() {
@@ -470,7 +479,7 @@ impl Game {
             source_attachment: source.attached_to,
             card: source.id,
             object: source.reference,
-            controller: source.owner, // Control-changing effects remain gated.
+            controller: source.controller,
             targets: Vec::new(),
             mode: None,
         });
@@ -527,7 +536,7 @@ impl Game {
                     && targets.iter().any(|bound| {
                         if let Target::Player(player) = bound.target {
                             return target == CastTarget::OpponentOrCreature
-                                && player != source.owner;
+                                && player != source.controller;
                         }
                         let (Target::Card(id), Some(reference)) = (bound.target, bound.object)
                         else {
@@ -543,13 +552,15 @@ impl Game {
                         match target {
                             CastTarget::Source => reference == source.reference,
                             CastTarget::OpponentOrCreature => {
-                                self.is_creature(id) && object.owner != source.owner
+                                self.is_creature(id) && object.controller != source.controller
                             }
                             CastTarget::Creature(relation) => {
                                 self.is_creature(id)
                                     && match relation {
-                                        CastRelation::You => object.owner == source.owner,
-                                        CastRelation::Opponent => object.owner != source.owner,
+                                        CastRelation::You => object.controller == source.controller,
+                                        CastRelation::Opponent => {
+                                            object.controller != source.controller
+                                        }
                                         CastRelation::Any => true,
                                     }
                             }
@@ -585,8 +596,8 @@ impl Game {
                 } = ability.condition.event()
                 {
                     let related = match relation {
-                        CastRelation::You => source.owner == caster,
-                        CastRelation::Opponent => source.owner != caster,
+                        CastRelation::You => source.controller == caster,
+                        CastRelation::Opponent => source.controller != caster,
                         CastRelation::Any => true,
                     };
                     if related
@@ -596,7 +607,7 @@ impl Game {
                             cast_event.as_ref(),
                         )
                         && (!ability.condition.requires_opponents_turn()
-                            || self.state.active != source.owner)
+                            || self.state.active != source.controller)
                         && self.cast_filter_matches_value(
                             filter,
                             card,
@@ -684,7 +695,9 @@ impl Game {
             .attack_sources
             .iter()
             .copied()
-            .filter(|&id| self.on_battlefield(id) && self.state.objects[id as usize].owner == actor)
+            .filter(|&id| {
+                self.on_battlefield(id) && self.state.objects[id as usize].controller == actor
+            })
             .map(|id| self.object_view(id))
             .collect();
         for source in sources {
@@ -701,7 +714,7 @@ impl Game {
                         .iter()
                         .filter(|a| {
                             let o = &self.state.objects[a.card as usize];
-                            o.owner == actor
+                            o.controller == actor
                                 && o.zone == Zone::Battlefield
                                 && self.is_creature(a.card)
                                 && power_min
@@ -732,7 +745,7 @@ impl Game {
                 if !self.on_battlefield(id)
                     || !self.on_battlefield(recipient.card)
                     || self.object_ref(recipient.card) != recipient
-                    || self.state.objects[recipient.card as usize].owner != actor
+                    || self.state.objects[recipient.card as usize].controller != actor
                     || !self
                         .state
                         .attackers
@@ -1436,6 +1449,11 @@ impl Game {
                 }
                 Instruction::ExileTopPlay { amount, next_turn } => {
                     self.exile_top_play(item.controller, amount, next_turn);
+                }
+                Instruction::ExileTargetLibraryPlay { amount } => {
+                    for player in self.program_players(PlayerSet::Targeted, &item) {
+                        self.exile_top_play_from(player, item.controller, amount, false);
+                    }
                 }
                 Instruction::SelectLibrary(spec) => {
                     if self.start_library_selection(&item, spec) {

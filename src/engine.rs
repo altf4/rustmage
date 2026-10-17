@@ -21,7 +21,7 @@ pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 80;
+pub const OBSERVATION_SCHEMA: u32 = 82;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -535,6 +535,7 @@ fn first_player() -> Player {
 struct Object {
     card: Card,
     owner: Player,
+    controller: Player,
     zone: Zone,
     generation: u64,
     tapped: bool,
@@ -1126,6 +1127,7 @@ pub struct ObjectView {
     pub reference: ObjectRef,
     pub card: Card,
     pub owner: Player,
+    pub controller: Player,
     pub zone: Zone,
     pub tapped: bool,
     pub summoning_sick: bool,
@@ -1488,6 +1490,7 @@ impl Game {
                 objects.push(Object {
                     card,
                     owner: p,
+                    controller: p,
                     zone: Zone::Library,
                     generation: 0,
                     tapped: false,
@@ -2052,10 +2055,19 @@ impl Game {
                     && matches!(s.step, Step::Main1 | Step::Main2)
                     && s.stack.is_empty();
                 for (i, obj) in s.objects.iter().enumerate() {
-                    if obj.owner != actor {
+                    let card = i as CardId;
+                    let authorized_origin = match obj.zone {
+                        Zone::Battlefield => obj.controller == actor,
+                        Zone::Hand | Zone::Graveyard => obj.owner == actor,
+                        Zone::Exile => {
+                            self.can_play_exiled(actor, card)
+                                || self.plotted_cast_available(actor, card)
+                        }
+                        _ => false,
+                    };
+                    if !authorized_origin {
                         continue;
                     }
-                    let card = i as CardId;
                     if obj.zone == Zone::Battlefield
                         && !obj.tapped
                         && obj.card.mana_color().is_some()
@@ -2370,7 +2382,7 @@ impl Game {
                     .iter()
                     .enumerate()
                     .filter(|(_, o)| {
-                        o.owner == actor.other()
+                        o.controller == actor.other()
                             && o.zone == Zone::Battlefield
                             && o.card.is_planeswalker()
                     })
@@ -2378,7 +2390,7 @@ impl Game {
                     .collect();
                 for (i, obj) in s.objects.iter().enumerate() {
                     let card = i as CardId;
-                    if obj.owner != actor
+                    if obj.controller != actor
                         || obj.zone != Zone::Battlefield
                         || !self.is_creature(card)
                         || obj.tapped
@@ -2793,11 +2805,21 @@ impl Game {
                     {
                         self.state.known_hand.push(reference);
                     }
-                    let movement =
-                        self.entry_move(card, Zone::Battlefield, self.enters_tapped(card));
+                    let mut movement = self.entry_move(
+                        card,
+                        Zone::Battlefield,
+                        self.enters_tapped_for(card, actor),
+                    );
+                    movement.controller = actor;
                     self.stage_entries(vec![movement], None);
                 } else {
-                    self.move_object(card, Zone::Battlefield);
+                    let mut movement = self.entry_move(
+                        card,
+                        Zone::Battlefield,
+                        self.enters_tapped_for(card, actor),
+                    );
+                    movement.controller = actor;
+                    self.stage_entries(vec![movement], None);
                 }
                 self.state.land_played = true;
                 self.state.passes = 0;
@@ -3286,6 +3308,7 @@ impl Game {
             reference: self.object_ref(id),
             card: definition,
             owner: obj.owner,
+            controller: obj.controller,
             zone: obj.zone,
             tapped: obj.tapped,
             summoning_sick: obj.summoning_sick,
@@ -3336,7 +3359,7 @@ impl Game {
                 Zone::Battlefield,
                 "sacrifice requires a permanent"
             );
-            assert_eq!(object.owner, actor, "sacrifice requires control");
+            assert_eq!(object.controller, actor, "sacrifice requires control");
             debug_assert!(
                 !sacrifices[..index].iter().any(|&(_, prior)| prior == id),
                 "duplicate sacrifice"
@@ -3395,33 +3418,38 @@ impl Game {
         self.state.static_sources.iter().any(|&id| {
             let source = &self.state.objects[id as usize];
             source.zone == Zone::Battlefield
-                && source.owner != controller
+                && source.controller != controller
                 && source.card.opponent_entry_tapped() & kinds != 0
         })
     }
 
     fn enters_tapped(&self, id: CardId) -> bool {
         let object = &self.state.objects[id as usize];
-        if self.opponent_entry_requires_tapped(object.card, object.owner) {
+        self.enters_tapped_for(id, object.controller)
+    }
+
+    fn enters_tapped_for(&self, id: CardId, controller: Player) -> bool {
+        let object = &self.state.objects[id as usize];
+        if self.opponent_entry_requires_tapped(object.card, controller) {
             return true;
         }
         match object.card.entry_tapped() {
             EntryTapped::Never | EntryTapped::PayLife(_) => false,
             EntryTapped::UnlessPlainsOrIsland => !self.state.objects.iter().any(|o| {
                 o.zone == Zone::Battlefield
-                    && o.owner == object.owner
+                    && o.controller == controller
                     && (o.card.has_subtype("Plains") || o.card.has_subtype("Island"))
             }),
             EntryTapped::UnlessPlaneswalker => !self.state.objects.iter().any(|o| {
                 o.zone == Zone::Battlefield
-                    && o.owner == object.owner
+                    && o.controller == controller
                     && o.card.kind_mask() & 64 != 0
             }),
             EntryTapped::Always => true,
-            EntryTapped::OpponentsTurn => object.owner != self.state.active,
+            EntryTapped::OpponentsTurn => controller != self.state.active,
             EntryTapped::UnlessLowLife => self.state.players.iter().all(|p| p.life > 13),
             EntryTapped::UnlessBasic => !self.state.objects.iter().any(|o| {
-                o.zone == Zone::Battlefield && o.owner == object.owner && o.card.is_basic_land()
+                o.zone == Zone::Battlefield && o.controller == controller && o.card.is_basic_land()
             }),
             EntryTapped::UnlessAtMostTwo | EntryTapped::UnlessAtLeastTwo => {
                 let lands = self
@@ -3432,7 +3460,7 @@ impl Game {
                     .filter(|(other, o)| {
                         *other != id as usize
                             && o.zone == Zone::Battlefield
-                            && o.owner == object.owner
+                            && o.controller == controller
                             && o.card.is_land()
                     })
                     .count();
@@ -3483,6 +3511,17 @@ impl Game {
         destination: Zone,
         tapped: bool,
         counters: Counters,
+    ) -> ZoneChange {
+        self.transition_object_under_control(before, destination, tapped, counters, None)
+    }
+
+    fn transition_object_under_control(
+        &mut self,
+        before: ObjectView,
+        destination: Zone,
+        tapped: bool,
+        counters: Counters,
+        entry_controller: Option<Player>,
     ) -> ZoneChange {
         let id = before.id;
         let destination = if before.zone == Zone::Stack && self.state.objects[id as usize].flashback
@@ -3621,6 +3660,12 @@ impl Game {
         }
         let obj = &mut self.state.objects[id as usize];
         obj.zone = destination;
+        // Only stack and battlefield objects have independent control.
+        obj.controller = if matches!(destination, Zone::Battlefield | Zone::Stack) {
+            entry_controller.unwrap_or(before.controller)
+        } else {
+            obj.owner
+        };
         obj.flashback = false;
         obj.generation = generation;
         obj.tapped = tapped;
@@ -3641,7 +3686,7 @@ impl Game {
             self.state.players[obj.owner.index()].library.push(id);
         }
         if destination == Zone::Battlefield {
-            let (owner, card) = (obj.owner, obj.card);
+            let (owner, card) = (obj.controller, obj.card);
             self.record_nonland_entry(owner, card);
             self.register_battlefield_sources(id);
         }
@@ -3738,7 +3783,7 @@ impl Game {
             }
             obj.damaged_this_turn = false;
             obj.dealt_damage_this_turn = false;
-            if obj.owner == self.state.active && obj.zone == Zone::Battlefield {
+            if obj.controller == self.state.active && obj.zone == Zone::Battlefield {
                 obj.untap();
                 obj.summoning_sick = false;
             }
@@ -3886,13 +3931,11 @@ impl Game {
 
     fn damage_source(&self, object: CardId) -> DamageSource {
         let obj = &self.state.objects[object as usize];
-        // Control-changing cards are not admitted yet. This is the single place
-        // where current controller must be used once control layers are added.
         DamageSource {
             facts: self.damage_facts(object),
             object,
             reference: self.object_ref(object),
-            controller: obj.owner,
+            controller: obj.controller,
             keywords: self.keywords(object),
         }
     }
@@ -5193,3 +5236,7 @@ mod selected_x_tests;
 #[cfg(test)]
 #[path = "engine_split_search_tests.rs"]
 mod split_search_tests;
+
+#[cfg(test)]
+#[path = "engine_control_tests.rs"]
+mod control_tests;

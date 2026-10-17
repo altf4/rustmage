@@ -81,7 +81,7 @@ impl Game {
         }
         for &source in &self.state.static_sources {
             let o = &self.state.objects[source as usize];
-            if o.owner == actor {
+            if o.controller == actor {
                 for rule in o.card.cost_reductions() {
                     thresholds(
                         rule.filter,

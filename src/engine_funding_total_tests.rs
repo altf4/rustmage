@@ -213,3 +213,41 @@ fn counterfactual_total_saturates_instead_of_overflowing() {
     assert_eq!(state.total_mana_upper(), u128::MAX);
     assert!(state.optimistic(goal(u32::MAX)));
 }
+
+#[test]
+fn foreign_owned_sources_fund_only_their_controller_without_mutation() {
+    for actor in [Player::P0, Player::P1] {
+        let mut g = scenario();
+        let forest = spawn(&mut g, actor.other(), Card::Forest, Zone::Battlefield);
+        let archive = spawn(
+            &mut g,
+            actor.other(),
+            Card::from_name("Hedron Archive").unwrap(),
+            Zone::Battlefield,
+        );
+        g.state.objects[forest as usize].controller = actor;
+        g.state.objects[archive as usize].controller = actor;
+        let before = g.snapshot();
+        let target = FundingGoal { actor, ..goal(3) };
+        assert!(g.can_fund(target));
+        assert!(!g.can_fund(FundingGoal {
+            actor: actor.other(),
+            ..goal(1)
+        }));
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(g.state.objects[forest as usize].owner, actor.other());
+        assert_eq!(g.state.objects[archive as usize].owner, actor.other());
+        let creature = spawn(
+            &mut g,
+            actor.other(),
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        g.state.objects[creature as usize].controller = actor;
+        assert!(g.can_fund_convoke(FundingGoal { actor, ..goal(4) }));
+        assert!(!g.can_fund_convoke(FundingGoal {
+            actor: actor.other(),
+            ..goal(1)
+        }));
+    }
+}

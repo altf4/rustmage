@@ -26,6 +26,7 @@ pub(super) fn spawn(game: &mut Game, p: Player, card: Card, zone: Zone) -> CardI
     game.state.objects.push(Object {
         card,
         owner: p,
+        controller: p,
         zone,
         generation: 0,
         tapped: false,

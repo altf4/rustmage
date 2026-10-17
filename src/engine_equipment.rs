@@ -27,7 +27,7 @@ impl Game {
                 let spec = object.card.attachment_bonus().unwrap();
                 stats += spec.stats;
                 keywords = keywords.union(spec.keywords);
-                if object.owner == self.state.active {
+                if object.controller == self.state.active {
                     keywords = keywords.union(object.card.attached_turn_keywords());
                 }
             }
@@ -51,7 +51,7 @@ impl Game {
         let attacking = self.state.attackers.iter().any(|a| a.card == id);
         for &source in &self.state.static_sources {
             let object = &self.state.objects[source as usize];
-            if self.is_creature(id) && target.owner == object.owner {
+            if self.is_creature(id) && target.controller == object.controller {
                 for &(kind, grant) in object.card.counter_keyword_grants() {
                     if target.counters.get(kind) > 0 {
                         keywords = keywords.union(grant);
@@ -60,17 +60,17 @@ impl Game {
             }
             for grant in object.card.keyword_grants() {
                 if grant.condition.is_none_or(|value| {
-                    self.stat_value(value, self.object_ref(source), object.owner) != 0
+                    self.stat_value(value, self.object_ref(source), object.controller) != 0
                 }) && (!grant.requires_life_gain
-                    || self.state.players[object.owner.index()].life_gained_this_turn > 0)
+                    || self.state.players[object.controller.index()].life_gained_this_turn > 0)
                     && grant.matches_characteristics(
                         target.card,
                         self.current_kinds(id),
                         self.granted_subtypes(id),
-                        target.owner == object.owner,
+                        target.controller == object.controller,
                         reference == self.object_ref(source),
                         attacking,
-                        object.owner == self.state.active,
+                        object.controller == self.state.active,
                     )
                 {
                     keywords = keywords.union(grant.keywords);

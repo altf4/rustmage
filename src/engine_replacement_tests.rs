@@ -156,6 +156,7 @@ fn counter_order_is_owned_exact_once_both_seats_and_effect_only_does_not_change_
                 object: g.object_ref(bear),
                 card: Card::from_name("Bear Cub").unwrap(),
                 owner: p,
+                controller: p,
                 subtypes: GrantedSubtypes::default(),
                 kind: 1,
                 amount: c,

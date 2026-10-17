@@ -64,7 +64,8 @@ impl Game {
     ) {
         for source in sources {
             if sacrifices.iter().any(|&(player, id)| {
-                player == source.owner && self.state.objects[id as usize].card.has_subtype("Food")
+                player == source.controller
+                    && self.state.objects[id as usize].card.has_subtype("Food")
             }) {
                 for (index, a) in source.card.triggers().iter().enumerate() {
                     if a.condition.event() == TriggerCondition::FoodsSacrificed {
@@ -191,11 +192,13 @@ impl Game {
         };
         let f = self.forage_selection();
         let p = self.actor().unwrap();
-        if self.object_ref(r.card) != r || o.owner != p || f.selected.contains(&r) {
+        if self.object_ref(r.card) != r || f.selected.contains(&r) {
             return false;
         }
         match f.route {
-            Some(ForageRoute::ExileThree) => o.zone == Zone::Graveyard && !o.card.is_token(),
+            Some(ForageRoute::ExileThree) => {
+                o.zone == Zone::Graveyard && o.owner == p && !o.card.is_token()
+            }
             Some(ForageRoute::Food) => {
                 self.additional_candidate(food_cost(), p, r, r)
                     && self.state.announcing.as_ref().is_none_or(|a| {
@@ -290,7 +293,11 @@ impl Game {
         for &r in &selection.selected {
             assert_eq!(self.object_ref(r.card), r);
             let o = &self.state.objects[r.card as usize];
-            assert_eq!(o.owner, player);
+            if selection.route == Some(ForageRoute::Food) {
+                assert_eq!(o.controller, player);
+            } else {
+                assert_eq!(o.owner, player);
+            }
             assert_eq!(
                 o.zone,
                 if selection.route == Some(ForageRoute::Food) {
@@ -316,7 +323,7 @@ impl Game {
             .enumerate()
             .filter(|(_, o)| {
                 o.zone == Zone::Battlefield
-                    && o.owner == player
+                    && o.controller == player
                     && o.card
                         .triggers()
                         .iter()

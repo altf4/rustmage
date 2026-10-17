@@ -7,6 +7,7 @@ impl Game {
         self.state.objects.push(Object {
             card: factory,
             owner: controller,
+            controller,
             zone: Zone::Command,
             generation: 0,
             tapped: false,

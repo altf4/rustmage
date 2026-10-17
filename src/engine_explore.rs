@@ -96,7 +96,7 @@ impl Game {
         if explorer.kinds & 1 != 0 {
             for id in sources {
                 let source = self.object_view(id);
-                if source.owner == explorer.controller {
+                if source.controller == explorer.controller {
                     for (index, ability) in source.card.triggers().iter().enumerate() {
                         if ability.condition.event() == TriggerCondition::CreatureExploresYou {
                             self.queue_trigger(&source, index);
@@ -134,7 +134,7 @@ impl Game {
                     kinds: self.current_kinds(id),
                     object: bound.object.unwrap(),
                     card: self.state.objects[id as usize].card,
-                    controller: self.state.objects[id as usize].owner,
+                    controller: self.state.objects[id as usize].controller,
                 }
             }
             _ => unreachable!("unsupported explore subject"),

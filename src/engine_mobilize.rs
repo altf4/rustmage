@@ -54,7 +54,7 @@ impl Game {
                 self.state.objects.get(r.card as usize).is_some_and(|o| {
                     o.generation == r.generation
                         && o.zone == Zone::Battlefield
-                        && o.owner == p.other()
+                        && o.controller == p.other()
                         && o.card.is_planeswalker()
                 })
             }
@@ -76,7 +76,7 @@ impl Game {
         }
         for (id, o) in self.state.objects.iter().enumerate() {
             if o.zone == Zone::Battlefield
-                && o.owner == p.other()
+                && o.controller == p.other()
                 && o.card.is_planeswalker()
                 && emit(Action::ChooseMobilizeDefender {
                     defender: CombatDefender::Planeswalker(self.object_ref(id as CardId)),
@@ -119,7 +119,7 @@ impl Game {
             .capacity("mobilize defender allocation exhausted");
         let choice = self.state.objects.iter().any(|o| {
             o.zone == Zone::Battlefield
-                && o.owner == item.controller.other()
+                && o.controller == item.controller.other()
                 && o.card.is_planeswalker()
         });
         if !choice {
@@ -243,7 +243,7 @@ impl Game {
                     .filter(|o| {
                         o.zone == Zone::Battlefield
                             && o.generation == r.generation
-                            && o.owner == d.controller
+                            && o.controller == d.controller
                     })
                     .map(|_| (d.controller, r.card))
             })
