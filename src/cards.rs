@@ -637,6 +637,12 @@ pub(crate) enum Instruction {
     UntapSource,
     TapSource,
     UntapCreatures(CreatureFilter),
+    UntapPlayerCreatures(PlayerSet),
+    PutPlayerCreatureCounters {
+        players: PlayerSet,
+        kind: CounterKind,
+        amount: u32,
+    },
     SetBaseStats {
         subject: Subject,
         power: Option<i128>,
