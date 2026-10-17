@@ -2281,6 +2281,7 @@ impl Game {
                         continue;
                     }
                     if obj.zone == Zone::Battlefield
+                        && self.printed_abilities_available(card)
                         && !obj.tapped
                         && obj.card.mana_color().is_some()
                         && (!self.is_creature(card)

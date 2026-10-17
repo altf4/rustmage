@@ -61,6 +61,12 @@ impl Game {
                 .filter(|grant| {
                     grant.recipient == event.before.reference
                         && grant.expires_turn == self.state.turn
+                        && event.before.grant_available(
+                            grant.grantor,
+                            grant.granting_card,
+                            grant.ability,
+                            Some(grant.timestamp),
+                        )
                 })
                 .collect();
             for grant in matching {

@@ -479,6 +479,18 @@ impl Game {
         index: usize,
         event: Option<Box<AttachmentTriggerView>>,
     ) -> bool {
+        if let Some(grant) = event.as_ref().filter(|grant| grant.granted) {
+            if !source.grant_available(
+                grant.grantor,
+                grant.granting_card,
+                u16::try_from(index).expect("ability index"),
+                None,
+            ) {
+                return false;
+            }
+        } else if !source.printed_abilities_available() {
+            return false;
+        }
         let definition = event
             .as_ref()
             .filter(|event| event.granted)

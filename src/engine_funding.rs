@@ -362,6 +362,9 @@ impl<'g> FundingState<'g> {
         ability_world::CharacteristicWorld::kinds(self, r.id)
     }
     fn keywords(&self, target: &Resource) -> Keywords {
+        if let Some(evaluation) = ability_evaluation::evaluate_if_needed(self) {
+            return evaluation.result.objects[target.id as usize].keywords;
+        }
         let mut keywords = target.object.keywords();
         if target.object.zone == Zone::Battlefield && self.kinds(target) & 1 != 0 {
             let reference = ObjectRef {
@@ -436,7 +439,10 @@ impl<'g> FundingState<'g> {
         let mut moves = Vec::new();
         for (resource, entry) in self.resources.iter().enumerate() {
             let object = &entry.object;
-            if object.zone != Zone::Battlefield || object.controller != goal.actor {
+            if object.zone != Zone::Battlefield
+                || object.controller != goal.actor
+                || !ability_world::CharacteristicWorld::printed_abilities_available(self, entry.id)
+            {
                 continue;
             }
             if !object.tapped
@@ -640,6 +646,12 @@ impl<'g> FundingState<'g> {
             u128::from(goal.generic) + goal.required.into_iter().map(u128::from).sum::<u128>();
         if self.total_mana_upper() < required {
             return false;
+        }
+        // A virtual source departure can restore an ability under layer6.
+        // The total upper bound remains conservative; color/readiness pruning
+        // must not assume the current blanking is permanent for this search.
+        if ability_world::CharacteristicWorld::has_ability_removal(self) {
+            return true;
         }
         let mut upper = self.mana;
         for resource in &self.resources {

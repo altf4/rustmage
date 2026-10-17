@@ -45,7 +45,7 @@ fn timestamp(game: &Game, source: ObjectRef) -> u64 {
         })
         .expect("layer6 static provider has a shared entry/attachment timestamp")
 }
-fn grant_fragment<W: CharacteristicWorld>(
+fn grant_fragment<W: CharacteristicWorld + ?Sized>(
     world: &W,
     source: ObjectRef,
     fragment: &StaticAbilityFragment,
@@ -128,7 +128,15 @@ fn grant_fragment<W: CharacteristicWorld>(
     })
 }
 
-pub(super) fn evaluate_abilities<W: CharacteristicWorld>(world: &W) -> AbilityEvaluation {
+pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+) -> Option<AbilityEvaluation> {
+    world
+        .has_ability_removal()
+        .then(|| evaluate_abilities(world))
+}
+
+pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> AbilityEvaluation {
     let game = world.game();
     let mut effects = Vec::new();
     let mut groups = Vec::new();
@@ -286,27 +294,13 @@ pub struct AbilityAvailabilityView {
 }
 impl Game {
     pub(super) fn has_ability_removal(&self) -> bool {
-        self.state.roles.as_ref().is_some_and(|state| {
-            state.ability_timestamps.iter().any(|row| {
-                let object = &self.state.objects[row.source.card as usize];
-                object.zone == Zone::Battlefield
-                    && self.object_ref(row.source.card) == row.source
-                    && object.card.static_ability_groups().iter().any(|group| {
-                        group.fragments.iter().any(|fragment| {
-                            matches!(fragment, StaticAbilityFragment::RemoveAttachedAbilities)
-                        })
-                    })
-            })
-        })
+        CharacteristicWorld::has_ability_removal(self)
     }
     pub(super) fn evaluated_abilities(&self) -> Option<AbilityEvaluation> {
-        self.has_ability_removal().then(|| evaluate_abilities(self))
+        evaluate_if_needed(self)
     }
     pub(super) fn printed_abilities_available(&self, id: CardId) -> bool {
-        self.state.objects[id as usize].zone != Zone::Battlefield
-            || self
-                .evaluated_abilities()
-                .is_none_or(|value| value.result.objects[id as usize].printed)
+        CharacteristicWorld::printed_abilities_available(self, id)
     }
     pub(super) fn ability_availability(&self, id: CardId) -> Option<Box<AbilityAvailabilityView>> {
         if !self.on_battlefield(id) {

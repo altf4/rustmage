@@ -149,3 +149,15 @@ and spells gain no persistent cache or field.
 The removal fragment is not yet emitted by any accepted physical body. Remaining
 source/activation/trigger/replacement queries, departure LKI filtering and all four
 complete Aura consumers still need wiring before any admission or final acceptance.
+
+The central trigger dispatcher now checks the event's captured printed/granted
+ability identities before creating a new packet. Temporary departure grants also
+check their individual effect timestamps, so an old erased grant cannot borrow
+availability from a later identical grant. Already queued packets keep their owned
+programs. Activation announcements and intrinsic mana actions consult effective
+printed availability; speculative funding consults its own overlay and keeps a
+conservative upper bound when a virtual departure could restore an ability.
+Complete native validation passes1906+12 again (24.126s,924 fixed inputs), with
+224,165,888 allocated terminal bytes cleaned and both SO identities preserved.
+No accepted card emits the removal fragment yet; continuous helper suppression,
+untap restrictions and the full four physical bodies remain required.
