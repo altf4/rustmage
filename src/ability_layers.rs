@@ -31,10 +31,12 @@ pub(crate) enum StaticAbilityFragment {
     AttachedSubtype(&'static str),
     AttachmentStats(Stats),
     AttachmentKeywords(Keywords),
+    AttachmentRule(Keywords),
     AttachedTurnKeywords(Keywords),
     /// Stable index into the granting definition's immutable trigger array.
     AttachmentTrigger(u16),
     KeywordGrant(u16, KeywordGrant),
+    StaticRuleGrant(u16, KeywordGrant),
     StaticModifier(u16, StaticModifier),
     ScalingModifier(u16, ScalingModifier),
     EnchantedModifier(u16, EnchantedModifier),

@@ -17,6 +17,8 @@ pub struct KeywordEffectView {
     pub recipient: ObjectRef,
     pub origin: KeywordEffectOrigin,
     pub keywords: Keywords,
+    /// Resolution-created blocking restrictions are not granted abilities.
+    pub rules: Keywords,
     pub timestamp: u64,
     pub expires_turn: Option<u32>,
 }
@@ -112,7 +114,8 @@ impl Game {
                 .push(KeywordEffectView {
                     recipient,
                     origin: KeywordEffectOrigin::Resolution { source },
-                    keywords,
+                    keywords: keywords.without(keywords.resolution_rules()),
+                    rules: keywords.resolution_rules(),
                     timestamp,
                     expires_turn: Some(self.state.turn),
                 });
@@ -149,6 +152,7 @@ impl Game {
                 recipient,
                 origin: KeywordEffectOrigin::Suspected,
                 keywords: Keywords::MENACE.union(Keywords::CANT_BLOCK),
+                rules: Keywords::NONE,
                 timestamp,
                 expires_turn: None,
             });

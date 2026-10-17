@@ -37,6 +37,23 @@ class StaticGroup:
         return min(f.layer for f in self.fragments)
 
 
+def _rule_mask(parser):
+    mask = 0
+    for flag in parser.TEXT_FLAGS.values():
+        mask |= flag
+    return mask
+
+
+def _grant_layer(value, parser):
+    mask = int(re.search(r'keywords: Keywords\(([0-9]+)\)', value)[1])
+    rules = _rule_mask(parser)
+    if mask & rules:
+        if mask & ~rules:
+            raise ValueError('combined rule and ability grant needs separate typed fragments')
+        return Layer.RULE
+    return Layer.ABILITY
+
+
 def _immutable(value):
     if isinstance(value, (list, tuple)):
         return tuple(_immutable(item) for item in value)
@@ -140,7 +157,7 @@ def _continuous_groups(card, parser):
         static = parser.static_permanent_template(residual)
         if static is not None:
             fragments.extend(Fragment('static_modifiers', Layer.MODIFY, s) for s in static[-2])
-            fragments.extend(Fragment('keyword_grants', Layer.ABILITY, s) for s in static[-1])
+            fragments.extend(Fragment('keyword_grants', _grant_layer(s, parser), s) for s in static[-1])
         # Rule-modifying static providers do not start in an earlier
         # characteristic layer. Preserve their independent raw ability group.
         for extract, kind, plural in (
@@ -196,7 +213,12 @@ def _continuous_groups(card, parser):
                 if body[7] or body[8]:
                     fragments.append(Fragment('attachment_stats', Layer.MODIFY, (body[7], body[8])))
                 if body[9]:
-                    fragments.append(Fragment('attachment_keywords', Layer.ABILITY, body[9]))
+                    rules = body[9] & _rule_mask(parser)
+                    abilities = body[9] & ~_rule_mask(parser)
+                    if abilities:
+                        fragments.append(Fragment('attachment_keywords', Layer.ABILITY, abilities))
+                    if rules:
+                        fragments.append(Fragment('attachment_rules', Layer.RULE, rules))
                 for condition, program, targets in body[2]:
                     if condition.startswith('Granted('):
                         fragments.append(Fragment('attachment_trigger', Layer.ABILITY, _immutable((condition, program, targets))))
@@ -242,9 +264,9 @@ def rust_groups(card, parser, abilities):
                 value = 'AttachedSubtype(' + json.dumps(payload) + ')'
             elif kind == 'attachment_stats':
                 value = f'AttachmentStats(Stats {{ power: {payload[0]}, toughness: {payload[1]} }})'
-            elif kind in ('intrinsic_keywords', 'attachment_keywords', 'attached_turn_keywords'):
+            elif kind in ('intrinsic_keywords', 'attachment_keywords', 'attachment_rules', 'attached_turn_keywords'):
                 variant = {'intrinsic_keywords': 'IntrinsicKeywords', 'attachment_keywords': 'AttachmentKeywords',
-                           'attached_turn_keywords': 'AttachedTurnKeywords'}[kind]
+                           'attached_turn_keywords': 'AttachedTurnKeywords', 'attachment_rules': 'AttachmentRule'}[kind]
                 value = f'{variant}(Keywords({payload}))'
             elif kind == 'counter_keyword_grants':
                 if not payload.startswith('(') or not payload.endswith(')'):
@@ -274,7 +296,8 @@ def rust_groups(card, parser, abilities):
                     slots[kind] = index + 1
                 if index > 65535:
                     raise ValueError('static fragment slot exhausted')
-                value = variants[kind] + '(' + str(index) + ', ' + str(payload) + ')'
+                variant = 'StaticRuleGrant' if kind == 'keyword_grants' and fragment.layer == Layer.RULE else variants[kind]
+                value = variant + '(' + str(index) + ', ' + str(payload) + ')'
             fragments.append('StaticAbilityFragment::' + value)
         rendered.append('StaticAbilityGroup { line: ' + str(group.line) + ', first_layer: AbilityLayer::' +
                         layers[group.first_layer] + ', fragments: &[' + ', '.join(fragments) + '] }')

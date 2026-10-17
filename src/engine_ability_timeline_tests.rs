@@ -305,3 +305,94 @@ fn ability_timeline_paid_job_equipment_retimes_only_on_an_actual_new_attachment(
         }
     }
 }
+
+#[test]
+fn ability_timeline_paid_blocking_rule_effects_survive_hypothetical_recipient_ability_loss() {
+    use super::ability_order::{LayerSixAction, LayerSixEffect, apply_layer_six};
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let ally = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let enemy = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = named(&mut g, p, "Enter the Enigma", Zone::Hand);
+        cast(&mut g, spell, None, &[Target::Card(ally)]);
+        settle(&mut g);
+        let verge = named(&mut g, p, "Sandstorm Verge", Zone::Battlefield);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: verge,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(enemy),
+            },
+        );
+        for _ in 0..10 {
+            if g.state.announcing.is_none() {
+                break;
+            }
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::FinishTargets))
+                .or_else(|| {
+                    g.legal_actions()
+                        .into_iter()
+                        .find(|a| matches!(a, Action::PayCosts { .. }))
+                })
+                .unwrap();
+            checked(&mut g, action);
+        }
+        settle(&mut g);
+        let rows = &g.state.roles.as_ref().unwrap().keyword_effects;
+        for (id, restriction) in [
+            (ally, Keywords::CANT_BE_BLOCKED),
+            (enemy, Keywords::CANT_BLOCK),
+        ] {
+            let row = rows
+                .iter()
+                .find(|row| row.recipient == g.object_ref(id))
+                .unwrap();
+            assert_eq!(row.rules, restriction);
+            assert_eq!(row.keywords, Keywords::NONE);
+        }
+        // This is a hypothetical layer6 boundary fixture, not a claimed cast of
+        // an unsupported removal Aura. Both independent rule effects above were
+        // created by genuine paid actions and keep their actual exact recipients.
+        let mut evaluated = ability_evaluation::evaluate_abilities(&g);
+        let removals: Vec<_> = [ally, enemy]
+            .into_iter()
+            .map(|id| LayerSixEffect {
+                provider: None,
+                started_earlier: false,
+                timestamp: u64::MAX,
+                recipients: vec![id],
+                action: LayerSixAction::Remove,
+            })
+            .collect();
+        evaluated.result = apply_layer_six(evaluated.result.objects, &removals);
+        assert_eq!(
+            evaluated.result.objects[ally as usize].keywords,
+            Keywords::NONE
+        );
+        assert_eq!(
+            evaluated.result.objects[enemy as usize].keywords,
+            Keywords::NONE
+        );
+        ability_evaluation::apply_rule_effects(&g, &mut evaluated);
+        assert_eq!(
+            evaluated.result.objects[ally as usize].keywords,
+            Keywords::CANT_BE_BLOCKED
+        );
+        assert_eq!(
+            evaluated.result.objects[enemy as usize].keywords,
+            Keywords::CANT_BLOCK
+        );
+        assert!(!evaluated.result.objects[ally as usize].printed);
+        assert!(!evaluated.result.objects[enemy as usize].printed);
+    }
+}

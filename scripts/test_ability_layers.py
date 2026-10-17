@@ -182,6 +182,23 @@ class AbilityLayerIdentityTests(unittest.TestCase):
         self.assertEqual(re.findall(r'LiveBase\(([0-9]+),', rendered), ['1'])
         self.assertEqual(re.findall(r'LiveBlockRestriction\(([0-9]+),', rendered), ['1'])
 
+    def test_conditional_blocking_rules_do_not_become_granted_keyword_abilities(self):
+        for name, first in [('Akawalli, the Seething Tower', Layer.MODIFY),
+                            ('Cephalid Inkmage', Layer.RULE), ('June, Bounty Hunter', Layer.RULE),
+                            ('Nightwhorl Hermit', Layer.MODIFY)]:
+            groups = self.groups(name)
+            selected = [group for group in groups if any(fragment.kind == 'keyword_grants' and fragment.layer == Layer.RULE for fragment in group.fragments)]
+            self.assertEqual(len(selected), 1, name)
+            self.assertEqual(selected[0].first_layer, first, name)
+        card = dict(self.cards['Bear Cub'], name='Independent external rule Aura', layout='normal',
+                    type_line='Enchantment — Aura', mana_cost='{U}',
+                    oracle_text="Enchant creature\nEnchanted creature can't be blocked.")
+        groups = continuous_groups(card, g)
+        self.assertEqual(len(groups), 1)
+        self.assertEqual(groups[0].first_layer, Layer.RULE)
+        self.assertEqual(groups[0].fragments[0].kind, 'attachment_rules')
+        self.assertIn('StaticAbilityFragment::AttachmentRule(Keywords(16384))', rust_groups(card, g, []))
+
     def test_actual_live_static_parent_keeps_archon_group_and_later_only_providers(self):
         for name, first in [('Maha, Its Feathers Night', Layer.BASE), ('Aettir and Priwen', Layer.BASE), ('Archon of the Wild Rose', Layer.ABILITY), ('Burden of Proof', Layer.BASE)]:
             with self.subTest(name=name):

@@ -1622,6 +1622,14 @@ impl Keywords {
     pub const fn union(self, other: Self) -> Self {
         Self(self.0 | other.0)
     }
+    /// Existing resolving instructions use these bits for rule restrictions,
+    /// never for a quoted ability grant. Static/printed uses stay removable.
+    pub(crate) const fn resolution_rules(self) -> Self {
+        Self(self.0 & (2048 | 16384 | 65536 | 131072 | 262144 | 2097152 | 4194304 | 8388608))
+    }
+    pub(crate) const fn without(self, other: Self) -> Self {
+        Self(self.0 & !other.0)
+    }
 }
 
 #[derive(Clone, Copy, Debug, Serialize)]

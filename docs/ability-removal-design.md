@@ -191,3 +191,26 @@ integration tests in26.823s. All937 tracked inputs remain fixed. Terminal cleanu
 reclaims225,583,104 allocated bytes while preserving both SO paths/hashes. This is
 foundation/integration validation: the four priority Auras remain gated, and the
 remaining rule providers and full printed bodies still require implementation.
+
+## Rule restrictions and direct-authoring transition
+
+Effect-created “can't block/be blocked this turn” changes game rules rather than
+adding an ability. The existing resolving instructions now record those restriction
+bits separately and apply them after layer6. Suspect remains an explicit ability
+grant: both its menace and quoted can't-block ability can be removed. Conditional
+static self-rules and generic external Aura restrictions similarly retain rule-layer
+identity; removing their source's printed ability still suppresses the provider.
+Existing executable programs are unchanged. All20 existing resolution-rule bodies,
+including the Beat a Path inset, were checked against their complete printed text.
+
+The source controls pass34 methods. A fresh36-method native selection passes,
+including both-seat genuine paid Enter the Enigma and Sandstorm Verge actions,
+owned replay and an explicitly hypothetical recipient-removal boundary. The
+hypothetical boundary is not represented as casting a still-gated Aura. All937
+inputs stayed fixed;76,816,384 allocated bytes were cleaned and the SO preserved.
+
+Further parser/origin expansion stops here following the direct typed-Rust card
+strategy. The shared layer6 machinery is retained. The four complete Aura bodies
+will be authored directly, using typed static-effect identities and programs after
+remaining runtime providers, untap restrictions and all-counter removal are wired.
+No new card admission or final acceptance is claimed at this transition checkpoint.

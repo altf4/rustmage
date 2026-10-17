@@ -66,7 +66,8 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
         timestamp: time,
     };
     let keywords = match *fragment {
-        StaticAbilityFragment::AttachmentKeywords(value) => {
+        StaticAbilityFragment::AttachmentKeywords(value)
+        | StaticAbilityFragment::AttachmentRule(value) => {
             if !world.attached(source, id) {
                 return None;
             }
@@ -94,7 +95,8 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             value
         }
-        StaticAbilityFragment::KeywordGrant(_, grant) => {
+        StaticAbilityFragment::KeywordGrant(_, grant)
+        | StaticAbilityFragment::StaticRuleGrant(_, grant) => {
             if grant
                 .condition
                 .is_some_and(|value| world.value(value, source.card) == 0)
@@ -273,9 +275,63 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             }
         }
     }
-    AbilityEvaluation {
+    let mut evaluation = AbilityEvaluation {
         result: apply_layer_six(objects, &effects),
         groups,
+    };
+    apply_rule_effects(world, &mut evaluation);
+    evaluation
+}
+
+/// CR613.11: external blocking restrictions affect rules, not abilities. They
+/// apply after characteristic layers and cannot be erased from the recipient.
+pub(super) fn apply_rule_effects<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    evaluation: &mut AbilityEvaluation,
+) {
+    let game = world.game();
+    for (i, _) in game.state.objects.iter().enumerate() {
+        let source = i as CardId;
+        let object = world.object(source);
+        if object.zone != Zone::Battlefield {
+            continue;
+        }
+        let reference = world.reference(source);
+        for (group, origin) in object.card.static_ability_groups().iter().enumerate() {
+            if !evaluation.group_available(reference, group) {
+                continue;
+            }
+            for fragment in origin.fragments {
+                if !matches!(
+                    fragment,
+                    StaticAbilityFragment::AttachmentRule(..)
+                        | StaticAbilityFragment::StaticRuleGrant(..)
+                ) {
+                    continue;
+                }
+                for (recipient, _) in game.state.objects.iter().enumerate() {
+                    if let Some(row) =
+                        grant_fragment(world, reference, fragment, recipient as CardId, 0)
+                    {
+                        evaluation.result.objects[recipient].keywords = evaluation.result.objects
+                            [recipient]
+                            .keywords
+                            .union(row.keywords);
+                    }
+                }
+            }
+        }
+    }
+    if let Some(state) = &game.state.roles {
+        for row in &state.keyword_effects {
+            if world.object(row.recipient.card).zone == Zone::Battlefield
+                && world.reference(row.recipient.card) == row.recipient
+                && row.expires_turn.is_none_or(|turn| turn == game.state.turn)
+            {
+                let object = &mut evaluation.result.objects[row.recipient.card as usize];
+                object.keywords = object.keywords.union(row.rules);
+            }
+        }
     }
 }
 
