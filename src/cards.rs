@@ -84,6 +84,7 @@ pub(crate) enum TargetPredicate {
     Token,
     Subtype(&'static str),
     Nonbasic,
+    Legendary,
     NonOutlaw,
 }
 
@@ -785,6 +786,30 @@ pub(crate) struct EntryCounterRule {
     pub amount: EntryCounterAmount,
 }
 
+/// Immutable replacement programs; active games retain only exact event/source identities.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ReplacementFilter {
+    Permanent,
+    Creature,
+    CreatureOrVehicle,
+    CreatureSpacecraftPlanet,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ReplacementSpec {
+    Counters {
+        filter: ReplacementFilter,
+        kind: Option<CounterKind>,
+        factor: u32,
+        add: u32,
+        effects_only: bool,
+    },
+    DoubleTokens {
+        effects_only: bool,
+    },
+    AddToken(Card),
+    ReplaceArtifactTokens(Card),
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum CounterKind {
     PlusOne,
@@ -1388,6 +1413,9 @@ impl Card {
     }
     pub(crate) fn attached_subtype(self) -> Option<&'static str> {
         generated::attached_subtype(self)
+    }
+    pub(crate) fn replacement_effects(self) -> &'static [ReplacementSpec] {
+        generated::replacement_effects(self)
     }
     pub fn colors(self) -> u8 {
         generated::COLORS[self.index()]

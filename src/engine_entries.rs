@@ -25,6 +25,7 @@ pub(super) struct EntryBatch {
     pub moves: Vec<EntryMove>,
     pub choices: Vec<usize>,
     pub next: usize,
+    pub counter_next: usize,
     pub resume: Option<Pending>,
     pub shuffle_after: Option<Player>,
 }
@@ -187,14 +188,41 @@ impl Game {
             moves,
             choices,
             next: 0,
+            counter_next: 0,
             resume: None,
             shuffle_after,
         };
-        if batch.choices.is_empty() {
+        let counter_replacements = batch.moves.iter().any(|m| {
+            m.destination == Zone::Battlefield
+                && m.counters.total() > 0
+                && (!m.before.card.replacement_effects().is_empty()
+                    || self.state.static_sources.iter().any(|&id| {
+                        self.state.objects[id as usize]
+                            .card
+                            .replacement_effects()
+                            .iter()
+                            .any(|e| matches!(e, crate::cards::ReplacementSpec::Counters { .. }))
+                    }))
+        });
+        if batch.choices.is_empty() && !counter_replacements {
             self.commit_entries(batch);
         } else {
             self.state.entry_batch = Some(Box::new(batch));
         }
+    }
+    pub(super) fn has_entry_counter_replacements(&self, card: Card) -> bool {
+        (card.enters_counters().total() > 0 || !card.entry_counter_rules().is_empty())
+            && (card
+                .replacement_effects()
+                .iter()
+                .any(|e| matches!(e, crate::cards::ReplacementSpec::Counters { .. }))
+                || self.state.static_sources.iter().any(|&id| {
+                    self.state.objects[id as usize]
+                        .card
+                        .replacement_effects()
+                        .iter()
+                        .any(|e| matches!(e, crate::cards::ReplacementSpec::Counters { .. }))
+                }))
     }
     pub(super) fn pre_entry_counters(&self, before: &ObjectView, destination: Zone) -> Counters {
         if destination != Zone::Battlefield {
@@ -336,6 +364,32 @@ impl Game {
                     batch.moves[index].skipped = true;
                 }
                 batch.next += 1;
+            }
+            while self.state.entry_batch.as_ref().unwrap().counter_next
+                < self.state.entry_batch.as_ref().unwrap().moves.len()
+            {
+                let batch = self.state.entry_batch.as_mut().unwrap();
+                let index = batch.counter_next;
+                batch.counter_next += 1;
+                let m = &batch.moves[index];
+                if m.destination != Zone::Battlefield || m.skipped || m.counters.total() == 0 {
+                    continue;
+                }
+                let p = replacements::CounterPlacement {
+                    object: m.before.reference,
+                    card: m.before.card,
+                    owner: m.before.owner,
+                    subtypes: GrantedSubtypes::default(),
+                    kind: m.before.card.kind_mask(),
+                    amount: m.counters,
+                    effect: true,
+                    entry_index: Some(index),
+                    private: !visible(m, m.before.owner.other(), &self.state.known_hand),
+                };
+                self.stage_counter_placements(vec![p], replacements::ResumeMode::Entry);
+                if self.advance_replacements(false) {
+                    return true;
+                }
             }
             let batch = *self.state.entry_batch.take().unwrap();
             self.state.pending = batch.resume.clone().unwrap();

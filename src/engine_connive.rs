@@ -141,9 +141,12 @@ impl Game {
                 if self.on_battlefield(current.object.card)
                     && self.object_ref(current.object.card) == current.object
                 {
-                    self.state.objects[current.object.card as usize]
-                        .counters
-                        .add(CounterKind::PlusOne, u64::from(nonlands));
+                    self.effect_counter(
+                        current.object.card,
+                        CounterKind::PlusOne,
+                        u64::from(nonlands),
+                        replacements::ResumeMode::Program,
+                    );
                 }
                 self.state
                     .resolving
@@ -153,6 +156,9 @@ impl Game {
                     .as_mut()
                     .unwrap()
                     .current = None;
+                if self.state.replacements.is_some() {
+                    return true;
+                }
             }
             let sequence = self
                 .state

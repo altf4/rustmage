@@ -12,7 +12,7 @@ use crate::cards::{
 mod saddle;
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 73;
+pub const OBSERVATION_SCHEMA: u32 = 74;
 #[path = "engine_mobilize.rs"]
 mod mobilize;
 #[path = "engine_plot.rs"]
@@ -26,6 +26,12 @@ pub use warp::{DelayedWarpExileView, WarpedCard};
 #[path = "engine_subtypes.rs"]
 mod subtypes;
 pub use subtypes::GrantedSubtypes;
+
+#[path = "engine_replacements.rs"]
+mod replacements;
+pub use replacements::{
+    CreatedTokenChoiceView, ReplacementChoiceView, ReplacementEffectView, TokenGroupView,
+};
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -171,6 +177,9 @@ mod mana_tests;
 #[path = "engine_program_tests.rs"]
 mod program_tests;
 #[cfg(test)]
+#[path = "engine_replacement_tests.rs"]
+mod replacement_tests;
+#[cfg(test)]
 #[path = "engine_target_tests.rs"]
 mod target_tests;
 #[cfg(test)]
@@ -268,6 +277,8 @@ define_actions! {
     ChooseEvidence { object: ObjectRef },
     FinishEvidence,
     DeclineEvidence,
+    ChooseReplacement { source: ObjectRef, ability: u16 },
+    ChooseCreatedToken { object: ObjectRef },
     ChooseEndure { put_counters: bool },
     BeginConvoke,
     ChooseConvoker { object: ObjectRef, contribution: ConvokeContribution },
@@ -844,6 +855,12 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    Replacement {
+        player: Player,
+    },
+    CreatedToken {
+        player: Player,
+    },
     Endure {
         player: Player,
         source: ObjectRef,
@@ -976,6 +993,7 @@ enum Pending {
 /// Card definitions are enum/static data, never cloned object graphs or trait objects.
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    replacements: Option<Box<replacements::ReplacementState>>,
     // Sparse registry: keep an eight-byte pointer in the common empty state
     // rather than an inline Vec header for games with no delayed obligation.
     #[allow(clippy::box_collection)]
@@ -1255,6 +1273,8 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    pub replacement_choice: Option<ReplacementChoiceView>,
+    pub created_token_choice: Option<CreatedTokenChoiceView>,
     pub endure_choice: Option<EndureChoiceView>,
     pub convoke_choice: Option<ConvokeChoiceView>,
     pub delayed_sacrifices: Vec<DelayedSacrificeView>,
@@ -1427,6 +1447,7 @@ impl Game {
         let mut game = Self {
             revision: 0,
             state: State {
+                replacements: None,
                 objects: objects.into(),
                 attacked_this_turn: Vec::new().into(),
                 creatures_died_this_turn: 0,
@@ -1518,7 +1539,9 @@ impl Game {
         match self.state.pending {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::PlotPayment { player }
+            Pending::Replacement { player }
+            | Pending::CreatedToken { player }
+            | Pending::PlotPayment { player }
             | Pending::EvidenceIntent { player }
             | Pending::Evidence { player }
             | Pending::Endure { player, .. }
@@ -1695,10 +1718,14 @@ impl Game {
             // Resolution is atomic with respect to SBAs and priority, even when
             // a program is suspended for an optional effect or discard choice.
             loop {
+                if self.advance_replacements(true) {
+                    break;
+                }
                 if self.advance_entries() {
                     break;
                 }
                 if self.state.resolving.is_none()
+                    && self.state.replacements.is_none()
                     && self.state.announcing.is_none()
                     && self.plot_payment().is_none()
                 {
@@ -1748,6 +1775,16 @@ impl Game {
         // result. Cache capacity affects work only, never the admitted action set.
         let mut spell_funding_cache: [Option<(Mana, u32, bool)>; 8] = [None; 8];
         match s.pending {
+            Pending::Replacement { .. } => {
+                if self.visit_replacement_actions(&mut emit) {
+                    return true;
+                }
+            }
+            Pending::CreatedToken { .. } => {
+                if self.visit_created_token_actions(&mut emit) {
+                    return true;
+                }
+            }
             Pending::Endure { .. } => {
                 if emit(Action::ChooseEndure { put_counters: true })
                     || emit(Action::ChooseEndure {
@@ -2566,6 +2603,10 @@ impl Game {
 
     fn apply_legal(&mut self, actor: Player, action: Action) {
         match action {
+            Action::ChooseReplacement { source, ability } => {
+                self.choose_replacement(source, ability)
+            }
+            Action::ChooseCreatedToken { object } => self.choose_created_token(object),
             Action::ChooseLibraryDestination {
                 object,
                 destination,
@@ -2634,7 +2675,8 @@ impl Game {
                 if matches!(
                     self.state.objects[card as usize].card.entry_tapped(),
                     EntryTapped::PayLife(_)
-                ) {
+                ) || self.has_entry_counter_replacements(self.state.objects[card as usize].card)
+                {
                     // A land play is public even while its pre-entry choice is pending.
                     let reference = self.object_ref(card);
                     if self.state.objects[card as usize].zone == Zone::Hand
@@ -3913,6 +3955,8 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
+            replacement_choice: self.replacement_choice(viewer),
+            created_token_choice: self.created_token_choice(),
             endure_choice: if owns_choice {
                 match s.pending {
                     Pending::Endure {
@@ -3962,6 +4006,8 @@ impl Game {
             turn: s.turn,
             step: s.step,
             decision: match s.pending {
+                Pending::Replacement { .. } => "replacement",
+                Pending::CreatedToken { .. } => "created_token",
                 Pending::ResolutionMana { .. } => "resolution_mana",
                 Pending::ConniveOrder { .. } => "connive_order",
                 Pending::Mulligan(_) => "mulligan",
@@ -4317,6 +4363,7 @@ impl Game {
             + s.plot.as_ref().map_or(0, |p| p.bytes())
             + s.warp.as_ref().map_or(0, |w| w.bytes())
             + s.triggered_this_turn.len() * std::mem::size_of::<TriggerUse>()
+            + s.replacements.as_ref().map_or(0, |f| f.bytes())
             + s.sba_batch.as_ref().map(|batch| batch.bytes()).unwrap_or(0)
             + s.entry_batch
                 .as_ref()

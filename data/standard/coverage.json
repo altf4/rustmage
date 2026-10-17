@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "6308cd9852add06732f6c36123993b6b3a06a0a6b037f16442b78acaf1374822",
+  "catalogue_version": "04450a31dfe73372198aeb0a5107a9413a2a4eb0d5769f9ae11f42a265c2c75e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1707,
-  "implemented_total": 1713,
-  "token_definitions": 83,
+  "implemented_standard_cards": 1716,
+  "implemented_total": 1722,
+  "token_definitions": 84,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -2050,8 +2050,8 @@
     {
       "name": "Bartolomé del Presidio",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Bartz and Boko",
@@ -3910,8 +3910,8 @@
     {
       "name": "Caradora, Heart of Alacria",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Careening Mine Cart",
@@ -6850,8 +6850,8 @@
     {
       "name": "Doubling Season",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Dour Port-Mage",
@@ -6898,8 +6898,8 @@
     {
       "name": "Draconic Visitor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Dracosaur Auxiliary",
@@ -8362,8 +8362,8 @@
     {
       "name": "Exalted Sunborn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Excalibur II",
@@ -15196,8 +15196,8 @@
     {
       "name": "Loading Zone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Loan Shark",
@@ -16462,8 +16462,8 @@
     {
       "name": "Michelangelo, Weirdness to 11",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Micromancer",
@@ -19924,8 +19924,8 @@
     {
       "name": "Quina, Qu Gourmet",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Quintessential Katana",
@@ -30850,8 +30850,8 @@
     {
       "name": "Yoshimaru, Beloved Companion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Yoshimaru, Scrappy Stray",
