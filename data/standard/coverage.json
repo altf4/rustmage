@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e6591b397553621288a204da250532c02e151d44a1f08e88f6ea9eac2c8b3474",
+  "catalogue_version": "fc32a097ec542622ff08a8fa73cd178d2eb3fdca0b2f398dfc0f717fcfddb849",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1811,
-  "implemented_total": 1817,
+  "implemented_standard_cards": 1817,
+  "implemented_total": 1823,
   "token_definitions": 87,
   "emblem_definitions": 1,
   "cards": [
@@ -1204,8 +1204,8 @@
     {
       "name": "Arashin Sunshield",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Araña, Heart of the Spider",
@@ -2818,8 +2818,8 @@
     {
       "name": "Bloomvine Regent // Claim Territory",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Blossom-Blessed Angel // Seed Suture",
@@ -8974,8 +8974,8 @@
     {
       "name": "Feral Deathgorger // Dusk Sight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Feral Encounter",
@@ -11278,8 +11278,8 @@
     {
       "name": "Griffnaut Tracker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Grim Bauble",
@@ -22312,8 +22312,8 @@
     {
       "name": "Scavenger Regent // Exude Toxin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Scavenger's Talent",
@@ -28132,8 +28132,8 @@
     {
       "name": "Troop of Ponies",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Trostani, Three Whispers",
@@ -31107,5 +31107,5 @@
     }
   ],
   "adventure_definitions": 19,
-  "omen_definitions": 10
+  "omen_definitions": 13
 }

@@ -890,12 +890,29 @@ def search_filter(noun):
         'card named Magitek Infantry':'Name("Magitek Infantry")',
     }
     if noun in fixed:return fixed[noun]
-    if noun in ('basic land cards','land cards','creature cards','artifact cards','enchantment cards'):
+    if noun in ('basic land cards','land cards','creature cards','artifact cards','enchantment cards','basic Forest cards'):
         return fixed[noun[:-1]]
     return None
 
 
+def split_search_route_text(text, *, include_other_search=False):
+    """Detect the new route through legacy reminder erasure; never rewrite its body."""
+    if not isinstance(text, str):return False
+    while True:
+        normalized=re.sub(r'\s+', ' ', text).casefold()
+        if ('put one onto the battlefield tapped and the other into your hand' in normalized
+                or include_other_search and 'search your library' in normalized):
+            return True
+        reduced=re.sub(r'\([^()]*\)', '', text)
+        if reduced==text:return False
+        text=reduced
+
+
 def search_program(text):
+    if m:=re.fullmatch(r'search your library for up to two (.+?), reveal them, put one onto the battlefield tapped and the other into your hand, then shuffle\.',text):
+        noun=m[1];filter_=search_filter(noun)
+        if not noun.endswith('cards') or filter_ is None:return None
+        return [f'Search(SearchSpec {{ filter: SearchFilter::{filter_}, maximum: 2, destination: SearchDestination::BattlefieldThenHand {{ battlefield: 1 }}, tapped: true, reveal: true }})']
     match=re.fullmatch(r'search your library for (a |an |up to two |up to three |up to four )(.+?), (reveal (?:it|them), )?put (it|them|that card) (into your hand|onto the battlefield)( tapped)?, then shuffle\.',text)
     if not match:return None
     count,noun,reveal,pronoun,destination,tapped=match.groups()
@@ -1128,6 +1145,14 @@ def scalar_x_body(card):
         "counter target spell unless its controller pays {x}. if that spell is countered this way, exile it instead of putting it into its owner's graveyard.":('Spell',['CounterUnlessPayScaled { amount: '+x+', exile: true }']),
         'this spell deals x damage to any target. draw two cards, then discard a card.':('Any',['DamageScaled('+x+')','Draw(PlayerSet::Controller, 2)','Discard(PlayerSet::Controller, 1)']),
     }
+    if m := re.fullmatch(r'each non-([a-z]+) creature gets -x/-x until end of turn\.', text):
+        # Detection may use normalized text; unknown raw parentheses are never
+        # authenticated by this new full-body grammar.
+        if '(' in card['oracle_text'] or ')' in card['oracle_text']:return None
+        subtype=next((name for name in CREATURE_TYPE_NAMES if name.casefold()==m[1]),None)
+        if subtype is None:return None
+        filt=creature_filter('creatures')
+        return 'Spell',0,[],('None',[f'GrowCreaturesScaled {{ filter: {filt}, excluding_subtype: Some({json.dumps(subtype)}), amount: {x}, power: -1, toughness: -1 }}']),False
     if text in bodies:
         target,program=bodies[text];return 'Spell',0,[],(target,program),False
     if text=='this spell deals x damage to any target.\n'+choco.lower():
@@ -1819,6 +1844,8 @@ def rust_target_group(spec):
     if isinstance(spec, str):
         return f'TargetSpec::one({TARGET_RULES[spec]})'
     rule, minimum, maximum = spec
+    if rule == 'CardSingleGrave':
+        return f'TargetSpec {{ rule: TargetRule::Grouped {{ base: &{TARGET_RULES["CardGrave"]}, constraint: TargetGroupConstraint::SameGraveyard }}, min: {minimum}, max: {maximum} }}'
     return f'TargetSpec {{ rule: {TARGET_RULES[rule]}, min: {minimum}, max: {maximum} }}'
 
 
@@ -2018,6 +2045,7 @@ def targeted_program(text):
         return 'LegendaryCreature',[counter_instruction('Targets',m[1],m[2])]
     if counter:=counter_program(text): return counter
     if text=='exile up to one target card from a graveyard.': return ('CardGrave',0,1),['Exile']
+    if text=='exile up to two target cards from a single graveyard.': return ('CardSingleGrave',0,2),['Exile']
     if text=='exile up to two target cards from graveyards.': return ('CardGrave',0,2),['Exile']
     if text=='target player draws a card, then up to one target creature you control connives.':
         return ['Player',('CreatureYou',0,1)],['Draw(PlayerSet::Targeted, 1)','SelectGroup(1)','Connive { subject: Subject::Targets, amount: 1 }']
@@ -3727,7 +3755,11 @@ def adventure_faces(card, mechanic="Adventure"):
         if not all(isinstance(face.get(k), str) for k in ('name','mana_cost','type_line','oracle_text')):
             return None
         if position and spell_cost_options(face['mana_cost']) is None:
-            return None
+            # Existing scalar programs support one explicit X plus a fixed cost.
+            # The complete scalar body must still compile before the pair admits.
+            scalar_cost = face['mana_cost']
+            if scalar_cost.count('{X}') != 1 or fixed_cost(scalar_cost.replace('{X}', '') or '{0}') is None:
+                return None
         text = face['oracle_text']
         if position and mechanic == 'Adventure' and '(Then ' in text and not re.search(r' \(Then exile this card\. You may (?:cast the (?:creature|artifact|enchantment)|play the land) later from exile\.\)$', text):
             return None
@@ -3949,6 +3981,19 @@ def compile_catalogue(snapshot, target):
     replacement_rows=[]
     for index, name in enumerate(names):
         original = cards.get(name, {})
+        raw_graveyard_body = original.get('oracle_text', '')
+        graveyard_route_surface = raw_graveyard_body
+        graveyard_route_seen = False
+        single_graveyard_seen = False
+        while True:
+            normalized_graveyard_surface = ' '.join(graveyard_route_surface.casefold().split())
+            single_graveyard_seen |= 'single graveyard' in normalized_graveyard_surface
+            graveyard_route_seen |= (single_graveyard_seen
+                                     or 'exile up to two target cards' in normalized_graveyard_surface)
+            stripped = re.sub(r'\([^()]*\)', '', graveyard_route_surface)
+            if stripped == graveyard_route_surface:
+                break
+            graveyard_route_surface = stripped
         if (original.get('layout') == 'normal' and 'Vehicle' in original.get('type_line','').split(' — ')[-1].split()
                 and all(original.get(axis, '') == '*' or original.get(axis, '').isdigit() for axis in ('power','toughness'))):
             pt = [0 if original[axis] == '*' else int(original[axis]) for axis in ('power','toughness')]
@@ -3956,11 +4001,13 @@ def compile_catalogue(snapshot, target):
                 vehicle_stats_rows.append(f'        {index} => Some(Stats {{ power: {pt[0]}, toughness: {pt[1]} }}),')
         timing_surface = original.get('oracle_text', '')
         timing_seen = False
+        scalar_mass_seen = False
         while True:
             # Inspect each erasure stage: an outer reminder can surround a
             # permission whose keywords themselves contain an inner reminder.
             timing_seen |= re.search(r'\b(?:cast|play)\b.*\bas though\b',
                                      ' '.join(timing_surface.split()), flags=re.I) is not None
+            scalar_mass_seen |= re.search(r'\beach\s+non-|gets\s+-x/-x', ' '.join(timing_surface.split()), flags=re.I) is not None
             stripped = re.sub(r'\([^()]*\)', '', timing_surface)
             if stripped == timing_surface:break
             timing_surface = stripped
@@ -4005,7 +4052,8 @@ def compile_catalogue(snapshot, target):
         abilities = []
         entry = 'Never'
         land = land_template(card)
-        if name in legacy and not timing_seen:
+        use_legacy = name in legacy and not (timing_seen or scalar_mass_seen or graveyard_route_seen or split_search_route_text(original.get('oracle_text', ''), include_other_search=True))
+        if use_legacy:
             effect, fallback_cost, color = legacy[name]
             # Lands have no mana cost. Their legacy cost token encodes colour only.
             cost = '' if effect == 'Land' else card.get('mana_cost', fallback_cost)
@@ -4114,8 +4162,15 @@ def compile_catalogue(snapshot, target):
                 activations=[];enters=[0,0,0]
         if attachment_ward_route(original) and not attachment_ward_reminders_valid(original):
             effect='Unsupported'
+        # New split-search consumers are whole bodies. The older permanent
+        # templates strip generic parentheticals, so reject every unaudited
+        # clause before that historical behavior can hide a new instruction.
+        raw_split_text = original.get('oracle_text', '')
+        if (split_search_route_text(raw_split_text)
+                and ('(' in raw_split_text or ')' in raw_split_text)):
+            effect = 'Unsupported'
         # Later fixed-cost selectors must never revive a rejected variable-cost body.
-        if '{X}' in card.get('mana_cost', '') and scalar is None:
+        if ('{X}' in card.get('mana_cost', '') or scalar_mass_seen) and scalar is None:
             effect = 'Unsupported'
         if replacements and (plot_seen or convoke or cycling or bargain or evidence is not None
                 or any(v is not None for v in (offspring,kicker,additional,flashback,target_reduction,scalar))
@@ -4142,6 +4197,10 @@ def compile_catalogue(snapshot, target):
         elif effect == 'Spell':
             rule, program = spell
             effect = f'Spell({rust_targets(rule)}, {rust_program(program)})'
+        # Both routes must authenticate their complete unchanged source bodies.
+        if (single_graveyard_seen
+                and any(char in raw_graveyard_body for char in '()')):
+            effect = 'Unsupported'
         if timing_grants and not (effect.startswith(('Creature(', 'Aura(')) or effect in ('Permanent', 'Land')):
             effect = 'Unsupported'
         offspring_key=None
@@ -4230,7 +4289,7 @@ def compile_catalogue(snapshot, target):
         exhaust_mask=sum(1<<i for i,a in enumerate(activations) if a[0].get('exhaust',False))
         if exhaust_mask and effect!='Unsupported':exhaust_rows.append(f'        {index} => {exhaust_mask},')
         coverage.append({'name': name, 'standard_legal': name in standard_names, 'implemented': effect != 'Unsupported',
-                         'implementation': 'bargain_template' if bargain and effect != 'Unsupported' else 'explicit' if name in legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'aura_template' if aura else 'equipment_template' if equipment else 'permanent_template' if permanent else 'static_template' if static else None})
+                         'implementation': 'bargain_template' if bargain and effect != 'Unsupported' else 'explicit' if use_legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'aura_template' if aura else 'equipment_template' if equipment else 'permanent_template' if permanent else 'static_template' if static else None})
 
     # Only factories referenced by wholly accepted cards enter the executable catalogue.
     used_tokens = sorted(set(re.findall(r'__TOKEN_([0-9a-f]+)__', '\n'.join(definitions+replacement_rows))))

@@ -1,5 +1,7 @@
 # Chosen-spell casting timing
 
+> Historical component evidence: counts, schemas, hashes and pending gates below refer to that component branch. The authoritative combined delivery is [PR275](review-pr-275.md).
+
 Whirlwing Stormbrood's complete normal body supplies a battlefield static permission for Sorcery spells and Dragon spells. Its printed Flash and Flying remain intrinsic keywords. Dynamic Soar is a separate chosen Sorcery Omen face, costs {2}{G}, targets a creature the caster controls, puts three +1/+1 counters on it, and shuffles the same physical card into its owner's library on successful resolution.
 
 The engine checks immutable `CastFilter` metadata against the chosen spell definition. The shared battlefield-static index avoids scanning the whole catalogue or adding mutable permission graphs to each game. Source departure removes future permissions through the existing source-index lifecycle. A spell already paid and on the stack remains legal after the timing source departs. The metadata is copied to generated offspring definitions with their other immutable abilities.
