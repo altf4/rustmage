@@ -111,6 +111,102 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
     for land in &mut decks[4][..10] {
         *land = Card::from_name("Swamp").unwrap();
     }
+    run_matrix(
+        decks,
+        &["Run Away Together", "Involuntary Employment", "Pilfer"],
+    );
+}
+
+#[test]
+fn foundations_cast_counter_and_program_cards_full_games() {
+    let mut decks = [
+        deck(
+            "Plains",
+            &[
+                "Jazal Goldmane",
+                "Mentor of the Meek",
+                "Linden, the Steadfast Queen",
+                "Ayli, Eternal Pilgrim",
+                "Healer's Hawk",
+                "Angel of Vitality",
+                "Exemplar of Light",
+                "Fleeting Flight",
+                "Raise the Past",
+            ],
+        ),
+        deck(
+            "Island",
+            &[
+                "Kiora, the Rising Tide",
+                "Koma, World-Eater",
+                "Prime Speaker Zegana",
+                "Lunar Insight",
+                "Fog Bank",
+                "Corsair Captain",
+                "High Fae Trickster",
+                "Exclusion Mage",
+                "Unsummon",
+            ],
+        ),
+        deck(
+            "Swamp",
+            &[
+                "Soul-Shackled Zombie",
+                "Tribute to Hunger",
+                "Midnight Snack",
+                "Vengeful Bloodwitch",
+                "Duress",
+                "Feed the Swarm",
+                "Diregraf Ghoul",
+                "Vampire Nighthawk",
+                "Tragic Banshee",
+            ],
+        ),
+        deck(
+            "Mountain",
+            &[
+                "Ashroot Animist",
+                "Frenzied Goblin",
+                "Mindsparker",
+                "Taurean Mauler",
+                "Stromkirk Noble",
+                "Slumbering Cerberus",
+                "Quick-Draw Katana",
+                "Heartfire Immolator",
+                "Burst Lightning",
+            ],
+        ),
+        deck(
+            "Forest",
+            &[
+                "Sylvan Scavenging",
+                "Mold Adder",
+                "Mossborn Hydra",
+                "Wildwood Scourge",
+                "Scavenging Ooze",
+                "Ramos, Dragon Engine",
+                "Llanowar Elves",
+                "Inspiring Call",
+                "Dwynen's Elite",
+            ],
+        ),
+    ];
+    for land in &mut decks[0][..8] {
+        *land = Card::from_name("Swamp").unwrap();
+    }
+    for land in &mut decks[1][..12] {
+        *land = Card::from_name("Forest").unwrap();
+    }
+    for land in &mut decks[3][..8] {
+        *land = Card::from_name("Forest").unwrap();
+    }
+    run_matrix(
+        decks,
+        &["Mentor of the Meek", "Frenzied Goblin", "Mold Adder"],
+    );
+}
+
+fn run_matrix(decks: [Vec<Card>; 5], expected_casts: &[&str]) {
     let mut total_decisions = 0;
     let mut triggered = false;
     let mut token = false;
@@ -197,7 +293,7 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
         }
     }
     assert!(triggered && token && combat);
-    for name in ["Run Away Together", "Involuntary Employment", "Pilfer"] {
+    for name in expected_casts {
         assert!(
             new_spells.contains(name),
             "new card was not cast in full games: {name}"
