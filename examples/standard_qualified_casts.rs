@@ -314,7 +314,9 @@ impl SurveilWitness {
                 let group = match destination {
                     LibraryDestination::Top => &partial.top,
                     LibraryDestination::Graveyard => &partial.graveyard,
-                    LibraryDestination::Bottom => panic!("surveil cannot bottom a card"),
+                    LibraryDestination::Bottom | LibraryDestination::Shuffle => {
+                        panic!("invalid surveil destination")
+                    }
                 };
                 let v = group.iter().find(|v| v.reference == *reference).unwrap();
                 assert_eq!(v.zone, Zone::Library);

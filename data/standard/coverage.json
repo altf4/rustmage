@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ec7ab5b89bfa6b576492517b789af763ecd300cd0a86e6f9871f029bc5b3c85b",
+  "catalogue_version": "5d88b288481c68b6a5d4bf99ec29073bc035a0ea33d9cc7a63e769ac71506afd",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1960,
-  "implemented_total": 1966,
+  "implemented_standard_cards": 1968,
+  "implemented_total": 1974,
   "token_definitions": 95,
   "emblem_definitions": 1,
   "cards": [
@@ -3040,8 +3040,8 @@
     {
       "name": "Boros Charm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Boros Guildgate",
@@ -8128,8 +8128,8 @@
     {
       "name": "Epic Fight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Equilibrium Adept",
@@ -9118,8 +9118,8 @@
     {
       "name": "Fire Magic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Fire Nation Attacks",
@@ -12736,8 +12736,8 @@
     {
       "name": "Ice Magic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Ice Out",
@@ -20968,8 +20968,8 @@
     {
       "name": "Restoration Magic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Restoration Seminar",
@@ -27484,8 +27484,8 @@
     {
       "name": "Thunder Magic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Thunder Salvo",
@@ -27592,8 +27592,8 @@
     {
       "name": "Tifa's Limit Break",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Tiger-Dillo",
@@ -29392,8 +29392,8 @@
     {
       "name": "Vincent's Limit Break",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Vindictive Triumph",
