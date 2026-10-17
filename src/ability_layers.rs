@@ -84,6 +84,8 @@ pub(crate) enum StaticAbilityFragment {
     CostReduction(u16, SpellReduction),
     TargetCostReduction(u16, TargetSpellReduction),
     CombatRestriction(u16, CombatRestriction),
+    /// Source attacks every combat when independently able to attack.
+    AttacksEachCombat,
     EntryTriggerSuppression(u16, u16),
     OpponentEntryTapped(u16, u16),
     ControlledEntryUntapped,
