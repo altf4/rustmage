@@ -47,3 +47,13 @@ The composed source passes1,922 unit+12 integration tests (1,934 total), all-tar
 Clippy and23 affected compiler/provenance methods in5.626s. Initial foreign fixture
 used AnnounceCast for an exile permission; the corrected AnnounceExile fixture
 passes without a runtime change. Public acceptance and final delivery remain pending.
+
+Independent review found a compiler error path in the new draw-then-land wrapper:
+an unsupported conditional subtype or life amount above65535 returned no tail and
+was splatted unconditionally. The corrected guard rejects both whole-body inputs,
+with dedicated regressions; all24 affected compiler methods pass in5.423s. Every
+valid generated definition/helper/color/alias/recipe is symbolically identical to
+the passing7872b98 source; only the compiler fingerprint changes. The public policy
+is kept byte-identical to its18 passing paid natural cases (18.111s). Under the new
+direct-Rust authoring strategy, this existing two-body kernel is preserved, with
+no further English-parser expansion or bot-policy expansion in this phase.

@@ -28,6 +28,11 @@ class UntappedEntryTests(unittest.TestCase):
     for cost in ['{Q}','{3}{','{X}{G}']:
      self.assertFalse(self.compile(dict(c,mana_cost=cost))[1],(name,cost))
     self.assertFalse(self.compile(dict(c,type_line='Sorcery Creature'))[1])
+ def test_whole_draw_then_land_unsupported_tail_is_gated_not_an_exception(self):
+  base=self.cards['Spelunking']
+  for bad in [base['oracle_text'].replace('a Cave','a Imaginary'),base['oracle_text'].replace('gain 4 life','gain 65536 life')]:
+   for name in ['Unsupported Draw Tail',*[c[0]for c in g.LEGACY]]:
+    self.assertFalse(self.compile(dict(base,name=name,oracle_text=bad))[1],(name,bad))
  def test_each_new_generic_production_authenticates_original_raw(self):
   base=metadata.LegacyMetadataTests.creature('Generic Replacement')
   routes=[

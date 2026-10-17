@@ -2138,7 +2138,8 @@ def hand_land_program(text):
     if m:=re.fullmatch(r'you may put a land card from your hand onto the battlefield( tapped)?\.',text):
         return ['PutHandLand { tapped: '+str(bool(m[1])).lower()+' }']
     if m:=re.fullmatch(r'draw (a card|two cards|three cards|four cards), then (you may put a land card from your hand(?: or graveyard)? onto the battlefield(?: tapped)?\.(?: If you put a [A-Z][A-Za-z-]* onto the battlefield this way, you gain [1-9][0-9]* life\.)?)',text):
-        return [f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[1]]})',*hand_land_program(m[2])]
+        tail=hand_land_program(m[2])
+        return [f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[1]]})',*tail] if tail is not None else None
     return None
 
 
