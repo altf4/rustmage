@@ -164,6 +164,16 @@ class AbilityLayerIdentityTests(unittest.TestCase):
         result = rust_groups(card, g, body[2])
         self.assertEqual(re.findall(r'AttachmentTrigger\(([0-9]+)\)', result), ['0', '1'])
 
+    def test_equal_helper_payloads_keep_distinct_slots_and_live_fragments_share_one(self):
+        card = dict(self.cards['Bear Cub'], oracle_text='Other creatures you control get +1/+1.\nOther creatures you control get +1/+1.')
+        rendered = rust_groups(card, g, [])
+        self.assertEqual(re.findall(r'StaticModifier\(([0-9]+),', rendered), ['0', '1'])
+        card = self.cards['Burden of Proof']
+        rendered = rust_groups(card, g, [])
+        self.assertEqual(re.findall(r'LiveBonus\(([0-9]+),', rendered), ['0'])
+        self.assertEqual(re.findall(r'LiveBase\(([0-9]+),', rendered), ['1'])
+        self.assertEqual(re.findall(r'LiveBlockRestriction\(([0-9]+),', rendered), ['1'])
+
     def test_actual_live_static_parent_keeps_archon_group_and_later_only_providers(self):
         for name, first in [('Maha, Its Feathers Night', Layer.BASE), ('Aettir and Priwen', Layer.BASE), ('Archon of the Wild Rose', Layer.ABILITY), ('Burden of Proof', Layer.BASE)]:
             with self.subTest(name=name):

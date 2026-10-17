@@ -31,7 +31,7 @@ mod gift;
 mod gift_tests;
 pub use gift::{GiftContext, GiftDeclaration};
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 100;
+pub const OBSERVATION_SCHEMA: u32 = 102;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -126,6 +126,9 @@ mod roles;
 #[path = "engine_sba.rs"]
 mod sba;
 pub use roles::{RoleGroupView, RoleTimestampView};
+#[path = "engine_ability_timeline.rs"]
+mod ability_timeline;
+pub use ability_timeline::{AbilitySourceTimestampView, KeywordEffectOrigin, KeywordEffectView};
 #[path = "engine_base_stats.rs"]
 mod base_stats;
 pub use base_stats::{BaseStatsEffectView, ResolvedStatSubjectView};
@@ -1525,6 +1528,8 @@ pub struct Observation {
     pub base_stat_effects: Vec<BaseStatsEffectView>,
     pub live_static_sources: Vec<LiveStaticSourceView>,
     pub resolved_stat_subjects: Vec<ResolvedStatSubjectView>,
+    pub ability_source_timestamps: Vec<AbilitySourceTimestampView>,
+    pub keyword_effects: Vec<KeywordEffectView>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
@@ -3666,7 +3671,8 @@ impl Game {
                         && !o.card.is_emblem()
                         && (o.card.base_stat_setter().is_some()
                             || !o.card.live_static_effects().is_empty()
-                            || o.card.role().is_some())
+                            || o.card.role().is_some()
+                            || o.card.has_layer6_provider())
                 })
                 .count();
             assert!(count <= 1, "simultaneous timestamp entry must be staged");
@@ -3898,6 +3904,7 @@ impl Game {
             self.forget_role(before.reference);
             self.forget_base_stats(before.reference);
             self.forget_live_static_source(before.reference);
+            self.forget_ability_source(before.reference);
             // Abilities use the source's actual last-known keywords if it leaves,
             // including gains made after that ability was announced.
             for item in self
@@ -4199,6 +4206,7 @@ impl Game {
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.state.temporary_abilities = None;
         self.expire_base_stats();
+        self.expire_keyword_effects();
         self.state.death_exile_replacements = None;
         for player in &mut self.state.players {
             player.extra_land_plays_remaining = 0;
@@ -4686,6 +4694,14 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.stat_subjects.clone()),
+            ability_source_timestamps: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.ability_timestamps.clone()),
+            keyword_effects: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.keyword_effects.clone()),
             role_timestamps: s
                 .roles
                 .as_ref()
@@ -5653,3 +5669,7 @@ mod live_static_rules_tests;
 #[cfg(test)]
 #[path = "engine_tiered_tests.rs"]
 mod tiered_tests;
+
+#[cfg(test)]
+#[path = "engine_ability_timeline_tests.rs"]
+mod ability_timeline_tests;

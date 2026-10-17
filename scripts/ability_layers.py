@@ -225,6 +225,8 @@ def rust_groups(card, parser, abilities):
         available.setdefault(_immutable((condition, program, targets)), []).append(index)
     used = set()
     rendered = []
+    slots = {}
+    live_slots = {}
     for group in continuous_groups(card, parser):
         fragments = []
         for fragment in group.fragments:
@@ -243,7 +245,9 @@ def rust_groups(card, parser, abilities):
             elif kind == 'counter_keyword_grants':
                 if not payload.startswith('(') or not payload.endswith(')'):
                     raise ValueError('invalid immutable counter-grant recipe')
-                value = 'CounterKeyword' + payload
+                index = slots.get(kind, 0)
+                slots[kind] = index + 1
+                value = 'CounterKeyword(' + str(index) + ', ' + payload[1:-1] + ')'
             elif kind == 'attachment_trigger':
                 candidates = [i for i in available.get(payload, ()) if i not in used]
                 if not candidates:
@@ -254,7 +258,19 @@ def rust_groups(card, parser, abilities):
                 used.add(index)
                 value = f'AttachmentTrigger({index})'
             else:
-                value = variants[kind] + '(' + str(payload) + ')'
+                if kind.startswith('live_static_'):
+                    # Several layer fragments refer to one live helper row.
+                    # Equal recipes from distinct source groups remain distinct.
+                    key = (group.line, payload)
+                    if key not in live_slots:
+                        live_slots[key] = len(live_slots)
+                    index = live_slots[key]
+                else:
+                    index = slots.get(kind, 0)
+                    slots[kind] = index + 1
+                if index > 65535:
+                    raise ValueError('static fragment slot exhausted')
+                value = variants[kind] + '(' + str(index) + ', ' + str(payload) + ')'
             fragments.append('StaticAbilityFragment::' + value)
         rendered.append('StaticAbilityGroup { line: ' + str(group.line) + ', first_layer: AbilityLayer::' +
                         layers[group.first_layer] + ', fragments: &[' + ', '.join(fragments) + '] }')

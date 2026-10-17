@@ -1211,12 +1211,18 @@ impl Game {
                     self.state.players[item.controller.index()].hexproof_until_end_turn = true;
                 }
                 Instruction::GrantPermanentsThisTurn(keywords) => {
-                    for object in &mut self.state.objects {
-                        if object.zone == Zone::Battlefield && object.controller == item.controller
-                        {
-                            object.gained_keywords = object.gained_keywords.union(keywords);
-                        }
-                    }
+                    let ids: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter_map(|(id, object)| {
+                            (object.zone == Zone::Battlefield
+                                && object.controller == item.controller)
+                                .then_some(id as CardId)
+                        })
+                        .collect();
+                    self.grant_keyword_effects(&ids, item.object, keywords);
                 }
                 Instruction::DamageWithController {
                     damage,
@@ -1967,38 +1973,10 @@ impl Game {
                 Instruction::ReturnGrantedSource { counter, role } => {
                     self.return_granted_source(&item, counter, role)
                 }
-                Instruction::GrantKeywords { subject, keywords } => match subject {
-                    Subject::Entering => {
-                        if let Some(id) = self.entering_subject(&item) {
-                            let object = &mut self.state.objects[id as usize];
-                            object.gained_keywords = object.gained_keywords.union(keywords);
-                        }
-                    }
-                    Subject::Attached => {
-                        if let Some(id) = self.attached_subject(&item) {
-                            let object = &mut self.state.objects[id as usize];
-                            object.gained_keywords = object.gained_keywords.union(keywords);
-                        }
-                    }
-                    Subject::Source => {
-                        if self.on_battlefield(item.card)
-                            && self.object_ref(item.card) == item.object
-                        {
-                            let object = &mut self.state.objects[item.card as usize];
-                            object.gained_keywords = object.gained_keywords.union(keywords);
-                        }
-                    }
-                    Subject::Targets => {
-                        for bound in &item.targets {
-                            if self.same_target_object(*bound)
-                                && let Target::Card(id) = bound.target
-                            {
-                                let object = &mut self.state.objects[id as usize];
-                                object.gained_keywords = object.gained_keywords.union(keywords);
-                            }
-                        }
-                    }
-                },
+                Instruction::GrantKeywords { subject, keywords } => {
+                    let ids = self.keyword_subjects(&item, subject);
+                    self.grant_keyword_effects(&ids, item.object, keywords);
+                }
                 Instruction::GrantCreatures { filter, keywords } => {
                     let affected: Vec<_> = (0..self.state.objects.len())
                         .map(|id| id as CardId)
@@ -2006,10 +1984,7 @@ impl Game {
                             self.creature_matches(filter, item.controller, item.object, id)
                         })
                         .collect();
-                    for id in affected {
-                        let object = &mut self.state.objects[id as usize];
-                        object.gained_keywords = object.gained_keywords.union(keywords);
-                    }
+                    self.grant_keyword_effects(&affected, item.object, keywords);
                 }
                 Instruction::SnapshotDoubleCreatures(filter) => {
                     // Snapshot every operand before changing any derived characteristic.

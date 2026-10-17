@@ -7,6 +7,7 @@ impl Game {
     pub(super) fn register_battlefield_sources(&mut self, id: CardId) {
         self.register_static_base_stats(id);
         self.register_live_static_source(id);
+        self.register_ability_source(id);
         if self.state.objects[id as usize]
             .card
             .attachment_bonus()

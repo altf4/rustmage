@@ -654,7 +654,8 @@ impl Game {
             && !m.skipped
             && (m.before.card.base_stat_setter().is_some()
                 || !m.before.card.live_static_effects().is_empty()
-                || m.before.card.role().is_some())
+                || m.before.card.role().is_some()
+                || m.before.card.has_layer6_provider())
     }
     fn entry_timestamp_indices(&self, batch: &EntryBatch) -> Vec<usize> {
         let mut ids: Vec<_> = batch

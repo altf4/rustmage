@@ -24,6 +24,8 @@ pub(super) struct RoleState {
     pub base_stats: Vec<BaseStatsEffectView>,
     pub live_static: Vec<LiveStaticSourceView>,
     pub stat_subjects: Vec<ResolvedStatSubjectView>,
+    pub ability_timestamps: Vec<AbilitySourceTimestampView>,
+    pub keyword_effects: Vec<KeywordEffectView>,
 }
 impl RoleState {
     pub fn bytes(&self) -> usize {
@@ -32,6 +34,8 @@ impl RoleState {
             + self.base_stats.len() * std::mem::size_of::<BaseStatsEffectView>()
             + self.live_static.len() * std::mem::size_of::<LiveStaticSourceView>()
             + self.stat_subjects.len() * std::mem::size_of::<ResolvedStatSubjectView>()
+            + self.ability_timestamps.len() * std::mem::size_of::<AbilitySourceTimestampView>()
+            + self.keyword_effects.len() * std::mem::size_of::<KeywordEffectView>()
     }
 }
 impl Game {
@@ -113,6 +117,9 @@ impl Game {
     pub(super) fn static_source_timestamp(&mut self, source: ObjectRef) -> u64 {
         // All continuous abilities of a permanent share its most recent timestamp.
         if let Some(r) = &self.state.roles {
+            if let Some(v) = r.ability_timestamps.iter().find(|v| v.source == source) {
+                return v.timestamp;
+            }
             if let Some(v) = r
                 .base_stats
                 .iter()
@@ -129,6 +136,11 @@ impl Game {
     pub(super) fn assign_static_source_timestamp(&mut self, source: ObjectRef) {
         let timestamp = self.next_role_timestamp();
         if let Some(r) = &mut self.state.roles {
+            for v in &mut r.ability_timestamps {
+                if v.source == source {
+                    v.timestamp = timestamp;
+                }
+            }
             for v in &mut r.base_stats {
                 if v.static_source && v.source == source {
                     v.timestamp = timestamp;
@@ -148,6 +160,11 @@ impl Game {
     }
     pub(super) fn record_role(&mut self, aura: ObjectRef, recipient: ObjectRef, timestamp: u64) {
         let r = self.state.roles.get_or_insert_with(Default::default);
+        for v in &mut r.ability_timestamps {
+            if v.source == aura {
+                v.timestamp = timestamp;
+            }
+        }
         r.attached.retain(|v| v.aura != aura);
         r.attached.push(RoleTimestampView {
             aura,
