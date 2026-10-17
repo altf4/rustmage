@@ -3,10 +3,25 @@
   "catalogue_id": 4679,
   "oracle_id": "dc5a501c-e16c-4d4b-a510-70a14272473e",
   "facts_sha256": "aaf4df7fb786fc03fc8a3d7aff92e4715c33f51064b9c71667a09c5b0bede237",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "82b67f856d8e02837d21041f0cb27a9e6c945b22e6372af31e0f9d26ee810388"
   },
-  "physical_metadata_sha256": "46c781c3c8f2d434f017070c35682293126f5cfc4e55b70040b91d187c4bc2f9"
+  "physical_metadata_sha256": "46c781c3c8f2d434f017070c35682293126f5cfc4e55b70040b91d187c4bc2f9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TributeToHunger.java",
+  "java_sha256": "3518d7dfa5a0ba1a6a4fe0f3c1902be7acf3cd89036d3c46bddf73b306dc527a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetSacrifice.java",
+      "sha256": "24e8ec2dda0609630c60e91b1b890feebc7c8dbb0eb6002565897a07ca9113d7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    }
+  ]
 }

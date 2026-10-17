@@ -111,6 +111,7 @@ impl Game {
                 discard_event: None,
                 draw_event: None,
                 life_event: None,
+                sacrificed_toughness: None,
                 card: view.source.card,
                 object: view.source,
                 targets: Vec::new(),

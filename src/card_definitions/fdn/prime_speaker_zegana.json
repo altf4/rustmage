@@ -3,10 +3,35 @@
   "catalogue_id": 3234,
   "oracle_id": "311e9368-696a-47e7-aa2f-3ef1b1a92e2b",
   "facts_sha256": "467863150090099cbcc297525345de768daa87d93cb47f17df1998f8193edafc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "87507848024b70e2b33ab2e08b808a0fc33db0a87f10ffd1ca7267ae2e2946bd"
   },
-  "physical_metadata_sha256": "5920973cdf647cc8983ef6cdf66212e01588916022737014cbd6dd3edd606eda"
+  "physical_metadata_sha256": "5920973cdf647cc8983ef6cdf66212e01588916022737014cbd6dd3edd606eda",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PrimeSpeakerZegana.java",
+  "java_sha256": "716af085264a2049bd12ad5d1759ffd3cf1b92a211b73f998cabb03004d69e84",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GreatestAmongPermanentsValue.java",
+      "sha256": "1fb2bb2baf97bbbf6aa1cf4669139b3d10d3fc3beb40a6f2c76fc403393fb299"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentPowerValue.java",
+      "sha256": "aabc6ce8b7bd68b08691830a2a45af0d886a2837c652bbca9e109b5813b0ca9a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ]
 }

@@ -53,6 +53,9 @@ impl Game {
     pub(super) fn activation_guard_available(&self, guard: ActivationGuard, actor: Player) -> bool {
         match guard {
             ActivationGuard::Always => true,
+            ActivationGuard::LifeAboveStarting(extra) => {
+                self.state.players[actor.index()].life >= STARTING_LIFE + i128::from(extra)
+            }
             ActivationGuard::OwnTurn => self.state.active == actor,
             ActivationGuard::ControlLandsAtLeast(minimum) => {
                 self.state
@@ -418,6 +421,7 @@ impl Game {
             discard_event: None,
             draw_event: None,
             life_event: None,
+            sacrificed_toughness: None,
             source_attachment: self.state.objects[card as usize].attached_to,
             card,
             object: self.object_ref(card),

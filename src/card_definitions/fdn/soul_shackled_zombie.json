@@ -3,10 +3,25 @@
   "catalogue_id": 3976,
   "oracle_id": "f81ca3a5-356d-4b5d-afc2-a33aa774816b",
   "facts_sha256": "cf2013f8ab173a04cc611e280786260d36de2e38ad21103399ca2726b2b5dc7e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6a9c34895439bac100708739b2e8503caa273f5a8028ea264110a98681d5c7b4"
   },
-  "physical_metadata_sha256": "785f744776e9f84f866252663dd701474229a8f9beba96c047c2a1107c0dc100"
+  "physical_metadata_sha256": "785f744776e9f84f866252663dd701474229a8f9beba96c047c2a1107c0dc100",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SoulShackledZombie.java",
+  "java_sha256": "4b6a78c1330fa689507b34a4e6809ba3861fa98c7792813cb140ff3f8b77c35e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInASingleGraveyard.java",
+      "sha256": "949cc145a9909c27e84176fa97ef96c73a3e59f445abda54b117c3318d7f1db9"
+    }
+  ]
 }

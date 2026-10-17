@@ -3,10 +3,30 @@
   "catalogue_id": 2858,
   "oracle_id": "84122d81-9634-4d3f-85a5-f6cf4303691a",
   "facts_sha256": "02923c1b43f16b4c8de5b70ea7eea88869883d8e6d0badeb39ca20501db2edde",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7719dc93b680157a1d15ee8025b55e9c1a5794c590cc596e4c6e5157dedd4c6f"
   },
-  "physical_metadata_sha256": "6fc19e0c21eec6f1e180d9627de82d2c724b89c01b8d1a2a437906a15dcea14d"
+  "physical_metadata_sha256": "6fc19e0c21eec6f1e180d9627de82d2c724b89c01b8d1a2a437906a15dcea14d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MossbornHydra.java",
+  "java_sha256": "896c00f35f620ec74a38f99d8b2167a35c678b9100d2f51cdd3cc7be140e74d6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldWithCountersAbility.java",
+      "sha256": "b34c7e6346705407d2a8519d8afdebd93b393745b995bbbce928753c35eacd59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+      "sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoubleCountersSourceEffect.java",
+      "sha256": "3924b0c19e24eb1e4fe888b8dee9166962d1dbe3fed317503e1632d48e300bf5"
+    }
+  ]
 }

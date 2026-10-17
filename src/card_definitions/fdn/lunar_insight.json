@@ -3,10 +3,20 @@
   "catalogue_id": 2583,
   "oracle_id": "56b4a2f7-2d35-4d05-8d26-4f9f16c5f9f5",
   "facts_sha256": "502c7d39370b3ede66e2338e23fd6eba7d5a1912f65c706583177de487be1e2a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5ac022988eef461e350fd44864c86bf7813c6890e1f6ac0d6910df421a86325b"
   },
-  "physical_metadata_sha256": "afa9e45eda843e3dd2170362ec718a1bc485e0ea699c4b6ebf3d790761f20d7e"
+  "physical_metadata_sha256": "afa9e45eda843e3dd2170362ec718a1bc485e0ea699c4b6ebf3d790761f20d7e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LunarInsight.java",
+  "java_sha256": "d99e4297de4ca51cd3cd71856a5de183760d86677223410e65fc1aaff7197e93",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ]
 }

@@ -345,6 +345,23 @@ impl Game {
         for rule in before.card.entry_counter_rules() {
             if self.step_guard(rule.guard, controller, before.reference, before.tapped) {
                 let amount = match rule.amount {
+                    EntryCounterAmount::GreatestOtherCreaturePower => self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(id, o)| {
+                            o.zone == Zone::Battlefield
+                                && o.controller == controller
+                                && *id as CardId != before.id
+                                && self.current_kinds(*id as CardId) & 1 != 0
+                        })
+                        .map(|(id, _)| self.stats(id as CardId).power)
+                        .max()
+                        .unwrap_or(0)
+                        .max(0)
+                        .try_into()
+                        .capacity("entry power exhausted"),
                     EntryCounterAmount::ColorsSpent => {
                         payment.map_or(0, |p| (0..5).filter(|&i| p[i] > 0).count() as u64)
                     }
@@ -484,19 +501,6 @@ impl Game {
             }
         }
         self.finish_zone_events(&events, &[]);
-        for event in &events {
-            if event.moved && event.destination == Zone::Battlefield {
-                let placed_by = self
-                    .state
-                    .resolving
-                    .as_ref()
-                    .map_or(event.before.controller, |r| r.item.controller);
-                let counters = self.state.objects[event.after.card as usize].counters;
-                for kind in CounterKind::ALL {
-                    self.self_counters_added(event.after, kind, counters.get(kind), placed_by);
-                }
-            }
-        }
         for (reference, controller, subtype, amount) in life_results {
             if self.object_ref(reference.card) == reference
                 && self.on_battlefield(reference.card)
