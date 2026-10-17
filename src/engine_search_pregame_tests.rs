@@ -1,11 +1,11 @@
-//! Gated printed fixtures exercising shared pregame and affected-player search rules.
+//! Admitted printed fixtures exercising shared pregame and affected-player search rules.
 use super::ability_timeline_tests::{checked, settle, setup};
 use super::tests::spawn;
 use super::*;
 
 fn fixture(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
     let card = Card::from_name(name).unwrap();
-    assert!(!card.is_supported());
+    assert!(card.is_supported());
     spawn(g, p, card, zone)
 }
 fn reject(g: &mut Game, action: Action) {
@@ -389,7 +389,7 @@ fn declined_opening_card_is_observationally_indistinguishable_from_another_hidde
             .position(|o| o.owner == start && o.zone == Zone::Hand)
             .unwrap();
         hidden.state.objects[id].card = Card::from_name("Leyline Axe").unwrap();
-        assert!(!hidden.state.objects[id].card.is_supported());
+        assert!(hidden.state.objects[id].card.is_supported());
         for action in [
             Action::Keep,
             Action::Keep,

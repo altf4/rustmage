@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "7bb445831da9b27ef0e0d6aa48c42b81b5d544878f55a079d8c5a989de0ed783",
+  "catalogue_version": "7178ff4f50a27aee9b84281e89938e3a31bcc7059176cb74d6a623e57b24b22d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2125,
-  "implemented_total": 2131,
+  "implemented_standard_cards": 2130,
+  "implemented_total": 2136,
   "token_definitions": 102,
   "emblem_definitions": 2,
   "adventure_definitions": 40,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 370,
-      "gated": 57
+      "complete": 375,
+      "gated": 52
     },
     "fin": {
       "total": 305,
@@ -8506,8 +8506,8 @@
     {
       "name": "Demolition Field",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/demolition_field.rs",
       "set": "fdn"
     },
@@ -9738,8 +9738,8 @@
     {
       "name": "Dropkick Bomber",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/dropkick_bomber.rs",
       "set": "fdn"
     },
@@ -20058,8 +20058,8 @@
     {
       "name": "Leyline Axe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/leyline_axe.rs",
       "set": "fdn"
     },
@@ -21746,8 +21746,8 @@
     {
       "name": "Mazemind Tome",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/mazemind_tome.rs",
       "set": "fdn"
     },
@@ -25970,8 +25970,8 @@
     {
       "name": "Predator Ooze",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/predator_ooze.rs",
       "set": "fdn"
     },
