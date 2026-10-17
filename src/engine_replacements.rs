@@ -52,10 +52,19 @@ pub struct TokenGroupView {
     pub tapped: bool,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct RoleReflexiveCompletion {
+    pub recipient: ObjectRef,
+    pub token: Card,
+    pub item: SpellView,
+    pub ability: u16,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum TokenCompletion {
     None,
     JobAttach(ObjectRef),
     RoleAttach(ObjectRef),
+    RoleReflexive(Box<RoleReflexiveCompletion>),
     /// One mass creation event; original group indices retain exact recipients.
     RoleAttachMany(Vec<ObjectRef>),
     Mobilize,
@@ -105,6 +114,9 @@ impl ReplacementState {
             b.groups.len() * std::mem::size_of::<TokenGroupView>()
                 + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
                 + match &b.completion {
+                    TokenCompletion::RoleReflexive(c) => {
+                        std::mem::size_of::<RoleReflexiveCompletion>() + c.item.owned_bytes()
+                    }
                     TokenCompletion::RoleAttachMany(recipients) => {
                         recipients.len() * std::mem::size_of::<ObjectRef>()
                     }
@@ -674,6 +686,14 @@ impl Game {
                                             &batch.groups,
                                             *recipient,
                                         ),
+                                    TokenCompletion::RoleReflexive(c) => self
+                                        .create_token_groups_attached(
+                                            batch.player,
+                                            &batch.groups,
+                                            None,
+                                            true,
+                                            Some(c.recipient),
+                                        ),
                                     TokenCompletion::RoleAttachMany(recipients) => self
                                         .create_token_groups_per_recipient(
                                             batch.player,
@@ -687,6 +707,15 @@ impl Game {
                                         capture,
                                     ),
                                 };
+                                if let TokenCompletion::RoleReflexive(c) = &batch.completion
+                                    && created.iter().any(|r| {
+                                        self.object_view(r.card).card == c.token
+                                            && self.object_view(r.card).attached_to
+                                                == Some(c.recipient)
+                                    })
+                                {
+                                    self.queue_reflexive(&c.item, c.ability, Some(c.recipient));
+                                }
                                 if let TokenCompletion::JobAttach(source) = batch.completion {
                                     let eligible = created
                                         .into_iter()
@@ -831,6 +860,11 @@ impl Game {
                         .iter()
                         .map(|g| g.token.role().map(|_| *recipient))
                         .collect(),
+                    TokenCompletion::RoleReflexive(completion) => batch
+                        .groups
+                        .iter()
+                        .map(|group| group.token.role().map(|_| completion.recipient))
+                        .collect(),
                     TokenCompletion::RoleAttachMany(recipients) => batch
                         .groups
                         .iter()
@@ -909,5 +943,62 @@ mod owned_memory_tests {
         entry.replacement_resume = Some(Box::new(frame.clone()));
         assert_eq!(entry.bytes(), without_outer + frame.bytes());
         assert_eq!(entry.clone().bytes(), entry.bytes());
+    }
+}
+
+#[cfg(test)]
+mod role_success_memory_tests {
+    use super::*;
+    #[test]
+    fn boxed_role_success_packet_and_nested_subject_are_counted_exactly_once() {
+        let mut g = super::super::tests::scenario();
+        let id = super::super::tests::spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Curse of the Werefox").unwrap(),
+            Zone::Hand,
+        );
+        let item = g.cast_item(Player::P0, id, [0; 6]);
+        let mut state = ReplacementState {
+            work: VecDeque::new(),
+            active: None,
+            attachment: None,
+            resume: None,
+            mode: ResumeMode::Program,
+        };
+        state.active = Some(Event::Tokens(TokenBatch {
+            player: Player::P0,
+            groups: Vec::new(),
+            effect: true,
+            used: Vec::new(),
+            completion: TokenCompletion::None,
+        }));
+        let before = state.bytes();
+        let recipient = g.object_ref(id);
+        let Some(Event::Tokens(batch)) = &mut state.active else {
+            unreachable!()
+        };
+        batch.completion = TokenCompletion::RoleReflexive(Box::new(RoleReflexiveCompletion {
+            recipient,
+            token: Card::from_name("Curse of the Werefox").unwrap(),
+            item: item.clone(),
+            ability: 0,
+        }));
+        assert_eq!(
+            state.bytes() - before,
+            std::mem::size_of::<RoleReflexiveCompletion>() + item.owned_bytes()
+        );
+        let n = state.bytes();
+        let Some(Event::Tokens(batch)) = &mut state.active else {
+            unreachable!()
+        };
+        let TokenCompletion::RoleReflexive(c) = &mut batch.completion else {
+            unreachable!()
+        };
+        c.item.reflexive_subject = Some(Box::new(ReflexiveSubjectView { object: recipient }));
+        assert_eq!(
+            state.bytes() - n,
+            std::mem::size_of::<ReflexiveSubjectView>()
+        );
     }
 }

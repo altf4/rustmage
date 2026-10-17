@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "6504b11a16c13082f442008e7ea9c5399ccdb0bc1c43dab95852c72446e5c2e8",
+  "catalogue_version": "0881a3aabaa1f79ba870fe0306bad19c4fdd831d90d5b965af239122c33926cf",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1895,
-  "implemented_total": 1901,
+  "implemented_standard_cards": 1896,
+  "implemented_total": 1902,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -5614,8 +5614,8 @@
     {
       "name": "Curse of the Werefox",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Curse-Marred Demon",
