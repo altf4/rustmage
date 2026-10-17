@@ -44,7 +44,7 @@ class HandLandTests(unittest.TestCase):
   c=self.cards['Insidious Fungus'];r,ok=self.compile(c);self.assertTrue(ok)
   line=next(x for x in r.splitlines()if 'name: "Insidious Fungus"'in x and x.lstrip().startswith('Definition {'))
   self.assertEqual(line.count('ActivatedAbility {'),1);self.assertIn('Instruction::Modal(',line);self.assertEqual(line.count('SpellMode {'),3)
-  for text in [c['oracle_text']+'\n• Discover 4.',c['oracle_text'].replace('• Destroy target enchantment.','• You win the game.'),'{2}: Choose one —\n• Add {G}.\n• Draw a card.']:
+  for text in [c['oracle_text']+'\n• Discover 4.',c['oracle_text'].replace('• Destroy target enchantment.','• You win the game.'),'{2}: Choose one —\n• Add {G}.\n• Draw a card.','{2}, Discard a card: Choose one —\n• Draw a card.\n• You gain 1 life.','{2}, Sacrifice a creature: Choose one —\n• Destroy target artifact.\n• You gain 1 life.']:
    self.assertFalse(self.compile(dict(c,oracle_text=text))[1],text)
  def test_explored_kinds_are_exact_and_empty_has_no_card_kind(self):
   r,ok=self.compile(self.cards['Nicanzil, Current Conductor']);self.assertTrue(ok);self.assertIn('CreatureExploresCardYou { land: true }',r);self.assertIn('CreatureExploresCardYou { land: false }',r)

@@ -4158,6 +4158,10 @@ def permanent_program_template(card):
                 effect_text = "Return this permanent to its owner's hand."
         source_return = source_return_program(effect_text)
         if effect_text in modal_activations:
+            # External object costs need a joint per-mode reservation/target proof.
+            # Fixed mana and source costs are mode-independent; source sacrifice
+            # may legally invalidate an announced target after costs are paid.
+            if cost['additional'] is not None:return None
             targets,program='None',modal_activations[effect_text]
         elif source_return:
             origin, program = source_return

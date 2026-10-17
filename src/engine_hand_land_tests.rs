@@ -539,3 +539,78 @@ fn hand_land_actual_foreign_exile_permissions_keep_caster_private_hand_and_land_
         }
     }
 }
+
+#[test]
+fn hand_land_modal_cost_is_paid_before_real_ward_counters_activation_and_stale_target_fizzles() {
+    for p in [Player::P0, Player::P1] {
+        for mode in [0, 1] {
+            for ward in [false, true] {
+                let mut g = setup(p);
+                let land = named(&mut g, p, "Forest", Zone::Hand);
+                let victim = named(
+                    &mut g,
+                    p.other(),
+                    if ward {
+                        if mode == 0 {
+                            "Hoverstone Pilgrim"
+                        } else {
+                            "Lionheart Glimmer"
+                        }
+                    } else if mode == 0 {
+                        "Goldvein Pick"
+                    } else {
+                        "Doubling Season"
+                    },
+                    Zone::Battlefield,
+                );
+                let source = paid(&mut g, p, "Insidious Fungus", None);
+                reject(
+                    &mut g,
+                    Action::Activate {
+                        card: source,
+                        ability: 0,
+                        target: Some(Target::Card(victim)),
+                        payment: [0, 0, 0, 0, 0, 2],
+                        counter_payment: Counters::default(),
+                    },
+                );
+                checked(
+                    &mut g,
+                    Action::AnnounceActivate {
+                        card: source,
+                        ability: 0,
+                        counter_payment: Counters::default(),
+                    },
+                );
+                checked(&mut g, Action::ChooseMode { mode });
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(victim),
+                    },
+                );
+                while g.state.announcing.is_some() {
+                    next(&mut g, None, mode, None);
+                }
+                assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+                assert!(!g.state.stack.is_empty());
+                if ward {
+                    until(&mut g, None, |g| {
+                        g.legal_actions().contains(&Action::DeclineResolutionMana)
+                    });
+                    checked(&mut g, Action::DeclineResolutionMana);
+                    drive(&mut g, None, 0, None);
+                    assert_eq!(g.object_view(victim).zone, Zone::Battlefield);
+                } else {
+                    let response = named(&mut g, p, "Disenchant", Zone::Hand);
+                    checked(&mut g, Action::AnnounceCast { card: response });
+                    drive(&mut g, None, 0, Some(Target::Card(victim)));
+                    assert_eq!(g.object_view(victim).zone, Zone::Graveyard);
+                }
+                assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+                assert_eq!(g.object_view(land).zone, Zone::Hand);
+                assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 0);
+            }
+        }
+    }
+}

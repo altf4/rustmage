@@ -17,7 +17,8 @@ matching occurs at event queue time; empty-library exploration matches neither.
 
 Insidious Fungus uses one real activated ability with announce-time modes before
 targets and payment, reusing the existing modal kernel. Its three paid modes and
-source sacrifice must all be tested. Modal mana-production abilities remain gated
+source sacrifice must all be tested. Modal external-object costs need joint per-mode reservation/target funding proof;
+they remain gated. Modal mana-production abilities remain gated
 until their classification/production solver is implemented.
 
 Initial focused compiler/native checks are pending. Full paid both-seat public
