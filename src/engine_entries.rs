@@ -26,6 +26,7 @@ pub(super) struct EntryBatch {
     pub choices: Vec<usize>,
     pub next: usize,
     pub counter_next: usize,
+    pub counter_order: Vec<usize>,
     pub resume: Option<Pending>,
     pub shuffle_after: Option<Player>,
 }
@@ -34,6 +35,7 @@ impl EntryBatch {
         std::mem::size_of::<Self>()
             + self.moves.len() * std::mem::size_of::<EntryMove>()
             + self.choices.len() * std::mem::size_of::<usize>()
+            + self.counter_order.len() * std::mem::size_of::<usize>()
     }
 }
 #[derive(Clone, Debug, Serialize)]
@@ -184,11 +186,21 @@ impl Game {
             .map(|(i, _)| i)
             .collect();
         choices.sort_by_key(|&i| (moves[i].before.owner != self.state.active, i));
+        // Counter replacement choices are APNAP independently of the move order.
+        // Preserve moves and existing Aura/life indices for the simultaneous commit.
+        let mut counter_order = moves
+            .iter()
+            .enumerate()
+            .filter(|(_, m)| m.destination == Zone::Battlefield && m.counters.total() > 0)
+            .map(|(i, _)| i)
+            .collect::<Vec<_>>();
+        counter_order.sort_by_key(|&i| (moves[i].before.owner != self.state.active, i));
         let batch = EntryBatch {
             moves,
             choices,
             next: 0,
             counter_next: 0,
+            counter_order,
             resume: None,
             shuffle_after,
         };
@@ -366,10 +378,10 @@ impl Game {
                 batch.next += 1;
             }
             while self.state.entry_batch.as_ref().unwrap().counter_next
-                < self.state.entry_batch.as_ref().unwrap().moves.len()
+                < self.state.entry_batch.as_ref().unwrap().counter_order.len()
             {
                 let batch = self.state.entry_batch.as_mut().unwrap();
-                let index = batch.counter_next;
+                let index = batch.counter_order[batch.counter_next];
                 batch.counter_next += 1;
                 let m = &batch.moves[index];
                 if m.destination != Zone::Battlefield || m.skipped || m.counters.total() == 0 {

@@ -360,8 +360,7 @@ fn entry_loyalty_and_all_counter_kinds_are_replaced_while_normal_loyalty_activat
     }
 }
 #[test]
-fn exact_recipient_filters_include_uncrewed_vehicles_and_loading_zone_spacecraft_not_arbitrary_artifacts()
- {
+fn caradora_and_loading_zone_do_not_modify_arbitrary_artifact_counters() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         named(&mut g, p, "Caradora, Heart of Alacria", Zone::Battlefield);
@@ -392,5 +391,313 @@ fn admitted_factory_closure_has_no_nested_entry_counter_event_including_offsprin
             card.identity()
         );
         assert!(card.entry_counter_rules().is_empty(), "{}", card.identity());
+    }
+}
+fn synthetic(g: &mut Game, source: CardId, code: &'static [Instruction], targets: &[CardId]) {
+    g.queue_trigger(&g.object_view(source), 0);
+    let mut item = g.state.pending_triggers.pop().unwrap();
+    item.targets = targets
+        .iter()
+        .map(|&id| g.bind_target(Target::Card(id)))
+        .collect();
+    g.state.resolving = Some(Resolution {
+        explore: None,
+        evidence: None,
+        connive: None,
+        item,
+        program: code,
+        pc: 0,
+        target_group: 0,
+        moved_count: None,
+        discards: [0; 2],
+        selected_discards: [Vec::new(), Vec::new()],
+        milled: Vec::new(),
+        library: None,
+        selection: None,
+        target_library: None,
+        search: None,
+        choice: None,
+        mana_payment: None,
+        forage: None,
+    });
+    g.run_program();
+}
+#[test]
+fn explore_private_top_and_empty_library_resume_after_counter_order_before_completion() {
+    for p in [Player::P0, Player::P1] {
+        for empty in [false, true] {
+            let mut g = setup(p);
+            named(&mut g, p, "Doubling Season", Zone::Battlefield);
+            named(
+                &mut g,
+                p,
+                "Michelangelo, Weirdness to 11",
+                Zone::Battlefield,
+            );
+            g.state.players[p.index()].library.clear();
+            if !empty {
+                named(&mut g, p, "Bear Cub", Zone::Library);
+            }
+            let source = named(&mut g, p, "Cenote Scout", Zone::Battlefield);
+            synthetic(
+                &mut g,
+                source,
+                &[
+                    Instruction::Explore(Subject::Source),
+                    Instruction::GainLife(PlayerSet::Controller, 1),
+                ],
+                &[],
+            );
+            assert!(g.advance_replacements(false));
+            assert!(matches!(g.state.pending, Pending::Replacement { .. }));
+            let before = g.state.players[p.index()].life;
+            assert_eq!(g.state.objects[source as usize].counters.plus_one, 0);
+            pick(&mut g);
+            assert!(g.state.objects[source as usize].counters.plus_one >= 3);
+            if !empty {
+                assert!(matches!(g.state.pending, Pending::Explore { .. }));
+                assert_eq!(g.state.players[p.index()].life, before);
+                assert_eq!(
+                    g.observe(p.other()).explore_choice,
+                    g.observe(p).explore_choice
+                );
+                pick(&mut g);
+            }
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].life, before + 1);
+            assert!(g.state.replacements.is_none());
+        }
+    }
+}
+#[test]
+fn connive_sequences_never_draw_the_next_card_before_counter_replacement_choice() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        named(&mut g, p, "Doubling Season", Zone::Battlefield);
+        named(
+            &mut g,
+            p,
+            "Michelangelo, Weirdness to 11",
+            Zone::Battlefield,
+        );
+        let source = named(&mut g, p, "Cenote Scout", Zone::Battlefield);
+        let other = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.state.players[p.index()].library.clear();
+        named(&mut g, p, "Shock", Zone::Library);
+        named(&mut g, p, "Shock", Zone::Library);
+        synthetic(
+            &mut g,
+            source,
+            &[
+                Instruction::Connive {
+                    subject: Subject::Targets,
+                    amount: 1,
+                },
+                Instruction::GainLife(PlayerSet::Controller, 1),
+            ],
+            &[source, other],
+        );
+        assert!(matches!(g.state.pending, Pending::ConniveOrder { .. }));
+        pick(&mut g);
+        assert!(matches!(g.state.pending, Pending::EffectDiscard { .. }));
+        assert_eq!(g.state.players[p.index()].library.len(), 1);
+        assert!(
+            g.observe(p.other())
+                .objects
+                .iter()
+                .all(|o| o.zone != Zone::Hand || o.owner != p)
+        );
+        pick(&mut g);
+        assert!(matches!(g.state.pending, Pending::Replacement { .. }));
+        assert_eq!(g.state.players[p.index()].library.len(), 1);
+        assert_eq!(g.hand_count(p), 0);
+        pick(&mut g);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].library.len(), 0);
+        assert!(g.state.objects[source as usize].counters.plus_one >= 3);
+        assert!(g.state.objects[other as usize].counters.plus_one >= 3);
+    }
+}
+#[test]
+fn late_counter_and_token_quantity_failure_restores_all_owned_event_state() {
+    for tokens in [false, true] {
+        let mut g = setup(Player::P0);
+        let ds = named(&mut g, Player::P0, "Doubling Season", Zone::Battlefield);
+        named(
+            &mut g,
+            Player::P0,
+            if tokens {
+                "Quina, Qu Gourmet"
+            } else {
+                "Michelangelo, Weirdness to 11"
+            },
+            Zone::Battlefield,
+        );
+        if tokens {
+            g.create_tokens(Player::P0, factory("Frog"), u128::MAX, false);
+        } else {
+            let bear = named(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
+            g.state.objects[bear as usize].counters.plus_one = u64::MAX;
+            g.effect_counter(
+                bear,
+                CounterKind::PlusOne,
+                1,
+                replacements::ResumeMode::Pending,
+            );
+        }
+        assert!(g.advance_replacements(false));
+        let a = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a,Action::ChooseReplacement{source,..}if source.card==ds))
+            .unwrap();
+        let old = g.snapshot();
+        let rev = g.revision();
+        let public = [
+            serde_json::to_string(&g.observe(Player::P0)).unwrap(),
+            serde_json::to_string(&g.observe(Player::P1)).unwrap(),
+        ];
+        assert!(matches!(
+            g.apply(Player::P0, a),
+            Err(Error::CapacityExceeded(_))
+        ));
+        assert_eq!(old, g.snapshot());
+        assert_eq!(rev, g.revision());
+        assert_eq!(
+            public,
+            [
+                serde_json::to_string(&g.observe(Player::P0)).unwrap(),
+                serde_json::to_string(&g.observe(Player::P1)).unwrap()
+            ]
+        );
+    }
+}
+#[test]
+fn each_nine_full_bodies_is_really_cast_and_activated_residuals_spend_real_sacrifices() {
+    for p in [Player::P0, Player::P1] {
+        for name in [
+            "Doubling Season",
+            "Exalted Sunborn",
+            "Loading Zone",
+            "Michelangelo, Weirdness to 11",
+            "Yoshimaru, Beloved Companion",
+            "Caradora, Heart of Alacria",
+            "Quina, Qu Gourmet",
+            "Draconic Visitor",
+            "Bartolomé del Presidio",
+        ] {
+            let mut g = setup(p);
+            let source = cast(&mut g, p, name, false);
+            assert!(g.on_battlefield(source));
+            assert!(g.state.players[p.index()].spells_cast_this_turn > 0);
+            match name {
+                "Quina, Qu Gourmet" | "Bartolomé del Presidio" => {
+                    g.create_tokens(
+                        p,
+                        factory(if name.starts_with("Quina") {
+                            "Frog"
+                        } else {
+                            "Treasure"
+                        }),
+                        1,
+                        false,
+                    );
+                    g.advance_replacements(false);
+                    let chosen = g
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .find(|(_, o)| o.zone == Zone::Battlefield && o.card.is_token())
+                        .map(|(i, _)| g.object_ref(i as CardId))
+                        .unwrap();
+                    replay(
+                        &mut g,
+                        Action::AnnounceActivate {
+                            card: source,
+                            ability: 0,
+                            counter_payment: Counters::default(),
+                        },
+                    );
+                    for _ in 0..20 {
+                        if g.legal_actions()
+                            .contains(&Action::ChooseAdditionalCost { object: chosen })
+                        {
+                            replay(&mut g, Action::ChooseAdditionalCost { object: chosen });
+                            break;
+                        }
+                        pick(&mut g);
+                    }
+                    settle(&mut g);
+                    assert_eq!(g.state.objects[source as usize].counters.plus_one, 1);
+                    assert!(g.object_ref(chosen.card) != chosen || !g.on_battlefield(chosen.card));
+                }
+                "Yoshimaru, Beloved Companion" => {
+                    let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+                    replay(
+                        &mut g,
+                        Action::AnnounceActivate {
+                            card: source,
+                            ability: 0,
+                            counter_payment: Counters::default(),
+                        },
+                    );
+                    assert!(!g.legal_actions().contains(&Action::ChooseTarget {
+                        target: Target::Card(bear)
+                    }));
+                    settle(&mut g);
+                    assert_eq!(g.state.objects[source as usize].counters.plus_one, 2);
+                }
+                "Exalted Sunborn" => assert!(
+                    g.keywords(source)
+                        .contains(Keywords::FLYING.union(Keywords::LIFELINK))
+                ),
+                "Michelangelo, Weirdness to 11" => {
+                    assert!(g.state.objects.iter().any(|o| o.owner == p
+                        && o.zone == Zone::Battlefield
+                        && o.card.has_subtype("Mutagen")))
+                }
+                "Draconic Visitor" => assert!(g.keywords(source).contains(Keywords::FLYING)),
+                _ => {}
+            }
+        }
+    }
+}
+
+#[test]
+fn root_review_simultaneous_entry_counter_choices_follow_apnap_not_input_order() {
+    for active in [Player::P0, Player::P1] {
+        let mut g = setup(active);
+        for owner in [active, active.other()] {
+            for _ in 0..2 {
+                named(&mut g, owner, "Doubling Season", Zone::Battlefield);
+            }
+        }
+        // Native mixed-owner entry batch, deliberately supplied NAP first.
+        let inactive_card = named(
+            &mut g,
+            active.other(),
+            "Ajani, Caller of the Pride",
+            Zone::Graveyard,
+        );
+        let active_card = named(
+            &mut g,
+            active,
+            "Ajani, Caller of the Pride",
+            Zone::Graveyard,
+        );
+        let moves = [inactive_card, active_card]
+            .into_iter()
+            .map(|id| g.entry_move(id, Zone::Battlefield, false))
+            .collect();
+        g.stage_entries(moves, None);
+        assert!(g.advance_entries());
+        assert_eq!(
+            g.actor(),
+            Some(active),
+            "AP chooses replacements before NAP for one simultaneous entry event"
+        );
+        let choice = g.observe(active).replacement_choice.unwrap();
+        assert_eq!(choice.object, Some(g.object_ref(active_card)));
     }
 }

@@ -1154,7 +1154,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             c=next(c for c in snapshot['cards'] if c['name']==a['name']);self.assertEqual(c['oracle_text'],a['oracle_text']);self.assertIn(c['name'],supported)
             c=dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')
             self.assertIsNone(generate.permanent_program_template(c));self.assertIsNone(generate.land_template(c))
-        for name in ['Ice Cream Kitty','Agency Coroner','Intruding Soulrager',"Bolg's Company",'Technodrome','Memorial Vault','Quina, Qu Gourmet','Sidisi, Regent of the Mire','Metalhead','Alquist Proft, Master Sleuth','Boneyard Desecrator','Rune-Brand Juggler']:
+        for name in ['Ice Cream Kitty','Agency Coroner','Intruding Soulrager',"Bolg's Company",'Technodrome','Memorial Vault','Sidisi, Regent of the Mire','Metalhead','Alquist Proft, Master Sleuth','Boneyard Desecrator','Rune-Brand Juggler']:
             self.assertNotIn(name,supported)
 
     def test_creature_tapped_entry_extraction_is_exact_and_retains_counter_clause(self):
