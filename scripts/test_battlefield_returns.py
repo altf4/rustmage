@@ -32,9 +32,11 @@ class BattlefieldReturnTests(unittest.TestCase):
    if c['name'] in ['Faerie Slumber Party','Season of Weaving','Turtles in Time','Summon: Leviathan','The Eagles Are Coming!']:self.assertFalse(self.compile(c)[1],c['name'])
   for c in self.cards.values():
    for suffix in [' Draw seven cards. You win the game.','\nYou win the game.']:self.assertFalse(self.compile(dict(c,oracle_text=c['oracle_text']+suffix))[1])
- def test_current_parent_exact_two(self):
+ def test_historical_return_delivery_and_current_complete_programs(self):
   from scripts.catalogue_preservation import canonical,assert_union
-  old=subprocess.check_output(['git','-C',str(g.ROOT),'show','c0232954838cf71203a5be7c0e8fc80a66f6bf26:src/generated/catalogue.rs'],text=True);physical={c['oracle_id']:c['name'] for c in json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards']};before=canonical(old,physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical);report=assert_union(before,after,changed={n+'#0' for n in NAMES},added=set(),helpers=set(),aliases={});self.assertEqual(report['preserved_definitions'],5329)
+  old=subprocess.check_output(['git','-C',str(g.ROOT),'show','c0232954838cf71203a5be7c0e8fc80a66f6bf26:src/generated/catalogue.rs'],text=True);physical={c['oracle_id']:c['name'] for c in json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards']};before=canonical(old,physical);after=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','8087b8b1cc6f7f43e5c87eeec5e2e2f83adbc4f9:src/generated/catalogue.rs'],text=True),physical);report=assert_union(before,after,changed={n+'#0' for n in NAMES},added=set(),helpers=set(),aliases={});self.assertEqual(report['preserved_definitions'],5329)
+  current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  for name in NAMES:self.assertEqual(current['definitions'][name+'#0'],after['definitions'][name+'#0'])
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(before,mutant,changed={n+'#0' for n in NAMES},added=set(),helpers=set(),aliases={})
  def test_full_pinned_sources_and_direct_imports(self):
