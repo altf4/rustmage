@@ -187,7 +187,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::PayCosts { .. } | Action::PayPlot { .. } => 100,
             Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,
             Action::ChooseMode { .. } => 50,
-            Action::ChooseSearch { .. } => 60,
+            Action::ChooseSearch { .. } | Action::ChooseSearchBattlefield { .. } => 60,
             Action::FinishSearch => 0,
             Action::ChooseEntryLife { pay } => {
                 // Avoid voluntary lethal payment; the example still exercises

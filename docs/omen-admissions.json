@@ -24,8 +24,7 @@
           "oracle_text": "Search your library for up to two basic Forest cards, reveal them, put one onto the battlefield tapped and the other into your hand, then shuffle. (Also shuffle this card.)"
         }
       ],
-      "status": "gated_incomplete_residual",
-      "remaining_obligation": "Search up to two basic Forest cards with split battlefield-tapped/hand destinations and subsequent search shuffle, then Omen completion shuffle.",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/b/BloomvineRegent.java",

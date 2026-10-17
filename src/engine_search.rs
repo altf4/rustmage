@@ -6,6 +6,7 @@ use crate::SearchDestination;
 pub(super) struct SearchChoice {
     pub spec: SearchSpec,
     pub selected: Vec<CardId>,
+    pub battlefield: Option<Vec<CardId>>,
 }
 
 impl Game {
@@ -23,7 +24,48 @@ impl Game {
         // a maximum-sized selection has an explicit commit boundary for replay.
     }
 
+    pub(super) fn choose_search_battlefield(&mut self, player: Player, card: CardId) {
+        let choice = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .search
+            .as_mut()
+            .unwrap();
+        let SearchDestination::BattlefieldThenHand { battlefield } = choice.spec.destination else {
+            unreachable!("validated split-search action")
+        };
+        let chosen = choice.battlefield.as_mut().unwrap();
+        chosen.push(card);
+        if chosen.len() == usize::from(battlefield) {
+            self.commit_search(player);
+        }
+    }
+
     pub(super) fn finish_search(&mut self, player: Player) {
+        let choice = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .search
+            .as_mut()
+            .unwrap();
+        if let SearchDestination::BattlefieldThenHand { battlefield } = choice.spec.destination {
+            if battlefield == 0 {
+                choice.battlefield = Some(Vec::new());
+            } else if choice.selected.len() > usize::from(battlefield) {
+                // The selected identities have now been revealed; the rest of the
+                // library stays private while the controller assigns destinations.
+                choice.battlefield = Some(Vec::new());
+                return;
+            }
+        }
+        self.commit_search(player);
+    }
+
+    fn commit_search(&mut self, player: Player) {
         let choice = self
             .state
             .resolving
@@ -32,14 +74,25 @@ impl Game {
             .search
             .take()
             .unwrap();
-        let destination = match choice.spec.destination {
-            SearchDestination::Hand => Zone::Hand,
-            SearchDestination::Battlefield => Zone::Battlefield,
-        };
         let moves = choice
             .selected
             .iter()
             .map(|&id| {
+                let destination = match choice.spec.destination {
+                    SearchDestination::Hand => Zone::Hand,
+                    SearchDestination::Battlefield => Zone::Battlefield,
+                    SearchDestination::BattlefieldThenHand { .. } => {
+                        if choice
+                            .battlefield
+                            .as_ref()
+                            .is_none_or(|selected| selected.contains(&id))
+                        {
+                            Zone::Battlefield
+                        } else {
+                            Zone::Hand
+                        }
+                    }
+                };
                 let mut movement = self.entry_move(
                     id,
                     destination,

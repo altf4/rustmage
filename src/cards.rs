@@ -253,6 +253,7 @@ impl SearchFilter {
 pub enum SearchDestination {
     Hand,
     Battlefield,
+    BattlefieldThenHand { battlefield: u16 },
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]

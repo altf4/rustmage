@@ -19,8 +19,8 @@ class OmenCompilerTests(unittest.TestCase):
     for clause in [' Discover 3.',' (Draw twenty cards.)',' (Then exile this card.)',' (Also shuffle another card.)']:
      c=copy.deepcopy(self.cards[n]);c['card_faces'][face]['oracle_text']+=clause
      with self.subTest(card=n,face=face,clause=clause):self.assertFalse(self.admitted(c))
- def test_four_remaining_omen_bodies_remain_tracked_and_wholly_gated(self):
-  remaining=[c for c in self.cards.values() if c.get('card_faces') and 'Omen' in c['card_faces'][-1]['type_line'] and c['name'] not in NAMES];self.assertEqual(len(remaining),4)
+ def test_three_remaining_omen_bodies_remain_tracked_and_wholly_gated(self):
+  remaining=[c for c in self.cards.values() if c.get('card_faces') and 'Omen' in c['card_faces'][-1]['type_line'] and c['name'] not in NAMES and c['name']!='Bloomvine Regent // Claim Territory'];self.assertEqual(len(remaining),3)
   for c in remaining:self.assertFalse(self.admitted(c),c['name'])
  def test_variable_malformed_and_wrong_reminder_cannot_revive_face(self):
   for n in NAMES:

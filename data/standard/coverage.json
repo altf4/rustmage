@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ebce123024ae9a7055ed13c68693d266f48e87ac4f1049784183e14aab416515",
+  "catalogue_version": "f8dd4ded65a5666932577171ec79424cf43c4b506d0d21b87ce860c103531cf0",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1810,
-  "implemented_total": 1816,
+  "implemented_standard_cards": 1812,
+  "implemented_total": 1818,
   "token_definitions": 87,
   "emblem_definitions": 1,
   "cards": [
@@ -2818,8 +2818,8 @@
     {
       "name": "Bloomvine Regent // Claim Territory",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Blossom-Blessed Angel // Seed Suture",
@@ -28132,8 +28132,8 @@
     {
       "name": "Troop of Ponies",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Trostani, Three Whispers",
@@ -31107,5 +31107,5 @@
     }
   ],
   "adventure_definitions": 19,
-  "omen_definitions": 9
+  "omen_definitions": 10
 }
