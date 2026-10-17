@@ -491,7 +491,26 @@ fn score(o: &Observation, action: &Action, focal: Card, progress: &[Pilot; 2]) -
             }
         }
         Action::Bottom { card } | Action::Discard { card } => {
-            if object(*card).card == focal {
+            let candidate = object(*card).card;
+            let reserved_observer_spell = focal == Card::from_name(NAMES[16]).unwrap()
+                && candidate == Card::from_name("Bygone Colossus").unwrap()
+                && !state.high_paid
+                && o.objects
+                    .iter()
+                    .filter(|v| {
+                        v.owner == actor
+                            && v.zone == Zone::Hand
+                            && v.card == candidate
+                            && !o.effect_discards.contains(&v.id)
+                            && o.effect_choice.as_ref().is_none_or(|choice| {
+                                !choice.selected[actor.index()].contains(&v.reference)
+                            })
+                    })
+                    .count()
+                    <= 1;
+            if reserved_observer_spell {
+                -1000
+            } else if candidate == focal {
                 -50
             } else {
                 200
@@ -811,6 +830,23 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let filtered: Vec<_> = candidates.iter().map(|(_, a)| a.clone()).collect();
             let pick = rustmage::policy::smoke_index(&game, &filtered);
             let (index, action) = candidates[pick].clone();
+            if std::env::args().any(|v| v == "--trace") && i == 16 {
+                let colossus = Card::from_name("Bygone Colossus").unwrap();
+                if matches!(action, Action::Discard { card } | Action::AnnounceCast { card }
+                    if o.objects.iter().any(|v| v.id == card && v.card == colossus))
+                {
+                    eprintln!(
+                        "TRACE action={action:?} score={best_score} actor={actor:?} turn={} pilot={:?} cards={:?}",
+                        o.turn,
+                        progress[actor.index()],
+                        o.objects
+                            .iter()
+                            .filter(|v| v.owner == actor && v.card == colossus)
+                            .map(|v| (v.id, v.zone))
+                            .collect::<Vec<_>>()
+                    );
+                }
+            }
             if matches!(action, Action::ArrangeLibrary { .. }) {
                 if let Some(f) = &mut progress[actor.index()].first_effect {
                     f.scry += 1;
