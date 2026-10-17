@@ -4176,9 +4176,11 @@ impl Game {
             destination
         };
         let destination = self.death_exile_destination(&before, destination);
-        // CR111.8: after leaving the battlefield, a token cannot move again.
+        // Outside is an internal staging zone for newly allocated tokens. A
+        // ceased token is on the free list and cannot move again (CR111.8).
+        let fresh_token = before.zone == Zone::Outside && !self.state.free_tokens.contains(&id);
         if before.card.is_emblem()
-            || (before.is_token() && !matches!(before.zone, Zone::Battlefield | Zone::Outside))
+            || (before.is_token() && before.zone != Zone::Battlefield && !fresh_token)
         {
             return ZoneChange {
                 gift: None,

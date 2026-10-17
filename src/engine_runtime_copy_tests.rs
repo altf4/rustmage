@@ -65,6 +65,16 @@ fn runtime_copy_paid_values_are_copiable_and_token_identity_survives_owned_resto
         settle(&mut child);
         assert_eq!(child.object_view(copy).zone, Zone::Outside);
         assert!(child.copy_recipe(child.object_ref(copy)).is_none());
+        let ceased = child.snapshot();
+        for destination in [
+            Zone::Battlefield,
+            Zone::Hand,
+            Zone::Graveyard,
+            Zone::Library,
+        ] {
+            assert!(!child.move_object(copy, destination).moved);
+            assert_eq!(child.snapshot(), ceased, "ceased token cannot move again");
+        }
         assert_eq!(g.snapshot(), before);
         child.restore(&before).unwrap();
         assert_eq!(child.snapshot(), before);
