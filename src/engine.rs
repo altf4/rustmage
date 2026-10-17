@@ -5327,9 +5327,11 @@ mod control_tests;
 mod adventure_land_targets_tests;
 
 #[cfg(test)]
-#[path = "engine_role_tests.rs"]
-mod role_tests;
-#[path = "engine_milled_selection_tests.rs"]
-mod milled_selection_tests;
 #[path = "engine_graveyard_recovery_tests.rs"]
 mod graveyard_recovery_tests;
+#[cfg(test)]
+#[path = "engine_milled_selection_tests.rs"]
+mod milled_selection_tests;
+#[cfg(test)]
+#[path = "engine_role_tests.rs"]
+mod role_tests;
