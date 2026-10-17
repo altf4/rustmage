@@ -31,9 +31,14 @@ The Omen parent integrates all thirteen complete Omen pairs with the three
 adjacent graveyard/search consumers: 1,817/5,164 identities, 3,347 gated,
 87 token recipes, one emblem, nineteen Adventure and thirteen Omen helpers,
 observation schema80. The union retains chosen-spell timing, selected-face X,
-same-graveyard target constraints and private split-search destinations.
+same-graveyard target constraints and mandatory split-search destinations after
+revealing only the selected cards.
 The individual kernel records scope their frozen source evidence. Full union
-validation and two independent nonauthor final-head reviews remain pending.
+validation passes: 1,703 native tests, 383 compiler/provenance methods, all 245
+unique fresh public API methods and four Standard100 workloads with 366,535
+owned replays / 733,070 denials. The [union review record](review-pr-275.md)
+identifies the exact source/library, preservation proof and independent reviews.
+Final exact-head approvals are recorded in the PR comments before merge.
 
 The other 48 true Adventure parents and 54 Saga parents
 remain part of the full goal, alongside wider Ward/Role/disguise/cloak/control

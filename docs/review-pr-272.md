@@ -1,5 +1,7 @@
 # PR #272: complete split-library-search consumers
 
+> Historical component evidence: counts, schemas, hashes and pending gates below refer to that component branch. The authoritative combined delivery is [PR275](review-pr-275.md).
+
 Issue #269 adds Bloomvine Regent // Claim Territory and Troop of Ponies as complete bodies. Published runtime composition `2e38d20` merges reviewed Whirl main `1f632809` into the Bloom branch; it has 1,813/5,164 executable Standard identities, 3,351 gated, 87 token factories, one emblem, 19 Adventure and 11 Omen helpers (5,301 definitions), schema 80. Feral and Scavenger remain outside this branch. PR #272 remains a draft; final remaining-Omen delivery is planned as a separately reviewed union with 267/271/272 ancestry.
 
 ## Exact artifact and whole-body rules

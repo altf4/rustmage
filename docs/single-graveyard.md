@@ -1,5 +1,7 @@
 # Targets constrained to one graveyard
 
+> Historical component evidence: counts, schemas, hashes and pending gates below refer to that component branch. The authoritative combined delivery is [PR275](review-pr-275.md).
+
 ## Composition with merged Whirlwing timing
 
 This candidate integrates main `1f632809` with the reviewed Feral batch `1f28c02`. It has 1,814/5,164 executable Standard identities, 3,350 gated, 87 token factories, one emblem, nineteen Adventure and eleven Omen helpers (5,301 definitions), schema79. Both strict generic parser routes survive: neither timing nor same-graveyard bodies can be revived by legacy name selectors. Fresh combined validation is complete; final independent exact-head confirmations remain required. The earlier evidence below remains scoped to its recorded sources.

@@ -1,5 +1,7 @@
 # Selected-face scalar X
 
+> Historical component evidence: counts, schemas, hashes and pending gates below refer to that component branch. The authoritative combined delivery is [PR275](review-pr-275.md).
+
 Scavenger Regent // Exude Toxin is a complete physical pair. The normal {3}{B} creature is a 4/4 Dragon with Flying and Ward—Discard a card. Its {X}{B}{B} Sorcery Omen gives every non-Dragon creature -X/-X until end of turn, then shuffles the same physical card into its owner's library on successful resolution. Countering the Omen does not perform that shuffle.
 
 Scalar funding now takes the chosen immutable definition before announcement, and the effective announced definition afterward. X symbols, printed base cost, mana value, reduction thresholds and additional/convoke funding cannot leak from the physical front face. Exact fundable X intervals retain the existing bounded threshold/binary-search representation; representative actions do not enumerate every integer. The ordinary normal-cost and existing X APIs delegate through the same definition-aware functions.

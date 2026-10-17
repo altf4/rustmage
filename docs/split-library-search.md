@@ -1,5 +1,7 @@
 # Split library search — issue269 draft
 
+> Historical component evidence: counts, schemas, hashes and pending gates below refer to that component branch. The authoritative combined delivery is [PR275](review-pr-275.md).
+
 This branch starts from reviewed Omen9 main9e4e08a and composes reviewed Whirl main1f632809. The shared instruction admits two complete genuine bodies: Bloomvine Regent // Claim Territory and Troop of Ponies. Composed coverage is1,813Standard identities,87token recipes, one emblem,19Adventure and11Omen definitions, observation schema80. Feral and Scavenger remain separate required Omen obligations. This draft is reserved for separately reviewed final union delivery; all-Standard and issue255 scope remain unchanged.
 
 A qualified search may select zero, one or two cards. Selections remain private and in the library until the explicit FinishSearch boundary. One found is forced onto the battlefield tapped; two found are revealed publicly and the controller chooses exactly one for the battlefield, with the other revealed into hand. The unselected library stays private. ChooseSearchBattlefield exposes only legal selected candidates. No targets are declared by searching or assigning destinations.
