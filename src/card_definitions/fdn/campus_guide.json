@@ -9,11 +9,6 @@
     "definition_sha256": "9b9df21c0e3d5a48913b6bdb15131e64a6f4e21d2dab0e0cdc61d7cbd12270b3"
   },
   "physical_metadata_sha256": "8db20babec7269807c921a3cb58e2f15c49978b98ae97fb4a86ea7d7922cdc9b",
-  "xmage": {
-    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-    "path": "Mage.Sets/src/mage/cards/c/CampusGuide.java",
-    "sha256": "7f23f35749d86c24ba62d4b3180e720c671a81c2443f2a0a1f471c0b80f71062"
-  },
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
@@ -36,5 +31,8 @@
       "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
     }
   ],
-  "rules_tests": "src/engine_fdn_recursion_tests.rs"
+  "rules_tests": "src/engine_fdn_recursion_tests.rs",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CampusGuide.java",
+  "java_sha256": "7f23f35749d86c24ba62d4b3180e720c671a81c2443f2a0a1f471c0b80f71062"
 }

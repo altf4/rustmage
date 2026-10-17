@@ -9,11 +9,6 @@
     "definition_sha256": "5a5eaaa1e0b8d89f5fc861ded7a203180af2ab3e8cc57c49ad1a199232f6b885"
   },
   "physical_metadata_sha256": "11e882c4e3444fbe950e9e7d2c09df36d80a3db559e9ff4eb2d0b64753a8e0e8",
-  "xmage": {
-    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-    "path": "Mage.Sets/src/mage/cards/d/DriverOfTheDead.java",
-    "sha256": "559bfb348b59518c09e249af984787aaf2eaaead03120526baa3859adde625d2"
-  },
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
@@ -41,5 +36,8 @@
       "sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
     }
   ],
-  "rules_tests": "src/engine_fdn_recursion_tests.rs"
+  "rules_tests": "src/engine_fdn_recursion_tests.rs",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DriverOfTheDead.java",
+  "java_sha256": "559bfb348b59518c09e249af984787aaf2eaaead03120526baa3859adde625d2"
 }

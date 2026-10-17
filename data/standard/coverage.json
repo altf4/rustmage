@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "2a13e79aecba3502206ac5533a5aee1c6e3acdd4b583b480c3fc1b7a3371c951",
+  "catalogue_version": "d2bccabd6fe21dd2ff1ccf89d96e61d560d1ca5c1ade3927fc6f2fef4240dfcb",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1990,
-  "implemented_total": 1996,
+  "implemented_standard_cards": 1992,
+  "implemented_total": 1998,
   "token_definitions": 97,
   "emblem_definitions": 1,
   "adventure_definitions": 40,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 250,
-      "gated": 177
+      "complete": 252,
+      "gated": 175
     },
     "fin": {
       "total": 305,
@@ -3595,8 +3595,8 @@
     {
       "name": "Bite Down",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/bite_down.rs",
       "set": "fdn"
     },
@@ -12139,8 +12139,8 @@
     {
       "name": "Felling Blow",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/felling_blow.rs",
       "set": "fdn"
     },

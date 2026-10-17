@@ -291,7 +291,9 @@ pub enum SearchDestination {
     Top,
     Hand,
     Battlefield,
-    BattlefieldThenHand { battlefield: u16 },
+    BattlefieldThenHand {
+        battlefield: u16,
+    },
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
