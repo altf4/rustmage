@@ -3,10 +3,35 @@
   "catalogue_id": 4193,
   "oracle_id": "ba5a2689-3578-4b1a-99d6-6b6d2356330e",
   "facts_sha256": "375b4fed05d73e3408ab8291a473b9e9b42e4476692429daf603262c2edf1ffb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ac4b34c23dd17182556bce0ead507cccbb65e705c6189a4595554df5db0b7454"
   },
-  "physical_metadata_sha256": "a3925c14a0507aa1f5e23a4216f4f5ec1b64d15f6e62359b5785e47d8c60c204"
+  "physical_metadata_sha256": "a3925c14a0507aa1f5e23a4216f4f5ec1b64d15f6e62359b5785e47d8c60c204",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StrongboxRaider.java",
+  "java_sha256": "f960d3c31bf03a65e39e1c39faf95f3da1b0d01306f09bbe03822bd7d3e7c0a9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+      "sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/RaidCondition.java",
+      "sha256": "8be3f0dd408d51dbd78f720f072495bd95e1490e324e50c7847877210559cedd"
+    }
+  ]
 }

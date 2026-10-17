@@ -295,7 +295,7 @@ impl<'g> FundingState<'g> {
             .iter()
             .enumerate()
             .filter(|(id, object)| {
-                goal.reserve
+                (object.zone == Zone::Command && object.card.is_emblem()) || goal.reserve
                     .is_some_and(|(reference, _)| reference.card == *id as CardId)
                     || goal
                         .source
@@ -396,7 +396,9 @@ impl<'g> FundingState<'g> {
         }
         if target.object.zone == Zone::Battlefield {
             for source in &self.resources {
-                if source.object.zone != Zone::Battlefield {
+                if source.object.zone != Zone::Battlefield
+                    && !(source.object.zone == Zone::Command && source.object.card.is_emblem())
+                {
                     continue;
                 }
                 if self.kinds(target) & 1 != 0
@@ -1078,6 +1080,11 @@ impl Game {
         })
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        if a.item.kind == StackKind::Spell
+            && !self.spell_cost_option_available(a.item.controller, a.item.card, cost)
+        {
+            return false;
+        }
         if a.item.kind == StackKind::Spell && a.item.source_card.x_symbols() > 0 {
             return a.item.x.is_some_and(|x| {
                 self.scalar_x_total(a.item.controller, a.item.card, cost, x)
@@ -2171,6 +2178,33 @@ mod ability_world_tests {
             assert!(!world.live_applies(source, &effect, bear));
             assert!(g.live_applies(source, &effect, bear));
             assert_eq!(g.state.objects[maha as usize].controller, p);
+        }
+    }
+    #[test]
+    fn fdn_library_eight_command_emblem_keywords_match_owned_funding_world() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = scenario();
+            let elf = spawn(
+                &mut g,
+                p,
+                Card::from_name("Llanowar Elves").unwrap(),
+                Zone::Battlefield,
+            );
+            let emblem = Card::catalogue().nth(5338).unwrap();
+            g.create_emblem(p, emblem);
+            let state = FundingState::from_game(
+                &g,
+                FundingGoal {
+                    actor: p,
+                    required: [0; 6],
+                    generic: 0,
+                    reserve: None,
+                    source: None,
+                },
+            );
+            let resource = state.resources.iter().find(|r| r.id == elf).unwrap();
+            assert_eq!(state.keywords(resource), g.keywords(elf));
+            assert!(state.keywords(resource).contains(Keywords::INDESTRUCTIBLE));
         }
     }
 }

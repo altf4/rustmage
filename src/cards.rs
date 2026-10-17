@@ -67,6 +67,9 @@ pub(crate) enum TargetRule {
         base: &'static TargetRule,
         predicate: &'static TargetPredicate,
     },
+    GraveCreatureSourcePower {
+        maximum: Option<i128>,
+    },
     GraveCreaturePower {
         excluded_subtype: &'static str,
         maximum: Option<i128>,
@@ -261,6 +264,28 @@ pub(crate) struct LibrarySelectionSpec {
     pub remainder: LibraryRemainder,
 }
 
+/// Explicit destinations for cards looked at without changing zones first.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum LibraryPickDestination {
+    Hand,
+    Battlefield,
+    Top,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum LibraryLook {
+    Fixed(u16),
+    ChosenX,
+    UntilKinds(u16),
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct LibrarySelectionEffect {
+    pub spec: LibrarySelectionSpec,
+    pub look: LibraryLook,
+    pub destination: LibraryPickDestination,
+    pub public: bool,
+    pub maximum_mana_value: Option<AmountValue>,
+}
+
 /// Fixed qualities admitted by library-search instructions.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum SearchFilter {
@@ -326,6 +351,7 @@ pub(crate) struct SearchSpec {
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
+    UntapLands { maximum: u16 },
     HandCreature,
     HandLand { tapped: bool },
     LandCards { maximum: u32, tapped: bool },
@@ -358,12 +384,14 @@ pub(crate) struct AdditionalCost {
 /// Public qualities for a non-targeted choice from one exact milling event.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum MilledFilter {
+    Any,
     Kinds(u8),
     KindsOrSubtype { kinds: u8, subtype: &'static str },
     Adventure,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum MilledDestination {
+    PlayPermission { next_turn: bool },
     Hand,
     Battlefield,
 }
@@ -470,6 +498,14 @@ pub(crate) enum Instruction {
     /// Register an exact current target for a direct exile replacement until cleanup.
     ExileIfDiesThisTurn,
     /// Queue a reflexive ability only when this exact Role actually enters attached.
+    CreateTokensReflexive {
+        token: Card,
+        amount: u16,
+        ability: u16,
+    },
+    SacrificeSourceIfAttachedCounters {
+        minimum: u64,
+    },
     CreateRoleReflexive {
         token: Card,
         ability: u16,
@@ -543,6 +579,10 @@ pub(crate) enum Instruction {
     },
     BecomeSaddled {
         minimum: u16,
+    },
+    ExileTopChoosePlay {
+        amount: u16,
+        next_turn: bool,
     },
     ExileTopPlay {
         amount: u16,
@@ -691,6 +731,16 @@ pub(crate) enum Instruction {
     /// Existing qualified searches retain their legal failure-to-find behavior.
     SearchRequired(SearchSpec),
     SelectLibrary(LibrarySelectionSpec),
+    SelectLibraryTo(LibrarySelectionEffect),
+    NoMaximumHandSize,
+    ExileResolvingSpell,
+    UntapLands(u16),
+    IfAmountAtLeast {
+        value: AmountValue,
+        minimum: u128,
+        skip: usize,
+    },
+    RevealUntilLandToGraveyard(PlayerSet),
     Damage(i32),
     DamageScaled(AmountValue),
     DamagePlayers(PlayerSet, i32),
@@ -1125,6 +1175,9 @@ pub(crate) enum ReplacementFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ReplacementSpec {
+    DoubleCreatureDamage,
+    DoubleOpponentDamage,
+    PreventOtherCreatureNoncombatDamage,
     Counters {
         filter: ReplacementFilter,
         kind: Option<CounterKind>,
@@ -1397,6 +1450,7 @@ pub(crate) enum DamageQualification {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum DamageSubject {
+    ControlledNoncombatSources,
     Source,
     Attached,
     Creatures {
@@ -1938,9 +1992,7 @@ impl Card {
         generated::token_info(self)
     }
     pub fn emblem_info(self) -> Option<&'static EmblemInfo> {
-        self.index()
-            .checked_sub(generated::EMBLEM_BASE)
-            .and_then(|offset| generated::EMBLEMS.get(offset))
+        generated::emblem_info(self)
     }
     pub fn is_emblem(self) -> bool {
         self.emblem_info().is_some()
@@ -2178,6 +2230,16 @@ impl Card {
     }
     pub(crate) fn cost_reductions(self) -> &'static [SpellReduction] {
         generated::cost_reductions(self)
+    }
+    pub(crate) fn cost_alternative_guard(self) -> Option<StepGuard> {
+        generated::cost_alternative_guard(self)
+    }
+    pub(crate) fn mana_alternative_replaces_additional(self, cost: ManaCost) -> bool {
+        generated::mana_alternative_replaces_additional(self)
+            && generated::cost_alternatives(self).contains(&cost)
+    }
+    pub(crate) fn kicked_targets(self) -> Option<TargetPlan> {
+        generated::kicked_targets(self)
     }
     pub(crate) fn has_hybrid_cost(self) -> bool {
         !generated::cost_alternatives(self).is_empty()

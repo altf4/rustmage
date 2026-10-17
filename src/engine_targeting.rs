@@ -30,6 +30,15 @@ impl Announcement {
             StackKind::Spell if self.item.cast.is_some_and(|c| c.bargain == Some(true)) => {
                 Some(bargain::COST)
             }
+            StackKind::Spell
+                if self.cost.is_some_and(|cost| {
+                    self.item
+                        .source_card
+                        .mana_alternative_replaces_additional(cost)
+                }) =>
+            {
+                None
+            }
             StackKind::Spell => self.item.source_card.additional_cost(),
             StackKind::ActivatedAbility { ability } => {
                 self.item.source_card.activations()[ability as usize]
@@ -142,9 +151,26 @@ impl Announcement {
 
 impl Game {
     pub(super) fn target_spec(&self, item: &SpellView) -> TargetPlan {
-        item.program()
+        let plan = item
+            .program()
             .map(|(plan, _)| plan)
-            .unwrap_or(TargetPlan::NONE)
+            .unwrap_or(TargetPlan::NONE);
+        if let TargetPlan::Single(mut spec) = plan
+            && matches!(spec.rule, TargetRule::GraveCreatureSourcePower { .. })
+        {
+            let power =
+                if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
+                    self.stats(item.card).power
+                } else {
+                    item.source_facts.power
+                };
+            spec.rule = TargetRule::GraveCreatureSourcePower {
+                maximum: Some(power),
+            };
+            TargetPlan::Single(spec)
+        } else {
+            plan
+        }
     }
 
     // A spell will leave its origin before targets are chosen (CR601.2a/c).
@@ -449,6 +475,17 @@ impl Game {
         departing: Option<CardId>,
     ) -> bool {
         match rule {
+            TargetRule::GraveCreatureSourcePower { maximum } => {
+                let Target::Card(id) = target else {
+                    return false;
+                };
+                return self.state.objects.get(id as usize).is_some_and(|o| {
+                    o.zone == Zone::Graveyard
+                        && o.owner == controller
+                        && o.card.is_creature()
+                        && maximum.is_some_and(|max| i128::from(o.card.fixed_mana_value()) <= max)
+                });
+            }
             TargetRule::GraveCreaturePower {
                 excluded_subtype,
                 maximum,
@@ -537,8 +574,7 @@ impl Game {
         }
         match target {
             Target::Player(player) => {
-                (player == controller
-                    || !self.state.players[player.index()].hexproof_until_end_turn)
+                (player == controller || !self.player_has_hexproof(player))
                     && match rule {
                         TargetRule::Any => true,
                         TargetRule::Player { opponent_only } => {
@@ -846,6 +882,9 @@ impl Game {
             self.targets_available(plan, player, item.target_source())
                 || item.source_card.gift().is_some_and(|gift| {
                     self.targets_available(gift.promised_targets, player, item.target_source())
+                })
+                || item.source_card.kicked_targets().is_some_and(|plan| {
+                    self.targets_available(plan, player, item.target_source())
                 })
         );
         let needs_mode = item.modes().is_some() && item.mode.is_none();

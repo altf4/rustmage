@@ -94,7 +94,7 @@ impl Game {
                 facts: item.source_facts,
                 object: item.card,
                 reference: item.object,
-                controller: item.controller,
+                controller: item.source_facts.controller,
                 keywords: item.source_keywords,
             }
         }

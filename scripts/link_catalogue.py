@@ -66,6 +66,11 @@ def render(metadata,records,version):
     lines.append("pub(super) fn token_info(card: Card) -> Option<&'static TokenInfo> { match card.index() {")
     lines.extend(f"    {c['index']} => Some(&TOKENS[{offset}])," for offset,c in enumerate(token_cards))
     lines.append("    _ => None, } }")
+    emblem_cards=[c for c in cards if c['category']=='emblem']
+    if len(emblem_cards)!=len(metadata['emblems']):raise ValueError('emblem metadata count mismatch')
+    lines.append("pub(super) fn emblem_info(card: Card) -> Option<&'static EmblemInfo> { match card.index() {")
+    lines.extend(f"    {c['index']} => Some(&EMBLEMS[{offset}])," for offset,c in enumerate(emblem_cards))
+    lines.append("    _ => None, } }")
     all_ids=[c['index']for c in cards[:metadata['physical_count']]if records[c['index']]['complete']]
     lines+=['#[allow(non_upper_case_globals)]','impl Card {','#[rustfmt::skip]',f'    pub const ALL: [Card; {len(all_ids)}] = ['+', '.join(f'Card({i})'for i in all_ids)+'];']
     lines.extend(f'    pub const {name}: Card = Card({index});'for name,index in metadata['constants'].items());lines.append('}')

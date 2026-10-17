@@ -1,11 +1,15 @@
 //! Private look-top selection; cards stay in place until the complete transaction commits.
 use super::*;
 use crate::cards::{
-    LibraryRemainder, LibrarySelectionCount, LibrarySelectionFilter, LibrarySelectionSpec,
+    LibraryLook, LibraryPickDestination, LibraryRemainder, LibrarySelectionCount,
+    LibrarySelectionEffect, LibrarySelectionFilter, LibrarySelectionSpec,
 };
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct LibrarySelection {
     pub spec: LibrarySelectionSpec,
+    pub destination: LibraryPickDestination,
+    pub public: bool,
+    pub entering: bool,
     pub remaining: Vec<ObjectRef>,
     pub eligible: Vec<ObjectRef>,
     pub selected: Vec<ObjectRef>,
@@ -31,6 +35,8 @@ pub struct LibrarySelectionView {
     pub maximum: usize,
     pub ordering: bool,
     pub reveal: bool,
+    pub public: bool,
+    pub destination: &'static str,
     pub remainder: &'static str,
 }
 impl Game {
@@ -57,12 +63,40 @@ impl Game {
         item: &SpellView,
         spec: LibrarySelectionSpec,
     ) -> bool {
+        self.start_library_selection_to(
+            item,
+            LibrarySelectionEffect {
+                spec,
+                look: LibraryLook::Fixed(spec.look),
+                destination: LibraryPickDestination::Hand,
+                public: false,
+                maximum_mana_value: None,
+            },
+        )
+    }
+    pub(super) fn start_library_selection_to(
+        &mut self,
+        item: &SpellView,
+        effect: LibrarySelectionEffect,
+    ) -> bool {
+        let spec = effect.spec;
         let owner = item.controller;
+        let limit = match effect.look {
+            LibraryLook::Fixed(n) => usize::from(n),
+            LibraryLook::ChosenX => usize::try_from(item.x.unwrap_or(0)).unwrap_or(usize::MAX),
+            LibraryLook::UntilKinds(kinds) => self.state.players[owner.index()]
+                .library
+                .iter()
+                .rev()
+                .position(|&id| self.state.objects[id as usize].card.kind_mask() & kinds != 0)
+                .map_or(usize::MAX, |at| at + 1),
+        };
+        let maximum_mana_value = effect.maximum_mana_value.map(|v| self.item_amount(v, item));
         let remaining: Vec<_> = self.state.players[owner.index()]
             .library
             .iter()
             .rev()
-            .take(usize::from(spec.look))
+            .take(limit)
             .map(|&id| self.object_ref(id))
             .collect();
         if remaining.is_empty() {
@@ -71,7 +105,13 @@ impl Game {
         let eligible: Vec<_> = remaining
             .iter()
             .copied()
-            .filter(|r| self.library_selection_matches(spec.filter, r.card))
+            .filter(|r| {
+                self.library_selection_matches(spec.filter, r.card)
+                    && maximum_mana_value.is_none_or(|max| {
+                        u128::from(self.state.objects[r.card as usize].card.fixed_mana_value())
+                            <= max
+                    })
+            })
             .collect();
         let grave = || {
             self.state
@@ -109,6 +149,9 @@ impl Game {
         let minimum = if spec.optional { 0 } else { maximum };
         self.state.resolving.as_mut().unwrap().selection = Some(Box::new(LibrarySelection {
             spec,
+            destination: effect.destination,
+            public: effect.public,
+            entering: false,
             remaining,
             eligible,
             selected: Vec::new(),
@@ -130,7 +173,7 @@ impl Game {
             .selection
             .as_mut()
             .unwrap();
-        if minimum == frame.remaining.len() {
+        if minimum == frame.remaining.len() && !frame.public {
             frame.selected = std::mem::take(&mut frame.remaining);
             return self.finish_library_selection_internal(owner);
         }
@@ -206,13 +249,45 @@ impl Game {
             );
         }
         let ids: Vec<_> = f.selected.iter().map(|r| r.card).collect();
-        let events = self.move_objects_raw(&ids, Zone::Hand);
+        let events = if f.destination == LibraryPickDestination::Hand {
+            self.move_objects_raw(&ids, Zone::Hand)
+        } else {
+            Vec::new()
+        };
         if f.spec.reveal {
             for e in &events {
                 self.state.known_hand.push(e.after);
             }
         }
         self.finish_zone_events(&events, &[]);
+        if f.destination == LibraryPickDestination::Top {
+            let library = &mut self.state.players[owner.index()].library;
+            library.retain(|id| !ids.contains(id));
+            library.extend(ids.iter().rev());
+        }
+        if f.destination == LibraryPickDestination::Battlefield && !ids.is_empty() {
+            f.entering = true;
+            self.state.resolving.as_mut().unwrap().selection = Some(f);
+            let moves = ids
+                .into_iter()
+                .map(|id| {
+                    let mut movement = self.entry_move(id, Zone::Battlefield, false);
+                    movement.controller = owner;
+                    movement
+                })
+                .collect();
+            self.stage_entries(moves, None);
+            return;
+        }
+        self.commit_library_remainder(owner, *f);
+    }
+    fn commit_library_remainder(&mut self, owner: Player, mut f: LibrarySelection) {
+        if f.destination == LibraryPickDestination::Battlefield {
+            f.remaining.extend(f.selected.iter().copied().filter(|r| {
+                self.object_ref(r.card) == *r
+                    && self.state.objects[r.card as usize].zone == Zone::Library
+            }));
+        }
         match f.spec.remainder {
             LibraryRemainder::Graveyard => {
                 let ids: Vec<_> = f.remaining.iter().map(|r| r.card).collect();
@@ -230,11 +305,27 @@ impl Game {
             }
         }
     }
+    pub(super) fn finish_entered_library_selection(&mut self) {
+        if self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .selection
+            .as_ref()
+            .is_some_and(|f| f.entering)
+        {
+            let resolution = self.state.resolving.as_mut().unwrap();
+            let owner = resolution.item.controller;
+            let frame = resolution.selection.take().unwrap();
+            self.commit_library_remainder(owner, *frame);
+        }
+    }
     pub(super) fn library_selection_view(&self, viewer: Player) -> Option<LibrarySelectionView> {
-        if self.actor() != Some(viewer) {
+        let f = self.state.resolving.as_ref()?.selection.as_ref()?;
+        if self.actor() != Some(viewer) && !f.public {
             return None;
         }
-        let f = self.state.resolving.as_ref()?.selection.as_ref()?;
         Some(LibrarySelectionView {
             remaining: f
                 .remaining
@@ -257,6 +348,12 @@ impl Game {
             maximum: f.maximum,
             ordering: f.ordering,
             reveal: f.spec.reveal,
+            public: f.public,
+            destination: match f.destination {
+                LibraryPickDestination::Hand => "hand",
+                LibraryPickDestination::Battlefield => "battlefield",
+                LibraryPickDestination::Top => "top",
+            },
             remainder: match f.spec.remainder {
                 LibraryRemainder::Graveyard => "graveyard",
                 LibraryRemainder::BottomAny => "bottom_any",

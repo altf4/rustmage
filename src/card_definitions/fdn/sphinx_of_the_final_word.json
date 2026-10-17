@@ -3,10 +3,30 @@
   "catalogue_id": 4015,
   "oracle_id": "d4246e4d-390d-4925-a5a8-89cd096a237c",
   "facts_sha256": "e83ff25c1dc67a0624d8dab3a5d85aa55000caa8a35da0c918e651f4593bdf4e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "35d3e7e9e0a5d9f4b091b60811fe98ee51de279057f9dd71da32a3a0658f1e4c"
   },
-  "physical_metadata_sha256": "eaa7c3995b3c46b910f6461f807158608f98de49008efdcdf55fba87d94fd568"
+  "physical_metadata_sha256": "eaa7c3995b3c46b910f6461f807158608f98de49008efdcdf55fba87d94fd568",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SphinxOfTheFinalWord.java",
+  "java_sha256": "a9523c3a6aa4ca7d5ad743ca087e181a389ee049668df0bf39904c31f6fec41b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CantBeCounteredSourceAbility.java",
+      "sha256": "ab592d3d97f245e6b3ca9971e1c559a7063c8717a4a5963b64564a13abd768de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CantBeCounteredSourceEffect.java",
+      "sha256": "f682272dc5b296650d7dfffd0792fcf6508ee366cc67bf1f583d31017a94e9a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CantBeCounteredControlledEffect.java",
+      "sha256": "27fc63b4a9057d305e6356dfcbeb00c952df15e838118ff0b63af6e135e968c3"
+    }
+  ]
 }

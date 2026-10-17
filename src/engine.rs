@@ -658,6 +658,8 @@ impl Object {
 struct PlayerState {
     hexproof_until_end_turn: bool,
     extra_land_plays_remaining: u64,
+    no_maximum_hand_size: bool,
+    extra_land_plays_granted: u64,
     nonland_permanents_entered_this_turn: u64,
     spells_cast_this_turn: u64,
     instant_sorcery_cast_this_turn: u64,
@@ -1004,6 +1006,11 @@ impl SpellView {
                     } else {
                         plan
                     };
+                    let plan = if self.cast.is_some_and(|c| c.kicker == Some(true)) {
+                        self.source_card.kicked_targets().unwrap_or(plan)
+                    } else {
+                        plan
+                    };
                     (plan, program)
                 }),
             StackKind::DelayedSacrifice => {
@@ -1074,6 +1081,7 @@ struct DamageChoice {
 /// that deal damage from their hand or as spells.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 pub struct DamageFacts {
+    pub controller: Player,
     pub kinds: u16,
     pub power: i128,
     pub power_above_base: bool,
@@ -1088,6 +1096,7 @@ pub struct DamageFacts {
 impl DamageFacts {
     fn from_view(view: &ObjectView) -> Self {
         Self {
+            controller: view.controller,
             kinds: view.kinds,
             power: view.power,
             power_above_base: view.power_above_base,
@@ -1361,6 +1370,7 @@ struct State {
     next_stack_id: u64,
     passes: u8,
     land_played: bool,
+    continuous_land_plays_used: u64,
     attack_declared: bool,
     attackers: Vec<Attacker>,
     blocking: Vec<CardId>, // Remains blocking even after its attacker leaves combat.
@@ -1452,6 +1462,7 @@ pub struct PlayerView {
     pub hexproof_until_end_turn: bool,
     /// Additional land plays granted until the current turn ends.
     pub extra_land_plays_remaining: u64,
+    pub no_maximum_hand_size: bool,
     /// Historical actual entries this turn; departures do not remove them.
     pub nonland_permanents_entered_this_turn: u64,
     pub spells_cast_this_turn: u64,
@@ -1769,6 +1780,8 @@ impl Game {
         let mut players = std::array::from_fn(|_| PlayerState {
             hexproof_until_end_turn: false,
             extra_land_plays_remaining: 0,
+            no_maximum_hand_size: false,
+            extra_land_plays_granted: 0,
             nonland_permanents_entered_this_turn: 0,
             spells_cast_this_turn: 0,
             instant_sorcery_cast_this_turn: 0,
@@ -1874,6 +1887,7 @@ impl Game {
                 passes: 0,
                 mulligan_round: [false; 2],
                 land_played: false,
+                continuous_land_plays_used: 0,
                 attack_declared: false,
                 attackers: Vec::new(),
                 blocking: Vec::new(),
@@ -2288,13 +2302,18 @@ impl Game {
             }
             Pending::EffectChoice { player } => {
                 let choice = s.resolving.as_ref().unwrap().choice.as_ref().unwrap();
-                if matches!(choice.kind, EffectChoiceKind::LandCards { .. })
-                    && emit(Action::FinishLandSelection)
+                if matches!(
+                    choice.kind,
+                    EffectChoiceKind::LandCards { .. } | EffectChoiceKind::UntapLands { .. }
+                ) && emit(Action::FinishLandSelection)
                 {
                     return true;
                 }
                 if choice.skip_to.is_some()
-                    && !matches!(choice.kind, EffectChoiceKind::LandCards { .. })
+                    && !matches!(
+                        choice.kind,
+                        EffectChoiceKind::LandCards { .. } | EffectChoiceKind::UntapLands { .. }
+                    )
                     && emit(
                         if matches!(
                             choice.kind,
@@ -2314,7 +2333,8 @@ impl Game {
                         let action = match choice.kind {
                             EffectChoiceKind::HandCreature => Action::PutHandCreature { object },
                             EffectChoiceKind::HandLand { .. } => Action::PutHandLand { object },
-                            EffectChoiceKind::LandCards { .. } => Action::SelectLand { object },
+                            EffectChoiceKind::LandCards { .. }
+                            | EffectChoiceKind::UntapLands { .. } => Action::SelectLand { object },
                             EffectChoiceKind::Sacrifice => Action::Sacrifice { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             _ => unreachable!("forage has its own choice"),
@@ -2465,7 +2485,11 @@ impl Game {
                             && sorcery
                             && (obj.zone == Zone::Hand || self.can_play_exiled(actor, card))
                             && (!s.land_played
-                                || s.players[actor.index()].extra_land_plays_remaining > 0)
+                                || self
+                                    .continuous_land_plays(actor)
+                                    .checked_add(s.players[actor.index()].extra_land_plays_granted)
+                                    .capacity("land allowance exhausted")
+                                    > s.continuous_land_plays_used)
                             && emit(Action::PlayLand { card })
                         {
                             return true;
@@ -2520,7 +2544,11 @@ impl Game {
                     if obj.card.is_land() {
                         if sorcery
                             && (!s.land_played
-                                || s.players[actor.index()].extra_land_plays_remaining > 0)
+                                || self
+                                    .continuous_land_plays(actor)
+                                    .checked_add(s.players[actor.index()].extra_land_plays_granted)
+                                    .capacity("land allowance exhausted")
+                                    > s.continuous_land_plays_used)
                             && emit(Action::PlayLand { card })
                         {
                             return true;
@@ -2553,6 +2581,7 @@ impl Game {
                                         self.object_ref(card),
                                     )
                                 })
+                                || self.kicked_cast_targets_available(actor, card)
                         }
                         _ => true,
                     };
@@ -2588,6 +2617,9 @@ impl Game {
                             obj.card.cost_options()
                         };
                         let can_fund = costs.into_iter().any(|cost| {
+                            if !self.spell_cost_option_available(actor, card, cost) {
+                                return false;
+                            }
                             if obj.card.tiered_costs().is_some() {
                                 return self.tiered_initial_fundable(actor, card, cost);
                             }
@@ -2708,6 +2740,7 @@ impl Game {
                         || obj.card.has_convoke()
                         || obj.card.has_bargain()
                         || obj.card.additional_cost().is_some()
+                        || obj.card.cost_alternative_guard().is_some()
                         || matches!(obj.card.effect(), Effect::Modal(_))
                     {
                         // Modal spells use the staged path: mode, targets, payment.
@@ -3249,7 +3282,10 @@ impl Game {
                     self.stage_entries(vec![movement], None);
                 }
                 if self.state.land_played {
-                    self.state.players[actor.index()].extra_land_plays_remaining -= 1;
+                    if self.state.players[actor.index()].extra_land_plays_remaining > 0 {
+                        self.state.players[actor.index()].extra_land_plays_remaining -= 1;
+                    }
+                    self.state.continuous_land_plays_used += 1;
                 } else {
                     self.state.land_played = true;
                 }
@@ -3491,6 +3527,18 @@ impl Game {
                     .as_mut()
                     .unwrap()
                     .kicker = Some(pay);
+                if let Some(plan) = self
+                    .state
+                    .announcing
+                    .as_ref()
+                    .unwrap()
+                    .item
+                    .source_card
+                    .kicked_targets()
+                    .filter(|_| pay)
+                {
+                    self.state.announcing.as_mut().unwrap().plan = plan;
+                }
                 self.continue_announcement_choices(false);
             }
             Action::ChooseGift { beneficiary } => self.choose_gift(beneficiary),
@@ -4242,6 +4290,7 @@ impl Game {
             player.attacked_this_turn = false;
         }
         self.state.land_played = false;
+        self.state.continuous_land_plays_used = 0;
         self.state.attack_declared = false;
         self.state.attackers.clear();
         self.state.blocking.clear();
@@ -4353,7 +4402,9 @@ impl Game {
             }
             Step::End | Step::Cleanup => {
                 self.state.step = Step::Cleanup;
-                if self.hand_count(self.state.active) > 7 {
+                if !self.no_maximum_hand_size(self.state.active)
+                    && self.hand_count(self.state.active) > 7
+                {
                     self.state.pending = Pending::Discard;
                 } else {
                     self.finish_cleanup();
@@ -4376,6 +4427,7 @@ impl Game {
         self.state.death_exile_replacements = None;
         for player in &mut self.state.players {
             player.extra_land_plays_remaining = 0;
+            player.extra_land_plays_granted = 0;
         }
         let expired_vehicles = self.expire_vehicle_animation();
         self.state.saddled.clear();
@@ -4435,6 +4487,15 @@ impl Game {
     }
 
     fn apply_damage_batch(&mut self, events: &[DamageEvent]) -> Vec<LifeGainEvent> {
+        if self.damage_replacement_candidates_exist(events) {
+            self.stage_damage_replacements(events);
+            Vec::new()
+        } else {
+            self.commit_damage_batch(events)
+        }
+    }
+
+    fn commit_damage_batch(&mut self, events: &[DamageEvent]) -> Vec<LifeGainEvent> {
         // Avoid allocating on the ordinary, unprevented damage path.
         let prevented = |event: &DamageEvent| {
             event.combat
@@ -4646,8 +4707,9 @@ impl Game {
 
     fn deal_combat_damage(&mut self) {
         let hits = std::mem::take(&mut self.state.hits);
-        self.apply_damage_batch(&hits);
         self.give_priority();
+        self.apply_damage_batch(&hits);
+        self.advance_replacements(false);
     }
 
     /// Player-facing information only. Unrevealed opponent hands and RNG state
@@ -4807,6 +4869,11 @@ impl Game {
             players: std::array::from_fn(|i| PlayerView {
                 hexproof_until_end_turn: s.players[i].hexproof_until_end_turn,
                 extra_land_plays_remaining: s.players[i].extra_land_plays_remaining,
+                no_maximum_hand_size: self.no_maximum_hand_size(if i == 0 {
+                    Player::P0
+                } else {
+                    Player::P1
+                }),
                 nonland_permanents_entered_this_turn: s.players[i]
                     .nonland_permanents_entered_this_turn,
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
@@ -5946,3 +6013,68 @@ mod fdn_cast_combat_eight_tests;
 #[cfg(test)]
 #[path = "engine_fdn_program_seven_tests.rs"]
 mod fdn_program_seven_tests;
+
+impl Game {
+    fn no_maximum_hand_size(&self, player: Player) -> bool {
+        self.state.players[player.index()].no_maximum_hand_size
+            || self.state.static_sources.iter().any(|&id| {
+                self.state.objects[id as usize].controller == player
+                    && self.state.objects[id as usize]
+                        .card
+                        .static_ability_groups()
+                        .iter()
+                        .any(|g| {
+                            g.fragments.iter().any(|f| {
+                                matches!(f, crate::cards::StaticAbilityFragment::NoMaximumHandSize)
+                            })
+                        })
+                    && self.continuous_fragment_available(id, |f| {
+                        matches!(f, crate::cards::StaticAbilityFragment::NoMaximumHandSize)
+                    })
+            })
+    }
+    fn continuous_land_plays(&self, player: Player) -> u64 {
+        self.state
+            .static_sources
+            .iter()
+            .filter(|&&id| self.state.objects[id as usize].controller == player)
+            .map(|&id| {
+                self.state.objects[id as usize]
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .flat_map(|g| g.fragments)
+                    .filter_map(|f| match f {
+                        crate::cards::StaticAbilityFragment::AdditionalLandPlays(n)
+                            if self.continuous_fragment_available(id, |x| {
+                                matches!(
+                                    x,
+                                    crate::cards::StaticAbilityFragment::AdditionalLandPlays(_)
+                                )
+                            }) =>
+                        {
+                            Some(u64::from(*n))
+                        }
+                        _ => None,
+                    })
+                    .sum::<u64>()
+            })
+            .sum()
+    }
+}
+
+#[cfg(test)]
+#[path = "engine_fdn_cast_choices_four_tests.rs"]
+mod fdn_cast_choices_four_tests;
+#[cfg(test)]
+#[path = "engine_fdn_damage_five_tests.rs"]
+mod fdn_damage_five_tests;
+#[cfg(test)]
+#[path = "engine_fdn_events_seven_tests.rs"]
+mod fdn_events_seven_tests;
+#[cfg(test)]
+#[path = "engine_fdn_exile_two_tests.rs"]
+mod fdn_exile_two_tests;
+#[cfg(test)]
+#[path = "engine_fdn_library_eight_tests.rs"]
+mod fdn_library_eight_tests;

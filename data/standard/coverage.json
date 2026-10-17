@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "catalogue_version": "7441c24da5c95eb1958ecdbbd2810da76f7f5c49db0016f6e19f76907284afb1",
+  "catalogue_version": "10266a85522603e28f56408a3ce42b18abca5b9a3b7ff67ee04a0c1093a15c39",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2076,
-  "implemented_total": 2082,
-  "token_definitions": 100,
-  "emblem_definitions": 1,
+  "implemented_standard_cards": 2100,
+  "implemented_total": 2106,
+  "token_definitions": 101,
+  "emblem_definitions": 2,
   "adventure_definitions": 40,
   "omen_definitions": 13,
   "definition_ownership": {
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 325,
-      "gated": 102
+      "complete": 347,
+      "gated": 80
     },
     "fin": {
       "total": 305,
@@ -92,8 +92,8 @@
     },
     "inr": {
       "total": 4,
-      "complete": 2,
-      "gated": 2
+      "complete": 3,
+      "gated": 1
     },
     "jmp": {
       "total": 2,
@@ -165,8 +165,8 @@
     },
     "tdc": {
       "total": 15,
-      "gated": 4,
-      "complete": 11
+      "gated": 3,
+      "complete": 12
     },
     "tdm": {
       "total": 264,
@@ -1234,8 +1234,8 @@
     {
       "name": "Alesha, Who Laughs at Fate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/alesha_who_laughs_at_fate.rs",
       "set": "fdn"
     },
@@ -3722,8 +3722,8 @@
     {
       "name": "Blasphemous Edict",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/blasphemous_edict.rs",
       "set": "fdn"
     },
@@ -6914,8 +6914,8 @@
     {
       "name": "Consuming Aberration",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdc/consuming_aberration.rs",
       "set": "tdc"
     },
@@ -7554,8 +7554,8 @@
     {
       "name": "Crystal Barricade",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/crystal_barricade.rs",
       "set": "fdn"
     },
@@ -9082,8 +9082,8 @@
     {
       "name": "Divine Resilience",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/divine_resilience.rs",
       "set": "fdn"
     },
@@ -10186,8 +10186,8 @@
     {
       "name": "Eaten Alive",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/inr/eaten_alive.rs",
       "set": "inr"
     },
@@ -11610,8 +11610,8 @@
     {
       "name": "Faebloom Trick",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/faebloom_trick.rs",
       "set": "fdn"
     },
@@ -12098,8 +12098,8 @@
     {
       "name": "Felidar Retreat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/felidar_retreat.rs",
       "set": "fdn"
     },
@@ -12298,8 +12298,8 @@
     {
       "name": "Finale of Revelation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/finale_of_revelation.rs",
       "set": "fdn"
     },
@@ -13882,8 +13882,8 @@
     {
       "name": "Genesis Wave",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/genesis_wave.rs",
       "set": "fdn"
     },
@@ -15018,8 +15018,8 @@
     {
       "name": "Gratuitous Violence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/gratuitous_violence.rs",
       "set": "fdn"
     },
@@ -15514,8 +15514,8 @@
     {
       "name": "Gutless Plunderer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/gutless_plunderer.rs",
       "set": "fdn"
     },
@@ -17346,8 +17346,8 @@
     {
       "name": "Immersturm Predator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/immersturm_predator.rs",
       "set": "fdn"
     },
@@ -18682,8 +18682,8 @@
     {
       "name": "Kalastria Highborn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/kalastria_highborn.rs",
       "set": "fdn"
     },
@@ -20602,8 +20602,8 @@
     {
       "name": "Loot, Exuberant Explorer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/loot_exuberant_explorer.rs",
       "set": "fdn"
     },
@@ -23810,8 +23810,8 @@
     {
       "name": "Niv-Mizzet, Visionary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/niv_mizzet_visionary.rs",
       "set": "fdn"
     },
@@ -24482,8 +24482,8 @@
     {
       "name": "Ordeal of Nylea",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/ordeal_of_nylea.rs",
       "set": "fdn"
     },
@@ -27666,8 +27666,8 @@
     {
       "name": "Redcap Gutter-Dweller",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/redcap_gutter_dweller.rs",
       "set": "fdn"
     },
@@ -32330,8 +32330,8 @@
     {
       "name": "Sphinx of the Final Word",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/sphinx_of_the_final_word.rs",
       "set": "fdn"
     },
@@ -32610,8 +32610,8 @@
     {
       "name": "Spinner of Souls",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/spinner_of_souls.rs",
       "set": "fdn"
     },
@@ -33754,8 +33754,8 @@
     {
       "name": "Strongbox Raider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/strongbox_raider.rs",
       "set": "fdn"
     },
@@ -37978,8 +37978,8 @@
     {
       "name": "Twinflame Tyrant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/twinflame_tyrant.rs",
       "set": "fdn"
     },
@@ -38906,8 +38906,8 @@
     {
       "name": "Vampire Gourmand",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/vampire_gourmand.rs",
       "set": "fdn"
     },
@@ -39602,8 +39602,8 @@
     {
       "name": "Vivien Reid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/vivien_reid.rs",
       "set": "fdn"
     },

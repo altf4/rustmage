@@ -24,6 +24,12 @@ impl Game {
             .then_some(target.card)
     }
     pub(super) fn attached_subject(&self, item: &SpellView) -> Option<CardId> {
+        if let Some(event) = &item.attachment_trigger {
+            return (self.on_battlefield(event.recipient.card)
+                && self.object_ref(event.recipient.card) == event.recipient
+                && self.is_creature(event.recipient.card))
+            .then_some(event.recipient.card);
+        }
         self.attached_permanent(item)
             .filter(|&id| self.is_creature(id))
     }

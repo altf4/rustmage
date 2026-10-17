@@ -208,6 +208,95 @@ fn foundations_cast_counter_and_program_cards_full_games() {
 
 /// Broad admitted-pool interaction regression, not proof of every printed rule.
 #[test]
+fn foundations_library_damage_events_and_cast_choices_full_games() {
+    let mut decks = [
+        deck(
+            "Plains",
+            &[
+                "Felidar Retreat",
+                "Divine Resilience",
+                "Crystal Barricade",
+                "Healer's Hawk",
+                "Hare Apparent",
+                "Angel of Vitality",
+                "Jazal Goldmane",
+                "Mentor of the Meek",
+                "Linden, the Steadfast Queen",
+            ],
+        ),
+        deck(
+            "Island",
+            &[
+                "Faebloom Trick",
+                "Finale of Revelation",
+                "Sphinx of the Final Word",
+                "Niv-Mizzet, Visionary",
+                "Consuming Aberration",
+                "Exclusion Mage",
+                "Kiora, the Rising Tide",
+                "High Fae Trickster",
+                "Fog Bank",
+            ],
+        ),
+        deck(
+            "Swamp",
+            &[
+                "Kalastria Highborn",
+                "Vampire Gourmand",
+                "Gutless Plunderer",
+                "Eaten Alive",
+                "Blasphemous Edict",
+                "Alesha, Who Laughs at Fate",
+                "Immersturm Predator",
+                "Vengeful Bloodwitch",
+                "Tribute to Hunger",
+            ],
+        ),
+        deck(
+            "Mountain",
+            &[
+                "Strongbox Raider",
+                "Redcap Gutter-Dweller",
+                "Gratuitous Violence",
+                "Twinflame Tyrant",
+                "Frenzied Goblin",
+                "Mindsparker",
+                "Shivan Dragon",
+                "Burst Lightning",
+                "Krenko, Mob Boss",
+            ],
+        ),
+        deck(
+            "Forest",
+            &[
+                "Vivien Reid",
+                "Loot, Exuberant Explorer",
+                "Spinner of Souls",
+                "Genesis Wave",
+                "Ordeal of Nylea",
+                "Llanowar Elves",
+                "Bear Cub",
+                "Mossborn Hydra",
+                "Wildwood Scourge",
+            ],
+        ),
+    ];
+    for land in &mut decks[1][..6] {
+        *land = Card::from_name("Swamp").unwrap();
+    }
+    for land in &mut decks[1][6..12] {
+        *land = Card::from_name("Mountain").unwrap();
+    }
+    for land in &mut decks[2][..8] {
+        *land = Card::from_name("Mountain").unwrap();
+    }
+    run_matrix(
+        &decks,
+        &["Gutless Plunderer", "Divine Resilience", "Vampire Gourmand"],
+    );
+}
+
+#[test]
 fn foundations_every_admitted_card_in_set_only_full_games() {
     let manifest: serde_json::Value =
         serde_json::from_str(include_str!("../data/sets/fdn.json")).unwrap();

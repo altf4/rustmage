@@ -1357,6 +1357,7 @@ impl Game {
             {
                 return;
             }
+            self.finish_entered_library_selection();
             if self.state.resolving.as_ref().unwrap().connive.is_some() && self.advance_connive() {
                 return;
             }
@@ -1389,7 +1390,9 @@ impl Game {
             let resolution = self.state.resolving.as_mut().unwrap();
             let Some(instruction) = resolution.program.get(resolution.pc).copied() else {
                 let item = self.state.resolving.take().unwrap().item;
-                if item.kind == StackKind::Spell {
+                if item.kind == StackKind::Spell
+                    && self.state.objects[item.card as usize].zone == Zone::Stack
+                {
                     if item.cast.is_some_and(|c| c.face == CastFace::Adventure) {
                         self.finish_adventure(&item);
                     } else if item.cast.is_some_and(|c| c.face == CastFace::Omen) {
@@ -1538,6 +1541,11 @@ impl Game {
                 Instruction::Crew { .. } => self.resolve_crew(&item),
                 Instruction::BecomeSaddled { .. } => self.resolve_saddle(&item),
                 Instruction::AdditionalLandPlays(amount) => {
+                    let granted =
+                        &mut self.state.players[item.controller.index()].extra_land_plays_granted;
+                    *granted = granted
+                        .checked_add(amount)
+                        .capacity("land allowance exhausted");
                     let available =
                         &mut self.state.players[item.controller.index()].extra_land_plays_remaining;
                     *available = available
@@ -1625,6 +1633,32 @@ impl Game {
                 Instruction::Forage { skip } => {
                     self.start_resolution_forage(skip);
                     return;
+                }
+                Instruction::CreateTokensReflexive {
+                    token,
+                    amount,
+                    ability,
+                } => {
+                    self.stage_token_creation(
+                        item.controller,
+                        token,
+                        u128::from(amount),
+                        false,
+                        replacements::TokenCompletion::Reflexive {
+                            item: Box::new(item.clone()),
+                            ability,
+                        },
+                    );
+                }
+                Instruction::SacrificeSourceIfAttachedCounters { minimum } => {
+                    if self.attached_subject(&item).is_some_and(|id| {
+                        self.state.objects[id as usize].counters.plus_one >= minimum
+                    }) && self.on_battlefield(item.card)
+                        && self.object_ref(item.card) == item.object
+                        && self.state.objects[item.card as usize].controller == item.controller
+                    {
+                        self.sacrifice_batch(&[(item.controller, item.card)]);
+                    }
                 }
                 Instruction::Reflexive { ability } => {
                     self.queue_reflexive(&item, ability, None);
@@ -2014,12 +2048,72 @@ impl Game {
                     };
                     return;
                 }
+                Instruction::ExileTopChoosePlay { amount, next_turn } => {
+                    if self.exile_top_choose_play(item.controller, amount, next_turn) {
+                        return;
+                    }
+                }
                 Instruction::ExileTopPlay { amount, next_turn } => {
                     self.exile_top_play(item.controller, amount, next_turn);
                 }
                 Instruction::ExileTargetLibraryPlay { amount } => {
                     for player in self.program_players(PlayerSet::Targeted, &item) {
                         self.exile_top_play_from(player, item.controller, amount, false);
+                    }
+                }
+                Instruction::IfAmountAtLeast {
+                    value,
+                    minimum,
+                    skip,
+                } => {
+                    if self.item_amount(value, &item) < minimum {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::UntapLands(maximum) => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::UntapLands { maximum },
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        0,
+                        None,
+                    ) {
+                        return;
+                    }
+                }
+                Instruction::RevealUntilLandToGraveyard(players) => {
+                    for player in self.program_players(players, &item).collect::<Vec<_>>() {
+                        let library = &self.state.players[player.index()].library;
+                        let amount = library
+                            .iter()
+                            .rev()
+                            .position(|&id| self.state.objects[id as usize].card.is_land())
+                            .map_or(library.len(), |n| n + 1);
+                        let ids = library
+                            .iter()
+                            .rev()
+                            .take(amount)
+                            .copied()
+                            .collect::<Vec<_>>();
+                        let events = self.move_objects_raw(&ids, Zone::Graveyard);
+                        self.finish_zone_events(&events, &[]);
+                    }
+                }
+                Instruction::NoMaximumHandSize => {
+                    self.state.players[item.controller.index()].no_maximum_hand_size = true;
+                }
+                Instruction::ExileResolvingSpell => {
+                    if item.kind == StackKind::Spell
+                        && self.object_ref(item.card) == item.object
+                        && self.state.objects[item.card as usize].zone == Zone::Stack
+                    {
+                        self.move_object(item.card, Zone::Exile);
+                    }
+                }
+                Instruction::SelectLibraryTo(effect) => {
+                    if self.start_library_selection_to(&item, effect) {
+                        return;
                     }
                 }
                 Instruction::SelectLibrary(spec) => {

@@ -1,16 +1,33 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from complete Oracle and pinned XMage sources.
+const OWN: TargetRule = TargetRule::Object {
+    zone: TargetZone::Battlefield,
+    kinds: 1,
+    relation: 0,
+    other: false,
+    nonland: false,
+    tapped: false,
+    min_mana: 0,
+    max_mana: u32::MAX,
+};
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Spell(
+        one(OWN),
+        &[Instruction::GrantKeywords {
+            subject: Subject::Targets,
+            keywords: Keywords::INDESTRUCTIBLE,
+        }],
+    ),
+    extras: &CardExtras {
+        kicker_cost: Some(ManaCost {
+            colored: [1, 0, 0, 0, 0, 0],
+            generic: 2,
+        }),
+        kicked_targets: Some(TargetPlan::Single(TargetSpec {
+            rule: OWN,
+            min: 0,
+            max: usize::MAX,
+        })),
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords(0),
     ..CardRules::EMPTY
 };
