@@ -1,4 +1,4 @@
-// Core attack/evasion fixture. Whole card remains gated until consumer acceptance.
+// Direct typed behavior; complete Oracle and pinned XMage reviewed.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(5, 3),
     static_groups: &[

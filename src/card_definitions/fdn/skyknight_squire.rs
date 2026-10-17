@@ -1,7 +1,15 @@
-// Gated core consumer: its enter trigger is still pending; this is not admitted.
+// Direct typed behavior from complete Oracle and pinned XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(1, 1),
-    triggers: &[],
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::OtherCreatureEntersYou,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::PutCounters {
+            subject: Subject::Source,
+            kind: CounterKind::PlusOne,
+            amount: 1,
+        }],
+    }],
     activated: &[],
     enters: Counters {
         plus_one: 0,

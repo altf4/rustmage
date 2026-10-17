@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "20f4603e46262ee6c58f5d71c2ee934b641532d1352bc10eaefe7fead3c74e78",
+  "catalogue_version": "05d5f143c6e9abd269786e29f7414b9a76f1d2a8277ef7ddd9a849eb8b4034ef",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2100,
-  "implemented_total": 2106,
-  "token_definitions": 101,
+  "implemented_standard_cards": 2107,
+  "implemented_total": 2113,
+  "token_definitions": 102,
   "emblem_definitions": 2,
   "adventure_definitions": 40,
   "omen_definitions": 13,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 347,
-      "gated": 80
+      "complete": 354,
+      "gated": 73
     },
     "fin": {
       "total": 305,
@@ -9578,8 +9578,8 @@
     {
       "name": "Drake Hatcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/drake_hatcher.rs",
       "set": "fdn"
     },
@@ -18570,8 +18570,8 @@
     {
       "name": "Juggernaut",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/juggernaut.rs",
       "set": "fdn"
     },
@@ -22266,8 +22266,8 @@
     {
       "name": "Mild-Mannered Librarian",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/mild_mannered_librarian.rs",
       "set": "fdn"
     },
@@ -24938,8 +24938,8 @@
     {
       "name": "Painful Quandary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/painful_quandary.rs",
       "set": "fdn"
     },
@@ -25234,8 +25234,8 @@
     {
       "name": "Perforating Artist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/perforating_artist.rs",
       "set": "fdn"
     },
@@ -27394,8 +27394,8 @@
     {
       "name": "Ravenous Amulet",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/ravenous_amulet.rs",
       "set": "fdn"
     },
@@ -31426,8 +31426,8 @@
     {
       "name": "Skyknight Squire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/skyknight_squire.rs",
       "set": "fdn"
     },

@@ -5344,7 +5344,8 @@
     2,
     16,
     1,
-    0
+    0,
+    2
   ],
   "aliases": [
     [
@@ -5914,6 +5915,10 @@
     [
       "@token/df2e2ec30d1a4752cb0232b9",
       5321
+    ],
+    [
+      "@token/drake_2_2_blue_flying",
+      5339
     ],
     [
       "@token/e18e80a7504b51c4aff3d868",
@@ -10726,6 +10731,10 @@
     [
       "Drake Hatcher",
       1171
+    ],
+    [
+      "Drake Token",
+      5339
     ],
     [
       "Drakuseth, Maw of Flames",
@@ -27734,6 +27743,12 @@
       "name": "Cat Beast Token",
       "subtypes": "Cat Beast",
       "colors": 1
+    },
+    {
+      "factory_identity": "@token/drake_2_2_blue_flying",
+      "name": "Drake Token",
+      "subtypes": "Drake",
+      "colors": 2
     }
   ],
   "emblems": [
@@ -28084,7 +28099,8 @@
     "Shock": 10,
     "GiantGrowth": 11,
     "Divination": 12,
-    "Counterspell": 13
+    "Counterspell": 13,
+    "DrakeToken": 5339
   },
   "helper_interface": [
     [
@@ -180285,6 +180301,35 @@
       "standard_legal": false,
       "legendary": false,
       "kind": 0,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5339,
+      "module": "card_5339",
+      "path": "synthetic/token_drake_2_2_blue_flying.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/drake_2_2_blue_flying",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Drake",
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
       "basic": false,
       "mana_color": null,
       "colored": [

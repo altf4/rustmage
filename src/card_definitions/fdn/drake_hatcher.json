@@ -3,10 +3,70 @@
   "catalogue_id": 1171,
   "oracle_id": "4de0ccab-bb5d-4c7c-827e-36aa1d00b182",
   "facts_sha256": "c0410adeebaf12a61da4735a5c5d4191f9d86481b3fcc6715f7a7ee6b30122e9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e9a1cddc20eeacd6e42dcfe8753bd2d76b0ba8e68e40cca65a3e2c2a9d42e47d"
   },
-  "physical_metadata_sha256": "18ebdacd37090b1e323ba4beb1fd5927de91f358a14f999840a263dcd0a50996"
+  "physical_metadata_sha256": "18ebdacd37090b1e323ba4beb1fd5927de91f358a14f999840a263dcd0a50996",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DrakeHatcher.java",
+  "java_sha256": "afba1f5cc7f61a23eeec05f9131e903644965048a3cb6cab500b2ad7ec0f6ca7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDamageValue.java",
+      "sha256": "2198ea2d400af0d1b03071469d9f85f92660dbe5101725ecb428a059d4264d26"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/RemoveCountersSourceCost.java",
+      "sha256": "6d8c1b5ff39cc2cd02e982807a027f4ff81fcce1cdeef232603904b26640a09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/DrakeToken.java",
+      "sha256": "e3e537fea71a435f8638b17dbe7a1848bfddc70779bf973bc3dafad9c89329e0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    }
+  ]
 }

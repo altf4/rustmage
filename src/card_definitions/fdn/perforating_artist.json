@@ -3,10 +3,40 @@
   "catalogue_id": 3128,
   "oracle_id": "a3643f66-dfa2-4275-a093-23e162496354",
   "facts_sha256": "89dfc0fea77877b445113c83192d98b79741c6a3f29c916617776c3cb0e1a606",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3e446d6cf74795f4b2b192ac61a39cdcd22c5f47f38a84665e4d09c1bc8c9381"
   },
-  "physical_metadata_sha256": "3114234a605e3ac183853f15dfc26ab36087aadd10a5c33524363aeb537db251"
+  "physical_metadata_sha256": "3114234a605e3ac183853f15dfc26ab36087aadd10a5c33524363aeb537db251",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PerforatingArtist.java",
+  "java_sha256": "fe03a6dff7725aa8a06729ca360c00493d94f7da7dec34e23b59bab10dde9824",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/RaidCondition.java",
+      "sha256": "8be3f0dd408d51dbd78f720f072495bd95e1490e324e50c7847877210559cedd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/PlayerAttackedWatcher.java",
+      "sha256": "ef4d7c44b307d0322a2b0462caa346a0ab5b303a0f4bcc4415a112e06f941fc5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/AtStepTriggeredAbility.java",
+      "sha256": "acaebe5709a15b181c6f315684db3969eb622d6dcc45f2994bf54c05b00d22af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    }
+  ]
 }

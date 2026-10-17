@@ -33,7 +33,7 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
                 "Angel of Vitality",
                 "Exemplar of Light",
                 "Fiendish Panda",
-                "Raise the Past",
+                "Skyknight Squire",
                 "Leonin Vanguard",
                 "Hare Apparent",
                 "Healer's Hawk",
@@ -49,7 +49,7 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
                 "Trygon Predator",
                 "Fog Bank",
                 "Corsair Captain",
-                "High Fae Trickster",
+                "Drake Hatcher",
                 "Exclusion Mage",
                 "Unsummon",
                 "Harbinger of the Tides",
@@ -58,14 +58,14 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
         deck(
             "Swamp",
             &[
-                "Bloodthirsty Conqueror",
+                "Painful Quandary",
                 "Vengeful Bloodwitch",
-                "Midnight Snack",
+                "Ravenous Amulet",
                 "Duress",
                 "Pilfer",
                 "Feed the Swarm",
                 "Dread Summons",
-                "Massacre Wurm",
+                "Perforating Artist",
                 "Tragic Banshee",
             ],
         ),
@@ -80,14 +80,14 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
                 "Hidetsugu's Second Rite",
                 "Burst Lightning",
                 "Ruby, Daring Tracker",
-                "Feldon's Cane",
+                "Juggernaut",
             ],
         ),
         deck(
             "Forest",
             &[
                 "Primal Might",
-                "Maelstrom Pulse",
+                "Mild-Mannered Librarian",
                 "Rise of the Dark Realms",
                 "Llanowar Elves",
                 "Elvish Archdruid",
@@ -105,6 +105,9 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
     for land in &mut decks[1][..8] {
         *land = Card::from_name("Forest").unwrap();
     }
+    for land in &mut decks[2][..8] {
+        *land = Card::from_name("Mountain").unwrap();
+    }
     for land in &mut decks[3][..8] {
         *land = Card::from_name("Forest").unwrap();
     }
@@ -113,7 +116,18 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
     }
     run_matrix(
         &decks,
-        &["Run Away Together", "Involuntary Employment", "Pilfer"],
+        &[
+            "Run Away Together",
+            "Involuntary Employment",
+            "Pilfer",
+            "Skyknight Squire",
+            "Mild-Mannered Librarian",
+            "Drake Hatcher",
+            "Ravenous Amulet",
+            "Juggernaut",
+            "Painful Quandary",
+            "Perforating Artist",
+        ],
     );
 }
 

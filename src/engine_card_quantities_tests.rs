@@ -250,7 +250,7 @@ fn wall_exclusion_uses_effective_changeling_types_and_removed_source_abilities()
             Card::from_name("Juggernaut").unwrap(),
             Zone::Battlefield,
         );
-        assert!(!g.state.objects[juggernaut as usize].card.is_supported());
+        assert!(g.state.objects[juggernaut as usize].card.is_supported());
         let wall = named(&mut g, p.other(), "Chitinous Graspling", Zone::Battlefield);
         let bear = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
         assert!(g.has_subtype(wall, "Wall"));

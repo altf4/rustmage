@@ -1,4 +1,4 @@
-//! Gated Juggernaut supplies only the typed core fixture; this does not admit it.
+//! Mandatory-attack regression tests use the fully implemented Juggernaut.
 use super::tests::{act, cast, scenario, spawn};
 use super::*;
 fn setup(p: Player) -> Game {
@@ -12,10 +12,7 @@ fn setup(p: Player) -> Game {
 }
 fn required(g: &mut Game, p: Player) -> CardId {
     let card = Card::from_name("Juggernaut").unwrap();
-    assert!(
-        !card.is_supported(),
-        "core fixture must not admit the whole card"
-    );
+    assert!(card.is_supported());
     spawn(g, p, card, Zone::Battlefield)
 }
 fn named(g: &mut Game, p: Player, n: &str, z: Zone) -> CardId {
