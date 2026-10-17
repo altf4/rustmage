@@ -95,7 +95,7 @@ fn foundations_qualified_graveyard_and_resolution_cards_full_games() {
                 "Healer's Hawk",
                 "Angel of Vitality",
                 "Gilded Lotus",
-                "Murder",
+                "Feed the Swarm",
             ],
         ),
         deck(
