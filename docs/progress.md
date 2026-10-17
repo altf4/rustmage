@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,903 executable Standard identities | 3,261 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,914 executable Standard identities | 3,250 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -188,3 +188,20 @@ Full Standard/training support remains unfinished.
 The [simultaneous return kernel](battlefield-returns.md) composes actual Werefox main and admits complete Aetherize and River’s Rebuke: 1,898/5,164 identities, 3,266 gated, schema89. Fresh composed validation passes 1,819 native tests, all-target Clippy/fmt, thirty affected compiler methods, six paid parent/own API methods and 100 unretried natural Standard games (82,844 owned frames / 165,688 denials). The full original 452 compiler/269 API suites retain their original baseline scope. The feature record documents the historical-preservation test correction, exact source/library identities and pending independent final-head approvals.
 
 The [continuous combat restrictions](combat-restrictions.md) add five complete bodies on actual return main: 1,903/5,164 executable identities, 3,261 gated, schema89. The frozen composition passes 1,824 native tests, all-target Clippy/fmt, 35 affected compiler methods, seven paid own/parent API methods and 100 unretried naturally terminal Standard games (93,895 owned frames / 187,790 denials). Exact source/library identities, earlier failed policy workloads, generic raw guards, strict parent preservation and required independent final-head approvals are recorded in the feature document.
+
+
+The [temporary would-die exile replacement batch](death-exile-plan.md) adds eleven
+whole bodies on actual main5d103e7: 1,914/5,164 executable Standard identities,
+3,250 gated and observation schema92. The exact-parent proof preserves all 5,320
+other definitions, all 888 prior helper arms, colors, aliases and 94 token recipes.
+Frozen runtime validation passes 1,836 native tests, all-target Clippy, formatting,
+276 unique fresh public API methods and 100 natural Standard games with 73,375
+owned frames and 146,750 wrong-actor/stale-revision denials. Thirty paid natural
+Standard cases cover every mode vector in both seats. The full 483-method compiler
+run has 480 passes and three inherited stale PR309 fixture failures; their
+assertions are corrected separately; all 276 fresh affected compiler methods
+pass in 537.037 seconds. These failed historical assertions are not relabeled as a
+passing full compiler run. Seven complete-body dependencies remain gated and
+tracked in [issue323](https://github.com/altf4/rustmage/issues/323). Two independent
+NONAUTHOR exact-final-head approvals are required before merge. The all-Standard
+rules and training goal remains incomplete.

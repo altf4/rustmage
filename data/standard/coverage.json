@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "995c10d2b1e8c94c6d014d4cfb3e083ee681433bb8b246d1833f648539c0fb92",
+  "catalogue_version": "ba88114f740c2281de8da35f1861924ea17d94170f57565bc78c03199e9f95fe",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1903,
-  "implemented_total": 1909,
+  "implemented_standard_cards": 1914,
+  "implemented_total": 1920,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -490,8 +490,8 @@
     {
       "name": "Agate Assault",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Agate-Blade Assassin",
@@ -3064,8 +3064,8 @@
     {
       "name": "Bot Bashing Time",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Botanical Sanctum",
@@ -4852,8 +4852,8 @@
     {
       "name": "Combustion Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Come Back Wrong",
@@ -7756,8 +7756,8 @@
     {
       "name": "Elspeth's Smite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Elspeth, Storm Slayer",
@@ -8236,8 +8236,8 @@
     {
       "name": "Essence Burn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Essence Channeler",
@@ -8896,8 +8896,8 @@
     {
       "name": "Feed the Flames",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Feed the Swarm",
@@ -17452,8 +17452,8 @@
     {
       "name": "Narset's Rebuke",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Narset, Jeskai Waymaster",
@@ -17920,8 +17920,8 @@
     {
       "name": "Obliterating Bolt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Oblivious Bookworm",
@@ -19000,8 +19000,8 @@
     {
       "name": "Pinecone Strike",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Pinnacle Emissary",
@@ -22360,8 +22360,8 @@
     {
       "name": "Scorching Dragonfire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Scorching Shot",
@@ -25588,8 +25588,8 @@
     {
       "name": "Suplex",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Supper for Spiders",
