@@ -136,6 +136,10 @@ class OmenStandard(unittest.TestCase):
     if a['kind']=='ChooseTarget'and not inset and not activation_started and i in [2,9,10,11] and ann and ann['source_card']==name and ann['kind']!='Spell':target_ids.add(a['target']['Card'])
     if a['kind']=='ChooseSearch':search_chosen=True
     if a['kind']=='Attack'and actor==p and a['card']==source:attacked=True
+    if o['decision']=='targets':
+     private+=1
+     other=g.observe(q if actor==p else p)
+     self.assertFalse(other['actions']);self.assertFalse(other['announcing']['targets']);self.assertIsNone(other['targeting_group'])
     if o['search_choice'] or o['effect_choice']:
      private+=1
      other=g.observe(q if actor==p else p)
