@@ -37337,8 +37337,29 @@ pub(super) mod card_5333 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/synthetic/emblem_775571b10b62868058a6d841.rs");
 }
+pub(super) mod card_5334 {
+    use crate::cards::*;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_scion_of_the_deep.rs");
+}
+pub(super) mod card_5335 {
+    use crate::cards::*;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_komas_coil.rs");
+}
+pub(super) mod card_5336 {
+    use crate::cards::*;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_raccoon_3_3_green.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5334] = [
+pub(super) static RULES: [&CardRules; 5337] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -42673,6 +42694,9 @@ pub(super) static RULES: [&CardRules; 5334] = [
     &card_5331::RULES,
     &card_5332::RULES,
     &card_5333::RULES,
+    &card_5334::RULES,
+    &card_5335::RULES,
+    &card_5336::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }
