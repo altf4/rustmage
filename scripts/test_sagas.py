@@ -18,6 +18,18 @@ class SagaCompilerTests(unittest.TestCase):
     if text!=c['oracle_text']:self.assertFalse(self.implemented(dict(c,oracle_text=text)),(name,text))
   for name,c in self.cards.items():
    if 'Saga'in c.get('type_line','')and name not in NAMES:self.assertFalse(self.implemented(c),name)
+ def test_parenthesized_unknown_chapter_and_intrinsic_residuals_stay_closed(self):
+  for name in NAMES:
+   c=self.cards[name]
+   text=c['oracle_text'];lines=text.splitlines();chapter=next(i for i,line in enumerate(lines)if ' — 'in line)
+   for residual in [' (You win the game.)',' (Discover 2.)',' (If a permanent with a stun counter would become untapped, draw a card instead.)']:
+    changed=list(lines);changed[chapter]+=residual
+    self.assertFalse(self.implemented(dict(c,oracle_text='\n'.join(changed))),(name,residual))
+   self.assertFalse(self.implemented(dict(c,oracle_text=text+'\n(You win the game.)')),name)
+   if ' (If a permanent with a stun counter' in text:
+    self.assertFalse(self.implemented(dict(c,oracle_text=text.replace('remove one from it instead.','draw a card instead.'))),name)
+   if ' (It\'s an artifact with' in text:
+    self.assertFalse(self.implemented(dict(c,oracle_text=text.replace('You gain 3 life.','You win the game.'))),name)
  def test_real_composite_selectors_and_read_ahead_remain_closed(self):
   controls=[('Appeal to Eirdu',g.extract_convoke,'Convoke'),('Candy Grapple',g.extract_bargain,'Bargain'),("Djinn of Fool's Fall",g.extract_plot,'Plot'),('Burst Lightning',g.extract_kicker,'Kicker')]
   for source,extract,prefix in controls:

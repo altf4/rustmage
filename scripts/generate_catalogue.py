@@ -3659,12 +3659,22 @@ def saga_body(card):
             if ' — ' in body:
                 flavor,body=body.split(' — ',1)
                 if flavor not in {'Aerial Blast','Diamond Dust','Heavenly Strike','Judgment Bolt','Kerplunk','Oblivion','Pain','Slipstream','Stampede!','Wark'}:return None
-            body=re.sub(r' \([^\n]*\)','',body).replace('This Saga','This creature')
+            # Only remove authenticated reminder sentences from their exact instruction.
+            # Unknown parenthesized text is executable residual, never harmless prose.
+            reminders = {
+                'Mill three cards, then create a Food token. (It\'s an artifact with "{2}, {T}, Sacrifice this token: You gain 3 life.")': 'Mill three cards, then create a Food token.',
+                'Tap target creature an opponent controls. Put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)': 'Tap target creature an opponent controls. Put a stun counter on it.',
+            }
+            body=reminders.get(body,body)
+            if '(' in body or ')' in body:return None
+            body=body.replace('This Saga','This creature')
             parsed=saga_chapter_program(body)
             if parsed is None:return None
             targets,program=parsed
             abilities.extend((f'Chapter {{ number: {number} }}',program,targets) for number in numbers)
-        else:intrinsic.append(line)
+        else:
+            if '(' in line or ')' in line:return None
+            intrinsic.append(line)
     if not seen or max(seen)!=final or seen!=set(range(1,final+1)):return None
     types=card.get('type_line','').split(' — ')[0].split()
     if 'Creature'in types:
