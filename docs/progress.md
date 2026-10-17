@@ -40,7 +40,7 @@ owned replays / 733,070 denials. The [union review record](review-pr-275.md)
 identifies the exact source/library, preservation proof and independent reviews.
 Final exact-head approvals are recorded in the PR comments before merge.
 
-The other 48 true Adventure parents and 54 Saga parents
+Other Adventure and Saga bodies
 remain part of the full goal, alongside wider Ward/Role/disguise/cloak/control
 and other required semantics. Full rules enforcement across Standard, efficient
 training interfaces and full-deck performance remain incomplete.
@@ -58,3 +58,5 @@ workload performance. A zero unsupported-card counter alone will not prove rules
 correctness.
 
 The [eight-pair Adventure candidate](adventure-land-targets.md) adds accumulating turn-bound land allowances and complete typed target movement/protection variants. Its combined coverage is 1,825/5,164, with 3,339 still gated. Validation passes: 1,710 native tests, all-target Clippy, all 388 unique compiler/data/provenance checks, 247 unique fresh public API methods and 100 natural Standard games with 79,608 owned frames / 159,216 denials. Two independent nonauthor final-head reviews remain required.
+
+The [ownership/controller candidate](ownership-control.md) composes that merged Adventure delivery and completes Korvold and the Noble Thief. Coverage is 1,826/5,164 with 3,338 gated, all 27 Adventure and 13 Omen pairs retained, and observation schema82. Frozen runtime validation passes all 1,724 native tests, all-target Clippy, 403 unique compiler/provenance methods and 249 unique public checkpoint methods. The two subsequently revised policy methods pass from an isolated final export, as do 100 natural Standard games with all sixteen inset route/seat vectors, 80,698 owned replays and 161,396 per-decision denials. Exact source/library and policy scopes, plus required independent nonauthor reviews, are tracked in the [PR 284 review record](review-pr-284.md). This initial stage leaves issue #265 open for broader changing-control bodies and layers.
