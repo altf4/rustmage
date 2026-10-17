@@ -26,4 +26,16 @@ class SelectedXCompilerTests(unittest.TestCase):
             bad=copy.deepcopy(c);bad['oracle_text']=text;self.assertFalse(self.admitted(bad))
         for subtype in ['UnknownType','noncreature']:
             bad=copy.deepcopy(c);bad['oracle_text']=bad['oracle_text'].replace('non-Dragon','non-'+subtype);self.assertFalse(self.admitted(bad))
+    def test_mass_x_legacy_aliases_use_actual_types_and_closed_costs(self):
+        c=copy.deepcopy(self.cards[self.name]['card_faces'][1]);c.update(layout='normal',type_line='Sorcery',colors=['B'],keywords=[],oracle_id=self.cards[self.name]['oracle_id'])
+        c['oracle_text']=c['oracle_text'].split(' (Then shuffle')[0]
+        for name in ['Grizzly Bears','Llanowar Elves','Shock','Quick Study']:
+            good=dict(c,name=name);rust,_=self.compile(good)
+            row=next(line for line in rust.splitlines() if 'Definition {' in line and 'name: "'+name+'"' in line)
+            self.assertIn('kind: 4',row);self.assertIn('effect: Effect::Spell',row)
+            self.assertIn('GrowCreaturesScaled',rust)
+            for cost in ['{X}{X}{B}','{Y}{B}','{X}{B/P}','{X}{4294967296}','{B}{B}','']:
+                self.assertFalse(self.admitted(dict(good,mana_cost=cost)),(name,cost))
+            for text in [good['oracle_text']+' Discover 4.',good['oracle_text'].replace('Dragon','UnknownType'),good['oracle_text'].replace('Each','Each (Unknown (nested) effect.)'), '('+good['oracle_text'].replace('non-Dragon','non-Dra(Unknown.)gon')+')']:
+                self.assertFalse(self.admitted(dict(good,oracle_text=text)),(name,text))
 if __name__=='__main__':unittest.main()

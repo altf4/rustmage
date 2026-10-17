@@ -3968,11 +3968,13 @@ def compile_catalogue(snapshot, target):
                 vehicle_stats_rows.append(f'        {index} => Some(Stats {{ power: {pt[0]}, toughness: {pt[1]} }}),')
         timing_surface = original.get('oracle_text', '')
         timing_seen = False
+        scalar_mass_seen = False
         while True:
             # Inspect each erasure stage: an outer reminder can surround a
             # permission whose keywords themselves contain an inner reminder.
             timing_seen |= re.search(r'\b(?:cast|play)\b.*\bas though\b',
                                      ' '.join(timing_surface.split()), flags=re.I) is not None
+            scalar_mass_seen |= re.search(r'\beach\s+non-|gets\s+-x/-x', ' '.join(timing_surface.split()), flags=re.I) is not None
             stripped = re.sub(r'\([^()]*\)', '', timing_surface)
             if stripped == timing_surface:break
             timing_surface = stripped
@@ -4017,7 +4019,7 @@ def compile_catalogue(snapshot, target):
         abilities = []
         entry = 'Never'
         land = land_template(card)
-        if name in legacy and not timing_seen:
+        if name in legacy and not timing_seen and not scalar_mass_seen:
             effect, fallback_cost, color = legacy[name]
             # Lands have no mana cost. Their legacy cost token encodes colour only.
             cost = '' if effect == 'Land' else card.get('mana_cost', fallback_cost)
@@ -4127,7 +4129,7 @@ def compile_catalogue(snapshot, target):
         if attachment_ward_route(original) and not attachment_ward_reminders_valid(original):
             effect='Unsupported'
         # Later fixed-cost selectors must never revive a rejected variable-cost body.
-        if '{X}' in card.get('mana_cost', '') and scalar is None:
+        if ('{X}' in card.get('mana_cost', '') or scalar_mass_seen) and scalar is None:
             effect = 'Unsupported'
         if replacements and (plot_seen or convoke or cycling or bargain or evidence is not None
                 or any(v is not None for v in (offspring,kicker,additional,flashback,target_reduction,scalar))
