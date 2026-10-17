@@ -508,3 +508,64 @@ fn landfall_optional_base_setting_binds_source_and_both_unblock_consumers_pay_fu
         }
     }
 }
+
+#[test]
+fn primitive_axes_cda_overflow_boundary_and_sparse_owned_heap_are_exact() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.state.players[p.index()].mana = [80; 6];
+        let body = named(&mut g, p, "Burrowguard Mentor", Zone::Battlefield);
+        assert_eq!((g.stats(body).power, g.stats(body).toughness), (1, 1));
+        // Isolate the setter primitive; the complete printed callers are paid above.
+        let item = g.cast_item(p, body, [0; 6]);
+        let bytes = g.state_bytes();
+        let before = g.snapshot();
+        let mut branch = {
+            let parent = g.clone();
+            parent.clone()
+        };
+        branch.set_base_stats(&item, Subject::Source, None, Some(5));
+        g.set_base_stats(&item, Subject::Source, None, Some(5));
+        assert_eq!(g.snapshot(), branch.snapshot());
+        assert_eq!(
+            g.state_bytes() - bytes,
+            std::mem::size_of::<roles::RoleState>() + std::mem::size_of::<BaseStatsEffectView>()
+        );
+        let after = g.snapshot();
+        g.restore(&before).unwrap();
+        g.set_base_stats(&item, Subject::Source, None, Some(5));
+        assert_eq!(g.snapshot(), after);
+        assert_eq!((g.stats(body).power, g.stats(body).toughness), (1, 5));
+        g.set_base_stats(&item, Subject::Source, Some(4), None);
+        assert_eq!((g.stats(body).power, g.stats(body).toughness), (4, 5));
+        cursed(&mut g, p, body);
+        assert_eq!((g.stats(body).power, g.stats(body).toughness), (1, 1));
+        g.set_base_stats(&item, Subject::Source, None, Some(7));
+        assert_eq!((g.stats(body).power, g.stats(body).toughness), (1, 7));
+        assert_eq!(
+            g.observe(p).base_stat_effects,
+            g.observe(p.other()).base_stat_effects
+        );
+        let bounce = named(&mut g, p, "Unsummon", Zone::Hand);
+        cast(&mut g, bounce, None, &[Target::Card(body)]);
+        settle(&mut g);
+        cast(&mut g, body, None, &[]);
+        settle(&mut g);
+        assert!(g.observe(p).base_stat_effects.is_empty());
+        let saved = g.snapshot();
+        g.set_base_stats(&item, Subject::Source, Some(9), Some(9));
+        assert_eq!(g.snapshot(), saved);
+        // Layer 7b precedes checked additive arithmetic: an overwritten printed
+        // power must not cause an intermediate overflow before the legal result.
+        let item = g.cast_item(p, body, [0; 6]);
+        g.state.objects[body as usize].growth.power = i128::MAX;
+        g.set_base_stats(&item, Subject::Source, Some(-1), None);
+        assert_eq!(g.stats(body).power, i128::MAX - 1);
+        let artifact = named(&mut g, p, "Mox Jasper", Zone::Battlefield);
+        g.state.objects[artifact as usize].counters.plus_one = 3;
+        assert_eq!(
+            (g.stats(artifact).power, g.stats(artifact).toughness),
+            (0, 0)
+        );
+    }
+}

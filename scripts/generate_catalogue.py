@@ -5181,6 +5181,12 @@ def compile_catalogue(snapshot, target):
             enchanted_rows.append(f'        {index} => &[' + ', '.join(enchanted) + '],')
         if flash_surcharge is not None and effect != 'Unsupported':
             flash_surcharge_rows.append(f'        {index} => Some({flash_surcharge}),')
+        # A newly parsed activation must not leak a partial program on a card
+        # whose complete body is still unsupported (for example an unported cost).
+        if effect == 'Unsupported':
+            activations = [a for a in activations if not any(
+                instruction.startswith('SetBaseStats') or instruction == 'GrantKeywords { subject: Subject::Source, keywords: Keywords(16384) }'
+                for instruction in a[2])]
         definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(card.get('name', name))}, oracle_id: {oracle_id}, mana_cost: {quote(card.get("mana_cost",cost) if scalar is not None else cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in standard_names).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]}, loyalty: 0, lore: 0 }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         if offspring_key is not None:
             offspring_factories[offspring_key]=(index,definitions[-1],color_mask,card.get('type_line','').split(' — ')[-1])
