@@ -307,6 +307,7 @@ impl Game {
                     }
                     TriggerCondition::SelfOffspring => same && event.offspring_paid,
                     TriggerCondition::SelfKicked => same && event.kicked,
+                    TriggerCondition::SelfGiftEnters => same && event.gift.is_some(),
                     TriggerCondition::SelfBargained => same && event.bargained,
                     TriggerCondition::SelfEvidence => same && event.evidence_collected,
                     TriggerCondition::EvidenceCollected | TriggerCondition::Chapter { .. } => false,
@@ -436,6 +437,16 @@ impl Game {
         if !self.queue_trigger_from(source, index, grant) {
             return false;
         }
+        if event.moved
+            && event.destination == Zone::Battlefield
+            && source.reference == event.after
+            && let Some(context) = &event.gift
+            && context.source == event.before.reference
+        {
+            let mut captured = **context;
+            captured.entry = Some(event.after);
+            self.state.pending_triggers.last_mut().unwrap().gift = Some(Box::new(captured));
+        }
         // Only the movement which actually triggered this ability may bind its
         // new source. Unrelated simultaneous observer deaths do not qualify.
         if event.moved
@@ -497,6 +508,7 @@ impl Game {
         }
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
+            gift: None,
             source_move: None,
             reflexive_subject: None,
             crew: None,
@@ -984,6 +996,7 @@ impl Game {
                     );
                     movement.attachment = Some(target);
                     movement.cast_payment = item.cast.map(|c| c.payment);
+                    movement.gift = item.gift_context().map(Box::new);
                     movement.warp_controller = item
                         .cast
                         .filter(|c| c.method == CastMethod::Warp)
@@ -998,6 +1011,7 @@ impl Game {
                             || c.kicker == Some(true)
                             || c.bargain == Some(true)
                             || c.evidence == Some(true)
+                            || matches!(c.gift, Some(GiftDeclaration::Promised { .. }))
                             || c.method == CastMethod::Warp
                             || item.source_card.entry_counter_rules().iter().any(|r| {
                                 matches!(
@@ -1022,6 +1036,7 @@ impl Game {
                         movement.offspring_paid =
                             item.cast.is_some_and(|c| c.offspring == Some(true));
                         movement.kicked = item.cast.is_some_and(|c| c.kicker == Some(true));
+                        movement.gift = item.gift_context().map(Box::new);
                         movement.bargained = item.cast.is_some_and(|c| c.bargain == Some(true));
                         movement.x = item.x.unwrap_or(0);
                         movement.evidence_collected =
@@ -1187,6 +1202,53 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::GiveGift => self.give_gift(&item),
+                Instruction::ReturnSpellToHand => self.return_targeted_spells_to_hand(&item),
+                Instruction::ProhibitCastingThisTurn => self.state.casting_prohibited = true,
+                Instruction::PlayerHexproofThisTurn => {
+                    self.state.players[item.controller.index()].hexproof_until_end_turn = true;
+                }
+                Instruction::GrantPermanentsThisTurn(keywords) => {
+                    for object in &mut self.state.objects {
+                        if object.zone == Zone::Battlefield && object.controller == item.controller
+                        {
+                            object.gained_keywords = object.gained_keywords.union(keywords);
+                        }
+                    }
+                }
+                Instruction::DamageWithController {
+                    damage,
+                    controller_damage,
+                } => {
+                    let source = self.program_damage_source(&item);
+                    let mut events = Vec::new();
+                    for bound in &item.targets {
+                        if self.same_target_object(*bound)
+                            && let Target::Card(id) = bound.target
+                            && self.on_battlefield(id)
+                        {
+                            let controller = self.state.objects[id as usize].controller;
+                            events.push(DamageEvent {
+                                source,
+                                target: bound.target,
+                                amount: i128::from(damage),
+                                combat: false,
+                            });
+                            events.push(DamageEvent {
+                                source,
+                                target: Target::Player(controller),
+                                amount: i128::from(controller_damage),
+                                combat: false,
+                            });
+                        }
+                    }
+                    self.apply_damage_batch(&events);
+                }
+                Instruction::IfGift { promised, skip } => {
+                    if item.gift_context().is_some() != promised {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::IfManaSpent {
                     minimum,
                     maximum,
@@ -1631,6 +1693,9 @@ impl Game {
                     if self.start_discard_mana_value_life(&item) {
                         return;
                     }
+                }
+                Instruction::ExileIfDiesThisTurn => {
+                    self.register_exile_if_dies(&item);
                 }
                 Instruction::CreateRoleReflexive { token, ability } => {
                     self.resolve_role_reflexive(&item, token, ability);
@@ -2161,6 +2226,35 @@ impl Game {
                             }
                         }
                     }
+                }
+                Instruction::Suspect { subject } => self.suspect_subject(&item, subject),
+                Instruction::UnsuspectCreatures { filter } => {
+                    self.unsuspect_creatures(&item, filter)
+                }
+                Instruction::ReturnGrantedSourceWithSuspect { tapped } => {
+                    self.return_granted_source_suspected(&item, tapped)
+                }
+                Instruction::ReturnToBattlefieldSuspected => {
+                    let moves = item
+                        .targets
+                        .iter()
+                        .copied()
+                        .filter(|b| self.same_target_object(*b))
+                        .filter_map(|b| match b.target {
+                            Target::Card(id) => {
+                                let mut movement = self.entry_move(
+                                    id,
+                                    Zone::Battlefield,
+                                    self.enters_tapped_for(id, item.controller),
+                                );
+                                movement.controller = item.controller;
+                                movement.suspect_after = true;
+                                Some(movement)
+                            }
+                            _ => None,
+                        })
+                        .collect();
+                    self.stage_entries(moves, None);
                 }
                 Instruction::ReturnToBattlefieldWithRole { token } => {
                     let moves = item

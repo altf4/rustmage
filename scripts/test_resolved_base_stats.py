@@ -4,7 +4,9 @@ from pathlib import Path
 from scripts import generate_catalogue as g
 from scripts.catalogue_preservation import canonical,assert_union
 NAMES={'Genemorph Imago','Moon Girl and Devil Dinosaur','Belligerent Yearling'}
-PARENT='4b309a0'
+PARENT='4b309a0763b4e8d12ebdb750ea098458f5f2c961'
+DELIVERED='ef36073d7f4edff2312d8069d29dcae7134f68d6'
+COMPOSED_PARENT='19e4602b436b7aa8c9708f28f87fe288985c9377'
 class ResolvedBaseTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):cls.all=json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards'];cls.cards={c['name']:c for c in cls.all if c['name']in NAMES}
@@ -33,8 +35,14 @@ class ResolvedBaseTests(unittest.TestCase):
   c=self.cards['Belligerent Yearling']
   for raw in [c['oracle_text'].replace("that creature's power","that creature's toughness"),c['oracle_text'].replace('until end of turn','until your next turn')]:self.assertFalse(self.compile(dict(c,oracle_text=raw))[1],raw)
  def test_exact_three_against_prototype_foundation_preserve_all_other_definitions(self):
-  physical={c['oracle_id']:c['name']for c in self.all};a=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True),physical);b=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  physical={c['oracle_id']:c['name']for c in self.all};a=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True),physical);b=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',DELIVERED+':src/generated/catalogue.rs'],text=True),physical);current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
   proof=assert_union(a,b,changed={n+'#0'for n in NAMES},added=set(),helpers=set(),aliases={});self.assertEqual(proof['preserved_definitions'],5328)
+  for name in NAMES:self.assertEqual(current['definitions'][name+'#0'],b['definitions'][name+'#0'])
+  mutant=copy.deepcopy(b);mutant['definitions']['Plains#0']='unrelated mutation'
+  with self.assertRaises(AssertionError):assert_union(a,mutant,changed={n+'#0'for n in NAMES},added=set(),helpers=set(),aliases={})
+ def test_actual_composed_parent_has_exactly_three_new_whole_bodies(self):
+  physical={c['oracle_id']:c['name']for c in self.all};a=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',COMPOSED_PARENT+':src/generated/catalogue.rs'],text=True),physical);b=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  proof=assert_union(a,b,changed={n+'#0'for n in NAMES},added=set(),helpers=set(),aliases={});self.assertEqual(proof['preserved_definitions'],5329)
   mutant=copy.deepcopy(b);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(a,mutant,changed={n+'#0'for n in NAMES},added=set(),helpers=set(),aliases={})
  def test_complete_pinned_java_and_direct_imports_are_audit_only(self):

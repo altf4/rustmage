@@ -101,6 +101,12 @@ impl Announcement {
             && self.item.source_card.kicker_cost().is_some()
             && self.item.cast.is_some_and(|c| c.kicker.is_none())
     }
+    pub(super) fn needs_gift(&self) -> bool {
+        self.pay_window
+            && self.item.kind == StackKind::Spell
+            && self.item.source_card.gift().is_some()
+            && self.item.cast.is_some_and(|c| c.gift.is_none())
+    }
     pub(super) fn needs_offspring(&self) -> bool {
         self.pay_window
             && self.item.kind == StackKind::Spell
@@ -279,6 +285,8 @@ impl Game {
             self.state.pending = Pending::Bargain { player };
         } else if a.needs_kicker() {
             self.state.pending = Pending::Kicker { player };
+        } else if a.needs_gift() {
+            self.state.pending = Pending::Gift { player };
         } else if a.needs_mana_cost() {
             self.state.pending = if a.item.kind == StackKind::Spell {
                 Pending::SpellCost { player }
@@ -432,11 +440,17 @@ impl Game {
             _ => {}
         }
         match target {
-            Target::Player(player) => match rule {
-                TargetRule::Any => true,
-                TargetRule::Player { opponent_only } => !opponent_only || player != controller,
-                _ => false,
-            },
+            Target::Player(player) => {
+                (player == controller
+                    || !self.state.players[player.index()].hexproof_until_end_turn)
+                    && match rule {
+                        TargetRule::Any => true,
+                        TargetRule::Player { opponent_only } => {
+                            !opponent_only || player != controller
+                        }
+                        _ => false,
+                    }
+            }
             Target::Spell(id) => self.state.stack.iter().any(|item| {
                 item.kind == StackKind::Spell
                     && item.card == id
@@ -608,6 +622,7 @@ impl Game {
         let object = event.after;
         let id = self.next_stack_id();
         SpellView {
+            gift: None,
             source_move: None,
             reflexive_subject: None,
             crew: None,
@@ -617,6 +632,7 @@ impl Game {
             x: None,
             attachment_trigger: None,
             cast: Some(CastInfo {
+                gift: None,
                 physical_card: None,
                 face: CastFace::Normal,
                 payment,
@@ -724,7 +740,12 @@ impl Game {
     ) {
         let plan = self.target_spec(&item);
         let player = item.controller;
-        assert!(self.targets_available(plan, player, item.target_source()));
+        assert!(
+            self.targets_available(plan, player, item.target_source())
+                || item.source_card.gift().is_some_and(|gift| {
+                    self.targets_available(gift.promised_targets, player, item.target_source())
+                })
+        );
         let needs_mode = item.kind == StackKind::Spell
             && matches!(item.source_card.effect(), Effect::Modal(_))
             && item.mode.is_none();

@@ -4,6 +4,9 @@ from scripts import generate_catalogue as g
 from scripts.catalogue_preservation import canonical,assert_union
 NAMES={'Doc Ock, Sinister Scientist','Mirkwood Meditator','Multiply by Zero','Perfected Theory','Quandrix Charm','Snowmelt Stag','Turtle-Duck','Water Wings','Gateway Sneak','Snooping Page'}
 PARENT='5d103e7a3172e4742687d3f77f3ed814264b1532'
+DELIVERED='4b309a0763b4e8d12ebdb750ea098458f5f2c961'
+COMPOSED_PARENT='c0c25197ce1fce2b8973c538455d49e2ffa46b23'
+COMPOSED_DELIVERED='19e4602b436b7aa8c9708f28f87fe288985c9377'
 class BaseStatTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):cls.all=json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards'];cls.cards={c['name']:c for c in cls.all if c['name'] in NAMES}
@@ -39,9 +42,18 @@ class BaseStatTests(unittest.TestCase):
    if c['name'] in ['Vincent\'s Limit Break','Eaten by Piranhas','Witness Protection','Atomic Microsizer','Archon of the Wild Rose','Unable to Scream','Aettir and Priwen']:self.assertFalse(self.compile(c)[1],c['name'])
   card=dict(self.cards['Multiply by Zero'])
   for value in [str(2**127),str(-(2**127)-1)]:self.assertFalse(self.compile(dict(card,oracle_text='Target creature has base power '+value+' until end of turn.'))[1])
- def test_exact_actual_parent_changes_ten_and_preserves_every_other_fact(self):
-  physical={c['oracle_id']:c['name'] for c in self.all};old=subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True);before=canonical(old,physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+ def test_historical_ten_body_preservation_and_current_programs(self):
+  physical={c['oracle_id']:c['name'] for c in self.all};old=subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True);before=canonical(old,physical);after=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',DELIVERED+':src/generated/catalogue.rs'],text=True),physical);current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
   helpers={('base_stat_setter',n+'#0') for n in ['Doc Ock, Sinister Scientist','Snowmelt Stag']}|{('keyword_grants','Doc Ock, Sinister Scientist#0')};proof=assert_union(before,after,changed={n+'#0' for n in NAMES},added=set(),helpers=helpers,aliases={});self.assertEqual(proof['preserved_definitions'],5321);self.assertEqual(proof['prior_helpers'],888)
+  for name in NAMES:self.assertEqual(current['definitions'][name+'#0'],after['definitions'][name+'#0'])
+  for helper in helpers:self.assertEqual(current['helpers'][helper],after['helpers'][helper])
+  mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
+  with self.assertRaises(AssertionError):assert_union(before,mutant,changed={n+'#0' for n in NAMES},added=set(),helpers=helpers,aliases={})
+ def test_actual_composed_parent_changes_only_ten_bodies(self):
+  physical={c['oracle_id']:c['name'] for c in self.all};before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',COMPOSED_PARENT+':src/generated/catalogue.rs'],text=True),physical);after=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',COMPOSED_DELIVERED+':src/generated/catalogue.rs'],text=True),physical);current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  helpers={('base_stat_setter',n+'#0') for n in ['Doc Ock, Sinister Scientist','Snowmelt Stag']}|{('keyword_grants','Doc Ock, Sinister Scientist#0')};proof=assert_union(before,after,changed={n+'#0' for n in NAMES},added=set(),helpers=helpers,aliases={});self.assertEqual(proof['preserved_definitions'],5322)
+  for name in NAMES:self.assertEqual(current['definitions'][name+'#0'],after['definitions'][name+'#0'])
+  for helper in helpers:self.assertEqual(current['helpers'][helper],after['helpers'][helper])
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(before,mutant,changed={n+'#0' for n in NAMES},added=set(),helpers=helpers,aliases={})
  def test_full_family_metadata_and_complete_pinned_direct_imports(self):

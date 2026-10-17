@@ -1,0 +1,23 @@
+{
+  "parent": "19e4602b436b7aa8c9708f28f87fe288985c9377",
+  "delivery": null,
+  "canonical": {
+    "prior_definitions": 5332,
+    "current_definitions": 5332,
+    "changed_definitions": [
+      "Belligerent Yearling#0",
+      "Genemorph Imago#0",
+      "Moon Girl and Devil Dinosaur#0"
+    ],
+    "added_definitions": [],
+    "preserved_definitions": 5329,
+    "prior_helpers": 911,
+    "new_helpers": [],
+    "prior_colors": 5332,
+    "inline_flag_tables": 3,
+    "token_recipes": 95,
+    "emblem_recipes": 1,
+    "prior_aliases": 5438,
+    "result": "PASS"
+  }
+}

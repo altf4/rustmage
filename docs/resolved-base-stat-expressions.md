@@ -87,3 +87,21 @@ These three bodies are an acceptance inventory, not an allowlist. Any genuinely
 complete extra admission after composing queued generic dependencies must receive
 full-body audit and acceptance. The broader remaining family stays tracked by
 issue #324; unsupported obligations are not erased to admit partial cards.
+
+## Interim actual schema96 composition
+
+The branch now composes actual merged main
+`19e4602b436b7aa8c9708f28f87fe288985c9377`, retaining all Gift, death-exile,
+Suspect and final base-stat contracts. The interim candidate is 1,953 executable
+Standard bodies with 95 token recipes. This is still not final delivery: schema98
+is reserved and final gates wait for the queued schema97 hand-land predecessor.
+The exact actual-parent proof changes only the three resolved-stat bodies and
+preserves 5,329 other definitions plus all 911 prior helpers and every table.
+All three programs equal the original prototype. Historical foundation and actual
+base-stat ten-body proofs are kept strict against their delivered revisions,
+with separate current-program/helper equality and mutation-negative controls.
+Twelve affected resolved-stat/base-stat compiler methods pass (1.862s). Parent
+Python/example policies differ only in explicit schema96-to98 assertions, verified
+by AST comparison. No interim current-parent full native/public/100 result is
+claimed from prototype evidence. Final source composition and acceptance remain
+pending.

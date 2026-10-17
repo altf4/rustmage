@@ -59,6 +59,9 @@ impl Game {
         if target.zone != Zone::Battlefield {
             return keywords;
         }
+        if self.is_suspected(id) {
+            keywords = keywords.union(Keywords::MENACE).union(Keywords::CANT_BLOCK);
+        }
         let reference = self.object_ref(id);
         let attacking = self.state.attackers.iter().any(|a| a.card == id);
         for &source in &self.state.static_sources {
