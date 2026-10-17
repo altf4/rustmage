@@ -205,6 +205,9 @@ impl Game {
             "unpaid additional cost"
         );
         a.additional_paid = true;
+        if object == a.item.object {
+            self.refresh_local_source_counter_quantities(&mut a.item);
+        }
         match spec.kind {
             EffectChoiceKind::UntapLands { .. }
             | EffectChoiceKind::HandCreature

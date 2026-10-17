@@ -264,7 +264,7 @@ impl Game {
                 history.push(r)
             }
         }
-        self.pay_activation(&a.item, [0; 6], Counters::default());
+        self.pay_activation(&mut a.item, [0; 6], Counters::default());
         self.tap_objects(
             &context
                 .contributors

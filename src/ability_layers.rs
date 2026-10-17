@@ -80,6 +80,8 @@ pub(crate) enum StaticAbilityFragment {
     CombatRestriction(u16, CombatRestriction),
     /// Source attacks every combat when independently able to attack.
     AttacksEachCombat,
+    /// The source's evasion ability excludes blockers with an effective subtype.
+    CannotBeBlockedBySubtype(&'static str),
     EntryTriggerSuppression(u16, u16),
     OpponentEntryTapped(u16, u16),
     ControlledEntryUntapped,

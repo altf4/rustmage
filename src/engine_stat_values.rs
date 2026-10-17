@@ -264,6 +264,9 @@ impl Game {
     ) -> u128 {
         match value {
             AmountValue::Fixed(n) => u128::from(n),
+            AmountValue::SourceCounterQuantity(kind) => {
+                u128::from(self.source_counter_quantity_live(source, kind).unwrap_or(0))
+            }
             AmountValue::MilledCreatures
             | AmountValue::ChosenX
             | AmountValue::ManaSpent
@@ -271,7 +274,8 @@ impl Game {
             | AmountValue::ColorsSpent
             | AmountValue::SacrificedToughness
             | AmountValue::SourcePower
-            | AmountValue::LifeEventAmount => 0, // Off-stack expressions have no cast parameter.
+            | AmountValue::LifeEventAmount
+            | AmountValue::DamageEventAmount => 0, // Off-stack expressions have no cast parameter.
             AmountValue::Stat(value) => self.stat_value(value, source, owner).max(0) as u128,
             AmountValue::CardsDiscardedThisTurn => {
                 u128::from(self.state.players[owner.index()].cards_discarded_this_turn)

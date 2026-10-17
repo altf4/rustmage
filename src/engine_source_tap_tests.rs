@@ -388,7 +388,7 @@ fn activation_tap_before_sacrifice_captures_old_source_incarnation() {
     let mut item = g.activation_item(Player::P0, source, 0); // Synthetic hook probe: none of the admitted tap observers has this activated ability.
     item.source_card = Card::from_name("Fanatical Firebrand").unwrap();
     let old = g.object_ref(source);
-    g.pay_activation(&item, [0; 6], Counters::default());
+    g.pay_activation(&mut item, [0; 6], Counters::default());
     assert_eq!(g.object_view(source).zone, Zone::Graveyard);
     assert_eq!(g.state.pending_triggers.len(), 1);
     assert_eq!(g.state.pending_triggers[0].object, old);

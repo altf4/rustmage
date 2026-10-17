@@ -203,7 +203,7 @@ impl Game {
     pub(super) fn finish_saddle_payment(&mut self) {
         assert!(self.saddle_frame_valid());
         let f = self.state.saddle_payment.take().unwrap();
-        let a = self.state.announcing.take().unwrap();
+        let mut a = self.state.announcing.take().unwrap();
         assert!(f.selected.iter().all(|r| self.saddle_eligible(
             a.item.object,
             a.item.controller,
@@ -216,7 +216,7 @@ impl Game {
         assert!(total.enough(f.minimum));
         // All powers are checked before the simultaneous tap cost. Tap observers
         // queue during payment, then are ordered above the activated ability.
-        self.pay_activation(&a.item, [0; 6], Counters::default());
+        self.pay_activation(&mut a.item, [0; 6], Counters::default());
         self.tap_objects(&f.selected.iter().map(|r| r.card).collect::<Vec<_>>());
         self.state.priority = a.item.controller;
         self.push_stack_item(a.item);
