@@ -58,6 +58,23 @@ Prototype evidence:
   preservation and full pinned source verification. All 5,328 other definitions,
   all parent helpers, aliases, colors, flags and recipes remain identical to 4b.
 - All-target Clippy passes (17.07s). Formatting was applied before the native run.
+- Initial prototype public acceptance on source417 and immutable schema98
+  `resolved328-417fef9-5881-schema98-f328e0423bc2.so` passes the six Moon Girl and
+  Yearling cases, including both optional outcomes in both seats. The two
+  Genemorph cases fail only the policy's setup: it filled its four land slots
+  without reserving blue/green and never cast the required source before deck
+  exhaustion. Sourceab29 changes only that policy to reserve those colors;
+  both exact original Genemorph seeds then pass naturally (2,631 owned frames,
+  5,262 wrong-actor/stale denials; 6.628s). No deck, seed or acceptance condition
+  changed. The initial eight-case run remains failed, not relabeled green.
+  These are prototype-only checks, not current-main or full100 acceptance.
+- The optimized prototype cargo build passes (25.768s); all864 tracked inputs
+  and SHA `f328e0423bc23084944677a2f6beb2eec91948f10db388e6ec695f232f037426`
+  are verified. Its copied runner retained a unique310-prefixed cache target;
+  the326-only cleanup guard rejected that prefix after cargo/manifest checks.
+  The wrapper failure is recorded and cleanup repaired only after termination,
+  preserving every library. No build or game result is inferred from a failed
+  wrapper exit.
 - The first compile prototype incorrectly referenced ObjectView.stats and matched
   duration before normalization; both were corrected before semantic tests.
   A later negative-test mutant was unchanged for Moon Girl because its text had no
