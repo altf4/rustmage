@@ -1,6 +1,5 @@
 //! Exact-object layer-7b effects share the Role timestamp clock (CR613.4/613.7).
 use super::*;
-use crate::cards::StaticAbilityFragment;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct BaseStatsEffectView {
@@ -191,71 +190,5 @@ impl Game {
             // Legal cleanup cannot begin with an unresolved stack or announcement.
             state.stat_subjects.clear();
         }
-    }
-    pub(super) fn apply_base_stat_layers(
-        &self,
-        id: CardId,
-        mut stats: Stats,
-        departing: Option<CardId>,
-    ) -> Stats {
-        let object = self.object_ref(id);
-        let cursed = self.cursed_role_timestamp(object);
-        let mut power_time = cursed;
-        let mut toughness_time = cursed;
-        if cursed.is_some() {
-            stats = Stats {
-                power: 1,
-                toughness: 1,
-            };
-        }
-        if let Some(state) = &self.state.roles {
-            for effect in &state.base_stats {
-                if effect.recipient != object {
-                    continue;
-                }
-                if effect.static_source {
-                    let source = &self.state.objects[effect.source.card as usize];
-                    if source.zone != Zone::Battlefield
-                        || self.object_ref(effect.source.card) != effect.source
-                    {
-                        continue;
-                    }
-                    let Some(spec) = source.card.base_stat_setter() else {
-                        continue;
-                    };
-                    if !self.continuous_fragment_available(effect.source.card, |fragment| {
-                        matches!(fragment, StaticAbilityFragment::BaseStatSetter(..))
-                    }) {
-                        continue;
-                    }
-                    if spec.own_turn && self.state.active != source.controller {
-                        continue;
-                    }
-                    if spec.condition.is_some_and(|condition| {
-                        self.stat_value_without_hand(
-                            condition,
-                            effect.source,
-                            source.controller,
-                            departing,
-                        ) == 0
-                    }) {
-                        continue;
-                    }
-                }
-                if let Some(power) = effect.power
-                    && power_time.is_none_or(|t| effect.timestamp > t)
-                {
-                    stats.power = power;
-                    power_time = Some(effect.timestamp);
-                }
-                if let Some(toughness) = effect.toughness
-                    && toughness_time.is_none_or(|t| effect.timestamp > t)
-                {
-                    stats.toughness = toughness;
-                    toughness_time = Some(effect.timestamp);
-                }
-            }
-        }
-        self.apply_live_base_stat_layers(id, stats, &mut power_time, &mut toughness_time)
     }
 }

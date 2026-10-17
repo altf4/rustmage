@@ -2,7 +2,6 @@
 //! setters, then additive modifiers. Unsupported switching/dependency effects
 //! remain gated by complete-text admission, never approximated by deltas.
 use super::*;
-use crate::cards::StaticAbilityFragment;
 
 impl Game {
     pub(super) fn register_battlefield_sources(&mut self, id: CardId) {
@@ -170,203 +169,30 @@ impl Game {
         source: ObjectRef,
         id: CardId,
     ) -> bool {
-        let object = &self.state.objects[id as usize];
-        object.zone == Zone::Battlefield
-            && self.is_creature(id)
-            && filter.matches_characteristics(
-                object.card,
-                self.current_kinds(id),
-                self.granted_subtypes(id),
-                object.controller == controller,
-                self.object_ref(id) == source,
-                self.state.attackers.iter().any(|a| a.card == id),
-            )
-            && (filter.keyword == Keywords::NONE || self.keywords(id).contains(filter.keyword))
+        self.characteristic_query()
+            .creature_matches(filter, controller, source, id)
     }
 
     pub(super) fn stats(&self, id: CardId) -> Stats {
-        self.stats_without_hand(id, None)
+        self.characteristic_query().stats(id)
     }
     // CR208.4b: characteristic definitions and setters, before modifiers/counters.
+    #[cfg(test)]
     pub(super) fn base_stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
-        let object = &self.state.objects[id as usize];
-        let mut stats = if let Some((power, toughness)) = object.card.vehicle_stats() {
-            if !self.is_creature(id) {
-                return Stats::default();
-            }
-            Stats { power, toughness }
-        } else {
-            match object.card.effect() {
-                Effect::Creature(power, toughness) => Stats {
-                    power: i128::from(power),
-                    toughness: i128::from(toughness),
-                },
-                _ => Stats::default(),
-            }
-        };
-        // Layer 7a applies in every zone, before setters and additive modifiers.
-        if let Some(base) = object.card.dynamic_stats()
-            && self.continuous_fragment_available(id, |fragment| {
-                matches!(fragment, StaticAbilityFragment::DynamicStats(..))
-            })
-        {
-            let reference = self.object_ref(id);
-            let power = base.power.map(|expr| {
-                self.stat_expression_without_hand(expr, reference, object.controller, departing)
-            });
-            if let Some(power) = power {
-                stats.power = power;
-            }
-            if let Some(expr) = base.toughness {
-                stats.toughness = if let Some(p) = base.power
-                    && p.value == expr.value
-                    && p.multiplier == expr.multiplier
-                {
-                    power
-                        .unwrap()
-                        .checked_add(expr.offset)
-                        .and_then(|v| v.checked_sub(p.offset))
-                        .capacity("toughness exhausted")
-                } else {
-                    self.stat_expression_without_hand(expr, reference, object.controller, departing)
-                };
-            }
-        }
-        let battlefield_creature = object.zone == Zone::Battlefield && self.is_creature(id);
-        if battlefield_creature {
-            stats = self.apply_base_stat_layers(id, stats, departing);
-        }
-        stats
+        self.characteristic_query()
+            .base_stats_without_hand(id, departing)
     }
 
     pub(super) fn stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
-        self.layered_stats_without_hand(id, departing).1
+        self.characteristic_query()
+            .stats_without_hand(id, departing)
     }
     pub(super) fn layered_stats_without_hand(
         &self,
         id: CardId,
         departing: Option<CardId>,
     ) -> (Stats, Stats) {
-        let object = &self.state.objects[id as usize];
-        let base = self.base_stats_without_hand(id, departing);
-        // A Vehicle has no effective creature stats while it is not a creature.
-        // Counters remain on it, ready for a later successful crew.
-        if object.card.vehicle_stats().is_some() && !self.is_creature(id) {
-            return (base, base);
-        }
-        let mut stats = base;
-        let battlefield_creature = object.zone == Zone::Battlefield && self.is_creature(id);
-        if matches!(object.card.effect(), Effect::Creature(..))
-            || object.card.vehicle_stats().is_some()
-            || object.card.dynamic_stats().is_some()
-        {
-            let dynamic = object.card.dynamic_stats();
-            let power_resource = if dynamic.is_some_and(|base| base.power.is_some()) {
-                "power exhausted"
-            } else if object.card.vehicle_stats().is_some() {
-                "Vehicle power exhausted"
-            } else {
-                "power representation exhausted"
-            };
-            let toughness_resource = if dynamic.is_some_and(|base| base.toughness.is_some()) {
-                "toughness exhausted"
-            } else if object.card.vehicle_stats().is_some() {
-                "Vehicle toughness exhausted"
-            } else {
-                "toughness representation exhausted"
-            };
-            stats.power = stats
-                .power
-                .checked_add(object.growth.power)
-                .and_then(|v| v.checked_add(object.counter_delta()))
-                .capacity(power_resource);
-            stats.toughness = stats
-                .toughness
-                .checked_add(object.growth.toughness)
-                .and_then(|v| v.checked_add(object.counter_delta()))
-                .capacity(toughness_resource);
-        }
-        if !battlefield_creature {
-            return (base, stats);
-        }
-        stats += self.live_static_bonus(id);
-        stats += self.attachment_bonus(id).0;
-        // Only the small live-source index is traversed. Central zone transitions
-        // maintain it, and snapshots own it; no derived stat cache needs invalidation.
-        for &source in &self.state.static_sources {
-            let object = &self.state.objects[source as usize];
-            for (index, modifier) in object.card.scaling_modifiers().iter().enumerate() {
-                if !self.continuous_fragment_available(source, |fragment| {
-                    matches!(fragment,
-                    StaticAbilityFragment::ScalingModifier(slot, _) if usize::from(*slot) == index)
-                }) {
-                    continue;
-                }
-                let applies = match modifier.subject {
-                    Subject::Source => source == id,
-                    Subject::Attached => {
-                        !self.is_creature(source) && object.attached_to == Some(self.object_ref(id))
-                    }
-                    Subject::Targets | Subject::Entering => {
-                        unreachable!("event or targeted scaling static modifier")
-                    }
-                };
-                if applies {
-                    let value = self.stat_value_without_hand(
-                        modifier.value,
-                        self.object_ref(source),
-                        object.controller,
-                        departing,
-                    );
-                    stats += Stats {
-                        power: modifier
-                            .stats
-                            .power
-                            .checked_mul(value)
-                            .capacity("power exhausted"),
-                        toughness: modifier
-                            .stats
-                            .toughness
-                            .checked_mul(value)
-                            .capacity("toughness exhausted"),
-                    };
-                }
-            }
-            for (index, modifier) in object.card.static_modifiers().iter().enumerate() {
-                if !self.continuous_fragment_available(source, |fragment| {
-                    matches!(fragment,
-                    StaticAbilityFragment::StaticModifier(slot, _) if usize::from(*slot) == index)
-                }) {
-                    continue;
-                }
-                if (!modifier.own_turn || self.state.active == object.controller)
-                    && (!modifier.requires_life_gain
-                        || self.state.players[object.controller.index()].life_gained_this_turn > 0)
-                    && self.creature_matches(
-                        modifier.filter,
-                        object.controller,
-                        self.object_ref(source),
-                        id,
-                    )
-                {
-                    stats += modifier.stats;
-                }
-            }
-            if !object.card.enchanted_modifiers().is_empty() && self.is_enchanted(id) {
-                for (index, modifier) in object.card.enchanted_modifiers().iter().enumerate() {
-                    if !self.continuous_fragment_available(source, |fragment| matches!(fragment,
-                        StaticAbilityFragment::EnchantedModifier(slot, _) if usize::from(*slot) == index)) { continue; }
-                    if self.creature_matches(
-                        modifier.filter,
-                        object.controller,
-                        self.object_ref(source),
-                        id,
-                    ) {
-                        stats += modifier.stats;
-                    }
-                }
-            }
-        }
-        (base, stats)
+        self.characteristic_query()
+            .layered_stats_without_hand(id, departing)
     }
 }
