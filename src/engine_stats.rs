@@ -177,6 +177,7 @@ impl Game {
     pub(super) fn stats(&self, id: CardId) -> Stats {
         self.stats_without_hand(id, None)
     }
+    // CR208.4b: characteristic definitions and setters, before modifiers/counters.
     pub(super) fn base_stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
         let object = &self.state.objects[id as usize];
         let mut stats = if let Some((power, toughness)) = object.card.vehicle_stats() {
