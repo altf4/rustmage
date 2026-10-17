@@ -2838,6 +2838,41 @@ def activation_cost(text):
     return cost
 
 
+def attachment_ward_route(card):
+    """New typed attachment and linked-union routes, selected by grammar alone."""
+    text=re.sub(r'\([^()]*\)', '',card.get('oracle_text','')).casefold()
+    return (re.search(r'(?m)^(?:enchanted|equipped) (?:creature|permanent)[^\n]*\bward\b',text) is not None
+            or 'enchant artifact you control' in text.splitlines()
+            or any(phrase in text for phrase in (
+                'exile target artifact or creature an opponent controls until ',
+                'exile target artifact, creature, or enchantment an opponent controls until ')))
+
+
+def attachment_ward_reminders_valid(card):
+    """Authenticate exact reminder syntax and repeated printed costs before extraction."""
+    mana=r'(?:\{(?:[0-9]+|[WUBRGC])\})+'
+    for line in card.get('oracle_text','').splitlines():
+        if '(' not in line and ')' not in line:continue
+        if line.count('(')!=1 or line.count(')')!=1 or not line.endswith(')') or ' (' not in line:return False
+        prefix,reminder=line.rsplit(' (',1)
+        if m:=re.fullmatch(r'Ward ('+mana+r')',prefix):
+            expected=r'Whenever this (?:artifact|enchantment|creature) becomes the target of a spell or ability an opponent controls, counter it unless that player pays '+re.escape(m[1])+r'\.\)'
+        elif m:=re.fullmatch(r'(Enchanted|Equipped) (?:creature|permanent)[^\n]*\bward ('+mana+r')\.',prefix):
+            recipient=m[1].lower()+r' (?:creature|permanent)'
+            expected=r'Whenever (?:'+recipient+r'|it) becomes the target of a spell or ability an opponent controls, counter it unless that player pays '+re.escape(m[2])+r'\.\)'
+        elif m:=re.fullmatch(r'(?:[^\n()]+ — )?Equip ('+mana+r')',prefix):
+            expected=re.escape(m[1])+r': Attach to target creature you control\. Equip only as a sorcery\.\)'
+        elif m:=re.fullmatch(r'Cycling ('+mana+r')',prefix):
+            expected=re.escape(m[1])+r', Discard this card: Draw a card\.\)'
+        elif prefix=='Job select':
+            expected=r'When this Equipment enters, create a 1/1 colorless Hero creature token, then attach this to it\.\)'
+        elif m:=re.fullmatch(r'Crew ([0-9]+)',prefix):
+            expected=r'Tap any number of (?:other untapped )?creatures you control with total power '+re.escape(m[1])+r' or more: This Vehicle becomes an artifact creature until end of turn\.\)'
+        else:return False
+        if re.fullmatch(expected,reminder) is None:return False
+    return True
+
+
 def attachment_grants(text):
     """Keywords and independently triggered Ward instances; never merge Ward costs."""
     if not text: return 0, []
@@ -3837,6 +3872,8 @@ def compile_catalogue(snapshot, target):
                     and creature_entry == 'Never') else None
             if crew is None: effect='Unsupported'
             else: effect,keywords,abilities,activations,enters,dynamic,scaling=crew
+        if attachment_ward_route(original) and not attachment_ward_reminders_valid(original):
+            effect='Unsupported'
         # Later fixed-cost selectors must never revive a rejected variable-cost body.
         if '{X}' in card.get('mana_cost', '') and scalar is None:
             effect = 'Unsupported'

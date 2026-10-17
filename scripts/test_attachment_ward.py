@@ -20,6 +20,17 @@ class AttachmentWardCompilerTests(unittest.TestCase):
    c=self.rows[n]
    with self.subTest(card=n):
     self.assertTrue(self.admitted(c));self.assertFalse(self.admitted(dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')))
+ def test_unknown_parenthetical_residuals_and_mismatched_reminders_stay_closed(self):
+  for n in NAMES:
+   c=self.rows[n]
+   for residual in [' (You win the game.)',' (Discover 2.)',' (Whenever it becomes targeted, draw a card.)',' (unclosed',')']:
+    self.assertFalse(self.admitted(dict(c,oracle_text=c['oracle_text']+residual)),(n,residual))
+   self.assertFalse(self.admitted(dict(c,oracle_text=c['oracle_text']+'\n(You win the game.)')),n)
+   self.assertFalse(self.admitted(dict(c,oracle_text=c['oracle_text'].replace('exile target','Exile target')+'\n(You win the game.)')),n)
+   changed=c['oracle_text'].replace('that player pays {1}.','that player pays {9}.').replace('that player pays {2}.','that player pays {9}.')
+   if changed!=c['oracle_text']:self.assertFalse(self.admitted(dict(c,oracle_text=changed)),n)
+  # Existing grammar consumers retain their audited Job select/equip reminders.
+  self.assertTrue(self.admitted(self.rows["Paladin's Arms"]))
  def test_grants_are_per_instance_and_reject_unsupported_costs(self):
   k,triggers=g.attachment_grants('flying and ward {1} and ward {1}')
   self.assertEqual(k,1);self.assertEqual(len(triggers),2);self.assertEqual(triggers[0],triggers[1])
