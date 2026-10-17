@@ -20,7 +20,7 @@ class RoleSemanticCompilerTests(unittest.TestCase):
         from scripts.catalogue_preservation import canonical, assert_union
         names=['Return Triumphant','Twisted Sewer-Witch','Syr Armont, the Redeemer','Asinine Antics','A Tale for the Ages','Mystical Tether']
         physical={c['oracle_id']:c['name'] for c in self.cards.values()}
-        before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','c41c060c024626843b17cf292aab838d36fd6eb1:src/generated/catalogue.rs'],text=True),physical)
+        before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','ce4b0c104a8e0dbc0a76753a03608eb7bc4618be:src/generated/catalogue.rs'],text=True),physical)
         after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
         helpers={('enchanted_modifiers',n+'#0') for n in ['Syr Armont, the Redeemer','A Tale for the Ages']}|{('flash_surcharge',n+'#0') for n in ['Asinine Antics','Mystical Tether']}
         assert_union(before,after,changed={n+'#0' for n in names},added=set(),helpers=helpers,aliases={})

@@ -32,7 +32,7 @@ class AdventureEventCompilerTests(unittest.TestCase):
    c=self.rows[NAMES[i]];report=g.compile_catalogue(dict(cards=[c],card_count=1,cards_sha256=hashlib.sha256(json.dumps([c],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()),dict(banned_card_names=[]));self.assertIn(expected,report[0])
  def test_historical_merged_event_union_preserves_every_unrelated_program_and_factory(self):
   import subprocess
-  from catalogue_preservation import canonical, assert_union
+  from scripts.catalogue_preservation import canonical, assert_union
   parent='ce9a90a1867ce741387d3ed0a1aac0aa1592ca08'
   old=subprocess.check_output(['git','-C',str(g.ROOT),'show',parent+':src/generated/catalogue.rs'],text=True)
   physical={c['oracle_id']:c['name'] for c in self.rows.values()}

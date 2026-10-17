@@ -391,10 +391,6 @@
       "reason": "Needs type/base transformation."
     },
     {
-      "name": "Diminisher Witch",
-      "reason": "Needs Role token/base setting."
-    },
-    {
       "name": "Rowan's Grim Search",
       "reason": "Needs top/grave arrangement."
     },
@@ -441,5 +437,12 @@
     "CR702.166a-d: optional artifact OR enchantment OR token sacrifice is declared before targets and before total cost locking.",
     "Exact selected sacrifice is reserved jointly with mana funding. Virtual queries do not pay costs.",
     "One exact cast and entry event own bargain history; no per-object flag. Composite additional costs, offspring and kicker remain gated."
+  ],
+  "additional_implemented_cards": [
+    {
+      "name": "Diminisher Witch",
+      "reason": "Complete SelfBargained Cursed Role body lowered by the Role compiler follow-up; paid gameplay gates remain required before delivery.",
+      "implemented_by": "Role compiler follow-up, issue290"
+    }
   ]
 }

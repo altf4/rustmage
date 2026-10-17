@@ -83,7 +83,7 @@ class FixedKickerTests(unittest.TestCase):
                     self.assertEqual(game.observe(actor), saved)
                 if ann and ann['source_card'] == name and obs['decision'] == 'pay_costs':
                     self.assertEqual((obs['payment_request']['required'], obs['payment_request']['generic']), (required, generic))
-                    self.assertEqual(ann['cast'], {'physical_card': None, 'face': 'Normal', 'payment': [0]*6, 'origin': 'Hand', 'method': 'Normal', 'offspring': None, 'kicker': pay, 'bargain': None, 'evidence': None})
+                    self.assertEqual(ann['cast'], {'physical_card': None, 'face': 'Normal', 'payment': [0]*6, 'origin': 'Hand', 'method': 'Normal', 'offspring': None, 'kicker': pay, 'bargain': None, 'evidence': None, 'flash_surcharge': False})
                     source_ref = ann['object']
                     if grave: grave_ref = grave[0]['reference']
                 if obs['search_choice']:
@@ -212,7 +212,7 @@ class FixedKickerTests(unittest.TestCase):
                         j = max(range(len(obs['actions'])), key=lambda j: score(obs['actions'][j]))
                         action = obs['actions'][j]
                         if action['kind'] == 'PayCosts' and ann and ann['source_card'] == 'Burst Lightning':
-                            self.assertEqual(ann['cast'], {'physical_card': None, 'face': 'Normal', 'payment': [0]*6, 'origin': 'Exile', 'method': 'Normal', 'offspring': None, 'kicker': True, 'bargain': None, 'evidence': None})
+                            self.assertEqual(ann['cast'], {'physical_card': None, 'face': 'Normal', 'payment': [0]*6, 'origin': 'Exile', 'method': 'Normal', 'offspring': None, 'kicker': True, 'bargain': None, 'evidence': None, 'flash_surcharge': False})
                             self.assertEqual(obs['payment_request']['required'], [0, 0, 0, 1, 0, 0])
                             self.assertEqual(obs['payment_request']['generic'], 4)
                             self.assertEqual(sum(action['payment']), 5)

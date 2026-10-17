@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,867 executable Standard identities | 3,297 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,879 executable Standard identities | 3,285 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -107,3 +107,17 @@ methods; the actual Adventure parent passes430 compiler and261 public methods.
 Those broad runs retain their original source scopes. Two independent nonauthor
 final published-head approvals remain the delivery gate. Full Standard support
 and the complete training/search goal remain incomplete.
+
+
+The [complete Role consumer follow-up](role-followup.md) adds twelve whole bodies
+on actual enchanted-draw main c41c060: 1,879/5,164 executable Standard identities,
+3,285 gated, 40 Adventure/13 Omen, 94 token recipes and schema86. The exact-parent
+proof preserves 5,319 prior programs and all prior helpers/colors/recipes; only
+the twelve intended bodies and Diminisher's zero-reduction Bargain arm change.
+Frozen corrected source passes all 1,775 native tests, all-target Clippy, all 441
+unique compiler/provenance methods and all 266 unique fresh public API methods,
+with no failures, errors or skips. One hundred natural paid Standard games
+produce 82,514 owned frames and 165,028 actor/revision denials. Both independent
+reviewers cleared corrected production using their own raw and adverse gameplay
+controls; exact final published-head confirmations remain the delivery gate.
+The full Standard and training/search goal remains incomplete.

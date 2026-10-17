@@ -1127,7 +1127,8 @@ class CatalogueCompilerTests(unittest.TestCase):
         changed['cards_sha256']=hashlib.sha256(json.dumps(changed['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
         rust,bad=generate.compile_catalogue(changed,target)
         self.assertFalse(any(c['implemented'] for c in bad['cards'] if c['name'] in {r['name'] for r in rows}))
-        self.assertEqual(rust.split('fn uncounterable(card: Card) -> bool {')[1].strip(), 'false\n}')
+        body=rust.split('fn uncounterable(card: Card) -> bool {')[1].split('\n}',1)[0]
+        self.assertEqual(body.strip(), 'false')
 
     def test_external_sacrifice_activation_cost_filters_are_exact_and_mana_remains_gated(self):
         for subject,kind,other,token in [('a creature',1,False,'None'),('another creature or artifact',17,True,'None'),
