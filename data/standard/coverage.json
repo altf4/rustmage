@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "33d67b747b03a7c7744002e11920d4aa462c11c1cb094ecf68c08c80e00e00f4",
+  "catalogue_version": "1286b67491500df6c3b26a0f381c26cffcfc5dcf6fc38661c395a9ddc299055c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1833,
-  "implemented_total": 1839,
-  "token_definitions": 88,
+  "implemented_standard_cards": 1863,
+  "implemented_total": 1869,
+  "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -1270,8 +1270,8 @@
     {
       "name": "Archenemy's Charm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Archive Arbiter",
@@ -1630,8 +1630,8 @@
     {
       "name": "Auroral Procession",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Auspicious Arrival",
@@ -1996,8 +1996,8 @@
     {
       "name": "Barkform Harvester",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Baron Bertram Graywater",
@@ -2362,8 +2362,8 @@
     {
       "name": "Besotted Knight // Betroth the Beast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Bespoke Battlegarb",
@@ -4354,8 +4354,8 @@
     {
       "name": "Charmed Clothier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Charmed Sleep",
@@ -4372,8 +4372,8 @@
     {
       "name": "Charming Scoundrel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Charred Foyer // Warped Space",
@@ -4726,8 +4726,8 @@
     {
       "name": "Coati Scavenger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Codecracker Hound",
@@ -4948,8 +4948,8 @@
     {
       "name": "Conceited Witch // Price of Beauty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Conciliator's Duelist",
@@ -7222,8 +7222,8 @@
     {
       "name": "Dundoolin Weaver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Dune Drifter",
@@ -7822,8 +7822,8 @@
     {
       "name": "Elvish Regrower",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Embalmed Ascendant",
@@ -7840,8 +7840,8 @@
     {
       "name": "Embereth Veteran",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Emberheart Challenger",
@@ -8740,8 +8740,8 @@
     {
       "name": "Fateshaper Aspirant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Faunsbane Troll",
@@ -8992,8 +8992,8 @@
     {
       "name": "Ferocious Werefox // Guard Change",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Ferocity of the Hunt",
@@ -9046,8 +9046,8 @@
     {
       "name": "Fight On!",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Figure of Fable",
@@ -11836,8 +11836,8 @@
     {
       "name": "Hazel's Nocturne",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Hazoret, Godseeker",
@@ -15154,8 +15154,8 @@
     {
       "name": "Living Lectern",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Living Library",
@@ -15628,8 +15628,8 @@
     {
       "name": "Macabre Waltz",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Machinesmith Automaton",
@@ -18064,8 +18064,8 @@
     {
       "name": "Oltec Archaeologists",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Oltec Cloud Guard",
@@ -19666,8 +19666,8 @@
     {
       "name": "Pull from the Grave",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Pulsar Squadron Ace",
@@ -20638,8 +20638,8 @@
     {
       "name": "Redtooth Genealogist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Redtooth Vanguard",
@@ -20986,8 +20986,8 @@
     {
       "name": "Restore with Empathy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Restricted Office // Lecture Hall",
@@ -21640,8 +21640,8 @@
     {
       "name": "Royal Treatment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Rubble Rouser",
@@ -21808,8 +21808,8 @@
     {
       "name": "Rydia's Return",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Rydia, Summoner of Mist",
@@ -24358,8 +24358,8 @@
     {
       "name": "Spiteful Hexmage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Spitfire Lagac",
@@ -24382,8 +24382,8 @@
     {
       "name": "Splashy Spellcaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Splatter Technique",
@@ -27754,14 +27754,14 @@
     {
       "name": "Tomb Trawler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Tombstone, Career Criminal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Tome Blast",
@@ -28162,8 +28162,8 @@
     {
       "name": "True Ancestry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Trumpeting Carnosaur",
@@ -29104,8 +29104,8 @@
     {
       "name": "Vantress Transmuter // Croaking Curse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Variable Chaser // Arc of Fortune",
@@ -30298,8 +30298,8 @@
     {
       "name": "White Widow, Free Agent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Whoosh!",
@@ -31106,6 +31106,6 @@
       "implementation": null
     }
   ],
-  "adventure_definitions": 33,
+  "adventure_definitions": 37,
   "omen_definitions": 13
 }
