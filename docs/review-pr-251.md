@@ -1,6 +1,6 @@
 # PR 251: actual cast payments and twenty complete bodies
 
-This record is in progress. Production remains the frozen author checkpoint
+Production remains the frozen author checkpoint
 `93a824ae806c6534348b0f67ecb04d06bb7d397e`; acceptance checkpoint `a83d7d98`
 adds tests, public schema fixtures and documentation. No claim of final approval
 or full Standard support is made here.
@@ -11,13 +11,17 @@ ordinary definitions, all ordinary IDs/colors, all 83 token recipes and the embl
 The 597 existing helper arms remain intact with three new helpers. All 52 unique
 manifest Java files match both their pinned Git revision and working-tree bytes.
 
-The author reports 1,598 native tests (1,586 unit plus twelve integration),
+The final root suite passes 1,599 native tests (1,587 unit in 3.74 seconds
+plus twelve integration tests), including the additional independent paid-entry
+Textbook Tabulator surveil-two privacy/ownership/rollback group. The author
+checkpoint passes 1,598 native tests. Final root all-target Clippy, formatting and
+diff checks pass. The author also reports
 all-target Clippy and formatting; clean 324-method compiler/data acceptance in
 451.259 seconds; and four public methods covering 48 actual paid scenarios in
-63.963 seconds. A clean full 221-method fresh-library collection is still running.
+63.963 seconds. The clean full 221-method fresh-library collection passes in 515.237 seconds.
 The source library has SHA256
 `b9d54ff39d48246cc91442f4683997f9d208652c63ac178e6ab95659c8ca9b0e`;
-the independent library reviewer reproduces that binary hash.
+both root and the independent library reviewer reproduce that binary hash.
 
 Root additionally supplies three native adverse groups for exact additional-cost
 reservations, late sacrifice rollback and interrupted entry payments; these were
@@ -38,9 +42,11 @@ It verifies low/high effects, one/five-color entry/discard, real Plot free casts
 and Unravel against equal-paid Shock and discounted Warp Bygone Colossus. Every
 chosen action is replayed after snapshot restoration, compared in both viewers,
 checked for wrong-actor/stale rejection and executed in an owned child after its
-parent closes. All games must end naturally. The first twenty-card low-payment
-pilot passed 20,574 decisions/replays and 41,148 denials; the complete 100-game
-matrix and final lint/replay evidence are pending.
+parent closes. All games must end naturally. The exact-source 100-game run passes 104,413 decisions/replays, 104,413
+parent-closed branches, 208,826 wrong-actor/stale denials and 1,330 private payment
+frames. Every one of the eighty card/seat/low-high effect cells is positive. All
+games end naturally. Initial logical state is 20,280 bytes, maximum 23,552. The
+first pilot is historical evidence only; the final complete matrix supersedes it.
 
 Pilot corrections concerned only the scenario driver: finished-game bookkeeping,
 targeting the intended counterspell cause, one-power versus two-power damage,

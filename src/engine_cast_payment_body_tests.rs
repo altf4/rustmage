@@ -520,3 +520,61 @@ fn actual_payment_includes_kicker_and_warp_but_excludes_separate_ward() {
         assert_eq!(g.object_view(target).damage, 2);
     }
 }
+
+#[test]
+fn root_review_textbook_actual_paid_entry_retains_two_card_private_surveillance() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = ready(p);
+        let source = named(&mut g, p, "Textbook Tabulator", Zone::Hand);
+        let before = g.state.players[p.index()].library.len();
+        paid(&mut g, p, source, None, None);
+        for _ in 0..100 {
+            if g.observe(p).library_choice.is_some() {
+                break;
+            }
+            choose(&mut g, p);
+        }
+        let view = g
+            .observe(p)
+            .library_choice
+            .expect("actual ETB must surveil two");
+        assert!(view.surveil);
+        assert_eq!(view.remaining.len(), 2);
+        assert!(g.observe(p.other()).library_choice.is_none());
+        let [first, second] = [view.remaining[0].id, view.remaining[1].id];
+        let saved = g.snapshot();
+        let revision = g.revision();
+        let a = Action::ArrangeLibrary {
+            card: first,
+            destination: LibraryDestination::Graveyard,
+        };
+        assert!(g.apply(p.other(), a.clone()).is_err());
+        assert_eq!(g.snapshot(), saved);
+        assert_eq!(g.revision(), revision);
+        let mut child = {
+            let parent = g.clone();
+            let child = parent.clone();
+            drop(parent);
+            child
+        };
+        act(&mut child, a.clone());
+        act(&mut g, a.clone());
+        assert_eq!(g.snapshot(), child.snapshot());
+        g.restore(&saved).unwrap();
+        act(&mut g, a);
+        assert_eq!(g.snapshot(), child.snapshot());
+        let a = Action::ArrangeLibrary {
+            card: second,
+            destination: LibraryDestination::Top,
+        };
+        act(&mut g, a.clone());
+        act(&mut child, a);
+        settle(&mut g, p);
+        settle(&mut child, p);
+        assert_eq!(g.snapshot(), child.snapshot());
+        assert_eq!(g.state.players[p.index()].library.len(), before - 1);
+        assert_eq!(g.state.players[p.index()].library.last(), Some(&second));
+        assert_eq!(g.state.objects[first as usize].zone, Zone::Graveyard);
+        assert_eq!(g.state.objects[source as usize].zone, Zone::Battlefield);
+    }
+}
