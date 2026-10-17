@@ -102,19 +102,27 @@ impl Game {
         counter: Option<(CounterKind, u64)>,
         role: Option<Card>,
     ) {
+        if let Some(movement) = self.granted_source_entry(item, counter, role) {
+            self.stage_entries(vec![movement], None);
+        }
+    }
+    pub(super) fn granted_source_entry(
+        &self,
+        item: &SpellView,
+        counter: Option<(CounterKind, u64)>,
+        role: Option<Card>,
+    ) -> Option<entries::EntryMove> {
         let expected = item.target_source();
-        let Some(object) = self.state.objects.get(expected.card as usize) else {
-            return;
-        };
+        let object = self.state.objects.get(expected.card as usize)?;
         if object.zone != Zone::Graveyard || self.object_ref(expected.card) != expected {
-            return;
+            return None;
         }
         let owner = object.owner;
         let mut movement = self.entry_move(expected.card, Zone::Battlefield, true);
         movement.controller = owner;
         movement.effect_counter = counter;
         movement.role_after = role.map(|token| (token, item.controller));
-        self.stage_entries(vec![movement], None);
+        Some(movement)
     }
     pub(super) fn temporary_ability_bytes(&self) -> usize {
         self.state.temporary_abilities.as_ref().map_or(0, |grants| {

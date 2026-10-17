@@ -492,3 +492,136 @@ fn printed_self_death_and_multiple_granted_definitions_all_keep_own_programs() {
         assert!(g.state.temporary_abilities.is_none());
     }
 }
+
+#[test]
+fn dying_token_recycled_id_cannot_rebind_second_grant_return_to_new_treasure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let sage = paid(&mut g, p, "Infestation Sage", None);
+        paid(&mut g, p, "Lightning Bolt", Some(Target::Card(sage)));
+        let token = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find(|(_, o)| {
+                o.zone == Zone::Battlefield && o.card.is_token() && o.card.has_subtype("Insect")
+            })
+            .unwrap()
+            .0 as CardId;
+        let old = g.object_ref(token);
+        for _ in 0..2 {
+            paid(&mut g, p, NAMES[1], Some(Target::Card(token)));
+        }
+        paid(&mut g, p, "Lightning Bolt", Some(Target::Card(token)));
+        assert_eq!(tokens(&g, p, "Treasure Token"), 2);
+        assert!(
+            g.state
+                .objects
+                .iter()
+                .all(|o| o.zone != Zone::Battlefield || !o.card.has_subtype("Insect"))
+        );
+        assert!(
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.zone == Zone::Battlefield
+                    && o.card
+                        .token_info()
+                        .is_some_and(|t| t.name == "Treasure Token"))
+                .all(|o| !o.tapped)
+        );
+        assert_ne!(g.object_ref(token), old);
+    }
+}
+#[test]
+fn actual_doubling_season_multiplies_return_role_then_role_sba_queues_one_death() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        paid(&mut g, p, "Doubling Season", None);
+        let bear = paid(&mut g, p, "Bear Cub", None);
+        let life = g.state.players[p.other().index()].life;
+        paid(&mut g, p, NAMES[0], Some(Target::Card(bear)));
+        paid(&mut g, p, "Murder", Some(Target::Card(bear)));
+        assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(bear).power, 3);
+        assert_eq!(tokens(&g, p, "Wicked"), 1);
+        assert_eq!(g.state.players[p.other().index()].life, life - 1);
+    }
+}
+#[test]
+fn synthetic_entry_replacement_boundary_preserves_failed_return_and_role_binding_rules() {
+    for p in [Player::P0, Player::P1] {
+        for mode in [0, 2] {
+            for skipped in [false, true] {
+                let mut g = setup(p);
+                let bear = paid(&mut g, p, "Bear Cub", None);
+                paid(&mut g, p, NAMES[mode], Some(Target::Card(bear)));
+                priority(&mut g, p);
+                let bolt = named(&mut g, p, "Lightning Bolt", Zone::Hand);
+                act(&mut g, Action::AnnounceCast { card: bolt });
+                for _ in 0..100 {
+                    if g.state.pending == Pending::Priority
+                        && g.state.stack.iter().any(|s| {
+                            s.trigger_definition() == Card::from_name(NAMES[mode]).unwrap()
+                        })
+                    {
+                        break;
+                    }
+                    let a = g
+                        .legal_actions()
+                        .iter()
+                        .find(|a| {
+                            **a == Action::ChooseTarget {
+                                target: Target::Card(bear),
+                            }
+                        })
+                        .cloned();
+                    if let Some(a) = a {
+                        act(&mut g, a);
+                    } else {
+                        choose(&mut g);
+                    }
+                }
+                let item = g.state.stack.pop().unwrap();
+                assert_eq!(
+                    item.trigger_definition(),
+                    Card::from_name(NAMES[mode]).unwrap()
+                );
+                let before = g.object_ref(bear);
+                let role = if mode == 0 {
+                    Card::catalogue().find(|c| c.role() == Some(crate::cards::RoleKind::Wicked))
+                } else {
+                    None
+                };
+                let counter = if mode == 2 {
+                    Some((CounterKind::PlusOne, 1))
+                } else {
+                    None
+                };
+                let mut movement = g.granted_source_entry(&item, counter, role).unwrap();
+                // Explicit native replacement boundary, not an admitted card:
+                // mutate only this actual paid trigger's constructed movement.
+                movement.skipped = skipped;
+                if !skipped {
+                    movement.destination = Zone::Exile;
+                }
+                g.stage_entries(vec![movement], None);
+                drive(&mut g, None);
+                assert_eq!(
+                    g.object_view(bear).zone,
+                    if skipped {
+                        Zone::Graveyard
+                    } else {
+                        Zone::Exile
+                    }
+                );
+                assert_eq!(g.object_view(bear).counters.plus_one, 0);
+                assert_eq!(tokens(&g, p, "Wicked"), 0);
+                if skipped {
+                    assert_eq!(g.object_ref(bear), before);
+                }
+            }
+        }
+    }
+}
