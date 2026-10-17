@@ -87,6 +87,7 @@ impl Game {
             let id = self.next_stack_id();
             self.state.pending_triggers.push(SpellView {
                 delayed_warp_exile: Some(Box::new(view)),
+                crew: None,
                 cast_event: None,
                 delayed_sacrifice: None,
                 x: None,

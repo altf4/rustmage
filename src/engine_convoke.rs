@@ -104,7 +104,7 @@ impl Game {
             o.generation == r.generation
                 && o.owner == p
                 && o.zone == Zone::Battlefield
-                && o.card.is_creature()
+                && self.object_kinds(r.card, o) & 1 != 0
                 && !o.tapped
         })
     }

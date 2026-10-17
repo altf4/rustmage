@@ -523,14 +523,14 @@ fn agonasaur_target_gets_counters_and_both_keywords_until_cleanup() {
 fn creature_or_vehicle_predicate_preserves_relation_hexproof_and_noncreature_vehicles() {
     let mut g = scenario();
     let howler = named(&mut g, Player::P0, "Howler's Heavy", Zone::Hand);
-    // Metadata-only Vehicle fixture; this identity still cannot enter a submitted deck.
+    // Intrinsically noncreature Vehicle, now supported with its complete Crew body.
     let vehicle = spawn(
         &mut g,
         Player::P1,
         Card::from_name("Clamorous Ironclad").unwrap(),
         Zone::Battlefield,
     );
-    assert!(!g.state.objects[vehicle as usize].card.is_supported());
+    assert!(g.state.objects[vehicle as usize].card.is_supported());
     let artifact = named(&mut g, Player::P1, "Collector's Vault", Zone::Battlefield);
     let own = named(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
     let rule = TargetRule::CreatureOrVehicle { relation: 1 };

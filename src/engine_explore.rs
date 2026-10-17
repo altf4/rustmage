@@ -8,6 +8,7 @@ pub struct RevealedLibraryCard {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct ExplorerView {
+    pub kinds: u16,
     pub object: ObjectRef,
     pub card: Card,
     pub controller: Player,
@@ -92,7 +93,7 @@ impl Game {
             counter_added,
         });
         let sources = data.sources.clone();
-        if explorer.card.is_creature() {
+        if explorer.kinds & 1 != 0 {
             for id in sources {
                 let source = self.object_view(id);
                 if source.owner == explorer.controller {
@@ -108,6 +109,13 @@ impl Game {
     pub(super) fn start_explore(&mut self, item: &SpellView, subject: Subject) -> bool {
         let explorer = match subject {
             Subject::Source => ExplorerView {
+                kinds: if self.on_battlefield(item.card)
+                    && self.object_ref(item.card) == item.object
+                {
+                    self.current_kinds(item.card)
+                } else {
+                    item.source_facts.kinds
+                },
                 object: item.object,
                 card: item.source_card,
                 controller: item.controller,
@@ -123,6 +131,7 @@ impl Game {
                     return false;
                 }
                 ExplorerView {
+                    kinds: self.current_kinds(id),
                     object: bound.object.unwrap(),
                     card: self.state.objects[id as usize].card,
                     controller: self.state.objects[id as usize].owner,

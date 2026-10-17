@@ -30,6 +30,7 @@ impl Game {
             spec,
             actor,
             o,
+            self.current_kinds(object.card),
             self.keywords(object.card),
             self.granted_subtypes(object.card),
         )
@@ -38,6 +39,7 @@ impl Game {
         spec: AdditionalCost,
         actor: Player,
         o: &Object,
+        kinds: u16,
         keywords: Keywords,
         subtypes: GrantedSubtypes,
     ) -> bool {
@@ -49,10 +51,8 @@ impl Game {
         let f = spec.filter;
         o.owner == actor
             && o.zone == zone
-            && (!f.artifact_enchantment_or_token
-                || o.card.kind_mask() & 48 != 0
-                || o.card.is_token())
-            && (f.kinds == 0 || o.card.kind_mask() & u16::from(f.kinds) != 0)
+            && (!f.artifact_enchantment_or_token || kinds & 48 != 0 || o.card.is_token())
+            && (f.kinds == 0 || kinds & u16::from(f.kinds) != 0)
             && (!f.nonland || !o.card.is_land())
             && keywords.contains(f.keywords)
             && f.tokens.is_none_or(|token| o.card.is_token() == token)

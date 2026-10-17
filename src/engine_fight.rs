@@ -14,7 +14,7 @@ impl Game {
                     && self.same_target_object(*bound)
                     && let Target::Card(id) = bound.target
                     && self.on_battlefield(id)
-                    && self.state.objects[id as usize].card.is_creature()
+                    && self.is_creature(id)
                 {
                     Some(id)
                 } else {

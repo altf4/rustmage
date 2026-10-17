@@ -136,7 +136,7 @@ impl Game {
                 .objects
                 .iter()
                 .enumerate()
-                .filter(|(id, o)| owned(*id) && o.card.is_creature())
+                .filter(|(id, _)| owned(*id) && self.is_creature(*id as CardId))
         };
         let value = match value {
             StepValue::Life => Some(p.life),

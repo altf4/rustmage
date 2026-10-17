@@ -10,20 +10,20 @@ impl Game {
         }?;
         (self.on_battlefield(target.card)
             && self.object_ref(target.card) == target
-            && self.state.objects[target.card as usize].card.is_creature())
+            && self.is_creature(target.card))
         .then_some(target.card)
     }
 
     pub(super) fn attachment_bonus(&self, id: CardId) -> (Stats, Keywords) {
         let mut stats = Stats::default();
         let mut keywords = Keywords::NONE;
-        if !self.on_battlefield(id) || !self.state.objects[id as usize].card.is_creature() {
+        if !self.on_battlefield(id) || !self.is_creature(id) {
             return (stats, keywords);
         }
         let target = self.object_ref(id);
         for &source in &self.state.attachment_sources {
             let object = &self.state.objects[source as usize];
-            if object.attached_to == Some(target) && !object.card.is_creature() {
+            if object.attached_to == Some(target) && !self.is_creature(source) {
                 let spec = object.card.attachment_bonus().unwrap();
                 stats += spec.stats;
                 keywords = keywords.union(spec.keywords);
@@ -45,7 +45,7 @@ impl Game {
         let attacking = self.state.attackers.iter().any(|a| a.card == id);
         for &source in &self.state.static_sources {
             let object = &self.state.objects[source as usize];
-            if target.card.is_creature() && target.owner == object.owner {
+            if self.is_creature(id) && target.owner == object.owner {
                 for &(kind, grant) in object.card.counter_keyword_grants() {
                     if target.counters.get(kind) > 0 {
                         keywords = keywords.union(grant);
@@ -59,6 +59,7 @@ impl Game {
                     || self.state.players[object.owner.index()].life_gained_this_turn > 0)
                     && grant.matches_characteristics(
                         target.card,
+                        self.current_kinds(id),
                         self.granted_subtypes(id),
                         target.owner == object.owner,
                         reference == self.object_ref(source),
@@ -81,10 +82,10 @@ impl Game {
                 .card
                 .equipment()
                 .is_none()
-            || self.state.objects[source.card as usize].card.is_creature()
+            || self.is_creature(source.card)
             || !self.on_battlefield(target.card)
             || self.object_ref(target.card) != target
-            || !self.state.objects[target.card as usize].card.is_creature()
+            || !self.is_creature(target.card)
         {
             return false;
         }

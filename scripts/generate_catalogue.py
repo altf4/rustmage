@@ -3041,6 +3041,49 @@ def source_return_program(text):
     return None
 
 
+def crew_vehicle_body(card):
+    """Bind authenticated self-Vehicle clauses to the source, never external nouns.
+
+    The creature-shaped parser is only a local source-subject grammar. Executable
+    identity remains the original Artifact, and layer-4 Crew adds Creature later.
+    Every residual sentence must compile; this does not erase Vehicle mentions.
+    """
+    if (card.get('layout') != 'normal' or permanent_type(card) != 'Artifact'
+            or 'Vehicle' not in card.get('type_line','').split(' — ')[-1].split()
+            or not isinstance(card.get('oracle_text'),str)
+            or not spell_cost_options(card.get('mana_cost',''))): return None
+    if any(not isinstance(card.get(axis),str) or not (card[axis].isdigit() or card[axis]=='*')
+           or (card[axis].isdigit() and int(card[axis])>2**127-1) for axis in ('power','toughness')): return None
+    declarations=[];body=[]
+    for line in card['oracle_text'].splitlines():
+        if line.startswith('Crew '):
+            # Authenticate the entire reminder as well as the nonnegative count.
+            m=re.fullmatch(r'Crew ([0-9]+)(?: \(Tap any number of (?:other untapped )?creatures you control with total power ([0-9]+) or more: This Vehicle becomes an artifact creature until end of turn\.\))?',line)
+            if m is None or int(m[1])>65535 or (m[2] is not None and int(m[2])!=int(m[1])): return None
+            declarations.append(int(m[1]))
+        else:body.append(line)
+    if len(declarations)!=1:return None
+    # Exact deictic source phrases only. Target Vehicle/card/other-Vehicle clauses
+    # are left untouched and rejected unless the complete grammar supports them.
+    text='\n'.join(body).replace('this Vehicle','this creature').replace('This Vehicle','This creature')
+    proxy=dict(card,type_line='Artifact Creature',oracle_text=text)
+    proxy,dynamic,scaling=extract_stat_rules(proxy)
+    # A printed star is not a zero-power approximation: it needs a complete CDA.
+    if '*' in card['power']+card['toughness'] and dynamic is None:return None
+    parsed=permanent_program_template(proxy)
+    if parsed is None:
+        basic=creature_template(proxy);trigger=trigger_creature_template(proxy)
+        if basic:effect,keywords=basic;abilities=[]
+        elif trigger:effect,keywords,abilities=trigger
+        else:return None
+        activations=[];enters=[0,0,0]
+    else:effect,keywords,abilities,activations,enters=parsed
+    cost=activation_cost('{0}');cost['mana_component']=False
+    activations=[*activations,(cost,'None',[f'Crew {{ minimum: {declarations[0]} }}'],False,False)]
+    if len(activations)>64:return None
+    return 'Permanent',keywords,abilities,activations,enters,dynamic,scaling
+
+
 def permanent_program_template(card):
     """Whole supported permanent text, including all activation restrictions."""
     if (card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str)
@@ -3598,6 +3641,7 @@ def compile_catalogue(snapshot, target):
     flashback_rows = []
     plot_rows = []
     warp_rows = []
+    vehicle_stats_rows = []
     x_rows = []
     x_entry_rows = []
     kicker_rows = []
@@ -3619,6 +3663,12 @@ def compile_catalogue(snapshot, target):
     aura_rows = []
     replacement_rows=[]
     for index, name in enumerate(names):
+        original = cards.get(name, {})
+        if (original.get('layout') == 'normal' and 'Vehicle' in original.get('type_line','').split(' — ')[-1].split()
+                and all(original.get(axis, '') == '*' or original.get(axis, '').isdigit() for axis in ('power','toughness'))):
+            pt = [0 if original[axis] == '*' else int(original[axis]) for axis in ('power','toughness')]
+            if max(pt) <= 2**127-1:
+                vehicle_stats_rows.append(f'        {index} => Some(Stats {{ power: {pt[0]}, toughness: {pt[1]} }}),')
         card, uncounterable = extract_uncounterable(cards.get(name, {}))
         card, entry_suppression = extract_entry_trigger_suppression(card)
         card, opponent_entry_tapped = extract_opponent_entry_tapped(card)
@@ -3750,6 +3800,15 @@ def compile_catalogue(snapshot, target):
                 or any(v is not None for v in (flashback,offspring,kicker,additional,target_reduction,scalar))
                 or bargain or reductions or spell_cost_options(card.get('mana_cost','')) is None):
             effect='Unsupported'
+        crew_seen = any(line.startswith('Crew ') for line in original.get('oracle_text','').splitlines())
+        if crew_seen:
+            crew = crew_vehicle_body(card) if (not convoke and not bargain and evidence is None
+                    and not plot_seen and not warp_seen
+                    and all(v is None for v in (flashback,offspring,kicker,additional,target_reduction,scalar))
+                    and not reductions and dynamic is None and not scaling and not entry_counters
+                    and creature_entry == 'Never') else None
+            if crew is None: effect='Unsupported'
+            else: effect,keywords,abilities,activations,enters,dynamic,scaling=crew
         # Later fixed-cost selectors must never revive a rejected variable-cost body.
         if '{X}' in card.get('mana_cost', '') and scalar is None:
             effect = 'Unsupported'
@@ -3949,6 +4008,7 @@ def compile_catalogue(snapshot, target):
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn plot_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *plot_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn warp_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *warp_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn vehicle_stats(card: Card) -> Option<Stats> {', '    match card.0 {', *vehicle_stats_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn replacement_effects(card: Card) -> &'static [ReplacementSpec] {", '    match card.0 {', *replacement_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn attached_subtype(card: Card) -> Option<&'static str> {", '    match card.0 {', *attached_subtype_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn attached_turn_keywords(card: Card) -> Keywords {', '    match card.0 {', *attached_turn_rows, '        _ => Keywords::NONE,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn dynamic_stats(card: Card) -> Option<DynamicStats> {', '    match card.0 {', *dynamic_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', "pub(super) fn scaling_modifiers(card: Card) -> &'static [ScalingModifier] {", '    match card.0 {', *scaling_rows, '        _ => &[],', '    }', '}', '']

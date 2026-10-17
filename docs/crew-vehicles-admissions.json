@@ -1,0 +1,1174 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-16",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+  "cards": [
+    {
+      "name": "Adventurer's Airship",
+      "mana_cost": "{3}",
+      "type_line": "Artifact — Vehicle",
+      "power": "3",
+      "toughness": "2",
+      "oracle_text": "Flying\nWhenever this Vehicle attacks, draw a card, then discard a card.\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AdventurersAirship.java",
+          "java_sha256": "f8538b1193cc74e855c4aa6dbbd4064312b0abac194ac7feea08ef0893cb843c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+          "java_sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        }
+      ]
+    },
+    {
+      "name": "Air Response Unit",
+      "mana_cost": "{2}{W}",
+      "type_line": "Artifact — Vehicle",
+      "power": "3",
+      "toughness": "3",
+      "oracle_text": "Flying, vigilance\nCrew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AirResponseUnit.java",
+          "java_sha256": "a8d075b7431d2426471318b22108f26ddb0a7f2707369118eb8dcaef9041c6ca"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        }
+      ]
+    },
+    {
+      "name": "Boosted Sloop",
+      "mana_cost": "{1}{U}{R}",
+      "type_line": "Artifact — Vehicle",
+      "power": "3",
+      "toughness": "3",
+      "oracle_text": "Menace\nWhenever you attack, draw a card, then discard a card.\nCrew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BoostedSloop.java",
+          "java_sha256": "d320f5d8896aa7c73d42b571c37b4de75cccfc84477e638bbd75630e003e3990"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+          "java_sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+          "java_sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+          "java_sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+        }
+      ]
+    },
+    {
+      "name": "Broadcast Rambler",
+      "mana_cost": "{4}{W}",
+      "type_line": "Artifact — Vehicle",
+      "power": "5",
+      "toughness": "4",
+      "oracle_text": "When this Vehicle enters, create a 1/1 colorless Thopter artifact creature token with flying.\nCrew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BroadcastRambler.java",
+          "java_sha256": "6ddb5536635b5a2c974ced8b06cd0b7dff2588315a8745c20673397554288d2c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/ThopterColorlessToken.java",
+          "java_sha256": "b33786a4fd2e4da0f01b8c8fe86280aeb5e471737a5e092b18b1853a3c5665fb"
+        }
+      ]
+    },
+    {
+      "name": "Burner Rocket",
+      "mana_cost": "{1}{R}",
+      "type_line": "Artifact — Vehicle",
+      "power": "3",
+      "toughness": "1",
+      "oracle_text": "Flash\nWhen this Vehicle enters, target creature you control gets +2/+0 and gains trample until end of turn.\nCrew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BurnerRocket.java",
+          "java_sha256": "04ad3aac930cd5d4385f9c93a0f4720ce41608610a7325c990afec29b002fe1b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        }
+      ]
+    },
+    {
+      "name": "Careening Mine Cart",
+      "mana_cost": "{3}",
+      "type_line": "Artifact — Vehicle",
+      "power": "3",
+      "toughness": "3",
+      "oracle_text": "Whenever this Vehicle attacks, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")\nCrew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CareeningMineCart.java",
+          "java_sha256": "ac7735cf15281b41dbc4306cfa935385bb4f4d2fbe3d7d94d334d7422b2bcb6a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+          "java_sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+        }
+      ]
+    },
+    {
+      "name": "Clamorous Ironclad",
+      "mana_cost": "{3}{R}",
+      "type_line": "Artifact — Vehicle",
+      "power": "6",
+      "toughness": "3",
+      "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nCrew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)\nCycling {R} ({R}, Discard this card: Draw a card.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/ClamorousIronclad.java",
+          "java_sha256": "7e6ab820c3074477ed461e191621abe07d76f5c62a4087e753674851031df6d9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+          "java_sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+          "java_sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+        }
+      ]
+    },
+    {
+      "name": "Cultivator's Caravan",
+      "mana_cost": "{3}",
+      "type_line": "Artifact — Vehicle",
+      "power": "5",
+      "toughness": "5",
+      "oracle_text": "{T}: Add one mana of any color.\nCrew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CultivatorsCaravan.java",
+          "java_sha256": "e39053ca68b484095dfba9eb9eabaffa417a48a7d356fdb65a87fbd40eacf499"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+          "java_sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+        }
+      ]
+    },
+    {
+      "name": "Debris Beetle",
+      "mana_cost": "{2}{B}{G}",
+      "type_line": "Artifact — Vehicle",
+      "power": "6",
+      "toughness": "6",
+      "oracle_text": "Trample\nWhen this Vehicle enters, each opponent loses 3 life and you gain 3 life.\nCrew 2",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DebrisBeetle.java",
+          "java_sha256": "a0d1d5b9d91a6922218bd62a3135473034ae5a86d933ee768900dd4889e8cd21"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+          "java_sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        }
+      ]
+    },
+    {
+      "name": "Dependable Quinjet",
+      "mana_cost": "{3}",
+      "type_line": "Artifact — Vehicle",
+      "power": "3",
+      "toughness": "3",
+      "oracle_text": "Flying\n{T}: Add one mana of any color.\nCrew 4 (Tap any number of creatures you control with total power 4 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DependableQuinjet.java",
+          "java_sha256": "3c13979fa11266a6c0a2dab9dcd14206dbbf861a2105de8d170abefdf14f30f4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+          "java_sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+        }
+      ]
+    },
+    {
+      "name": "Fire Nation Warship",
+      "mana_cost": "{3}",
+      "type_line": "Artifact — Vehicle",
+      "power": "4",
+      "toughness": "4",
+      "oracle_text": "Reach\nWhen this Vehicle dies, create a Clue token. (It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FireNationWarship.java",
+          "java_sha256": "deafa3986c69cf6b0f8a9d2143c90e04867ed2f7b4a42d07dd471e0ea7a75878"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/ClueArtifactToken.java",
+          "java_sha256": "711939b0212d808576d149e8c95b0007df2e003c29095ddb26c4cdce94a3ddd8"
+        }
+      ]
+    },
+    {
+      "name": "Haunted Hellride",
+      "mana_cost": "{1}{U}{B}",
+      "type_line": "Artifact — Vehicle",
+      "power": "3",
+      "toughness": "3",
+      "oracle_text": "Whenever you attack, target creature you control gets +1/+0 and gains deathtouch until end of turn. Untap it.\nCrew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HauntedHellride.java",
+          "java_sha256": "ba965ba511afafb390179fc3bd6c989e31622b150f7b1d236edf2a048e589c55"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+          "java_sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/UntapTargetEffect.java",
+          "java_sha256": "69bec57593db2620ef750768e381badf6843aefaf7584c796037dcdf87f1b973"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+          "java_sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        }
+      ]
+    },
+    {
+      "name": "Hulldrifter",
+      "mana_cost": "{3}{U}{U}",
+      "type_line": "Artifact — Vehicle",
+      "power": "3",
+      "toughness": "2",
+      "oracle_text": "Flying\nWhen this Vehicle enters, draw two cards.\nCrew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/Hulldrifter.java",
+          "java_sha256": "b6351c447c83b14bbb088873577aac8e6a613d8b17f3b3d0332ee8f5ddd1710d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        }
+      ]
+    },
+    {
+      "name": "Lumbering Worldwagon",
+      "mana_cost": "{2}{G}",
+      "type_line": "Artifact — Vehicle",
+      "power": "*",
+      "toughness": "4",
+      "oracle_text": "This Vehicle's power is equal to the number of lands you control.\nWhenever this Vehicle enters or attacks, you may search your library for a basic land card, put it onto the battlefield tapped, then shuffle.\nCrew 4",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LumberingWorldwagon.java",
+          "java_sha256": "446ed88a577071e045f6d2cd706719b4867924f4911f2ca73a4faaf4f167cab6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrAttacksSourceTriggeredAbility.java",
+          "java_sha256": "b5c87d096aa0a689c9915ee2c8c8f8b6eb0fcd2acd4ad8c0c8696c6204f27224"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/LandsYouControlCount.java",
+          "java_sha256": "5d39300c382c862538f44ba6be1565cb60cfed952c2a95515f3d4b9daee3483e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerSourceEffect.java",
+          "java_sha256": "07d7b0ba8fdb6f3e6eeb405c2768a37677e7fded311795af1425dc2bfdb9bbd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+          "java_sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+          "java_sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+        }
+      ]
+    },
+    {
+      "name": "Magitek Armor",
+      "mana_cost": "{3}{W}",
+      "type_line": "Artifact — Vehicle",
+      "power": "4",
+      "toughness": "4",
+      "oracle_text": "When this Vehicle enters, create a 1/1 colorless Hero creature token.\nCrew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MagitekArmor.java",
+          "java_sha256": "2b8bc5bed99a078a9a7c0c897b9409bdcc857036b4a2d13f4ef70c5a34ce2b6a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/HeroToken.java",
+          "java_sha256": "ae85d8ad9709b08a990352247abee6a63ab13b152ca1caf9c541a85c32b59dcc"
+        }
+      ]
+    },
+    {
+      "name": "Ripclaw Wrangler",
+      "mana_cost": "{3}{B}",
+      "type_line": "Artifact — Vehicle",
+      "power": "4",
+      "toughness": "3",
+      "oracle_text": "When this Vehicle enters, each opponent discards a card.\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RipclawWrangler.java",
+          "java_sha256": "c8d7ab4b357945c9118f37f69b20d5dd921f433b86a9ad2f24fee8bc54127166"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardEachPlayerEffect.java",
+          "java_sha256": "f8ba858157ec21e41dbda51ea2176cba7c3e46cd51af4ff57e12af803f8fa24c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        }
+      ]
+    },
+    {
+      "name": "S.H.I.E.L.D. Helicarrier",
+      "mana_cost": "{4}",
+      "type_line": "Artifact — Vehicle",
+      "power": "4",
+      "toughness": "5",
+      "oracle_text": "Flying\nWhen this Vehicle enters, create two 1/1 white Soldier creature tokens.\nCrew 6 (Tap any number of creatures you control with total power 6 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SHIELDHelicarrier.java",
+          "java_sha256": "039702383c34eb11aeb4f0f8ec5541a19053e590b3b1d38d6f35841d379060a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/SoldierToken.java",
+          "java_sha256": "7c859e450b096f19105ca3418abdce2a01555a2d61e0c545e2c04fb162cb891c"
+        }
+      ]
+    },
+    {
+      "name": "Skybox Ferry",
+      "mana_cost": "{5}",
+      "type_line": "Artifact — Vehicle",
+      "power": "4",
+      "toughness": "4",
+      "oracle_text": "Flying\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)\nCycling {2} ({2}, Discard this card: Draw a card.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SkyboxFerry.java",
+          "java_sha256": "ee3b4ac241a42ec8f12b7de91d70e76663b9ae05ee102393fe95a9df5adff336"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+          "java_sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        }
+      ]
+    },
+    {
+      "name": "Spotcycle Scouter",
+      "mana_cost": "{1}{W}",
+      "type_line": "Artifact — Vehicle",
+      "power": "3",
+      "toughness": "2",
+      "oracle_text": "When this Vehicle enters, scry 2. (Look at the top two cards of your library, then put any number of them on the bottom and the rest on top in any order.)\nCrew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SpotcycleScouter.java",
+          "java_sha256": "7bcb0b056c3039a46aad5745be06d0c38044d35b951077361be7837d2d9beac7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+          "java_sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        }
+      ]
+    },
+    {
+      "name": "Strixhaven Skycoach",
+      "mana_cost": "{3}",
+      "type_line": "Artifact — Vehicle",
+      "power": "3",
+      "toughness": "2",
+      "oracle_text": "Flying\nWhen this Vehicle enters, you may search your library for a basic land card, reveal it, put it into your hand, then shuffle.\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StrixhavenSkycoach.java",
+          "java_sha256": "26ea8d5ad1edde25c521666e16cf81903f1424928c101ae6e5bcbca7c219dbf7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+          "java_sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+          "java_sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+        }
+      ]
+    },
+    {
+      "name": "Thopter Fabricator",
+      "mana_cost": "{2}{U}",
+      "type_line": "Artifact — Vehicle",
+      "power": "4",
+      "toughness": "4",
+      "oracle_text": "Flying\nWhenever you draw your second card each turn, create a 1/1 colorless Thopter artifact creature token with flying.\nCrew 2",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/ThopterFabricator.java",
+          "java_sha256": "fc94d2d848e169c5c26498e5118f1bf2d6f568fd5cb1a3d1a648c2590a0b8162"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DrawNthCardTriggeredAbility.java",
+          "java_sha256": "095cd64414b755c8b1ccc32a24549901ecc2600dd2483688c6a44c0dacca1b55"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/ThopterColorlessToken.java",
+          "java_sha256": "b33786a4fd2e4da0f01b8c8fe86280aeb5e471737a5e092b18b1853a3c5665fb"
+        }
+      ]
+    },
+    {
+      "name": "Tundra Tank",
+      "mana_cost": "{2}{B}",
+      "type_line": "Artifact — Vehicle",
+      "power": "4",
+      "toughness": "4",
+      "oracle_text": "Firebending 1 (Whenever this creature attacks, add {R}. This mana lasts until end of combat.)\nWhen this Vehicle enters, target creature you control gains indestructible until end of turn.\nCrew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TundraTank.java",
+          "java_sha256": "b4f12461f2f2b1d81e7a3a980d38d30f4471ddfd274c6ce9a59d909ea5a731b2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FirebendingAbility.java",
+          "java_sha256": "886553199042c3caee285871191096e9e938f2ef1ffa96cb289bac8518502566"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+          "java_sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        }
+      ]
+    },
+    {
+      "name": "Turtle Blimp",
+      "mana_cost": "{5}",
+      "type_line": "Artifact — Vehicle",
+      "power": "3",
+      "toughness": "4",
+      "oracle_text": "Flying\nWhen this Vehicle enters, create a 2/2 red Mutant creature token.\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TurtleBlimp.java",
+          "java_sha256": "d150afa928c91b8ce424654a860794f23ec0e37b892b9b2a2c5d0dd3ae2f5963"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/RedMutantToken.java",
+          "java_sha256": "ab1a9b03b1f024ff3e9aea35a1767e2d37bc51cf979dc07726c0631944ab0d41"
+        }
+      ]
+    },
+    {
+      "name": "Veloheart Bike",
+      "mana_cost": "{2}{G}",
+      "type_line": "Artifact — Vehicle",
+      "power": "4",
+      "toughness": "2",
+      "oracle_text": "When this Vehicle enters, you gain 2 life.\n{T}: Add one mana of any color.\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VeloheartBike.java",
+          "java_sha256": "b55f833fee29433efd767c320c36e200d5c0dd671e61aeff7fdcb398d0c7b8c2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+          "java_sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+        }
+      ]
+    }
+  ],
+  "gated": [
+    {
+      "name": "Cargo Ship",
+      "mana_cost": "{1}{U}",
+      "type_line": "Artifact — Vehicle",
+      "power": "2",
+      "toughness": "3",
+      "oracle_text": "Flying, vigilance\n{T}: Add {C}. Spend this mana only to cast an artifact spell or activate an ability of an artifact source.\nCrew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CargoShip.java",
+          "java_sha256": "67a5431509ca96c8389798f8aa795280306f174299209d95fad799dbbcff023d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/mana/ConditionalColorlessManaAbility.java",
+          "java_sha256": "a33a4fadca48e2602ea78ec9a7a27e8e53659b047720c5cfffc2d34a27a51a6c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/mana/builder/ConditionalManaBuilder.java",
+          "java_sha256": "511937d592a02c2edb14e85d3408f3d7142cdace5e288881c8ac39aca03284cd"
+        }
+      ],
+      "reason": "Restricted mana provenance is not implemented."
+    },
+    {
+      "name": "Luxurious Locomotive",
+      "mana_cost": "{5}",
+      "type_line": "Artifact — Vehicle",
+      "power": "6",
+      "toughness": "5",
+      "oracle_text": "Whenever this Vehicle attacks, create a Treasure token for each creature that crewed it this turn. (They're artifacts with \"{T}, Sacrifice this token: Add one mana of any color.\")\nCrew 1. Activate only once each turn. (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LuxuriousLocomotive.java",
+          "java_sha256": "926f8c79451504b3c26414804431496ce533af9a6919da9123ce79f9da9cf38d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/ActivatedAbility.java",
+          "java_sha256": "f1d5f9e5167bacdfd4f2a3362e1904847ae16f03dcf4290177f131c5258e68b3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+          "java_sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+          "java_sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+          "java_sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/CrewedVehicleWatcher.java",
+          "java_sha256": "cf30f42d7f9bb7e0d06079c5c413d2c1bfc294b9d5d2dd1c442a37708fc05075"
+        }
+      ],
+      "reason": "Its full distinct-crewer Treasure effect and once-each-turn Crew restriction are not implemented."
+    },
+    {
+      "name": "Subterranean Schooner",
+      "mana_cost": "{1}{U}",
+      "type_line": "Artifact — Vehicle",
+      "power": "3",
+      "toughness": "4",
+      "oracle_text": "Whenever this Vehicle attacks, target creature that crewed it this turn explores. (Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on that creature, then put the card back or put it into your graveyard.)\nCrew 1",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SubterraneanSchooner.java",
+          "java_sha256": "1f054d821e9fd31f61fe00dccc4acd7015091ef03d2603355a77cfb245e5d207"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreTargetEffect.java",
+          "java_sha256": "341217e7c17ad4a5921695f9ec242245be91395b6e49e6bc4494521f59beb9ba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/CrewedSourceThisTurnPredicate.java",
+          "java_sha256": "5b3633d8bb4d125b94b1a71a597d0abda391cb759710eaa30ec039965de9faec"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/CrewedVehicleWatcher.java",
+          "java_sha256": "cf30f42d7f9bb7e0d06079c5c413d2c1bfc294b9d5d2dd1c442a37708fc05075"
+        }
+      ],
+      "reason": "Its complete chosen-crewer explore continuation is not implemented."
+    },
+    {
+      "name": "Turtle Van",
+      "mana_cost": "{3}",
+      "type_line": "Artifact — Vehicle",
+      "power": "4",
+      "toughness": "4",
+      "oracle_text": "Whenever this Vehicle attacks, put a +1/+1 counter on target creature that crewed it this turn. Then if that creature is a Mutant, Ninja, or Turtle, double the number of +1/+1 counters on it.\nCrew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TurtleVan.java",
+          "java_sha256": "2b459fa8dd058c2150f7366671349b28045f66c355610eb3c9fdf0ea7e3638bd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/TargetHasSubtypeCondition.java",
+          "java_sha256": "8f2b5c35b36e949dde467dd40cc88ac8858056cc3df5bb1e8ade08e0ef0d0d25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoubleCountersTargetEffect.java",
+          "java_sha256": "efd6157e6d2b9be74a5eac1be3519dc1e559d574429693499fb9bb709a9e0ead"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/CrewedSourceThisTurnPredicate.java",
+          "java_sha256": "5b3633d8bb4d125b94b1a71a597d0abda391cb759710eaa30ec039965de9faec"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/CrewedVehicleWatcher.java",
+          "java_sha256": "cf30f42d7f9bb7e0d06079c5c413d2c1bfc294b9d5d2dd1c442a37708fc05075"
+        }
+      ],
+      "reason": "Its history-qualified target and subtype-conditional counter doubling are not implemented."
+    },
+    {
+      "name": "Midnight Mangler",
+      "mana_cost": "{1}{U}",
+      "type_line": "Artifact — Vehicle",
+      "power": "3",
+      "toughness": "3",
+      "oracle_text": "During turns other than yours, this Vehicle is an artifact creature.\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MidnightMangler.java",
+          "java_sha256": "6225dfbfba895f74772e51a629e833a5e109a6e554404cede75d52fc8ccc4b40"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/NotMyTurnCondition.java",
+          "java_sha256": "db899ec29be5298f5f3d4e36f0df6975f3f23ef347fa7753aa14cc9c1580e9df"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+          "java_sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeSourceEffect.java",
+          "java_sha256": "eebc0ef4cbc6c73c1d811abab3b1909a235d0dedf97ff992d1618e76644a325c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        }
+      ],
+      "reason": "Conditional continuous animation is separate from Crew resolution."
+    },
+    {
+      "name": "Unidentified Hovership",
+      "mana_cost": "{1}{W}{W}",
+      "type_line": "Artifact — Vehicle",
+      "power": "2",
+      "toughness": "2",
+      "oracle_text": "Flying\nWhen this Vehicle enters, exile up to one target creature with toughness 5 or less.\nWhen this Vehicle leaves the battlefield, the exiled card's owner manifests dread.\nCrew 1",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/u/UnidentifiedHovership.java",
+          "java_sha256": "eb32bc3255d7d47ac47d8b9e9f0bf4f9e5731d9af97ec12f9e22560022e5ccd6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/LeavesBattlefieldTriggeredAbility.java",
+          "java_sha256": "c4061b0636d580e727a5f586192bff129fedfe84eaa6e1c1bc051c4981f2e274"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetForSourceEffect.java",
+          "java_sha256": "74386ca760e2041bc0045bb0c007d29f306832b7933b2ee191aaaa43d2fa2690"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestDreadEffect.java",
+          "java_sha256": "ca7876db599289446f3ad49f363776ea856dbef9e095c2b2bb0b97b01d2835d6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ToughnessPredicate.java",
+          "java_sha256": "dde981d3b674374b3638ade013cc0c706d21f4c4e93309422dc53b76c83b8ff2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ],
+      "reason": "Manifest and its linked departure continuation are not implemented."
+    }
+  ],
+  "shared_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+      "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/Mode.java",
+      "java_sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/Cost.java",
+      "java_sha256": "51faa5510bad018a9529ca34c9a3c7189a2ff5df0bd9e5853e53303d7f54e1b8"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/CostImpl.java",
+      "java_sha256": "ac24e04444dec48d936fed7a03970a8b7e765ef7f368c7b4024747e6fdd83df7"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+      "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/InfoEffect.java",
+      "java_sha256": "48bac57c3707da691071b0fb266461819de4fbfef0608a0e1767de405a2eca4b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeSourceEffect.java",
+      "java_sha256": "eebc0ef4cbc6c73c1d811abab3b1909a235d0dedf97ff992d1618e76644a325c"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/hint/HintUtils.java",
+      "java_sha256": "9154109c7d5a378fb762ccf68fd995329a2f1b14eb6bfc96ab7fe80a81bcd67c"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/icon/CardIconImpl.java",
+      "java_sha256": "7713e6017be841c8fa395d8daf173d6c6475020505da5c62239fe436b8e2ad72"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/icon/CardIconType.java",
+      "java_sha256": "b7b22b017d7b6df424dded88af9ab8f7d45a59c4f31e5ec1bb51b35da7c72804"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+      "java_sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+      "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TappedPredicate.java",
+      "java_sha256": "71eabf46dc3838343404e9d40c88835361370549c67e42e8c694082ecd050436"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/Target.java",
+      "java_sha256": "bfa4bcb195f5bc43a53e61baf312f392c782fd177d36c4b232e4146156a6b916"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ]
+}

@@ -126,7 +126,7 @@ impl Game {
         };
         self.on_battlefield(target.card)
             && self.object_ref(target.card) == target
-            && self.state.objects[target.card as usize].card.is_creature()
+            && self.is_creature(target.card)
             && match spec.relation {
                 0 => self.state.objects[target.card as usize].owner == controller,
                 1 => self.state.objects[target.card as usize].owner != controller,

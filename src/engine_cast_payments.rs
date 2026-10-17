@@ -268,7 +268,7 @@ impl Game {
         }
         self.on_battlefield(source.card)
             && self.object_ref(source.card) == source
-            && self.state.objects[source.card as usize].card.is_creature()
+            && self.is_creature(source.card)
             && {
                 let stats = self.stats(source.card);
                 i128::from(spent) > stats.power || i128::from(spent) > stats.toughness

@@ -143,9 +143,10 @@ impl Game {
     ) -> bool {
         let object = &self.state.objects[id as usize];
         object.zone == Zone::Battlefield
-            && object.card.is_creature()
+            && self.is_creature(id)
             && filter.matches_characteristics(
                 object.card,
+                self.current_kinds(id),
                 self.granted_subtypes(id),
                 object.owner == controller,
                 self.object_ref(id) == source,
@@ -159,9 +160,25 @@ impl Game {
     }
     pub(super) fn stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
         let object = &self.state.objects[id as usize];
-        let mut stats = Stats {
-            power: object.local_power(),
-            toughness: object.local_toughness(),
+        let mut stats = if let Some((power, toughness)) = object.card.vehicle_stats() {
+            if !self.is_creature(id) {
+                return Stats::default();
+            }
+            Stats {
+                power: power
+                    .checked_add(object.growth.power)
+                    .and_then(|n| n.checked_add(object.counter_delta()))
+                    .capacity("Vehicle power exhausted"),
+                toughness: toughness
+                    .checked_add(object.growth.toughness)
+                    .and_then(|n| n.checked_add(object.counter_delta()))
+                    .capacity("Vehicle toughness exhausted"),
+            }
+        } else {
+            Stats {
+                power: object.local_power(),
+                toughness: object.local_toughness(),
+            }
         };
         // Characteristic-defining abilities apply in every zone (layer 7a).
         if let Some(base) = object.card.dynamic_stats() {
@@ -195,7 +212,7 @@ impl Game {
                     .capacity("toughness exhausted");
             }
         }
-        if object.zone != Zone::Battlefield || !object.card.is_creature() {
+        if object.zone != Zone::Battlefield || !self.is_creature(id) {
             return stats;
         }
         stats += self.attachment_bonus(id).0;
@@ -207,8 +224,7 @@ impl Game {
                 let applies = match modifier.subject {
                     Subject::Source => source == id,
                     Subject::Attached => {
-                        !object.card.is_creature()
-                            && object.attached_to == Some(self.object_ref(id))
+                        !self.is_creature(source) && object.attached_to == Some(self.object_ref(id))
                     }
                     Subject::Targets | Subject::Entering => {
                         unreachable!("event or targeted scaling static modifier")

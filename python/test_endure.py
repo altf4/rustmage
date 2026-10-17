@@ -162,5 +162,5 @@ class EndureTests(unittest.TestCase):
                 if action['kind'] == 'DeclineResolutionMana':
                     declined = True
                 after = self.replay(game, o, index)
-                self.assertEqual(after['schema'], 75)
+                self.assertEqual(after['schema'], 76)
             self.fail(str((name, player, paid, source, attacked, killed, bounced, choices)))

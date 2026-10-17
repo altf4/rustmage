@@ -282,7 +282,7 @@ impl Game {
                     card: o.card,
                     owner: o.owner,
                     subtypes: self.granted_subtypes(object.card),
-                    kind: o.card.kind_mask(),
+                    kind: self.current_kinds(object.card),
                     amount,
                     effect: true,
                     entry_index: None,
@@ -613,15 +613,11 @@ impl Game {
                                 if let TokenCompletion::JobAttach(source) = batch.completion {
                                     let eligible = created
                                         .into_iter()
-                                        .filter(|r| {
-                                            self.state.objects[r.card as usize].card.is_creature()
-                                        })
+                                        .filter(|r| self.is_creature(r.card))
                                         .collect::<Vec<_>>();
                                     if self.on_battlefield(source.card)
                                         && self.object_ref(source.card) == source
-                                        && !self.state.objects[source.card as usize]
-                                            .card
-                                            .is_creature()
+                                        && !self.is_creature(source.card)
                                     {
                                         match eligible.as_slice() {
                                             [] => {}

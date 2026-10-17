@@ -39,6 +39,7 @@ struct FundingMove {
 #[derive(Hash, PartialEq, Eq)]
 struct ResourceKey {
     definition: usize,
+    kinds: u16,
     protected: bool,
     reserved: bool,
     present: bool,
@@ -128,19 +129,21 @@ fn concrete_payment(payment: [u64; 6]) -> Mana {
 fn reserve_obligations(
     goal: FundingGoal,
     object: Option<&Object>,
+    kinds: u16,
     keywords: Keywords,
     subtypes: GrantedSubtypes,
 ) -> bool {
     goal.reserve.is_none_or(|(reference, spec)| {
         object.is_some_and(|o| {
             o.generation == reference.generation
-                && Game::additional_object_matches(spec, goal.actor, o, keywords, subtypes)
+                && Game::additional_object_matches(spec, goal.actor, o, kinds, keywords, subtypes)
         })
     })
 }
 fn source_obligations(
     goal: FundingGoal,
     object: Option<&Object>,
+    kinds: u16,
     keywords: Keywords,
     life: i128,
 ) -> bool {
@@ -161,8 +164,9 @@ fn source_obligations(
         || ability.cost.remove.is_some()
         || ability.cost.loyalty.is_some();
     if let Some(object) = current {
-        Game::object_activation_available(
+        Game::object_activation_available_with_kinds(
             object,
+            kinds,
             keywords,
             life,
             ability,
@@ -222,7 +226,8 @@ impl<'g> FundingState<'g> {
                                     .iter()
                                     .any(|subtype| game.has_subtype(*id as CardId, subtype))
                             || (object.owner == goal.actor
-                                && ((convoke && object.card.is_creature())
+                                && ((convoke
+                                    && game.object_kinds(*id as CardId, object) & 1 != 0)
                                     || object.card.mana_color().is_some()
                                     || object
                                         .card
@@ -252,31 +257,25 @@ impl<'g> FundingState<'g> {
         }
     }
     fn obligations(&self, goal: FundingGoal) -> bool {
-        let object = goal.source.and_then(|(source, _, _, _)| {
-            self.resources
-                .iter()
-                .find(|resource| resource.id == source.card)
-                .map(|resource| &resource.object)
-        });
-        let keywords = goal
+        let source = goal
             .source
-            .and_then(|(source, _, _, _)| self.resources.iter().find(|r| r.id == source.card))
-            .map_or(Keywords::NONE, |r| self.keywords(r));
+            .and_then(|(r, _, _, _)| self.resources.iter().find(|s| s.id == r.card));
+        let reserve = goal
+            .reserve
+            .and_then(|(r, _)| self.resources.iter().find(|s| s.id == r.card));
         reserve_obligations(
             goal,
-            goal.reserve.and_then(|(r, _)| {
-                self.resources
-                    .iter()
-                    .find(|o| o.id == r.card)
-                    .map(|r| &r.object)
-            }),
-            goal.reserve
-                .and_then(|(r, _)| self.resources.iter().find(|o| o.id == r.card))
-                .map_or(Keywords::NONE, |r| self.keywords(r)),
-            goal.reserve.map_or(GrantedSubtypes::default(), |(r, _)| {
-                self.granted_subtypes(r.card)
-            }),
-        ) && source_obligations(goal, object, keywords, self.life)
+            reserve.map(|r| &r.object),
+            reserve.map_or(0, |r| self.kinds(r)),
+            reserve.map_or(Keywords::NONE, |r| self.keywords(r)),
+            reserve.map_or(GrantedSubtypes::default(), |r| self.granted_subtypes(r.id)),
+        ) && source_obligations(
+            goal,
+            source.map(|r| &r.object),
+            source.map_or(0, |r| self.kinds(r)),
+            source.map_or(Keywords::NONE, |r| self.keywords(r)),
+            self.life,
+        )
     }
     fn granted_subtypes(&self, id: CardId) -> GrantedSubtypes {
         let lookup = |id| {
@@ -315,6 +314,7 @@ impl<'g> FundingState<'g> {
                     })
             },
             &|id| self.granted_subtypes(id),
+            &|id, o| self.game.object_kinds(id, o),
             if source.object.owner == self.actor {
                 self.life
             } else {
@@ -323,16 +323,19 @@ impl<'g> FundingState<'g> {
             self.game.state.attack_declared && source.attacking,
         )
     }
+    fn kinds(&self, r: &Resource) -> u16 {
+        self.game.object_kinds(r.id, &r.object)
+    }
     fn keywords(&self, target: &Resource) -> Keywords {
         let mut keywords = target.object.keywords();
-        if target.object.zone == Zone::Battlefield && target.object.card.is_creature() {
+        if target.object.zone == Zone::Battlefield && self.kinds(target) & 1 != 0 {
             let reference = ObjectRef {
                 card: target.id,
                 generation: target.object.generation,
             };
             for source in &self.resources {
                 if source.object.zone == Zone::Battlefield
-                    && !source.object.card.is_creature()
+                    && self.kinds(source) & 1 == 0
                     && source.object.attached_to == Some(reference)
                     && let Some(spec) = source.object.card.attachment_bonus()
                 {
@@ -348,7 +351,7 @@ impl<'g> FundingState<'g> {
                 if source.object.zone != Zone::Battlefield {
                     continue;
                 }
-                if target.object.card.is_creature() && target.object.owner == source.object.owner {
+                if self.kinds(target) & 1 != 0 && target.object.owner == source.object.owner {
                     for &(kind, grant) in source.object.card.counter_keyword_grants() {
                         if target.object.counters.get(kind) > 0 {
                             keywords = keywords.union(grant);
@@ -363,6 +366,7 @@ impl<'g> FundingState<'g> {
                             || self.life_gained[source.object.owner.index()])
                         && grant.matches_characteristics(
                             target.object.card,
+                            self.game.object_kinds(target.id, &target.object),
                             self.granted_subtypes(target.id),
                             target.object.owner == source.object.owner,
                             target.id == source.id
@@ -399,7 +403,7 @@ impl<'g> FundingState<'g> {
                 continue;
             }
             if !object.tapped
-                && (!object.card.is_creature()
+                && (self.kinds(entry) & 1 == 0
                     || !object.summoning_sick
                     || self.keywords(entry).contains(Keywords::HASTE))
                 && let Some(color) = object.card.mana_color()
@@ -429,8 +433,9 @@ impl<'g> FundingState<'g> {
                     continue;
                 }
                 if !self.guard_available(ability.guard, goal.actor)
-                    || !Game::object_activation_available(
+                    || !Game::object_activation_available_with_kinds(
                         object,
+                        self.kinds(entry),
                         self.keywords(entry),
                         self.life,
                         ability,
@@ -512,6 +517,7 @@ impl<'g> FundingState<'g> {
             .iter()
             .map(|r| ResourceKey {
                 definition: r.object.card.index(),
+                kinds: self.kinds(r),
                 protected: goal
                     .source
                     .is_some_and(|(source, _, _, _)| source.card == r.id),
@@ -533,6 +539,7 @@ impl<'g> FundingState<'g> {
         resources.sort_by_key(|r| {
             (
                 r.definition,
+                r.kinds,
                 (r.protected, r.reserved),
                 r.present,
                 r.tapped,
@@ -563,7 +570,7 @@ impl<'g> FundingState<'g> {
                 continue;
             }
             let tap_ready = !object.tapped
-                && (!object.card.is_creature()
+                && (self.kinds(resource) & 1 == 0
                     || !object.summoning_sick
                     || self.keywords(resource).contains(Keywords::HASTE));
             if tap_ready && let Some(color) = object.card.mana_color() {
@@ -579,8 +586,9 @@ impl<'g> FundingState<'g> {
                         && object.generation == source.generation
                         && pending as usize == index
                 }) || !self.guard_available(ability.guard, goal.actor)
-                    || !Game::object_activation_available(
+                    || !Game::object_activation_available_with_kinds(
                         object,
+                        self.kinds(resource),
                         self.keywords(resource),
                         self.life,
                         ability,
@@ -641,7 +649,7 @@ impl<'g> FundingState<'g> {
             let o = &r.object;
             if o.zone == Zone::Battlefield
                 && o.owner == self.actor
-                && o.card.is_creature()
+                && self.kinds(r) & 1 != 0
                 && !o.tapped
             {
                 masks[o.card.colors() as usize & 31] += 1;
@@ -748,24 +756,27 @@ impl Game {
     pub(super) fn can_fund(&self, goal: FundingGoal) -> bool {
         let object = goal
             .source
-            .and_then(|(source, _, _, _)| self.state.objects.get(source.card as usize));
-        let keywords = object.map_or(Keywords::NONE, |_| {
-            self.keywords(goal.source.unwrap().0.card)
-        });
+            .and_then(|(r, _, _, _)| self.state.objects.get(r.card as usize));
+        let reserve = goal
+            .reserve
+            .and_then(|(r, _)| self.state.objects.get(r.card as usize));
         if !reserve_obligations(
             goal,
-            goal.reserve
-                .and_then(|(r, _)| self.state.objects.get(r.card as usize)),
-            goal.reserve
-                .filter(|(r, _)| (r.card as usize) < self.state.objects.len())
-                .map_or(Keywords::NONE, |(r, _)| self.keywords(r.card)),
-            goal.reserve.map_or(GrantedSubtypes::default(), |(r, _)| {
-                self.granted_subtypes(r.card)
+            reserve,
+            reserve.map_or(0, |o| self.object_kinds(goal.reserve.unwrap().0.card, o)),
+            reserve.map_or(Keywords::NONE, |_| {
+                self.keywords(goal.reserve.unwrap().0.card)
+            }),
+            reserve.map_or(GrantedSubtypes::default(), |_| {
+                self.granted_subtypes(goal.reserve.unwrap().0.card)
             }),
         ) || !source_obligations(
             goal,
             object,
-            keywords,
+            object.map_or(0, |o| self.object_kinds(goal.source.unwrap().0.card, o)),
+            object.map_or(Keywords::NONE, |_| {
+                self.keywords(goal.source.unwrap().0.card)
+            }),
             self.state.players[goal.actor.index()].life,
         ) {
             return false;
@@ -805,7 +816,12 @@ impl Game {
         &self,
         viewer: Player,
     ) -> Option<PaymentRequestView> {
-        if self.actor() != Some(viewer) || matches!(self.state.pending, Pending::Saddle { .. }) {
+        if self.actor() != Some(viewer)
+            || matches!(
+                self.state.pending,
+                Pending::Saddle { .. } | Pending::Crew { .. }
+            )
+        {
             return None;
         }
         let a = self.state.announcing.as_ref()?;

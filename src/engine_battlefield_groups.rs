@@ -9,7 +9,7 @@ impl Game {
     ) -> bool {
         let object = &self.state.objects[id as usize];
         object.zone == Zone::Battlefield
-            && (filter.kinds == 0 || object.card.kind_mask() & filter.kinds != 0)
+            && (filter.kinds == 0 || self.current_kinds(id) & filter.kinds != 0)
             && (filter.relation == -1 || (object.owner == actor) == (filter.relation == 0))
             && (!filter.nonland || !object.card.is_land())
             && filter.tapped.is_none_or(|tapped| object.tapped == tapped)

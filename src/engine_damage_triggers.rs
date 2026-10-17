@@ -44,7 +44,8 @@ impl Game {
     pub(super) fn damage_facts(&self, id: CardId) -> DamageFacts {
         let object = &self.state.objects[id as usize];
         DamageFacts {
-            power: if object.zone == Zone::Battlefield && object.card.is_creature() {
+            kinds: self.current_kinds(id),
+            power: if object.zone == Zone::Battlefield && self.is_creature(id) {
                 self.stats(id).power
             } else {
                 0
@@ -81,7 +82,7 @@ impl Game {
             } => {
                 let facts = dealer.facts;
                 facts.battlefield
-                    && facts.card.is_creature()
+                    && facts.is_creature()
                     && match filter.relation {
                         0 => dealer.controller == source.owner,
                         1 => dealer.controller != source.owner,
