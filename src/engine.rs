@@ -5,9 +5,10 @@ use crate::cards::{
     CounterSubject, Counters, CreatureFilter, DamageQualification, DamageSubject, Effect,
     EffectChoiceKind, EmblemInfo, EntryCounterAmount, EntryPredicate, EntryTapped, Instruction,
     ManaCost, ManaProduction, MillAmount, MilledCount, MilledDestination, MilledFilter,
-    MilledSelectionSpec, PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec, SpellMode,
-    StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetGroupConstraint, TargetPlan,
-    TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
+    MilledSelectionSpec, PlayerSet, RecoveryFilter, ResolvedStatValue, SacrificeFilter, SearchSpec,
+    SpellMode, StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetGroupConstraint,
+    TargetPlan, TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep,
+    payments,
 };
 #[path = "engine_milled_selection.rs"]
 mod milled_selection;
@@ -127,7 +128,7 @@ mod sba;
 pub use roles::{RoleGroupView, RoleTimestampView};
 #[path = "engine_base_stats.rs"]
 mod base_stats;
-pub use base_stats::BaseStatsEffectView;
+pub use base_stats::{BaseStatsEffectView, ResolvedStatSubjectView};
 #[path = "engine_search.rs"]
 mod search;
 pub use explore::{ExploreChoiceView, ExploreEventView, ExplorerView, RevealedLibraryCard};
@@ -320,6 +321,7 @@ define_actions! {
     ChooseConvoker { object: ObjectRef, contribution: ConvokeContribution },
     ChooseMobilizeDefender { defender: CombatDefender },
     PutHandCreature { object: ObjectRef },
+    PutHandLand { object: ObjectRef },
     DeclineHandEntry,
     ChooseHandDefender { defender: CombatDefender },
     ChooseSaddler { object: ObjectRef },
@@ -818,9 +820,15 @@ impl SpellView {
                 Some(Instruction::Modal(modes)) => Some(modes),
                 _ => None,
             },
-            StackKind::ActivatedAbility { .. }
-            | StackKind::DelayedSacrifice
-            | StackKind::DelayedWarpExile => None,
+            StackKind::ActivatedAbility { ability } => match self.source_card.activations()
+                [ability as usize]
+                .program
+                .first()
+            {
+                Some(Instruction::Modal(modes)) => Some(modes),
+                _ => None,
+            },
+            StackKind::DelayedSacrifice | StackKind::DelayedWarpExile => None,
         }
     }
     pub(crate) fn program(&self) -> Option<(TargetPlan, &'static [Instruction])> {
@@ -1508,6 +1516,7 @@ pub struct Observation {
     pub role_choices: Vec<RoleGroupView>,
     pub role_timestamps: Vec<RoleTimestampView>,
     pub base_stat_effects: Vec<BaseStatsEffectView>,
+    pub resolved_stat_subjects: Vec<ResolvedStatSubjectView>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
@@ -2109,11 +2118,16 @@ impl Game {
             Pending::EffectChoice { player } => {
                 let choice = s.resolving.as_ref().unwrap().choice.as_ref().unwrap();
                 if choice.skip_to.is_some()
-                    && emit(if choice.kind == EffectChoiceKind::HandCreature {
-                        Action::DeclineHandEntry
-                    } else {
-                        Action::DeclineEffectPayment
-                    })
+                    && emit(
+                        if matches!(
+                            choice.kind,
+                            EffectChoiceKind::HandCreature | EffectChoiceKind::HandLand { .. }
+                        ) {
+                            Action::DeclineHandEntry
+                        } else {
+                            Action::DeclineEffectPayment
+                        },
+                    )
                 {
                     return true;
                 }
@@ -2122,6 +2136,7 @@ impl Game {
                     if self.effect_choice_candidate(choice, player, object) {
                         let action = match choice.kind {
                             EffectChoiceKind::HandCreature => Action::PutHandCreature { object },
+                            EffectChoiceKind::HandLand { .. } => Action::PutHandLand { object },
                             EffectChoiceKind::Sacrifice => Action::Sacrifice { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             _ => unreachable!("forage has its own choice"),
@@ -3362,7 +3377,9 @@ impl Game {
                 }
                 self.advance_damage_choices();
             }
-            Action::PutHandCreature { object } => self.choose_effect_object(actor, object),
+            Action::PutHandCreature { object } | Action::PutHandLand { object } => {
+                self.choose_effect_object(actor, object)
+            }
             Action::DeclineHandEntry => self.decline_effect_payment(),
             Action::ChooseHandDefender { defender } => self.choose_hand_defender(defender),
             Action::Sacrifice { object } => self.choose_effect_object(actor, object),
@@ -3801,6 +3818,7 @@ impl Game {
                 .capacity("creature death history exhausted");
         }
         if before.zone == Zone::Battlefield {
+            self.capture_stat_subject_departure(&before);
             self.forget_death_exile_replacements(before.reference);
             self.forget_vehicle_animation(before.reference);
             self.state.saddled.retain(|r| *r != before.reference);
@@ -4623,6 +4641,10 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.base_stats.clone()),
+            resolved_stat_subjects: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.stat_subjects.clone()),
             role_timestamps: s
                 .roles
                 .as_ref()
@@ -5571,6 +5593,10 @@ mod death_exile_tests;
 #[cfg(test)]
 #[path = "engine_combat_restriction_tests.rs"]
 mod combat_restriction_tests;
+
+#[cfg(test)]
+#[path = "engine_hand_land_tests.rs"]
+mod hand_land_tests;
 
 #[cfg(test)]
 #[path = "engine_base_stats_tests.rs"]

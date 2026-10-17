@@ -29,7 +29,7 @@ class OmenTests(unittest.TestCase):
   with Game([own,foe]if p=='P0'else[foe,own],seed=2550+i,starting_player=p,deck_rules='Freeform')as g:
    stage='setup';source=None;base=None;descriptor=False;boosted=False;activated=False;target_ids=set();search_chosen=False;enemy_spell=None
    for iteration in range(30000):
-    o=g.observe('P0');self.assertIsNone(o['outcome'],(name,p,inset,stage,iteration));o=g.observe(o['actor']);self.assertEqual(o['schema'],96);actor=o['actor'];objects={v['id']:v for v in o['objects']};mine=g.observe(p)
+    o=g.observe('P0');self.assertIsNone(o['outcome'],(name,p,inset,stage,iteration));o=g.observe(o['actor']);self.assertEqual(o['schema'],99);actor=o['actor'];objects={v['id']:v for v in o['objects']};mine=g.observe(p)
     def field(owner,n):return next((v for v in objects.values()if v['owner']==owner and v['zone']=='Battlefield'and v['card']==n),None)
     ally=field(p,'Bear Cub');enemy=field(q,'Bear Cub');artifact=field(q,'Candy Trail');body=objects.get(source)
     quiet=o['decision']=='priority'and not o['stack']and not o['announcing']and not o['resolving']

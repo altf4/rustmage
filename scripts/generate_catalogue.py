@@ -78,6 +78,25 @@ def base_stat_program(text):
     """Whole constant 7b setters; each axis is independent of additive bonuses."""
     if not isinstance(text,str) or not text:return None
     text=normalize_duration(text[0].lower()+text[1:])
+    if m:=re.fullmatch(r"choose up to one target creature\. That creature can't be blocked this turn and has base power and toughness (-?[0-9]+)/(-?[0-9]+) until end of turn\.",text):
+        p,t=int(m[1]),int(m[2])
+        if any(not -(2**127)<=v<2**127 for v in (p,t)):return None
+        return ('Creature',0,1),['GrantKeywords { subject: Subject::Targets, keywords: Keywords(16384) }',f'SetBaseStats {{ subject: Subject::Targets, power: Some({p}), toughness: Some({t}) }}']
+    if m:=re.fullmatch(r"this creature's base (power|toughness) becomes equal to (?:the number of )?(.+) until end of turn\.",text):
+        value=stat_value(m[2])
+        if value is None:return None
+        expression='Some(ResolvedStatValue::Stat('+value+'))'
+        p,t=(expression,'None') if m[1]=='power' else ('None',expression)
+        return 'None',['SetResolvedBaseStats { subject: Subject::Source, power: '+p+', toughness: '+t+' }']
+    if m:=re.fullmatch(r"this creature's base power and toughness become (-?[0-9]+)/(-?[0-9]+) and (?:it|they) gains? (.+) until end of turn\.",text):
+        text=f'this creature has base power and toughness {m[1]}/{m[2]} and gains {m[3]} until end of turn.'
+    if m:=re.fullmatch(r'target creature has base power and toughness (-?[0-9]+)/(-?[0-9]+) until end of turn\. If you control ([a-z]+|[0-9]+) or more lands, that creature has base power and toughness (-?[0-9]+)/(-?[0-9]+) until end of turn instead\.',text):
+        threshold=COUNT_WORDS.get(m[3],int(m[3]) if m[3].isdigit() else None)
+        values=[int(m[i]) for i in (1,2,4,5)]
+        if threshold is None or threshold>65535 or any(not -(2**127)<=v<2**127 for v in values):return None
+        count='StatValue::Count(CountFilter { zone: CountZone::Battlefield, relation: 0, kind: 2, exclude: 0, subtype: None, basic: false, other: false, cards_only: false })'
+        expr=lambda yes,no:'Some(ResolvedStatValue::Threshold { value: '+count+', minimum: '+str(threshold)+', yes: '+str(yes)+', no: '+str(no)+' })'
+        return 'Creature',['SetResolvedBaseStats { subject: Subject::Targets, power: '+expr(values[2],values[0])+', toughness: '+expr(values[3],values[1])+' }']
     optional=text.startswith("you may have this creature's base ")
     if optional:
         text='this creature has base '+text[len("you may have this creature's base "):]
@@ -1956,6 +1975,29 @@ def exile_play_program(text):
     return ['ExileTopPlay { amount: '+str(amount)+', next_turn: '+str('your next turn' in m[2]).lower()+' }']
 
 
+def hand_land_reminders_valid(card):
+    """Detection may erase nested text; admission authenticates original raw."""
+    raw=card.get('oracle_text','')
+    if not isinstance(raw,str):return True
+    surface=raw;seen=False
+    while True:
+        normalized=' '.join(surface.casefold().split())
+        seen |= re.search(r'\bput a land card from your hand\b|\bexplores a (?:non)?land card\b|: choose one(?: or both)? —',normalized) is not None
+        stripped=re.sub(r'\([^()]*\)','',surface)
+        if stripped==surface:break
+        surface=stripped
+    return not seen or all(intrinsic_reminder_line_valid(line)
+                           for line in raw.splitlines() if '(' in line or ')' in line)
+
+
+def hand_land_program(text):
+    if m:=re.fullmatch(r'you may put a land card from your hand onto the battlefield( tapped)?\.',text):
+        return ['PutHandLand { tapped: '+str(bool(m[1])).lower()+' }']
+    if m:=re.fullmatch(r'draw (a card|two cards|three cards|four cards), then (you may put a land card from your hand onto the battlefield(?: tapped)?\.)',text):
+        return [f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[1]]})',*hand_land_program(m[2])]
+    return None
+
+
 def statement_program(text):
     """Compile only these complete sentences; residual text never gets ignored."""
     if not isinstance(text, str) or not text:
@@ -1963,6 +2005,7 @@ def statement_program(text):
     text = strip_rule_label(text)
     if not text:return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if land := hand_land_program(text):return land
     if (base_set := base_stat_program(text)) and base_set[0]=='None':return base_set[1]
     if text=="this creature can't be blocked this turn.":return ['GrantKeywords { subject: Subject::Source, keywords: Keywords(16384) }']
     if text=='suspect this creature.':return ['Suspect { subject: Subject::Source }']
@@ -3302,8 +3345,8 @@ def trigger_mode_lines(card, text):
             return None
         condition,_,_=parsed[2][0]
         data='&['+', '.join(f'SpellMode {{ text: {json.dumps(label,ensure_ascii=False)}, targets: {rust_targets(rule)}, program: {rust_program(program)} }}' for label,rule,program in modes)+']'
-        key=f'__rustmage_modal_trigger_{len(modal)}__'
-        modal[key]=(condition,['Modal('+data+')'],'None');body.append(key)
+        # Only the parsed header owns this semantic continuation.
+        modal[len(body)]=(condition,['Modal('+data+')'],'None');body.append(line)
     return body,modal
 
 
@@ -3312,6 +3355,8 @@ def entering_object_program(text, condition):
     events=('SelfEnters','OtherCreatureEntersYou','CreatureEntersYou','ArtifactEntersYou','OtherArtifactEntersYou','EnchantmentEntersYou','LandEntersYou')
     if condition not in events and not condition.startswith(('OtherSubtypeEntersYou(','SubtypeEntersYou(','PermanentEntersYou {','OtherFilteredEntersYou(','CreatureEnters {')):
         return None
+    if text=="you may have this creature's base power become equal to that creature's power until end of turn.":
+        return 'None',['May { skip: 1 }','SetResolvedBaseStats { subject: Subject::Source, power: Some(ResolvedStatValue::EnteringPower), toughness: None }']
     if text=="you gain 1 life. If it's a Spider, put a +1/+1 counter on it.":
         return 'None',['GainLife(PlayerSet::Controller, 1)',subject_guard('Entering',1,subtype='Spider'),counter_instruction('Entering','a','+1/+1')]
     m=re.fullmatch(r'[Pp]ut (a|one|two|three|four|five|six) \+1/\+1 counters? on that creature(?: and it gains haste until end of turn)?\.',text)
@@ -3400,6 +3445,8 @@ def trigger_creature_template(card):
         'Whenever another creature you control enters, ': 'OtherCreatureEntersYou',
         'Whenever a creature you control enters, ': 'CreatureEntersYou',
         'Whenever a creature you control explores, ': 'CreatureExploresYou',
+        'Whenever a creature you control explores a land card, ': 'CreatureExploresCardYou { land: true }',
+        'Whenever a creature you control explores a nonland card, ': 'CreatureExploresCardYou { land: false }',
         'Whenever a creature an opponent controls enters, ': 'CreatureEnters { relation: CastRelation::Opponent, other: false }',
         'Whenever another Villain you control enters, ': 'OtherSubtypeEntersYou("Villain")',
         'Whenever this creature or another creature you control enters, ': 'CreatureEntersYou',
@@ -3418,9 +3465,9 @@ def trigger_creature_template(card):
     grouped=trigger_mode_lines(card,text)
     if grouped is None:return None
     lines,modal=grouped
-    for line in lines:
-        if line in modal:
-            abilities.append(modal[line]);continue
+    for line_index, line in enumerate(lines):
+        if line_index in modal:
+            abilities.append(modal[line_index]);continue
         line = line.strip()
         line = strip_rule_label(line)
         for label in ('Do You Like Squirrels? — ', 'I LOVE Squirrels! — ', 'Vivid — ', 'Valiant — '):
@@ -3556,6 +3603,7 @@ def trigger_creature_template(card):
                 # An explicit occurrence of this card's name denotes this source;
                 # event-subject pronouns still have no inferred binding.
                 for alias in names:
+                    effect_text=effect_text.replace(alias+"'s base ","this creature's base ")
                     effect_text = effect_text.replace(' on ' + alias + '.', ' on this creature.')
                 if (condition.startswith('PlayerDamaged { subject: DamageSubject::Source,')
                         and re.fullmatch(r'[Pp]ut (?:a|one|two|three|four|five|six) (?:\+1/\+1|-1/-1|stun) counters? on it\.',effect_text)):
@@ -4345,6 +4393,26 @@ def crew_vehicle_body(card):
     return 'Permanent',keywords,abilities,activations,enters,dynamic,scaling
 
 
+def activation_mode_lines(card, text):
+    """Announce one real ability's mode, not several fabricated abilities."""
+    lines=text.split('\n');body=[];modal={};i=0
+    while i<len(lines):
+        line=lines[i].strip();i+=1
+        if ': ' not in line or line.split(': ',1)[1] not in ('Choose one —','Choose one or both —'):
+            body.append(line);continue
+        cost,header=line.split(': ',1);bullets=[]
+        while i<len(lines) and lines[i].strip().startswith('• '):
+            bullets.append(lines[i].strip());i+=1
+        modes=modal_spell_template(dict(card,type_line='Instant',oracle_text=header+'\n'+'\n'.join(bullets)))
+        # Modal mana abilities need their own classification/production solver.
+        if modes is None or any(instruction.startswith('AddMana') for _,_,program in modes for instruction in program):return None
+        data='&['+', '.join(f'SpellMode {{ text: {json.dumps(label,ensure_ascii=False)}, targets: {rust_targets(rule)}, program: {rust_program(program)} }}' for label,rule,program in modes)+']'
+        # Bind semantic lowering to this parsed line, never to a forgeable
+        # string appearing in supplied Oracle text.
+        modal[len(body)]=['Modal('+data+')'];body.append(cost+': '+header)
+    return body,modal
+
+
 def permanent_program_template(card):
     """Whole supported permanent text, including all activation restrictions."""
     if (card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str)
@@ -4358,9 +4426,12 @@ def permanent_program_template(card):
     if creature and (not card.get('power', '').isdigit() or not card.get('toughness', '').isdigit()):
         return None
     text = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
+    modal_lines=activation_mode_lines(card,text)
+    if modal_lines is None:return None
+    lines,modal_activations=modal_lines
     activations, body = [], []
     enters = [0, 0, 0]
-    for line in text.split('\n'):
+    for line_index, line in enumerate(lines):
         # Removing a reminder can leave trailing spaces before a newline.
         line=line.strip()
         for label in ('Do You Like Squirrels? — ', 'I LOVE Squirrels! — ', 'Fateful Bite — ', 'Blow Up — '):
@@ -4446,7 +4517,13 @@ def permanent_program_template(card):
             if effect_text == 'Return '+alias+" to its owner's hand.":
                 effect_text = "Return this permanent to its owner's hand."
         source_return = source_return_program(effect_text)
-        if source_return:
+        if line_index in modal_activations:
+            # External object costs need a joint per-mode reservation/target proof.
+            # Fixed mana and source costs are mode-independent; source sacrifice
+            # may legally invalidate an announced target after costs are paid.
+            if cost['additional'] is not None:return None
+            targets,program='None',modal_activations[line_index]
+        elif source_return:
             origin, program = source_return
             if cost.get('origin', origin) != origin: return None
             if origin == 'Graveyard' and (cost['tap'] or cost['sacrifice'] or cost['remove'] or cost['loyalty'] is not None or exhaust): return None
@@ -5383,6 +5460,8 @@ def compile_catalogue(snapshot, target):
             effect = 'Unsupported'
         if not intrinsic_reminders_valid(dict(original, oracle_text=suspect_proxy)):
             effect = 'Unsupported'
+        if not hand_land_reminders_valid(original):
+            effect='Unsupported'
         # A complete Tiered parse authenticates its single keyword reminder;
         # retain every other byte when passing common base-stat text onward.
         base_auth = dict(original, oracle_text=original.get('oracle_text','').replace('Tiered (Choose one additional cost.)', 'Tiered', 1)) if tiered is not None else original

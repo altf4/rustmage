@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "35223a19b58b80519cef4da77b7f22ea5bae40a0c730c02a1548c6273633c8c3",
+  "catalogue_version": "5d88b288481c68b6a5d4bf99ec29073bc035a0ea33d9cc7a63e769ac71506afd",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1958,
-  "implemented_total": 1964,
+  "implemented_standard_cards": 1968,
+  "implemented_total": 1974,
   "token_definitions": 95,
   "emblem_definitions": 1,
   "cards": [
@@ -1546,8 +1546,8 @@
     {
       "name": "Atomic Microsizer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Attack-in-the-Box",
@@ -2278,8 +2278,8 @@
     {
       "name": "Belligerent Yearling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Belligerent of the Ball",
@@ -7864,8 +7864,8 @@
     {
       "name": "Embrace the Paradox",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Emerge from the Cocoon",
@@ -10240,8 +10240,8 @@
     {
       "name": "Genemorph Imago",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "General Traag, Heart of Stone",
@@ -11530,8 +11530,8 @@
     {
       "name": "H.E.R.B.I.E. Scout Unit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "HULK SMASH!",
@@ -13102,8 +13102,8 @@
     {
       "name": "Insidious Fungus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Insidious Roots",
@@ -14884,8 +14884,8 @@
     {
       "name": "Lessons from Life",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Let's Play a Game",
@@ -17050,8 +17050,8 @@
     {
       "name": "Moon Girl and Devil Dinosaur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Moon-Vigil Adherents",
@@ -17596,8 +17596,8 @@
     {
       "name": "Nicanzil, Current Conductor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Nick Fury, Agent of S.H.I.E.L.D.",
@@ -19636,8 +19636,8 @@
     {
       "name": "PuPu UFO",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Public Thoroughfare",

@@ -570,6 +570,7 @@ fn primitive_axes_cda_overflow_boundary_and_sparse_owned_heap_are_exact() {
     }
 }
 
+include!("engine_resolved_base_stats_cases.rs");
 // Insert after Suspect PR322 is merged; requires its completed Presumed/Galuf bodies.
 #[test]
 fn base_stat_sba_uses_parent_death_exile_before_suspect_return() {

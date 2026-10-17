@@ -426,29 +426,6 @@
       "reason": "Exact source-power/LKI conditional destruction is not implemented."
     },
     {
-      "name": "Nicanzil, Current Conductor",
-      "oracle_text": "Whenever a creature you control explores a land card, you may put a land card from your hand onto the battlefield tapped.\nWhenever a creature you control explores a nonland card, put a +1/+1 counter on Nicanzil.",
-      "sources": [
-        {
-          "java_source": "Mage.Sets/src/mage/cards/n/NicanzilCurrentConductor.java",
-          "java_sha256": "0050eb1823529b8d44cbaa35d8081ae58ed997e5c122ba7c5a4a981faee73a73"
-        },
-        {
-          "java_source": "Mage/src/main/java/mage/abilities/effects/Effect.java",
-          "java_sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
-        },
-        {
-          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutCardFromHandOntoBattlefieldEffect.java",
-          "java_sha256": "60ead6e7cba07c849019361189b61b541490b8f4ec1bdda1e91b3315a673788a"
-        },
-        {
-          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
-          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
-        }
-      ],
-      "reason": "Land/nonland-qualified explore observers and optional Hand-land entry are not implemented."
-    },
-    {
       "name": "Defossilize",
       "oracle_text": "Return target creature card from your graveyard to the battlefield. That creature explores, then it explores again. (Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on that creature, then put the card back or put it into your graveyard. Then repeat this process.)",
       "sources": [
@@ -493,6 +470,32 @@
         }
       ],
       "reason": "Tapped-before-bounce lookback qualification is not implemented."
+    }
+  ],
+  "subsequently_completed": [
+    {
+      "name": "Nicanzil, Current Conductor",
+      "oracle_text": "Whenever a creature you control explores a land card, you may put a land card from your hand onto the battlefield tapped.\nWhenever a creature you control explores a nonland card, put a +1/+1 counter on Nicanzil.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/n/NicanzilCurrentConductor.java",
+          "java_sha256": "0050eb1823529b8d44cbaa35d8081ae58ed997e5c122ba7c5a4a981faee73a73"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+          "java_sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutCardFromHandOntoBattlefieldEffect.java",
+          "java_sha256": "60ead6e7cba07c849019361189b61b541490b8f4ec1bdda1e91b3315a673788a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        }
+      ],
+      "historical_reason": "Land/nonland-qualified explore observers and optional Hand-land entry are not implemented.",
+      "completed_by": "#325 / #327: complete land/nonland event predicates and private hand-land entry"
     }
   ]
 }

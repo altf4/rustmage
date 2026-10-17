@@ -25,7 +25,7 @@ class TemporaryDeathConsumerTests(unittest.TestCase):
   with Game([deck,deck],seed=seed,starting_player=p,deck_rules='Standard',library=library) as g:
    stage='setup';recipient=source=old=counter_source=None;paid=complete=attacked=False;frames=0;draw_before=life_before=0;first_person=None;observed_warp=False;warp_exiled_turn=None;warp_recast_paid=False
    for iteration in range(40000):
-    head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(96,FP))
+    head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(99,FP))
     if head['outcome'] is not None:
      self.assertTrue(complete and paid,(name,p,seed,stage,iteration,paid));self.assertEqual(stage,'finish');self.assertTrue(attacked,(name,p,'no natural attack'))
      if warp:self.assertTrue(observed_warp and warp_recast_paid)

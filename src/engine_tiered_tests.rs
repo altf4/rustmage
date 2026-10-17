@@ -927,3 +927,70 @@ fn mode_funding_never_pairs_an_unfunded_nontargeted_tier_with_cheaper_missing_ta
         assert_eq!(g.state.players[p.index()].life, 26);
     }
 }
+
+#[test]
+fn paid_genemorph_resolution_setter_and_tiered_multiply_vincent_return_compose() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        for _ in 0..5 {
+            named(&mut g, p, "Forest", Zone::Battlefield);
+        }
+        let imago = named(&mut g, p, "Genemorph Imago", Zone::Hand);
+        cast(&mut g, imago, None, &[]);
+        settle(&mut g);
+        let double = named(&mut g, p, "Tifa's Limit Break", Zone::Hand);
+        cast(&mut g, double, Some(1), &[Target::Card(bear)]);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(bear),
+            Stats {
+                power: 4,
+                toughness: 4
+            }
+        );
+        let land = named(&mut g, p, "Forest", Zone::Hand);
+        checked(&mut g, Action::PlayLand { card: land });
+        settle_on(&mut g, Some(Target::Card(bear)));
+        assert_eq!(
+            g.stats(bear),
+            Stats {
+                power: 8,
+                toughness: 8
+            }
+        );
+        let triple = named(&mut g, p, "Tifa's Limit Break", Zone::Hand);
+        cast(&mut g, triple, Some(2), &[Target::Card(bear)]);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(bear),
+            Stats {
+                power: 24,
+                toughness: 24
+            }
+        );
+        let vincent = named(&mut g, p, "Vincent's Limit Break", Zone::Hand);
+        cast(&mut g, vincent, Some(0), &[Target::Card(bear)]);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(bear),
+            Stats {
+                power: 21,
+                toughness: 20
+            }
+        );
+        let old = g.object_ref(bear);
+        let murder = named(&mut g, p, "Murder", Zone::Hand);
+        cast(&mut g, murder, None, &[Target::Card(bear)]);
+        settle(&mut g);
+        assert_ne!(g.object_ref(bear), old);
+        assert!(g.on_battlefield(bear));
+        assert_eq!(
+            g.stats(bear),
+            Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+    }
+}

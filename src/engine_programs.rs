@@ -317,6 +317,7 @@ impl Game {
                     | TriggerCondition::SelfEntersOrAttacksWhileSaddled
                     | TriggerCondition::SelfEntersOrDies => same,
                     TriggerCondition::CreatureExploresYou
+                    | TriggerCondition::CreatureExploresCardYou { .. }
                     | TriggerCondition::Foraged
                     | TriggerCondition::FoodsSacrificed
                     | TriggerCondition::Reflexive
@@ -400,6 +401,7 @@ impl Game {
                     }
                 };
                 if matched && self.queue_zone_trigger(source, index, event) {
+                    self.bind_stat_subject(event.after, source.card.triggers()[index].program);
                     if same && source.card.x_symbols() > 0 {
                         self.state.pending_triggers.last_mut().unwrap().x = Some(event.x);
                     }
@@ -982,9 +984,9 @@ impl Game {
         let program = match item.kind {
             StackKind::TriggeredAbility { .. }
             | StackKind::DelayedSacrifice
-            | StackKind::DelayedWarpExile => item.program().expect("selected trigger program").1,
-            StackKind::ActivatedAbility { ability } => {
-                item.source_card.activations()[ability as usize].program
+            | StackKind::DelayedWarpExile
+            | StackKind::ActivatedAbility { .. } => {
+                item.program().expect("selected ability program").1
             }
             StackKind::Spell => match item.source_card.effect() {
                 Effect::Aura(_) => {
@@ -1331,7 +1333,7 @@ impl Game {
                 Instruction::Reflexive { ability } => {
                     self.queue_reflexive(&item, ability, None);
                 }
-                Instruction::Modal(_) => unreachable!("unselected modal trigger executed"),
+                Instruction::Modal(_) => unreachable!("unselected modal ability executed"),
                 Instruction::Explore(subject) => {
                     if self.start_explore(&item, subject) {
                         return;
@@ -1688,6 +1690,11 @@ impl Game {
                     let amount = self.item_amount(amount, &item);
                     self.create_tokens(item.controller, token, amount, tapped);
                 }
+                Instruction::PutHandLand { tapped } => {
+                    if self.start_hand_land(&item, tapped) {
+                        return;
+                    }
+                }
                 Instruction::PutHandCreature => {
                     if self.start_hand_creature(&item) {
                         return;
@@ -1893,6 +1900,13 @@ impl Game {
                     power,
                     toughness,
                 } => self.set_base_stats(&item, subject, power, toughness),
+                Instruction::SetResolvedBaseStats {
+                    subject,
+                    power,
+                    toughness,
+                } => {
+                    self.set_resolved_base_stats(&item, subject, power, toughness);
+                }
                 Instruction::Grow {
                     subject,
                     power,

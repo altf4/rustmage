@@ -21,6 +21,8 @@ class TieredTests(unittest.TestCase):
 
 NAMES={'Fire Magic','Ice Magic','Restoration Magic','Thunder Magic',"Tifa's Limit Break","Vincent's Limit Break",'Boros Charm','Epic Fight'}
 PARENT='17d100bc39114551fdd677b215535622b2a11393'
+COMPOSED_PARENT='ba3752a456908e0bee67a86e88864b14ba1312df'
+DELIVERED='8b80e47'
 class TieredCompilerTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):cls.all=json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards'];cls.cards={c['name']:c for c in cls.all if c['name']in NAMES}
@@ -59,8 +61,14 @@ class TieredCompilerTests(unittest.TestCase):
  def test_authenticated_gift_body_preserved_without_borrowing_its_reminder(self):
   c=next(c for c in self.all if c['name']=="Dawn's Truce");self.assertTrue(self.compile(c)[1])
   for raw in [c['oracle_text']+' (You win the game.)',c['oracle_text'].replace('they draw a card','they draw seven cards'),c['oracle_text'].replace('hexproof','hex(You win the game.)proof',1)]:self.assertFalse(self.compile(dict(c,oracle_text=raw))[1],raw)
- def test_strict_eight_whole_body_union_preserves_all_parent_programs(self):
-  physical={c['oracle_id']:c['name']for c in self.all};before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True),physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical);helpers={('tiered_costs',n+'#0')for n in NAMES if n not in ['Boros Charm','Epic Fight']};proof=assert_union(before,after,changed={n+'#0'for n in NAMES},added=set(),helpers=helpers,aliases={});self.assertEqual(proof['preserved_definitions'],5324)
+ def test_historical_eight_body_union_and_current_owned_programs(self):
+  physical={c['oracle_id']:c['name']for c in self.all};before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True),physical);after=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',DELIVERED+':src/generated/catalogue.rs'],text=True),physical);current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  for name in NAMES:self.assertEqual(current['definitions'][name+'#0'],after['definitions'][name+'#0'])
+  helpers={('tiered_costs',n+'#0')for n in NAMES if n not in ['Boros Charm','Epic Fight']};proof=assert_union(before,after,changed={n+'#0'for n in NAMES},added=set(),helpers=helpers,aliases={});self.assertEqual(proof['preserved_definitions'],5324)
+  mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
+  with self.assertRaises(AssertionError):assert_union(before,mutant,changed={n+'#0'for n in NAMES},added=set(),helpers=helpers,aliases={})
+ def test_actual_schema98_parent_has_exactly_eight_complete_body_changes(self):
+  physical={c['oracle_id']:c['name']for c in self.all};before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',COMPOSED_PARENT+':src/generated/catalogue.rs'],text=True),physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical);helpers={('tiered_costs',n+'#0')for n in NAMES if n not in ['Boros Charm','Epic Fight']};proof=assert_union(before,after,changed={n+'#0'for n in NAMES},added=set(),helpers=helpers,aliases={});self.assertEqual(proof['preserved_definitions'],5324);self.assertEqual(proof['prior_helpers'],912)
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(before,mutant,changed={n+'#0'for n in NAMES},added=set(),helpers=helpers,aliases={})
 if __name__=='__main__':unittest.main()

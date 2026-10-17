@@ -28,12 +28,17 @@ policies remain byte-identical. The optimized library is:
 SHA-256: `1145c363c2950c2d4b69a0bf29bd0c8434537475a5d65239fbb1922cb8f14d23`.
 Catalogue: `9fc25b72fa36df9d09c874eb64e990754020e5e572e8bbb523d37d462dd87aa9`.
 
+The final actual-parent50-method compiler gate also passes without errors or
+skips at `17d100bc39114551fdd677b215535622b2a11393` in26.623 seconds, with all881
+tracked inputs unchanged. The final documentation correction changes only the
+reported count of the initial Git-context harness errors and this result.
+
 Fresh composed evidence at f373:
 
 - 1,858 unit and 12 integration tests pass; all-target Clippy, formatting and
   generator verification pass. Native/Clippy/fmt/gen driver:81.060 seconds.
 - All 50 unique affected compiler methods pass without errors or skips in32.675
-  seconds. The initial frozen export lacked Git object lookup and produced seven
+  seconds. The initial frozen export lacked Git object lookup and produced eight
   historical-preservation harness errors; that failed50-method scope remains
   recorded separately. After all jobs closed, explicit read-only Git lookup was
   added and all50 methods passed with the same880 tracked source inputs. No

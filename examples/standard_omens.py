@@ -28,7 +28,7 @@ class OmenStandard(unittest.TestCase):
      self.assertEqual(stage,'finish',(name,p,inset,seed,'prematureterminal',stage))
      if not inset:self.assertTrue(attacked,(name,p,seed,'no actual source attack'))
      return dict(decisions=iteration,private=private,outcome=o['outcome'])
-    o=g.observe(o['actor']);self.assertEqual(o['schema'],96);actor=o['actor'];objects={v['id']:v for v in o['objects']};mine=g.observe(p)
+    o=g.observe(o['actor']);self.assertEqual(o['schema'],99);actor=o['actor'];objects={v['id']:v for v in o['objects']};mine=g.observe(p)
     def field(owner,n):return next((v for v in objects.values()if v['owner']==owner and v['zone']=='Battlefield'and v['card']==n),None)
     ally=field(p,'Bear Cub');enemy=field(q,'Bear Cub');artifact=field(q,'Chrome Companion');body=objects.get(source)
     graves={v:[x for x in objects.values()if x['owner']==v and x['zone']=='Graveyard']for v in [p,q]}
