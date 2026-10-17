@@ -738,7 +738,7 @@ impl Game {
             .timestamp_order
             .push(i);
     }
-    pub(super) fn entry_timestamp_view(&self) -> Option<EntryTimestampView> {
+    pub(super) fn entry_timestamp_view(&self, viewer: Player) -> Option<EntryTimestampView> {
         let Pending::EntryTimestamp { player } = self.state.pending else {
             return None;
         };
@@ -751,14 +751,29 @@ impl Game {
                 controller: m.controller,
             }
         };
+        // Entry remains a single transaction. Ordering continuous sources must
+        // not publish cards that are still selected in a private library/hand.
+        let visible_index = |&i: &usize| visible(&batch.moves[i], viewer, &self.state.known_hand);
+        let candidates: Vec<_> = self
+            .remaining_timestamp_indices()
+            .into_iter()
+            .filter(visible_index)
+            .map(view)
+            .collect();
+        let selected: Vec<_> = batch
+            .timestamp_order
+            .iter()
+            .copied()
+            .filter(visible_index)
+            .map(view)
+            .collect();
+        if candidates.is_empty() && selected.is_empty() {
+            return None;
+        }
         Some(EntryTimestampView {
             controller: player,
-            candidates: self
-                .remaining_timestamp_indices()
-                .into_iter()
-                .map(view)
-                .collect(),
-            selected: batch.timestamp_order.iter().copied().map(view).collect(),
+            candidates,
+            selected,
         })
     }
 }

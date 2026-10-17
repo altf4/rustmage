@@ -1,6 +1,8 @@
 //! Sparse live source clauses use current earlier-layer facts and a shared timestamp clock.
 use super::*;
-use crate::cards::{LiveStatRecipients, LiveStatValue, LiveStaticEffect};
+#[cfg(test)]
+use crate::cards::LiveStatRecipients;
+use crate::cards::{LiveStatValue, LiveStaticEffect};
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct LiveStaticSourceView {
@@ -59,46 +61,9 @@ impl Game {
         effect: &LiveStaticEffect,
         id: CardId,
     ) -> bool {
-        if !self.on_battlefield(id)
-            || !self.is_creature(id)
-            || !self.on_battlefield(row.source.card)
-            || self.object_ref(row.source.card) != row.source
-        {
-            return false;
-        }
-        let source = &self.state.objects[row.source.card as usize];
-        let target = &self.state.objects[id as usize];
-        let reference = self.object_ref(id);
-        let member = match effect.recipients {
-            LiveStatRecipients::Attached => source.attached_to == Some(reference),
-            LiveStatRecipients::Creatures {
-                relation,
-                other,
-                enchanted_by_controller,
-            } => {
-                (match relation {
-                    0 => target.controller == source.controller,
-                    1 => target.controller != source.controller,
-                    _ => true,
-                }) && (!other || reference != row.source)
-                    && (!enchanted_by_controller
-                        || self.state.attachment_sources.iter().any(|&a| {
-                            let aura = &self.state.objects[a as usize];
-                            aura.zone == Zone::Battlefield
-                                && aura.card.aura().is_some()
-                                && aura.controller == source.controller
-                                && aura.attached_to == Some(reference)
-                        }))
-            }
-        };
-        member
-            && effect.condition.is_none_or(|c| {
-                let matching = target.controller == source.controller
-                    && (target.card.has_subtype(c.subtype)
-                        || self.granted_subtypes(id).contains(c.subtype));
-                matching != c.negated
-            })
+        ability_world::CharacteristicWorld::live_applies(self, row.source, effect, id)
     }
+
     fn live_stat_value(&self, value: LiveStatValue, source: ObjectRef) -> i128 {
         match value {
             LiveStatValue::Fixed(value) => value,

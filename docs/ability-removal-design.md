@@ -94,3 +94,34 @@ The scheduler is not yet connected to a removal Aura, source queries or prospect
 funding worlds. The four priority bodies remain gated until those full semantics
 and paid public acceptance are implemented. Schema102 is a prototype reservation;
 final composition will use a fresh schema above any intervening merged103 contract.
+
+## Actual and virtual earlier-layer queries
+
+The real Game and speculative FundingState now implement one borrowed fact
+interface for current object presence, control, incarnation, life, attack status,
+layer4 grants and live-static recipients. Funding overlays supply their own object
+and life values; no real-game ability-result cache crosses virtual payments. The
+previous duplicate funding count/subtype logic and actual live-recipient predicate
+now delegate to that interface. A new both-seat query regression changes only a
+virtual Maha source's controller, zone and incarnation, verifies each recipient
+change, and verifies the actual game remains unchanged. The existing71 funding
+checks pass on this refactor.
+
+The complete native run initially had1903 passing tests and three failures. The
+new chronology adds an entry timestamp choice for two simultaneously searched
+keyword Auras. Completing that choice exposed a real privacy gap in the old
+public-only timestamp observer: it did not apply entry visibility. The observer
+now filters both pending and selected rows by the same exact-incarnation visibility
+as Aura attachment/life choices. A both-seat private library-search test verifies
+that references, card identities and actions remain private through attachment
+and timestamp ordering, then commits the full search/shuffle/draw transaction.
+The other assertions now account exactly for the shared sparse clock allocation
+and distinguish absent Role attachments from the presence of that clock.
+
+After these corrections, complete `cargo test --lib --tests` passes1906 unit plus12
+integration tests in23.608s, with all923 tracked inputs fixed. Terminal cleanup
+reclaimed220,344,320 allocated bytes; both generated shared libraries retain their
+exact paths and hashes. The earlier failing1903/3 run remains a failed scope.
+The22 source/provenance/raw controls also pass, including separate Changeling
+and flying origins when their independent abilities share one printed line.
+These gates cover the shared-query/timeline foundation, not removal-card acceptance.

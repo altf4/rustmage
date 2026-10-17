@@ -28,6 +28,36 @@ struct FundingState<'g> {
     resources: Vec<Resource>,
     convoke: bool,
 }
+impl ability_world::CharacteristicWorld for FundingState<'_> {
+    fn game(&self) -> &Game {
+        self.game
+    }
+    fn object(&self, id: CardId) -> &Object {
+        self.resources
+            .iter()
+            .find(|resource| resource.id == id)
+            .map_or(&self.game.state.objects[id as usize], |resource| {
+                &resource.object
+            })
+    }
+    fn life(&self, player: Player) -> i128 {
+        if player == self.actor {
+            self.life
+        } else {
+            self.game.state.players[player.index()].life
+        }
+    }
+    fn gained_life(&self, player: Player) -> bool {
+        self.life_gained[player.index()]
+    }
+    fn attacking(&self, id: CardId) -> bool {
+        self.resources
+            .iter()
+            .find(|resource| resource.id == id)
+            .is_some_and(|resource| resource.attacking)
+    }
+}
+
 #[derive(Clone)]
 struct FundingMove {
     resource: usize,
@@ -323,53 +353,13 @@ impl<'g> FundingState<'g> {
         )
     }
     fn granted_subtypes(&self, id: CardId) -> GrantedSubtypes {
-        let lookup = |id| {
-            self.resources
-                .iter()
-                .find(|r| r.id == id)
-                .map(|r| &r.object)
-                .or_else(|| self.game.state.objects.get(id as usize))
-        };
-        lookup(id).map_or_else(GrantedSubtypes::default, |target| {
-            self.game.granted_subtypes_with(id, target, lookup)
-        })
+        ability_world::CharacteristicWorld::subtypes(self, id)
     }
     fn stat_value(&self, value: StatValue, source: &Resource) -> i128 {
-        self.game.stat_value_with(
-            value,
-            ObjectRef {
-                card: source.id,
-                generation: source.object.generation,
-            },
-            source.object.controller,
-            &|| {
-                self.game
-                    .state
-                    .objects
-                    .iter()
-                    .enumerate()
-                    .map(|(id, original)| {
-                        let id = id as CardId;
-                        let object = self
-                            .resources
-                            .iter()
-                            .find(|r| r.id == id)
-                            .map_or(original, |r| &r.object);
-                        (id, object)
-                    })
-            },
-            &|id| self.granted_subtypes(id),
-            &|id, o| self.game.object_kinds(id, o),
-            if source.object.controller == self.actor {
-                self.life
-            } else {
-                self.game.state.players[source.object.controller.index()].life
-            },
-            self.game.state.attack_declared && source.attacking,
-        )
+        ability_world::CharacteristicWorld::value(self, value, source.id)
     }
     fn kinds(&self, r: &Resource) -> u16 {
-        self.game.object_kinds(r.id, &r.object)
+        ability_world::CharacteristicWorld::kinds(self, r.id)
     }
     fn keywords(&self, target: &Resource) -> Keywords {
         let mut keywords = target.object.keywords();
@@ -1988,3 +1978,59 @@ mod job_subtype_tests {
 #[cfg(test)]
 #[path = "engine_funding_total_tests.rs"]
 mod total_tests;
+
+#[cfg(test)]
+mod ability_world_tests {
+    use super::super::tests::{scenario, spawn};
+    use super::*;
+    use crate::engine::ability_world::CharacteristicWorld;
+
+    #[test]
+    fn funding_ability_world_uses_virtual_source_zone_controller_and_exact_incarnation() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = scenario();
+            let maha = spawn(
+                &mut g,
+                p,
+                Card::from_name("Maha, Its Feathers Night").unwrap(),
+                Zone::Battlefield,
+            );
+            let bear = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+            let source = g.object_ref(maha);
+            let effect = g.state.objects[maha as usize].card.live_static_effects()[0];
+            let spec = AdditionalCost {
+                kind: EffectChoiceKind::Sacrifice,
+                filter: SacrificeFilter {
+                    keywords: Keywords::NONE,
+                    source_only: false,
+                    kinds: 1,
+                    nonland: false,
+                    other: false,
+                    tokens: None,
+                    artifact_enchantment_or_token: false,
+                    subtype: None,
+                },
+            };
+            let goal = FundingGoal {
+                actor: p,
+                required: [0; 6],
+                generic: 0,
+                source: None,
+                reserve: Some((source, spec)),
+            };
+            let mut world = FundingState::from_game(&g, goal);
+            assert!(world.live_applies(source, &effect, bear));
+            let provider = world.resources.iter().position(|r| r.id == maha).unwrap();
+            world.resources[provider].object.controller = p.other();
+            assert!(!world.live_applies(source, &effect, bear));
+            world.resources[provider].object.controller = p;
+            world.resources[provider].object.zone = Zone::Graveyard;
+            assert!(!world.live_applies(source, &effect, bear));
+            world.resources[provider].object.zone = Zone::Battlefield;
+            world.resources[provider].object.generation += 1;
+            assert!(!world.live_applies(source, &effect, bear));
+            assert!(g.live_applies(source, &effect, bear));
+            assert_eq!(g.state.objects[maha as usize].controller, p);
+        }
+    }
+}

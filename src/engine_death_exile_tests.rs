@@ -425,7 +425,11 @@ fn actual_nonlethal_damage_registers_then_paid_murder_exiles_without_death_grant
         assert_eq!(g.object_view(target).zone, Zone::Exile);
         assert!(g.observe(p).temporary_abilities.is_empty());
         assert_eq!(g.state.creatures_died_this_turn, 0);
-        assert!(g.state.roles.is_none());
+        assert!(g.state.roles.as_ref().is_none_or(|state| {
+            state.attached.is_empty()
+                && state.ability_timestamps.is_empty()
+                && state.keyword_effects.is_empty()
+        }));
     }
 }
 #[test]

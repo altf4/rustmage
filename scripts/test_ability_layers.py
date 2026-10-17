@@ -18,6 +18,14 @@ class AbilityLayerIdentityTests(unittest.TestCase):
         self.assertEqual(g.TOKEN_DEFS, old, 'metadata projection changed token factory registry')
         return result
 
+    def test_changeling_on_same_line_does_not_carry_independent_flying_past_removal(self):
+        card = dict(self.cards['Bear Cub'], oracle_text='Changeling, flying') if 'Bear Cub' in self.cards else dict(next(iter(self.cards.values())), layout='normal', type_line='Creature — Shapeshifter', mana_cost='{2}', oracle_text='Changeling, flying')
+        groups = continuous_groups(card, g)
+        self.assertEqual(len(groups), 2)
+        self.assertEqual([group.first_layer for group in groups], [Layer.TYPE, Layer.ABILITY])
+        self.assertEqual([fragment.kind for group in groups for fragment in group.fragments], ['changeling', 'intrinsic_keywords'])
+        self.assertEqual(groups[0].line, groups[1].line)
+
     def test_job_type_keywords_trigger_and_stats_remain_one_earlier_started_effect(self):
         for name in ["Ninja's Blades", "Samurai's Katana", "White Mage's Staff", "Black Mage's Rod", "Paladin's Arms"]:
             with self.subTest(name=name):

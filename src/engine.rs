@@ -130,6 +130,8 @@ pub use roles::{RoleGroupView, RoleTimestampView};
 mod ability_order;
 #[path = "engine_ability_timeline.rs"]
 mod ability_timeline;
+#[path = "engine_ability_world.rs"]
+mod ability_world;
 pub use ability_timeline::{AbilitySourceTimestampView, KeywordEffectOrigin, KeywordEffectView};
 #[path = "engine_base_stats.rs"]
 mod base_stats;
@@ -4652,7 +4654,7 @@ impl Game {
             effect_choice: self.effect_choice_view(viewer),
             aura_entry: self.aura_entry_view(viewer),
             entry_life: self.entry_life_view(viewer),
-            entry_timestamps: self.entry_timestamp_view(),
+            entry_timestamps: self.entry_timestamp_view(viewer),
             additional_cost: self.additional_cost_view(viewer),
             forage: self.forage_view(viewer),
             evidence: self.evidence_view(viewer),

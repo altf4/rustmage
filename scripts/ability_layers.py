@@ -108,7 +108,10 @@ def _continuous_groups(card, parser):
             mask = sum(parser.INTRINSIC_KEYWORDS[word] for word in words)
             changeling = parser.INTRINSIC_KEYWORDS['changeling']
             if mask & changeling:
-                fragments.append(Fragment('changeling', Layer.TYPE, changeling))
+                # Comma-separated keywords are separate abilities, even when
+                # the presentation puts them on the same physical line. The
+                # layer4 CDA cannot carry independent flying through layer6.
+                groups.append(StaticGroup(index, original, (Fragment('changeling', Layer.TYPE, changeling),)))
             if mask & ~changeling:
                 fragments.append(Fragment('intrinsic_keywords', Layer.ABILITY, mask & ~changeling))
         # These extractors may rewrite a combined stats/keyword clause. Pass the
