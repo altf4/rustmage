@@ -1,6 +1,11 @@
 """Pinned full-source provenance; no rules text is compiled."""
 import hashlib,json,os,re,subprocess,unittest
 from pathlib import Path
+if __package__:
+    from .source_paths import xmage_source
+else:
+    from source_paths import xmage_source
+
 ROOT=Path(__file__).resolve().parents[1]
 
 NAMES = {'Blooming Blast', 'Consumed by Greed', 'Crumb and Get It', 'Dewdrop Cure', 'Into the Flood Maw', "Long River's Pull", 'Longstalk Brawl', 'Mind Spiral', 'Nocturnal Hunger', 'Peerless Recycling', "Sazacap's Brew", 'Scrapshooter', 'Wear Down', "Bilbo's Gambit", "Dawn's Truce", 'Valley Rally', 'Wildfire Howl'}
@@ -16,7 +21,7 @@ class GiftTests(unittest.TestCase):
         gifts = {c['name']: c for c in self.cards if c.get('oracle_text', '').startswith('Gift ')}
         self.assertEqual(len(gifts), 23)
         self.assertEqual({c['name'] for c in manifest['cards']}, set(gifts))
-        root = Path('/home/altf4/Code/mage')
+        root = xmage_source()
         unique = {}
         for card in manifest['cards']:
             self.assertEqual(card['facts'], {k: v for k, v in gifts[card['name']].items() if k in ['mana_cost', 'type_line', 'oracle_text', 'power', 'toughness', 'colors', 'keywords', 'layout']})

@@ -1,6 +1,11 @@
 """Pinned full-source provenance; no rules text is compiled."""
 import hashlib,json,os,re,subprocess,unittest
 from pathlib import Path
+if __package__:
+    from .source_paths import xmage_source
+else:
+    from source_paths import xmage_source
+
 ROOT=Path(__file__).resolve().parents[1]
 
 class TemporaryDeathGrantProvenanceTests(unittest.TestCase):
@@ -12,7 +17,7 @@ class TemporaryDeathGrantProvenanceTests(unittest.TestCase):
         self.assertEqual(len(expected), 8)
         self.assertEqual({r['name'] for r in manifest['cards']}, set(expected))
         self.assertEqual(set(manifest['initial_consumers']), {'Not Dead After All', 'Fake Your Own Death', 'Undying Malice'})
-        java = Path(os.environ.get('RUSTMAGE_XMAGE_SOURCE', '/home/altf4/Code/mage'))
+        java = xmage_source()
         seen = set()
         for row in manifest['cards']:
             for key in ['name', 'oracle_id', 'mana_cost', 'type_line', 'oracle_text']:

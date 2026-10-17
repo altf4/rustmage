@@ -51,3 +51,19 @@ Each paired record pins both the full Oracle facts and its reviewed physical
 metadata (including intrinsic colors). Changes to costs, types or legality in the
 identity manifest require an explicit per-card provenance update; the linker
 rejects accidental drift. Synthetic entries carry the same metadata pin.
+
+## Portable source locations
+
+Use the active checkout for repository files; do not record a developer's absolute
+home or workspace paths in checked-in files. XMage source audits use
+`RUSTMAGE_XMAGE_SOURCE` when configured. Otherwise they look for a sibling `mage`
+checkout, including beside the primary repository when run from a linked Git
+worktree. The `set_status` CLI also accepts an explicit `--xmage` path. A source
+checkout is required for provenance checks; relocating Rustmage must not silently
+skip those checks.
+
+Historical evidence uses `<cache>`, `<temp>`, `<worktree>`, `<checkout>` and `<xmage>` as
+location placeholders. These identify the original artifact suffixes without
+binding the repository to one machine. Artifact hashes and measurements remain
+unchanged. Actual libraries remain at their existing paths; the notation change
+does not move or delete artifacts.

@@ -1,6 +1,11 @@
 """Pinned full-source provenance; no rules text is compiled."""
 import hashlib,json,os,re,subprocess,unittest
 from pathlib import Path
+if __package__:
+    from .source_paths import xmage_source
+else:
+    from source_paths import xmage_source
+
 ROOT=Path(__file__).resolve().parents[1]
 
 NAMES = ["Archenemy's Charm", 'Auroral Procession', 'Barkform Harvester', 'Coati Scavenger', 'Dundoolin Weaver', 'Elvish Regrower', 'Fateshaper Aspirant', 'Fight On!', "Hazel's Nocturne", 'Macabre Waltz', "Morcant's Loyalist", 'Oltec Archaeologists', 'Pull from the Grave', 'Restore with Empathy', "Rydia's Return", 'Tomb Trawler', 'Tombstone, Career Criminal', 'True Ancestry', 'White Widow, Free Agent']
@@ -16,7 +21,7 @@ class GraveyardRecoveryTests(unittest.TestCase):
         import subprocess
         from pathlib import Path
         manifest = json.loads((ROOT / 'docs/graveyard-recovery-admissions.json').read_text())
-        java = Path('/home/altf4/Code/mage')
+        java = xmage_source()
         self.assertEqual({r['name'] for r in manifest['cards']}, set(NAMES))
         checked = set()
         for row in manifest['cards']:

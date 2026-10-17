@@ -50,7 +50,7 @@ that a new prevention card is supported.
 
 Frozen execution source is `667c502738208622f40a536ee1296c4da8b7a59f`.
 The optimized library is
-`/home/altf4/.cache/rustmage-immutable/death313-667c502-ba88-schema92-6a8611dcf214.so`,
+`<cache>/rustmage-immutable/death313-667c502-ba88-schema92-6a8611dcf214.so`,
 SHA256 `6a8611dcf214ed40f59c2cf11f204cc4ee1cb00d2c726f530d15ee3b283e4f1d`,
 catalogue fingerprint
 `ba88114f740c2281de8da35f1861924ea17d94170f57565bc78c03199e9f95fe`.

@@ -17,8 +17,8 @@
   "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
   "cleaned_allocated_bytes": 221220864,
   "preserved_shared_libraries": {
-    "/home/altf4/.cache/rustmage-fdn-games-gtr7wsv_/target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
-    "/home/altf4/.cache/rustmage-fdn-games-gtr7wsv_/target/debug/deps/librustmage.so": "7fcfaa5069659aa652936e4cbdf00cdd1abb0828434c2b40ab6674a8080179a6"
+    "<cache>/rustmage-fdn-games-gtr7wsv_/target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+    "<cache>/rustmage-fdn-games-gtr7wsv_/target/debug/deps/librustmage.so": "7fcfaa5069659aa652936e4cbdf00cdd1abb0828434c2b40ab6674a8080179a6"
   },
   "source_unchanged_through_test": true
 }

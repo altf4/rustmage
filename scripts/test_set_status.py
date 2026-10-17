@@ -6,12 +6,17 @@ import tempfile
 import unittest
 from scripts import set_status
 
+if __package__:
+    from .source_paths import xmage_source
+else:
+    from source_paths import xmage_source
+
 ROOT = Path(__file__).resolve().parents[1]
 
 class SetStatusTests(unittest.TestCase):
     def test_full_foundations_freeze_matches_all_pinned_printings(self):
         manifest = json.loads((ROOT / 'data/sets/fdn.json').read_text())
-        fresh = set_status.freeze(ROOT, Path('/home/altf4/Code/mage'), 'FDN')
+        fresh = set_status.freeze(ROOT, xmage_source(), 'FDN')
         self.assertEqual(fresh, manifest)
         self.assertEqual(len(manifest['cards']), 517)
         self.assertEqual(sum(len(c['printings']) for c in manifest['cards']), 771)

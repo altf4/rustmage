@@ -22,7 +22,7 @@ Raw compilation authenticates every common clause, cost and branch. Tiered and G
 Frozen source: `26adbdecc93e929e3b1b894697901a16b597ff82`, composed on actual merged main `ba3752a456908e0bee67a86e88864b14ba1312df` (schema98/1,960). The [strict union proof](tiered-main-preservation.json) allows exactly eight complete body changes and six new Tiered-cost helper arms: all5,324 other definitions,912 prior helper arms,5,332 colors,5,438 aliases, three inline flag tables and95 token recipes are preserved. All eight owned programs, their six helper arms and the Tiered runtime module remain byte/semantically identical to prototype8b80e47; parent hand/private/resolved-expression machinery is retained. Earlier hand/base/resolved proofs stay pinned to their actual historical deliveries with current-owned equality and mutation-negative controls. Parent Python policies differ only by schema98→99 assertion metadata (AST checked).
 
 Catalogue fingerprint: `5d88b288481c68b6a5d4bf99ec29073bc035a0ea33d9cc7a63e769ac71506afd`.
-Optimized immutable library: `/home/altf4/.cache/rustmage-immutable/tiered333-union26adbde-5d88-schema99-ca5cceea2d0c.so`.
+Optimized immutable library: `<cache>/rustmage-immutable/tiered333-union26adbde-5d88-schema99-ca5cceea2d0c.so`.
 SHA-256: `ca5cceea2d0cffcf2020a3ced8968f2f9ee9d7980a213c6993ff1e62bc85a7e9`.
 
 Every final gate below held all903 tracked execution inputs and this exact library unchanged through terminal completion. Final publication changes only README/progress/this record plus audit workflow statuses; no production/generator/card facts/policy/test logic changes. Fresh Tiered inventory/compiler checks pass after that status-only audit transition.

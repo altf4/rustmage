@@ -1,6 +1,11 @@
 """Pinned full-source provenance; no rules text is compiled."""
 import hashlib,json,os,re,subprocess,unittest
 from pathlib import Path
+if __package__:
+    from .source_paths import xmage_source
+else:
+    from source_paths import xmage_source
+
 ROOT=Path(__file__).resolve().parents[1]
 
 INITIAL_NAMES = {'Genemorph Imago', 'Moon Girl and Devil Dinosaur', 'Belligerent Yearling'}
@@ -16,7 +21,7 @@ class ResolvedBaseTests(unittest.TestCase):
     def test_complete_pinned_java_and_direct_imports_are_audit_only(self):
         audit = json.loads((ROOT / 'docs/resolved-base-stat-admissions.json').read_text())
         self.assertEqual({r['name'] for r in audit['cards']}, NAMES)
-        java = Path('/home/altf4/Code/mage')
+        java = xmage_source()
         facts = {c['name']: c for c in self.all}
         seen = set()
         records = 0

@@ -22,7 +22,7 @@ Current-main canonical comparison changes exactly the three complete ordinary bo
 
 The immutable optimized library remains:
 
-`/home/altf4/.cache/rustmage-immutable/temporary302-ecedec2-6504-schema88-b4b41b6851e6.so`
+`<cache>/rustmage-immutable/temporary302-ecedec2-6504-schema88-b4b41b6851e6.so`
 
 SHA256 `b4b41b6851e67025a747ab35ec2bf97d1c29f51f83df6003b5c257880487bd4b`; catalogue `6504b11a16c13082f442008e7ea9c5399ccdb0bc1c43dab95852c72446e5c2e8`; schema 88. The filename and metadata retain the actual build source, rather than implying a rebuild after documentation/test corrections.
 

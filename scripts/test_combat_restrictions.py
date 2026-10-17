@@ -1,6 +1,11 @@
 """Pinned full-source provenance; no rules text is compiled."""
 import hashlib,json,os,re,subprocess,unittest
 from pathlib import Path
+if __package__:
+    from .source_paths import xmage_source
+else:
+    from source_paths import xmage_source
+
 ROOT=Path(__file__).resolve().parents[1]
 
 NAMES = {'Mouser Mark III', 'Pacifism', 'Technodrome', 'The Lion-Turtle', 'Tiger-Dillo'}
@@ -18,5 +23,5 @@ class CombatRestrictionTests(unittest.TestCase):
             for k in ['name', 'oracle_id', 'mana_cost', 'type_line', 'oracle_text']:
                 self.assertEqual(row[k], self.cards[row['name']][k])
             for rec in row['sources']:
-                b = subprocess.check_output(['git', '-C', '/home/altf4/Code/mage', 'show', m['java_revision'] + ':' + rec['java_source']])
+                b = subprocess.check_output(['git', '-C', str(xmage_source()), 'show', m['java_revision'] + ':' + rec['java_source']])
                 self.assertEqual(hashlib.sha256(b).hexdigest(), rec['java_sha256'])

@@ -11,7 +11,7 @@ Verdict: approved, no actionable findings. Independently passed 1,439 Rust tests
 
 Eight independent declaration frames forked into twenty-four declined, self-sacrifice/self-target-fizzle and Map-token-sacrifice continuations, with 184 rejected actions and 144 restore/replays. Four additional legal games used reserved Prophetic Prisms to filter mana, then actually sacrificed those same Prisms for bargain, proving tap-only use remains valid. Parent isolation and both-viewer state held.
 
-Actual evidence: `/tmp/issue223-library-review-rust.log`, `release.log`, `python.log`, `standard.log`, `standard-independent.log`, `probe.log`, `prism.log`, `provenance.log` and `verdict.log`, each latter file using the same `/tmp/issue223-library-review-` prefix. Probe sources use that prefix with `suite.py`, `probe.py` and `prism.py`.
+Actual evidence: `<temp>/issue223-library-review-rust.log`, `release.log`, `python.log`, `standard.log`, `standard-independent.log`, `probe.log`, `prism.log`, `provenance.log` and `verdict.log`, each latter file using the same `<temp>/issue223-library-review-` prefix. Probe sources use that prefix with `suite.py`, `probe.py` and `prism.py`.
 
 ## Rules/compiler — `/root/independent_library_189`
 
@@ -19,4 +19,4 @@ Verdict: approved, no actionable findings. Independently passed 1,439 Rust tests
 
 Four independent runtime groups verify reserved-Prism mana then sacrifice; a genuine Solemn Simulacrum death/draw trigger above the bargain spell; Kellan's live combat predicate becoming false in both branches and seats; and Farsight's four/eight private selection with late overflow restoring choices, RNG and revision atomically.
 
-Actual evidence: `/tmp/issue223-rules-review-rust.log`, `compiler.log`, `standard100.log`, `probes.log`, `grammar.log`, `semantic.log`, `clippy.log`, `format.log`, `catalogue.log`, `java.log` and `verdict.log`, each latter file using the same `/tmp/issue223-rules-review-` prefix. External probe source is `/tmp/issue223-rules-review-probe`; its build target remains home-backed.
+Actual evidence: `<temp>/issue223-rules-review-rust.log`, `compiler.log`, `standard100.log`, `probes.log`, `grammar.log`, `semantic.log`, `clippy.log`, `format.log`, `catalogue.log`, `java.log` and `verdict.log`, each latter file using the same `<temp>/issue223-rules-review-` prefix. External probe source is `<temp>/issue223-rules-review-probe`; its build target remains home-backed.

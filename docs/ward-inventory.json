@@ -7511,7 +7511,7 @@
       "whole_body_boundary": "Retain complete oracle_text_complete/card_faces as the exact residual contract; NOT admitted by the initial task. No claim that its non-Ward residual is implemented."
     }
   ],
-  "proposal_markdown": "/tmp/rustmage-ward-scout.md",
+  "proposal_markdown": "<temp>/rustmage-ward-scout.md",
   "notes": [
     "Final inventory is149/29supported/120gated; earlier139 missed10 multiface cards, earlier148 intermediate missedRoyalRole onBesottedKnight.",
     "Surface tags are nonexclusive; face-down cards may also have only reminder text mentioningWard.",

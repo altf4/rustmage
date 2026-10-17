@@ -23,7 +23,7 @@ two-line acceptance readiness policy, historical/actual-parent proof metadata an
 documentation. All engine, card model, generator, generated data and own acceptance
 policies remain byte-identical. The optimized library is:
 
-`/home/altf4/.cache/rustmage-immutable/basestats321-f373f04-9fc2-schema96-1145c363c295.so`
+`<cache>/rustmage-immutable/basestats321-f373f04-9fc2-schema96-1145c363c295.so`
 
 SHA-256: `1145c363c2950c2d4b69a0bf29bd0c8434537475a5d65239fbb1922cb8f14d23`.
 Catalogue: `9fc25b72fa36df9d09c874eb64e990754020e5e572e8bbb523d37d462dd87aa9`.

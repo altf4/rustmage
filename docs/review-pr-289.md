@@ -31,7 +31,7 @@ group and one public method, with no production/compiler/data change.
 
 Immutable optimized library:
 
-- File: `/home/altf4/.cache/rustmage-immutable/roles289-union8083680-481a-schema85-fce58ca62222.so`
+- File: `<cache>/rustmage-immutable/roles289-union8083680-481a-schema85-fce58ca62222.so`
 - SHA256: `fce58ca6222207ccc721a741e05b01dced8084149f80b77701d8dc7664190edd`
 - Catalogue: `481a956ca3c658dbe8660a4c6a4bd06a0135e30880744fc0f0f57860302a78aa`
 - Schema:85. Every public constructor and subprocess child was pinned to this file

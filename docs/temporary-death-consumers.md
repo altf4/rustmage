@@ -61,7 +61,7 @@ only in the two Rabid readiness lines described below; all 872 other tracked inp
 are byte-identical. Each gate freezes its complete 873-file input manifest. The
 optimized immutable library is:
 
-`/home/altf4/.cache/rustmage-immutable/suspect322-4a8fe17-67b5-schema95-680d3781dd9f.so`
+`<cache>/rustmage-immutable/suspect322-4a8fe17-67b5-schema95-680d3781dd9f.so`
 
 SHA-256: `680d3781dd9f39dc75cf362010ef7a8165b0250922d7e698336695e9bd19f543`.
 Catalogue: `67b5c64ea193ad159aa94d7976e3e692d2abc327232d50fd1438034852dc312e`.
