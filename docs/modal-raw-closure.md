@@ -49,3 +49,13 @@ preserves every5332 definition,918 helpers,5438 aliases and95 token recipes,
 including all six Tiered cards and Boros Charm/Epic Fight. Six adversarial
 triggered/activated modal tails remain rejected. This is a compatibility probe,
 not final-parent delivery validation or a native/public gameplay claim.
+
+The actual-parent composition is now based on merged main356d798 (schema100).
+All5332 definitions,924 helpers,5438 aliases,95 token recipes and the emblem are
+identical to that parent; coverage remains1972Standard/1978total,40Adventure and
+13Omen. The only generated change is fingerprint1551e6ebeb4ee554c01f2f108fd5e9f3fc90b78ac5385ce3e7c99d7c2ffdd7a4.
+Ten own methods now include durable actual Tiered-six/adjacent-two compatibility
+and altered Tiered-reminder rejection. All43 affected methods (own modal raw,
+Tiered, live-stat, private-hand, intrinsic reminders and legacy metadata) pass
+in6.550s with no skips. Immutable-library/public validation and two independent
+final reviews are still pending; this is not a full-suite or100-game claim.

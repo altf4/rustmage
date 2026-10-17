@@ -570,6 +570,7 @@ fn primitive_axes_cda_overflow_boundary_and_sparse_owned_heap_are_exact() {
     }
 }
 
+include!("engine_resolved_base_stats_cases.rs");
 // Insert after Suspect PR322 is merged; requires its completed Presumed/Galuf bodies.
 #[test]
 fn base_stat_sba_uses_parent_death_exile_before_suspect_return() {
@@ -644,5 +645,131 @@ fn base_stat_death_lki_feeds_galuf_and_owner_return_clears_old_layers() {
         cleanup_checked(&mut g);
         assert!(g.is_suspected(bear));
         assert_eq!((g.stats(bear).power, g.stats(bear).toughness), (2, 2));
+    }
+}
+
+fn live_equip_target(g: &mut Game, card: CardId, recipient: CardId) {
+    let a = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a,Action::AnnounceActivate{card:id,ability:0,..}if *id==card))
+        .unwrap();
+    checked(g, a);
+    checked(
+        g,
+        Action::ChooseTarget {
+            target: Target::Card(recipient),
+        },
+    );
+    while g.state.announcing.is_some() {
+        let a = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::FinishTargets))
+            .or_else(|| {
+                g.legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a, Action::PayCosts { .. }))
+            })
+            .unwrap();
+        checked(g, a);
+    }
+    settle(g);
+}
+#[test]
+fn live_static_paid_whole_creatures_aura_and_additive_layers_compose() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let detective = named(&mut g, p, "April, Reporter of the Weird", Zone::Battlefield);
+        let enemy = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let archon = named(&mut g, p, "Archon of the Wild Rose", Zone::Hand);
+        cast(&mut g, archon, None, &[]);
+        settle(&mut g);
+        assert_eq!(g.stats(bear).power, 2);
+        assert!(!g.keywords(bear).contains(Keywords::FLYING));
+        let pacifism = named(&mut g, p, "Pacifism", Zone::Hand);
+        cast(&mut g, pacifism, None, &[Target::Card(bear)]);
+        settle(&mut g);
+        assert_eq!((g.stats(bear).power, g.stats(bear).toughness), (4, 4));
+        assert!(g.keywords(bear).contains(Keywords::FLYING));
+        let maha = named(&mut g, p, "Maha, Its Feathers Night", Zone::Hand);
+        cast(&mut g, maha, None, &[]);
+        settle(&mut g);
+        assert_eq!((g.stats(enemy).power, g.stats(enemy).toughness), (2, 1));
+        assert!(
+            g.keywords(maha)
+                .contains(Keywords::FLYING.union(Keywords::TRAMPLE))
+        );
+        assert!(
+            g.state.objects[maha as usize]
+                .card
+                .triggers()
+                .iter()
+                .any(|a| a.condition.event() == TriggerCondition::Ward)
+        );
+        let burden = named(&mut g, p, "Burden of Proof", Zone::Hand);
+        cast(&mut g, burden, None, &[Target::Card(detective)]);
+        settle(&mut g);
+        // Archon's layer7b applies before Burden's conditional layer7c.
+        assert_eq!(
+            (g.stats(detective).power, g.stats(detective).toughness),
+            (6, 6)
+        );
+        assert!(g.keywords(detective).contains(Keywords::FLYING));
+        for aura in [pacifism, burden] {
+            let disenchant = named(&mut g, p, "Disenchant", Zone::Hand);
+            cast(&mut g, disenchant, None, &[Target::Card(aura)]);
+            settle(&mut g);
+        }
+        assert_eq!(g.stats(bear).power, 2);
+        assert_eq!(g.stats(detective).power, 2);
+        assert!(!g.keywords(detective).contains(Keywords::FLYING));
+        let bounce = named(&mut g, p, "Unsummon", Zone::Hand);
+        cast(&mut g, bounce, None, &[Target::Card(maha)]);
+        settle(&mut g);
+        assert_eq!(g.stats(enemy).toughness, 2);
+    }
+}
+#[test]
+fn live_static_paid_life_equipment_uses_attachment_timestamps_against_cursed() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let first = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let second = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let equipment = named(&mut g, p, "Aettir and Priwen", Zone::Hand);
+        cast(&mut g, equipment, None, &[]);
+        settle(&mut g);
+        live_equip_target(&mut g, equipment, first);
+        assert_eq!((g.stats(first).power, g.stats(first).toughness), (20, 20));
+        let original = g
+            .observe(p)
+            .live_static_sources
+            .iter()
+            .find(|v| v.source.card == equipment)
+            .unwrap()
+            .timestamp;
+        let shock = named(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, None, &[Target::Player(p)]);
+        settle(&mut g);
+        assert_eq!((g.stats(first).power, g.stats(first).toughness), (18, 18));
+        assert_eq!(
+            g.observe(p)
+                .live_static_sources
+                .iter()
+                .find(|v| v.source.card == equipment)
+                .unwrap()
+                .timestamp,
+            original
+        );
+        cursed(&mut g, p, first);
+        assert_eq!(g.stats(first).power, 1);
+        live_equip_target(&mut g, equipment, first); // Already attached: no new timestamp.
+        assert_eq!(g.stats(first).power, 1);
+        live_equip_target(&mut g, equipment, second);
+        assert_eq!(g.stats(second).power, 18);
+        live_equip_target(&mut g, equipment, first);
+        assert_eq!((g.stats(first).power, g.stats(first).toughness), (18, 18));
+        assert_eq!(g.stats(second).power, 2);
     }
 }

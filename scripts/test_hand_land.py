@@ -22,7 +22,8 @@ class HandLandTests(unittest.TestCase):
     for cost in ['{Y}','{R}{','{4294967296}']:
      self.assertFalse(self.compile(dict(d,mana_cost=cost))[1],(n,name,cost))
     self.assertFalse(self.compile(dict(d,type_line='Unknown'))[1])
- def test_seven_other_complete_bodies_remain_gated(self):
+ def test_six_remaining_bodies_and_later_complete_pupu_keep_full_body_guards(self):
+  c=self.cards['PuPu UFO'];self.assertTrue(self.compile(c)[1]);self.assertFalse(self.compile(dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.'))[1])
   for n in self.audit['remaining_dependencies']:
    c=self.cards[n];self.assertFalse(self.compile(c)[1],n)
    self.assertFalse(self.compile(dict(c,name='Independent Remaining',oracle_text=c['oracle_text'].replace(n,'Independent Remaining')))[1],n)
@@ -77,8 +78,14 @@ class HandLandTests(unittest.TestCase):
   for phrase in ['an artifact card','a creature card','a card','another land card']:
    c=self.cards['Nicanzil, Current Conductor'];self.assertFalse(self.compile(dict(c,oracle_text=c['oracle_text'].replace('a land card,',phrase+',')))[1],phrase)
  def test_exact_current_parent_preservation(self):
-  before=subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True);physical={c['oracle_id']:c['name']for c in self.cards.values()}
-  proof=assert_union(canonical(before,physical),canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical),changed={n+'#0'for n in self.audit['proposed_complete']},added=set(),helpers=set(),aliases={});self.assertEqual(proof['preserved_definitions'],5327);self.assertEqual(proof['prior_helpers'],911)
+  before=subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True);delivered=subprocess.check_output(['git','-C',str(g.ROOT),'show','a9380ec478646c42308c7284de197fa466db24d2:src/generated/catalogue.rs'],text=True);physical={c['oracle_id']:c['name']for c in self.cards.values()}
+  old=canonical(before,physical);final=canonical(delivered,physical);current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  proof=assert_union(old,final,changed={n+'#0'for n in self.audit['proposed_complete']},added=set(),helpers=set(),aliases={});self.assertEqual(proof['preserved_definitions'],5327);self.assertEqual(proof['prior_helpers'],911)
+  for name in self.audit['proposed_complete']:self.assertEqual(current['definitions'][name+'#0'],final['definitions'][name+'#0'])
+  for key,value in final['helpers'].items():self.assertEqual(current['helpers'][key],value)
+  import copy
+  mutant=copy.deepcopy(final);mutant['definitions']['Plains#0']='unrelated mutation'
+  with self.assertRaises(AssertionError):assert_union(old,mutant,changed={n+'#0'for n in self.audit['proposed_complete']},added=set(),helpers=set(),aliases={})
  def test_complete_twelve_body_metadata_and_all_pinned_java_files(self):
   self.assertEqual(len(self.audit['cards']),12);self.assertEqual(self.audit['source_records'],187);self.assertEqual(self.audit['unique_source_count'],86)
   root=Path('/home/altf4/Code/mage')

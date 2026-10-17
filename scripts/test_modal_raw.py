@@ -3,7 +3,7 @@ import copy,json,subprocess,unittest
 from scripts import generate_catalogue as g
 from scripts import test_legacy_metadata as metadata
 from scripts.catalogue_preservation import canonical,assert_union
-PARENT='a9380ec478646c42308c7284de197fa466db24d2'
+PARENT='356d79880dbae6bdcbda600dadb1bef6da16c18c'
 class ModalRawTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
@@ -18,6 +18,15 @@ class ModalRawTests(unittest.TestCase):
    self.assertEqual(g.modal_reminder_text(dict(oracle_text=raw)),raw)
   for raw in ['Choose one —','Choose one or both —','Cho(unknown)ose one —','Choose one (unknown) —','Choose one or (unknown)both —']:
    self.assertTrue(g.modal_route(raw),raw)
+ def test_complete_tiered_parser_keeps_all_six_and_adjacent_modal_bodies(self):
+  names=['Fire Magic','Ice Magic','Restoration Magic','Thunder Magic',"Tifa's Limit Break","Vincent's Limit Break",'Boros Charm','Epic Fight']
+  for name in names:
+   card=self.cards[name];self.assertTrue(self.compile(card)[1],name)
+   if name in names[:6]:
+    self.assertEqual(g.modal_reminder_text(card),card['oracle_text'])
+    self.assertFalse(g.modal_route(card['oracle_text']))
+    self.assertIsNotNone(g.tiered_spell_template(card))
+    self.assertFalse(self.compile(dict(card,oracle_text=card['oracle_text'].replace('Choose one additional cost.','Choose one additional cost. You win the game.')))[1])
  def test_all_generic_hosts_and_reserved_names_reject_unknown_raw(self):
   basic='• Draw a card.\n• You gain 1 life.'
   hosts=[('When this creature enters, choose one —\n'+basic,False),('Whenever this creature attacks, choose one —\n'+basic,False),('{2}: Choose one —\n'+basic,False),('Choose one —\n'+basic,True),('Choose one or both —\n'+basic,True),('When this creature enters, choose one —\n'+basic+'\n{1}: You gain 1 life.',False),('{1}: Choose one —\n'+basic+'\nWhenever this creature attacks, draw a card.',False)]
@@ -79,7 +88,7 @@ class ModalRawTests(unittest.TestCase):
   raw='When this creature enters, choose one —\n• Create a Sorcerer Role token attached to target creature you control. (Enchanted creature gets +1/+1 and has "Whenever this creature attacks, scry 1. ('+reminder+')")\n• Draw a card.'
   self.assertTrue(self.compile(self.card(raw))[1],raw)
  def test_no_actual_program_helper_factory_color_or_alias_changes(self):
-  physical={c['oracle_id']:c['name']for c in self.cards.values()};before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True),physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical);proof=assert_union(before,after,changed=set(),added=set(),helpers=set(),aliases={});self.assertEqual(proof['preserved_definitions'],5332);self.assertEqual(proof['prior_helpers'],911)
+  physical={c['oracle_id']:c['name']for c in self.cards.values()};before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True),physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical);proof=assert_union(before,after,changed=set(),added=set(),helpers=set(),aliases={});self.assertEqual(proof['preserved_definitions'],5332);self.assertEqual(proof['prior_helpers'],924)
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(before,mutant,changed=set(),added=set(),helpers=set(),aliases={})
 if __name__=='__main__':unittest.main()

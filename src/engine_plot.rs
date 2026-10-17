@@ -106,6 +106,16 @@ impl Game {
         {
             return false;
         }
+        if object.card.tiered_costs().is_some() {
+            return self.tiered_initial_fundable(
+                actor,
+                card,
+                ManaCost {
+                    colored: [0; 6],
+                    generic: 0,
+                },
+            );
+        }
         let plan = match object.card.effect() {
             Effect::Modal(modes) => {
                 return modes

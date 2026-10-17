@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "dd742bc9c21b44c69ee0f22066cab4712c2f714f815f9942a1b4e6fe0bce8d8d",
+  "catalogue_version": "1551e6ebeb4ee554c01f2f108fd5e9f3fc90b78ac5385ce3e7c99d7c2ffdd7a4",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1955,
-  "implemented_total": 1961,
+  "implemented_standard_cards": 1972,
+  "implemented_total": 1978,
   "token_definitions": 95,
   "emblem_definitions": 1,
   "cards": [
@@ -460,8 +460,8 @@
     {
       "name": "Aettir and Priwen",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Affectionate Indrik",
@@ -1300,8 +1300,8 @@
     {
       "name": "Archon of the Wild Rose",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Archon's Glory",
@@ -1546,8 +1546,8 @@
     {
       "name": "Atomic Microsizer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Attack-in-the-Box",
@@ -2278,8 +2278,8 @@
     {
       "name": "Belligerent Yearling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Belligerent of the Ball",
@@ -3040,8 +3040,8 @@
     {
       "name": "Boros Charm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Boros Guildgate",
@@ -3520,8 +3520,8 @@
     {
       "name": "Burden of Proof",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Burdened Stoneback",
@@ -8128,8 +8128,8 @@
     {
       "name": "Epic Fight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Equilibrium Adept",
@@ -9118,8 +9118,8 @@
     {
       "name": "Fire Magic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Fire Nation Attacks",
@@ -10240,8 +10240,8 @@
     {
       "name": "Genemorph Imago",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "General Traag, Heart of Stone",
@@ -12736,8 +12736,8 @@
     {
       "name": "Ice Magic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Ice Out",
@@ -15784,8 +15784,8 @@
     {
       "name": "Maha, Its Feathers Night",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mai, Jaded Edge",
@@ -17050,8 +17050,8 @@
     {
       "name": "Moon Girl and Devil Dinosaur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Moon-Vigil Adherents",
@@ -19636,8 +19636,8 @@
     {
       "name": "PuPu UFO",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Public Thoroughfare",
@@ -20968,8 +20968,8 @@
     {
       "name": "Restoration Magic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Restoration Seminar",
@@ -27484,8 +27484,8 @@
     {
       "name": "Thunder Magic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Thunder Salvo",
@@ -27592,8 +27592,8 @@
     {
       "name": "Tifa's Limit Break",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Tiger-Dillo",
@@ -29392,8 +29392,8 @@
     {
       "name": "Vincent's Limit Break",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Vindictive Triumph",

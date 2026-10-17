@@ -869,6 +869,8 @@ fn sparse_gift_context_heap_payloads_are_owned_and_counted_once() {
         next: 0,
         counter_next: 0,
         counter_order: vec![],
+        timestamp_order: Vec::new(),
+        timestamps_ready: false,
         resume: None,
         shuffle_after: None,
         replacement_resume: None,

@@ -78,6 +78,25 @@ def base_stat_program(text):
     """Whole constant 7b setters; each axis is independent of additive bonuses."""
     if not isinstance(text,str) or not text:return None
     text=normalize_duration(text[0].lower()+text[1:])
+    if m:=re.fullmatch(r"choose up to one target creature\. That creature can't be blocked this turn and has base power and toughness (-?[0-9]+)/(-?[0-9]+) until end of turn\.",text):
+        p,t=int(m[1]),int(m[2])
+        if any(not -(2**127)<=v<2**127 for v in (p,t)):return None
+        return ('Creature',0,1),['GrantKeywords { subject: Subject::Targets, keywords: Keywords(16384) }',f'SetBaseStats {{ subject: Subject::Targets, power: Some({p}), toughness: Some({t}) }}']
+    if m:=re.fullmatch(r"this creature's base (power|toughness) becomes equal to (?:the number of )?(.+) until end of turn\.",text):
+        value=stat_value(m[2])
+        if value is None:return None
+        expression='Some(ResolvedStatValue::Stat('+value+'))'
+        p,t=(expression,'None') if m[1]=='power' else ('None',expression)
+        return 'None',['SetResolvedBaseStats { subject: Subject::Source, power: '+p+', toughness: '+t+' }']
+    if m:=re.fullmatch(r"this creature's base power and toughness become (-?[0-9]+)/(-?[0-9]+) and (?:it|they) gains? (.+) until end of turn\.",text):
+        text=f'this creature has base power and toughness {m[1]}/{m[2]} and gains {m[3]} until end of turn.'
+    if m:=re.fullmatch(r'target creature has base power and toughness (-?[0-9]+)/(-?[0-9]+) until end of turn\. If you control ([a-z]+|[0-9]+) or more lands, that creature has base power and toughness (-?[0-9]+)/(-?[0-9]+) until end of turn instead\.',text):
+        threshold=COUNT_WORDS.get(m[3],int(m[3]) if m[3].isdigit() else None)
+        values=[int(m[i]) for i in (1,2,4,5)]
+        if threshold is None or threshold>65535 or any(not -(2**127)<=v<2**127 for v in values):return None
+        count='StatValue::Count(CountFilter { zone: CountZone::Battlefield, relation: 0, kind: 2, exclude: 0, subtype: None, basic: false, other: false, cards_only: false })'
+        expr=lambda yes,no:'Some(ResolvedStatValue::Threshold { value: '+count+', minimum: '+str(threshold)+', yes: '+str(yes)+', no: '+str(no)+' })'
+        return 'Creature',['SetResolvedBaseStats { subject: Subject::Targets, power: '+expr(values[2],values[0])+', toughness: '+expr(values[3],values[1])+' }']
     optional=text.startswith("you may have this creature's base ")
     if optional:
         text='this creature has base '+text[len("you may have this creature's base "):]
@@ -99,6 +118,67 @@ def base_stat_program(text):
         program.append('GrantKeywords { subject: Subject::'+subject+', keywords: Keywords('+str(keywords)+') }')
     if optional:program=['May { skip: '+str(len(program))+' }',*program]
     return ('None' if subject=='Source' else 'CreatureYou' if who.endswith('you control') else 'Creature'),program
+
+
+def extract_live_static_stats(card):
+    """Typed, whole continuous clauses; every residual ability must still compile."""
+    kind=permanent_type(card)
+    if (card.get('layout')!='normal' or not isinstance(card.get('oracle_text'),str)
+            or spell_cost_options(card.get('mana_cost','')) is None
+            or kind not in ('Creature','Artifact Creature','Enchantment Creature','Artifact','Enchantment')):
+        return card,[]
+    is_creature='Creature' in kind.split()
+    is_aura=kind=='Enchantment' and card.get('type_line','').endswith(' — Aura')
+    is_equipment=kind=='Artifact' and 'Equipment' in card.get('type_line','').split(' — ')[-1].split()
+    residual=[];effects=[];clauses=0
+    def number(value):
+        n=int(value)
+        return n if -(2**127)<=n<2**127 else None
+    def opt(value):return 'None' if value is None else 'Some(LiveStatValue::'+value+')'
+    def effect(recipients,condition=None,power=None,toughness=None,bonus=(0,0),keywords=0,block=None):
+        return ('LiveStaticEffect { recipients: LiveStatRecipients::'+recipients+
+            ', condition: '+('None' if condition is None else 'Some('+condition+')')+
+            ', power: '+opt(power)+', toughness: '+opt(toughness)+
+            ', bonus_power: '+str(bonus[0])+', bonus_toughness: '+str(bonus[1])+
+            ', keywords: Keywords('+str(keywords)+'), cannot_block_subtype: '+
+            ('None' if block is None else 'Some('+json.dumps(block)+')')+' }')
+    for raw in card['oracle_text'].splitlines():
+        if is_equipment and raw=='Equipped creature has base power and toughness X/X, where X is your life total.':
+            effects.append(effect('Attached',power='ControllerLife',toughness='ControllerLife'));clauses+=1;continue
+        m=re.fullmatch(r"Enchanted creature gets ([+-][0-9]+)/([+-][0-9]+) as long as it's a ([A-Z][A-Za-z]+) you control\. Otherwise, it has base power and toughness (-?[0-9]+)/(-?[0-9]+) and can't block ([A-Z][A-Za-z]+)s\.",raw)
+        if m and is_aura and m[3] in CREATURE_TYPE_NAMES and m[6] in CREATURE_TYPE_NAMES:
+            values=[number(m[i])for i in (1,2,4,5)]
+            if all(v is not None for v in values):
+                cond='LiveStatCondition { subtype: '+json.dumps(m[3])+', negated: '
+                effects.extend([effect('Attached',condition=cond+'false }',bonus=values[:2]),
+                    effect('Attached',condition=cond+'true }',power='Fixed('+str(values[2])+')',toughness='Fixed('+str(values[3])+')',block=m[6])]);clauses+=1;continue
+        m=re.fullmatch(r'(Other creatures|Creatures)( you control| your opponents control)?( that are enchanted by Auras you control)? have base (power and toughness|power|toughness) (-?[0-9]+)(?:/(-?[0-9]+))?(?: and have (.+))?\.',raw)
+        if m and is_creature and (m[4]=='power and toughness')==(m[6] is not None):
+            first=number(m[5]);second=number(m[6])if m[6] is not None else None
+            words=keyword_list(m[7])if m[7] is not None else 0
+            if first is not None and (m[6] is None or second is not None) and words is not None and not words&KEYWORDS['flash']:
+                relation={' you control':0,' your opponents control':1,None:-1}[m[2]]
+                recipients='Creatures { relation: '+str(relation)+', other: '+str(m[1].startswith('Other')).lower()+', enchanted_by_controller: '+str(m[3] is not None).lower()+' }'
+                power='Fixed('+str(first)+')'if m[4]!='toughness'else None
+                toughness='Fixed('+str(second if m[4]=='power and toughness'else first)+')'if m[4]!='power'else None
+                effects.append(effect(recipients,power=power,toughness=toughness,keywords=words));clauses+=1;continue
+        residual.append(raw)
+    if clauses!=1:return card,[]
+    return dict(card,oracle_text='\n'.join(residual)),effects
+
+
+def live_static_reminders_valid(card):
+    # Detect both literal and erased routes. An erased phrase never authenticates
+    # its own raw clause; complete intrinsic reminder slots are the only exception.
+    raw=card.get('oracle_text','')
+    if not isinstance(raw,str):return True
+    surface=raw;seen=False
+    while True:
+        seen |= bool(re.search(r'creatures.*have base|equipped creature has base|otherwise, it has base',' '.join(surface.casefold().split())))
+        erased=re.sub(r'\([^()]*\)','',surface)
+        if erased==surface:break
+        surface=erased
+    return not seen or all(intrinsic_reminder_line_valid(line) for line in raw.splitlines()if '(' in line or ')' in line)
 
 
 def extract_base_stat_setter(card):
@@ -1990,6 +2070,9 @@ def statement_program(text):
     if (base_set := base_stat_program(text)) and base_set[0]=='None':return base_set[1]
     if text=="this creature can't be blocked this turn.":return ['GrantKeywords { subject: Subject::Source, keywords: Keywords(16384) }']
     if text=='suspect this creature.':return ['Suspect { subject: Subject::Source }']
+    if m:=re.fullmatch(r'permanents you control gain (.+) until end of turn\.',text):
+        keywords=keyword_list(m[1])
+        if keywords is not None:return [f'GrantPermanentsThisTurn(Keywords({keywords}))']
     if text=='suspect enchanted creature.':return ['Suspect { subject: Subject::Attached }']
     if text=='all suspected creatures are no longer suspected.':return ['UnsuspectCreatures { filter: '+creature_filter('creatures')+' }']
     if text.startswith('suspect this creature. '):
@@ -2803,6 +2886,11 @@ def targeted_program(text):
     if m:=re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on each of (up to two|up to three|one or two|two) target creatures( you control)?\.',text):
         spec=('CreatureYou' if m[4] else 'Creature',0 if m[3].startswith('up to') else 1 if m[3]=='one or two' else 2,3 if m[3]=='up to three' else 2)
         return spec,[counter_instruction('Targets',m[1],m[2])]
+    if text=="target creature's owner shuffles it into their library.":return 'Creature',['ShuffleTargetIntoLibrary']
+    if m:=re.fullmatch(r"(double|triple) target creature's power and toughness until end of turn\.",text):return 'Creature',[f'MultiplyTargetStats {{ factor: {2 if m[1]=="double" else 3} }}']
+    if m:=re.fullmatch(r'target permanent gains (.+) until end of turn\.',text):
+        keywords=keyword_list(m[1])
+        if keywords is not None:return 'Permanent',[f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({keywords}) }}']
     if text=='double the number of each kind of counter on up to two target creatures and/or artifacts you control.':
         return ('ArtifactCreatureYou',0,2),['DoubleCounters']
     if m:=re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on target legendary creature\.',text):
@@ -3328,6 +3416,8 @@ def entering_object_program(text, condition):
     events=('SelfEnters','OtherCreatureEntersYou','CreatureEntersYou','ArtifactEntersYou','OtherArtifactEntersYou','EnchantmentEntersYou','LandEntersYou')
     if condition not in events and not condition.startswith(('OtherSubtypeEntersYou(','SubtypeEntersYou(','PermanentEntersYou {','OtherFilteredEntersYou(','CreatureEnters {')):
         return None
+    if text=="you may have this creature's base power become equal to that creature's power until end of turn.":
+        return 'None',['May { skip: 1 }','SetResolvedBaseStats { subject: Subject::Source, power: Some(ResolvedStatValue::EnteringPower), toughness: None }']
     if text=="you gain 1 life. If it's a Spider, put a +1/+1 counter on it.":
         return 'None',['GainLife(PlayerSet::Controller, 1)',subject_guard('Entering',1,subtype='Spider'),counter_instruction('Entering','a','+1/+1')]
     m=re.fullmatch(r'[Pp]ut (a|one|two|three|four|five|six) \+1/\+1 counters? on that creature(?: and it gains haste until end of turn)?\.',text)
@@ -3577,6 +3667,7 @@ def trigger_creature_template(card):
                 # An explicit occurrence of this card's name denotes this source;
                 # event-subject pronouns still have no inferred binding.
                 for alias in names:
+                    effect_text=effect_text.replace(alias+"'s base ","this creature's base ")
                     effect_text = effect_text.replace(' on ' + alias + '.', ' on this creature.')
                 if (condition.startswith('PlayerDamaged { subject: DamageSubject::Source,')
                         and re.fullmatch(r'[Pp]ut (?:a|one|two|three|four|five|six) (?:\+1/\+1|-1/-1|stun) counters? on it\.',effect_text)):
@@ -4055,6 +4146,59 @@ def modal_reminder_text(card):
         if result is None:return None
         normalized.append(result)
     return '\n'.join(normalized)
+
+def tiered_spell_template(card):
+    """Authenticate every complete branch and common clause before admission."""
+    if (card.get('layout')!='normal' or card.get('type_line') not in ('Instant','Sorcery')
+            or spell_cost_options(card.get('mana_cost','')) is None
+            or not isinstance(card.get('oracle_text'),str)):return None
+    lines=card['oracle_text'].splitlines()
+    if not lines or lines[0] not in ('Tiered','Tiered (Choose one additional cost.)'):return None
+    body=lines[1:];prefix=[]
+    while body and not body[0].startswith('• '):prefix.append(body.pop(0))
+    common='Until end of turn, target creature you control gains "When this creature dies, return it to the battlefield tapped under its owner\'s control" and has the chosen base power and toughness.'
+    if prefix not in ([],[common]):return None
+    if not 1<=len(body)<=64:return None
+    modes=[];costs=[];abilities=[]
+    for line in body:
+        m=re.fullmatch(r"• ([A-Z][A-Za-z0-9', -]*) — ((?:\{[^{}]+\})+) — (.+)",line)
+        if m is None:return None
+        label,cost,text=m.groups();extra=mana_cost_spec(cost)
+        if extra is None or '(' in text or ')' in text:return None
+        if prefix:
+            stats=re.fullmatch(r'(-?[0-9]+)/(-?[0-9]+)\.',text)
+            if stats is None:return None
+            power,toughness=map(int,stats.groups())
+            if not all(-(2**127)<=v<2**127 for v in (power,toughness)):return None
+            compiled=('CreatureYou',['GrantUntilEndTurn { ability: 0 }',f'SetBaseStats {{ subject: Subject::Targets, power: Some({power}), toughness: Some({toughness}) }}'])
+            abilities=[('Granted(&TriggerCondition::SelfDies)',['ReturnGrantedSource { counter: None, role: None }'],'None')]
+        else:
+            compiled=spell_program_template(dict(card,oracle_text=text))
+            if compiled is None:return None
+        modes.append((label+' — '+cost+' — '+text,*compiled));costs.append(extra)
+    return modes,costs,abilities
+
+
+def tiered_routes_reminders_valid(card):
+    """Erasure detects opened routes, but never authenticates their raw text."""
+    raw=card.get('oracle_text','')
+    if not isinstance(raw,str):return True
+    surface=raw;seen=False;tiered=False
+    while True:
+        text=' '.join(surface.casefold().split())
+        tiered |= re.search(r'(?mi)^\s*tiered(?:\s*\(|\s*$)',surface) is not None
+        seen |= re.search(r"\b(?:double|triple) target creature's power and toughness|target creature's owner shuffles it into their library|target permanent gains|permanents you control gain",text) is not None
+        stripped=re.sub(r'\([^()]*\)','',surface)
+        if stripped==surface:break
+        surface=stripped
+    if tiered:return tiered_spell_template(card) is not None
+    if not seen:return True
+    # Gift's exact keyword slot and complete remaining body authenticate its own
+    # reminder; generic effect routes must not erase an unauthenticated header.
+    gift_card, gift_kind = extract_gift(card)
+    if gift_kind is not None and gift_spell_program(gift_card) is not None:
+        raw = gift_card['oracle_text']
+    return all(intrinsic_reminder_line_valid(line) for line in raw.splitlines() if '(' in line or ')' in line)
 
 
 def modal_spell_template(card):
@@ -5227,6 +5371,7 @@ def compile_catalogue(snapshot, target):
     enchanted_rows = []
     flash_surcharge_rows = []
     base_set_rows = []
+    live_static_rows = []
     combat_rows = []
     grant_rows = []
     dynamic_rows = []
@@ -5240,6 +5385,7 @@ def compile_catalogue(snapshot, target):
     x_entry_rows = []
     kicker_rows = []
     gift_rows = []
+    tiered_rows = []
     bargain_rows = []
     convoke_rows = []
     evidence_rows = []
@@ -5296,6 +5442,7 @@ def compile_catalogue(snapshot, target):
         # Detection never authenticates or changes the raw validation body.
         gift_card, gift_kind = extract_gift(original)
         card, timing_grants = extract_cast_timing_grants(gift_card)
+        card, live_static = extract_live_static_stats(card)
         card, base_set = extract_base_stat_setter(card)
         card, combat = extract_combat_restriction(card)
         card, uncounterable = extract_uncounterable(card)
@@ -5332,6 +5479,7 @@ def compile_catalogue(snapshot, target):
         temporary_death = temporary_death_spell_template(original)
         temporary_consumer = temporary_death_consumers_body(original)
         modal = modal_spell_template(card)
+        tiered = tiered_spell_template(original)
         aura = aura_template(card)
         job = job_select_template(card) if (plot is None and warp is None and not cycling and flashback is None and offspring is None and kicker is None and not bargain and not convoke and evidence is None and additional is None and target_reduction is None and not reductions and dynamic is None and not scaling and creature_entry == 'Never' and not entry_counters) else None
         equipment = job[0] if job else equipment_template(card)
@@ -5438,6 +5586,9 @@ def compile_catalogue(snapshot, target):
             effect,keywords,abilities = gift_permanent
             promised_targets='None'
             activations=[];enters=[0,0,0]
+        if tiered is not None:
+            modal,tiered_costs,abilities=tiered
+            effect='Modal';keywords=0;activations=[];enters=[0,0,0]
         role_fight = role_fight_body(original)
         if role_fight is not None:
             effect, keywords, abilities, spell = role_fight
@@ -5515,17 +5666,24 @@ def compile_catalogue(snapshot, target):
         # A later generic selector cannot revive rejected intrinsic reminder text.
         if not suspect_reminders_valid(original):
             effect='Unsupported'
-        if temporary_death_route(original.get('oracle_text', '')) and temporary_death is None and temporary_consumer is None:
+        if temporary_death_route(original.get('oracle_text', '')) and temporary_death is None and temporary_consumer is None and tiered is None:
             effect = 'Unsupported'
+        if not tiered_routes_reminders_valid(original):
+            effect='Unsupported'
         if not adventure_event_reminders_valid(original):
             effect = 'Unsupported'
         if not recovery_reminders_valid(gift_card if gift_body is not None else dict(original, oracle_text=suspect_proxy)):
             effect = 'Unsupported'
         if not intrinsic_reminders_valid(dict(original, oracle_text=suspect_proxy)):
             effect = 'Unsupported'
+        if not live_static_reminders_valid(original):
+            effect='Unsupported'
         if not hand_land_reminders_valid(original):
             effect='Unsupported'
-        if not base_stat_reminders_valid(original):
+        # A complete Tiered parse authenticates its single keyword reminder;
+        # retain every other byte when passing common base-stat text onward.
+        base_auth = dict(original, oracle_text=original.get('oracle_text','').replace('Tiered (Choose one additional cost.)', 'Tiered', 1)) if tiered is not None else original
+        if not base_stat_reminders_valid(base_auth):
             effect='Unsupported'
         if not battlefield_return_reminders_valid(original):
             effect='Unsupported'
@@ -5613,6 +5771,8 @@ def compile_catalogue(snapshot, target):
                 raise ValueError(f'invalid or missing starting loyalty: {name}')
             loyalty_rows.append(f'        {index} => {int(value)},')
         if effect != 'Unsupported':
+            if live_static:live_static_rows.append(f'        {index} => &[{", ".join(live_static)}],')
+            if tiered is not None:tiered_rows.append(f'        {index} => Some(&[{", ".join(tiered_costs)}]),')
             if base_set:base_set_rows.append(f'        {index} => Some({base_set}),')
             if gift_body is not None or gift_permanent is not None:
                 token='None'
@@ -5721,7 +5881,7 @@ def compile_catalogue(snapshot, target):
             color_masks.append(color)
             # Clone every compiled property table for the immutable copy; no
             # mutable copy/type-changing engine or runtime card-name dispatch.
-            for table in [base_set_rows,combat_rows,static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,cast_timing_rows,target_reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,offspring_rows]:
+            for table in [live_static_rows,base_set_rows,combat_rows,static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,cast_timing_rows,target_reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,offspring_rows]:
                 prefix=f'        {source_index} =>'
                 table.extend(row.replace(prefix,f'        {index} =>',1) for row in list(table) if row.startswith(prefix))
             offspring_copy_rows.append(f'        {index} => Some(__TOKEN_{key}__),')
@@ -5808,6 +5968,8 @@ def compile_catalogue(snapshot, target):
     for index, (name, _, _, _) in enumerate(LEGACY):
         lines.append(f'    pub const {name.replace(" ", "")}: Card = Card({index});')
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', "pub(super) fn live_static_effects(card: Card) -> &'static [LiveStaticEffect] {", '    match card.0 {', *live_static_rows, '        _ => &[],', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', "pub(super) fn tiered_costs(card: Card) -> Option<&'static [ManaCost]> {", '    match card.0 {', *tiered_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn base_stat_setter(card: Card) -> Option<BaseStatSetter> {', '    match card.0 {', *base_set_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn combat_restriction(card: Card) -> Option<CombatRestriction> {', '    match card.0 {', *combat_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn role(card: Card) -> Option<RoleKind> {', '    match card.0 {', *role_rows, '        _ => None,', '    }', '}', '']

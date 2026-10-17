@@ -10,13 +10,109 @@ pub struct BaseStatsEffectView {
     pub timestamp: u64,
     pub static_source: bool,
 }
+/// Sparse facts only for exact entering subjects read by resolved expressions.
+/// Departure updates use the frozen pre-transition view, including simultaneous moves.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct ResolvedStatSubjectView {
+    pub object: ObjectRef,
+    pub departure_power: Option<i128>,
+}
 impl Game {
+    pub(super) fn bind_stat_subject(&mut self, object: ObjectRef, program: &[Instruction]) {
+        let reads_power = program.iter().any(|instruction| {
+            matches!(
+                instruction,
+                Instruction::SetResolvedBaseStats {
+                    power: Some(ResolvedStatValue::EnteringPower),
+                    ..
+                } | Instruction::SetResolvedBaseStats {
+                    toughness: Some(ResolvedStatValue::EnteringPower),
+                    ..
+                }
+            )
+        });
+        if !reads_power {
+            return;
+        }
+        let facts = &mut self
+            .state
+            .roles
+            .get_or_insert_with(Default::default)
+            .stat_subjects;
+        if !facts.iter().any(|fact| fact.object == object) {
+            facts.push(ResolvedStatSubjectView {
+                object,
+                departure_power: None,
+            });
+        }
+    }
+    pub(super) fn capture_stat_subject_departure(&mut self, before: &ObjectView) {
+        if let Some(state) = &mut self.state.roles {
+            for fact in &mut state.stat_subjects {
+                if fact.object == before.reference && fact.departure_power.is_none() {
+                    fact.departure_power = Some(before.power);
+                }
+            }
+        }
+    }
+    fn resolved_stat_value(&self, item: &SpellView, value: ResolvedStatValue) -> Option<i128> {
+        match value {
+            ResolvedStatValue::Stat(value) => {
+                Some(self.stat_value(value, item.object, item.controller))
+            }
+            ResolvedStatValue::Threshold {
+                value,
+                minimum,
+                yes,
+                no,
+            } => Some(
+                if self.stat_value(value, item.object, item.controller) >= minimum {
+                    yes
+                } else {
+                    no
+                },
+            ),
+            ResolvedStatValue::EnteringPower => {
+                let subject = item.entering_object?;
+                let fact = self
+                    .state
+                    .roles
+                    .as_ref()?
+                    .stat_subjects
+                    .iter()
+                    .find(|fact| fact.object == subject)?;
+                if let Some(power) = fact.departure_power {
+                    Some(power)
+                } else if self.on_battlefield(subject.card)
+                    && self.object_ref(subject.card) == subject
+                {
+                    Some(self.object_view(subject.card).power)
+                } else {
+                    None
+                }
+            }
+        }
+    }
+    pub(super) fn set_resolved_base_stats(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+        power: Option<ResolvedStatValue>,
+        toughness: Option<ResolvedStatValue>,
+    ) {
+        let p = power.map(|value| self.resolved_stat_value(item, value));
+        let t = toughness.map(|value| self.resolved_stat_value(item, value));
+        if p.is_some_and(|value| value.is_none()) || t.is_some_and(|value| value.is_none()) {
+            return;
+        }
+        self.set_base_stats(item, subject, p.flatten(), t.flatten());
+    }
     pub(super) fn register_static_base_stats(&mut self, id: CardId) {
         let Some(spec) = self.state.objects[id as usize].card.base_stat_setter() else {
             return;
         };
         let object = self.object_ref(id);
-        let timestamp = self.next_role_timestamp();
+        let timestamp = self.static_source_timestamp(object);
         self.state
             .roles
             .get_or_insert_with(Default::default)
@@ -91,6 +187,8 @@ impl Game {
     pub(super) fn expire_base_stats(&mut self) {
         if let Some(state) = &mut self.state.roles {
             state.base_stats.retain(|effect| effect.static_source);
+            // Legal cleanup cannot begin with an unresolved stack or announcement.
+            state.stat_subjects.clear();
         }
     }
     pub(super) fn apply_base_stat_layers(
@@ -152,6 +250,6 @@ impl Game {
                 }
             }
         }
-        stats
+        self.apply_live_base_stat_layers(id, stats, &mut power_time, &mut toughness_time)
     }
 }

@@ -926,6 +926,7 @@ impl Game {
             || a.needs_evidence()
             || a.additional_cost().is_some_and(forage::is_forage_cost) && a.forage.is_none()
             || a.needs_mana_cost()
+            || (a.item.source_card.tiered_costs().is_some() && a.item.mode.is_none())
             || (a
                 .additional_cost()
                 .is_some_and(|spec| !forage::is_forage_cost(spec))

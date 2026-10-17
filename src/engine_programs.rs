@@ -87,6 +87,7 @@ impl Game {
             LibraryDestination::Top => choice.top.push(card),
             LibraryDestination::Bottom => choice.bottom.push(card),
             LibraryDestination::Graveyard => choice.graveyard.push(card),
+            LibraryDestination::Shuffle => unreachable!("shuffle is not an arrangement action"),
         }
         if !choice.remaining.is_empty() {
             return;
@@ -400,6 +401,7 @@ impl Game {
                     }
                 };
                 if matched && self.queue_zone_trigger(source, index, event) {
+                    self.bind_stat_subject(event.after, source.card.triggers()[index].program);
                     if same && source.card.x_symbols() > 0 {
                         self.state.pending_triggers.last_mut().unwrap().x = Some(event.x);
                     }
@@ -1315,6 +1317,10 @@ impl Game {
                         }
                     }
                 }
+                Instruction::ShuffleTargetIntoLibrary => self.shuffle_target_into_library(&item),
+                Instruction::MultiplyTargetStats { factor } => {
+                    self.multiply_target_stats(&item, factor)
+                }
                 Instruction::OwnerLibrary => {
                     if self.start_target_library(&item) {
                         return;
@@ -1894,6 +1900,13 @@ impl Game {
                     power,
                     toughness,
                 } => self.set_base_stats(&item, subject, power, toughness),
+                Instruction::SetResolvedBaseStats {
+                    subject,
+                    power,
+                    toughness,
+                } => {
+                    self.set_resolved_base_stats(&item, subject, power, toughness);
+                }
                 Instruction::Grow {
                     subject,
                     power,
