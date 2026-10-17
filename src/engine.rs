@@ -12,13 +12,16 @@ use crate::cards::{
 mod saddle;
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 73;
+pub const OBSERVATION_SCHEMA: u32 = 74;
+#[path = "engine_cast_payments.rs"]
+mod cast_payments;
 #[path = "engine_mobilize.rs"]
 mod mobilize;
 #[path = "engine_plot.rs"]
 mod plot;
 #[path = "engine_warp.rs"]
 mod warp;
+pub use cast_payments::ManaPaymentDomain;
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
 pub use plot::{PlotPaymentView, PlottedCard};
 pub use warp::{DelayedWarpExileView, WarpedCard};
@@ -591,6 +594,8 @@ pub enum CastMethod {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CastInfo {
+    /// Actual mana spent on this cast, including additional mana costs.
+    pub payment: Mana,
     pub origin: Zone,
     pub method: CastMethod,
     /// Explicit optional additional cost, declared before targets; None until chosen.
@@ -1248,6 +1253,7 @@ impl XChoiceView {
 /// Complete action space: concrete choices, damage bounds and scalar intervals.
 #[derive(Clone, Debug, Serialize)]
 pub struct LegalActionSpace {
+    pub mana_payment: Option<ManaPaymentDomain>,
     pub choices: Vec<Action>,
     pub x_choice: Option<XChoiceView>,
     pub damage_assignment: Option<DamageAssignmentRange>,
@@ -1255,6 +1261,8 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    /// Complete exact numeric cost-payment space, visible only to its actor.
+    pub mana_payment: Option<ManaPaymentDomain>,
     pub endure_choice: Option<EndureChoiceView>,
     pub convoke_choice: Option<ConvokeChoiceView>,
     pub delayed_sacrifices: Vec<DelayedSacrificeView>,
@@ -1563,6 +1571,7 @@ impl Game {
     /// Complete legal space, including damage assignments and scalar-X intervals.
     pub fn legal_action_space(&self) -> LegalActionSpace {
         LegalActionSpace {
+            mana_payment: self.mana_payment_domain(),
             choices: self.legal_actions(),
             x_choice: self.x_choice(),
             damage_assignment: self.damage_assignment_range(),
@@ -1678,7 +1687,10 @@ impl Game {
             if self.actor() != Some(actor) {
                 return Err(Error::WrongActor);
             }
-            let legal = if let Action::ChooseX { value } = &action {
+            let legal = if let Action::PayCosts { payment } = &action {
+                self.mana_payment_domain()
+                    .is_some_and(|d| d.contains(*payment))
+            } else if let Action::ChooseX { value } = &action {
                 self.x_choice()
                     .is_some_and(|domain| domain.contains(*value))
             } else if let Action::AssignDamage { target, amount } = &action {
@@ -2781,6 +2793,14 @@ impl Game {
                     self.state.announcing.as_mut().unwrap().payment = Some(payment);
                 } else {
                     self.spend_mana(actor, payment);
+                    self.state
+                        .stack
+                        .last_mut()
+                        .unwrap()
+                        .cast
+                        .as_mut()
+                        .unwrap()
+                        .payment = payment;
                     self.record_cast(
                         actor,
                         self.state.objects[card as usize].card,
@@ -3913,6 +3933,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
+            mana_payment: owns_choice.then(|| self.mana_payment_domain()).flatten(),
             endure_choice: if owns_choice {
                 match s.pending {
                     Pending::Endure {

@@ -111,9 +111,21 @@ fn all_nine_complete_bodies_cast_from_both_origins_and_have_independent_effects(
             );
             finish(&mut g);
             let root = &g.state.stack[0];
+            let actual = root.cast.unwrap();
+            let cost = if flashback {
+                root.source_card.flashback_cost().unwrap()
+            } else {
+                let (colored, generic) = root.source_card.cost();
+                ManaCost { colored, generic }
+            };
+            assert_eq!(
+                actual.mana_spent(),
+                cost.colored.into_iter().map(u64::from).sum::<u64>() + u64::from(cost.generic)
+            );
             assert_eq!(
                 root.cast,
                 Some(CastInfo {
+                    payment: root.cast.unwrap().payment,
                     offspring: None,
                     kicker: None,
                     bargain: None,

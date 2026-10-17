@@ -308,6 +308,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     assert_eq!(
                         info,
                         CastInfo {
+                            payment: info.payment,
                             offspring: None,
                             kicker: None,
                             bargain: None,
