@@ -8,5 +8,33 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e6bb9dae4d7a20f27ecffaa74934f40f489db30d6b3eccd1484a090e6d656dcd"
   },
-  "physical_metadata_sha256": "c422c04ee68e07223e4e3c0989ee1c7b4e632d83a47871ded0d38bba03b893cc"
+  "physical_metadata_sha256": "c422c04ee68e07223e4e3c0989ee1c7b4e632d83a47871ded0d38bba03b893cc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/Juggernaut.java",
+  "java_sha256": "0325daa73c5fd97960dde7bfe135339f20e5f0fe597a4c7aa46a79e75b09ffe5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksEachCombatStaticAbility.java",
+      "sha256": "85243fdf02d35648e569259e01a901a2b356807971b1db74bb8d27153c6ae40d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/AttacksIfAbleSourceEffect.java",
+      "sha256": "d6230d30e62ef789a51c2584ff4b0d213f744792672d6fc99263ea6d9ba5194a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/RequirementEffect.java",
+      "sha256": "15b42b0f7541d1f8ae082316fd192306be3860ba139ab9927d73342a38881a15"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByCreaturesSourceEffect.java",
+      "sha256": "db532584552c032f8fed7fb9a2cb025e45f58c4710c0d3bb1406f6aab7a338f5"
+    }
+  ],
+  "remaining_obligations": [
+    "Cannot be blocked by Walls; full card rules tests and admission remain pending."
+  ]
 }
