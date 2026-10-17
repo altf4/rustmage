@@ -135,19 +135,18 @@ class GraveyardRecoveryTests(unittest.TestCase):
                 checked.add(name)
         self.assertEqual(len(checked),69)
 
-    def test_all_prior_programs_helpers_colors_recipes_preserved_except_named_admissions(self):
+    def test_historical_recovery_union_preserves_prior_programs_helpers_colors_recipes(self):
         import subprocess
         old=subprocess.check_output(['git','-C',str(g.ROOT),'show','c676f59:src/generated/catalogue.rs'],text=True)
-        new=(g.ROOT/'src/generated/catalogue.rs').read_text()
+        # Historical recovery/source-binding proof remains pinned; subsequent
+        # families provide exact union proofs against their actual merged parent.
+        new=subprocess.check_output(['git','-C',str(g.ROOT),'show','ce9a90a1867ce741387d3ed0a1aac0aa1592ca08:src/generated/catalogue.rs'],text=True)
         definitions=lambda text:[line for line in text.splitlines() if line.lstrip().startswith('Definition {')]
         before,after=definitions(old),definitions(new)
-        # Historical recovery baseline predates nineteen recoveries and this
-        # separately audited twelve-card Role follow-up, not just the original eighteen.
-        expected=set(NAMES)|{'Unassuming Sage', 'Diminisher Witch', 'Protective Parents', "Witch's Mark", "Eriette's Whisper", 'Cursed Courtier', 'Merry Bards', 'Spellbook Vendor', "The Witch's Vanity", 'Become Brutes', 'Shatter the Oath', 'Cut In'}
+        expected=set(NAMES)
         self.assertEqual(len(before),5328);self.assertEqual(len(after),5328)
         changed=[(a,b) for a,b in zip(before,after) if a!=b]
-        self.assertEqual(len(changed),31)
-
+        self.assertEqual(len(changed),19)
         changed_names={json.loads(re.search(r'name: ("(?:[^"\\]|\\.)*")',b)[1]) for _,b in changed}
         self.assertEqual(changed_names,expected)
         for a,b in changed:self.assertIn('effect: Effect::Unsupported',a)
@@ -155,8 +154,7 @@ class GraveyardRecoveryTests(unittest.TestCase):
         # admitted Tombstone reducer and Loyalist's complete Elf lord add entries.
         import difflib
         removed=[l[2:] for l in difflib.ndiff(old.splitlines(),new.splitlines()) if l.startswith('- ')]
-        self.assertEqual(len(removed),33) # 19 recovery + 12 Role rows, fingerprint, ALL.
-
+        self.assertEqual(len(removed),21) # 19 definition rows, fingerprint, ALL.
         self.assertTrue(all(l.startswith(('    Definition {','pub const CATALOGUE_VERSION:','    pub const ALL:')) for l in removed))
 
 

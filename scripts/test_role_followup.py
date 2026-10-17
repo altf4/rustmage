@@ -42,10 +42,44 @@ class RoleFollowupTests(unittest.TestCase):
   base=self.cards['Diminisher Witch']
   for variant in ['Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)\nWhen this creature enters, draw a card. (Draw seven cards.)','Bargain (Draw seven cards.)\nWhen this creature enters, draw a card.']:
    self.assertFalse(self.compile_one(dict(base,oracle_text=variant))[1]['implemented'])
+ def test_new_generic_productions_authenticate_raw_without_role_clauses(self):
+  fixtures=[
+   (self.cards['Shatter the Oath'],'Destroy target creature an opponent controls with mana value 2 or less.','max_mana: 2'),
+   (self.cards['Shatter the Oath'],'Destroy target creature or enchantment.','Destroy'),
+   (self.cards['Diminisher Witch'],'When this creature enters, if it was bargained, draw a card.','TriggerCondition::SelfBargained'),
+  ]
+  for base,text,semantic in fixtures:
+   for name in ['Independent generic production',*[row[0] for row in g.LEGACY]]:
+    c=dict(base,name=name,oracle_text=text)
+    rust,row=self.compile_one(c);self.assertTrue(row['implemented'],(name,text));self.assertIn(semantic,rust)
+    for cost in ['{Y}','{4294967296}']:
+     self.assertFalse(self.compile_one(dict(c,mana_cost=cost))[1]['implemented'])
+    self.assertFalse(self.compile_one(dict(c,type_line='Malformed'))[1]['implemented'])
+   variants=[text+' (You win the game.)',text+' ((You win the game.))',text+'\n(Draw seven cards.)',text+' (This creature can attack and {T} as soon as it comes under your control.)']
+   for index in range(1,len(text)):
+    if text[index-1].isalpha() and text[index].isalpha():
+     for residual in ['(Draw seven cards.)','((Draw seven cards.))']:
+      variants.append(text[:index]+residual+text[index:])
+   for index in [m.end() for m in re.finditer(r'\s+',text)]:
+    variants.append(text[:index]+'(You win the game.) '+text[index:])
+   for variant in variants:
+    for name in ['Independent generic production','Shock']:
+     self.assertFalse(self.compile_one(dict(base,name=name,oracle_text=variant))[1]['implemented'],(name,variant))
+ def test_generic_bargained_event_preserves_authenticated_intrinsic_reminder(self):
+  base=self.cards['Diminisher Witch'];body='When this creature enters, if it was bargained, draw a card.'
+  clean=dict(base,name='Independent keyword and bargained event',oracle_text='Flying\n'+body)
+  text='Flying (This creature can\'t be blocked except by creatures with flying or reach.)\n'+body
+  expected,row=self.compile_one(clean);self.assertTrue(row['implemented'])
+  actual,row=self.compile_one(dict(clean,oracle_text=text));self.assertTrue(row['implemented'])
+  # The complete semantics, including keyword, cost and type, remain identical.
+  drop=lambda s:[line for line in s.splitlines() if not line.startswith('pub const CATALOGUE_VERSION:')]
+  self.assertEqual(drop(expected),drop(actual))
+  for variant in [text.replace('creatures with flying or reach.','you pay {1}.'),body+' (This creature can\'t be blocked except by creatures with flying or reach.)']:
+   self.assertFalse(self.compile_one(dict(clean,oracle_text=variant))[1]['implemented'])
  def test_exact_twelve_admissions_preserve_every_prior_program_and_recipe(self):
-  old=subprocess.check_output(['git','-C',str(g.ROOT),'show','ce9a90a1867ce741387d3ed0a1aac0aa1592ca08:src/generated/catalogue.rs'],text=True);new=(g.ROOT/'src/generated/catalogue.rs').read_text()
+  old=subprocess.check_output(['git','-C',str(g.ROOT),'show','804f539567d2f50b27c801915a3eb5afd7f8d692:src/generated/catalogue.rs'],text=True);new=(g.ROOT/'src/generated/catalogue.rs').read_text()
   defs=lambda t:[l for l in t.splitlines() if l.lstrip().startswith('Definition {')]
-  before,after=defs(old),defs(new);self.assertEqual(len(before),5328);self.assertEqual(len(after),5328)
+  before,after=defs(old),defs(new);self.assertEqual(len(before),5331);self.assertEqual(len(after),5331)
   changed=[(a,b) for a,b in zip(before,after) if a!=b];self.assertEqual(len(changed),12)
   self.assertEqual({json.loads(re.search(r'name: ("(?:[^"\\]|\\.)*")',b)[1]) for a,b in changed},set(NAMES))
   for a,b in changed:self.assertIn('effect: Effect::Unsupported',a)
