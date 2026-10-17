@@ -191,3 +191,63 @@ def _continuous_groups(card, parser):
         if fragments:
             groups.append(StaticGroup(index, original, tuple(fragments)))
     return tuple(groups)
+
+
+def rust_groups(card, parser, abilities):
+    """Lower grouped immutable recipes, binding grants to their exact program index.
+
+    The caller owns complete-body admission. An unmatched granted trigger is a
+    compiler error, never an omitted fragment or an inferred name-based ability.
+    """
+    variants = {
+        'static_modifiers': 'StaticModifier', 'scaling_modifiers': 'ScalingModifier',
+        'enchanted_modifiers': 'EnchantedModifier', 'dynamic_stats': 'DynamicStats',
+        'base_stat_setter': 'BaseStatSetter', 'live_static_base': 'LiveBase',
+        'live_static_bonus': 'LiveBonus', 'live_static_keywords': 'LiveKeywords',
+        'live_static_block_restriction': 'LiveBlockRestriction',
+        'replacement_effects': 'Replacement', 'cast_timing_grants': 'CastTiming',
+        'cost_reductions': 'CostReduction', 'target_cost_reduction': 'TargetCostReduction',
+        'combat_restriction': 'CombatRestriction', 'entry_trigger_suppression': 'EntryTriggerSuppression',
+        'opponent_entry_tapped': 'OpponentEntryTapped',
+    }
+    layers = {Layer.TYPE: 'Type', Layer.COLOR: 'Color', Layer.ABILITY: 'Ability',
+              Layer.CDA: 'Cda', Layer.BASE: 'Base', Layer.MODIFY: 'Modify', Layer.RULE: 'Rule'}
+    available = {}
+    for index, (condition, program, targets) in enumerate(abilities):
+        available.setdefault((condition, tuple(program), targets), []).append(index)
+    used = set()
+    rendered = []
+    for group in continuous_groups(card, parser):
+        fragments = []
+        for fragment in group.fragments:
+            kind, payload = fragment.kind, fragment.payload
+            if kind == 'changeling':
+                value = 'Changeling'
+            elif kind == 'attached_subtype':
+                import json
+                value = 'AttachedSubtype(' + json.dumps(payload) + ')'
+            elif kind == 'attachment_stats':
+                value = f'AttachmentStats(Stats {{ power: {payload[0]}, toughness: {payload[1]} }})'
+            elif kind in ('intrinsic_keywords', 'attachment_keywords', 'attached_turn_keywords'):
+                variant = {'intrinsic_keywords': 'IntrinsicKeywords', 'attachment_keywords': 'AttachmentKeywords',
+                           'attached_turn_keywords': 'AttachedTurnKeywords'}[kind]
+                value = f'{variant}(Keywords({payload}))'
+            elif kind == 'counter_keyword_grants':
+                if not payload.startswith('(') or not payload.endswith(')'):
+                    raise ValueError('invalid immutable counter-grant recipe')
+                value = 'CounterKeyword' + payload
+            elif kind == 'attachment_trigger':
+                candidates = [i for i in available.get(payload, ()) if i not in used]
+                if not candidates:
+                    raise ValueError(f'unbound granted trigger in {card.get("name")!r} at line {group.line}')
+                index = candidates[0]
+                if index > 65535:
+                    raise ValueError('granted-trigger identity exhausted')
+                used.add(index)
+                value = f'AttachmentTrigger({index})'
+            else:
+                value = variants[kind] + '(' + str(payload) + ')'
+            fragments.append('StaticAbilityFragment::' + value)
+        rendered.append('StaticAbilityGroup { line: ' + str(group.line) + ', first_layer: AbilityLayer::' +
+                        layers[group.first_layer] + ', fragments: &[' + ', '.join(fragments) + '] }')
+    return '&[' + ', '.join(rendered) + ']'

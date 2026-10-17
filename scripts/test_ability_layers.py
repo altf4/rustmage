@@ -3,7 +3,7 @@ import json
 import re
 import unittest
 from scripts import generate_catalogue as g
-from scripts.ability_layers import Layer, continuous_groups
+from scripts.ability_layers import Layer, continuous_groups, rust_groups
 from scripts.catalogue_preservation import canonical
 
 
@@ -140,6 +140,29 @@ class AbilityLayerIdentityTests(unittest.TestCase):
         self.assertNotEqual(typed.line, turn.line)
         self.assertEqual(typed.first_layer, Layer.TYPE)
         self.assertEqual(turn.first_layer, Layer.ABILITY)
+
+    def test_lowering_binds_exact_granted_program_indexes_and_rejects_omissions(self):
+        for name in ["Ninja's Blades", "Astrologian's Planisphere", "White Mage's Staff"]:
+            with self.subTest(name=name):
+                card = self.cards[name]
+                tokens = dict(g.TOKEN_DEFS)
+                try:
+                    body = g.job_select_template(card)[0]
+                finally:
+                    g.TOKEN_DEFS.clear()
+                    g.TOKEN_DEFS.update(tokens)
+                result = rust_groups(card, g, body[2])
+                indexes = [index for index, ability in enumerate(body[2]) if ability[0].startswith('Granted(')]
+                self.assertEqual([int(i) for i in re.findall(r'AttachmentTrigger\(([0-9]+)\)', result)], indexes)
+                self.assertIn('first_layer: AbilityLayer::Type', result)
+                with self.assertRaises(ValueError):
+                    rust_groups(card, g, [])
+        card = dict(self.cards['Lavaspur Boots'], name='Independent duplicate grants',
+                    oracle_text='Equipped creature has ward {1}.\nEquipped creature has ward {1}.\nEquip {1}')
+        body = g.equipment_template(card)
+        self.assertIsNotNone(body)
+        result = rust_groups(card, g, body[2])
+        self.assertEqual(re.findall(r'AttachmentTrigger\(([0-9]+)\)', result), ['0', '1'])
 
     def test_actual_live_static_parent_keeps_archon_group_and_later_only_providers(self):
         for name, first in [('Maha, Its Feathers Night', Layer.BASE), ('Aettir and Priwen', Layer.BASE), ('Archon of the Wild Rose', Layer.ABILITY), ('Burden of Proof', Layer.BASE)]:
