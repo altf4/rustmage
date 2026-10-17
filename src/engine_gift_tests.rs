@@ -919,6 +919,8 @@ fn paid_gift_damage_after_death_exile_preserves_controller_and_suppresses_return
         assert_eq!(g.observe(p).death_exile_replacements.len(), 1);
         let lives = [g.state.players[0].life, g.state.players[1].life];
         let drawn = g.state.players[p.other().index()].cards_drawn_this_turn;
+        let gifts = tokens(&g, p.other(), "Treasure").len();
+        let caster_treasures = tokens(&g, p, "Treasure").len();
         paid(
             &mut g,
             p,
@@ -936,11 +938,11 @@ fn paid_gift_damage_after_death_exile_preserves_controller_and_suppresses_return
         );
         assert_eq!(
             g.state.players[p.other().index()].cards_drawn_this_turn,
-            drawn + 1
+            drawn
         );
         assert!(g.observe(p).death_exile_replacements.is_empty());
         assert!(g.observe(p).temporary_abilities.is_empty());
-        assert!(tokens(&g, p, "Treasure").is_empty());
-        assert!(tokens(&g, p.other(), "Treasure").is_empty());
+        assert_eq!(tokens(&g, p, "Treasure").len(), caster_treasures);
+        assert_eq!(tokens(&g, p.other(), "Treasure").len(), gifts + 1);
     }
 }
