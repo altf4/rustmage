@@ -3472,6 +3472,7 @@ def compile_catalogue(snapshot, target):
     flashback_rows = []
     plot_rows = []
     warp_rows = []
+    vehicle_stats_rows = []
     x_rows = []
     x_entry_rows = []
     kicker_rows = []
@@ -3492,6 +3493,12 @@ def compile_catalogue(snapshot, target):
     attached_turn_rows = []
     aura_rows = []
     for index, name in enumerate(names):
+        original = cards.get(name, {})
+        if (original.get('layout') == 'normal' and 'Vehicle' in original.get('type_line','').split(' — ')[-1].split()
+                and all(original.get(axis, '') == '*' or original.get(axis, '').isdigit() for axis in ('power','toughness'))):
+            pt = [0 if original[axis] == '*' else int(original[axis]) for axis in ('power','toughness')]
+            if max(pt) <= 2**127-1:
+                vehicle_stats_rows.append(f'        {index} => Some(Stats {{ power: {pt[0]}, toughness: {pt[1]} }}),')
         card, uncounterable = extract_uncounterable(cards.get(name, {}))
         card, entry_suppression = extract_entry_trigger_suppression(card)
         card, opponent_entry_tapped = extract_opponent_entry_tapped(card)
@@ -3811,6 +3818,7 @@ def compile_catalogue(snapshot, target):
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn plot_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *plot_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn warp_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *warp_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn vehicle_stats(card: Card) -> Option<Stats> {', '    match card.0 {', *vehicle_stats_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn attached_subtype(card: Card) -> Option<&'static str> {", '    match card.0 {', *attached_subtype_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn attached_turn_keywords(card: Card) -> Keywords {', '    match card.0 {', *attached_turn_rows, '        _ => Keywords::NONE,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn dynamic_stats(card: Card) -> Option<DynamicStats> {', '    match card.0 {', *dynamic_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', "pub(super) fn scaling_modifiers(card: Card) -> &'static [ScalingModifier] {", '    match card.0 {', *scaling_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn entry_trigger_suppression(card: Card) -> u16 {', '    match card.0 {', *entry_suppression_rows, '        _ => 0,', '    }', '}', '']

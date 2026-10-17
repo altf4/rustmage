@@ -140,6 +140,18 @@ impl Game {
             if !self.activation_cost_available(card, ability, index, actor, sorcery) {
                 continue;
             }
+            if let Some(minimum) = ability.crew_minimum() {
+                if self.crew_fundable(self.object_ref(card), actor, minimum)
+                    && emit(Action::AnnounceActivate {
+                        card,
+                        ability: index as u16,
+                        counter_payment: Counters::default(),
+                    })
+                {
+                    return true;
+                }
+                continue;
+            }
             if let Some(minimum) = ability.saddle_minimum() {
                 if self.saddle_fundable(self.object_ref(card), actor, minimum)
                     && emit(Action::AnnounceActivate {
@@ -300,6 +312,7 @@ impl Game {
     ) -> SpellView {
         self.state.passes = 0;
         SpellView {
+            crew: None,
             delayed_sacrifice: None,
             delayed_warp_exile: None,
             x: None,

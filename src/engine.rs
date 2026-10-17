@@ -8,11 +8,14 @@ use crate::cards::{
     SpellMode, StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetPlan,
     TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
+#[path = "engine_crew.rs"]
+mod crew;
 #[path = "engine_saddle.rs"]
 mod saddle;
+pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 73;
+pub const OBSERVATION_SCHEMA: u32 = 74;
 #[path = "engine_mobilize.rs"]
 mod mobilize;
 #[path = "engine_plot.rs"]
@@ -276,6 +279,8 @@ define_actions! {
     DeclineHandEntry,
     ChooseHandDefender { defender: CombatDefender },
     ChooseSaddler { object: ObjectRef },
+    ChooseCrewer { object: ObjectRef },
+    FinishCrew,
     FinishSaddle,
     ChooseLibraryDestination { object: ObjectRef, destination: LibraryDestination },
     ChooseForageRoute { route: ForageRoute },
@@ -616,6 +621,7 @@ pub struct AttachmentTriggerView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    pub crew: Option<Box<CrewContext>>,
     pub delayed_sacrifice: Option<Box<DelayedSacrificeView>>,
     pub delayed_warp_exile: Option<Box<DelayedWarpExileView>>,
     /// Chosen X, retained independently by a spell and its own entry-trigger packets.
@@ -788,6 +794,7 @@ struct DamageChoice {
 /// that deal damage from their hand or as spells.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 pub struct DamageFacts {
+    pub kinds: u16,
     pub granted_subtypes: GrantedSubtypes,
     pub card: Card,
     pub battlefield: bool,
@@ -799,6 +806,7 @@ pub struct DamageFacts {
 impl DamageFacts {
     fn from_view(view: &ObjectView) -> Self {
         Self {
+            kinds: view.kinds,
             granted_subtypes: view.granted_subtypes,
             card: view.card,
             battlefield: view.zone == Zone::Battlefield,
@@ -866,6 +874,9 @@ enum Pending {
         player: Player,
     },
     Saddle {
+        player: Player,
+    },
+    Crew {
         player: Player,
     },
     Explore {
@@ -983,6 +994,7 @@ struct State {
     mobilize: Option<Box<mobilize::MobilizePlan>>,
     saddled: Vec<ObjectRef>,
     saddle_payment: Option<Box<saddle::SaddlePayment>>,
+    crew: Option<Box<crew::CrewState>>,
     objects: SharedVec<Object>,
     attacked_this_turn: SharedVec<ObjectRef>,
     creatures_died_this_turn: u64,
@@ -1058,6 +1070,8 @@ pub struct EndureChoiceView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ObjectView {
+    /// Current card-type bits; Card remains the immutable printed identity.
+    pub kinds: u16,
     pub granted_subtypes: GrantedSubtypes,
     pub saddled: bool,
     pub id: CardId,
@@ -1280,6 +1294,8 @@ pub struct Observation {
     pub exile_links: Vec<ExileLink>,
     pub exile_permissions: Vec<ExilePlayPermission>,
     pub plotted_cards: Vec<PlottedCard>,
+    pub crew_choice: Option<CrewChoiceView>,
+    pub crewed_vehicles: Vec<CrewHistory>,
     pub warped_cards: Vec<WarpedCard>,
     pub delayed_warp_exiles: Vec<DelayedWarpExileView>,
     pub plot_payment: Option<PlotPaymentView>,
@@ -1454,6 +1470,7 @@ impl Game {
                 mobilize: None,
                 saddled: Vec::new(),
                 saddle_payment: None,
+                crew: None,
                 last_target_library_move: None,
                 players,
                 rng,
@@ -1525,6 +1542,7 @@ impl Game {
             | Pending::Convoke { player }
             | Pending::Mobilize { player }
             | Pending::Saddle { player }
+            | Pending::Crew { player }
             | Pending::Explore { player }
             | Pending::Bargain { player }
             | Pending::X { player }
@@ -1764,6 +1782,11 @@ impl Game {
             }
             Pending::Mobilize { .. } => {
                 if self.visit_mobilize_actions(&mut emit) {
+                    return true;
+                }
+            }
+            Pending::Crew { .. } => {
+                if self.visit_crew_actions(&mut emit) {
                     return true;
                 }
             }
@@ -2820,6 +2843,8 @@ impl Game {
                 .selected
                 .push(object),
             Action::FinishSaddle => self.finish_saddle_payment(),
+            Action::ChooseCrewer { object } => self.choose_crewer(object),
+            Action::FinishCrew => self.finish_crew_payment(),
             Action::ChooseX { value } => {
                 self.state.announcing.as_mut().unwrap().item.x = Some(value);
                 self.continue_announcement_choices(false);
@@ -3080,6 +3105,7 @@ impl Game {
         let obj = &self.state.objects[id as usize];
         let stats = self.stats(id);
         ObjectView {
+            kinds: self.current_kinds(id),
             granted_subtypes: self.granted_subtypes(id),
             saddled: self.is_saddled(self.object_ref(id)),
             id,
@@ -3977,6 +4003,7 @@ impl Game {
                 Pending::Convoke { .. } => "convoke",
                 Pending::Mobilize { .. } => "mobilize",
                 Pending::Saddle { .. } => "saddle",
+                Pending::Crew { .. } => "crew",
                 Pending::Explore { .. } => "explore",
                 Pending::X { .. } => "x",
                 Pending::EvidenceIntent { .. } => "evidence_intent",
@@ -4052,6 +4079,8 @@ impl Game {
             exile_links: s.exile_links.clone(),
             exile_permissions: s.exile_permissions.clone(),
             plotted_cards: s.plot.as_ref().map_or_else(Vec::new, |p| p.cards.clone()),
+            crew_choice: self.crew_choice(viewer),
+            crewed_vehicles: s.crew.as_ref().map_or_else(Vec::new, |c| c.history.clone()),
             warped_cards: s.warp.as_ref().map_or_else(Vec::new, |w| w.cards.clone()),
             delayed_warp_exiles: s
                 .warp
@@ -4315,6 +4344,7 @@ impl Game {
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
             + s.exile_permissions.len() * std::mem::size_of::<ExilePlayPermission>()
             + s.plot.as_ref().map_or(0, |p| p.bytes())
+            + s.crew.as_ref().map_or(0, |c| c.bytes())
             + s.warp.as_ref().map_or(0, |w| w.bytes())
             + s.triggered_this_turn.len() * std::mem::size_of::<TriggerUse>()
             + s.sba_batch.as_ref().map(|batch| batch.bytes()).unwrap_or(0)
@@ -4412,6 +4442,7 @@ impl Game {
                 .chain(s.announcing.iter().map(|announcement| &announcement.item))
                 .map(|item| {
                     item.delayed_sacrifice.as_ref().map_or(0, |d| d.bytes())
+                        + item.crew.as_ref().map_or(0, |c| c.bytes())
                         + item
                             .delayed_warp_exile
                             .as_ref()

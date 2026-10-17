@@ -524,6 +524,7 @@ impl Game {
         let object = self.move_object(card, Zone::Stack).after;
         let id = self.next_stack_id();
         SpellView {
+            crew: None,
             delayed_sacrifice: None,
             delayed_warp_exile: None,
             x: None,
@@ -650,6 +651,9 @@ impl Game {
     }
 
     pub(super) fn finish_announcement(&mut self) {
+        if self.start_crew_payment() {
+            return;
+        }
         if self.start_saddle_payment() {
             return;
         }

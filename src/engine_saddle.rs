@@ -17,12 +17,12 @@ pub struct SaddleChoiceView {
 /// Each sign sums magnitudes with a u64 carry above u128. CardId bounds the
 /// number of terms, so the high limb cannot overflow. Cancellation is exact.
 #[derive(Clone, Copy, Default)]
-struct PowerSum {
+pub(super) struct PowerSum {
     positive: (u64, u128),
     negative: (u64, u128),
 }
 impl PowerSum {
-    fn add(&mut self, p: i128) {
+    pub(super) fn add(&mut self, p: i128) {
         let limb = if p < 0 {
             &mut self.negative
         } else {
@@ -42,11 +42,11 @@ impl PowerSum {
         let (low, borrow) = a.1.overflowing_sub(b.1);
         (neg, a.0 - b.0 - u64::from(borrow), low)
     }
-    fn enough(self, n: u16) -> bool {
+    pub(super) fn enough(self, n: u16) -> bool {
         let (neg, hi, lo) = self.difference();
         !neg && (hi > 0 || lo >= u128::from(n))
     }
-    fn represented(self) -> Option<i128> {
+    pub(super) fn represented(self) -> Option<i128> {
         let (neg, hi, lo) = self.difference();
         if hi > 0 {
             return None;

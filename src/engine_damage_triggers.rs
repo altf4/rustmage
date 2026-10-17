@@ -44,6 +44,7 @@ impl Game {
     pub(super) fn damage_facts(&self, id: CardId) -> DamageFacts {
         let object = &self.state.objects[id as usize];
         DamageFacts {
+            kinds: self.current_kinds(id),
             granted_subtypes: self.granted_subtypes(id),
             card: object.card,
             battlefield: object.zone == Zone::Battlefield,

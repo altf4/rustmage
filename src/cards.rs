@@ -372,6 +372,9 @@ pub(crate) enum Instruction {
     },
     SacrificeDelayedTokens,
     ExileWarpedPermanent,
+    Crew {
+        minimum: u16,
+    },
     BecomeSaddled {
         minimum: u16,
     },
@@ -1475,6 +1478,9 @@ impl Card {
     }
     pub fn is_token(self) -> bool {
         self.token_info().is_some()
+    }
+    pub fn vehicle_stats(self) -> Option<(i128, i128)> {
+        generated::vehicle_stats(self).map(|s| (s.power, s.toughness))
     }
     pub fn warp_cost(self) -> Option<ManaCost> {
         generated::warp_cost(self)

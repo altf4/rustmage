@@ -448,6 +448,7 @@ impl Game {
         }
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
+            crew: None,
             delayed_sacrifice: None,
             delayed_warp_exile: None,
             x: None,
@@ -1039,6 +1040,7 @@ impl Game {
                 }
                 Instruction::SacrificeDelayedTokens => self.sacrifice_delayed_tokens(&item),
                 Instruction::ExileWarpedPermanent => self.exile_warped_permanent(&item),
+                Instruction::Crew { .. } => self.resolve_crew(&item),
                 Instruction::BecomeSaddled { .. } => self.resolve_saddle(&item),
                 Instruction::BottomLibrary => {
                     for bound in &item.targets {
