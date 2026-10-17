@@ -117,6 +117,7 @@ fn drive(g: &mut Game, target: Option<Target>) {
 }
 fn paid(g: &mut Game, p: Player, n: &str, target: Option<Target>) -> CardId {
     priority(g, p);
+    g.state.players[p.index()].mana = [30; 6];
     let id = named(g, p, n, Zone::Hand);
     act(g, Action::AnnounceCast { card: id });
     drive(g, target);
@@ -402,6 +403,45 @@ fn actual_foreign_permission_casts_both_faces_and_controller_owned_event_effects
                     && o.owner == p
                     && o.controller == p));
             }
+        }
+    }
+}
+
+#[test]
+fn viper_uses_chosen_face_mana_value_with_x_at_the_cast_event() {
+    for p in [Player::P0, Player::P1] {
+        for x in [0, 1, 2] {
+            let mut g = setup(p);
+            let viper = paid(&mut g, p, NAMES[1], None);
+            g.state.active = p.other();
+            g.state.priority = p.other();
+            let before = g.state.players[p.other().index()].life;
+            paid(&mut g, p.other(), "Bygone Colossus", None);
+            assert_eq!(g.state.players[p.other().index()].life, before);
+            let omen = named(
+                &mut g,
+                p.other(),
+                "Scavenger Regent // Exude Toxin",
+                Zone::Hand,
+            );
+            priority(&mut g, p.other());
+            g.state.players[p.other().index()].mana = [30; 6];
+            act(&mut g, Action::AnnounceOmen { card: omen });
+            act(&mut g, Action::ChooseX { x });
+            // Resolve the spell and cast-event packet without reading physical parent MV.
+            drive(&mut g, None);
+            assert_eq!(
+                g.state.players[p.other().index()].life,
+                before - i128::from(x <= 1)
+            );
+            assert_eq!(
+                g.state.objects[viper as usize].zone,
+                if x >= 1 {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
         }
     }
 }
