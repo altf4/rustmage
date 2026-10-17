@@ -49,7 +49,7 @@ class AdventureEventTests(unittest.TestCase):
       self.assertEqual(packet['controller'],p)
       if i==1:self.assertEqual(packet['cast_event']['controller'],q)
       if i<2:event=True
-    if i==2 and stage=='finish' and any(v['card'].endswith('Food Token') and v['owner']==p for v in own):event=True
+    if i==2 and stage=='finish' and any(v.get('token') and v['token']['name']=='Food Token' and v['owner']==p for v in own):event=True
     ready=quiet and len(lands)>=6 and (dead if i==0 else ally)
     def score(a):
      k=a['kind'];card=objects.get(a.get('card'),{});n=card.get('card','')
@@ -69,6 +69,7 @@ class AdventureEventTests(unittest.TestCase):
       if ann and ann['card']==source:return 2900 if a['target'].get('Card')==target else -1000
       if ann and ann['source_card']=='Shock':return 2900 if a['target'].get('Player')==q else -1000
       return 2300 if objects.get(a['target'].get('Card'),{}).get('controller')==actor else 1000
+     if k in ['AnnounceActivate','Activate','BeginActivate']:return -1000
      if k=='PlayLand':return 1800-20*sum(v['card']==n and v['zone']=='Battlefield' and v['controller']==actor for v in objects.values())
      if k in ['TapMana','ActivateMana','AnnounceMana']:return 2100 if o['decision'] in ['pay_costs','resolution_mana'] and n in BASICS else -1000
      if k in ['PayCosts','PutTrigger','FinishTargets','FinishSearch','FinishAttackers','FinishBlockers','Keep','ChooseSpellCost']:return 2400
