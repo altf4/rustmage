@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Serialize builds across worktrees and bound their entire process tree to 6 GiB.
 
-Uses a user systemd cgroup. Fails closed if limits cannot be installed. Reports
+Uses a user systemd cgroup and preserves common Rust/C toolchain inputs. Fails closed if limits cannot be installed. Reports
 survive reboot under ~/.cache/rustmage-build-reports. Nested managed commands
 reuse the same cgroup and lock rather than deadlocking.
 """
@@ -26,7 +26,9 @@ def inside(command, report, acquire=True):
     env = dict(os.environ, CARGO_BUILD_JOBS='1', RUST_TEST_THREADS='1')
     started = time.monotonic()
     cache = Path(os.environ.get('XDG_CACHE_HOME', Path.home()/'.cache'))
-    with (cache/'rustmage-build.lock').open('a') as lock:
+    lock_path = Path.home()/'.cache/rustmage-build.lock'
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with lock_path.open('a') as lock:
         if acquire:
             print('Waiting for the shared build slot...', file=sys.stderr)
             fcntl.flock(lock, fcntl.LOCK_EX)
@@ -64,8 +66,10 @@ def main():
                     'CPUQuota=200%', 'TasksMax=256'], check=True)
     unit = 'rustmage-build-'+uuid.uuid4().hex
     forwarded = ['--setenv='+key+'='+value for key, value in os.environ.items()
-                 if key in ('PATH', 'CARGO_TARGET_DIR', 'CARGO_HOME', 'RUSTUP_HOME',
-                            'RUSTUP_TOOLCHAIN', 'RUSTFLAGS', 'RUSTDOCFLAGS', 'PYTHONPATH',
+                 if key.startswith(('CARGO_PROFILE_', 'CARGO_TARGET_', 'RUSTMAGE_')) or key in ('PATH', 'CARGO_TARGET_DIR', 'CARGO_HOME', 'RUSTUP_HOME',
+                            'RUSTUP_TOOLCHAIN', 'RUSTFLAGS', 'RUSTDOCFLAGS', 'CARGO_ENCODED_RUSTFLAGS',
+                            'CARGO_INCREMENTAL', 'CC', 'CXX', 'AR', 'CFLAGS', 'CXXFLAGS',
+                            'LDFLAGS', 'LD_LIBRARY_PATH', 'PKG_CONFIG_PATH', 'PYTHONPATH',
                             'PYTHONDONTWRITEBYTECODE', 'XDG_CACHE_HOME',
                             'RUSTMAGE_CATALOGUE_SNAPSHOT')]
     invocation = ['systemd-run', '--user', '--wait', '--pipe', '--collect', '--unit='+unit,

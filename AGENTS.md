@@ -30,6 +30,7 @@ Catalogue entries or partial card implementations do not satisfy it.
 - Resource safety: run Cargo through `python3 scripts/resource_guard.py -- cargo ...`.
   Routine validation enters this runner automatically. It enforces one build
   across worktrees, one Cargo job/test thread, and a shared 6 GiB memory cgroup
-  (including subprocesses and orphaned units). Raw Rust compilation fails closed.
+  (including subprocesses and orphaned units). Raw Cargo compilation from a checkout fails closed. Cargo invoked from an
+  unrelated cwd with --manifest-path must still use the runner.
   Do not bypass the wrapper, raise the memory cap or launch unmanaged builds.
   Keep logs/reports under ~/.cache so reboot does not erase failure evidence.

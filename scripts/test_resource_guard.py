@@ -34,7 +34,7 @@ class ResourceGuardTests(unittest.TestCase):
             def run(i):
                 path=Path(directory)/str(i)
                 code=f"import json,time;from pathlib import Path;s=time.monotonic();time.sleep(.1);Path({str(path)!r}).write_text(json.dumps([s,time.monotonic()]))"
-                result=self.run_guard([sys.executable, str(GUARD), '--', sys.executable, '-c', code], timeout=15)
+                result=self.run_guard([sys.executable, str(GUARD), '--', sys.executable, '-c', code], timeout=15, env=dict(os.environ, XDG_CACHE_HOME=str(Path(directory)/('cache'+str(i)))))
                 self.assertEqual(result.returncode, 0, result.stderr)
                 return json.loads(path.read_text())
             with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
