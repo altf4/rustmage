@@ -43,3 +43,19 @@ Final fresh-library Python collection passes all218 methods in562.326seconds, in
 An optimized standalone benchmark linked against the release library completes1,000 smoke games/571,049 decisions in2.845seconds, approximately200,697 decisions/second; measured clone216.60ns and restore228.03ns. This includes native smoke policy/observation construction, excludes model/tensor/JSON, and is not an XMage speed/parity comparison. Log `/tmp/issue250-benchmark1000-final.log`. The final lint-only pilot rewrite reproduces all100-game output vectors exactly; logs `/tmp/issue250-standard100-first.log`, `/tmp/issue250-standard100-second.log`, `/tmp/issue250-standard100-final.log`. The initial Standard pilot incorrectly used non-Standard Hill Giant, omitted a legal mana-conversion action and attributed its Thopter's flying to Broadcast Rambler; all three fixture errors were corrected without changing production.
 
 Final runtime/catalogue fingerprint: `8ea9ef36298eff71fd9ee7add7d2512e4ab11c5717931241b5f0d8b29115924b`. Production is unchanged from the reviewed all24 checkpoint `dd98399`; subsequent changes are acceptance, test corrections, provenance and evidence. Completed disposable Cargo outputs are removed after validation while every shared-library exact path is retained.
+
+## Payment-library composition checkpoint
+
+The integration branch composes standalone Crew `4cd27a3` with reviewed main
+`63169e1` (actual cast payments). This interim composition admits 1,751/5,164
+Standard identities, keeps 83 recipes and uses observation schema 75. It preserves
+both owned `SpellView.crew` and `cast_event` contexts and counts both in snapshots.
+Captured source power and Increment's creature predicate now use live Vehicle
+kinds. The combined catalogue fingerprint is
+`cf219c014a49df3f29bc127cf4da6abb3528e2c89410327cbb9c4fbf46338616`.
+
+All 1,608 combined native tests, all-target Clippy and generated-data/format checks
+pass. Standalone compiler/public/Standard evidence above remains attributed to its
+standalone source; fresh combined-library acceptance and composition with the
+replacement branch are still pending. This is an intermediate draft checkpoint,
+not final integrated approval or a claim that the all-Standard goal is complete.
