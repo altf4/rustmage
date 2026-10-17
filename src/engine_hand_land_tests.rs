@@ -614,3 +614,391 @@ fn hand_land_modal_cost_is_paid_before_real_ward_counters_activation_and_stale_t
         }
     }
 }
+
+fn joint_choice(g: &Game) -> bool {
+    g.state
+        .resolving
+        .as_ref()
+        .and_then(|r| r.choice.as_ref())
+        .is_some_and(|c| matches!(c.kind, EffectChoiceKind::LandCards { .. }))
+}
+fn rage_to_choice(g: &mut Game, p: Player, x: u32, target: Target) -> CardId {
+    let id = named(g, p, "Worldsoul's Rage", Zone::Hand);
+    checked(g, Action::AnnounceCast { card: id });
+    let action = Action::ChooseX { value: x };
+    let before = g.snapshot();
+    let mut branch = {
+        let parent = g.clone();
+        parent.clone()
+    };
+    assert_eq!(g.apply(p.other(), action.clone()), Err(Error::WrongActor));
+    assert_eq!(g.snapshot(), before);
+    branch.apply(p, action.clone()).unwrap();
+    g.apply(p, action.clone()).unwrap();
+    let after = g.snapshot();
+    assert_eq!(after, branch.snapshot());
+    g.restore(&before).unwrap();
+    g.apply(p, action).unwrap();
+    assert_eq!(g.snapshot(), after);
+    for _ in 0..200 {
+        if joint_choice(g) || settled(g) {
+            return id;
+        }
+        next(g, None, 0, Some(target));
+    }
+    panic!("rage did not reach choice");
+}
+#[test]
+fn joint_land_paid_x_stages_exact_owned_hand_and_grave_then_one_tapped_event() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let a = named(&mut g, p, "Forest", Zone::Hand);
+        let b = named(&mut g, p, "Island", Zone::Graveyard);
+        let c = named(&mut g, p, "Mountain", Zone::Hand);
+        let foreign = named(&mut g, p.other(), "Forest", Zone::Graveyard);
+        let wrong_kind = named(&mut g, p, "Giant Growth", Zone::Hand);
+        let watcher = named(&mut g, p, "Attercop", Zone::Battlefield);
+        g.state.land_played = true;
+        let spell = rage_to_choice(&mut g, p, 3, Target::Player(p.other()));
+        assert!(joint_choice(&g));
+        assert_eq!(g.state.players[p.other().index()].life, 17);
+        assert_eq!(g.object_view(spell).zone, Zone::Stack);
+        for id in [foreign, wrong_kind] {
+            let object = g.object_ref(id);
+            reject(&mut g, Action::SelectLand { object });
+        }
+        let old = g.object_ref(a);
+        let stale = ObjectRef {
+            generation: old.generation + 1,
+            ..old
+        };
+        reject(&mut g, Action::SelectLand { object: stale });
+        checked(&mut g, Action::SelectLand { object: old });
+        reject(&mut g, Action::SelectLand { object: old });
+        let object = g.object_ref(b);
+        checked(&mut g, Action::SelectLand { object });
+        assert_eq!(g.object_view(a).zone, Zone::Hand);
+        assert_eq!(g.object_view(b).zone, Zone::Graveyard);
+        assert!(g.state.pending_triggers.is_empty());
+        // Finishing below X keeps the third eligible card in its original zone.
+        checked(&mut g, Action::FinishLandSelection);
+        assert_eq!(g.object_view(a).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(b).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(c).zone, Zone::Hand);
+        for id in [a, b] {
+            assert!(g.object_view(id).tapped);
+            assert_eq!(g.object_view(id).controller, p);
+        }
+        assert!(g.state.land_played);
+        drive(&mut g, None, 0, None);
+        assert_eq!(g.object_view(watcher).power, 4);
+        assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn joint_land_optional_no_eligible_and_private_hand_have_identical_peer_choices() {
+    for p in [Player::P0, Player::P1] {
+        let mut games = Vec::new();
+        for eligible in [false, true] {
+            let mut g = setup(p);
+            named(
+                &mut g,
+                p,
+                if eligible { "Forest" } else { "Giant Growth" },
+                Zone::Hand,
+            );
+            let grave = named(&mut g, p, "Island", Zone::Graveyard);
+            rage_to_choice(&mut g, p, 2, Target::Player(p.other()));
+            assert_eq!(
+                g.observe(p.other())
+                    .effect_choice
+                    .as_ref()
+                    .unwrap()
+                    .candidates,
+                vec![g.object_ref(grave)]
+            );
+            games.push(g);
+        }
+        assert_eq!(
+            serde_json::to_value(games[0].observe(p.other())).unwrap(),
+            serde_json::to_value(games[1].observe(p.other())).unwrap()
+        );
+        for mut g in games {
+            checked(&mut g, Action::FinishLandSelection);
+            drive(&mut g, None, 0, None);
+        }
+        let mut g = setup(p);
+        rage_to_choice(&mut g, p, 2, Target::Player(p.other()));
+        assert!(joint_choice(&g));
+        assert_eq!(
+            g.legal_actions()
+                .into_iter()
+                .filter(|a| !matches!(a, Action::Concede))
+                .collect::<Vec<_>>(),
+            vec![Action::FinishLandSelection]
+        );
+        checked(&mut g, Action::FinishLandSelection);
+        drive(&mut g, None, 0, None);
+        let mut g = setup(p);
+        let land = named(&mut g, p, "Forest", Zone::Hand);
+        rage_to_choice(&mut g, p, 0, Target::Player(p.other()));
+        assert!(settled(&g));
+        assert_eq!(g.object_view(land).zone, Zone::Hand);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+    }
+}
+#[test]
+fn joint_land_bonny_complete_paid_legendary_cda_and_attack_draw_entry() {
+    for p in [Player::P0, Player::P1] {
+        for origin in [Zone::Hand, Zone::Graveyard] {
+            let mut g = setup(p);
+            for _ in 0..3 {
+                named(&mut g, p, "Forest", Zone::Battlefield);
+            }
+            let foreign = named(&mut g, p.other(), "Island", Zone::Battlefield);
+            let bonny = paid(&mut g, p, "Bonny Pall, Clearcutter", None);
+            let beau = |g: &Game| {
+                g.state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, o)| {
+                        o.zone == Zone::Battlefield
+                            && o.card.token_info().is_some_and(|t| t.name == "Beau")
+                    })
+                    .map(|(id, _)| id as CardId)
+                    .collect::<Vec<_>>()
+            };
+            assert_eq!(beau(&g).len(), 1);
+            let first = beau(&g)[0];
+            assert_eq!(g.object_view(first).power, 3);
+            assert!(g.object_view(first).card.is_legendary());
+            assert_eq!(g.object_view(bonny).keywords, Keywords::REACH);
+            paid(&mut g, p, "Bonny Pall, Clearcutter", None);
+            assert_eq!(beau(&g), vec![first]);
+            assert_eq!(
+                g.state
+                    .objects
+                    .iter()
+                    .filter(|o| o.zone == Zone::Battlefield
+                        && o.card == Card::from_name("Bonny Pall, Clearcutter").unwrap())
+                    .count(),
+                1
+            );
+            let land = named(&mut g, p, "Island", origin);
+            named(&mut g, p, "Shock", Zone::Library);
+            let bear = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+            g.state.step = Step::Attackers;
+            g.state.pending = Pending::Attackers;
+            checked(&mut g, Action::Attack { card: bear });
+            checked(&mut g, Action::FinishAttackers);
+            for _ in 0..200 {
+                if joint_choice(&g) {
+                    break;
+                }
+                next(&mut g, None, 0, None);
+            }
+            assert!(joint_choice(&g));
+            assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
+            let object = g.object_ref(land);
+            checked(&mut g, Action::SelectLand { object });
+            drive(&mut g, None, 0, None);
+            assert_eq!(g.object_view(land).zone, Zone::Battlefield);
+            assert!(!g.object_view(land).tapped);
+            assert_eq!(g.object_view(first).power, 4);
+            assert_eq!(g.object_view(first).toughness, 4);
+            for _ in 0..5 {
+                if g.actor() == Some(p) {
+                    break;
+                }
+                checked(&mut g, Action::Pass);
+            }
+            let spell = named(&mut g, p, "Unsummon", Zone::Hand);
+            let target = Target::Card(bonny);
+            checked(&mut g, Action::AnnounceCast { card: spell });
+            drive(&mut g, None, 0, Some(target));
+            assert_eq!(g.object_view(bonny).zone, Zone::Hand);
+            assert_eq!(g.object_view(first).power, 4);
+            // Layer 7a follows the token's current controller, not its creator or Bonny.
+            g.state.objects[foreign as usize].controller = p;
+            assert_eq!(g.object_view(first).power, 5);
+            g.state.objects[first as usize].controller = p.other();
+            assert_eq!(g.object_view(first).power, 0);
+            assert_eq!(g.object_view(first).owner, p);
+        }
+        let mut g = setup(p);
+        paid(&mut g, p, "Bonny Pall, Clearcutter", None);
+        assert!(!g.state.objects.iter().any(|o| o.zone == Zone::Battlefield
+            && o.card.token_info().is_some_and(|t| t.name == "Beau")));
+    }
+}
+#[test]
+fn joint_land_sole_damage_target_paid_hexproof_fizzle_skips_all_land_selection() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        let land = named(&mut g, p, "Forest", Zone::Hand);
+        let spell = named(&mut g, p, "Worldsoul's Rage", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        g.apply(p, Action::ChooseX { value: 2 }).unwrap();
+        while g.state.announcing.is_some() {
+            next(&mut g, None, 0, Some(Target::Card(bear)));
+        }
+        for _ in 0..4 {
+            if g.actor() == Some(p.other()) {
+                break;
+            }
+            checked(&mut g, Action::Pass);
+        }
+        let response = named(&mut g, p.other(), "Shore Up", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: response });
+        drive(&mut g, None, 0, Some(Target::Card(bear)));
+        assert!(settled(&g));
+        assert_eq!(g.object_view(land).zone, Zone::Hand);
+        assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(bear).damage, 0);
+    }
+}
+#[test]
+fn joint_land_actual_korvold_foreign_sources_use_only_resolvers_lands_and_create_own_beau() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, [rage, bonny, _]) = super::control_tests::korvold_grants_for(
+            p,
+            ["Worldsoul's Rage", "Bonny Pall, Clearcutter", "Forest"],
+        );
+        let hand = named(&mut g, p, "Forest", Zone::Hand);
+        let grave = named(&mut g, p, "Island", Zone::Graveyard);
+        let foreign_hand = named(&mut g, p.other(), "Forest", Zone::Hand);
+        let foreign_grave = named(&mut g, p.other(), "Island", Zone::Graveyard);
+        named(&mut g, p, "Forest", Zone::Battlefield);
+        named(&mut g, p.other(), "Island", Zone::Battlefield);
+        checked(&mut g, Action::AnnounceExile { card: rage });
+        g.apply(p, Action::ChooseX { value: 2 }).unwrap();
+        for _ in 0..200 {
+            if joint_choice(&g) {
+                break;
+            }
+            next(&mut g, None, 0, Some(Target::Player(p.other())));
+        }
+        assert!(joint_choice(&g));
+        assert_eq!(g.actor(), Some(p));
+        for id in [foreign_hand, foreign_grave] {
+            let object = g.object_ref(id);
+            reject(&mut g, Action::SelectLand { object });
+        }
+        let object = g.object_ref(hand);
+        checked(&mut g, Action::SelectLand { object });
+        checked(&mut g, Action::FinishLandSelection);
+        drive(&mut g, None, 0, None);
+        assert_eq!(g.object_view(rage).owner, p.other());
+        assert_eq!(g.object_view(rage).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(hand).owner, p);
+        assert_eq!(g.object_view(hand).controller, p);
+        for _ in 0..4 {
+            if g.actor() == Some(p) {
+                break;
+            }
+            checked(&mut g, Action::Pass);
+        }
+        checked(&mut g, Action::AnnounceExile { card: bonny });
+        drive(&mut g, None, 0, None);
+        assert_eq!(g.object_view(bonny).owner, p.other());
+        assert_eq!(g.object_view(bonny).controller, p);
+        let token = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find(|(_, o)| {
+                o.zone == Zone::Battlefield && o.card.token_info().is_some_and(|t| t.name == "Beau")
+            })
+            .unwrap()
+            .0 as CardId;
+        assert_eq!(g.object_view(token).owner, p);
+        assert_eq!(g.object_view(token).controller, p);
+        assert_eq!(g.object_view(token).power, 2);
+        assert_eq!(g.object_view(grave).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn joint_land_all_entry_replacement_choices_precede_one_simultaneous_commit() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let hand = named(&mut g, p, "Breeding Pool", Zone::Hand);
+        let grave = named(&mut g, p, "Blood Crypt", Zone::Graveyard);
+        rage_to_choice(&mut g, p, 2, Target::Player(p.other()));
+        let object = g.object_ref(hand);
+        checked(&mut g, Action::SelectLand { object });
+        let object = g.object_ref(grave);
+        checked(&mut g, Action::SelectLand { object });
+        assert!(matches!(g.state.pending, Pending::EntryLife { .. }));
+        assert_eq!(g.state.entry_batch.as_ref().unwrap().moves.len(), 2);
+        assert_eq!(g.object_view(hand).zone, Zone::Hand);
+        assert_eq!(g.object_view(grave).zone, Zone::Graveyard);
+        checked(&mut g, Action::ChooseEntryLife { pay: true });
+        assert_eq!(g.state.players[p.index()].life, 18);
+        assert_eq!(g.object_view(hand).zone, Zone::Hand);
+        assert_eq!(g.object_view(grave).zone, Zone::Graveyard);
+        checked(&mut g, Action::ChooseEntryLife { pay: false });
+        for id in [hand, grave] {
+            assert_eq!(g.object_view(id).zone, Zone::Battlefield);
+            assert!(g.object_view(id).tapped);
+        }
+        drive(&mut g, None, 0, None);
+    }
+}
+
+#[test]
+fn joint_land_foreign_bonny_attack_packet_keeps_controller_after_paid_source_bounce() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, [bonny, _, _]) = super::control_tests::korvold_grants_for(
+            p,
+            ["Bonny Pall, Clearcutter", "Forest", "Forest"],
+        );
+        named(&mut g, p, "Forest", Zone::Battlefield);
+        named(&mut g, p, "Shock", Zone::Library);
+        let land = named(&mut g, p, "Island", Zone::Graveyard);
+        let foreign = named(&mut g, p.other(), "Mountain", Zone::Graveyard);
+        checked(&mut g, Action::AnnounceExile { card: bonny });
+        drive(&mut g, None, 0, None);
+        let drawn = g.state.players[p.index()].cards_drawn_this_turn;
+        let bear = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        checked(&mut g, Action::Attack { card: bear });
+        checked(&mut g, Action::FinishAttackers);
+        for _ in 0..200 {
+            if g.state.pending == Pending::Priority
+                && g.state.stack.iter().any(|item| item.card == bonny)
+                && g.actor() == Some(p)
+            {
+                break;
+            }
+            next(&mut g, None, 0, None);
+        }
+        assert!(g.state.stack.iter().any(|item| item.card == bonny));
+        let response = named(&mut g, p, "Unsummon", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: response });
+        for _ in 0..200 {
+            if joint_choice(&g) {
+                break;
+            }
+            next(&mut g, None, 0, Some(Target::Card(bonny)));
+        }
+        assert!(joint_choice(&g));
+        assert_eq!(g.object_view(bonny).zone, Zone::Hand);
+        assert_eq!(g.object_view(bonny).owner, p.other());
+        assert_eq!(g.actor(), Some(p));
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, drawn + 1);
+        let object = g.object_ref(foreign);
+        reject(&mut g, Action::SelectLand { object });
+        let object = g.object_ref(land);
+        checked(&mut g, Action::SelectLand { object });
+        drive(&mut g, None, 0, None);
+        assert_eq!(g.object_view(land).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(land).controller, p);
+        assert_eq!(g.object_view(land).owner, p);
+    }
+}

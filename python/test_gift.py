@@ -31,7 +31,7 @@ class GiftTests(unittest.TestCase):
   with Game([deck,deck],seed=seed,starting_player=p,deck_rules='Standard',library=library or os.environ.get('RUSTMAGE_GIFT_LIBRARY'))as g:
    stage='setup';source=victim=kill=discard=None;targets=[];pre=None;paid=False;declared=False;attacked=False;frames=extra=0;cast_ref=None;entry_packets=set()
    for iteration in range(40000):
-    head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(100,FP))
+    head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(101,FP))
     if head['outcome']is not None:
      self.assertEqual(stage,'finish',(name,p,seed,promise,stage,iteration));self.assertTrue(paid and declared and attacked)
      return dict(card=name,seat=p,promise=promise,frames=frames,denials=2*frames+extra,outcome=head['outcome'])

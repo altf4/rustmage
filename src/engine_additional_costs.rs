@@ -197,6 +197,7 @@ impl Game {
         match spec.kind {
             EffectChoiceKind::HandCreature
             | EffectChoiceKind::HandLand { .. }
+            | EffectChoiceKind::LandCards { .. }
             | EffectChoiceKind::CollectEvidence(_)
             | EffectChoiceKind::Forage
             | EffectChoiceKind::ForageOrBlack => unreachable!(),

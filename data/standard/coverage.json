@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "1551e6ebeb4ee554c01f2f108fd5e9f3fc90b78ac5385ce3e7c99d7c2ffdd7a4",
+  "catalogue_version": "1e310a3382de48a388ae479cf50c98697b7d65cf76f86372092a30f954b9552f",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1972,
-  "implemented_total": 1978,
-  "token_definitions": 95,
+  "implemented_standard_cards": 1974,
+  "implemented_total": 1980,
+  "token_definitions": 96,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -3004,8 +3004,8 @@
     {
       "name": "Bonny Pall, Clearcutter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Boom Box",
@@ -30700,8 +30700,8 @@
     {
       "name": "Worldsoul's Rage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Worldwalker Helm",

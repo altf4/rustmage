@@ -82,7 +82,12 @@ impl Game {
             }
             if object.card.is_legendary() {
                 legends[object.controller.index()]
-                    .entry(object.card.name())
+                    .entry(
+                        object
+                            .card
+                            .token_info()
+                            .map_or(object.card.name(), |token| token.name),
+                    )
                     .or_default()
                     .push(self.object_ref(id));
             }

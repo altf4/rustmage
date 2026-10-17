@@ -833,6 +833,27 @@ def source_role_program(text, condition):
     return 'None',([f'MayPayMana {{ cost: {pay}, skip: {len(program)} }}'] if pay else [])+program
 
 
+def dynamic_named_token_program(text):
+    """A complete named legendary token recipe with one actual parsed CDA."""
+    m=re.fullmatch(r'create ([A-Z][A-Za-z -]*), a legendary (white|blue|black|red|green|colorless) ([A-Z][A-Za-z\'-]*) creature token with "(.+)"',text)
+    if not m:return None
+    name,color,subtype,ability=m.groups()
+    if subtype not in CREATURE_TYPE_NAMES or '(' in ability or ')' in ability:return None
+    # Printed self-name and the generic self-reference are equivalent; an
+    # unrelated name cannot supply the token's characteristic definition.
+    if not ability.startswith((name+"'s power", "This creature's power")):return None
+    proxy=dict(name=name,layout='normal',type_line='Legendary Creature — '+subtype,
+               mana_cost='{0}',power='*',toughness='*',oracle_text=ability)
+    bare,dynamic,scaling=extract_stat_rules(proxy)
+    if dynamic is None or scaling or bare['oracle_text'].strip():return None
+    factory=dict(name=name,subtypes=subtype,colors={'white':1,'blue':2,'black':4,'red':8,'green':16,'colorless':0}[color],
+                 power=0,toughness=0,extra_type=None,keywords=0,legendary=True,dynamic=dynamic)
+    key=hashlib.sha256(json.dumps(factory,sort_keys=True).encode()).hexdigest()[:24]
+    if key in TOKEN_DEFS and TOKEN_DEFS[key]!=factory:raise ValueError('dynamic token factory collision')
+    TOKEN_DEFS[key]=factory
+    return [f'CreateTokens {{ token: __TOKEN_{key}__, amount: 1, tapped: false }}']
+
+
 def token_program(text):
     """Fixed fully-described creature tokens only; no inferred predefined abilities."""
     if not isinstance(text, str):
@@ -1702,6 +1723,10 @@ def scalar_x_body(card):
         if subtype is None:return None
         filt=creature_filter('creatures')
         return 'Spell',0,[],('None',[f'GrowCreaturesScaled {{ filter: {filt}, excluding_subtype: Some({json.dumps(subtype)}), amount: {x}, power: -1, toughness: -1 }}']),False
+    if text=='this spell deals x damage to any target. put up to x land cards from your hand and/or graveyard onto the battlefield tapped.':
+        # This complete new route accepts no unauthenticated raw parenthetical.
+        if '(' in card['oracle_text'] or ')' in card['oracle_text']:return None
+        return 'Spell',0,[],('Any',['DamageScaled('+x+')','PutLandCards { maximum: '+x+', tapped: true }']),False
     if text in bodies:
         target,program=bodies[text];return 'Spell',0,[],(target,program),False
     if text=='this spell deals x damage to any target.\n'+choco.lower():
@@ -2051,10 +2076,26 @@ def hand_land_reminders_valid(card):
                            for line in raw.splitlines() if '(' in line or ')' in line)
 
 
+def hand_grave_land_reminders_valid(card):
+    raw=card.get('oracle_text','')
+    if not isinstance(raw,str):return True
+    surface=raw;seen=False
+    while True:
+        normalized=' '.join(surface.casefold().split())
+        seen |= re.search(r'land cards? from your hand (?:and/)?or graveyard',normalized) is not None
+        seen |= re.search(r'legendary .+ creature token with',normalized) is not None
+        stripped=re.sub(r'\([^()]*\)','',surface)
+        if stripped==surface:break
+        surface=stripped
+    return not seen or all(intrinsic_reminder_line_valid(line) for line in raw.splitlines() if '(' in line or ')' in line)
+
+
 def hand_land_program(text):
+    if m:=re.fullmatch(r'you may put a land card from your hand or graveyard onto the battlefield( tapped)?\.',text):
+        return ['PutLandCards { maximum: AmountValue::Fixed(1), tapped: '+str(bool(m[1])).lower()+' }']
     if m:=re.fullmatch(r'you may put a land card from your hand onto the battlefield( tapped)?\.',text):
         return ['PutHandLand { tapped: '+str(bool(m[1])).lower()+' }']
-    if m:=re.fullmatch(r'draw (a card|two cards|three cards|four cards), then (you may put a land card from your hand onto the battlefield(?: tapped)?\.)',text):
+    if m:=re.fullmatch(r'draw (a card|two cards|three cards|four cards), then (you may put a land card from your hand(?: or graveyard)? onto the battlefield(?: tapped)?\.)',text):
         return [f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[1]]})',*hand_land_program(m[2])]
     return None
 
@@ -2153,7 +2194,7 @@ def statement_program(text):
     if choice := optional_payment_program(text, False): return choice
     if sacrifice := sacrifice_program(text):
         if sacrifice[0] == 'None': return sacrifice[1]
-    token = scaled_token_program(text) or token_program(text) or predefined_program(text)
+    token = dynamic_named_token_program(text) or scaled_token_program(text) or token_program(text) or predefined_program(text)
     if token: return token
     if m:=re.fullmatch(r'(?:you )?draw (a card|two cards|three cards|four cards) and (create .+)\.',text):
         if program:=token_program(m[2]+'.') or predefined_program(m[2]+'.'):
@@ -5676,6 +5717,9 @@ def compile_catalogue(snapshot, target):
             effect = 'Unsupported'
         if not intrinsic_reminders_valid(dict(original, oracle_text=suspect_proxy)):
             effect = 'Unsupported'
+        if not hand_grave_land_reminders_valid(original):
+            effect = 'Unsupported'
+
         if not live_static_reminders_valid(original):
             effect='Unsupported'
         if not hand_land_reminders_valid(original):
@@ -5906,10 +5950,12 @@ def compile_catalogue(snapshot, target):
             type_line, kind = 'Artifact — ' + factory['subtypes'], 16
         else:
             types = ((factory['extra_type'].title() + ' ') if factory['extra_type'] else '') + 'Creature'
-            type_line = types + ' — ' + factory['subtypes']
+            type_line = ('Legendary ' if factory.get('legendary') else '') + types + ' — ' + factory['subtypes']
             kind = 1 | (16 if factory['extra_type'] == 'artifact' else 32 if factory['extra_type'] == 'enchantment' else 0)
             effect = f"Creature({factory['power']}, {factory['toughness']})"
             token_abilities = []
+        if factory.get('dynamic'):
+            dynamic_rows.append(f"        {index} => Some({factory['dynamic']}),")
         token_triggers='&[]'
         role = factory.get('role')
         role_triggers = []
@@ -5922,7 +5968,7 @@ def compile_catalogue(snapshot, target):
         if factory.get('landfall_growth'):
             p,t=factory['landfall_growth']
             token_triggers='&[TriggeredAbility { condition: TriggerCondition::LandEntersYou, targets: TargetPlan::Single(TargetSpec::NONE), program: '+rust_program([grow_instruction('Source',p,t)])+' }]'
-        definitions.append(f"    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: \"\", type_line: {json.dumps(type_line, ensure_ascii=False)}, oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: Keywords({factory['keywords']}), deck_limit: None }}, effect: Effect::{effect}, triggers: {token_triggers}, activated: {rust_activations(token_abilities)}, enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0, loyalty: 0, lore: 0 }}, entry: EntryTapped::Never, kind: {kind}, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},")
+        definitions.append(f"    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: \"\", type_line: {json.dumps(type_line, ensure_ascii=False)}, oracle_keywords: &[], standard_legal: false, legendary: {str(bool(factory.get('legendary'))).lower()}, implemented: true, keywords: Keywords({factory['keywords']}), deck_limit: None }}, effect: Effect::{effect}, triggers: {token_triggers}, activated: {rust_activations(token_abilities)}, enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0, loyalty: 0, lore: 0 }}, entry: EntryTapped::Never, kind: {kind}, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},")
         token_infos.append(f"    TokenInfo {{ factory_identity: {json.dumps(name)}, name: {json.dumps(factory['name'])}, subtypes: {json.dumps(factory['subtypes'])}, colors: {factory['colors']} }},")
         color_masks.append(factory['colors'])
         marker = '__TOKEN_' + key + '__'
