@@ -139,6 +139,15 @@ def extract_cast_timing_grants(card):
     """Exact top-level permission; every other sentence stays for whole-body parsing."""
     if card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str):
         return card, []
+    # This metadata describes a static ability of a permanent on the battlefield.
+    # A spell instruction needs a duration-bearing resolution program instead.
+    kinds = card.get('type_line', '').split(' — ')[0].split()
+    if not any(kind in kinds for kind in ('Creature', 'Artifact', 'Enchantment', 'Land', 'Planeswalker', 'Battle')):
+        return card, []
+    # Do not expose the inherited broad parenthetical stripping to a new route.
+    # Audited two-face wrappers remove only authenticated reminders beforehand.
+    if '(' in card['oracle_text'] or ')' in card['oracle_text']:
+        return card, []
     residual, grants = [], []
     for original in card['oracle_text'].splitlines():
         line = original.strip()
@@ -3795,6 +3804,7 @@ def compile_catalogue(snapshot, target):
             pt = [0 if original[axis] == '*' else int(original[axis]) for axis in ('power','toughness')]
             if max(pt) <= 2**127-1:
                 vehicle_stats_rows.append(f'        {index} => Some(Stats {{ power: {pt[0]}, toughness: {pt[1]} }}),')
+        timing_seen = any(re.search(r'\b(?:cast|play)\b.*\bas though\b', line, flags=re.I) for line in original.get('oracle_text', '').splitlines())
         card, timing_grants = extract_cast_timing_grants(cards.get(name, {}))
         card, uncounterable = extract_uncounterable(card)
         card, entry_suppression = extract_entry_trigger_suppression(card)
@@ -3948,6 +3958,9 @@ def compile_catalogue(snapshot, target):
             if creature_entry != 'Never':entry=creature_entry
             activations = [*activations, *cycling]
             if len(activations) > 64: effect = 'Unsupported'; activations = []
+        # Rejected timing syntax/source shapes must not be revived by legacy selectors.
+        if timing_seen and not timing_grants:
+            effect = 'Unsupported'
         programs = {
             'Damage(3)': ('Any', ['Damage(3)']), 'Damage(2)': ('Any', ['Damage(2)']),
             'Grow': ('Creature', [grow_instruction('Targets', 3, 3)]), 'Draw': ('None', ['Draw(PlayerSet::Controller, 2)']),
@@ -3961,6 +3974,8 @@ def compile_catalogue(snapshot, target):
         elif effect == 'Spell':
             rule, program = spell
             effect = f'Spell({rust_targets(rule)}, {rust_program(program)})'
+        if timing_grants and not (effect.startswith(('Creature(', 'Aura(')) or effect in ('Permanent', 'Land')):
+            effect = 'Unsupported'
         offspring_key=None
         if offspring is not None and effect!='Unsupported':
             # Fixed copiable values only. The definition below preserves complete
