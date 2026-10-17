@@ -158,3 +158,112 @@ fn ability_removal_paid_external_blocking_rules_survive_real_removal_aura() {
         assert!(!g.object_view(bear).abilities.unwrap().printed);
     }
 }
+
+#[test]
+fn ability_removal_paid_layer_six_orders_resolution_grants_without_removing_counters() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let old = named(&mut g, p, "Take Up the Shield", Zone::Hand);
+        cast(&mut g, old, None, &[Target::Card(bear)]);
+        settle(&mut g);
+        let aura = named(&mut g, p, "Stop Cold", Zone::Hand);
+        cast(&mut g, aura, None, &[Target::Card(bear)]);
+        settle(&mut g);
+        assert!(!g.keywords(bear).contains(Keywords::INDESTRUCTIBLE));
+        assert!(!g.keywords(bear).contains(Keywords::LIFELINK));
+        assert_eq!(g.state.objects[bear as usize].counters.plus_one, 1);
+        let later = named(&mut g, p, "Take Up the Shield", Zone::Hand);
+        cast(&mut g, later, None, &[Target::Card(bear)]);
+        settle(&mut g);
+        assert!(g.keywords(bear).contains(Keywords::INDESTRUCTIBLE));
+        assert!(g.keywords(bear).contains(Keywords::LIFELINK));
+        assert_eq!(g.state.objects[bear as usize].counters.plus_one, 2);
+        assert!(!g.object_view(bear).abilities.unwrap().printed);
+    }
+}
+
+#[test]
+fn ability_removal_paid_live_multipart_provider_dependency_and_pure_later_provider() {
+    for p in [Player::P0, Player::P1] {
+        for source_name in ["Archon of the Wild Rose", "Maha, Its Feathers Night"] {
+            let mut g = setup(p);
+            let source = named(&mut g, p, source_name, Zone::Battlefield);
+            let recipient_owner = if source_name.starts_with("Maha") {
+                p.other()
+            } else {
+                p
+            };
+            let recipient = named(&mut g, recipient_owner, "Bear Cub", Zone::Battlefield);
+            if recipient_owner == p {
+                let royal = named(&mut g, p, "Royal Treatment", Zone::Hand);
+                cast(&mut g, royal, None, &[Target::Card(recipient)]);
+                settle(&mut g);
+                assert_eq!(
+                    g.stats(recipient),
+                    Stats {
+                        power: 5,
+                        toughness: 5
+                    }
+                );
+                assert!(g.keywords(recipient).contains(Keywords::FLYING));
+            } else {
+                assert_eq!(g.stats(recipient).toughness, 1);
+            }
+            let aura = named(&mut g, p, "Stop Cold", Zone::Hand);
+            cast(&mut g, aura, None, &[Target::Card(source)]);
+            settle(&mut g);
+            assert!(!g.object_view(source).abilities.unwrap().printed);
+            if recipient_owner == p {
+                assert_eq!(
+                    g.stats(recipient),
+                    Stats {
+                        power: 3,
+                        toughness: 3
+                    }
+                );
+                assert!(!g.keywords(recipient).contains(Keywords::FLYING));
+            } else {
+                assert_eq!(g.stats(recipient).toughness, 2);
+            }
+            let remove = named(&mut g, p, "Disenchant", Zone::Hand);
+            cast(&mut g, remove, None, &[Target::Card(aura)]);
+            settle(&mut g);
+            assert_eq!(g.state.objects[aura as usize].zone, Zone::Graveyard);
+            if recipient_owner == p {
+                assert_eq!(
+                    g.stats(recipient),
+                    Stats {
+                        power: 5,
+                        toughness: 5
+                    }
+                );
+                assert!(g.keywords(recipient).contains(Keywords::FLYING));
+            } else {
+                assert_eq!(g.stats(recipient).toughness, 1);
+            }
+        }
+    }
+}
+
+#[test]
+fn ability_removal_paid_already_queued_trigger_keeps_its_own_program() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Aquatic Alchemist", Zone::Battlefield);
+        let draw = named(&mut g, p, "Quick Study", Zone::Hand);
+        cast(&mut g, draw, None, &[]);
+        let aura = named(&mut g, p, "Stop Cold", Zone::Hand);
+        cast(&mut g, aura, None, &[Target::Card(source)]);
+        settle(&mut g);
+        assert!(!g.object_view(source).abilities.unwrap().printed);
+        assert_eq!(g.state.objects[source as usize].counters.plus_one, 0);
+        assert_eq!(
+            g.stats(source),
+            Stats {
+                power: 3,
+                toughness: 3
+            }
+        );
+    }
+}
