@@ -82,6 +82,68 @@ fn foundations_chosen_values_control_and_death_cards_full_games() {
 }
 
 #[test]
+fn foundations_qualified_graveyard_and_resolution_cards_full_games() {
+    let mut decks = [
+        deck(
+            "Swamp",
+            &[
+                "Knight of Grace",
+                "Knight of Malice",
+                "Elenda, Saint of Dusk",
+                "Myojin of Night's Reach",
+                "Resolute Reinforcements",
+                "Healer's Hawk",
+                "Angel of Vitality",
+                "Gilded Lotus",
+                "Feed the Swarm",
+            ],
+        ),
+        deck(
+            "Mountain",
+            &[
+                "Flamewake Phoenix",
+                "Gate Colossus",
+                "Fiery Annihilation",
+                "Venom Connoisseur",
+                "Llanowar Elves",
+                "Garruk's Uprising",
+                "Rampaging Baloths",
+                "Goldvein Pick",
+                "Solemn Simulacrum",
+            ],
+        ),
+    ];
+    for land in &mut decks[0][..8] {
+        *land = Card::from_name("Plains").unwrap();
+    }
+    for land in &mut decks[1][..4] {
+        *land = Card::from_name("Gruul Guildgate").unwrap();
+    }
+    for land in &mut decks[1][4..8] {
+        *land = Card::from_name("Golgari Guildgate").unwrap();
+    }
+    for land in &mut decks[1][8..16] {
+        *land = Card::from_name("Forest").unwrap();
+    }
+    run_matrix_actions(
+        &decks,
+        &[
+            "Knight of Grace",
+            "Knight of Malice",
+            "Elenda, Saint of Dusk",
+            "Myojin of Night's Reach",
+            "Flamewake Phoenix",
+            "Gate Colossus",
+            "Fiery Annihilation",
+            "Venom Connoisseur",
+        ],
+        &["Gruul Guildgate"],
+        &["Gruul Guildgate"],
+        &[0, 1, 2, 3, 7, 13, 41, 73],
+    );
+}
+
+#[test]
 fn foundations_five_color_full_games_and_owned_search_replay() {
     let mut decks = [
         deck(

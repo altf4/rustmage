@@ -1,4 +1,4 @@
-// Direct typed behavior; kept gated until complete-card consumer acceptance.
+// Direct typed behavior; complete Oracle and pinned executable sources reviewed.
 const CONDITION: StatValue = StatValue::HasColor {
     filter: CountFilter {
         zone: CountZone::Battlefield,

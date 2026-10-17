@@ -1,11 +1,11 @@
-//! Real gated definitions exercise the core; support flags remain false.
+//! Authored complete definitions exercise the shared core after consumer acceptance.
 use super::ability_timeline_tests::{cast, checked, named, settle, setup};
 use super::tests::spawn;
 use super::*;
 
-fn gated(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
+fn authored(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
     let card = Card::from_name(name).unwrap();
-    assert!(!card.is_supported(), "core fixtures stay gated");
+    assert!(card.is_supported(), "complete consumers must be admitted");
     spawn(g, p, card, zone)
 }
 fn reject(g: &mut Game, a: Action) {
@@ -25,13 +25,13 @@ fn paid(g: &mut Game, p: Player, name: &str, targets: &[Target]) -> CardId {
     id
 }
 fn hand_myojin(g: &mut Game, p: Player) -> CardId {
-    let id = gated(g, p, "Myojin of Night's Reach", Zone::Hand);
+    let id = authored(g, p, "Myojin of Night's Reach", Zone::Hand);
     cast(g, id, None, &[]);
     settle(g);
     id
 }
 fn venom(g: &mut Game, p: Player) -> CardId {
-    let id = gated(g, p, "Venom Connoisseur", Zone::Hand);
+    let id = authored(g, p, "Venom Connoisseur", Zone::Hand);
     cast(g, id, None, &[]);
     settle(g);
     id
@@ -71,7 +71,7 @@ fn fdn_bounded_core_fiery_targets_at_cast_only_related_equipment_and_exiles_leth
             let wrong = named(&mut g, p.other(), "Short Bow", Zone::Battlefield);
             attach(&mut g, bow, bear);
             attach(&mut g, wrong, other);
-            let fiery = gated(&mut g, p, "Fiery Annihilation", Zone::Hand);
+            let fiery = authored(&mut g, p, "Fiery Annihilation", Zone::Hand);
             checked(&mut g, Action::AnnounceCast { card: fiery });
             checked(
                 &mut g,
@@ -131,7 +131,7 @@ fn fdn_bounded_core_fiery_rechecks_attachment_and_independent_target_legality() 
             let other = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
             let bow = named(&mut g, p.other(), "Short Bow", Zone::Battlefield);
             attach(&mut g, bow, bear);
-            let fiery = gated(&mut g, p, "Fiery Annihilation", Zone::Hand);
+            let fiery = authored(&mut g, p, "Fiery Annihilation", Zone::Hand);
             cast(
                 &mut g,
                 fiery,
@@ -176,7 +176,7 @@ fn fdn_bounded_core_myojin_true_hand_cast_named_replacements_and_source_only_key
         let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
         g.add_counter(bear, CounterKind::Divinity, 1);
         assert!(!g.keywords(bear).contains(Keywords::INDESTRUCTIBLE));
-        let other = gated(&mut g, p, "Myojin of Night's Reach", Zone::Graveyard);
+        let other = authored(&mut g, p, "Myojin of Night's Reach", Zone::Graveyard);
         // Direct reanimation is not casting, even following a hand cast this step.
         g.move_object(other, Zone::Battlefield);
         assert_eq!(g.counter_count(other, CounterKind::Divinity), 0);
@@ -200,7 +200,7 @@ fn fdn_bounded_core_myojin_free_hand_cast_and_nonhand_normal_cast_are_distinct()
     for p in [Player::P0, Player::P1] {
         for origin in [Zone::Hand, Zone::Graveyard, Zone::Exile] {
             let mut g = setup(p);
-            let id = gated(&mut g, p, "Myojin of Night's Reach", origin);
+            let id = authored(&mut g, p, "Myojin of Night's Reach", origin);
             // This directly tests the existing actual cast builder: zero payment
             // and Normal method are deliberately identical for all origins.
             let item = g.cast_item(p, id, [0; 6]);
@@ -391,16 +391,16 @@ fn fdn_bounded_core_venom_source_control_and_removal_leave_queued_resolution_ind
 fn fdn_eight_core_qualified_source_and_relational_target_groups_work_together() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
-        let elenda = gated(
+        let elenda = authored(
             &mut g,
             p.other(),
             "Elenda, Saint of Dusk",
             Zone::Battlefield,
         );
-        let knight = gated(&mut g, p.other(), "Knight of Grace", Zone::Battlefield);
+        let knight = authored(&mut g, p.other(), "Knight of Grace", Zone::Battlefield);
         let bow = named(&mut g, p.other(), "Short Bow", Zone::Battlefield);
         attach(&mut g, bow, knight);
-        let fiery = gated(&mut g, p, "Fiery Annihilation", Zone::Hand);
+        let fiery = authored(&mut g, p, "Fiery Annihilation", Zone::Hand);
         checked(&mut g, Action::AnnounceCast { card: fiery });
         let prohibited = Action::ChooseTarget {
             target: Target::Card(elenda),

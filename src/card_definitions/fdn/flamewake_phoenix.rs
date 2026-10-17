@@ -1,4 +1,4 @@
-// Gated graveyard-origin core consumer; full-card admission is separate.
+// Direct typed behavior; complete Oracle and pinned executable sources reviewed.
 const STATIC_GROUPS: &[StaticAbilityGroup] = &[
     StaticAbilityGroup {
         line: 0,
