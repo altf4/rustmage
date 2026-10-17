@@ -60,6 +60,7 @@ struct Flight {
 #[derive(Default, Debug)]
 struct Pilot {
     inset: Option<u32>,
+    setup_ready: bool,
     permission: bool,
     normal: bool,
     second: bool,
@@ -400,14 +401,22 @@ fn score(o: &Observation, action: &Action, focal: Card, progress: &[Pilot; 2]) -
             2000 - count as i32 * 20 + if count < main.max(inset) { 100 } else { 0 }
         }
         Action::AnnounceAdventure { .. } => {
-            let ready = [actor, actor.other()].iter().all(|p| {
-                ["Bear Cub", "Chrome Companion", "Llanowar Elves"]
-                    .iter()
-                    .all(|n| field(o, *p, Card::from_name(n).unwrap()) > 0)
-            });
+            // Setup is historical: a resolved damage/sweeper may legitimately
+            // kill an Elf. Requiring it to remain alive can stall the opponent
+            // forever even though its Adventure has legal meaningful targets.
+            let ready = progress.iter().all(|p| p.setup_ready)
+                && (!matches!(focal, c if c == Card::from_name(NAMES[4]).unwrap()
+                    || c == Card::from_name(NAMES[13]).unwrap())
+                    || o.objects.iter().any(|v| {
+                        v.owner == actor.other() && v.zone == Zone::Battlefield && v.is_creature()
+                    }));
             if ((!state.permission && state.inset.is_none())
                 || (state.main_verified && !state.second && state.second_id.is_none()))
                 && ready
+                && !(focal == Card::from_name(NAMES[13]).unwrap()
+                    && state.normal
+                    && progress[actor.other().index()].normal
+                    && !progress[actor.other().index()].attacked)
                 && o.stack.is_empty()
                 && o.resolving.is_none()
             {
@@ -496,9 +505,8 @@ fn score(o: &Observation, action: &Action, focal: Card, progress: &[Pilot; 2]) -
             }
         }
         Action::Attack { card } | Action::AttackPlaneswalker { card, .. } => {
-            if all_done
-                && (progress.iter().all(|p| p.attacked)
-                    || (!state.attacked && Some(*card) == state.inset))
+            if (state.main_verified && !state.attacked && Some(*card) == state.inset)
+                || (all_done && progress.iter().all(|p| p.attacked))
             {
                 100
             } else {
@@ -522,6 +530,15 @@ fn score(o: &Observation, action: &Action, focal: Card, progress: &[Pilot; 2]) -
         }
         Action::PayCosts { .. } | Action::PayResolutionMana { .. } => 400,
         Action::DeclineResolutionMana => -100,
+        Action::ChooseTarget {
+            target: Target::Card(id),
+            ..
+        } if object(*id).owner != actor
+            && Some(*id) == progress[actor.other().index()].inset
+            && !progress[actor.other().index()].attacked =>
+        {
+            -1000
+        }
         Action::ChooseTarget { .. } => 150,
         Action::FinishTargets => 0,
         _ => 100,
@@ -532,6 +549,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .nth(1)
         .unwrap_or_else(|| "100".into())
         .parse()?;
+    let start: usize = std::env::args()
+        .nth(2)
+        .unwrap_or_else(|| "0".into())
+        .parse()?;
     let mut casts = [[0u64; 2]; 19];
     let mut grants = [[0u64; 2]; 19];
     let mut entries = [[0u64; 2]; 19];
@@ -541,7 +562,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut attacks = [[0u64; 2]; 19];
     let (mut decisions, mut closed, mut denials, mut initial, mut maximum) =
         (0u64, 0u64, 0u64, 0usize, 0usize);
-    for seed in 0..games {
+    for seed in start..start + games {
         let i = seed % NAMES.len();
         let focal = Card::from_name(NAMES[i]).unwrap();
         let mut game = Game::new(Config {
@@ -567,6 +588,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let actor = game.actor().unwrap();
             let o = game.observe(actor);
+            if [Player::P0, Player::P1].iter().all(|p| {
+                ["Bear Cub", "Chrome Companion", "Llanowar Elves"]
+                    .iter()
+                    .all(|name| field(&o, *p, Card::from_name(name).unwrap()) > 0)
+            }) {
+                for state in &mut progress {
+                    state.setup_ready = true;
+                }
+            }
             for p in [Player::P0, Player::P1] {
                 let state = &mut progress[p.index()];
                 if !state.permission
@@ -914,6 +944,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             maximum = maximum.max(game.state_bytes());
         }
         assert!(game.outcome().is_some(), "unfinished seed{seed}");
+        if !progress.iter().all(complete) {
+            eprintln!(
+                "terminal P0={} P1={}",
+                serde_json::to_string(&game.observe(Player::P0))?,
+                serde_json::to_string(&game.observe(Player::P1))?
+            );
+        }
         assert!(
             progress.iter().all(complete),
             "incomplete seed{seed} {} {progress:?}",
