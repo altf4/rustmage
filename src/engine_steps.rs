@@ -160,6 +160,11 @@ impl Game {
             ),
             StepValue::SpellsCast => Some(i128::from(p.spells_cast_this_turn)),
             StepValue::Creatures => Some(creatures().count() as i128),
+            StepValue::EnchantedCreatures => Some(
+                creatures()
+                    .filter(|(id, _)| self.is_enchanted(*id as CardId))
+                    .count() as i128,
+            ),
             StepValue::TappedCreatures => {
                 Some(creatures().filter(|(_, o)| o.tapped).count() as i128)
             }

@@ -251,6 +251,35 @@ def creature_template(card):
 
 
 
+def intrinsic_reminder_line_valid(line):
+    """A complete keyword line proves its own trailing reminder, on any host."""
+    grammar = {
+        'changeling': r'This card is every creature type\.',
+        'deathtouch': r'Any amount of damage this deals to a creature is enough to destroy it\.',
+        'defender': r"This creature can't attack\.",
+        'double strike': r'This creature deals both first-strike and regular combat damage\.',
+        'first strike': r'This creature deals combat damage before creatures without first strike\.',
+        'flash': r'You may cast this spell any time you could cast an instant\.',
+        'flying': r"This creature can't be blocked except by creatures with flying or reach\.",
+        'haste': r'This creature can attack and \{T\} as soon as it comes under your control\.',
+        'hexproof': r"It can't be the target of spells or abilities your opponents control\.",
+        'indestructible': r'''Damage and effects that say "destroy" don't destroy it\.(?: If its toughness is 0 or less, it still dies\.)?''',
+        'lifelink': r'Damage dealt by this creature also causes you to gain that much life\.',
+        'menace': r"This creature can't be blocked except by two or more creatures\.",
+        'reach': r'This creature can block creatures with flying\.',
+        'skulk': r"This creature can't be blocked by creatures with greater power\.",
+        'trample': r"This creature can deal excess combat damage to the player or planeswalker it's attacking\.",
+        'vigilance': r"Attacking doesn't cause this creature to tap\.",
+    }
+    match = re.fullmatch(r'([^()]+) \(([^()]+)\)', line)
+    if match is None:
+        return False
+    words = [word.strip().casefold() for word in match[1].split(',')]
+    return (bool(words) and all(word in INTRINSIC_KEYWORDS for word in words)
+            and words[-1] in grammar
+            and re.fullmatch(grammar[words[-1]], match[2]) is not None)
+
+
 def intrinsic_reminders_valid(card):
     """Authenticate complete intrinsic bodies before any generic text extraction.
 
@@ -268,38 +297,8 @@ def intrinsic_reminders_valid(card):
             break
         bare = stripped
     if creature_template(dict(card, oracle_text=bare)) is not None:
-        # These are semantic keyword productions, anchored to the final keyword
-        # on the same intrinsic line. Matching prose elsewhere proves nothing.
-        grammar = {
-            'changeling': r'This card is every creature type\.',
-            'deathtouch': r'Any amount of damage this deals to a creature is enough to destroy it\.',
-            'defender': r"This creature can't attack\.",
-            'double strike': r'This creature deals both first-strike and regular combat damage\.',
-            'first strike': r'This creature deals combat damage before creatures without first strike\.',
-            'flash': r'You may cast this spell any time you could cast an instant\.',
-            'flying': r"This creature can't be blocked except by creatures with flying or reach\.",
-            'haste': r'This creature can attack and \{T\} as soon as it comes under your control\.',
-            'hexproof': r"It can't be the target of spells or abilities your opponents control\.",
-            'indestructible': r'''Damage and effects that say "destroy" don't destroy it\.(?: If its toughness is 0 or less, it still dies\.)?''',
-            'lifelink': r'Damage dealt by this creature also causes you to gain that much life\.',
-            'menace': r"This creature can't be blocked except by two or more creatures\.",
-            'reach': r'This creature can block creatures with flying\.',
-            'skulk': r"This creature can't be blocked by creatures with greater power\.",
-            'trample': r"This creature can deal excess combat damage to the player or planeswalker it's attacking\.",
-            'vigilance': r"Attacking doesn't cause this creature to tap\.",
-        }
-        for line in raw.splitlines():
-            if not any(c in line for c in '()'):
-                continue
-            match = re.fullmatch(r'([^()]+) \(([^()]+)\)', line)
-            if match is None:
-                return False
-            words = [word.strip().casefold() for word in match[1].split(',')]
-            if (not words or any(word not in INTRINSIC_KEYWORDS for word in words)
-                    or words[-1] not in grammar
-                    or re.fullmatch(grammar[words[-1]], match[2]) is None):
-                return False
-        return True
+        return all(intrinsic_reminder_line_valid(line) for line in raw.splitlines()
+                   if any(c in line for c in '()'))
     if (card.get('layout') == 'normal' and card.get('mana_cost', '') == ''
             and permanent_type(card) in ('Land', 'Basic Land') and not bare.strip()):
         # The complete intrinsic land grammar includes its actual basic subtypes
@@ -416,11 +415,71 @@ def role_reminder_text(text):
         # These two printed presentations describe the same predefined Role.
         bodies = [body, prefix + body]
         if kind == 'Wicked':
+            bodies += [v.replace('When this Aura is put into a graveyard from the battlefield', 'When this token is put into a graveyard') for v in bodies]
             bodies += [v.replace('this Aura', 'this enchantment') for v in bodies]
         for accepted in bodies:
             pattern = r'(' + re.escape(kind) + r' Role token attached to [^.]+\.)( Activate only as a sorcery\.)? \(' + re.escape(accepted) + r'\)'
             text = re.sub(pattern, r'\1\2', text)
     return text
+
+
+def role_consumer_reminders_valid(card):
+    """Authenticate raw context for every production opened by Role consumers.
+
+    Detection follows parenthetical erasure/whitespace stages only to identify
+    grammar use. Execution still requires the original raw body: an unrelated
+    recognized reminder cannot authenticate an instruction's own parentheses.
+    """
+    raw = card.get('oracle_text')
+    if not isinstance(raw, str) or not any(c in raw for c in '()'):
+        return True
+    text = raw
+    seen = role_route(raw)
+    productions = (
+        r'destroy target creature an opponent controls with mana value [0-9]+ or less\.',
+        r'destroy target creature or enchantment\.',
+        r'\bif it was bargained,',
+    )
+    while True:
+        normalized = ' '.join(text.casefold().split())
+        seen = seen or any(re.search(pattern, normalized) for pattern in productions)
+        stripped = re.sub(r'\([^()]*\)', '', text)
+        if stripped == text:
+            break
+        text = stripped
+    if not seen:
+        return True
+    if card.get('layout') == 'saga':
+        # This grammar already authenticates its header, all chapters, exact
+        # Food/Role reminders and the matching final sacrifice number.
+        return saga_body(card) is not None
+    authenticated = role_reminder_text(raw)
+    authenticated = re.sub(
+        r'^Bargain \(You may sacrifice an artifact, enchantment, or token as you cast this spell\.\)$',
+        'Bargain', authenticated, flags=re.MULTILINE)
+    return all(intrinsic_reminder_line_valid(line)
+               for line in authenticated.splitlines() if any(c in line for c in '()'))
+
+
+def enchanted_draw_reminders_valid(card):
+    """New generic guard/draw routes authenticate raw input before erasure."""
+    raw=card.get('oracle_text','')
+    if not isinstance(raw,str):return True
+    surface=raw;seen=False
+    while True:
+        normalized=' '.join(surface.casefold().split())
+        seen |= re.search(r'\byou control an enchanted creature\b|\byou lose [0-9]+ life and you draw an additional card\b',normalized) is not None
+        stripped=re.sub(r'\([^()]*\)','',surface)
+        if stripped==surface:break
+        surface=stripped
+    if not seen:return True
+    for line in role_reminder_text(raw).splitlines():
+        if '(' not in line and ')' not in line:continue
+        bare=re.sub(r'\([^()]*\)','',line).strip()
+        proxy=dict(card,oracle_text=bare)
+        if creature_template(proxy) is None or not intrinsic_reminders_valid(dict(card,oracle_text=line)):
+            return False
+    return True
 
 
 def role_program(text):
@@ -435,11 +494,17 @@ def role_program(text):
         before = [f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({KEYWORDS["hexproof"]}) }}']; fixed_rule = 'CreatureYou'
     elif body.startswith('draw a card. '):
         body = body[len('draw a card. '):]; before = ['Draw(PlayerSet::Controller, 1)']
+    if body.startswith('one or two target creatures each gain haste until end of turn. For each of those creatures, '):
+        tail=body[len('one or two target creatures each gain haste until end of turn. For each of those creatures, '):]
+        result=role_program(tail.replace('attached to it.','attached to target creature.'))
+        if result is not None and result[0]=='Creature':
+            return ('Creature',1,2),[f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({KEYWORDS["haste"]}) }}',*result[1]]
+        return None
     body = body[0].lower() + body[1:] if body else body
-    m = re.fullmatch(r'create a (Cursed|Monster|Royal|Sorcerer|Wicked|Young Hero) Role token attached to (target creature(?: you control)?|another target creature(?: you control)?|up to one other target creature you control|it|that creature)\.', body)
+    m = re.fullmatch(r'create a (Cursed|Monster|Royal|Sorcerer|Wicked|Young Hero) Role token attached to (target creature(?: you control| an opponent controls)?|another target creature(?: you control)?|up to one (?:other )?target creature you control|it|that creature)\.', body)
     if not m:return None
     kind, recipient = m.groups()
-    rules = {'target creature':'Creature','target creature you control':'CreatureYou','another target creature':'OtherCreature','another target creature you control':'OtherCreatureYou','up to one other target creature you control':('OtherCreatureYou',0,1)}
+    rules = {'target creature':'Creature','target creature you control':'CreatureYou','target creature an opponent controls':'CreatureOpponent','another target creature':'OtherCreature','another target creature you control':'OtherCreatureYou','up to one other target creature you control':('OtherCreatureYou',0,1),'up to one target creature you control':('CreatureYou',0,1)}
     rule = rules.get(recipient)
     if rule is None:
         if fixed_rule is None:return None
@@ -450,6 +515,23 @@ def role_program(text):
     if key in TOKEN_DEFS and TOKEN_DEFS[key] != factory:raise ValueError('token factory collision')
     TOKEN_DEFS[key] = factory
     return rule, [*before, f'CreateRole {{ token: __TOKEN_{key}__, subject: Subject::Targets }}']
+
+
+
+def source_role_program(text, condition):
+    """Only a complete self-event clause proves the recipient is this source."""
+    if condition not in ('SelfEnters','SelfAttacks','SelfEntersOrAttacks'):return None
+    pay=None
+    if match:=re.fullmatch(r'you may pay ((?:\{[0-9WUBRGC]+\})+)\. If you do, (.+)',text):
+        pay=mana_cost_spec(match[1])
+        if pay is None or spell_cost_options(match[1]) is None:return None
+        text=match[2]
+    match=re.fullmatch(r'[Cc]reate a (Cursed|Monster|Royal|Sorcerer|Wicked|Young Hero) Role token attached to (?:it|this creature)\.',text)
+    if match is None:return None
+    result=role_program('create a '+match[1]+' Role token attached to target creature.')
+    assert result is not None
+    program=[v.replace('Subject::Targets','Subject::Source') for v in result[1]]
+    return 'None',([f'MayPayMana {{ cost: {pay}, skip: {len(program)} }}'] if pay else [])+program
 
 
 def token_program(text):
@@ -1138,7 +1220,7 @@ def extract_bargain(card):
 
 
 def fixed_bargain_body(card):
-    """Ten closed complete bodies; no partial parsing of unknown bargain tails."""
+    """Complete Bargain bodies; generic creature fallback authenticates raw reminders."""
     cost=card.get('mana_cost','')
     if fixed_cost(cost) is None or spell_cost_options(cost) is None:return None
     text=card.get('oracle_text','')
@@ -1164,7 +1246,11 @@ def fixed_bargain_body(card):
       'When this creature enters, if it was bargained, return target instant or sorcery card from your graveyard to your hand.':(0,[('SelfBargained',['ReturnToHand'],'InstantSorceryGraveYou')],0),
       'When this creature enters, if it was bargained, exile target artifact or enchantment an opponent controls.':(0,[('SelfBargained',['Exile'],'ArtifactEnchantmentOpponent')],0),
     }
-    if text not in creatures:return None
+    if text not in creatures:
+        raw=role_reminder_text(text)
+        if '(' in raw or ')' in raw:return None
+        parsed=trigger_creature_template(dict(card,oracle_text=raw))
+        return (parsed[0],parsed[1],parsed[2],None,0) if parsed else None
     keywords,triggers,reduction=creatures[text]
     return effect,keywords,triggers,None,reduction
 
@@ -1594,6 +1680,9 @@ def statement_program(text):
     text = strip_rule_label(text)
     if not text:return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if m:=re.fullmatch(r'you lose ([0-9]+) life and you draw an additional card\.',text):
+        amount=int(m[1])
+        return [f'LoseLife(PlayerSet::Controller, {amount})','Draw(PlayerSet::Controller, 1)'] if amount<=65535 else None
     if text=='you may play an additional land this turn.':
         return ['AdditionalLandPlays(1)']
     if text=='discard a card. If you do, draw two cards.':
@@ -2130,10 +2219,8 @@ def recovery_target_program(text):
     if match is None:
         return None
     action, cardinality, noun, destination, where = match.groups()
-    # Death-trigger source references currently retain the former incarnation.
-    # 'Another' in a graveyard needs a validated physical-source exclusion.
-    if cardinality == 'another target':
-        return None
+    # Zone-trigger packets bind their exact first public destination separately
+    # from source LKI, so `other` excludes that incarnation, never every CardId.
     if (action == 'return') != (where is None):
         return None
     noun = noun or ''
@@ -2230,6 +2317,16 @@ def targeted_program(text):
         result=targeted_program(text.replace('another target attacking creature you control','another target creature you control',1))
         return ('OtherCreatureAttackingYou',result[1]) if result and result[0]=='OtherCreatureYou' else None
     if result:=role_program(text):return result
+    if match:=re.fullmatch(r'destroy target creature an opponent controls with mana value ([0-9]+) or less\.',text):
+        maximum=int(match[1])
+        if maximum>4294967295:return None
+        key='CreatureOpponentMax'+str(maximum)
+        TARGET_RULES[key]=f'TargetRule::Object {{ zone: TargetZone::Battlefield, kinds: 1, relation: 1, other: false, nonland: false, tapped: false, min_mana: 0, max_mana: {maximum} }}'
+        return key,['Destroy']
+    if match:=re.fullmatch(r'(you may discard (?:a card|two cards|three cards)\. If you do, [^.]+\.) ([Cc]reate a .+ Role token attached to .+\.)',text):
+        prefix=statement_program(match[1]);tail=role_program(match[2])
+        if prefix and tail:return tail[0],[*prefix,*tail[1]]
+        return None
     if result:=target_subject_conditional(text):return result
     for subject,rule in [('another target attacking creature you control','OtherCreatureAttackingYou'),('target attacking creature','CreatureAttacking'),('target attacking Goblin you control','GoblinAttackingYou')]:
         if text.startswith(subject+' '):
@@ -2415,6 +2512,7 @@ def targeted_program(text):
         'destroy target creature.': ('Creature', ['Destroy']),
         'destroy target artifact.': ('Artifact', ['Destroy']),
         'destroy target enchantment.': ('Enchantment', ['Destroy']),
+        'destroy target creature or enchantment.': ('CreatureEnchantment', ['Destroy']),
         'destroy target artifact or enchantment.': ('ArtifactEnchantment', ['Destroy']),
         'destroy up to one target artifact or enchantment.': (('ArtifactEnchantment',0,1),['Destroy']),
         "return up to one other target creature you control to its owner's hand.": (('OtherCreatureYou',0,1),['ReturnToHand']),
@@ -2509,6 +2607,42 @@ def targeted_program(text):
 
 OPPONENT_TURN_CAST_PREFIX = "Whenever you cast a spell during an opponent's turn, "
 
+def adventure_event_route(text):
+    """Detect new event routes through erased stages; never authenticate erasure."""
+    if not isinstance(text, str): return False
+    while True:
+        surface = ' '.join(text.casefold().split())
+        if (re.search(r'you cast your (?:first|second) instant or sorcery spell each turn', surface)
+                or 'attacks alone' in surface
+                or (re.search(r'\bcasts?\b', surface) and 'damage to that player' in surface)):
+            return True
+        stripped = re.sub(r'\([^()]*\)', '', text)
+        if stripped == text: return False
+        text = stripped
+
+
+def adventure_event_reminders_valid(card):
+    raw = card.get('oracle_text', '')
+    if not adventure_event_route(raw) or not any(c in raw for c in '()'): return True
+    for line in raw.splitlines():
+        if not any(c in line for c in '()'): continue
+        match = re.fullmatch(r'([^()]+) \(([^()]+)\)', line)
+        if match is None: return False
+        body, reminder = match.groups()
+        intrinsic = dict(card, oracle_text=line)
+        if (creature_template(dict(intrinsic, oracle_text=body)) is not None
+                and intrinsic_reminders_valid(intrinsic)):
+            continue
+        # Authenticate the complete Food creation production, not a reminder
+        # copied onto another ability or detached from its actual token clause.
+        if (reminder == 'It\'s an artifact with "{2}, {T}, Sacrifice this token: You gain 3 life."'
+                and re.search(r'(?:^|, |\. )create (?:a|one|two|three|four|five|six) (?:tapped )?Food tokens?\.$', body)
+                and trigger_creature_template(dict(card, oracle_text=body)) is not None):
+            continue
+        return False
+    return True
+
+
 def qualified_cast_prefix(line):
     """Printed spell characteristics and event-only turn qualifications."""
     targeted = {
@@ -2524,6 +2658,9 @@ def qualified_cast_prefix(line):
     }
     for prefix,filter_ in targeted.items():
         if line.startswith(prefix):return prefix,cast_condition(filter_=filter_)
+    for word,ordinal in [('first',1),('second',2)]:
+        prefix=f'Whenever you cast your {word} instant or sorcery spell each turn, '
+        if line.startswith(prefix):return prefix,cast_condition(filter_=f'InstantSorceryOrdinal({ordinal})')
     prefix='Whenever you cast your first spell each turn, '
     if line.startswith(prefix):return prefix,cast_condition(ordinal=1)
 
@@ -2553,6 +2690,8 @@ def step_guard(text):
     if text == 'a creature died this turn': return 'StepGuard::CreatureDied'
     if text == 'an opponent lost life this turn': return 'StepGuard::OpponentLostLife'
     if text == 'this creature is tapped': return 'StepGuard::SourceTapped'
+    if text == 'you control an enchanted creature':
+        return 'StepGuard::Threshold { value: StepValue::EnchantedCreatures, minimum: Some(1), maximum: None }'
     def threshold(value, minimum=None, maximum=None):
         lo = 'None' if minimum is None else f'Some({minimum})'
         hi = 'None' if maximum is None else f'Some({maximum})'
@@ -2834,6 +2973,7 @@ def trigger_creature_template(card):
         'Whenever a player casts a spell, ': cast_condition(relation='Any'),
         'Whenever you cast your second spell each turn, ': cast_condition(ordinal=2),
         'Flurry — Whenever you cast your second spell each turn, ': cast_condition(ordinal=2),
+        'When this creature enters, if it was bargained, ': 'SelfBargained',
         'When this creature enters, ': 'SelfEnters',
         'When this creature dies, ': 'SelfDies',
         'When this creature enters or dies, ': 'SelfEntersOrDies',
@@ -2842,6 +2982,7 @@ def trigger_creature_template(card):
         **{f'When this {noun} enters or is put into a graveyard from the battlefield, ': 'SelfEntersOrDies'
            for noun in ('creature','artifact','enchantment','Aura','Equipment')},
         'Whenever this creature attacks, ': 'SelfAttacks',
+        'Whenever this creature attacks alone, ': 'SelfAttacksAlone',
         'Whenever this creature becomes tapped, ': 'SelfBecomesTapped',
         'Whenever you attack, ': 'AttackDeclared { minimum: 1, power_min: None, guard: StepGuard::Always }',
         'Whenever one or more creatures you control attack, ': 'AttackDeclared { minimum: 1, power_min: None, guard: StepGuard::Always }',
@@ -3024,9 +3165,26 @@ def trigger_creature_template(card):
                     break
                 if condition=='SelfEnters' and effect_text=='you may forage. If you do, put two +1/+1 counters on it.':
                     effect_text=effect_text.replace(' on it.',' on this creature.')
+                # 'When you do' queues a separate targeted reflexive ability;
+                # target selection must not occur before the optional payment.
+                role_payment=re.fullmatch(r'you may pay ((?:\{[0-9WUBRGC]+\})+)\. When you do, (.+)',effect_text)
+                if role_payment and (result:=role_program(role_payment[2])):
+                    if limited or intervening is not None:return None
+                    cost=mana_cost_spec(role_payment[1])
+                    if cost is None or spell_cost_options(role_payment[1]) is None:return None
+                    targets,body=result;index=len(abilities)+1
+                    abilities.append((condition,[f'MayPayMana {{ cost: {cost}, skip: 1 }}',f'Reflexive {{ ability: {index} }}'],'None'))
+                    abilities.append(('Reflexive',body,targets))
+                    break
+                source_role=source_role_program(effect_text,condition)
                 entering_program=entering_object_program(effect_text,condition)
-                if entering_program is not None:
+                if source_role is not None:
+                    targets,program=source_role
+                elif entering_program is not None:
                     targets,program=entering_program
+                elif condition.startswith('SpellCast {') and (m:=re.fullmatch(r'this creature deals ([0-9]+) damage to that player\.',effect_text)):
+                    amount=int(m[1])
+                    targets,program=('None',[f'DamagePlayers(PlayerSet::CastingPlayer, {amount})']) if amount<=32767 else ('None',None)
                 elif condition.startswith('CardDrawn {'):
                     result=draw_event_program(effect_text)
                     targets,program=result if result else ('None',None)
@@ -4116,6 +4274,7 @@ def saga_body(card):
             # Unknown parenthesized text is executable residual, never harmless prose.
             reminders = {
                 'Create a Treasure token. (It\'s an artifact with "{T}, Sacrifice this token: Add one mana of any color.")': 'Create a Treasure token.',
+                'Create a Food token. (It\'s an artifact with "{2}, {T}, Sacrifice this token: You gain 3 life.")': 'Create a Food token.',
                 'Mill three cards, then create a Food token. (It\'s an artifact with "{2}, {T}, Sacrifice this token: You gain 3 life.")': 'Mill three cards, then create a Food token.',
                 'Tap target creature an opponent controls. Put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)': 'Tap target creature an opponent controls. Put a stun counter on it.',
             }
@@ -4424,11 +4583,8 @@ def compile_catalogue(snapshot, target):
             else:
                 effect,keywords,abilities=saga
                 activations=[];enters=[0,0,0]
-        role_raw = original.get('oracle_text','')
-        if role_route(role_raw):
-            checked_role = role_reminder_text(role_raw)
-            checked_role = checked_role.replace("Menace (This creature can't be blocked except by two or more creatures.)", 'Menace')
-            if '(' in checked_role or ')' in checked_role: effect='Unsupported'
+        if not role_consumer_reminders_valid(original):
+            effect='Unsupported'
         if attachment_ward_route(original) and not attachment_ward_reminders_valid(original):
             effect='Unsupported'
         # New split-search consumers are whole bodies. The older permanent
@@ -4451,9 +4607,13 @@ def compile_catalogue(snapshot, target):
             activations = [*activations, *cycling]
             if len(activations) > 64: effect = 'Unsupported'; activations = []
         # A later generic selector cannot revive rejected intrinsic reminder text.
+        if not adventure_event_reminders_valid(original):
+            effect = 'Unsupported'
         if not recovery_reminders_valid(original):
             effect = 'Unsupported'
         if not intrinsic_reminders_valid(original):
+            effect = 'Unsupported'
+        if not enchanted_draw_reminders_valid(original):
             effect = 'Unsupported'
         # Rejected timing syntax/source shapes must not be revived by legacy selectors.
         if timing_seen and not timing_grants:

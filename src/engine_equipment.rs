@@ -1,6 +1,17 @@
 //! Exact-incarnation attachment links and continuous Equipment bonuses.
 use super::*;
 impl Game {
+    /// An Aura's controller does not affect whether its exact recipient is enchanted.
+    pub(super) fn is_enchanted(&self, id: CardId) -> bool {
+        self.on_battlefield(id)
+            && self.state.attachment_sources.iter().any(|&aura| {
+                let object = &self.state.objects[aura as usize];
+                object.zone == Zone::Battlefield
+                    && object.card.aura().is_some()
+                    && object.attached_to == Some(self.object_ref(id))
+            })
+    }
+
     pub(super) fn attached_subject(&self, item: &SpellView) -> Option<CardId> {
         let target = if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object
         {
