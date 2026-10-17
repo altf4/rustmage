@@ -58,8 +58,14 @@ class DeathExileTests(unittest.TestCase):
  def test_strict_current_parent_preservation(self):
   before=subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True)
   physical={c['oracle_id']:c['name']for c in self.cards.values()}
-  proof=assert_union(canonical(before,physical),canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical),changed={name+'#0'for name in self.audit['proposed_complete_batch']},added=set(),helpers=set(),aliases={})
+  delivered=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','8dd395286661963d1d1d98a2d384f2f5ab62d620:src/generated/catalogue.rs'],text=True),physical)
+  current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  proof=assert_union(canonical(before,physical),delivered,changed={name+'#0'for name in self.audit['proposed_complete_batch']},added=set(),helpers=set(),aliases={})
   self.assertEqual(proof['preserved_definitions'],5320)
+  for name in self.audit['proposed_complete_batch']:
+   self.assertEqual(current['definitions'][name+'#0'],delivered['definitions'][name+'#0'])
+  mutant=copy.deepcopy(delivered);mutant['definitions']['Plains#0']='unrelated mutation'
+  with self.assertRaises(AssertionError):assert_union(canonical(before,physical),mutant,changed={name+'#0'for name in self.audit['proposed_complete_batch']},added=set(),helpers=set(),aliases={})
  def test_entire_pinned_java_source_and_full_metadata_audit(self):
   root=Path(os.environ.get('RUSTMAGE_XMAGE_SOURCE','/home/altf4/Code/mage'))
   if not root.exists():self.skipTest('set RUSTMAGE_XMAGE_SOURCE for complete pinned source audit')

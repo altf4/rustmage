@@ -26,6 +26,22 @@ pub(crate) struct SpellMode {
     pub program: &'static [Instruction],
 }
 
+/// The four complete Gift payloads present in the pinned Standard catalogue.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum GiftKind {
+    Card,
+    Food,
+    Treasure,
+    TappedFish,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct GiftSpec {
+    pub kind: GiftKind,
+    pub token: Option<Card>,
+    pub promised_targets: TargetPlan,
+}
+
 /// A relationship between distinct bindings within one occurrence of target.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetGroupConstraint {
@@ -113,7 +129,8 @@ pub(crate) enum TargetZone {
 pub(crate) struct TargetSpec {
     pub rule: TargetRule,
     pub min: u16,
-    pub max: u16,
+    /// usize::MAX denotes any number; only arena/address-space limits apply.
+    pub max: usize,
 }
 impl TargetSpec {
     pub const fn one(rule: TargetRule) -> Self {
@@ -394,6 +411,29 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    Suspect {
+        subject: Subject,
+    },
+    UnsuspectCreatures {
+        filter: CreatureFilter,
+    },
+    ReturnGrantedSourceWithSuspect {
+        tapped: bool,
+    },
+    ReturnToBattlefieldSuspected,
+    GiveGift,
+    ReturnSpellToHand,
+    ProhibitCastingThisTurn,
+    PlayerHexproofThisTurn,
+    GrantPermanentsThisTurn(Keywords),
+    DamageWithController {
+        damage: i32,
+        controller_damage: i32,
+    },
+    IfGift {
+        promised: bool,
+        skip: usize,
+    },
     /// Register an exact current target for a direct exile replacement until cleanup.
     ExileIfDiesThisTurn,
     /// Queue a reflexive ability only when this exact Role actually enters attached.
@@ -589,6 +629,11 @@ pub(crate) enum Instruction {
     UntapSource,
     TapSource,
     UntapCreatures(CreatureFilter),
+    SetBaseStats {
+        subject: Subject,
+        power: Option<i128>,
+        toughness: Option<i128>,
+    },
     Grow {
         subject: Subject,
         power: i32,
@@ -773,6 +818,13 @@ pub(crate) struct StatExpr {
     pub value: StatValue,
     pub multiplier: i128,
     pub offset: i128,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct BaseStatSetter {
+    pub power: Option<i128>,
+    pub toughness: Option<i128>,
+    pub own_turn: bool,
+    pub condition: Option<StatValue>,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct DynamicStats {
@@ -1215,6 +1267,8 @@ pub(crate) enum TriggerCondition {
     SelfAttacksWhileSaddled,
     SelfEntersOrAttacksWhileSaddled,
     SelfSaddledFirst,
+    /// A paid promise belongs to this actual cast-to-battlefield entry event.
+    SelfGiftEnters,
     Foraged,
     FoodsSacrificed,
     Reflexive,
@@ -1726,6 +1780,9 @@ impl Card {
     pub(crate) fn additional_cost(self) -> Option<AdditionalCost> {
         generated::additional_cost(self)
     }
+    pub(crate) fn base_stat_setter(self) -> Option<BaseStatSetter> {
+        generated::base_stat_setter(self)
+    }
     pub(crate) fn dynamic_stats(self) -> Option<DynamicStats> {
         generated::dynamic_stats(self)
     }
@@ -1887,6 +1944,9 @@ impl Card {
     /// Fixed optional kicker surcharge for this immutable whole-card definition.
     pub fn kicker_cost(self) -> Option<ManaCost> {
         generated::kicker_cost(self)
+    }
+    pub(crate) fn gift(self) -> Option<GiftSpec> {
+        generated::gift(self)
     }
     pub(crate) fn kicked_entry_counters(self) -> u16 {
         generated::kicked_entry_counters(self)

@@ -4,7 +4,7 @@ from pathlib import Path
 from scripts import generate_catalogue as g
 from scripts import test_legacy_metadata as metadata
 from scripts.catalogue_preservation import canonical,assert_union
-PARENT='8dd395286661963d1d1d98a2d384f2f5ab62d620'
+PARENT='19e4602b436b7aa8c9708f28f87fe288985c9377'
 class HandLandTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
@@ -78,7 +78,7 @@ class HandLandTests(unittest.TestCase):
    c=self.cards['Nicanzil, Current Conductor'];self.assertFalse(self.compile(dict(c,oracle_text=c['oracle_text'].replace('a land card,',phrase+',')))[1],phrase)
  def test_exact_current_parent_preservation(self):
   before=subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True);physical={c['oracle_id']:c['name']for c in self.cards.values()}
-  proof=assert_union(canonical(before,physical),canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical),changed={n+'#0'for n in self.audit['proposed_complete']},added=set(),helpers=set(),aliases={});self.assertEqual(proof['preserved_definitions'],5326)
+  proof=assert_union(canonical(before,physical),canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical),changed={n+'#0'for n in self.audit['proposed_complete']},added=set(),helpers=set(),aliases={});self.assertEqual(proof['preserved_definitions'],5327);self.assertEqual(proof['prior_helpers'],911)
  def test_complete_twelve_body_metadata_and_all_pinned_java_files(self):
   self.assertEqual(len(self.audit['cards']),12);self.assertEqual(self.audit['source_records'],187);self.assertEqual(self.audit['unique_source_count'],86)
   root=Path('/home/altf4/Code/mage')

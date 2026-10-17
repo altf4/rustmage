@@ -23,6 +23,12 @@ mod saddle;
 pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
+#[path = "engine_gift.rs"]
+mod gift;
+#[cfg(test)]
+#[path = "engine_gift_tests.rs"]
+mod gift_tests;
+pub use gift::{GiftContext, GiftDeclaration};
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
 pub const OBSERVATION_SCHEMA: u32 = 97;
 #[path = "engine_cast_payments.rs"]
@@ -117,6 +123,9 @@ mod roles;
 #[path = "engine_sba.rs"]
 mod sba;
 pub use roles::{RoleGroupView, RoleTimestampView};
+#[path = "engine_base_stats.rs"]
+mod base_stats;
+pub use base_stats::BaseStatsEffectView;
 #[path = "engine_search.rs"]
 mod search;
 pub use explore::{ExploreChoiceView, ExploreEventView, ExplorerView, RevealedLibraryCard};
@@ -330,6 +339,9 @@ define_actions! {
     ChooseX { value: u32 },
     ChooseKicker {
         pay: bool,
+    },
+    ChooseGift {
+        beneficiary: Option<Player>,
     },
     ChooseOffspring {
         pay: bool,
@@ -587,6 +599,7 @@ impl Object {
         }
     }
 
+    #[cfg(test)]
     fn local_power(&self) -> i128 {
         match self.card.effect() {
             Effect::Creature(p, _) => i128::from(p)
@@ -596,6 +609,7 @@ impl Object {
             _ => 0,
         }
     }
+    #[cfg(test)]
     fn local_toughness(&self) -> i128 {
         match self.card.effect() {
             Effect::Creature(_, t) => i128::from(t)
@@ -609,6 +623,7 @@ impl Object {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct PlayerState {
+    hexproof_until_end_turn: bool,
     extra_land_plays_remaining: u64,
     nonland_permanents_entered_this_turn: u64,
     spells_cast_this_turn: u64,
@@ -646,6 +661,9 @@ pub enum CastFace {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CastInfo {
+    /// A non-targeted promise, declared before targets; absent until chosen.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gift: Option<GiftDeclaration>,
     /// Chosen characteristics, independent of payment/permission method.
     pub face: CastFace,
     /// Canonical physical identity, distinct from the chosen inset definition.
@@ -695,6 +713,8 @@ pub struct ReflexiveSubjectView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gift: Option<Box<GiftContext>>,
     pub reflexive_subject: Option<Box<ReflexiveSubjectView>>,
     pub source_move: Option<Box<TriggerSourceMoveView>>,
     pub crew: Option<Box<CrewContext>>,
@@ -731,9 +751,13 @@ pub struct SpellView {
 impl SpellView {
     /// Heap-owned continuation payloads; inline packet storage is counted by its container.
     pub(super) fn owned_bytes(&self) -> usize {
-        self.source_move
+        self.gift
             .as_ref()
-            .map_or(0, |_| std::mem::size_of::<TriggerSourceMoveView>())
+            .map_or(0, |_| std::mem::size_of::<GiftContext>())
+            + self
+                .source_move
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<TriggerSourceMoveView>())
             + self
                 .reflexive_subject
                 .as_ref()
@@ -841,7 +865,22 @@ impl SpellView {
                 let a = &self.source_card.activations()[ability as usize];
                 Some((a.targets, a.program))
             }
-            StackKind::Spell => self.source_card.spell_program(self.mode),
+            StackKind::Spell => self
+                .source_card
+                .spell_program(self.mode)
+                .map(|(plan, program)| {
+                    let promised = self
+                        .cast
+                        .is_some_and(|c| matches!(c.gift, Some(GiftDeclaration::Promised { .. })));
+                    let plan = if promised {
+                        self.source_card
+                            .gift()
+                            .map_or(plan, |gift| gift.promised_targets)
+                    } else {
+                        plan
+                    };
+                    (plan, program)
+                }),
             StackKind::DelayedSacrifice => {
                 Some((TargetPlan::NONE, &[Instruction::SacrificeDelayedTokens]))
             }
@@ -1024,6 +1063,9 @@ enum Pending {
     Kicker {
         player: Player,
     },
+    Gift {
+        player: Player,
+    },
     Offspring {
         player: Player,
     },
@@ -1117,8 +1159,11 @@ enum Pending {
 /// Card definitions are enum/static data, never cloned object graphs or trait objects.
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    casting_prohibited: bool,
     #[allow(clippy::box_collection)]
     temporary_abilities: Option<Box<Vec<TemporaryAbilityView>>>,
+    #[allow(clippy::box_collection)]
+    suspected: Option<Box<Vec<ObjectRef>>>,
     #[allow(clippy::box_collection)]
     death_exile_replacements: Option<Box<Vec<ExileDeathReplacementView>>>,
     roles: Option<Box<roles::RoleState>>,
@@ -1240,6 +1285,7 @@ pub struct ObjectView {
 /// Engine internals consume this value; observations do not expose hidden transitions.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ZoneChange {
+    pub gift: Option<Box<GiftContext>>,
     pub before: ObjectView,
     pub after: ObjectRef,
     pub destination: Zone,
@@ -1257,6 +1303,7 @@ pub struct ZoneChange {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
+    pub hexproof_until_end_turn: bool,
     /// Additional land plays granted until the current turn ends.
     pub extra_land_plays_remaining: u64,
     /// Historical actual entries this turn; departures do not remove them.
@@ -1419,8 +1466,10 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    pub casting_prohibited: bool,
     pub death_exile_replacements: Vec<ExileDeathReplacementView>,
     pub temporary_abilities: Vec<TemporaryAbilityView>,
+    pub suspected: Vec<ObjectRef>,
     pub replacement_choice: Option<ReplacementChoiceView>,
     pub created_token_choice: Option<CreatedTokenChoiceView>,
     /// Complete exact numeric cost-payment space, visible only to its actor.
@@ -1460,6 +1509,7 @@ pub struct Observation {
     pub triggered_this_turn: Vec<TriggerUse>,
     pub role_choices: Vec<RoleGroupView>,
     pub role_timestamps: Vec<RoleTimestampView>,
+    pub base_stat_effects: Vec<BaseStatsEffectView>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
@@ -1561,6 +1611,7 @@ impl Game {
         }
         let mut objects = Vec::with_capacity(config.decks.iter().map(Vec::len).sum());
         let mut players = std::array::from_fn(|_| PlayerState {
+            hexproof_until_end_turn: false,
             extra_land_plays_remaining: 0,
             nonland_permanents_entered_this_turn: 0,
             spells_cast_this_turn: 0,
@@ -1610,6 +1661,7 @@ impl Game {
         let mut game = Self {
             revision: 0,
             state: State {
+                casting_prohibited: false,
                 replacements: None,
                 objects: objects.into(),
                 attacked_this_turn: Vec::new().into(),
@@ -1630,6 +1682,7 @@ impl Game {
                 exile_links: Vec::new(),
                 exile_permissions: Vec::new(),
                 temporary_abilities: None,
+                suspected: None,
                 death_exile_replacements: None,
                 roles: None,
                 adventures: None,
@@ -1721,6 +1774,7 @@ impl Game {
             | Pending::Bargain { player }
             | Pending::X { player }
             | Pending::Kicker { player }
+            | Pending::Gift { player }
             | Pending::Offspring { player }
             | Pending::SpellCost { player }
             | Pending::ActivationCost { player }
@@ -2213,6 +2267,20 @@ impl Game {
                     {
                         return true;
                     }
+                    if s.casting_prohibited {
+                        if obj.card.is_land()
+                            && sorcery
+                            && (obj.zone == Zone::Hand || self.can_play_exiled(actor, card))
+                            && (!s.land_played
+                                || s.players[actor.index()].extra_land_plays_remaining > 0)
+                            && emit(Action::PlayLand { card })
+                        {
+                            return true;
+                        }
+                        // Plot and activated abilities were offered above; every
+                        // casting method/face below remains prohibited.
+                        continue;
+                    }
                     if sorcery
                         && obj.zone == Zone::Exile
                         && self.plotted_cast_available(actor, card)
@@ -2285,6 +2353,13 @@ impl Game {
                         }),
                         Effect::Spell(spec, _) | Effect::Aura(spec) => {
                             self.cast_targets_available(spec, actor, self.object_ref(card))
+                                || obj.card.gift().is_some_and(|gift| {
+                                    self.cast_targets_available(
+                                        gift.promised_targets,
+                                        actor,
+                                        self.object_ref(card),
+                                    )
+                                })
                         }
                         _ => true,
                     };
@@ -2376,6 +2451,7 @@ impl Game {
                         && obj.zone == Zone::Hand
                         && obj.card.offspring_cost().is_none()
                         && obj.card.kicker_cost().is_none()
+                        && obj.card.gift().is_none()
                         && obj.card.collect_evidence_cost().is_none()
                         && !obj.card.has_bargain()
                         && obj.card.additional_cost().is_none()
@@ -2431,6 +2507,7 @@ impl Game {
                         || target_cost
                         || obj.card.offspring_cost().is_some()
                         || obj.card.kicker_cost().is_some()
+                        || obj.card.gift().is_some()
                         || obj.card.collect_evidence_cost().is_some()
                         || obj.card.has_convoke()
                         || obj.card.has_bargain()
@@ -2652,6 +2729,16 @@ impl Game {
                     }
                 }
             }
+            Pending::Gift { .. } => {
+                let a = s.announcing.as_ref().unwrap();
+                for beneficiary in [None, Some(actor.other())] {
+                    if self.gift_choice_fundable(a, beneficiary)
+                        && emit(Action::ChooseGift { beneficiary })
+                    {
+                        return true;
+                    }
+                }
+            }
             Pending::Offspring { player: _ } => {
                 let a = s.announcing.as_ref().unwrap();
                 for pay in [false, true] {
@@ -2709,7 +2796,7 @@ impl Game {
                 {
                     return true;
                 }
-                if count < usize::from(announcement.spec.max) {
+                if count < announcement.spec.max {
                     return self.visit_targets(
                         announcement.spec.rule,
                         actor,
@@ -3201,6 +3288,7 @@ impl Game {
                     .kicker = Some(pay);
                 self.continue_announcement_choices(false);
             }
+            Action::ChooseGift { beneficiary } => self.choose_gift(beneficiary),
             Action::ChooseOffspring { pay } => {
                 self.state
                     .announcing
@@ -3230,7 +3318,7 @@ impl Game {
                     .iter()
                     .filter(|bound| bound.group == announcement.group)
                     .count()
-                    == usize::from(announcement.spec.max)
+                    == announcement.spec.max
                 {
                     self.finish_target_group();
                 }
@@ -3697,6 +3785,7 @@ impl Game {
         // CR111.8: after leaving the battlefield, a token cannot move again.
         if before.card.is_emblem() || (before.card.is_token() && before.zone != Zone::Battlefield) {
             return ZoneChange {
+                gift: None,
                 after: before.reference,
                 destination: before.zone,
                 before,
@@ -3713,6 +3802,9 @@ impl Game {
             before.zone, destination,
             "same-zone moves are ordering operations"
         );
+        if before.zone == Zone::Battlefield {
+            self.clear_suspected_reference(before.reference);
+        }
         if before.zone == Zone::Battlefield
             && destination == Zone::Graveyard
             && before.is_creature()
@@ -3768,6 +3860,7 @@ impl Game {
         }
         if before.zone == Zone::Battlefield {
             self.forget_role(before.reference);
+            self.forget_base_stats(before.reference);
             // Abilities use the source's actual last-known keywords if it leaves,
             // including gains made after that ability was announced.
             for item in self
@@ -3863,6 +3956,7 @@ impl Game {
             }
         }
         ZoneChange {
+            gift: None,
             before,
             after: self.object_ref(id),
             destination,
@@ -4061,8 +4155,13 @@ impl Game {
     }
 
     fn finish_cleanup(&mut self) {
+        self.state.casting_prohibited = false;
+        for player in &mut self.state.players {
+            player.hexproof_until_end_turn = false;
+        }
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.state.temporary_abilities = None;
+        self.expire_base_stats();
         self.state.death_exile_replacements = None;
         for player in &mut self.state.players {
             player.extra_land_plays_remaining = 0;
@@ -4339,6 +4438,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
+            casting_prohibited: s.casting_prohibited,
             replacement_choice: self.replacement_choice(viewer),
             created_token_choice: self.created_token_choice(),
             mana_payment: owns_choice.then(|| self.mana_payment_domain()).flatten(),
@@ -4380,6 +4480,10 @@ impl Game {
                 None
             },
             x_choice: if owns_choice { self.x_choice() } else { None },
+            suspected: s
+                .suspected
+                .as_ref()
+                .map_or_else(Vec::new, |v| v.as_ref().clone()),
             temporary_abilities: s
                 .temporary_abilities
                 .as_ref()
@@ -4413,6 +4517,7 @@ impl Game {
                 Pending::Offspring { .. } => "offspring",
                 Pending::Bargain { .. } => "bargain",
                 Pending::Kicker { .. } => "kicker",
+                Pending::Gift { .. } => "gift",
                 Pending::Endure { .. } => "endure",
                 Pending::Convoke { .. } => "convoke",
                 Pending::Mobilize { .. } => "mobilize",
@@ -4460,6 +4565,7 @@ impl Game {
                 Pending::Terminal => "terminal",
             },
             players: std::array::from_fn(|i| PlayerView {
+                hexproof_until_end_turn: s.players[i].hexproof_until_end_turn,
                 extra_land_plays_remaining: s.players[i].extra_land_plays_remaining,
                 nonland_permanents_entered_this_turn: s.players[i]
                     .nonland_permanents_entered_this_turn,
@@ -4528,6 +4634,10 @@ impl Game {
                 .sba_batch
                 .as_ref()
                 .map_or_else(Vec::new, |b| b.roles.clone()),
+            base_stat_effects: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.base_stats.clone()),
             role_timestamps: s
                 .roles
                 .as_ref()
@@ -4797,6 +4907,7 @@ impl Game {
         let s = &self.state;
         std::mem::size_of::<State>()
             + self.temporary_ability_bytes()
+            + self.suspected_bytes()
             + self.death_exile_bytes()
             + self.mobilize_bytes()
             + std::mem::size_of::<Vec<Object>>()
@@ -5472,6 +5583,8 @@ mod target_exclusion_tests;
 #[cfg(test)]
 #[path = "engine_battlefield_return_tests.rs"]
 mod battlefield_return_tests;
+#[path = "engine_suspect.rs"]
+mod suspect;
 
 #[cfg(test)]
 #[path = "engine_death_exile_tests.rs"]
@@ -5484,3 +5597,7 @@ mod combat_restriction_tests;
 #[cfg(test)]
 #[path = "engine_hand_land_tests.rs"]
 mod hand_land_tests;
+
+#[cfg(test)]
+#[path = "engine_base_stats_tests.rs"]
+mod base_stats_tests;

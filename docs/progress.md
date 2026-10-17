@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,914 executable Standard identities | 3,250 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,950 executable Standard identities | 3,214 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -205,3 +205,78 @@ passing full compiler run. Seven complete-body dependencies remain gated and
 tracked in [issue323](https://github.com/altf4/rustmage/issues/323). Two independent
 NONAUTHOR exact-final-head approvals are required before merge. The all-Standard
 rules and training goal remains incomplete.
+
+
+## Shared Gift delivery — PR #312 / issue #310
+
+Seventeen complete Gift bodies compose onto actual main
+`8dd395286661963d1d1d98a2d384f2f5ab62d620`: 1,931 executable Standard identities,
+3,233 gated, schema94, 94 token recipes and one emblem. The
+[Gift record](gift-kernels.md) describes promise-before-target legality, all four
+gifts, exact cast/entry provenance, gift-first resolution, owner spell returns,
+protection and casting prohibition, pinned 23-card Java audit and six concrete
+remaining whole-body dependencies. Strict preservation retains 5,314 unrelated
+definitions and all 888 parent helpers.
+
+Frozen composed source `e484dbcb787f57c24a10a309c0ad35f84f10fd85` passes all
+1,848 native tests, all-target Clippy, formatting, generator verification, 50
+affected compiler methods (23.283s), and five unique public methods (210.011s,
+68 Gift cases, 30 death-exile/mode cases, 24 Role cases and inset alias guards),
+without skips. Fresh composed Standard100 finishes naturally: 74,676 owned
+frames, 149,452 denials, 155.576s. All 866 frozen inputs and the exact schema94
+`87d27d0258d2` immutable library hash are verified. Source721's native failure
+was solely a new fixture expecting a card instead of Blooming Blast's printed
+Treasure; the correction changes only that fixture, with production/generator/
+data/policies identical. The fresh full native suite proves the corrected case.
+
+Historical schema90 breadth remains scoped to source28 on actual5d:
+277 unique public methods pass with no skips; the full480 compiler run remains
+477 passes and three stale-fixture failures. Exactly those three catalogue
+expectations were corrected after all jobs ended, then their affected checks and
+the composed 50-method gate pass. No historical broad run is relabeled as a
+current-parent full run. Two independent whole-batch preliminary reviews find
+no issues; final exact-head confirmations are required before merge. All jobs
+are terminal, completed outputs cleaned, shared libraries retained at their
+original paths/hashes, and frozen source exports hash-verified into recoverable
+archives. Full Standard remains unfinished.
+
+
+The [temporary death consumers and Suspect batch](temporary-death-consumers.md)
+composes actual Gift/death-exile main02d8352 and adds nine complete bodies:
+1,940/5,164 executable Standard identities, 3,224 gated, schema95. Strict union
+preserves 5,322 other definitions and all906 parent helpers/old94 recipes, adding
+only the declared Detective factory and two helpers. All nine complete programs
+remain identical to the initial reviewed471 delivery; historical/current Gift,
+death-exile, combat and own sentinels retain exact independent scopes.
+
+Fresh composed production4a8 passes1,862 native tests, all-target Clippy/fmt,
+generator check and43 affected compiler methods. Final policy5a5 differs only in
+two Rabid readiness lines, with every other tracked byte identical; its20 paid
+natural Standard cases and entire unchanged fixed100 pass (90,675 owned replay
+frames/181,350 denials). The feature record preserves both historical failed100
+workloads, precise policy diagnostics, old481 compiler475/6fixture outcome and
+fresh affected corrections. Original277 API scope remains schema91/471, not a
+fresh schema95 broad run. All jobs are terminal and completed build non-SO outputs
+are cleaned with every shared library retained. Two independent NONAUTHOR exact
+final-head reviews are required before merge. Fifteen inventoried full consumers,
+including complete Tiered Vincent, remain gated; issue311 and full Standard stay open.
+
+
+## Timestamped base-stat layers — PR321
+
+This delivery adds ten complete bodies to the actual merged Suspect/Gift parent,
+bringing executable coverage to1,950/5,164, with3,214 gated,95 token recipes and
+observation schema96. Shared sparse exact-incarnation effects enforce7a→7b→7c,
+Cursed Role timestamps, live static predicates, fixed resolution recipients and
+cleanup/departure. Owned branches, replay, restore and public projections remain
+independent. Full56-card source/dependency inventory remains in the audit;48
+remaining base-stat bodies are tracked in issue324, and full Standard is unfinished.
+
+Composedf373 evidence:1870 native tests/Clippy/fmt/generator,50 affected compiler
+methods,30 paid natural cases, three corrected split-search API methods and the
+complete fixed100 workload all pass. The100 workload has81,625 owned replay frames
+and163,250 denials. New paid cross-rule cases cover zero-toughness state actions
+using death-exile replacement before death-return, and7-power dying LKI with
+owner-return/Suspect clearing old base layers. Final actual-parent preservation is
+checked separately. See base-stat-layers.md for exact source/library hashes and
+the historical failed schema assertions and missing-Git harness scope.

@@ -1,5 +1,17 @@
 # Private hand-land placement — issue325
 
+Actual-main composition parent `19e4602b436b7aa8c9708f28f87fe288985c9377`
+retains all reviewed Gift/Suspect/base-stat rules and adds exactly five whole
+bodies: 1,955/5,164 Standard identities, 3,209 gated, schema97 and 95 token recipes.
+Strict canonical proof preserves 5,327 other definitions and all 911 prior helpers;
+no new helper/factory is added. Current fingerprint is
+`a9e03eb43bf0586fc2558d95bf3cc0ff32b6be700fe709485774bc14c49b2cb3`.
+Nine focused compiler/raw/provenance/actual-parent methods pass in 1.937s.
+Fresh combined native/library/public/workload validation remains pending.
+
+## Historical prototype evidence
+
+
 Prototype from actual main8dd3952. The complete twelve-body audit records187
 source/direct-import records and86 unique complete pinned Java files. Five full
 bodies now lower: Embrace the Paradox, H.E.R.B.I.E. Scout Unit, Insidious Fungus,

@@ -1,0 +1,44 @@
+{
+  "parent": "c0c25197ce1fce2b8973c538455d49e2ffa46b23",
+  "execution_source": "f373f040e31dde83fd3115a4d89f28dcdfcd4f61",
+  "canonical": {
+    "prior_definitions": 5332,
+    "current_definitions": 5332,
+    "changed_definitions": [
+      "Doc Ock, Sinister Scientist#0",
+      "Gateway Sneak#0",
+      "Mirkwood Meditator#0",
+      "Multiply by Zero#0",
+      "Perfected Theory#0",
+      "Quandrix Charm#0",
+      "Snooping Page#0",
+      "Snowmelt Stag#0",
+      "Turtle-Duck#0",
+      "Water Wings#0"
+    ],
+    "added_definitions": [],
+    "preserved_definitions": 5322,
+    "prior_helpers": 908,
+    "new_helpers": [
+      [
+        "base_stat_setter",
+        "Doc Ock, Sinister Scientist#0"
+      ],
+      [
+        "base_stat_setter",
+        "Snowmelt Stag#0"
+      ],
+      [
+        "keyword_grants",
+        "Doc Ock, Sinister Scientist#0"
+      ]
+    ],
+    "prior_colors": 5332,
+    "inline_flag_tables": 3,
+    "token_recipes": 95,
+    "emblem_recipes": 1,
+    "prior_aliases": 5438,
+    "result": "PASS"
+  },
+  "all_ten_original_programs_and_three_helpers_identical": true
+}

@@ -921,6 +921,7 @@ impl Game {
             || (a.item.source_card.x_symbols() > 0 && a.item.x.is_none())
             || a.needs_offspring()
             || a.needs_kicker()
+            || a.needs_gift()
             || a.needs_bargain()
             || a.needs_evidence()
             || a.additional_cost().is_some_and(forage::is_forage_cost) && a.forage.is_none()

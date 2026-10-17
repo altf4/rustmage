@@ -133,6 +133,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ChooseSaddler { .. } | Action::ChooseCrewer { .. } => 50,
             Action::FinishSaddle | Action::FinishCrew => 100,
             Action::ChooseX { value } => 80 + i128::from((*value).min(20)),
+            Action::ChooseGift { beneficiary } => {
+                if beneficiary.is_some() {
+                    40
+                } else {
+                    0
+                }
+            }
             Action::ChooseOffspring { pay } | Action::ChooseKicker { pay } => {
                 if *pay {
                     100

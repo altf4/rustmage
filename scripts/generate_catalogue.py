@@ -74,6 +74,83 @@ def spell_cost_options(cost):
     # side of every two-brid symbol. Its total remains the printed mana value.
     return [(list(row[:6]),row[6]) for row in sorted(variants)]
 
+def base_stat_program(text):
+    """Whole constant 7b setters; each axis is independent of additive bonuses."""
+    if not isinstance(text,str) or not text:return None
+    text=normalize_duration(text[0].lower()+text[1:])
+    optional=text.startswith("you may have this creature's base ")
+    if optional:
+        text='this creature has base '+text[len("you may have this creature's base "):]
+        text=text.replace(' become ', ' ',1)
+    m=re.fullmatch(r'(target creature you control|target creature|this creature) has base (power and toughness|power|toughness) (-?[0-9]+)(?:/(-?[0-9]+))?(?: and gains (.+))? until end of turn\.',text)
+    if m is None:return None
+    who,axes,first,second,words=m.groups()
+    if (axes=='power and toughness') != (second is not None):return None
+    values=[int(first),int(second) if second is not None else None]
+    if any(v is not None and not -(2**127)<=v<2**127 for v in values):return None
+    p=values[0] if axes!='toughness' else None
+    t=values[1] if axes=='power and toughness' else values[0] if axes=='toughness' else None
+    subject='Source' if who=='this creature' else 'Targets'
+    option=lambda n:'None' if n is None else 'Some('+str(n)+')'
+    program=['SetBaseStats { subject: Subject::'+subject+', power: '+option(p)+', toughness: '+option(t)+' }']
+    if words is not None:
+        keywords=keyword_list(words)
+        if keywords is None or keywords & KEYWORDS['flash']:return None
+        program.append('GrantKeywords { subject: Subject::'+subject+', keywords: Keywords('+str(keywords)+') }')
+    if optional:program=['May { skip: '+str(len(program))+' }',*program]
+    return ('None' if subject=='Source' else 'CreatureYou' if who.endswith('you control') else 'Creature'),program
+
+
+def extract_base_stat_setter(card):
+    if (card.get('layout')!='normal' or not isinstance(card.get('oracle_text'),str)
+            or 'Creature' not in card.get('type_line','').split(' — ')[0].split()):return card,None
+    names=[card.get('name','')]
+    if card.get('type_line','').startswith('Legendary '):names.append(names[0].split(',')[0])
+    residual=[];found=[]
+    for raw in card['oracle_text'].splitlines():
+        line=source_rule_line(raw,[n for n in names if n]);own_turn=line.startswith('During your turn, ');condition=None
+        if own_turn:line=line[len('During your turn, '):]
+        elif m:=re.fullmatch(r'As long as (.+), (this creature has base .+)',line):
+            condition=stat_threshold_condition(m[1])
+            if condition is None:residual.append(raw);continue
+            line=m[2]
+        m=re.fullmatch(r'[Tt]his creature has base (power and toughness|power|toughness) (-?[0-9]+)(?:/(-?[0-9]+))?\.',line)
+        if m is None or (m[1]=='power and toughness') != (m[3] is not None):residual.append(raw);continue
+        first=int(m[2]);second=int(m[3]) if m[3] is not None else None
+        if any(v is not None and not -(2**127)<=v<2**127 for v in [first,second]):residual.append(raw);continue
+        p=first if m[1]!='toughness' else None;t=second if m[1]=='power and toughness' else first if m[1]=='toughness' else None
+        option=lambda n:'None' if n is None else 'Some('+str(n)+')'
+        found.append('BaseStatSetter { power: '+option(p)+', toughness: '+option(t)+', own_turn: '+str(own_turn).lower()+', condition: '+('None' if condition is None else 'Some('+condition+')')+' }')
+    if len(found)!=1:return card,None
+    return dict(card,oracle_text='\n'.join(residual)),found[0]
+
+
+def base_stat_reminders_valid(card):
+    raw=card.get('oracle_text','');surface=raw;seen=False
+    if not isinstance(raw,str):return True
+    while True:
+        seen |= re.search(r'\bbase\s+(?:power|toughness)\b',' '.join(surface.casefold().split())) is not None or \
+            "this creature can't be blocked this turn" in ' '.join(surface.casefold().split())
+        erased=re.sub(r'\([^()]*\)','',surface)
+        if erased==surface:break
+        surface=erased
+    if not seen:return True
+    names=[card.get('name','')]
+    if card.get('type_line','').startswith('Legendary '):names.append(names[0].split(',')[0])
+    for line in raw.splitlines():
+        if '(' not in line and ')' not in line:continue
+        if intrinsic_reminder_line_valid(line):continue
+        m=re.fullmatch(r"([^()]+) \((It|He) can't be the target of spells or abilities your opponents control\.\)",line)
+        if m is None:return False
+        parsed=base_stat_program(m[1])
+        if parsed and any('GrantKeywords' in row and (int(re.search(r'Keywords\(([0-9]+)\)',row)[1]) & KEYWORDS['hexproof']) for row in parsed[1]):continue
+        normalized=source_rule_line(m[1],[n for n in names if n])
+        conditional=re.fullmatch(r'As long as (.+), this creature has hexproof\.',normalized)
+        if conditional and stat_threshold_condition(conditional[1]) is not None:continue
+        return False
+    return True
+
+
 def extract_combat_restriction(card):
     """Whole readonly source/Aura clauses; unrecognized conditions stay in body."""
     if (card.get('layout')!='normal' or not isinstance(card.get('oracle_text'),str)
@@ -1910,6 +1987,14 @@ def statement_program(text):
     if not text:return None
     text = normalize_duration(text[0].lower() + text[1:])
     if land := hand_land_program(text):return land
+    if (base_set := base_stat_program(text)) and base_set[0]=='None':return base_set[1]
+    if text=="this creature can't be blocked this turn.":return ['GrantKeywords { subject: Subject::Source, keywords: Keywords(16384) }']
+    if text=='suspect this creature.':return ['Suspect { subject: Subject::Source }']
+    if text=='suspect enchanted creature.':return ['Suspect { subject: Subject::Attached }']
+    if text=='all suspected creatures are no longer suspected.':return ['UnsuspectCreatures { filter: '+creature_filter('creatures')+' }']
+    if text.startswith('suspect this creature. '):
+        tail=statement_program(text[len('suspect this creature. '):])
+        return ['Suspect { subject: Subject::Source }',*tail] if tail is not None else None
     if mass_roles := mass_role_program(text): return mass_roles
     if m:=re.fullmatch(r'you lose ([0-9]+) life and you draw an additional card\.',text):
         amount=int(m[1])
@@ -2625,6 +2710,9 @@ def damage_death_exile_program(text):
 
 
 def targeted_program(text):
+    if isinstance(text,str) and text:
+        suspected=suspect_targeted_program(text[0].lower()+text[1:])
+        if suspected:return suspected
     """Complete target occurrences with independent predicates and effect focus."""
     if not isinstance(text, str) or not text.endswith('.'):
         return None
@@ -2636,6 +2724,7 @@ def targeted_program(text):
     if 'another target attacking creature you control' in text:
         result=targeted_program(text.replace('another target attacking creature you control','another target creature you control',1))
         return ('OtherCreatureAttackingYou',result[1]) if result and result[0]=='OtherCreatureYou' else None
+    if result:=base_stat_program(text):return result
     if result:=damage_death_exile_program(text):return result
     if result:=role_return_program(text):return result
     returned=battlefield_return_program(text)
@@ -3459,6 +3548,7 @@ def trigger_creature_template(card):
                 # Only self-event subjects prove an initial 'it' denotes this source.
                 # Other-creature events and later targeted clauses have other antecedents.
                 if condition in ('SelfEnters', 'SelfDies', 'SelfEntersOrDies', 'SelfAttacks', 'SelfEntersOrAttacks', 'SelfDiscarded', 'SelfCycled'):
+                    effect_text=re.sub(r'^[Ss]uspect it(?=[. ])', 'suspect this creature', effect_text)
                     effect_text = re.sub(r'^(?:[Ii]t|[Hh]e|[Ss]he) deals ', 'this creature deals ', effect_text)
                     if effect_text=='it explores.':effect_text='this creature explores.'
                     if m:=re.fullmatch(r'(?:it|he|she) connives(?: ([0-9]+))?\.',effect_text):
@@ -3477,6 +3567,8 @@ def trigger_creature_template(card):
                     if m:=re.fullmatch(re.escape(alias)+r' connives(?: ([0-9]+))?\.',effect_text):
                         effect_text='this creature connives'+(' '+m[1] if m[1] else '')+'.'
                     if effect_text=='untap '+alias+'.':effect_text='untap this creature.'
+                    if effect_text.startswith('suspect '+alias+'.'):
+                        effect_text='suspect this creature.'+effect_text[len('suspect '+alias+'.'):]
                     if effect_text.startswith(alias + ' gets '):
                         effect_text = 'this creature gets ' + effect_text[len(alias) + len(' gets '):]
                 # An explicit occurrence of this card's name denotes this source;
@@ -3554,6 +3646,90 @@ def trigger_creature_template(card):
     return f"Creature({int(card['power'])}, {int(card['toughness'])})", keywords, abilities
 
 
+def suspect_reminders_valid(card):
+    """Detect each erasure stage but authenticate original, line-bound context."""
+    raw=card.get('oracle_text','')
+    if not isinstance(raw,str):return True
+    surface=raw;seen=False
+    while True:
+        seen |= re.search(r'\bsuspect(?:ed)?\b',' '.join(surface.casefold().split())) is not None
+        stripped=re.sub(r'\([^()]*\)','',surface)
+        if stripped==surface:break
+        surface=stripped
+    if not seen:return True
+    aliases=[card.get('name','')]
+    if card.get('type_line','').startswith('Legendary '):
+        aliases += [card.get('name','').split(',')[0],card.get('name','').split(' the ')[0]]
+    actions=[r'it',r'this creature',r'enchanted creature',r'(?:up to one )?target creature(?: you control| an opponent controls)?']
+    actions += [re.escape(a) for a in aliases if a]
+    action=re.compile(r'\bsuspect (?:'+ '|'.join(actions)+r')\b',re.I)
+    for line in raw.splitlines():
+        if '(' not in line and ')' not in line:continue
+        cleaned=re.sub(r" \((?:A suspected creature|It) has menace and can't block\.\)$",'',line)
+        if cleaned!=line and action.search(cleaned) and '(' not in cleaned and ')' not in cleaned:continue
+        if not intrinsic_reminder_line_valid(line):return False
+    return True
+
+
+def suspect_targeted_program(text):
+    if text=="return target creature card from your graveyard to the battlefield. Suspect it.":
+        return 'CreatureGraveYou',['ReturnToBattlefieldSuspected']
+    m=re.fullmatch(r'(?:(?:you gain ([0-9]+) life and )?suspect) (up to one )?(target creature(?: you control| an opponent controls)?)\.',text)
+    if m is None:return None
+    rule={'target creature':'Creature','target creature you control':'CreatureYou','target creature an opponent controls':'CreatureOpponent'}[m[3]]
+    targets=(rule,0,1) if m[2] else rule
+    if m[1] and int(m[1])>65535:return None
+    before=[f'GainLife(PlayerSet::Controller, {int(m[1])})'] if m[1] else []
+    return targets,[*before,'Suspect { subject: Subject::Targets }']
+
+
+def temporary_death_consumers_body(card):
+    """Whole raw payloads: no source-name admission or erased residual program."""
+    if (card.get('layout')!='normal' or card.get('card_faces')
+            or spell_cost_options(card.get('mana_cost','')) is None):return None
+    raw=card.get('oracle_text')
+    if not isinstance(raw,str):return None
+    text=' '.join(raw.split());types=card.get('type_line','').split(' — ')[0].split()
+    def growth(p,t):
+        p,t=int(p),int(t)
+        if max(abs(p),abs(t))>2147483647:return None
+        return f'Grow {{ subject: Subject::Targets, power: {p}, toughness: {t} }}'
+    if types in [['Instant'],['Sorcery']]:
+        prefix=r'Until end of turn, (target creature(?: you control)?) gets ([+-][0-9]+)/([+-][0-9]+) and gains '
+        galuf=re.fullmatch(prefix+r'"When this creature dies, put a number of \+1/\+1 counters equal to its power on up to one target creature\."',text)
+        if galuf:
+            grow=growth(galuf[2],galuf[3])
+            if grow is None:return None
+            rule='CreatureYou' if galuf[1].endswith(' you control') else 'Creature'
+            return 'Spell',0,[('Granted(&TriggerCondition::SelfDies)',['PutCountersScaled { subject: Subject::Targets, kind: CounterKind::PlusOne, amount: AmountValue::SourcePower }'],('Creature',0,1))],(rule,[grow,'GrantUntilEndTurn { ability: 0 }'])
+        presumed=re.fullmatch(prefix+r'"When this creature dies, return it to the battlefield under its owner\'s control and suspect it\."(?: \(A suspected creature has menace and can\'t block\.\))?',text)
+        if presumed:
+            grow=growth(presumed[2],presumed[3])
+            if grow is None:return None
+            rule='CreatureYou' if presumed[1].endswith(' you control') else 'Creature'
+            return 'Spell',0,[('Granted(&TriggerCondition::SelfDies)',['ReturnGrantedSourceWithSuspect { tapped: false }'],'None')],(rule,[grow,'GrantUntilEndTurn { ability: 0 }'])
+        rabid=re.fullmatch(r'Until end of turn, any number of target creatures you control each get ([+-][0-9]+)/([+-][0-9]+) and gain "When this creature dies, draw a card\."',text)
+        if rabid:
+            grow=growth(rabid[1],rabid[2])
+            if grow is None:return None
+            return 'Spell',0,[('Granted(&TriggerCondition::SelfDies)',['Draw(PlayerSet::Controller, 1)'],'None')],(('CreatureYou',0,'usize::MAX'),[grow,'GrantUntilEndTurn { ability: 0 }'])
+        return None
+    if 'Creature' not in types:return None
+    residual,warp=extract_warp(card)
+    if any(line.startswith('Warp') for line in raw.splitlines()) and warp is None:return None
+    base=creature_template(dict(residual,oracle_text=''))
+    if base is None:return None
+    text=' '.join(residual['oracle_text'].split())
+    name=card.get('name','')
+    if name and text.startswith('When '+name+' enters, '):text='When this creature enters, '+text[len('When '+name+' enters, '):]
+    m=re.fullmatch(r'When this creature enters, until end of turn, another target creature you control gets ([+-][0-9]+)/([+-][0-9]+) and gains "When this creature dies, return it to the battlefield tapped under its owner\'s control\."',text)
+    if m is None:return None
+    grow=growth(m[1],m[2])
+    if grow is None:return None
+    effect,keywords=base
+    return effect,keywords,[('SelfEnters',[grow,'GrantUntilEndTurn { ability: 1 }'],'OtherCreatureYou'),('Granted(&TriggerCondition::SelfDies)',['ReturnGrantedSource { counter: None, role: None }'],'None')],None
+
+
 def temporary_death_route(text):
     """Detection survives erasure; only the untouched whole spell grants abilities."""
     if not isinstance(text, str): return False
@@ -3564,6 +3740,105 @@ def temporary_death_route(text):
         stripped = re.sub(r'\([^()]*\)', '', text)
         if stripped == text: return False
         text = stripped
+
+
+def extract_gift(card):
+    """Authenticate the actual keyword slot before exposing any remaining body."""
+    raw = card.get('oracle_text')
+    if card.get('layout') != 'normal' or not isinstance(raw, str): return card, None
+    lines = raw.splitlines()
+    if not lines: return card, None
+    match = re.fullmatch(r'Gift (a card|a Food|a Treasure|a tapped Fish)(?: \((.*)\))?', lines[0])
+    if match is None: return card, None
+    kind, reminder = match.groups()
+    permanent = card.get('type_line','').split(' — ')[0] not in ('Instant','Sorcery')
+    result = {'a card':'they draw a card', 'a Food':'they create a Food token',
+              'a Treasure':'they create a Treasure token',
+              'a tapped Fish':'they create a tapped 1/1 blue Fish creature token'}[kind]
+    expected = ('You may promise an opponent a gift as you cast this spell. If you do, '
+                + ('when it enters, '+result+'.' if permanent else result+' before its other effects.'))
+    if kind == 'a Food': expected += ' It\'s an artifact with "{2}, {T}, Sacrifice this token: You gain 3 life."'
+    if kind == 'a Treasure': expected += ' It\'s an artifact with "{T}, Sacrifice this token: Add one mana of any color."'
+    if reminder is not None and reminder != expected: return card, None
+    return dict(card, oracle_text='\n'.join(lines[1:])), {'a card':'Card','a Food':'Food','a Treasure':'Treasure','a tapped Fish':'TappedFish'}[kind]
+
+
+def gift_spell_program(card):
+    """Whole semantic bodies; neither card names nor inventory labels dispatch."""
+    if (card.get('layout') != 'normal' or card.get('type_line') not in ('Instant','Sorcery')
+            or spell_cost_options(card.get('mana_cost','')) is None): return None
+    body = card.get('oracle_text','')
+    # Only this precise presentation slot is needed by the complete stun body.
+    stun = ' (If a permanent with a stun counter would become untapped, remove one from it instead.)'
+    if body.endswith(stun): body = body[:-len(stun)]
+    if '(' in body or ')' in body: return None
+    body = ' '.join(body.split())
+    if card.get('name'):
+        body = re.sub(r'(^|\. |, |instead )'+re.escape(card['name'])+r' (also )?deals ',
+                      lambda m:m[1]+'this spell '+(m[2] or '')+'deals ', body)
+    def conditional(program, promised=True):
+        return [f'IfGift {{ promised: {str(promised).lower()}, skip: {len(program)} }}', *program]
+    cases = {
+      "Return target spell to its owner's hand. If the gift was promised, players can't cast spells this turn.":
+        ('Spell','Spell',['ReturnSpellToHand',*conditional(['ProhibitCastingThisTurn'])]),
+      'You and permanents you control gain hexproof until end of turn. If the gift was promised, permanents you control also gain indestructible until end of turn.':
+        ('None','None',['PlayerHexproofThisTurn','GrantPermanentsThisTurn(Keywords(4096))',*conditional(['GrantPermanentsThisTurn(Keywords(8192))'])]),
+      'Creatures you control get +2/+0 until end of turn. If the gift was promised, target creature you control gains first strike until end of turn.':
+        ('None','CreatureYou',[*statement_program('creatures you control get +2/+0 until end of turn.'),*conditional(['GrantKeywords { subject: Subject::Targets, keywords: Keywords(512) }'])]),
+      'this spell deals 2 damage to each creature. If the gift was promised, instead this spell deals 1 damage to any target and 2 damage to each creature.':
+        ('None','Any', [*conditional(['Damage(1)']),*battlefield_damage_program('this spell deals 2 damage to each creature.')]),
+      "this spell deals 2 damage to target creature. If the gift was promised, this spell also deals 3 damage to that creature's controller.":
+        ('Creature','Creature',[*conditional(['Damage(2)'],False),*conditional(['DamageWithController { damage: 2, controller_damage: 3 }'])]),
+      "Destroy target creature. If the gift wasn't promised, you lose 2 life.":
+        ('Creature','Creature',['Destroy',*conditional(['LoseLife(PlayerSet::Controller, 2)'],False)]),
+      'Target creature you control gets +2/+2 until end of turn. If the gift was promised, that creature also gains indestructible until end of turn.':
+        ('CreatureYou','CreatureYou',[grow_instruction('Targets',2,2),*conditional(['GrantKeywords { subject: Subject::Targets, keywords: Keywords(8192) }'])]),
+      "Return target creature an opponent controls to its owner's hand. If the gift was promised, instead return target nonland permanent an opponent controls to its owner's hand.":
+        ('CreatureOpponent','NonlandOpponent',['ReturnToHand']),
+      'Counter target creature spell. If the gift was promised, instead counter target spell.':
+        ('SpellCreature','Spell',['Counter']),
+      'Destroy target artifact or enchantment. If the gift was promised, instead destroy two target artifacts and/or enchantments.':
+        ('ArtifactEnchantment',('ArtifactEnchantment',2,2),['Destroy']),
+      'Return target permanent card from your graveyard to your hand. If the gift was promised, instead return two target permanent cards from your graveyard to your hand.':
+        ('PermanentGraveYou',('PermanentGraveYou',2,2),['ReturnToHand']),
+      'Choose target creature you control and target creature you don\'t control. Put a +1/+1 counter on the creature you control if the gift was promised. Then those creatures fight each other.':
+        (['CreatureYou','CreatureOpponent'],['CreatureYou','CreatureOpponent'],[*conditional(['PutCounters { subject: Subject::Targets, kind: CounterKind::PlusOne, amount: 1 }']),'Fight { source: 0, recipient: 1 }']),
+      'Target player draws three cards. If the gift was promised, tap target creature an opponent controls and put a stun counter on it.':
+        ('Player',['Player','CreatureOpponent'],['Draw(PlayerSet::Targeted, 3)',*conditional(['SelectGroup(1)','Tap','PutCounters { subject: Subject::Targets, kind: CounterKind::Stun, amount: 1 }'])]),
+      'Target player draws two cards. If the gift was promised, target creature you control gets +2/+0 until end of turn.':
+        ('Player',['Player','CreatureYou'],['Draw(PlayerSet::Targeted, 2)',*conditional(['SelectGroup(1)',grow_instruction('Targets',2,0)])]),
+    }
+    if body in cases: return cases[body]
+    if body == 'Return up to two target creature cards each with mana value 2 or less from your graveyard to the battlefield. If the gift was promised, instead return up to three target creature cards each with mana value 2 or less from your graveyard to the battlefield.':
+        rule='GiftCreatureGraveYouMax2'
+        TARGET_RULES[rule]='TargetRule::Object { zone: TargetZone::Graveyard, kinds: 1, relation: 0, other: false, nonland: false, tapped: false, min_mana: 0, max_mana: 2 }'
+        return (rule,0,2),(rule,0,3),['ReturnToBattlefield']
+    if body == 'Target opponent sacrifices a creature with the greatest power among creatures they control. If the gift was promised, return target creature card from your graveyard to your hand.':
+        return 'Opponent',['Opponent','CreatureGraveYou'],['SacrificeGreatestPower',*conditional(['SelectGroup(1)','ReturnToHand'])]
+    return None
+
+
+def gift_permanent_body(card):
+    """A complete intrinsic creature plus its gift-qualified entry ability."""
+    if card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'),str): return None
+    lines = card['oracle_text'].splitlines()
+    if not lines: return None
+    if any(('(' in line or ')' in line) and not intrinsic_reminder_line_valid(line)
+           for line in lines[:-1]): return None
+    trigger = lines[-1]
+    if card.get('name'):
+        trigger = trigger.replace('When '+card['name']+' enters, ', 'When this creature enters, ', 1)
+    match = re.fullmatch(r'When this creature enters, if the gift was promised, (.+)', trigger)
+    if match is None: return None
+    result = targeted_program(match[1][0].upper()+match[1][1:])
+    if match[1] == 'destroy target artifact or enchantment an opponent controls.':
+        result = 'ArtifactEnchantmentOpponent',['Destroy']
+    if result is None: return None
+    base = creature_template(dict(card,oracle_text='\n'.join(lines[:-1])))
+    if base is None: return None
+    if any(int(card[axis]) > 2147483647 for axis in ('power','toughness')): return None
+    rule, program = result
+    return base[0],base[1],[('SelfGiftEnters',['GiveGift'],'None'),('SelfGiftEnters',program,rule)]
 
 
 def temporary_death_spell_template(card):
@@ -4802,6 +5077,7 @@ def compile_catalogue(snapshot, target):
     static_rows = []
     enchanted_rows = []
     flash_surcharge_rows = []
+    base_set_rows = []
     combat_rows = []
     grant_rows = []
     dynamic_rows = []
@@ -4814,6 +5090,7 @@ def compile_catalogue(snapshot, target):
     x_rows = []
     x_entry_rows = []
     kicker_rows = []
+    gift_rows = []
     bargain_rows = []
     convoke_rows = []
     evidence_rows = []
@@ -4865,7 +5142,9 @@ def compile_catalogue(snapshot, target):
             if stripped == timing_surface:break
             timing_surface = stripped
         # Detection never authenticates or changes the raw validation body.
-        card, timing_grants = extract_cast_timing_grants(cards.get(name, {}))
+        gift_card, gift_kind = extract_gift(original)
+        card, timing_grants = extract_cast_timing_grants(gift_card)
+        card, base_set = extract_base_stat_setter(card)
         card, combat = extract_combat_restriction(card)
         card, uncounterable = extract_uncounterable(card)
         card, entry_suppression = extract_entry_trigger_suppression(card)
@@ -4899,6 +5178,7 @@ def compile_catalogue(snapshot, target):
         trigger_template = trigger_creature_template(card)
         spell = spell_program_template(card)
         temporary_death = temporary_death_spell_template(original)
+        temporary_consumer = temporary_death_consumers_body(original)
         modal = modal_spell_template(card)
         aura = aura_template(card)
         job = job_select_template(card) if (plot is None and warp is None and not cycling and flashback is None and offspring is None and kicker is None and not bargain and not convoke and evidence is None and additional is None and target_reduction is None and not reductions and dynamic is None and not scaling and creature_entry == 'Never' and not entry_counters) else None
@@ -4991,6 +5271,21 @@ def compile_catalogue(snapshot, target):
         paid_body=actual_mana_body(card) if (plot is None and warp is None and not convoke and not cycling and not bargain and evidence is None and all(v is None for v in (flashback,offspring,kicker,additional,target_reduction)) and not reductions and not dynamic and not scaling) else None
         if paid_body is not None:
             effect,keywords,abilities,activations,enters=paid_body
+        if temporary_consumer is not None:
+            effect,keywords,abilities,spell=temporary_consumer
+            activations=[];enters=[0,0,0]
+        gift_body = gift_spell_program(card) if gift_kind is not None else None
+        gift_permanent = gift_permanent_body(card) if gift_kind is not None else None
+        if gift_body is not None:
+            declined_targets, promised_targets, gift_program = gift_body
+            effect = 'Spell'
+            keywords = 0
+            spell = declined_targets, ['GiveGift', *gift_program]
+            abilities=[];activations=[];enters=[0,0,0]
+        elif gift_permanent is not None:
+            effect,keywords,abilities = gift_permanent
+            promised_targets='None'
+            activations=[];enters=[0,0,0]
         role_fight = role_fight_body(original)
         if role_fight is not None:
             effect, keywords, abilities, spell = role_fight
@@ -5027,14 +5322,19 @@ def compile_catalogue(snapshot, target):
             else:
                 effect,keywords,abilities=saga
                 activations=[];enters=[0,0,0]
-        role_raw = original.get('oracle_text','')
+        # A Suspect reminder is authenticated on its original action line before
+        # it can serve as contextual input to the independent Aura/Role guards.
+        # Unknown or stolen reminders keep the original raw text and fail closed.
+        suspect_raw = original.get('oracle_text', '')
+        suspect_proxy = re.sub(r" \((?:A suspected creature|It) has menace and can't block\.\)(?=\n|$)", '', suspect_raw) if suspect_reminders_valid(original) else suspect_raw
+        role_raw = suspect_proxy
         if enchanted_modifier_route(role_raw):
             checked_enchanted = role_reminder_text(role_raw)
             if '(' in checked_enchanted or ')' in checked_enchanted:
                 effect = 'Unsupported'
         # Only a completely authenticated temporary program can supply its
         # contextual reminder-free body. Every other caller keeps original raw.
-        role_auth = dict(original, oracle_text=temporary_death[3]) if temporary_death is not None else original
+        role_auth = dict(original, oracle_text=temporary_death[3]) if temporary_death is not None else dict(original, oracle_text=suspect_proxy)
         if not role_consumer_reminders_valid(role_auth):
             effect='Unsupported'
         if attachment_ward_route(original) and not attachment_ward_reminders_valid(original):
@@ -5059,15 +5359,19 @@ def compile_catalogue(snapshot, target):
             activations = [*activations, *cycling]
             if len(activations) > 64: effect = 'Unsupported'; activations = []
         # A later generic selector cannot revive rejected intrinsic reminder text.
-        if temporary_death_route(original.get('oracle_text', '')) and temporary_death is None:
+        if not suspect_reminders_valid(original):
+            effect='Unsupported'
+        if temporary_death_route(original.get('oracle_text', '')) and temporary_death is None and temporary_consumer is None:
             effect = 'Unsupported'
         if not adventure_event_reminders_valid(original):
             effect = 'Unsupported'
-        if not recovery_reminders_valid(original):
+        if not recovery_reminders_valid(gift_card if gift_body is not None else dict(original, oracle_text=suspect_proxy)):
             effect = 'Unsupported'
-        if not intrinsic_reminders_valid(original):
+        if not intrinsic_reminders_valid(dict(original, oracle_text=suspect_proxy)):
             effect = 'Unsupported'
         if not hand_land_reminders_valid(original):
+            effect='Unsupported'
+        if not base_stat_reminders_valid(original):
             effect='Unsupported'
         if not battlefield_return_reminders_valid(original):
             effect='Unsupported'
@@ -5092,6 +5396,16 @@ def compile_catalogue(snapshot, target):
             checked_flash = role_reminder_text(original.get('oracle_text', ''))
             if '(' in checked_flash or ')' in checked_flash:
                 effect = 'Unsupported'
+        # Gift is an entire keyword plus body contract; no later selector may
+        # revive a malformed keyword, unauthenticated reminder or partial body.
+        gift_surface = original.get('oracle_text','')
+        gift_seen = False
+        while True:
+            gift_seen |= re.search(r'(?:^|\n|\()\s*Gift\s',gift_surface) is not None
+            stripped = re.sub(r'\([^()]*\)', '', gift_surface)
+            if stripped == gift_surface: break
+            gift_surface = stripped
+        if gift_seen and (gift_kind is None or (gift_body is None and gift_permanent is None)): effect='Unsupported'
         programs = {
             'Damage(3)': ('Any', ['Damage(3)']), 'Damage(2)': ('Any', ['Damage(2)']),
             'Grow': ('Creature', [grow_instruction('Targets', 3, 3)]), 'Draw': ('None', ['Draw(PlayerSet::Controller, 2)']),
@@ -5145,6 +5459,14 @@ def compile_catalogue(snapshot, target):
                 raise ValueError(f'invalid or missing starting loyalty: {name}')
             loyalty_rows.append(f'        {index} => {int(value)},')
         if effect != 'Unsupported':
+            if base_set:base_set_rows.append(f'        {index} => Some({base_set}),')
+            if gift_body is not None or gift_permanent is not None:
+                token='None'
+                if gift_kind != 'Card':
+                    creation = (token_program('create a tapped 1/1 blue Fish creature token.')
+                                if gift_kind == 'TappedFish' else predefined_program('create a '+gift_kind+' token.'))
+                    token='Some('+re.search(r'token: (__TOKEN_[a-f0-9]+__)',creation[0])[1]+')'
+                gift_rows.append(f'        {index} => {{ const SPEC: GiftSpec = GiftSpec {{ kind: GiftKind::{gift_kind}, token: {token}, promised_targets: {rust_targets(promised_targets)} }}; Some(SPEC) }},')
             if combat:combat_rows.append(f'        {index} => Some({combat}),')
             if timing_grants:cast_timing_rows.append(f'        {index} => &[{", ".join(timing_grants)}],')
             if replacements:replacement_rows.append(f'        {index} => &[{", ".join(replacements)}],')
@@ -5209,6 +5531,12 @@ def compile_catalogue(snapshot, target):
             enchanted_rows.append(f'        {index} => &[' + ', '.join(enchanted) + '],')
         if flash_surcharge is not None and effect != 'Unsupported':
             flash_surcharge_rows.append(f'        {index} => Some({flash_surcharge}),')
+        # A newly parsed activation must not leak a partial program on a card
+        # whose complete body is still unsupported (for example an unported cost).
+        if effect == 'Unsupported':
+            activations = [a for a in activations if not any(
+                instruction.startswith('SetBaseStats') or instruction == 'GrantKeywords { subject: Subject::Source, keywords: Keywords(16384) }'
+                for instruction in a[2])]
         definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(card.get('name', name))}, oracle_id: {oracle_id}, mana_cost: {quote(card.get("mana_cost",cost) if scalar is not None else cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in standard_names).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]}, loyalty: 0, lore: 0 }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         if offspring_key is not None:
             offspring_factories[offspring_key]=(index,definitions[-1],color_mask,card.get('type_line','').split(' — ')[-1])
@@ -5219,7 +5547,7 @@ def compile_catalogue(snapshot, target):
                          'implementation': 'bargain_template' if bargain and effect != 'Unsupported' else 'explicit' if use_legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'aura_template' if aura else 'equipment_template' if equipment else 'permanent_template' if permanent else 'static_template' if static else None})
 
     # Only factories referenced by wholly accepted cards enter the executable catalogue.
-    used_tokens = sorted(set(re.findall(r'__TOKEN_([0-9a-f]+)__', '\n'.join(definitions+replacement_rows))))
+    used_tokens = sorted(set(re.findall(r'__TOKEN_([0-9a-f]+)__', '\n'.join(definitions+replacement_rows+gift_rows))))
     token_base = len(names)
     token_infos = []
     role_rows = []
@@ -5239,7 +5567,7 @@ def compile_catalogue(snapshot, target):
             color_masks.append(color)
             # Clone every compiled property table for the immutable copy; no
             # mutable copy/type-changing engine or runtime card-name dispatch.
-            for table in [combat_rows,static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,cast_timing_rows,target_reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,offspring_rows]:
+            for table in [base_set_rows,combat_rows,static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,cast_timing_rows,target_reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,offspring_rows]:
                 prefix=f'        {source_index} =>'
                 table.extend(row.replace(prefix,f'        {index} =>',1) for row in list(table) if row.startswith(prefix))
             offspring_copy_rows.append(f'        {index} => Some(__TOKEN_{key}__),')
@@ -5291,6 +5619,7 @@ def compile_catalogue(snapshot, target):
     definitions=[replace_token_markers(row) for row in definitions]
     offspring_copy_rows=[replace_token_markers(row) for row in offspring_copy_rows]
     replacement_rows=[replace_token_markers(row) for row in replacement_rows]
+    gift_rows=[replace_token_markers(row) for row in gift_rows]
     used_emblems=sorted(set(re.findall(r'__EMBLEM_([0-9a-f]+)__', '\n'.join(definitions))))
     emblem_base=len(names)
     emblem_infos=[]
@@ -5325,6 +5654,7 @@ def compile_catalogue(snapshot, target):
     for index, (name, _, _, _) in enumerate(LEGACY):
         lines.append(f'    pub const {name.replace(" ", "")}: Card = Card({index});')
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn base_stat_setter(card: Card) -> Option<BaseStatSetter> {', '    match card.0 {', *base_set_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn combat_restriction(card: Card) -> Option<CombatRestriction> {', '    match card.0 {', *combat_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn role(card: Card) -> Option<RoleKind> {', '    match card.0 {', *role_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn plot_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *plot_rows, '        _ => None,', '    }', '}', '']
@@ -5353,6 +5683,8 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', 'pub(super) fn x_symbols(card: Card) -> u8 {', '    match card.0 {', *x_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn x_entry_counters(card: Card) -> bool {', '    '+('matches!(card.0, '+' | '.join(x_entry_rows)+')' if x_entry_rows else 'false'), '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn kicker_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *kicker_rows, '        _ => None,', '    }', '}', '']
+    # Gift recipes are emitted only after complete body lowering authenticates them.
+    lines += ['#[rustfmt::skip]', 'pub(super) fn gift(card: Card) -> Option<GiftSpec> {', '    match card.0 {', *gift_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn kicked_entry_counters(card: Card) -> u16 {', '    match card.0 {', *kicked_entry_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn counter_keyword_grants(card: Card) -> &'static [(CounterKind, Keywords)] {", '    match card.0 {', *counter_grant_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn offspring_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *offspring_rows, '        _ => None,', '    }', '}', '']

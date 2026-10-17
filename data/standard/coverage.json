@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "72160f6813843279379d29b92f688f2621de1b64522c31aa3c959cd22ce1b576",
+  "catalogue_version": "a9e03eb43bf0586fc2558d95bf3cc0ff32b6be700fe709485774bc14c49b2cb3",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1919,
-  "implemented_total": 1925,
-  "token_definitions": 94,
+  "implemented_standard_cards": 1955,
+  "implemented_total": 1961,
+  "token_definitions": 95,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -232,8 +232,8 @@
     {
       "name": "Absolving Lammasu",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Absorbing Man",
@@ -2464,8 +2464,8 @@
     {
       "name": "Bilbo's Gambit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Bilbo, Luckwearer // Burglar's Plot",
@@ -2800,8 +2800,8 @@
     {
       "name": "Blooming Blast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Blooming Marsh",
@@ -5032,8 +5032,8 @@
     {
       "name": "Consumed by Greed",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Consuming Aberration",
@@ -5056,8 +5056,8 @@
     {
       "name": "Convenient Target",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Cool but Rude",
@@ -5446,8 +5446,8 @@
     {
       "name": "Crumb and Get It",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Crusader of Odric",
@@ -5884,8 +5884,8 @@
     {
       "name": "Dawn's Truce",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Dawn-Blessed Pennant",
@@ -6412,8 +6412,8 @@
     {
       "name": "Dewdrop Cure",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Diamond Mare",
@@ -6706,8 +6706,8 @@
     {
       "name": "Doc Ock, Sinister Scientist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Doc Samson, Super Psychiatrist",
@@ -10042,8 +10042,8 @@
     {
       "name": "Galuf's Final Act",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Galvanic Giant // Storm Reading",
@@ -10186,8 +10186,8 @@
     {
       "name": "Gateway Sneak",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Gather the White Lotus",
@@ -10223,7 +10223,7 @@
       "name": "Gearseeker Serpent",
       "standard_legal": true,
       "implemented": false,
-      "implementation": null
+      "implementation": "permanent_template"
     },
     {
       "name": "Geist of Saint Thalia",
@@ -13216,8 +13216,8 @@
     {
       "name": "Into the Flood Maw",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Into the Roil",
@@ -13444,8 +13444,8 @@
     {
       "name": "It Doesn't Add Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "It'll Quench Ya!",
@@ -15280,8 +15280,8 @@
     {
       "name": "Long River's Pull",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Long-Bodied Grey Dog",
@@ -15298,8 +15298,8 @@
     {
       "name": "Longstalk Brawl",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Loot, Exuberant Explorer",
@@ -16588,8 +16588,8 @@
     {
       "name": "Mind Spiral",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Mind Spring",
@@ -16696,8 +16696,8 @@
     {
       "name": "Mirkwood Meditator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mirkwood Nurturer",
@@ -17260,8 +17260,8 @@
     {
       "name": "Multiply by Zero",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Multiversal Incursion",
@@ -17746,8 +17746,8 @@
     {
       "name": "Nocturnal Hunger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Noggle Robber",
@@ -18736,8 +18736,8 @@
     {
       "name": "Peerless Recycling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Peerless Ropemaster",
@@ -18772,8 +18772,8 @@
     {
       "name": "Perfected Theory",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Perforating Artist",
@@ -18784,7 +18784,7 @@
     {
       "name": "Perigee Beckoner",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -18808,8 +18808,8 @@
     {
       "name": "Person of Interest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Personify",
@@ -19354,8 +19354,8 @@
     {
       "name": "Presumed Dead",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Pretending Poxbearers",
@@ -19834,8 +19834,8 @@
     {
       "name": "Quandrix Charm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Quandrix, the Proof",
@@ -19972,8 +19972,8 @@
     {
       "name": "Rabid Attack",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Rabid Bite",
@@ -20506,8 +20506,8 @@
     {
       "name": "Reasonable Doubt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Reassembling Skeleton",
@@ -22234,8 +22234,8 @@
     {
       "name": "Sazacap's Brew",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Sazh Katzroy",
@@ -22426,7 +22426,7 @@
     {
       "name": "Scrapshooter",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -23680,8 +23680,8 @@
     {
       "name": "Snooping Page",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Snow Villiers",
@@ -23692,8 +23692,8 @@
     {
       "name": "Snowmelt Stag",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Snowslope Hunter",
@@ -28276,8 +28276,8 @@
     {
       "name": "Turtle-Duck",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Turtles Forever",
@@ -29008,8 +29008,8 @@
     {
       "name": "Valley Rally",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Valley Rotcaller",
@@ -29986,8 +29986,8 @@
     {
       "name": "Water Wings",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Waterbender Ascension",
@@ -30142,8 +30142,8 @@
     {
       "name": "Wear Down",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Weather Maker",
@@ -30394,8 +30394,8 @@
     {
       "name": "Wildfire Howl",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Wildfire Wickerfolk",

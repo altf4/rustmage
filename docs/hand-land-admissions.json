@@ -1,6 +1,6 @@
 {
   "issue": 325,
-  "baseline": "8dd395286661963d1d1d98a2d384f2f5ab62d620",
+  "baseline": "19e4602b436b7aa8c9708f28f87fe288985c9377",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "purpose": "Complete twelve-body and direct explicit-import provenance inventory; no admission whitelist or transitive migration claim.",
   "cards": [
@@ -12,7 +12,7 @@
         "layout": "normal",
         "mana_cost": "{3}{G}{U}{U}",
         "cmc": 6.0,
-        "type_line": "Legendary Creature \u2014 Giant Scout",
+        "type_line": "Legendary Creature — Giant Scout",
         "oracle_text": "Reach\nWhen Bonny Pall enters, create Beau, a legendary blue Ox creature token with \"Beau's power and toughness are each equal to the number of lands you control.\"\nWhenever you attack, draw a card, then you may put a land card from your hand or graveyard onto the battlefield.",
         "power": "6",
         "toughness": "5",
@@ -32,13 +32,13 @@
             "id": "f1751016-9461-4250-ac07-afe4f5b41095",
             "component": "token",
             "name": "Beau",
-            "type_line": "Token Legendary Creature \u2014 Ox"
+            "type_line": "Token Legendary Creature — Ox"
           },
           {
             "id": "ee29f20b-27cd-433a-8874-41f500720109",
             "component": "combo_piece",
             "name": "Bonny Pall, Clearcutter",
-            "type_line": "Legendary Creature \u2014 Giant Scout"
+            "type_line": "Legendary Creature — Giant Scout"
           }
         ],
         "reference_printing": {
@@ -513,7 +513,7 @@
         "layout": "normal",
         "mana_cost": "{4}",
         "cmc": 4.0,
-        "type_line": "Artifact Creature \u2014 Robot Scout",
+        "type_line": "Artifact Creature — Robot Scout",
         "oracle_text": "Flying\nWhen this creature enters, draw a card, then you may put a land card from your hand onto the battlefield tapped.",
         "power": "2",
         "toughness": "1",
@@ -763,8 +763,8 @@
         "layout": "normal",
         "mana_cost": "{G}",
         "cmc": 1.0,
-        "type_line": "Creature \u2014 Fungus",
-        "oracle_text": "{2}, Sacrifice this creature: Choose one \u2014\n\u2022 Destroy target artifact.\n\u2022 Destroy target enchantment.\n\u2022 Draw a card. Then you may put a land card from your hand onto the battlefield tapped.",
+        "type_line": "Creature — Fungus",
+        "oracle_text": "{2}, Sacrifice this creature: Choose one —\n• Destroy target artifact.\n• Destroy target enchantment.\n• Draw a card. Then you may put a land card from your hand onto the battlefield tapped.",
         "power": "1",
         "toughness": "2",
         "colors": [
@@ -1074,7 +1074,7 @@
         "layout": "normal",
         "mana_cost": "{G}{W}{U}",
         "cmc": 3.0,
-        "type_line": "Legendary Creature \u2014 Human Faerie Rogue",
+        "type_line": "Legendary Creature — Human Faerie Rogue",
         "oracle_text": "Flying, lifelink\nWhenever you cast a spell from anywhere other than your hand, you may cast a permanent spell with equal or lesser mana value from your hand without paying its mana cost. If you don't, you may put a land card from your hand onto the battlefield.",
         "power": "3",
         "toughness": "3",
@@ -1771,7 +1771,7 @@
         "layout": "normal",
         "mana_cost": "{3}{G}",
         "cmc": 4.0,
-        "type_line": "Legendary Creature \u2014 Mutant Ninja Turtle",
+        "type_line": "Legendary Creature — Mutant Ninja Turtle",
         "oracle_text": "Sneak {2}{G}{G} (You may cast this spell for {2}{G}{G} if you also return an unblocked attacker you control to hand during the declare blockers step. He enters tapped and attacking.)\nWhenever Michelangelo deals combat damage to a player, you may put a creature card and/or a land card from your hand onto the battlefield.",
         "power": "4",
         "toughness": "4",
@@ -1973,7 +1973,7 @@
         "layout": "normal",
         "mana_cost": "{G}{U}",
         "cmc": 2.0,
-        "type_line": "Legendary Creature \u2014 Merfolk Scout",
+        "type_line": "Legendary Creature — Merfolk Scout",
         "oracle_text": "Whenever a creature you control explores a land card, you may put a land card from your hand onto the battlefield tapped.\nWhenever a creature you control explores a nonland card, put a +1/+1 counter on Nicanzil.",
         "power": "2",
         "toughness": "3",
@@ -2336,7 +2336,7 @@
         "layout": "normal",
         "mana_cost": "{2}",
         "cmc": 2.0,
-        "type_line": "Artifact Creature \u2014 Construct Alien",
+        "type_line": "Artifact Creature — Construct Alien",
         "oracle_text": "Flying\n{T}: You may put a land card from your hand onto the battlefield.\n{3}: Until end of turn, this creature's base power becomes equal to the number of Towns you control.",
         "power": "0",
         "toughness": "4",
@@ -3159,7 +3159,7 @@
         "layout": "normal",
         "mana_cost": "{3}{B}{G}",
         "cmc": 5.0,
-        "type_line": "Legendary Creature \u2014 Frog Horror Mount",
+        "type_line": "Legendary Creature — Frog Horror Mount",
         "oracle_text": "Trample, haste\nWhenever The Gitrog deals combat damage to a player, you may sacrifice a creature that saddled it this turn. If you do, draw X cards, then put up to X land cards from your hand onto the battlefield tapped, where X is the sacrificed creature's power.\nSaddle 1",
         "power": "6",
         "toughness": "5",
@@ -5559,5 +5559,6 @@
     "Spelunking": "Captured successful Cave land result and prospective untapped entry replacement.",
     "The Gitrog, Ravenous Ride": "Exact saddler sacrifice choice and power-LKI-bound draw/multiple-land placement.",
     "Worldsoul's Rage": "Chosen-X combined damage and multiple hand-or-graveyard entry."
-  }
+  },
+  "original_inventory_baseline": "8dd395286661963d1d1d98a2d384f2f5ab62d620"
 }
