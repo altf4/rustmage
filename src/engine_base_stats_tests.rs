@@ -9,7 +9,19 @@ fn named(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
 fn checked(g: &mut Game, action: Action) {
     let actor = g.actor().unwrap();
     let revision = g.revision();
-    let index = g.legal_actions().iter().position(|a| *a == action).unwrap();
+    let index = g
+        .legal_actions()
+        .iter()
+        .position(|a| *a == action)
+        .unwrap_or_else(|| {
+            panic!(
+                "missing {:?} at {:?}/{:?}; legal {:?}",
+                action,
+                g.state.step,
+                g.state.pending,
+                g.legal_actions()
+            )
+        });
     let before = g.snapshot();
     assert_eq!(
         g.apply(actor.other(), action.clone()),

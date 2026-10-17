@@ -24,13 +24,24 @@ fn order(g: &mut Game) {
     }
 }
 fn finish_damage(g: &mut Game) {
-    // From post-attacker priority to unblocked ordinary combat damage.
-    checked(g, Action::Pass);
-    checked(g, Action::Pass);
-    checked(g, Action::FinishBlockers);
-    checked(g, Action::Pass);
-    checked(g, Action::Pass);
-    order(g);
+    for _ in 0..30 {
+        if g.state.step == Step::CombatDamage {
+            order(g);
+            return;
+        }
+        let action = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::Pass | Action::FinishBlockers))
+            .unwrap_or_else(|| {
+                panic!(
+                    "cannot advance combat: {:?} {:?}",
+                    g.state.step, g.state.pending
+                )
+            });
+        checked(g, action);
+    }
+    panic!("combat did not advance");
 }
 
 #[test]
@@ -244,7 +255,7 @@ fn power_excess_paid_voice_mobilizes_exactly_two_and_delayed_sacrifice_survives_
             assert_eq!(v.controller, p);
             assert!(v.tapped && v.attacking);
             assert_eq!((v.power, v.toughness), (1, 1));
-            assert_eq!(v.token.unwrap().name, "Warrior");
+            assert_eq!(v.token.unwrap().name, "Warrior Token");
         }
         let bounce = named(&mut g, p, "Unsummon", Zone::Hand);
         cast(&mut g, bounce, None, &[Target::Card(source)]);
