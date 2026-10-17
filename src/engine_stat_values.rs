@@ -256,7 +256,8 @@ impl Game {
     ) -> u128 {
         match value {
             AmountValue::Fixed(n) => u128::from(n),
-            AmountValue::ChosenX
+            AmountValue::MilledCreatures
+            | AmountValue::ChosenX
             | AmountValue::ManaSpent
             | AmountValue::ColorsSpent
             | AmountValue::SourcePower => 0, // Off-stack expressions have no cast parameter.

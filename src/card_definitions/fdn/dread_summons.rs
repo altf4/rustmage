@@ -1,16 +1,19 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Count only the exact incarnations that actually entered graveyards in this mill event.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::NONE),
+        &[
+            Instruction::Mill(PlayerSet::Each, MillAmount::ChosenX),
+            Instruction::CreateTokensScaled {
+                token: Card(5268),
+                amount: AmountValue::MilledCreatures,
+                tapped: true,
+            },
+        ],
+    ),
+    extras: &CardExtras {
+        x_symbols: 1,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords(0),
     ..CardRules::EMPTY
 };

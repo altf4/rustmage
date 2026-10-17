@@ -3,10 +3,20 @@
   "catalogue_id": 1174,
   "oracle_id": "642fa01d-025e-44dd-8360-5325e5a28282",
   "facts_sha256": "cf293e51995d8ee427a46887c3209619806ace44b584c3288fc31d7465127d11",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ad77e7e9c4b490b50e09aa9a640b1c26bbc43b50e53ef644f2c3827d9f59809e"
   },
-  "physical_metadata_sha256": "0c30f777cb80e89bb7881cdc6105497724a407b9bc75aab7e2c9e0cb25bf7fc3"
+  "physical_metadata_sha256": "e0225b02ae4b42aba6ff9e94daa4ad405817d4ab0ced1d8924b72e1d3c0c6434",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DreadSummons.java",
+  "java_sha256": "e54373a2a0a1635fdbcc053ef24b31e7432ee67f402b5e81addf421f36333e72",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ZombieToken.java",
+      "sha256": "5f597b5065b0c9b6edcef5cac9ca6a7a3018a1a7588ef4b983e700bc6a473e4d"
+    }
+  ]
 }

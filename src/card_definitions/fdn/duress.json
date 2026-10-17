@@ -3,10 +3,20 @@
   "catalogue_id": 1204,
   "oracle_id": "33d405ea-7a9a-4970-b70f-9c05d90dd6f0",
   "facts_sha256": "76de48c32a02b5ea4337d670ec88814c59b351ff0be265a13af4ae3a0cf0163b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ab03b272bc757e1234ceec7e3d9245aa094e1de680abce37acdd3d4213c8c06d"
   },
-  "physical_metadata_sha256": "a2dc28751be5ab31de4bf2cb965251475fa37c7ce38dc9e85be83856b316d3eb"
+  "physical_metadata_sha256": "a2dc28751be5ab31de4bf2cb965251475fa37c7ce38dc9e85be83856b316d3eb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/Duress.java",
+  "java_sha256": "fc47f5e491e94cd32143ce416aa1ea89be9012ec6aa15400733b471a944d1513",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardCardYouChooseTargetEffect.java",
+      "sha256": "ee3872ce6e44f3605b5b71fa77669461c11e8312bd1fbb0a486c5730c463de3d"
+    }
+  ]
 }
