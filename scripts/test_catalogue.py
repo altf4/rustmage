@@ -2700,9 +2700,9 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Fear of Failed Tests','Fear of Surveillance','Festerleech','Frostbite Pyromental','Goldvein Pick',
                      'Grasping Longneck','Haliya, Ascendant Cadet','Invasion Tactics','Jeskai Shrinekeeper','Locke Cole',
                      'SP//dr, Piloted by Peni','Scream Puff','Syr Vondam, the Lucent','The Thing, Ben Grimm',
-                     'Thieving Otter','Ultimecia, Temporal Threat','Yathan Tombguard']:
+                     'Thieving Otter',"Thief's Knife",'Ultimecia, Temporal Threat','Yathan Tombguard']:
             self.assertIn(name,supported)
-        for name in ['Curious Inquiry','Thief\'s Knife','Enduring Curiosity','Trygon Predator','Kutzil, Malamet Exemplar',
+        for name in ['Curious Inquiry','Enduring Curiosity','Trygon Predator','Kutzil, Malamet Exemplar',
                      'Venus, Torn Between Worlds','Nashi, Searcher in the Dark','Buster Sword']:
             self.assertNotIn(name,supported)
         row=self.card(name='Example, Named',type_line='Legendary Creature — Human',

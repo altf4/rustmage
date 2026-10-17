@@ -5,10 +5,12 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,664 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,680 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
+[Job Select](docs/job-select.md) adds all sixteen complete Equipment bodies with live subtype grants,
+recipient-owned abilities, private Ninja discards and Summoner creature/defender choices.
 [Mobilize](docs/mobilize.md) adds eight complete bodies with real attacking-token entry,
 per-token non-target defender choices and owned next-end-step sacrifice abilities.
 [Convoke](docs/convoke.md) adds nine complete intrinsic bodies with exact joint funding and private tap payments, plus the complete adjacent Bespoke Bō Equipment.
