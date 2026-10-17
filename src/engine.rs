@@ -6024,3 +6024,7 @@ impl Game {
             .sum()
     }
 }
+
+#[cfg(test)]
+#[path="engine_fdn_exile_two_tests.rs"]
+mod fdn_exile_two_tests;

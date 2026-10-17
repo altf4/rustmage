@@ -2022,6 +2022,11 @@ impl Game {
                     };
                     return;
                 }
+                Instruction::ExileTopChoosePlay { amount, next_turn } => {
+                    if self.exile_top_choose_play(item.controller, amount, next_turn) {
+                        return;
+                    }
+                }
                 Instruction::ExileTopPlay { amount, next_turn } => {
                     self.exile_top_play(item.controller, amount, next_turn);
                 }

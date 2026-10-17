@@ -52,6 +52,7 @@ impl Game {
         }
         let kinds = self.current_kinds(object.card);
         match filter {
+            MilledFilter::Any => true,
             MilledFilter::Kinds(mask) => kinds & u16::from(mask) != 0,
             MilledFilter::KindsOrSubtype {
                 kinds: mask,
@@ -201,6 +202,12 @@ impl Game {
         selected: &[ObjectRef],
         destination: MilledDestination,
     ) {
+        if let MilledDestination::PlayPermission { next_turn } = destination {
+            for &object in selected {
+                self.grant_exile_play_permission(player, object, next_turn);
+            }
+            return;
+        }
         // A public replacement destination can be the stack. Removing its spell
         // packet is movement, not a counter event. Hidden destinations never enter
         // this continuation and no old-generation object can be recovered.
@@ -208,6 +215,9 @@ impl Game {
             .stack
             .retain(|item| !selected.contains(&item.object));
         let destination = match destination {
+            MilledDestination::PlayPermission { .. } => {
+                unreachable!("handled permission without movement")
+            }
             MilledDestination::Hand => Zone::Hand,
             MilledDestination::Battlefield => Zone::Battlefield,
         };

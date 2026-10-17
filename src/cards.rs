@@ -381,12 +381,14 @@ pub(crate) struct AdditionalCost {
 /// Public qualities for a non-targeted choice from one exact milling event.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum MilledFilter {
+    Any,
     Kinds(u8),
     KindsOrSubtype { kinds: u8, subtype: &'static str },
     Adventure,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum MilledDestination {
+    PlayPermission { next_turn: bool },
     Hand,
     Battlefield,
 }
@@ -566,6 +568,10 @@ pub(crate) enum Instruction {
     },
     BecomeSaddled {
         minimum: u16,
+    },
+    ExileTopChoosePlay {
+        amount: u16,
+        next_turn: bool,
     },
     ExileTopPlay {
         amount: u16,
