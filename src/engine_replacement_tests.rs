@@ -788,3 +788,61 @@ fn immediate_until_return_entry_finishes_before_destroy_and_create_tokens() {
         }
     }
 }
+
+#[test]
+fn immediate_return_aura_attachment_is_owned_and_precedes_maps() {
+    for p in [Player::P0, Player::P1] {
+        let q = p.other();
+        let mut g = setup(p);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        named(&mut g, q, "Doubling Season", Zone::Battlefield);
+        named(&mut g, q, "Quina, Qu Gourmet", Zone::Battlefield);
+        let aura = named(&mut g, p, "Blanchwood Armor", Zone::Exile);
+        let old = g.object_ref(aura);
+        let light = named(&mut g, q, "Banishing Light", Zone::Battlefield);
+        g.state.exile_links.push(ExileLink {
+            source: g.object_ref(light),
+            exiled: old,
+            return_zone: Zone::Battlefield,
+        });
+        let spell = named(&mut g, p, "Get Lost", Zone::Hand);
+        replay(&mut g, Action::AnnounceCast { card: spell });
+        replay(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(light),
+            },
+        );
+        for _ in 0..100 {
+            if matches!(g.state.pending, Pending::AuraEntry { .. }) {
+                break;
+            }
+            pick(&mut g);
+        }
+        assert_eq!(g.actor(), Some(p));
+        assert!(g.observe(p).aura_entry.is_some());
+        assert!(g.observe(p).replacement_choice.is_none());
+        let action = Action::ChooseAuraAttachment {
+            object: g.object_ref(bear),
+        };
+        let mut child = {
+            let parent = g.clone();
+            let child = parent.clone();
+            drop(parent);
+            child
+        };
+        act(&mut child, action.clone());
+        reject(&mut g, q, action.clone(), Error::WrongActor);
+        replay(&mut g, action);
+        assert_eq!(g.snapshot(), child.snapshot());
+        assert_eq!(g.state.objects[aura as usize].zone, Zone::Battlefield);
+        assert_eq!(
+            g.state.objects[aura as usize].attached_to,
+            Some(g.object_ref(bear))
+        );
+        assert_ne!(old, g.object_ref(aura));
+        assert_eq!(g.observe(q).replacement_choice.unwrap().kind, "Tokens");
+        assert_eq!(g.actor(), Some(q));
+        settle(&mut g);
+    }
+}
