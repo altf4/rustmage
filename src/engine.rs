@@ -6358,3 +6358,11 @@ pub use search::OptionalSearchSequence;
 #[path = "engine_event_counter_core.rs"]
 mod event_counter_core;
 pub use event_counter_core::CreatureDamageHistoryView;
+
+#[cfg(test)]
+#[path = "engine_search_pregame_tests.rs"]
+mod search_pregame_tests;
+
+#[cfg(test)]
+#[path = "engine_event_counter_core_tests.rs"]
+mod event_counter_core_tests;
