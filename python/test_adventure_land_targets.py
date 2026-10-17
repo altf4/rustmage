@@ -54,7 +54,8 @@ class AdventureLandTargetTests(unittest.TestCase):
                         if i==4:self.assertEqual(objects[target]['keywords']&(4096|8192),4096|8192)
                         if i==5:self.assertEqual(objects[target]['zone'],'Hand')
                         if i==6:self.assertTrue(objects[target]['tapped'])
-                        if i==7:self.assertEqual(o['last_target_library_move']['target_after'],objects[target]['reference']);self.assertEqual(o['last_target_library_move']['destination'],'Top')
+                        if i==7:
+                            movement=o['last_target_library_move'];self.assertEqual(movement['target_before'],base['target']);self.assertEqual(movement['target_after'],dict(card=target,generation=base['target']['generation']+1));self.assertEqual(movement['destination'],'Top');self.assertEqual(o['players'][pi]['library_count'],base['library']+1);self.assertEqual(movement,g.observe(q)['last_target_library_move'])
                         stage='normal'
                 if quiet and stage=='wait_extra':
                     self.assertEqual(o['players'][pi]['extra_land_plays_remaining'],0);stage='normal'
@@ -65,7 +66,7 @@ class AdventureLandTargetTests(unittest.TestCase):
                         face=FACTS[name]['card_faces'][0];self.assertEqual((objects[source]['power'],objects[source]['toughness']),(int(face['power']),int(face['toughness'])))
                     if i==7:self.assertEqual(objects[target]['zone'],'Hand')
                     stage='finish'
-                ready=bool(ally and foe and len(lands)>=8 and (dead if i in [5,7] else True) and (played_turn==o['turn'] and any(v['card'] in BASICS for v in hand) if i in [0,1] else True))
+                ready=bool(quiet and ally and foe and len(lands)>=8 and (dead if i in [5,7] else True) and (played_turn==o['turn'] and any(v['card'] in BASICS for v in hand) if i in [0,1] else True))
                 def score(a):
                     k=a['kind'];n=objects.get(a.get('card'),{}).get('card','')
                     if k in ['Concede','Mulligan','Cast','BeginCast','AnnounceWarp','AnnounceFlashback','AnnouncePlot']:return -2000
@@ -96,6 +97,7 @@ class AdventureLandTargetTests(unittest.TestCase):
                 j=max(range(len(o['actions'])),key=lambda j:score(o['actions'][j]));a=o['actions'][j];self.assertGreaterEqual(score(a),0,(name,p,stage,o['decision']))
                 if a['kind']=='AnnounceAdventure':
                     source=a['card'];target=(foe if i in [2,3,6] else ally if i==4 else dead)['id'] if i not in [0,1] else None;stage='wait_inset'
+                    if i==7:base=dict(target=objects[target]['reference'],library=o['players'][pi]['library_count'])
                 if a['kind']=='PlayLand' and actor==p:
                     played_turn=o['turn']
                     if stage=='extra_land':stage='wait_extra'
