@@ -748,7 +748,7 @@ pub struct SpellView {
     /// Allocated only after a targeted permanent departs; these are public facts.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
-    pub target_controller_lki: Option<Box<Vec<(ObjectRef, Player)>>> ,
+    pub target_controller_lki: Option<Box<Vec<(ObjectRef, Player)>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gift: Option<Box<GiftContext>>,
     pub reflexive_subject: Option<Box<ReflexiveSubjectView>>,
@@ -786,18 +786,27 @@ pub struct SpellView {
 
 impl SpellView {
     fn needs_target_controller_lki(&self) -> bool {
-        let needs = |spec: TargetSpec| matches!(spec.rule, TargetRule::Grouped {
-            constraint: TargetGroupConstraint::DifferentControllers, .. });
-        self.program().is_some_and(|(plan,_)| match plan {
+        let needs = |spec: TargetSpec| {
+            matches!(
+                spec.rule,
+                TargetRule::Grouped {
+                    constraint: TargetGroupConstraint::DifferentControllers,
+                    ..
+                }
+            )
+        };
+        self.program().is_some_and(|(plan, _)| match plan {
             TargetPlan::Single(spec) => needs(spec),
             TargetPlan::Groups(groups) => groups.iter().copied().any(needs),
         })
     }
     /// Heap-owned continuation payloads; inline packet storage is counted by its container.
     pub(super) fn owned_bytes(&self) -> usize {
-        self.target_controller_lki.as_ref().map_or(0, |v| std::mem::size_of::<Vec<(ObjectRef, Player)>>()
-            + v.len() * std::mem::size_of::<(ObjectRef, Player)>())
-            + self.gift
+        self.target_controller_lki.as_ref().map_or(0, |v| {
+            std::mem::size_of::<Vec<(ObjectRef, Player)>>()
+                + v.len() * std::mem::size_of::<(ObjectRef, Player)>()
+        }) + self
+            .gift
             .as_ref()
             .map_or(0, |_| std::mem::size_of::<GiftContext>())
             + self
@@ -4029,9 +4038,18 @@ impl Game {
                 .chain(self.state.announcing.iter_mut().map(|a| &mut a.item))
             {
                 if item.needs_target_controller_lki()
-                    && item.targets.iter().any(|bound| bound.object == Some(before.reference)) {
-                    let history = item.target_controller_lki.get_or_insert_with(|| Box::new(Vec::new()));
-                    if !history.iter().any(|(object,_)| *object == before.reference) {
+                    && item
+                        .targets
+                        .iter()
+                        .any(|bound| bound.object == Some(before.reference))
+                {
+                    let history = item
+                        .target_controller_lki
+                        .get_or_insert_with(|| Box::new(Vec::new()));
+                    if !history
+                        .iter()
+                        .any(|(object, _)| *object == before.reference)
+                    {
                         history.push((before.reference, before.controller));
                     }
                 }
@@ -4671,7 +4689,10 @@ impl Game {
                 .suspected
                 .as_ref()
                 .map_or_else(Vec::new, |v| v.as_ref().clone()),
-            temporary_controls: s.temporary_controls.as_ref().map_or_else(Vec::new, |v| v.as_ref().clone()),
+            temporary_controls: s
+                .temporary_controls
+                .as_ref()
+                .map_or_else(Vec::new, |v| v.as_ref().clone()),
             temporary_abilities: s
                 .temporary_abilities
                 .as_ref()
@@ -5877,8 +5898,8 @@ mod fdn_tribal_seven_tests;
 mod zone_effects;
 pub use zone_effects::TemporaryControlView;
 #[cfg(test)]
-#[path = "engine_fdn_private_seven_tests.rs"]
-mod fdn_private_seven_tests;
-#[cfg(test)]
 #[path = "engine_fdn_life_seven_tests.rs"]
 mod fdn_life_seven_tests;
+#[cfg(test)]
+#[path = "engine_fdn_private_seven_tests.rs"]
+mod fdn_private_seven_tests;

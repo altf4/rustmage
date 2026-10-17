@@ -598,7 +598,10 @@ pub(crate) enum Instruction {
     },
     /// Freeze a non-targeted battlefield group, then return it simultaneously.
     GainControlUntilEndTurn,
-    ReturnGraveyardCreatures { players: PlayerSet, maximum_mana_value: u64 },
+    ReturnGraveyardCreatures {
+        players: PlayerSet,
+        maximum_mana_value: u64,
+    },
     DestroyTargetNameGroup,
     ReturnBattlefield {
         filters: &'static [BattlefieldFilter],

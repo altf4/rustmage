@@ -27,84 +27,44 @@ fn deck(land: &str, names: &[&str]) -> Vec<Card> {
 #[test]
 fn foundations_five_color_full_games_and_owned_search_replay() {
     let mut decks = [
-        deck(
-            "Plains",
-            &[
-                "Leonin Vanguard",
-                "Hare Apparent",
-                "Healer's Hawk",
-                "Inspiring Paladin",
-                "Inspiring Overseer",
-                "Prayer of Binding",
-                "Fleeting Flight",
-                "Felidar Savior",
-                "Stroke of Midnight",
-            ],
-        ),
-        deck(
-            "Island",
-            &[
-                "An Offer You Can't Refuse",
-                "Dictate of Kruphix",
-                "Fog Bank",
-                "Corsair Captain",
-                "High Fae Trickster",
-                "Exclusion Mage",
-                "Pirate's Cutlass",
-                "Unsummon",
-                "Harbinger of the Tides",
-            ],
-        ),
-        deck(
-            "Swamp",
-            &[
-                "Diregraf Ghoul",
-                "Infestation Sage",
-                "Exsanguinate",
-                "Vampire Nighthawk",
-                "Rune-Scarred Demon",
-                "Death Baron",
-                "Sanguine Indulgence",
-                "Cemetery Recruitment",
-                "Vile Entomber",
-            ],
-        ),
-        deck(
-            "Mountain",
-            &[
-                "Heartfire Immolator",
-                "Brazen Scourge",
-                "Goblin Smuggler",
-                "Bulk Up",
-                "Hidetsugu's Second Rite",
-                "Burst Lightning",
-                "Halana and Alena, Partners",
-                "Ruby, Daring Tracker",
-                "Feldon's Cane",
-            ],
-        ),
-        deck(
-            "Forest",
-            &[
-                "Llanowar Elves",
-                "Heroes' Bane",
-                "Elvish Archdruid",
-                "Affectionate Indrik",
-                "Dwynen, Gilt-Leaf Daen",
-                "Inspiring Call",
-                "Garruk's Uprising",
-                "Aggressive Mammoth",
-                "New Horizons",
-            ],
-        ),
+        deck("Plains", &[
+            "Angel of Vitality", "Exemplar of Light", "Fiendish Panda",
+            "Raise the Past", "Leonin Vanguard", "Hare Apparent",
+            "Healer's Hawk", "Inspiring Overseer", "Stroke of Midnight",
+        ]),
+        deck("Island", &[
+            "Run Away Together", "Inspiration from Beyond", "Trygon Predator",
+            "Fog Bank", "Corsair Captain", "High Fae Trickster",
+            "Exclusion Mage", "Unsummon", "Harbinger of the Tides",
+        ]),
+        deck("Swamp", &[
+            "Bloodthirsty Conqueror", "Vengeful Bloodwitch", "Midnight Snack",
+            "Duress", "Pilfer", "Feed the Swarm", "Dread Summons",
+            "Massacre Wurm", "Tragic Banshee",
+        ]),
+        deck("Mountain", &[
+            "Involuntary Employment", "Giant Cindermaw", "Heartfire Immolator",
+            "Goblin Smuggler", "Bulk Up", "Hidetsugu's Second Rite",
+            "Burst Lightning", "Ruby, Daring Tracker", "Feldon's Cane",
+        ]),
+        deck("Forest", &[
+            "Primal Might", "Maelstrom Pulse", "Rise of the Dark Realms",
+            "Llanowar Elves", "Elvish Archdruid", "Dwynen, Gilt-Leaf Daen",
+            "Inspiring Call", "Affectionate Indrik", "Heroes' Bane",
+        ]),
     ];
-    // Ruby has a real two-color cost; Caves replaces basics without adding
-    // a fifth copy of any card or leaving this set's Standard-legal inventory.
-    for land in &mut decks[3][..12] {
+    // Supply printed off-color costs within the Foundations inventory.
+    for land in &mut decks[0][..8] {
+        *land = Card::from_name("Swamp").unwrap();
+    }
+    for land in &mut decks[1][..8] {
         *land = Card::from_name("Forest").unwrap();
     }
-    for land in &mut decks[0][..4] {
-        *land = Card::from_name("Cryptic Caves").unwrap();
+    for land in &mut decks[3][..8] {
+        *land = Card::from_name("Forest").unwrap();
+    }
+    for land in &mut decks[4][..10] {
+        *land = Card::from_name("Swamp").unwrap();
     }
     let mut total_decisions = 0;
     let mut triggered = false;
@@ -193,9 +153,9 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
     }
     assert!(triggered && token && combat);
     for name in [
-        "Exsanguinate",
-        "Sanguine Indulgence",
-        "Cemetery Recruitment",
+        "Run Away Together",
+        "Involuntary Employment",
+        "Pilfer",
     ] {
         assert!(
             new_spells.contains(name),
@@ -204,6 +164,6 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
     }
     assert!(branches >= 20);
     println!(
-        "FDN initial matrix: 20 natural full games, {total_decisions} decisions, {branches} owned replay checks; 45 nonland card identities, Cryptic Caves and basics, not full-set acceptance"
+        "FDN initial matrix: 20 natural full games, {total_decisions} decisions, {branches} owned replay checks; 45 nonland card identities, basics, not full-set acceptance"
     );
 }
