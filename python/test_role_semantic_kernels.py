@@ -93,7 +93,7 @@ class RoleSemanticTests(unittest.TestCase):
                         if k=='AnnounceFlashSurcharge':return -1000
                         if i==0 and actor==q and n=='Murder' and (stage=='setup' and ready or stage=='wait_death') and recipient is not None:return 4100
                         if i==4 and actor==p and n=='Royal Treatment' and stage=='setup' and ready:return 4100
-                        if i==3 and flash and actor==q and n=='Royal Treatment' and stage=='setup' and ready:return 4100
+                        if i==3 and flash and actor==q and o['active']==q and n=='Royal Treatment' and stage=='setup' and ready:return 4100
                         if i==5 and actor==p and n=='Disenchant' and stage=='remove_tether':return 4100
                         if i==1 and actor==p and n=='Disenchant' and stage=='break_wicked':return 4100
                         if n in ['Bear Cub','Three Tree Mascot']:
@@ -113,8 +113,8 @@ class RoleSemanticTests(unittest.TestCase):
                     if k in ['FinishAttackers','FinishBlockers']:return 2400
                     if k in ['PayCosts','PutTrigger','FinishTargets','FinishSearch','Keep','ChooseSpellCost']:return 3000
                     if k in ['Discard','Bottom']:
-                        protected=[name,'Murder' if i==0 else 'Royal Treatment' if i in [3,4] else 'Disenchant' if i==5 else name]
-                        return -500 if actor==p and stage!='finish' and n in protected and sum(v['card']==n for v in hand(actor))<=1 else 1500
+                        protected=([name]+(['Royal Treatment'] if i==4 else ['Disenchant'] if i in [1,5] else [])) if actor==p else (['Murder'] if i==0 else ['Royal Treatment'] if i==3 and flash else [])
+                        return -500 if stage!='finish' and n in protected and sum(v['card']==n for v in hand(actor))<=1 else 1500
                     if k=='Attack':return 2800 if stage=='finish' else -1000
                     if k=='Pass':return 0
                     return 1000
@@ -124,7 +124,9 @@ class RoleSemanticTests(unittest.TestCase):
                 self.assertGreaterEqual(score(a),0,(name,p,seed,stage,o['decision'],o['actions'],o['announcing'],available(actor)))
                 if a['kind'] in ['AnnounceCast','AnnounceFlashSurcharge']:
                     card=objects[a['card']]['card']
-                    if actor==p and card==name:source=a['card'];spell_started=True;stage='wait_source'
+                    if actor==p and card==name:
+                        if i==3 and flash:self.assertTrue(objects[foe_id]['keywords']&4096)
+                        source=a['card'];spell_started=True;stage='wait_source'
                     elif i==0 and actor==q and card=='Murder' and stage=='setup':stage='wait_death'
                     elif i==4 and card=='Royal Treatment' and stage=='setup':stage='wait_enchant'
                     elif i==3 and card=='Royal Treatment' and stage=='setup':stage='wait_hexproof'
