@@ -4,7 +4,7 @@
   "parent": "61a7d0cef4b10591958cea4391c553db4c2c07ff",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "reserved_observation_schema": 102,
-  "scope": "24 complete physical bodies matching lose/loses all abilities; direct imports plus full card roots, not transitive closure or an admission whitelist",
+  "scope": "24 complete physical bodies matching lose/loses all abilities; explicit resolvable single-class imports plus full card roots, not transitive closure or an admission whitelist",
   "source_records": 410,
   "unique_sources": [
     {
