@@ -102,7 +102,7 @@ class ConvokeTests(unittest.TestCase):
      paid=True;source=ann['card'];chosen=frame['selected'] if frame else [];convoked=len(chosen);baseline={v['id']:(v['power'],v['toughness']) for v in objects.values()};cast_library=o['players'][0 if p=='P0' else 1]['library_count']
     if a['kind']=='PayCosts' and finished and ann and i==7 and ann['kind']=='Spell' and ann['controller']==p and ann['source_card']=='Candy Trail':extra=True;baseline={v['id']:(v['power'],v['toughness']) for v in objects.values() if v['owner']==p and v['zone']=='Battlefield' and v['card'] in [name,'Savannah Lions','Aegis Turtle','Chrome Companion']}
     if a['kind']=='PayCosts' and finished and ann and i==9 and ann['source_card']==name and ann['kind']!='Spell':residual_paid=True;equipped=ann['targets'][0]['target']['Card']
-    after=self.replay(g,o,j);self.assertEqual(after['schema'],82)
+    after=self.replay(g,o,j);self.assertEqual(after['schema'],84)
     if a['kind']=='PayCosts' and chosen:
      afterobjs={v['id']:v for v in after['objects']}
      for s in chosen:self.assertTrue(afterobjs[s['object']['card']]['tapped'])

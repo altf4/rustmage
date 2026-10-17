@@ -22,7 +22,7 @@ class SagaTests(unittest.TestCase):
     if paid and body and body['zone']=='Battlefield':
      entered=True;seen.add(int(body['counters'].get('lore',0)));self.assertTrue(body['modified']);last=body
     if entered and body and body['zone']=='Graveyard':
-     self.assertEqual(seen,set(range(1,5 if i in [0,2,3,4,5]else 4)));self.assertGreater(held_frames,0);self.assertEqual(ownview['schema'],82)
+     self.assertEqual(seen,set(range(1,5 if i in [0,2,3,4,5]else 4)));self.assertGreater(held_frames,0);self.assertEqual(ownview['schema'],84)
      if i==5:self.assertEqual(ownview['players'][pi]['life'],base['players'][pi]['life']-3);self.assertEqual(ownview['players'][1-pi]['life'],base['players'][1-pi]['life']-3)
      if i==3:self.assertGreater(discarded,0)
      print('completed Saga',name,p,'steps',step,'chapters',sorted(seen),flush=True)
