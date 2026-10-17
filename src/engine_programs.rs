@@ -1693,6 +1693,9 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::ExileIfDiesThisTurn => {
+                    self.register_exile_if_dies(&item);
+                }
                 Instruction::CreateRoleReflexive { token, ability } => {
                     self.resolve_role_reflexive(&item, token, ability);
                 }

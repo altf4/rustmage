@@ -422,6 +422,8 @@ pub(crate) enum Instruction {
         promised: bool,
         skip: usize,
     },
+    /// Register an exact current target for a direct exile replacement until cleanup.
+    ExileIfDiesThisTurn,
     /// Queue a reflexive ability only when this exact Role actually enters attached.
     CreateRoleReflexive {
         token: Card,

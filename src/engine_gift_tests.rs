@@ -878,3 +878,69 @@ fn sparse_gift_context_heap_payloads_are_owned_and_counted_once() {
     assert_eq!(batch.bytes() - before, std::mem::size_of::<GiftContext>());
     assert_eq!(batch.clone().bytes(), batch.bytes());
 }
+
+#[test]
+fn paid_gift_damage_after_death_exile_preserves_controller_and_suppresses_return() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let creature = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        g.state.objects[creature as usize].controller = p.other();
+        normal_response(&mut g, p, "Fake Your Own Death", Target::Card(creature));
+        settle(&mut g);
+        normal_response(&mut g, p, "Giant Growth", Target::Card(creature));
+        settle(&mut g);
+        assert_eq!(
+            (g.stats(creature).power, g.stats(creature).toughness),
+            (7, 5)
+        );
+        let strike = named(&mut g, p, "Pinecone Strike", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: strike });
+        act(&mut g, Action::ChooseMode { mode: 0 });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(creature),
+            },
+        );
+        for _ in 0..8 {
+            if g.state.announcing.is_none() {
+                break;
+            }
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::FinishTargets | Action::PayCosts { .. }))
+                .unwrap();
+            act(&mut g, action);
+        }
+        settle(&mut g);
+        assert_eq!(g.object_view(creature).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(creature).damage, 3);
+        assert_eq!(g.observe(p).death_exile_replacements.len(), 1);
+        let lives = [g.state.players[0].life, g.state.players[1].life];
+        let drawn = g.state.players[p.other().index()].cards_drawn_this_turn;
+        paid(
+            &mut g,
+            p,
+            "Blooming Blast",
+            true,
+            Some(Target::Card(creature)),
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(creature).zone, Zone::Exile);
+        assert_eq!(g.object_view(creature).controller, p);
+        assert_eq!(g.state.players[p.index()].life, lives[p.index()]);
+        assert_eq!(
+            g.state.players[p.other().index()].life,
+            lives[p.other().index()] - 3
+        );
+        assert_eq!(
+            g.state.players[p.other().index()].cards_drawn_this_turn,
+            drawn + 1
+        );
+        assert!(g.observe(p).death_exile_replacements.is_empty());
+        assert!(g.observe(p).temporary_abilities.is_empty());
+        assert!(tokens(&g, p, "Treasure").is_empty());
+        assert!(tokens(&g, p.other(), "Treasure").is_empty());
+    }
+}

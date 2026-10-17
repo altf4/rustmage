@@ -30,7 +30,7 @@ mod gift;
 mod gift_tests;
 pub use gift::{GiftContext, GiftDeclaration};
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 90;
+pub const OBSERVATION_SCHEMA: u32 = 94;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -1150,6 +1150,8 @@ struct State {
     casting_prohibited: bool,
     #[allow(clippy::box_collection)]
     temporary_abilities: Option<Box<Vec<TemporaryAbilityView>>>,
+    #[allow(clippy::box_collection)]
+    death_exile_replacements: Option<Box<Vec<ExileDeathReplacementView>>>,
     roles: Option<Box<roles::RoleState>>,
     replacements: Option<Box<replacements::ReplacementState>>,
     // Sparse registry: keep an eight-byte pointer in the common empty state
@@ -1451,6 +1453,7 @@ pub struct LegalActionSpace {
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
     pub casting_prohibited: bool,
+    pub death_exile_replacements: Vec<ExileDeathReplacementView>,
     pub temporary_abilities: Vec<TemporaryAbilityView>,
     pub replacement_choice: Option<ReplacementChoiceView>,
     pub created_token_choice: Option<CreatedTokenChoiceView>,
@@ -1663,6 +1666,7 @@ impl Game {
                 exile_links: Vec::new(),
                 exile_permissions: Vec::new(),
                 temporary_abilities: None,
+                death_exile_replacements: None,
                 roles: None,
                 adventures: None,
                 plot: None,
@@ -3752,6 +3756,7 @@ impl Game {
         } else {
             destination
         };
+        let destination = self.death_exile_destination(&before, destination);
         // CR111.8: after leaving the battlefield, a token cannot move again.
         if before.card.is_emblem() || (before.card.is_token() && before.zone != Zone::Battlefield) {
             return ZoneChange {
@@ -3783,6 +3788,7 @@ impl Game {
                 .capacity("creature death history exhausted");
         }
         if before.zone == Zone::Battlefield {
+            self.forget_death_exile_replacements(before.reference);
             self.forget_vehicle_animation(before.reference);
             self.state.saddled.retain(|r| *r != before.reference);
         }
@@ -4126,6 +4132,7 @@ impl Game {
         }
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.state.temporary_abilities = None;
+        self.state.death_exile_replacements = None;
         for player in &mut self.state.players {
             player.extra_land_plays_remaining = 0;
         }
@@ -4447,6 +4454,10 @@ impl Game {
                 .temporary_abilities
                 .as_ref()
                 .map_or_else(Vec::new, |grants| grants.as_ref().clone()),
+            death_exile_replacements: s
+                .death_exile_replacements
+                .as_ref()
+                .map_or_else(Vec::new, |rules| rules.as_ref().clone()),
             schema: OBSERVATION_SCHEMA,
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             creatures_died_this_turn: s.creatures_died_this_turn,
@@ -4858,6 +4869,7 @@ impl Game {
         let s = &self.state;
         std::mem::size_of::<State>()
             + self.temporary_ability_bytes()
+            + self.death_exile_bytes()
             + self.mobilize_bytes()
             + std::mem::size_of::<Vec<Object>>()
             + std::mem::size_of::<Vec<ObjectRef>>()
@@ -5504,6 +5516,10 @@ mod adventure_event_tests;
 #[path = "engine_role_tests.rs"]
 mod role_tests;
 
+#[path = "engine_death_exile.rs"]
+mod death_exile;
+pub use death_exile::ExileDeathReplacementView;
+
 #[path = "engine_temporary_abilities.rs"]
 mod temporary_abilities;
 pub use temporary_abilities::TemporaryAbilityView;
@@ -5528,6 +5544,10 @@ mod target_exclusion_tests;
 #[cfg(test)]
 #[path = "engine_battlefield_return_tests.rs"]
 mod battlefield_return_tests;
+
+#[cfg(test)]
+#[path = "engine_death_exile_tests.rs"]
+mod death_exile_tests;
 
 #[cfg(test)]
 #[path = "engine_combat_restriction_tests.rs"]

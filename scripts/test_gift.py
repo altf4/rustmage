@@ -4,7 +4,7 @@ from pathlib import Path
 from scripts import generate_catalogue as g
 from scripts import test_legacy_metadata as metadata
 from scripts.catalogue_preservation import canonical,assert_union
-PARENT='5d103e7a3172e4742687d3f77f3ed814264b1532'
+PARENT='8dd395286661963d1d1d98a2d384f2f5ab62d620'
 # Explicit prototype inventory; expand only after the corresponding whole kernel exists.
 NAMES={'Blooming Blast','Consumed by Greed','Crumb and Get It','Dewdrop Cure','Into the Flood Maw',"Long River's Pull",'Longstalk Brawl','Mind Spiral','Nocturnal Hunger','Peerless Recycling',"Sazacap's Brew",'Scrapshooter','Wear Down',"Bilbo's Gambit","Dawn's Truce",'Valley Rally','Wildfire Howl'}
 class GiftTests(unittest.TestCase):
