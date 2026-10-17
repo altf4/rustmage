@@ -48,8 +48,9 @@ comparison preserves all other parent definitions, helpers, colors and recipes.
 At production checkpoint `69c16d3`, a focused public policy run passed 16
 naturally terminal Standard games: 14,033 owned frames and 28,066 illegal-action
 denials. It includes both seats, cheaper normal timing routes, Young Hero attack
-counters, Wicked death life loss and paid off-turn Asinine through opposing Royal
-hexproof. Immutable library SHA256:
+counters, Wicked death life loss and paid off-turn Asinine with opposing Royal
+Roles. A later policy assertion requires hexproof to remain active at casting.
+Immutable library SHA256:
 `c3613807780ab01e4e7be2ded4a7ece6edfa7a8c327229f5e77daa0169d2305c`.
 This is checkpoint evidence: later Role observation and compiler closure changes
 require fresh native/library/public validation before final delivery.

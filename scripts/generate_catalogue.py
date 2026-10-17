@@ -505,6 +505,40 @@ def role_program(text):
     return rule, [*before, f'CreateRole {{ token: {role_factory(kind)}, subject: Subject::Targets }}']
 
 
+def quoted_creature_token_reminders_valid(card):
+    """Every caller of the quoted creature-token grammar authenticates raw text."""
+    raw = card.get('oracle_text', '')
+    if not isinstance(raw, str) or not any(c in raw for c in '()'):
+        return True
+    surface = raw
+    seen = False
+    while True:
+        normalized = ' '.join(surface.casefold().split())
+        seen |= re.search(r'"this creature can\'t (?:block|be blocked)\."', normalized) is not None
+        stripped = re.sub(r'\([^()]*\)', '', surface)
+        if stripped == surface:
+            break
+        surface = stripped
+    if not seen:
+        return True
+    if card.get('layout') == 'saga':
+        return saga_body(card) is not None
+    authenticated = role_reminder_text(raw)
+    authenticated = re.sub(r'^Bargain \(You may sacrifice an artifact, enchantment, or token as you cast this spell\.\)$', 'Bargain', authenticated, flags=re.MULTILINE)
+    for line in authenticated.splitlines():
+        if not any(c in line for c in '()'):
+            continue
+        # This neutral proxy checks only a complete intrinsic line's syntax;
+        # it never changes the source card's type, costs, abilities or execution.
+        proxy = dict(layout='normal', mana_cost='{0}', type_line='Creature',
+                     power='0', toughness='1', oracle_text=line)
+        bare = re.sub(r'\([^()]*\)', '', line).strip()
+        if (creature_template(dict(proxy, oracle_text=bare)) is None
+                or not intrinsic_reminders_valid(proxy)):
+            return False
+    return True
+
+
 def token_program(text):
     """Fixed fully-described creature tokens only; no inferred predefined abilities."""
     if not isinstance(text, str):
@@ -4673,6 +4707,8 @@ def compile_catalogue(snapshot, target):
         if not intrinsic_reminders_valid(original):
             effect = 'Unsupported'
         if not enchanted_draw_reminders_valid(original):
+            effect = 'Unsupported'
+        if not quoted_creature_token_reminders_valid(original):
             effect = 'Unsupported'
         # Rejected timing syntax/source shapes must not be revived by legacy selectors.
         if timing_seen and not timing_grants and flash_surcharge is None:
