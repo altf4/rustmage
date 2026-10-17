@@ -383,3 +383,77 @@ fn minstrel_intervening_town_condition_and_actual_entry_completion_reject_failed
         assert_eq!(g.state.players[p.index()].life, life);
     }
 }
+
+#[test]
+fn paid_foreign_spelunking_keeps_draw_land_cave_bonus_with_actual_resolver() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, [source, _, _]) =
+            super::control_tests::korvold_grants_for(p, ["Spelunking", "Forest", "Forest"]);
+        let cave = named(&mut g, p, "Captivating Cave", Zone::Hand);
+        let foreign = named(&mut g, p.other(), "Captivating Cave", Zone::Hand);
+        g.state.players[p.index()].mana = [80; 6];
+        let life = g.state.players[p.index()].life;
+        g.state.land_played = true;
+        checked(&mut g, Action::AnnounceExile { card: source });
+        for _ in 0..200 {
+            if g.state
+                .resolving
+                .as_ref()
+                .and_then(|r| r.choice.as_ref())
+                .is_some()
+            {
+                break;
+            }
+            next(&mut g, None, 0, None);
+        }
+        let invalid = Action::PutHandLand {
+            object: g.object_ref(foreign),
+        };
+        let saved = g.snapshot();
+        assert!(g.apply(p, invalid).is_err());
+        assert_eq!(saved, g.snapshot());
+        drive(&mut g, Some(cave), 0, None);
+        assert_eq!(g.object_view(source).owner, p.other());
+        assert_eq!(g.object_view(source).controller, p);
+        assert_eq!(g.object_view(cave).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(foreign).zone, Zone::Hand);
+        assert_eq!(g.state.players[p.index()].life, life + 4);
+        assert!(g.state.land_played);
+    }
+}
+#[test]
+fn actual_cave_bonus_capacity_failure_rolls_back_entry_and_owned_continuation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let cave = named(&mut g, p, "Captivating Cave", Zone::Hand);
+        let source = named(&mut g, p, "Spelunking", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: source });
+        for _ in 0..200 {
+            if g.state
+                .resolving
+                .as_ref()
+                .and_then(|r| r.choice.as_ref())
+                .is_some()
+            {
+                break;
+            }
+            next(&mut g, None, 0, None);
+        }
+        g.state.players[p.index()].life = i128::MAX;
+        let before = g.snapshot();
+        let rev = g.revision();
+        assert!(matches!(
+            g.apply(
+                p,
+                Action::PutHandLand {
+                    object: g.object_ref(cave)
+                }
+            ),
+            Err(Error::CapacityExceeded(_))
+        ));
+        assert_eq!(before, g.snapshot());
+        assert_eq!(g.revision(), rev);
+        assert_eq!(g.object_view(cave).zone, Zone::Hand);
+        assert!(g.observe(p).effect_choice.is_some());
+    }
+}

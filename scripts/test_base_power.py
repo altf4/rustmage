@@ -104,9 +104,12 @@ class BasePowerCompilerTests(unittest.TestCase):
         physical = {c['oracle_id']: c['name'] for c in self.cards}
         parent = 'f35e95302aad7924be38def41598dcf9013c0fb7'
         before = canonical(subprocess.check_output(['git', '-C', str(g.ROOT), 'show', parent+':src/generated/catalogue.rs'], text=True),physical)
-        after = canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+        after = canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','2812c749b63b38d10572bf96baacd527464852de:src/generated/catalogue.rs'],text=True),physical)
+        current = canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
         args = dict(changed={n+'#0'for n in self.names},added=set(),helpers={('static_cast_restriction',n+'#0')for n in ['Kutzil, Malamet Exemplar','Voice of Victory']},aliases={})
         proof=assert_union(before,after,**args)
+        for name in self.names:self.assertEqual(current['definitions'][name+'#0'],after['definitions'][name+'#0'])
+        for key in args['helpers']:self.assertEqual(current['helpers'][key],after['helpers'][key])
         self.assertEqual(proof['preserved_definitions'],5330)
         self.assertEqual(proof['prior_helpers'],926)
         self.assertEqual(proof['token_recipes'],96)

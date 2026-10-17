@@ -36,3 +36,14 @@ with strict actual-parent two-body preservation and generic raw/name/type/cost
 controls. An initial full-native run passes1,912 unit tests and fails only the old
 96-factory count; its corrected97-factory assertion retains the full closure audit.
 No final full-suite or public-workload claim is made yet.
+
+The actual-main composition now uses2812c749 (1,977/schema103). Its candidate
+has1,979 executable Standard identities,97 recipes and prototype schema105.
+The strict current-parent proof preserves5,331 other definitions/all928 inherited
+helpers/all96 old recipes, adding exactly the two whole definitions, two untapped
+helper arms and one all-color Elemental factory/alias. Own nine paid both-seat
+native groups include real Korvold foreign casting and atomic Cave-bonus overflow.
+The composed source passes1,922 unit+12 integration tests (1,934 total), all-target
+Clippy and23 affected compiler/provenance methods in5.626s. Initial foreign fixture
+used AnnounceCast for an exile permission; the corrected AnnounceExile fixture
+passes without a runtime change. Public acceptance and final delivery remain pending.

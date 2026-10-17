@@ -3,7 +3,7 @@ import copy,json,subprocess,unittest
 from scripts import generate_catalogue as g
 from scripts import test_legacy_metadata as metadata
 from scripts.catalogue_preservation import canonical,assert_union
-PARENT='f35e95302aad7924be38def41598dcf9013c0fb7'
+PARENT='2812c749b63b38d10572bf96baacd527464852de'
 class UntappedEntryTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
@@ -56,7 +56,7 @@ class UntappedEntryTests(unittest.TestCase):
   self.assertTrue(all(after['tokens'].get(k)==v for k,v in before['tokens'].items()))
   after=copy.deepcopy(after);after['tokens']=copy.deepcopy(before['tokens'])
   allowed=dict(changed={'Spelunking#0','The Wandering Minstrel#0'},added=added,helpers={('controlled_entry_untapped','Spelunking#0'),('controlled_entry_untapped','The Wandering Minstrel#0')},aliases={recipe:token})
-  proof=assert_union(before,after,**allowed);self.assertEqual(proof['prior_helpers'],926)
+  proof=assert_union(before,after,**allowed);self.assertEqual(proof['prior_helpers'],928)
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(before,mutant,**allowed)
  def test_pinned_full_java_audit(self):

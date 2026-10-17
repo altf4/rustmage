@@ -1,6 +1,6 @@
 {
   "issue": 342,
-  "parent": "f35e95302aad7924be38def41598dcf9013c0fb7",
+  "parent": "2812c749b63b38d10572bf96baacd527464852de",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "reserved_observation_schema": 105,
   "purpose": "Full four direct Java users and explicit imports; only two are in current Standard. Token/effect direct imports audited separately. No transitive closure or name admission claim.",
@@ -1652,5 +1652,6 @@
   "proposed_complete": [
     "Spelunking",
     "The Wandering Minstrel"
-  ]
+  ],
+  "original_inventory_parent": "f35e95302aad7924be38def41598dcf9013c0fb7"
 }
