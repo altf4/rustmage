@@ -75,6 +75,47 @@ class RoleSemanticCompilerTests(unittest.TestCase):
         combined=dict(self.cards['Asinine Antics'],name='Independent mixed Warp cost',type_line='Creature — Illusion',power='3',toughness='3',keywords=[],oracle_text='Warp {1}{U}\nYou may cast this spell as though it had flash if you pay {2} more to cast it.\nFlying')
         self.assertFalse(metadata.LegacyMetadataTests().definition(combined)[1]['implemented'])
 
+    def test_quoted_creature_tokens_authenticate_every_generic_caller_before_erasure(self):
+        def admitted(card):
+            _, coverage=metadata.LegacyMetadataTests.compile([card])
+            return next(row['implemented'] for row in coverage['cards'] if row['name']==card['name'])
+        for restriction in ["can't block", "can't be blocked"]:
+            token='Create a 1/1 black Rat creature token with "This creature '+restriction+'."'
+            lower=token[0].lower()+token[1:]
+            forms=[('Instant','{1}{B}',token),('Sorcery','{1}{B}',token),
+                   ('Creature','{1}{B}','When this creature enters, '+lower),
+                   ('Creature','{1}{B}','{1}: '+token),
+                   ('Artifact','{1}{B}','When this artifact enters, '+lower),
+                   ('Enchantment','{1}{B}','When this enchantment enters, '+lower),
+                   ('Land','','{T}: Add {B}.\nWhen this land enters, '+lower),
+                   ('Enchantment — Aura','{1}{B}','Enchant creature\nWhen this Aura enters, '+lower),
+                   ('Artifact — Equipment','{1}{B}','When this Equipment enters, '+lower+'\nEquip {1}'),
+                   ('Enchantment — Saga','{1}{B}','(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — '+token+'\nII — Draw a card.\nIII — Draw a card.')]
+            for typ,cost,text in forms:
+                for name in ['Independent Quoted Token',*[row[0] for row in g.LEGACY]]:
+                    card=dict(self.cards['Murder'],name=name,type_line=typ,mana_cost=cost,power='2',toughness='2',keywords=[],oracle_text=text,layout='saga' if 'Saga' in typ else 'normal')
+                    self.assertTrue(admitted(card),(typ,name,text))
+                    mutants=[text+' (You win the game.)',text+' ((You win the game.))',
+                             text.replace('This creature','This (You win the game.) creature',1),
+                             text.replace('creature can','creat(You win the game.)ure can',1),
+                             text+'\n(This creature can\'t be blocked except by creatures with flying or reach.)']
+                    for raw in mutants:self.assertFalse(admitted(dict(card,oracle_text=raw)),(typ,name,raw))
+            for typ,noun in [('Creature','creature'),('Artifact','artifact'),('Enchantment','enchantment')]:
+                text='Flying (This creature can\'t be blocked except by creatures with flying or reach.)\nWhen this '+noun+' enters, '+lower
+                card=dict(self.cards['Murder'],name='Independent Reminder Host',type_line=typ,mana_cost='{2}',power='2',toughness='2',keywords=['Flying'],oracle_text=text)
+                self.assertTrue(admitted(card),typ)
+                self.assertFalse(admitted(dict(card,oracle_text=text.replace('with flying or reach.','with flying or reach. Draw a card.'))))
+            for name in ['Aquatic Alchemist // Bubble Up','Bloomvine Regent // Claim Territory']:
+                for face in [0,1]:
+                    card=copy.deepcopy(self.cards[name])
+                    body='When this creature enters, '+lower if face==0 else token
+                    card['card_faces'][face]['oracle_text']=body
+                    card['card_faces'][face]['keywords']=[]
+                    self.assertTrue(admitted(card),(name,face))
+                    for raw in [body+' (You win the game.)',body+' ((You win the game.))',body.replace('This creature','This (You win the game.) creature',1)]:
+                        mutant=copy.deepcopy(card);mutant['card_faces'][face]['oracle_text']=raw
+                        self.assertFalse(admitted(mutant),(name,face,raw))
+
     def test_complete_return_binds_successful_entry_and_authenticates_young_hero_reminder(self):
         original=self.cards['Return Triumphant']
         before,row=metadata.LegacyMetadataTests().definition(original)
