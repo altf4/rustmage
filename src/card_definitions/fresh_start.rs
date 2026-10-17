@@ -1,6 +1,6 @@
 // Flash Aura: the -5/-0 modifier and loss share one continuous effect.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Permanent,
+    effect: Effect::Aura(one(object(1))),
     keywords: Keywords::FLASH,
     aura: Some(AuraSpec {
         kinds: 1,
