@@ -26,8 +26,18 @@ pub(crate) struct SpellMode {
     pub program: &'static [Instruction],
 }
 
+/// A relationship between distinct bindings within one occurrence of target.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum TargetGroupConstraint {
+    SameGraveyard,
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetRule {
+    Grouped {
+        base: &'static TargetRule,
+        constraint: TargetGroupConstraint,
+    },
     None,
     Union(&'static [TargetRule]),
     Filtered {

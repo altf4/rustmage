@@ -5,8 +5,9 @@ use crate::cards::{
     CounterSubject, Counters, CreatureFilter, DamageQualification, DamageSubject, Effect,
     EffectChoiceKind, EmblemInfo, EntryCounterAmount, EntryPredicate, EntryTapped, Instruction,
     ManaCost, ManaProduction, MillAmount, PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec,
-    SpellMode, StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetPlan,
-    TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
+    SpellMode, StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetGroupConstraint,
+    TargetPlan, TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep,
+    payments,
 };
 #[path = "engine_adventure.rs"]
 mod adventure;
@@ -2555,7 +2556,12 @@ impl Game {
                         actor,
                         announcement.item.object,
                         |target| {
-                            !announcement.item.targets.iter().any(|bound| {
+                            self.target_group_compatible(
+                                announcement.spec.rule,
+                                announcement.group,
+                                &announcement.item.targets,
+                                target,
+                            ) && !announcement.item.targets.iter().any(|bound| {
                                 bound.group == announcement.group && bound.target == target
                             }) && self.announcement_target_fundable(
                                 announcement,
@@ -5101,3 +5107,7 @@ mod adventure_tests;
 #[cfg(test)]
 #[path = "engine_omen_tests.rs"]
 mod omen_tests;
+
+#[cfg(test)]
+#[path = "engine_feral_tests.rs"]
+mod feral_tests;

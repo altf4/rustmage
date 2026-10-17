@@ -1780,6 +1780,8 @@ def rust_target_group(spec):
     if isinstance(spec, str):
         return f'TargetSpec::one({TARGET_RULES[spec]})'
     rule, minimum, maximum = spec
+    if rule == 'CardSingleGrave':
+        return f'TargetSpec {{ rule: TargetRule::Grouped {{ base: &{TARGET_RULES["CardGrave"]}, constraint: TargetGroupConstraint::SameGraveyard }}, min: {minimum}, max: {maximum} }}'
     return f'TargetSpec {{ rule: {TARGET_RULES[rule]}, min: {minimum}, max: {maximum} }}'
 
 
@@ -1979,6 +1981,7 @@ def targeted_program(text):
         return 'LegendaryCreature',[counter_instruction('Targets',m[1],m[2])]
     if counter:=counter_program(text): return counter
     if text=='exile up to one target card from a graveyard.': return ('CardGrave',0,1),['Exile']
+    if text=='exile up to two target cards from a single graveyard.': return ('CardSingleGrave',0,2),['Exile']
     if text=='exile up to two target cards from graveyards.': return ('CardGrave',0,2),['Exile']
     if text=='target player draws a card, then up to one target creature you control connives.':
         return ['Player',('CreatureYou',0,1)],['Draw(PlayerSet::Targeted, 1)','SelectGroup(1)','Connive { subject: Subject::Targets, amount: 1 }']
@@ -3938,6 +3941,13 @@ def compile_catalogue(snapshot, target):
         elif effect == 'Spell':
             rule, program = spell
             effect = f'Spell({rust_targets(rule)}, {rust_program(program)})'
+        # The new single-graveyard route has no audited parenthetical reminders.
+        # Generic inherited templates may strip them, so authenticate the original
+        # entire body before final admission, without selecting any card name.
+        raw_graveyard_body = original.get('oracle_text', '')
+        if ('single graveyard' in raw_graveyard_body.casefold()
+                and any(char in raw_graveyard_body for char in '()')):
+            effect = 'Unsupported'
         offspring_key=None
         if offspring is not None and effect!='Unsupported':
             # Fixed copiable values only. The definition below preserves complete

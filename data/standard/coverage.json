@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f9d88fd260473d7c964ecd12bc6f5d502a9d68605d7e906181631b64d29c8d9f",
+  "catalogue_version": "a5f867dbae0764d740f2663f282a0549f6f737daf0a763c9f818d04a11887b50",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1788,
-  "implemented_total": 1794,
+  "implemented_standard_cards": 1791,
+  "implemented_total": 1797,
   "token_definitions": 85,
   "emblem_definitions": 1,
   "cards": [
@@ -1204,8 +1204,8 @@
     {
       "name": "Arashin Sunshield",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Araña, Heart of the Spider",
@@ -8974,8 +8974,8 @@
     {
       "name": "Feral Deathgorger // Dusk Sight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Feral Encounter",
@@ -11278,8 +11278,8 @@
     {
       "name": "Griffnaut Tracker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Grim Bauble",
@@ -31107,5 +31107,5 @@
     }
   ],
   "adventure_definitions": 19,
-  "omen_definitions": 9
+  "omen_definitions": 10
 }

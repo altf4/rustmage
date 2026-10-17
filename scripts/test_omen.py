@@ -2,7 +2,7 @@
 import copy,hashlib,importlib.util,json,unittest
 from pathlib import Path
 spec=importlib.util.spec_from_file_location('omen_generator',Path(__file__).with_name('generate_catalogue.py'));g=importlib.util.module_from_spec(spec);spec.loader.exec_module(g)
-NAMES=['Dirgur Island Dragon // Skimming Strike','Disruptive Stormbrood // Petty Revenge','Riling Dawnbreaker // Signaling Roar','Sagu Wildling // Roost Seek','Twinmaw Stormbrood // Charring Bite','Marang River Regent // Coil and Catch','Purging Stormbrood // Absorb Essence','Runescale Stormbrood // Chilling Screech','Stormshriek Feral // Flush Out']
+NAMES=['Dirgur Island Dragon // Skimming Strike','Disruptive Stormbrood // Petty Revenge','Riling Dawnbreaker // Signaling Roar','Sagu Wildling // Roost Seek','Twinmaw Stormbrood // Charring Bite','Marang River Regent // Coil and Catch','Purging Stormbrood // Absorb Essence','Runescale Stormbrood // Chilling Screech','Stormshriek Feral // Flush Out','Feral Deathgorger // Dusk Sight']
 class OmenCompilerTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):cls.cards={c['name']:c for c in json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards']}
@@ -19,8 +19,8 @@ class OmenCompilerTests(unittest.TestCase):
     for clause in [' Discover 3.',' (Draw twenty cards.)',' (Then exile this card.)',' (Also shuffle another card.)']:
      c=copy.deepcopy(self.cards[n]);c['card_faces'][face]['oracle_text']+=clause
      with self.subTest(card=n,face=face,clause=clause):self.assertFalse(self.admitted(c))
- def test_four_remaining_omen_bodies_remain_tracked_and_wholly_gated(self):
-  remaining=[c for c in self.cards.values() if c.get('card_faces') and 'Omen' in c['card_faces'][-1]['type_line'] and c['name'] not in NAMES];self.assertEqual(len(remaining),4)
+ def test_three_remaining_omen_bodies_remain_tracked_and_wholly_gated(self):
+  remaining=[c for c in self.cards.values() if c.get('card_faces') and 'Omen' in c['card_faces'][-1]['type_line'] and c['name'] not in NAMES];self.assertEqual(len(remaining),3)
   for c in remaining:self.assertFalse(self.admitted(c),c['name'])
  def test_variable_malformed_and_wrong_reminder_cannot_revive_face(self):
   for n in NAMES:
