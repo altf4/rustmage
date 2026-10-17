@@ -9,6 +9,8 @@ knows all 5,164 pinned Standard identities; 1,693 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
+[Job Select](docs/job-select.md) adds all sixteen complete Equipment bodies with live subtype grants,
+recipient-owned abilities and private Ninja/Summoner continuations.
 [Plot](docs/plot.md) adds thirteen complete bodies with paid special actions and exact later-turn free casting.
 [Mobilize](docs/mobilize.md) adds eight complete bodies with real attacking-token entry,
 per-token non-target defender choices and owned next-end-step sacrifice abilities.

@@ -12,7 +12,7 @@ spec.loader.exec_module(g)
 class JobPlotCompositionTests(unittest.TestCase):
     def test_recognized_plot_does_not_revive_job_select_composites(self):
         rows = {c['name']: c for c in json.loads((g.ROOT / 'data/standard/cards.json').read_text())['cards']}
-        names = ["Bard's Bow", "Dark Knight's Greatsword", "Dragoon's Lance", "Machinist's Arsenal", "Monk's Fist", "Samurai's Katana", "Warrior's Sword"]
+        names = ["Astrologian's Planisphere", "Bard's Bow", "Black Mage's Rod", "Dark Knight's Greatsword", "Dragoon's Lance", "Machinist's Arsenal", "Monk's Fist", "Ninja's Blades", "Paladin's Arms", "Red Mage's Rapier", "Sage's Nouliths", "Samurai's Katana", "Summoner's Grimoire", "Thief's Knife", "Warrior's Sword", "White Mage's Staff"]
         declaration = next(line for line in rows["Djinn of Fool's Fall"]['oracle_text'].splitlines() if line.startswith('Plot '))
         for name in names:
             with self.subTest(name=name):

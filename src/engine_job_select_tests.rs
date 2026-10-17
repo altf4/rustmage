@@ -578,3 +578,227 @@ fn job_summoner_obeys_opponent_entry_tapped_replacement_for_ordinary_creature() 
     resolve(&mut g);
     assert_eq!(g.state.players[1].life, 21);
 }
+
+#[test]
+fn job_summoner_exact_private_defender_and_late_capacity_are_atomic() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario();
+        let book = paid(&mut g, p, "Summoner's Grimoire");
+        let hero = g.object_view(book).attached_to.unwrap();
+        let creature = named(&mut g, p, "Fear of Immobility", Zone::Hand);
+        let old = g.object_ref(creature);
+        let walkers: Vec<_> = Card::catalogue()
+            .filter(|c| c.is_supported() && c.is_planeswalker())
+            .take(2)
+            .collect();
+        let mut refs = Vec::new();
+        for card in walkers {
+            let id = spawn(&mut g, p.other(), card, Zone::Battlefield);
+            g.state.objects[id as usize].counters.loyalty = 5;
+            refs.push(g.object_ref(id));
+        }
+        attack_job(&mut g, p, hero.card);
+        pass_pair(&mut g);
+        let saved = g.snapshot();
+        let actor = g.actor().unwrap();
+        let revision = g.revision;
+        assert_eq!(
+            g.apply(actor.other(), Action::PutHandCreature { object: old }),
+            Err(Error::WrongActor)
+        );
+        assert_eq!(g.snapshot(), saved);
+        let mut stale = old;
+        stale.generation += 1;
+        assert_eq!(
+            g.apply(actor, Action::PutHandCreature { object: stale }),
+            Err(Error::IllegalAction)
+        );
+        assert_eq!(g.snapshot(), saved);
+        act(&mut g, Action::PutHandCreature { object: old });
+        assert_eq!(g.apply_index(actor, revision, 0), Err(Error::StaleRevision));
+        let actions = g.legal_actions();
+        assert_eq!(
+            actions
+                .iter()
+                .filter(|a| matches!(a, Action::ChooseHandDefender { .. }))
+                .count(),
+            3
+        );
+        let current = refs[1];
+        let mut stale = current;
+        stale.generation += 1;
+        let snap = g.snapshot();
+        assert_eq!(
+            g.apply(
+                actor,
+                Action::ChooseHandDefender {
+                    defender: CombatDefender::Planeswalker(stale)
+                }
+            ),
+            Err(Error::IllegalAction)
+        );
+        assert_eq!(g.snapshot(), snap);
+        g.state.next_stack_id = u64::MAX;
+        let failure = g.snapshot();
+        let revision = g.revision;
+        let action = Action::ChooseHandDefender {
+            defender: CombatDefender::Planeswalker(current),
+        };
+        assert!(matches!(
+            g.apply(actor, action.clone()),
+            Err(Error::CapacityExceeded(_))
+        ));
+        assert_eq!(g.snapshot(), failure);
+        assert_eq!(g.revision, revision);
+        assert_eq!(g.object_ref(creature), old);
+        assert_eq!(g.state.objects[creature as usize].zone, Zone::Hand);
+        g.restore(&snap).unwrap();
+        act(&mut g, action);
+        assert_eq!(g.state.objects[creature as usize].zone, Zone::Battlefield);
+        assert_eq!(
+            g.state
+                .attackers
+                .iter()
+                .find(|a| a.card == creature)
+                .unwrap()
+                .defender,
+            Some(CombatDefender::Planeswalker(current))
+        );
+    }
+}
+#[test]
+fn job_ninja_discarded_x_is_zero_off_stack_and_late_life_overflow_rolls_back_only_choice() {
+    for (name, expected) in [("Spectral Denial", 1), ("Forest", 0)] {
+        let mut g = scenario();
+        let blades = paid(&mut g, Player::P0, "Ninja's Blades");
+        let hero = g.object_view(blades).attached_to.unwrap();
+        let discard = named(&mut g, Player::P0, name, Zone::Hand);
+        let old = g.object_ref(discard);
+        g.player_damage_triggers(&[DamageEvent {
+            source: g.damage_source(hero.card),
+            target: Target::Player(Player::P1),
+            amount: 2,
+            combat: true,
+        }]);
+        g.prepare_triggers();
+        pass_pair(&mut g);
+        assert_eq!(g.state.players[0].cards_drawn_this_turn, 1);
+        if expected > 0 {
+            g.state.players[1].life = i128::MIN;
+            let saved = g.snapshot();
+            let rev = g.revision;
+            assert!(matches!(
+                g.apply(Player::P0, Action::Discard { card: discard }),
+                Err(Error::CapacityExceeded(_))
+            ));
+            assert_eq!(g.snapshot(), saved);
+            assert_eq!(g.revision, rev);
+            assert_eq!(g.object_ref(discard), old);
+            assert_eq!(g.state.players[0].cards_drawn_this_turn, 1);
+            g.state.players[1].life = 20;
+        }
+        act(&mut g, Action::Discard { card: discard });
+        assert_eq!(g.state.players[1].life, 20 - expected);
+        assert_eq!(g.state.objects[discard as usize].zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn job_independent_duplicate_grants_do_not_merge_and_third_draw_uses_global_history() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario();
+        g.state.active = p;
+        g.state.priority = p;
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.draw(p);
+        g.draw(p);
+        let mut equipment = Vec::new();
+        for owner in [p, p.other()] {
+            let id = named(
+                &mut g,
+                owner,
+                "Astrologian's Planisphere",
+                Zone::Battlefield,
+            );
+            g.attach_equipment(g.object_ref(id), g.object_ref(bear));
+            equipment.push(id);
+        }
+        assert_eq!(
+            serde_json::to_value(g.object_view(bear).granted_subtypes).unwrap(),
+            serde_json::json!(["Wizard"])
+        );
+        g.draw(p);
+        assert_eq!(g.state.pending_triggers.len(), 2);
+        let grants: Vec<_> = g
+            .state
+            .pending_triggers
+            .iter()
+            .map(|s| s.attachment_trigger.as_ref().unwrap().grantor.card)
+            .collect();
+        assert!(equipment.iter().all(|id| grants.contains(id)));
+        g.move_object(equipment[0], Zone::Graveyard);
+        g.move_object(equipment[1], Zone::Graveyard);
+        resolve(&mut g);
+        assert_eq!(g.object_view(bear).counters.plus_one, 2);
+        g.draw(p);
+        assert!(g.state.pending_triggers.is_empty());
+    }
+}
+#[test]
+fn job_hero_entry_precedes_attachment_and_suppression_is_not_retroactive() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario();
+        named(&mut g, p, "Serra Redeemer", Zone::Battlefield);
+        let sword = paid(&mut g, p, "Warrior's Sword");
+        let hero = g.object_view(sword).attached_to.unwrap();
+        assert_eq!(g.object_view(hero.card).counters.plus_one, 2);
+        assert_eq!(
+            g.stats(hero.card),
+            Stats {
+                power: 6,
+                toughness: 5
+            }
+        );
+        let mut g = scenario();
+        let thrull = named(&mut g, p.other(), "Doorkeeper Thrull", Zone::Battlefield);
+        let sword = paid(&mut g, p, "Warrior's Sword");
+        assert_eq!(g.object_view(sword).attached_to, None);
+        assert!(
+            !g.state
+                .objects
+                .iter()
+                .any(|o| o.zone == Zone::Battlefield && o.card.is_token())
+        );
+        g.move_object(thrull, Zone::Graveyard);
+        resolve(&mut g);
+        assert_eq!(g.object_view(sword).attached_to, None);
+        g.move_object(sword, Zone::Hand);
+        g.move_object(sword, Zone::Battlefield);
+        resolve(&mut g);
+        assert!(g.object_view(sword).attached_to.is_some());
+    }
+}
+#[test]
+fn job_ninja_empty_library_and_no_discarded_card_loses_zero_life() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario();
+        let blades = paid(&mut g, p, "Ninja's Blades");
+        let hero = g.object_view(blades).attached_to.unwrap();
+        for id in g.state.players[p.index()].library.clone() {
+            g.move_object(id, Zone::Graveyard);
+        }
+        assert_eq!(g.hand_count(p), 0);
+        g.player_damage_triggers(&[DamageEvent {
+            source: g.damage_source(hero.card),
+            target: Target::Player(p.other()),
+            amount: 2,
+            combat: true,
+        }]);
+        g.prepare_triggers();
+        pass_pair(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 0);
+        assert!(g.state.resolving.is_none());
+        assert!(g.state.players[p.index()].attempted_empty_draw);
+    }
+}
