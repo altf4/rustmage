@@ -5,8 +5,8 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,813 have executable rules so far,
-with 3,351 still gated. The catalogue includes 87 token recipes and one emblem;
+knows all 5,164 pinned Standard identities; 1,814 have executable rules so far,
+with 3,350 still gated. The catalogue includes 87 token recipes and one emblem;
 observations use schema 79.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
@@ -17,7 +17,7 @@ The first training target is [current Standard, pinned to October 15, 2026](docs
 [Single-face Sagas](docs/sagas.md) add twelve complete bodies with typed lore counters, ordinary chapter packets and exact-incarnation final-chapter sacrifice.
 [Single-graveyard targeting](docs/single-graveyard.md) adds three complete bodies to the ten-pair Omen composition, with group-owned choices and exact rollback.
 [Adventure faces](docs/adventure.md) add nineteen complete pairs with paid inset casts and owned normal-play exile permissions; [typed attachment Ward](docs/attachment-ward.md) adds ten complete bodies. Their [composition record](docs/review-pr-258.md) tracks combined validation.
-[Omen spell faces](docs/omens.md) add nine complete pairs with chosen characteristics and owner-library shuffle completion; four Omen parents remain gated.
+[Omen spell faces](docs/omens.md) add eleven complete pairs with chosen characteristics and owner-library shuffle completion. [Chosen-spell timing](docs/cast-timing.md) completes Whirlwing; two Omen parents remain gated.
 [Job Select](docs/job-select.md) adds all sixteen complete Equipment bodies with live subtype grants,
 recipient-owned abilities and private Ninja/Summoner continuations.
 [Plot](docs/plot.md) adds thirteen complete bodies with paid special actions and exact later-turn free casting.

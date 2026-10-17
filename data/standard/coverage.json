@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b80c6e3eb1f68ea84caf2a3bdb24287fdc9ffa8ab57869cfdc997d88db854689",
+  "catalogue_version": "ad940c9bd13fdf2c1f0076ca307f7063967dd6254e4261a377eeb8613c782c25",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1813,
-  "implemented_total": 1819,
+  "implemented_standard_cards": 1814,
+  "implemented_total": 1820,
   "token_definitions": 87,
   "emblem_definitions": 1,
   "cards": [
@@ -30244,8 +30244,8 @@
     {
       "name": "Whirlwing Stormbrood // Dynamic Soar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Whiskerquill Scribe",
@@ -31107,5 +31107,5 @@
     }
   ],
   "adventure_definitions": 19,
-  "omen_definitions": 10
+  "omen_definitions": 11
 }

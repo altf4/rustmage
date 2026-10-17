@@ -417,3 +417,72 @@ fn feral_group_relation_resets_between_separate_occurrences_and_owns_each_choice
         assert_eq!(packet.targets[1].group, 1);
     }
 }
+
+#[test]
+fn feral_whirl_off_turn_dragon_and_sorcery_faces_keep_grouped_etb_and_owned_completion() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, normal) = setup(p);
+        g.state.active = p.other();
+        g.state.priority = p;
+        g.state.step = Step::FirstStrikeDamage;
+        let inset = spawn(&mut g, p, Card::from_name(NAME).unwrap(), Zone::Hand);
+        let unrelated = spawn(
+            &mut g,
+            p,
+            Card::from_name("Griffnaut Tracker").unwrap(),
+            Zone::Hand,
+        );
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: normal })
+        );
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceOmen { card: inset })
+        );
+        let grantor = spawn(
+            &mut g,
+            p,
+            Card::from_name("Whirlwing Stormbrood // Dynamic Soar").unwrap(),
+            Zone::Battlefield,
+        );
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceCast { card: normal })
+        );
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceOmen { card: inset })
+        );
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: unrelated })
+        );
+        let a = spawn(&mut g, p, Card::Forest, Zone::Graveyard);
+        let b = spawn(&mut g, p, Card::Swamp, Zone::Graveyard);
+        let foreign = spawn(&mut g, p.other(), Card::Shock, Zone::Graveyard);
+        let mana = g.state.players[p.index()].mana;
+        normal_targets(&mut g, normal);
+        assert_ne!(g.state.players[p.index()].mana, mana);
+        choose(&mut g, a);
+        deny(&mut g, foreign);
+        choose(&mut g, b);
+        settle(&mut g);
+        assert_eq!(g.state.objects[a as usize].zone, Zone::Exile);
+        assert_eq!(g.state.objects[b as usize].zone, Zone::Exile);
+        assert_eq!(g.state.objects[foreign as usize].zone, Zone::Graveyard);
+        assert_eq!(g.state.active, p.other());
+        if g.actor() != Some(p) {
+            act(&mut g, Action::Pass);
+        }
+        let library = g.state.players[p.index()].library.len();
+        paid_packet(&mut g, inset, true, &[Target::Card(normal)]);
+        settle(&mut g);
+        assert_eq!(g.state.objects[normal as usize].counters.plus_one, 1);
+        assert_eq!(g.state.objects[inset as usize].zone, Zone::Library);
+        assert_eq!(g.state.players[p.index()].library.len(), library);
+        assert_eq!(g.state.objects[grantor as usize].zone, Zone::Battlefield);
+        assert!(g.state.adventures.is_none());
+        assert!(g.state.exile_permissions.is_empty());
+    }
+}

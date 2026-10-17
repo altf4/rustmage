@@ -1,5 +1,14 @@
 # Targets constrained to one graveyard
 
+## Composition with merged Whirlwing timing
+
+This candidate integrates main `1f632809` with the reviewed Feral batch `1f28c02`. It has 1,814/5,164 executable Standard identities, 3,350 gated, 87 token factories, one emblem, nineteen Adventure and eleven Omen helpers (5,301 definitions), schema79. Both strict generic parser routes survive: neither timing nor same-graveyard bodies can be revived by legacy name selectors. Fresh combined validation and final independent reviews are pending; the earlier evidence below remains scoped to its recorded sources.
+
+Canonical comparison preserves 5,297 of main’s 5,300 definitions, changing only the three Feral/Arashin/Griffnaut rows. Relative to the Feral parent, only Whirlwing’s ordinary row changes and 5,299 definitions survive. All previous colors, factories, emblem and helper arms survive; the combined catalogue has 786 helper arms. All 1,661 provenance records across 575 distinct Java paths still match disk and the pinned source. A new both-seat paid native cross group casts the Dragon normal body and Sorcery inset off-turn under Whirlwing, rejects an unrelated non-Dragon, enforces exact grouped graveyard targets, and preserves draw/shuffle completion and rollback.
+
+## Earlier independently reviewed Feral batch
+
+
 Issue #266 and PR #267 add three complete bodies to reviewed Omen/Adventure/Saga/Ward main: Feral Deathgorger // Dusk Sight, Arashin Sunshield and Griffnaut Tracker. Combined coverage is 1,813/5,164 Standard identities, 3,351 gated, 87 token factories, one emblem, nineteen Adventure helpers and ten Omen helpers (5,300 definitions). The full Standard goal remains incomplete.
 
 `TargetRule::Grouped` combines the ordinary immutable target predicate with typed `TargetGroupConstraint::SameGraveyard`. All selected cards within that occurrence must share the same graveyard owner. Either player’s graveyard is available before the first selection; afterward the other graveyard disappears from the legal mask. Ordinary distinct-target checks remain in force. Zero, one or two targets are legal; an empty graveyard creates no forced choice. Required-group availability counts candidates within each graveyard rather than combining players. The existing unconstrained “from graveyards” grammar remains distinct.
