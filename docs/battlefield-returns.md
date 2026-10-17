@@ -56,6 +56,42 @@ Its catalogue fingerprint is
 Both independent preliminary complete-batch reviews report no findings; their
 novel paid interaction checks and raw-rule mutation controls are retained.
 
-Composition with the newer main parent, fresh integration checks, and two
-independent approvals at the final published head remain required. The broad
-baseline results above do not claim validation of that future composition.
+Final composition uses actual main `c0232954838cf71203a5be7c0e8fc80a66f6bf26`.
+Strict comparison changes exactly the two return bodies and preserves 5,329 other
+definitions, all 882 helpers, colors, aliases, flags, 94 token recipes and the
+emblem. Both complete programs, the return runtime file and the two new compiler
+recognition/authentication functions are unchanged from the original baseline.
+All parent Role/reflexive/temporary-grant paths and raw guards remain present.
+
+Frozen production/native checkpoint `0347dc925523d34065a9beebc2ba4e2db72a9544`
+passes 1,807 unit plus 12 integration tests, all-target Clippy and formatting
+(39.017 seconds). This includes a new paid both-seat interaction: Fake Your Own
+Death grants its exact recipient an ability, River's Rebuke returns that creature,
+the same physical card is recast, and Stab kills the new incarnation permanently
+without creating Treasure. Every action retains owned branch/restore/view and
+actor/revision checks. The final optimized library is
+`/home/altf4/.cache/rustmage-immutable/returns307-0347dc9-47ef-schema89-255f51f40463.so`,
+SHA256 `255f51f4046384aed117302030817baae93537e17563d0772674698e44fae5fd`,
+schema89, catalogue fingerprint
+`47ef06451233ccf6e22f6e2e09bdc8cfb63fce96c87c52942e81d291a8efdf98`.
+
+The initial composed compiler run passes 29 methods and fails one inherited
+Werefox preservation assertion that still compared the current catalogue as a
+single-admission delivery. Test-only checkpoint
+`5851de4d94a97b3792bd3cfa86b2f7b2b886b18c` keeps that exact historical delivery
+proof at c023295 and separately checks its complete program in the current union.
+No production, native-test or public-policy file changes. All thirty affected
+compiler/provenance methods then pass in 6.653 seconds, without failures/errors/
+skips. The original failed run remains a failed diagnostic.
+
+At 5851de4, six relevant API methods pass in 57.941 seconds: both return bodies,
+all three temporary grants, local/foreign Werefox, all six Role semantics bodies
+and the cheaper-normal-cast timing controls. All 100 fixed unretried Standard
+games pass in 165.274 seconds with four complete body/seat vectors, 82,844 owned
+frames and 165,688 actor/revision denials. Every gate verifies all 845 frozen
+execution files and the exact library hash. The original 452/269 broad suites
+retain their original source scope; they are not relabeled fresh union runs.
+
+All jobs are terminal, and non-library build outputs are cleaned while preserving
+every shared-library path/hash. Two independent complete-batch final-head
+approvals remain required before merge. Full Standard support remains unfinished.
