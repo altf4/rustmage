@@ -8,5 +8,33 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "52e83d9c5fdffa29d897bfde63ddc28475999c9d51eb179e04c53c4c11b99e69"
   },
-  "physical_metadata_sha256": "936e960510a3273beb95f9682fcd87047780f70dfd12749dcd6ea4598291ce7e"
+  "physical_metadata_sha256": "936e960510a3273beb95f9682fcd87047780f70dfd12749dcd6ea4598291ce7e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GarnaBloodfistOfKeld.java",
+  "java_sha256": "ecb746215ec1b681addbeb8d15c64431b200da1356eb08ab5836ca67558a5ec9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    }
+  ],
+  "remaining_obligations": [
+    "Whole-card consumer acceptance and independent batch reviews remain pending; core fixture is not admitted."
+  ]
 }

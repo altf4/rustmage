@@ -113,6 +113,8 @@ const fn object(kinds: u8) -> TargetRule {
     }
 }
 pub(super) struct CardExtras {
+    pub entry_choice: Option<EntryChoiceKind>,
+    pub chosen_entry_counters: Option<CounterKind>,
     pub static_modifiers: &'static [StaticModifier],
     pub equipment: Option<EquipmentSpec>,
     pub aura: Option<AuraSpec>,
@@ -169,6 +171,8 @@ pub(super) struct CardExtras {
 }
 impl CardExtras {
     pub const EMPTY: Self = Self {
+        entry_choice: None,
+        chosen_entry_counters: None,
         static_modifiers: &[],
         equipment: None,
         aura: None,

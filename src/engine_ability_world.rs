@@ -222,6 +222,15 @@ impl ManaProduction {
         source: CardId,
     ) -> Self {
         match self {
+            Self::ChosenColor => {
+                let mut mana = [0; 6];
+                if let Some(EntryChoiceValue::Color(color)) =
+                    world.game().entry_value(world.reference(source))
+                {
+                    mana[color.index()] = 1;
+                }
+                Self::Fixed(mana)
+            }
             Self::CountSubtype { color, subtype } => {
                 let controller = world.object(source).controller;
                 let count = world

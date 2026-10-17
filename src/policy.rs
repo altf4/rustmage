@@ -204,6 +204,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ChooseMode { .. } => 50,
             Action::ChooseSearch { .. } | Action::ChooseSearchBattlefield { .. } => 60,
             Action::FinishSearch => 0,
+            Action::ChooseEntryValue { .. } => 0,
             Action::ChooseEntryLife { pay } => {
                 // Avoid voluntary lethal payment; the example still exercises
                 // both branches as life falls during games.

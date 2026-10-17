@@ -31,6 +31,7 @@ impl Card {
                         fragment,
                         StaticAbilityFragment::RemoveAttachedAbilities
                             | StaticAbilityFragment::SourceCounterSubtype { .. }
+                            | StaticAbilityFragment::ChosenCreatureType
                             | StaticAbilityFragment::AttachedSubtype(..)
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::AttachmentKeywords(..)

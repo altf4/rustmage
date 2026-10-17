@@ -1,16 +1,34 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Gated core consumer: whole-card admission awaits the reviewed consumer batch.
+const OTHER_YOURS: CreatureFilter = CreatureFilter {
+    relation: 0,
+    other: true,
+    subtype: None,
+    keyword: Keywords::NONE,
+    attacking: false,
+    tokens: None,
+    artifact: false,
+};
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(4, 3),
+    // Disjoint predicates select the printed ability's branch at the event.
+    // Only one packet exists per death; no extra death facts live in game state.
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::CreatureDiesAttackState {
+                filter: OTHER_YOURS,
+                attacking: true,
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::Draw(PlayerSet::Controller, 1)],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::CreatureDiesAttackState {
+                filter: OTHER_YOURS,
+                attacking: false,
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::DamagePlayers(PlayerSet::Opponent, 1)],
+        },
+    ],
     ..CardRules::EMPTY
 };

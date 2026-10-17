@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "issue": 410,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "oracle_source": "https://api.scryfall.com/cards/search?q=legal%3Astandard+date%3C%3D2026-10-15&unique=cards&order=name",
+  "oracle_as_of": "2026-10-15",
+  "cards": [
+    {
+      "name": "Harmless Offering",
+      "oracle_id": "f5d32e5f-066b-42cf-8dd1-072a96275313",
+      "oracle_text": "Target opponent gains control of target permanent you control.",
+      "complete": false
+    },
+    {
+      "name": "Wishclaw Talisman",
+      "oracle_id": "81c70ae7-3c18-4c9b-8505-e4db9e0e6518",
+      "oracle_text": "This artifact enters with three wish counters on it.\n{1}, {T}, Remove a wish counter from this artifact: Search your library for a card, put it into your hand, then shuffle. An opponent gains control of this artifact. Activate only during your turn.",
+      "complete": false
+    }
+  ],
+  "sources": [
+    {
+      "path": "Mage.Sets/src/mage/cards/h/HarmlessOffering.java",
+      "sha256": "df2ae7130a5f343e14ce5960b1baa54465a4e0d28b9cced79e79355afa6a9415"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/w/WishclawTalisman.java",
+      "sha256": "64cd88ef3d2d2c7ffdd3779a7a78fbad69ec769750c27f6cbf13ae4e1ee85eab"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TargetPlayerGainControlTargetPermanentEffect.java",
+      "sha256": "a78fe4473af92c9961a7df6d763281b824ef34c05c3d21264ffeb9c9126bda94"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainControlTargetEffect.java",
+      "sha256": "93e055d129c924686ebca800aee72c6797220dfc56b829c70b715dd06a8c09ed"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+      "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateIfConditionActivatedAbility.java",
+      "sha256": "9f9d45f4e624eaa78c99f720c00a3302f6936e7b5246bf76ae15f9e75ba327b0"
+    }
+  ]
+}

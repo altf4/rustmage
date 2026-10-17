@@ -8,5 +8,75 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3ee294f3150bedbb792c853770d38ea4fa43ade96dd92befd138627fbda309e2"
   },
-  "physical_metadata_sha256": "ac26d1e3ed1d46fae76e85548379bb93fa2f87ffe0ca6a1d1c853ce0d3c78c00"
+  "physical_metadata_sha256": "ac26d1e3ed1d46fae76e85548379bb93fa2f87ffe0ca6a1d1c853ce0d3c78c00",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DiamondMare.java",
+  "java_sha256": "83246e2cc909be7ebd808ee6ebd94b54de82e72372ff6358f4f0861ef66a80f6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseColorEffect.java",
+      "sha256": "bbc363d77d1883e5473b95e94ecb24c6d33f8c03a85dd2c6d570c56d112dcba6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaChosenColorEffect.java",
+      "sha256": "e129dbded6a8eeaa978804934e34f9b3c5992ad5c560692e1fa5120b8c3f2e48"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseCreatureTypeEffect.java",
+      "sha256": "7c002222709f95c0fb03244a866082efaec9f9db530fb6f62f682000a4806b9d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AsEntersBattlefieldAbility.java",
+      "sha256": "3919eac1ae9ebc0edd9decad5d293bdf0cdb4d16c516021ea3e97711f9a72ab5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAsItEntersChooseColorAbility.java",
+      "sha256": "ae5f335e82c104afe8d7165f2d404c4ad5e1972a28225b7b9af732c30e8b125d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddChosenSubtypeEffect.java",
+      "sha256": "001d020ed7d1c3f52c597c33adfa31ec550b3c994f09fec6b62e138b96edd691"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllOfChosenSubtypeEffect.java",
+      "sha256": "aa088319449679f38b3d77f34e8939565afe24be2f2b7b2d374454e4c6df7128"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/enterAttribute/EnterAttributeAddChosenSubtypeEffect.java",
+      "sha256": "9cbbd91ca3cb70ba5fd1a43b12275eb92f5856e7e3ccded8611d7ae9405be0e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/EntersBattlefieldEffect.java",
+      "sha256": "992476599885ef0ca5b2187155efe9fe40b9a16e98b578b67e0dacf21b8e6e48"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+      "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/choices/ChoiceCreatureType.java",
+      "sha256": "c940b4b86491e3c45d7d6011a43e340e051fd3fac732b035a068af6b7074b44b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/choices/ChoiceColor.java",
+      "sha256": "1db540710d45621c881502405d5dbcf85ce255f78239ac71fe8c4669f31b6ccd"
+    }
+  ]
 }

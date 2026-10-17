@@ -4,12 +4,12 @@ use crate::cards::{
     ActivatedAbility, ActivationCost, ActivationGuard, ActivationOrigin, AdditionalCost,
     AmountValue, BattlefieldFilter, CastRelation, CostTurn, CountFilter, CountZone, CounterAmounts,
     CounterKind, CounterSubject, Counters, CreatureFilter, DamageQualification, DamageSubject,
-    Effect, EffectChoiceKind, EmblemInfo, EntryCounterAmount, EntryPredicate, EntryTapped,
-    InitialCounters, Instruction, ManaCost, ManaProduction, MillAmount, MilledCount,
-    MilledDestination, MilledFilter, MilledSelectionSpec, NamedCounters, PlayerSet, RecoveryFilter,
-    ResolvedStatValue, SacrificeFilter, SearchSpec, SpellMode, StatExpr, StatValue, Stats,
-    StepGuard, StepValue, Subject, TargetGroupConstraint, TargetPlan, TargetPredicate, TargetRule,
-    TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
+    Effect, EffectChoiceKind, EmblemInfo, EntryChoiceKind, EntryChoiceValue, EntryCounterAmount,
+    EntryPredicate, EntryTapped, InitialCounters, Instruction, ManaCost, ManaProduction,
+    MillAmount, MilledCount, MilledDestination, MilledFilter, MilledSelectionSpec, NamedCounters,
+    PlayerSet, RecoveryFilter, ResolvedStatValue, SacrificeFilter, SearchSpec, SpellMode, StatExpr,
+    StatValue, Stats, StepGuard, StepValue, Subject, TargetGroupConstraint, TargetPlan,
+    TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 #[path = "engine_milled_selection.rs"]
 mod milled_selection;
@@ -396,6 +396,7 @@ define_actions! {
     FinishMilledSelection,
     ChooseEntryTimestamp { object: ObjectRef },
     ChooseEntryReplacement { source: ObjectRef, intrinsic: bool },
+    ChooseEntryValue { value: EntryChoiceValue },
     ChooseEntryLife {
         pay: bool,
     },
@@ -1243,6 +1244,9 @@ enum Pending {
     EntryReplacement {
         player: Player,
     },
+    EntryValue {
+        player: Player,
+    },
     EntryLife {
         player: Player,
     },
@@ -1335,6 +1339,7 @@ struct State {
     crew: Option<Box<crew::CrewState>>,
     objects: SharedVec<Object>,
     named_counters: Option<SharedVec<live_counters::NamedCounterRow>>,
+    entry_values: entry_choices::Rows,
     attacked_this_turn: SharedVec<ObjectRef>,
     creatures_died_this_turn: u64,
     free_tokens: Vec<CardId>,
@@ -1418,6 +1423,7 @@ pub struct ObjectView {
     /// Current card-type bits; Card remains the immutable printed identity.
     pub kinds: u16,
     pub granted_subtypes: GrantedSubtypes,
+    pub entry_choice: Option<EntryChoiceValue>,
     pub saddled: bool,
     pub id: CardId,
     pub reference: ObjectRef,
@@ -1713,6 +1719,7 @@ pub struct Observation {
     pub search_choice: Option<SearchChoiceView>,
     pub search_distribution: Option<SearchDistributionView>,
     pub effect_choice: Option<EffectChoiceView>,
+    pub entry_value: Option<entry_choices::EntryChoiceView>,
     pub aura_entry: Option<entries::AuraEntryView>,
     pub entry_life: Option<entries::EntryLifeView>,
     pub entry_replacement: Option<entry_tap::EntryTapView>,
@@ -1853,6 +1860,7 @@ impl Game {
                 replacements: None,
                 objects: objects.into(),
                 named_counters: None,
+                entry_values: None,
                 attacked_this_turn: Vec::new().into(),
                 creatures_died_this_turn: 0,
                 free_tokens: Vec::new(),
@@ -1974,6 +1982,7 @@ impl Game {
             | Pending::AdditionalCost { player }
             | Pending::EntryTimestamp { player }
             | Pending::EntryReplacement { player }
+            | Pending::EntryValue { player }
             | Pending::EntryLife { player }
             | Pending::AuraEntry { player }
             | Pending::EffectChoice { player }
@@ -2300,6 +2309,11 @@ impl Game {
                     }) {
                         return true;
                     }
+                }
+            }
+            Pending::EntryValue { .. } => {
+                if self.visit_entry_values(|value| emit(Action::ChooseEntryValue { value })) {
+                    return true;
                 }
             }
             Pending::EntryLife { .. } => {
@@ -3227,6 +3241,7 @@ impl Game {
             Action::ChooseEntryReplacement { source, intrinsic } => {
                 self.choose_entry_tap_effect(source, intrinsic)
             }
+            Action::ChooseEntryValue { value } => self.choose_entry_value(value),
             Action::ChooseEntryLife { pay } => self.choose_entry_life(pay),
             Action::ChooseAuraAttachment { object } => self.choose_aura_attachment(object),
             Action::Keep => {
@@ -3281,7 +3296,11 @@ impl Game {
                 if matches!(
                     self.state.objects[card as usize].card.entry_tapped(),
                     EntryTapped::PayLife(_)
-                ) || self.has_entry_counter_replacements(self.state.objects[card as usize].card)
+                ) || self.state.objects[card as usize]
+                    .card
+                    .entry_choice()
+                    .is_some()
+                    || self.has_entry_counter_replacements(self.state.objects[card as usize].card)
                 {
                     // A land play is public even while its pre-entry choice is pending.
                     let reference = self.object_ref(card);
@@ -4056,6 +4075,7 @@ impl Game {
             "same-zone moves are ordering operations"
         );
         self.capture_source_counter_departure(&before);
+        self.clear_entry_value(before.reference);
         if before.zone == Zone::Battlefield {
             self.clear_suspected_reference(before.reference);
         }
@@ -4878,6 +4898,7 @@ impl Game {
                 Pending::HandDefender { .. } => "hand_defender",
                 Pending::EffectChoice { .. } => "effect_choice",
                 Pending::EntryTimestamp { .. } => "entry_timestamps",
+                Pending::EntryValue { .. } => "entry_value",
                 Pending::EntryLife { .. } => "entry_life",
                 Pending::EntryReplacement { .. } => "entry_replacement",
                 Pending::AuraEntry { .. } => "aura_entry",
@@ -4930,6 +4951,7 @@ impl Game {
                 _ => None,
             },
             effect_choice: self.effect_choice_view(viewer),
+            entry_value: self.entry_choice_view(viewer),
             aura_entry: self.aura_entry_view(viewer),
             entry_life: self.entry_life_view(viewer),
             entry_replacement: self.entry_tap_view(viewer),
@@ -5262,6 +5284,7 @@ impl Game {
             + 2 * std::mem::size_of::<Vec<CardId>>()
             + s.objects.len() * std::mem::size_of::<Object>()
             + live_counters::owned_bytes(&s.named_counters)
+            + entry_choices::owned_bytes(&s.entry_values)
             + s.announcing
                 .as_ref()
                 .map_or(0, |a| a.counter_payment.owned_bytes())
@@ -5456,6 +5479,10 @@ mod equipment;
 #[cfg(test)]
 #[path = "engine_equipment_tests.rs"]
 mod equipment_tests;
+
+#[path = "engine_entry_choices.rs"]
+mod entry_choices;
+pub use entry_choices::EntryChoiceView;
 
 #[path = "engine_entries.rs"]
 mod entries;
@@ -5891,6 +5918,10 @@ mod split_search_tests;
 mod control_tests;
 
 #[cfg(test)]
+#[path = "engine_durable_control_tests.rs"]
+mod durable_control_tests;
+
+#[cfg(test)]
 #[path = "engine_adventure_land_targets_tests.rs"]
 mod adventure_land_targets_tests;
 
@@ -6138,3 +6169,11 @@ mod fdn_drake_amulet_juggernaut_tests;
 #[cfg(test)]
 #[path = "engine_fdn_punisher_two_tests.rs"]
 mod fdn_punisher_two_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_death_life_core_tests.rs"]
+mod fdn_death_life_core_tests;
+
+#[cfg(test)]
+#[path = "engine_entry_choices_tests.rs"]
+mod entry_choices_tests;

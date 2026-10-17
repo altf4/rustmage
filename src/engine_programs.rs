@@ -371,8 +371,15 @@ impl Game {
                                 && f.subtype
                                     .is_none_or(|subtype| event.before.has_subtype(subtype))
                         }
-                        TriggerCondition::CreatureDiesFiltered { filter } => {
+                        TriggerCondition::CreatureDiesFiltered { filter }
+                        | TriggerCondition::CreatureDiesAttackState { filter, .. } => {
                             event.before.is_creature()
+                                && match ability.condition.event() {
+                                    TriggerCondition::CreatureDiesAttackState {
+                                        attacking, ..
+                                    } => event.before.attacking == attacking,
+                                    _ => true,
+                                }
                                 && filter.matches_characteristics(
                                     event.before.card,
                                     event.before.kinds,
@@ -460,6 +467,7 @@ impl Game {
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
+                    | TriggerCondition::CreatureDiesAttackState { .. }
                     | TriggerCondition::Sacrificed { .. }
                     | TriggerCondition::LifeGained { .. }
                     | TriggerCondition::LifeLost { .. }
@@ -751,6 +759,9 @@ impl Game {
         targets: &[BoundTarget],
     ) -> bool {
         match filter {
+            CastFilter::SourceChosenColor => {
+                matches!(source.entry_choice, Some(EntryChoiceValue::Color(color)) if card.colors() & (1 << color.index()) != 0)
+            }
             CastFilter::InstantSorceryOrdinal(wanted) => {
                 CastFilter::InstantSorcery.matches(card)
                     && self.state.players[caster.index()].instant_sorcery_cast_this_turn == wanted
@@ -1217,6 +1228,7 @@ impl Game {
                                 )
                             })
                     }) || item.x.is_some()
+                        || item.source_card.entry_choice().is_some()
                         || self.has_entry_counter_replacements(item.source_card)
                     {
                         let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
@@ -1412,7 +1424,12 @@ impl Game {
             let mut item = resolution.item.clone();
             if !matches!(
                 instruction,
-                Instruction::Fight { .. } | Instruction::PowerDamage { .. }
+                Instruction::Fight { .. }
+                    | Instruction::PowerDamage { .. }
+                    | Instruction::GainControl {
+                        controller: PlayerSet::Targeted,
+                        ..
+                    }
             ) {
                 item.targets
                     .retain(|bound| bound.group == resolution.target_group);
@@ -1754,8 +1771,14 @@ impl Game {
                     };
                     return;
                 }
-                Instruction::MayPayOpponentLife { amount, skip } => {
-                    let player = item.controller.other();
+                Instruction::MayPayOpponentLife { amount, skip }
+                | Instruction::MayPayControllerLife { amount, skip } => {
+                    let player = if matches!(instruction, Instruction::MayPayControllerLife { .. })
+                    {
+                        item.controller
+                    } else {
+                        item.controller.other()
+                    };
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     assert!(skip_to <= resolution.program.len());
                     if amount != 0 && self.state.players[player.index()].life < i128::from(amount) {
@@ -1792,6 +1815,12 @@ impl Game {
                     self.move_battlefield_group(&item, filters, exile);
                 }
                 Instruction::GainControlUntilEndTurn => self.gain_control_until_end_turn(&item),
+                Instruction::GainControl {
+                    subject,
+                    controller,
+                } => {
+                    self.gain_control(&item, subject, controller);
+                }
                 Instruction::ReturnGraveyardCreatures {
                     players,
                     maximum_mana_value,
@@ -2017,7 +2046,9 @@ impl Game {
                     );
                 }
                 Instruction::AddMana(production) => match production.in_world(self, item.card) {
-                    ManaProduction::CountSubtype { .. } => unreachable!("resolved production"),
+                    ManaProduction::ChosenColor | ManaProduction::CountSubtype { .. } => {
+                        unreachable!("resolved production")
+                    }
                     ManaProduction::Fixed(mana) => self.add_mana(item.controller, mana),
                     ManaProduction::Choice { .. } => {
                         self.state.pending = Pending::EffectMana {

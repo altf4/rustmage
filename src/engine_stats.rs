@@ -88,6 +88,7 @@ impl Game {
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
+                    | TriggerCondition::CreatureDiesAttackState { .. }
                     | TriggerCondition::FoodsSacrificed
                     | TriggerCondition::Sacrificed { .. }
             )
@@ -137,6 +138,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::NoMaximumHandSize
                             | crate::cards::StaticAbilityFragment::AdditionalLandPlays(_)
                             | crate::cards::StaticAbilityFragment::CantGainLife
+                            | crate::cards::StaticAbilityFragment::ChosenModifier(..)
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..)
                     )

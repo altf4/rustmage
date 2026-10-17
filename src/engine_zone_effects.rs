@@ -1,4 +1,4 @@
-//! Sparse owned temporary control and frozen non-targeted zone sets.
+//! Fixed indefinite and sparse temporary control, and frozen non-targeted zone sets.
 use super::*;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -64,6 +64,30 @@ impl Game {
                 .get_or_insert_with(|| Box::new(Vec::new()))
                 .push(effect);
             self.change_controller(effect.object, effect.controller);
+        }
+    }
+    pub(super) fn gain_control(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+        controller: PlayerSet,
+    ) {
+        // Targeted players here are the already revalidated resolution targets.
+        // Opponent uses the captured ability controller, not the live source's.
+        let Some(controller) = self.program_players(controller, item).next() else {
+            return;
+        };
+        for id in self.keyword_subjects(item, subject) {
+            if !self.on_battlefield(id) {
+                continue;
+            }
+            let object = self.object_ref(id);
+            // This later fixed, indefinite effect supersedes every older control
+            // effect for the recipient. Older EOT undo records must never restore
+            // their controllers, even when the new controller is already current.
+            // Future temporary effects capture this controller as their baseline.
+            self.forget_temporary_control(object);
+            self.change_controller(object, controller);
         }
     }
     pub(super) fn forget_temporary_control(&mut self, object: ObjectRef) {
