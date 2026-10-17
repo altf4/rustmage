@@ -3845,7 +3845,7 @@ def compile_catalogue(snapshot, target):
         abilities = []
         entry = 'Never'
         land = land_template(card)
-        if name in legacy:
+        if name in legacy and not timing_seen:
             effect, fallback_cost, color = legacy[name]
             # Lands have no mana cost. Their legacy cost token encodes colour only.
             cost = '' if effect == 'Land' else card.get('mana_cost', fallback_cost)

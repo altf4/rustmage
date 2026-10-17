@@ -49,6 +49,16 @@ class CastingTimingCompilerTests(unittest.TestCase):
             c["oracle_text"] += "\nYou may cast sorcery spells as though they had flash."
             self.assertFalse(self.admitted(c))
 
+    def test_timing_route_cannot_use_legacy_name_residual_bypasses(self):
+        for name in ["Grizzly Bears", "Llanowar Elves"]:
+            c=copy.deepcopy(self.cards[self.name]["card_faces"][0])
+            c.update(name=name,layout="normal",oracle_id=self.cards[self.name]["oracle_id"],colors=["U"],keywords=["Flash","Flying"])
+            self.assertTrue(self.admitted(c))
+            for residual in ["\nDraw nineteen cards.","\n(You win the game.)"]:
+                bad=copy.deepcopy(c)
+                bad["oracle_text"]+=residual
+                self.assertFalse(self.admitted(bad))
+
     def test_unknown_permissions_and_any_unknown_face_text_remain_gated(self):
         changes = [
             "You may cast sorcery spells and Dragon spells as though they had flying.",

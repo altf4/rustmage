@@ -76,7 +76,7 @@ class CastingTimingTests(unittest.TestCase):
                     if k in ["PayCosts","PutTrigger","FinishTargets","FinishSearch","FinishAttackers","FinishBlockers","Keep","ChooseSpellCost"]:return 2400
                     if k in ["Discard","Bottom"]:
                         reserve = (2 if stage=="source" else 1) if n==WHIRL else (0 if ally else 1) if n=="Bear Cub" else 1
-                        if n in [WHIRL,DRAGON,BILBO,"Bear Cub"] and sum(v["card"]==n for v in hand)<=reserve:return -1000
+                        if actor==p and n in [WHIRL,DRAGON,BILBO,"Bear Cub"] and sum(v["card"]==n for v in hand)<=reserve:return -1000
                         return 2200 if n in ["Shock","Thrill of Possibility","Bygone Colossus"] else 1000
                     if k=="Attack":return 2800 if stage=="finish" else -1000
                     if k=="Pass":return 0
