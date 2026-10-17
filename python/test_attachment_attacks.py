@@ -87,13 +87,13 @@ class AttachmentAttackTests(unittest.TestCase):
                         self.assertEqual(event['defender'], other)
                         self.assertEqual(packet['controller'], seat)
                         self.assertIsNone(packet['cast'])
-                        self.assertEqual(packet['object'], event['attacker'] if i >= 5 else event['grantor'])
+                        self.assertEqual(packet['object'], event['recipient'] if i >= 5 else event['grantor'])
                         self.assertEqual(packet['card'], packet['object']['card'])
                         self.assertEqual(packet['source_card'], creature if i >= 5 else name)
-                        self.assertEqual(event['attacker'], recipient_ref)
+                        self.assertEqual(event['recipient'], recipient_ref)
                         self.assertEqual(event['grantor'], equipment['reference'])
                         self.assertEqual(event['granting_card'], name)
-                        self.assertEqual(objects[event['attacker']['card']]['tapped'], i != 1)
+                        self.assertEqual(objects[event['recipient']['card']]['tapped'], i != 1)
                 frame = obs['library_choice']
                 if frame:
                     self.assertEqual(i, 5)
@@ -256,7 +256,7 @@ class AttachmentAttackTests(unittest.TestCase):
                                     if event:
                                         self.assertEqual(event['granting_card'], "Medic's Kitesail")
                                         self.assertTrue(event['granted'])
-                                        self.assertEqual(event['attacker'], tracker['reference'])
+                                        self.assertEqual(event['recipient'], tracker['reference'])
                                         self.assertEqual(event['defender'], other)
                                         grantors.add(tuple(event['grantor'].values()))
                             def score(a):

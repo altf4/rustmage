@@ -264,6 +264,7 @@ pub(crate) struct SearchSpec {
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
+    HandCreature,
     CollectEvidence(u16),
     Forage,
     ForageOrBlack,
@@ -351,6 +352,8 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    DiscardManaValueLifeLoss,
+    PutHandCreature,
     JobSelect {
         token: Card,
     },
@@ -1015,6 +1018,8 @@ pub(crate) enum EntryPredicate {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    /// Immutable Equipment program, with the exact recipient as ability source.
+    Granted(&'static TriggerCondition),
     SelfAttacksWhileSaddled,
     SelfEntersOrAttacksWhileSaddled,
     SelfSaddledFirst,
@@ -1124,10 +1129,19 @@ pub(crate) enum TriggerCondition {
 }
 
 impl TriggerCondition {
+    pub(crate) fn is_granted(self) -> bool {
+        match self {
+            Self::Granted(_) | Self::GrantedAttacks => true,
+            Self::OncePerTurn(e)
+            | Self::DuringOpponentsTurn(e)
+            | Self::InterveningIf { event: e, .. } => e.is_granted(),
+            _ => false,
+        }
+    }
     pub(crate) fn requires_opponents_turn(self) -> bool {
         match self {
             Self::DuringOpponentsTurn(_) => true,
-            Self::OncePerTurn(event) | Self::InterveningIf { event, .. } => {
+            Self::Granted(event) | Self::OncePerTurn(event) | Self::InterveningIf { event, .. } => {
                 event.requires_opponents_turn()
             }
             _ => false,
@@ -1135,7 +1149,8 @@ impl TriggerCondition {
     }
     pub(crate) fn event(self) -> Self {
         match self {
-            Self::OncePerTurn(event)
+            Self::Granted(event)
+            | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
             | Self::InterveningIf { event, .. } => event.event(),
             event => event,
@@ -1144,9 +1159,9 @@ impl TriggerCondition {
     pub(crate) fn once_per_turn(self) -> bool {
         match self {
             Self::OncePerTurn(_) => true,
-            Self::InterveningIf { event, .. } | Self::DuringOpponentsTurn(event) => {
-                event.once_per_turn()
-            }
+            Self::Granted(event)
+            | Self::InterveningIf { event, .. }
+            | Self::DuringOpponentsTurn(event) => event.once_per_turn(),
             _ => false,
         }
     }

@@ -8,18 +8,32 @@ fn named(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
 }
 fn resolve(g: &mut Game) {
     g.prepare_triggers();
-    while !g.state.stack.is_empty() || !g.state.ordering_triggers.is_empty() {
-        if let Some(a) = g
+    for _ in 0..200 {
+        if g.state.stack.is_empty()
+            && g.state.ordering_triggers.is_empty()
+            && g.state.announcing.is_none()
+        {
+            return;
+        }
+        let action = g
             .legal_actions()
             .into_iter()
-            .find(|a| matches!(a, Action::PutTrigger { .. }))
-        {
-            act(g, a);
-        } else {
-            pass_pair(g);
-        }
+            .find(|a| {
+                matches!(
+                    a,
+                    Action::PutTrigger { .. }
+                        | Action::ChooseTarget { .. }
+                        | Action::FinishTargets
+                        | Action::PayCosts { .. }
+                        | Action::Pass
+                )
+            })
+            .expect("trigger continuation");
+        act(g, action);
     }
+    panic!("unsettled trigger")
 }
+
 fn paid(g: &mut Game, p: Player, name: &str) -> CardId {
     g.state.active = p;
     g.state.priority = p;
@@ -229,4 +243,338 @@ fn job_select_life_equip_is_targeted_once_each_turn_and_scaling_tracks_controlle
             }
         );
     }
+}
+
+#[test]
+fn job_select_all_sixteen_whole_bodies_create_and_attach() {
+    for p in [Player::P0, Player::P1] {
+        for (name, subtype) in [
+            ("Astrologian's Planisphere", "Wizard"),
+            ("Bard's Bow", "Bard"),
+            ("Black Mage's Rod", "Wizard"),
+            ("Dark Knight's Greatsword", "Knight"),
+            ("Dragoon's Lance", "Knight"),
+            ("Machinist's Arsenal", "Artificer"),
+            ("Monk's Fist", "Monk"),
+            ("Ninja's Blades", "Ninja"),
+            ("Paladin's Arms", "Knight"),
+            ("Red Mage's Rapier", "Wizard"),
+            ("Sage's Nouliths", "Cleric"),
+            ("Samurai's Katana", "Samurai"),
+            ("Summoner's Grimoire", "Shaman"),
+            ("Thief's Knife", "Rogue"),
+            ("Warrior's Sword", "Warrior"),
+            ("White Mage's Staff", "Cleric"),
+        ] {
+            let mut g = scenario();
+            let equipment = paid(&mut g, p, name);
+            let hero = g.object_view(equipment).attached_to.unwrap();
+            assert!(g.object_view(hero.card).has_subtype(subtype), "{name}");
+            assert_eq!(
+                g.state
+                    .objects
+                    .iter()
+                    .filter(|o| o.zone == Zone::Battlefield && o.card.is_token())
+                    .count(),
+                1
+            );
+        }
+    }
+}
+#[test]
+fn job_granted_cast_draw_controller_provenance_and_source_incarnation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario();
+        g.state.active = p;
+        g.state.priority = p;
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let orb = named(
+            &mut g,
+            p.other(),
+            "Astrologian's Planisphere",
+            Zone::Battlefield,
+        );
+        let rod = named(&mut g, p.other(), "Black Mage's Rod", Zone::Battlefield);
+        let rapier = named(&mut g, p.other(), "Red Mage's Rapier", Zone::Battlefield);
+        for equipment in [orb, rod, rapier] {
+            assert!(g.attach_equipment(g.object_ref(equipment), g.object_ref(bear)));
+        }
+        let shock = named(&mut g, p, "Shock", Zone::Hand);
+        g.state.players[p.index()].mana[3] = 1;
+        cast(&mut g, shock, Some(Target::Player(p.other())));
+        let packets: Vec<_> = g
+            .state
+            .stack
+            .iter()
+            .chain(g.state.ordering_triggers.iter())
+            .chain(g.state.pending_triggers.iter())
+            .filter(|s| s.attachment_trigger.is_some())
+            .collect();
+        assert_eq!(packets.len(), 3);
+        for s in packets {
+            assert_eq!(s.object, g.object_ref(bear));
+            assert_eq!(s.source_card, Card::from_name("Bear Cub").unwrap());
+            assert_eq!(s.controller, p);
+            let ctx = s.attachment_trigger.as_ref().unwrap();
+            assert_eq!(ctx.recipient, s.object);
+            assert_eq!(ctx.defender, None);
+            assert!(ctx.granted);
+        }
+        g.move_object(orb, Zone::Graveyard);
+        g.move_object(rod, Zone::Graveyard);
+        g.move_object(rapier, Zone::Graveyard);
+        resolve(&mut g);
+        assert_eq!(g.object_view(bear).counters.plus_one, 1);
+        assert_eq!(
+            g.stats(bear),
+            Stats {
+                power: 5,
+                toughness: 3
+            }
+        );
+        assert_eq!(g.state.players[p.other().index()].life, 17);
+        let second = named(&mut g, p, "Astrologian's Planisphere", Zone::Battlefield);
+        g.attach_equipment(g.object_ref(second), g.object_ref(bear));
+        for _ in 0..2 {
+            g.draw(p);
+            resolve(&mut g);
+        }
+        assert_eq!(g.object_view(bear).counters.plus_one, 1);
+        g.draw(p);
+        assert_eq!(g.state.pending_triggers.len(), 1);
+        let old = g.object_ref(bear);
+        g.move_object(bear, Zone::Hand);
+        g.move_object(bear, Zone::Battlefield);
+        assert_ne!(old, g.object_ref(bear));
+        resolve(&mut g);
+        assert_eq!(g.object_view(bear).counters.plus_one, 0);
+    }
+}
+#[test]
+fn job_granted_ninja_actual_private_discard_causes_life_loss_not_damage() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario();
+        let blades = paid(&mut g, p, "Ninja's Blades");
+        let hero = g.object_view(blades).attached_to.unwrap();
+        g.state.objects[hero.card as usize].gained_keywords = Keywords::LIFELINK;
+        let discard = named(&mut g, p, "Warrior's Sword", Zone::Hand);
+        let event = DamageEvent {
+            source: g.damage_source(hero.card),
+            target: Target::Player(p.other()),
+            amount: 2,
+            combat: true,
+        };
+        g.player_damage_triggers(&[event]);
+        g.prepare_triggers();
+        pass_pair(&mut g);
+        assert!(matches!(g.state.pending,Pending::EffectChoice{player} if player==p));
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
+        assert!(g.observe(p).effect_choice.is_some());
+        assert!(g.observe(p.other()).effect_choice.is_none());
+        let snap = g.snapshot();
+        let mut fork = g.clone();
+        act(&mut g, Action::Discard { card: discard });
+        act(&mut fork, Action::Discard { card: discard });
+        assert_eq!(g.snapshot(), fork.snapshot());
+        assert_eq!(g.state.objects[discard as usize].zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+        assert_eq!(g.state.players[p.index()].life, 20);
+        g.restore(&snap).unwrap();
+        act(&mut g, Action::Discard { card: discard });
+        assert_eq!(g.snapshot(), fork.snapshot());
+    }
+}
+
+fn attack_job(g: &mut Game, p: Player, id: CardId) {
+    g.state.objects[id as usize].summoning_sick = false;
+    g.state.active = p;
+    g.state.priority = p;
+    g.state.step = Step::Attackers;
+    g.state.pending = Pending::Attackers;
+    act(g, Action::Attack { card: id });
+    act(g, Action::FinishAttackers);
+}
+#[test]
+fn job_summoner_private_optional_entry_chooses_real_defender_without_attack_events() {
+    for p in [Player::P0, Player::P1] {
+        for enchantment in [false, true] {
+            for choose_walker in [false, true] {
+                let mut g = scenario();
+                let book = paid(&mut g, p, "Summoner's Grimoire");
+                assert!(g.state.objects[book as usize].card.has_subtype("Book"));
+                let hero = g.object_view(book).attached_to.unwrap();
+                let card = named(
+                    &mut g,
+                    p,
+                    if enchantment {
+                        "Appendage Amalgam"
+                    } else {
+                        "Bear Cub"
+                    },
+                    Zone::Hand,
+                );
+                let old = g.object_ref(card);
+                let walker_def = Card::catalogue()
+                    .find(|c| c.is_supported() && c.is_planeswalker())
+                    .unwrap();
+                let walker = spawn(&mut g, p.other(), walker_def, Zone::Battlefield);
+                g.state.objects[walker as usize].counters.loyalty = 5;
+                attack_job(&mut g, p, hero.card);
+                g.move_object(book, Zone::Graveyard);
+                pass_pair(&mut g);
+                let view = g.observe(p);
+                assert_eq!(
+                    view.effect_choice.as_ref().unwrap().kind,
+                    EffectChoiceKind::HandCreature
+                );
+                assert!(g.observe(p.other()).effect_choice.is_none());
+                assert_eq!(g.state.objects[card as usize].zone, Zone::Hand);
+                let saved = g.snapshot();
+                let mut fork = g.clone();
+                let a = Action::PutHandCreature { object: old };
+                act(&mut g, a.clone());
+                act(&mut fork, a);
+                assert_eq!(g.snapshot(), fork.snapshot());
+                if enchantment {
+                    assert!(matches!(g.state.pending,Pending::HandDefender{player} if player==p));
+                    assert_eq!(g.state.objects[card as usize].zone, Zone::Hand);
+                    assert!(g.observe(p).effect_choice.as_ref().unwrap().defender_choice);
+                    assert!(g.observe(p.other()).effect_choice.is_none());
+                    let defender = if choose_walker {
+                        CombatDefender::Planeswalker(g.object_ref(walker))
+                    } else {
+                        CombatDefender::Player(p.other())
+                    };
+                    let action = Action::ChooseHandDefender { defender };
+                    act(&mut g, action.clone());
+                    act(&mut fork, action);
+                    assert_eq!(g.snapshot(), fork.snapshot());
+                    assert!(g.object_view(card).tapped);
+                    assert_eq!(
+                        g.state
+                            .attackers
+                            .iter()
+                            .find(|a| a.card == card)
+                            .unwrap()
+                            .defender,
+                        Some(defender)
+                    );
+                    // Amalgam's attack-surveil ability does not trigger merely from entering attacking.
+                    assert!(g.state.pending_triggers.is_empty());
+                    assert!(g.state.ordering_triggers.is_empty());
+                    assert!(g.state.stack.is_empty());
+                } else {
+                    assert!(!g.object_view(card).tapped);
+                    assert!(!g.state.attackers.iter().any(|a| a.card == card));
+                }
+                assert_eq!(g.state.objects[card as usize].zone, Zone::Battlefield);
+                assert_ne!(g.object_ref(card), old);
+                g.restore(&saved).unwrap();
+                act(&mut g, Action::DeclineHandEntry);
+                assert_eq!(g.object_ref(card), old);
+                assert_eq!(g.state.objects[card as usize].zone, Zone::Hand);
+            }
+        }
+    }
+}
+#[test]
+fn job_granted_ward_is_recipient_owned_independent_and_payer_is_targeting_controller() {
+    for p in [Player::P0, Player::P1] {
+        for pay in [false, true] {
+            let mut g = scenario();
+            let arms = paid(&mut g, p, "Paladin's Arms");
+            let hero = g.object_view(arms).attached_to.unwrap();
+            let shock = named(&mut g, p.other(), "Shock", Zone::Hand);
+            g.state.priority = p.other();
+            g.state.players[p.other().index()].mana = [0, 0, 0, 1, 0, 1];
+            cast(&mut g, shock, Some(Target::Card(hero.card)));
+            let ward = g.state.stack.last().unwrap();
+            assert_eq!(ward.object, hero);
+            assert_eq!(ward.controller, p);
+            assert_eq!(ward.related_stack.unwrap().controller, p.other());
+            assert_eq!(
+                ward.attachment_trigger.as_ref().unwrap().granting_card,
+                Card::from_name("Paladin's Arms").unwrap()
+            );
+            g.move_object(arms, Zone::Graveyard);
+            pass_pair(&mut g);
+            assert_eq!(g.actor(), Some(p.other()));
+            let a = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| {
+                    if pay {
+                        matches!(a, Action::PayResolutionMana { .. })
+                    } else {
+                        matches!(a, Action::DeclineResolutionMana)
+                    }
+                })
+                .unwrap();
+            act(&mut g, a);
+            resolve(&mut g);
+            assert_eq!(g.state.objects[shock as usize].zone, Zone::Graveyard);
+            assert_eq!(
+                g.state.objects[hero.card as usize].zone,
+                if pay {
+                    Zone::Outside
+                } else {
+                    Zone::Battlefield
+                }
+            );
+        }
+    }
+}
+
+#[test]
+fn job_sage_white_and_thief_grants_are_real_recipient_events() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario();
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        for name in ["Sage's Nouliths", "White Mage's Staff"] {
+            let e = named(&mut g, p.other(), name, Zone::Battlefield);
+            g.attach_equipment(g.object_ref(e), g.object_ref(bear));
+        }
+        attack_job(&mut g, p, bear);
+        assert!(g.object_view(bear).tapped);
+        resolve(&mut g);
+        assert!(!g.object_view(bear).tapped);
+        assert_eq!(g.state.players[p.index()].life, 21);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+        let knife = named(&mut g, p.other(), "Thief's Knife", Zone::Battlefield);
+        g.attach_equipment(g.object_ref(knife), g.object_ref(bear));
+        let hit = DamageEvent {
+            source: g.damage_source(bear),
+            target: Target::Player(p.other()),
+            amount: 1,
+            combat: true,
+        };
+        g.player_damage_triggers(&[hit]);
+        g.prepare_triggers();
+        g.move_object(knife, Zone::Graveyard);
+        g.move_object(bear, Zone::Graveyard);
+        resolve(&mut g);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
+        assert_eq!(g.state.players[p.other().index()].cards_drawn_this_turn, 0);
+    }
+}
+#[test]
+fn job_summoner_obeys_opponent_entry_tapped_replacement_for_ordinary_creature() {
+    let mut g = scenario();
+    let book = paid(&mut g, Player::P0, "Summoner's Grimoire");
+    let hero = g.object_view(book).attached_to.unwrap();
+    named(
+        &mut g,
+        Player::P1,
+        "Authority of the Consuls",
+        Zone::Battlefield,
+    );
+    let bear = named(&mut g, Player::P0, "Bear Cub", Zone::Hand);
+    let before = g.object_ref(bear);
+    attack_job(&mut g, Player::P0, hero.card);
+    pass_pair(&mut g);
+    act(&mut g, Action::PutHandCreature { object: before });
+    assert!(g.object_view(bear).tapped);
+    assert!(!g.state.attackers.iter().any(|a| a.card == bear));
+    resolve(&mut g);
+    assert_eq!(g.state.players[1].life, 21);
 }

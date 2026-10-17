@@ -7,6 +7,7 @@ pub(super) struct EntryMove {
     pub destination: Zone,
     pub tapped: bool,
     pub attachment: Option<ObjectRef>,
+    pub attacking: Option<CombatDefender>,
     pub skipped: bool,
     pub reveal_hand: bool,
     pub life_paid: Option<bool>,
@@ -130,6 +131,7 @@ impl Game {
             destination,
             tapped,
             attachment: None,
+            attacking: None,
             skipped: false,
             reveal_hand: false,
             life_paid: None,
@@ -244,6 +246,16 @@ impl Game {
             event.x = movement.x;
             event.evidence_collected = movement.evidence_collected;
             if event.moved {
+                if event.destination == Zone::Battlefield
+                    && let Some(defender) = movement.attacking
+                {
+                    self.state.attackers.push(Attacker {
+                        card: event.after.card,
+                        defender: Some(defender),
+                        blocked: false,
+                    });
+                }
+
                 if let Some(target) = movement.attachment {
                     attachments.push((event.after, target));
                 }

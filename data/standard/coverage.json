@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "aee1682ea2fad0e850c7f8f6e1d89ab810be6f12d4b37354bbbd035fc48204fb",
+  "catalogue_version": "115c0b72334f47bb04635dc48e734617da2fa9ca2e6b12bd04076cfa3e238db8",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1684,
-  "implemented_total": 1690,
+  "implemented_standard_cards": 1693,
+  "implemented_total": 1699,
   "token_definitions": 83,
   "emblem_definitions": 1,
   "cards": [
@@ -1516,8 +1516,8 @@
     {
       "name": "Astrologian's Planisphere",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "At Knifepoint",
@@ -2590,8 +2590,8 @@
     {
       "name": "Black Mage's Rod",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Black Panther, Vanguard",
@@ -17692,8 +17692,8 @@
     {
       "name": "Ninja's Blades",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Nita, Forum Conciliator",
@@ -18568,8 +18568,8 @@
     {
       "name": "Paladin's Arms",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Palani's Hatcher",
@@ -20584,8 +20584,8 @@
     {
       "name": "Red Mage's Rapier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Red Room Recruit",
@@ -21904,8 +21904,8 @@
     {
       "name": "Sage's Nouliths",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Sagu Pummeler",
@@ -25384,8 +25384,8 @@
     {
       "name": "Summoner's Grimoire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Sun Warriors",
@@ -27178,8 +27178,8 @@
     {
       "name": "Thief's Knife",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Thieving Otter",
@@ -30286,8 +30286,8 @@
     {
       "name": "White Mage's Staff",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "White Tiger, Ava Ayala",
