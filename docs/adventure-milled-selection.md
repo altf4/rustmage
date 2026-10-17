@@ -2,7 +2,7 @@
 
 Issue [283](https://github.com/altf4/rustmage/issues/283) implements the complete printed normal and Adventure faces of Bramble Familiar, Most Decrepit Old Bird, Picklock Prankster, Thranduil Sindarin Liege, Beluna Grandsquall and Glamdring Foe-hammer. Whole-body parsing, including strict residual and reminder rejection, gates both faces without identity whitelists.
 
-Candidate coverage is 1,831/5,164 Standard identities, with 3,333 still gated, 33 Adventure helpers, thirteen Omen helpers, 88 token recipes and one emblem, 5,318 definitions total. Full Standard remains incomplete.
+Candidate coverage is 1,832/5,164 Standard identities, with 3,332 still gated, 33 Adventure helpers, thirteen Omen helpers, 88 token recipes and one emblem, 5,318 definitions total. Full Standard remains incomplete.
 
 The owned resolution retains exact post-mill object incarnations. Selection is restricted to that exact batch, its current public destinations and the printed card qualities. Pinned Comprehensive Rules [701.17c](https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf) permits finding a milled card in its actual public replacement destination; a blanket graveyard-only lookup would be wrong. Hidden destinations and old generations cannot appear in the choice. All represented exile destinations are face up; unsupported face-down mechanics remain gated. Current admitted zone replacement vocabulary does not implement a blanket Rest in Peace replacement: explicit native boundary tests supply the captured public/hidden destination and generation without pretending that such a source is supported.
 
@@ -21,3 +21,14 @@ Canonical preservation compares against the composed eight-pair parent: 5,311 pr
 Validation is in progress. The prototype optimized library passes all 1,705 unit and twelve integration tests, all-target Clippy, seven new real paid both-seat native groups, 24 focused combined compiler methods and two public API methods (twelve paid Standard full-pair games plus six helper-alias rejects) in 12.759 seconds. A later permanent-filter completeness correction adds Battle to the typed permanent predicate; final runtime freeze and fresh validation are still pending. The full compiler/data suite and 100 natural Standard games are running. No final readiness or independent review is claimed yet.
 
 Reproduce ordinary acceptance with `python3 examples/standard_adventure_milled_selection.py --library PATH --games 100`. Ended prototype build targets were cleaned of 316,935,814 non-shared bytes; every shared-library path and hash was preserved.
+
+
+## Controller composition before final validation
+
+The stable ownership/controller parent `f826f789b41607e8ae3692517cf5772eaea2b41e` is composed at `d86e5e3`. It admits Korvold's existing ordinary row; the combined catalogue is 1,832 Standard identities / 5,318 total definitions, preserving the controller parent's 5,305 unaffected definitions, 5,311 colors, 87 recipes and 817 helper arms. Seven manifest counts remain 1,881 records / 602 unique Java files. Schema 83 includes both explicit owner/controller facts and the private milling view. The fingerprint is `b88837b7de709802a1132b60a262f2e9bc1a1627991b4fc6b68ff45c77568443`.
+
+An additional both-seat group uses actual paid Korvold I/II/III through natural turns to obtain all six foreign-owned pairs. Each inset mills and recovers the caster's own batch, keeps choices private from the physical source's owner, and permits the same card's later normal under the caster's control. The group also checks foreign Thranduil's caster-owned Elf/lord, both foreign reducers' beneficiaries, and foreign Bramble's mana beneficiary, mandatory caster discard and return to its actual owner's hand. Eight dedicated groups now supplement the whole native suite.
+
+The composed development checkpoint passes 1,714 unit plus twelve integration tests in 10.00 seconds and all-target Clippy in 14.00 seconds before the final physical Adventure predicate/public Hand-fact guards. The original 100-game prototype completes naturally with 79,930 owned frames and 159,860 wrong-actor/stale denials. Its equipment attack criterion has since been strengthened to require the actual equipped recipient; exact final-source/library public validation must use this final policy.
+
+The earlier full compiler process was deliberately terminated after source composition invalidated its mixed module/file-fingerprint context. It is diagnostic only and supplies no final passing evidence. Final gates must run against an unchanged entire checkout, including generator/data/tests/policy, with a fresh optimized immutable library. No final independent approval is claimed here.

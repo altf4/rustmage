@@ -50,11 +50,6 @@ impl Game {
         if card.owner != player {
             return false;
         }
-        let definition = if card.zone == Zone::Stack {
-            self.effective_spell_card(object.card)
-        } else {
-            card.card
-        };
         let kinds = self.current_kinds(object.card);
         match filter {
             MilledFilter::Kinds(mask) => kinds & u16::from(mask) != 0,
@@ -62,7 +57,7 @@ impl Game {
                 kinds: mask,
                 subtype,
             } => kinds & u16::from(mask) != 0 || self.has_subtype(object.card, subtype),
-            MilledFilter::Adventure => definition.adventure_spell().is_some(),
+            MilledFilter::Adventure => card.card.adventure_spell().is_some(),
         }
     }
     fn milled_selection(&self) -> Option<&MilledSelection> {

@@ -607,3 +607,234 @@ fn no_eligible_milled_card_never_forces_illegal_choice_and_all_recovery_excludes
         assert_eq!(g.state.objects[chosen as usize].zone, Zone::Hand);
     }
 }
+
+fn foreign_grants(actor: Player, names: [&str; 3]) -> (Game, [CardId; 3]) {
+    let mut g = setup(actor);
+    let cards = names.map(|name| {
+        spawn(
+            &mut g,
+            actor.other(),
+            Card::from_name(name).unwrap(),
+            Zone::Library,
+        )
+    });
+    // The opponent naturally draws once on each intervening turn before III.
+    for _ in 0..2 {
+        spawn(&mut g, actor.other(), Card::Forest, Zone::Library);
+    }
+    let saga = spawn(
+        &mut g,
+        actor,
+        Card::from_name("Korvold and the Noble Thief").unwrap(),
+        Zone::Hand,
+    );
+    act(&mut g, Action::AnnounceCast { card: saga });
+    settle(&mut g);
+    assert_eq!(g.state.objects[saga as usize].counters.lore, 1);
+    let mut second = false;
+    for _ in 0..1500 {
+        if g.state.objects[saga as usize].counters.lore == 2 {
+            second = true;
+        }
+        if cards.iter().all(|&id| g.can_play_exiled(actor, id)) {
+            break;
+        }
+        let actions = g.legal_actions();
+        let action = actions
+            .iter()
+            .find(|a| matches!(a, Action::Pass | Action::FinishTargets))
+            .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
+            .unwrap()
+            .clone();
+        act(&mut g, action);
+    }
+    assert!(second);
+    assert_eq!(g.state.objects[saga as usize].zone, Zone::Graveyard);
+    assert!(cards.iter().all(|&id| g.can_play_exiled(actor, id)));
+    assert!(
+        cards
+            .iter()
+            .all(|&id| !g.can_play_exiled(actor.other(), id))
+    );
+    assert_eq!(
+        g.state
+            .objects
+            .iter()
+            .filter(|o| o.zone == Zone::Battlefield
+                && o.controller == actor
+                && o.card
+                    .token_info()
+                    .is_some_and(|t| t.name == "Treasure Token"))
+            .count(),
+        2
+    );
+    g.state.players[actor.index()].mana = [30; 6];
+    (g, cards)
+}
+
+#[test]
+fn actual_korvold_foreign_mill_pairs_use_casters_batch_choices_and_later_normal_control() {
+    for p in [Player::P0, Player::P1] {
+        for (i, &name) in NAMES.iter().enumerate() {
+            let (mut g, [source, _, _]) = foreign_grants(p, [name, "Bear Cub", "Forest"]);
+            let count = [7, 4, 4, 4, 7, 6][i];
+            let recovery = match i {
+                0 | 3 => "Forest",
+                4 => NAMES[2],
+                _ => "Shock",
+            };
+            let recovered: Vec<_> = (0..count)
+                .map(|_| named(&mut g, p, recovery, Zone::Library))
+                .collect();
+            let owner_library = g.state.players[p.other().index()].library.len();
+            if i < 4 {
+                choice(&mut g, source);
+                assert_eq!(g.observe(p).milled_choice.unwrap().player, p);
+                assert!(g.observe(p.other()).milled_choice.is_none());
+                let take = if i == 3 { 2 } else { 1 };
+                for &id in recovered.iter().take(take) {
+                    let object = g.object_ref(id);
+                    act(&mut g, Action::SelectMilled { object });
+                }
+                settle(&mut g);
+            } else {
+                act(&mut g, Action::AnnounceAdventure { card: source });
+                settle(&mut g);
+            }
+            assert_eq!(
+                g.state.players[p.other().index()].library.len(),
+                owner_library
+            );
+            assert_eq!(g.state.objects[source as usize].owner, p.other());
+            assert!(g.can_play_adventure(p, source));
+            assert!(!g.can_play_adventure(p.other(), source));
+            priority(&mut g, p);
+            act(&mut g, Action::AnnounceExile { card: source });
+            settle(&mut g);
+            let view = g.object_view(source);
+            assert_eq!(view.zone, Zone::Battlefield);
+            assert_eq!(view.owner, p.other());
+            assert_eq!(view.controller, p);
+            if i == 0 {
+                let turn = g.state.turn;
+                for _ in 0..200 {
+                    if g.state.turn > turn
+                        && g.state.active == p
+                        && g.state.step == Step::Main1
+                        && g.actor() == Some(p)
+                    {
+                        break;
+                    }
+                    choose(&mut g);
+                }
+                let own_green = g.state.players[p.index()].mana[4];
+                let other_green = g.state.players[p.other().index()].mana[4];
+                let action=g.legal_actions().into_iter().find(|a|matches!(a,Action::TapMana {card,..}|Action::ActivateMana {card,..} if *card==source)).unwrap();
+                act(&mut g, action);
+                assert_eq!(g.state.players[p.index()].mana[4], own_green + 1);
+                assert_eq!(g.state.players[p.other().index()].mana[4], other_green);
+                let turn = g.state.turn;
+                for _ in 0..200 {
+                    if g.state.turn > turn
+                        && g.state.active == p
+                        && g.state.step == Step::Main1
+                        && g.actor() == Some(p)
+                    {
+                        break;
+                    }
+                    choose(&mut g);
+                }
+                named(&mut g, p, "Forest", Zone::Hand);
+                g.state.players[p.index()].mana = [30; 6];
+                let owner_hand = g
+                    .state
+                    .objects
+                    .iter()
+                    .filter(|o| o.owner == p.other() && o.zone == Zone::Hand)
+                    .count();
+                let caster_grave = g
+                    .state
+                    .objects
+                    .iter()
+                    .filter(|o| o.owner == p && o.zone == Zone::Graveyard)
+                    .count();
+                let action = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a,Action::AnnounceActivate {card,..} if *card==source))
+                    .unwrap();
+                act(&mut g, action);
+                settle(&mut g);
+                assert_eq!(g.object_view(source).zone, Zone::Hand);
+                assert_eq!(g.object_view(source).owner, p.other());
+                assert_eq!(
+                    g.state
+                        .objects
+                        .iter()
+                        .filter(|o| o.owner == p.other() && o.zone == Zone::Hand)
+                        .count(),
+                    owner_hand + 1
+                );
+                assert_eq!(
+                    g.state
+                        .objects
+                        .iter()
+                        .filter(|o| o.owner == p && o.zone == Zone::Graveyard)
+                        .count(),
+                    caster_grave + 1
+                );
+            }
+            if i == 3 {
+                priority(&mut g, p);
+                let land = named(&mut g, p, "Forest", Zone::Hand);
+                act(&mut g, Action::PlayLand { card: land });
+                settle(&mut g);
+                let elves: Vec<_> = g
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, o)| {
+                        o.zone == Zone::Battlefield
+                            && o.owner == p
+                            && o.controller == p
+                            && o.card.is_token()
+                            && o.card.has_subtype("Elf")
+                    })
+                    .map(|(id, _)| id as CardId)
+                    .collect();
+                assert_eq!(elves.len(), 1);
+                assert_eq!(g.stats(elves[0]).power, 2);
+            }
+            if i == 4 {
+                let own = named(&mut g, p, "Beanstalk Wurm // Plant Beans", Zone::Hand);
+                let other = named(
+                    &mut g,
+                    p.other(),
+                    "Beanstalk Wurm // Plant Beans",
+                    Zone::Hand,
+                );
+                assert_eq!(g.reduced_spell_cost(p, own, base_cost(&g, own)).generic, 3);
+                assert_eq!(
+                    g.reduced_spell_cost(p.other(), other, base_cost(&g, other))
+                        .generic,
+                    4
+                );
+            }
+            if i == 5 {
+                priority(&mut g, p);
+                let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+                equip(&mut g, source, bear);
+                let own = named(&mut g, p, "Quick Study", Zone::Hand);
+                let other = named(&mut g, p.other(), "Quick Study", Zone::Hand);
+                assert_eq!(g.reduced_spell_cost(p, own, base_cost(&g, own)).generic, 0);
+                assert_eq!(
+                    g.reduced_spell_cost(p.other(), other, base_cost(&g, other))
+                        .generic,
+                    2
+                );
+                assert_eq!(g.object_view(source).attached_to, Some(g.object_ref(bear)));
+            }
+        }
+    }
+}
