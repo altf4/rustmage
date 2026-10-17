@@ -1,4 +1,4 @@
-// Direct typed behavior; kept gated until complete-card consumer acceptance.
+// Direct typed behavior; complete Oracle and pinned executable sources reviewed.
 const ABOVE: StatValue = StatValue::ControllerLifeAboveStarting { minimum: 1 };
 const TEN_ABOVE: StatValue = StatValue::ControllerLifeAboveStarting { minimum: 10 };
 const FIRST_BONUS: ScalingModifier = ScalingModifier {

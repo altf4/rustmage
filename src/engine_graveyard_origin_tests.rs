@@ -4,7 +4,7 @@ use super::tests::spawn;
 use super::*;
 
 fn paid(g: &mut Game, p: Player, name: &str, targets: &[Target]) -> CardId {
-    // The actual printed fixtures remain gated until whole-card acceptance.
+    // Use the actual printed definitions through ordinary paid actions.
     let card = Card::from_name(name).unwrap();
     let id = spawn(g, p, card, Zone::Hand);
     cast(g, id, None, targets);

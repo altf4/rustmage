@@ -1,4 +1,4 @@
-//! Shared qualified targeting and live threshold regressions using gated production definitions.
+//! Shared qualified targeting and live threshold regressions using complete production definitions.
 use super::ability_timeline_tests::{cast, checked, named, settle, setup};
 use super::tests::spawn;
 use super::*;

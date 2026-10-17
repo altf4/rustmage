@@ -6228,3 +6228,15 @@ mod graveyard_origin_tests;
 #[cfg(test)]
 #[path = "engine_qualified_hexproof_tests.rs"]
 mod qualified_hexproof_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_eight_qualified_acceptance_tests.rs"]
+mod fdn_eight_qualified_acceptance_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_eight_gate_acceptance_tests.rs"]
+mod fdn_eight_gate_acceptance_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_eight_bounded_acceptance_tests.rs"]
+mod fdn_eight_bounded_acceptance_tests;

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e29872cee513cc168cfde20059198643c2e139b3b4498bbc1c4980c7053a8124",
+  "catalogue_version": "0c1d05ca461676deda3f97dffc2e050be33c11c95db3eb1cf9efebcfe94b9d6c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2117,
-  "implemented_total": 2123,
+  "implemented_standard_cards": 2125,
+  "implemented_total": 2131,
   "token_definitions": 102,
   "emblem_definitions": 2,
   "adventure_definitions": 40,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 362,
-      "gated": 65
+      "complete": 370,
+      "gated": 57
     },
     "fin": {
       "total": 305,
@@ -10490,8 +10490,8 @@
     {
       "name": "Elenda, Saint of Dusk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/elenda_saint_of_dusk.rs",
       "set": "fdn"
     },
@@ -12250,8 +12250,8 @@
     {
       "name": "Fiery Annihilation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/fiery_annihilation.rs",
       "set": "fdn"
     },
@@ -12578,8 +12578,8 @@
     {
       "name": "Flamewake Phoenix",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/flamewake_phoenix.rs",
       "set": "fdn"
     },
@@ -13762,8 +13762,8 @@
     {
       "name": "Gate Colossus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/gate_colossus.rs",
       "set": "fdn"
     },
@@ -19290,16 +19290,16 @@
     {
       "name": "Knight of Grace",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/knight_of_grace.rs",
       "set": "fdn"
     },
     {
       "name": "Knight of Malice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/knight_of_malice.rs",
       "set": "fdn"
     },
@@ -23362,8 +23362,8 @@
     {
       "name": "Myojin of Night's Reach",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/myojin_of_night_s_reach.rs",
       "set": "fdn"
     },
@@ -39154,8 +39154,8 @@
     {
       "name": "Venom Connoisseur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/venom_connoisseur.rs",
       "set": "fdn"
     },
