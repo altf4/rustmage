@@ -14,7 +14,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
 | Fast simulation | Reproducible initial Freeform benchmark and compact state | Profile full Standard decks as mechanics expand, including inference/encoding; optimize atomic checkpoint overhead |
 | Fair observations | Hidden-hand/library projection and privacy tests; catalogue fingerprint | New private choices/zones; belief sampling and neural encoders |
-| Reviewed delivery | Reviewed main through Job Select PR #246; Warp PR #247 has two independent nonauthor reviews, exact combined validation and a durable [review record](review-pr-247.md). Earlier milestones remain documented in their feature/review pages. | Continue issue-managed, reviewed PRs through complete acceptance |
+| Reviewed delivery | Job Select PR #246, Warp PR #247 and actual-payment PR #251 have two independent nonauthor reviews and durable scoped validation records; [payment review](review-pr-251.md). Earlier milestones remain documented in their feature/review pages. | Continue issue-managed, reviewed PRs through complete acceptance |
 
 The latest composed work includes sixteen complete [Job Select](job-select.md)
 bodies, fourteen [Warp/shared-rule](warp.md) bodies and twenty
@@ -26,7 +26,7 @@ The payment Standard100 run witnesses every card in both seats at low/high
 payments, natural game outcomes and 104,413 owned decision replays. Initial
 logical state is 20,280 bytes; maximum is 23,552 in that workload. These are
 supported-card workloads, not proof of complete Standard rules or full-deck
-performance. Full validation scopes and pending exact-head review are in
+performance. Full validation scopes and exact-head independent reviews are in
 [the payment review](review-pr-251.md).
 
 Parallel [owned token/counter replacements (#248)](https://github.com/altf4/rustmage/issues/248)

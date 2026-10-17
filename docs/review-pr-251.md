@@ -2,8 +2,10 @@
 
 Production remains the frozen author checkpoint
 `93a824ae806c6534348b0f67ecb04d06bb7d397e`; acceptance checkpoint `a83d7d98`
-adds tests, public schema fixtures and documentation. No claim of final approval
-or full Standard support is made here.
+adds tests, public schema fixtures and documentation. Two independent nonauthor
+subagents approve the complete source at `9c39dd6c4f671fd1abf7ef800218724fb47440d7`.
+This final record changes documentation only and requires their exact-head
+reconfirmation before guarded merge. Full Standard support is not yet achieved.
 
 The branch admits twenty whole Standard bodies, taking the pinned catalogue from
 1,707 to 1,727 of 5,164 identities. Semantic comparison preserves the other 5,247
@@ -34,7 +36,16 @@ The independent rules reviewer read all twenty complete pinned constructors,
 ran 296 compiler probes (60 positive controls and 236 closed-boundary rejections),
 and four independent native groups/eight both-seat cases covering live Increment
 rechecks, sacrificed source-power LKI, Unravel fizzle, and colorless Converge.
-Neither reviewer has issued final exact-head approval yet.
+The library/API reviewer (`independent_library_189`) explicitly approves exact
+head `9c39dd6`. The rules/compiler reviewer (`review_explore_library`) independently
+compiles and completes the identical 100-game driver: 104,413 decisions/replays
+and parent-closed branches, 208,826 denials, 1,330 payment frames and every one of
+the eighty effect cells positive, with the same memory/vector results. It also
+independently passes the four public methods/48 paid scenarios in 32.727 seconds,
+in addition to the earlier adverse/compiler scope above, and explicitly approves
+exact head `9c39dd6`. Neither reviewer reports an actionable finding. Their broad
+native/compiler/public baseline scope is intentionally distinguished from root
+and author evidence. Final documentation-only head reconfirmation follows.
 
 `examples/standard_cast_payments.rs` uses legal 60-card Standard decks and genuine
 land drops, mana abilities, casts, target choices, discard, Plot, Warp and combat.
