@@ -2,9 +2,26 @@
 
 ## Composition with merged Whirlwing timing
 
-This candidate integrates main `1f632809` with the reviewed Feral batch `1f28c02`. It has 1,814/5,164 executable Standard identities, 3,350 gated, 87 token factories, one emblem, nineteen Adventure and eleven Omen helpers (5,301 definitions), schema79. Both strict generic parser routes survive: neither timing nor same-graveyard bodies can be revived by legacy name selectors. Fresh combined validation and final independent reviews are pending; the earlier evidence below remains scoped to its recorded sources.
+This candidate integrates main `1f632809` with the reviewed Feral batch `1f28c02`. It has 1,814/5,164 executable Standard identities, 3,350 gated, 87 token factories, one emblem, nineteen Adventure and eleven Omen helpers (5,301 definitions), schema79. Both strict generic parser routes survive: neither timing nor same-graveyard bodies can be revived by legacy name selectors. Fresh combined validation is complete; final independent exact-head confirmations remain required. The earlier evidence below remains scoped to its recorded sources.
 
 Canonical comparison preserves 5,297 of main’s 5,300 definitions, changing only the three Feral/Arashin/Griffnaut rows. Relative to the Feral parent, only Whirlwing’s ordinary row changes and 5,299 definitions survive. All previous colors, factories, emblem and helper arms survive; the combined catalogue has 786 helper arms. All 1,661 provenance records across 575 distinct Java paths still match disk and the pinned source. A new both-seat paid native cross group casts the Dragon normal body and Sorcery inset off-turn under Whirlwing, rejects an unrelated non-Dragon, enforces exact grouped graveyard targets, and preserves draw/shuffle completion and rollback.
+
+
+Frozen composition source is `4a63f93431068a9229c925d278bb5523b6134cbb`, fingerprint `ad940c9bd13fdf2c1f0076ca307f7063967dd6254e4261a377eeb8613c782c25`, schema79. Its optimized immutable is `/home/altf4/.cache/rustmage-immutable/feral267-whirl-4a63f93-ad940c-schema79-release.so`, SHA256 `c446aa6db043dc5c89ed2fe47bb355bc64060b95afb61f512003c3c8217d16aa`.
+
+Completed combined gates:
+
+- All 1,680 native tests pass: 1,668 unit in 10.20s plus twelve integration. All-target Clippy with warnings denied passes in 34.01s.
+- All twenty-two focused compiler/provenance methods pass: ten Feral in 0.772s, seven timing in 0.182s and five Omen in 0.561s. Final generated-file, formatting and whitespace checks pass.
+- All four unique focused public methods pass in 46.317s, covering twenty actual-paid Feral cases and both timing seats. Every constructor explicitly selects the immutable and asserts the full fingerprint and schema.
+- Feral/Omen Standard100 passes naturally with all body/face/seat vectors: 89,944 parent-closed owned frames, 179,888 wrong-actor/stale denials and 210 counted private frames. Wall 206.83s, user 196.97s, peak RSS 53,520KiB.
+- Timing Standard100 passes naturally: 100,567 owned frames and 201,134 wrong-actor/stale denials. Wall 256.53s, user 242.77s, peak RSS 37,628KiB. Both workloads use the same immutable and full per-constructor identity assertions. These include JSON/replay/legality verification rather than measuring isolated engine throughput.
+
+Logs and proofs: `/tmp/rustmage-feral-whirl-{native,clippy,focused,public,feral100,timing100,cross,canonical}.log`, workload `.time` files, `-canonical.json` and `-immutable.json`. The full 363 compiler/239 public regression evidence below belongs to the earlier precisely identified composition, not this new fingerprint. A fresh full union regression is coordinated separately after the remaining Omen siblings compose.
+
+After native and optimized builds ended, 2,221 disposable files totaling 2,702,042,008 logical bytes were removed from the two exclusive build targets. All six shared-library paths and SHA values were preserved. A per-user `/tmp` quota blocked metadata writing until another ended target was cleaned; native/lint had already passed, the copied immutable was independently SHA-verified complete, and all fresh public/100 gates started only after a successful write probe. Source, worktrees, immutable libraries and logs remain intact. Logical bytes include hard links and are not measured physical disk-space recovery. Cleanup and immutable records are also retained under `/home/altf4/.cache/rustmage-evidence/`.
+
+Two independent nonauthor reviewers must confirm the exact final published composition head. Future Bloom/selected-X/funding union deltas are excluded from this record; PR267 is held for that coordinated delivery rather than merged separately.
 
 ## Earlier independently reviewed Feral batch
 
