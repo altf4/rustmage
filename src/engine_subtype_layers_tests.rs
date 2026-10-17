@@ -114,9 +114,7 @@ fn subtype_layers_static_threshold_is_reversible_and_starts_before_ability_remov
         assert!(g.has_subtype(squire, "Knight"));
         assert!(g.keywords(squire).contains(Keywords::FLYING));
         g.state.objects[squire as usize].counters.minus_one = 1;
-        g.state.objects[squire as usize]
-            .counters
-            .add(CounterKind::Page, 2);
+        g.add_counter(squire, CounterKind::Page, 2);
         let stats_before = g.stats(squire);
         let before_sba = g.snapshot();
         let mut branch = {

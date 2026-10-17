@@ -46,7 +46,7 @@ pub(super) trait CharacteristicWorld {
                     keywords,
                     ..
                 } = *fragment
-                    && object.counters.get(kind) >= minimum
+                    && self.counter_count(id, kind) >= minimum
                 {
                     result = result.union(keywords);
                 }
@@ -87,8 +87,12 @@ pub(super) trait CharacteristicWorld {
         self.game().object_kinds(id, self.object(id))
     }
     fn subtypes(&self, id: CardId) -> GrantedSubtypes {
-        self.game()
-            .granted_subtypes_with(id, self.object(id), |source| Some(self.object(source)))
+        self.game().granted_subtypes_with(
+            id,
+            self.object(id),
+            |source| Some(self.object(source)),
+            |source, kind| self.counter_count(source, kind),
+        )
     }
     fn value(&self, value: StatValue, source: CardId) -> i128 {
         let game = self.game();

@@ -103,6 +103,7 @@ impl Game {
         id: CardId,
         target: &Object,
         lookup: impl Fn(CardId) -> Option<&'a Object>,
+        counter_count: impl Fn(CardId, CounterKind) -> u64,
     ) -> GrantedSubtypes {
         let mut mask = GrantedSubtypes::default();
         if target.zone != Zone::Battlefield || self.object_kinds(id, target) & 1 == 0 {
@@ -147,7 +148,7 @@ impl Game {
                     subtype,
                     ..
                 } = *fragment
-                    && target.counters.get(kind) >= minimum
+                    && counter_count(id, kind) >= minimum
                     && newer(reference)
                 {
                     // The effect starts in layer four, before ability removal.
@@ -178,7 +179,12 @@ impl Game {
             .objects
             .get(id as usize)
             .map_or_else(GrantedSubtypes::default, |o| {
-                self.granted_subtypes_with(id, o, |source| self.state.objects.get(source as usize))
+                self.granted_subtypes_with(
+                    id,
+                    o,
+                    |source| self.state.objects.get(source as usize),
+                    |source, kind| self.counter_count(source, kind),
+                )
             })
     }
     pub(super) fn has_subtype(&self, id: CardId, subtype: &str) -> bool {

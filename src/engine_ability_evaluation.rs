@@ -115,7 +115,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             keywords,
             ..
         } => {
-            if id != source.card || provider.counters.get(kind) < minimum {
+            if id != source.card || world.counter_count(source.card, kind) < minimum {
                 return None;
             }
             keywords
