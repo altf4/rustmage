@@ -71,6 +71,7 @@ fn later_counter_field_failure_restores_earlier_writes_and_suspended_resolution(
     );
     let artifact = named(&mut g, Player::P0, "Mox Jasper", Zone::Battlefield);
     g.state.objects[artifact as usize].counters = Counters {
+        lore: 0,
         loyalty: 0,
         plus_one: 1,
         minus_one: 0,

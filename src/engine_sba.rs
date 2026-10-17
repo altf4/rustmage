@@ -54,6 +54,9 @@ impl Game {
             if object.zone != Zone::Battlefield {
                 continue;
             }
+            if self.saga_sacrifice_required(id) {
+                batch.deaths.push(id);
+            }
             if object.card.is_planeswalker() && object.counters.loyalty == 0 {
                 batch.deaths.push(id);
             }
@@ -190,7 +193,19 @@ impl Game {
         } else {
             self.death_trigger_sources()
         };
-        let events = self.move_objects_raw(&batch.deaths, Zone::Graveyard);
+        let sacrifices: Vec<_> = batch
+            .deaths
+            .iter()
+            .filter(|&&id| self.saga_sacrifice_required(id))
+            .map(|&id| (self.state.objects[id as usize].owner, id))
+            .collect();
+        self.food_sacrifice_triggers(&sacrifices, &sources);
+        let mut events = self.move_objects_raw(&batch.deaths, Zone::Graveyard);
+        for event in &mut events {
+            if let Some(&(actor, _)) = sacrifices.iter().find(|&&(_, id)| id == event.before.id) {
+                event.sacrificed_by = Some(actor);
+            }
+        }
         for source in batch.detached {
             if self.object_ref(source.card) == source {
                 self.state.objects[source.card as usize].attached_to = None;

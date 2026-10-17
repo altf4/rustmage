@@ -19,7 +19,7 @@ pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 78;
+pub const OBSERVATION_SCHEMA: u32 = 79;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -39,6 +39,8 @@ pub use subtypes::GrantedSubtypes;
 
 #[path = "engine_replacements.rs"]
 mod replacements;
+#[path = "engine_sagas.rs"]
+mod sagas;
 pub use replacements::{
     CreatedTokenChoiceView, ReplacementChoiceView, ReplacementEffectView, TokenGroupView,
 };
@@ -4721,6 +4723,9 @@ mod milling_tests;
 mod damage_trigger_tests;
 
 #[cfg(test)]
+#[path = "engine_attachment_ward_tests.rs"]
+mod attachment_ward_tests;
+#[cfg(test)]
 #[path = "engine_spell_cost_tests.rs"]
 mod spell_cost_tests;
 #[cfg(test)]
@@ -5111,3 +5116,7 @@ mod omen_tests;
 #[cfg(test)]
 #[path = "engine_feral_tests.rs"]
 mod feral_tests;
+
+#[cfg(test)]
+#[path = "engine_composition_tests.rs"]
+mod composition_tests;

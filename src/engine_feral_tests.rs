@@ -35,7 +35,10 @@ fn next(g: &mut Game) {
         .find(|a| {
             matches!(
                 a,
-                Action::PayCosts { .. } | Action::PutTrigger { .. } | Action::FinishTargets
+                Action::PayCosts { .. }
+                    | Action::PutTrigger { .. }
+                    | Action::FinishTargets
+                    | Action::DeclineResolutionMana
             )
         })
         .or_else(|| actions.iter().find(|a| matches!(a, Action::Pass)))
@@ -292,5 +295,125 @@ fn feral_group_template_unlocks_complete_sunshield_and_tracker_bodies() {
             settle(&mut g);
             assert!(g.state.objects[enemy as usize].tapped);
         }
+    }
+}
+
+fn paid_packet(g: &mut Game, id: CardId, inset: bool, targets: &[Target]) {
+    act(
+        g,
+        if inset {
+            Action::AnnounceOmen { card: id }
+        } else {
+            Action::AnnounceCast { card: id }
+        },
+    );
+    for _ in 0..80 {
+        if g.state.pending == Pending::Priority
+            && g.state
+                .stack
+                .iter()
+                .any(|s| s.card == id && s.kind == StackKind::Spell)
+        {
+            return;
+        }
+        if matches!(g.state.pending, Pending::Targets { .. }) {
+            let count = g.state.announcing.as_ref().unwrap().item.targets.len();
+            if let Some(&target) = targets.get(count) {
+                act(g, Action::ChooseTarget { target });
+                continue;
+            }
+        }
+        next(g);
+    }
+    panic!("paid packet");
+}
+#[test]
+fn feral_composed_paid_ward_countered_omen_and_both_graveyard_physical_identities() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, inset) = setup(p);
+        g.state.players[p.other().index()].mana = [20; 6];
+        let enemy = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        let shock = spawn(&mut g, p, Card::Shock, Zone::Hand);
+        paid_packet(&mut g, shock, false, &[Target::Player(p.other())]);
+        settle(&mut g);
+        let foreign = spawn(&mut g, p.other(), Card::Shock, Zone::Hand);
+        act(&mut g, Action::Pass);
+        paid_packet(&mut g, foreign, false, &[Target::Player(p)]);
+        settle(&mut g);
+        let aura = spawn(
+            &mut g,
+            p,
+            Card::from_name("Super Strength").unwrap(),
+            Zone::Hand,
+        );
+        paid_packet(&mut g, aura, false, &[Target::Card(enemy)]);
+        settle(&mut g);
+        let library = g.state.players[p.index()].library.clone();
+        let rng = g.state.rng;
+        paid_packet(&mut g, inset, true, &[Target::Card(enemy)]);
+        settle(&mut g);
+        assert_eq!(g.state.objects[inset as usize].zone, Zone::Graveyard);
+        assert_eq!(
+            g.state.objects[inset as usize].card,
+            Card::from_name(NAME).unwrap()
+        );
+        assert_eq!(g.state.players[p.index()].library, library);
+        assert_eq!(g.state.rng, rng);
+        let normal = spawn(&mut g, p, Card::from_name(NAME).unwrap(), Zone::Hand);
+        normal_targets(&mut g, normal);
+        choose(&mut g, inset);
+        deny(&mut g, foreign);
+        choose(&mut g, shock);
+        settle(&mut g);
+        assert_eq!(g.state.objects[inset as usize].zone, Zone::Exile);
+        assert_eq!(g.state.objects[shock as usize].zone, Zone::Exile);
+        assert_eq!(g.state.objects[foreign as usize].zone, Zone::Graveyard);
+        assert!(g.state.adventures.is_none());
+        assert!(g.state.exile_permissions.is_empty());
+    }
+}
+#[test]
+fn feral_group_relation_resets_between_separate_occurrences_and_owns_each_choice() {
+    const SPEC: TargetSpec = TargetSpec {
+        rule: TargetRule::Grouped {
+            base: &TargetRule::Object {
+                zone: TargetZone::Graveyard,
+                kinds: 0,
+                relation: -1,
+                other: false,
+                nonland: false,
+                tapped: false,
+                min_mana: 0,
+                max_mana: u32::MAX,
+            },
+            constraint: TargetGroupConstraint::SameGraveyard,
+        },
+        min: 0,
+        max: 2,
+    };
+    for p in [Player::P0, Player::P1] {
+        let (mut g, id) = setup(p);
+        let own = spawn(&mut g, p, Card::Forest, Zone::Graveyard);
+        let foreign = spawn(&mut g, p.other(), Card::Swamp, Zone::Graveyard);
+        normal_targets(&mut g, id);
+        // Declaration-only synthetic metadata fixture exercises two occurrences;
+        // the real admitted Feral body continues to have exactly one occurrence.
+        g.state.announcing.as_mut().unwrap().plan = TargetPlan::Groups(&[SPEC, SPEC]);
+        choose(&mut g, own);
+        deny(&mut g, foreign);
+        act(&mut g, Action::FinishTargets);
+        assert_eq!(g.state.announcing.as_ref().unwrap().group, 1);
+        choose(&mut g, foreign);
+        deny(&mut g, own);
+        act(&mut g, Action::FinishTargets);
+        let packet = g.state.stack.last().unwrap();
+        assert_eq!(packet.targets.len(), 2);
+        assert_eq!(packet.targets[0].group, 0);
+        assert_eq!(packet.targets[1].group, 1);
     }
 }

@@ -286,6 +286,7 @@ fn loyalty_is_in_all_kind_counter_doubling_and_any_kind_payment_space() {
     let mut cost = Card::from_name("Burdened Stoneback").unwrap().activations()[0].cost;
     cost.remove = Some((None, 2));
     let available = Counters {
+        lore: 0,
         plus_one: 1,
         minus_one: 1,
         stun: 1,
