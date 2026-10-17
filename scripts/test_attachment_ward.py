@@ -61,6 +61,8 @@ class AttachmentWardCompilerTests(unittest.TestCase):
   rule,program=g.targeted_program('attach this Equipment to target Dwarf you control.')
   self.assertIn('Subtype("Dwarf")',g.TARGET_RULES[rule]);self.assertIn('kinds: 0',g.TARGET_RULES[rule]);self.assertEqual(program,['AttachSource'])
   result=g.aura_template(self.rows['Hardlight Containment']);self.assertEqual(result[-5:-3],(16,0))
-  for n in ['Royal Treatment','Redtooth Genealogist','Charmed Clothier','Secret Invasion','Nowhere to Run','Titania, Rugged Rumbler']:
+  for n in ['Royal Treatment','Redtooth Genealogist','Charmed Clothier']:
+   self.assertTrue(self.admitted(self.rows[n]),n)
+  for n in ['Secret Invasion','Nowhere to Run','Titania, Rugged Rumbler']:
    self.assertFalse(self.admitted(self.rows[n]),n)
 if __name__=='__main__':unittest.main()
