@@ -693,6 +693,10 @@ impl Game {
             discard_event: None,
             draw_event: None,
             life_event: None,
+            source_counter_lki: card_quantities::counter_quantity_facts(
+                definition.triggers()[index].program,
+                |kind| source.counters.get(kind),
+            ),
             sacrificed_toughness: None,
             source_attachment: source.attached_to,
             card: source.id,

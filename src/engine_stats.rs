@@ -129,6 +129,7 @@ impl Game {
                     matches!(
                         fragment,
                         crate::cards::StaticAbilityFragment::AttacksEachCombat
+                            | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
                             | crate::cards::StaticAbilityFragment::PlayerHexproof
                             | crate::cards::StaticAbilityFragment::ControlledSpellsUncounterable(_)
                             | crate::cards::StaticAbilityFragment::SelfUntap(_)

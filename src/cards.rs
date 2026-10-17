@@ -963,6 +963,16 @@ pub(crate) enum AmountValue {
     ColorsSpent,
     SpellColors,
     SourcePower,
+    #[allow(
+        dead_code,
+        reason = "Core quantity is scenario-tested while its consumer cards remain gated"
+    )]
+    DamageEventAmount,
+    #[allow(
+        dead_code,
+        reason = "Core quantity is scenario-tested while its consumer cards remain gated"
+    )]
+    SourceCounterQuantity(CounterKind),
     SacrificedToughness,
     Fixed(u16),
     /// Explicit immutable parameter of the resolving spell or its exact ETB packet.

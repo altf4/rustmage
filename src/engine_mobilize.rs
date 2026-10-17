@@ -224,6 +224,7 @@ impl Game {
                 discard_event: None,
                 draw_event: None,
                 life_event: None,
+                source_counter_lki: None,
                 sacrificed_toughness: None,
                 card: source.card,
                 object: source,

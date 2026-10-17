@@ -790,6 +790,7 @@ impl Game {
             discard_event: None,
             draw_event: None,
             life_event: None,
+            source_counter_lki: None,
             sacrificed_toughness: None,
             source_attachment: self.state.objects[card as usize].attached_to,
             card,
@@ -1003,7 +1004,7 @@ impl Game {
             }) && let Some(payment) = announcement.payment.take()
             {
                 self.pay_activation(
-                    &announcement.item,
+                    &mut announcement.item,
                     payment,
                     announcement.counter_payment.clone(),
                 );
@@ -1014,7 +1015,7 @@ impl Game {
         if let Some(payment) = announcement.payment {
             if matches!(announcement.item.kind, StackKind::ActivatedAbility { .. }) {
                 self.pay_activation(
-                    &announcement.item,
+                    &mut announcement.item,
                     payment,
                     announcement.counter_payment.clone(),
                 );

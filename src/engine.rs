@@ -781,6 +781,9 @@ pub struct SpellView {
     pub draw_event: Option<DrawTriggerView>,
     pub life_event: Option<LifeTriggerView>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[allow(clippy::box_collection)]
+    pub source_counter_lki: Option<Box<Vec<SourceCounterQuantityView>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sacrificed_toughness: Option<Box<i128>>,
     pub source_facts: DamageFacts,
     pub related_stack: Option<StackLink>,
@@ -832,7 +835,10 @@ impl SpellView {
     }
     /// Heap-owned continuation payloads; inline packet storage is counted by its container.
     pub(super) fn owned_bytes(&self) -> usize {
-        self.target_controller_lki.as_ref().map_or(0, |v| {
+        self.source_counter_lki.as_ref().map_or(0, |facts| {
+            std::mem::size_of::<Vec<SourceCounterQuantityView>>()
+                + facts.len() * std::mem::size_of::<SourceCounterQuantityView>()
+        }) + self.target_controller_lki.as_ref().map_or(0, |v| {
             std::mem::size_of::<Vec<(ObjectRef, Player)>>()
                 + v.len() * std::mem::size_of::<(ObjectRef, Player)>()
         }) + self
@@ -3432,7 +3438,7 @@ impl Game {
                     self.target_becomes_bound(&item, bound);
                     item.targets.push(bound);
                 }
-                self.pay_activation(&item, payment, counter_payment);
+                self.pay_activation(&mut item, payment, counter_payment);
                 self.push_stack_item(item);
                 self.state.passes = 0;
             }
@@ -3443,8 +3449,8 @@ impl Game {
                 counter_payment,
                 production,
             } => {
-                let item = self.activation_item(actor, card, ability);
-                self.pay_activation(&item, payment, counter_payment);
+                let mut item = self.activation_item(actor, card, ability);
+                self.pay_activation(&mut item, payment, counter_payment);
                 self.add_mana(actor, production);
                 self.reopen_evidence_after_mana_sacrifice(card);
             }
@@ -3464,8 +3470,8 @@ impl Game {
                     announcement.payment = Some(payment);
                     announcement.counter_payment = counter_payment;
                 } else {
-                    let item = self.state.stack.last().unwrap().clone();
-                    self.pay_activation(&item, payment, counter_payment);
+                    let mut item = self.state.stack.last().unwrap().clone();
+                    self.pay_activation(&mut item, payment, counter_payment);
                 }
             }
             Action::BeginCast { card, payment } => {
@@ -4049,6 +4055,7 @@ impl Game {
             before.zone, destination,
             "same-zone moves are ordering operations"
         );
+        self.capture_source_counter_departure(&before);
         if before.zone == Zone::Battlefield {
             self.clear_suspected_reference(before.reference);
         }
@@ -6108,6 +6115,14 @@ mod named_counter_tests;
 #[cfg(test)]
 #[path = "engine_attack_requirement_tests.rs"]
 mod attack_requirement_tests;
+
+#[path = "engine_card_quantities.rs"]
+mod card_quantities;
+pub use card_quantities::SourceCounterQuantityView;
+
+#[cfg(test)]
+#[path = "engine_card_quantities_tests.rs"]
+mod card_quantities_tests;
 #[cfg(test)]
 #[path = "engine_subtype_layers_tests.rs"]
 mod subtype_layers_tests;

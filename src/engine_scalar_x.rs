@@ -164,6 +164,16 @@ impl Game {
                 .copied()
                 .unwrap_or(0)
                 .max(0) as u128,
+            AmountValue::DamageEventAmount => item.damage_event.expect("saved damage event").amount,
+            AmountValue::SourceCounterQuantity(kind) => self
+                .source_counter_quantity_live(item.object, kind)
+                .map(u128::from)
+                .unwrap_or_else(|| {
+                    item.source_counter_lki
+                        .as_ref()
+                        .and_then(|facts| facts.iter().find(|fact| fact.kind == kind))
+                        .map_or(0, |fact| u128::from(fact.count))
+                }),
             AmountValue::SourcePower => {
                 if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
                     self.stats(item.card).power.max(0) as u128

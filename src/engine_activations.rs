@@ -437,6 +437,16 @@ impl Game {
             discard_event: None,
             draw_event: None,
             life_event: None,
+            source_counter_lki: self.state.objects[card as usize]
+                .card
+                .activations()
+                .get(usize::from(ability))
+                .and_then(|ability| {
+                    card_quantities::counter_quantity_facts(ability.program, |kind| {
+                        self.source_counter_quantity_live(self.object_ref(card), kind)
+                            .expect("live activated source")
+                    })
+                }),
             sacrificed_toughness: None,
             source_attachment: self.state.objects[card as usize].attached_to,
             card,
@@ -449,7 +459,7 @@ impl Game {
 
     pub(super) fn pay_activation(
         &mut self,
-        item: &SpellView,
+        item: &mut SpellView,
         payment: Mana,
         counter_payment: Counters,
     ) {
@@ -457,6 +467,19 @@ impl Game {
             unreachable!()
         };
         let definition = &item.source_card.activations()[ability as usize];
+        self.pay_activation_definition(item, payment, counter_payment, ability, definition);
+    }
+
+    // The same committed payment routine handles both ordinary authored abilities
+    // and bounded typed fixtures that exercise ordered combinations of costs.
+    pub(super) fn pay_activation_definition(
+        &mut self,
+        item: &mut SpellView,
+        payment: Mana,
+        counter_payment: Counters,
+        ability: u16,
+        definition: &ActivatedAbility,
+    ) {
         let cost: ActivationCost = definition.cost;
         self.spend_mana(item.controller, payment);
         self.lose_life(item.controller, i128::from(cost.life));
@@ -488,6 +511,7 @@ impl Game {
         if cost.tap {
             self.tap_objects(&[item.card]);
         }
+        self.refresh_local_source_counter_quantities(item);
         if cost.exile_self {
             self.move_object(item.card, Zone::Exile);
         } else if cost.discard {
