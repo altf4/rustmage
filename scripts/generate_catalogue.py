@@ -4005,7 +4005,9 @@ def compile_catalogue(snapshot, target):
         abilities = []
         entry = 'Never'
         land = land_template(card)
-        if name in legacy and not timing_seen:
+        # Reserved IDs retain absent demonstration fixtures. Supplied facts must
+        # compile generically: a familiar name authenticates no rules or costs.
+        if name in legacy and name not in cards:
             effect, fallback_cost, color = legacy[name]
             # Lands have no mana cost. Their legacy cost token encodes colour only.
             cost = '' if effect == 'Land' else card.get('mana_cost', fallback_cost)
@@ -4152,6 +4154,20 @@ def compile_catalogue(snapshot, target):
             offspring_key=hashlib.sha256(json.dumps(factory,sort_keys=True).encode()).hexdigest()[:24]
             TOKEN_DEFS[offspring_key]=factory
             abilities=[('SelfOffspring',[f'CreateTokens {{ token: __TOKEN_{offspring_key}__, amount: 1, tapped: false }}'],'None'),*abilities]
+        # The compact mana action is an ABI choice, never an admission route.
+        # A supplied definition reaches it only after complete generic compilation
+        # proves the exact same one-mana tap ability, with no additional ability.
+        if name in legacy and name in cards and effect != 'Unsupported':
+            old_effect, _, old_color = legacy[name]
+            if old_color is not None and effect == old_effect and not abilities and len(activations) == 1:
+                activation = activations[0]
+                cost_spec, targets, instructions, sorcery_only, once = activation
+                expected_cost = dict(activation_cost('{T}'), exhaust=False)
+                mana = [int(i == old_color) for i in range(6)]
+                if (cost_spec == expected_cost and targets == 'None'
+                        and instructions == [f'AddMana(ManaProduction::Fixed({mana}))']
+                        and not sorcery_only and not once):
+                    color, activations = old_color, []
         triggers_rust = '&[' + ', '.join(f'TriggeredAbility {{ condition: TriggerCondition::{condition}, targets: {rust_targets(targets)}, program: {rust_program(program)} }}' for condition, program, targets in abilities) + ']'
 
         if kind & 64:
@@ -4194,7 +4210,7 @@ def compile_catalogue(snapshot, target):
             if target_reduction: target_reduction_rows.append(f'        {index} => Some(&{target_reduction}),')
             if reductions: reduction_rows.append(f'        {index} => &[{", ".join(reductions)}],')
             if additional is not None: additional_rows.append(f'        {index} => Some({additional}),')
-        basic = name in {'Plains', 'Island', 'Swamp', 'Mountain', 'Forest'} or card.get('type_line', '').split(' — ')[0] == 'Basic Land'
+        basic = (not card and name in {'Plains', 'Island', 'Swamp', 'Mountain', 'Forest'}) or card.get('type_line', '').split(' — ')[0] == 'Basic Land'
         costs = spell_cost_options(cost) or [([0] * 6, 0)]
         colored, generic = costs[0]
         if len(costs)>1:
@@ -4230,7 +4246,7 @@ def compile_catalogue(snapshot, target):
         exhaust_mask=sum(1<<i for i,a in enumerate(activations) if a[0].get('exhaust',False))
         if exhaust_mask and effect!='Unsupported':exhaust_rows.append(f'        {index} => {exhaust_mask},')
         coverage.append({'name': name, 'standard_legal': name in standard_names, 'implemented': effect != 'Unsupported',
-                         'implementation': 'bargain_template' if bargain and effect != 'Unsupported' else 'explicit' if name in legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'aura_template' if aura else 'equipment_template' if equipment else 'permanent_template' if permanent else 'static_template' if static else None})
+                         'implementation': 'bargain_template' if bargain and effect != 'Unsupported' else 'explicit' if name in legacy and name not in cards else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'aura_template' if aura else 'equipment_template' if equipment else 'permanent_template' if permanent else 'static_template' if static else None})
 
     # Only factories referenced by wholly accepted cards enter the executable catalogue.
     used_tokens = sorted(set(re.findall(r'__TOKEN_([0-9a-f]+)__', '\n'.join(definitions+replacement_rows))))
