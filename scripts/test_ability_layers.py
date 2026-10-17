@@ -1,5 +1,6 @@
 """Whole effect identity survives extraction into different characteristic layers."""
 import json
+import re
 import unittest
 from scripts import generate_catalogue as g
 from scripts.ability_layers import Layer, continuous_groups
@@ -50,7 +51,9 @@ class AbilityLayerIdentityTests(unittest.TestCase):
         catalogue = canonical((g.ROOT / 'src/generated/catalogue.rs').read_text(), physical)
         families = {'static_modifiers', 'keyword_grants', 'scaling_modifiers',
                     'enchanted_modifiers', 'counter_keyword_grants', 'dynamic_stats',
-                    'base_stat_setter', 'attached_subtype'}
+                    'base_stat_setter', 'attached_subtype', 'replacement_effects',
+                    'cast_timing_grants', 'cost_reductions', 'target_cost_reduction',
+                    'combat_restriction', 'entry_trigger_suppression', 'opponent_entry_tapped'}
         checked = 0
         for card in cards:
             key = card['name'] + '#0'
@@ -71,16 +74,27 @@ class AbilityLayerIdentityTests(unittest.TestCase):
                     if family == 'attached_subtype':
                         self.assertEqual(len(values), 1)
                         actual = 'Some(' + json.dumps(values[0]) + '),'
-                    elif family in ('dynamic_stats', 'base_stat_setter'):
+                    elif family in ('entry_trigger_suppression', 'opponent_entry_tapped'):
+                        self.assertEqual(len(values), 1)
+                        actual = str(values[0]) + ','
+                    elif family == 'target_cost_reduction':
+                        self.assertEqual(len(values), 1)
+                        actual = 'Some(&' + values[0] + '),'
+                    elif family in ('dynamic_stats', 'base_stat_setter', 'combat_restriction'):
                         self.assertEqual(len(values), 1)
                         actual = 'Some(' + values[0] + '),'
                     else:
                         actual = '&[' + ', '.join(values) + '],'
+                    def token(match):
+                        key = '@token/' + match[1] + '#0'
+                        self.assertIn(key, catalogue['definitions'])
+                        return 'Card(' + json.dumps(key) + ')'
+                    actual = re.sub(r'__TOKEN_([a-f0-9]+)__', token, actual)
                     self.assertEqual(actual, payload)
                     checked += 1
-        # Initial merged100 corpus has130 such helper arms. New parent arms must
+        # Initial merged100 corpus has221 such helper arms. New parent arms must
         # also reconstruct; this is not an exemption for future admissions.
-        self.assertGreaterEqual(checked, 130)
+        self.assertGreaterEqual(checked, 221)
 
     def test_actual_live_static_parent_keeps_archon_group_and_later_only_providers(self):
         for name, first in [('Maha, Its Feathers Night', Layer.BASE), ('Aettir and Priwen', Layer.BASE), ('Archon of the Wild Rose', Layer.ABILITY), ('Burden of Proof', Layer.BASE)]:

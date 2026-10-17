@@ -38,6 +38,18 @@ class StaticGroup:
 
 
 def continuous_groups(card, parser):
+    """Project immutable groups without changing the caller's factory registry."""
+    tokens, emblems = dict(parser.TOKEN_DEFS), dict(parser.EMBLEM_DEFS)
+    try:
+        return _continuous_groups(card, parser)
+    finally:
+        parser.TOKEN_DEFS.clear()
+        parser.TOKEN_DEFS.update(tokens)
+        parser.EMBLEM_DEFS.clear()
+        parser.EMBLEM_DEFS.update(emblems)
+
+
+def _continuous_groups(card, parser):
     """Preserve clause identity while existing extractors split its fragments.
 
     Every payload is the existing immutable executable recipe. The projection
@@ -118,6 +130,19 @@ def continuous_groups(card, parser):
         if static is not None:
             fragments.extend(Fragment('static_modifiers', Layer.MODIFY, s) for s in static[-2])
             fragments.extend(Fragment('keyword_grants', Layer.ABILITY, s) for s in static[-1])
+        # Rule-modifying static providers do not start in an earlier
+        # characteristic layer. Preserve their independent raw ability group.
+        for extract, kind, plural in (
+                (parser.extract_replacements, 'replacement_effects', True),
+                (parser.extract_cast_timing_grants, 'cast_timing_grants', True),
+                (parser.extract_cost_reductions, 'cost_reductions', True),
+                (parser.extract_target_cost_reduction, 'target_cost_reduction', False),
+                (parser.extract_combat_restriction, 'combat_restriction', False),
+                (parser.extract_entry_trigger_suppression, 'entry_trigger_suppression', False),
+                (parser.extract_opponent_entry_tapped, 'opponent_entry_tapped', False)):
+            _, value = extract(one)
+            if value is not None and value != 0:
+                fragments.extend(Fragment(kind, Layer.RULE, row) for row in (value if plural else [value]))
         if equipment and original not in equips and original not in job_header:
             if job_header and 'in addition to its other types' in original:
                 # Job parsing allocates immutable token factories. Projection
