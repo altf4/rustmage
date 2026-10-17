@@ -3475,6 +3475,7 @@ def gift_permanent_body(card):
     if result is None: return None
     base = creature_template(dict(card,oracle_text='\n'.join(lines[:-1])))
     if base is None: return None
+    if any(int(card[axis]) > 2147483647 for axis in ('power','toughness')): return None
     rule, program = result
     return base[0],base[1],[('SelfGiftEnters',['GiveGift'],'None'),('SelfGiftEnters',program,rule)]
 
@@ -4880,6 +4881,7 @@ def compile_catalogue(snapshot, target):
         if gift_body is not None:
             declined_targets, promised_targets, gift_program = gift_body
             effect = 'Spell'
+            keywords = 0
             spell = declined_targets, ['GiveGift', *gift_program]
             abilities=[];activations=[];enters=[0,0,0]
         elif gift_permanent is not None:

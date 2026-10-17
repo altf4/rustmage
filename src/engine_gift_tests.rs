@@ -511,3 +511,370 @@ fn paid_spell_return_is_not_countering_and_casting_prohibition_allows_lands_and_
         }
     }
 }
+#[test]
+fn paid_other_complete_gift_consumers_enforce_both_declared_plans_and_cost_ownership() {
+    for p in [Player::P0, Player::P1] {
+        for promise in [false, true] {
+            for route in 0..8 {
+                let mut g = setup(p);
+                let q = p.other();
+                let own = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+                let foe = named(&mut g, q, "Grizzly Bears", Zone::Battlefield);
+                let big = named(&mut g, q, "Hill Giant", Zone::Battlefield);
+                let grave = named(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+                let grave2 = named(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+                let grave3 = named(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+                let hand = g
+                    .state
+                    .objects
+                    .iter()
+                    .filter(|o| o.owner == p && o.zone == Zone::Hand)
+                    .count();
+                let (name, targets) = match route {
+                    0 => (
+                        "Consumed by Greed",
+                        if promise {
+                            vec![Target::Player(q), Target::Card(grave)]
+                        } else {
+                            vec![Target::Player(q)]
+                        },
+                    ),
+                    1 => (
+                        "Longstalk Brawl",
+                        vec![Target::Card(own), Target::Card(foe)],
+                    ),
+                    2 => (
+                        "Mind Spiral",
+                        if promise {
+                            vec![Target::Player(p), Target::Card(foe)]
+                        } else {
+                            vec![Target::Player(p)]
+                        },
+                    ),
+                    3 => (
+                        "Peerless Recycling",
+                        if promise {
+                            vec![Target::Card(grave), Target::Card(grave2)]
+                        } else {
+                            vec![Target::Card(grave)]
+                        },
+                    ),
+                    4 => (
+                        "Sazacap's Brew",
+                        if promise {
+                            vec![Target::Player(p), Target::Card(own)]
+                        } else {
+                            vec![Target::Player(p)]
+                        },
+                    ),
+                    5 => {
+                        let a = named(&mut g, q, "Doubling Season", Zone::Battlefield);
+                        let b = named(&mut g, q, "Doubling Season", Zone::Battlefield);
+                        (
+                            "Wear Down",
+                            if promise {
+                                vec![Target::Card(a), Target::Card(b)]
+                            } else {
+                                vec![Target::Card(a)]
+                            },
+                        )
+                    }
+                    6 => (
+                        "Dewdrop Cure",
+                        if promise {
+                            vec![
+                                Target::Card(grave),
+                                Target::Card(grave2),
+                                Target::Card(grave3),
+                            ]
+                        } else {
+                            vec![Target::Card(grave), Target::Card(grave2)]
+                        },
+                    ),
+                    _ => {
+                        g.state.active = q;
+                        g.state.priority = q;
+                        let victim = named(&mut g, q, "Hill Giant", Zone::Hand);
+                        act(&mut g, Action::AnnounceCast { card: victim });
+                        let pay = g
+                            .legal_actions()
+                            .into_iter()
+                            .find(|a| matches!(a, Action::PayCosts { .. }))
+                            .unwrap();
+                        act(&mut g, pay);
+                        act(&mut g, Action::Pass);
+                        ("Long River's Pull", vec![Target::Spell(victim)])
+                    }
+                };
+                let spell = paid_targets(&mut g, p, name, promise, &targets);
+                settle(&mut g);
+                assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+                assert_eq!(g.object_view(spell).owner, q);
+                match route {
+                    0 => {
+                        assert_eq!(g.object_view(big).zone, Zone::Graveyard);
+                        assert_eq!(g.object_view(foe).zone, Zone::Battlefield);
+                        assert_eq!(
+                            g.object_view(grave).zone,
+                            if promise { Zone::Hand } else { Zone::Graveyard }
+                        );
+                    }
+                    1 => {
+                        assert_eq!(g.object_view(foe).zone, Zone::Graveyard);
+                        assert_eq!(
+                            g.object_view(own).zone,
+                            if promise {
+                                Zone::Battlefield
+                            } else {
+                                Zone::Graveyard
+                            }
+                        );
+                        if promise {
+                            assert_eq!(g.object_view(own).counters.plus_one, 1);
+                            assert_eq!(g.object_view(own).damage, 2);
+                        }
+                    }
+                    2 => {
+                        assert_eq!(
+                            g.state
+                                .objects
+                                .iter()
+                                .filter(|o| o.owner == p && o.zone == Zone::Hand)
+                                .count(),
+                            hand + 3
+                        );
+                        assert_eq!(g.object_view(foe).tapped, promise);
+                        assert_eq!(g.object_view(foe).counters.stun, u64::from(promise));
+                    }
+                    3 => {
+                        assert_eq!(g.object_view(grave).zone, Zone::Hand);
+                        assert_eq!(
+                            g.object_view(grave2).zone,
+                            if promise { Zone::Hand } else { Zone::Graveyard }
+                        );
+                    }
+                    4 => {
+                        assert_eq!(
+                            g.state
+                                .objects
+                                .iter()
+                                .filter(|o| o.owner == p && o.zone == Zone::Hand)
+                                .count(),
+                            hand - 1 + 2
+                        );
+                        assert_eq!(g.stats(own).power, if promise { 4 } else { 2 });
+                    }
+                    5 => {
+                        for (i, target) in targets.iter().enumerate() {
+                            if let Target::Card(id) = target {
+                                assert_eq!(g.object_view(*id).zone, Zone::Graveyard, "{i}");
+                            }
+                        }
+                    }
+                    6 => {
+                        for id in [grave, grave2] {
+                            assert_eq!(g.object_view(id).zone, Zone::Battlefield);
+                        }
+                        assert_eq!(
+                            g.object_view(grave3).zone,
+                            if promise {
+                                Zone::Battlefield
+                            } else {
+                                Zone::Graveyard
+                            }
+                        );
+                    }
+                    _ => {
+                        let Target::Spell(id) = targets[0] else {
+                            unreachable!()
+                        };
+                        assert_eq!(g.object_view(id).zone, Zone::Graveyard);
+                    }
+                }
+            }
+        }
+    }
+}
+fn normal_response(g: &mut Game, p: Player, name: &str, target: Target) -> CardId {
+    if g.actor() != Some(p) {
+        act(g, Action::Pass);
+    }
+    let card = named(g, p, name, Zone::Hand);
+    act(g, Action::AnnounceCast { card });
+    act(g, Action::ChooseTarget { target });
+    let pay = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a, Action::PayCosts { .. }))
+        .unwrap();
+    act(g, pay);
+    card
+}
+#[test]
+fn paid_countered_and_all_illegal_spells_never_give_or_run_other_effects() {
+    for p in [Player::P0, Player::P1] {
+        for promise in [false, true] {
+            for counter in [false, true] {
+                let mut g = setup(p);
+                let foe = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+                let life = g.state.players[p.index()].life;
+                let spell =
+                    paid_targets(&mut g, p, "Nocturnal Hunger", promise, &[Target::Card(foe)]);
+                normal_response(
+                    &mut g,
+                    p.other(),
+                    if counter { "Negate" } else { "Murder" },
+                    if counter {
+                        Target::Spell(spell)
+                    } else {
+                        Target::Card(foe)
+                    },
+                );
+                settle(&mut g);
+                assert_eq!(tokens(&g, p.other(), "Food").len(), 0);
+                assert_eq!(g.state.players[p.index()].life, life);
+                assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+                assert_eq!(
+                    g.object_view(foe).zone,
+                    if counter {
+                        Zone::Battlefield
+                    } else {
+                        Zone::Graveyard
+                    }
+                );
+            }
+        }
+    }
+}
+#[test]
+fn paid_partially_illegal_gift_only_target_still_gives_and_draws_without_rebinding() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let foe = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        let before = g
+            .state
+            .objects
+            .iter()
+            .filter(|o| o.owner == p && o.zone == Zone::Hand)
+            .count();
+        paid_targets(
+            &mut g,
+            p,
+            "Mind Spiral",
+            true,
+            &[Target::Player(p), Target::Card(foe)],
+        );
+        normal_response(&mut g, p.other(), "Murder", Target::Card(foe));
+        settle(&mut g);
+        assert_eq!(g.object_view(foe).zone, Zone::Graveyard);
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.owner == p && o.zone == Zone::Hand)
+                .count(),
+            before + 3
+        );
+        assert_eq!(tokens(&g, p.other(), "Fish").len(), 1);
+    }
+}
+#[test]
+fn actual_paid_source_death_after_entry_binding_preserves_beneficiary_and_controller() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let q = p.other();
+        let enemy = named(&mut g, q, "Doubling Season", Zone::Battlefield);
+        let hand = g
+            .state
+            .objects
+            .iter()
+            .filter(|o| o.owner == q && o.zone == Zone::Hand)
+            .count();
+        let source = paid_targets(&mut g, p, "Scrapshooter", true, &[]);
+        let cast_object = g.object_ref(source);
+        for _ in 0..160 {
+            if g.state.pending == Pending::Priority
+                && g.object_view(source).zone == Zone::Battlefield
+                && g.state.stack.iter().any(|s| s.gift.is_some())
+            {
+                break;
+            }
+            let a = if g.state.pending == Pending::Priority {
+                Action::Pass
+            } else {
+                g.legal_actions()
+                    .into_iter()
+                    .find(|a| !matches!(a, Action::Concede))
+                    .unwrap()
+            };
+            act(&mut g, a);
+        }
+        let entry = g.object_ref(source);
+        let packets = g
+            .state
+            .stack
+            .iter()
+            .filter_map(|s| s.gift.as_ref().map(|c| (s.controller, **c)))
+            .collect::<Vec<_>>();
+        assert_eq!(packets.len(), 2);
+        for (controller, c) in packets {
+            assert_eq!(controller, p);
+            assert_eq!(c.caster, p);
+            assert_eq!(c.beneficiary, q);
+            assert_eq!(c.source, cast_object);
+            assert_eq!(c.entry, Some(entry));
+        }
+        normal_response(&mut g, q, "Murder", Target::Card(source));
+        settle(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(source).owner, q);
+        assert_eq!(g.object_view(source).controller, q);
+        assert_eq!(g.object_view(enemy).zone, Zone::Graveyard);
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.owner == q && o.zone == Zone::Hand)
+                .count(),
+            hand + 1
+        );
+    }
+}
+#[test]
+fn sparse_gift_context_heap_payloads_are_owned_and_counted_once() {
+    let mut g = setup(Player::P0);
+    let source = named(&mut g, Player::P0, "Scrapshooter", Zone::Hand);
+    let item = g.cast_item(Player::P0, source, [0; 6]);
+    g.state.stack.push(item);
+    let context = GiftContext {
+        source: g.object_ref(source),
+        caster: Player::P0,
+        beneficiary: Player::P1,
+        kind: crate::cards::GiftKind::Card,
+        entry: None,
+    };
+    let before = g.state_bytes();
+    g.state.stack.last_mut().unwrap().gift = Some(Box::new(context));
+    assert_eq!(g.state_bytes() - before, std::mem::size_of::<GiftContext>());
+    let child = {
+        let parent = g.clone();
+        parent.clone()
+    };
+    assert_eq!(child.state_bytes(), g.state_bytes());
+    assert_eq!(child.snapshot(), g.snapshot());
+    let movement = g.entry_move(source, Zone::Battlefield, false);
+    let mut batch = entries::EntryBatch {
+        moves: vec![movement],
+        choices: vec![],
+        next: 0,
+        counter_next: 0,
+        counter_order: vec![],
+        resume: None,
+        shuffle_after: None,
+        replacement_resume: None,
+    };
+    let before = batch.bytes();
+    batch.moves[0].gift = Some(Box::new(context));
+    assert_eq!(batch.bytes() - before, std::mem::size_of::<GiftContext>());
+    assert_eq!(batch.clone().bytes(), batch.bytes());
+}

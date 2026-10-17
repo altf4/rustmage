@@ -88,3 +88,13 @@ Six complete bodies remain gated on concrete dependencies: Coiling Rebirth#314,
 Cruelclaw's Heist#315, Kitnap#265, Parting Gust#316, Starfall Invocation#317, and
 Starforged Sword#318. These follow-ups specify their entire missing semantics,
 not admission exceptions. Full paid/public coverage and broad gates remain pending.
+
+The next focused checkpoint passes eleven native Gift groups, including actual
+paid promise/decline execution of every one of the seventeen bodies in both seats,
+real counter/all-illegal/partial-target responses, caster-owned additional discard,
+late foreign source death after both entry packets bind, and exact sparse owned
+heap accounting. Four compiler methods pass, adding malformed cost/layout/type
+and native-stat-range controls to raw/source/canonical proof. These focused results
+remain scoped to this e5-based prototype; current-main composition and final broad
+acceptance remain pending. Completed target outputs are cleaned immediately with
+every shared library retained at its original path and hash.

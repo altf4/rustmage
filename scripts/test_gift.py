@@ -27,6 +27,21 @@ class GiftTests(unittest.TestCase):
   allowed={('gift',n+'#0')for n in NAMES}|{('additional_cost',"Sazacap's Brew#0")}
   proof=assert_union(a,b,changed={n+'#0'for n in NAMES},added=set(),helpers=allowed,aliases={})
   self.assertEqual(proof['preserved_definitions'],5314)
+ def test_malformed_cost_layout_type_and_out_of_range_stats_never_dispatch(self):
+  for c in self.cards:
+   if c['name']not in NAMES:continue
+   for name in ['Independent Gift Shape','Forest']:
+    card=dict(c,name=name,oracle_text=c['oracle_text'].replace(c['name'],name))
+    for cost in ['', '{X}{G}', '{Y}', '{4294967296}', '{G}{']:
+     self.assertFalse(self.implemented(dict(card,mana_cost=cost)),(c['name'],name,cost))
+    for typ in ['Unknown','Creature Instant','Artifact Sorcery']:
+     self.assertFalse(self.implemented(dict(card,type_line=typ,power='2',toughness='2')),(c['name'],name,typ))
+    for layout in ['unknown','adventure','saga']:
+     self.assertFalse(self.implemented(dict(card,layout=layout)),(c['name'],name,layout))
+    if c['name']=='Scrapshooter':
+     for axis in ['power','toughness']:
+      for value in ['2147483648','-1','*','unknown']:
+       self.assertFalse(self.implemented(dict(card,**{axis:value})),(name,axis,value))
  def test_all23_full_java_bodies_and_direct_imports_are_pinned(self):
   manifest=json.loads((g.ROOT/'docs/gift-admissions.json').read_text());gifts={c['name']:c for c in self.cards if c.get('oracle_text','').startswith('Gift ')}
   self.assertEqual(len(gifts),23);self.assertEqual({c['name']for c in manifest['cards']},set(gifts))
