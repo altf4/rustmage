@@ -13,7 +13,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             players: PlayerSet::Controller,
             filter: SacrificeFilter {
                 artifact_enchantment_or_token: false,
-                keywords: Keywords(0),
+                keywords: Keywords::NONE,
                 source_only: true,
                 kinds: 1,
                 nonland: false,
@@ -34,17 +34,17 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(260),
+    keywords: Keywords::HASTE.union(Keywords::TRAMPLE),
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(256))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::TRAMPLE)],
         },
         StaticAbilityGroup {
             line: 1,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(4))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::HASTE)],
         },
     ],
     extras: &CardExtras {
@@ -52,12 +52,12 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(256))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::TRAMPLE)],
             },
             StaticAbilityGroup {
                 line: 1,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(4))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::HASTE)],
             },
         ],
         ..CardExtras::EMPTY

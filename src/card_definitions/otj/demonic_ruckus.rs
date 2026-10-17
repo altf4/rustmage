@@ -15,7 +15,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     aura: Some(AuraSpec {
         kinds: 1,
         relation: -1,
@@ -24,7 +24,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 1,
                 toughness: 1,
             },
-            keywords: Keywords(33024),
+            keywords: Keywords::TRAMPLE.union(Keywords::MENACE),
         },
     }),
     static_groups: &[StaticAbilityGroup {
@@ -35,7 +35,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 1,
                 toughness: 1,
             }),
-            StaticAbilityFragment::AttachmentKeywords(Keywords(33024)),
+            StaticAbilityFragment::AttachmentKeywords(Keywords::TRAMPLE.union(Keywords::MENACE)),
         ],
     }],
     extras: &CardExtras {
@@ -47,7 +47,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 1,
                     toughness: 1,
                 },
-                keywords: Keywords(33024),
+                keywords: Keywords::TRAMPLE.union(Keywords::MENACE),
             },
         }),
         static_ability_groups: &[StaticAbilityGroup {
@@ -58,7 +58,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 1,
                     toughness: 1,
                 }),
-                StaticAbilityFragment::AttachmentKeywords(Keywords(33024)),
+                StaticAbilityFragment::AttachmentKeywords(
+                    Keywords::TRAMPLE.union(Keywords::MENACE),
+                ),
             ],
         }],
         plot_cost: Some(ManaCost {

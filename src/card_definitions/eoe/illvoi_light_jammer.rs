@@ -17,7 +17,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             Instruction::AttachSource,
             Instruction::GrantKeywords {
                 subject: Subject::Targets,
-                keywords: Keywords(4096),
+                keywords: Keywords::HEXPROOF,
             },
         ],
     }],
@@ -62,12 +62,12 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(32),
+    keywords: Keywords::FLASH,
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLASH)],
         },
         StaticAbilityGroup {
             line: 2,
@@ -84,13 +84,13 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 1,
                 toughness: 2,
             },
-            keywords: Keywords(0),
+            keywords: Keywords::NONE,
         }),
         static_ability_groups: &[
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLASH)],
             },
             StaticAbilityGroup {
                 line: 2,

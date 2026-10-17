@@ -11,7 +11,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(524352),
+    keywords: Keywords::LIFELINK.union(Keywords::CHANGELING),
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
@@ -21,7 +21,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         StaticAbilityGroup {
             line: 1,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(64))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::LIFELINK)],
         },
     ],
     extras: &CardExtras {
@@ -34,7 +34,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 1,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(64))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::LIFELINK)],
             },
         ],
         cost_alternatives: &[ManaCost {

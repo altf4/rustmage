@@ -19,7 +19,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             },
             Instruction::GrantKeywords {
                 subject: Subject::Targets,
-                keywords: Keywords(4096),
+                keywords: Keywords::HEXPROOF,
             },
         ],
     ),
@@ -33,6 +33,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

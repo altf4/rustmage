@@ -47,17 +47,19 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(130),
+    keywords: Keywords::REACH.union(Keywords::DEATHTOUCH),
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(2))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::REACH)],
         },
         StaticAbilityGroup {
             line: 1,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(128))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::DEATHTOUCH,
+            )],
         },
     ],
     extras: &CardExtras {
@@ -65,12 +67,14 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(2))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::REACH)],
             },
             StaticAbilityGroup {
                 line: 1,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(128))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                    Keywords::DEATHTOUCH,
+                )],
             },
         ],
         ..CardExtras::EMPTY

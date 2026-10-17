@@ -21,7 +21,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             },
             Instruction::GrantKeywords {
                 subject: Subject::Targets,
-                keywords: Keywords(4),
+                keywords: Keywords::HASTE,
             },
         ],
     }],
@@ -34,17 +34,17 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(4),
+    keywords: Keywords::HASTE,
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(4))],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::HASTE)],
     }],
     extras: &CardExtras {
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(4))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::HASTE)],
         }],
         plot_cost: Some(ManaCost {
             colored: [0, 0, 0, 1, 0, 0],

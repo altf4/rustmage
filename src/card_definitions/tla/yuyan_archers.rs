@@ -10,7 +10,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 players: PlayerSet::Controller,
                 filter: SacrificeFilter {
                     artifact_enchantment_or_token: false,
-                    keywords: Keywords(0),
+                    keywords: Keywords::NONE,
                     source_only: false,
                     kinds: 0,
                     nonland: false,
@@ -33,17 +33,17 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(2),
+    keywords: Keywords::REACH,
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(2))],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::REACH)],
     }],
     extras: &CardExtras {
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(2))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::REACH)],
         }],
         ..CardExtras::EMPTY
     },

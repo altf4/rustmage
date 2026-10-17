@@ -13,7 +13,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 relation: 0,
                 other: false,
                 subtype: None,
-                keyword: Keywords(0),
+                keyword: Keywords::NONE,
                 attacking: false,
                 tokens: None,
                 artifact: false,
@@ -31,7 +31,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         has_convoke: true,
         ..CardExtras::EMPTY

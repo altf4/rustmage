@@ -65,6 +65,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::UnlessBasic,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

@@ -9,7 +9,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 relation: -1,
                 other: true,
                 subtype: None,
-                keyword: Keywords(0),
+                keyword: Keywords::NONE,
                 attacking: false,
                 tokens: None,
                 artifact: false,
@@ -54,17 +54,17 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(32768),
+    keywords: Keywords::MENACE,
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32768))],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::MENACE)],
     }],
     extras: &CardExtras {
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32768))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::MENACE)],
         }],
         ..CardExtras::EMPTY
     },

@@ -11,22 +11,28 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(1288),
+    keywords: Keywords::VIGILANCE
+        .union(Keywords::TRAMPLE)
+        .union(Keywords::DOUBLE_STRIKE),
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(1024))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::DOUBLE_STRIKE,
+            )],
         },
         StaticAbilityGroup {
             line: 1,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(8))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::VIGILANCE,
+            )],
         },
         StaticAbilityGroup {
             line: 2,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(256))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::TRAMPLE)],
         },
     ],
     extras: &CardExtras {
@@ -34,17 +40,21 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(1024))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                    Keywords::DOUBLE_STRIKE,
+                )],
             },
             StaticAbilityGroup {
                 line: 1,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(8))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                    Keywords::VIGILANCE,
+                )],
             },
             StaticAbilityGroup {
                 line: 2,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(256))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::TRAMPLE)],
             },
         ],
         ..CardExtras::EMPTY

@@ -57,7 +57,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             targets: TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
             program: &[Instruction::GrantKeywords {
                 subject: Subject::Targets,
-                keywords: Keywords(1025),
+                keywords: Keywords::FLYING.union(Keywords::DOUBLE_STRIKE),
             }],
             sorcery: true,
             once_per_turn: false,
@@ -99,7 +99,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         starting_loyalty: 4,
         ..CardExtras::EMPTY

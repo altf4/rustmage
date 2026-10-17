@@ -23,7 +23,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     relation: -1,
                     other: false,
                     subtype: Some("Ally"),
-                    keyword: Keywords(0),
+                    keyword: Keywords::NONE,
                     attacking: false,
                     tokens: None,
                     artifact: false,
@@ -32,7 +32,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             },
             Instruction::GrantKeywords {
                 subject: Subject::Targets,
-                keywords: Keywords(1),
+                keywords: Keywords::FLYING,
             },
         ],
     ),
@@ -46,6 +46,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

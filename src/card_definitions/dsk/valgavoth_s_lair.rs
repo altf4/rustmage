@@ -11,6 +11,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(4096),
+    keywords: Keywords::HEXPROOF,
     ..CardRules::EMPTY
 };

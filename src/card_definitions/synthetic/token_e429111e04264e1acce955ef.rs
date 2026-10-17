@@ -11,7 +11,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(2048),
+    keywords: Keywords::CANT_BLOCK,
     deck_limit: None,
     ..CardRules::EMPTY
 };

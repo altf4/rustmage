@@ -38,17 +38,21 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(8),
+    keywords: Keywords::VIGILANCE,
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(8))],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+            Keywords::VIGILANCE,
+        )],
     }],
     extras: &CardExtras {
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(8))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::VIGILANCE,
+            )],
         }],
         ..CardExtras::EMPTY
     },

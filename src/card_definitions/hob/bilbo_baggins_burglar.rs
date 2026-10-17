@@ -15,7 +15,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         adventure_identity: Some("Bilbo Baggins, Burglar // Take a Glance"),
         adventure_spell: Some(Card(5220)),

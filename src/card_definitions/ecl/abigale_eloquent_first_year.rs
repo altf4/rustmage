@@ -11,7 +11,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(577),
+    keywords: Keywords::FLYING
+        .union(Keywords::LIFELINK)
+        .union(Keywords::FIRST_STRIKE),
     extras: &CardExtras {
         cost_alternatives: &[
             ManaCost {

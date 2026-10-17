@@ -15,7 +15,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 kind: EffectChoiceKind::Sacrifice,
                 filter: SacrificeFilter {
                     artifact_enchantment_or_token: false,
-                    keywords: Keywords(0),
+                    keywords: Keywords::NONE,
                     source_only: false,
                     kinds: 1,
                     nonland: false,
@@ -37,7 +37,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         program: &[
             Instruction::GrantKeywords {
                 subject: Subject::Source,
-                keywords: Keywords(8192),
+                keywords: Keywords::INDESTRUCTIBLE,
             },
             Instruction::TapSource,
         ],
@@ -52,17 +52,17 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(32),
+    keywords: Keywords::FLASH,
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32))],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLASH)],
     }],
     extras: &CardExtras {
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLASH)],
         }],
         ..CardExtras::EMPTY
     },

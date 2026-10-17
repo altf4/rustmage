@@ -11,7 +11,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(128),
+    keywords: Keywords::DEATHTOUCH,
     extras: &CardExtras {
         cost_alternatives: &[
             ManaCost {

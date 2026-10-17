@@ -23,7 +23,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     players: PlayerSet::Controller,
                     filter: SacrificeFilter {
                         artifact_enchantment_or_token: false,
-                        keywords: Keywords(0),
+                        keywords: Keywords::NONE,
                         source_only: false,
                         kinds: 17,
                         nonland: false,
@@ -47,6 +47,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

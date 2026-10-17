@@ -4,7 +4,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
         &[Instruction::GrantKeywords {
             subject: Subject::Targets,
-            keywords: Keywords(1024),
+            keywords: Keywords::DOUBLE_STRIKE,
         }],
     ),
     triggers: &[],
@@ -17,7 +17,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         adventure_parent: Some(Card(4731)),
         ..CardExtras::EMPTY

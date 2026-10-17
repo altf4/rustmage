@@ -11,12 +11,12 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(1),
+    keywords: Keywords::FLYING,
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(1))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLYING)],
         },
         StaticAbilityGroup {
             line: 1,
@@ -30,7 +30,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                         relation: 0,
                         other: true,
                         subtype: None,
-                        keyword: Keywords(1),
+                        keyword: Keywords::FLYING,
                         attacking: false,
                         tokens: None,
                         artifact: false,
@@ -51,7 +51,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 relation: 0,
                 other: true,
                 subtype: None,
-                keyword: Keywords(1),
+                keyword: Keywords::FLYING,
                 attacking: false,
                 tokens: None,
                 artifact: false,
@@ -65,7 +65,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(1))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLYING)],
             },
             StaticAbilityGroup {
                 line: 1,
@@ -79,7 +79,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                             relation: 0,
                             other: true,
                             subtype: None,
-                            keyword: Keywords(1),
+                            keyword: Keywords::FLYING,
                             attacking: false,
                             tokens: None,
                             artifact: false,

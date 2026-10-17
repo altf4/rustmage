@@ -11,7 +11,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(32),
+    keywords: Keywords::FLASH,
     aura: Some(AuraSpec {
         kinds: 1,
         relation: -1,
@@ -20,19 +20,21 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 0,
                 toughness: 0,
             },
-            keywords: Keywords(1024),
+            keywords: Keywords::DOUBLE_STRIKE,
         },
     }),
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLASH)],
         },
         StaticAbilityGroup {
             line: 2,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::AttachmentKeywords(Keywords(1024))],
+            fragments: &[StaticAbilityFragment::AttachmentKeywords(
+                Keywords::DOUBLE_STRIKE,
+            )],
         },
     ],
     extras: &CardExtras {
@@ -44,19 +46,21 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 0,
                     toughness: 0,
                 },
-                keywords: Keywords(1024),
+                keywords: Keywords::DOUBLE_STRIKE,
             },
         }),
         static_ability_groups: &[
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLASH)],
             },
             StaticAbilityGroup {
                 line: 2,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::AttachmentKeywords(Keywords(1024))],
+                fragments: &[StaticAbilityFragment::AttachmentKeywords(
+                    Keywords::DOUBLE_STRIKE,
+                )],
             },
         ],
         ..CardExtras::EMPTY

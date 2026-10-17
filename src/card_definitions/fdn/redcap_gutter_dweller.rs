@@ -24,7 +24,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     kind: EffectChoiceKind::Sacrifice,
                     players: PlayerSet::Controller,
                     filter: SacrificeFilter {
-                        keywords: Keywords(0),
+                        keywords: Keywords::NONE,
                         source_only: false,
                         kinds: 1,
                         nonland: false,

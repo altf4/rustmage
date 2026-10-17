@@ -11,12 +11,14 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(257),
+    keywords: Keywords::FLYING.union(Keywords::TRAMPLE),
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(257))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::FLYING.union(Keywords::TRAMPLE),
+            )],
         },
         StaticAbilityGroup {
             line: 1,
@@ -39,7 +41,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(257))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                    Keywords::FLYING.union(Keywords::TRAMPLE),
+                )],
             },
             StaticAbilityGroup {
                 line: 1,

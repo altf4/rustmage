@@ -23,7 +23,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                         players: PlayerSet::Controller,
                         filter: SacrificeFilter {
                             artifact_enchantment_or_token: false,
-                            keywords: Keywords(0),
+                            keywords: Keywords::NONE,
                             source_only: false,
                             kinds: 1,
                             nonland: false,
@@ -46,12 +46,12 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                         relation: 0,
                         other: false,
                         subtype: None,
-                        keyword: Keywords(0),
+                        keyword: Keywords::NONE,
                         attacking: false,
                         tokens: None,
                         artifact: false,
                     },
-                    keywords: Keywords(32768),
+                    keywords: Keywords::MENACE,
                 }],
             },
         ])],
@@ -65,6 +65,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

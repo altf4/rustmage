@@ -15,7 +15,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             })),
             program: &[Instruction::GrantKeywords {
                 subject: Subject::Targets,
-                keywords: Keywords(12288),
+                keywords: Keywords::HEXPROOF.union(Keywords::INDESTRUCTIBLE),
             }],
         },
         SpellMode {
@@ -33,7 +33,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             program: &[
                 Instruction::GrantKeywords {
                     subject: Subject::Targets,
-                    keywords: Keywords(12288),
+                    keywords: Keywords::HEXPROOF.union(Keywords::INDESTRUCTIBLE),
                 },
                 Instruction::GainLife(PlayerSet::Controller, 3),
             ],
@@ -42,7 +42,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             text: "Curaga — {3}{W} — Permanents you control gain hexproof and indestructible until end of turn. You gain 6 life.",
             targets: TargetPlan::Single(TargetSpec::NONE),
             program: &[
-                Instruction::GrantPermanentsThisTurn(Keywords(12288)),
+                Instruction::GrantPermanentsThisTurn(
+                    Keywords::HEXPROOF.union(Keywords::INDESTRUCTIBLE),
+                ),
                 Instruction::GainLife(PlayerSet::Controller, 6),
             ],
         },
@@ -57,7 +59,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         tiered_costs: Some(&[
             ManaCost {

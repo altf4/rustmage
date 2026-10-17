@@ -36,17 +36,17 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(4),
+    keywords: Keywords::HASTE,
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(4))],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::HASTE)],
     }],
     extras: &CardExtras {
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(4))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::HASTE)],
         }],
         ..CardExtras::EMPTY
     },

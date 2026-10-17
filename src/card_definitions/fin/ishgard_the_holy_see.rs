@@ -36,7 +36,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Always,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         adventure_identity: Some("Ishgard, the Holy See // Faith & Grief"),
         adventure_spell: Some(Card(5196)),

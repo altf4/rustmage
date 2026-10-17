@@ -11,7 +11,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(2097152),
+    keywords: Keywords::NO_POWER_LE_TWO_BLOCKERS,
     extras: &CardExtras {
         adventure_identity: Some("Stormkeld Vanguard // Bear Down"),
         adventure_spell: Some(Card(5206)),

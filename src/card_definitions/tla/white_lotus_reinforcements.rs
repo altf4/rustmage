@@ -11,12 +11,14 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(8),
+    keywords: Keywords::VIGILANCE,
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(8))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::VIGILANCE,
+            )],
         },
         StaticAbilityGroup {
             line: 1,
@@ -30,7 +32,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                         relation: 0,
                         other: true,
                         subtype: Some("Ally"),
-                        keyword: Keywords(0),
+                        keyword: Keywords::NONE,
                         attacking: false,
                         tokens: None,
                         artifact: false,
@@ -51,7 +53,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 relation: 0,
                 other: true,
                 subtype: Some("Ally"),
-                keyword: Keywords(0),
+                keyword: Keywords::NONE,
                 attacking: false,
                 tokens: None,
                 artifact: false,
@@ -65,7 +67,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(8))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                    Keywords::VIGILANCE,
+                )],
             },
             StaticAbilityGroup {
                 line: 1,
@@ -79,7 +83,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                             relation: 0,
                             other: true,
                             subtype: Some("Ally"),
-                            keyword: Keywords(0),
+                            keyword: Keywords::NONE,
                             attacking: false,
                             tokens: None,
                             artifact: false,

@@ -11,7 +11,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     aura: Some(AuraSpec {
         kinds: 1,
         relation: -1,
@@ -20,7 +20,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: -5,
                 toughness: -3,
             },
-            keywords: Keywords(0),
+            keywords: Keywords::NONE,
         },
     }),
     static_groups: &[
@@ -32,7 +32,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 TargetSpellReduction {
                     rule: TargetRule::Filtered {
                         base: &TargetRule::Creature,
-                        predicate: &TargetPredicate::Keyword(Keywords(1)),
+                        predicate: &TargetPredicate::Keyword(Keywords::FLYING),
                     },
                     discount: ManaCost {
                         colored: [0, 0, 0, 0, 0, 0],
@@ -59,7 +59,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: -5,
                     toughness: -3,
                 },
-                keywords: Keywords(0),
+                keywords: Keywords::NONE,
             },
         }),
         static_ability_groups: &[
@@ -71,7 +71,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     TargetSpellReduction {
                         rule: TargetRule::Filtered {
                             base: &TargetRule::Creature,
-                            predicate: &TargetPredicate::Keyword(Keywords(1)),
+                            predicate: &TargetPredicate::Keyword(Keywords::FLYING),
                         },
                         discount: ManaCost {
                             colored: [0, 0, 0, 0, 0, 0],
@@ -92,7 +92,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         target_cost_reduction: Some(&TargetSpellReduction {
             rule: TargetRule::Filtered {
                 base: &TargetRule::Creature,
-                predicate: &TargetPredicate::Keyword(Keywords(1)),
+                predicate: &TargetPredicate::Keyword(Keywords::FLYING),
             },
             discount: ManaCost {
                 colored: [0, 0, 0, 0, 0, 0],

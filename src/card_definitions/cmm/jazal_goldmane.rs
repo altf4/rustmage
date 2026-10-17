@@ -27,7 +27,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 relation: 0,
                 other: false,
                 subtype: None,
-                keyword: Keywords(0),
+                keyword: Keywords::NONE,
                 attacking: true,
                 tokens: None,
                 artifact: false,

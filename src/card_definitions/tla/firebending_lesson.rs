@@ -19,7 +19,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         kicker_cost: Some(ManaCost {
             colored: [0, 0, 0, 0, 0, 0],

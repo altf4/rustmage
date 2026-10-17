@@ -32,17 +32,21 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(320),
+    keywords: Keywords::LIFELINK.union(Keywords::TRAMPLE),
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(320))],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+            Keywords::LIFELINK.union(Keywords::TRAMPLE),
+        )],
     }],
     extras: &CardExtras {
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(320))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::LIFELINK.union(Keywords::TRAMPLE),
+            )],
         }],
         ..CardExtras::EMPTY
     },

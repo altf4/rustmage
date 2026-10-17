@@ -37,7 +37,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(524288),
+    keywords: Keywords::CHANGELING,
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Type,

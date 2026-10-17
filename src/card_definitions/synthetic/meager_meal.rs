@@ -31,7 +31,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         adventure_parent: Some(Card(1829)),
         ..CardExtras::EMPTY

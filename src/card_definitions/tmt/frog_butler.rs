@@ -52,7 +52,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             targets: TargetPlan::Single(TargetSpec::NONE),
             program: &[Instruction::GrantKeywords {
                 subject: Subject::Source,
-                keywords: Keywords(2),
+                keywords: Keywords::REACH,
             }],
             sorcery: false,
             once_per_turn: false,
@@ -66,17 +66,21 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(128),
+    keywords: Keywords::DEATHTOUCH,
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(128))],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+            Keywords::DEATHTOUCH,
+        )],
     }],
     extras: &CardExtras {
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(128))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::DEATHTOUCH,
+            )],
         }],
         ..CardExtras::EMPTY
     },

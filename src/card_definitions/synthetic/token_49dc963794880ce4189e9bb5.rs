@@ -11,7 +11,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(64),
+    keywords: Keywords::LIFELINK,
     deck_limit: None,
     ..CardRules::EMPTY
 };

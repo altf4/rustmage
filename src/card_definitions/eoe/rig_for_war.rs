@@ -10,7 +10,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             },
             Instruction::GrantKeywords {
                 subject: Subject::Targets,
-                keywords: Keywords(514),
+                keywords: Keywords::REACH.union(Keywords::FIRST_STRIKE),
             },
         ],
     ),
@@ -24,6 +24,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

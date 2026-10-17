@@ -39,12 +39,12 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 relation: 0,
                 other: false,
                 subtype: None,
-                keyword: Keywords(0),
+                keyword: Keywords::NONE,
                 attacking: false,
                 tokens: Some(true),
                 artifact: false,
             },
-            keywords: Keywords(4),
+            keywords: Keywords::HASTE,
         }],
         sorcery: false,
         once_per_turn: false,
@@ -57,6 +57,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

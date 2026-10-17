@@ -47,7 +47,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     static_groups: &[
         StaticAbilityGroup {
             line: 1,
@@ -63,7 +63,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         StaticAbilityGroup {
             line: 2,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::AttachedTurnKeywords(Keywords(1))],
+            fragments: &[StaticAbilityFragment::AttachedTurnKeywords(
+                Keywords::FLYING,
+            )],
         },
     ],
     extras: &CardExtras {
@@ -72,7 +74,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 1,
                 toughness: 0,
             },
-            keywords: Keywords(0),
+            keywords: Keywords::NONE,
         }),
         static_ability_groups: &[
             StaticAbilityGroup {
@@ -89,11 +91,13 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 2,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::AttachedTurnKeywords(Keywords(1))],
+                fragments: &[StaticAbilityFragment::AttachedTurnKeywords(
+                    Keywords::FLYING,
+                )],
             },
         ],
         attached_subtype: Some("Knight"),
-        attached_turn_keywords: Keywords(1),
+        attached_turn_keywords: Keywords::FLYING,
         ..CardExtras::EMPTY
     },
     ..CardRules::EMPTY

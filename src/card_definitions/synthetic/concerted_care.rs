@@ -13,7 +13,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         })),
         &[Instruction::GrantKeywords {
             subject: Subject::Targets,
-            keywords: Keywords(12288),
+            keywords: Keywords::HEXPROOF.union(Keywords::INDESTRUCTIBLE),
         }],
     ),
     triggers: &[],
@@ -26,7 +26,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         adventure_parent: Some(Card(475)),
         ..CardExtras::EMPTY

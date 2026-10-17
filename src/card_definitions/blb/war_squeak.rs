@@ -15,7 +15,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         })),
         program: &[Instruction::GrantKeywords {
             subject: Subject::Targets,
-            keywords: Keywords(2048),
+            keywords: Keywords::CANT_BLOCK,
         }],
     }],
     activated: &[],
@@ -27,7 +27,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     aura: Some(AuraSpec {
         kinds: 1,
         relation: -1,
@@ -36,7 +36,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 1,
                 toughness: 1,
             },
-            keywords: Keywords(4),
+            keywords: Keywords::HASTE,
         },
     }),
     static_groups: &[StaticAbilityGroup {
@@ -47,7 +47,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 1,
                 toughness: 1,
             }),
-            StaticAbilityFragment::AttachmentKeywords(Keywords(4)),
+            StaticAbilityFragment::AttachmentKeywords(Keywords::HASTE),
         ],
     }],
     extras: &CardExtras {
@@ -59,7 +59,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 1,
                     toughness: 1,
                 },
-                keywords: Keywords(4),
+                keywords: Keywords::HASTE,
             },
         }),
         static_ability_groups: &[StaticAbilityGroup {
@@ -70,7 +70,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 1,
                     toughness: 1,
                 }),
-                StaticAbilityFragment::AttachmentKeywords(Keywords(4)),
+                StaticAbilityFragment::AttachmentKeywords(Keywords::HASTE),
             ],
         }],
         ..CardExtras::EMPTY

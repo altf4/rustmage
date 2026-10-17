@@ -15,6 +15,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(4194304),
+    keywords: Keywords::NO_POWER_GE_THREE_BLOCKERS,
     ..CardRules::EMPTY
 };

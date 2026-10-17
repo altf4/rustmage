@@ -23,17 +23,21 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(5),
+    keywords: Keywords::FLYING.union(Keywords::HASTE),
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(5))],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+            Keywords::FLYING.union(Keywords::HASTE),
+        )],
     }],
     extras: &CardExtras {
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(5))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::FLYING.union(Keywords::HASTE),
+            )],
         }],
         plot_cost: Some(ManaCost {
             colored: [0, 0, 0, 1, 0, 0],

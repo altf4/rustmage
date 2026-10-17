@@ -5,7 +5,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         &[Instruction::Search(SearchSpec {
             filter: SearchFilter::AnyOf(&[
                 SearchFilter::Kinds(8),
-                SearchFilter::Keyword(Keywords(32)),
+                SearchFilter::Keyword(Keywords::FLASH),
             ]),
             maximum: 1,
             destination: SearchDestination::Hand,
@@ -23,7 +23,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         flashback_cost: Some(ManaCost {
             colored: [0, 0, 1, 0, 0, 0],

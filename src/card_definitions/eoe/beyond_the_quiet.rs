@@ -9,7 +9,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     relation: -1,
                     nonland: false,
                     tapped: None,
-                    without: Keywords(0),
+                    without: Keywords::NONE,
                     subtype: None,
                     max_mana: 4294967295,
                 },
@@ -18,7 +18,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     relation: -1,
                     nonland: false,
                     tapped: None,
-                    without: Keywords(0),
+                    without: Keywords::NONE,
                     subtype: Some("Spacecraft"),
                     max_mana: 4294967295,
                 },
@@ -36,6 +36,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

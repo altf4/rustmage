@@ -27,7 +27,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         targets: TargetPlan::Single(TargetSpec::NONE),
         program: &[Instruction::GrantKeywords {
             subject: Subject::Source,
-            keywords: Keywords(32768),
+            keywords: Keywords::MENACE,
         }],
         sorcery: false,
         once_per_turn: false,
@@ -40,7 +40,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         cost_alternatives: &[ManaCost {
             colored: [0, 0, 1, 0, 0, 0],

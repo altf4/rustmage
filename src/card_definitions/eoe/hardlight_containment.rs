@@ -48,7 +48,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     aura: Some(AuraSpec {
         kinds: 16,
         relation: 0,
@@ -57,7 +57,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 0,
                 toughness: 0,
             },
-            keywords: Keywords(0),
+            keywords: Keywords::NONE,
         },
     }),
     static_groups: &[StaticAbilityGroup {
@@ -74,7 +74,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 0,
                     toughness: 0,
                 },
-                keywords: Keywords(0),
+                keywords: Keywords::NONE,
             },
         }),
         static_ability_groups: &[StaticAbilityGroup {

@@ -11,22 +11,26 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(193),
+    keywords: Keywords::FLYING
+        .union(Keywords::LIFELINK)
+        .union(Keywords::DEATHTOUCH),
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(1))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLYING)],
         },
         StaticAbilityGroup {
             line: 1,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(128))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::DEATHTOUCH,
+            )],
         },
         StaticAbilityGroup {
             line: 2,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(64))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::LIFELINK)],
         },
     ],
     extras: &CardExtras {
@@ -34,17 +38,19 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(1))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLYING)],
             },
             StaticAbilityGroup {
                 line: 1,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(128))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                    Keywords::DEATHTOUCH,
+                )],
             },
             StaticAbilityGroup {
                 line: 2,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(64))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::LIFELINK)],
             },
         ],
         ..CardExtras::EMPTY

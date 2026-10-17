@@ -11,6 +11,8 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(8201),
+    keywords: Keywords::FLYING
+        .union(Keywords::VIGILANCE)
+        .union(Keywords::INDESTRUCTIBLE),
     ..CardRules::EMPTY
 };

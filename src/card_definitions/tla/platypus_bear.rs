@@ -11,7 +11,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(16),
+    keywords: Keywords::DEFENDER,
     extras: &CardExtras {
         cost_alternatives: &[ManaCost {
             colored: [0, 1, 0, 0, 0, 0],

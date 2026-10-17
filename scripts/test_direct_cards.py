@@ -1,6 +1,7 @@
 """Metadata linkage and complete-source pins; no English behavior compiler."""
 import hashlib
 import json
+import re
 from pathlib import Path
 import subprocess
 import tempfile
@@ -14,6 +15,12 @@ else:
     from source_paths import xmage_source
 
 class DirectCardTests(unittest.TestCase):
+    def test_card_keywords_use_named_flags(self):
+        raw_constructor = re.compile(r'\bKeywords\s*\(')
+        for path in (linker.ROOT/'src/card_definitions').rglob('*.rs'):
+            self.assertIsNone(raw_constructor.search(path.read_text()),
+                f'{path}: use Keywords::NONE, named flags and .union(...)')
+
     def test_all_typed_definitions_have_stable_ids_and_set_paths(self):
         metadata, records, version = linker.load()
         self.assertEqual(len(metadata['cards']), len(records))

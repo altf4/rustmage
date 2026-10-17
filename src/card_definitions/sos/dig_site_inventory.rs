@@ -19,7 +19,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             },
             Instruction::GrantKeywords {
                 subject: Subject::Targets,
-                keywords: Keywords(8),
+                keywords: Keywords::VIGILANCE,
             },
         ],
     ),
@@ -33,7 +33,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         flashback_cost: Some(ManaCost {
             colored: [1, 0, 0, 0, 0, 0],

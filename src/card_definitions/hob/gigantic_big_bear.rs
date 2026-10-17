@@ -11,17 +11,21 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(4100),
+    keywords: Keywords::HASTE.union(Keywords::HEXPROOF),
     static_groups: &[StaticAbilityGroup {
         line: 1,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(4100))],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+            Keywords::HASTE.union(Keywords::HEXPROOF),
+        )],
     }],
     extras: &CardExtras {
         static_ability_groups: &[StaticAbilityGroup {
             line: 1,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(4100))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::HASTE.union(Keywords::HEXPROOF),
+            )],
         }],
         uncounterable: true,
         ..CardExtras::EMPTY

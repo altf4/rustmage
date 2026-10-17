@@ -9,12 +9,12 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 relation: 0,
                 other: false,
                 subtype: None,
-                keyword: Keywords(0),
+                keyword: Keywords::NONE,
                 attacking: false,
                 tokens: None,
                 artifact: false,
             },
-            keywords: Keywords(1024),
+            keywords: Keywords::DOUBLE_STRIKE,
         }],
     }],
     activated: &[],
@@ -26,17 +26,19 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(1025),
+    keywords: Keywords::FLYING.union(Keywords::DOUBLE_STRIKE),
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(1))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLYING)],
         },
         StaticAbilityGroup {
             line: 1,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(1024))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::DOUBLE_STRIKE,
+            )],
         },
     ],
     extras: &CardExtras {
@@ -44,12 +46,14 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(1))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLYING)],
             },
             StaticAbilityGroup {
                 line: 1,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(1024))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                    Keywords::DOUBLE_STRIKE,
+                )],
             },
         ],
         ..CardExtras::EMPTY

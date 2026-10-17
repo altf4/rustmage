@@ -3,7 +3,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Spell(
         TargetPlan::Single(TargetSpec::one(TargetRule::Filtered {
             base: &TargetRule::Creature,
-            predicate: &TargetPredicate::WithoutKeyword(Keywords(1)),
+            predicate: &TargetPredicate::WithoutKeyword(Keywords::FLYING),
         })),
         &[Instruction::Damage(5)],
     ),
@@ -17,7 +17,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         omen_parent: Some(Card(4723)),
         ..CardExtras::EMPTY

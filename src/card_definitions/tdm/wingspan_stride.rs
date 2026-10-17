@@ -34,7 +34,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     aura: Some(AuraSpec {
         kinds: 1,
         relation: -1,
@@ -43,7 +43,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 1,
                 toughness: 1,
             },
-            keywords: Keywords(1),
+            keywords: Keywords::FLYING,
         },
     }),
     static_groups: &[StaticAbilityGroup {
@@ -54,7 +54,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 1,
                 toughness: 1,
             }),
-            StaticAbilityFragment::AttachmentKeywords(Keywords(1)),
+            StaticAbilityFragment::AttachmentKeywords(Keywords::FLYING),
         ],
     }],
     extras: &CardExtras {
@@ -66,7 +66,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 1,
                     toughness: 1,
                 },
-                keywords: Keywords(1),
+                keywords: Keywords::FLYING,
             },
         }),
         static_ability_groups: &[StaticAbilityGroup {
@@ -77,7 +77,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 1,
                     toughness: 1,
                 }),
-                StaticAbilityFragment::AttachmentKeywords(Keywords(1)),
+                StaticAbilityFragment::AttachmentKeywords(Keywords::FLYING),
             ],
         }],
         ..CardExtras::EMPTY

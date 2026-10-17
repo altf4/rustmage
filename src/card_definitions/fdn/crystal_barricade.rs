@@ -1,12 +1,12 @@
 // Direct typed behavior from complete paired Oracle and pinned XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(0, 4),
-    keywords: Keywords(16),
+    keywords: Keywords::DEFENDER,
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(16))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::DEFENDER)],
         },
         StaticAbilityGroup {
             line: 1,
@@ -28,7 +28,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(16))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::DEFENDER)],
             },
             StaticAbilityGroup {
                 line: 1,
