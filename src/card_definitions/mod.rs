@@ -10,6 +10,8 @@ pub(super) struct CardRules {
     pub entry: EntryTapped,
     /// Fixed additional mana for each predeclared modal combination.
     pub mode_costs: Option<&'static [ManaCost]>,
+    pub aura: Option<AuraSpec>,
+    pub static_groups: &'static [StaticAbilityGroup],
 }
 impl CardRules {
     pub const EMPTY: Self = Self {
@@ -26,6 +28,8 @@ impl CardRules {
         },
         entry: EntryTapped::Never,
         mode_costs: None,
+        aura: None,
+        static_groups: &[],
     };
     pub const fn checked_effect(&self) -> Effect {
         assert!(

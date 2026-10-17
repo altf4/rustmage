@@ -1,5 +1,6 @@
 //! Exact-object layer-7b effects share the Role timestamp clock (CR613.4/613.7).
 use super::*;
+use crate::cards::StaticAbilityFragment;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct BaseStatsEffectView {
@@ -222,6 +223,11 @@ impl Game {
                     let Some(spec) = source.card.base_stat_setter() else {
                         continue;
                     };
+                    if !self.continuous_fragment_available(effect.source.card, |fragment| {
+                        matches!(fragment, StaticAbilityFragment::BaseStatSetter(..))
+                    }) {
+                        continue;
+                    }
                     if spec.own_turn && self.state.active != source.controller {
                         continue;
                     }

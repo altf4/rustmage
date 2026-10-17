@@ -210,6 +210,9 @@ impl Game {
                 return;
             }
             for (index, &spec) in card.replacement_effects().iter().enumerate() {
+                if self.on_battlefield(reference.card) && self.object_ref(reference.card) == reference
+                    && !self.continuous_fragment_available(reference.card, |fragment| matches!(fragment,
+                        crate::cards::StaticAbilityFragment::Replacement(slot, _) if usize::from(*slot) == index)) { continue; }
                 let ability = u16::try_from(index).expect("immutable replacement index");
                 if !used.contains(&(reference, ability)) && counter_applies(spec, p) {
                     out.push(ReplacementEffectView {
@@ -379,6 +382,8 @@ impl Game {
             }
             let source = self.object_ref(id);
             for (i, &spec) in o.card.replacement_effects().iter().enumerate() {
+                if !self.continuous_fragment_available(id, |fragment| matches!(fragment,
+                    crate::cards::StaticAbilityFragment::Replacement(slot, _) if usize::from(*slot) == i)) { continue; }
                 let ability = u16::try_from(i).expect("immutable replacement index");
                 let applicable = match spec {
                     ReplacementSpec::DoubleTokens { effects_only } => !effects_only || b.effect,

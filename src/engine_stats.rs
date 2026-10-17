@@ -2,11 +2,13 @@
 //! setters, then additive modifiers. Unsupported switching/dependency effects
 //! remain gated by complete-text admission, never approximated by deltas.
 use super::*;
+use crate::cards::StaticAbilityFragment;
 
 impl Game {
     pub(super) fn register_battlefield_sources(&mut self, id: CardId) {
         self.register_static_base_stats(id);
         self.register_live_static_source(id);
+        self.register_ability_source(id);
         if self.state.objects[id as usize]
             .card
             .attachment_bonus()
@@ -203,7 +205,11 @@ impl Game {
             }
         };
         // Layer 7a applies in every zone, before setters and additive modifiers.
-        if let Some(base) = object.card.dynamic_stats() {
+        if let Some(base) = object.card.dynamic_stats()
+            && self.continuous_fragment_available(id, |fragment| {
+                matches!(fragment, StaticAbilityFragment::DynamicStats(..))
+            })
+        {
             let reference = self.object_ref(id);
             let power = base.power.map(|expr| {
                 self.stat_expression_without_hand(expr, reference, object.controller, departing)
@@ -289,7 +295,13 @@ impl Game {
         // maintain it, and snapshots own it; no derived stat cache needs invalidation.
         for &source in &self.state.static_sources {
             let object = &self.state.objects[source as usize];
-            for modifier in object.card.scaling_modifiers() {
+            for (index, modifier) in object.card.scaling_modifiers().iter().enumerate() {
+                if !self.continuous_fragment_available(source, |fragment| {
+                    matches!(fragment,
+                    StaticAbilityFragment::ScalingModifier(slot, _) if usize::from(*slot) == index)
+                }) {
+                    continue;
+                }
                 let applies = match modifier.subject {
                     Subject::Source => source == id,
                     Subject::Attached => {
@@ -320,7 +332,13 @@ impl Game {
                     };
                 }
             }
-            for modifier in object.card.static_modifiers() {
+            for (index, modifier) in object.card.static_modifiers().iter().enumerate() {
+                if !self.continuous_fragment_available(source, |fragment| {
+                    matches!(fragment,
+                    StaticAbilityFragment::StaticModifier(slot, _) if usize::from(*slot) == index)
+                }) {
+                    continue;
+                }
                 if (!modifier.own_turn || self.state.active == object.controller)
                     && (!modifier.requires_life_gain
                         || self.state.players[object.controller.index()].life_gained_this_turn > 0)
@@ -335,7 +353,9 @@ impl Game {
                 }
             }
             if !object.card.enchanted_modifiers().is_empty() && self.is_enchanted(id) {
-                for modifier in object.card.enchanted_modifiers() {
+                for (index, modifier) in object.card.enchanted_modifiers().iter().enumerate() {
+                    if !self.continuous_fragment_available(source, |fragment| matches!(fragment,
+                        StaticAbilityFragment::EnchantedModifier(slot, _) if usize::from(*slot) == index)) { continue; }
                     if self.creature_matches(
                         modifier.filter,
                         object.controller,

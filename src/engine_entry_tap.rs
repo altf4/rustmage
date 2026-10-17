@@ -40,6 +40,12 @@ impl Game {
             if source.zone == Zone::Battlefield
                 && source.controller == movement.controller
                 && source.card.controlled_entry_untapped() & kinds != 0
+                && self.continuous_fragment_available(id, |fragment| {
+                    matches!(
+                        fragment,
+                        crate::cards::StaticAbilityFragment::ControlledEntryUntapped
+                    )
+                })
             {
                 effects.push(EntryTapEffect {
                     source: self.object_ref(id),
@@ -57,6 +63,12 @@ impl Game {
             if source.zone == Zone::Battlefield
                 && source.controller != movement.controller
                 && source.card.opponent_entry_tapped() & kinds != 0
+                && self.continuous_fragment_available(id, |fragment| {
+                    matches!(
+                        fragment,
+                        crate::cards::StaticAbilityFragment::OpponentEntryTapped(..)
+                    )
+                })
             {
                 effects.push(EntryTapEffect {
                     source: self.object_ref(id),

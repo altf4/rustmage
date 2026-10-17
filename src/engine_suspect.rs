@@ -20,6 +20,10 @@ impl Game {
             self.clear_suspected_reference(object);
             return;
         }
+        if self.is_suspected(object.card) {
+            return;
+        }
+        self.record_suspect_keywords(object);
         let objects = self
             .state
             .suspected
@@ -30,6 +34,7 @@ impl Game {
         }
     }
     pub(super) fn clear_suspected_reference(&mut self, object: ObjectRef) {
+        self.forget_suspect_keywords(object);
         if let Some(objects) = &mut self.state.suspected {
             if let Ok(index) = objects.binary_search_by_key(&object.card, |r| r.card)
                 && objects[index] == object

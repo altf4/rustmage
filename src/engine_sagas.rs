@@ -67,7 +67,10 @@ impl Game {
         let Some(final_chapter) = o.card.saga_final_chapter() else {
             return false;
         };
-        if o.zone != Zone::Battlefield || o.counters.lore < u64::from(final_chapter) {
+        if o.zone != Zone::Battlefield
+            || !self.printed_abilities_available(id)
+            || o.counters.lore < u64::from(final_chapter)
+        {
             return false;
         }
         let source = self.object_ref(id);

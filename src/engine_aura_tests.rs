@@ -66,8 +66,16 @@ fn resolve_all(g: &mut Game) {
 // Synthetic IR/link fixtures below exercise future complete-card combinations;
 // they do not admit an otherwise unsupported card or bypass public API validation.
 fn program(g: &mut Game, code: &'static [Instruction], targets: Vec<BoundTarget>) {
-    let id = named(g, Player::P0, "Shock", Zone::Hand);
-    let mut item = g.cast_item(Player::P0, id, [0; 6]);
+    program_for(g, Player::P0, code, targets);
+}
+fn program_for(
+    g: &mut Game,
+    player: Player,
+    code: &'static [Instruction],
+    targets: Vec<BoundTarget>,
+) {
+    let id = named(g, player, "Shock", Zone::Hand);
+    let mut item = g.cast_item(player, id, [0; 6]);
     item.targets = targets;
     g.state.resolving = Some(Resolution {
         explore: None,
@@ -299,34 +307,59 @@ fn search_selection_stays_private_through_attachment_choice_then_shuffles_and_re
         }),
         Instruction::Draw(PlayerSet::Controller, 1),
     ];
-    let mut g = scenario();
-    let bear = permanent(&mut g, "Grizzly Bears");
-    let a = named(&mut g, Player::P0, "Frantic Strength", Zone::Library);
-    let b = named(&mut g, Player::P0, "Untamed Hunger", Zone::Library);
-    program(&mut g, CODE, Vec::new());
-    replay(&mut g, Action::ChooseSearch { card: a });
-    replay(&mut g, Action::ChooseSearch { card: b });
-    let before = g.state.players[0].library.clone();
-    let rng = g.state.rng;
-    replay(&mut g, Action::FinishSearch);
-    assert_eq!(g.state.players[0].library, before);
-    assert_eq!(g.state.rng, rng);
-    assert!(g.observe(Player::P1).aura_entry.is_none());
-    assert!(g.observe(Player::P1).actions.is_empty());
-    assert!(
-        !g.observe(Player::P1)
-            .objects
-            .iter()
-            .any(|o| o.id == a || o.id == b)
-    );
-    choose_entry(&mut g, bear);
-    assert_eq!(g.object_view(a).zone, Zone::Library);
-    assert_eq!(g.object_view(b).zone, Zone::Library);
-    choose_entry(&mut g, bear);
-    assert_eq!(g.state.players[0].library.len(), before.len() - 3);
-    assert!(g.object_view(a).tapped && g.object_view(b).tapped);
-    assert_eq!(g.stats(bear).power, 6);
-    assert!(g.state.resolving.is_none());
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario();
+        g.state.active = player;
+        g.state.priority = player;
+        let bear = named(&mut g, player, "Grizzly Bears", Zone::Battlefield);
+        let a = named(&mut g, player, "Frantic Strength", Zone::Library);
+        let b = named(&mut g, player, "Untamed Hunger", Zone::Library);
+        program_for(&mut g, player, CODE, Vec::new());
+        replay(&mut g, Action::ChooseSearch { card: a });
+        replay(&mut g, Action::ChooseSearch { card: b });
+        let before = g.state.players[player.index()].library.clone();
+        let rng = g.state.rng;
+        replay(&mut g, Action::FinishSearch);
+        assert_eq!(g.state.players[player.index()].library, before);
+        assert_eq!(g.state.rng, rng);
+        assert!(g.observe(player.other()).aura_entry.is_none());
+        assert!(g.observe(player.other()).actions.is_empty());
+        assert!(
+            !g.observe(player.other())
+                .objects
+                .iter()
+                .any(|o| o.id == a || o.id == b)
+        );
+        choose_entry(&mut g, bear);
+        assert_eq!(g.object_view(a).zone, Zone::Library);
+        assert_eq!(g.object_view(b).zone, Zone::Library);
+        choose_entry(&mut g, bear);
+        assert!(matches!(g.state.pending, Pending::EntryTimestamp { .. }));
+        let own = g.observe(player).entry_timestamps.unwrap();
+        assert_eq!(own.candidates.len(), 2);
+        assert!(g.observe(player.other()).entry_timestamps.is_none());
+        assert!(g.observe(player.other()).actions.is_empty());
+        assert_eq!(g.state.players[player.index()].library, before);
+        for object in own.candidates.iter().map(|candidate| candidate.object) {
+            if matches!(g.state.pending, Pending::EntryTimestamp { .. }) {
+                assert!(g.observe(player.other()).entry_timestamps.is_none());
+                assert!(
+                    g.observe(player.other())
+                        .objects
+                        .iter()
+                        .all(|o| o.id != a && o.id != b)
+                );
+                replay(&mut g, Action::ChooseEntryTimestamp { object });
+            }
+        }
+        assert_eq!(
+            g.state.players[player.index()].library.len(),
+            before.len() - 3
+        );
+        assert!(g.object_view(a).tapped && g.object_view(b).tapped);
+        assert_eq!(g.stats(bear).power, 6);
+        assert!(g.state.resolving.is_none());
+    }
 }
 #[test]
 fn failed_search_entry_is_shuffled_back_and_the_program_still_resumes() {

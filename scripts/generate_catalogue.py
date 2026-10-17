@@ -15,6 +15,22 @@ except ModuleNotFoundError:
     import direct_cards
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def ability_layer_module():
+    # Historical test loaders import this generator under arbitrary module names.
+    # Resolve this exact sibling, never another checkout's cached scripts package.
+    import importlib.util
+    import sys
+    path = Path(__file__).with_name('ability_layers.py')
+    key = '_rustmage_ability_layers_' + hashlib.sha256(str(path.resolve()).encode() + path.read_bytes()).hexdigest()
+    if key not in sys.modules:
+        spec = importlib.util.spec_from_file_location(key, path)
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[key] = module
+        spec.loader.exec_module(module)
+    return sys.modules[key]
+
 CREATURE_TYPE_NAMES = tuple(json.loads((ROOT / 'data/creature-types.json').read_text())['types'])
 EMBLEM_DEFS = {}
 LEGACY = [
@@ -5484,6 +5500,10 @@ def compile_catalogue(snapshot, target):
     names += sorted(internal_faces)
     if len(names) > 65536:
         raise ValueError('catalogue exceeds u16 identity space')
+    from types import SimpleNamespace
+    ability_layers = ability_layer_module()
+    ability_parser = SimpleNamespace(**globals())
+    static_group_rows = []
     definitions = []
     color_masks = []
     exhaust_rows = []
@@ -5544,7 +5564,7 @@ def compile_catalogue(snapshot, target):
             kind=sum(bit for label,bit in [('Creature',1),('Land',2),('Sorcery',4),('Instant',8),('Artifact',16),('Enchantment',32),('Planeswalker',64),('Kindred',128),('Battle',256)] if label in types)
             rules='authored::'+direct['module']+'::RULES'
             quote=lambda value:json.dumps(value,ensure_ascii=False)
-            tags='&['+', '.join(json.dumps(k) for k in original.get('keywords',[]))+']'
+            tags='&['+', '.join(quote(k) for k in original.get('keywords',[]))+']'
             definitions.append(f'    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: Some({quote(original["oracle_id"])}), mana_cost: {quote(original["mana_cost"])}, type_line: {quote(original["type_line"])}, oracle_keywords: {tags}, standard_legal: true, legendary: {str(original["type_line"].startswith("Legendary ")).lower()}, implemented: true, keywords: {rules}.keywords, deck_limit: Some(4) }}, effect: {rules}.checked_effect(), triggers: {rules}.triggers, activated: {rules}.activated, enters: {rules}.enters, entry: {rules}.entry, kind: {kind}, basic: false, mana_color: None, colored: {colored}, generic: {generic} }},')
             color_masks.append(sum(1 << 'WUBRG'.index(c) for c in original.get('colors',[])))
             supported.append(index)
@@ -5923,6 +5943,8 @@ def compile_catalogue(snapshot, target):
                 raise ValueError(f'invalid or missing starting loyalty: {name}')
             loyalty_rows.append(f'        {index} => {int(value)},')
         if effect != 'Unsupported':
+            grouped = ability_layers.rust_groups(original, ability_parser, abilities)
+            if grouped != '&[]':static_group_rows.append(f'        {index} => {grouped},')
             if live_static:live_static_rows.append(f'        {index} => &[{", ".join(live_static)}],')
             if tiered is not None:tiered_rows.append(f'        {index} => Some(&[{", ".join(tiered_costs)}]),')
             if base_set:base_set_rows.append(f'        {index} => Some({base_set}),')
@@ -6035,7 +6057,7 @@ def compile_catalogue(snapshot, target):
             color_masks.append(color)
             # Clone every compiled property table for the immutable copy; no
             # mutable copy/type-changing engine or runtime card-name dispatch.
-            for table in [static_cast_rows,live_static_rows,base_set_rows,combat_rows,static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,cast_timing_rows,target_reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,controlled_entry_untapped_rows,offspring_rows]:
+            for table in [static_group_rows,static_cast_rows,live_static_rows,base_set_rows,combat_rows,static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,cast_timing_rows,target_reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,controlled_entry_untapped_rows,offspring_rows]:
                 prefix=f'        {source_index} =>'
                 table.extend(row.replace(prefix,f'        {index} =>',1) for row in list(table) if row.startswith(prefix))
             offspring_copy_rows.append(f'        {index} => Some(__TOKEN_{key}__),')
@@ -6053,6 +6075,7 @@ def compile_catalogue(snapshot, target):
             keywords = KEYWORDS['trample'] if role == 'Monster' else 0
             aura_rows.append(f'        {index} => Some(AuraSpec {{ kinds: 1, relation: -1, bonus: EquipmentSpec {{ stats: Stats {{ power: {bonus}, toughness: {bonus} }}, keywords: Keywords({keywords}) }} }}),')
             role_rows.append(f'        {index} => Some(RoleKind::{role.replace(" ", "")}),')
+            static_group_rows.append(f'        {index} => {ability_layers.rust_role_groups(role, ability_parser)},')
         elif predefined:
             effect, _, _, token_abilities, _ = permanent_program_template({
                 'layout': 'normal', 'type_line': 'Artifact', 'mana_cost': '{0}',
@@ -6066,6 +6089,9 @@ def compile_catalogue(snapshot, target):
             token_abilities = []
         if factory.get('dynamic'):
             dynamic_rows.append(f"        {index} => Some({factory['dynamic']}),")
+            if factory.get('role'):
+                raise ValueError('predefined Role cannot have an unrelated token CDA')
+            static_group_rows.append(f"        {index} => &[StaticAbilityGroup {{ line: 0, first_layer: AbilityLayer::Cda, fragments: &[StaticAbilityFragment::DynamicStats(0, {factory['dynamic']})] }}],")
         token_triggers='&[]'
         role = factory.get('role')
         role_triggers = []
@@ -6089,6 +6115,7 @@ def compile_catalogue(snapshot, target):
     definitions=[replace_token_markers(row) for row in definitions]
     offspring_copy_rows=[replace_token_markers(row) for row in offspring_copy_rows]
     replacement_rows=[replace_token_markers(row) for row in replacement_rows]
+    static_group_rows=[replace_token_markers(row) for row in static_group_rows]
     gift_rows=[replace_token_markers(row) for row in gift_rows]
     used_emblems=sorted(set(re.findall(r'__EMBLEM_([0-9a-f]+)__', '\n'.join(definitions))))
     emblem_base=len(names)
@@ -6104,7 +6131,7 @@ def compile_catalogue(snapshot, target):
         raise ValueError('catalogue exceeds u16 identity space')
     # The fingerprint covers data and compiler logic; card IDs are local to it.
     target_bytes = json.dumps(target, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()
-    version = hashlib.sha256(canonical + target_bytes + creature_types_bytes + Path(__file__).read_bytes() + authored_bytes + Path(direct_cards.__file__).read_bytes()).hexdigest()
+    version = hashlib.sha256(canonical + target_bytes + creature_types_bytes + Path(__file__).read_bytes() + Path(ability_layers.__file__).read_bytes() + authored_bytes + Path(direct_cards.__file__).read_bytes()).hexdigest()
     lines = ['// Generated by scripts/generate_catalogue.py. Do not edit.',
              f'pub const CATALOGUE_VERSION: &str = "{version}";',
              '#[rustfmt::skip]', f'pub(super) static COLORS: [u8; {len(names)}] = {color_masks};',
@@ -6124,6 +6151,7 @@ def compile_catalogue(snapshot, target):
     for index, (name, _, _, _) in enumerate(LEGACY):
         lines.append(f'    pub const {name.replace(" ", "")}: Card = Card({index});')
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', "pub(super) fn static_ability_groups(card: Card) -> &'static [StaticAbilityGroup] {", '    match card.0 {', *static_group_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn live_static_effects(card: Card) -> &'static [LiveStaticEffect] {", '    match card.0 {', *live_static_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn tiered_costs(card: Card) -> Option<&'static [ManaCost]> {", '    match card.0 {', *tiered_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn base_stat_setter(card: Card) -> Option<BaseStatSetter> {', '    match card.0 {', *base_set_rows, '        _ => None,', '    }', '}', '']

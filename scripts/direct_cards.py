@@ -30,4 +30,8 @@ def registry(records,indices):
     for identity,record in records.items():
         if identity in indices:lines.append(f'        {indices[identity]} => {record["module"]}::RULES.mode_costs,')
     lines.extend(['        _=>None,','    }','}'])
+    lines.extend(["pub(super) fn rules(card:Card)->Option<&'static CardRules> {", '    match card.0 {'])
+    for identity,record in records.items():
+        if identity in indices:lines.append(f'        {indices[identity]} => Some(&{record["module"]}::RULES),')
+    lines.extend(['        _=>None,','    }','}'])
     return '\n'.join(lines)+'\n'

@@ -479,6 +479,18 @@ impl Game {
         index: usize,
         event: Option<Box<AttachmentTriggerView>>,
     ) -> bool {
+        if let Some(grant) = event.as_ref().filter(|grant| grant.granted) {
+            if !source.grant_available(
+                grant.grantor,
+                grant.granting_card,
+                u16::try_from(index).expect("ability index"),
+                None,
+            ) {
+                return false;
+            }
+        } else if !source.printed_abilities_available() {
+            return false;
+        }
         let definition = event
             .as_ref()
             .filter(|event| event.granted)
@@ -1223,12 +1235,18 @@ impl Game {
                     self.state.players[item.controller.index()].hexproof_until_end_turn = true;
                 }
                 Instruction::GrantPermanentsThisTurn(keywords) => {
-                    for object in &mut self.state.objects {
-                        if object.zone == Zone::Battlefield && object.controller == item.controller
-                        {
-                            object.gained_keywords = object.gained_keywords.union(keywords);
-                        }
-                    }
+                    let ids: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter_map(|(id, object)| {
+                            (object.zone == Zone::Battlefield
+                                && object.controller == item.controller)
+                                .then_some(id as CardId)
+                        })
+                        .collect();
+                    self.grant_keyword_effects(&ids, item.object, keywords);
                 }
                 Instruction::DamageWithController {
                     damage,
@@ -1580,7 +1598,7 @@ impl Game {
                     }
                 }
                 Instruction::TapAttached => {
-                    if let Some(id) = self.attached_subject(&item) {
+                    if let Some(id) = self.attached_permanent(&item) {
                         self.tap_objects(&[id]);
                     }
                 }
@@ -1892,9 +1910,7 @@ impl Game {
                     if matches!(instruction, Instruction::TapCreatures(_)) {
                         self.tap_objects(&ids);
                     } else {
-                        for id in ids {
-                            self.state.objects[id as usize].untap();
-                        }
+                        self.untap_objects(&ids, untap_rules::UntapCause::Effect);
                     }
                 }
                 Instruction::UntapSource | Instruction::TapSource => {
@@ -1902,7 +1918,7 @@ impl Game {
                         if instruction == Instruction::TapSource {
                             self.tap_objects(&[item.card]);
                         } else {
-                            self.state.objects[item.card as usize].untap();
+                            self.untap_objects(&[item.card], untap_rules::UntapCause::Effect);
                         }
                     }
                 }
@@ -2021,38 +2037,10 @@ impl Game {
                 Instruction::ReturnGrantedSource { counter, role } => {
                     self.return_granted_source(&item, counter, role)
                 }
-                Instruction::GrantKeywords { subject, keywords } => match subject {
-                    Subject::Entering => {
-                        if let Some(id) = self.entering_subject(&item) {
-                            let object = &mut self.state.objects[id as usize];
-                            object.gained_keywords = object.gained_keywords.union(keywords);
-                        }
-                    }
-                    Subject::Attached => {
-                        if let Some(id) = self.attached_subject(&item) {
-                            let object = &mut self.state.objects[id as usize];
-                            object.gained_keywords = object.gained_keywords.union(keywords);
-                        }
-                    }
-                    Subject::Source => {
-                        if self.on_battlefield(item.card)
-                            && self.object_ref(item.card) == item.object
-                        {
-                            let object = &mut self.state.objects[item.card as usize];
-                            object.gained_keywords = object.gained_keywords.union(keywords);
-                        }
-                    }
-                    Subject::Targets => {
-                        for bound in &item.targets {
-                            if self.same_target_object(*bound)
-                                && let Target::Card(id) = bound.target
-                            {
-                                let object = &mut self.state.objects[id as usize];
-                                object.gained_keywords = object.gained_keywords.union(keywords);
-                            }
-                        }
-                    }
-                },
+                Instruction::GrantKeywords { subject, keywords } => {
+                    let ids = self.keyword_subjects(&item, subject);
+                    self.grant_keyword_effects(&ids, item.object, keywords);
+                }
                 Instruction::GrantCreatures { filter, keywords } => {
                     let affected: Vec<_> = (0..self.state.objects.len())
                         .map(|id| id as CardId)
@@ -2060,10 +2048,7 @@ impl Game {
                             self.creature_matches(filter, item.controller, item.object, id)
                         })
                         .collect();
-                    for id in affected {
-                        let object = &mut self.state.objects[id as usize];
-                        object.gained_keywords = object.gained_keywords.union(keywords);
-                    }
+                    self.grant_keyword_effects(&affected, item.object, keywords);
                 }
                 Instruction::SnapshotDoubleCreatures(filter) => {
                     // Snapshot every operand before changing any derived characteristic.
@@ -2178,6 +2163,16 @@ impl Game {
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
+                Instruction::RemoveAllCountersFrom(subject) => {
+                    let ids = if subject == Subject::Attached {
+                        self.attached_permanent(&item).into_iter().collect()
+                    } else {
+                        self.keyword_subjects(&item, subject)
+                    };
+                    for id in ids {
+                        self.state.objects[id as usize].counters = Counters::default();
+                    }
+                }
                 Instruction::RemoveAllCounters => {
                     for bound in &item.targets {
                         if self.same_target_object(*bound)
@@ -2246,13 +2241,16 @@ impl Game {
                 }
                 Instruction::Tap | Instruction::Untap => {
                     if instruction == Instruction::Untap {
-                        for bound in &item.targets {
-                            if self.same_target_object(*bound)
-                                && let Target::Card(id) = bound.target
-                            {
-                                self.state.objects[id as usize].untap();
-                            }
-                        }
+                        let ids: Vec<_> = item
+                            .targets
+                            .iter()
+                            .filter(|bound| self.same_target_object(**bound))
+                            .filter_map(|bound| match bound.target {
+                                Target::Card(id) => Some(id),
+                                _ => None,
+                            })
+                            .collect();
+                        self.untap_objects(&ids, untap_rules::UntapCause::Effect);
                     } else if let [bound] = item.targets.as_slice() {
                         if self.same_target_object(*bound)
                             && let Target::Card(id) = bound.target

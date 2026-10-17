@@ -128,6 +128,18 @@ mod roles;
 #[path = "engine_sba.rs"]
 mod sba;
 pub use roles::{RoleGroupView, RoleTimestampView};
+#[path = "engine_ability_evaluation.rs"]
+mod ability_evaluation;
+#[path = "engine_untap_rules.rs"]
+mod untap_rules;
+pub use ability_evaluation::{AbilityAvailabilityView, GrantedAbilityView};
+#[path = "engine_ability_order.rs"]
+mod ability_order;
+#[path = "engine_ability_timeline.rs"]
+mod ability_timeline;
+#[path = "engine_ability_world.rs"]
+mod ability_world;
+pub use ability_timeline::{AbilitySourceTimestampView, KeywordEffectOrigin, KeywordEffectView};
 #[path = "engine_base_power.rs"]
 mod base_power;
 #[path = "engine_base_stats.rs"]
@@ -1275,6 +1287,9 @@ pub struct EndureChoiceView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ObjectView {
+    /// Frozen effective nonkeyword abilities only while a removal effect exists.
+    /// None is the allocation-free complete printed/default-grant case.
+    pub abilities: Option<Box<AbilityAvailabilityView>>,
     /// Current card-type bits; Card remains the immutable printed identity.
     pub kinds: u16,
     pub granted_subtypes: GrantedSubtypes,
@@ -1539,6 +1554,8 @@ pub struct Observation {
     pub base_stat_effects: Vec<BaseStatsEffectView>,
     pub live_static_sources: Vec<LiveStaticSourceView>,
     pub resolved_stat_subjects: Vec<ResolvedStatSubjectView>,
+    pub ability_source_timestamps: Vec<AbilitySourceTimestampView>,
+    pub keyword_effects: Vec<KeywordEffectView>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
@@ -2301,6 +2318,7 @@ impl Game {
                         continue;
                     }
                     if obj.zone == Zone::Battlefield
+                        && self.printed_abilities_available(card)
                         && !obj.tapped
                         && obj.card.mana_color().is_some()
                         && (!self.is_creature(card)
@@ -3603,6 +3621,7 @@ impl Game {
             self.layered_stats_without_hand(id, None)
         };
         ObjectView {
+            abilities: self.ability_availability(id),
             kinds: self.current_kinds(id),
             granted_subtypes: self.granted_subtypes(id),
             saddled: self.is_saddled(self.object_ref(id)),
@@ -3700,7 +3719,8 @@ impl Game {
                         && !o.card.is_emblem()
                         && (o.card.base_stat_setter().is_some()
                             || !o.card.live_static_effects().is_empty()
-                            || o.card.role().is_some())
+                            || o.card.role().is_some()
+                            || o.card.has_layer6_provider())
                 })
                 .count();
             assert!(count <= 1, "simultaneous timestamp entry must be staged");
@@ -3739,6 +3759,7 @@ impl Game {
             let source = &self.state.objects[id as usize];
             source.zone == Zone::Battlefield
                 && source.controller != controller
+                && self.printed_abilities_available(id)
                 && source.card.opponent_entry_tapped() & kinds != 0
         })
     }
@@ -3935,6 +3956,7 @@ impl Game {
             self.forget_role(before.reference);
             self.forget_base_stats(before.reference);
             self.forget_live_static_source(before.reference);
+            self.forget_ability_source(before.reference);
             // Abilities use the source's actual last-known keywords if it leaves,
             // including gains made after that ability was announced.
             for item in self
@@ -4119,10 +4141,10 @@ impl Game {
             obj.damaged_this_turn = false;
             obj.dealt_damage_this_turn = false;
             if obj.controller == self.state.active && obj.zone == Zone::Battlefield {
-                obj.untap();
                 obj.summoning_sick = false;
             }
         }
+        self.untap_active_player();
         self.begin_step(Step::Upkeep);
         self.give_priority();
     }
@@ -4236,6 +4258,7 @@ impl Game {
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.state.temporary_abilities = None;
         self.expire_base_stats();
+        self.expire_keyword_effects();
         self.state.death_exile_replacements = None;
         for player in &mut self.state.players {
             player.extra_land_plays_remaining = 0;
@@ -4681,7 +4704,7 @@ impl Game {
             aura_entry: self.aura_entry_view(viewer),
             entry_life: self.entry_life_view(viewer),
             entry_replacement: self.entry_tap_view(viewer),
-            entry_timestamps: self.entry_timestamp_view(),
+            entry_timestamps: self.entry_timestamp_view(viewer),
             additional_cost: self.additional_cost_view(viewer),
             forage: self.forage_view(viewer),
             evidence: self.evidence_view(viewer),
@@ -4725,6 +4748,14 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.stat_subjects.clone()),
+            ability_source_timestamps: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.ability_timestamps.clone()),
+            keyword_effects: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.keyword_effects.clone()),
             role_timestamps: s
                 .roles
                 .as_ref()
@@ -5695,6 +5726,14 @@ mod live_static_rules_tests;
 #[cfg(test)]
 #[path = "engine_tiered_tests.rs"]
 mod tiered_tests;
+
+#[cfg(test)]
+#[path = "engine_ability_timeline_tests.rs"]
+mod ability_timeline_tests;
+
+#[cfg(test)]
+#[path = "engine_ability_removal_tests.rs"]
+mod ability_removal_tests;
 
 #[cfg(test)]
 #[path = "engine_untapped_entry_tests.rs"]

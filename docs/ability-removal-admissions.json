@@ -1,0 +1,2854 @@
+{
+  "schema": 1,
+  "issue": 337,
+  "parent": "61a7d0cef4b10591958cea4391c553db4c2c07ff",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "reserved_observation_schema": 106,
+  "scope": "24 complete physical bodies matching lose/loses all abilities; explicit resolvable single-class imports plus full card roots, not transitive closure or an admission whitelist",
+  "source_records": 410,
+  "unique_sources": [
+    {
+      "java_source": "Mage.Sets/src/mage/cards/a/AbigaleEloquentFirstYear.java",
+      "java_sha256": "6c49afdee3fcfb92518adc514dbc94a70f57e2bde3d1aae329908329c7870a50"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/a/AzureBeastbinder.java",
+      "java_sha256": "800d86c8debd3307162b700551660f43cda3dcf90b501ee7bc43e9c6f64344e8"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/c/CuriousColossus.java",
+      "java_sha256": "8a87d7f990bf17d2e67409a54fc168623b5409d10ffb6a1163dce12f3e9eddc0"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/d/DayOfBlackSun.java",
+      "java_sha256": "858a0bf3c862c6f550c1a1213fba0b0d86d387be86fefa3f24fd4168e5509ec3"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/d/DuskmournsDomination.java",
+      "java_sha256": "150d7f907aa3fbb4fa48c13952ca141d413ae4341f2c3b5d31a078c4b6cc5e73"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/e/EatenByPiranhas.java",
+      "java_sha256": "149afad94e7b3da1a9e1712e93b578777f51045c363ee14f0e2fa63ff59c8c5b"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/e/EnchantedRiversGrasp.java",
+      "java_sha256": "4a24857b5f390110fa9e97a4714d8ffd1059b50f05845ad8c18e9ed2d87963be"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/f/FinalShowdown.java",
+      "java_sha256": "a5123a4997f51f0188301a17d1e4635033f2ca7728ea3da9c0a292ec3b378558"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/f/FloodTheEngine.java",
+      "java_sha256": "7d1bfec33cf1cea9f6e65234dd8d54abb39bab10dac8920219bdf646da14cd5c"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/f/FlourishingGrapple.java",
+      "java_sha256": "24c7e0e9aaabcd1c73f10036e2be603b4074f301062bba8b43d52f98c12de81f"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/f/FreshStart.java",
+      "java_sha256": "912021bd4546c753b0a4d4eb7f81ea76457d8800c551edb5159d0bc0b9bd6657"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/f/FrozenInIce.java",
+      "java_sha256": "fea8383c8dbaaa9192f10511e8cf2a5dcde43f29a66904099932de63f09d52d4"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/h/HellcatUndyingVigilante.java",
+      "java_sha256": "98588abe5e3866c1eb508a1717db4ad07c7618a87ae0456771ca292d7f93f195"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/h/HonestWork.java",
+      "java_sha256": "8a843d1aa2ed649bd09fa76738ccbc597995681c1f85c4d8659b9b93e9e47892"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/i/InfiniteCoursework.java",
+      "java_sha256": "8fe08faefd01ba3a2567c4e6e3ca316532472b642da19bf90f7cf13888a586db"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/l/LizardConnorssCurse.java",
+      "java_sha256": "d2953afae0c8a2bdfa76008847b407fd12df41062927f92ee8aec4cbad9239cb"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/n/NoggleTheMind.java",
+      "java_sha256": "00458f78325cded9ad53ab52909d210fc83014c957ca20a30ac56020ac5dc970"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/r/RetchedWretch.java",
+      "java_sha256": "0f54bc5a892e301483b43540e05d15c54f9048f57e3d5f33e949cdca3756a990"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/r/RetroMutation.java",
+      "java_sha256": "500088f5f2b327e15cabd8d454c47f781d2bddb6334a093000bcff4f80839257"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/s/StopCold.java",
+      "java_sha256": "d79dafea156849027e536c62f2eb5a540f8f5d7dab8e0be838fa6ee13777c5b7"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/t/TheWondrousWasp.java",
+      "java_sha256": "1152937a14ddd740f8e6500c5da74688d4c21f5998219af0bafa0bb357b97a6a"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/t/TishanasTidebinder.java",
+      "java_sha256": "a4d6a4e1f3048102cf755615451436c8531e25b099f1cd3464be62875764f1fd"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/u/UnableToScream.java",
+      "java_sha256": "3ee039f390917095ba800e6d1093fb21c40881bba8d0c3d510d29a7397cca15f"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/w/WitnessProtection.java",
+      "java_sha256": "e9dcfaa2fb47550f2adb77fc7d370677fab8e7234a7b593550b0539c93047e54"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/MageInt.java",
+      "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/ObjectColor.java",
+      "java_sha256": "4007f6c67ee8bc5323a9df1ab068a9877564922ef0e16e0cee636b010f79c7b7"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+      "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/Mode.java",
+      "java_sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+      "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/condition/common/TargetObjectMatchesFilterCondition.java",
+      "java_sha256": "bbfaec573e5f78824a822d44921d247b507a74dec19452689f86c7ae5ad44816"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "java_sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffect.java",
+      "java_sha256": "deea4c7c61bc169d2cc284d082e13df8322434d8784d94f2a744244ad96d24d9"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+      "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousRuleModifyingEffectImpl.java",
+      "java_sha256": "0f9822b6683144489e62ea1fa0e99c8e1e928479c90f8941e3794d57044e5948"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+      "java_sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/AddContinuousEffectToGame.java",
+      "java_sha256": "3647d2fb3d84fed968d2b45c43d33d706a712ec4dc4f9ba7aa39d39cc3efa31e"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyAllEffect.java",
+      "java_sha256": "ff52578966339bd976dc24cb1505f5862e3ee9b7b1abf41d2d8fac78cb43b48d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/DontUntapInControllersUntapStepEnchantedEffect.java",
+      "java_sha256": "70d499fc10da2ffb0d0be4f8ac2104fd1e2c6dfc2c8f9e494c4b2e8480d90f3b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldWithCounterTargetEffect.java",
+      "java_sha256": "0e7f52f88746be4b6bbb9acafadcf25b3ad14633151a2868726600cb1af9434c"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapEnchantedEffect.java",
+      "java_sha256": "ec3b0885abf02638a5f0fa47926e753828840f1adc8307b8c4c3d85d97231f65"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantAttackAttachedEffect.java",
+      "java_sha256": "6d98d4e5e97cc55afb5ef5da8ea38820db20e9e3a6309914ea6e04ed40810f03"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByCreaturesSourceEffect.java",
+      "java_sha256": "db532584552c032f8fed7fb9a2cb025e45f58c4710c0d3bb1406f6aab7a338f5"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardSubTypeTargetEffect.java",
+      "java_sha256": "4a5b785143060689d498ae3f97610eac0103c628160a52505c1d6fcad298384f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardSubtypeAttachedEffect.java",
+      "java_sha256": "dbe2d3ace133714b13fce577d8fee1c52736d5cc7d20f1c18ffdd49c82ce781f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeAttachedEffect.java",
+      "java_sha256": "a6bf04cf1b0457cac84a9c56e1db9cd1a6b5070fcc995aa18c7f7cd5e9e8bffc"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureAttachedEffect.java",
+      "java_sha256": "3fe1bc492de2b19b90314d93d7a07c705a70927e168d63458084f5a6360a2a0f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureTargetEffect.java",
+      "java_sha256": "434e8c33e1b80342d01dc8475ebc78920a314f3265bae6e16da7902d4e40c4f8"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEnchantedEffect.java",
+      "java_sha256": "c390aae1354b298fc7d8b379f73583e2bbee3bdd13d88a082553dce6c75e1303"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/ControlEnchantedEffect.java",
+      "java_sha256": "84e8b3f040dcdbb7be851fb8b5fcfab3620c38514f3b80d811577f9cce34a9b8"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesAllEffect.java",
+      "java_sha256": "d27e324d8451b20f1e33cd26b0df6c5f50ef6d5491a6fbab576a2553aeb3de8f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesAttachedEffect.java",
+      "java_sha256": "945c33113331a9a46b08c1f58aed0a2f0cd8a8e4836c267b912199f9ced014c5"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesTargetEffect.java",
+      "java_sha256": "016ec15a3f4b05c2eeea23439fcc71554cfef1232bcdd844dee63ad6618cacd4"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessAttachedEffect.java",
+      "java_sha256": "1c0acf946ead98873fc4e57586bf707356771bb257c7138824a1e067770a6831"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessTargetEffect.java",
+      "java_sha256": "cc450621ce5efa6894bfc8eab4290a28aafb69a3f197f62851095e13d2f97f8f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+      "java_sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "java_sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "java_sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/SpreeAbility.java",
+      "java_sha256": "748a9f9ee829dca76fd302165682a269a26aa7e15bfe662727af0100b5e676a3"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+      "java_sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/Card.java",
+      "java_sha256": "86b9a512358a5c6814e62bc2f9cff87be07cf5a248e313686c137f0b76b798b0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+      "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+      "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/AttachmentType.java",
+      "java_sha256": "7931287bfa8563637d894de3e49b3d5fb3f15da417940ef4cc0c416f20976d24"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+      "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+      "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+      "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+      "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+      "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/TargetController.java",
+      "java_sha256": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+      "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+      "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+      "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/common/FilterCreatureOrPlaneswalkerPermanent.java",
+      "java_sha256": "4787afd92dc502caec536204ece84bbdc7ba99acf3d243222c152bf3fa17bce2"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+      "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/ObjectSourcePlayer.java",
+      "java_sha256": "0caa8e0aa45f57ac07bec12591861979c9ee35f9f76b57b30ec11234f2f2c794"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/ObjectSourcePlayerPredicate.java",
+      "java_sha256": "b0592932e613775e26f24f44f1faa95dcc20df826c86d4b592ff1479a1264973"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+      "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+      "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ColorPredicate.java",
+      "java_sha256": "b62ced1f121575b7737a20875425334d7bf61e018a809548805d14f38d71e82b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/PowerPredicate.java",
+      "java_sha256": "909b9038e02c0653920408059e987b6ee3cfad717900e62e78c597285f137dde"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/Game.java",
+      "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/events/GameEvent.java",
+      "java_sha256": "3df463d33eff295607e700578e547cef896cf183e1dba3c41131a353f53cb7dc"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+      "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/custom/CreatureToken.java",
+      "java_sha256": "71de72a2543d4471901857cc0d58c1a06c383b25760e2a59e46b094862b2f31c"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/stack/StackObject.java",
+      "java_sha256": "ab532c51a5138d5e02f5e53dae426c6ea63e5db5113274d1008689f085184cf5"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/players/Player.java",
+      "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetActivatedOrTriggeredAbility.java",
+      "java_sha256": "1d83aa0018d3a33d04dfba3966f177e2e60e6a807c28bf6ac49832bad5d3bcdd"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "java_sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+      "java_sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "java_sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+      "java_sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/util/CardUtil.java",
+      "java_sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    }
+  ],
+  "cards": [
+    {
+      "facts": {
+        "oracle_id": "48a773d0-c433-4463-b50f-b6d4604a042c",
+        "name": "Abigale, Eloquent First-Year",
+        "layout": "normal",
+        "mana_cost": "{W/B}{W/B}",
+        "cmc": 2.0,
+        "type_line": "Legendary Creature — Bird Bard",
+        "oracle_text": "Flying, first strike, lifelink\nWhen Abigale enters, up to one other target creature loses all abilities. Put a flying counter, a first strike counter, and a lifelink counter on that creature.",
+        "power": "1",
+        "toughness": "1",
+        "colors": [
+          "B",
+          "W"
+        ],
+        "color_identity": [
+          "B",
+          "W"
+        ],
+        "keywords": [
+          "Flying",
+          "Lifelink",
+          "First strike"
+        ],
+        "reference_printing": {
+          "id": "bf708169-a307-494b-b8d8-baae53b2e2f2",
+          "set": "ecl",
+          "collector_number": "204",
+          "released_at": "2026-01-23"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "keyword counter kinds and timestamps after permanent removal",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AbigaleEloquentFirstYear.java",
+          "java_sha256": "6c49afdee3fcfb92518adc514dbc94a70f57e2bde3d1aae329908329c7870a50"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesTargetEffect.java",
+          "java_sha256": "016ec15a3f4b05c2eeea23439fcc71554cfef1232bcdd844dee63ad6618cacd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+          "java_sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+          "java_sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+          "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "7bb51602-60e8-4730-b11c-2870d6b42e20",
+        "name": "Azure Beastbinder",
+        "layout": "normal",
+        "mana_cost": "{1}{U}",
+        "cmc": 2.0,
+        "type_line": "Creature — Rat Rogue",
+        "oracle_text": "Vigilance\nThis creature can't be blocked by creatures with power 2 or greater.\nWhenever this creature attacks, up to one target artifact, creature, or planeswalker an opponent controls loses all abilities until your next turn. If it's a creature, it also has base power and toughness 2/2 until your next turn.",
+        "power": "1",
+        "toughness": "3",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Vigilance"
+        ],
+        "reference_printing": {
+          "id": "211af1bf-910b-41a5-b928-f378188d1871",
+          "set": "blb",
+          "collector_number": "41",
+          "released_at": "2024-08-02"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "until-next-own-turn duration, conditional creature base and attack restriction",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AzureBeastbinder.java",
+          "java_sha256": "800d86c8debd3307162b700551660f43cda3dcf90b501ee7bc43e9c6f64344e8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/TargetObjectMatchesFilterCondition.java",
+          "java_sha256": "bbfaec573e5f78824a822d44921d247b507a74dec19452689f86c7ae5ad44816"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AddContinuousEffectToGame.java",
+          "java_sha256": "3647d2fb3d84fed968d2b45c43d33d706a712ec4dc4f9ba7aa39d39cc3efa31e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByCreaturesSourceEffect.java",
+          "java_sha256": "db532584552c032f8fed7fb9a2cb025e45f58c4710c0d3bb1406f6aab7a338f5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesTargetEffect.java",
+          "java_sha256": "016ec15a3f4b05c2eeea23439fcc71554cfef1232bcdd844dee63ad6618cacd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessTargetEffect.java",
+          "java_sha256": "cc450621ce5efa6894bfc8eab4290a28aafb69a3f197f62851095e13d2f97f8f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/PowerPredicate.java",
+          "java_sha256": "909b9038e02c0653920408059e987b6ee3cfad717900e62e78c597285f137dde"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "c8de2e1b-f2fa-4b6a-a3c5-9811c7f5f051",
+        "name": "Curious Colossus",
+        "layout": "normal",
+        "mana_cost": "{5}{W}{W}",
+        "cmc": 7.0,
+        "type_line": "Creature — Giant Warrior",
+        "oracle_text": "When this creature enters, each creature target opponent controls loses all abilities, becomes a Coward in addition to its other types, and has base power and toughness 1/1.",
+        "power": "7",
+        "toughness": "7",
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "582b6e5d-0bab-471d-af4d-19438c5fd524",
+          "set": "ecl",
+          "collector_number": "12",
+          "released_at": "2026-01-23"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "permanent multi-object removal plus additive Coward subtype/base1/1",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CuriousColossus.java",
+          "java_sha256": "8a87d7f990bf17d2e67409a54fc168623b5409d10ffb6a1163dce12f3e9eddc0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardSubTypeTargetEffect.java",
+          "java_sha256": "4a5b785143060689d498ae3f97610eac0103c628160a52505c1d6fcad298384f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesTargetEffect.java",
+          "java_sha256": "016ec15a3f4b05c2eeea23439fcc71554cfef1232bcdd844dee63ad6618cacd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessTargetEffect.java",
+          "java_sha256": "cc450621ce5efa6894bfc8eab4290a28aafb69a3f197f62851095e13d2f97f8f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+          "java_sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+          "java_sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "dc857129-533c-41d1-8e8b-1c0443030d69",
+        "name": "Day of Black Sun",
+        "layout": "normal",
+        "mana_cost": "{X}{B}{B}",
+        "cmc": 2.0,
+        "type_line": "Sorcery",
+        "oracle_text": "Each creature with mana value X or less loses all abilities until end of turn. Destroy those creatures.",
+        "colors": [
+          "B"
+        ],
+        "color_identity": [
+          "B"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "d0e24797-3e45-4c2b-b4b0-1ef44d42eaee",
+          "set": "tla",
+          "collector_number": "94",
+          "released_at": "2025-11-21"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "scalarX selection frozen before removal and destruction",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DayOfBlackSun.java",
+          "java_sha256": "858a0bf3c862c6f550c1a1213fba0b0d86d387be86fefa3f24fd4168e5509ec3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+          "java_sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyAllEffect.java",
+          "java_sha256": "ff52578966339bd976dc24cb1505f5862e3ee9b7b1abf41d2d8fac78cb43b48d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesAllEffect.java",
+          "java_sha256": "d27e324d8451b20f1e33cd26b0df6c5f50ef6d5491a6fbab576a2553aeb3de8f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/ObjectSourcePlayer.java",
+          "java_sha256": "0caa8e0aa45f57ac07bec12591861979c9ee35f9f76b57b30ec11234f2f2c794"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/ObjectSourcePlayerPredicate.java",
+          "java_sha256": "b0592932e613775e26f24f44f1faa95dcc20df826c86d4b592ff1479a1264973"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "ebdace8f-8e8e-411b-b1d5-5b27cca7d9fb",
+        "name": "Duskmourn's Domination",
+        "layout": "normal",
+        "mana_cost": "{4}{U}{U}",
+        "cmc": 6.0,
+        "type_line": "Enchantment — Aura",
+        "oracle_text": "Enchant creature\nYou control enchanted creature.\nEnchanted creature gets -3/-0 and loses all abilities.",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Enchant"
+        ],
+        "reference_printing": {
+          "id": "1d96dbc9-c2fd-42c1-9d55-5c14fa1c1c6f",
+          "set": "dsk",
+          "collector_number": "50",
+          "released_at": "2024-09-27"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "continuous layer2 Aura control changing plus full removal",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DuskmournsDomination.java",
+          "java_sha256": "150d7f907aa3fbb4fa48c13952ca141d413ae4341f2c3b5d31a078c4b6cc5e73"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEnchantedEffect.java",
+          "java_sha256": "c390aae1354b298fc7d8b379f73583e2bbee3bdd13d88a082553dce6c75e1303"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/ControlEnchantedEffect.java",
+          "java_sha256": "84e8b3f040dcdbb7be851fb8b5fcfab3620c38514f3b80d811577f9cce34a9b8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "c37eae65-1afe-4242-b677-24dd40e6f401",
+        "name": "Eaten by Piranhas",
+        "layout": "normal",
+        "mana_cost": "{1}{U}",
+        "cmc": 2.0,
+        "type_line": "Enchantment — Aura",
+        "oracle_text": "Flash (You may cast this spell any time you could cast an instant.)\nEnchant creature\nEnchanted creature loses all abilities and is a black Skeleton creature with base power and toughness 1/1. (It loses all other colors, card types, and creature types.)",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Enchant",
+          "Flash"
+        ],
+        "reference_printing": {
+          "id": "475e28bb-1333-45e1-b6fd-83121c2f1ab9",
+          "set": "fdn",
+          "collector_number": "507",
+          "released_at": "2024-11-15"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "layer4 total kinds/subtypes and layer5 color replacement plus base",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/EatenByPiranhas.java",
+          "java_sha256": "149afad94e7b3da1a9e1712e93b578777f51045c363ee14f0e2fa63ff59c8c5b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/ObjectColor.java",
+          "java_sha256": "4007f6c67ee8bc5323a9df1ab068a9877564922ef0e16e0cee636b010f79c7b7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "fcc9f3bc-0bc3-4189-a4d0-9698594b99a8",
+        "name": "Enchanted River's Grasp",
+        "layout": "normal",
+        "mana_cost": "{2}{U}",
+        "cmc": 3.0,
+        "type_line": "Enchantment — Aura",
+        "oracle_text": "Enchant creature\nWhen this Aura enters, tap enchanted creature and remove all counters from it.\nEnchanted creature loses all abilities and doesn't untap during its controller's untap step.",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Enchant"
+        ],
+        "reference_printing": {
+          "id": "ad40a4b9-9fab-49c1-8e9f-6e0776966833",
+          "set": "hob",
+          "collector_number": "39",
+          "released_at": "2026-08-14"
+        }
+      },
+      "status": "implemented_direct_rust",
+      "required_semantics": "layer6 removal plus controller-step prohibition; ETB tap and remove ALL counters",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/EnchantedRiversGrasp.java",
+          "java_sha256": "4a24857b5f390110fa9e97a4714d8ffd1059b50f05845ad8c18e9ed2d87963be"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DontUntapInControllersUntapStepEnchantedEffect.java",
+          "java_sha256": "70d499fc10da2ffb0d0be4f8ac2104fd1e2c6dfc2c8f9e494c4b2e8480d90f3b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapEnchantedEffect.java",
+          "java_sha256": "ec3b0885abf02638a5f0fa47926e753828840f1adc8307b8c4c3d85d97231f65"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesAttachedEffect.java",
+          "java_sha256": "945c33113331a9a46b08c1f58aed0a2f0cd8a8e4836c267b912199f9ced014c5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AttachmentType.java",
+          "java_sha256": "7931287bfa8563637d894de3e49b3d5fb3f15da417940ef4cc0c416f20976d24"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "7e7ec3d6-a84f-4cc3-93f4-4d181d41e126",
+        "name": "Final Showdown",
+        "layout": "normal",
+        "mana_cost": "{W}",
+        "cmc": 1.0,
+        "type_line": "Instant",
+        "oracle_text": "Spree (Choose one or more additional costs.)\n+ {1} — All creatures lose all abilities until end of turn.\n+ {1} — Choose a creature you control. It gains indestructible until end of turn.\n+ {3}{W}{W} — Destroy all creatures.",
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "keywords": [
+          "Spree"
+        ],
+        "reference_printing": {
+          "id": "358968f9-45bd-4022-b6bc-f1f7e0adf0e7",
+          "set": "otj",
+          "collector_number": "11",
+          "released_at": "2024-04-19"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "Spree additional-cost subsets and late non-targeted choice with later indestructible grant",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FinalShowdown.java",
+          "java_sha256": "a5123a4997f51f0188301a17d1e4635033f2ca7728ea3da9c0a292ec3b378558"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Mode.java",
+          "java_sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyAllEffect.java",
+          "java_sha256": "ff52578966339bd976dc24cb1505f5862e3ee9b7b1abf41d2d8fac78cb43b48d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesAllEffect.java",
+          "java_sha256": "d27e324d8451b20f1e33cd26b0df6c5f50ef6d5491a6fbab576a2553aeb3de8f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+          "java_sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/SpreeAbility.java",
+          "java_sha256": "748a9f9ee829dca76fd302165682a269a26aa7e15bfe662727af0100b5e676a3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+          "java_sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "e16e2199-d821-49fd-94a0-30ecebd8bd4c",
+        "name": "Flood the Engine",
+        "layout": "normal",
+        "mana_cost": "{2}{U}",
+        "cmc": 3.0,
+        "type_line": "Enchantment — Aura",
+        "oracle_text": "Enchant creature or Vehicle\nWhen this Aura enters, tap enchanted permanent.\nEnchanted permanent loses all abilities and doesn't untap during its controller's untap step.",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Enchant"
+        ],
+        "reference_printing": {
+          "id": "57402f7c-5d4c-4f1e-8bce-a2328a297111",
+          "set": "dft",
+          "collector_number": "42",
+          "released_at": "2025-02-14"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "creature-or-Vehicle attachment and controller-step untap prohibition",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FloodTheEngine.java",
+          "java_sha256": "7d1bfec33cf1cea9f6e65234dd8d54abb39bab10dac8920219bdf646da14cd5c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DontUntapInControllersUntapStepEnchantedEffect.java",
+          "java_sha256": "70d499fc10da2ffb0d0be4f8ac2104fd1e2c6dfc2c8f9e494c4b2e8480d90f3b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapEnchantedEffect.java",
+          "java_sha256": "ec3b0885abf02638a5f0fa47926e753828840f1adc8307b8c4c3d85d97231f65"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesAttachedEffect.java",
+          "java_sha256": "945c33113331a9a46b08c1f58aed0a2f0cd8a8e4836c267b912199f9ced014c5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AttachmentType.java",
+          "java_sha256": "7931287bfa8563637d894de3e49b3d5fb3f15da417940ef4cc0c416f20976d24"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "6b4f1569-2025-46a8-89ba-79859208b04e",
+        "name": "Flourishing Grapple",
+        "layout": "normal",
+        "mana_cost": "{G}",
+        "cmc": 1.0,
+        "type_line": "Instant",
+        "oracle_text": "Target creature or planeswalker an opponent controls that's red or white loses all abilities until end of turn. Target creature you control deals damage equal to its power to that permanent.",
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "f71958e9-6d6d-4393-8b49-567103b50877",
+          "set": "fra",
+          "collector_number": "102",
+          "released_at": "2026-10-02"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "red-or-white opposing permanent predicate, removal-before-fightlike damage",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FlourishingGrapple.java",
+          "java_sha256": "24c7e0e9aaabcd1c73f10036e2be603b4074f301062bba8b43d52f98c12de81f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/ObjectColor.java",
+          "java_sha256": "4007f6c67ee8bc5323a9df1ab068a9877564922ef0e16e0cee636b010f79c7b7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesTargetEffect.java",
+          "java_sha256": "016ec15a3f4b05c2eeea23439fcc71554cfef1232bcdd844dee63ad6618cacd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TargetController.java",
+          "java_sha256": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreatureOrPlaneswalkerPermanent.java",
+          "java_sha256": "4787afd92dc502caec536204ece84bbdc7ba99acf3d243222c152bf3fa17bce2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ColorPredicate.java",
+          "java_sha256": "b62ced1f121575b7737a20875425334d7bf61e018a809548805d14f38d71e82b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "77f1734d-ea0b-4344-8a9e-9d1a34eb6164",
+        "name": "Fresh Start",
+        "layout": "normal",
+        "mana_cost": "{1}{U}",
+        "cmc": 2.0,
+        "type_line": "Enchantment — Aura",
+        "oracle_text": "Flash\nEnchant creature\nEnchanted creature gets -5/-0 and loses all abilities.",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Enchant",
+          "Flash"
+        ],
+        "reference_printing": {
+          "id": "96f7af08-ac05-45d0-979f-282943130c61",
+          "set": "tdm",
+          "collector_number": "46",
+          "released_at": "2025-04-11"
+        }
+      },
+      "status": "implemented_direct_rust",
+      "required_semantics": "layer6 complete removal plus existing -5/-0/Flash/Aura support",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FreshStart.java",
+          "java_sha256": "912021bd4546c753b0a4d4eb7f81ea76457d8800c551edb5159d0bc0b9bd6657"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEnchantedEffect.java",
+          "java_sha256": "c390aae1354b298fc7d8b379f73583e2bbee3bdd13d88a082553dce6c75e1303"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesAttachedEffect.java",
+          "java_sha256": "945c33113331a9a46b08c1f58aed0a2f0cd8a8e4836c267b912199f9ced014c5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AttachmentType.java",
+          "java_sha256": "7931287bfa8563637d894de3e49b3d5fb3f15da417940ef4cc0c416f20976d24"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "82fa14d8-5019-4e1b-a86c-923d9292b87a",
+        "name": "Frozen in Ice",
+        "layout": "normal",
+        "mana_cost": "{2}{U}",
+        "cmc": 3.0,
+        "type_line": "Enchantment — Aura",
+        "oracle_text": "Enchant creature\nWhen this Aura enters, tap enchanted creature.\nEnchanted creature loses all abilities and can't become untapped.",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Enchant"
+        ],
+        "reference_printing": {
+          "id": "a990260b-39b7-4799-930a-bf9ac208d9ed",
+          "set": "msh",
+          "collector_number": "54",
+          "released_at": "2026-06-26"
+        }
+      },
+      "status": "implemented_direct_rust",
+      "required_semantics": "layer6 removal plus generic ALL-attempt untap prohibition and ETB tap",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FrozenInIce.java",
+          "java_sha256": "fea8383c8dbaaa9192f10511e8cf2a5dcde43f29a66904099932de63f09d52d4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+          "java_sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapEnchantedEffect.java",
+          "java_sha256": "ec3b0885abf02638a5f0fa47926e753828840f1adc8307b8c4c3d85d97231f65"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/events/GameEvent.java",
+          "java_sha256": "3df463d33eff295607e700578e547cef896cf183e1dba3c41131a353f53cb7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "4c27ba61-6812-4dd7-8efc-65435a8df7b5",
+        "name": "Hellcat, Undying Vigilante",
+        "layout": "normal",
+        "mana_cost": "{G}{G}",
+        "cmc": 2.0,
+        "type_line": "Legendary Creature — Human Hero",
+        "oracle_text": "Haste\nWhen Hellcat dies, return her to the battlefield under her owner's control with a +1/+1 counter on her. She loses all abilities and gains haste.",
+        "power": "2",
+        "toughness": "2",
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "keywords": [
+          "Haste"
+        ],
+        "reference_printing": {
+          "id": "d7922c5f-d6ee-4b62-a537-3be5aa280e10",
+          "set": "msh",
+          "collector_number": "170",
+          "released_at": "2026-06-26"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "exact death-return continuation with entry counter and permanent removal+later haste",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HellcatUndyingVigilante.java",
+          "java_sha256": "98588abe5e3866c1eb508a1717db4ad07c7618a87ae0456771ca292d7f93f195"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldWithCounterTargetEffect.java",
+          "java_sha256": "0e7f52f88746be4b6bbb9acafadcf25b3ad14633151a2868726600cb1af9434c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesTargetEffect.java",
+          "java_sha256": "016ec15a3f4b05c2eeea23439fcc71554cfef1232bcdd844dee63ad6618cacd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Card.java",
+          "java_sha256": "86b9a512358a5c6814e62bc2f9cff87be07cf5a248e313686c137f0b76b798b0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+          "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+          "java_sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/util/CardUtil.java",
+          "java_sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "12956c07-e679-471b-8dcb-2a2d15b0be55",
+        "name": "Honest Work",
+        "layout": "normal",
+        "mana_cost": "{U}",
+        "cmc": 1.0,
+        "type_line": "Enchantment — Aura",
+        "oracle_text": "Enchant creature an opponent controls\nWhen this Aura enters, tap enchanted creature and remove all counters from it.\nEnchanted creature loses all abilities and is a Citizen with base power and toughness 1/1 and \"{T}: Add {C}\" named Humble Merchant. (It loses all other creature types and names.)",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Enchant"
+        ],
+        "produced_mana": [
+          "C"
+        ],
+        "reference_printing": {
+          "id": "57e0ccb0-22f0-4e4d-9a47-c4fec2c7f251",
+          "set": "tla",
+          "collector_number": "55",
+          "released_at": "2025-11-21"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "opponent-only Aura, all counters, layer3 name/layer4 subtype replacement and granted mana",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HonestWork.java",
+          "java_sha256": "8a843d1aa2ed649bd09fa76738ccbc597995681c1f85c4d8659b9b93e9e47892"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapEnchantedEffect.java",
+          "java_sha256": "ec3b0885abf02638a5f0fa47926e753828840f1adc8307b8c4c3d85d97231f65"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+          "java_sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+          "java_sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "666b34b5-a0c2-43e3-befd-7c3979313682",
+        "name": "Infinite Coursework",
+        "layout": "normal",
+        "mana_cost": "{2}{U}",
+        "cmc": 3.0,
+        "type_line": "Enchantment — Aura",
+        "oracle_text": "Enchant creature\nWhen this Aura enters, tap enchanted creature. It becomes unprepared.\nEnchanted creature loses all abilities and doesn't untap during its controller's untap step.",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Enchant",
+          "Prepared"
+        ],
+        "reference_printing": {
+          "id": "a5988272-faaa-463d-a0a1-a8e96b946bad",
+          "set": "fra",
+          "collector_number": "31",
+          "released_at": "2026-10-02"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "unprepared state plus controller-step untap prohibition",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/i/InfiniteCoursework.java",
+          "java_sha256": "8fe08faefd01ba3a2567c4e6e3ca316532472b642da19bf90f7cf13888a586db"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DontUntapInControllersUntapStepEnchantedEffect.java",
+          "java_sha256": "70d499fc10da2ffb0d0be4f8ac2104fd1e2c6dfc2c8f9e494c4b2e8480d90f3b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapEnchantedEffect.java",
+          "java_sha256": "ec3b0885abf02638a5f0fa47926e753828840f1adc8307b8c4c3d85d97231f65"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesAttachedEffect.java",
+          "java_sha256": "945c33113331a9a46b08c1f58aed0a2f0cd8a8e4836c267b912199f9ced014c5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AttachmentType.java",
+          "java_sha256": "7931287bfa8563637d894de3e49b3d5fb3f15da417940ef4cc0c416f20976d24"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "48d1b217-b068-468c-bc6c-4bef9e44cc6e",
+        "name": "Lizard, Connors's Curse",
+        "layout": "normal",
+        "mana_cost": "{2}{G}{G}",
+        "cmc": 4.0,
+        "type_line": "Legendary Creature — Lizard Villain",
+        "oracle_text": "Trample\nLizard Formula — When Lizard, Connors's Curse enters, up to one other target creature loses all abilities and becomes a green Lizard creature with base power and toughness 4/4.",
+        "power": "5",
+        "toughness": "5",
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "keywords": [
+          "Lizard Formula",
+          "Trample"
+        ],
+        "reference_printing": {
+          "id": "6add5d2a-950e-4bee-9850-e68f5f6d6142",
+          "set": "spm",
+          "collector_number": "106",
+          "released_at": "2025-09-26"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "permanent removal and layer4 creature-kind/subtype/layer5 green replacement",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LizardConnorssCurse.java",
+          "java_sha256": "d2953afae0c8a2bdfa76008847b407fd12df41062927f92ee8aec4cbad9239cb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureTargetEffect.java",
+          "java_sha256": "434e8c33e1b80342d01dc8475ebc78920a314f3265bae6e16da7902d4e40c4f8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+          "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/custom/CreatureToken.java",
+          "java_sha256": "71de72a2543d4471901857cc0d58c1a06c383b25760e2a59e46b094862b2f31c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "b49efbe8-e15b-4dc7-82de-970cbce92b79",
+        "name": "Noggle the Mind",
+        "layout": "normal",
+        "mana_cost": "{1}{U}",
+        "cmc": 2.0,
+        "type_line": "Enchantment — Aura",
+        "oracle_text": "Flash\nEnchant creature\nEnchanted creature loses all abilities and is a colorless Noggle with base power and toughness 1/1. (It loses all colors and all other creature types.)",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Enchant",
+          "Flash"
+        ],
+        "reference_printing": {
+          "id": "076c0ac1-722e-49ef-b815-ace210069972",
+          "set": "ecl",
+          "collector_number": "60",
+          "released_at": "2026-01-23"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "layer4 subtype and layer5 color removal plus base",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/n/NoggleTheMind.java",
+          "java_sha256": "00458f78325cded9ad53ab52909d210fc83014c957ca20a30ac56020ac5dc970"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureAttachedEffect.java",
+          "java_sha256": "3fe1bc492de2b19b90314d93d7a07c705a70927e168d63458084f5a6360a2a0f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/custom/CreatureToken.java",
+          "java_sha256": "71de72a2543d4471901857cc0d58c1a06c383b25760e2a59e46b094862b2f31c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "0d3b6e27-2f8b-42e0-9490-7b134e84bb6b",
+        "name": "Retched Wretch",
+        "layout": "normal",
+        "mana_cost": "{2}{B}",
+        "cmc": 3.0,
+        "type_line": "Creature — Goblin",
+        "oracle_text": "When this creature dies, if it had a -1/-1 counter on it, return it to the battlefield under its owner's control and it loses all abilities.",
+        "power": "4",
+        "toughness": "2",
+        "colors": [
+          "B"
+        ],
+        "color_identity": [
+          "B"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "c7a4d7f1-976a-4a28-97a9-ff089a241c9d",
+          "set": "ecl",
+          "collector_number": "117",
+          "released_at": "2026-01-23"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "negative-counter predeath guard and owner return with permanent ability removal",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RetchedWretch.java",
+          "java_sha256": "0f54bc5a892e301483b43540e05d15c54f9048f57e3d5f33e949cdca3756a990"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffect.java",
+          "java_sha256": "deea4c7c61bc169d2cc284d082e13df8322434d8784d94f2a744244ad96d24d9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesTargetEffect.java",
+          "java_sha256": "016ec15a3f4b05c2eeea23439fcc71554cfef1232bcdd844dee63ad6618cacd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Card.java",
+          "java_sha256": "86b9a512358a5c6814e62bc2f9cff87be07cf5a248e313686c137f0b76b798b0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+          "java_sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/util/CardUtil.java",
+          "java_sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "d8b5de6d-8654-4550-bccb-79de6cbef4d5",
+        "name": "Retro-Mutation",
+        "layout": "normal",
+        "mana_cost": "{2}{U}",
+        "cmc": 3.0,
+        "type_line": "Enchantment — Aura",
+        "oracle_text": "Flash\nEnchant creature\nEnchanted creature is a Turtle with base power and toughness 0/1. It can't attack and loses all abilities. (It also loses all other creature types.)",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Enchant",
+          "Flash"
+        ],
+        "reference_printing": {
+          "id": "4af284ba-fa54-43c5-8c76-3e1128957452",
+          "set": "tmt",
+          "collector_number": "51",
+          "released_at": "2026-03-06"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "subtype replacement and external cannot-attack restriction plus base0/1",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RetroMutation.java",
+          "java_sha256": "500088f5f2b327e15cabd8d454c47f781d2bddb6334a093000bcff4f80839257"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantAttackAttachedEffect.java",
+          "java_sha256": "6d98d4e5e97cc55afb5ef5da8ea38820db20e9e3a6309914ea6e04ed40810f03"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureAttachedEffect.java",
+          "java_sha256": "3fe1bc492de2b19b90314d93d7a07c705a70927e168d63458084f5a6360a2a0f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesAttachedEffect.java",
+          "java_sha256": "945c33113331a9a46b08c1f58aed0a2f0cd8a8e4836c267b912199f9ced014c5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/custom/CreatureToken.java",
+          "java_sha256": "71de72a2543d4471901857cc0d58c1a06c383b25760e2a59e46b094862b2f31c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "e0206af2-8034-4351-a797-a1d996f080b5",
+        "name": "Stop Cold",
+        "layout": "normal",
+        "mana_cost": "{3}{U}",
+        "cmc": 4.0,
+        "type_line": "Enchantment — Aura",
+        "oracle_text": "Flash\nEnchant artifact or creature\nWhen this Aura enters, tap enchanted permanent.\nEnchanted permanent loses all abilities and doesn't untap during its controller's untap step.",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Enchant",
+          "Flash"
+        ],
+        "reference_printing": {
+          "id": "9ff9c158-0080-427c-8cf9-0289011ea63e",
+          "set": "otj",
+          "collector_number": "72",
+          "released_at": "2024-04-19"
+        }
+      },
+      "status": "implemented_direct_rust",
+      "required_semantics": "layer6 removal plus controller-untap-step prohibition; artifact or creature recipient",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StopCold.java",
+          "java_sha256": "d79dafea156849027e536c62f2eb5a540f8f5d7dab8e0be838fa6ee13777c5b7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DontUntapInControllersUntapStepEnchantedEffect.java",
+          "java_sha256": "70d499fc10da2ffb0d0be4f8ac2104fd1e2c6dfc2c8f9e494c4b2e8480d90f3b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapEnchantedEffect.java",
+          "java_sha256": "ec3b0885abf02638a5f0fa47926e753828840f1adc8307b8c4c3d85d97231f65"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "5ad8963b-8091-4787-9147-20a1fe7bf0fb",
+        "name": "The Wondrous Wasp",
+        "layout": "normal",
+        "mana_cost": "{1}{U}",
+        "cmc": 2.0,
+        "type_line": "Legendary Creature — Human Hero",
+        "oracle_text": "Flash\nFlying\nWasp's Sting — When The Wondrous Wasp enters, tap up to one target creature. It loses all abilities for as long as The Wondrous Wasp remains on the battlefield.",
+        "power": "2",
+        "toughness": "1",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Flying",
+          "Wasp's Sting",
+          "Flash"
+        ],
+        "reference_printing": {
+          "id": "484e80a4-1d5f-4c27-98a8-ee2ef9d6cbdc",
+          "set": "msh",
+          "collector_number": "84",
+          "released_at": "2026-06-26"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "source-bound duration exact incarnation and ETB tap",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TheWondrousWasp.java",
+          "java_sha256": "1152937a14ddd740f8e6500c5da74688d4c21f5998219af0bafa0bb357b97a6a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+          "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesTargetEffect.java",
+          "java_sha256": "016ec15a3f4b05c2eeea23439fcc71554cfef1232bcdd844dee63ad6618cacd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+          "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "2993dc7d-723d-4a9b-94bd-4bb02a9f7243",
+        "name": "Tishana's Tidebinder",
+        "layout": "normal",
+        "mana_cost": "{2}{U}",
+        "cmc": 3.0,
+        "type_line": "Creature — Merfolk Wizard",
+        "oracle_text": "Flash\nWhen this creature enters, counter up to one target activated or triggered ability. If an ability of an artifact, creature, or planeswalker is countered this way, that permanent loses all abilities for as long as this creature remains on the battlefield. (Mana abilities can't be targeted.)",
+        "power": "3",
+        "toughness": "2",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Flash"
+        ],
+        "reference_printing": {
+          "id": "907b3d1d-8c85-4707-80b5-c4d832df9846",
+          "set": "lci",
+          "collector_number": "81",
+          "released_at": "2023-11-17"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "activated/triggered stack ability targeting, actual-counter result binding, source-bound duration",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TishanasTidebinder.java",
+          "java_sha256": "a4d6a4e1f3048102cf755615451436c8531e25b099f1cd3464be62875764f1fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesTargetEffect.java",
+          "java_sha256": "016ec15a3f4b05c2eeea23439fcc71554cfef1232bcdd844dee63ad6618cacd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/stack/StackObject.java",
+          "java_sha256": "ab532c51a5138d5e02f5e53dae426c6ea63e5db5113274d1008689f085184cf5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetActivatedOrTriggeredAbility.java",
+          "java_sha256": "1d83aa0018d3a33d04dfba3966f177e2e60e6a807c28bf6ac49832bad5d3bcdd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+          "java_sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "3d240726-5214-4493-8537-29bf65db1e4b",
+        "name": "Unable to Scream",
+        "layout": "normal",
+        "mana_cost": "{U}",
+        "cmc": 1.0,
+        "type_line": "Enchantment — Aura",
+        "oracle_text": "Enchant creature\nEnchanted creature loses all abilities and is a Toy artifact creature with base power and toughness 0/2 in addition to its other types.\nAs long as enchanted creature is face down, it can't be turned face up.",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Enchant"
+        ],
+        "reference_printing": {
+          "id": "7c59e0cd-10a8-4a32-9c0a-a2c6ef1ed9a6",
+          "set": "dsk",
+          "collector_number": "78",
+          "released_at": "2024-09-27"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "additive Toy artifact creature transformation, base0/2, face-down turn-up restriction",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/u/UnableToScream.java",
+          "java_sha256": "3ee039f390917095ba800e6d1093fb21c40881bba8d0c3d510d29a7397cca15f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousRuleModifyingEffectImpl.java",
+          "java_sha256": "0f9822b6683144489e62ea1fa0e99c8e1e928479c90f8941e3794d57044e5948"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardSubtypeAttachedEffect.java",
+          "java_sha256": "dbe2d3ace133714b13fce577d8fee1c52736d5cc7d20f1c18ffdd49c82ce781f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeAttachedEffect.java",
+          "java_sha256": "a6bf04cf1b0457cac84a9c56e1db9cd1a6b5070fcc995aa18c7f7cd5e9e8bffc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesAttachedEffect.java",
+          "java_sha256": "945c33113331a9a46b08c1f58aed0a2f0cd8a8e4836c267b912199f9ced014c5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessAttachedEffect.java",
+          "java_sha256": "1c0acf946ead98873fc4e57586bf707356771bb257c7138824a1e067770a6831"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/events/GameEvent.java",
+          "java_sha256": "3df463d33eff295607e700578e547cef896cf183e1dba3c41131a353f53cb7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "a5f5e71e-83a7-468d-829a-6392b764c76e",
+        "name": "Witness Protection",
+        "layout": "normal",
+        "mana_cost": "{U}",
+        "cmc": 1.0,
+        "type_line": "Enchantment — Aura",
+        "oracle_text": "Enchant creature\nEnchanted creature loses all abilities and is a green and white Citizen creature with base power and toughness 1/1 named Legitimate Businessperson. (It loses all other colors, card types, creature types, and names.)",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Enchant"
+        ],
+        "reference_printing": {
+          "id": "f231e981-0069-43ce-ac1c-c85ced613e93",
+          "set": "fdn",
+          "collector_number": "168",
+          "released_at": "2024-11-15"
+        }
+      },
+      "status": "gated_dependency",
+      "required_semantics": "layer3 name/layer4 total kind+subtype/layer5 color replacements and base1/1",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WitnessProtection.java",
+          "java_sha256": "e9dcfaa2fb47550f2adb77fc7d370677fab8e7234a7b593550b0539c93047e54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/ObjectColor.java",
+          "java_sha256": "4007f6c67ee8bc5323a9df1ab068a9877564922ef0e16e0cee636b010f79c7b7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    }
+  ],
+  "delivery_parent": "361285a34c6ab5dc3a511a2f9a024ee5dcaf0abf"
+}

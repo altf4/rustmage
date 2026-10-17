@@ -355,8 +355,22 @@ fn sparse_registry_logical_memory_counts_each_grant_and_owned_clone() {
             priority(&mut g, p);
             act(&mut g, Action::AnnounceCast { card });
             drive(&mut g, Some(Target::Card(bear)));
+            let clock = g
+                .state
+                .roles
+                .as_ref()
+                .expect("temporary grants share the effect clock");
+            assert!(
+                clock.attached.is_empty()
+                    && clock.base_stats.is_empty()
+                    && clock.live_static.is_empty()
+                    && clock.stat_subjects.is_empty()
+                    && clock.ability_timestamps.is_empty()
+                    && clock.keyword_effects.is_empty()
+            );
             let expected = std::mem::size_of::<Vec<TemporaryAbilityView>>()
-                + (i + 1) * std::mem::size_of::<TemporaryAbilityView>();
+                + (i + 1) * std::mem::size_of::<TemporaryAbilityView>()
+                + std::mem::size_of::<roles::RoleState>();
             assert_eq!(g.state_bytes(), baseline + expected);
             let owned = {
                 let parent = g.clone();

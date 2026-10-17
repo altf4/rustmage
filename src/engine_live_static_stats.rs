@@ -1,6 +1,8 @@
 //! Sparse live source clauses use current earlier-layer facts and a shared timestamp clock.
 use super::*;
-use crate::cards::{LiveStatRecipients, LiveStatValue, LiveStaticEffect};
+#[cfg(test)]
+use crate::cards::LiveStatRecipients;
+use crate::cards::{LiveStatValue, LiveStaticEffect, StaticAbilityFragment};
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct LiveStaticSourceView {
@@ -45,12 +47,10 @@ impl Game {
         }
     }
     pub(super) fn retimestamp_live_static_source(&mut self, source: ObjectRef) {
-        if !self
-            .state
-            .roles
-            .as_ref()
-            .is_some_and(|r| r.live_static.iter().any(|e| e.source == source))
-        {
+        if !self.state.roles.as_ref().is_some_and(|r| {
+            r.live_static.iter().any(|e| e.source == source)
+                || r.ability_timestamps.iter().any(|e| e.source == source)
+        }) {
             return;
         }
         self.assign_static_source_timestamp(source);
@@ -59,48 +59,16 @@ impl Game {
         &self,
         row: &LiveStaticSourceView,
         effect: &LiveStaticEffect,
+        index: usize,
         id: CardId,
     ) -> bool {
-        if !self.on_battlefield(id)
-            || !self.is_creature(id)
-            || !self.on_battlefield(row.source.card)
-            || self.object_ref(row.source.card) != row.source
-        {
-            return false;
-        }
-        let source = &self.state.objects[row.source.card as usize];
-        let target = &self.state.objects[id as usize];
-        let reference = self.object_ref(id);
-        let member = match effect.recipients {
-            LiveStatRecipients::Attached => source.attached_to == Some(reference),
-            LiveStatRecipients::Creatures {
-                relation,
-                other,
-                enchanted_by_controller,
-            } => {
-                (match relation {
-                    0 => target.controller == source.controller,
-                    1 => target.controller != source.controller,
-                    _ => true,
-                }) && (!other || reference != row.source)
-                    && (!enchanted_by_controller
-                        || self.state.attachment_sources.iter().any(|&a| {
-                            let aura = &self.state.objects[a as usize];
-                            aura.zone == Zone::Battlefield
-                                && aura.card.aura().is_some()
-                                && aura.controller == source.controller
-                                && aura.attached_to == Some(reference)
-                        }))
-            }
-        };
-        member
-            && effect.condition.is_none_or(|c| {
-                let matching = target.controller == source.controller
-                    && (target.card.has_subtype(c.subtype)
-                        || self.granted_subtypes(id).contains(c.subtype));
-                matching != c.negated
-            })
+        self.continuous_fragment_available(row.source.card, |fragment| matches!(fragment,
+            StaticAbilityFragment::LiveBase(slot, _) | StaticAbilityFragment::LiveBonus(slot, _)
+            | StaticAbilityFragment::LiveKeywords(slot, _) | StaticAbilityFragment::LiveBlockRestriction(slot, _)
+            if usize::from(*slot) == index))
+            && ability_world::CharacteristicWorld::live_applies(self, row.source, effect, id)
     }
+
     fn live_stat_value(&self, value: LiveStatValue, source: ObjectRef) -> i128 {
         match value {
             LiveStatValue::Fixed(value) => value,
@@ -118,8 +86,8 @@ impl Game {
     ) -> Stats {
         if let Some(r) = &self.state.roles {
             for row in &r.live_static {
-                for effect in row.effects {
-                    if !self.live_static_applies(row, effect, id) {
+                for (index, effect) in row.effects.iter().enumerate() {
+                    if !self.live_static_applies(row, effect, index, id) {
                         continue;
                     }
                     if let Some(power) = effect.power
@@ -143,8 +111,8 @@ impl Game {
         let mut stats = Stats::default();
         if let Some(r) = &self.state.roles {
             for row in &r.live_static {
-                for effect in row.effects {
-                    if self.live_static_applies(row, effect, id) {
+                for (index, effect) in row.effects.iter().enumerate() {
+                    if self.live_static_applies(row, effect, index, id) {
                         stats += Stats {
                             power: effect.bonus_power,
                             toughness: effect.bonus_toughness,
@@ -159,8 +127,8 @@ impl Game {
         let mut keywords = Keywords::NONE;
         if let Some(r) = &self.state.roles {
             for row in &r.live_static {
-                for effect in row.effects {
-                    if self.live_static_applies(row, effect, id) {
+                for (index, effect) in row.effects.iter().enumerate() {
+                    if self.live_static_applies(row, effect, index, id) {
                         keywords = keywords.union(effect.keywords);
                     }
                 }
@@ -171,8 +139,8 @@ impl Game {
     pub(super) fn live_static_forbids_block(&self, blocker: CardId, attacker: CardId) -> bool {
         self.state.roles.as_ref().is_some_and(|r| {
             r.live_static.iter().any(|row| {
-                row.effects.iter().any(|effect| {
-                    self.live_static_applies(row, effect, blocker)
+                row.effects.iter().enumerate().any(|(index, effect)| {
+                    self.live_static_applies(row, effect, index, blocker)
                         && effect.cannot_block_subtype.is_some_and(|subtype| {
                             self.state.objects[attacker as usize]
                                 .card

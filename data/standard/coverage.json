@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "2b7dcb15c2ff61094071dce2d937cbc40f348da76cca62abbdadeb05128ff886",
+  "catalogue_version": "4bc5bd45071b508aa3cd717e282a49ab97332f7abb884e9a8a748d6a1189ee03",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1983,
-  "implemented_total": 1989,
+  "implemented_standard_cards": 1987,
+  "implemented_total": 1993,
   "token_definitions": 97,
   "emblem_definitions": 1,
   "cards": [
@@ -7960,8 +7960,9 @@
     {
       "name": "Enchanted River's Grasp",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "authored_rust",
+      "definition": "src/card_definitions/enchanted_rivers_grasp.rs"
     },
     {
       "name": "Encouraging Aviator // Jump",
@@ -9743,8 +9744,9 @@
     {
       "name": "Fresh Start",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "authored_rust",
+      "definition": "src/card_definitions/fresh_start.rs"
     },
     {
       "name": "Freya Crescent",
@@ -9851,8 +9853,9 @@
     {
       "name": "Frozen in Ice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "authored_rust",
+      "definition": "src/card_definitions/frozen_in_ice.rs"
     },
     {
       "name": "Fuel the Flames",
@@ -25016,8 +25019,9 @@
     {
       "name": "Stop Cold",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "authored_rust",
+      "definition": "src/card_definitions/stop_cold.rs"
     },
     {
       "name": "Storm Fleet Spy",

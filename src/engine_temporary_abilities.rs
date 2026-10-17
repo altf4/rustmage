@@ -10,6 +10,7 @@ pub struct TemporaryAbilityView {
     pub ability: u16,
     pub grantor_controller: Player,
     pub expires_turn: u32,
+    pub timestamp: u64,
 }
 impl Game {
     pub(super) fn grant_temporary_ability(&mut self, item: &SpellView, ability: u16) {
@@ -19,6 +20,7 @@ impl Game {
                 .condition
                 .is_granted()
         );
+        let timestamp = self.next_role_timestamp();
         for bound in &item.targets {
             if !self.same_target_object(*bound) {
                 continue;
@@ -36,6 +38,7 @@ impl Game {
                 ability,
                 grantor_controller: item.controller,
                 expires_turn: self.state.turn,
+                timestamp,
             };
             self.state
                 .temporary_abilities
@@ -58,6 +61,12 @@ impl Game {
                 .filter(|grant| {
                     grant.recipient == event.before.reference
                         && grant.expires_turn == self.state.turn
+                        && event.before.grant_available(
+                            grant.grantor,
+                            grant.granting_card,
+                            grant.ability,
+                            Some(grant.timestamp),
+                        )
                 })
                 .collect();
             for grant in matching {

@@ -1,3 +1,9 @@
+#[path = "ability_layers.rs"]
+mod ability_layers;
+pub(crate) use ability_layers::{
+    AbilityLayer, StaticAbilityFragment, StaticAbilityGroup, UntapRestriction,
+};
+
 use crate::capacity::CapacityExt;
 use crate::engine::GrantedSubtypes;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
@@ -721,6 +727,7 @@ pub(crate) enum Instruction {
     },
     DoubleCounters,
     RemoveAllCounters,
+    RemoveAllCountersFrom(Subject),
     SnapshotDoubleCreatures(CreatureFilter),
     PutCounters {
         subject: Subject,
@@ -1629,6 +1636,14 @@ impl Keywords {
     pub const fn union(self, other: Self) -> Self {
         Self(self.0 | other.0)
     }
+    /// Existing resolving instructions use these bits for rule restrictions,
+    /// never for a quoted ability grant. Static/printed uses stay removable.
+    pub(crate) const fn resolution_rules(self) -> Self {
+        Self(self.0 & (2048 | 16384 | 65536 | 131072 | 262144 | 2097152 | 4194304 | 8388608))
+    }
+    pub(crate) const fn without(self, other: Self) -> Self {
+        Self(self.0 & !other.0)
+    }
 }
 
 #[derive(Clone, Copy, Debug, Serialize)]
@@ -1863,6 +1878,30 @@ impl Card {
     pub(crate) fn additional_cost(self) -> Option<AdditionalCost> {
         generated::additional_cost(self)
     }
+    pub(crate) fn static_ability_groups(self) -> &'static [StaticAbilityGroup] {
+        authored::rules(self).map_or_else(
+            || {
+                let groups = generated::static_ability_groups(self);
+                if self.controlled_entry_untapped() != 0 {
+                    // These legacy providers were added after the original typed
+                    // origin table. Their sole static effect gets its own source-
+                    // local identity without interpreting English or card names.
+                    assert!(
+                        groups.is_empty(),
+                        "new typed provider needs explicit combined groups"
+                    );
+                    &[StaticAbilityGroup {
+                        line: 0,
+                        first_layer: AbilityLayer::Rule,
+                        fragments: &[StaticAbilityFragment::ControlledEntryUntapped],
+                    }]
+                } else {
+                    groups
+                }
+            },
+            |rules| rules.static_groups,
+        )
+    }
     pub(crate) fn live_static_effects(self) -> &'static [LiveStaticEffect] {
         generated::live_static_effects(self)
     }
@@ -1906,7 +1945,7 @@ impl Card {
         generated::role(self)
     }
     pub(crate) fn aura(self) -> Option<AuraSpec> {
-        generated::aura(self)
+        authored::rules(self).map_or_else(|| generated::aura(self), |rules| rules.aura)
     }
     pub(crate) fn attachment_bonus(self) -> Option<EquipmentSpec> {
         self.equipment().or_else(|| self.aura().map(|a| a.bonus))

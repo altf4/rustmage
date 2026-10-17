@@ -6,6 +6,7 @@ impl Game {
         self.state.static_sources.iter().any(|&id| {
             let object = &self.state.objects[id as usize];
             object.zone == Zone::Battlefield
+                && self.printed_abilities_available(id)
                 && object.controller == self.state.active
                 && object.controller != actor
                 && object.card.static_cast_restriction() & 1 != 0

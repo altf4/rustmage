@@ -66,9 +66,11 @@ impl Game {
                 batch.deaths.push(id);
             }
             if object.card.aura().is_some() {
-                if !object.attached_to.is_some_and(|target| {
-                    self.aura_can_enchant(object.card, object.controller, target)
-                }) {
+                if !self.printed_abilities_available(id)
+                    || !object.attached_to.is_some_and(|target| {
+                        self.aura_can_enchant(object.card, object.controller, target)
+                    })
+                {
                     batch.deaths.push(id);
                 }
             } else if let Some(target) = object.attached_to

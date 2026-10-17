@@ -74,7 +74,8 @@ impl Game {
         actor: Player,
         sorcery: bool,
     ) -> bool {
-        self.activation_guard_available(ability.guard, actor)
+        self.printed_abilities_available(card)
+            && self.activation_guard_available(ability.guard, actor)
             && Self::object_activation_available_with_kinds(
                 &self.state.objects[card as usize],
                 self.current_kinds(card),

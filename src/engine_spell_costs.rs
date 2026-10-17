@@ -290,7 +290,9 @@ impl Game {
             if object.controller != actor {
                 continue;
             }
-            for rule in object.card.cost_reductions() {
+            for (index, rule) in object.card.cost_reductions().iter().enumerate() {
+                if !self.continuous_fragment_available(source, |fragment| matches!(fragment,
+                    crate::cards::StaticAbilityFragment::CostReduction(slot, _) if usize::from(*slot) == index)) { continue; }
                 if !rule.source_only && applies(rule, source) {
                     reduction = reduction.saturating_add(amount(rule, source));
                 }

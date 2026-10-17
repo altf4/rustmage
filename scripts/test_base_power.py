@@ -104,8 +104,11 @@ class BasePowerCompilerTests(unittest.TestCase):
         physical = {c['oracle_id']: c['name'] for c in self.cards}
         parent = 'f35e95302aad7924be38def41598dcf9013c0fb7'
         before = canonical(subprocess.check_output(['git', '-C', str(g.ROOT), 'show', parent+':src/generated/catalogue.rs'], text=True),physical)
-        after = canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','2812c749b63b38d10572bf96baacd527464852de:src/generated/catalogue.rs'],text=True),physical)
+        after = canonical(subprocess.check_output(['git', '-C', str(g.ROOT), 'show', '9168218cce337b8f39ec85e4e1d227e6e4e8aa71:src/generated/catalogue.rs'], text=True), physical)
         current = canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+        for name in self.names: self.assertEqual(current['definitions'][name+'#0'], after['definitions'][name+'#0'])
+        for name in ['Kutzil, Malamet Exemplar','Voice of Victory']:
+            self.assertEqual(current['helpers'][('static_cast_restriction',name+'#0')], after['helpers'][('static_cast_restriction',name+'#0')])
         args = dict(changed={n+'#0'for n in self.names},added=set(),helpers={('static_cast_restriction',n+'#0')for n in ['Kutzil, Malamet Exemplar','Voice of Victory']},aliases={})
         proof=assert_union(before,after,**args)
         for name in self.names:self.assertEqual(current['definitions'][name+'#0'],after['definitions'][name+'#0'])
