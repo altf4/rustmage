@@ -3,10 +3,46 @@
   "catalogue_id": 871,
   "oracle_id": "c107e271-5741-4a84-bfc4-3bc322972d0d",
   "facts_sha256": "f958f0ec727eced33bc78fbbdf5631ad12b5f1bf6db14098bc327f49cfe31f17",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "845a4a8f4bc9775ea7ad79922a96a4aabebb81a35e50a15fd99874abc166ba97"
   },
-  "physical_metadata_sha256": "c28cde50b98b843d683e6d1f41f82f53d364f9cdafddc587c668e1dfaa498db3"
+  "physical_metadata_sha256": "c28cde50b98b843d683e6d1f41f82f53d364f9cdafddc587c668e1dfaa498db3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CourageousGoblin.java",
+  "java_sha256": "d5c0103006f574a655308992ccff06a0a5fba7b5031bcd7919c2da5205b1f80f",
+  "rules_tests": "src/engine_fdn_lords_six_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/FerociousCondition.java",
+      "sha256": "4cb67672f9434ee2230c941595cd3489a6b27658508e5cadaa3cecacbc8e84fa"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    }
+  ]
 }

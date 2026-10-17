@@ -5719,3 +5719,7 @@ mod fdn_tutor_tests;
 #[cfg(test)]
 #[path = "engine_fdn_life_graveyard_tests.rs"]
 mod fdn_life_graveyard_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_lords_six_tests.rs"]
+mod fdn_lords_six_tests;

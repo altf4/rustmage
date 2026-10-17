@@ -222,7 +222,7 @@ impl Game {
                 );
                 if targets_available && fundable() {
                     let done = if let Some(production) = ability.mana_production() {
-                        production.visit(|production| {
+                        production.in_world(self, card).visit(|production| {
                             emit(Action::AnnounceMana {
                                 card,
                                 ability: index as u16,
@@ -264,7 +264,7 @@ impl Game {
                                 return;
                             }
                             if let Some(production) = ability.mana_production() {
-                                done = production.visit(|production| {
+                                done = production.in_world(self, card).visit(|production| {
                                     emit(Action::ActivateMana {
                                         card,
                                         ability: index as u16,

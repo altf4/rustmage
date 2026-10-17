@@ -131,3 +131,37 @@ impl CharacteristicWorld for Game {
             .any(|attacker| attacker.card == id)
     }
 }
+
+impl ManaProduction {
+    /// Evaluate against the actual game or a speculative funding overlay.
+    pub(super) fn in_world<W: CharacteristicWorld + ?Sized>(
+        self,
+        world: &W,
+        source: CardId,
+    ) -> Self {
+        match self {
+            Self::CountSubtype { color, subtype } => {
+                let controller = world.object(source).controller;
+                let count = world
+                    .game()
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(id, _)| {
+                        let object = world.object(*id as CardId);
+                        object.zone == Zone::Battlefield
+                            && object.controller == controller
+                            && (object.card.has_subtype(subtype)
+                                || world.subtypes(*id as CardId).contains(subtype))
+                    })
+                    .count();
+                let mut mana = [0; 6];
+                mana[usize::from(color)] =
+                    u32::try_from(count).capacity("mana representation exhausted");
+                Self::Fixed(mana)
+            }
+            value => value,
+        }
+    }
+}

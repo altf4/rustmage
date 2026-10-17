@@ -195,11 +195,13 @@ pub(crate) enum PlayerSet {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ManaProduction {
     Fixed(Mana),
+    CountSubtype { color: u8, subtype: &'static str },
     Choice { mask: u8, amount: u32 },
 }
 impl ManaProduction {
     pub(crate) fn visit(self, mut emit: impl FnMut(Mana) -> bool) -> bool {
         match self {
+            Self::CountSubtype { .. } => panic!("dynamic mana requires a characteristic world"),
             Self::Fixed(mana) => emit(mana),
             Self::Choice { mask, amount } => {
                 for index in 0..6 {
@@ -1347,6 +1349,7 @@ pub(crate) enum DamageSubject {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum EntryPredicate {
     CreaturePowerAtMost(i32),
+    CreaturePowerAtLeast(i32),
     SubtypeAny(&'static [&'static str]),
     KindOrSubtype { kinds: u16, subtype: &'static str },
 }
@@ -1375,6 +1378,11 @@ pub(crate) enum TriggerCondition {
     /// A cast-event qualification, not an intervening-if resolution guard.
     DuringOpponentsTurn(&'static TriggerCondition),
     OncePerTurn(&'static TriggerCondition),
+    /// Qualification checked only when the event occurs.
+    When {
+        guard: StepGuard,
+        event: &'static TriggerCondition,
+    },
     InterveningIf {
         guard: StepGuard,
         event: &'static TriggerCondition,
@@ -1465,6 +1473,7 @@ pub(crate) enum TriggerCondition {
         include_source: bool,
     },
     OtherFilteredEntersYou(EntryPredicate),
+    FilteredEntersYou(EntryPredicate),
     OtherCreatureEntersYou,
     CreatureEnters {
         relation: CastRelation,
@@ -1488,6 +1497,7 @@ impl TriggerCondition {
             Self::Granted(e)
             | Self::OncePerTurn(e)
             | Self::DuringOpponentsTurn(e)
+            | Self::When { event: e, .. }
             | Self::InterveningIf { event: e, .. } => e.mana_spent_rule(),
             _ => None,
         }
@@ -1498,6 +1508,7 @@ impl TriggerCondition {
             Self::Granted(_) | Self::GrantedAttacks => true,
             Self::OncePerTurn(e)
             | Self::DuringOpponentsTurn(e)
+            | Self::When { event: e, .. }
             | Self::InterveningIf { event: e, .. }
             | Self::ManaSpent { event: e, .. } => e.is_granted(),
             _ => false,
@@ -1509,6 +1520,7 @@ impl TriggerCondition {
             Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::ManaSpent { event, .. }
+            | Self::When { event, .. }
             | Self::InterveningIf { event, .. } => event.requires_opponents_turn(),
             _ => false,
         }
@@ -1518,6 +1530,7 @@ impl TriggerCondition {
             Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
+            | Self::When { event, .. }
             | Self::InterveningIf { event, .. }
             | Self::ManaSpent { event, .. } => event.event(),
             event => event,
@@ -1527,6 +1540,7 @@ impl TriggerCondition {
         match self {
             Self::OncePerTurn(_) => true,
             Self::Granted(event)
+            | Self::When { event, .. }
             | Self::InterveningIf { event, .. }
             | Self::ManaSpent { event, .. }
             | Self::DuringOpponentsTurn(event) => event.once_per_turn(),

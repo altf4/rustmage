@@ -3,10 +3,56 @@
   "catalogue_id": 201,
   "oracle_id": "540693f3-985c-4a4a-945c-c957c5aad395",
   "facts_sha256": "6182eefc5a659618d9734a44ab260b08efcf31d24db67715de45e6ca522d1ece",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b40c764edbada0ce6d10815074768c1a0e769c7c6ea5fb47319ca19b069e340b"
   },
-  "physical_metadata_sha256": "98592bc006a56f9ca17551cc6e712148e497cb50161743fe897fdd745c072627"
+  "physical_metadata_sha256": "98592bc006a56f9ca17551cc6e712148e497cb50161743fe897fdd745c072627",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/ArbiterOfWoe.java",
+  "java_sha256": "b50740d91e1dd3d1d48e9bc0ca01155fe1c9c16f9d60fa5d6147d2fe82b32ae4",
+  "rules_tests": "src/engine_fdn_lords_six_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+      "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardEachPlayerEffect.java",
+      "sha256": "f8ba858157ec21e41dbda51ea2176cba7c3e46cd51af4ff57e12af803f8fa24c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ]
 }

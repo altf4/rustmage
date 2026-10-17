@@ -303,6 +303,7 @@ impl Game {
                     | TriggerCondition::Granted(_)
                     | TriggerCondition::OncePerTurn(_)
                     | TriggerCondition::DuringOpponentsTurn(_)
+                    | TriggerCondition::When { .. }
                     | TriggerCondition::InterveningIf { .. } => {
                         unreachable!("unwrapped event")
                     }
@@ -359,10 +360,18 @@ impl Game {
                                     && subtype.is_none_or(|t| entered.has_subtype(t))
                             }
                     }
-                    TriggerCondition::OtherFilteredEntersYou(predicate) => {
+                    TriggerCondition::OtherFilteredEntersYou(predicate)
+                    | TriggerCondition::FilteredEntersYou(predicate) => {
                         yours
-                            && !same
+                            && (!same
+                                || matches!(
+                                    ability.condition.event(),
+                                    TriggerCondition::FilteredEntersYou(_)
+                                ))
                             && match predicate {
+                                EntryPredicate::CreaturePowerAtLeast(minimum) => {
+                                    entered.is_creature() && entered.power >= i128::from(minimum)
+                                }
                                 EntryPredicate::CreaturePowerAtMost(maximum) => {
                                     entered.is_creature() && entered.power <= i128::from(maximum)
                                 }
@@ -500,7 +509,12 @@ impl Game {
             return false;
         }
 
-        if !self.trigger_guards_hold(
+        if !self.trigger_time_guards_hold(
+            condition,
+            source.controller,
+            source.reference,
+            source.tapped,
+        ) || !self.trigger_guards_hold(
             condition,
             source.controller,
             source.reference,
@@ -1631,7 +1645,8 @@ impl Game {
                         matches!(instruction, Instruction::Fight { .. }),
                     );
                 }
-                Instruction::AddMana(production) => match production {
+                Instruction::AddMana(production) => match production.in_world(self, item.card) {
+                    ManaProduction::CountSubtype { .. } => unreachable!("resolved production"),
                     ManaProduction::Fixed(mana) => self.add_mana(item.controller, mana),
                     ManaProduction::Choice { .. } => {
                         self.state.pending = Pending::EffectMana {
