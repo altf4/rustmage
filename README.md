@@ -98,6 +98,7 @@ PYTHONPATH=python python3 -m unittest discover -s python -p 'test_*.py' -v
 cargo run --release --bin benchmark -- 1000
 cargo run --release --example branch
 cargo run --release --example standard
+cargo run --release --example standard_job_select -- 100
 cargo run --release --example standard_library_selection -- 100
 cargo run --release --example standard_flashback -- 100
 cargo run --release --example standard_attack_declarations -- 100
