@@ -102,3 +102,15 @@ keyword tails remain unsupported pending their shared semantics. This is not
 main coverage or final paid acceptance; real paid native groups and actual-parent
 composition are next. The initial generator attempt found a keyword-mask lookup
 error before writing outputs; it was corrected before generating this catalogue.
+
+At58e1830 all seven focused native groups PASS0.16s, including real paid whole-body
+casting/Equip in both seats, Archon+Burden7b/7c composition, real Disenchant and
+Unsummon departures, and life changes/same-target re-equip/moved attachment against
+a genuinely created Cursed Role. Every action in the paid groups checks owned
+child replay, parent drop, restore, both observations, wrong actor and stale revision.
+All-target Clippy/fmt/generator consistency and all four source/compiler/preservation
+methods PASS;885 tracked inputs stayed fixed. All build outputs except verified
+shared libraries were removed at terminal completion. The complete native suite
+PASS at the earlier primitive-only ebacd75 is not relabeled as this admission build.
+Further paid Ward, non-Detective blocking, late crewed Vehicle, foreign controller,
+simultaneous conflicting setters and final optimized public workloads remain.
