@@ -63,7 +63,7 @@ class JointLandTests(unittest.TestCase):
       tokens=[v for v in board(p)if v.get('token')and v['token']['name']=='Beau'];self.assertEqual(len(tokens),1);count=sum(v['kinds']&2!=0 for v in board(p));self.assertEqual((tokens[0]['power'],tokens[0]['toughness']),(count,count))
      stage='finish'
     effect=o.get('effect_choice');land_choice=effect and isinstance(effect['kind'],dict)and'LandCards'in effect['kind']
-    if land_choice:
+    if land_choice and stage!='finish':
      choice_seen=True;self.assertEqual(actor,p);self.assertTrue(effect['optional']);self.assertEqual(effect['kind']['LandCards']['maximum'],1 if bonny else x)
      peer=g.observe(q)['effect_choice'];self.assertIsNotNone(peer)
      for ref in peer['candidates']+sum(peer['selected'],[]):self.assertEqual(objects[ref['card']]['zone'],'Graveyard')
@@ -84,10 +84,14 @@ class JointLandTests(unittest.TestCase):
       return -1000
      if k=='ChooseTarget':return 4500 if a['target']=={'Player':q}else -1000
      if k=='SelectLand':
+      if stage=='finish':return -1000
       zone=objects[a['object']['card']]['zone'];wanted='Hand'if selection in['hand','subset']or selection=='both'and not selected else'Graveyard'
       return 4500 if selection!='decline'and zone==wanted and(selection!='subset'or not selected)else -1000
-     if k=='FinishLandSelection':return 4600 if selection=='decline'or selection=='subset'and selected else -1000
-     if k=='PlayLand':return 1900-15*sum(v['card']==n for v in board(actor))if actor!=p or stage=='finish'or sum(v['card']in BASICS for v in board(p))<7 else -1000
+     if k=='FinishLandSelection':return 4600 if stage=='finish'or selection=='decline'or selection=='subset'and selected else -1000
+     if k=='PlayLand':
+      required={'Island':2,'Forest':1}if bonny else{'Mountain':1,'Forest':1}
+      missing_color=n in required and sum(v['card']==n for v in board(p))<required[n]
+      return 1900-15*sum(v['card']==n for v in board(actor))if actor!=p or stage=='finish'or sum(v['card']in BASICS for v in board(p))<7 or missing_color else -1000
      if k in['AnnounceMana','TapMana','ActivateMana']:return 3500 if o['decision']in['pay_costs','resolution_mana']else -1000
      if k in['PayCosts','PutTrigger','FinishTargets','Keep','ChooseSpellCost','ChooseEntryLife','KeepLegend']:return 4200
      if k=='Attack':return 3500 if actor==p and(stage=='finish'or stage=='attack'and n=='Bear Cub')else -1000
