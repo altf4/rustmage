@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "d078fdd57028ec462080f6fd25c7ca8cae06f7093eeff8ae60642a13936ee5b6",
+  "catalogue_version": "58a043432adce46ab17715a5f1439115d7ba0af5d77957af623305d2167494d5",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1999,
-  "implemented_total": 2005,
+  "implemented_standard_cards": 2011,
+  "implemented_total": 2017,
   "token_definitions": 97,
   "emblem_definitions": 1,
   "adventure_definitions": 40,
@@ -43,8 +43,8 @@
     },
     "ecc": {
       "total": 7,
-      "gated": 4,
-      "complete": 3
+      "gated": 3,
+      "complete": 4
     },
     "ecl": {
       "total": 267,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 259,
-      "gated": 168
+      "complete": 269,
+      "gated": 158
     },
     "fin": {
       "total": 305,
@@ -87,8 +87,8 @@
     },
     "hoc": {
       "total": 5,
-      "complete": 3,
-      "gated": 2
+      "complete": 4,
+      "gated": 1
     },
     "inr": {
       "total": 4,
@@ -1819,8 +1819,8 @@
     {
       "name": "Arbiter of Woe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/arbiter_of_woe.rs",
       "set": "fdn"
     },
@@ -7067,8 +7067,8 @@
     {
       "name": "Corsair Captain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/corsair_captain.rs",
       "set": "fdn"
     },
@@ -7179,8 +7179,8 @@
     {
       "name": "Courageous Goblin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/courageous_goblin.rs",
       "set": "fdn"
     },
@@ -7531,8 +7531,8 @@
     {
       "name": "Cryptic Caves",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/cryptic_caves.rs",
       "set": "fdn"
     },
@@ -10603,8 +10603,8 @@
     {
       "name": "Elvish Archdruid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hoc/elvish_archdruid.rs",
       "set": "hoc"
     },
@@ -12107,8 +12107,8 @@
     {
       "name": "Felidar Savior",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/felidar_savior.rs",
       "set": "fdn"
     },
@@ -13699,8 +13699,8 @@
     {
       "name": "Garruk's Uprising",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecc/garruk_s_uprising.rs",
       "set": "ecc"
     },
@@ -23611,8 +23611,8 @@
     {
       "name": "New Horizons",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/new_horizons.rs",
       "set": "fdn"
     },
@@ -25587,8 +25587,8 @@
     {
       "name": "Pirate's Cutlass",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/pirate_s_cutlass.rs",
       "set": "fdn"
     },
@@ -25947,8 +25947,8 @@
     {
       "name": "Prayer of Binding",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/prayer_of_binding.rs",
       "set": "fdn"
     },
@@ -29083,8 +29083,8 @@
     {
       "name": "Ruby, Daring Tracker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/ruby_daring_tracker.rs",
       "set": "fdn"
     },
@@ -33051,8 +33051,8 @@
     {
       "name": "Starlight Snare",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/starlight_snare.rs",
       "set": "fdn"
     },

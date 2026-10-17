@@ -3140,8 +3140,9 @@ impl Game {
             Action::TapGrantedMana {
                 card, production, ..
             } => {
-                self.state.objects[card as usize].tapped = true;
+                self.tap_objects(&[card]);
                 self.add_mana(actor, production);
+                self.state.passes = 0;
             }
             Action::TapMana { card } => {
                 self.tap_objects(&[card]);

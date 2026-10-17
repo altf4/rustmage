@@ -538,3 +538,35 @@ fn granted_mana_layer_six_obeys_recipient_removal_timestamps() {
         assert_eq!(result.objects[2].mana.len(), usize::from(grant_later));
     }
 }
+
+#[test]
+fn horizons_mana_breaks_consecutive_passes_before_stack_resolution() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let land = named(&mut g, p.other(), "Forest", Zone::Battlefield);
+        let aura = horizons(&mut g, p, land);
+        let body = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let spell = named(&mut g, p, "Giant Growth", Zone::Hand);
+        cast(&mut g, spell, None, &[Target::Card(body)]);
+        checked(&mut g, Action::Pass);
+        assert_eq!(g.actor(), Some(p.other()));
+        let grantor = g.object_ref(aura);
+        checked(
+            &mut g,
+            Action::TapGrantedMana {
+                card: land,
+                grantor,
+                production: [0, 0, 0, 0, 2, 0],
+            },
+        );
+        assert!(g.object_view(land).tapped);
+        assert_eq!(g.state.passes, 0);
+        checked(&mut g, Action::Pass);
+        assert_eq!(g.actor(), Some(p));
+        assert_eq!(g.object_view(spell).zone, Zone::Stack);
+        assert_eq!(g.stats(body).power, 2);
+        checked(&mut g, Action::Pass);
+        assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+        assert_eq!(g.stats(body).power, 5);
+    }
+}
