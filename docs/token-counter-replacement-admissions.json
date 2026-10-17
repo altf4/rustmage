@@ -1,0 +1,568 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-16",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+  "shared_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/MageInt.java",
+      "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/MageObject.java",
+      "java_sha256": "061a5412bcd48f83d961a10c987ddb072ab3ed3712ba70135305fb88565fa55a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+      "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+      "java_sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenAttachSourceEffect.java",
+      "java_sha256": "84a5d669cabd468eb41ca13d77f05eb715b6a25d2c0b19bea64e9e48efaed3cd"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/replacement/CreateTwiceThatManyTokensEffect.java",
+      "java_sha256": "69a7a85dbf7e5537041f4d1b6b633f76dfb0f73b429ef33dac9bcc648ec419c1"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/replacement/ModifyCountersAddedEffect.java",
+      "java_sha256": "4270c73a12ca9f6cefe9fba581df74efee744c1b9bac0e83fe2e1337789dabf7"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "java_sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/JobSelectAbility.java",
+      "java_sha256": "996307c9ee31b28c7dbda62505b97f7bdeb512f5dbadfc2168de3ddbc1982380"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "java_sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+      "java_sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/OffspringAbility.java",
+      "java_sha256": "9e3620de5724a8d48e2058c815a76cf870ee74852e8002ec4e05e6e5151fad9b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+      "java_sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+      "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+      "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+      "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+      "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+      "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+      "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+      "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/counters/Counter.java",
+      "java_sha256": "6d4e0bf164c0dcff96733c77953362f8a7e3550166f1fd6deaf335ddb0b99ede"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+      "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/counters/Counters.java",
+      "java_sha256": "b9e042f9af94a36bcfa431de6c94188a5854266a919f5d2ea26d805cecd0e42b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/FilterCard.java",
+      "java_sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+      "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+      "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+      "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/Game.java",
+      "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/events/CreateTokenEvent.java",
+      "java_sha256": "5fbe74789f7171db3634e42f002a8c32aa3e832fa2ab98ba7527f02d86c56d55"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/events/GameEvent.java",
+      "java_sha256": "3df463d33eff295607e700578e547cef896cf183e1dba3c41131a353f53cb7dc"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+      "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/Dragon55Token.java",
+      "java_sha256": "e0aac85574a7722ee8e5177208ec041fe1136b87e92395bd382911e19011fa82"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/FrogGreenToken.java",
+      "java_sha256": "2265bb94c21de8537dd351a179c56523b3fb2052dc5cad2b3ed83a5bd9f7581c"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/MutagenToken.java",
+      "java_sha256": "bcb05068d2fd40b12c614b7be40e1fc353c9b5398e72ce493fa9c24e0354644d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/Token.java",
+      "java_sha256": "77098d7376c01bf204d0fed3cd83eb2a99b55b03525dfeff9188e1dbce27903f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "java_sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/util/CardUtil.java",
+      "java_sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    }
+  ],
+  "cards": [
+    {
+      "name": "Doubling Season",
+      "mana_cost": "{4}{G}",
+      "oracle_text": "If an effect would create one or more tokens under your control, it creates twice that many of those tokens instead.\nIf an effect would put one or more counters on a permanent you control, it puts twice that many of those counters on that permanent instead.",
+      "type_line": "Enchantment",
+      "power": null,
+      "toughness": null,
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DoublingSeason.java",
+          "java_sha256": "72181a61bc8290fe500a73ffccd70f93a0b51c38c154be4e8b43f1c24ea23fe1"
+        }
+      ]
+    },
+    {
+      "name": "Exalted Sunborn",
+      "mana_cost": "{3}{W}{W}",
+      "oracle_text": "Flying, lifelink\nIf one or more tokens would be created under your control, twice that many of those tokens are created instead.\nWarp {1}{W} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "type_line": "Creature — Angel Wizard",
+      "power": "4",
+      "toughness": "5",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/ExaltedSunborn.java",
+          "java_sha256": "2359969079993a60354e63688432736b64ea06f4f843d89c6daa516f2724e225"
+        }
+      ]
+    },
+    {
+      "name": "Loading Zone",
+      "mana_cost": "{3}{G}",
+      "oracle_text": "If one or more counters would be put on a creature, Spacecraft, or Planet you control, twice that many of each of those kinds of counters are put on it instead.\nWarp {G} (You may cast this card from your hand for its warp cost. Exile this enchantment at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "type_line": "Enchantment",
+      "power": null,
+      "toughness": null,
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LoadingZone.java",
+          "java_sha256": "d1d3d2af4d64b14f71563b159fd599e47f22cdc3ae4f3d9a9a53186ed912ce08"
+        }
+      ]
+    },
+    {
+      "name": "Michelangelo, Weirdness to 11",
+      "mana_cost": "{1}{G}",
+      "oracle_text": "When Michelangelo enters, create a Mutagen token. (It's an artifact with \"{1}, {T}, Sacrifice this token: Put a +1/+1 counter on target creature. Activate only as a sorcery.\")\nIf one or more +1/+1 counters would be put on a creature you control, that many plus one +1/+1 counters are put on it instead.",
+      "type_line": "Legendary Creature — Mutant Ninja Turtle",
+      "power": "1",
+      "toughness": "1",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MichelangeloWeirdnessTo11.java",
+          "java_sha256": "010841c0e966c0be76c6ea6460a9f2da922457aaa1b6121a3bd4843b62dfbf98"
+        }
+      ]
+    },
+    {
+      "name": "Yoshimaru, Beloved Companion",
+      "mana_cost": "{2}{W}",
+      "oracle_text": "If one or more +1/+1 counters would be put on a creature you control, that many plus one +1/+1 counters are put on it instead.\n{6}: Put a +1/+1 counter on target legendary creature.",
+      "type_line": "Legendary Creature — Dog",
+      "power": "2",
+      "toughness": "2",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/y/YoshimaruBelovedCompanion.java",
+          "java_sha256": "3456921fecb1298d7a598efa5aa3098ef7f6a82146725c3bdc66b13434a0a0c7"
+        }
+      ]
+    },
+    {
+      "name": "Caradora, Heart of Alacria",
+      "mana_cost": "{2}{G}{W}",
+      "oracle_text": "When Caradora enters, you may search your library for a Mount or Vehicle card, reveal it, put it into your hand, then shuffle.\nIf one or more +1/+1 counters would be put on a creature or Vehicle you control, that many plus one +1/+1 counters are put on it instead.",
+      "type_line": "Legendary Creature — Human Knight",
+      "power": "4",
+      "toughness": "2",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CaradoraHeartOfAlacria.java",
+          "java_sha256": "055fe29793347a5f6fb81a1a338be7ff2ad10b02bb3c25f7f166f0fe09c7b599"
+        }
+      ]
+    },
+    {
+      "name": "Quina, Qu Gourmet",
+      "mana_cost": "{2}{G}",
+      "oracle_text": "If one or more tokens would be created under your control, those tokens plus a 1/1 green Frog creature token are created instead.\n{2}, Sacrifice a Frog: Put a +1/+1 counter on Quina.",
+      "type_line": "Legendary Creature — Qu",
+      "power": "2",
+      "toughness": "3",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/q/QuinaQuGourmet.java",
+          "java_sha256": "600cce3f7045f0fb2b3a114be02664224709a9303f60eea46047ae6e1aede789"
+        }
+      ]
+    },
+    {
+      "name": "Draconic Visitor",
+      "mana_cost": "{3}{R}{R}",
+      "oracle_text": "Flying\nIf one or more artifact tokens would be created under your control, that many 5/5 red Dragon creature tokens with flying are created instead.",
+      "type_line": "Creature — Dragon",
+      "power": "5",
+      "toughness": "5",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DraconicVisitor.java",
+          "java_sha256": "fbd4640192d37caf906c209c4d06f2eb3453207575921ec4783038a6f0d2ddac"
+        }
+      ]
+    },
+    {
+      "name": "Bartolomé del Presidio",
+      "mana_cost": "{W}{B}",
+      "oracle_text": "Sacrifice another creature or artifact: Put a +1/+1 counter on Bartolomé del Presidio.",
+      "type_line": "Legendary Creature — Vampire Knight",
+      "power": "2",
+      "toughness": "1",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BartolomeDelPresidio.java",
+          "java_sha256": "02c0470f4d019ed0cd8a50d48e5563073126ae5b513a0c9077ea473d32daf0f5"
+        }
+      ]
+    }
+  ],
+  "remaining": [
+    {
+      "name": "Annie Joins Up",
+      "mana_cost": "{1}{R}{G}{W}",
+      "oracle_text": "When Annie Joins Up enters, it deals 5 damage to target creature or planeswalker an opponent controls.\nIf a triggered ability of a legendary creature you control triggers, that ability triggers an additional time.",
+      "type_line": "Legendary Enchantment",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AnnieJoinsUp.java",
+          "java_sha256": "4c6f28eb2f79497eb763bf9665ad3821dd8cbfe611e818a748f2171e35f8f7ab"
+        }
+      ],
+      "remaining_dependency": "Triggered-ability duplication and complete independent residuals; replacement ordering alone does not implement this."
+    },
+    {
+      "name": "Bard, King of Dale",
+      "mana_cost": "{4}{W}{U}",
+      "oracle_text": "Reach, vigilance\nIf you would draw a card except the first one you draw in each of your draw steps, draw two cards instead.\nIf one or more tokens would be created under your control, twice that many of those tokens are created instead.",
+      "type_line": "Legendary Creature — Human Noble Archer",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BardKingOfDale.java",
+          "java_sha256": "7b535ab4dd7b853a109eeb5743c36a8e3861e4e5b0abac95c3ab71399f6decf8"
+        }
+      ],
+      "remaining_dependency": "Draw replacement or remaining full draw/history/activated body; no line stripping."
+    },
+    {
+      "name": "Case of the Pilfered Proof",
+      "mana_cost": "{1}{W}",
+      "oracle_text": "Whenever a Detective you control enters or is turned face up, put a +1/+1 counter on it.\nTo solve — You control three or more Detectives. (If unsolved, solve at the beginning of your end step.)\nSolved — If one or more tokens would be created under your control, those tokens plus a Clue token are created instead. (It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+      "type_line": "Enchantment — Case",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CaseOfThePilferedProof.java",
+          "java_sha256": "32973a8e1e819c45c8774a072160247274fecd0a3fdeaf4acfb3bfc253f17963"
+        }
+      ],
+      "remaining_dependency": "Draw replacement or remaining full draw/history/activated body; no line stripping."
+    },
+    {
+      "name": "Delney, Streetwise Lookout",
+      "mana_cost": "{2}{W}",
+      "oracle_text": "Creatures you control with power 2 or less can't be blocked by creatures with power 3 or greater.\nIf a triggered ability of a creature you control with power 2 or less triggers, that ability triggers an additional time.",
+      "type_line": "Legendary Creature — Human Scout",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DelneyStreetwiseLookout.java",
+          "java_sha256": "738c9b80fff88276514d7617c1fb6e304cdbb31422f76d9390f01481b5843bf8"
+        }
+      ],
+      "remaining_dependency": "Triggered-ability duplication and complete independent residuals; replacement ordering alone does not implement this."
+    },
+    {
+      "name": "Doc Samson, Super Psychiatrist",
+      "mana_cost": "{4}{G}",
+      "oracle_text": "If you would put one or more counters on a permanent you control, put that many plus one of each of those kinds of counters on that permanent instead.\n{T}: Add X mana of any one color, where X is Doc Samson's power.",
+      "type_line": "Legendary Creature — Gamma Doctor Hero",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DocSamsonSuperPsychiatrist.java",
+          "java_sha256": "d4a56da881cd4dab11fcf32028e1e16c06bdcb5b547c96bc6e0c7ad961d66673"
+        }
+      ],
+      "remaining_dependency": "Additional full residuals or a different replacement event family; exact whole body remains gated."
+    },
+    {
+      "name": "Elspeth, Storm Slayer",
+      "mana_cost": "{3}{W}{W}",
+      "oracle_text": "If one or more tokens would be created under your control, twice that many of those tokens are created instead.\n+1: Create a 1/1 white Soldier creature token.\n0: Put a +1/+1 counter on each creature you control. Those creatures gain flying until your next turn.\n−3: Destroy target creature an opponent controls with mana value 3 or greater.",
+      "type_line": "Legendary Planeswalker — Elspeth",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/ElspethStormSlayer.java",
+          "java_sha256": "4da6366c832b938decfdd785a90f4a0122ee21e70f937dfabe2724c527064f10"
+        }
+      ],
+      "remaining_dependency": "Bounded expiration across the next turn, loyalty abilities and remaining full body."
+    },
+    {
+      "name": "Innkeeper's Talent",
+      "mana_cost": "{1}{G}",
+      "oracle_text": "(Gain the next level as a sorcery to add its ability.)\nAt the beginning of combat on your turn, put a +1/+1 counter on target creature you control.\n{G}: Level 2\nPermanents you control with counters on them have ward {1}.\n{3}{G}: Level 3\nIf you would put one or more counters on a permanent or player, put twice that many of each of those kinds of counters on that permanent or player instead.",
+      "type_line": "Enchantment — Class",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/i/InnkeepersTalent.java",
+          "java_sha256": "1f8cfa23ec437abd243392ba9499a281b7fa0bd646a1c8e9bcca6803859184fe"
+        }
+      ],
+      "remaining_dependency": "Additional full residuals or a different replacement event family; exact whole body remains gated."
+    },
+    {
+      "name": "Katara, the Fearless",
+      "mana_cost": "{G}{W}{U}",
+      "oracle_text": "If a triggered ability of an Ally you control triggers, that ability triggers an additional time.",
+      "type_line": "Legendary Creature — Human Warrior Ally",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KataraTheFearless.java",
+          "java_sha256": "4b24db57c0201fc2ce10d8d24b6c5828271d0e296b47dcfbb06d93abbc4b4d98"
+        }
+      ],
+      "remaining_dependency": "Triggered-ability duplication and complete independent residuals; replacement ordering alone does not implement this."
+    },
+    {
+      "name": "Prairie Dog",
+      "mana_cost": "{1}{W}",
+      "oracle_text": "Lifelink\nAt the beginning of your end step, if you haven't cast a spell from your hand this turn, put a +1/+1 counter on this creature.\n{4}{W}: Until end of turn, if you would put one or more +1/+1 counters on a creature you control, put that many plus one +1/+1 counters on it instead.",
+      "type_line": "Creature — Squirrel",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PrairieDog.java",
+          "java_sha256": "197a0b973da3d23485f3385093f8483a548078b50f93c148bf635d8b4ea4722e"
+        }
+      ],
+      "remaining_dependency": "Additional full residuals or a different replacement event family; exact whole body remains gated."
+    },
+    {
+      "name": "Roaming Throne",
+      "mana_cost": "{4}",
+      "oracle_text": "Ward {2}\nAs this creature enters, choose a creature type.\nThis creature is the chosen type in addition to its other types.\nIf a triggered ability of another creature you control of the chosen type triggers, it triggers an additional time.",
+      "type_line": "Artifact Creature — Golem",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RoamingThrone.java",
+          "java_sha256": "fe277b630c7b055d2929bf79aab6bd477ee67f325cd18746fdcb02cfc89fa991"
+        }
+      ],
+      "remaining_dependency": "Triggered-ability duplication and complete independent residuals; replacement ordering alone does not implement this."
+    },
+    {
+      "name": "Splinter, Radical Rat",
+      "mana_cost": "{1}{W/B}{W/B}",
+      "oracle_text": "If a triggered ability of a Ninja creature you control triggers, that ability triggers an additional time.\n{1}{U}: Target Ninja can't be blocked this turn.",
+      "type_line": "Legendary Creature — Mutant Ninja Rat",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SplinterRadicalRat.java",
+          "java_sha256": "c5d26839d28750e753ca6924e5af8b743c04a1330474a35e133e155361218401"
+        }
+      ],
+      "remaining_dependency": "Triggered-ability duplication and complete independent residuals; replacement ordering alone does not implement this."
+    },
+    {
+      "name": "Starfield Vocalist",
+      "mana_cost": "{3}{U}",
+      "oracle_text": "If a permanent entering the battlefield causes a triggered ability of a permanent you control to trigger, that ability triggers an additional time.\nWarp {1}{U} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "type_line": "Creature — Human Bard",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StarfieldVocalist.java",
+          "java_sha256": "b77346a3c2792abb65b1ef2636b56555c6507cf106027f02b9effe38840a40c3"
+        }
+      ],
+      "remaining_dependency": "Triggered-ability duplication and complete independent residuals; replacement ordering alone does not implement this."
+    },
+    {
+      "name": "The Earth Crystal",
+      "mana_cost": "{2}{G}{G}",
+      "oracle_text": "Green spells you cast cost {1} less to cast.\nIf one or more +1/+1 counters would be put on a creature you control, twice that many +1/+1 counters are put on that creature instead.\n{4}{G}{G}, {T}: Distribute two +1/+1 counters among one or two target creatures you control.",
+      "type_line": "Legendary Artifact",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TheEarthCrystal.java",
+          "java_sha256": "cf1f77fb17313c6b614e96a6a5e363f33d9fff448f6d378e9c09cb4e5371a226"
+        }
+      ],
+      "remaining_dependency": "Additional full residuals or a different replacement event family; exact whole body remains gated."
+    },
+    {
+      "name": "The Masamune",
+      "mana_cost": "{3}",
+      "oracle_text": "As long as equipped creature is attacking, it has first strike and must be blocked if able.\nEquipped creature has \"If a creature dying causes a triggered ability of this creature or an emblem you own to trigger, that ability triggers an additional time.\"\nEquip {2}",
+      "type_line": "Legendary Artifact — Equipment",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TheMasamune.java",
+          "java_sha256": "65aa5a219db951cb84758336f3100036ef000cb432ea038d86280c62d9c3af77"
+        }
+      ],
+      "remaining_dependency": "Triggered-ability duplication and complete independent residuals; replacement ordering alone does not implement this."
+    },
+    {
+      "name": "Traveling Chocobo",
+      "mana_cost": "{2}{G}",
+      "oracle_text": "You may look at the top card of your library any time.\nYou may play lands and cast Bird spells from the top of your library.\nIf a land or Bird you control entering the battlefield causes a triggered ability of a permanent you control to trigger, that ability triggers an additional time.",
+      "type_line": "Creature — Bird",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TravelingChocobo.java",
+          "java_sha256": "dde7573ee08ff01202f28de9064611037e6ada8689f91fab07125b9b8f276a6c"
+        }
+      ],
+      "remaining_dependency": "Triggered-ability duplication and complete independent residuals; replacement ordering alone does not implement this."
+    },
+    {
+      "name": "Twinflame Travelers",
+      "mana_cost": "{2}{U}{R}",
+      "oracle_text": "Flying\nIf a triggered ability of another Elemental you control triggers, it triggers an additional time.",
+      "type_line": "Creature — Elemental Sorcerer",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TwinflameTravelers.java",
+          "java_sha256": "7428d72049c1d050fbb9a021d1088899a74fb88025e2939084583caa80ad132b"
+        }
+      ],
+      "remaining_dependency": "Triggered-ability duplication and complete independent residuals; replacement ordering alone does not implement this."
+    },
+    {
+      "name": "Windcrag Siege",
+      "mana_cost": "{1}{R}{W}",
+      "oracle_text": "As this enchantment enters, choose Mardu or Jeskai.\n• Mardu — If a creature attacking causes a triggered ability of a permanent you control to trigger, that ability triggers an additional time.\n• Jeskai — At the beginning of your upkeep, create a 1/1 red Goblin creature token. It gains lifelink and haste until end of turn.",
+      "type_line": "Enchantment",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WindcragSiege.java",
+          "java_sha256": "fca0dd40aeb3e2aa50640a738d9bc0b009bde0a02fdf90bc783ca25056417018"
+        }
+      ],
+      "remaining_dependency": "Triggered-ability duplication and complete independent residuals; replacement ordering alone does not implement this."
+    },
+    {
+      "name": "Wizard's Staff",
+      "mana_cost": "{1}{U}",
+      "oracle_text": "Equipped creature has prowess. (Whenever its controller casts a noncreature spell, that creature gets +1/+1 until end of turn.)\nIf a triggered ability of equipped creature triggers, that ability triggers an additional time.\nEquip Wizard {1}\nEquip {3}",
+      "type_line": "Artifact — Equipment",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WizardsStaff.java",
+          "java_sha256": "56593fe8c0b7924c727a969d92ce8bedf82f68f39a8c7993a64c8195d7580037"
+        }
+      ],
+      "remaining_dependency": "Triggered-ability duplication and complete independent residuals; replacement ordering alone does not implement this."
+    }
+  ]
+}

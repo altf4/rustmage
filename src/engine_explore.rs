@@ -70,7 +70,7 @@ impl Game {
         assert!(!d.sources.contains(&id));
         d.sources.push(id);
     }
-    fn explore_completed(
+    pub(super) fn explore_completed(
         &mut self,
         explorer: ExplorerView,
         revealed: Option<RevealedLibraryCard>,
@@ -158,9 +158,16 @@ impl Game {
         let counter_added = self.on_battlefield(explorer.object.card)
             && self.object_ref(explorer.object.card) == explorer.object;
         if counter_added {
-            self.state.objects[explorer.object.card as usize]
-                .counters
-                .add(CounterKind::PlusOne, 1);
+            self.effect_counter(
+                explorer.object.card,
+                CounterKind::PlusOne,
+                1,
+                if revealed.is_some() {
+                    replacements::ResumeMode::Pending
+                } else {
+                    replacements::ResumeMode::Program
+                },
+            );
         }
         if let Some(revealed) = revealed {
             self.state.resolving.as_mut().unwrap().explore = Some(Box::new(ExploreChoiceView {
@@ -171,8 +178,13 @@ impl Game {
             self.state.pending = Pending::Explore { player };
             true
         } else {
-            self.explore_completed(explorer, None, None, None, counter_added);
-            false
+            if self.state.replacements.is_some() {
+                self.defer_empty_explore(explorer, counter_added);
+                true
+            } else {
+                self.explore_completed(explorer, None, None, None, counter_added);
+                false
+            }
         }
     }
     pub(super) fn finish_explore(&mut self, graveyard: bool) {

@@ -101,8 +101,12 @@ impl Game {
         }
         if !self.state.objects[id as usize]
             .card
-            .static_modifiers()
+            .replacement_effects()
             .is_empty()
+            || !self.state.objects[id as usize]
+                .card
+                .static_modifiers()
+                .is_empty()
             || !self.state.objects[id as usize]
                 .card
                 .keyword_grants()

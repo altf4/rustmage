@@ -352,6 +352,7 @@ impl Game {
                     TargetPredicate::Permanent => {
                         object.card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
                     }
+                    TargetPredicate::Legendary => object.card.info().legendary,
                     TargetPredicate::Nonbasic => !object.card.is_basic_land(),
                     TargetPredicate::NonOutlaw => {
                         !["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]

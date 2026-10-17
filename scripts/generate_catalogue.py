@@ -852,6 +852,7 @@ def search_filter(noun):
         'instant card or a card with flash':'AnyOf(&[SearchFilter::Kinds(8), SearchFilter::Keyword(Keywords(32))])',
         'basic Forest card':'AllOf(&[SearchFilter::BasicLand, SearchFilter::Subtype("Forest")])',
         'Spider Hero card':'AllOf(&[SearchFilter::Subtype("Spider"), SearchFilter::Subtype("Hero")])',
+        'Mount or Vehicle card':'AnyOf(&[SearchFilter::Subtype("Mount"), SearchFilter::Subtype("Vehicle")])',
         'Equipment card':'Subtype("Equipment")','Mountain card':'Subtype("Mountain")',
         'card named Dragonstorm Globe or Boulderborn Dragon':'AnyOf(&[SearchFilter::Name("Dragonstorm Globe"), SearchFilter::Name("Boulderborn Dragon")])',
         'card named Magitek Infantry':'Name("Magitek Infantry")',
@@ -916,6 +917,7 @@ def sacrifice_spec(text):
         subject,tokens={'creature token':'creature','artifact token':'artifact','token':'permanent'}[subject],'Some(true)'
     if subject in ('food','clue','treasure','lander'):
         subtype,subject='Some('+json.dumps(subject.capitalize())+')','artifact'
+    if subject=='frog':subtype,subject='Some("Frog")','permanent'
     if subject not in kinds: return None
     filt=(f'SacrificeFilter {{ artifact_enchantment_or_token: false, keywords: Keywords({keyword}), source_only: {str(source_only).lower()}, kinds: {kinds[subject]}, nonland: {str(nonland).lower()}, '
           f'other: {str(other).lower()}, tokens: {tokens}, subtype: {subtype} }}')
@@ -1678,6 +1680,7 @@ for _name, _kinds, _relation, _tapped, _minimum, _maximum in [
                           f'tapped: {str(_tapped).lower()}, min_mana: {_minimum}, max_mana: {_maximum} }}')
 TARGET_RULES['CreatureEnchantmentPlaneswalker']='TargetRule::Object { zone: TargetZone::Battlefield, kinds: 97, relation: -1, other: false, nonland: false, tapped: false, min_mana: 0, max_mana: u32::MAX }'
 TARGET_RULES['DefendingCreature'] = 'TargetRule::DefendingCreature'
+TARGET_RULES['LegendaryCreature'] = filtered_target('Creature','Legendary')
 TARGET_RULES['PirateYou'] = filtered_target('CreatureYou','Subtype("Pirate")')
 TARGET_RULES['CaveGraveYou'] = 'TargetRule::Filtered { base: &TargetRule::Object { zone: TargetZone::Graveyard, kinds: 0, relation: 0, other: false, nonland: false, tapped: false, min_mana: 0, max_mana: u32::MAX }, predicate: &TargetPredicate::Subtype("Cave") }'
 TARGET_RULES['VampireYou'] = ('TargetRule::Filtered { base: &TargetRule::Object { zone: TargetZone::Battlefield, kinds: 0, relation: 0, other: false, nonland: false, tapped: false, min_mana: 0, max_mana: 4294967295 }, predicate: &TargetPredicate::Subtype("Vampire") }')
@@ -1959,6 +1962,8 @@ def targeted_program(text):
         return spec,[counter_instruction('Targets',m[1],m[2])]
     if text=='double the number of each kind of counter on up to two target creatures and/or artifacts you control.':
         return ('ArtifactCreatureYou',0,2),['DoubleCounters']
+    if m:=re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on target legendary creature\.',text):
+        return 'LegendaryCreature',[counter_instruction('Targets',m[1],m[2])]
     if counter:=counter_program(text): return counter
     if text=='exile up to one target card from a graveyard.': return ('CardGrave',0,1),['Exile']
     if text=='exile up to two target cards from graveyards.': return ('CardGrave',0,2),['Exile']
@@ -3132,6 +3137,8 @@ def permanent_program_template(card):
         # an initial pronoun in this activation therefore denotes the source.
         effect_text = re.sub(r'^[Ii]t deals ', 'this permanent deals ', effect_text)
         for alias in aliases:
+            if m:=re.fullmatch(r'Put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on '+re.escape(alias)+r'\.',effect_text):
+                effect_text='Put '+m[1]+' '+m[2]+' counter'+('' if m[1] in ('a','one') else 's')+' on this creature.'
             if effect_text == 'Return '+alias+" to its owner's hand.":
                 effect_text = "Return this permanent to its owner's hand."
         source_return = source_return_program(effect_text)
@@ -3521,6 +3528,36 @@ def rust_activations(abilities):
 def rust_program(program):
     return '&[' + ', '.join('Instruction::' + instruction for instruction in program) + ']'
 
+def extract_replacements(card):
+    """Whole mandatory battlefield replacement sentences, never name dispatch."""
+    if (card.get('layout')!='normal' or not isinstance(card.get('oracle_text'),str)
+            or fixed_cost(card.get('mana_cost','')) is None
+            or spell_cost_options(card.get('mana_cost','')) is None):return card,[]
+    def counter(filter_,kind=None,factor=1,add=0,effect=False):
+        return ('ReplacementSpec::Counters { filter: ReplacementFilter::'+filter_+
+                ', kind: '+('Some(CounterKind::'+kind+')' if kind else 'None')+
+                f', factor: {factor}, add: {add}, effects_only: {str(effect).lower()}'+' }')
+    fixed={
+        'If an effect would create one or more tokens under your control, it creates twice that many of those tokens instead.':'ReplacementSpec::DoubleTokens { effects_only: true }',
+        'If one or more tokens would be created under your control, twice that many of those tokens are created instead.':'ReplacementSpec::DoubleTokens { effects_only: false }',
+        'If an effect would put one or more counters on a permanent you control, it puts twice that many of those counters on that permanent instead.':counter('Permanent',factor=2,effect=True),
+        'If one or more counters would be put on a creature, Spacecraft, or Planet you control, twice that many of each of those kinds of counters are put on it instead.':counter('CreatureSpacecraftPlanet',factor=2),
+        'If one or more +1/+1 counters would be put on a creature you control, that many plus one +1/+1 counters are put on it instead.':counter('Creature','PlusOne',add=1),
+        'If one or more +1/+1 counters would be put on a creature or Vehicle you control, that many plus one +1/+1 counters are put on it instead.':counter('CreatureOrVehicle','PlusOne',add=1),
+    }
+    residual=[];specs=[]
+    for line in card['oracle_text'].splitlines():
+        if line in fixed:specs.append(fixed[line]);continue
+        if line=='If one or more tokens would be created under your control, those tokens plus a 1/1 green Frog creature token are created instead.':
+            token=token_program('create a 1/1 green Frog creature token.')[0]
+            specs.append('ReplacementSpec::AddToken('+re.search(r'token: (__TOKEN_[0-9a-f]+__)',token)[1]+')');continue
+        if line=='If one or more artifact tokens would be created under your control, that many 5/5 red Dragon creature tokens with flying are created instead.':
+            token=token_program('create a 5/5 red Dragon creature token with flying.')[0]
+            specs.append('ReplacementSpec::ReplaceArtifactTokens('+re.search(r'token: (__TOKEN_[0-9a-f]+__)',token)[1]+')');continue
+        residual.append(line)
+    return dict(card,oracle_text='\n'.join(residual)),specs
+
+
 def compile_catalogue(snapshot, target):
     TOKEN_DEFS.clear()
     EMBLEM_DEFS.clear()
@@ -3580,6 +3617,7 @@ def compile_catalogue(snapshot, target):
     attached_subtype_rows = []
     attached_turn_rows = []
     aura_rows = []
+    replacement_rows=[]
     for index, name in enumerate(names):
         card, uncounterable = extract_uncounterable(cards.get(name, {}))
         card, entry_suppression = extract_entry_trigger_suppression(card)
@@ -3594,6 +3632,7 @@ def compile_catalogue(snapshot, target):
         card, plot = extract_plot(card)
         warp_seen = any(line.startswith('Warp') for line in card.get('oracle_text','').splitlines())
         card, warp = extract_warp(card)
+        card, replacements = extract_replacements(card)
         card, extra_counter_grants = extract_counter_grants(card) if kicker is None and offspring is None else (card,[])
         card, evidence = extract_evidence(card)
         card, additional = extract_additional_cost(card)
@@ -3714,6 +3753,11 @@ def compile_catalogue(snapshot, target):
         # Later fixed-cost selectors must never revive a rejected variable-cost body.
         if '{X}' in card.get('mana_cost', '') and scalar is None:
             effect = 'Unsupported'
+        if replacements and (plot_seen or convoke or cycling or bargain or evidence is not None
+                or any(v is not None for v in (offspring,kicker,additional,flashback,target_reduction,scalar))
+                or reductions or dynamic or scaling or creature_entry!='Never' or entry_counters
+                or any(line.startswith(('Saddle ','Mobilize ')) or 'endures ' in line for line in card.get('oracle_text','').splitlines())):
+            effect='Unsupported'
         if effect != 'Unsupported':
             if creature_entry != 'Never':entry=creature_entry
             activations = [*activations, *cycling]
@@ -3751,6 +3795,7 @@ def compile_catalogue(snapshot, target):
                 raise ValueError(f'invalid or missing starting loyalty: {name}')
             loyalty_rows.append(f'        {index} => {int(value)},')
         if effect != 'Unsupported':
+            if replacements:replacement_rows.append(f'        {index} => &[{", ".join(replacements)}],')
             supported.append(index)
             if job is not None:
                 attached_subtype_rows.append(f'        {index} => Some({json.dumps(job[1])}),')
@@ -3818,7 +3863,7 @@ def compile_catalogue(snapshot, target):
                          'implementation': 'bargain_template' if bargain and effect != 'Unsupported' else 'explicit' if name in legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'aura_template' if aura else 'equipment_template' if equipment else 'permanent_template' if permanent else 'static_template' if static else None})
 
     # Only factories referenced by wholly accepted cards enter the executable catalogue.
-    used_tokens = sorted(set(re.findall(r'__TOKEN_([0-9a-f]+)__', '\n'.join(definitions))))
+    used_tokens = sorted(set(re.findall(r'__TOKEN_([0-9a-f]+)__', '\n'.join(definitions+replacement_rows))))
     token_base = len(names)
     token_infos = []
     for offset, key in enumerate(used_tokens):
@@ -3872,6 +3917,7 @@ def compile_catalogue(snapshot, target):
         return re.sub(r'__TOKEN_([0-9a-f]+)__',lambda match:f'Card({token_indices[match[1]]})',row)
     definitions=[replace_token_markers(row) for row in definitions]
     offspring_copy_rows=[replace_token_markers(row) for row in offspring_copy_rows]
+    replacement_rows=[replace_token_markers(row) for row in replacement_rows]
     used_emblems=sorted(set(re.findall(r'__EMBLEM_([0-9a-f]+)__', '\n'.join(definitions))))
     emblem_base=len(names)
     emblem_infos=[]
@@ -3903,6 +3949,7 @@ def compile_catalogue(snapshot, target):
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn plot_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *plot_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn warp_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *warp_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', "pub(super) fn replacement_effects(card: Card) -> &'static [ReplacementSpec] {", '    match card.0 {', *replacement_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn attached_subtype(card: Card) -> Option<&'static str> {", '    match card.0 {', *attached_subtype_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn attached_turn_keywords(card: Card) -> Keywords {', '    match card.0 {', *attached_turn_rows, '        _ => Keywords::NONE,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn dynamic_stats(card: Card) -> Option<DynamicStats> {', '    match card.0 {', *dynamic_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', "pub(super) fn scaling_modifiers(card: Card) -> &'static [ScalingModifier] {", '    match card.0 {', *scaling_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn entry_trigger_suppression(card: Card) -> u16 {', '    match card.0 {', *entry_suppression_rows, '        _ => 0,', '    }', '}', '']
