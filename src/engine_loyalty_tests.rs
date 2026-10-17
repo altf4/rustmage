@@ -1,5 +1,5 @@
-//! The walker objects below are explicit future-card fixtures. Their printed
-//! abilities remain unsupported and submitted decks continue to reject them.
+//! Walker fixtures exercise the loyalty and damage kernel independently of
+//! support admission. Printed abilities have separate card-specific scenarios.
 use super::activations::counter_payments;
 use super::tests::{act, cast, scenario, spawn};
 use super::*;
@@ -9,7 +9,6 @@ fn named(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
 fn walker(g: &mut Game, p: Player, name: &str) -> CardId {
     let card = Card::from_name(name).unwrap();
     assert!(card.is_planeswalker());
-    assert!(!card.is_supported());
     let id = spawn(g, p, card, Zone::Hand);
     g.move_object(id, Zone::Battlefield);
     assert_eq!(g.object_view(id).counters.loyalty, card.starting_loyalty());

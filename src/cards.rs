@@ -1158,6 +1158,9 @@ pub(crate) enum ReplacementFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ReplacementSpec {
+    DoubleCreatureDamage,
+    DoubleOpponentDamage,
+    PreventOtherCreatureNoncombatDamage,
     Counters {
         filter: ReplacementFilter,
         kind: Option<CounterKind>,
@@ -1430,6 +1433,7 @@ pub(crate) enum DamageQualification {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum DamageSubject {
+    ControlledNoncombatSources,
     Source,
     Attached,
     Creatures {

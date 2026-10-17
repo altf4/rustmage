@@ -1,11 +1,11 @@
-//! Future-walker fixtures exercise the combat kernel only. Their missing printed
-//! abilities are not executed and submitted decks still reject those cards.
+//! Walker fixtures exercise the combat kernel independently of support admission.
+//! Printed abilities have separate card-specific scenarios.
 use super::tests::{act, scenario, spawn};
 use super::*;
 
 fn walker(g: &mut Game, owner: Player, name: &str) -> CardId {
     let card = Card::from_name(name).unwrap();
-    assert!(!card.is_supported());
+    assert!(card.is_planeswalker());
     let id = spawn(g, owner, card, Zone::Hand);
     g.move_object(id, Zone::Battlefield);
     id
