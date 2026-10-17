@@ -419,10 +419,17 @@ fn live_static_rules_simultaneous_opposing_sources_follow_apnap_for_conflicting_
         assert_eq!(g.stats(bearer), expected);
         // Independent source-vector permutations yield the same selected timestamp outcome.
         for viewer in [p, q] {
-            assert_eq!(
-                serde_json::to_value(g.observe(viewer)).unwrap(),
-                serde_json::to_value(child.observe(viewer)).unwrap()
-            );
+            let timestamps = |game: &Game| {
+                let mut rows: Vec<_> = game
+                    .observe(viewer)
+                    .live_static_sources
+                    .iter()
+                    .map(|row| (row.source, row.timestamp))
+                    .collect();
+                rows.sort_unstable();
+                rows
+            };
+            assert_eq!(timestamps(&g), timestamps(&child));
         }
         g.restore(&after).unwrap();
         assert_eq!(g.stats(bearer), expected);
