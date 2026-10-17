@@ -9,7 +9,7 @@ pub(super) struct EntryMove {
     pub tapped: bool,
     pub attachment: Option<ObjectRef>,
     /// Owned completion tied to this move's actual successful public result.
-    pub role_after: Option<Card>,
+    pub role_after: Option<(Card, Player)>,
     pub attacking: Option<CombatDefender>,
     pub skipped: bool,
     pub reveal_hand: bool,
@@ -325,9 +325,9 @@ impl Game {
             event.evidence_collected = movement.evidence_collected;
             if event.moved {
                 if event.destination == Zone::Battlefield
-                    && let Some(token) = movement.role_after
+                    && let Some((token, creator)) = movement.role_after
                 {
-                    role_results.push((movement.controller, token, event.after));
+                    role_results.push((creator, token, event.after));
                 }
                 if event.destination == Zone::Battlefield
                     && let Some(defender) = movement.attacking

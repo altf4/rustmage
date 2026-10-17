@@ -693,7 +693,7 @@ fn role_move_completion_requires_actual_successful_battlefield_destination() {
             let target = named(&mut g, p, "Bear Cub", Zone::Graveyard);
             let before = g.object_ref(target);
             let mut movement = g.entry_move(target, Zone::Battlefield, false);
-            movement.role_after = Some(factory(RoleKind::YoungHero));
+            movement.role_after = Some((factory(RoleKind::YoungHero), p));
             movement.skipped = skipped;
             if !skipped {
                 movement.destination = Zone::Exile;
@@ -712,6 +712,28 @@ fn role_move_completion_requires_actual_successful_battlefield_destination() {
                 assert_eq!(g.object_ref(target), before);
             }
         }
+    }
+}
+
+#[test]
+fn successful_return_role_creator_is_independent_of_returned_creature_controller() {
+    for creator in [Player::P0, Player::P1] {
+        let mut g = setup(creator);
+        let owner = creator.other();
+        let target = named(&mut g, owner, "Bear Cub", Zone::Graveyard);
+        let mut movement = g.entry_move(target, Zone::Battlefield, false);
+        movement.controller = owner;
+        movement.role_after = Some((factory(RoleKind::Wicked), creator));
+        g.stage_entries(vec![movement], None);
+        g.advance_entries();
+        g.advance_replacements(false);
+        settle(&mut g);
+        assert_eq!(g.object_view(target).controller, owner);
+        let roles = &g.state.roles.as_ref().unwrap().attached;
+        assert_eq!(roles.len(), 1);
+        assert_eq!(roles[0].recipient, g.object_ref(target));
+        let aura = g.object_view(roles[0].aura.card);
+        assert_eq!((aura.owner, aura.controller), (creator, creator));
     }
 }
 

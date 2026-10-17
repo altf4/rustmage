@@ -2085,7 +2085,7 @@ impl Game {
                             Target::Card(id) => {
                                 let mut movement = self.entry_move(id, Zone::Battlefield, false);
                                 movement.controller = item.controller;
-                                movement.role_after = Some(token);
+                                movement.role_after = Some((token, item.controller));
                                 Some(movement)
                             }
                             _ => None,
