@@ -143,6 +143,10 @@ def _continuous_groups(card, parser):
             _, value = extract(one)
             if value is not None and value != 0:
                 fragments.extend(Fragment(kind, Layer.RULE, row) for row in (value if plural else [value]))
+        if job_header and original == 'During your turn, equipped creature has flying.':
+            whole_job = parser.job_select_template(card)
+            if whole_job is not None and whole_job[2]:
+                fragments.append(Fragment('attached_turn_keywords', Layer.ABILITY, whole_job[2]))
         if equipment and original not in equips and original not in job_header:
             if job_header and 'in addition to its other types' in original:
                 # Job parsing allocates immutable token factories. Projection

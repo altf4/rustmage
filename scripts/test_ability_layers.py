@@ -96,6 +96,51 @@ class AbilityLayerIdentityTests(unittest.TestCase):
         # also reconstruct; this is not an exemption for future admissions.
         self.assertGreaterEqual(checked, 221)
 
+    def test_all_attachment_aggregates_live_clauses_and_separate_turn_grants_reconstruct(self):
+        cards = list(self.cards.values())
+        physical = {c['oracle_id']: c['name'] for c in cards}
+        catalogue = canonical((g.ROOT / 'src/generated/catalogue.rs').read_text(), physical)
+        checked = 0
+        for card in cards:
+            key = card['name'] + '#0'
+            expected = {fn: payload for (fn, definition), payload in catalogue['helpers'].items()
+                        if definition == key and fn in {'equipment', 'aura', 'attached_turn_keywords', 'live_static_effects'}}
+            if not expected:
+                continue
+            groups = continuous_groups(card, g)
+            fragments = [f for group in groups for f in group.fragments]
+            for family, payload in expected.items():
+                with self.subTest(card=card['name'], family=family):
+                    if family in ('equipment', 'aura'):
+                        stats = tuple(sum(f.payload[axis] for f in fragments if f.kind == 'attachment_stats') for axis in (0, 1))
+                        keywords = 0
+                        for fragment in fragments:
+                            if fragment.kind == 'attachment_keywords':
+                                keywords |= fragment.payload
+                        match = re.search(r'stats: Stats \{ power: (-?[0-9]+), toughness: (-?[0-9]+) \}, keywords: Keywords\(([0-9]+)\)', payload)
+                        self.assertIsNotNone(match)
+                        self.assertEqual((stats[0], stats[1], keywords), tuple(map(int, match.groups())))
+                    elif family == 'attached_turn_keywords':
+                        values = [f.payload for f in fragments if f.kind == family]
+                        self.assertEqual(len(values), 1)
+                        self.assertEqual('Keywords(' + str(values[0]) + '),', payload)
+                    else:
+                        # One effect can contribute several layer fragments;
+                        # reconstruct its immutable clause exactly once.
+                        values = []
+                        for fragment in fragments:
+                            if fragment.kind.startswith('live_static_') and fragment.payload not in values:
+                                values.append(fragment.payload)
+                        self.assertEqual('&[' + ', '.join(values) + '],', payload)
+                    checked += 1
+        self.assertGreater(checked, 50)
+        dragoon = self.groups("Dragoon's Lance")
+        typed = next(group for group in dragoon if any(f.kind == 'attached_subtype' for f in group.fragments))
+        turn = next(group for group in dragoon if any(f.kind == 'attached_turn_keywords' for f in group.fragments))
+        self.assertNotEqual(typed.line, turn.line)
+        self.assertEqual(typed.first_layer, Layer.TYPE)
+        self.assertEqual(turn.first_layer, Layer.ABILITY)
+
     def test_actual_live_static_parent_keeps_archon_group_and_later_only_providers(self):
         for name, first in [('Maha, Its Feathers Night', Layer.BASE), ('Aettir and Priwen', Layer.BASE), ('Archon of the Wild Rose', Layer.ABILITY), ('Burden of Proof', Layer.BASE)]:
             with self.subTest(name=name):
