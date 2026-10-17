@@ -33,6 +33,9 @@ impl Game {
                 a.item.cast.is_some_and(|c| c.flash_surcharge),
             );
         }
+        if a.cost.is_none() {
+            base = Self::with_tiered_mana(base, &a.item).expect("validated selected Tiered cost");
+        }
         if a.forage
             .as_ref()
             .is_some_and(|f| f.route == Some(ForageRoute::Black))

@@ -38,6 +38,8 @@ mod cast_payments;
 mod mobilize;
 #[path = "engine_plot.rs"]
 mod plot;
+#[path = "engine_tiered.rs"]
+mod tiered;
 #[path = "engine_warp.rs"]
 mod warp;
 pub use cast_payments::{CastPaymentEvent, ManaPaymentDomain};
@@ -513,6 +515,7 @@ pub enum LibraryDestination {
     Top,
     Bottom,
     Graveyard,
+    Shuffle,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -1358,6 +1361,8 @@ pub struct SpellCostChoiceView {
 pub struct ModeChoiceView {
     pub mode: u16,
     pub text: &'static str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_mana: Option<ManaCost>,
 }
 
 /// Private cards and partial order of a resolving scry/surveil choice.
@@ -2414,6 +2419,9 @@ impl Game {
                             obj.card.cost_options()
                         };
                         let can_fund = costs.into_iter().any(|cost| {
+                            if obj.card.tiered_costs().is_some() {
+                                return self.tiered_initial_fundable(actor, card, cost);
+                            }
                             if target_cost {
                                 return self.initial_target_cost_fundable(actor, card, cost);
                             }
@@ -2782,19 +2790,11 @@ impl Game {
                     }
                 }
             }
-            Pending::Modes { player } => {
+            Pending::Modes { .. } => {
                 let item = &s.announcing.as_ref().unwrap().item;
                 let modes = item.modes().expect("modal announcement");
-                for (index, mode) in modes.iter().enumerate() {
-                    if self.targets_available(mode.targets, player, item.target_source())
-                        && self.announcement_target_fundable(
-                            s.announcing.as_ref().unwrap(),
-                            Some(mode.targets),
-                            None,
-                            None,
-                            None,
-                            false,
-                        )
+                for (index, _) in modes.iter().enumerate() {
+                    if self.mode_choice_fundable(s.announcing.as_ref().unwrap(), index)
                         && emit(Action::ChooseMode { mode: index as u16 })
                     {
                         return true;
@@ -4772,20 +4772,13 @@ impl Game {
                 modes
                     .iter()
                     .enumerate()
-                    .filter(|(_, mode)| {
-                        self.targets_available(mode.targets, item.controller, item.target_source())
-                            && self.announcement_target_fundable(
-                                s.announcing.as_ref().unwrap(),
-                                Some(mode.targets),
-                                None,
-                                None,
-                                None,
-                                false,
-                            )
+                    .filter(|(index, _)| {
+                        self.mode_choice_fundable(s.announcing.as_ref().unwrap(), *index)
                     })
                     .map(|(index, mode)| ModeChoiceView {
                         mode: index as u16,
                         text: mode.text,
+                        additional_mana: item.source_card.tiered_costs().map(|costs| costs[index]),
                     })
                     .collect()
             } else {
@@ -5656,3 +5649,7 @@ mod base_stats_tests;
 #[cfg(test)]
 #[path = "engine_live_static_rules_tests.rs"]
 mod live_static_rules_tests;
+
+#[cfg(test)]
+#[path = "engine_tiered_tests.rs"]
+mod tiered_tests;

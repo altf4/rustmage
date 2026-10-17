@@ -151,3 +151,15 @@ timestamp and changes actual Detective blocking legality. They passed0.07s in
 independent e9 review before adoption. Additional late real Crew and simultaneous
 opposing Maha/Archon tests exercise current creature membership and APNAP-conflicting
 axes. These newly adopted tests await execution on the composed source.
+
+## Final schema99 parent composition
+
+The delivery now composes actual main61a7d0c (1,968/schema99), yielding1,972
+prototype executable Standard bodies/schema100. Parent Tiered cost recipes,
+resolved-expression state and all policies are preserved. The first45-method
+composed compiler gate ran44PASS/one historical-context failure: Tiered's exact
+eight-body proof compared its old schema98 parent with every later admission.
+That proof now pins the merged Tiered delivery61a7d0c and separately requires all
+eight current programs and six recipes to remain identical, with its mutant
+control retained. The new strict actual99-parent four-body proof remains complete.
+No final composed runtime/public success is claimed before the frozen gates finish.

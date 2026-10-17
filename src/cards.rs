@@ -686,6 +686,10 @@ pub(crate) enum Instruction {
     TopLibrary,
     AdditionalLandPlays(u64),
     OwnerLibrary,
+    ShuffleTargetIntoLibrary,
+    MultiplyTargetStats {
+        factor: u8,
+    },
     ReturnToBattlefield,
     ReturnToBattlefieldTapped,
     Destroy,
@@ -1832,9 +1836,11 @@ impl Card {
     pub(crate) fn additional_cost(self) -> Option<AdditionalCost> {
         generated::additional_cost(self)
     }
-    /// No new body is admitted until complete lowering and timestamp batching exist.
     pub(crate) fn live_static_effects(self) -> &'static [LiveStaticEffect] {
         generated::live_static_effects(self)
+    }
+    pub(crate) fn tiered_costs(self) -> Option<&'static [ManaCost]> {
+        generated::tiered_costs(self)
     }
     pub(crate) fn base_stat_setter(self) -> Option<BaseStatSetter> {
         generated::base_stat_setter(self)

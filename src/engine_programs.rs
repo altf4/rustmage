@@ -87,6 +87,7 @@ impl Game {
             LibraryDestination::Top => choice.top.push(card),
             LibraryDestination::Bottom => choice.bottom.push(card),
             LibraryDestination::Graveyard => choice.graveyard.push(card),
+            LibraryDestination::Shuffle => unreachable!("shuffle is not an arrangement action"),
         }
         if !choice.remaining.is_empty() {
             return;
@@ -1315,6 +1316,10 @@ impl Game {
                             );
                         }
                     }
+                }
+                Instruction::ShuffleTargetIntoLibrary => self.shuffle_target_into_library(&item),
+                Instruction::MultiplyTargetStats { factor } => {
+                    self.multiply_target_stats(&item, factor)
                 }
                 Instruction::OwnerLibrary => {
                     if self.start_target_library(&item) {

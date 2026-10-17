@@ -50,12 +50,12 @@ class ResolvedBaseTests(unittest.TestCase):
   for name in INITIAL_NAMES:self.assertEqual(current['definitions'][name+'#0'],b['definitions'][name+'#0'])
   mutant=copy.deepcopy(b);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(a,mutant,changed={n+'#0'for n in INITIAL_NAMES},added=set(),helpers=set(),aliases={})
- def test_actual_composed_parent_has_exactly_five_new_whole_bodies(self):
-  physical={c['oracle_id']:c['name']for c in self.all};a=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',COMPOSED_PARENT+':src/generated/catalogue.rs'],text=True),physical);b=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','b7e053d7c9503e7e59f1871e348f17dfb9c16b4e:src/generated/catalogue.rs'],text=True),physical);current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+ def test_historical_actual_parent_has_exactly_five_bodies_and_current_owned_programs(self):
+  physical={c['oracle_id']:c['name']for c in self.all};a=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',COMPOSED_PARENT+':src/generated/catalogue.rs'],text=True),physical);b=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','ba3752a456908e0bee67a86e88864b14ba1312df:src/generated/catalogue.rs'],text=True),physical);current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  for name in NAMES:self.assertEqual(current['definitions'][name+'#0'],b['definitions'][name+'#0'])
+  self.assertEqual(current['helpers'][('equipment','Atomic Microsizer#0')],b['helpers'][('equipment','Atomic Microsizer#0')])
   helpers={('equipment','Atomic Microsizer#0')}
   proof=assert_union(a,b,changed={n+'#0'for n in NAMES},added=set(),helpers=helpers,aliases={});self.assertEqual(proof['preserved_definitions'],5327)
-  for name in NAMES:self.assertEqual(current['definitions'][name+'#0'],b['definitions'][name+'#0'])
-  for helper in helpers:self.assertEqual(current['helpers'][helper],b['helpers'][helper])
   mutant=copy.deepcopy(b);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(a,mutant,changed={n+'#0'for n in NAMES},added=set(),helpers=helpers,aliases={})
  def test_complete_pinned_java_and_direct_imports_are_audit_only(self):
