@@ -144,6 +144,8 @@ fn declarations(g: &Game, id: CardId, p: Player, attack: bool, block: bool) {
         "Ajani, Caller of the Pride",
         Zone::Battlefield,
     );
+    a.state.objects[walker as usize].counters.loyalty =
+        a.state.objects[walker as usize].card.starting_loyalty();
     for action in [
         Action::Attack { card: id },
         Action::AttackPlaneswalker {
