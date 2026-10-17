@@ -5114,3 +5114,7 @@ mod omen_tests;
 #[cfg(test)]
 #[path = "engine_composition_tests.rs"]
 mod composition_tests;
+
+#[cfg(test)]
+#[path = "engine_selected_x_tests.rs"]
+mod selected_x_tests;

@@ -541,6 +541,13 @@ pub(crate) enum Instruction {
         power: i32,
         toughness: i32,
     },
+    GrowCreaturesScaled {
+        filter: CreatureFilter,
+        excluding_subtype: Option<&'static str>,
+        amount: AmountValue,
+        power: i32,
+        toughness: i32,
+    },
     Counter,
     Exile,
     ExileUntilSourceLeaves,

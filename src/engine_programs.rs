@@ -1786,6 +1786,35 @@ impl Game {
                         self.state.objects[id as usize].growth += delta;
                     }
                 }
+                Instruction::GrowCreaturesScaled {
+                    filter,
+                    excluding_subtype,
+                    amount,
+                    power,
+                    toughness,
+                } => {
+                    let amount = i128::try_from(self.item_amount(amount, &item))
+                        .capacity("growth amount representation exhausted");
+                    let delta = Stats {
+                        power: i128::from(power)
+                            .checked_mul(amount)
+                            .capacity("power representation exhausted"),
+                        toughness: i128::from(toughness)
+                            .checked_mul(amount)
+                            .capacity("toughness representation exhausted"),
+                    };
+                    let affected: Vec<_> = (0..self.state.objects.len())
+                        .map(|id| id as CardId)
+                        .filter(|&id| {
+                            self.creature_matches(filter, item.controller, item.object, id)
+                                && excluding_subtype
+                                    .is_none_or(|subtype| !self.has_subtype(id, subtype))
+                        })
+                        .collect();
+                    for id in affected {
+                        self.state.objects[id as usize].growth += delta;
+                    }
+                }
                 Instruction::GrowCreatures {
                     filter,
                     power,

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b8e290118bc4d0bbd025444a8a6e762e15bff642c8aab00c8e5573436c346921",
+  "catalogue_version": "1d3f3408f58a677b764cbfeb82c833c285d1e9397dab5c24ba7b8bdecee9871a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1811,
-  "implemented_total": 1817,
+  "implemented_standard_cards": 1812,
+  "implemented_total": 1818,
   "token_definitions": 87,
   "emblem_definitions": 1,
   "cards": [
@@ -22312,8 +22312,8 @@
     {
       "name": "Scavenger Regent // Exude Toxin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Scavenger's Talent",
@@ -31107,5 +31107,5 @@
     }
   ],
   "adventure_definitions": 19,
-  "omen_definitions": 10
+  "omen_definitions": 11
 }

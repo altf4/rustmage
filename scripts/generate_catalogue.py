@@ -1128,6 +1128,14 @@ def scalar_x_body(card):
         "counter target spell unless its controller pays {x}. if that spell is countered this way, exile it instead of putting it into its owner's graveyard.":('Spell',['CounterUnlessPayScaled { amount: '+x+', exile: true }']),
         'this spell deals x damage to any target. draw two cards, then discard a card.':('Any',['DamageScaled('+x+')','Draw(PlayerSet::Controller, 2)','Discard(PlayerSet::Controller, 1)']),
     }
+    if m := re.fullmatch(r'each non-([a-z]+) creature gets -x/-x until end of turn\.', text):
+        # Detection may use normalized text; unknown raw parentheses are never
+        # authenticated by this new full-body grammar.
+        if '(' in card['oracle_text'] or ')' in card['oracle_text']:return None
+        subtype=next((name for name in CREATURE_TYPE_NAMES if name.casefold()==m[1]),None)
+        if subtype is None:return None
+        filt=creature_filter('creatures')
+        return 'Spell',0,[],('None',[f'GrowCreaturesScaled {{ filter: {filt}, excluding_subtype: Some({json.dumps(subtype)}), amount: {x}, power: -1, toughness: -1 }}']),False
     if text in bodies:
         target,program=bodies[text];return 'Spell',0,[],(target,program),False
     if text=='this spell deals x damage to any target.\n'+choco.lower():
@@ -3727,7 +3735,11 @@ def adventure_faces(card, mechanic="Adventure"):
         if not all(isinstance(face.get(k), str) for k in ('name','mana_cost','type_line','oracle_text')):
             return None
         if position and spell_cost_options(face['mana_cost']) is None:
-            return None
+            # Existing scalar programs support one explicit X plus a fixed cost.
+            # The complete scalar body must still compile before the pair admits.
+            scalar_cost = face['mana_cost']
+            if scalar_cost.count('{X}') != 1 or fixed_cost(scalar_cost.replace('{X}', '') or '{0}') is None:
+                return None
         text = face['oracle_text']
         if position and mechanic == 'Adventure' and '(Then ' in text and not re.search(r' \(Then exile this card\. You may (?:cast the (?:creature|artifact|enchantment)|play the land) later from exile\.\)$', text):
             return None

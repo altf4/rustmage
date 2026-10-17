@@ -792,8 +792,7 @@
           "oracle_text": "Each non-Dragon creature gets -X/-X until end of turn. (Then shuffle this card into its owner's library.)"
         }
       ],
-      "status": "gated_incomplete_residual",
-      "remaining_obligation": "Chosen-inset variable X declaration/funding plus all non-Dragon -X/-X.",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/s/ScavengerRegent.java",
