@@ -414,7 +414,7 @@ fn normal_only_permission_survives_cleanup_but_retains_land_limits_and_actor() {
         let id = spawn(&mut g, p, parent, Zone::Hand);
         act(&mut g, Action::AnnounceAdventure { card: id });
         settle(&mut g);
-        let permission = g.state.adventures.as_ref().unwrap().permissions[0].clone();
+        let permission = g.state.adventures.as_ref().unwrap().permissions[0];
         // Indefinite Adventure grants do not use the cleanup deadline registry.
         g.state.step = Step::Cleanup;
         g.finish_cleanup();
