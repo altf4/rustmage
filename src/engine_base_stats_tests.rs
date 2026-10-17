@@ -569,3 +569,5 @@ fn primitive_axes_cda_overflow_boundary_and_sparse_owned_heap_are_exact() {
         );
     }
 }
+
+include!("engine_resolved_base_stats_cases.rs");

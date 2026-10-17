@@ -398,6 +398,7 @@ impl Game {
                     }
                 };
                 if matched && self.queue_zone_trigger(source, index, event) {
+                    self.bind_stat_subject(event.after, source.card.triggers()[index].program);
                     if same && source.card.x_symbols() > 0 {
                         self.state.pending_triggers.last_mut().unwrap().x = Some(event.x);
                     }
@@ -1823,6 +1824,13 @@ impl Game {
                     power,
                     toughness,
                 } => self.set_base_stats(&item, subject, power, toughness),
+                Instruction::SetResolvedBaseStats {
+                    subject,
+                    power,
+                    toughness,
+                } => {
+                    self.set_resolved_base_stats(&item, subject, power, toughness);
+                }
                 Instruction::Grow {
                     subject,
                     power,

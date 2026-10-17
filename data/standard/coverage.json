@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "63abf3157e96f91ef208ddc8f03b0622573794046284775baf40df6495bdfce8",
+  "catalogue_version": "5881c61304e2243d0b001696082cc3163ab65ae2d9bffd340cdd0704078c8c17",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1913,
-  "implemented_total": 1919,
+  "implemented_standard_cards": 1916,
+  "implemented_total": 1922,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -2278,8 +2278,8 @@
     {
       "name": "Belligerent Yearling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Belligerent of the Ball",
@@ -10240,8 +10240,8 @@
     {
       "name": "Genemorph Imago",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "General Traag, Heart of Stone",
@@ -17050,8 +17050,8 @@
     {
       "name": "Moon Girl and Devil Dinosaur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Moon-Vigil Adherents",

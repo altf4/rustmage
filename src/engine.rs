@@ -5,9 +5,10 @@ use crate::cards::{
     CounterSubject, Counters, CreatureFilter, DamageQualification, DamageSubject, Effect,
     EffectChoiceKind, EmblemInfo, EntryCounterAmount, EntryPredicate, EntryTapped, Instruction,
     ManaCost, ManaProduction, MillAmount, MilledCount, MilledDestination, MilledFilter,
-    MilledSelectionSpec, PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec, SpellMode,
-    StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetGroupConstraint, TargetPlan,
-    TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
+    MilledSelectionSpec, PlayerSet, RecoveryFilter, ResolvedStatValue, SacrificeFilter, SearchSpec,
+    SpellMode, StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetGroupConstraint,
+    TargetPlan, TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep,
+    payments,
 };
 #[path = "engine_milled_selection.rs"]
 mod milled_selection;
@@ -24,7 +25,7 @@ pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 93;
+pub const OBSERVATION_SCHEMA: u32 = 98;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -119,7 +120,7 @@ mod sba;
 pub use roles::{RoleGroupView, RoleTimestampView};
 #[path = "engine_base_stats.rs"]
 mod base_stats;
-pub use base_stats::BaseStatsEffectView;
+pub use base_stats::{BaseStatsEffectView, ResolvedStatSubjectView};
 #[path = "engine_search.rs"]
 mod search;
 pub use explore::{ExploreChoiceView, ExploreEventView, ExplorerView, RevealedLibraryCard};
@@ -1456,6 +1457,7 @@ pub struct Observation {
     pub role_choices: Vec<RoleGroupView>,
     pub role_timestamps: Vec<RoleTimestampView>,
     pub base_stat_effects: Vec<BaseStatsEffectView>,
+    pub resolved_stat_subjects: Vec<ResolvedStatSubjectView>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
@@ -3710,6 +3712,7 @@ impl Game {
                 .capacity("creature death history exhausted");
         }
         if before.zone == Zone::Battlefield {
+            self.capture_stat_subject_departure(&before);
             self.forget_vehicle_animation(before.reference);
             self.state.saddled.retain(|r| *r != before.reference);
         }
@@ -4514,6 +4517,10 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.base_stats.clone()),
+            resolved_stat_subjects: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.stat_subjects.clone()),
             role_timestamps: s
                 .roles
                 .as_ref()

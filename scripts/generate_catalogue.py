@@ -78,6 +78,15 @@ def base_stat_program(text):
     """Whole constant 7b setters; each axis is independent of additive bonuses."""
     if not isinstance(text,str) or not text:return None
     text=normalize_duration(text[0].lower()+text[1:])
+    if m:=re.fullmatch(r"this creature's base power and toughness become (-?[0-9]+)/(-?[0-9]+) and (?:it|they) gains? (.+) until end of turn\.",text):
+        text=f'this creature has base power and toughness {m[1]}/{m[2]} and gains {m[3]} until end of turn.'
+    if m:=re.fullmatch(r'target creature has base power and toughness (-?[0-9]+)/(-?[0-9]+) until end of turn\. If you control ([a-z]+|[0-9]+) or more lands, that creature has base power and toughness (-?[0-9]+)/(-?[0-9]+) until end of turn instead\.',text):
+        threshold=COUNT_WORDS.get(m[3],int(m[3]) if m[3].isdigit() else None)
+        values=[int(m[i]) for i in (1,2,4,5)]
+        if threshold is None or threshold>65535 or any(not -(2**127)<=v<2**127 for v in values):return None
+        count='StatValue::Count(CountFilter { zone: CountZone::Battlefield, relation: 0, kind: 2, exclude: 0, subtype: None, basic: false, other: false, cards_only: false })'
+        expr=lambda yes,no:'Some(ResolvedStatValue::Threshold { value: '+count+', minimum: '+str(threshold)+', yes: '+str(yes)+', no: '+str(no)+' })'
+        return 'Creature',['SetResolvedBaseStats { subject: Subject::Targets, power: '+expr(values[2],values[0])+', toughness: '+expr(values[3],values[1])+' }']
     optional=text.startswith("you may have this creature's base ")
     if optional:
         text='this creature has base '+text[len("you may have this creature's base "):]
@@ -3241,6 +3250,8 @@ def entering_object_program(text, condition):
     events=('SelfEnters','OtherCreatureEntersYou','CreatureEntersYou','ArtifactEntersYou','OtherArtifactEntersYou','EnchantmentEntersYou','LandEntersYou')
     if condition not in events and not condition.startswith(('OtherSubtypeEntersYou(','SubtypeEntersYou(','PermanentEntersYou {','OtherFilteredEntersYou(','CreatureEnters {')):
         return None
+    if text=="you may have this creature's base power become equal to that creature's power until end of turn.":
+        return 'None',['May { skip: 1 }','SetResolvedBaseStats { subject: Subject::Source, power: Some(ResolvedStatValue::EnteringPower), toughness: None }']
     if text=="you gain 1 life. If it's a Spider, put a +1/+1 counter on it.":
         return 'None',['GainLife(PlayerSet::Controller, 1)',subject_guard('Entering',1,subtype='Spider'),counter_instruction('Entering','a','+1/+1')]
     m=re.fullmatch(r'[Pp]ut (a|one|two|three|four|five|six) \+1/\+1 counters? on that creature(?: and it gains haste until end of turn)?\.',text)
@@ -3482,6 +3493,7 @@ def trigger_creature_template(card):
                 # An explicit occurrence of this card's name denotes this source;
                 # event-subject pronouns still have no inferred binding.
                 for alias in names:
+                    effect_text=effect_text.replace(alias+"'s base ","this creature's base ")
                     effect_text = effect_text.replace(' on ' + alias + '.', ' on this creature.')
                 if (condition.startswith('PlayerDamaged { subject: DamageSubject::Source,')
                         and re.fullmatch(r'[Pp]ut (?:a|one|two|three|four|five|six) (?:\+1/\+1|-1/-1|stun) counters? on it\.',effect_text)):
