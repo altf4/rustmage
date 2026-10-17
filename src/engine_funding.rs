@@ -669,22 +669,7 @@ impl<'g> FundingState<'g> {
                 r.present,
                 r.tapped,
                 r.sick,
-                (
-                    r.counters.plus_one,
-                    r.counters.minus_one,
-                    r.counters.stun,
-                    r.counters.loyalty,
-                    r.counters.lore,
-                    [
-                        CounterKind::Incubation,
-                        CounterKind::Bait,
-                        CounterKind::Page,
-                        CounterKind::Divinity,
-                        CounterKind::Revival,
-                        CounterKind::Soul,
-                    ]
-                    .map(|kind| r.counters.get(kind)),
-                ),
+                CounterKind::ALL.map(|kind| r.counters.get(kind)),
                 r.used,
                 r.gained,
                 r.attacking,

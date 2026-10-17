@@ -1263,6 +1263,7 @@ impl<'de> Deserialize<'de> for NamedCounters {
                 "named counters must be distinct, nonzero named kinds",
             ));
         }
+        values.shrink_to_fit();
         Ok(Self(values))
     }
 }
@@ -1348,7 +1349,7 @@ impl Counters {
                 }
                 let values = &mut self
                     .named
-                    .get_or_insert_with(|| Box::new(NamedCounters(Vec::new())))
+                    .get_or_insert_with(|| Box::new(NamedCounters(Vec::with_capacity(1))))
                     .0;
                 match values.binary_search_by_key(&kind, |(k, _)| *k) {
                     Ok(i) if amount == 0 => {

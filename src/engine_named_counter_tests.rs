@@ -17,6 +17,9 @@ fn named_counters_storage_is_canonical_owned_and_sparse() {
     assert_eq!(std::mem::size_of::<Counters>(), 48);
     let empty = Counters::default();
     assert_eq!(empty.owned_bytes(), 0);
+    let single = Counters::of(CounterKind::Soul, 1);
+    assert_eq!(single.allocated_bytes(), 40);
+    assert_eq!(single.owned_bytes(), 40);
     assert!(serde_json::to_value(&empty).unwrap().get("named").is_none());
     let mut all = empty.clone();
     for kind in NAMED.into_iter().rev() {
