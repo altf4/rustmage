@@ -74,11 +74,36 @@ impl Game {
             .search
             .take()
             .unwrap();
+        if choice.spec.destination == SearchDestination::Top {
+            // Searching does not change the found card's zone or incarnation.
+            // Reveal and shuffle are one committed action; only the final known
+            // top is public, never the rest of the private search/selection.
+            if self.state.players[player.index()].library.len() > 1 {
+                self.forget_library_top(player);
+            }
+            let library = &mut self.state.players[player.index()].library;
+            self.state.rng.shuffle(library);
+            for &id in &choice.selected {
+                let position = library.iter().position(|&card| card == id).unwrap();
+                library.remove(position);
+                library.push(id);
+            }
+            if choice.spec.reveal
+                && let Some(&id) = choice.selected.last()
+            {
+                self.remember_library_top(player, self.object_ref(id));
+            }
+            self.run_program();
+            return;
+        }
         let moves = choice
             .selected
             .iter()
             .map(|&id| {
                 let destination = match choice.spec.destination {
+                    SearchDestination::Top => {
+                        unreachable!("top search committed before entry moves")
+                    }
                     SearchDestination::Hand => Zone::Hand,
                     SearchDestination::Battlefield => Zone::Battlefield,
                     SearchDestination::BattlefieldThenHand { .. } => {

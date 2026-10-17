@@ -3,10 +3,41 @@
   "catalogue_id": 998,
   "oracle_id": "6178715c-870d-4710-b758-66e080804ee3",
   "facts_sha256": "8b31041c8c466231c8dce4320ea2faf5a8c147f25a680831554f3af49bb11f04",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "501cf0c1a2424669656e146afc02affc5c7274df152159c5926e95a723d8be62"
   },
-  "physical_metadata_sha256": "838c7a9bd2cb9404c91a288cf007363e2e5a4f513dd020b2e3466fee0a413fb2"
+  "physical_metadata_sha256": "838c7a9bd2cb9404c91a288cf007363e2e5a4f513dd020b2e3466fee0a413fb2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreatureOrPlaneswalker.java",
+      "sha256": "74a515df49ac9de9bab546fb06aa877375286ce8bb4ea19113e77d811177d85f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreatureCard.java",
+      "sha256": "ee796c20588a1c0975306824c57d1c173bfa54b4afaf8c3526aaf32e15d02739"
+    }
+  ],
+  "rules_tests": "src/engine_fdn_recursion_tests.rs",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DeadlyPlot.java",
+  "java_sha256": "91b2268d75fb1c895e83a982a539401d210aa95059832eb33f172562e23ee317"
 }

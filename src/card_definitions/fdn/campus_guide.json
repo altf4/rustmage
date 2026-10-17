@@ -3,10 +3,36 @@
   "catalogue_id": 629,
   "oracle_id": "5b8e0913-47e9-4d56-971d-abd91b0f7587",
   "facts_sha256": "3343a5314e6629dea45f8cc9c646a743e0cd4eb74dcc6aafbc1baacee68b1417",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9b9df21c0e3d5a48913b6bdb15131e64a6f4e21d2dab0e0cdc61d7cbd12270b3"
   },
-  "physical_metadata_sha256": "8db20babec7269807c921a3cb58e2f15c49978b98ae97fb4a86ea7d7922cdc9b"
+  "physical_metadata_sha256": "8db20babec7269807c921a3cb58e2f15c49978b98ae97fb4a86ea7d7922cdc9b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutOnLibraryEffect.java",
+      "sha256": "743cf7facece5aca87d59348f3bb7d8655aa46d3852e9e437f6672c29535e782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/SearchEffect.java",
+      "sha256": "3bd01fb726f6f76df078d7bf1f7a84fe484cc02fa0b1ca8dff89a3a2f562be96"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ],
+  "rules_tests": "src/engine_fdn_recursion_tests.rs",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CampusGuide.java",
+  "java_sha256": "7f23f35749d86c24ba62d4b3180e720c671a81c2443f2a0a1f471c0b80f71062"
 }

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b9e904b1a00dcd7daa5d4f2c0543f70db97ed98e946633158ed02a95b0d5efd8",
+  "catalogue_version": "d2bccabd6fe21dd2ff1ccf89d96e61d560d1ca5c1ade3927fc6f2fef4240dfcb",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1989,
-  "implemented_total": 1995,
+  "implemented_standard_cards": 1992,
+  "implemented_total": 1998,
   "token_definitions": 97,
   "emblem_definitions": 1,
   "adventure_definitions": 40,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 249,
-      "gated": 178
+      "complete": 252,
+      "gated": 175
     },
     "fin": {
       "total": 305,
@@ -5243,8 +5243,8 @@
     {
       "name": "Campus Guide",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/campus_guide.rs",
       "set": "fdn"
     },
@@ -8195,8 +8195,8 @@
     {
       "name": "Deadly Plot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/deadly_plot.rs",
       "set": "fdn"
     },
@@ -9715,8 +9715,8 @@
     {
       "name": "Driver of the Dead",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/driver_of_the_dead.rs",
       "set": "fdn"
     },

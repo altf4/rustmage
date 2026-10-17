@@ -86,8 +86,14 @@ class DirectCardTests(unittest.TestCase):
         _, records, _ = linker.load()
         authored = [r for r in records.values() if 'java_source' in r]
         self.assertGreaterEqual(len(authored), 8)
-        for record in authored:
-            raw = subprocess.check_output(['git','-C','/home/altf4/Code/mage','show',record['java_revision']+':'+record['java_source']])
-            self.assertEqual(hashlib.sha256(raw).hexdigest(), record['java_sha256'])
+        pins = [(r['java_revision'], r['java_source'], r['java_sha256']) for r in authored]
+        # Reusable effects/targets are provenance too, including records whose
+        # own implementation was mechanically lifted rather than newly authored.
+        pins.extend((pin['revision'], pin['path'], pin['sha256'])
+                    for record in records.values()
+                    for pin in record.get('xmage_dependencies', []))
+        for revision, path, digest in sorted(set(pins)):
+            raw = subprocess.check_output(['git','-C','/home/altf4/Code/mage','show',revision+':'+path])
+            self.assertEqual(hashlib.sha256(raw).hexdigest(), digest, path)
 
 if __name__ == '__main__': unittest.main()

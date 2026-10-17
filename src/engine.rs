@@ -5701,5 +5701,9 @@ mod untapped_entry_tests;
 mod query_tests;
 
 #[cfg(test)]
+#[path = "engine_fdn_recursion_tests.rs"]
+mod fdn_recursion_tests;
+
+#[cfg(test)]
 #[path = "engine_fdn_power_damage_tests.rs"]
 mod fdn_power_damage_tests;
