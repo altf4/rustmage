@@ -646,6 +646,13 @@ impl Game {
                         )
                         && wanted.is_none_or(|wanted| wanted == ordinal)
                         && self.queue_trigger_from(&source, index, grant.map(Box::new))
+                        && (ability.condition.mana_spent_rule().is_some()
+                            || ability.program.iter().any(|instruction| {
+                                matches!(
+                                    instruction,
+                                    Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
+                                )
+                            }))
                     {
                         self.state.pending_triggers.last_mut().unwrap().cast_event =
                             cast_event.map(Box::new);
