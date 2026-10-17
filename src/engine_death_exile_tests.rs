@@ -389,3 +389,158 @@ fn all_eleven_paid_whole_bodies_every_mode_both_seats_and_foreign_spell_ownershi
         }
     }
 }
+
+#[test]
+fn actual_nonlethal_damage_registers_then_paid_murder_exiles_without_death_grants() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        for player in &mut g.state.players {
+            player.mana = [30; 6];
+        }
+        let target = named(&mut g, p.other(), "Bygone Colossus", Zone::Battlefield);
+        let grant = named(&mut g, p.other(), "Not Dead After All", Zone::Hand);
+        // Both owners may cast the printed grant on the opposing permanent.
+        g.state.priority = p.other();
+        paid_cast(&mut g, grant, None, &[Target::Card(target)]);
+        settle(&mut g);
+        if g.actor() != Some(p) {
+            checked(&mut g, Action::Pass);
+        }
+        let spell = named(&mut g, p, "Scorching Dragonfire", Zone::Hand);
+        paid_cast(&mut g, spell, None, &[Target::Card(target)]);
+        settle(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(target).damage, 3);
+        let rule = g.observe(p).death_exile_replacements[0];
+        assert_eq!(rule.object, g.object_ref(target));
+        assert_eq!(
+            rule.source_card,
+            Card::from_name("Scorching Dragonfire").unwrap()
+        );
+        assert_eq!(rule.source_controller, p);
+        if g.actor() != Some(p) {
+            checked(&mut g, Action::Pass);
+        }
+        let murder = named(&mut g, p, "Murder", Zone::Hand);
+        paid_cast(&mut g, murder, None, &[Target::Card(target)]);
+        settle(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Exile);
+        assert!(g.observe(p).temporary_abilities.is_empty());
+        assert_eq!(g.state.creatures_died_this_turn, 0);
+        assert!(g.state.roles.is_none());
+    }
+}
+#[test]
+fn actual_lesson_damage_counts_only_casters_graveyard_and_color_target_checks_whole_union() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.state.players[p.index()].mana = [30; 6];
+        for _ in 0..2 {
+            named(&mut g, p, "Combustion Technique", Zone::Graveyard);
+        }
+        for _ in 0..3 {
+            named(&mut g, p.other(), "Combustion Technique", Zone::Graveyard);
+        }
+        let target = named(&mut g, p.other(), "Bygone Colossus", Zone::Battlefield);
+        let spell = named(&mut g, p, "Combustion Technique", Zone::Hand);
+        paid_cast(&mut g, spell, None, &[Target::Card(target)]);
+        settle(&mut g);
+        assert_eq!(g.object_view(target).damage, 4);
+        assert_eq!(g.observe(p).death_exile_replacements.len(), 1);
+        // The spell is still on the stack when its Lesson count is evaluated.
+        assert_eq!(g.state.players[p.index()].graveyard.len(), 3);
+        if g.actor() != Some(p) {
+            checked(&mut g, Action::Pass);
+        }
+        let green = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        let colorless = named(&mut g, p.other(), "Chrome Companion", Zone::Battlefield);
+        let burn = named(&mut g, p, "Essence Burn", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: burn });
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(colorless),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(green),
+            },
+        );
+        while g.state.announcing.is_some() {
+            let a = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::FinishTargets))
+                .or_else(|| {
+                    g.legal_actions()
+                        .into_iter()
+                        .find(|a| matches!(a, Action::PayCosts { .. }))
+                })
+                .unwrap();
+            checked(&mut g, a);
+        }
+        settle(&mut g);
+        assert_eq!(g.object_view(green).zone, Zone::Exile);
+        assert_eq!(g.object_view(colorless).zone, Zone::Battlefield);
+    }
+}
+#[test]
+fn paid_combined_mode_partial_group_invalidity_stale_target_and_counter_never_register_wrong_objects()
+ {
+    for p in [Player::P0, Player::P1] {
+        for route in 0..4 {
+            let mut g = setup(p);
+            for player in &mut g.state.players {
+                player.mana = [30; 6];
+            }
+            let target = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+            let token = Card::ALL
+                .iter()
+                .copied()
+                .find(|c| c.token_info().is_some_and(|t| t.subtypes == "Treasure"))
+                .unwrap();
+            let treasure = spawn(&mut g, p.other(), token, Zone::Battlefield);
+            let spell = named(&mut g, p, "Pinecone Strike", Zone::Hand);
+            paid_cast(
+                &mut g,
+                spell,
+                Some(2),
+                &[Target::Card(target), Target::Card(treasure)],
+            );
+            if route == 0 || route == 2 {
+                g.move_object(target, Zone::Hand);
+                g.move_object(target, Zone::Battlefield);
+            }
+            if route == 1 || route == 2 {
+                g.move_object(treasure, Zone::Exile);
+            }
+            if route == 3 {
+                if g.actor() != Some(p.other()) {
+                    checked(&mut g, Action::Pass);
+                }
+                let negate = named(&mut g, p.other(), "Negate", Zone::Hand);
+                paid_cast(&mut g, negate, None, &[Target::Spell(spell)]);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(target).zone,
+                if route == 1 {
+                    Zone::Exile
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            assert_eq!(
+                g.object_view(treasure).zone,
+                if route == 3 {
+                    Zone::Battlefield
+                } else {
+                    Zone::Outside
+                }
+            );
+            assert!(g.observe(p).death_exile_replacements.is_empty());
+        }
+    }
+}
