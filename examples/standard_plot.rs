@@ -489,72 +489,70 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if let Action::AnnouncePlot { card } = action {
                 s.source = Some(card);
             }
-            if let Action::AnnounceCast { card } | Action::AnnouncePlotted { card } = action {
-                if actor == p
-                    && o.objects
-                        .iter()
-                        .any(|v| v.id == card && v.card.name() == NAMES[i])
-                    && !s.paid
-                {
-                    s.source = Some(card);
-                }
+            if let Action::AnnounceCast { card } | Action::AnnouncePlotted { card } = action
+                && actor == p
+                && o.objects
+                    .iter()
+                    .any(|v| v.id == card && v.card.name() == NAMES[i])
+                && !s.paid
+            {
+                s.source = Some(card);
             }
             if let Action::ChooseTarget {
                 target: Target::Card(id),
             } = action
+                && actor == p
+                && i == 10
+                && !s.paid
+                && o.objects.iter().any(|v| {
+                    v.id == id
+                        && v.owner == p
+                        && v.zone == Zone::Battlefield
+                        && v.card.name() == "Bear Cub"
+                })
             {
-                if actor == p
-                    && i == 10
-                    && !s.paid
-                    && o.objects.iter().any(|v| {
-                        v.id == id
-                            && v.owner == p
-                            && v.zone == Zone::Battlefield
-                            && v.card.name() == "Bear Cub"
-                    })
-                {
-                    s.mate = Some(o.objects.iter().find(|v| v.id == id).unwrap().reference);
-                }
+                s.mate = Some(o.objects.iter().find(|v| v.id == id).unwrap().reference);
             }
             if matches!(action, Action::PayCosts { .. })
                 && let Some(a) = &o.announcing
+                && a.kind == StackKind::Spell
+                && a.controller == p
+                && !s.done
             {
-                if a.kind == StackKind::Spell && a.controller == p && !s.done {
-                    let n = a.source_card.name();
-                    if n == NAMES[i] && !s.paid {
-                        s.paid = true;
-                        s.library = o.players[p.index()].library_count;
-                        s.life = o.players[p.index()].life;
-                        s.rights = o.exile_permissions.len();
-                        s.grave = o
-                            .objects
-                            .iter()
-                            .filter(|v| {
-                                v.owner == p
-                                    && v.zone == Zone::Graveyard
-                                    && !v.card.is_token()
-                                    && v.card.is_creature()
-                            })
-                            .count();
-                        if plotted {
-                            plotted_casts[i][p.index()] += 1;
-                        } else {
-                            hard[i][p.index()] += 1;
-                        }
+                let n = a.source_card.name();
+                if n == NAMES[i] && !s.paid {
+                    s.paid = true;
+                    s.library = o.players[p.index()].library_count;
+                    s.life = o.players[p.index()].life;
+                    s.rights = o.exile_permissions.len();
+                    s.grave = o
+                        .objects
+                        .iter()
+                        .filter(|v| {
+                            v.owner == p
+                                && v.zone == Zone::Graveyard
+                                && !v.card.is_token()
+                                && v.card.is_creature()
+                        })
+                        .count();
+                    if plotted {
+                        plotted_casts[i][p.index()] += 1;
+                    } else {
+                        hard[i][p.index()] += 1;
                     }
-                    if n == "Bear Cub" && i == 5 {
-                        s.loan_turn = Some(o.turn);
-                    }
-                    if n == "Shock" && [1, 11, 12].contains(&i) {
-                        s.death_turn = Some(o.turn);
-                    }
-                    if n == "Shock" && i == 6 {
-                        s.pump = true;
-                    }
-                    if n == "Scorching Shot" && i == 10 {
-                        s.aura_death = true;
-                        s.death_library = o.players[p.index()].library_count;
-                    }
+                }
+                if n == "Bear Cub" && i == 5 {
+                    s.loan_turn = Some(o.turn);
+                }
+                if n == "Shock" && [1, 11, 12].contains(&i) {
+                    s.death_turn = Some(o.turn);
+                }
+                if n == "Shock" && i == 6 {
+                    s.pump = true;
+                }
+                if n == "Scorching Shot" && i == 10 {
+                    s.aura_death = true;
+                    s.death_library = o.players[p.index()].library_count;
                 }
             }
             let frame = o.plot_payment;
@@ -643,24 +641,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if matches!(action, Action::PayCosts { .. })
                 && let Some(a) = &o.announcing
+                && a.kind == StackKind::Spell
+                && a.controller == p
+                && a.source_card.name() == NAMES[i]
+                && !s.done
             {
-                if a.kind == StackKind::Spell
-                    && a.controller == p
-                    && a.source_card.name() == NAMES[i]
-                    && !s.done
-                {
-                    let after = g.observe(p);
-                    let spell = after
-                        .stack
-                        .iter()
-                        .find(|v| v.card == a.card && v.kind == StackKind::Spell)
-                        .unwrap();
-                    let cast = serde_json::to_value(spell.cast)?;
-                    assert_eq!(cast["method"], if plotted { "Plot" } else { "Normal" });
-                    assert_eq!(cast["origin"], if plotted { "Exile" } else { "Hand" });
-                    if plotted {
-                        assert!(o.turn > s.plotted_turn.unwrap());
-                    }
+                let after = g.observe(p);
+                let spell = after
+                    .stack
+                    .iter()
+                    .find(|v| v.card == a.card && v.kind == StackKind::Spell)
+                    .unwrap();
+                let cast = serde_json::to_value(spell.cast)?;
+                assert_eq!(cast["method"], if plotted { "Plot" } else { "Normal" });
+                assert_eq!(cast["origin"], if plotted { "Exile" } else { "Hand" });
+                if plotted {
+                    assert!(o.turn > s.plotted_turn.unwrap());
                 }
             }
         }
