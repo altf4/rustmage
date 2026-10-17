@@ -83,7 +83,7 @@ class AdventureLandTargetTests(unittest.TestCase):
                     if k=='PlayLand':
                         if n==name:return 2800 if actor==p and stage=='normal' and a['card']==source else -1000
                         if actor==p and stage=='extra_land':return 2900
-                        if actor==p and stage=='setup' and i in [0,1] and len(lands)>=8 and sum(v['card'] in BASICS for v in hand)<2:return -1000
+                        if actor==p and stage=='setup' and i in [0,1] and sum(v['card'] in BASICS for v in own)>=8 and sum(v['card'] in BASICS for v in hand)<2:return -1000
                         return 1800-20*sum(v['owner']==actor and v['zone']=='Battlefield' and v['card']==n for v in objects.values())
                     if k=='ChooseTarget':return 2900 if a['target'].get('Card')==target else -1000
                     if k in ['TapMana','ActivateMana','AnnounceMana']:
@@ -91,6 +91,7 @@ class AdventureLandTargetTests(unittest.TestCase):
                         return 2100 if o['decision'] in ['pay_costs','resolution_mana'] and n in BASICS else -1000
                     if k in ['PayCosts','PutTrigger','FinishTargets','FinishSearch','FinishAttackers','FinishBlockers','Keep','ChooseSpellCost']:return 2400
                     if k in ['Discard','Bottom']:
+                        if actor==p and stage=='setup' and i in [0,1] and n in BASICS and sum(v['card'] in BASICS for v in hand)<=2:return -500
                         if actor==p and stage!='finish' and n==name and sum(v['card']==n for v in hand)<=1:return -1000
                         return 2200 if n in ['Shock','Thrill of Possibility','Bygone Colossus','Chrome Companion'] else 1000
                     if k=='Attack':return 2800 if stage=='finish' else -1000

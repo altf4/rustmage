@@ -3242,10 +3242,11 @@
     }
   ],
   "counts": {
-    "admitted": 19,
-    "gated_adventure": 56,
-    "gated_omen": 13,
-    "source_records": 203,
-    "unique_java_files": 160
+    "admitted": 27,
+    "gated_adventure": 48,
+    "admitted_omen": 13,
+    "gated_omen": 0,
+    "source_records": 284,
+    "unique_java_files": 182
   }
 }

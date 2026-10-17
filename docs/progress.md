@@ -27,7 +27,7 @@ fresh public methods pass in 712.402 seconds. The
 [composition record](review-pr-258.md) tracks exact source/library identities,
 canonical preservation, meaningful cross-mechanic cases and current gate status.
 
-The current candidate integrates all thirteen complete Omen pairs with the three
+The Omen parent integrates all thirteen complete Omen pairs with the three
 adjacent graveyard/search consumers: 1,817/5,164 identities, 3,347 gated,
 87 token recipes, one emblem, nineteen Adventure and thirteen Omen helpers,
 observation schema80. The union retains chosen-spell timing, selected-face X,
@@ -35,7 +35,7 @@ same-graveyard target constraints and private split-search destinations.
 The individual kernel records scope their frozen source evidence. Full union
 validation and two independent nonauthor final-head reviews remain pending.
 
-The other 56 true Adventure parents and 54 Saga parents
+The other 48 true Adventure parents and 54 Saga parents
 remain part of the full goal, alongside wider Ward/Role/disguise/cloak/control
 and other required semantics. Full rules enforcement across Standard, efficient
 training interfaces and full-deck performance remain incomplete.
