@@ -3,10 +3,36 @@
   "catalogue_id": 1050,
   "oracle_id": "ef75be00-1a88-47a1-a1ae-fe2c9881a798",
   "facts_sha256": "3a923a43d4d5c363cfdccf53c5e81994d3458a2b15a18cfc4daa63841d61c1ee",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ca1c5d5faf8d41b64b5f2572ebc24e8ffced528db1902146ad7ae60cd3d904a5"
   },
-  "physical_metadata_sha256": "96468b478a6186e1af0c7a9bda6fd5780f55475b4bb1b8abe2dea085e4fa5e2b"
+  "physical_metadata_sha256": "96468b478a6186e1af0c7a9bda6fd5780f55475b4bb1b8abe2dea085e4fa5e2b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DesecrationDemon.java",
+  "java_sha256": "679d9b00371e10e12bc377436c04c20ac68c00cc29053533ce84f26e51df6c58",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+      "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/AtStepTriggeredAbility.java",
+      "sha256": "acaebe5709a15b181c6f315684db3969eb622d6dcc45f2994bf54c05b00d22af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+      "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+    }
+  ],
+  "rules_note": "Oracle keeps the optional opponent sacrifice after this source leaves; subsequent tap and counter effects require the original battlefield incarnation. The pinned Java early return is not copied."
 }

@@ -25,6 +25,63 @@ fn deck(land: &str, names: &[&str]) -> Vec<Card> {
 }
 
 #[test]
+fn foundations_chosen_values_control_and_death_cards_full_games() {
+    let mut decks = [
+        deck(
+            "Plains",
+            &[
+                "Diamond Mare",
+                "Heraldic Banner",
+                "Adaptive Automaton",
+                "Banner of Kinship",
+                "Healer's Hawk",
+                "Leonin Vanguard",
+                "Resolute Reinforcements",
+                "Angel of Vitality",
+                "Inspiring Overseer",
+            ],
+        ),
+        deck(
+            "Swamp",
+            &[
+                "Wishclaw Talisman",
+                "Harmless Offering",
+                "Garna, Bloodfist of Keld",
+                "Crossway Troublemakers",
+                "Desecration Demon",
+                "Vampire Interloper",
+                "Vengeful Bloodwitch",
+                "Feed the Swarm",
+                "Diregraf Ghoul",
+            ],
+        ),
+    ];
+    for land in &mut decks[0][..4] {
+        *land = Card::from_name("Uncharted Haven").unwrap();
+    }
+    for land in &mut decks[1][..8] {
+        *land = Card::from_name("Mountain").unwrap();
+    }
+    run_matrix_actions(
+        &decks,
+        &[
+            "Diamond Mare",
+            "Heraldic Banner",
+            "Adaptive Automaton",
+            "Banner of Kinship",
+            "Wishclaw Talisman",
+            "Harmless Offering",
+            "Garna, Bloodfist of Keld",
+            "Crossway Troublemakers",
+            "Desecration Demon",
+        ],
+        &["Uncharted Haven"],
+        &["Uncharted Haven", "Heraldic Banner"],
+        &[0, 1, 2, 3, 7, 13, 41, 73],
+    );
+}
+
+#[test]
 fn foundations_five_color_full_games_and_owned_search_replay() {
     let mut decks = [
         deck(
@@ -354,6 +411,18 @@ fn foundations_every_admitted_card_in_set_only_full_games() {
 }
 
 fn run_matrix(decks: &[Vec<Card>], expected_casts: &[&str]) {
+    run_matrix_actions(decks, expected_casts, &[], &[], &[7, 41]);
+}
+
+fn run_matrix_actions(
+    decks: &[Vec<Card>],
+    expected_casts: &[&str],
+    expected_lands: &[&str],
+    expected_mana_sources: &[&str],
+    seeds: &[u64],
+) {
+    let mut played_lands = BTreeSet::new();
+    let mut used_mana_sources = BTreeSet::new();
     let mut total_decisions = 0;
     let mut triggered = false;
     let mut token = false;
@@ -361,7 +430,7 @@ fn run_matrix(decks: &[Vec<Card>], expected_casts: &[&str]) {
     let mut branches = 0;
     let mut new_spells = BTreeSet::new();
     for pair in 0..decks.len() {
-        for seed in [7, 41] {
+        for &seed in seeds {
             for starter in [Player::P0, Player::P1] {
                 let mut game = Game::new(Config {
                     decks: [decks[pair].clone(), decks[(pair + 1) % decks.len()].clone()],
@@ -391,6 +460,17 @@ fn run_matrix(decks: &[Vec<Card>], expected_casts: &[&str]) {
                     let action = actions[index].clone();
                     assert!(!matches!(action, Action::Concede));
                     let obs = game.observe(actor);
+                    match &action {
+                        Action::PlayLand { card } => {
+                            let object = obs.objects.iter().find(|o| o.id == *card).unwrap();
+                            played_lands.insert(object.card.name());
+                        }
+                        Action::ActivateMana { card, .. } | Action::TapMana { card } => {
+                            let object = obs.objects.iter().find(|o| o.id == *card).unwrap();
+                            used_mana_sources.insert(object.card.name());
+                        }
+                        _ => {}
+                    }
                     for item in &obs.stack {
                         if item.kind == StackKind::Spell {
                             new_spells.insert(item.source_card.name());
@@ -439,15 +519,27 @@ fn run_matrix(decks: &[Vec<Card>], expected_casts: &[&str]) {
             }
         }
     }
-    assert!(triggered && token && combat);
+    assert!(
+        triggered && token && combat,
+        "matrix events: triggered={triggered}, token={token}, combat={combat}; spells={new_spells:?}"
+    );
     for name in expected_casts {
         assert!(
             new_spells.contains(name),
-            "new card was not cast in full games: {name}"
+            "new card was not cast in full games: {name}; observed spells={new_spells:?}"
+        );
+    }
+    for name in expected_lands {
+        assert!(played_lands.contains(name), "land was not played: {name}");
+    }
+    for name in expected_mana_sources {
+        assert!(
+            used_mana_sources.contains(name),
+            "mana source was not used: {name}"
         );
     }
     assert!(branches >= 20);
-    let games = decks.len() * 4;
+    let games = decks.len() * seeds.len() * 2;
     println!(
         "FDN matrix: {games} natural full games, {total_decisions} decisions, {branches} owned replay checks; {} cast identities, not full-set acceptance",
         new_spells.len()

@@ -1,14 +1,10 @@
-//! Five real gated definitions exercise the shared core; none is an admission.
+//! Shared entry-choice rules regressions, independent of admission flags.
 use super::ability_timeline_tests::{cast, checked, named, settle, setup};
 use super::tests::spawn;
 use super::*;
 use crate::cards::{ChoiceColor, CreatureType};
 fn fixture(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
     let card = Card::from_name(name).unwrap();
-    assert!(
-        !card.is_supported(),
-        "core fixture must remain gated: {name}"
-    );
     spawn(g, p, card, zone)
 }
 fn color(c: ChoiceColor) -> EntryChoiceValue {

@@ -116,8 +116,21 @@ fn assert_invariants(game: &Game) {
                     s.resolving.as_ref().is_some_and(
                         |r| r.item.kind == StackKind::Spell && r.item.card == i as CardId
                     )
-                ),
-            usize::from(obj.zone == Zone::Stack)
+                )
+                + s.entry_batch.as_ref().map_or(0, |batch| {
+                    batch
+                        .moves
+                        .iter()
+                        .filter(|movement| {
+                            movement.before.zone == Zone::Stack
+                                && movement.before.reference == game.object_ref(i as CardId)
+                        })
+                        .count()
+                }),
+            usize::from(obj.zone == Zone::Stack),
+            "stack ownership for {} at {i}, pending {:?}",
+            obj.card.identity(),
+            s.pending
         );
     }
     let mut stack_ids = std::collections::BTreeSet::new();
@@ -589,6 +602,35 @@ fn constructed_and_unknown_card_rejection_are_explicit() {
     assert!(Game::new(cfg).is_err());
     assert!(serde_json::from_str::<Card>("\"BlackLotus\"").is_err());
     assert!(Game::new(config(vec![Card::Forest; 60])).is_ok());
+}
+
+#[test]
+fn pending_entry_batch_owns_the_resolved_permanent_spell_until_choice_commits() {
+    use super::ability_timeline_tests::{cast as paid_cast, checked, setup};
+    for player in [Player::P0, Player::P1] {
+        let mut game = setup(player);
+        let card = Card::from_name("Diamond Mare").unwrap();
+        let id = spawn(&mut game, player, card, Zone::Hand);
+        paid_cast(&mut game, id, None, &[]);
+        checked(&mut game, Action::Pass);
+        checked(&mut game, Action::Pass);
+        assert!(matches!(game.state.pending, Pending::EntryValue { .. }));
+        assert_eq!(game.state.objects[id as usize].zone, Zone::Stack);
+        assert!(game.state.stack.is_empty());
+        assert!(game.state.resolving.is_none());
+        let movement = &game.state.entry_batch.as_ref().unwrap().moves[0];
+        assert_eq!(movement.before.reference, game.object_ref(id));
+        assert_eq!(movement.before.zone, Zone::Stack);
+        assert_invariants(&game);
+        checked(
+            &mut game,
+            Action::ChooseEntryValue {
+                value: EntryChoiceValue::Color(crate::cards::ChoiceColor::White),
+            },
+        );
+        assert_eq!(game.state.objects[id as usize].zone, Zone::Battlefield);
+        assert_invariants(&game);
+    }
 }
 
 #[test]

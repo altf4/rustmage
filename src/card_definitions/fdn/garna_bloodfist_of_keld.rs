@@ -1,4 +1,4 @@
-// Gated core consumer: whole-card admission awaits the reviewed consumer batch.
+// Direct typed behavior from complete Oracle and pinned XMage sources.
 const OTHER_YOURS: CreatureFilter = CreatureFilter {
     relation: 0,
     other: true,
