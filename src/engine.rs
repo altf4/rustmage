@@ -5652,3 +5652,7 @@ mod hand_land_tests;
 #[cfg(test)]
 #[path = "engine_base_stats_tests.rs"]
 mod base_stats_tests;
+
+#[cfg(test)]
+#[path = "engine_live_static_rules_tests.rs"]
+mod live_static_rules_tests;

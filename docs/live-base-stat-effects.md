@@ -136,3 +136,18 @@ five-body head b7e053d for that historical exact-diff proof, retains its unrelat
 mutation control, and separately requires all five current programs plus Atomic's
 helper to stay identical. This does not weaken the new actual-parent four-body
 proof or permit unrelated current changes.
+
+At actual98 interim source0aa891d the full native suite passes1,894 tests
+(1,882 unit+12 integration), all-target Clippy/fmt/gen pass, and the immutable
+optimized schema100 library has SHA3ac8c09362e81f50297bdaba2e02f9eb1dca07d4ef75f0acebda9a4223c0f4d1.
+All12 naturally drawn/paid Standard vectors PASS21.113s with9,662 owned frames
+and19,324 denials; all902 tracked inputs and library hash stayed fixed. This is
+interim source-scoped evidence, not final99 composition or a100-game claim.
+
+Two independently authored paid regressions now persist in the repository: a
+foreign-controlled Maha's captured discard Ward survives its return to its owner,
+with private original-payer discard/decline; Burden's controller change preserves
+timestamp and changes actual Detective blocking legality. They passed0.07s in
+independent e9 review before adoption. Additional late real Crew and simultaneous
+opposing Maha/Archon tests exercise current creature membership and APNAP-conflicting
+axes. These newly adopted tests await execution on the composed source.
