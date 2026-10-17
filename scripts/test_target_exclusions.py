@@ -8,10 +8,16 @@ class ExclusionTests(unittest.TestCase):
  def compile(self,c):
   payload=json.dumps([c],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode();rust,cov=g.compile_catalogue(dict(cards=[c],card_count=1,cards_sha256=hashlib.sha256(payload).hexdigest()),dict(banned_card_names=[]))
   return rust,next(row['implemented'] for row in cov['cards'] if row['name']==c['name'])
+ def definition(self,rust,name):
+  rows=[line for line in rust.splitlines() if line.lstrip().startswith('Definition {')]
+  names=[json.loads(re.search(r'name: ("(?:[^"\\]|\\.)*")',row)[1]) for row in rows]
+  row=next(row for row in rows if 'name: '+json.dumps(name)+',' in row)
+  return re.sub(r'Card\((\d+)\)',lambda m:'Card('+json.dumps(names[int(m[1])])+')',row)
  def test_complete_all_seven_and_reserved_names(self):
   for name,c in self.cards.items():
+   original=self.definition(self.compile(c)[0],name)
    for alias in [name,'Fresh Filter',*[v[0] for v in g.LEGACY]]:
-    text=c['oracle_text'].replace(name,alias);rust,ok=self.compile(dict(c,name=alias,oracle_text=text));self.assertTrue(ok,(name,alias))
+    text=c['oracle_text'].replace(name,alias);rust,ok=self.compile(dict(c,name=alias,oracle_text=text));self.assertTrue(ok,(name,alias));self.assertEqual(self.definition(rust,alias),original.replace(name,alias),(name,alias))
     if name in {'Amazing Acrobatics','Decoy Ploy','Overwhelming Surge'}:self.assertIn('text: "Choose both"',rust)
  def test_every_raw_new_route_fails_closed(self):
   for name,c in self.cards.items():
