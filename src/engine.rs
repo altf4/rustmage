@@ -4896,3 +4896,30 @@ mod granted_abilities;
 #[cfg(test)]
 #[path = "engine_cast_payment_body_tests.rs"]
 mod cast_payment_body_tests;
+
+#[cfg(test)]
+mod cast_payment_layout_probe {
+    use super::*;
+    #[test]
+    fn layout_probe() {
+        println!(
+            "LAYOUT State={} Object={} SpellView={} Announcement={} Resolution={} CastInfo={} DamageFacts={} DamageEvent={}",
+            std::mem::size_of::<State>(),
+            std::mem::size_of::<Object>(),
+            std::mem::size_of::<SpellView>(),
+            std::mem::size_of::<Announcement>(),
+            std::mem::size_of::<Resolution>(),
+            std::mem::size_of::<CastInfo>(),
+            std::mem::size_of::<DamageFacts>(),
+            std::mem::size_of::<DamageEvent>()
+        );
+        let g = Game::new(Config {
+            decks: [vec![Card::Forest; 60], vec![Card::Forest; 60]],
+            seed: 249,
+            starting_player: Player::P0,
+            deck_rules: DeckRules::Standard,
+        })
+        .unwrap();
+        println!("LAYOUT initial_logical_bytes={}", g.state_bytes());
+    }
+}

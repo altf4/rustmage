@@ -429,3 +429,94 @@ fn unravel_draws_for_real_discount_even_when_countering_is_prevented() {
         assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
     }
 }
+#[test]
+fn actual_payment_includes_kicker_and_warp_but_excludes_separate_ward() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = ready(p);
+        let spell = named(&mut g, p, "Burst Lightning", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(&mut g, Action::ChooseKicker { pay: true });
+        while g.state.announcing.is_some() {
+            choose(&mut g, p);
+        }
+        assert_eq!(
+            g.state
+                .stack
+                .iter()
+                .find(|s| s.card == spell)
+                .unwrap()
+                .cast
+                .unwrap()
+                .mana_spent(),
+            5
+        );
+        let mut g = ready(p);
+        let spell = named(&mut g, p, "Bygone Colossus", Zone::Hand);
+        act(&mut g, Action::AnnounceWarp { card: spell });
+        while g.state.announcing.is_some() {
+            choose(&mut g, p);
+        }
+        let cast = g
+            .state
+            .stack
+            .iter()
+            .find(|s| s.card == spell)
+            .unwrap()
+            .cast
+            .unwrap();
+        assert_eq!(cast.method, CastMethod::Warp);
+        assert_eq!(cast.mana_spent(), 3);
+        let mut g = ready(p);
+        let target = named(&mut g, p.other(), "Hulking Raptor", Zone::Battlefield);
+        let spell = named(&mut g, p, "Shock", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: spell });
+        while g.state.announcing.is_some() {
+            let a = Action::ChooseTarget {
+                target: Target::Card(target),
+            };
+            if g.legal_actions().contains(&a) {
+                act(&mut g, a)
+            } else {
+                choose(&mut g, p)
+            }
+        }
+        let payment = g
+            .state
+            .stack
+            .iter()
+            .find(|s| s.card == spell)
+            .unwrap()
+            .cast
+            .unwrap()
+            .payment;
+        assert_eq!(payment.into_iter().sum::<u32>(), 1);
+        for _ in 0..20 {
+            if g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::PayResolutionMana { .. }))
+            {
+                break;
+            }
+            choose(&mut g, p);
+        }
+        act(
+            &mut g,
+            Action::PayResolutionMana {
+                payment: [0, 0, 0, 0, 0, 2],
+            },
+        );
+        assert_eq!(
+            g.state
+                .stack
+                .iter()
+                .find(|s| s.card == spell)
+                .unwrap()
+                .cast
+                .unwrap()
+                .payment,
+            payment
+        );
+        settle(&mut g, p);
+        assert_eq!(g.object_view(target).damage, 2);
+    }
+}
