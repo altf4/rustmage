@@ -3357,6 +3357,9 @@ def entry_predicate_prefix(line):
 
 
 def trigger_creature_template(card):
+    checked_modal = modal_reminder_text(card)
+    if checked_modal is None: return None
+    card = dict(card, oracle_text=checked_modal)
     if not isinstance(card.get('oracle_text'), str):
         return None
     # Reuse the same complete body/type/cost checks as the keyword-only template.
@@ -3914,8 +3917,99 @@ def spell_program_template(card):
     return ('None', program) if program else None
 
 
+def modal_route(raw):
+    """Erasure is detection only: no detected surface is executable input."""
+    while isinstance(raw, str):
+        if re.search(r'\bchoose\s+one\b', ' '.join(raw.split()), re.I): return True
+        stripped = re.sub(r'\([^()]*\)', '', raw)
+        if stripped == raw: return False
+        raw = stripped
+    return False
+
+
+def modal_reminder_text(card):
+    """Authenticate each balanced reminder in its semantic slot before lowering.
+
+    Matching is by mechanic/count/subject/token recipe, never card identity. A
+    nested reminder must first prove its own slot, then its containing reminder
+    must prove the complete outer production. Unknown outer text is never erased.
+    """
+    raw = card.get('oracle_text')
+    if not isinstance(raw, str) or not modal_route(raw): return raw
+    def number(word):
+        words = {'zero':0,'a':1,'an':1,'one':1,'two':2,'three':3,'four':4,'five':5,
+                 'six':6,'seven':7,'eight':8,'nine':9,'ten':10}
+        return int(word) if word.isdecimal() else words.get(word)
+    def amount_present(before, mechanic, value):
+        if value is None: return False
+        return any(number(m[1]) == value for m in re.finditer(
+            r'\b'+mechanic+r' ([a-z0-9]+)\b', before, re.I))
+    def slot(before, reminder):
+        # Complete intrinsic lines prove their own trailing presentation.
+        if intrinsic_reminder_line_valid(before+' ('+reminder+')'): return True
+        # A nested Role's Ward reminder binds the printed matching payment.
+        ward = re.search(r'\bward ((?:\{[0-9WUBRGC]+\})+)\.?$', before, re.I)
+        if ward and reminder == ('Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays '+ward[1]+'.'): return True
+        grant = re.search(r'\b(?:gains?|has|have) ([a-z, ]+?)(?: until end of turn)?\.$', before, re.I)
+        if grant:
+            keywords = re.split(r',? and |, ', grant[1].lower())
+            if keywords[-1] != 'hexproof' and intrinsic_reminder_line_valid(keywords[-1].title()+' ('+reminder+')'): return True
+            if 'indestructible' in keywords and re.fullmatch(r'''Damage and effects that say "destroy" don't destroy it\.(?: If its toughness is 0 or less, it still dies\.)?''', reminder): return True
+            if 'hexproof' in keywords:
+                plural = re.match(r'(?:gain|have) ', grant[0], re.I) is not None
+                expected = ("They can't be the targets" if plural else "It can't be the target")+" of spells or abilities your opponents control."
+                if reminder == expected: return True
+            if 'trample' in keywords and reminder == "This creature can deal excess combat damage to the player or planeswalker it's attacking.": return True
+        if re.search(r'\bfights\b[^.]*\.$', before) and reminder in [
+                'Each deals damage equal to its power to the other.',
+                'Creatures that fight each deal damage equal to their power to the other.']: return True
+        if m := re.fullmatch(r'Look at the top ([a-z0-9]+) cards? of your library, then put any number of them on the bottom and the rest on top in any order\.', reminder):
+            return amount_present(before, 'scry', number(m[1]))
+        if m := re.fullmatch(r'To surveil ([0-9]+), look at the top ([a-z0-9]+) cards? of your library, then put any number of them into your graveyard and the rest on top of your library in any order\.', reminder):
+            return number(m[1]) == number(m[2]) and amount_present(before, 'surveil', number(m[1]))
+        if m := re.fullmatch(r'To mill ([a-z0-9]+) cards?, put the top ([a-z0-9]+) cards? of your library into your graveyard\.', reminder):
+            return number(m[1]) == number(m[2]) and amount_present(before, 'mill', number(m[1]))
+        explore = "Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on that creature, then put the card back or put it into your graveyard."
+        if before.endswith('explores, then it explores again.') and reminder == explore+' Then repeat this process.': return True
+        if before.endswith('explores.') and reminder == explore: return True
+        for kind, ability in PREDEFINED.items():
+            if re.search(r'\b[Cc]reate (?:a|an|one|two|three|four|five|six|seven|eight) '+kind+r' tokens?\.$', before):
+                if reminder == 'It\'s an artifact with "'+ability.replace('this artifact','this token')+'"': return True
+        # All six Roles use their complete predefined characteristics, after any
+        # authenticated nested keyword reminder has been removed recursively.
+        return role_reminder_text(before+' ('+reminder+')') == before
+    def line(text, nesting=0):
+        if nesting >= 64: return None
+        result='';i=0
+        while i<len(text):
+            if text[i] == ')': return None
+            if text[i] != '(':
+                result+=text[i];i+=1;continue
+            # Presentation is a trailing space-delimited grammar slot, never an
+            # infix capable of repairing a split semantic token.
+            if not result.endswith(' '): return None
+            depth=1;j=i+1
+            while j<len(text) and depth:
+                depth += int(text[j]=='(')-int(text[j]==')');j+=1
+            if depth: return None
+            nested=line(text[i+1:j-1], nesting+1)
+            before=result.rstrip()
+            if nested is None or not slot(before,nested): return None
+            result=before;i=j
+        return result
+    normalized=[]
+    for raw_line in raw.splitlines():
+        result=line(raw_line)
+        if result is None:return None
+        normalized.append(result)
+    return '\n'.join(normalized)
+
+
 def modal_spell_template(card):
     """Every mode must compile completely; unsupported alternatives gate the card."""
+    checked_modal = modal_reminder_text(card)
+    if checked_modal is None: return None
+    card = dict(card, oracle_text=checked_modal)
     if (card.get('layout') != 'normal' or card.get('type_line') not in ('Instant', 'Sorcery')
             or spell_cost_options(card.get('mana_cost', '')) is None
             or not isinstance(card.get('oracle_text'), str)):
@@ -4331,6 +4425,9 @@ def activation_mode_lines(card, text):
 
 def permanent_program_template(card):
     """Whole supported permanent text, including all activation restrictions."""
+    checked_modal = modal_reminder_text(card)
+    if checked_modal is None: return None
+    card = dict(card, oracle_text=checked_modal)
     if (card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str)
             or spell_cost_options(card.get('mana_cost', '')) is None):
         return None
@@ -5111,6 +5208,9 @@ def compile_catalogue(snapshot, target):
     replacement_rows=[]
     for index, name in enumerate(names):
         original = cards.get(name, {})
+        modal_clean = modal_reminder_text(original)
+        if modal_clean is not None and modal_route(original.get('oracle_text')):
+            original = dict(original, oracle_text=modal_clean)
         raw_graveyard_body = original.get('oracle_text', '')
         graveyard_route_surface = raw_graveyard_body
         graveyard_route_seen = False
@@ -5358,6 +5458,8 @@ def compile_catalogue(snapshot, target):
             if creature_entry != 'Never':entry=creature_entry
             activations = [*activations, *cycling]
             if len(activations) > 64: effect = 'Unsupported'; activations = []
+        # A rejected modal raw body cannot be revived by another selector.
+        if modal_clean is None and modal_route(original.get('oracle_text')): effect='Unsupported'
         # A later generic selector cannot revive rejected intrinsic reminder text.
         if not suspect_reminders_valid(original):
             effect='Unsupported'
