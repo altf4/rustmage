@@ -1412,7 +1412,12 @@ impl Game {
             let mut item = resolution.item.clone();
             if !matches!(
                 instruction,
-                Instruction::Fight { .. } | Instruction::PowerDamage { .. }
+                Instruction::Fight { .. }
+                    | Instruction::PowerDamage { .. }
+                    | Instruction::GainControl {
+                        controller: PlayerSet::Targeted,
+                        ..
+                    }
             ) {
                 item.targets
                     .retain(|bound| bound.group == resolution.target_group);
@@ -1792,6 +1797,12 @@ impl Game {
                     self.move_battlefield_group(&item, filters, exile);
                 }
                 Instruction::GainControlUntilEndTurn => self.gain_control_until_end_turn(&item),
+                Instruction::GainControl {
+                    subject,
+                    controller,
+                } => {
+                    self.gain_control(&item, subject, controller);
+                }
                 Instruction::ReturnGraveyardCreatures {
                     players,
                     maximum_mana_value,

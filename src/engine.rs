@@ -5891,6 +5891,10 @@ mod split_search_tests;
 mod control_tests;
 
 #[cfg(test)]
+#[path = "engine_durable_control_tests.rs"]
+mod durable_control_tests;
+
+#[cfg(test)]
 #[path = "engine_adventure_land_targets_tests.rs"]
 mod adventure_land_targets_tests;
 
