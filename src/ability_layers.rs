@@ -37,6 +37,8 @@ pub(crate) struct StaticAbilityGroup {
 pub(crate) enum StaticAbilityFragment {
     LifeGainAdditional(u16),
     CantGainLife,
+    NoMaximumHandSize,
+    AdditionalLandPlays(u16),
     IntrinsicKeywords(Keywords),
     Changeling,
     /// Predefined Cursed Role sets both axes in layer 7b.

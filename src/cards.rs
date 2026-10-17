@@ -261,6 +261,28 @@ pub(crate) struct LibrarySelectionSpec {
     pub remainder: LibraryRemainder,
 }
 
+/// Explicit destinations for cards looked at without changing zones first.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum LibraryPickDestination {
+    Hand,
+    Battlefield,
+    Top,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum LibraryLook {
+    Fixed(u16),
+    ChosenX,
+    UntilKinds(u16),
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct LibrarySelectionEffect {
+    pub spec: LibrarySelectionSpec,
+    pub look: LibraryLook,
+    pub destination: LibraryPickDestination,
+    pub public: bool,
+    pub maximum_mana_value: Option<AmountValue>,
+}
+
 /// Fixed qualities admitted by library-search instructions.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum SearchFilter {
@@ -691,6 +713,9 @@ pub(crate) enum Instruction {
     /// Existing qualified searches retain their legal failure-to-find behavior.
     SearchRequired(SearchSpec),
     SelectLibrary(LibrarySelectionSpec),
+    SelectLibraryTo(LibrarySelectionEffect),
+    NoMaximumHandSize,
+    ExileResolvingSpell,
     Damage(i32),
     DamageScaled(AmountValue),
     DamagePlayers(PlayerSet, i32),
