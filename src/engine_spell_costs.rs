@@ -151,7 +151,7 @@ impl Game {
                     .enumerate()
                     .filter(|(id, o)| {
                         o.zone == Zone::Battlefield
-                            && o.owner == actor
+                            && o.controller == actor
                             && self.is_creature(*id as CardId)
                             && self.stats_without_hand(*id as CardId, departing).power
                                 >= i128::from(minimum)
@@ -164,6 +164,19 @@ impl Game {
                     .unwrap_or(u64::MAX)
                     .saturating_mul(u64::from(factor))
             }
+            crate::cards::SpellReductionAmount::EquippedPower => self.state.objects
+                [source as usize]
+                .attached_to
+                .filter(|target| {
+                    self.on_battlefield(target.card)
+                        && self.object_ref(target.card) == *target
+                        && Some(target.card) != departing
+                        && self.is_creature(target.card)
+                })
+                .map_or(0, |target| {
+                    u64::try_from(self.stats_without_hand(target.card, departing).power.max(0))
+                        .unwrap_or(u64::MAX)
+                }),
             crate::cards::SpellReductionAmount::SourcePower => {
                 u64::try_from(self.stats_without_hand(source, departing).power.max(0))
                     .unwrap_or(u64::MAX)
@@ -210,7 +223,7 @@ impl Game {
         }
         for &source in &self.state.static_sources {
             let object = &self.state.objects[source as usize];
-            if object.owner != actor {
+            if object.controller != actor {
                 continue;
             }
             for rule in object.card.cost_reductions() {

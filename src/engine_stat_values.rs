@@ -16,10 +16,15 @@ impl Game {
             CountZone::Graveyard => Zone::Graveyard,
             CountZone::Exile => Zone::Exile,
         };
+        let related_player = if zone == Zone::Battlefield {
+            o.controller
+        } else {
+            o.owner
+        };
         o.zone == zone
             && match filter.relation {
-                0 => o.owner == owner,
-                1 => o.owner != owner,
+                0 => related_player == owner,
+                1 => related_player != owner,
                 _ => true,
             }
             && (!filter.other
@@ -108,7 +113,7 @@ impl Game {
             }
             StatValue::AttackingCreatures => objects()
                 .filter(|(id, o)| {
-                    o.owner == owner
+                    o.controller == owner
                         && o.zone == Zone::Battlefield
                         && kinds(*id, o) & 1 != 0
                         && self.state.attackers.iter().any(|a| a.card == *id)

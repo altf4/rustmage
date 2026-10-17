@@ -28,6 +28,7 @@ pub(super) struct CounterPlacement {
     pub object: ObjectRef,
     pub card: Card,
     pub owner: Player,
+    pub controller: Player,
     pub subtypes: GrantedSubtypes,
     pub kind: u16,
     pub amount: Counters,
@@ -180,8 +181,8 @@ impl Game {
         used: &[(ObjectRef, u16)],
     ) -> Vec<ReplacementEffectView> {
         let mut out = Vec::new();
-        let mut add = |reference: ObjectRef, card: Card, owner: Player| {
-            if owner != p.owner {
+        let mut add = |reference: ObjectRef, card: Card, controller: Player| {
+            if controller != p.controller {
                 return;
             }
             for (index, &spec) in card.replacement_effects().iter().enumerate() {
@@ -198,13 +199,13 @@ impl Game {
         for &id in &self.state.static_sources {
             let o = &self.state.objects[id as usize];
             if o.zone == Zone::Battlefield {
-                add(self.object_ref(id), o.card, o.owner);
+                add(self.object_ref(id), o.card, o.controller);
             }
         }
         // CR614.12: only the incoming permanent's own effects may affect its entry;
         // a different member of this simultaneous entry batch is not yet a source.
         if p.entry_index.is_some() {
-            add(p.object, p.card, p.owner);
+            add(p.object, p.card, p.controller);
         }
         out
     }
@@ -245,7 +246,7 @@ impl Game {
         if placements.is_empty() {
             return;
         }
-        placements.sort_by_key(|p| (p.owner != self.state.active, p.object.card));
+        placements.sort_by_key(|p| (p.controller != self.state.active, p.object.card));
         if self.state.replacements.is_none()
             && placements
                 .iter()
@@ -289,6 +290,7 @@ impl Game {
                     object,
                     card: o.card,
                     owner: o.owner,
+                    controller: o.controller,
                     subtypes: self.granted_subtypes(object.card),
                     kind: self.current_kinds(object.card),
                     amount,
@@ -348,7 +350,7 @@ impl Game {
         }
         for &id in &self.state.static_sources {
             let o = &self.state.objects[id as usize];
-            if o.zone != Zone::Battlefield || o.owner != b.player {
+            if o.zone != Zone::Battlefield || o.controller != b.player {
                 continue;
             }
             let source = self.object_ref(id);
@@ -432,7 +434,7 @@ impl Game {
             && !self.state.static_sources.iter().any(|&id| {
                 let o = &self.state.objects[id as usize];
                 o.zone == Zone::Battlefield
-                    && o.owner == player
+                    && o.controller == player
                     && o.card.replacement_effects().iter().any(|s| {
                         matches!(
                             s,
@@ -534,7 +536,7 @@ impl Game {
                             if self.same_target_object(bound)
                                 && let Target::Card(id) = bound.target
                             {
-                                let player = self.state.objects[id as usize].owner;
+                                let player = self.state.objects[id as usize].controller;
                                 if !self.keywords(id).contains(Keywords::INDESTRUCTIBLE) {
                                     self.move_target_batch(&[bound], Zone::Graveyard);
                                 }
@@ -598,7 +600,9 @@ impl Game {
                             batch.used.push((only.source, only.ability));
                         }
                         _ => {
-                            self.state.pending = Pending::Replacement { player: p.owner };
+                            self.state.pending = Pending::Replacement {
+                                player: p.controller,
+                            };
                             self.state.replacements = Some(state);
                             return true;
                         }

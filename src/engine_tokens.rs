@@ -100,6 +100,7 @@ impl Game {
                 let object = Object {
                     card: token,
                     owner: controller,
+                    controller,
                     zone: Zone::Outside,
                     generation,
                     tapped: false,

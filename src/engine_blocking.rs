@@ -5,7 +5,7 @@ impl Game {
     pub(super) fn can_be_blocker(&self, id: CardId) -> bool {
         self.state.objects.get(id as usize).is_some_and(|b| {
             b.zone == Zone::Battlefield
-                && b.owner == self.state.active.other()
+                && b.controller == self.state.active.other()
                 && self.is_creature(id)
                 && !b.tapped
                 && !self.keywords(id).contains(Keywords::CANT_BLOCK)
@@ -21,7 +21,7 @@ impl Game {
         };
         if !self.can_be_blocker(blocker)
             || a.zone != Zone::Battlefield
-            || a.owner != self.state.active
+            || a.controller != self.state.active
             || !self.is_creature(attacker)
         {
             return false;

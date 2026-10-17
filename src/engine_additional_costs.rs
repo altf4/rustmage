@@ -19,7 +19,12 @@ impl Game {
         let Some(o) = self.state.objects.get(object.card as usize) else {
             return false;
         };
-        if o.owner != actor
+        let controls_cost_object = match spec.kind {
+            EffectChoiceKind::Discard => o.owner == actor,
+            EffectChoiceKind::Sacrifice => o.controller == actor,
+            _ => false,
+        };
+        if !controls_cost_object
             || self.object_ref(object.card) != object
             || object == source && (spec.kind == EffectChoiceKind::Discard || spec.filter.other)
             || spec.filter.source_only && object != source
@@ -49,7 +54,11 @@ impl Game {
             _ => return false,
         };
         let f = spec.filter;
-        o.owner == actor
+        (if zone == Zone::Battlefield {
+            o.controller
+        } else {
+            o.owner
+        }) == actor
             && o.zone == zone
             && (!f.artifact_enchantment_or_token || kinds & 48 != 0 || o.card.is_token())
             && (f.kinds == 0 || kinds & u16::from(f.kinds) != 0)

@@ -4,6 +4,7 @@ use super::*;
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EntryMove {
     pub before: ObjectView,
+    pub controller: Player,
     pub destination: Zone,
     pub tapped: bool,
     pub attachment: Option<ObjectRef>,
@@ -128,14 +129,15 @@ impl Game {
             && self.object_ref(target.card) == target
             && self.current_kinds(target.card) & u16::from(spec.kinds) != 0
             && match spec.relation {
-                0 => self.state.objects[target.card as usize].owner == controller,
-                1 => self.state.objects[target.card as usize].owner != controller,
+                0 => self.state.objects[target.card as usize].controller == controller,
+                1 => self.state.objects[target.card as usize].controller != controller,
                 _ => true,
             }
     }
     pub(super) fn entry_move(&self, id: CardId, destination: Zone, tapped: bool) -> EntryMove {
         EntryMove {
             before: self.object_view(id),
+            controller: self.state.objects[id as usize].controller,
             destination,
             tapped,
             attachment: None,
@@ -169,6 +171,7 @@ impl Game {
                 &movement.before,
                 movement.destination,
                 movement.cast_payment,
+                movement.controller,
             );
             if movement.before.card.x_entry_counters() && movement.destination == Zone::Battlefield
             {
@@ -194,7 +197,7 @@ impl Game {
             })
             .map(|(i, _)| i)
             .collect();
-        choices.sort_by_key(|&i| (moves[i].before.owner != self.state.active, i));
+        choices.sort_by_key(|&i| (moves[i].controller != self.state.active, i));
         // Counter replacement choices are APNAP independently of the move order.
         // Preserve moves and existing Aura/life indices for the simultaneous commit.
         let mut counter_order = moves
@@ -203,7 +206,7 @@ impl Game {
             .filter(|(_, m)| m.destination == Zone::Battlefield && m.counters.total() > 0)
             .map(|(i, _)| i)
             .collect::<Vec<_>>();
-        counter_order.sort_by_key(|&i| (moves[i].before.owner != self.state.active, i));
+        counter_order.sort_by_key(|&i| (moves[i].controller != self.state.active, i));
         let batch = EntryBatch {
             moves,
             choices,
@@ -247,20 +250,21 @@ impl Game {
                 }))
     }
     pub(super) fn pre_entry_counters(&self, before: &ObjectView, destination: Zone) -> Counters {
-        self.pre_entry_counters_with_payment(before, destination, None)
+        self.pre_entry_counters_with_payment(before, destination, None, before.controller)
     }
     fn pre_entry_counters_with_payment(
         &self,
         before: &ObjectView,
         destination: Zone,
         payment: Option<Mana>,
+        controller: Player,
     ) -> Counters {
         if destination != Zone::Battlefield {
             return Counters::default();
         }
         let mut counters = before.card.enters_counters();
         for rule in before.card.entry_counter_rules() {
-            if self.step_guard(rule.guard, before.owner, before.reference, before.tapped) {
+            if self.step_guard(rule.guard, controller, before.reference, before.tapped) {
                 let amount = match rule.amount {
                     EntryCounterAmount::ColorsSpent => {
                         payment.map_or(0, |p| (0..5).filter(|&i| p[i] > 0).count() as u64)
@@ -273,11 +277,10 @@ impl Game {
                         }
                     }
                     EntryCounterAmount::Fixed(n) => u64::from(n),
-                    EntryCounterAmount::Stat(value) => u64::try_from(
-                        self.stat_value(value, before.reference, before.owner)
-                            .max(0),
-                    )
-                    .capacity("entry counter amount exhausted"),
+                    EntryCounterAmount::Stat(value) => {
+                        u64::try_from(self.stat_value(value, before.reference, controller).max(0))
+                            .capacity("entry counter amount exhausted")
+                    }
                 };
                 counters.add(CounterKind::PlusOne, amount);
             }
@@ -304,11 +307,12 @@ impl Game {
         let mut events = Vec::new();
         let mut attachments = Vec::new();
         for (movement, counters) in moves {
-            let mut event = self.transition_object_with_counters(
+            let mut event = self.transition_object_under_control(
                 movement.before,
                 movement.destination,
                 movement.tapped,
                 counters,
+                Some(movement.controller),
             );
             event.offspring_paid = movement.offspring_paid;
             event.kicked = movement.kicked;
@@ -373,7 +377,7 @@ impl Game {
                 batch
                     .choices
                     .get(batch.next)
-                    .map(|&index| (index, batch.moves[index].before.owner))
+                    .map(|&index| (index, batch.moves[index].controller))
             }) {
                 let movement = &self.state.entry_batch.as_ref().unwrap().moves[index];
                 if matches!(movement.before.card.entry_tapped(), EntryTapped::PayLife(_)) {
@@ -419,6 +423,7 @@ impl Game {
                     object: m.before.reference,
                     card: m.before.card,
                     owner: m.before.owner,
+                    controller: m.controller,
                     subtypes: GrantedSubtypes::default(),
                     kind: m.before.card.kind_mask(),
                     amount: m.counters,
@@ -456,7 +461,7 @@ impl Game {
     pub(super) fn entry_candidate(&self, target: ObjectRef) -> bool {
         let batch = self.state.entry_batch.as_ref().unwrap();
         let movement = &batch.moves[batch.choices[batch.next]];
-        self.aura_can_enchant(movement.before.card, movement.before.owner, target)
+        self.aura_can_enchant(movement.before.card, movement.controller, target)
             && batch.moves.iter().all(|m| m.before.id != target.card)
     }
     pub(super) fn choose_aura_attachment(&mut self, target: ObjectRef) {
@@ -471,7 +476,7 @@ impl Game {
         let EntryTapped::PayLife(cost) = movement.before.card.entry_tapped() else {
             unreachable!()
         };
-        self.state.players[movement.before.owner.index()].life >= i128::from(cost)
+        self.state.players[movement.controller.index()].life >= i128::from(cost)
     }
     pub(super) fn choose_entry_life(&mut self, pay: bool) {
         assert!(!pay || self.can_pay_entry_life());
@@ -480,7 +485,7 @@ impl Game {
         let EntryTapped::PayLife(cost) = movement.before.card.entry_tapped() else {
             unreachable!()
         };
-        let player = movement.before.owner;
+        let player = movement.controller;
         movement.life_paid = Some(pay);
         movement.tapped |= !pay;
         batch.next += 1;

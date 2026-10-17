@@ -282,6 +282,7 @@ fn unrepresentable_derived_stats_cannot_escape_at_an_optional_resolution_boundar
         discards: [0; 2],
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
+        milled_selection: None,
         library: None,
         selection: None,
         target_library: None,

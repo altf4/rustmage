@@ -74,8 +74,8 @@ impl Game {
                     let count = counts[player.index()];
                     if count == 0
                         || !match relation {
-                            CastRelation::You => source.owner == player,
-                            CastRelation::Opponent => source.owner != player,
+                            CastRelation::You => source.controller == player,
+                            CastRelation::Opponent => source.controller != player,
                             CastRelation::Any => true,
                         }
                     {

@@ -61,10 +61,9 @@ impl Game {
                 batch.deaths.push(id);
             }
             if object.card.aura().is_some() {
-                if !object
-                    .attached_to
-                    .is_some_and(|target| self.aura_can_enchant(object.card, object.owner, target))
-                {
+                if !object.attached_to.is_some_and(|target| {
+                    self.aura_can_enchant(object.card, object.controller, target)
+                }) {
                     batch.deaths.push(id);
                 }
             } else if let Some(target) = object.attached_to
@@ -77,7 +76,7 @@ impl Game {
                 batch.detached.push(self.object_ref(id));
             }
             if object.card.is_legendary() {
-                legends[object.owner.index()]
+                legends[object.controller.index()]
                     .entry(object.card.name())
                     .or_default()
                     .push(self.object_ref(id));
@@ -197,7 +196,7 @@ impl Game {
             .deaths
             .iter()
             .filter(|&&id| self.saga_sacrifice_required(id))
-            .map(|&id| (self.state.objects[id as usize].owner, id))
+            .map(|&id| (self.state.objects[id as usize].controller, id))
             .collect();
         self.food_sacrifice_triggers(&sacrifices, &sources);
         let mut events = self.move_objects_raw(&batch.deaths, Zone::Graveyard);

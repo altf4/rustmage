@@ -371,7 +371,7 @@ fn unavailable_or_foreign_resources_offer_only_decline_without_consumption() {
     let mut g = setup();
     grave(&mut g, 2);
     let f = food(&mut g);
-    g.state.objects[f as usize].owner = Player::P1;
+    g.state.objects[f as usize].controller = Player::P1;
     let id = named(&mut g, "Treetop Sentries", Zone::Hand);
     replay(&mut g, Action::AnnounceCast { card: id });
     to_forage(&mut g);

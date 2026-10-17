@@ -102,7 +102,7 @@ impl Game {
     pub(super) fn convoke_eligible(&self, p: Player, r: ObjectRef) -> bool {
         self.state.objects.get(r.card as usize).is_some_and(|o| {
             o.generation == r.generation
-                && o.owner == p
+                && o.controller == p
                 && o.zone == Zone::Battlefield
                 && self.object_kinds(r.card, o) & 1 != 0
                 && !o.tapped

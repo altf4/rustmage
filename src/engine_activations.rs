@@ -57,7 +57,7 @@ impl Game {
             ActivationGuard::ControlSubtypeAny(_) => {
                 self.state.objects.iter().enumerate().any(|(id, o)| {
                     o.zone == Zone::Battlefield
-                        && o.owner == actor
+                        && o.controller == actor
                         && guard
                             .subtypes()
                             .iter()
@@ -121,7 +121,7 @@ impl Game {
         sorcery: bool,
     ) -> bool {
         if object.zone != ability.source_zone()
-            || object.owner != actor
+            || object.controller != actor
             || (ability.sorcery && !sorcery)
             || ((ability.once_per_turn || ability.exhaust)
                 && object.used_abilities & (1u64 << index) != 0)

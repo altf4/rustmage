@@ -173,7 +173,11 @@ def extract_cost_reductions(card):
         line=original.strip();turn='Any';guard='StepGuard::Always';source_only=False;filt=None;amount=None;quantity=None;derived=None
         for prefix,timing in [('During turns other than yours, ','Other'),('During your turn, ','Own')]:
             if line.startswith(prefix):turn=timing;line=line[len(prefix):];break
-        if m:=re.fullmatch(r'Affinity for ([A-Za-z -]+)(?: \(This spell costs \{1\} less to cast for each (.+) you control\.\))?',line):
+        if m:=re.fullmatch(r'Permanent spells you cast that have an Adventure cost \{([0-9]+)\} less to cast\.',line):
+            filt='CastFilter::PermanentAdventure';amount=int(m[1])
+        elif m:=re.fullmatch(r'([A-Za-z -]+) spells you cast cost \{X\} less to cast, where X is equipped creature[’\']s power\.',line):
+            filt=reduction_filter(m[1]);amount=1;derived='SpellReductionAmount::EquippedPower'
+        elif m:=re.fullmatch(r'Affinity for ([A-Za-z -]+)(?: \(This spell costs \{1\} less to cast for each (.+) you control\.\))?',line):
             noun=m[1]
             candidate=reduction_quantity(noun.casefold()+' you control')
             if m[2] is None or candidate==reduction_quantity(m[2].casefold()+' you control'):
@@ -1361,7 +1365,23 @@ def mill_instruction(players, amount):
     return f'Mill(PlayerSet::{players}, MillAmount::Fixed({amount}))'
 
 
+def milled_selection_program(text):
+    def emit(amount,filter_,count,destination):
+        return [mill_instruction('Controller',amount),'SelectMilled(MilledSelectionSpec { filter: MilledFilter::'+filter_+', count: MilledCount::'+count+', destination: MilledDestination::'+destination+' })']
+    if m:=re.fullmatch(r'mill (.+?)(?:, then|\. Then) put (?:a|an) (creature, enchantment, or land|instant or sorcery|instant, sorcery, or Faerie) card from among (?:them|the milled cards) (into your hand|onto the battlefield)\.',text):
+        amount=mill_quantity(m[1]);filter_={'creature, enchantment, or land':'Kinds(35)','instant or sorcery':'Kinds(12)','instant, sorcery, or Faerie':'KindsOrSubtype { kinds: 12, subtype: "Faerie" }'}[m[2]]
+        if amount is not None:return emit(amount,filter_,'Range { minimum: 1, maximum: 1 }','Hand' if m[3]=='into your hand' else 'Battlefield')
+    if m:=re.fullmatch(r'mill (.+?)(?:, then|\. Then) put up to two land cards from among (?:them|the milled cards) into your hand\.',text):
+        amount=mill_quantity(m[1])
+        if amount is not None:return emit(amount,'Kinds(2)','Range { minimum: 0, maximum: 2 }','Hand')
+    if m:=re.fullmatch(r'mill (.+?)(?:, then|\. Then) put all (instant and sorcery cards|cards that have an Adventure) from among (?:them|the milled cards) into your hand\.',text):
+        amount=mill_quantity(m[1])
+        if amount is not None:return emit(amount,'Kinds(12)' if m[2]=='instant and sorcery cards' else 'Adventure','All','Hand')
+    return None
+
+
 def mill_program(text):
+    if selected:=milled_selection_program(text):return selected
     # Bind recovery only within an explicit mill-and-recover expression. A bare
     # 'them' or 'milled cards' elsewhere does not acquire a guessed antecedent.
     if m:=re.fullmatch(r'(?:you )?mill (.+?)(?:, then you may return a (permanent|land) card from among them to your hand|\. (?:Then )?You may put a (permanent|land) card from among (?:them|the milled cards|the cards milled this way) into your hand)\.(?: (.+))?',text):
@@ -3969,6 +3989,11 @@ def adventure_faces(card, mechanic="Adventure"):
 def saga_chapter_program(body):
     """Complete chapter sentences using shared immutable effects, without card-name gates."""
     text=normalize_duration(body[0].lower()+body[1:])
+    if m:=re.fullmatch(r"exile the top (two|three|[0-9]+) cards of target opponent's library\. You may play those cards this turn\.",text):
+        amount={'two':2,'three':3}.get(m[1])
+        if amount is None:amount=int(m[1])
+        if not 1<=amount<=65535:return None
+        return 'Opponent',[f'ExileTargetLibraryPlay {{ amount: {amount} }}']
     if text=='destroy target artifact an opponent controls.':return 'ArtifactOpponent',['Destroy']
     if m:=re.fullmatch(r'this creature deals ([0-9]+) damage to target tapped creature an opponent controls\.',text):
         return ('CreatureOpponentTapped',[f'Damage({int(m[1])})']) if int(m[1])<=32767 else None
@@ -4025,6 +4050,7 @@ def saga_body(card):
             # Only remove authenticated reminder sentences from their exact instruction.
             # Unknown parenthesized text is executable residual, never harmless prose.
             reminders = {
+                'Create a Treasure token. (It\'s an artifact with "{T}, Sacrifice this token: Add one mana of any color.")': 'Create a Treasure token.',
                 'Mill three cards, then create a Food token. (It\'s an artifact with "{2}, {T}, Sacrifice this token: You gain 3 life.")': 'Mill three cards, then create a Food token.',
                 'Tap target creature an opponent controls. Put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)': 'Tap target creature an opponent controls. Put a stun counter on it.',
             }

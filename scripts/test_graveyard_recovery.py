@@ -137,12 +137,12 @@ class GraveyardRecoveryTests(unittest.TestCase):
 
     def test_all_prior_programs_helpers_colors_recipes_preserved_except_named_admissions(self):
         import subprocess
-        old=subprocess.check_output(['git','-C',str(g.ROOT),'show','0977111f57734f6e4e22bf6c3c68a88358d29da9:src/generated/catalogue.rs'],text=True)
+        old=subprocess.check_output(['git','-C',str(g.ROOT),'show','bece141f80a5efa5b5bea1798257d471db0c3d8e:src/generated/catalogue.rs'],text=True)
         new=(g.ROOT/'src/generated/catalogue.rs').read_text()
         definitions=lambda text:[line for line in text.splitlines() if line.lstrip().startswith('Definition {')]
         before,after=definitions(old),definitions(new)
         expected=set(NAMES)-{"Morcant's Loyalist"}
-        self.assertEqual(len(before),5311);self.assertEqual(len(after),5311)
+        self.assertEqual(len(before),5318);self.assertEqual(len(after),5318)
         changed=[(a,b) for a,b in zip(before,after) if a!=b]
         self.assertEqual(len(changed),18)
         changed_names={json.loads(re.search(r'name: ("(?:[^"\\]|\\.)*")',b)[1]) for _,b in changed}
