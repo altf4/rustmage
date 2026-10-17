@@ -126,6 +126,8 @@ mod roles;
 #[path = "engine_sba.rs"]
 mod sba;
 pub use roles::{RoleGroupView, RoleTimestampView};
+#[path = "engine_ability_order.rs"]
+mod ability_order;
 #[path = "engine_ability_timeline.rs"]
 mod ability_timeline;
 pub use ability_timeline::{AbilitySourceTimestampView, KeywordEffectOrigin, KeywordEffectView};

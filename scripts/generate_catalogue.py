@@ -5921,6 +5921,7 @@ def compile_catalogue(snapshot, target):
             keywords = KEYWORDS['trample'] if role == 'Monster' else 0
             aura_rows.append(f'        {index} => Some(AuraSpec {{ kinds: 1, relation: -1, bonus: EquipmentSpec {{ stats: Stats {{ power: {bonus}, toughness: {bonus} }}, keywords: Keywords({keywords}) }} }}),')
             role_rows.append(f'        {index} => Some(RoleKind::{role.replace(" ", "")}),')
+            static_group_rows.append(f'        {index} => {ability_layers.rust_role_groups(role, ability_parser)},')
         elif predefined:
             effect, _, _, token_abilities, _ = permanent_program_template({
                 'layout': 'normal', 'type_line': 'Artifact', 'mana_cost': '{0}',

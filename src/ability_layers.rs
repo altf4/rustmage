@@ -25,6 +25,8 @@ pub(crate) struct StaticAbilityGroup {
 pub(crate) enum StaticAbilityFragment {
     IntrinsicKeywords(Keywords),
     Changeling,
+    /// Predefined Cursed Role sets both axes in layer 7b.
+    PredefinedRoleBase,
     AttachedSubtype(&'static str),
     AttachmentStats(Stats),
     AttachmentKeywords(Keywords),

@@ -53,3 +53,44 @@ Funding evaluation needs a borrowed characteristic-world interface that can view
 ### Immediate paid earlier-layer witness
 
 Stop Cold can enchant a noncreature artifact Equipment already admitted in the parent. Ninja's Blades, Samurai's Katana and White Mage's Staff each have one continuous ability adding a Job subtype in layer4, granting triggered/keyword abilities in6 and/or a bonus in7c. Removing the Equipment's abilities6 disables its separate Equip ability, but that one effect has already begun in4 and continues its later fragments on the same recipient under613.6. Test this using a genuinely paid Equipment, actual attach/Job token, and paid Stop Cold; require the retained Job/subsequent-grant/stat fragments and denied Equip. A source-wide effective flag on all Equipment helpers would fail this first-batch case. By contrast Maha's pure7b clause is lost, and Archon's6+7b group obeys the explicit dependency before first application.
+
+## Sparse chronology and dependency checkpoint
+
+The first owned runtime foundation records static layer6 provider timestamps,
+resolution keyword effects, and temporary triggered-ability grants. One resolving
+instruction shares its timestamp across every affected recipient. Suspect keeps
+its persistent designation and records both granted abilities; becoming suspected
+again does not refresh that timestamp. Actual new Equipment attachment retimestamps
+the provider, while re-equipping the same recipient does not. Cleanup removes only
+expiring effects and departure removes only the departing recipient incarnation.
+No cache or extra field was added to every Object or Spell.
+
+Three paid native groups passed in both seats: Boros Charm plus Royal Treatment
+shared timing and real cleanup, Person of Interest plus repeated Convenient Target
+and eventual Unsummon, and Samurai's Katana Job entry plus actual Equip movement.
+The frozen 921 tracked inputs remained unchanged; terminal cleanup reclaimed
+75,980,800 allocated bytes and retained every shared-library path and digest.
+These are foundation checks, not full ability-removal or card-admission acceptance.
+
+All six predefined Role factories now carry their complete static clause origins.
+Royal, Sorcerer and Young Hero retain exact granted-trigger index0; Monster's stats
+and trample stay one effect. Cursed is a pure7b setter. Wicked's separate death
+trigger remains distinct from its static bonus. This extends provenance only;
+factory definitions, programs, identities and admitted card counts do not change.
+
+An iterative strongly-connected-component scheduler evaluates the frozen layer6
+recipient sets. Dependencies override timestamp order, while only an actual cycle
+ignores its internal dependencies. An older effect outside a cycle still waits.
+Earlier-started effects and source-independent resolution grants continue; removing
+abilities clears prior keywords and nonkeyword grants but preserves the underlying
+object's other characteristics. Started effect identities are retained for later
+layers. Three scheduler regressions pass, covering these distinctions and both
+Suspect-granted abilities together. The first compilation exposed two invalid
+`usize::from(u32)` conversions; corrected indexing passed in a fresh target. All922
+inputs stayed fixed, 76,046,336 allocated bytes were cleaned, and every SO preserved.
+The complete source/provenance/raw control group passes21 methods.
+
+The scheduler is not yet connected to a removal Aura, source queries or prospective
+funding worlds. The four priority bodies remain gated until those full semantics
+and paid public acceptance are implemented. Schema102 is a prototype reservation;
+final composition will use a fresh schema above any intervening merged103 contract.

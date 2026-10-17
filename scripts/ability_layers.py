@@ -2,7 +2,7 @@
 
 This projection does not authorize text or admit cards. Callers must compile and
 raw-authenticate the COMPLETE body first; fragments retain the original line.
-The current module is not yet connected to catalogue emission.
+The caller emits these groups only after complete-body authentication.
 """
 from dataclasses import dataclass
 from enum import IntEnum
@@ -275,3 +275,27 @@ def rust_groups(card, parser, abilities):
         rendered.append('StaticAbilityGroup { line: ' + str(group.line) + ', first_layer: AbilityLayer::' +
                         layers[group.first_layer] + ', fragments: &[' + ', '.join(fragments) + '] }')
     return '&[' + ', '.join(rendered) + ']'
+
+
+def rust_role_groups(kind, parser):
+    """Predefined CR303.7 characteristics, independent of the creating spell.
+
+    These six roles are rules-defined factories, not physical-card dispatch.
+    A stat-and-grant clause keeps one identity; Wicked's separate death ability
+    is an ordinary printed trigger and is not part of its stat effect.
+    """
+    if kind not in parser.ROLE_BODIES:
+        raise ValueError('unknown predefined Role characteristics')
+    if kind == 'Cursed':
+        layer = 'Base'
+        parts = ['PredefinedRoleBase']
+    else:
+        parts = []
+        if kind != 'Young Hero':
+            parts.append('AttachmentStats(Stats { power: 1, toughness: 1 })')
+        if kind == 'Monster':
+            parts.append('AttachmentKeywords(Keywords(' + str(parser.KEYWORDS['trample']) + '))')
+        if kind in ('Royal', 'Sorcerer', 'Young Hero'):
+            parts.append('AttachmentTrigger(0)')
+        layer = 'Ability' if kind != 'Wicked' else 'Modify'
+    return '&[StaticAbilityGroup { line: 0, first_layer: AbilityLayer::' + layer + ', fragments: &[' + ', '.join('StaticAbilityFragment::' + part for part in parts) + '] }]'

@@ -198,5 +198,21 @@ class AbilityLayerIdentityTests(unittest.TestCase):
                 self.assertIn(groups[0].raw, self.cards[name]['oracle_text'])
 
 
+
+class PredefinedRoleOriginTests(unittest.TestCase):
+    def test_every_role_retains_complete_predefined_static_identity(self):
+        from scripts import ability_layers as layers
+        for kind in g.ROLE_BODIES:
+            row = layers.rust_role_groups(kind, g)
+            self.assertEqual(row.count('StaticAbilityGroup {'), 1, kind)
+            self.assertEqual('AttachmentTrigger(0)' in row, kind in ('Royal', 'Sorcerer', 'Young Hero'))
+            self.assertEqual('AttachmentStats(' in row, kind not in ('Cursed', 'Young Hero'))
+            self.assertEqual('PredefinedRoleBase' in row, kind == 'Cursed')
+            self.assertEqual('AttachmentKeywords(' in row, kind == 'Monster')
+            expected = 'Base' if kind == 'Cursed' else 'Modify' if kind == 'Wicked' else 'Ability'
+            self.assertIn('first_layer: AbilityLayer::' + expected, row)
+        with self.assertRaises(ValueError):
+            layers.rust_role_groups('Forged new role', g)
+
 if __name__ == '__main__':
     unittest.main()
