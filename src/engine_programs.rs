@@ -645,18 +645,23 @@ impl Game {
             .filter(|event| event.granted)
             .map_or(source.card, |event| event.granting_card);
         let condition = definition.triggers()[index].condition;
-        // Adding a graveyard observer must not also enable its unqualified
-        // battlefield abilities. Legacy hand-discard/cycling callers retain
-        // their existing pre-event source views and require no zone wrapper.
-        let origin_matches = condition
-            .origin()
-            .map_or(source.zone != Zone::Graveyard, |origin| {
+        // Graveyard observers must not enable unqualified battlefield abilities.
+        // Self-discard/cycling dispatch deliberately uses the destination object,
+        // so those events remain valid there. An explicit origin always wins.
+        let destination_event = matches!(
+            condition.event(),
+            TriggerCondition::SelfDiscarded | TriggerCondition::SelfCycled
+        );
+        let origin_matches = condition.origin().map_or(
+            source.zone != Zone::Graveyard || destination_event,
+            |origin| {
                 source.zone
                     == match origin {
                         TargetZone::Battlefield => Zone::Battlefield,
                         TargetZone::Graveyard => Zone::Graveyard,
                     }
-            });
+            },
+        );
         if !origin_matches {
             return false;
         }
