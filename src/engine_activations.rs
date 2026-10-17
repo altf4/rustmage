@@ -511,6 +511,9 @@ impl Game {
         if cost.tap {
             self.tap_objects(&[item.card]);
         }
+        if let Some((kind, amount)) = item.source_card.activation_put_counter(ability) {
+            self.activation_cost_counters(item.object, kind, amount, item.controller);
+        }
         self.refresh_local_source_counter_quantities(item);
         if cost.exile_self {
             self.move_object(item.card, Zone::Exile);

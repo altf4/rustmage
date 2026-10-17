@@ -34,6 +34,7 @@ impl Game {
             matches!(
                 a.condition.event(),
                 TriggerCondition::OtherCreatureCountersAdded { .. }
+                    | TriggerCondition::StateCounterAtLeast { .. }
             )
         }) {
             self.state.counter_sources.push(id);
@@ -81,7 +82,7 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),
-                TriggerCondition::PlayerDamaged { .. }
+                TriggerCondition::PlayerDamaged { .. } | TriggerCondition::SourceDealtCombatDamage
             )
         }) {
             self.state.damage_sources.push(id);
@@ -97,7 +98,8 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),
-                TriggerCondition::SelfDies
+                TriggerCondition::DamagedCreatureDies
+                    | TriggerCondition::SelfDies
                     | TriggerCondition::SelfEntersOrDies
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::PermanentToGraveyard { .. }

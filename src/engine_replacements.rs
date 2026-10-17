@@ -455,6 +455,29 @@ impl Game {
             used: Vec::new(),
         }));
     }
+    pub(super) fn activation_cost_counters(
+        &mut self,
+        object: ObjectRef,
+        kind: CounterKind,
+        amount: u64,
+        player: Player,
+    ) {
+        let o = &self.state.objects[object.card as usize];
+        let placement = CounterPlacement {
+            placed_by: player,
+            object,
+            card: o.card,
+            owner: o.owner,
+            controller: o.controller,
+            subtypes: self.granted_subtypes(object.card),
+            kind: self.current_kinds(object.card),
+            amount: Counters::of(kind, amount),
+            effect: false,
+            entry_index: None,
+            private: false,
+        };
+        self.stage_counter_placements(vec![placement], ResumeMode::Pending);
+    }
     pub(super) fn effect_counters(
         &mut self,
         changes: Vec<(ObjectRef, Counters)>,

@@ -114,6 +114,7 @@ const fn object(kinds: u8) -> TargetRule {
 }
 pub(super) struct CardExtras {
     pub opening_hand_battlefield: bool,
+    pub activation_put_counters: &'static [(u16, CounterKind, u64)],
     pub fixed_entry_counters: &'static [(CounterKind, u64)],
     pub entry_choice: Option<EntryChoiceKind>,
     pub chosen_entry_counters: Option<CounterKind>,
@@ -175,6 +176,7 @@ pub(super) struct CardExtras {
 impl CardExtras {
     pub const EMPTY: Self = Self {
         opening_hand_battlefield: false,
+        activation_put_counters: &[],
         fixed_entry_counters: &[],
         hand_cast_entry_counters: &[],
         entry_choice: None,

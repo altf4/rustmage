@@ -1370,6 +1370,7 @@ struct State {
     crew: Option<Box<crew::CrewState>>,
     objects: SharedVec<Object>,
     named_counters: Option<SharedVec<live_counters::NamedCounterRow>>,
+    creature_damage_history: Option<SharedVec<CreatureDamageHistoryView>>,
     entry_values: entry_choices::Rows,
     ability_resolutions: ability_resolutions::Rows,
     attacked_this_turn: SharedVec<ObjectRef>,
@@ -1682,6 +1683,7 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    pub creature_damage_history: Vec<CreatureDamageHistoryView>,
     pub temporary_controls: Vec<TemporaryControlView>,
     pub casting_prohibited: bool,
     pub death_exile_replacements: Vec<ExileDeathReplacementView>,
@@ -1894,6 +1896,7 @@ impl Game {
                 replacements: None,
                 objects: objects.into(),
                 named_counters: None,
+                creature_damage_history: None,
                 entry_values: None,
                 ability_resolutions: None,
                 attacked_this_turn: Vec::new().into(),
@@ -4427,6 +4430,7 @@ impl Game {
         self.clear_crew_history();
         self.state.triggered_this_turn.clear();
         self.state.ability_resolutions = None;
+        self.state.creature_damage_history = None;
         self.state.attacked_this_turn.clear();
         self.state.creatures_died_this_turn = 0;
         for player in &mut self.state.players {
@@ -4731,6 +4735,7 @@ impl Game {
         for gain in &gains {
             self.gain_life(gain.source.controller, gain.amount);
         }
+        self.creature_damage_events(events);
         self.player_damage_triggers(events);
         // Trigger events are recorded before SBAs, after the whole damage batch.
         gains
@@ -4942,6 +4947,10 @@ impl Game {
                 .death_exile_replacements
                 .as_ref()
                 .map_or_else(Vec::new, |rules| rules.as_ref().clone()),
+            creature_damage_history: s
+                .creature_damage_history
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             schema: OBSERVATION_SCHEMA,
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             creatures_died_this_turn: s.creatures_died_this_turn,
@@ -5535,6 +5544,10 @@ impl Game {
             + s.selected_attackers.len() * std::mem::size_of::<Attacker>()
             + s.selected_blocks.len() * std::mem::size_of::<(CardId, CardId)>()
             + s.hits.len() * std::mem::size_of::<DamageEvent>()
+            + s.creature_damage_history.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<CreatureDamageHistoryView>>()
+                    + rows.len() * std::mem::size_of::<CreatureDamageHistoryView>()
+            })
             + s.first_strikers.len() * std::mem::size_of::<CardId>()
             + s.damage_choices.len() * std::mem::size_of::<DamageChoice>()
             + s.damage_choices
@@ -6342,3 +6355,6 @@ mod fdn_eight_gate_acceptance_tests;
 mod fdn_eight_bounded_acceptance_tests;
 
 pub use search::OptionalSearchSequence;
+#[path = "engine_event_counter_core.rs"]
+mod event_counter_core;
+pub use event_counter_core::CreatureDamageHistoryView;

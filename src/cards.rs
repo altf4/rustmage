@@ -877,6 +877,8 @@ pub(crate) enum Instruction {
         subject: Subject,
         types: &'static [&'static str],
     },
+    SacrificeAbilitySource,
+    ExileSourceGainLifeIfMoved(u16),
     GrantUntilEndTurn {
         ability: u16,
     },
@@ -1897,6 +1899,12 @@ pub(crate) enum TriggerCondition {
         relation: CastRelation,
         spells_only: bool,
     },
+    SourceDealtCombatDamage,
+    DamagedCreatureDies,
+    StateCounterAtLeast {
+        kind: CounterKind,
+        minimum: u64,
+    },
     PlayerDamaged {
         subject: DamageSubject,
         combat_only: bool,
@@ -2614,6 +2622,14 @@ impl Card {
     }
     pub(crate) fn chosen_entry_counters(self) -> Option<CounterKind> {
         authored::RULES[self.index()].extras.chosen_entry_counters
+    }
+    pub(crate) fn activation_put_counter(self, ability: u16) -> Option<(CounterKind, u64)> {
+        authored::RULES[self.index()]
+            .extras
+            .activation_put_counters
+            .iter()
+            .find(|(index, _, _)| *index == ability)
+            .map(|(_, kind, amount)| (*kind, *amount))
     }
     pub(crate) fn hand_cast_entry_counters(self) -> &'static [(CounterKind, u64)] {
         authored::RULES[self.index()]

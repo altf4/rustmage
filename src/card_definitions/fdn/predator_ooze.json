@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0790e893f804b5a572a2125c1a279ff02be0834753b001d6b0e497873c3170dd"
   },
-  "physical_metadata_sha256": "0c0f4a96300c01f82c1b823a1f5b76a997faf1c3223096eea0478e957e5b5f90"
+  "physical_metadata_sha256": "0c0f4a96300c01f82c1b823a1f5b76a997faf1c3223096eea0478e957e5b5f90",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PredatorOoze.java",
+  "java_sha256": "3b4f5bfd8aa0e61f95df3d8d0da8fb7e8bede9454eb95178d739cc19a74557ba",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealtDamageAndDiedTriggeredAbility.java",
+      "sha256": "de10aa1545a7bd37296b1d7591be29f164817e86f0f69551afb301507ad2cf19"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    }
+  ]
 }
