@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "4e0a70fbfc770f16d3875e93c3b70d66a6eba2c41205b2027469a18db03297a3",
+  "catalogue_version": "4e8832fc8a3e3648b0e2008fe103dc8ea9a92cdfdcc4a658f98a356ded2e48f7",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1779,
-  "implemented_total": 1785,
-  "token_definitions": 84,
+  "implemented_standard_cards": 1791,
+  "implemented_total": 1797,
+  "token_definitions": 86,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -3550,7 +3550,7 @@
     {
       "name": "Burn, Burn, Tree and Fern",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -14806,7 +14806,7 @@
     {
       "name": "Leaves from the Vine",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -21382,7 +21382,7 @@
     {
       "name": "Roar of Endless Song",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -25288,7 +25288,7 @@
     {
       "name": "Summon: Anima",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -25306,19 +25306,19 @@
     {
       "name": "Summon: Choco/Mog",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
       "name": "Summon: Esper Ramuh",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
       "name": "Summon: Fat Chocobo",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -25336,7 +25336,7 @@
     {
       "name": "Summon: G.F. Ifrit",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -25354,7 +25354,7 @@
     {
       "name": "Summon: Primal Garuda",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -25366,7 +25366,7 @@
     {
       "name": "Summon: Shiva",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -26728,7 +26728,7 @@
     {
       "name": "The Huntsman's Redemption",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -30208,7 +30208,7 @@
     {
       "name": "Welcome to Sweettooth",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
