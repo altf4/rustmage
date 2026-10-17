@@ -19,3 +19,13 @@ rollback probes and independent final reviews remain required before admissions.
 
 Authoritative card clarifications: [Wizards LCI release notes](https://media.wizards.com/2023/downloads/LCI_Release_Notes_kUj28nYwbydD/EN_MTGLCI_ReleaseNotes_20231107.pdf).
 The pinned September25,2026 Comprehensive Rules208.4b/613.4a-c provide the layer boundary.
+
+## First frozen query validation
+
+At baef377,21 focused base-stat rules groups PASS0.29s, including both-seat
+real Growth/Veil/Water Wings/Cursed transactions, changing CDA counts, signed
+base power, cleanup and owned rollback. All-target Clippy, fmt and generator
+consistency PASS; five inherited live-static compiler/provenance methods PASS.
+All913 tracked inputs stayed fixed. The unique target was cleaned after terminal
+completion, preserving all shared-library paths/hashes. No complete-body admission
+or optimized public acceptance is claimed by this query-only checkpoint.
