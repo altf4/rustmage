@@ -66,7 +66,7 @@ impl Game {
             && keywords.contains(f.keywords)
             && f.tokens.is_none_or(|token| o.card.is_token() == token)
             && f.subtype
-                .is_none_or(|subtype| o.card.has_subtype(subtype) || subtypes.contains(subtype))
+                .is_none_or(|subtype| subtypes.has(o.card, subtype))
     }
 
     pub(super) fn spell_can_fund(&self, actor: Player, card: CardId, cost: ManaCost) -> bool {

@@ -774,6 +774,15 @@ pub(crate) enum Instruction {
         power: i32,
         toughness: i32,
     },
+    /// Replace creature types until the affected permanent changes zones.
+    #[allow(
+        dead_code,
+        reason = "Core instruction is scenario-tested while complete-card consumers remain gated"
+    )]
+    SetCreatureTypes {
+        subject: Subject,
+        types: &'static [&'static str],
+    },
     GrantUntilEndTurn {
         ability: u16,
     },
@@ -1068,9 +1077,7 @@ impl CreatureFilter {
             1 => !yours,
             _ => true,
         }) && (!self.other || !same)
-            && self
-                .subtype
-                .is_none_or(|subtype| card.has_subtype(subtype) || added.contains(subtype))
+            && self.subtype.is_none_or(|subtype| added.has(card, subtype))
             && (!self.attacking || attacking)
             && self.tokens.is_none_or(|tokens| card.is_token() == tokens)
             && (!self.artifact || kinds & 16 != 0)

@@ -4110,6 +4110,7 @@ impl Game {
             self.forget_temporary_control(before.reference);
             self.forget_role(before.reference);
             self.forget_base_stats(before.reference);
+            self.forget_creature_types(before.reference);
             self.forget_live_static_source(before.reference);
             self.forget_ability_source(before.reference);
             // Abilities use the source's actual last-known keywords if it leaves,
@@ -6107,3 +6108,6 @@ mod named_counter_tests;
 #[cfg(test)]
 #[path = "engine_attack_requirement_tests.rs"]
 mod attack_requirement_tests;
+#[cfg(test)]
+#[path = "engine_subtype_layers_tests.rs"]
+mod subtype_layers_tests;

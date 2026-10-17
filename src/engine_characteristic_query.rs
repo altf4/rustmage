@@ -317,7 +317,10 @@ impl CharacteristicQuery<'_> {
             }
         }
         let target = &self.state.objects[id as usize];
-        let mut keywords = target.keywords().union(self.attachment_bonus(id).1);
+        let mut keywords = target
+            .keywords()
+            .union(self.attachment_bonus(id).1)
+            .union(CharacteristicWorld::counter_subtype_keywords(self, id));
         if target.zone != Zone::Battlefield {
             return keywords;
         }
@@ -532,10 +535,8 @@ impl CharacteristicQuery<'_> {
                 row.effects.iter().enumerate().any(|(index, effect)| {
                     self.live_static_applies(row, effect, index, blocker)
                         && effect.cannot_block_subtype.is_some_and(|subtype| {
-                            self.state.objects[attacker as usize]
-                                .card
-                                .has_subtype(subtype)
-                                || self.granted_subtypes(attacker).contains(subtype)
+                            self.granted_subtypes(attacker)
+                                .has(self.state.objects[attacker as usize].card, subtype)
                         })
                 })
             })

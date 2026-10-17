@@ -48,6 +48,12 @@ pub(crate) enum StaticAbilityFragment {
     RemoveAttachedAbilities,
     AttachedUntap(UntapRestriction),
     SelfUntap(UntapRestriction),
+    SourceCounterSubtype {
+        kind: CounterKind,
+        minimum: u64,
+        subtype: &'static str,
+        keywords: Keywords,
+    },
     AttachedSubtype(&'static str),
     AttachmentStats(Stats),
     AttachmentTurnStats(Stats),

@@ -109,6 +109,17 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             Keywords::DEATHTOUCH
         }
+        StaticAbilityFragment::SourceCounterSubtype {
+            kind,
+            minimum,
+            keywords,
+            ..
+        } => {
+            if id != source.card || world.counter_count(source.card, kind) < minimum {
+                return None;
+            }
+            keywords
+        }
         StaticAbilityFragment::CounterKeywordOwnTurn(kind, value) => {
             if provider.controller != world.game().state.active
                 || !own
@@ -205,7 +216,8 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             let provides = origin.fragments.iter().any(|f| {
                 matches!(
                     f,
-                    StaticAbilityFragment::AttachmentKeywords(..)
+                    StaticAbilityFragment::SourceCounterSubtype { .. }
+                        | StaticAbilityFragment::AttachmentKeywords(..)
                         | StaticAbilityFragment::AttachedTurnKeywords(..)
                         | StaticAbilityFragment::AttachmentTrigger(..)
                         | StaticAbilityFragment::AttachmentMana(..)
