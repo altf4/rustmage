@@ -70,7 +70,18 @@ impl Game {
     }
 
     pub(super) fn spell_can_fund(&self, actor: Player, card: CardId, cost: ManaCost) -> bool {
+        let definition = self.effective_spell_card(card);
+        let skips_additional = definition.mana_alternative_replaces_additional(cost);
         let cost = self.reduced_spell_cost(actor, card, cost);
+        if skips_additional {
+            return self.can_fund(FundingGoal {
+                actor,
+                required: cost.colored,
+                generic: cost.generic,
+                source: None,
+                reserve: None,
+            });
+        }
         self.spell_can_fund_total(actor, card, cost, None)
     }
     pub(super) fn spell_can_fund_total(

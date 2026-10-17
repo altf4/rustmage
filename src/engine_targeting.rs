@@ -30,6 +30,15 @@ impl Announcement {
             StackKind::Spell if self.item.cast.is_some_and(|c| c.bargain == Some(true)) => {
                 Some(bargain::COST)
             }
+            StackKind::Spell
+                if self.cost.is_some_and(|cost| {
+                    self.item
+                        .source_card
+                        .mana_alternative_replaces_additional(cost)
+                }) =>
+            {
+                None
+            }
             StackKind::Spell => self.item.source_card.additional_cost(),
             StackKind::ActivatedAbility { ability } => {
                 self.item.source_card.activations()[ability as usize]
@@ -846,6 +855,9 @@ impl Game {
             self.targets_available(plan, player, item.target_source())
                 || item.source_card.gift().is_some_and(|gift| {
                     self.targets_available(gift.promised_targets, player, item.target_source())
+                })
+                || item.source_card.kicked_targets().is_some_and(|plan| {
+                    self.targets_available(plan, player, item.target_source())
                 })
         );
         let needs_mode = item.modes().is_some() && item.mode.is_none();

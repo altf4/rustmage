@@ -3,10 +3,31 @@
   "catalogue_id": 439,
   "oracle_id": "6cf50e21-0f60-4e9a-b910-ebe1bad2a29e",
   "facts_sha256": "228ac366153e044dbfa9003a993e21d5f9336dd86eaf9c76b107ff9b13e952bd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fd4005c97bba8fc48af837ef90bd88fd4d7121a6b4748eacbe29f391fe0e2a1d"
   },
-  "physical_metadata_sha256": "76d1834458d81efb21bd53ce10fe7e99be21fe2484c5cd01ec69424f430bb000"
+  "physical_metadata_sha256": "76d1834458d81efb21bd53ce10fe7e99be21fe2484c5cd01ec69424f430bb000",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BlasphemousEdict.java",
+  "java_sha256": "072029e457ff6c34d768f6fc39479ecd7c29bf462e01843630c653ea698e67a9",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/AlternativeCostSourceAbility.java",
+      "sha256": "b0a55dc753a0b65f6075dd417a1cf6237599541a1e79d99c85aff3ccc0e73f98"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeAllEffect.java",
+      "sha256": "edfea847c85bbbee218fd9e81bc9c2d310ce3bc2221d31eef237e9c66accfc62"
+    }
+  ]
 }

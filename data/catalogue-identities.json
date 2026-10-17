@@ -28274,6 +28274,18 @@
     [
       "flash_surcharge",
       "Option<ManaCost>"
+    ],
+    [
+      "cost_alternative_guard",
+      "Option<StepGuard>"
+    ],
+    [
+      "mana_alternative_replaces_additional",
+      "bool"
+    ],
+    [
+      "kicked_targets",
+      "Option<TargetPlan>"
     ]
   ],
   "cards": [

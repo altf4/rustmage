@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "7441c24da5c95eb1958ecdbbd2810da76f7f5c49db0016f6e19f76907284afb1",
+  "catalogue_version": "1621420210b547f9d6270e683649d420150c14ba878338c53584bb82f36a652e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2076,
-  "implemented_total": 2082,
-  "token_definitions": 100,
+  "implemented_standard_cards": 2080,
+  "implemented_total": 2086,
+  "token_definitions": 101,
   "emblem_definitions": 1,
   "adventure_definitions": 40,
   "omen_definitions": 13,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 325,
-      "gated": 102
+      "complete": 328,
+      "gated": 99
     },
     "fin": {
       "total": 305,
@@ -92,8 +92,8 @@
     },
     "inr": {
       "total": 4,
-      "complete": 2,
-      "gated": 2
+      "complete": 3,
+      "gated": 1
     },
     "jmp": {
       "total": 2,
@@ -3722,8 +3722,8 @@
     {
       "name": "Blasphemous Edict",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/blasphemous_edict.rs",
       "set": "fdn"
     },
@@ -9082,8 +9082,8 @@
     {
       "name": "Divine Resilience",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/divine_resilience.rs",
       "set": "fdn"
     },
@@ -10186,8 +10186,8 @@
     {
       "name": "Eaten Alive",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/inr/eaten_alive.rs",
       "set": "inr"
     },
@@ -15514,8 +15514,8 @@
     {
       "name": "Gutless Plunderer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/gutless_plunderer.rs",
       "set": "fdn"
     },

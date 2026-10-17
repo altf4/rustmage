@@ -1005,6 +1005,11 @@ impl SpellView {
                     } else {
                         plan
                     };
+                    let plan = if self.cast.is_some_and(|c| c.kicker == Some(true)) {
+                        self.source_card.kicked_targets().unwrap_or(plan)
+                    } else {
+                        plan
+                    };
                     (plan, program)
                 }),
             StackKind::DelayedSacrifice => {
@@ -2560,6 +2565,7 @@ impl Game {
                                         self.object_ref(card),
                                     )
                                 })
+                                || self.kicked_cast_targets_available(actor, card)
                         }
                         _ => true,
                     };
@@ -2595,6 +2601,9 @@ impl Game {
                             obj.card.cost_options()
                         };
                         let can_fund = costs.into_iter().any(|cost| {
+                            if !self.spell_cost_option_available(actor, card, cost) {
+                                return false;
+                            }
                             if obj.card.tiered_costs().is_some() {
                                 return self.tiered_initial_fundable(actor, card, cost);
                             }
@@ -2715,6 +2724,7 @@ impl Game {
                         || obj.card.has_convoke()
                         || obj.card.has_bargain()
                         || obj.card.additional_cost().is_some()
+                        || obj.card.cost_alternative_guard().is_some()
                         || matches!(obj.card.effect(), Effect::Modal(_))
                     {
                         // Modal spells use the staged path: mode, targets, payment.
@@ -3502,6 +3512,18 @@ impl Game {
                     .as_mut()
                     .unwrap()
                     .kicker = Some(pay);
+                if let Some(plan) = self
+                    .state
+                    .announcing
+                    .as_ref()
+                    .unwrap()
+                    .item
+                    .source_card
+                    .kicked_targets()
+                    .filter(|_| pay)
+                {
+                    self.state.announcing.as_mut().unwrap().plan = plan;
+                }
                 self.continue_announcement_choices(false);
             }
             Action::ChooseGift { beneficiary } => self.choose_gift(beneficiary),
@@ -6005,3 +6027,7 @@ impl Game {
             .sum()
     }
 }
+
+#[cfg(test)]
+#[path = "engine_fdn_cast_choices_four_tests.rs"]
+mod fdn_cast_choices_four_tests;

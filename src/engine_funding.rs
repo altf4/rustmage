@@ -1078,6 +1078,11 @@ impl Game {
         })
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        if a.item.kind == StackKind::Spell
+            && !self.spell_cost_option_available(a.item.controller, a.item.card, cost)
+        {
+            return false;
+        }
         if a.item.kind == StackKind::Spell && a.item.source_card.x_symbols() > 0 {
             return a.item.x.is_some_and(|x| {
                 self.scalar_x_total(a.item.controller, a.item.card, cost, x)

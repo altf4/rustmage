@@ -1,6 +1,33 @@
 //! Generic reductions and the total cost locked before mana abilities/payment.
 use super::*;
 impl Game {
+    pub(super) fn spell_cost_option_available(
+        &self,
+        actor: Player,
+        card: CardId,
+        cost: ManaCost,
+    ) -> bool {
+        let definition = self.effective_spell_card(card);
+        let (colored, generic) = definition.cost();
+        cost == ManaCost { colored, generic }
+            || definition.cost_alternative_guard().is_none_or(|guard| {
+                self.step_guard(
+                    guard,
+                    actor,
+                    self.object_ref(card),
+                    self.state.objects[card as usize].tapped,
+                )
+            })
+    }
+    pub(super) fn kicked_cast_targets_available(&self, actor: Player, card: CardId) -> bool {
+        let definition = self.effective_spell_card(card);
+        definition.kicked_targets().is_some_and(|plan| {
+            self.cast_targets_available(plan, actor, self.object_ref(card))
+                && definition.cost_options().any(|cost| {
+                    self.spell_can_fund(actor, card, Self::with_kicker_cost(cost, definition, true))
+                })
+        })
+    }
     pub(super) fn announcement_base_cost(a: &Announcement) -> ManaCost {
         let mut base = a.cost.unwrap_or_else(|| {
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Warp) {
@@ -135,6 +162,15 @@ impl Game {
     pub(super) fn kicker_choice_fundable(&self, a: &Announcement, pay: bool) -> bool {
         let mut proposal = a.clone();
         proposal.item.cast.as_mut().unwrap().kicker = Some(pay);
+        if proposal.item.source_card.kicked_targets().is_some()
+            && !self.targets_available(
+                self.target_spec(&proposal.item),
+                proposal.item.controller,
+                proposal.item.target_source(),
+            )
+        {
+            return false;
+        }
         proposal
             .cost_options()
             .any(|cost| self.announcement_cost_fundable(&proposal, cost))

@@ -2204,6 +2204,16 @@ impl Card {
     pub(crate) fn cost_reductions(self) -> &'static [SpellReduction] {
         generated::cost_reductions(self)
     }
+    pub(crate) fn cost_alternative_guard(self) -> Option<StepGuard> {
+        generated::cost_alternative_guard(self)
+    }
+    pub(crate) fn mana_alternative_replaces_additional(self, cost: ManaCost) -> bool {
+        generated::mana_alternative_replaces_additional(self)
+            && generated::cost_alternatives(self).contains(&cost)
+    }
+    pub(crate) fn kicked_targets(self) -> Option<TargetPlan> {
+        generated::kicked_targets(self)
+    }
     pub(crate) fn has_hybrid_cost(self) -> bool {
         !generated::cost_alternatives(self).is_empty()
     }
