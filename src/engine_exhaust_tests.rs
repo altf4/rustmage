@@ -86,11 +86,14 @@ fn exhaustive_masks_match_immutable_abilities_and_do_not_alias_ordinary_per_turn
         });
         assert_eq!(c.exhaust_mask(), expected);
         if expected != 0 {
-            assert!(NEW.contains(&c.name()) || c.name() == "Rough Rhino Cavalry");
+            assert!(
+                NEW.contains(&c.name())
+                    || matches!(c.name(), "Rough Rhino Cavalry" | "Mild-Mannered Librarian")
+            );
             count += 1;
         }
     }
-    assert_eq!(count, 11);
+    assert_eq!(count, 12);
     let mut g = scenario();
     let id = named(&mut g, Player::P0, "Greenbelt Guardian", Zone::Battlefield);
     g.state.players[0].mana = [50; 6];

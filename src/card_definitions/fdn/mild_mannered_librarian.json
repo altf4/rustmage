@@ -3,10 +3,40 @@
   "catalogue_id": 2757,
   "oracle_id": "fb7070ab-c234-4d54-8cdc-caf106bf24a6",
   "facts_sha256": "f4adfd0108d38a33b8a6d6734a432a874962aa370c323cd8a8b973d37720c464",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "02444242a1009026b4b2e13b3b36825c2773a3eac6cabcfea0e16013aed1d9ff"
   },
-  "physical_metadata_sha256": "c4af52a1ac37d725449a490e8715726d7105a410f6f03de1954e57df59537b23"
+  "physical_metadata_sha256": "c4af52a1ac37d725449a490e8715726d7105a410f6f03de1954e57df59537b23",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MildManneredLibrarian.java",
+  "java_sha256": "c84cd9d5cf818ed6d5898559af2d810e5010651e384d09207693ff2d3561aa1a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardSubTypeSourceEffect.java",
+      "sha256": "7f49c9464a917091481b5f7636bbfbaf7f90041be840b2da070c57ca0214a765"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateOncePerGameActivatedAbility.java",
+      "sha256": "21e8d6e6cd120cd699f490a1fdefcc18b988b13931b7c158bfb1a05151c8c9b8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ]
 }
