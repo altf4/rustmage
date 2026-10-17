@@ -23,6 +23,120 @@ fn rule_item(g: &mut Game, p: Player, id: CardId) -> SpellView {
     item.targets.push(g.bind_target(Target::Card(id)));
     item
 }
+fn checked(g: &mut Game, action: Action) {
+    let actor = g.actor().unwrap();
+    let revision = g.revision();
+    let index = g.legal_actions().iter().position(|a| *a == action).unwrap();
+    let before = g.snapshot();
+    assert_eq!(
+        g.apply(actor.other(), action.clone()),
+        Err(Error::WrongActor)
+    );
+    assert_eq!(g.snapshot(), before);
+    let mut branch = {
+        let parent = g.clone();
+        parent.clone()
+    };
+    branch.apply_index(actor, revision, index).unwrap();
+    g.apply(actor, action.clone()).unwrap();
+    assert_eq!(g.snapshot(), branch.snapshot());
+    for player in [Player::P0, Player::P1] {
+        assert_eq!(
+            serde_json::to_value(g.observe(player)).unwrap(),
+            serde_json::to_value(branch.observe(player)).unwrap()
+        );
+    }
+    let after = g.snapshot();
+    g.restore(&before).unwrap();
+    assert_eq!(
+        g.apply_index(actor, revision, index),
+        Err(Error::StaleRevision)
+    );
+    g.apply(actor, action).unwrap();
+    assert_eq!(g.snapshot(), after);
+}
+fn settle_on(g: &mut Game, chosen: Option<Target>) {
+    g.prepare_triggers();
+    for _ in 0..100 {
+        if g.state.pending == Pending::Priority
+            && g.state.stack.is_empty()
+            && g.state.announcing.is_none()
+            && g.state.resolving.is_none()
+            && g.state.pending_triggers.is_empty()
+        {
+            return;
+        }
+        let actions = g.legal_actions();
+        let action = if let Some(target) =
+            chosen.filter(|t| actions.contains(&Action::ChooseTarget { target: *t }))
+        {
+            Action::ChooseTarget { target }
+        } else if g.state.pending == Pending::Priority {
+            Action::Pass
+        } else {
+            actions
+                .iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .or_else(|| actions.iter().find(|a| matches!(a, Action::FinishTargets)))
+                .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
+                .unwrap()
+                .clone()
+        };
+        checked(g, action);
+    }
+    panic!("unsettled {:?}", g.state.pending);
+}
+fn settle(g: &mut Game) {
+    settle_on(g, None);
+}
+fn reject(g: &mut Game, a: Action) {
+    let before = g.snapshot();
+    let rev = g.revision();
+    assert!(g.apply(g.actor().unwrap(), a).is_err());
+    assert_eq!(g.snapshot(), before);
+    assert_eq!(g.revision(), rev);
+}
+fn paid_cast(g: &mut Game, id: CardId, mode: Option<u16>, targets: &[Target]) {
+    checked(
+        g,
+        if g.object_view(id).zone == Zone::Exile {
+            Action::AnnounceExile { card: id }
+        } else {
+            Action::AnnounceCast { card: id }
+        },
+    );
+    if let Some(mode) = mode {
+        reject(g, Action::ChooseMode { mode: 3 });
+        checked(g, Action::ChooseMode { mode });
+    }
+    for &target in targets {
+        for _ in 0..3 {
+            if g.legal_actions().contains(&Action::ChooseTarget { target }) {
+                break;
+            }
+            checked(g, Action::FinishTargets);
+        }
+        checked(g, Action::ChooseTarget { target });
+    }
+    for _ in 0..8 {
+        if g.state.announcing.is_none() {
+            return;
+        }
+        let a = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::FinishTargets))
+            .or_else(|| {
+                g.legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a, Action::PayCosts { .. }))
+            })
+            .unwrap();
+        checked(g, a);
+    }
+    panic!("unpaid");
+}
+
 #[test]
 fn primitive_predeath_redirect_suppresses_printed_death_and_granted_return_for_both_owners() {
     for p in [Player::P0, Player::P1] {
@@ -174,5 +288,104 @@ fn primitive_registry_memory_is_sparse_owned_and_exact_in_both_observations() {
         g.restore(&before).unwrap();
         g.move_object(id, Zone::Graveyard);
         assert_eq!(g.snapshot(), child.snapshot());
+    }
+}
+
+#[test]
+fn all_eleven_paid_whole_bodies_every_mode_both_seats_and_foreign_spell_ownership() {
+    let rows = [
+        ("Feed the Flames", None, true, false),
+        ("Bot Bashing Time", None, true, false),
+        ("Elspeth's Smite", None, true, false),
+        ("Narset's Rebuke", None, true, false),
+        ("Obliterating Bolt", None, true, false),
+        ("Scorching Dragonfire", None, true, false),
+        ("Essence Burn", None, true, false),
+        ("Combustion Technique", None, true, false),
+        ("Suplex", Some(0), true, false),
+        ("Suplex", Some(1), false, true),
+        ("Agate Assault", Some(0), true, false),
+        ("Agate Assault", Some(1), false, true),
+        ("Pinecone Strike", Some(0), true, false),
+        ("Pinecone Strike", Some(1), false, true),
+        ("Pinecone Strike", Some(2), true, true),
+    ];
+    for p in [Player::P0, Player::P1] {
+        for foreign in [false, true] {
+            for (name, mode, damage, artifact) in rows {
+                let mut g = setup(p);
+                g.state.players[p.index()].mana = [30; 6];
+                let bear = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+                if name == "Elspeth's Smite" {
+                    g.state.attackers.push(AttackDeclaration {
+                        card: bear,
+                        defender: Some(CombatDefender::Player(p)),
+                        blocked: false,
+                    });
+                }
+                let token = Card::ALL
+                    .iter()
+                    .copied()
+                    .find(|c| c.token_info().is_some_and(|t| t.subtypes == "Treasure"))
+                    .unwrap();
+                let treasure = spawn(&mut g, p.other(), token, Zone::Battlefield);
+                let owner = if foreign { p.other() } else { p };
+                let spell = named(
+                    &mut g,
+                    owner,
+                    name,
+                    if foreign { Zone::Exile } else { Zone::Hand },
+                );
+                if foreign {
+                    g.state.exile_permissions.push(ExilePlayPermission {
+                        object: g.object_ref(spell),
+                        player: p,
+                        expires_turn: g.state.turn,
+                    });
+                }
+                let mut targets = Vec::new();
+                if damage {
+                    targets.push(Target::Card(bear));
+                }
+                if artifact {
+                    targets.push(Target::Card(treasure));
+                }
+                let before = g.state.players[p.index()].mana.iter().sum::<u32>();
+                let mv = g.object_view(spell).card.mana_value();
+                paid_cast(&mut g, spell, mode, &targets);
+                assert_eq!(
+                    before - g.state.players[p.index()].mana.iter().sum::<u32>(),
+                    u32::from(mv),
+                    "{name}"
+                );
+                let after_paid = g.state.players[p.index()].mana;
+                settle(&mut g);
+                assert_eq!(g.object_view(spell).zone, Zone::Graveyard, "{name}");
+                assert_eq!(g.object_view(spell).owner, owner);
+                assert_eq!(
+                    g.object_view(bear).zone,
+                    if damage {
+                        Zone::Exile
+                    } else {
+                        Zone::Battlefield
+                    },
+                    "{name}"
+                );
+                if artifact {
+                    assert_eq!(g.object_view(treasure).zone, Zone::Outside, "{name}");
+                } else {
+                    assert_eq!(g.object_view(treasure).zone, Zone::Battlefield, "{name}");
+                }
+                assert_eq!(g.state.creatures_died_this_turn, 0, "{name}");
+                assert!(g.observe(p).death_exile_replacements.is_empty());
+                if name == "Narset's Rebuke" {
+                    let mut expected = after_paid;
+                    for i in [0, 1, 3] {
+                        expected[i] += 1;
+                    }
+                    assert_eq!(g.state.players[p.index()].mana, expected);
+                }
+            }
+        }
     }
 }
