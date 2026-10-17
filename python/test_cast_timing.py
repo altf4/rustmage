@@ -12,17 +12,18 @@ class CastingTimingTests(unittest.TestCase):
     def test_paid_flash_source_omen_dragon_and_adventure_both_seats(self):
         for p in ["P0", "P1"]:
             with self.subTest(seat=p): self.scenario(p,2640)
-    def scenario(self,p,seed):
+    def scenario(self,p,seed,library=None):
         q="P1" if p=="P0" else "P0"
         deck=["Island"]*16+["Forest"]*16+sum(([n]*4 for n in [WHIRL,DRAGON,BILBO,"Bear Cub","Bygone Colossus","Shock","Thrill of Possibility"]),[])
         self.assertEqual(len(deck),60)
-        with Game([deck,deck],seed=seed,starting_player=p,deck_rules="Standard") as g:
+        with Game([deck,deck],seed=seed,starting_player=p,deck_rules="Standard",library=library) as g:
             stage="source";source=None;inset=None;dragon=None;bilbo=None;base=None;descriptor=set();attacked=False;frames=0
             for iteration in range(30000):
                 o=g.observe("P0")
                 if o["outcome"] is not None:
                     self.assertEqual(stage,"finish",(p,seed,stage,iteration))
                     self.assertTrue(attacked)
+                    self.assertTrue({(source,"Normal"),(inset,"Omen"),(dragon,"Normal"),(bilbo,"Adventure")} <= descriptor)
                     return frames
                 o=g.observe(o["actor"]);actor=o["actor"];objects={v["id"]:v for v in o["objects"]};offturn=o["active"]!=p
                 mine=g.observe(p);hand=[v for v in mine["objects"] if v["zone"]=="Hand"]
@@ -74,7 +75,8 @@ class CastingTimingTests(unittest.TestCase):
                     if k in ["TapMana","ActivateMana","AnnounceMana"]:return 2100 if o["decision"] in ["pay_costs","resolution_mana"] and n in ["Island","Forest"] else -1000
                     if k in ["PayCosts","PutTrigger","FinishTargets","FinishSearch","FinishAttackers","FinishBlockers","Keep","ChooseSpellCost"]:return 2400
                     if k in ["Discard","Bottom"]:
-                        if n in [WHIRL,DRAGON,BILBO,"Bear Cub"] and sum(v["card"]==n for v in hand)<=2:return -1000
+                        reserve = (2 if stage=="source" else 1) if n==WHIRL else (0 if ally else 1) if n=="Bear Cub" else 1
+                        if n in [WHIRL,DRAGON,BILBO,"Bear Cub"] and sum(v["card"]==n for v in hand)<=reserve:return -1000
                         return 2200 if n in ["Shock","Thrill of Possibility","Bygone Colossus"] else 1000
                     if k=="Attack":return 2800 if stage=="finish" else -1000
                     if k=="Pass":return 0

@@ -1052,8 +1052,7 @@
           "oracle_text": "Put three +1/+1 counters on target creature you control. (Then shuffle this card into its owner's library.)"
         }
       ],
-      "status": "gated_incomplete_residual",
-      "remaining_obligation": "Global permission to cast sorcery and Dragon spells as though they had flash; must use chosen characteristics.",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/w/WhirlwingStormbrood.java",

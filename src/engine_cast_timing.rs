@@ -204,6 +204,53 @@ mod tests {
         }
     }
     #[test]
+    fn plotted_explicit_restriction_and_already_paid_spells_keep_their_rules() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = setup(p);
+            let source = spawn(
+                &mut g,
+                p,
+                Card::from_name(WHIRL).unwrap(),
+                Zone::Battlefield,
+            );
+            let terror = spawn(
+                &mut g,
+                p,
+                Card::from_name("Stingerback Terror").unwrap(),
+                Zone::Hand,
+            );
+            g.state.active = p;
+            act(&mut g, Action::AnnouncePlot { card: terror });
+            for _ in 0..40 {
+                if g.state.pending == Pending::Priority {
+                    break;
+                }
+                choose(&mut g);
+            }
+            assert_eq!(g.state.objects[terror as usize].zone, Zone::Exile);
+            g.state.turn += 1;
+            g.state.active = p.other();
+            g.state.priority = p;
+            denied(&mut g, Action::AnnouncePlotted { card: terror });
+            let omen = spawn(&mut g, p, Card::from_name(WHIRL).unwrap(), Zone::Hand);
+            announce(&mut g, Action::AnnounceOmen { card: omen }, omen);
+            g.move_object(source, Zone::Graveyard);
+            settle(&mut g);
+            assert_eq!(g.state.objects[omen as usize].zone, Zone::Library);
+            let bear = g
+                .state
+                .objects
+                .iter()
+                .find(|o| {
+                    o.owner == p
+                        && o.zone == Zone::Battlefield
+                        && o.card == Card::from_name("Bear Cub").unwrap()
+                })
+                .unwrap();
+            assert_eq!(bear.counters.plus_one, 3);
+        }
+    }
+    #[test]
     fn chosen_sorcery_adventure_gets_timing_but_normal_exile_face_does_not() {
         for p in [Player::P0, Player::P1] {
             let mut g = setup(p);
