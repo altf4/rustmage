@@ -906,6 +906,24 @@ impl SpellView {
                         };
                         TargetPlan::Single(spec)
                     }
+                    TargetPlan::Single(mut spec)
+                        if matches!(
+                            spec.rule,
+                            TargetRule::GraveCreaturePower { maximum: None, .. }
+                        ) =>
+                    {
+                        let TargetRule::GraveCreaturePower {
+                            excluded_subtype, ..
+                        } = spec.rule
+                        else {
+                            unreachable!()
+                        };
+                        spec.rule = TargetRule::GraveCreaturePower {
+                            excluded_subtype,
+                            maximum: Some(self.source_facts.power),
+                        };
+                        TargetPlan::Single(spec)
+                    }
                     TargetPlan::Single(mut spec) if spec.rule == TargetRule::DefendingCreature => {
                         if let Some(event) = &self.attachment_trigger {
                             spec.rule = TargetRule::Object {
@@ -1064,7 +1082,7 @@ pub struct DamageEvent {
     pub combat: bool,
 }
 
-/// A public life-gain event captured when an observer triggers.
+/// A public life-gain or life-loss event captured when an observer triggers.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct LifeTriggerView {
     pub player: Player,
@@ -4385,6 +4403,7 @@ impl Game {
                 .collect::<Vec<_>>()
         });
         let events = dealt.as_deref().unwrap_or(events);
+        let mut losses = [0i128; 2];
         let mut gains: Vec<LifeGainEvent> = Vec::new();
         let mut gain_indices: std::collections::BTreeMap<DamageSource, usize> =
             std::collections::BTreeMap::new();
@@ -4394,7 +4413,10 @@ impl Game {
             }
             match event.target {
                 Target::Player(p) => {
-                    self.lose_life(p, event.amount);
+                    self.lose_life_unobserved(p, event.amount);
+                    losses[p.index()] = losses[p.index()]
+                        .checked_add(event.amount)
+                        .capacity("damage life-loss batch exhausted");
                 }
                 Target::Card(id) => {
                     let creature = self.is_creature(id);
@@ -4444,6 +4466,9 @@ impl Game {
                     });
                 }
             }
+        }
+        for player in [Player::P0, Player::P1] {
+            self.life_lost_event(player, losses[player.index()]);
         }
         for gain in &gains {
             self.gain_life(gain.source.controller, gain.amount);
@@ -5854,3 +5879,6 @@ pub use zone_effects::TemporaryControlView;
 #[cfg(test)]
 #[path = "engine_fdn_private_seven_tests.rs"]
 mod fdn_private_seven_tests;
+#[cfg(test)]
+#[path = "engine_fdn_life_seven_tests.rs"]
+mod fdn_life_seven_tests;

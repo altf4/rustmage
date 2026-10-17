@@ -33,6 +33,7 @@ impl Game {
                     return None;
                 }
                 Some(replacements::CounterPlacement {
+                    placed_by: o.controller,
                     object: self.object_ref(id),
                     card: o.card,
                     owner: o.owner,

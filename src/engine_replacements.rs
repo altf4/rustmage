@@ -29,6 +29,7 @@ pub struct ReplacementChoiceView {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct CounterPlacement {
     pub object: ObjectRef,
+    pub placed_by: Player,
     pub card: Card,
     pub owner: Player,
     pub controller: Player,
@@ -255,6 +256,9 @@ impl Game {
                         .counters
                         .add(kind, p.amount.get(kind));
                 }
+                for kind in CounterKind::ALL {
+                    self.self_counters_added(p.object, kind, p.amount.get(kind), p.placed_by);
+                }
                 if p.amount.lore > 0 {
                     lore.push((p.object, before));
                 }
@@ -314,6 +318,11 @@ impl Game {
                 }
                 let o = &self.state.objects[object.card as usize];
                 Some(CounterPlacement {
+                    placed_by: self
+                        .state
+                        .resolving
+                        .as_ref()
+                        .map_or(o.controller, |r| r.item.controller),
                     object,
                     card: o.card,
                     owner: o.owner,
@@ -350,6 +359,14 @@ impl Game {
         {
             let before = self.state.objects[id as usize].counters.lore;
             self.state.objects[id as usize].counters.add(kind, amount);
+            let placed_by = self
+                .state
+                .resolving
+                .as_ref()
+                .map_or(self.state.objects[id as usize].controller, |r| {
+                    r.item.controller
+                });
+            self.self_counters_added(self.object_ref(id), kind, amount, placed_by);
             if kind == CounterKind::Lore {
                 self.lore_counters_added(self.object_ref(id), before);
             }

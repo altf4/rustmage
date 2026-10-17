@@ -3,10 +3,30 @@
   "catalogue_id": 4862,
   "oracle_id": "4cdbc466-42fc-471f-beab-397caec18101",
   "facts_sha256": "986d0bc52f7dc4174ff4ca8f4ffe8072d35b62a94b6f515e5403f95e39de0a12",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e177d0cdf6739ab81b75ff81ae596105ad1c1cd78b1d7cf2dc6fc8b15d71f83a"
   },
-  "physical_metadata_sha256": "6d7f8d70c265ae7e4e906987a35b152affaa3f95694e7f5a7b3225d5ce7f2cd6"
+  "physical_metadata_sha256": "6d7f8d70c265ae7e4e906987a35b152affaa3f95694e7f5a7b3225d5ce7f2cd6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VengefulBloodwitch.java",
+  "java_sha256": "84e2643c96628fb4063871deebe95c249cfce9f93bfa83b76a600053afda0c4f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesThisOrAnotherTriggeredAbility.java",
+      "sha256": "4511f11fe0c29d6984fc30bc40f6c270865b68a607f740f7247998c33b80fe01"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeTargetEffect.java",
+      "sha256": "cb540577a835c69b5b4bd5182c58715215e03ee165d349a7d19d388c03224e37"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    }
+  ]
 }

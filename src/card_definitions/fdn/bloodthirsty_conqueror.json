@@ -3,10 +3,30 @@
   "catalogue_id": 460,
   "oracle_id": "fd505c02-c59e-476d-8e88-35da862ddc23",
   "facts_sha256": "54db42e6c8d7a6eafe3149d650998167c7dada38293001a262fd2f6fe8ea3d34",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "306809e806b59204b1199e1e5ce080f4128c6f67fce2a82e5d31298fc77a89ef"
   },
-  "physical_metadata_sha256": "cff4570515fe12fa465a4c41df7dede1d30b712bf12494e1c0e40c5478ab6e35"
+  "physical_metadata_sha256": "cff4570515fe12fa465a4c41df7dede1d30b712bf12494e1c0e40c5478ab6e35",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BloodthirstyConqueror.java",
+  "java_sha256": "8373bd726bcfd0ee927d7ea4ea418bfdc79e1a946c8e39d3b07ac449f13d81c4",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LoseLifeTriggeredAbility.java",
+      "sha256": "6d6a10a3d81d3cc3949dd1f70d678487bf79f8ff7564b9c009eecb28f9577d62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedLifeLossValue.java",
+      "sha256": "7b2c3c39eb75e42146911828a50c2f468d1ea2ae7955fec68fe82e37f23a9bd0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    }
+  ]
 }

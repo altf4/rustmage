@@ -384,6 +384,23 @@ impl Game {
         departing: Option<CardId>,
     ) -> bool {
         match rule {
+            TargetRule::GraveCreaturePower {
+                excluded_subtype,
+                maximum,
+            } => {
+                let Target::Card(id) = target else {
+                    return false;
+                };
+                return self.state.objects.get(id as usize).is_some_and(|object| {
+                    object.zone == Zone::Graveyard
+                        && object.owner == controller
+                        && object.card.is_creature()
+                        && !object.card.has_subtype(excluded_subtype)
+                        && self.object_ref(id) != source
+                        && maximum
+                            .is_some_and(|max| i128::from(object.card.fixed_mana_value()) <= max)
+                });
+            }
             TargetRule::Grouped { base, constraint } => {
                 let zone = match constraint { TargetGroupConstraint::SameGraveyard => Zone::Graveyard,
                     TargetGroupConstraint::DifferentControllers => Zone::Battlefield };
