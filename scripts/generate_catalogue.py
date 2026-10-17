@@ -785,6 +785,19 @@ def enchanted_modifier_route(text):
     return False
 
 
+def extract_flash_surcharge(card):
+    """Exact optional additional cost; the remaining whole body must compile."""
+    if card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str):
+        return card, None
+    match = re.match(r'^You may cast this spell as though it had flash if you pay ((?:\{[0-9WUBRGC]+\})+) more to cast it\.\n', card['oracle_text'])
+    if match is None or fixed_cost(card.get('mana_cost', '')) is None:
+        return card, None
+    extra = mana_cost_spec(match[1])
+    if extra is None or spell_cost_options(match[1]) is None:
+        return card, None
+    return dict(card, oracle_text=card['oracle_text'][match.end():]), extra
+
+
 def extract_enchanted_modifiers(card):
     """Exact attached-Aura predicates; residual whole body still must compile."""
     if card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str):
@@ -4272,6 +4285,7 @@ def compile_catalogue(snapshot, target):
     coverage = []
     static_rows = []
     enchanted_rows = []
+    flash_surcharge_rows = []
     grant_rows = []
     dynamic_rows = []
     scaling_rows = []
@@ -4354,6 +4368,7 @@ def compile_catalogue(snapshot, target):
         card, additional = extract_additional_cost(card)
         card, target_reduction = extract_target_cost_reduction(card)
         card, reductions = extract_cost_reductions(card)
+        card, flash_surcharge = extract_flash_surcharge(card)
         card, enchanted = extract_enchanted_modifiers(card)
         card, dynamic, scaling = extract_stat_rules(card)
         card, creature_entry = extract_creature_entry_tapped(card)
@@ -4521,8 +4536,12 @@ def compile_catalogue(snapshot, target):
         if not intrinsic_reminders_valid(original):
             effect = 'Unsupported'
         # Rejected timing syntax/source shapes must not be revived by legacy selectors.
-        if timing_seen and not timing_grants:
+        if timing_seen and not timing_grants and flash_surcharge is None:
             effect = 'Unsupported'
+        if flash_surcharge is not None:
+            checked_flash = role_reminder_text(original.get('oracle_text', ''))
+            if '(' in checked_flash or ')' in checked_flash:
+                effect = 'Unsupported'
         programs = {
             'Damage(3)': ('Any', ['Damage(3)']), 'Damage(2)': ('Any', ['Damage(2)']),
             'Grow': ('Creature', [grow_instruction('Targets', 3, 3)]), 'Draw': ('None', ['Draw(PlayerSet::Controller, 2)']),
@@ -4637,6 +4656,8 @@ def compile_catalogue(snapshot, target):
             if scaling:scaling_rows.append(f'        {index} => &['+', '.join(scaling)+'],')
         if enchanted and effect != 'Unsupported':
             enchanted_rows.append(f'        {index} => &[' + ', '.join(enchanted) + '],')
+        if flash_surcharge is not None and effect != 'Unsupported':
+            flash_surcharge_rows.append(f'        {index} => Some({flash_surcharge}),')
         definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(card.get('name', name))}, oracle_id: {oracle_id}, mana_cost: {quote(card.get("mana_cost",cost) if scalar is not None else cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in standard_names).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]}, loyalty: 0, lore: 0 }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         if offspring_key is not None:
             offspring_factories[offspring_key]=(index,definitions[-1],color_mask,card.get('type_line','').split(' — ')[-1])
@@ -4798,6 +4819,7 @@ def compile_catalogue(snapshot, target):
     protection = 'matches!(card.0, ' + ' | '.join(uncounterable_rows) + ')' if uncounterable_rows else 'false'
     lines += ['#[rustfmt::skip]', 'pub(super) fn uncounterable(card: Card) -> bool {', '    ' + protection, '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn enchanted_modifiers(card: Card) -> &'static [EnchantedModifier] {", '    match card.0 {', *enchanted_rows, '        _ => &[],', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn flash_surcharge(card: Card) -> Option<ManaCost> {', '    match card.0 {', *flash_surcharge_rows, '        _ => None,', '    }', '}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(standard_names),
         'implemented_standard_cards': sum(row['implemented'] and row['standard_legal'] for row in coverage),
         'implemented_total': len(supported), 'token_definitions': len(used_tokens), 'emblem_definitions': len(used_emblems), 'cards': [r for r in coverage if r['name'] not in internal_faces], 'adventure_definitions': len(adventure_pairs), 'omen_definitions': len(omen_pairs)}

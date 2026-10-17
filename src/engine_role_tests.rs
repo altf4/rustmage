@@ -760,6 +760,153 @@ fn role295_frogs(g: &Game, p: Player) -> Vec<CardId> {
         .collect()
 }
 #[test]
+fn paid_asinine_flash_cost_timing_foreign_rights_and_nontarget_hexproof_both_seats() {
+    for p in [Player::P0, Player::P1] {
+        for (flash, foreign, reduced) in [
+            (false, false, false),
+            (true, false, false),
+            (true, true, false),
+            (true, true, true),
+        ] {
+            let mut g = setup(p);
+            let foe = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            g.state.objects[foe as usize].gained_keywords = Keywords::HEXPROOF;
+            let ally = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            g.state.objects[ally as usize].controller = p;
+            if reduced {
+                named(&mut g, p, "Archmage of Runes", Zone::Battlefield);
+            }
+            let spell = named(
+                &mut g,
+                if foreign { p.other() } else { p },
+                "Asinine Antics",
+                if foreign { Zone::Exile } else { Zone::Hand },
+            );
+            if foreign {
+                g.state.exile_permissions.push(ExilePlayPermission {
+                    object: g.object_ref(spell),
+                    player: p,
+                    expires_turn: g.state.turn,
+                });
+            }
+            if flash {
+                g.state.active = p.other();
+            }
+            g.state.priority = p;
+            g.state.players[p.index()].mana = [0, 2, 0, 0, 0, if reduced { 2 } else { 3 }];
+            assert!(
+                !g.legal_actions()
+                    .contains(&Action::AnnounceFlashSurcharge { card: spell })
+            );
+            if flash {
+                let before = g.snapshot();
+                let action = if foreign {
+                    Action::AnnounceExile { card: spell }
+                } else {
+                    Action::AnnounceCast { card: spell }
+                };
+                assert_eq!(g.apply(p, action), Err(Error::IllegalAction));
+                assert_eq!(g.snapshot(), before);
+            }
+            let expected = if flash {
+                if reduced { 5 } else { 6 }
+            } else {
+                4
+            };
+            g.state.players[p.index()].mana = [0, 2, 0, 0, 0, expected - 2];
+            act(
+                &mut g,
+                if flash {
+                    Action::AnnounceFlashSurcharge { card: spell }
+                } else {
+                    Action::AnnounceCast { card: spell }
+                },
+            );
+            assert!(!matches!(g.state.pending, Pending::Targets { .. }));
+            let cast = g.state.announcing.as_ref().unwrap().item.cast.unwrap();
+            assert_eq!(cast.flash_surcharge, flash);
+            assert_eq!(cast.method, CastMethod::Normal);
+            let before = g.snapshot();
+            assert_eq!(
+                g.apply(p, Action::PayCosts { payment: [0; 6] }),
+                Err(Error::IllegalAction)
+            );
+            assert_eq!(g.snapshot(), before);
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert_eq!(g.stats(foe).power, 1);
+            assert_eq!(g.stats(ally).power, 2);
+            let aura = g
+                .state
+                .roles
+                .as_ref()
+                .unwrap()
+                .attached
+                .iter()
+                .find(|r| r.recipient == g.object_ref(foe))
+                .unwrap()
+                .aura;
+            assert_eq!(g.object_view(aura.card).controller, p);
+            assert_eq!(g.object_view(aura.card).owner, p);
+            assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+            assert_eq!(
+                g.object_view(spell).owner,
+                if foreign { p.other() } else { p }
+            );
+        }
+    }
+}
+
+#[test]
+fn paid_mystical_tether_optional_flash_keeps_linked_return_and_foreign_owner_routing() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.state.active = p.other();
+        let foe = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = named(&mut g, p.other(), "Mystical Tether", Zone::Exile);
+        g.state.exile_permissions.push(ExilePlayPermission {
+            object: g.object_ref(spell),
+            player: p,
+            expires_turn: g.state.turn,
+        });
+        let before = g.state.players[p.index()].mana;
+        act(&mut g, Action::AnnounceFlashSurcharge { card: spell });
+        for _ in 0..120 {
+            if g.object_view(foe).zone == Zone::Exile {
+                break;
+            }
+            let actions = g.legal_actions();
+            let a = if g.state.pending == Pending::Priority {
+                Action::Pass
+            } else {
+                actions
+                    .iter()
+                    .find(|a| {
+                        **a == Action::ChooseTarget {
+                            target: Target::Card(foe),
+                        }
+                    })
+                    .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
+                    .unwrap()
+                    .clone()
+            };
+            act(&mut g, a);
+        }
+        assert_eq!(g.object_view(foe).zone, Zone::Exile);
+        assert_eq!(
+            before.iter().sum::<u32>() - g.state.players[p.index()].mana.iter().sum::<u32>(),
+            5
+        );
+        assert_eq!(g.object_view(spell).controller, p);
+        assert_eq!(g.object_view(spell).owner, p.other());
+        g.move_object(spell, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.object_view(foe).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(foe).controller, p.other());
+        assert_eq!(g.object_view(spell).controller, p.other());
+    }
+}
+#[test]
 fn paid_sewer_witch_mass_role_event_binds_all_actual_rats_and_adds_only_one_extra_frog() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);

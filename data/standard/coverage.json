@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "9f04c342326e5a2b4af2b28d8a0a50751668b4f9247a455a3de4a9e924336ae2",
+  "catalogue_version": "8ffd6ad2fb8995ea434df197223167aaa70f9b0afed737e6edd8b9be10454c3d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1867,
-  "implemented_total": 1873,
+  "implemented_standard_cards": 1869,
+  "implemented_total": 1875,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -1480,8 +1480,8 @@
     {
       "name": "Asinine Antics",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Assassin's Trophy",
@@ -17416,8 +17416,8 @@
     {
       "name": "Mystical Tether",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Naga Fleshcrafter",

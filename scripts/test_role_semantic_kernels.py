@@ -30,6 +30,25 @@ class RoleSemanticCompilerTests(unittest.TestCase):
                      original['oracle_text'].replace('for each Rat','for each (Draw seven cards.) Rat')]:
             self.assertFalse(metadata.LegacyMetadataTests().definition(dict(original,oracle_text=text))[1]['implemented'],text)
 
+    def test_paid_flash_timing_is_generic_additional_cost_and_requires_whole_raw_body(self):
+        for name in ['Asinine Antics','Mystical Tether']:
+            original=self.cards[name]
+            compiled,row=metadata.LegacyMetadataTests.compile([original])
+            self.assertTrue(next(r for r in row['cards'] if r['name']==name)['implemented'])
+            self.assertIn('pub(super) fn flash_surcharge',compiled)
+            self.assertIn('Some(ManaCost { colored: [0, 0, 0, 0, 0, 0], generic: 2 })',compiled)
+            renamed=dict(original,name='Independent Paid Timing Subject')
+            before,_=metadata.LegacyMetadataTests().definition(original)
+            after,row=metadata.LegacyMetadataTests().definition(renamed)
+            self.assertTrue(row['implemented'])
+            self.assertEqual(before.replace(json.dumps(name),json.dumps(renamed['name'])),after)
+            for text in [original['oracle_text']+'\nDiscover 4.',
+                         original['oracle_text']+' (Draw seven cards.)',
+                         original['oracle_text'].replace('had flash','had (Draw seven cards.) flash'),
+                         original['oracle_text'].replace('pay {2}','pay {4294967296}'),
+                         original['oracle_text'].replace('more to cast it.','more to cast it. (Draw seven cards.)')]:
+                self.assertFalse(metadata.LegacyMetadataTests().definition(dict(original,oracle_text=text))[1]['implemented'],text)
+
     def test_complete_return_binds_successful_entry_and_authenticates_young_hero_reminder(self):
         original=self.cards['Return Triumphant']
         before,row=metadata.LegacyMetadataTests().definition(original)

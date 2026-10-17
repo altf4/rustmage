@@ -180,6 +180,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::Sacrifice { .. } => 50,
             Action::DeclineEffectPayment => -1,
             Action::AnnounceCast { .. }
+            | Action::AnnounceFlashSurcharge { .. }
             | Action::AnnounceWarp { .. }
             | Action::AnnouncePlotted { .. }
             | Action::AnnounceExile { .. }

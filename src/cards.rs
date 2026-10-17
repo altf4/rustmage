@@ -1697,6 +1697,9 @@ impl Card {
     pub(crate) fn enchanted_modifiers(self) -> &'static [EnchantedModifier] {
         generated::enchanted_modifiers(self)
     }
+    pub(crate) fn flash_surcharge(self) -> Option<ManaCost> {
+        generated::flash_surcharge(self)
+    }
     pub(crate) fn equipment(self) -> Option<EquipmentSpec> {
         generated::equipment(self)
     }
