@@ -36,7 +36,7 @@ fn foundations_chosen_values_control_and_death_cards_full_games() {
                 "Banner of Kinship",
                 "Healer's Hawk",
                 "Leonin Vanguard",
-                "Hare Apparent",
+                "Resolute Reinforcements",
                 "Angel of Vitality",
                 "Inspiring Overseer",
             ],
@@ -77,6 +77,7 @@ fn foundations_chosen_values_control_and_death_cards_full_games() {
         ],
         &["Uncharted Haven"],
         &["Uncharted Haven", "Heraldic Banner"],
+        &[0, 1, 2, 3, 7, 13, 41, 73],
     );
 }
 
@@ -410,7 +411,7 @@ fn foundations_every_admitted_card_in_set_only_full_games() {
 }
 
 fn run_matrix(decks: &[Vec<Card>], expected_casts: &[&str]) {
-    run_matrix_actions(decks, expected_casts, &[], &[]);
+    run_matrix_actions(decks, expected_casts, &[], &[], &[7, 41]);
 }
 
 fn run_matrix_actions(
@@ -418,6 +419,7 @@ fn run_matrix_actions(
     expected_casts: &[&str],
     expected_lands: &[&str],
     expected_mana_sources: &[&str],
+    seeds: &[u64],
 ) {
     let mut played_lands = BTreeSet::new();
     let mut used_mana_sources = BTreeSet::new();
@@ -428,7 +430,7 @@ fn run_matrix_actions(
     let mut branches = 0;
     let mut new_spells = BTreeSet::new();
     for pair in 0..decks.len() {
-        for seed in [7, 41] {
+        for &seed in seeds {
             for starter in [Player::P0, Player::P1] {
                 let mut game = Game::new(Config {
                     decks: [decks[pair].clone(), decks[(pair + 1) % decks.len()].clone()],
@@ -517,11 +519,14 @@ fn run_matrix_actions(
             }
         }
     }
-    assert!(triggered && token && combat);
+    assert!(
+        triggered && token && combat,
+        "matrix events: triggered={triggered}, token={token}, combat={combat}; spells={new_spells:?}"
+    );
     for name in expected_casts {
         assert!(
             new_spells.contains(name),
-            "new card was not cast in full games: {name}"
+            "new card was not cast in full games: {name}; observed spells={new_spells:?}"
         );
     }
     for name in expected_lands {
@@ -534,7 +539,7 @@ fn run_matrix_actions(
         );
     }
     assert!(branches >= 20);
-    let games = decks.len() * 4;
+    let games = decks.len() * seeds.len() * 2;
     println!(
         "FDN matrix: {games} natural full games, {total_decisions} decisions, {branches} owned replay checks; {} cast identities, not full-set acceptance",
         new_spells.len()
