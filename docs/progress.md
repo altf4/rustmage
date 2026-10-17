@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,832 executable Standard identities | 3,332 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,863 executable Standard identities | 3,301 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -70,3 +70,15 @@ production. One hundred natural Standard games cover all 24 Role body/seat
 vectors with 81,882 owned frames and 163,764 denials. The
 [PR289 record](review-pr-289.md) keeps exact source scopes and final review gates
 explicit. The full all-Standard, rules and training goal remains incomplete.
+
+The [exact source-binding delivery](trigger-source-binding.md) completes Morcant's
+Loyalist on actual merged Role main, bringing coverage to 1,863/5,164 (3,301 gated)
+and schema 86. All 1,755 native tests, all-target Clippy and 257 unique fresh public
+methods pass. The 423-method compiler collection executes 421 passing methods and
+skips two opt-in provenance methods; both then execute/pass with the pinned Java
+source explicitly enabled, completing all 423 unique methods across those runs.
+Six actual paid Morcant cases cover both seats with Elf/Changeling recovery or no
+other Elf, 5,097 owned decisions and 10,194 actor/revision denials. The new inherited
+Tombstone payment method passes separately on identical production. Exact
+checkpoint/export/library identities and required independent reviews remain in
+the [PR 293 record](review-pr-293.md). This does not complete the all-Standard goal.

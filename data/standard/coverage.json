@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "855c02901028876ace629d6be0fffd0d6525e728848f8afdcf93b6e0554ff28d",
+  "catalogue_version": "aeb29ca4abe7c0551e1a10323c5088d026cef0052e223f4a0a32266586be6d2b",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1874,
-  "implemented_total": 1880,
+  "implemented_standard_cards": 1875,
+  "implemented_total": 1881,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -17122,8 +17122,8 @@
     {
       "name": "Morcant's Loyalist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Morlun, Devourer of Spiders",

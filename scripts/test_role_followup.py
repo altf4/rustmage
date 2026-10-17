@@ -43,7 +43,7 @@ class RoleFollowupTests(unittest.TestCase):
   for variant in ['Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)\nWhen this creature enters, draw a card. (Draw seven cards.)','Bargain (Draw seven cards.)\nWhen this creature enters, draw a card.']:
    self.assertFalse(self.compile_one(dict(base,oracle_text=variant))[1]['implemented'])
  def test_exact_twelve_admissions_preserve_every_prior_program_and_recipe(self):
-  old=subprocess.check_output(['git','-C',str(g.ROOT),'show','0f15430:src/generated/catalogue.rs'],text=True);new=(g.ROOT/'src/generated/catalogue.rs').read_text()
+  old=subprocess.check_output(['git','-C',str(g.ROOT),'show','ce9a90a1867ce741387d3ed0a1aac0aa1592ca08:src/generated/catalogue.rs'],text=True);new=(g.ROOT/'src/generated/catalogue.rs').read_text()
   defs=lambda t:[l for l in t.splitlines() if l.lstrip().startswith('Definition {')]
   before,after=defs(old),defs(new);self.assertEqual(len(before),5328);self.assertEqual(len(after),5328)
   changed=[(a,b) for a,b in zip(before,after) if a!=b];self.assertEqual(len(changed),12)

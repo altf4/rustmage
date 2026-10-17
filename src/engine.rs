@@ -24,7 +24,7 @@ pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 85;
+pub const OBSERVATION_SCHEMA: u32 = 86;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -208,6 +208,9 @@ mod tests;
 #[cfg(test)]
 #[path = "engine_token_tests.rs"]
 mod token_tests;
+#[cfg(test)]
+#[path = "engine_trigger_source_binding_tests.rs"]
+mod trigger_source_binding_tests;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum Zone {
@@ -667,8 +670,19 @@ pub struct AttachmentTriggerView {
     pub granted: bool,
 }
 
+/// Exact public source movement observed by a zone-change trigger (CR400.7e).
+/// The packet's original `object` and source facts remain its last-known source.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct TriggerSourceMoveView {
+    pub before: ObjectRef,
+    pub after: ObjectRef,
+    pub origin: Zone,
+    pub destination: Zone,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    pub source_move: Option<Box<TriggerSourceMoveView>>,
     pub crew: Option<Box<CrewContext>>,
     pub cast_event: Option<Box<CastPaymentEvent>>,
     pub delayed_sacrifice: Option<Box<DelayedSacrificeView>>,
@@ -701,6 +715,14 @@ pub struct SpellView {
 }
 
 impl SpellView {
+    /// Source-relative targets refer to the tracked public incarnation, without
+    /// rebinding a later departure/reentry or replacing source LKI.
+    pub(crate) fn target_source(&self) -> ObjectRef {
+        self.source_move
+            .as_ref()
+            .map_or(self.object, |event| event.after)
+    }
+
     /// Characteristics of this stack spell, independent of actual mana paid.
     pub fn mana_value(&self) -> u64 {
         self.source_card.fixed_mana_value()
@@ -2591,7 +2613,7 @@ impl Game {
                 let item = &s.announcing.as_ref().unwrap().item;
                 let modes = item.modes().expect("modal announcement");
                 for (index, mode) in modes.iter().enumerate() {
-                    if self.targets_available(mode.targets, player, item.object)
+                    if self.targets_available(mode.targets, player, item.target_source())
                         && self.announcement_target_fundable(
                             s.announcing.as_ref().unwrap(),
                             Some(mode.targets),
@@ -2624,7 +2646,7 @@ impl Game {
                     return self.visit_targets(
                         announcement.spec.rule,
                         actor,
-                        announcement.item.object,
+                        announcement.item.target_source(),
                         |target| {
                             self.target_group_compatible(
                                 announcement.spec.rule,
@@ -4498,7 +4520,7 @@ impl Game {
                     .iter()
                     .enumerate()
                     .filter(|(_, mode)| {
-                        self.targets_available(mode.targets, item.controller, item.object)
+                        self.targets_available(mode.targets, item.controller, item.target_source())
                             && self.announcement_target_fundable(
                                 s.announcing.as_ref().unwrap(),
                                 Some(mode.targets),
@@ -4801,9 +4823,13 @@ impl Game {
                 .chain(s.resolving.iter().map(|resolution| &resolution.item))
                 .chain(s.announcing.iter().map(|announcement| &announcement.item))
                 .map(|item| {
-                    item.cast_event
+                    item.source_move
                         .as_ref()
-                        .map_or(0, |_| std::mem::size_of::<CastPaymentEvent>())
+                        .map_or(0, |_| std::mem::size_of::<TriggerSourceMoveView>())
+                        + item
+                            .cast_event
+                            .as_ref()
+                            .map_or(0, |_| std::mem::size_of::<CastPaymentEvent>())
                         + item.delayed_sacrifice.as_ref().map_or(0, |d| d.bytes())
                         + item.crew.as_ref().map_or(0, |c| c.bytes())
                         + item

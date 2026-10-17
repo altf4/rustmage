@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-  "scope": "Eighteen admitted complete recovery cards plus the nineteenth inventoried candidate Morcant’s Loyalist, deliberately gated on exact death-trigger source binding (issue287). Full card source and all directly imported mage classes are hashed and equal pinned Git blobs; this does not claim complete transitive Java rewriting.",
+  "scope": "Nineteen admitted complete recovery cards, including Morcant’s Loyalist after exact death-trigger source binding (issue287). Full card source and all directly imported mage classes are hashed and equal pinned Git blobs; this does not claim complete transitive Java rewriting.",
   "cards": [
     {
       "name": "Archenemy's Charm",
@@ -673,7 +673,7 @@
           "java_sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
         }
       ],
-      "status": "gated_exact_death_source_binding_issue287"
+      "status": "implemented_exact_source_binding_issue287"
     },
     {
       "name": "Oltec Archaeologists",

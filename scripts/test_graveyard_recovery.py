@@ -18,11 +18,8 @@ class GraveyardRecoveryTests(unittest.TestCase):
     def setUpClass(cls):
         cls.cards = {c['name']: c for c in json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards']}
 
-    def test_all_eighteen_complete_programs_are_name_independent(self):
+    def test_all_nineteen_complete_programs_are_name_independent(self):
         for name in NAMES:
-            if name == "Morcant's Loyalist":
-                self.assertFalse(metadata.LegacyMetadataTests().definition(self.cards[name])[1]["implemented"])
-                continue
             with self.subTest(name=name):
                 card = copy.deepcopy(self.cards[name])
                 original, row = metadata.LegacyMetadataTests().definition(card)
@@ -100,7 +97,7 @@ class GraveyardRecoveryTests(unittest.TestCase):
                      'Return up to three target creature cards from your graveyard to your hand.']:
             self.assertIsNone(g.targeted_program(text), text)
 
-    def test_invalid_types_costs_and_physical_source_exclusion_stay_gated(self):
+    def test_invalid_metadata_stays_gated_and_another_is_exact_typed_exclusion(self):
         mutants=[]
         for name in NAMES:
             for change in [dict(type_line='Unknown'), dict(mana_cost='{Y}'),
@@ -112,7 +109,10 @@ class GraveyardRecoveryTests(unittest.TestCase):
         _,cov=metadata.LegacyMetadataTests.compile(mutants)
         rows={r['name']:r for r in cov['cards']}
         for c in mutants:self.assertFalse(rows[c['name']]['implemented'], c)
-        self.assertIsNone(g.targeted_program('Return another target Elf card from your graveyard to your hand.'))
+        spec, program = g.targeted_program('Return another target Elf card from your graveyard to your hand.')
+        self.assertEqual(program, ['ReturnToHand'])
+        self.assertIn('other: true', g.TARGET_RULES[spec])
+        self.assertIn('TargetPredicate::Subtype("Elf")', g.TARGET_RULES[spec])
 
     def test_pinned_java_complete_card_and_direct_dependency_provenance(self):
         import hashlib
@@ -141,18 +141,22 @@ class GraveyardRecoveryTests(unittest.TestCase):
         new=(g.ROOT/'src/generated/catalogue.rs').read_text()
         definitions=lambda text:[line for line in text.splitlines() if line.lstrip().startswith('Definition {')]
         before,after=definitions(old),definitions(new)
-        expected=set(NAMES)-{"Morcant's Loyalist"}|{'Unassuming Sage', 'Diminisher Witch', 'Protective Parents', "Witch's Mark", "Eriette's Whisper", 'Cursed Courtier', 'Merry Bards', 'Spellbook Vendor', "The Witch's Vanity", 'Become Brutes', 'Shatter the Oath', 'Cut In'}
+        # Historical recovery baseline predates nineteen recoveries and this
+        # separately audited twelve-card Role follow-up, not just the original eighteen.
+        expected=set(NAMES)|{'Unassuming Sage', 'Diminisher Witch', 'Protective Parents', "Witch's Mark", "Eriette's Whisper", 'Cursed Courtier', 'Merry Bards', 'Spellbook Vendor', "The Witch's Vanity", 'Become Brutes', 'Shatter the Oath', 'Cut In'}
         self.assertEqual(len(before),5328);self.assertEqual(len(after),5328)
         changed=[(a,b) for a,b in zip(before,after) if a!=b]
-        self.assertEqual(len(changed),30)
+        self.assertEqual(len(changed),31)
+
         changed_names={json.loads(re.search(r'name: ("(?:[^"\\]|\\.)*")',b)[1]) for _,b in changed}
         self.assertEqual(changed_names,expected)
         for a,b in changed:self.assertIn('effect: Effect::Unsupported',a)
         # Existing helper arms stay byte-identical; only the complete newly
-        # admitted Tombstone reducer adds a helper entry. Loyalist stays gated.
+        # admitted Tombstone reducer and Loyalist's complete Elf lord add entries.
         import difflib
         removed=[l[2:] for l in difflib.ndiff(old.splitlines(),new.splitlines()) if l.startswith('- ')]
-        self.assertEqual(len(removed),32) # 18 recovery + 12 Role rows, fingerprint, ALL.
+        self.assertEqual(len(removed),33) # 19 recovery + 12 Role rows, fingerprint, ALL.
+
         self.assertTrue(all(l.startswith(('    Definition {','pub const CATALOGUE_VERSION:','    pub const ALL:')) for l in removed))
 
 
@@ -174,7 +178,6 @@ class GraveyardRecoveryTests(unittest.TestCase):
     def test_full_bodies_reject_unknown_infix_reminders_across_every_recovery_boundary(self):
         mutants = []
         for name in NAMES:
-            if name == "Morcant's Loyalist": continue
             base = self.cards[name]
             route = re.search(r'from your graveyard (?:to your hand|on (?:the )?(?:top|bottom) of your library)', base['oracle_text'])
             self.assertIsNotNone(route, name)
