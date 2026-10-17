@@ -27,7 +27,7 @@
     {
       "name": "Become Brutes",
       "oracle_id": "789e034c-7f4a-4fd5-9dd8-48313742126e",
-      "status": "gated_incomplete_body",
+      "status": "implemented",
       "faces": [
         {
           "name": "Become Brutes",
@@ -161,7 +161,7 @@
     {
       "name": "Cursed Courtier",
       "oracle_id": "17916cf9-1e6c-41bd-96ce-2b050d828838",
-      "status": "gated_incomplete_body",
+      "status": "implemented",
       "faces": [
         {
           "name": "Cursed Courtier",
@@ -182,7 +182,7 @@
     {
       "name": "Cut In",
       "oracle_id": "9b205900-ec39-455e-900b-615ece08a07f",
-      "status": "gated_incomplete_body",
+      "status": "implemented",
       "faces": [
         {
           "name": "Cut In",
@@ -201,7 +201,7 @@
     {
       "name": "Diminisher Witch",
       "oracle_id": "c2283655-f6b8-4399-ba1f-68a7107f9485",
-      "status": "gated_incomplete_body",
+      "status": "implemented",
       "faces": [
         {
           "name": "Diminisher Witch",
@@ -243,7 +243,7 @@
     {
       "name": "Eriette's Whisper",
       "oracle_id": "27ca3201-a374-4a9d-b0ba-93b391f36844",
-      "status": "gated_incomplete_body",
+      "status": "implemented",
       "faces": [
         {
           "name": "Eriette's Whisper",
@@ -369,7 +369,7 @@
     {
       "name": "Merry Bards",
       "oracle_id": "699fa8e6-84f5-4010-a8fe-7b2e4f280ef9",
-      "status": "gated_incomplete_body",
+      "status": "implemented",
       "faces": [
         {
           "name": "Merry Bards",
@@ -409,7 +409,7 @@
     {
       "name": "Protective Parents",
       "oracle_id": "d9717522-358b-41ac-9183-8a6b3981f921",
-      "status": "gated_incomplete_body",
+      "status": "implemented",
       "faces": [
         {
           "name": "Protective Parents",
@@ -489,7 +489,7 @@
     {
       "name": "Shatter the Oath",
       "oracle_id": "f545870d-b628-4acb-88c7-37c2d72a5a85",
-      "status": "gated_incomplete_body",
+      "status": "implemented",
       "faces": [
         {
           "name": "Shatter the Oath",
@@ -508,7 +508,7 @@
     {
       "name": "Spellbook Vendor",
       "oracle_id": "51dad7d3-f91d-4bd8-aaed-235da42a448b",
-      "status": "gated_incomplete_body",
+      "status": "implemented",
       "faces": [
         {
           "name": "Spellbook Vendor",
@@ -592,7 +592,7 @@
     {
       "name": "The Witch's Vanity",
       "oracle_id": "ad2793f3-a36f-4a09-a38f-eb98ce0a2b79",
-      "status": "gated_incomplete_body",
+      "status": "implemented",
       "faces": [
         {
           "name": "The Witch's Vanity",
@@ -651,7 +651,7 @@
     {
       "name": "Unassuming Sage",
       "oracle_id": "1cf4e16b-2273-41c7-9bcd-0cdc78e12198",
-      "status": "gated_incomplete_body",
+      "status": "implemented",
       "faces": [
         {
           "name": "Unassuming Sage",
@@ -699,7 +699,7 @@
     {
       "name": "Witch's Mark",
       "oracle_id": "00807825-88e5-4b88-8527-a49f553a91be",
-      "status": "gated_incomplete_body",
+      "status": "implemented",
       "faces": [
         {
           "name": "Witch's Mark",
