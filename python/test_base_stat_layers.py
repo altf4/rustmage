@@ -103,7 +103,7 @@ class BaseStatPublicTests(unittest.TestCase):
        if name=='Doc Ock, Sinister Scientist':keep.add('Common Crook')
       if stage!='finish' and n in keep and sum(objects[x]['card']==n for x in remaining)<=1:return -1000
       return 2800 if n in ['Pacifism','Common Crook','Giant Growth'] else 1600
-     if k=='Attack':return 4200 if actor==p and stage=='attack' and a['card']==source else 3000 if stage=='finish' else -1000
+     if k=='Attack':return 4200 if actor==p and stage=='attack' and a['card']==source else 4300 if stage=='finish' else -1000
      if k=='Block':return -1000
      return {'Keep':4000,'PayCosts':4000,'ChooseSpellCost':4000,'FinishTargets':3900,'PutTrigger':3800,'FinishSearch':3700,'FinishAttackers':3500,'FinishBlockers':3500,'Pass':0}.get(k,1000)
     index=max(range(len(o['actions'])),key=lambda j:score(o['actions'][j]));a=o['actions'][index];self.assertGreaterEqual(score(a),0,(name,p,seed,stage,o['decision'],a))
