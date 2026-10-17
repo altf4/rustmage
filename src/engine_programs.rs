@@ -970,9 +970,9 @@ impl Game {
         let program = match item.kind {
             StackKind::TriggeredAbility { .. }
             | StackKind::DelayedSacrifice
-            | StackKind::DelayedWarpExile => item.program().expect("selected trigger program").1,
-            StackKind::ActivatedAbility { ability } => {
-                item.source_card.activations()[ability as usize].program
+            | StackKind::DelayedWarpExile
+            | StackKind::ActivatedAbility { .. } => {
+                item.program().expect("selected ability program").1
             }
             StackKind::Spell => match item.source_card.effect() {
                 Effect::Aura(_) => {
