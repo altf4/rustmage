@@ -112,6 +112,19 @@ fn paid_loyalist_excludes_exact_grave_source_and_returns_real_elf_or_changeling_
             assert!(!g.legal_actions().contains(&Action::ChooseTarget {
                 target: Target::Card(loyalist)
             }));
+            let saved = g.snapshot();
+            let revision = g.revision();
+            assert_eq!(
+                g.apply(
+                    p,
+                    Action::ChooseTarget {
+                        target: Target::Card(loyalist)
+                    }
+                ),
+                Err(Error::IllegalAction)
+            );
+            assert_eq!(g.snapshot(), saved);
+            assert_eq!(g.revision(), revision);
             checked(
                 &mut g,
                 Action::ChooseTarget {
