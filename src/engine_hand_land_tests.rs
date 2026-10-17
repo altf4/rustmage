@@ -295,3 +295,247 @@ fn hand_land_nicanzil_binds_actual_revealed_kind_empty_is_neither_and_can_put_an
         assert_eq!(g.object_view(conductor).counters.plus_one, 1);
     }
 }
+
+fn reject(g: &mut Game, action: Action) {
+    let before = g.snapshot();
+    let revision = g.revision();
+    assert_eq!(
+        g.apply(g.actor().unwrap(), action),
+        Err(Error::IllegalAction)
+    );
+    assert_eq!(g.snapshot(), before);
+    assert_eq!(g.revision(), revision);
+}
+fn until(g: &mut Game, target: Option<Target>, predicate: impl Fn(&Game) -> bool) {
+    for _ in 0..300 {
+        if predicate(g) {
+            return;
+        }
+        next(g, None, 0, target)
+    }
+    panic!("unreached boundary {:?}", g.state.pending)
+}
+#[test]
+fn hand_land_rejects_foreign_wrong_kind_zone_controller_and_stale_refs_atomically() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        for _ in 0..3 {
+            named(&mut g, p, "Shock", Zone::Library);
+        }
+        let own = named(&mut g, p, "Forest", Zone::Hand);
+        let other = named(&mut g, p.other(), "Island", Zone::Hand);
+        let wrong_kind = named(&mut g, p, "Grizzly Bears", Zone::Hand);
+        let wrong_zone = named(&mut g, p, "Mountain", Zone::Graveyard);
+        let wrong_controller = named(&mut g, p, "Swamp", Zone::Hand);
+        g.state.objects[wrong_controller as usize].controller = p.other();
+        let spell = named(&mut g, p, "Embrace the Paradox", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        reach_land_choice(&mut g);
+        for id in [other, wrong_kind, wrong_zone, wrong_controller] {
+            let object = g.object_ref(id);
+            reject(&mut g, Action::PutHandLand { object });
+        }
+        let old = g.object_ref(own);
+        g.move_object(own, Zone::Exile);
+        g.move_object(own, Zone::Hand);
+        reject(&mut g, Action::PutHandLand { object: old });
+        let current = g.object_ref(own);
+        checked(&mut g, Action::PutHandLand { object: current });
+        drive(&mut g, None, 0, None);
+        assert_eq!(g.object_view(own).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(own).owner, p);
+    }
+}
+#[test]
+fn hand_land_printed_life_replacement_remains_tapped_and_triggers_real_landfall() {
+    for p in [Player::P0, Player::P1] {
+        for pay in [false, true] {
+            let mut g = setup(p);
+            let observer = paid(&mut g, p, "Attercop", None);
+            for _ in 0..3 {
+                named(&mut g, p, "Shock", Zone::Library);
+            }
+            let land = named(&mut g, p, "Breeding Pool", Zone::Hand);
+            g.state.land_played = true;
+            let spell = named(&mut g, p, "Embrace the Paradox", Zone::Hand);
+            checked(&mut g, Action::AnnounceCast { card: spell });
+            reach_land_choice(&mut g);
+            let object = g.object_ref(land);
+            checked(&mut g, Action::PutHandLand { object });
+            assert!(g.observe(p).entry_life.as_ref().unwrap().already_tapped);
+            assert_eq!(g.object_view(land).zone, Zone::Hand);
+            let life = g.state.players[p.index()].life;
+            checked(&mut g, Action::ChooseEntryLife { pay });
+            drive(&mut g, None, 0, None);
+            assert_eq!(g.object_view(land).zone, Zone::Battlefield);
+            assert!(g.object_view(land).tapped);
+            assert_eq!(g.object_view(land).controller, p);
+            assert_eq!(
+                g.state.players[p.index()].life,
+                life - if pay { 2 } else { 0 }
+            );
+            assert!(g.state.land_played);
+            assert_eq!(
+                (g.stats(observer).power, g.stats(observer).toughness),
+                (3, 2)
+            );
+        }
+    }
+}
+#[test]
+fn hand_land_late_generation_and_landfall_capacity_failures_restore_pending_private_choice() {
+    for p in [Player::P0, Player::P1] {
+        for generation in [false, true] {
+            let mut g = setup(p);
+            paid(&mut g, p, "Attercop", None);
+            for _ in 0..3 {
+                named(&mut g, p, "Shock", Zone::Library);
+            }
+            let land = named(&mut g, p, "Forest", Zone::Hand);
+            let spell = named(&mut g, p, "Embrace the Paradox", Zone::Hand);
+            checked(&mut g, Action::AnnounceCast { card: spell });
+            reach_land_choice(&mut g);
+            let safe = g.snapshot();
+            if generation {
+                g.state.objects[land as usize].generation = u64::MAX;
+            } else {
+                g.state.next_stack_id = u64::MAX;
+            }
+            let saved = g.snapshot();
+            let revision = g.revision();
+            let object = g.object_ref(land);
+            assert!(matches!(
+                g.apply(p, Action::PutHandLand { object }),
+                Err(Error::CapacityExceeded(_))
+            ));
+            assert_eq!(g.snapshot(), saved);
+            assert_eq!(g.revision(), revision);
+            assert_eq!(g.object_view(land).zone, Zone::Hand);
+            assert!(g.observe(p).effect_choice.is_some());
+            assert!(g.observe(p.other()).effect_choice.is_none());
+            g.restore(&safe).unwrap();
+            let object = g.object_ref(land);
+            checked(&mut g, Action::PutHandLand { object });
+            drive(&mut g, None, 0, None);
+            assert_eq!(g.object_view(land).zone, Zone::Battlefield);
+        }
+    }
+}
+#[test]
+fn hand_land_herbie_paid_response_source_departure_preserves_draw_and_private_land() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        named(&mut g, p, "Shock", Zone::Library);
+        let land = named(&mut g, p, "Forest", Zone::Hand);
+        let source = named(&mut g, p, "H.E.R.B.I.E. Scout Unit", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: source });
+        until(&mut g, None, |g| {
+            g.state.pending == Pending::Priority
+                && g.object_view(source).zone == Zone::Battlefield
+                && g.state.stack.iter().any(|i| {
+                    i.trigger_definition() == Card::from_name("H.E.R.B.I.E. Scout Unit").unwrap()
+                })
+        });
+        let murder = named(&mut g, p, "Murder", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: murder });
+        while g.state.announcing.is_some() {
+            next(&mut g, None, 0, Some(Target::Card(source)));
+        }
+        reach_land_choice(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+        let object = g.object_ref(land);
+        checked(&mut g, Action::PutHandLand { object });
+        drive(&mut g, None, 0, None);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
+        assert_eq!(g.object_view(land).zone, Zone::Battlefield);
+        assert!(g.object_view(land).tapped);
+    }
+}
+#[test]
+fn hand_land_inherited_summoner_private_eligibility_does_not_change_peer_phase() {
+    for p in [Player::P0, Player::P1] {
+        let mut games = Vec::new();
+        for eligible in [false, true] {
+            let mut g = setup(p);
+            let book = paid(&mut g, p, "Summoner's Grimoire", None);
+            let hero = g.object_view(book).attached_to.unwrap().card;
+            named(
+                &mut g,
+                p,
+                if eligible { "Bear Cub" } else { "Giant Growth" },
+                Zone::Hand,
+            );
+            g.state.objects[hero as usize].summoning_sick = false;
+            g.state.step = Step::Attackers;
+            g.state.pending = Pending::Attackers;
+            checked(&mut g, Action::Attack { card: hero });
+            checked(&mut g, Action::FinishAttackers);
+            until(&mut g, None, |g| {
+                g.state
+                    .resolving
+                    .as_ref()
+                    .and_then(|r| r.choice.as_ref())
+                    .is_some_and(|c| c.kind == EffectChoiceKind::HandCreature)
+            });
+            assert!(g.legal_actions().contains(&Action::DeclineHandEntry));
+            assert!(g.observe(p.other()).effect_choice.is_none());
+            assert_eq!(
+                g.observe(p)
+                    .effect_choice
+                    .as_ref()
+                    .unwrap()
+                    .candidates
+                    .len(),
+                usize::from(eligible)
+            );
+            games.push(g);
+        }
+        assert_eq!(
+            serde_json::to_value(games[0].observe(p.other())).unwrap(),
+            serde_json::to_value(games[1].observe(p.other())).unwrap()
+        );
+        for mut g in games {
+            checked(&mut g, Action::DeclineHandEntry);
+        }
+    }
+}
+#[test]
+fn hand_land_actual_foreign_exile_permissions_keep_caster_private_hand_and_land_owner() {
+    for p in [Player::P0, Player::P1] {
+        for name in [
+            "Embrace the Paradox",
+            "Lessons from Life",
+            "H.E.R.B.I.E. Scout Unit",
+        ] {
+            let mut g = setup(p);
+            for _ in 0..3 {
+                named(&mut g, p, "Shock", Zone::Library);
+            }
+            let own = named(&mut g, p, "Forest", Zone::Hand);
+            let foreign = named(&mut g, p.other(), "Island", Zone::Hand);
+            let source = named(&mut g, p.other(), name, Zone::Exile);
+            g.state.exile_permissions.push(ExilePlayPermission {
+                object: g.object_ref(source),
+                player: p,
+                expires_turn: g.state.turn,
+            });
+            checked(&mut g, Action::AnnounceExile { card: source });
+            reach_land_choice(&mut g);
+            assert_eq!(g.actor(), Some(p));
+            let object = g.object_ref(foreign);
+            reject(&mut g, Action::PutHandLand { object });
+            let object = g.object_ref(own);
+            checked(&mut g, Action::PutHandLand { object });
+            drive(&mut g, None, 0, None);
+            assert_eq!(g.object_view(own).zone, Zone::Battlefield);
+            assert_eq!(g.object_view(own).controller, p);
+            assert_eq!(g.object_view(own).owner, p);
+            assert_eq!(g.object_view(foreign).zone, Zone::Hand);
+            assert_eq!(g.object_view(source).owner, p.other());
+            if name == "H.E.R.B.I.E. Scout Unit" {
+                assert_eq!(g.object_view(source).controller, p);
+                assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+            }
+        }
+    }
+}
