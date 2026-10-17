@@ -25,11 +25,10 @@ impl Game {
         while let Some(spec) = c.plan.group(group) {
             let count = c.chosen.iter().filter(|b| b.group == group).count()
                 + usize::from(group == c.group && c.extra.is_some());
-            if count > usize::from(spec.max) {
+            if count > spec.max {
                 return None;
             }
-            let closed =
-                group < c.group || group == c.group && c.finished || count == usize::from(spec.max);
+            let closed = group < c.group || group == c.group && c.finished || count == spec.max;
             if closed {
                 if count < usize::from(spec.min) {
                     return None;
@@ -53,7 +52,7 @@ impl Game {
                 if count + available < usize::from(spec.min) {
                     return None;
                 }
-                qualifies |= count < usize::from(spec.max) && can_qualify;
+                qualifies |= count < spec.max && can_qualify;
             }
             group += 1;
         }

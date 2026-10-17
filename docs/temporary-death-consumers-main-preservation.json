@@ -1,0 +1,45 @@
+{
+  "parent": "02d83521879d80772374b1c50d66c6356ea7325e",
+  "canonical": {
+    "prior_definitions": 5331,
+    "current_definitions": 5332,
+    "changed_definitions": [
+      "Absolving Lammasu#0",
+      "Convenient Target#0",
+      "Galuf's Final Act#0",
+      "It Doesn't Add Up#0",
+      "Perigee Beckoner#0",
+      "Person of Interest#0",
+      "Presumed Dead#0",
+      "Rabid Attack#0",
+      "Reasonable Doubt#0"
+    ],
+    "added_definitions": [
+      "@token/f144ea316833bbffad6fa831#0"
+    ],
+    "preserved_definitions": 5322,
+    "prior_helpers": 906,
+    "new_helpers": [
+      [
+        "aura",
+        "Convenient Target#0"
+      ],
+      [
+        "warp_cost",
+        "Perigee Beckoner#0"
+      ]
+    ],
+    "prior_colors": 5331,
+    "inline_flag_tables": 3,
+    "token_recipes": 94,
+    "emblem_recipes": 1,
+    "prior_aliases": 5437,
+    "result": "PASS"
+  },
+  "all_nine_and_detective_identical_to_471": true,
+  "all_two_helpers_identical_to_471": true,
+  "new_token_recipe": "TokenInfo { factory_identity: \"@token/f144ea316833bbffad6fa831\", name: \"Detective Token\", subtypes: \"Detective\", colors: 3 },",
+  "schema": 95,
+  "catalogue": "67b5c64ea193ad159aa94d7976e3e692d2abc327232d50fd1438034852dc312e",
+  "source_own_suspect_module_unchanged": true
+}

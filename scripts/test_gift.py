@@ -22,11 +22,17 @@ class GiftTests(unittest.TestCase):
      if bad!=raw:self.assertFalse(self.implemented(dict(c,oracle_text=bad)),(card['name'],name,bad))
  def test_current_candidate_changes_only_declared_complete_bodies(self):
   before=subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True)
-  after=(g.ROOT/'src/generated/catalogue.rs').read_text();physical={c['oracle_id']:c['name']for c in self.cards}
+  after=subprocess.check_output(['git','-C',str(g.ROOT),'show','02d83521879d80772374b1c50d66c6356ea7325e:src/generated/catalogue.rs'],text=True);physical={c['oracle_id']:c['name']for c in self.cards}
   a,b=canonical(before,physical),canonical(after,physical)
   allowed={('gift',n+'#0')for n in NAMES}|{('additional_cost',"Sazacap's Brew#0")}
   proof=assert_union(a,b,changed={n+'#0'for n in NAMES},added=set(),helpers=allowed,aliases={})
   self.assertEqual(proof['preserved_definitions'],5314)
+  current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  for name in NAMES:self.assertEqual(current['definitions'][name+'#0'],b['definitions'][name+'#0'])
+  for key in allowed:self.assertEqual(current['helpers'][key],b['helpers'][key])
+  import copy
+  mutant=copy.deepcopy(b);mutant['definitions']['Plains#0']='unrelated mutation'
+  with self.assertRaises(AssertionError):assert_union(a,mutant,changed={n+'#0'for n in NAMES},added=set(),helpers=allowed,aliases={})
  def test_malformed_cost_layout_type_and_out_of_range_stats_never_dispatch(self):
   for c in self.cards:
    if c['name']not in NAMES:continue

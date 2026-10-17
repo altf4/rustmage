@@ -76,7 +76,7 @@
       "mana_cost": "{1}{G}",
       "type_line": "Instant",
       "oracle_text": "Until end of turn, target creature gets +1/+0 and gains \"When this creature dies, put a number of +1/+1 counters equal to its power on up to one target creature.\"",
-      "status": "gated_incomplete_body",
+      "status": "implemented_complete_body",
       "sources": [
         {
           "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
@@ -240,7 +240,7 @@
       "mana_cost": "{4}{B}",
       "type_line": "Creature — Horror",
       "oracle_text": "When this creature enters, until end of turn, another target creature you control gets +2/+0 and gains \"When this creature dies, return it to the battlefield tapped under its owner's control.\"\nWarp {1}{B} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
-      "status": "gated_incomplete_body",
+      "status": "implemented_complete_body",
       "sources": [
         {
           "java_source": "Mage/src/main/java/mage/MageInt.java",
@@ -318,7 +318,7 @@
       "mana_cost": "{1}{B}",
       "type_line": "Instant",
       "oracle_text": "Until end of turn, target creature gets +2/+0 and gains \"When this creature dies, return it to the battlefield under its owner's control and suspect it.\" (A suspected creature has menace and can't block.)",
-      "status": "gated_incomplete_body",
+      "status": "implemented_complete_body",
       "sources": [
         {
           "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
@@ -412,7 +412,7 @@
       "mana_cost": "{1}{B}",
       "type_line": "Instant",
       "oracle_text": "Until end of turn, any number of target creatures you control each get +1/+0 and gain \"When this creature dies, draw a card.\"",
-      "status": "gated_incomplete_body",
+      "status": "implemented_complete_body",
       "sources": [
         {
           "java_source": "Mage/src/main/java/mage/abilities/Ability.java",

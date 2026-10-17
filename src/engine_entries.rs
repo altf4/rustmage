@@ -11,6 +11,7 @@ pub(super) struct EntryMove {
     pub attachment: Option<ObjectRef>,
     /// Owned completion tied to this move's actual successful public result.
     pub role_after: Option<(Card, Player)>,
+    pub suspect_after: bool,
     /// Counters put on this object as part of entering by the surrounding effect.
     pub effect_counter: Option<(CounterKind, u64)>,
     pub attacking: Option<CombatDefender>,
@@ -150,6 +151,7 @@ impl Game {
             tapped,
             attachment: None,
             role_after: None,
+            suspect_after: false,
             effect_counter: None,
             attacking: None,
             skipped: false,
@@ -322,6 +324,7 @@ impl Game {
         let mut events = Vec::new();
         let mut attachments = Vec::new();
         let mut role_results = Vec::new();
+        let mut suspect_results = Vec::new();
         for (movement, counters) in moves {
             let mut event = self.transition_object_under_control(
                 movement.before,
@@ -339,6 +342,9 @@ impl Game {
             event.x = movement.x;
             event.evidence_collected = movement.evidence_collected;
             if event.moved {
+                if event.destination == Zone::Battlefield && movement.suspect_after {
+                    suspect_results.push(event.after);
+                }
                 if event.destination == Zone::Battlefield
                     && let Some((token, creator)) = movement.role_after
                 {
@@ -382,6 +388,10 @@ impl Game {
             }
         }
         self.finish_zone_events(&events, &[]);
+        // The entry event precedes the subsequent suspect instruction.
+        for recipient in suspect_results {
+            self.set_suspected(recipient, true);
+        }
         for (controller, token, recipient) in role_results {
             if self.aura_can_enchant(token, controller, recipient) {
                 self.stage_token_creation(

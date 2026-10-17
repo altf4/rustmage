@@ -77,7 +77,7 @@ fn priority(g: &mut Game, p: Player) {
 }
 
 fn drive(g: &mut Game, target: Option<Target>) {
-    for _ in 0..160 {
+    for _ in 0..2048 {
         if g.state.pending == Pending::Priority
             && g.state.stack.is_empty()
             && g.state.resolving.is_none()
@@ -625,3 +625,5 @@ fn synthetic_entry_replacement_boundary_preserves_failed_return_and_role_binding
         }
     }
 }
+
+include!("engine_temporary_death_consumers_cases.rs");
