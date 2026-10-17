@@ -50,3 +50,15 @@ no engine change accompanies that policy correction.
 Final actual-main composition, fresh combined gates and the 100-game workload
 remain required. No prototype result is a delivery or full Standard
 completion claim. Two independent NONAUTHOR exact-final-head reviews are required.
+
+Compiler admission hardening after that prototype found two forgeable internal
+modal string markers: the new activated route and the inherited triggered route.
+A supplied extra line could imitate a generated marker and acquire its program.
+Both paths now attach semantic programs to parsed line indices; user text cannot
+acquire that parser-owned binding. Nine focused hand-land/marker methods pass
+(1.851s), plus four inherited modal methods (3.555s). All actual catalogue programs
+remain identical to the tested prototype; generated fingerprint alone changes to
+`72160f6813843279379d29b92f688f2621de1b64522c31aa3c959cd22ce1b576`.
+The earlier native/library/24-case results retain source-a36 provenance; final
+composed execution requires a fresh library. The inherited test which formerly
+rejected every modal activation now checks one complete supported activation.

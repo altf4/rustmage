@@ -3229,8 +3229,8 @@ def trigger_mode_lines(card, text):
             return None
         condition,_,_=parsed[2][0]
         data='&['+', '.join(f'SpellMode {{ text: {json.dumps(label,ensure_ascii=False)}, targets: {rust_targets(rule)}, program: {rust_program(program)} }}' for label,rule,program in modes)+']'
-        key=f'__rustmage_modal_trigger_{len(modal)}__'
-        modal[key]=(condition,['Modal('+data+')'],'None');body.append(key)
+        # Only the parsed header owns this semantic continuation.
+        modal[len(body)]=(condition,['Modal('+data+')'],'None');body.append(line)
     return body,modal
 
 
@@ -3347,9 +3347,9 @@ def trigger_creature_template(card):
     grouped=trigger_mode_lines(card,text)
     if grouped is None:return None
     lines,modal=grouped
-    for line in lines:
-        if line in modal:
-            abilities.append(modal[line]);continue
+    for line_index, line in enumerate(lines):
+        if line_index in modal:
+            abilities.append(modal[line_index]);continue
         line = line.strip()
         line = strip_rule_label(line)
         for label in ('Do You Like Squirrels? — ', 'I LOVE Squirrels! — ', 'Vivid — ', 'Valiant — '):
@@ -4048,8 +4048,9 @@ def activation_mode_lines(card, text):
         # Modal mana abilities need their own classification/production solver.
         if modes is None or any(instruction.startswith('AddMana') for _,_,program in modes for instruction in program):return None
         data='&['+', '.join(f'SpellMode {{ text: {json.dumps(label,ensure_ascii=False)}, targets: {rust_targets(rule)}, program: {rust_program(program)} }}' for label,rule,program in modes)+']'
-        key=f'__rustmage_modal_activation_{len(modal)}__'
-        modal[key]=['Modal('+data+')'];body.append(cost+': '+key)
+        # Bind semantic lowering to this parsed line, never to a forgeable
+        # string appearing in supplied Oracle text.
+        modal[len(body)]=['Modal('+data+')'];body.append(cost+': '+header)
     return body,modal
 
 
@@ -4071,7 +4072,7 @@ def permanent_program_template(card):
     lines,modal_activations=modal_lines
     activations, body = [], []
     enters = [0, 0, 0]
-    for line in lines:
+    for line_index, line in enumerate(lines):
         # Removing a reminder can leave trailing spaces before a newline.
         line=line.strip()
         for label in ('Do You Like Squirrels? — ', 'I LOVE Squirrels! — ', 'Fateful Bite — ', 'Blow Up — '):
@@ -4157,12 +4158,12 @@ def permanent_program_template(card):
             if effect_text == 'Return '+alias+" to its owner's hand.":
                 effect_text = "Return this permanent to its owner's hand."
         source_return = source_return_program(effect_text)
-        if effect_text in modal_activations:
+        if line_index in modal_activations:
             # External object costs need a joint per-mode reservation/target proof.
             # Fixed mana and source costs are mode-independent; source sacrifice
             # may legally invalidate an announced target after costs are paid.
             if cost['additional'] is not None:return None
-            targets,program='None',modal_activations[effect_text]
+            targets,program='None',modal_activations[line_index]
         elif source_return:
             origin, program = source_return
             if cost.get('origin', origin) != origin: return None

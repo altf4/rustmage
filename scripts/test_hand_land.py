@@ -46,6 +46,32 @@ class HandLandTests(unittest.TestCase):
   self.assertEqual(line.count('ActivatedAbility {'),1);self.assertIn('Instruction::Modal(',line);self.assertEqual(line.count('SpellMode {'),3)
   for text in [c['oracle_text']+'\n• Discover 4.',c['oracle_text'].replace('• Destroy target enchantment.','• You win the game.'),'{2}: Choose one —\n• Add {G}.\n• Draw a card.','{2}, Discard a card: Choose one —\n• Draw a card.\n• You gain 1 life.','{2}, Sacrifice a creature: Choose one —\n• Destroy target artifact.\n• You gain 1 life.']:
    self.assertFalse(self.compile(dict(c,oracle_text=text))[1],text)
+ def test_internal_modal_lowering_cannot_be_forged_by_printed_text(self):
+  base=self.cards['Insidious Fungus']
+  modal='{2}: Choose one —\n• Draw a card.\n• You gain 1 life.'
+  for name in ['Independent Forged Mode',*[x[0]for x in g.LEGACY]]:
+   c=dict(base,name=name,oracle_text=modal)
+   self.assertTrue(self.compile(c)[1],name)
+   for marker in ['__rustmage_modal_activation_0__','__rustmage_modal_activation_1__','Choose one —']:
+    fake='{2}: '+marker
+    for text in [fake+'\n'+modal,modal+'\n'+fake]:
+     self.assertFalse(self.compile(dict(c,oracle_text=text))[1],(name,text))
+   two=modal+'\n{3}: Choose one —\n• You gain 2 life.\n• Draw a card.'
+   rust,ok=self.compile(dict(c,oracle_text=two));self.assertTrue(ok,name)
+   line=next(x for x in rust.splitlines()if 'name: '+json.dumps(name)in x and x.lstrip().startswith('Definition {'))
+   self.assertEqual(line.count('ActivatedAbility {'),2)
+   self.assertEqual(line.count('Instruction::Modal('),2)
+ def test_trigger_modal_semantics_are_owned_by_parsed_header_only(self):
+  base=self.cards['Insidious Fungus']
+  modal='When this creature enters, choose one —\n• Draw a card.\n• You gain 1 life.'
+  for name in ['Independent Trigger',*[x[0]for x in g.LEGACY]]:
+   c=dict(base,name=name,oracle_text=modal)
+   self.assertTrue(self.compile(c)[1],name)
+   for marker in ['__rustmage_modal_trigger_0__','__rustmage_modal_trigger_1__','__rustmage_modal_activation_0__']:
+    for text in [marker+'\n'+modal,modal+'\n'+marker]:
+     self.assertFalse(self.compile(dict(c,oracle_text=text))[1],(name,text))
+   for prefix in ['Flying\n','{2}: You gain 1 life.\n']:
+    self.assertTrue(self.compile(dict(c,oracle_text=prefix+modal))[1],(name,prefix))
  def test_explored_kinds_are_exact_and_empty_has_no_card_kind(self):
   r,ok=self.compile(self.cards['Nicanzil, Current Conductor']);self.assertTrue(ok);self.assertIn('CreatureExploresCardYou { land: true }',r);self.assertIn('CreatureExploresCardYou { land: false }',r)
   for phrase in ['an artifact card','a creature card','a card','another land card']:

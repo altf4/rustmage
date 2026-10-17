@@ -769,7 +769,10 @@ class CatalogueCompilerTests(unittest.TestCase):
         for count in [0,1,65]:self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=header+'\n'.join(['• Draw a card.']*count))))
         for body in [header+'• Draw a card.\n• Discover 3.',header+'• Draw a card.\nDraw a card.',header+'• Draw a card.\n• Untap target creature.\nWhenever you attack, discover 3.',header.replace('choose one —','choose one or both —')+'• Draw a card.\n• You gain 2 life.',header.replace('choose one —','choose up to one —')+'• Draw a card.\n• You gain 2 life.',header.replace('When this creature enters, ','Whenever you commit a crime, ')+'• Draw a card.\n• You gain 2 life.']:
             self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=body)),body)
-        self.assertIsNone(generate.permanent_program_template(self.card(oracle_text='{2}: Choose one —\n• Draw a card.\n• You gain 2 life.')))
+        activated=generate.permanent_program_template(self.card(oracle_text='{2}: Choose one —\n• Draw a card.\n• You gain 2 life.'))
+        self.assertIsNotNone(activated)
+        self.assertEqual(len(activated[3]),1)
+        self.assertIn('Modal(',activated[3][0][2][0])
 
     def test_modal_trigger_admissions_require_all_twelve_complete_bodies_and_each_residual(self):
         import json
