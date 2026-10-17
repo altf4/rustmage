@@ -267,6 +267,11 @@ fn foreign_permission_grants_return_to_owner_but_tokens_belong_to_death_controll
             priority(&mut g, p);
             act(&mut g, Action::AnnounceExile { card: bear });
             drive(&mut g, None);
+            // The caster's counter replacement must not affect a creature
+            // returning under its different immutable owner's control.
+            if i == 2 {
+                paid(&mut g, p, "Doubling Season", None);
+            }
             priority(&mut g, p);
             act(&mut g, Action::AnnounceExile { card: grant });
             drive(&mut g, Some(Target::Card(bear)));
@@ -318,5 +323,172 @@ fn actual_doubling_season_replaces_counter_on_return_entry() {
         assert!(v.tapped);
         assert_eq!(v.counters.plus_one, 2);
         assert_eq!((v.power, v.toughness), (4, 4));
+    }
+}
+
+#[test]
+fn trigger_controller_is_dying_creatures_controller_not_granting_spells_caster() {
+    for p in [Player::P0, Player::P1] {
+        let q = p.other();
+        let mut g = setup(q);
+        let bear = paid(&mut g, q, "Bear Cub", None);
+        paid(&mut g, p, NAMES[1], Some(Target::Card(bear)));
+        assert_eq!(g.observe(p).temporary_abilities[0].grantor_controller, p);
+        paid(&mut g, p, "Lightning Bolt", Some(Target::Card(bear)));
+        assert_eq!(g.object_view(bear).controller, q);
+        assert_eq!(tokens(&g, p, "Treasure Token"), 0);
+        assert_eq!(tokens(&g, q, "Treasure Token"), 1);
+    }
+}
+#[test]
+fn sparse_registry_logical_memory_counts_each_grant_and_owned_clone() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = paid(&mut g, p, "Bear Cub", None);
+        let spells = [
+            named(&mut g, p, NAMES[2], Zone::Hand),
+            named(&mut g, p, NAMES[2], Zone::Hand),
+        ];
+        let baseline = g.state_bytes();
+        assert!(g.state.temporary_abilities.is_none());
+        for (i, card) in spells.into_iter().enumerate() {
+            priority(&mut g, p);
+            act(&mut g, Action::AnnounceCast { card });
+            drive(&mut g, Some(Target::Card(bear)));
+            let expected = std::mem::size_of::<Vec<TemporaryAbilityView>>()
+                + (i + 1) * std::mem::size_of::<TemporaryAbilityView>();
+            assert_eq!(g.state_bytes(), baseline + expected);
+            let owned = {
+                let parent = g.clone();
+                parent.clone()
+            };
+            assert_eq!(owned.state_bytes(), g.state_bytes());
+            assert_eq!(owned.snapshot(), g.snapshot());
+        }
+        g.state.step = Step::Cleanup;
+        g.finish_cleanup();
+        assert!(g.state.temporary_abilities.is_none());
+        assert_eq!(g.temporary_ability_bytes(), 0);
+    }
+}
+#[test]
+fn real_lantern_response_prevents_return_but_independent_treasure_still_resolves() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, [grant, bear, _]) = foreign_grants(p, [NAMES[1], "Bear Cub", "Forest"]);
+        priority(&mut g, p);
+        act(&mut g, Action::AnnounceExile { card: bear });
+        drive(&mut g, None);
+        priority(&mut g, p);
+        act(&mut g, Action::AnnounceExile { card: grant });
+        drive(&mut g, Some(Target::Card(bear)));
+        let lantern = paid(&mut g, p, "Soul-Guide Lantern", Some(Target::Card(grant)));
+        // Moving the original granting spell again does not revoke its ability.
+        assert_eq!(g.object_view(grant).zone, Zone::Exile);
+        assert_eq!(g.observe(p).temporary_abilities.len(), 1);
+        priority(&mut g, p);
+        let bolt = named(&mut g, p, "Lightning Bolt", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: bolt });
+        for _ in 0..100 {
+            if g.state.pending == Pending::Priority
+                && g.state
+                    .stack
+                    .iter()
+                    .any(|s| s.trigger_definition() == Card::from_name(NAMES[1]).unwrap())
+            {
+                break;
+            }
+            let a = g
+                .legal_actions()
+                .iter()
+                .find(|a| {
+                    **a == Action::ChooseTarget {
+                        target: Target::Card(bear),
+                    }
+                })
+                .cloned();
+            if let Some(a) = a {
+                act(&mut g, a);
+            } else {
+                choose(&mut g);
+            }
+        }
+        assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
+        assert!(!g.state.stack.is_empty());
+        priority(&mut g, p);
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: lantern,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        drive(&mut g, None);
+        assert_eq!(g.object_view(bear).zone, Zone::Exile);
+        assert_eq!(g.object_view(lantern).zone, Zone::Graveyard);
+        assert_eq!(tokens(&g, p, "Treasure Token"), 3);
+    }
+}
+
+#[test]
+fn actual_crewed_vehicle_returns_as_noncreature_and_cannot_receive_wicked_aura() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let vehicle = paid(&mut g, p, "Cultivator's Caravan", None);
+        let crew = paid(&mut g, p, "Hill Giant", None);
+        priority(&mut g, p);
+        let ability = g.state.objects[vehicle as usize]
+            .card
+            .activations()
+            .iter()
+            .position(|a| a.crew_minimum().is_some())
+            .unwrap() as u16;
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: vehicle,
+                ability,
+                counter_payment: Counters::default(),
+            },
+        );
+        let object = g.object_ref(crew);
+        act(&mut g, Action::ChooseCrewer { object });
+        act(&mut g, Action::FinishCrew);
+        drive(&mut g, None);
+        assert!(g.is_creature(vehicle));
+        paid(&mut g, p, NAMES[0], Some(Target::Card(vehicle)));
+        paid(&mut g, p, "Murder", Some(Target::Card(vehicle)));
+        let v = g.object_view(vehicle);
+        assert_eq!(v.zone, Zone::Battlefield);
+        assert!(v.tapped);
+        assert!(!g.is_creature(vehicle));
+        assert_eq!(tokens(&g, p, "Wicked"), 0);
+    }
+}
+
+#[test]
+fn printed_self_death_and_multiple_granted_definitions_all_keep_own_programs() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let sage = paid(&mut g, p, "Infestation Sage", None);
+        paid(&mut g, p, NAMES[1], Some(Target::Card(sage)));
+        paid(&mut g, p, NAMES[2], Some(Target::Card(sage)));
+        paid(&mut g, p, "Lightning Bolt", Some(Target::Card(sage)));
+        assert_eq!(g.object_view(sage).zone, Zone::Battlefield);
+        assert_eq!(tokens(&g, p, "Treasure Token"), 1);
+        let insects: Vec<_> = g
+            .state
+            .objects
+            .iter()
+            .filter(|o| {
+                o.zone == Zone::Battlefield
+                    && o.controller == p
+                    && o.card.is_token()
+                    && o.card.has_subtype("Insect")
+            })
+            .collect();
+        assert_eq!(insects.len(), 1);
+        assert!(insects[0].card.info().keywords.contains(Keywords::FLYING));
+        assert!(g.state.temporary_abilities.is_none());
     }
 }

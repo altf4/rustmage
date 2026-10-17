@@ -14,7 +14,7 @@
       "mana_cost": "{1}{B}",
       "type_line": "Instant",
       "oracle_text": "Until end of turn, target creature gets +2/+0 and gains \"When this creature dies, return it to the battlefield tapped under its owner's control and you create a Treasure token.\" (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
-      "status": "gated_incomplete_body",
+      "status": "implemented_complete_body",
       "sources": [
         {
           "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
@@ -138,7 +138,7 @@
       "mana_cost": "{B}",
       "type_line": "Instant",
       "oracle_text": "Until end of turn, target creature you control gains \"When this creature dies, return it to the battlefield tapped under its owner's control, then create a Wicked Role token attached to it.\" (Enchanted creature gets +1/+1. When this token is put into a graveyard, each opponent loses 1 life.)",
-      "status": "gated_incomplete_body",
+      "status": "implemented_complete_body",
       "sources": [
         {
           "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
@@ -466,7 +466,7 @@
       "mana_cost": "{B}",
       "type_line": "Instant",
       "oracle_text": "Until end of turn, target creature gains \"When this creature dies, return it to the battlefield tapped under its owner's control with a +1/+1 counter on it.\"",
-      "status": "gated_incomplete_body",
+      "status": "implemented_complete_body",
       "sources": [
         {
           "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",

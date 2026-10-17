@@ -34,6 +34,13 @@ class TemporaryDeathGrantCompilerTests(unittest.TestCase):
    self.assertEqual(norm(text.replace(json.dumps(name),json.dumps(renamed['name']))),norm(other))
    if name=='Undying Malice':self.assertIn('counter: Some((CounterKind::PlusOne, 1))',text)
    if name=='Fake Your Own Death':self.assertRegex(text,r'ReturnGrantedSource[^\n]+CreateTokens')
+ def test_reserved_names_authenticate_supplied_semantics_instead_of_old_fixture(self):
+  for original in ['Not Dead After All','Fake Your Own Death','Undying Malice']:
+   for name,*_ in self.g.LEGACY:
+    c=dict(self.cards[original],name=name)
+    self.assertTrue(self.compile(c)[1]['implemented'])
+    for suffix in [' (You win the game.)',' ((Draw seven cards.))']:
+     self.assertFalse(self.compile(dict(c,oracle_text=c['oracle_text']+suffix))[1]['implemented'])
  def test_every_unknown_raw_boundary_remains_gated(self):
   for name in ['Not Dead After All','Fake Your Own Death','Undying Malice']:
    c=self.cards[name];raw=c['oracle_text']
@@ -47,6 +54,7 @@ class TemporaryDeathGrantCompilerTests(unittest.TestCase):
  def test_malformed_metadata_and_remaining_five_whole_bodies_stay_gated(self):
   manifest=json.loads((ROOT/'docs/temporary-death-admissions.json').read_text())
   initial=set(manifest['initial_consumers'])
+  self.assertEqual({r['name'] for r in manifest['cards'] if r['status']=='implemented_complete_body'},initial)
   for row in manifest['cards']:
    c=self.cards[row['name']]
    if row['name'] not in initial:self.assertFalse(self.compile(c)[1]['implemented'])
