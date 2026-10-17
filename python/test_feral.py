@@ -1,11 +1,11 @@
 """Actual paid whole-pair casts with one-graveyard masks through the public C API."""
 import unittest
 from rustmage import Game,EngineError
-from test_adventure import AdventureTests
+import test_adventure
 NAME='Feral Deathgorger // Dusk Sight'
 class FeralTests(unittest.TestCase):
- replay=AdventureTests.replay
- denied=AdventureTests.denied
+ replay=test_adventure.AdventureTests.replay
+ denied=test_adventure.AdventureTests.denied
  def test_paid_normal_zero_one_two_from_either_graveyard_both_seats(self):
   for p in ['P0','P1']:
    for foreign in [False,True]:
