@@ -5,10 +5,21 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         condition: TriggerCondition::OtherCreatureEntersYou,
         targets: TargetPlan::NONE,
         program: &[
-            Instruction::GrantKeywords { subject: Subject::Source, keywords: Keywords::DEATHTOUCH },
+            Instruction::GrantKeywords {
+                subject: Subject::Source,
+                keywords: Keywords::DEATHTOUCH,
+            },
             Instruction::IfThisAbilityResolutionNumber { number: 2, skip: 1 },
             Instruction::GrantCreatures {
-                filter: CreatureFilter { relation: 0, other: false, subtype: None, keyword: Keywords::NONE, attacking: false, tokens: None, artifact: false },
+                filter: CreatureFilter {
+                    relation: 0,
+                    other: false,
+                    subtype: None,
+                    keyword: Keywords::NONE,
+                    attacking: false,
+                    tokens: None,
+                    artifact: false,
+                },
                 keywords: Keywords::DEATHTOUCH,
             },
         ],

@@ -6201,3 +6201,7 @@ mod fdn_control_two_tests;
 #[cfg(test)]
 #[path = "engine_fdn_death_demon_three_tests.rs"]
 mod fdn_death_demon_three_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_bounded_side_core_tests.rs"]
+mod fdn_bounded_side_core_tests;
