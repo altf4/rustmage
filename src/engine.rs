@@ -5081,3 +5081,7 @@ mod cast_payment_layout_probe {
 #[cfg(test)]
 #[path = "engine_adventure_tests.rs"]
 mod adventure_tests;
+
+#[cfg(test)]
+#[path = "engine_composition_tests.rs"]
+mod composition_tests;
