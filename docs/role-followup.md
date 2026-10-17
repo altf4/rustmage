@@ -54,8 +54,26 @@ and granted ability/attack obligations. They are not natural Standard terminals.
 `examples/standard_role_followup.py --library /absolute/path/librustmage.so`
 runs 100 naturally terminal Standard games, rotating all twelve bodies and seats.
 
-The corrected composed source has passed 40 focused compiler/provenance/Saga
-methods. Fresh native/Clippy, optimized library, full compiler/API and 100-game
-gates are pending for this corrected composition; earlier source's passing
-native/paid/100-game checks are historical evidence only. Two independent
-NONAUTHOR exact-head approvals remain required before merge.
+Frozen source `9f44154c39aac93cefa74249b1bf22ce22a655b6` passes all 1,775
+native tests (1,763 unit plus 12 integration), all-target Clippy with warnings
+rejected, formatting, deterministic generation, all 441 unique compiler and
+pinned-provenance methods (645.302 seconds, no failures, errors or skips), and
+all 266 unique fresh public API methods (1379.417 seconds, no failures,
+errors or skips). All 814 tracked execution inputs remain unchanged throughout
+the final gates. The 40 focused source/provenance methods also pass separately.
+
+One hundred fixed naturally terminal Standard games rotate the twelve bodies
+and both seats: 82,514 owned frames and 165,028 wrong-actor/stale-revision denials
+in 260.863 seconds. The optimized immutable library is
+`role294-9f44154-2480-schema86-05cf113abcdd.so`, SHA256
+`05cf113abcdde3dc84752be016560845c19cb4d16031391ba9022579693df81c`,
+with catalogue fingerprint
+`2480cc08e157a033b820dc5f7be65c6b5bf0ae1214f548a9e60d2bf012f213a7`.
+
+Earlier `32ab9a7` and `3eca8a6` compiler/API attempts are diagnostics: the former
+exposed an obsolete Saga fixture and the valid generic raw-route review finding;
+the latter was stopped for the source-alias correction. They are not final gate
+evidence. Completed build outputs were removed with every shared library kept
+at its original path and hash. Two independent NONAUTHOR reviewers have cleared
+the corrected production with their own raw/adverse gameplay probes; exact final
+published-head confirmations remain required before merge.
