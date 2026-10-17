@@ -1,0 +1,2479 @@
+{
+  "issue": 336,
+  "parent": "ba3752a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "purpose": "Complete remaining six physical bodies plus direct explicit Java imports; Beau token and its own explicit imports are separately included. No name-based admission permission or transitive closure claim.",
+  "reserved_observation_schema": 101,
+  "cards": [
+    {
+      "name": "Bonny Pall, Clearcutter",
+      "facts": {
+        "oracle_id": "fcb811a8-c6e6-4bc4-b64b-8963a7183669",
+        "name": "Bonny Pall, Clearcutter",
+        "layout": "normal",
+        "mana_cost": "{3}{G}{U}{U}",
+        "cmc": 6.0,
+        "type_line": "Legendary Creature — Giant Scout",
+        "oracle_text": "Reach\nWhen Bonny Pall enters, create Beau, a legendary blue Ox creature token with \"Beau's power and toughness are each equal to the number of lands you control.\"\nWhenever you attack, draw a card, then you may put a land card from your hand or graveyard onto the battlefield.",
+        "power": "6",
+        "toughness": "5",
+        "colors": [
+          "G",
+          "U"
+        ],
+        "color_identity": [
+          "G",
+          "U"
+        ],
+        "keywords": [
+          "Reach"
+        ],
+        "all_parts": [
+          {
+            "id": "f1751016-9461-4250-ac07-afe4f5b41095",
+            "component": "token",
+            "name": "Beau",
+            "type_line": "Token Legendary Creature — Ox"
+          },
+          {
+            "id": "ee29f20b-27cd-433a-8874-41f500720109",
+            "component": "combo_piece",
+            "name": "Bonny Pall, Clearcutter",
+            "type_line": "Legendary Creature — Giant Scout"
+          }
+        ],
+        "reference_printing": {
+          "id": "4383ae7c-58ea-4354-93e4-677ad185c3bb",
+          "set": "otj",
+          "collector_number": "196",
+          "released_at": "2024-04-19"
+        }
+      },
+      "root_source": "Mage.Sets/src/mage/cards/b/BonnyPallClearcutter.java",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BonnyPallClearcutter.java",
+          "java_sha256": "b6bbcdba5123ddbab96dc62bbfa69406540065621de4caf3249bb5f86854bbba",
+          "java_bytes": 2172,
+          "explicit_imports": [
+            "mage.MageInt",
+            "mage.abilities.Ability",
+            "mage.abilities.common.AttacksWithCreaturesTriggeredAbility",
+            "mage.abilities.common.EntersBattlefieldTriggeredAbility",
+            "mage.abilities.effects.common.CreateTokenEffect",
+            "mage.abilities.effects.common.DrawCardSourceControllerEffect",
+            "mage.abilities.effects.common.PutCardFromHandOrGraveyardOntoBattlefieldEffect",
+            "mage.abilities.keyword.ReachAbility",
+            "mage.cards.CardImpl",
+            "mage.cards.CardSetInfo",
+            "mage.constants.CardType",
+            "mage.constants.SubType",
+            "mage.constants.SuperType",
+            "mage.filter.StaticFilters",
+            "mage.game.permanent.token.BeauToken"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140",
+          "java_bytes": 2776,
+          "explicit_imports": [
+            "mage.util.CardUtil",
+            "mage.util.Copyable"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b",
+          "java_bytes": 19570,
+          "explicit_imports": [
+            "mage.MageIdentifier",
+            "mage.MageObject",
+            "mage.abilities.costs.Cost",
+            "mage.abilities.costs.CostAdjuster",
+            "mage.abilities.costs.Costs",
+            "mage.abilities.costs.common.TapSourceCost",
+            "mage.abilities.costs.mana.ManaCost",
+            "mage.abilities.costs.mana.ManaCosts",
+            "mage.abilities.effects.Effect",
+            "mage.abilities.effects.Effects",
+            "mage.abilities.hint.Hint",
+            "mage.abilities.icon.CardIcon",
+            "mage.cards.Card",
+            "mage.game.Controllable",
+            "mage.game.Game",
+            "mage.game.events.GameEvent",
+            "mage.game.permanent.Permanent",
+            "mage.players.Player",
+            "mage.target.Target",
+            "mage.target.Targets",
+            "mage.target.targetadjustment.TargetAdjuster",
+            "mage.watchers.Watcher"
+          ],
+          "wildcard_imports": [
+            "mage.constants.*",
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+          "java_sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954",
+          "java_bytes": 4293,
+          "explicit_imports": [
+            "mage.MageItem",
+            "mage.abilities.TriggeredAbilityImpl",
+            "mage.abilities.effects.Effect",
+            "mage.constants.Zone",
+            "mage.filter.FilterPermanent",
+            "mage.filter.StaticFilters",
+            "mage.game.Game",
+            "mage.game.events.GameEvent",
+            "mage.game.permanent.Permanent",
+            "mage.target.targetpointer.FixedTargets",
+            "mage.util.CardUtil"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f",
+          "java_bytes": 3876,
+          "explicit_imports": [
+            "mage.abilities.TriggeredAbilityImpl",
+            "mage.abilities.effects.Effect",
+            "mage.cards.Card",
+            "mage.constants.SubType",
+            "mage.constants.Zone",
+            "mage.game.Game",
+            "mage.game.events.GameEvent"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3",
+          "java_bytes": 9454,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.abilities.DelayedTriggeredAbility",
+            "mage.abilities.common.delayed.AtTheBeginOfNextEndStepDelayedTriggeredAbility",
+            "mage.abilities.common.delayed.AtTheEndOfCombatDelayedTriggeredAbility",
+            "mage.abilities.dynamicvalue.DynamicValue",
+            "mage.abilities.dynamicvalue.common.StaticValue",
+            "mage.abilities.effects.Effect",
+            "mage.abilities.effects.OneShotEffect",
+            "mage.constants.Outcome",
+            "mage.constants.PhaseStep",
+            "mage.constants.TargetController",
+            "mage.constants.Zone",
+            "mage.counters.CounterType",
+            "mage.game.Game",
+            "mage.game.permanent.Permanent",
+            "mage.game.permanent.token.Token",
+            "mage.target.targetpointer.FixedTargets",
+            "mage.util.CardUtil"
+          ],
+          "wildcard_imports": [
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2",
+          "java_bytes": 2310,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.abilities.dynamicvalue.DynamicValue",
+            "mage.abilities.dynamicvalue.common.StaticValue",
+            "mage.abilities.effects.OneShotEffect",
+            "mage.constants.Outcome",
+            "mage.game.Game",
+            "mage.players.Player",
+            "mage.util.CardUtil"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutCardFromHandOrGraveyardOntoBattlefieldEffect.java",
+          "java_sha256": "086c90b648fbed391683c3156d6e8d70c6edaef2976a60f541ea99a0419846c6",
+          "java_bytes": 2433,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.abilities.effects.OneShotEffect",
+            "mage.cards.Card",
+            "mage.cards.Cards",
+            "mage.cards.CardsImpl",
+            "mage.constants.Outcome",
+            "mage.constants.Zone",
+            "mage.filter.FilterCard",
+            "mage.game.Game",
+            "mage.players.Player",
+            "mage.target.TargetCard",
+            "mage.util.CardUtil"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559",
+          "java_bytes": 990,
+          "explicit_imports": [
+            "mage.constants.Zone",
+            "mage.abilities.MageSingleton",
+            "mage.abilities.StaticAbility",
+            "mage.abilities.icon.CardIconImpl",
+            "mage.abilities.icon.CardIconType"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54",
+          "java_bytes": 45243,
+          "explicit_imports": [
+            "mage.MageInt",
+            "mage.MageObject",
+            "mage.MageObjectImpl",
+            "mage.Mana",
+            "mage.abilities.common.AttachableToRestrictedAbility",
+            "mage.abilities.common.EntersBattlefieldTriggeredAbility",
+            "mage.abilities.common.SimpleStaticAbility",
+            "mage.abilities.effects.common.continuous.HasSubtypesSourceEffect",
+            "mage.abilities.mana.ActivatedManaAbilityImpl",
+            "mage.cards.mock.MockableCard",
+            "mage.cards.repository.PluginClassloaderRegistery",
+            "mage.counters.Counter",
+            "mage.counters.Counters",
+            "mage.filter.FilterMana",
+            "mage.game.command.CommandObject",
+            "mage.game.permanent.Permanent",
+            "mage.game.permanent.PermanentCard",
+            "mage.game.stack.Spell",
+            "mage.game.stack.StackObject",
+            "mage.util.CardUtil",
+            "mage.util.GameLog",
+            "mage.util.ManaUtil",
+            "mage.watchers.Watcher"
+          ],
+          "wildcard_imports": [
+            "mage.abilities.*",
+            "mage.abilities.keyword.*",
+            "mage.constants.*",
+            "mage.game.*",
+            "mage.game.events.*",
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af",
+          "java_bytes": 1972,
+          "explicit_imports": [
+            "mage.constants.Rarity",
+            "mage.util.Copyable"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45",
+          "java_bytes": 2985,
+          "explicit_imports": [
+            "mage.MageObject",
+            "mage.filter.predicate.Predicate",
+            "mage.game.Game"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2",
+          "java_bytes": 34545,
+          "explicit_imports": [
+            "mage.MageObject",
+            "mage.filter.predicate.Predicate",
+            "mage.game.Game"
+          ],
+          "wildcard_imports": [
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+          "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc",
+          "java_bytes": 1170,
+          "explicit_imports": [
+            "mage.MageObject",
+            "mage.filter.predicate.Predicate",
+            "mage.game.Game"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105",
+          "java_bytes": 55761,
+          "explicit_imports": [
+            "mage.ObjectColor",
+            "mage.abilities.keyword.FlyingAbility",
+            "mage.counters.CounterType",
+            "mage.filter.predicate.Predicates",
+            "mage.filter.predicate.other.AnotherTargetPredicate",
+            "mage.filter.predicate.other.TriggeredAbilityPredicate"
+          ],
+          "wildcard_imports": [
+            "mage.constants.*",
+            "mage.filter.common.*",
+            "mage.filter.predicate.mageobject.*",
+            "mage.filter.predicate.permanent.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/BeauToken.java",
+          "java_sha256": "f898be94e5df44dde06175e2228381457f3cfe355a68286d1ce4cd4effea7d31",
+          "java_bytes": 1344,
+          "explicit_imports": [
+            "mage.MageInt",
+            "mage.abilities.common.SimpleStaticAbility",
+            "mage.abilities.dynamicvalue.common.LandsYouControlCount",
+            "mage.abilities.effects.common.continuous.SetBasePowerToughnessSourceEffect",
+            "mage.constants.CardType",
+            "mage.constants.Duration",
+            "mage.constants.SubType",
+            "mage.constants.SuperType"
+          ],
+          "wildcard_imports": []
+        }
+      ]
+    },
+    {
+      "name": "Kellan, the Kid",
+      "facts": {
+        "oracle_id": "afacc200-16ff-40f3-9d43-268438131d24",
+        "name": "Kellan, the Kid",
+        "layout": "normal",
+        "mana_cost": "{G}{W}{U}",
+        "cmc": 3.0,
+        "type_line": "Legendary Creature — Human Faerie Rogue",
+        "oracle_text": "Flying, lifelink\nWhenever you cast a spell from anywhere other than your hand, you may cast a permanent spell with equal or lesser mana value from your hand without paying its mana cost. If you don't, you may put a land card from your hand onto the battlefield.",
+        "power": "3",
+        "toughness": "3",
+        "colors": [
+          "G",
+          "U",
+          "W"
+        ],
+        "color_identity": [
+          "G",
+          "U",
+          "W"
+        ],
+        "keywords": [
+          "Flying",
+          "Lifelink"
+        ],
+        "reference_printing": {
+          "id": "04dfbc4c-ab21-45db-bbd9-b9d245d60015",
+          "set": "otj",
+          "collector_number": "213",
+          "released_at": "2024-04-19"
+        }
+      },
+      "root_source": "Mage.Sets/src/mage/cards/k/KellanTheKid.java",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KellanTheKid.java",
+          "java_sha256": "2bc4c5b6ee302c514ae8d138d21b253697fad8df5441cfa217ae4047f422dac4",
+          "java_bytes": 3481,
+          "explicit_imports": [
+            "mage.MageInt",
+            "mage.abilities.Ability",
+            "mage.abilities.common.SpellCastControllerTriggeredAbility",
+            "mage.abilities.effects.OneShotEffect",
+            "mage.abilities.effects.common.PutCardFromHandOntoBattlefieldEffect",
+            "mage.abilities.keyword.FlyingAbility",
+            "mage.abilities.keyword.LifelinkAbility",
+            "mage.cards.CardImpl",
+            "mage.cards.CardSetInfo",
+            "mage.cards.CardsImpl",
+            "mage.filter.FilterCard",
+            "mage.filter.FilterSpell",
+            "mage.filter.StaticFilters",
+            "mage.filter.common.FilterPermanentCard",
+            "mage.filter.predicate.Predicates",
+            "mage.filter.predicate.card.CastFromZonePredicate",
+            "mage.filter.predicate.mageobject.ManaValuePredicate",
+            "mage.game.Game",
+            "mage.game.stack.Spell",
+            "mage.players.Player",
+            "mage.util.CardUtil"
+          ],
+          "wildcard_imports": [
+            "mage.constants.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140",
+          "java_bytes": 2776,
+          "explicit_imports": [
+            "mage.util.CardUtil",
+            "mage.util.Copyable"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b",
+          "java_bytes": 19570,
+          "explicit_imports": [
+            "mage.MageIdentifier",
+            "mage.MageObject",
+            "mage.abilities.costs.Cost",
+            "mage.abilities.costs.CostAdjuster",
+            "mage.abilities.costs.Costs",
+            "mage.abilities.costs.common.TapSourceCost",
+            "mage.abilities.costs.mana.ManaCost",
+            "mage.abilities.costs.mana.ManaCosts",
+            "mage.abilities.effects.Effect",
+            "mage.abilities.effects.Effects",
+            "mage.abilities.hint.Hint",
+            "mage.abilities.icon.CardIcon",
+            "mage.cards.Card",
+            "mage.game.Controllable",
+            "mage.game.Game",
+            "mage.game.events.GameEvent",
+            "mage.game.permanent.Permanent",
+            "mage.players.Player",
+            "mage.target.Target",
+            "mage.target.Targets",
+            "mage.target.targetadjustment.TargetAdjuster",
+            "mage.watchers.Watcher"
+          ],
+          "wildcard_imports": [
+            "mage.constants.*",
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2",
+          "java_bytes": 4647,
+          "explicit_imports": [
+            "mage.abilities.TriggeredAbilityImpl",
+            "mage.abilities.effects.Effect",
+            "mage.constants.SetTargetPointer",
+            "mage.constants.Zone",
+            "mage.filter.FilterSpell",
+            "mage.filter.StaticFilters",
+            "mage.game.Game",
+            "mage.game.events.GameEvent",
+            "mage.game.stack.Spell",
+            "mage.target.targetpointer.FixedTarget",
+            "mage.util.CardUtil"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863",
+          "java_bytes": 1269,
+          "explicit_imports": [
+            "mage.constants.EffectType",
+            "mage.constants.Outcome",
+            "mage.target.targetpointer.TargetPointer"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutCardFromHandOntoBattlefieldEffect.java",
+          "java_sha256": "60ead6e7cba07c849019361189b61b541490b8f4ec1bdda1e91b3315a673788a",
+          "java_bytes": 4027,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.abilities.Mode",
+            "mage.abilities.effects.OneShotEffect",
+            "mage.cards.Card",
+            "mage.constants.Outcome",
+            "mage.constants.Zone",
+            "mage.filter.FilterCard",
+            "mage.filter.StaticFilters",
+            "mage.game.Game",
+            "mage.players.Player",
+            "mage.target.common.TargetCardInHand",
+            "mage.util.CardUtil"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb",
+          "java_bytes": 2202,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.abilities.EvasionAbility",
+            "mage.abilities.MageSingleton",
+            "mage.abilities.effects.RestrictionEffect",
+            "mage.abilities.icon.CardIconImpl",
+            "mage.constants.AsThoughEffectType",
+            "mage.constants.Duration",
+            "mage.constants.SubType",
+            "mage.game.Game",
+            "mage.game.permanent.Permanent"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+          "java_sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81",
+          "java_bytes": 925,
+          "explicit_imports": [
+            "mage.abilities.MageSingleton",
+            "mage.abilities.StaticAbility",
+            "mage.abilities.icon.CardIconImpl",
+            "mage.constants.Zone"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54",
+          "java_bytes": 45243,
+          "explicit_imports": [
+            "mage.MageInt",
+            "mage.MageObject",
+            "mage.MageObjectImpl",
+            "mage.Mana",
+            "mage.abilities.common.AttachableToRestrictedAbility",
+            "mage.abilities.common.EntersBattlefieldTriggeredAbility",
+            "mage.abilities.common.SimpleStaticAbility",
+            "mage.abilities.effects.common.continuous.HasSubtypesSourceEffect",
+            "mage.abilities.mana.ActivatedManaAbilityImpl",
+            "mage.cards.mock.MockableCard",
+            "mage.cards.repository.PluginClassloaderRegistery",
+            "mage.counters.Counter",
+            "mage.counters.Counters",
+            "mage.filter.FilterMana",
+            "mage.game.command.CommandObject",
+            "mage.game.permanent.Permanent",
+            "mage.game.permanent.PermanentCard",
+            "mage.game.stack.Spell",
+            "mage.game.stack.StackObject",
+            "mage.util.CardUtil",
+            "mage.util.GameLog",
+            "mage.util.ManaUtil",
+            "mage.watchers.Watcher"
+          ],
+          "wildcard_imports": [
+            "mage.abilities.*",
+            "mage.abilities.keyword.*",
+            "mage.constants.*",
+            "mage.game.*",
+            "mage.game.events.*",
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af",
+          "java_bytes": 1972,
+          "explicit_imports": [
+            "mage.constants.Rarity",
+            "mage.util.Copyable"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardsImpl.java",
+          "java_sha256": "e3a32dd4f367a6429bd83cb8c1a1890e314b5dfbbedf8d61f4251797646dc1e0",
+          "java_bytes": 6449,
+          "explicit_imports": [
+            "mage.MageItem",
+            "mage.MageObject",
+            "mage.abilities.Ability",
+            "mage.constants.Zone",
+            "mage.filter.FilterCard",
+            "mage.game.Game",
+            "mage.util.RandomUtil",
+            "mage.util.ThreadLocalStringBuilder"
+          ],
+          "wildcard_imports": [
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterCard.java",
+          "java_sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2",
+          "java_bytes": 3762,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.cards.Card",
+            "mage.constants.SubType",
+            "mage.constants.TargetController",
+            "mage.filter.predicate.ObjectSourcePlayer",
+            "mage.filter.predicate.ObjectSourcePlayerPredicate",
+            "mage.filter.predicate.Predicate",
+            "mage.filter.predicate.Predicates",
+            "mage.game.Game"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterSpell.java",
+          "java_sha256": "50fd3169b7ed9ae7f81bce450a44155f4326c657186c1ba6713e2d0f8c3e3a6c",
+          "java_bytes": 822,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.game.Game",
+            "mage.game.stack.Spell",
+            "mage.game.stack.StackObject"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105",
+          "java_bytes": 55761,
+          "explicit_imports": [
+            "mage.ObjectColor",
+            "mage.abilities.keyword.FlyingAbility",
+            "mage.counters.CounterType",
+            "mage.filter.predicate.Predicates",
+            "mage.filter.predicate.other.AnotherTargetPredicate",
+            "mage.filter.predicate.other.TriggeredAbilityPredicate"
+          ],
+          "wildcard_imports": [
+            "mage.constants.*",
+            "mage.filter.common.*",
+            "mage.filter.predicate.mageobject.*",
+            "mage.filter.predicate.permanent.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterPermanentCard.java",
+          "java_sha256": "2af04f95edb47547b39271ca3c5024712fa9ba1728c5e2c7249d63fa8c411033",
+          "java_bytes": 606,
+          "explicit_imports": [
+            "mage.filter.FilterCard",
+            "mage.filter.predicate.mageobject.PermanentPredicate"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98",
+          "java_bytes": 11007,
+          "explicit_imports": [
+            "mage.game.Game"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/card/CastFromZonePredicate.java",
+          "java_sha256": "c656e76a2ab12ad6571b86d28436c3ebde0d212aeeacf0f46a2e11bee5bd8a83",
+          "java_bytes": 781,
+          "explicit_imports": [
+            "mage.MageObject",
+            "mage.constants.Zone",
+            "mage.filter.predicate.Predicate",
+            "mage.game.Game",
+            "mage.game.stack.Spell"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+          "java_sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262",
+          "java_bytes": 569,
+          "explicit_imports": [
+            "mage.MageObject",
+            "mage.constants.ComparisonType",
+            "mage.filter.predicate.IntComparePredicate"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d",
+          "java_bytes": 28403,
+          "explicit_imports": [
+            "mage.MageItem",
+            "mage.MageObject",
+            "mage.MageObjectReference",
+            "mage.abilities.Ability",
+            "mage.abilities.ActivatedAbility",
+            "mage.abilities.DelayedTriggeredAbility",
+            "mage.abilities.TriggeredAbility",
+            "mage.abilities.common.delayed.ReflexiveTriggeredAbility",
+            "mage.abilities.effects.ContinuousEffect",
+            "mage.abilities.effects.ContinuousEffects",
+            "mage.abilities.effects.PreventionEffectData",
+            "mage.cards.Card",
+            "mage.cards.Cards",
+            "mage.cards.MeldCard",
+            "mage.cards.decks.Deck",
+            "mage.choices.Choice",
+            "mage.counters.Counters",
+            "mage.game.combat.Combat",
+            "mage.game.events.GameEvent",
+            "mage.game.events.Listener",
+            "mage.game.events.PlayerQueryEvent",
+            "mage.game.events.TableEvent",
+            "mage.game.match.MatchType",
+            "mage.game.mulligan.Mulligan",
+            "mage.game.permanent.Battlefield",
+            "mage.game.permanent.Permanent",
+            "mage.game.stack.Spell",
+            "mage.game.stack.SpellStack",
+            "mage.game.stack.StackObject",
+            "mage.game.turn.Phase",
+            "mage.game.turn.Step",
+            "mage.game.turn.Turn",
+            "mage.players.Player",
+            "mage.players.PlayerList",
+            "mage.players.Players",
+            "mage.util.Copyable",
+            "mage.util.MessageToClient",
+            "mage.util.MultiAmountMessage",
+            "mage.util.functions.CopyApplier"
+          ],
+          "wildcard_imports": [
+            "mage.constants.*",
+            "mage.game.command.*",
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/stack/Spell.java",
+          "java_sha256": "7613dc12a6650f28f30cddca34bc409021108489792961eb4a7a7bcf9e747099",
+          "java_bytes": 46543,
+          "explicit_imports": [
+            "mage.abilities.common.SpellTransformedAbility",
+            "mage.abilities.costs.mana.ActivationManaAbilityStep",
+            "mage.abilities.costs.mana.ManaCost",
+            "mage.abilities.costs.mana.ManaCosts",
+            "mage.abilities.keyword.BestowAbility",
+            "mage.abilities.keyword.PrototypeAbility",
+            "mage.counters.Counter",
+            "mage.counters.Counters",
+            "mage.filter.FilterMana",
+            "mage.filter.predicate.mageobject.MageObjectReferencePredicate",
+            "mage.game.Game",
+            "mage.game.GameState",
+            "mage.game.MageObjectAttribute",
+            "mage.game.events.CopiedStackObjectEvent",
+            "mage.game.events.ZoneChangeEvent",
+            "mage.game.permanent.Permanent",
+            "mage.game.permanent.token.Token",
+            "mage.players.Player",
+            "mage.util.CardUtil",
+            "mage.util.GameLog",
+            "mage.util.ManaUtil",
+            "mage.util.SubTypes",
+            "mage.util.functions.CopyTokenFunction",
+            "mage.util.functions.StackObjectCopyApplier"
+          ],
+          "wildcard_imports": [
+            "mage.*",
+            "mage.abilities.*",
+            "mage.cards.*",
+            "mage.constants.*",
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f",
+          "java_bytes": 42402,
+          "explicit_imports": [
+            "mage.abilities.costs.AlternativeSourceCosts",
+            "mage.abilities.costs.Cost",
+            "mage.abilities.costs.Costs",
+            "mage.abilities.costs.mana.ManaCost",
+            "mage.abilities.costs.mana.ManaCosts",
+            "mage.abilities.mana.ManaOptions",
+            "mage.cards.Card",
+            "mage.cards.Cards",
+            "mage.cards.CardsImpl",
+            "mage.cards.decks.Deck",
+            "mage.choices.Choice",
+            "mage.counters.Counter",
+            "mage.counters.CounterType",
+            "mage.counters.Counters",
+            "mage.designations.Designation",
+            "mage.designations.DesignationType",
+            "mage.filter.FilterCard",
+            "mage.filter.FilterMana",
+            "mage.game.draft.Draft",
+            "mage.game.events.GameEvent",
+            "mage.game.match.Match",
+            "mage.game.match.MatchPlayer",
+            "mage.game.permanent.Permanent",
+            "mage.game.tournament.Tournament",
+            "mage.players.net.UserData",
+            "mage.target.Target",
+            "mage.target.TargetAmount",
+            "mage.target.TargetCard",
+            "mage.target.common.TargetCardInLibrary",
+            "mage.util.Copyable",
+            "mage.util.MultiAmountMessage"
+          ],
+          "wildcard_imports": [
+            "mage.*",
+            "mage.abilities.*",
+            "mage.constants.*",
+            "mage.game.*",
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/util/CardUtil.java",
+          "java_sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06",
+          "java_bytes": 109830,
+          "explicit_imports": [
+            "mage.abilities.condition.Condition",
+            "mage.abilities.costs.Cost",
+            "mage.abilities.costs.Costs",
+            "mage.abilities.costs.VariableCost",
+            "mage.abilities.dynamicvalue.DynamicValue",
+            "mage.abilities.dynamicvalue.common.StaticValue",
+            "mage.abilities.effects.ContinuousEffect",
+            "mage.abilities.effects.Effect",
+            "mage.abilities.effects.common.InfoEffect",
+            "mage.abilities.effects.common.asthought.CanPlayCardControllerEffect",
+            "mage.abilities.effects.common.asthought.YouMaySpendManaAsAnyColorToCastTargetEffect",
+            "mage.abilities.effects.common.counter.AddCountersTargetEffect",
+            "mage.abilities.hint.Hint",
+            "mage.abilities.hint.HintUtils",
+            "mage.counters.Counter",
+            "mage.filter.Filter",
+            "mage.filter.FilterCard",
+            "mage.filter.StaticFilters",
+            "mage.filter.predicate.Predicate",
+            "mage.filter.predicate.Predicates",
+            "mage.filter.predicate.card.OwnerIdPredicate",
+            "mage.filter.predicate.mageobject.NamePredicate",
+            "mage.filter.predicate.permanent.ControllerIdPredicate",
+            "mage.game.CardState",
+            "mage.game.Game",
+            "mage.game.GameState",
+            "mage.game.command.Commander",
+            "mage.game.events.BatchEvent",
+            "mage.game.events.GameEvent",
+            "mage.game.permanent.Permanent",
+            "mage.game.permanent.PermanentCard",
+            "mage.game.permanent.PermanentMeld",
+            "mage.game.permanent.PermanentToken",
+            "mage.game.permanent.token.Token",
+            "mage.game.stack.Spell",
+            "mage.game.stack.StackObject",
+            "mage.players.Player",
+            "mage.players.PlayerList",
+            "mage.target.Target",
+            "mage.target.TargetCard",
+            "mage.target.targetpointer.FixedTarget",
+            "mage.watchers.Watcher"
+          ],
+          "wildcard_imports": [
+            "mage.*",
+            "mage.abilities.*",
+            "mage.abilities.costs.mana.*",
+            "mage.cards.*",
+            "mage.constants.*",
+            "java.util.*"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Michelangelo, Improviser",
+      "facts": {
+        "oracle_id": "1939679b-ea2e-4a75-b3ce-d7af68437484",
+        "name": "Michelangelo, Improviser",
+        "layout": "normal",
+        "mana_cost": "{3}{G}",
+        "cmc": 4.0,
+        "type_line": "Legendary Creature — Mutant Ninja Turtle",
+        "oracle_text": "Sneak {2}{G}{G} (You may cast this spell for {2}{G}{G} if you also return an unblocked attacker you control to hand during the declare blockers step. He enters tapped and attacking.)\nWhenever Michelangelo deals combat damage to a player, you may put a creature card and/or a land card from your hand onto the battlefield.",
+        "power": "4",
+        "toughness": "4",
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "keywords": [
+          "Sneak"
+        ],
+        "reference_printing": {
+          "id": "955848c0-5092-4e13-97c9-5978d44d5586",
+          "set": "tmt",
+          "collector_number": "119",
+          "released_at": "2026-03-06"
+        }
+      },
+      "root_source": "Mage.Sets/src/mage/cards/m/MichelangeloImproviser.java",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MichelangeloImproviser.java",
+          "java_sha256": "6a6687ad6c9ddf4c2b57c18e38df82276b3b25f661af94bb323b1952321faa28",
+          "java_bytes": 1514,
+          "explicit_imports": [
+            "mage.MageInt",
+            "mage.abilities.common.DealsCombatDamageToAPlayerTriggeredAbility",
+            "mage.abilities.effects.common.PutCreatureAndOrLandFromHandOntoBattlefieldEffect",
+            "mage.abilities.keyword.SneakAbility",
+            "mage.cards.CardImpl",
+            "mage.cards.CardSetInfo",
+            "mage.constants.CardType",
+            "mage.constants.SubType",
+            "mage.constants.SuperType"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140",
+          "java_bytes": 2776,
+          "explicit_imports": [
+            "mage.util.CardUtil",
+            "mage.util.Copyable"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+          "java_sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11",
+          "java_bytes": 2095,
+          "explicit_imports": [
+            "mage.abilities.TriggeredAbilityImpl",
+            "mage.abilities.effects.Effect",
+            "mage.constants.Zone",
+            "mage.game.Game",
+            "mage.game.events.DamagedEvent",
+            "mage.game.events.GameEvent",
+            "mage.target.targetpointer.FixedTarget"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutCreatureAndOrLandFromHandOntoBattlefieldEffect.java",
+          "java_sha256": "7d26fdb6ea92a4b3fb199812cd63a1c83e1f539a421e52b171115dd4616dcdd3",
+          "java_bytes": 3068,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.abilities.assignment.common.CardTypeAssignment",
+            "mage.abilities.effects.OneShotEffect",
+            "mage.cards.Card",
+            "mage.cards.Cards",
+            "mage.cards.CardsImpl",
+            "mage.constants.CardType",
+            "mage.constants.Outcome",
+            "mage.constants.Zone",
+            "mage.filter.StaticFilters",
+            "mage.game.Game",
+            "mage.players.Player",
+            "mage.target.TargetCard",
+            "mage.target.common.TargetCardInHand"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/SneakAbility.java",
+          "java_sha256": "b25a32bf041c6a146f7d602c757f3be034f9282db5ed9c6cc03070b374611c70",
+          "java_bytes": 2651,
+          "explicit_imports": [
+            "mage.MageIdentifier",
+            "mage.abilities.SpellAbility",
+            "mage.abilities.costs.common.ReturnToHandChosenControlledPermanentCost",
+            "mage.abilities.costs.mana.ManaCostsImpl",
+            "mage.cards.Card",
+            "mage.constants.PhaseStep",
+            "mage.constants.SpellAbilityType",
+            "mage.constants.TimingRule",
+            "mage.constants.Zone",
+            "mage.filter.common.FilterControlledPermanent",
+            "mage.filter.predicate.permanent.AttackingPredicate",
+            "mage.filter.predicate.permanent.UnblockedPredicate",
+            "mage.game.Game",
+            "mage.target.common.TargetControlledPermanent",
+            "mage.util.CardUtil"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54",
+          "java_bytes": 45243,
+          "explicit_imports": [
+            "mage.MageInt",
+            "mage.MageObject",
+            "mage.MageObjectImpl",
+            "mage.Mana",
+            "mage.abilities.common.AttachableToRestrictedAbility",
+            "mage.abilities.common.EntersBattlefieldTriggeredAbility",
+            "mage.abilities.common.SimpleStaticAbility",
+            "mage.abilities.effects.common.continuous.HasSubtypesSourceEffect",
+            "mage.abilities.mana.ActivatedManaAbilityImpl",
+            "mage.cards.mock.MockableCard",
+            "mage.cards.repository.PluginClassloaderRegistery",
+            "mage.counters.Counter",
+            "mage.counters.Counters",
+            "mage.filter.FilterMana",
+            "mage.game.command.CommandObject",
+            "mage.game.permanent.Permanent",
+            "mage.game.permanent.PermanentCard",
+            "mage.game.stack.Spell",
+            "mage.game.stack.StackObject",
+            "mage.util.CardUtil",
+            "mage.util.GameLog",
+            "mage.util.ManaUtil",
+            "mage.watchers.Watcher"
+          ],
+          "wildcard_imports": [
+            "mage.abilities.*",
+            "mage.abilities.keyword.*",
+            "mage.constants.*",
+            "mage.game.*",
+            "mage.game.events.*",
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af",
+          "java_bytes": 1972,
+          "explicit_imports": [
+            "mage.constants.Rarity",
+            "mage.util.Copyable"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45",
+          "java_bytes": 2985,
+          "explicit_imports": [
+            "mage.MageObject",
+            "mage.filter.predicate.Predicate",
+            "mage.game.Game"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2",
+          "java_bytes": 34545,
+          "explicit_imports": [
+            "mage.MageObject",
+            "mage.filter.predicate.Predicate",
+            "mage.game.Game"
+          ],
+          "wildcard_imports": [
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+          "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc",
+          "java_bytes": 1170,
+          "explicit_imports": [
+            "mage.MageObject",
+            "mage.filter.predicate.Predicate",
+            "mage.game.Game"
+          ],
+          "wildcard_imports": []
+        }
+      ]
+    },
+    {
+      "name": "Spelunking",
+      "facts": {
+        "oracle_id": "2962fe4c-bf48-454b-8a6b-0f8253352ae8",
+        "name": "Spelunking",
+        "layout": "normal",
+        "mana_cost": "{2}{G}",
+        "cmc": 3.0,
+        "type_line": "Enchantment",
+        "oracle_text": "When this enchantment enters, draw a card, then you may put a land card from your hand onto the battlefield. If you put a Cave onto the battlefield this way, you gain 4 life.\nLands you control enter untapped.",
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "d3be4257-2316-4a2e-b347-f71c0368a947",
+          "set": "lci",
+          "collector_number": "213",
+          "released_at": "2023-11-17"
+        }
+      },
+      "root_source": "Mage.Sets/src/mage/cards/s/Spelunking.java",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/Spelunking.java",
+          "java_sha256": "75524d597d543f462b0ddb1f6d35fddde896e626a2f4e009a7431afa22af559d",
+          "java_bytes": 2879,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.abilities.common.EntersBattlefieldTriggeredAbility",
+            "mage.abilities.common.SimpleStaticAbility",
+            "mage.abilities.effects.OneShotEffect",
+            "mage.abilities.effects.common.DrawCardSourceControllerEffect",
+            "mage.abilities.effects.common.EnterUntappedAllEffect",
+            "mage.cards.Card",
+            "mage.cards.CardImpl",
+            "mage.cards.CardSetInfo",
+            "mage.constants.CardType",
+            "mage.constants.Outcome",
+            "mage.constants.SubType",
+            "mage.constants.Zone",
+            "mage.filter.StaticFilters",
+            "mage.game.Game",
+            "mage.players.Player",
+            "mage.target.common.TargetCardInHand"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b",
+          "java_bytes": 19570,
+          "explicit_imports": [
+            "mage.MageIdentifier",
+            "mage.MageObject",
+            "mage.abilities.costs.Cost",
+            "mage.abilities.costs.CostAdjuster",
+            "mage.abilities.costs.Costs",
+            "mage.abilities.costs.common.TapSourceCost",
+            "mage.abilities.costs.mana.ManaCost",
+            "mage.abilities.costs.mana.ManaCosts",
+            "mage.abilities.effects.Effect",
+            "mage.abilities.effects.Effects",
+            "mage.abilities.hint.Hint",
+            "mage.abilities.icon.CardIcon",
+            "mage.cards.Card",
+            "mage.game.Controllable",
+            "mage.game.Game",
+            "mage.game.events.GameEvent",
+            "mage.game.permanent.Permanent",
+            "mage.players.Player",
+            "mage.target.Target",
+            "mage.target.Targets",
+            "mage.target.targetadjustment.TargetAdjuster",
+            "mage.watchers.Watcher"
+          ],
+          "wildcard_imports": [
+            "mage.constants.*",
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f",
+          "java_bytes": 3876,
+          "explicit_imports": [
+            "mage.abilities.TriggeredAbilityImpl",
+            "mage.abilities.effects.Effect",
+            "mage.cards.Card",
+            "mage.constants.SubType",
+            "mage.constants.Zone",
+            "mage.game.Game",
+            "mage.game.events.GameEvent"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789",
+          "java_bytes": 646,
+          "explicit_imports": [
+            "mage.abilities.StaticAbility",
+            "mage.abilities.effects.Effect",
+            "mage.constants.Zone"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863",
+          "java_bytes": 1269,
+          "explicit_imports": [
+            "mage.constants.EffectType",
+            "mage.constants.Outcome",
+            "mage.target.targetpointer.TargetPointer"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2",
+          "java_bytes": 2310,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.abilities.dynamicvalue.DynamicValue",
+            "mage.abilities.dynamicvalue.common.StaticValue",
+            "mage.abilities.effects.OneShotEffect",
+            "mage.constants.Outcome",
+            "mage.game.Game",
+            "mage.players.Player",
+            "mage.util.CardUtil"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/EnterUntappedAllEffect.java",
+          "java_sha256": "6be277dcc5ce0fade23cb50e9558e0dbc6c86882fc52bc5ebf56e057c6be6bd0",
+          "java_bytes": 1679,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.abilities.effects.ReplacementEffectImpl",
+            "mage.constants.Duration",
+            "mage.constants.Outcome",
+            "mage.filter.FilterPermanent",
+            "mage.game.Game",
+            "mage.game.events.EntersTheBattlefieldEvent",
+            "mage.game.events.GameEvent",
+            "mage.game.permanent.Permanent"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Card.java",
+          "java_sha256": "86b9a512358a5c6814e62bc2f9cff87be07cf5a248e313686c137f0b76b798b0",
+          "java_bytes": 10012,
+          "explicit_imports": [
+            "mage.MageInt",
+            "mage.MageObject",
+            "mage.Mana",
+            "mage.abilities.Abilities",
+            "mage.abilities.Ability",
+            "mage.abilities.SpellAbility",
+            "mage.constants.CardType",
+            "mage.constants.Rarity",
+            "mage.constants.SubType",
+            "mage.constants.Zone",
+            "mage.counters.Counter",
+            "mage.counters.Counters",
+            "mage.filter.FilterMana",
+            "mage.game.Game",
+            "mage.game.GameState",
+            "mage.game.Ownerable",
+            "mage.game.permanent.Permanent",
+            "mage.util.ManaUtil",
+            "mage.watchers.common.CommanderPlaysCountWatcher"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54",
+          "java_bytes": 45243,
+          "explicit_imports": [
+            "mage.MageInt",
+            "mage.MageObject",
+            "mage.MageObjectImpl",
+            "mage.Mana",
+            "mage.abilities.common.AttachableToRestrictedAbility",
+            "mage.abilities.common.EntersBattlefieldTriggeredAbility",
+            "mage.abilities.common.SimpleStaticAbility",
+            "mage.abilities.effects.common.continuous.HasSubtypesSourceEffect",
+            "mage.abilities.mana.ActivatedManaAbilityImpl",
+            "mage.cards.mock.MockableCard",
+            "mage.cards.repository.PluginClassloaderRegistery",
+            "mage.counters.Counter",
+            "mage.counters.Counters",
+            "mage.filter.FilterMana",
+            "mage.game.command.CommandObject",
+            "mage.game.permanent.Permanent",
+            "mage.game.permanent.PermanentCard",
+            "mage.game.stack.Spell",
+            "mage.game.stack.StackObject",
+            "mage.util.CardUtil",
+            "mage.util.GameLog",
+            "mage.util.ManaUtil",
+            "mage.watchers.Watcher"
+          ],
+          "wildcard_imports": [
+            "mage.abilities.*",
+            "mage.abilities.keyword.*",
+            "mage.constants.*",
+            "mage.game.*",
+            "mage.game.events.*",
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af",
+          "java_bytes": 1972,
+          "explicit_imports": [
+            "mage.constants.Rarity",
+            "mage.util.Copyable"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45",
+          "java_bytes": 2985,
+          "explicit_imports": [
+            "mage.MageObject",
+            "mage.filter.predicate.Predicate",
+            "mage.game.Game"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2",
+          "java_bytes": 1970,
+          "explicit_imports": [],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2",
+          "java_bytes": 34545,
+          "explicit_imports": [
+            "mage.MageObject",
+            "mage.filter.predicate.Predicate",
+            "mage.game.Game"
+          ],
+          "wildcard_imports": [
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e",
+          "java_bytes": 683,
+          "explicit_imports": [],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105",
+          "java_bytes": 55761,
+          "explicit_imports": [
+            "mage.ObjectColor",
+            "mage.abilities.keyword.FlyingAbility",
+            "mage.counters.CounterType",
+            "mage.filter.predicate.Predicates",
+            "mage.filter.predicate.other.AnotherTargetPredicate",
+            "mage.filter.predicate.other.TriggeredAbilityPredicate"
+          ],
+          "wildcard_imports": [
+            "mage.constants.*",
+            "mage.filter.common.*",
+            "mage.filter.predicate.mageobject.*",
+            "mage.filter.predicate.permanent.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d",
+          "java_bytes": 28403,
+          "explicit_imports": [
+            "mage.MageItem",
+            "mage.MageObject",
+            "mage.MageObjectReference",
+            "mage.abilities.Ability",
+            "mage.abilities.ActivatedAbility",
+            "mage.abilities.DelayedTriggeredAbility",
+            "mage.abilities.TriggeredAbility",
+            "mage.abilities.common.delayed.ReflexiveTriggeredAbility",
+            "mage.abilities.effects.ContinuousEffect",
+            "mage.abilities.effects.ContinuousEffects",
+            "mage.abilities.effects.PreventionEffectData",
+            "mage.cards.Card",
+            "mage.cards.Cards",
+            "mage.cards.MeldCard",
+            "mage.cards.decks.Deck",
+            "mage.choices.Choice",
+            "mage.counters.Counters",
+            "mage.game.combat.Combat",
+            "mage.game.events.GameEvent",
+            "mage.game.events.Listener",
+            "mage.game.events.PlayerQueryEvent",
+            "mage.game.events.TableEvent",
+            "mage.game.match.MatchType",
+            "mage.game.mulligan.Mulligan",
+            "mage.game.permanent.Battlefield",
+            "mage.game.permanent.Permanent",
+            "mage.game.stack.Spell",
+            "mage.game.stack.SpellStack",
+            "mage.game.stack.StackObject",
+            "mage.game.turn.Phase",
+            "mage.game.turn.Step",
+            "mage.game.turn.Turn",
+            "mage.players.Player",
+            "mage.players.PlayerList",
+            "mage.players.Players",
+            "mage.util.Copyable",
+            "mage.util.MessageToClient",
+            "mage.util.MultiAmountMessage",
+            "mage.util.functions.CopyApplier"
+          ],
+          "wildcard_imports": [
+            "mage.constants.*",
+            "mage.game.command.*",
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f",
+          "java_bytes": 42402,
+          "explicit_imports": [
+            "mage.abilities.costs.AlternativeSourceCosts",
+            "mage.abilities.costs.Cost",
+            "mage.abilities.costs.Costs",
+            "mage.abilities.costs.mana.ManaCost",
+            "mage.abilities.costs.mana.ManaCosts",
+            "mage.abilities.mana.ManaOptions",
+            "mage.cards.Card",
+            "mage.cards.Cards",
+            "mage.cards.CardsImpl",
+            "mage.cards.decks.Deck",
+            "mage.choices.Choice",
+            "mage.counters.Counter",
+            "mage.counters.CounterType",
+            "mage.counters.Counters",
+            "mage.designations.Designation",
+            "mage.designations.DesignationType",
+            "mage.filter.FilterCard",
+            "mage.filter.FilterMana",
+            "mage.game.draft.Draft",
+            "mage.game.events.GameEvent",
+            "mage.game.match.Match",
+            "mage.game.match.MatchPlayer",
+            "mage.game.permanent.Permanent",
+            "mage.game.tournament.Tournament",
+            "mage.players.net.UserData",
+            "mage.target.Target",
+            "mage.target.TargetAmount",
+            "mage.target.TargetCard",
+            "mage.target.common.TargetCardInLibrary",
+            "mage.util.Copyable",
+            "mage.util.MultiAmountMessage"
+          ],
+          "wildcard_imports": [
+            "mage.*",
+            "mage.abilities.*",
+            "mage.constants.*",
+            "mage.game.*",
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInHand.java",
+          "java_sha256": "0b88ed18c6053986dc57c50ac6363da0acacc35899724fae164813085a428f88",
+          "java_bytes": 3021,
+          "explicit_imports": [
+            "mage.MageObject",
+            "mage.abilities.Ability",
+            "mage.cards.Card",
+            "mage.constants.TargetController",
+            "mage.constants.Zone",
+            "mage.filter.FilterCard",
+            "mage.game.Game",
+            "mage.game.events.TargetEvent",
+            "mage.players.Player",
+            "mage.target.TargetCard",
+            "mage.filter.StaticFilters"
+          ],
+          "wildcard_imports": []
+        }
+      ]
+    },
+    {
+      "name": "The Gitrog, Ravenous Ride",
+      "facts": {
+        "oracle_id": "7739311a-682b-48a6-8db2-c07f44141751",
+        "name": "The Gitrog, Ravenous Ride",
+        "layout": "normal",
+        "mana_cost": "{3}{B}{G}",
+        "cmc": 5.0,
+        "type_line": "Legendary Creature — Frog Horror Mount",
+        "oracle_text": "Trample, haste\nWhenever The Gitrog deals combat damage to a player, you may sacrifice a creature that saddled it this turn. If you do, draw X cards, then put up to X land cards from your hand onto the battlefield tapped, where X is the sacrificed creature's power.\nSaddle 1",
+        "power": "6",
+        "toughness": "5",
+        "colors": [
+          "B",
+          "G"
+        ],
+        "color_identity": [
+          "B",
+          "G"
+        ],
+        "keywords": [
+          "Saddle",
+          "Haste",
+          "Trample"
+        ],
+        "reference_printing": {
+          "id": "82512813-8618-483b-a7f0-e6a611d9d487",
+          "set": "otj",
+          "collector_number": "206",
+          "released_at": "2024-04-19"
+        }
+      },
+      "root_source": "Mage.Sets/src/mage/cards/t/TheGitrogRavenousRide.java",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TheGitrogRavenousRide.java",
+          "java_sha256": "2bdd1451e3fcdd0a57f2bb45de1928c4c04fbf1c372eab0941df7f5438bed606",
+          "java_bytes": 4058,
+          "explicit_imports": [
+            "mage.MageInt",
+            "mage.abilities.Ability",
+            "mage.abilities.common.DealsCombatDamageToAPlayerTriggeredAbility",
+            "mage.abilities.effects.OneShotEffect",
+            "mage.abilities.keyword.HasteAbility",
+            "mage.abilities.keyword.SaddleAbility",
+            "mage.abilities.keyword.TrampleAbility",
+            "mage.cards.CardImpl",
+            "mage.cards.CardSetInfo",
+            "mage.cards.Cards",
+            "mage.cards.CardsImpl",
+            "mage.filter.FilterPermanent",
+            "mage.filter.StaticFilters",
+            "mage.filter.common.FilterCreaturePermanent",
+            "mage.filter.predicate.permanent.SaddledSourceThisTurnPredicate",
+            "mage.game.Game",
+            "mage.game.permanent.Permanent",
+            "mage.players.Player",
+            "mage.target.TargetCard",
+            "mage.target.common.TargetCardInHand",
+            "mage.target.common.TargetSacrifice"
+          ],
+          "wildcard_imports": [
+            "mage.constants.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140",
+          "java_bytes": 2776,
+          "explicit_imports": [
+            "mage.util.CardUtil",
+            "mage.util.Copyable"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b",
+          "java_bytes": 19570,
+          "explicit_imports": [
+            "mage.MageIdentifier",
+            "mage.MageObject",
+            "mage.abilities.costs.Cost",
+            "mage.abilities.costs.CostAdjuster",
+            "mage.abilities.costs.Costs",
+            "mage.abilities.costs.common.TapSourceCost",
+            "mage.abilities.costs.mana.ManaCost",
+            "mage.abilities.costs.mana.ManaCosts",
+            "mage.abilities.effects.Effect",
+            "mage.abilities.effects.Effects",
+            "mage.abilities.hint.Hint",
+            "mage.abilities.icon.CardIcon",
+            "mage.cards.Card",
+            "mage.game.Controllable",
+            "mage.game.Game",
+            "mage.game.events.GameEvent",
+            "mage.game.permanent.Permanent",
+            "mage.players.Player",
+            "mage.target.Target",
+            "mage.target.Targets",
+            "mage.target.targetadjustment.TargetAdjuster",
+            "mage.watchers.Watcher"
+          ],
+          "wildcard_imports": [
+            "mage.constants.*",
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+          "java_sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11",
+          "java_bytes": 2095,
+          "explicit_imports": [
+            "mage.abilities.TriggeredAbilityImpl",
+            "mage.abilities.effects.Effect",
+            "mage.constants.Zone",
+            "mage.game.Game",
+            "mage.game.events.DamagedEvent",
+            "mage.game.events.GameEvent",
+            "mage.target.targetpointer.FixedTarget"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863",
+          "java_bytes": 1269,
+          "explicit_imports": [
+            "mage.constants.EffectType",
+            "mage.constants.Outcome",
+            "mage.target.targetpointer.TargetPointer"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1",
+          "java_bytes": 779,
+          "explicit_imports": [
+            "mage.abilities.MageSingleton",
+            "mage.abilities.StaticAbility",
+            "mage.constants.Zone"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/SaddleAbility.java",
+          "java_sha256": "ad652baf45e4662717bfe85771ddc22b35eacc9a7b7727bed1a07157ed473b3d",
+          "java_bytes": 6735,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.abilities.common.CrewSaddleIncreasedPowerAbility",
+            "mage.abilities.common.CrewSaddleWithToughnessAbility",
+            "mage.abilities.common.SimpleActivatedAbility",
+            "mage.abilities.condition.common.SaddledCondition",
+            "mage.abilities.costs.Cost",
+            "mage.abilities.costs.CostImpl",
+            "mage.abilities.effects.OneShotEffect",
+            "mage.abilities.hint.ConditionHint",
+            "mage.abilities.hint.Hint",
+            "mage.abilities.hint.HintUtils",
+            "mage.constants.Outcome",
+            "mage.constants.TimingRule",
+            "mage.filter.common.FilterControlledCreaturePermanent",
+            "mage.filter.predicate.mageobject.AnotherPredicate",
+            "mage.filter.predicate.permanent.TappedPredicate",
+            "mage.game.Game",
+            "mage.game.events.GameEvent",
+            "mage.game.permanent.Permanent",
+            "mage.target.Target",
+            "mage.target.TargetPermanent",
+            "mage.watchers.common.SaddledMountWatcher"
+          ],
+          "wildcard_imports": [
+            "java.awt.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c",
+          "java_bytes": 925,
+          "explicit_imports": [
+            "mage.abilities.MageSingleton",
+            "mage.abilities.StaticAbility",
+            "mage.abilities.icon.CardIconImpl",
+            "mage.constants.Zone"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54",
+          "java_bytes": 45243,
+          "explicit_imports": [
+            "mage.MageInt",
+            "mage.MageObject",
+            "mage.MageObjectImpl",
+            "mage.Mana",
+            "mage.abilities.common.AttachableToRestrictedAbility",
+            "mage.abilities.common.EntersBattlefieldTriggeredAbility",
+            "mage.abilities.common.SimpleStaticAbility",
+            "mage.abilities.effects.common.continuous.HasSubtypesSourceEffect",
+            "mage.abilities.mana.ActivatedManaAbilityImpl",
+            "mage.cards.mock.MockableCard",
+            "mage.cards.repository.PluginClassloaderRegistery",
+            "mage.counters.Counter",
+            "mage.counters.Counters",
+            "mage.filter.FilterMana",
+            "mage.game.command.CommandObject",
+            "mage.game.permanent.Permanent",
+            "mage.game.permanent.PermanentCard",
+            "mage.game.stack.Spell",
+            "mage.game.stack.StackObject",
+            "mage.util.CardUtil",
+            "mage.util.GameLog",
+            "mage.util.ManaUtil",
+            "mage.watchers.Watcher"
+          ],
+          "wildcard_imports": [
+            "mage.abilities.*",
+            "mage.abilities.keyword.*",
+            "mage.constants.*",
+            "mage.game.*",
+            "mage.game.events.*",
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af",
+          "java_bytes": 1972,
+          "explicit_imports": [
+            "mage.constants.Rarity",
+            "mage.util.Copyable"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Cards.java",
+          "java_sha256": "2ceaf2939456fd7356ea668af3c3aa642d7319455cf24ebf690109dce09db3d3",
+          "java_bytes": 2579,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.constants.Zone",
+            "mage.filter.FilterCard",
+            "mage.game.Game",
+            "mage.util.Copyable"
+          ],
+          "wildcard_imports": [
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardsImpl.java",
+          "java_sha256": "e3a32dd4f367a6429bd83cb8c1a1890e314b5dfbbedf8d61f4251797646dc1e0",
+          "java_bytes": 6449,
+          "explicit_imports": [
+            "mage.MageItem",
+            "mage.MageObject",
+            "mage.abilities.Ability",
+            "mage.constants.Zone",
+            "mage.filter.FilterCard",
+            "mage.game.Game",
+            "mage.util.RandomUtil",
+            "mage.util.ThreadLocalStringBuilder"
+          ],
+          "wildcard_imports": [
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397",
+          "java_bytes": 2499,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.constants.SubType",
+            "mage.filter.predicate.ObjectSourcePlayer",
+            "mage.filter.predicate.ObjectSourcePlayerPredicate",
+            "mage.filter.predicate.Predicate",
+            "mage.filter.predicate.Predicates",
+            "mage.game.Game",
+            "mage.game.permanent.Permanent"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105",
+          "java_bytes": 55761,
+          "explicit_imports": [
+            "mage.ObjectColor",
+            "mage.abilities.keyword.FlyingAbility",
+            "mage.counters.CounterType",
+            "mage.filter.predicate.Predicates",
+            "mage.filter.predicate.other.AnotherTargetPredicate",
+            "mage.filter.predicate.other.TriggeredAbilityPredicate"
+          ],
+          "wildcard_imports": [
+            "mage.constants.*",
+            "mage.filter.common.*",
+            "mage.filter.predicate.mageobject.*",
+            "mage.filter.predicate.permanent.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952",
+          "java_bytes": 859,
+          "explicit_imports": [
+            "mage.constants.CardType",
+            "mage.constants.SubType",
+            "mage.filter.FilterPermanent"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/SaddledSourceThisTurnPredicate.java",
+          "java_sha256": "782f4d9bfbea1c87f266d91aa7e92c1b30494edce001baa36aec4003d661c419",
+          "java_bytes": 980,
+          "explicit_imports": [
+            "mage.MageObjectReference",
+            "mage.filter.predicate.ObjectSourcePlayer",
+            "mage.filter.predicate.ObjectSourcePlayerPredicate",
+            "mage.game.Game",
+            "mage.game.permanent.Permanent",
+            "mage.watchers.common.SaddledMountWatcher"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d",
+          "java_bytes": 28403,
+          "explicit_imports": [
+            "mage.MageItem",
+            "mage.MageObject",
+            "mage.MageObjectReference",
+            "mage.abilities.Ability",
+            "mage.abilities.ActivatedAbility",
+            "mage.abilities.DelayedTriggeredAbility",
+            "mage.abilities.TriggeredAbility",
+            "mage.abilities.common.delayed.ReflexiveTriggeredAbility",
+            "mage.abilities.effects.ContinuousEffect",
+            "mage.abilities.effects.ContinuousEffects",
+            "mage.abilities.effects.PreventionEffectData",
+            "mage.cards.Card",
+            "mage.cards.Cards",
+            "mage.cards.MeldCard",
+            "mage.cards.decks.Deck",
+            "mage.choices.Choice",
+            "mage.counters.Counters",
+            "mage.game.combat.Combat",
+            "mage.game.events.GameEvent",
+            "mage.game.events.Listener",
+            "mage.game.events.PlayerQueryEvent",
+            "mage.game.events.TableEvent",
+            "mage.game.match.MatchType",
+            "mage.game.mulligan.Mulligan",
+            "mage.game.permanent.Battlefield",
+            "mage.game.permanent.Permanent",
+            "mage.game.stack.Spell",
+            "mage.game.stack.SpellStack",
+            "mage.game.stack.StackObject",
+            "mage.game.turn.Phase",
+            "mage.game.turn.Step",
+            "mage.game.turn.Turn",
+            "mage.players.Player",
+            "mage.players.PlayerList",
+            "mage.players.Players",
+            "mage.util.Copyable",
+            "mage.util.MessageToClient",
+            "mage.util.MultiAmountMessage",
+            "mage.util.functions.CopyApplier"
+          ],
+          "wildcard_imports": [
+            "mage.constants.*",
+            "mage.game.command.*",
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf",
+          "java_bytes": 14489,
+          "explicit_imports": [
+            "mage.MageObject",
+            "mage.MageObjectReference",
+            "mage.abilities.Ability",
+            "mage.cards.Card",
+            "mage.constants.Zone",
+            "mage.counters.Counter",
+            "mage.counters.CounterType",
+            "mage.game.Controllable",
+            "mage.game.Game",
+            "mage.game.GameState",
+            "mage.game.stack.Spell",
+            "mage.util.CardUtil"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f",
+          "java_bytes": 42402,
+          "explicit_imports": [
+            "mage.abilities.costs.AlternativeSourceCosts",
+            "mage.abilities.costs.Cost",
+            "mage.abilities.costs.Costs",
+            "mage.abilities.costs.mana.ManaCost",
+            "mage.abilities.costs.mana.ManaCosts",
+            "mage.abilities.mana.ManaOptions",
+            "mage.cards.Card",
+            "mage.cards.Cards",
+            "mage.cards.CardsImpl",
+            "mage.cards.decks.Deck",
+            "mage.choices.Choice",
+            "mage.counters.Counter",
+            "mage.counters.CounterType",
+            "mage.counters.Counters",
+            "mage.designations.Designation",
+            "mage.designations.DesignationType",
+            "mage.filter.FilterCard",
+            "mage.filter.FilterMana",
+            "mage.game.draft.Draft",
+            "mage.game.events.GameEvent",
+            "mage.game.match.Match",
+            "mage.game.match.MatchPlayer",
+            "mage.game.permanent.Permanent",
+            "mage.game.tournament.Tournament",
+            "mage.players.net.UserData",
+            "mage.target.Target",
+            "mage.target.TargetAmount",
+            "mage.target.TargetCard",
+            "mage.target.common.TargetCardInLibrary",
+            "mage.util.Copyable",
+            "mage.util.MultiAmountMessage"
+          ],
+          "wildcard_imports": [
+            "mage.*",
+            "mage.abilities.*",
+            "mage.constants.*",
+            "mage.game.*",
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetCard.java",
+          "java_sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e",
+          "java_bytes": 8764,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.cards.Card",
+            "mage.cards.Cards",
+            "mage.constants.CommanderCardType",
+            "mage.constants.Zone",
+            "mage.filter.FilterCard",
+            "mage.game.Game",
+            "mage.game.events.TargetEvent",
+            "mage.players.Player"
+          ],
+          "wildcard_imports": [
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInHand.java",
+          "java_sha256": "0b88ed18c6053986dc57c50ac6363da0acacc35899724fae164813085a428f88",
+          "java_bytes": 3021,
+          "explicit_imports": [
+            "mage.MageObject",
+            "mage.abilities.Ability",
+            "mage.cards.Card",
+            "mage.constants.TargetController",
+            "mage.constants.Zone",
+            "mage.filter.FilterCard",
+            "mage.game.Game",
+            "mage.game.events.TargetEvent",
+            "mage.players.Player",
+            "mage.target.TargetCard",
+            "mage.filter.StaticFilters"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetSacrifice.java",
+          "java_sha256": "24e8ec2dda0609630c60e91b1b890feebc7c8dbb0eb6002565897a07ca9113d7",
+          "java_bytes": 1550,
+          "explicit_imports": [
+            "mage.constants.TargetController",
+            "mage.filter.FilterPermanent",
+            "mage.filter.predicate.permanent.CanBeSacrificedPredicate",
+            "mage.target.TargetPermanent"
+          ],
+          "wildcard_imports": []
+        }
+      ]
+    },
+    {
+      "name": "Worldsoul's Rage",
+      "facts": {
+        "oracle_id": "3b6ef144-bb98-4686-9718-204f1c3cf020",
+        "name": "Worldsoul's Rage",
+        "layout": "normal",
+        "mana_cost": "{X}{R}{G}",
+        "cmc": 2.0,
+        "type_line": "Sorcery",
+        "oracle_text": "Worldsoul's Rage deals X damage to any target. Put up to X land cards from your hand and/or graveyard onto the battlefield tapped.",
+        "colors": [
+          "G",
+          "R"
+        ],
+        "color_identity": [
+          "G",
+          "R"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "1a54246e-1e22-4660-b2c8-fdfa2110b4fe",
+          "set": "eoc",
+          "collector_number": "130",
+          "released_at": "2025-08-01"
+        }
+      },
+      "root_source": "Mage.Sets/src/mage/cards/w/WorldsoulsRage.java",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WorldsoulsRage.java",
+          "java_sha256": "f14b2f60abfcbbee277ce43121b20f0cc1185658de1de49df0b911ae5d39a25a",
+          "java_bytes": 3221,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.abilities.dynamicvalue.common.GetXValue",
+            "mage.abilities.effects.OneShotEffect",
+            "mage.abilities.effects.common.DamageTargetEffect",
+            "mage.constants.CardType",
+            "mage.constants.Outcome",
+            "mage.constants.Zone",
+            "mage.filter.FilterCard",
+            "mage.filter.common.FilterLandCard",
+            "mage.game.Game",
+            "mage.players.Player",
+            "mage.target.TargetCard",
+            "mage.target.common.TargetAnyTarget",
+            "mage.util.CardUtil"
+          ],
+          "wildcard_imports": [
+            "mage.cards.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b",
+          "java_bytes": 19570,
+          "explicit_imports": [
+            "mage.MageIdentifier",
+            "mage.MageObject",
+            "mage.abilities.costs.Cost",
+            "mage.abilities.costs.CostAdjuster",
+            "mage.abilities.costs.Costs",
+            "mage.abilities.costs.common.TapSourceCost",
+            "mage.abilities.costs.mana.ManaCost",
+            "mage.abilities.costs.mana.ManaCosts",
+            "mage.abilities.effects.Effect",
+            "mage.abilities.effects.Effects",
+            "mage.abilities.hint.Hint",
+            "mage.abilities.icon.CardIcon",
+            "mage.cards.Card",
+            "mage.game.Controllable",
+            "mage.game.Game",
+            "mage.game.events.GameEvent",
+            "mage.game.permanent.Permanent",
+            "mage.players.Player",
+            "mage.target.Target",
+            "mage.target.Targets",
+            "mage.target.targetadjustment.TargetAdjuster",
+            "mage.watchers.Watcher"
+          ],
+          "wildcard_imports": [
+            "mage.constants.*",
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+          "java_sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0",
+          "java_bytes": 678,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.abilities.dynamicvalue.DynamicValue",
+            "mage.abilities.effects.Effect",
+            "mage.game.Game",
+            "mage.util.CardUtil"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863",
+          "java_bytes": 1269,
+          "explicit_imports": [
+            "mage.constants.EffectType",
+            "mage.constants.Outcome",
+            "mage.target.targetpointer.TargetPointer"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25",
+          "java_bytes": 3656,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.abilities.Mode",
+            "mage.abilities.dynamicvalue.DynamicValue",
+            "mage.abilities.dynamicvalue.common.StaticValue",
+            "mage.abilities.effects.OneShotEffect",
+            "mage.constants.Outcome",
+            "mage.game.Game",
+            "mage.game.permanent.Permanent",
+            "mage.players.Player"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45",
+          "java_bytes": 2985,
+          "explicit_imports": [
+            "mage.MageObject",
+            "mage.filter.predicate.Predicate",
+            "mage.game.Game"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2",
+          "java_bytes": 1970,
+          "explicit_imports": [],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e",
+          "java_bytes": 683,
+          "explicit_imports": [],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterCard.java",
+          "java_sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2",
+          "java_bytes": 3762,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.cards.Card",
+            "mage.constants.SubType",
+            "mage.constants.TargetController",
+            "mage.filter.predicate.ObjectSourcePlayer",
+            "mage.filter.predicate.ObjectSourcePlayerPredicate",
+            "mage.filter.predicate.Predicate",
+            "mage.filter.predicate.Predicates",
+            "mage.game.Game"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterLandCard.java",
+          "java_sha256": "e9e31535856250c875e2036b551236be506dd0b4229c3e7a4f3f4f639ac257df",
+          "java_bytes": 562,
+          "explicit_imports": [
+            "mage.constants.CardType",
+            "mage.filter.FilterCard"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d",
+          "java_bytes": 28403,
+          "explicit_imports": [
+            "mage.MageItem",
+            "mage.MageObject",
+            "mage.MageObjectReference",
+            "mage.abilities.Ability",
+            "mage.abilities.ActivatedAbility",
+            "mage.abilities.DelayedTriggeredAbility",
+            "mage.abilities.TriggeredAbility",
+            "mage.abilities.common.delayed.ReflexiveTriggeredAbility",
+            "mage.abilities.effects.ContinuousEffect",
+            "mage.abilities.effects.ContinuousEffects",
+            "mage.abilities.effects.PreventionEffectData",
+            "mage.cards.Card",
+            "mage.cards.Cards",
+            "mage.cards.MeldCard",
+            "mage.cards.decks.Deck",
+            "mage.choices.Choice",
+            "mage.counters.Counters",
+            "mage.game.combat.Combat",
+            "mage.game.events.GameEvent",
+            "mage.game.events.Listener",
+            "mage.game.events.PlayerQueryEvent",
+            "mage.game.events.TableEvent",
+            "mage.game.match.MatchType",
+            "mage.game.mulligan.Mulligan",
+            "mage.game.permanent.Battlefield",
+            "mage.game.permanent.Permanent",
+            "mage.game.stack.Spell",
+            "mage.game.stack.SpellStack",
+            "mage.game.stack.StackObject",
+            "mage.game.turn.Phase",
+            "mage.game.turn.Step",
+            "mage.game.turn.Turn",
+            "mage.players.Player",
+            "mage.players.PlayerList",
+            "mage.players.Players",
+            "mage.util.Copyable",
+            "mage.util.MessageToClient",
+            "mage.util.MultiAmountMessage",
+            "mage.util.functions.CopyApplier"
+          ],
+          "wildcard_imports": [
+            "mage.constants.*",
+            "mage.game.command.*",
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f",
+          "java_bytes": 42402,
+          "explicit_imports": [
+            "mage.abilities.costs.AlternativeSourceCosts",
+            "mage.abilities.costs.Cost",
+            "mage.abilities.costs.Costs",
+            "mage.abilities.costs.mana.ManaCost",
+            "mage.abilities.costs.mana.ManaCosts",
+            "mage.abilities.mana.ManaOptions",
+            "mage.cards.Card",
+            "mage.cards.Cards",
+            "mage.cards.CardsImpl",
+            "mage.cards.decks.Deck",
+            "mage.choices.Choice",
+            "mage.counters.Counter",
+            "mage.counters.CounterType",
+            "mage.counters.Counters",
+            "mage.designations.Designation",
+            "mage.designations.DesignationType",
+            "mage.filter.FilterCard",
+            "mage.filter.FilterMana",
+            "mage.game.draft.Draft",
+            "mage.game.events.GameEvent",
+            "mage.game.match.Match",
+            "mage.game.match.MatchPlayer",
+            "mage.game.permanent.Permanent",
+            "mage.game.tournament.Tournament",
+            "mage.players.net.UserData",
+            "mage.target.Target",
+            "mage.target.TargetAmount",
+            "mage.target.TargetCard",
+            "mage.target.common.TargetCardInLibrary",
+            "mage.util.Copyable",
+            "mage.util.MultiAmountMessage"
+          ],
+          "wildcard_imports": [
+            "mage.*",
+            "mage.abilities.*",
+            "mage.constants.*",
+            "mage.game.*",
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetCard.java",
+          "java_sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e",
+          "java_bytes": 8764,
+          "explicit_imports": [
+            "mage.abilities.Ability",
+            "mage.cards.Card",
+            "mage.cards.Cards",
+            "mage.constants.CommanderCardType",
+            "mage.constants.Zone",
+            "mage.filter.FilterCard",
+            "mage.game.Game",
+            "mage.game.events.TargetEvent",
+            "mage.players.Player"
+          ],
+          "wildcard_imports": [
+            "java.util.*"
+          ]
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetAnyTarget.java",
+          "java_sha256": "94f28b8a4a9908ef9b7599805c0ac39faf0aae249231969cd51373db206ebf34",
+          "java_bytes": 856,
+          "explicit_imports": [
+            "mage.filter.common.FilterAnyTarget"
+          ],
+          "wildcard_imports": []
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/util/CardUtil.java",
+          "java_sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06",
+          "java_bytes": 109830,
+          "explicit_imports": [
+            "mage.abilities.condition.Condition",
+            "mage.abilities.costs.Cost",
+            "mage.abilities.costs.Costs",
+            "mage.abilities.costs.VariableCost",
+            "mage.abilities.dynamicvalue.DynamicValue",
+            "mage.abilities.dynamicvalue.common.StaticValue",
+            "mage.abilities.effects.ContinuousEffect",
+            "mage.abilities.effects.Effect",
+            "mage.abilities.effects.common.InfoEffect",
+            "mage.abilities.effects.common.asthought.CanPlayCardControllerEffect",
+            "mage.abilities.effects.common.asthought.YouMaySpendManaAsAnyColorToCastTargetEffect",
+            "mage.abilities.effects.common.counter.AddCountersTargetEffect",
+            "mage.abilities.hint.Hint",
+            "mage.abilities.hint.HintUtils",
+            "mage.counters.Counter",
+            "mage.filter.Filter",
+            "mage.filter.FilterCard",
+            "mage.filter.StaticFilters",
+            "mage.filter.predicate.Predicate",
+            "mage.filter.predicate.Predicates",
+            "mage.filter.predicate.card.OwnerIdPredicate",
+            "mage.filter.predicate.mageobject.NamePredicate",
+            "mage.filter.predicate.permanent.ControllerIdPredicate",
+            "mage.game.CardState",
+            "mage.game.Game",
+            "mage.game.GameState",
+            "mage.game.command.Commander",
+            "mage.game.events.BatchEvent",
+            "mage.game.events.GameEvent",
+            "mage.game.permanent.Permanent",
+            "mage.game.permanent.PermanentCard",
+            "mage.game.permanent.PermanentMeld",
+            "mage.game.permanent.PermanentToken",
+            "mage.game.permanent.token.Token",
+            "mage.game.stack.Spell",
+            "mage.game.stack.StackObject",
+            "mage.players.Player",
+            "mage.players.PlayerList",
+            "mage.target.Target",
+            "mage.target.TargetCard",
+            "mage.target.targetpointer.FixedTarget",
+            "mage.watchers.Watcher"
+          ],
+          "wildcard_imports": [
+            "mage.*",
+            "mage.abilities.*",
+            "mage.abilities.costs.mana.*",
+            "mage.cards.*",
+            "mage.constants.*",
+            "java.util.*"
+          ]
+        }
+      ]
+    }
+  ],
+  "additional_beau_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/BeauToken.java",
+      "java_sha256": "f898be94e5df44dde06175e2228381457f3cfe355a68286d1ce4cd4effea7d31",
+      "java_bytes": 1344,
+      "explicit_imports": [
+        "mage.MageInt",
+        "mage.abilities.common.SimpleStaticAbility",
+        "mage.abilities.dynamicvalue.common.LandsYouControlCount",
+        "mage.abilities.effects.common.continuous.SetBasePowerToughnessSourceEffect",
+        "mage.constants.CardType",
+        "mage.constants.Duration",
+        "mage.constants.SubType",
+        "mage.constants.SuperType"
+      ],
+      "wildcard_imports": []
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/MageInt.java",
+      "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140",
+      "java_bytes": 2776,
+      "explicit_imports": [
+        "mage.util.CardUtil",
+        "mage.util.Copyable"
+      ],
+      "wildcard_imports": []
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789",
+      "java_bytes": 646,
+      "explicit_imports": [
+        "mage.abilities.StaticAbility",
+        "mage.abilities.effects.Effect",
+        "mage.constants.Zone"
+      ],
+      "wildcard_imports": []
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/LandsYouControlCount.java",
+      "java_sha256": "5d39300c382c862538f44ba6be1565cb60cfed952c2a95515f3d4b9daee3483e",
+      "java_bytes": 859,
+      "explicit_imports": [
+        "mage.abilities.Ability",
+        "mage.abilities.dynamicvalue.DynamicValue",
+        "mage.abilities.effects.Effect",
+        "mage.filter.StaticFilters",
+        "mage.game.Game"
+      ],
+      "wildcard_imports": []
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessSourceEffect.java",
+      "java_sha256": "278acb623e2d4c4db2efdc4764512cfe0a983770512e2eb2c73afb887a193fe3",
+      "java_bytes": 4424,
+      "explicit_imports": [
+        "mage.MageObject",
+        "mage.abilities.Ability",
+        "mage.abilities.dynamicvalue.DynamicValue",
+        "mage.abilities.dynamicvalue.common.StaticValue",
+        "mage.abilities.effects.ContinuousEffectImpl",
+        "mage.constants.Duration",
+        "mage.constants.Layer",
+        "mage.constants.Outcome",
+        "mage.constants.SubLayer",
+        "mage.game.Game"
+      ],
+      "wildcard_imports": []
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+      "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45",
+      "java_bytes": 2985,
+      "explicit_imports": [
+        "mage.MageObject",
+        "mage.filter.predicate.Predicate",
+        "mage.game.Game"
+      ],
+      "wildcard_imports": []
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+      "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747",
+      "java_bytes": 1880,
+      "explicit_imports": [],
+      "wildcard_imports": []
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+      "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2",
+      "java_bytes": 34545,
+      "explicit_imports": [
+        "mage.MageObject",
+        "mage.filter.predicate.Predicate",
+        "mage.game.Game"
+      ],
+      "wildcard_imports": [
+        "java.util.*"
+      ]
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+      "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc",
+      "java_bytes": 1170,
+      "explicit_imports": [
+        "mage.MageObject",
+        "mage.filter.predicate.Predicate",
+        "mage.game.Game"
+      ],
+      "wildcard_imports": []
+    }
+  ],
+  "source_records": 112,
+  "unique_sources": 63,
+  "proposed_complete": [
+    "Worldsoul's Rage",
+    "Bonny Pall, Clearcutter"
+  ],
+  "remaining_dependencies": {
+    "Kellan, the Kid": "Conditional free permanent casting and fallback land choice.",
+    "Michelangelo, Improviser": "Sneak plus creature-and/or-land multiple private choice.",
+    "Spelunking": "Captured successful Cave land result and prospective untapped entry replacement.",
+    "The Gitrog, Ravenous Ride": "Exact saddler sacrifice choice and power-LKI-bound draw/multiple-land placement."
+  }
+}

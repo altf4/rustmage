@@ -27,6 +27,14 @@ impl Game {
         object: ObjectRef,
     ) -> bool {
         let o = &self.state.objects[object.card as usize];
+        if let EffectChoiceKind::LandCards { maximum, .. } = choice.kind {
+            return o.owner == player
+                && self.object_ref(object.card) == object
+                && matches!(o.zone, Zone::Hand | Zone::Graveyard)
+                && o.card.is_land()
+                && !choice.selected[player.index()].contains(&object)
+                && choice.selected[player.index()].len() < maximum as usize;
+        }
         let hand_choice = matches!(
             choice.kind,
             EffectChoiceKind::Discard
@@ -128,6 +136,64 @@ impl Game {
             None,
         )
     }
+    pub(super) fn start_land_selection(
+        &mut self,
+        item: &SpellView,
+        maximum: u32,
+        tapped: bool,
+    ) -> bool {
+        if maximum == 0 {
+            return false;
+        }
+        self.start_effect_choice_inner(
+            item,
+            EffectChoiceKind::LandCards { maximum, tapped },
+            PlayerSet::Controller,
+            evidence::cost(0).filter,
+            0,
+            Some(0),
+            false,
+            None,
+        )
+    }
+
+    pub(super) fn finish_land_selection(&mut self) {
+        let choice = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .choice
+            .take()
+            .unwrap();
+        let EffectChoiceKind::LandCards { tapped, .. } = choice.kind else {
+            unreachable!()
+        };
+        let player = self.state.resolving.as_ref().unwrap().item.controller;
+        let movements = choice.selected[player.index()]
+            .iter()
+            .map(|reference| {
+                assert_eq!(self.object_ref(reference.card), *reference);
+                let object = &self.state.objects[reference.card as usize];
+                assert!(
+                    object.owner == player
+                        && matches!(object.zone, Zone::Hand | Zone::Graveyard)
+                        && object.card.is_land()
+                );
+                let mut movement = self.entry_move(
+                    reference.card,
+                    Zone::Battlefield,
+                    tapped || self.enters_tapped_for(reference.card, player),
+                );
+                movement.controller = player;
+                movement
+            })
+            .collect::<Vec<_>>();
+        if !movements.is_empty() {
+            self.stage_entries(movements, None);
+        }
+    }
+
     pub(super) fn choose_hand_defender(&mut self, defender: CombatDefender) {
         self.state
             .resolving
@@ -260,6 +326,17 @@ impl Game {
             .choice
             .as_ref()
             .unwrap();
+        if let EffectChoiceKind::LandCards { maximum, .. } = choice.kind {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            if choice.selected[player.index()].len() >= maximum as usize {
+                self.finish_land_selection();
+                return false;
+            }
+            // The same optional phase is presented even when the hidden hand
+            // contains no eligible land; no availability proof is required.
+            self.state.pending = Pending::EffectChoice { player };
+            return true;
+        }
         for player in [self.state.active, self.state.active.other()] {
             if choice.selected[player.index()].len() < usize::from(choice.required[player.index()])
             {
@@ -392,6 +469,8 @@ impl Game {
         {
             return None;
         }
+        let public_only =
+            viewer != actor && matches!(choice.kind, EffectChoiceKind::LandCards { .. });
         let candidates = self
             .state
             .objects
@@ -399,13 +478,25 @@ impl Game {
             .enumerate()
             .map(|(id, _)| self.object_ref(id as CardId))
             .filter(|&object| self.effect_choice_candidate(choice, actor, object))
+            .filter(|object| {
+                !public_only || self.state.objects[object.card as usize].zone == Zone::Graveyard
+            })
             .collect();
         Some(EffectChoiceView {
             kind: choice.kind,
             amount: choice.amount,
             optional: choice.skip_to.is_some(),
             required: choice.required,
-            selected: choice.selected.clone(),
+            selected: std::array::from_fn(|index| {
+                choice.selected[index]
+                    .iter()
+                    .copied()
+                    .filter(|object| {
+                        !public_only
+                            || self.state.objects[object.card as usize].zone == Zone::Graveyard
+                    })
+                    .collect()
+            }),
             candidates: if matches!(self.state.pending, Pending::HandDefender { .. }) {
                 Vec::new()
             } else {
