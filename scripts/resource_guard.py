@@ -55,6 +55,9 @@ def main():
     reports.mkdir(parents=True, exist_ok=True)
     report = args.report or reports/(uuid.uuid4().hex+'.json')
     report = report.absolute()
+    if not args.inside and report.exists():
+        parser.error('report already exists; choose a fresh report path')
+    report.parent.mkdir(parents=True, exist_ok=True)
     if args.inside:
         return inside(command, report)
     if bounded_group() is not None:
