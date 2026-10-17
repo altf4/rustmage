@@ -5499,8 +5499,14 @@ class BindingTests(unittest.TestCase):
             self.assertEqual(game.observe("P0")["players"][0]["library_count"], 53)
         with self.assertRaisesRegex(EngineError, "not Standard legal"):
             Game([["Mountain"] * 56 + ["Lightning Bolt"] * 4] * 2, deck_rules="Standard")
-        with self.assertRaisesRegex(EngineError, "rules not implemented"):
-            Game([["Hare Apparent"] * 60] * 2, deck_rules="Standard")
+        coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
+        gated = next((row["name"] for row in coverage["cards"]
+                      if row["standard_legal"] and not row["implemented"]), None)
+        if gated is not None:
+            with self.assertRaisesRegex(EngineError, "rules not implemented"):
+                Game([["Forest"] * 56 + [gated] * 4] * 2, deck_rules="Standard")
+        with Game([["Hare Apparent"] * 60] * 2, deck_rules="Standard") as game:
+            self.assertEqual(game.observe("P0")["players"][0]["library_count"], 53)
 
     def test_decoded_nul_in_invalid_card_is_an_error_without_aborting_host(self):
         # A regression in this boundary can abort the interpreter, so exercise it
