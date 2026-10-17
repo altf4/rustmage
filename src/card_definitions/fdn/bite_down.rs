@@ -14,7 +14,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             }),
             TargetSpec::one(TargetRule::Object {
                 zone: TargetZone::Battlefield,
-                kinds: 9,
+                kinds: 1 | 64,
                 relation: 1,
                 other: false,
                 nonland: false,

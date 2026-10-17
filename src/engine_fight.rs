@@ -26,13 +26,13 @@ impl Game {
         fight: bool,
     ) {
         let permanent = |group: u16, creature_only: bool| {
+            let kinds = if creature_only { 1 } else { 1 | 64 };
             item.targets.iter().find_map(|bound| {
                 if bound.group == group
                     && self.same_target_object(*bound)
                     && let Target::Card(id) = bound.target
                     && self.on_battlefield(id)
-                    && (self.is_creature(id)
-                        || (!creature_only && self.object_view(id).kinds & 8 != 0))
+                    && self.current_kinds(id) & kinds != 0
                 {
                     Some(id)
                 } else {
