@@ -85,6 +85,13 @@ impl Game {
         I: Iterator<Item = (CardId, &'a Object)>,
     {
         match value {
+            StatValue::Fixed(n) => i128::from(n),
+            StatValue::TappedCount(filter) => objects()
+                .filter(|&(id, o)| {
+                    o.tapped
+                        && Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
+                })
+                .count() as i128,
             StatValue::Not(value) => i128::from(
                 self.stat_value_with(
                     *value, source, owner, objects, subtypes, kinds, life, attacking,
@@ -103,6 +110,13 @@ impl Game {
                 .filter(|(id, o)| {
                     o.owner == owner
                         && o.zone == Zone::Battlefield
+                        && kinds(*id, o) & 1 != 0
+                        && self.state.attackers.iter().any(|a| a.card == *id)
+                })
+                .count() as i128,
+            StatValue::AllAttackingCreatures => objects()
+                .filter(|(id, o)| {
+                    o.zone == Zone::Battlefield
                         && kinds(*id, o) & 1 != 0
                         && self.state.attackers.iter().any(|a| a.card == *id)
                 })

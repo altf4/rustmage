@@ -303,7 +303,7 @@ impl Game {
                     TriggerCondition::SelfKicked => same && event.kicked,
                     TriggerCondition::SelfBargained => same && event.bargained,
                     TriggerCondition::SelfEvidence => same && event.evidence_collected,
-                    TriggerCondition::EvidenceCollected => false,
+                    TriggerCondition::EvidenceCollected | TriggerCondition::Chapter { .. } => false,
                     TriggerCondition::SelfEnters
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrAttacksWhileSaddled
@@ -1771,6 +1771,19 @@ impl Game {
                     for id in affected {
                         let object = &mut self.state.objects[id as usize];
                         object.gained_keywords = object.gained_keywords.union(keywords);
+                    }
+                }
+                Instruction::SnapshotDoubleCreatures(filter) => {
+                    // Snapshot every operand before changing any derived characteristic.
+                    let affected: Vec<_> = (0..self.state.objects.len())
+                        .map(|id| id as CardId)
+                        .filter(|&id| {
+                            self.creature_matches(filter, item.controller, item.object, id)
+                        })
+                        .map(|id| (id, self.stats(id)))
+                        .collect();
+                    for (id, delta) in affected {
+                        self.state.objects[id as usize].growth += delta;
                     }
                 }
                 Instruction::GrowCreatures {

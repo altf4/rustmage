@@ -395,6 +395,7 @@ impl Game {
         object.counters.minus_one -= counter_payment.minus_one;
         object.counters.stun -= counter_payment.stun;
         object.counters.loyalty -= counter_payment.loyalty;
+        object.counters.lore -= counter_payment.lore;
         if let Some(change) = cost.loyalty {
             if change < 0 {
                 object.counters.loyalty -= u64::from(change.unsigned_abs());

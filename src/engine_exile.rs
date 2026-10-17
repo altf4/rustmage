@@ -148,6 +148,9 @@ impl Game {
                 self.state.known_hand.push(event.after);
             }
             self.zone_triggers(event, death_sources, &sources, entry_suppression);
+            if event.moved && event.destination == Zone::Battlefield {
+                self.lore_counters_added(event.after, 0);
+            }
         }
         if self.state.exile_links.is_empty()
             || !events

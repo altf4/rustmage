@@ -8,29 +8,29 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,760 executable Standard identities | 3,404 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,801 executable Standard identities | 3,363 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
 | Fast simulation | Reproducible initial Freeform benchmark and compact state | Profile full Standard decks as mechanics expand, including inference/encoding; optimize atomic checkpoint overhead |
 | Fair observations | Hidden-hand/library projection and privacy tests; catalogue fingerprint | New private choices/zones; belief sampling and neural encoders |
-| Reviewed delivery | Job Select PR #246, Warp PR #247, actual-payment PR #251 and replacement PR #252 have two independent nonauthor reviews and durable scoped validation records; [replacement review](review-pr-252.md). Earlier milestones remain documented in their feature/review pages. | Continue issue-managed, reviewed PRs through complete acceptance |
+| Reviewed delivery | Saga PR #259 has two independent nonauthor approvals of the complete authored batch and durable scoped evidence in the [Saga review record](review-pr-259.md). Crew PR #253 and earlier milestones retain their own feature/review records. | Continue issue-managed, reviewed PRs through complete acceptance |
 
-The latest composition adds twenty-four complete [Crew/Vehicle](crew-vehicles.md)
-bodies to reviewed actual-payment and token/counter replacement foundations.
-Coverage is 1,760/5,164, with 84 token factories, one emblem and observation
-schema 76. All 1,624 native tests and 334 clean compiler/data tests pass; the
-225-method fresh-library public collection passes in 510.027 seconds.
-Three composed Standard100 workloads complete naturally with all full-body
-effect vectors and respectively 95,925, 104,413 and 187,965 owned replays.
-Initial logical state is 20,296 bytes; workload maxima are 23,532, 23,568 and
-21,144 bytes. These workloads do not prove complete Standard rules or full-deck
-performance. Final Crew acceptance awaits both independent exact-head review confirmations.
+The current composition adds nineteen complete [Adventure pairs](adventure.md)
+and ten complete [attachment/Ward bodies](attachment-ward.md) to merged Saga
+main. Coverage is 1,801/5,164, with 3,363 identities still gated, 86 token factories,
+one emblem and observation schema 78. All 1,659 combined native tests and all-target
+Clippy pass. All three same-source Standard100 workloads finish naturally with
+complete body vectors, 496,285 owned replay frames and 992,570 denials. The
+complete 351 compiler/data suite passes in 476.874 seconds; all 233 unique
+fresh public methods pass in 712.402 seconds. The
+[composition record](review-pr-258.md) tracks exact source/library identities,
+canonical preservation, meaningful cross-mechanic cases and current gate status.
 
-[Adventure spell faces and owned normal-play exile permissions (#254)](https://github.com/altf4/rustmage/issues/254)
-are now being implemented in an exclusive worktree. The shared foundation and
-nineteen audited complete pairs include a land normal face; the fifty-six other
-Adventure bodies and thirteen distinct Omen bodies remain full-goal requirements.
+The other 56 true Adventure parents, thirteen Omen parents and 54 Saga parents
+remain part of the full goal, alongside wider Ward/Role/disguise/cloak/control
+and other required semantics. Full rules enforcement across Standard, efficient
+training interfaces and full-deck performance remain incomplete.
 
 Other dependencies include wider costs/modes/events, multiple distinct target
 groups, triggered/restricted/variable mana, infinite-resource handling and
