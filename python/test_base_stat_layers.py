@@ -89,17 +89,19 @@ class BaseStatPublicTests(unittest.TestCase):
      if k=='PayResolutionMana':return 4000 if accept else -1000
      if k=='DeclineResolutionMana':return 4000 if not accept else -1000
      if k=='PlayLand':
-      if actor==p and n=='Azorius Guildgate' and stage not in ['gate','finish']:return -1000
+      if actor==p and name=='Gateway Sneak' and n=='Azorius Guildgate' and stage not in ['gate','finish']:return -1000
       if actor==p and stage=='gate':return 4200 if n=='Azorius Guildgate' and main and not body['summoning_sick'] else -1000
       return 2500-20*sum(v['card']==n for v in field if v['controller']==actor)
      if k in ['AnnounceMana','TapMana','ActivateMana']:return 3000 if o['decision'] in ['pay_costs','resolution_mana'] else -1000
      if k in ['Discard','Bottom']:
-      keep={name}
+      keep={name} if actor==p else set()
+      if stage!='finish' and (ally if actor==p else foe) is None:keep.add('Bear Cub')
+      if actor==q and stage=='setup' and name=='Quandrix Charm':keep.add('Opt' if mode==0 else 'Pacifism')
       if actor==p and stage!='finish':
        if name=='Gateway Sneak':keep.add('Azorius Guildgate')
        if name=='Snooping Page':keep.add('Giant Growth')
        if name=='Doc Ock, Sinister Scientist':keep.add('Common Crook')
-      if actor==p and stage!='finish' and n in keep and sum(objects[x]['card']==n for x in remaining)<=1:return -1000
+      if stage!='finish' and n in keep and sum(objects[x]['card']==n for x in remaining)<=1:return -1000
       return 2800 if n in ['Pacifism','Common Crook','Giant Growth'] else 1600
      if k=='Attack':return 4200 if actor==p and stage=='attack' and a['card']==source else 3000 if stage=='finish' else -1000
      if k=='Block':return -1000
