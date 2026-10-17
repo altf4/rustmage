@@ -80,6 +80,7 @@ class AdventureLandTargetTests(unittest.TestCase):
                     if k=='PlayLand':
                         if n==name:return 2800 if actor==p and stage=='normal' and a['card']==source else -1000
                         if actor==p and stage=='extra_land':return 2900
+                        if actor==p and stage=='setup' and i in [0,1] and len(lands)>=8 and sum(v['card'] in BASICS for v in hand)<2:return -1000
                         return 1800-20*sum(v['owner']==actor and v['zone']=='Battlefield' and v['card']==n for v in objects.values())
                     if k=='ChooseTarget':return 2900 if a['target'].get('Card')==target else -1000
                     if k in ['TapMana','ActivateMana','AnnounceMana']:
@@ -101,7 +102,7 @@ class AdventureLandTargetTests(unittest.TestCase):
                     elif a['card']==source:stage='wait_normal'
                 if a['kind']=='AnnounceExile' and actor==p:stage='wait_normal'
                 if a['kind']=='Attack' and a['card']==source:attacked=True
-                if a['kind']=='TapMana' and a['card']==source:land_witness=True
+                if a['kind'] in ['TapMana','ActivateMana'] and a['card']==source:land_witness=True
                 before=[g.observe(v) for v in ['P0','P1']]
                 with self.assertRaisesRegex(EngineError,'WrongActor'):g.act(dict(o,actor='P1' if actor=='P0' else 'P0'),a)
                 self.assertEqual(before,[g.observe(v) for v in ['P0','P1']]);self.replay(g,o,j);frames+=1
