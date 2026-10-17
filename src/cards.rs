@@ -832,6 +832,12 @@ pub(crate) struct StaticModifier {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct EnchantedModifier {
+    pub filter: CreatureFilter,
+    pub stats: Stats,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct EquipmentSpec {
     pub stats: Stats,
     pub keywords: Keywords,
@@ -1680,6 +1686,9 @@ impl Card {
 
     pub(crate) fn static_modifiers(self) -> &'static [StaticModifier] {
         generated::static_modifiers(self)
+    }
+    pub(crate) fn enchanted_modifiers(self) -> &'static [EnchantedModifier] {
+        generated::enchanted_modifiers(self)
     }
     pub(crate) fn equipment(self) -> Option<EquipmentSpec> {
         generated::equipment(self)

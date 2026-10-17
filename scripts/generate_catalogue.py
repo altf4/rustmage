@@ -742,6 +742,32 @@ def source_grant_mask(words):
     return restrictions.get(words,keyword_list(words.casefold()))
 
 
+def enchanted_modifier_route(text):
+    """Detect attempted static predicates even behind nested/infix reminders."""
+    while isinstance(text, str):
+        if re.search(r'\benchanted\s+creatures\b', text, re.IGNORECASE): return True
+        stripped = re.sub(r'\([^()]*\)', '', text)
+        if stripped == text: return False
+        text = stripped
+    return False
+
+
+def extract_enchanted_modifiers(card):
+    """Exact attached-Aura predicates; residual whole body still must compile."""
+    if card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str):
+        return card, []
+    residual, modifiers = [], []
+    for line in card['oracle_text'].splitlines():
+        match = re.fullmatch(r'Enchanted (creatures you control|creatures your opponents control|creatures) get ([+-][0-9]+)/([+-][0-9]+)\.', line)
+        if match and max(abs(int(match[2])), abs(int(match[3]))) <= 32767:
+            filt = creature_filter(match[1])
+            if filt is None: return card, []
+            modifiers.append(f'EnchantedModifier {{ filter: {filt}, stats: Stats {{ power: {int(match[2])}, toughness: {int(match[3])} }} }}')
+        else:
+            residual.append(line)
+    return dict(card, oracle_text='\n'.join(residual)), modifiers
+
+
 def extract_stat_rules(card):
     """Extract exact source/attached scaling and characteristic clauses only.
     The residual card must still compile in full before any rule is emitted.
@@ -4210,6 +4236,7 @@ def compile_catalogue(snapshot, target):
     supported = []
     coverage = []
     static_rows = []
+    enchanted_rows = []
     grant_rows = []
     dynamic_rows = []
     scaling_rows = []
@@ -4292,6 +4319,7 @@ def compile_catalogue(snapshot, target):
         card, additional = extract_additional_cost(card)
         card, target_reduction = extract_target_cost_reduction(card)
         card, reductions = extract_cost_reductions(card)
+        card, enchanted = extract_enchanted_modifiers(card)
         card, dynamic, scaling = extract_stat_rules(card)
         card, creature_entry = extract_creature_entry_tapped(card)
         card, entry_counters = extract_entry_counters(card)
@@ -4423,6 +4451,10 @@ def compile_catalogue(snapshot, target):
                 effect,keywords,abilities=saga
                 activations=[];enters=[0,0,0]
         role_raw = original.get('oracle_text','')
+        if enchanted_modifier_route(role_raw):
+            checked_enchanted = role_reminder_text(role_raw)
+            if '(' in checked_enchanted or ')' in checked_enchanted:
+                effect = 'Unsupported'
         if role_route(role_raw):
             checked_role = role_reminder_text(role_raw)
             checked_role = checked_role.replace("Menace (This creature can't be blocked except by two or more creatures.)", 'Menace')
@@ -4568,6 +4600,8 @@ def compile_catalogue(snapshot, target):
         if effect != 'Unsupported':
             if dynamic is not None:dynamic_rows.append(f'        {index} => Some({dynamic}),')
             if scaling:scaling_rows.append(f'        {index} => &['+', '.join(scaling)+'],')
+        if enchanted and effect != 'Unsupported':
+            enchanted_rows.append(f'        {index} => &[' + ', '.join(enchanted) + '],')
         definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(card.get('name', name))}, oracle_id: {oracle_id}, mana_cost: {quote(card.get("mana_cost",cost) if scalar is not None else cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in standard_names).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]}, loyalty: 0, lore: 0 }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         if offspring_key is not None:
             offspring_factories[offspring_key]=(index,definitions[-1],color_mask,card.get('type_line','').split(' — ')[-1])
@@ -4728,6 +4762,7 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', 'pub(super) fn has_convoke(card: Card) -> bool {', '    '+convoke_match, '}', '']
     protection = 'matches!(card.0, ' + ' | '.join(uncounterable_rows) + ')' if uncounterable_rows else 'false'
     lines += ['#[rustfmt::skip]', 'pub(super) fn uncounterable(card: Card) -> bool {', '    ' + protection, '}', '']
+    lines += ['#[rustfmt::skip]', "pub(super) fn enchanted_modifiers(card: Card) -> &'static [EnchantedModifier] {", '    match card.0 {', *enchanted_rows, '        _ => &[],', '    }', '}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(standard_names),
         'implemented_standard_cards': sum(row['implemented'] and row['standard_legal'] for row in coverage),
         'implemented_total': len(supported), 'token_definitions': len(used_tokens), 'emblem_definitions': len(used_emblems), 'cards': [r for r in coverage if r['name'] not in internal_faces], 'adventure_definitions': len(adventure_pairs), 'omen_definitions': len(omen_pairs)}

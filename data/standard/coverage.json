@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "1286b67491500df6c3b26a0f381c26cffcfc5dcf6fc38661c395a9ddc299055c",
+  "catalogue_version": "24d10057fcd713c4fc1ee5fe722dc3976b761195b8488b59028ba2090fa15f8d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1863,
-  "implemented_total": 1869,
+  "implemented_standard_cards": 1865,
+  "implemented_total": 1871,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -106,8 +106,8 @@
     {
       "name": "A Tale for the Ages",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "A.I.M. Labs",
@@ -25858,8 +25858,8 @@
     {
       "name": "Syr Armont, the Redeemer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Syr Ginger, the Meal Ender",

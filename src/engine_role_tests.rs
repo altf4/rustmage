@@ -517,3 +517,95 @@ fn eight_whole_ordinary_consumers_use_real_paid_casts_triggers_and_activation_co
         }
     }
 }
+
+#[test]
+fn paid_syr_armont_enchanted_lord_uses_creature_control_and_any_exact_aura_both_seats() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let ally = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let foe = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let ally_ref = g.object_ref(ally);
+        attach(&mut g, p.other(), RoleKind::YoungHero, ally_ref, 1);
+        let foe_ref = g.object_ref(foe);
+        let foreign_aura = attach(&mut g, p, RoleKind::Royal, foe_ref, 1)[0];
+        let source = named(&mut g, p, "Syr Armont, the Redeemer", Zone::Hand);
+        let before = g.state.players[p.index()].mana;
+        act(&mut g, Action::AnnounceCast { card: source });
+        for _ in 0..100 {
+            if g.state.pending == Pending::Priority
+                && g.state.stack.is_empty()
+                && g.state.announcing.is_none()
+                && g.state.pending_triggers.is_empty()
+            {
+                break;
+            }
+            let actions = g.legal_actions();
+            let a = if g.state.pending == Pending::Priority {
+                Action::Pass
+            } else {
+                actions
+                    .iter()
+                    .find(|a| {
+                        **a == Action::ChooseTarget {
+                            target: Target::Card(ally),
+                        }
+                    })
+                    .or_else(|| actions.iter().find(|a| matches!(a, Action::FinishTargets)))
+                    .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
+                    .unwrap()
+                    .clone()
+            };
+            act(&mut g, a);
+        }
+        assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+        assert_eq!(
+            before.iter().sum::<u32>() - g.state.players[p.index()].mana.iter().sum::<u32>(),
+            5
+        );
+        assert!(before[0] > g.state.players[p.index()].mana[0]);
+        assert!(before[4] > g.state.players[p.index()].mana[4]);
+        assert!(g.is_enchanted(ally));
+        assert!(g.is_enchanted(foe));
+        assert!(!g.is_enchanted(source));
+        assert_eq!(g.stats(ally).power, 4); // Bear + Monster + lord, foreign Young Hero has no flat bonus.
+        assert_eq!(g.stats(foe).power, 3); // Opponent's creature gets no lord bonus despite our Aura.
+        assert_eq!(g.stats(source).power, 4);
+        g.state.objects[source as usize].controller = p.other();
+        assert_eq!(g.stats(ally).power, 3);
+        assert_eq!(g.stats(foe).power, 4);
+        g.move_object(foreign_aura.card, Zone::Graveyard);
+        assert!(!g.is_enchanted(foe));
+        assert_eq!(g.stats(foe).power, 2);
+    }
+}
+
+#[test]
+fn paid_tale_for_ages_buffs_only_live_enchanted_creatures_and_not_equipment_both_seats() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let ally = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let equipment_only = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let recipe = Card::catalogue()
+            .find(|card| card.is_supported() && card.equipment().is_some())
+            .unwrap();
+        let equipment = spawn(&mut g, p, recipe, Zone::Battlefield);
+        g.state.objects[equipment as usize].attached_to = Some(g.object_ref(equipment_only));
+        let ally_ref = g.object_ref(ally);
+        let aura = attach(&mut g, p.other(), RoleKind::Cursed, ally_ref, 1)[0];
+        let source = named(&mut g, p, "A Tale for the Ages", Zone::Hand);
+        let before = g.state.players[p.index()].mana.iter().sum::<u32>();
+        act(&mut g, Action::AnnounceCast { card: source });
+        settle(&mut g);
+        assert_eq!(
+            before - g.state.players[p.index()].mana.iter().sum::<u32>(),
+            2
+        );
+        assert_eq!(g.stats(ally).power, 3); // Cursed 1/1 plus enchanted +2/+2.
+        assert!(!g.is_enchanted(equipment_only));
+        let equipped_power = g.stats(equipment_only).power;
+        g.move_object(aura.card, Zone::Graveyard);
+        assert!(!g.is_enchanted(ally));
+        assert_eq!(g.stats(ally).power, 2);
+        assert_eq!(g.stats(equipment_only).power, equipped_power);
+    }
+}
