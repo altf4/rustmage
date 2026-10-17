@@ -40,7 +40,12 @@ pub(super) trait CharacteristicWorld {
         let mut result = Keywords::NONE;
         for group in object.card.static_ability_groups() {
             for fragment in group.fragments {
-                if let crate::cards::StaticAbilityFragment::SourceCounterSubtype {
+                if let crate::cards::StaticAbilityFragment::SourceCounterKeywords {
+                    kind,
+                    minimum,
+                    keywords,
+                }
+                | crate::cards::StaticAbilityFragment::SourceCounterSubtype {
                     kind,
                     minimum,
                     keywords,

@@ -52,6 +52,8 @@ pub(crate) struct GiftSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetGroupConstraint {
     SameGraveyard,
+    /// Attached to the exact object selected in another target group.
+    AttachedToGroup(u16),
     DifferentControllers,
 }
 
@@ -541,6 +543,11 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    /// Skip instructions unless this is the specified successful resolution this turn.
+    IfThisAbilityResolutionNumber {
+        number: u64,
+        skip: usize,
+    },
     PutPowerExcessCounters {
         filter: CreatureFilter,
     },
@@ -2557,6 +2564,11 @@ impl Card {
     }
     pub(crate) fn chosen_entry_counters(self) -> Option<CounterKind> {
         authored::RULES[self.index()].extras.chosen_entry_counters
+    }
+    pub(crate) fn hand_cast_entry_counters(self) -> &'static [(CounterKind, u64)] {
+        authored::RULES[self.index()]
+            .extras
+            .hand_cast_entry_counters
     }
     pub(crate) fn entry_counter_rules(self) -> &'static [EntryCounterRule] {
         generated::entry_counter_rules(self)

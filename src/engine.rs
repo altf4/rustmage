@@ -198,6 +198,8 @@ impl Player {
     }
 }
 
+#[path = "engine_ability_resolutions.rs"]
+mod ability_resolutions;
 #[cfg(test)]
 #[path = "engine_activation_guard_tests.rs"]
 mod activation_guard_tests;
@@ -213,6 +215,7 @@ mod entry_life_tests;
 #[cfg(test)]
 #[path = "engine_identity_tests.rs"]
 mod identity_tests;
+pub use ability_resolutions::AbilityResolutionView;
 #[path = "engine_programs.rs"]
 mod programs;
 use programs::Resolution;
@@ -1340,6 +1343,7 @@ struct State {
     objects: SharedVec<Object>,
     named_counters: Option<SharedVec<live_counters::NamedCounterRow>>,
     entry_values: entry_choices::Rows,
+    ability_resolutions: ability_resolutions::Rows,
     attacked_this_turn: SharedVec<ObjectRef>,
     creatures_died_this_turn: u64,
     free_tokens: Vec<CardId>,
@@ -1692,6 +1696,7 @@ pub struct Observation {
     pub delayed_warp_exiles: Vec<DelayedWarpExileView>,
     pub plot_payment: Option<PlotPaymentView>,
     pub triggered_this_turn: Vec<TriggerUse>,
+    pub ability_resolutions: Vec<AbilityResolutionView>,
     pub role_choices: Vec<RoleGroupView>,
     pub role_timestamps: Vec<RoleTimestampView>,
     pub base_stat_effects: Vec<BaseStatsEffectView>,
@@ -1861,6 +1866,7 @@ impl Game {
                 objects: objects.into(),
                 named_counters: None,
                 entry_values: None,
+                ability_resolutions: None,
                 attacked_this_turn: Vec::new().into(),
                 creatures_died_this_turn: 0,
                 free_tokens: Vec::new(),
@@ -4317,6 +4323,7 @@ impl Game {
     fn begin_turn(&mut self) {
         self.clear_crew_history();
         self.state.triggered_this_turn.clear();
+        self.state.ability_resolutions = None;
         self.state.attacked_this_turn.clear();
         self.state.creatures_died_this_turn = 0;
         for player in &mut self.state.players {
@@ -4982,6 +4989,10 @@ impl Game {
                 .filter(|p| p.controller == viewer)
                 .copied(),
             triggered_this_turn: s.triggered_this_turn.clone(),
+            ability_resolutions: s
+                .ability_resolutions
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.to_vec()),
             role_choices: s
                 .sba_batch
                 .as_ref()
@@ -5285,6 +5296,7 @@ impl Game {
             + s.objects.len() * std::mem::size_of::<Object>()
             + live_counters::owned_bytes(&s.named_counters)
             + entry_choices::owned_bytes(&s.entry_values)
+            + ability_resolutions::owned_bytes(&s.ability_resolutions)
             + s.announcing
                 .as_ref()
                 .map_or(0, |a| a.counter_payment.owned_bytes())

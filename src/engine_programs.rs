@@ -1203,6 +1203,7 @@ impl Game {
                     let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
                     movement.attachment = Some(target);
                     movement.cast_payment = item.cast.map(|c| c.payment);
+                    movement.cast_origin = item.cast.map(|c| c.origin);
                     movement.gift = item.gift_context().map(Box::new);
                     movement.warp_controller = item
                         .cast
@@ -1228,6 +1229,7 @@ impl Game {
                                 )
                             })
                     }) || item.x.is_some()
+                        || !item.source_card.hand_cast_entry_counters().is_empty()
                         || item.source_card.entry_choice().is_some()
                         || self.has_entry_counter_replacements(item.source_card)
                     {
@@ -1237,6 +1239,7 @@ impl Game {
                             .filter(|c| c.method == CastMethod::Warp)
                             .map(|_| item.controller);
                         movement.cast_payment = item.cast.map(|c| c.payment);
+                        movement.cast_origin = item.cast.map(|c| c.origin);
                         movement.offspring_paid =
                             item.cast.is_some_and(|c| c.offspring == Some(true));
                         movement.kicked = item.cast.is_some_and(|c| c.kicker == Some(true));
@@ -1260,6 +1263,12 @@ impl Game {
                 }
             },
         };
+        if program
+            .iter()
+            .any(|i| matches!(i, Instruction::IfThisAbilityResolutionNumber { .. }))
+        {
+            self.record_ability_resolution(&item);
+        }
         assert!(self.state.resolving.is_none());
         self.state.resolving = Some(Resolution {
             explore: None,
@@ -1435,6 +1444,11 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::IfThisAbilityResolutionNumber { number, skip } => {
+                    if self.ability_resolution_number(&item) != number {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::GiveGift => self.give_gift(&item),
                 Instruction::ReturnSpellToHand => self.return_targeted_spells_to_hand(&item),
                 Instruction::ProhibitCastingThisTurn => self.state.casting_prohibited = true,

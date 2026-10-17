@@ -289,6 +289,10 @@ impl Game {
             return false;
         };
         match constraint {
+            TargetGroupConstraint::AttachedToGroup(first_group) => object.zone == Zone::Battlefield
+                && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| {
+                    self.same_target_object(*b) && object.attached_to == b.object
+                }),
             TargetGroupConstraint::SameGraveyard => object.zone == Zone::Graveyard && chosen.iter().filter(|b| b.group == group).all(|b| {
                 matches!(b.target, Target::Card(other) if self.state.objects.get(other as usize).is_some_and(|o| o.owner == object.owner))
             }),
@@ -304,6 +308,29 @@ impl Game {
         bound: BoundTarget,
         plan: TargetPlan,
     ) -> bool {
+        if let Some(TargetSpec {
+            rule:
+                TargetRule::Grouped {
+                    constraint: TargetGroupConstraint::AttachedToGroup(first_group),
+                    ..
+                },
+            ..
+        }) = plan.group(bound.group)
+        {
+            let Target::Card(id) = bound.target else {
+                return false;
+            };
+            return self.same_target_object(bound)
+                && self.on_battlefield(id)
+                && item
+                    .targets
+                    .iter()
+                    .find(|b| b.group == first_group)
+                    .is_some_and(|b| {
+                        self.same_target_object(*b)
+                            && self.state.objects[id as usize].attached_to == b.object
+                    });
+        }
         if !plan.group(bound.group).is_some_and(|g| {
             matches!(
                 g.rule,
@@ -506,7 +533,8 @@ impl Game {
             TargetRule::Grouped { base, constraint } => {
                 let zone = match constraint {
                     TargetGroupConstraint::SameGraveyard => Zone::Graveyard,
-                    TargetGroupConstraint::DifferentControllers => Zone::Battlefield,
+                    TargetGroupConstraint::DifferentControllers
+                    | TargetGroupConstraint::AttachedToGroup(_) => Zone::Battlefield,
                 };
                 return matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| o.zone == zone))
                     && self

@@ -161,6 +161,7 @@ pub(super) struct CardExtras {
     pub cost_alternative_guard: Option<StepGuard>,
     pub mana_alternative_replaces_additional: bool,
     pub kicked_targets: Option<TargetPlan>,
+    pub hand_cast_entry_counters: &'static [(CounterKind, u64)],
     pub entry_counter_rules: &'static [EntryCounterRule],
     pub starting_loyalty: u64,
     pub exhaust_mask: u64,
@@ -173,6 +174,7 @@ pub(super) struct CardExtras {
 impl CardExtras {
     pub const EMPTY: Self = Self {
         fixed_entry_counters: &[],
+        hand_cast_entry_counters: &[],
         entry_choice: None,
         chosen_entry_counters: None,
         static_modifiers: &[],

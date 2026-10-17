@@ -50,6 +50,11 @@ pub(crate) enum StaticAbilityFragment {
     RemoveAttachedAbilities,
     AttachedUntap(UntapRestriction),
     SelfUntap(UntapRestriction),
+    SourceCounterKeywords {
+        kind: CounterKind,
+        minimum: u64,
+        keywords: Keywords,
+    },
     SourceCounterSubtype {
         kind: CounterKind,
         minimum: u64,
