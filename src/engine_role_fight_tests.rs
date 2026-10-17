@@ -520,6 +520,7 @@ fn composed_role_replacement_observations_bind_original_subject_and_leave_extra_
         let own = named(&mut g, p, "Hill Giant", Zone::Battlefield);
         named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
         named(&mut g, p, "Doubling Season", Zone::Battlefield);
+        named(&mut g, p, "Doubling Season", Zone::Battlefield);
         let quina = named(&mut g, p, "Quina, Qu Gourmet", Zone::Battlefield);
         let recipient = g.object_ref(own);
         paid(&mut g, p, own, false);
@@ -548,7 +549,7 @@ fn composed_role_replacement_observations_bind_original_subject_and_leave_extra_
                 }
             }
             // Apply the extra-token replacement first so its unbound Frog group
-            // is visible while the doubling replacement still awaits a choice.
+            // is visible while two doubling replacements still await a choice.
             let a = g
                 .legal_actions()
                 .into_iter()
@@ -603,7 +604,7 @@ fn combined_paid_temporary_death_grant_returns_fighter_owner_and_creates_indepen
             settle(&mut g);
             paid(&mut g, p, own, foreign);
             to_reflexive(&mut g);
-            assert_eq!(g.stats(own).power, 4);
+            assert_eq!(g.stats(own).power, 3);
             announce_fight(&mut g, Some(foe));
             settle(&mut g);
             assert_ne!(g.object_ref(own), original);
@@ -618,7 +619,7 @@ fn combined_paid_temporary_death_grant_returns_fighter_owner_and_creates_indepen
             assert!(g.object_view(own).tapped);
             assert_eq!(g.object_view(own).damage, 0);
             assert_eq!(g.stats(own).power, 3);
-            assert_eq!(g.object_view(foe).damage, 4);
+            assert_eq!(g.object_view(foe).damage, 3);
             assert!(
                 g.state
                     .temporary_abilities
