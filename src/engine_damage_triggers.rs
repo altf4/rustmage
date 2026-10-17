@@ -28,7 +28,7 @@ impl Game {
         attachments: impl Iterator<Item = &'a Object>,
     ) -> bool {
         object.zone == Zone::Battlefield
-            && (object.counters.total() > 0
+            && (object.counters.has_any()
                 || attachments.into_iter().any(|attachment| {
                     attachment.zone == Zone::Battlefield
                         && attachment.attached_to == Some(source)
@@ -58,7 +58,7 @@ impl Game {
                 object.card
             },
             battlefield: object.zone == Zone::Battlefield,
-            counter: object.counters.total() > 0,
+            counter: object.counters.has_any(),
             plus_one: object.counters.plus_one > 0,
             modified: self.is_modified(id),
             attacking: self.state.attackers.iter().any(|a| a.card == id),

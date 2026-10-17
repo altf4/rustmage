@@ -204,7 +204,7 @@ fn counter_applies(spec: ReplacementSpec, p: &CounterPlacement) -> bool {
     };
     matches_filter(filter, p)
         && (!effects_only || p.effect)
-        && kind.map_or_else(|| p.amount.total() > 0, |k| p.amount.get(k) > 0)
+        && kind.map_or_else(|| p.amount.has_any(), |k| p.amount.get(k) > 0)
 }
 fn modify_counter(spec: ReplacementSpec, p: &mut CounterPlacement) {
     let ReplacementSpec::Counters {
@@ -425,7 +425,7 @@ impl Game {
         mut placements: Vec<CounterPlacement>,
         mode: ResumeMode,
     ) {
-        placements.retain(|p| p.amount.total() > 0);
+        placements.retain(|p| p.amount.has_any());
         if placements.is_empty() {
             return;
         }

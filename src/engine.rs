@@ -1103,7 +1103,7 @@ impl DamageFacts {
             granted_subtypes: view.granted_subtypes,
             card: view.card,
             battlefield: view.zone == Zone::Battlefield,
-            counter: view.counters.total() > 0,
+            counter: view.counters.has_any(),
             plus_one: view.counters.plus_one > 0,
             modified: view.modified,
             attacking: view.attacking,

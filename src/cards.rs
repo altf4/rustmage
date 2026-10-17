@@ -1316,6 +1316,17 @@ impl Counters {
                 .unwrap_or(0),
         }
     }
+    /// Canonical named storage is nonempty whenever it exists. Presence queries
+    /// need neither wide quantity arithmetic nor a scan of cold counter rows.
+    #[inline]
+    pub fn is_empty(&self) -> bool {
+        (self.plus_one | self.minus_one | self.stun | self.loyalty | self.lore) == 0
+            && self.named.is_none()
+    }
+    #[inline]
+    pub fn has_any(&self) -> bool {
+        !self.is_empty()
+    }
     pub fn total(&self) -> u128 {
         u128::from(self.plus_one)
             + u128::from(self.minus_one)
