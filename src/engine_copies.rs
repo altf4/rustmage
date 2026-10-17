@@ -37,13 +37,16 @@ pub(super) fn owned_bytes(rows: &Rows) -> usize {
     })
 }
 impl Game {
+    fn copy_recipe_index(&self, object: ObjectRef) -> Option<usize> {
+        let rows = self.state.copy_recipes.as_ref()?;
+        let index = rows
+            .binary_search_by_key(&object.card, |row| row.object.card)
+            .ok()?;
+        (rows[index].object == object).then_some(index)
+    }
     pub(super) fn copy_recipe(&self, object: ObjectRef) -> Option<CopyRecipe> {
-        self.state
-            .copy_recipes
-            .as_ref()?
-            .iter()
-            .find(|row| row.object == object)
-            .map(|row| row.recipe)
+        let index = self.copy_recipe_index(object)?;
+        Some(self.state.copy_recipes.as_ref().unwrap()[index].recipe)
     }
     pub(super) fn object_token_info(&self, id: CardId) -> Option<TokenInfo> {
         let object = &self.state.objects[id as usize];
@@ -59,26 +62,21 @@ impl Game {
         }
     }
     pub(super) fn clear_copy_recipe(&mut self, object: ObjectRef) {
-        if !self
-            .state
-            .copy_recipes
-            .as_ref()
-            .is_some_and(|rows| rows.iter().any(|r| r.object == object))
-        {
+        let Some(index) = self.copy_recipe_index(object) else {
             return;
-        }
+        };
         let rows = self.state.copy_recipes.as_mut().unwrap();
-        rows.retain(|r| r.object != object);
+        rows.remove(index);
         if rows.is_empty() {
             self.state.copy_recipes = None;
         }
     }
     pub(super) fn advance_copy_recipe(&mut self, before: ObjectRef, after: ObjectRef) {
-        if self.copy_recipe(before).is_none() {
+        let Some(index) = self.copy_recipe_index(before) else {
             return;
-        }
-        let rows = self.state.copy_recipes.as_mut().unwrap();
-        rows.iter_mut().find(|r| r.object == before).unwrap().object = after;
+        };
+        assert_eq!(before.card, after.card);
+        self.state.copy_recipes.as_mut().unwrap()[index].object = after;
     }
     pub(super) fn release_unentered_copy(&mut self, object: ObjectRef) {
         self.clear_copy_recipe(object);
@@ -156,13 +154,17 @@ impl Game {
                 }
                 if let Some(recipe) = recipe {
                     let reference = self.object_ref(id);
-                    self.state
-                        .copy_recipes
-                        .get_or_insert_with(Default::default)
-                        .push(CopyRow {
+                    let rows = self.state.copy_recipes.get_or_insert_with(Default::default);
+                    rows.try_reserve(1)
+                        .capacity("copy recipe allocation exhausted");
+                    let index = rows.partition_point(|row| row.object.card < id);
+                    rows.insert(
+                        index,
+                        CopyRow {
                             object: reference,
                             recipe: *recipe,
-                        });
+                        },
+                    );
                 }
                 moves.push(self.entry_move(id, Zone::Battlefield, group.tapped));
             }

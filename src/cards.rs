@@ -111,6 +111,33 @@ pub(crate) enum TargetRule {
     },
 }
 
+impl TargetRule {
+    pub const fn creature_you_control() -> Self {
+        Self::Object {
+            zone: TargetZone::Battlefield,
+            kinds: 1,
+            relation: 0,
+            other: false,
+            nonland: false,
+            tapped: false,
+            min_mana: 0,
+            max_mana: u32::MAX,
+        }
+    }
+    pub const fn another_nonland_permanent_you_control() -> Self {
+        Self::Object {
+            zone: TargetZone::Battlefield,
+            kinds: 0,
+            relation: 0,
+            other: true,
+            nonland: true,
+            tapped: false,
+            min_mana: 0,
+            max_mana: u32::MAX,
+        }
+    }
+}
+
 /// Immutable live constraints; indirection keeps target plans compact in checkpoints.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetPredicate {

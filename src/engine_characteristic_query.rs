@@ -120,7 +120,8 @@ impl CharacteristicQuery<'_> {
         }
         let mut stats = base;
         let battlefield_creature = object.zone == Zone::Battlefield && self.is_creature(id);
-        if matches!(object.card.effect(), Effect::Creature(..))
+        if battlefield_creature
+            || matches!(object.card.effect(), Effect::Creature(..))
             || object.card.vehicle_stats().is_some()
             || object.card.dynamic_stats().is_some()
         {
@@ -666,7 +667,11 @@ impl CharacteristicQuery<'_> {
             } else {
                 self.keywords(id)
             },
-            copy_recipe: self.copy_recipe(self.object_ref(id)),
+            copy_recipe: if obj.copy_token {
+                self.copy_recipe(self.object_ref(id))
+            } else {
+                None
+            },
             token: self.object_token_info(id),
             emblem: obj.card.emblem_info(),
         }

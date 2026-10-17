@@ -2,6 +2,7 @@
 use super::ability_timeline_tests::{cast, checked, settle, setup};
 use super::tests::spawn;
 use super::*;
+use crate::{ChoiceColor, CreatureType};
 
 fn fixture(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
     spawn(g, p, Card::from_name(name).unwrap(), zone)
@@ -59,6 +60,7 @@ fn runtime_copy_paid_values_are_copiable_and_token_identity_survives_owned_resto
             parent.clone()
         };
         child.sacrifice_batch(&[(p, copy)]);
+        child.state_based_actions();
         child.give_priority();
         settle(&mut child);
         assert_eq!(child.object_view(copy).zone, Zone::Outside);
@@ -124,42 +126,44 @@ fn resolve_to(g: &mut Game, wanted: impl Fn(&Pending) -> bool) {
 #[test]
 fn runtime_copy_kicker_simultaneous_replacements_and_fixed_offspring_recipe() {
     for p in [Player::P0, Player::P1] {
-        let mut g = setup(p);
-        fixture(&mut g, p, "Doubling Season", Zone::Battlefield);
-        let offspring = Card::catalogue()
-            .find(|c| c.is_token() && c.name() == "Tender Wildguide")
-            .unwrap();
-        let target = spawn(&mut g, p.other(), offspring, Zone::Battlefield);
-        let rite = fixture(&mut g, p, "Rite of Replication", Zone::Hand);
-        let before: u32 = g.state.players[p.index()].mana.iter().sum();
-        checked(&mut g, Action::AnnounceCast { card: rite });
-        checked(&mut g, Action::ChooseKicker { pay: true });
-        checked(
-            &mut g,
-            Action::ChooseTarget {
-                target: Target::Card(target),
-            },
-        );
-        if g.legal_actions().contains(&Action::FinishTargets) {
-            checked(&mut g, Action::FinishTargets);
-        }
-        let pay = g
-            .legal_actions()
-            .into_iter()
-            .find(|a| matches!(a, Action::PayCosts { .. }))
-            .unwrap();
-        checked(&mut g, pay);
-        settle(&mut g);
-        assert_eq!(
-            before - g.state.players[p.index()].mana.iter().sum::<u32>(),
-            9
-        );
-        let created = copies(&g, "Tender Wildguide");
-        assert_eq!(created.len(), 10);
-        for id in created {
-            assert_eq!((g.stats(id).power, g.stats(id).toughness), (1, 1));
-            assert_eq!(g.object_view(id).copy_recipe.unwrap().definition, offspring);
-            assert!(!g.state.objects[id as usize].card.activated().is_empty());
+        for kicked in [false, true] {
+            let mut g = setup(p);
+            fixture(&mut g, p, "Doubling Season", Zone::Battlefield);
+            let offspring = Card::catalogue()
+                .find(|c| c.is_token() && c.name() == "Tender Wildguide")
+                .unwrap();
+            let target = spawn(&mut g, p.other(), offspring, Zone::Battlefield);
+            let rite = fixture(&mut g, p, "Rite of Replication", Zone::Hand);
+            let before: u32 = g.state.players[p.index()].mana.iter().sum();
+            checked(&mut g, Action::AnnounceCast { card: rite });
+            checked(&mut g, Action::ChooseKicker { pay: kicked });
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                checked(&mut g, Action::FinishTargets);
+            }
+            let pay = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .unwrap();
+            checked(&mut g, pay);
+            settle(&mut g);
+            assert_eq!(
+                before - g.state.players[p.index()].mana.iter().sum::<u32>(),
+                if kicked { 9 } else { 4 }
+            );
+            let created = copies(&g, "Tender Wildguide");
+            assert_eq!(created.len(), if kicked { 10 } else { 2 });
+            for id in created {
+                assert_eq!((g.stats(id).power, g.stats(id).toughness), (1, 1));
+                assert_eq!(g.object_view(id).copy_recipe.unwrap().definition, offspring);
+                assert!(!g.state.objects[id as usize].card.activations().is_empty());
+            }
         }
     }
 }
@@ -226,6 +230,7 @@ fn runtime_copy_fresh_entry_choices_and_counter_replacements() {
         );
         g.advance_replacements(false);
         g.advance_entries();
+        g.state_based_actions();
         settle(&mut g);
         let walkers = copies(&g, "Liliana, Dreadhorde General");
         assert_eq!(walkers.len(), 1);
@@ -334,7 +339,7 @@ fn runtime_copy_flashback_and_replication_paid_upkeep_target_rules() {
         let rep = fixture(&mut g, p, "Extravagant Replication", Zone::Hand);
         cast(&mut g, rep, None, &[]);
         settle(&mut g);
-        let rock = fixture(&mut g, p, "Arcane Signet", Zone::Battlefield);
+        let rock = fixture(&mut g, p, "Hedron Archive", Zone::Battlefield);
         g.begin_step(Step::Upkeep);
         g.prepare_triggers();
         assert!(g.legal_actions().contains(&Action::ChooseTarget {
@@ -350,8 +355,97 @@ fn runtime_copy_flashback_and_replication_paid_upkeep_target_rules() {
             },
         );
         settle(&mut g);
-        let copy = copies(&g, "Arcane Signet")[0];
+        let copy = copies(&g, "Hedron Archive")[0];
         assert!(g.state.objects[copy as usize].card.is_artifact());
         assert_eq!(g.stats(copy).power, 0);
+    }
+}
+#[test]
+fn runtime_copy_illegal_enemy_target_is_atomic_and_departed_target_fizzles() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let own = fixture(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let enemy = fixture(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let reflection = fixture(&mut g, p, "Self-Reflection", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: reflection });
+        let before = g.snapshot();
+        let revision = g.revision();
+        assert_eq!(
+            g.apply(
+                p,
+                Action::ChooseTarget {
+                    target: Target::Card(enemy)
+                }
+            ),
+            Err(Error::IllegalAction)
+        );
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(g.revision(), revision);
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(own),
+            },
+        );
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            checked(&mut g, Action::FinishTargets);
+        }
+        let payment = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, payment);
+        let bounce = fixture(&mut g, p, "Unsummon", Zone::Hand);
+        cast(&mut g, bounce, None, &[Target::Card(own)]);
+        settle(&mut g);
+        assert_eq!(g.object_view(own).zone, Zone::Hand);
+        assert!(copies(&g, "Bear Cub").is_empty());
+        assert!(g.state.copy_recipes.is_none());
+        assert_eq!(g.object_view(reflection).zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn runtime_copy_token_filters_frozen_damage_facts_and_speculative_bargain_cost() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let definition = Card::from_name("Bear Cub").unwrap();
+        g.stage_copy_creation(p, CopyRecipe { definition }, 1);
+        let token = copies(&g, "Bear Cub")[0];
+        let physical = fixture(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let source = fixture(&mut g, p, "High Fae Negotiator", Zone::Hand);
+        let nontoken = TargetRule::Filtered {
+            base: &TargetRule::Creature,
+            predicate: &TargetPredicate::Nontoken,
+        };
+        assert!(!g.target_matches(nontoken, p, g.object_ref(source), Target::Card(token)));
+        assert!(g.target_matches(nontoken, p, g.object_ref(source), Target::Card(physical)));
+        let facts = g.damage_facts(token);
+        assert!(facts.is_token());
+        assert!(!g.damage_facts(physical).is_token());
+        checked(&mut g, Action::AnnounceCast { card: source });
+        let before = g.snapshot();
+        let revision = g.revision();
+        let rejected = Action::ChooseBargain {
+            sacrifice: Some(g.object_ref(physical)),
+        };
+        assert_eq!(g.apply(p, rejected), Err(Error::IllegalAction));
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(g.revision(), revision);
+        let sacrifice = Some(g.object_ref(token));
+        checked(&mut g, Action::ChooseBargain { sacrifice });
+        while g.state.announcing.is_some() {
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. } | Action::FinishTargets))
+                .unwrap();
+            checked(&mut g, action);
+        }
+        settle(&mut g);
+        assert_eq!(g.object_view(token).zone, Zone::Outside);
+        assert!(g.state.copy_recipes.is_none());
+        assert!(facts.is_token());
+        assert_eq!(g.state.players[p.index()].life, STARTING_LIFE + 3);
     }
 }
