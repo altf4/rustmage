@@ -84,13 +84,16 @@ class HandLandTests(unittest.TestCase):
       if actor==q and stage=='setup'and name=='Insidious Fungus'and mode<2 and n==('Candy Trail'if mode==0 else'Doubling Season')and target is None:return 3300
       if actor==p and stage=='explore'and n=='Sentinel of the Nameless City'and not maps and can_pay(n,p):return 3500
       if actor==p and stage=='finish'and n in['Bear Cub','Bygone Colossus','Attercop','Sentinel of the Nameless City']:return 2800
-      if actor==p and stage in['setup','explore']and n=='Quick Study'and quiet and sum(budget(p))>=5 and can_pay(n,p):return 2200
-      if actor==p and stage=='explore'and n=='Candy Trail'and quiet and can_pay(n,p):return 2100
+      if actor==p and stage in['setup','explore']and not(name=='Nicanzil, Current Conductor'and stage=='explore')and n=='Quick Study'and quiet and sum(budget(p))>=5 and can_pay(n,p):return 2200
+      if actor==p and stage=='explore'and n=='Candy Trail'and quiet and can_pay(n,p):return 5500 if maps else 2100
       return -1000
      if k=='AnnounceActivate':
       if actor==p and stage=='activate'and a['card']==source and a['ability']==0:return 5000
       if actor==p and stage=='explore'and map_context is None and any(v['id']==a['card']for v in maps)and sum(budget(p))>=1:return 5000
       return -1000
+     if k=='ArrangeLibrary'and actor==p and stage=='explore':
+      known=next(v['card']for v in o['library_choice']['remaining']if v['id']==a['card']);land='Land'in FACTS[known]['type_line'].split(' — ')[0].split();wanted=land if'land'not in seen else not land
+      return 4500 if(a['destination']=='Top')==wanted else -1000
      if k=='ChooseMode':return 4000 if a['mode']==mode else -1000
      if k=='ChooseTarget':return 4000 if a['target'].get('Card')==(source if stage=='explore'else victim)else -1000
      if k=='PutHandLand':return 4000 if not decline else -1000
