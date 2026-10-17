@@ -3369,6 +3369,66 @@ def trigger_creature_template(card):
     return f"Creature({int(card['power'])}, {int(card['toughness'])})", keywords, abilities
 
 
+def temporary_death_route(text):
+    """Detection survives erasure; only the untouched whole spell grants abilities."""
+    if not isinstance(text, str): return False
+    while True:
+        surface = ' '.join(text.casefold().split())
+        if re.search(r'\bgains?\s+"when\b', surface) and 'dies' in surface:
+            return True
+        stripped = re.sub(r'\([^()]*\)', '', text)
+        if stripped == text: return False
+        text = stripped
+
+
+def temporary_death_spell_template(card):
+    if (card.get('layout') != 'normal'
+            or card.get('type_line', '').split(' — ')[0] not in ('Instant', 'Sorcery')
+            or spell_cost_options(card.get('mana_cost', '')) is None):
+        return None
+    raw = card.get('oracle_text')
+    if not isinstance(raw, str): return None
+    text = ' '.join(raw.split())
+    match = re.fullmatch(
+        r'(?P<clean>Until end of turn, (?P<target>target creature(?: you control)?)'
+        r'(?: gets (?P<power>[+-][0-9]+)/(?P<toughness>[+-][0-9]+) and)? gains '
+        r'"When this creature dies, (?P<body>[^"()]+)")'
+        r'(?: \((?P<reminder>[^()]+)\))?', text)
+    if match is None: return None
+    base = "return it to the battlefield tapped under its owner's control"
+    forms = {
+        base + '.': 'plain',
+        base + ' with a +1/+1 counter on it.': 'counter',
+        base + ', then create a Wicked Role token attached to it.': 'role',
+        base + ' and you create a Treasure token.': 'treasure',
+    }
+    mode = forms.get(match['body'])
+    if mode is None: return None
+    reminder = match['reminder']
+    if reminder is not None:
+        if mode == 'treasure':
+            if reminder != 'It\'s an artifact with "{T}, Sacrifice this token: Add one mana of any color."': return None
+        elif mode == 'role':
+            production = 'Create a Wicked Role token attached to it.'
+            if role_reminder_text(production + ' (' + reminder + ')') != production: return None
+        else:
+            return None
+    before = []
+    if match['power'] is not None:
+        power, toughness = int(match['power']), int(match['toughness'])
+        if max(abs(power), abs(toughness)) > 2147483647: return None
+        before.append(f'Grow {{ subject: Subject::Targets, power: {power}, toughness: {toughness} }}')
+    counter = 'Some((CounterKind::PlusOne, 1))' if mode == 'counter' else 'None'
+    role = 'Some(' + role_factory('Wicked') + ')' if mode == 'role' else 'None'
+    death = [f'ReturnGrantedSource {{ counter: {counter}, role: {role} }}']
+    if mode == 'treasure':
+        # Independent of whether the guarded return found/moved its old object.
+        death += predefined_program('create a Treasure token.')
+    rule = 'CreatureYou' if match['target'].endswith(' you control') else 'Creature'
+    return (rule, [*before, 'GrantUntilEndTurn { ability: 0 }'],
+            [('Granted(&TriggerCondition::SelfDies)', death, 'None')], match['clean'])
+
+
 def spell_program_template(card):
     if card.get('layout')=='normal' and spell_cost_options(card.get('mana_cost','')) is not None and card.get('type_line','').split(' — ')[0] in ('Instant','Sorcery'):
         if card.get('oracle_text')=='Counter target spell. If the amount of mana spent to cast that spell was less than its mana value, you draw a card.':
@@ -4622,6 +4682,7 @@ def compile_catalogue(snapshot, target):
         template = creature_template(card)
         trigger_template = trigger_creature_template(card)
         spell = spell_program_template(card)
+        temporary_death = temporary_death_spell_template(original)
         modal = modal_spell_template(card)
         aura = aura_template(card)
         job = job_select_template(card) if (plot is None and warp is None and not cycling and flashback is None and offspring is None and kicker is None and not bargain and not convoke and evidence is None and additional is None and target_reduction is None and not reductions and dynamic is None and not scaling and creature_entry == 'Never' and not entry_counters) else None
@@ -4649,6 +4710,10 @@ def compile_catalogue(snapshot, target):
                 effect, keywords = template
             elif trigger_template is not None:
                 effect, keywords, abilities = trigger_template
+            elif temporary_death is not None:
+                effect = 'Spell'
+                spell = temporary_death[:2]
+                abilities = temporary_death[2]
             elif modal is not None:
                 effect = 'Modal'
             elif spell is not None:
@@ -4747,7 +4812,10 @@ def compile_catalogue(snapshot, target):
             checked_enchanted = role_reminder_text(role_raw)
             if '(' in checked_enchanted or ')' in checked_enchanted:
                 effect = 'Unsupported'
-        if not role_consumer_reminders_valid(original):
+        # Only a completely authenticated temporary program can supply its
+        # contextual reminder-free body. Every other caller keeps original raw.
+        role_auth = dict(original, oracle_text=temporary_death[3]) if temporary_death is not None else original
+        if not role_consumer_reminders_valid(role_auth):
             effect='Unsupported'
         if attachment_ward_route(original) and not attachment_ward_reminders_valid(original):
             effect='Unsupported'
@@ -4771,6 +4839,8 @@ def compile_catalogue(snapshot, target):
             activations = [*activations, *cycling]
             if len(activations) > 64: effect = 'Unsupported'; activations = []
         # A later generic selector cannot revive rejected intrinsic reminder text.
+        if temporary_death_route(original.get('oracle_text', '')) and temporary_death is None:
+            effect = 'Unsupported'
         if not adventure_event_reminders_valid(original):
             effect = 'Unsupported'
         if not recovery_reminders_valid(original):

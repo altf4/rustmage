@@ -24,7 +24,7 @@ pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 87;
+pub const OBSERVATION_SCHEMA: u32 = 88;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -1076,6 +1076,8 @@ enum Pending {
 /// Card definitions are enum/static data, never cloned object graphs or trait objects.
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    #[allow(clippy::box_collection)]
+    temporary_abilities: Option<Box<Vec<TemporaryAbilityView>>>,
     roles: Option<Box<roles::RoleState>>,
     replacements: Option<Box<replacements::ReplacementState>>,
     // Sparse registry: keep an eight-byte pointer in the common empty state
@@ -1374,6 +1376,7 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    pub temporary_abilities: Vec<TemporaryAbilityView>,
     pub replacement_choice: Option<ReplacementChoiceView>,
     pub created_token_choice: Option<CreatedTokenChoiceView>,
     /// Complete exact numeric cost-payment space, visible only to its actor.
@@ -1582,6 +1585,7 @@ impl Game {
                 attachment_sources: Vec::new(),
                 exile_links: Vec::new(),
                 exile_permissions: Vec::new(),
+                temporary_abilities: None,
                 roles: None,
                 adventures: None,
                 plot: None,
@@ -4001,6 +4005,8 @@ impl Game {
     }
 
     fn finish_cleanup(&mut self) {
+        // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
+        self.state.temporary_abilities = None;
         for player in &mut self.state.players {
             player.extra_land_plays_remaining = 0;
         }
@@ -4317,6 +4323,10 @@ impl Game {
                 None
             },
             x_choice: if owns_choice { self.x_choice() } else { None },
+            temporary_abilities: s
+                .temporary_abilities
+                .as_ref()
+                .map_or_else(Vec::new, |grants| grants.as_ref().clone()),
             schema: OBSERVATION_SCHEMA,
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             creatures_died_this_turn: s.creatures_died_this_turn,
@@ -4725,6 +4735,7 @@ impl Game {
     pub fn state_bytes(&self) -> usize {
         let s = &self.state;
         std::mem::size_of::<State>()
+            + self.temporary_ability_bytes()
             + self.mobilize_bytes()
             + std::mem::size_of::<Vec<Object>>()
             + std::mem::size_of::<Vec<ObjectRef>>()
@@ -5390,13 +5401,20 @@ mod adventure_event_tests;
 #[path = "engine_role_tests.rs"]
 mod role_tests;
 
+#[path = "engine_temporary_abilities.rs"]
+mod temporary_abilities;
+pub use temporary_abilities::TemporaryAbilityView;
+
 #[cfg(test)]
 #[path = "engine_enchanted_draw_tests.rs"]
 mod enchanted_draw_tests;
-
 #[cfg(test)]
 #[path = "engine_role_followup_tests.rs"]
 mod role_followup_tests;
+#[cfg(test)]
+#[path = "engine_temporary_death_grants_tests.rs"]
+mod temporary_death_grants_tests;
+
 #[cfg(test)]
 #[path = "engine_target_exclusion_tests.rs"]
 mod target_exclusion_tests;

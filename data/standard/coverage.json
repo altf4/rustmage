@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "aaf3add17ed8e6e8421a93e7beaa4314a35ff3244378a9384a323b010cc09bdc",
+  "catalogue_version": "6504b11a16c13082f442008e7ea9c5399ccdb0bc1c43dab95852c72446e5c2e8",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1892,
-  "implemented_total": 1898,
+  "implemented_standard_cards": 1895,
+  "implemented_total": 1901,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -8596,8 +8596,8 @@
     {
       "name": "Fake Your Own Death",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Falcon's Wing Harness",
@@ -17818,8 +17818,8 @@
     {
       "name": "Not Dead After All",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Not on My Watch",
@@ -28648,8 +28648,8 @@
     {
       "name": "Undying Malice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Uneasy Alliance",
