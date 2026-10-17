@@ -348,3 +348,27 @@ fn selected_face_reductions_and_typed_spell_predicates_ignore_main_creature_trai
         ));
     }
 }
+#[test]
+fn popped_spell_exit_captures_inset_characteristics_but_preserves_physical_card() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let parent = Card::from_name("Frolicking Familiar // Blow Off Steam").unwrap();
+        let id = spawn(&mut g, p, parent, Zone::Hand);
+        announce_to_stack(
+            &mut g,
+            Action::AnnounceAdventure { card: id },
+            Some(Target::Player(p.other())),
+            id,
+        );
+        let index = g.state.stack.iter().position(|s| s.card == id).unwrap();
+        let item = g.state.stack.remove(index);
+        let event = g.move_adventure_spell(&item, Zone::Graveyard);
+        assert_eq!(event.before.card, parent.adventure_spell().unwrap());
+        assert_eq!(event.before.kinds, 8);
+        assert_eq!(event.before.keywords, Keywords::NONE);
+        assert_eq!(event.before.power, 0);
+        assert_eq!(g.state.objects[id as usize].card, parent);
+        assert_eq!(g.object_view(id).card, parent);
+        assert!(g.state.adventures.is_none());
+    }
+}

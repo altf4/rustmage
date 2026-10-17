@@ -4081,6 +4081,8 @@ def compile_catalogue(snapshot, target):
         lines.append(f'    pub const {name.replace(" ", "")}: Card = Card({index});')
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn plot_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *plot_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', "pub(super) fn adventure_identity(card: Card) -> Option<&'static str> {", '    match card.0 {',
+              *(f'        {names.index(parent)} => Some({json.dumps(parent,ensure_ascii=False)}),' for parent in adventure_pairs), '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn adventure_spell(card: Card) -> Option<Card> {', '    match card.0 {',
               *(f'        {names.index(parent)} => Some(Card({names.index(face)})),' for parent,face in adventure_pairs.items()), '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn adventure_parent(card: Card) -> Option<Card> {', '    match card.0 {',

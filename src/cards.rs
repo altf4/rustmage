@@ -1494,8 +1494,10 @@ impl Card {
     }
     /// Stable catalogue lookup/serialization identity, distinct from a token copy's printed name.
     pub fn identity(self) -> &'static str {
-        self.token_info()
-            .map_or(self.name(), |token| token.factory_identity)
+        generated::adventure_identity(self).unwrap_or_else(|| {
+            self.token_info()
+                .map_or(self.name(), |token| token.factory_identity)
+        })
     }
     pub fn name(self) -> &'static str {
         self.info().name

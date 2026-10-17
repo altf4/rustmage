@@ -637,12 +637,23 @@ fn all_admitted_printed_mana_costs_and_values_match_frozen_oracle_facts() {
     for row in snapshot["cards"].as_array().unwrap() {
         let card = Card::from_name(row["name"].as_str().unwrap()).unwrap();
         if card.is_supported() {
+            let normal = if card.adventure_spell().is_some() {
+                &row["card_faces"][0]
+            } else {
+                row
+            };
             assert_eq!(
                 card.info().mana_cost,
-                row["mana_cost"].as_str().unwrap(),
+                normal["mana_cost"].as_str().unwrap(),
                 "{}",
                 card.name()
             );
+            if let Some(spell) = card.adventure_spell() {
+                let inset = &row["card_faces"][1];
+                assert_eq!(spell.info().mana_cost, inset["mana_cost"].as_str().unwrap());
+                assert_eq!(spell.info().type_line, inset["type_line"].as_str().unwrap());
+                assert_eq!(spell.adventure_parent(), Some(card));
+            }
             assert_eq!(
                 card.fixed_mana_value() as f64,
                 row["cmc"].as_f64().unwrap(),

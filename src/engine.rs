@@ -14,7 +14,7 @@ mod adventure;
 mod crew;
 #[path = "engine_saddle.rs"]
 mod saddle;
-pub use adventure::AdventurePermission;
+pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
@@ -1339,6 +1339,7 @@ pub struct Observation {
     pub exile_links: Vec<ExileLink>,
     pub exile_permissions: Vec<ExilePlayPermission>,
     pub adventures: Vec<AdventurePermission>,
+    pub spell_characteristics: Vec<SpellCharacteristicsView>,
     pub plotted_cards: Vec<PlottedCard>,
     pub crew_choice: Option<CrewChoiceView>,
     pub crewed_vehicles: Vec<CrewHistory>,
@@ -4210,6 +4211,7 @@ impl Game {
             last_evidence: s.evidence_data.as_ref().and_then(|d| d.last.clone()),
             objects,
             exile_links: s.exile_links.clone(),
+            spell_characteristics: self.spell_characteristics(),
             exile_permissions: s.exile_permissions.clone(),
             adventures: s
                 .adventures

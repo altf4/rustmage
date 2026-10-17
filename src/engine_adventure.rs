@@ -7,6 +7,19 @@ pub struct AdventurePermission {
     pub card: Card,
     pub player: Player,
 }
+/// Public chosen spell facts; immutable metadata is borrowed, never stored per object.
+#[derive(Clone, Debug, Serialize)]
+pub struct SpellCharacteristicsView {
+    pub id: u64,
+    pub object: ObjectRef,
+    pub physical_card: Card,
+    pub face: CastFace,
+    pub name: &'static str,
+    pub mana_cost: &'static str,
+    pub mana_value: u64,
+    pub type_line: &'static str,
+    pub colors: u8,
+}
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct AdventureState {
     pub permissions: Vec<AdventurePermission>,
@@ -18,6 +31,32 @@ impl AdventureState {
     }
 }
 impl Game {
+    pub fn spell_characteristics(&self) -> Vec<SpellCharacteristicsView> {
+        self.state
+            .stack
+            .iter()
+            .chain(self.state.announcing.iter().map(|a| &a.item))
+            .chain(self.state.resolving.iter().map(|r| &r.item))
+            .filter(|s| s.kind == StackKind::Spell)
+            .map(|s| {
+                let info = s.source_card.info();
+                SpellCharacteristicsView {
+                    id: s.id,
+                    object: s.object,
+                    physical_card: s
+                        .cast
+                        .and_then(|c| c.physical_card)
+                        .unwrap_or(s.source_card),
+                    face: s.cast.map_or(CastFace::Normal, |c| c.face),
+                    name: info.name,
+                    mana_cost: info.mana_cost,
+                    mana_value: s.mana_value(),
+                    type_line: info.type_line,
+                    colors: s.source_card.colors(),
+                }
+            })
+            .collect()
+    }
     pub(super) fn can_play_adventure(&self, player: Player, id: CardId) -> bool {
         self.state.adventures.as_ref().is_some_and(|rights| {
             rights.permissions.iter().any(|r| {
@@ -36,13 +75,31 @@ impl Game {
             }
         }
     }
+    /// A popped/resolving packet still owns the last stack characteristics.
+    pub(super) fn move_adventure_spell(
+        &mut self,
+        item: &SpellView,
+        destination: Zone,
+    ) -> ZoneChange {
+        let mut before = self.object_view(item.card);
+        if before.zone == Zone::Stack && before.reference == item.object {
+            before.card = item.source_card;
+            before.kinds = item.source_card.kind_mask();
+            before.keywords = item.source_keywords;
+            before.power = 0;
+            before.toughness = 0;
+        }
+        let event = self.transition_object(before, destination, false);
+        self.finish_zone_events(std::slice::from_ref(&event), &[]);
+        event
+    }
     pub(super) fn finish_adventure(&mut self, item: &SpellView) {
         if self.state.objects[item.card as usize].zone != Zone::Stack
             || self.object_ref(item.card) != item.object
         {
             return;
         }
-        let event = self.move_object(item.card, Zone::Exile);
+        let event = self.move_adventure_spell(item, Zone::Exile);
         if event.moved && event.destination == Zone::Exile {
             let card = self.state.objects[item.card as usize].card;
             self.state

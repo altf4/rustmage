@@ -27,7 +27,15 @@ fn every_pinned_standard_identity_has_a_native_catalogue_entry() {
     for record in cards {
         let name = record["name"].as_str().unwrap();
         let card = Card::from_name(name).expect(name);
-        assert_eq!(card.name(), name);
+        assert_eq!(card.identity(), name);
+        if card.adventure_spell().is_some() {
+            assert_eq!(
+                card.name(),
+                record["card_faces"][0]["name"].as_str().unwrap()
+            );
+        } else {
+            assert_eq!(card.name(), name);
+        }
         assert_eq!(card.info().oracle_id, record["oracle_id"].as_str());
         assert!(card.is_standard_legal());
         assert_eq!(
