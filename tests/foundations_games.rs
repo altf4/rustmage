@@ -112,7 +112,7 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
         *land = Card::from_name("Swamp").unwrap();
     }
     run_matrix(
-        decks,
+        &decks,
         &["Run Away Together", "Involuntary Employment", "Pilfer"],
     );
 }
@@ -201,12 +201,56 @@ fn foundations_cast_counter_and_program_cards_full_games() {
         *land = Card::from_name("Forest").unwrap();
     }
     run_matrix(
-        decks,
+        &decks,
         &["Mentor of the Meek", "Frenzied Goblin", "Mold Adder"],
     );
 }
 
-fn run_matrix(decks: [Vec<Card>; 5], expected_casts: &[&str]) {
+/// Broad admitted-pool interaction regression, not proof of every printed rule.
+#[test]
+fn foundations_every_admitted_card_in_set_only_full_games() {
+    let manifest: serde_json::Value =
+        serde_json::from_str(include_str!("../data/sets/fdn.json")).unwrap();
+    let mut cards: Vec<_> = manifest["cards"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|row| {
+            Card::from_name(row["name"].as_str().unwrap())
+                .expect("full Foundations inventory must have a catalogue identity")
+        })
+        .filter(|card| card.is_supported())
+        .collect();
+    cards.sort_by_key(|card| (card.colors(), card.fixed_mana_value(), card.name()));
+    let basics = ["Plains", "Island", "Swamp", "Mountain", "Forest"];
+    let mut decks = Vec::new();
+    let mut covered = BTreeSet::new();
+    for group in cards.chunks(9) {
+        let colors = group.iter().fold(0u8, |mask, card| mask | card.colors());
+        let mut lands: Vec<_> = basics
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| colors & (1 << index) != 0)
+            .map(|(_, name)| Card::from_name(name).unwrap())
+            .collect();
+        if lands.is_empty() {
+            lands.push(Card::from_name("Forest").unwrap());
+        }
+        let mut deck: Vec<_> = (0..24).map(|i| lands[i % lands.len()]).collect();
+        for &card in group {
+            deck.extend([card; 4]);
+            covered.insert(card.name());
+        }
+        while deck.len() < 60 {
+            deck.push(lands[deck.len() % lands.len()]);
+        }
+        decks.push(deck);
+    }
+    assert_eq!(covered.len(), cards.len());
+    run_matrix(&decks, &[]);
+}
+
+fn run_matrix(decks: &[Vec<Card>], expected_casts: &[&str]) {
     let mut total_decisions = 0;
     let mut triggered = false;
     let mut token = false;
@@ -300,7 +344,9 @@ fn run_matrix(decks: [Vec<Card>; 5], expected_casts: &[&str]) {
         );
     }
     assert!(branches >= 20);
+    let games = decks.len() * 4;
     println!(
-        "FDN initial matrix: 20 natural full games, {total_decisions} decisions, {branches} owned replay checks; 45 nonland card identities, basics, not full-set acceptance"
+        "FDN matrix: {games} natural full games, {total_decisions} decisions, {branches} owned replay checks; {} cast identities, not full-set acceptance",
+        new_spells.len()
     );
 }

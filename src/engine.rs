@@ -2724,12 +2724,7 @@ impl Game {
                             };
                             let source = self.object_ref(card);
                             if spec.max > 1 {
-                                let mut count = 0;
-                                self.visit_cast_targets(spec.rule, actor, source, |_| {
-                                    count += 1;
-                                    false
-                                });
-                                if count >= usize::from(spec.min) {
+                                if self.cast_targets_available(plan, actor, source) {
                                     done = emit(Action::BeginCast { card, payment });
                                 }
                             } else {

@@ -776,7 +776,11 @@ impl Game {
         }
         let plan = self.target_spec(&item);
         if !self.targets_available(plan, item.controller, item.target_source()) {
-            assert!(trigger, "validated spell announcement");
+            assert!(
+                trigger,
+                "validated spell announcement: {} ({plan:?})",
+                item.source_card.name()
+            );
             return false;
         }
         let has_choice = needs_mode
