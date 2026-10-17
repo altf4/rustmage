@@ -831,17 +831,26 @@ pub(crate) enum ReplacementSpec {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum CounterKind {
+    Lore,
     PlusOne,
     MinusOne,
     Stun,
     Loyalty,
 }
 impl CounterKind {
-    pub const ALL: [Self; 4] = [Self::PlusOne, Self::MinusOne, Self::Stun, Self::Loyalty];
+    pub const ALL: [Self; 5] = [
+        Self::PlusOne,
+        Self::MinusOne,
+        Self::Stun,
+        Self::Loyalty,
+        Self::Lore,
+    ];
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct Counters {
+    #[serde(default, skip_serializing_if = "is_zero_counter")]
+    pub lore: u64,
     pub plus_one: u64,
     pub minus_one: u64,
     pub stun: u64,
@@ -858,6 +867,7 @@ impl Counters {
             CounterKind::MinusOne => self.minus_one,
             CounterKind::Stun => self.stun,
             CounterKind::Loyalty => self.loyalty,
+            CounterKind::Lore => self.lore,
         }
     }
     pub fn total(self) -> u128 {
@@ -875,6 +885,7 @@ impl Counters {
             CounterKind::MinusOne => &mut self.minus_one,
             CounterKind::Stun => &mut self.stun,
             CounterKind::Loyalty => &mut self.loyalty,
+            CounterKind::Lore => &mut self.lore,
         };
         *counter = counter
             .checked_add(amount)
@@ -1064,6 +1075,10 @@ pub(crate) enum EntryPredicate {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    /// Historical lore threshold crossing; never a live resolution recheck.
+    Chapter {
+        number: u16,
+    },
     ManaSpent {
         minimum: u64,
         increment: bool,
@@ -1634,9 +1649,19 @@ impl Card {
     pub(crate) fn entry_tapped(self) -> EntryTapped {
         generated::DEFINITIONS[self.0 as usize].entry
     }
+    pub fn saga_final_chapter(self) -> Option<u16> {
+        self.triggers()
+            .iter()
+            .filter_map(|a| match a.condition {
+                TriggerCondition::Chapter { number } => Some(number),
+                _ => None,
+            })
+            .max()
+    }
     pub(crate) fn enters_counters(self) -> Counters {
         let mut counters = generated::DEFINITIONS[self.0 as usize].enters;
         counters.loyalty = self.starting_loyalty();
+        counters.lore = u64::from(self.saga_final_chapter().is_some());
         counters
     }
     pub(crate) fn entry_counter_rules(self) -> &'static [EntryCounterRule] {

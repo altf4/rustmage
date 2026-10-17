@@ -82,7 +82,12 @@ impl Game {
             .card
             .triggers()
             .iter()
-            .any(|ability| matches!(ability.condition.event(), TriggerCondition::AtStep { .. }))
+            .any(|ability| {
+                matches!(
+                    ability.condition.event(),
+                    TriggerCondition::AtStep { .. } | TriggerCondition::Chapter { .. }
+                )
+            })
         {
             self.state.step_sources.push(id);
         }

@@ -149,6 +149,7 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
             && o.card.has_subtype("Hero")
             && o.counters
                 == Counters {
+                    lore: 0,
                     loyalty: 0,
                     plus_one: 1,
                     minus_one: 0,

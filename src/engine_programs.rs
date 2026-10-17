@@ -303,7 +303,7 @@ impl Game {
                     TriggerCondition::SelfKicked => same && event.kicked,
                     TriggerCondition::SelfBargained => same && event.bargained,
                     TriggerCondition::SelfEvidence => same && event.evidence_collected,
-                    TriggerCondition::EvidenceCollected => false,
+                    TriggerCondition::EvidenceCollected | TriggerCondition::Chapter { .. } => false,
                     TriggerCondition::SelfEnters
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrAttacksWhileSaddled

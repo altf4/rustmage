@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "92dcc6649eaf01aa27336a8c42d9e204324ff669782f85afd3cb01300bd32543",
+  "catalogue_version": "073ce021f9394964984f4dabe9e3ad364dfeac65d518516cea474529efb3a1c8",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1760,
-  "implemented_total": 1766,
+  "implemented_standard_cards": 1764,
+  "implemented_total": 1770,
   "token_definitions": 84,
   "emblem_definitions": 1,
   "cards": [
@@ -25306,19 +25306,19 @@
     {
       "name": "Summon: Choco/Mog",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
       "name": "Summon: Esper Ramuh",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
       "name": "Summon: Fat Chocobo",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -25336,7 +25336,7 @@
     {
       "name": "Summon: G.F. Ifrit",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {

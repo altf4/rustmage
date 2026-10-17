@@ -3601,6 +3601,50 @@ def extract_replacements(card):
     return dict(card,oracle_text='\n'.join(residual)),specs
 
 
+def saga_body(card):
+    """Whole single-face Saga only: exact reminder, all numbered effects and intrinsic text."""
+    if card.get('layout') != 'saga' or 'Saga' not in card.get('type_line','').split(' — ')[-1].split():return None
+    if spell_cost_options(card.get('mana_cost','')) is None or '{X}' in card.get('mana_cost',''):return None
+    lines=card.get('oracle_text','').splitlines()
+    if not lines:return None
+    roman={'I':1,'II':2,'III':3,'IV':4,'V':5}
+    header=re.fullmatch(r'\(As this Saga enters and after your draw step, add a lore counter\. Sacrifice after (I|II|III|IV|V)\.\)',lines[0])
+    if not header:return None
+    final=roman[header[1]];abilities=[];seen=set();intrinsic=[]
+    for line in lines[1:]:
+        match=re.fullmatch(r'([IV, ]+) — (.+)',line)
+        if match:
+            labels=match[1].split(', ')
+            if any(label not in roman for label in labels):return None
+            numbers=[roman[label] for label in labels]
+            if numbers!=sorted(set(numbers)) or seen.intersection(numbers):return None
+            seen.update(numbers)
+            body=match[2]
+            # A flavor word is part of this one complete chapter, never an executable clause.
+            if ' — ' in body:
+                flavor,body=body.split(' — ',1)
+                if not re.fullmatch(r"[A-Za-z! ']+",flavor):return None
+            body=re.sub(r' \([^\n]*\)','',body).replace('This Saga','This creature')
+            parsed=targeted_program(body)
+            if parsed:targets,program=parsed
+            else:
+                targets,program='None',statement_program(body)
+            if not program:return None
+            abilities.extend((f'Chapter {{ number: {number} }}',program,targets) for number in numbers)
+        else:intrinsic.append(line)
+    if not seen or max(seen)!=final or seen!=set(range(1,final+1)):return None
+    types=card.get('type_line','').split(' — ')[0].split()
+    if 'Creature'in types:
+        residual=dict(card,layout='normal',oracle_text='\n'.join(intrinsic))
+        parsed=creature_template(residual)
+        if parsed is None:return None
+        effect,keywords=parsed
+    else:
+        if intrinsic:return None
+        effect,keywords='Permanent',0
+    return effect,keywords,abilities
+
+
 def compile_catalogue(snapshot, target):
     TOKEN_DEFS.clear()
     EMBLEM_DEFS.clear()
@@ -3809,6 +3853,12 @@ def compile_catalogue(snapshot, target):
                     and creature_entry == 'Never') else None
             if crew is None: effect='Unsupported'
             else: effect,keywords,abilities,activations,enters,dynamic,scaling=crew
+        if original.get("layout") == "saga":
+            saga=saga_body(original)
+            if saga is None: effect="Unsupported"
+            else:
+                effect,keywords,abilities=saga
+                activations=[];enters=[0,0,0]
         # Later fixed-cost selectors must never revive a rejected variable-cost body.
         if '{X}' in card.get('mana_cost', '') and scalar is None:
             effect = 'Unsupported'
@@ -3912,7 +3962,7 @@ def compile_catalogue(snapshot, target):
         if effect != 'Unsupported':
             if dynamic is not None:dynamic_rows.append(f'        {index} => Some({dynamic}),')
             if scaling:scaling_rows.append(f'        {index} => &['+', '.join(scaling)+'],')
-        definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(card.get("mana_cost",cost) if scalar is not None else cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]}, loyalty: 0 }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
+        definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(card.get("mana_cost",cost) if scalar is not None else cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]}, loyalty: 0, lore: 0 }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         if offspring_key is not None:
             offspring_factories[offspring_key]=(index,definitions[-1],color_mask,card.get('type_line','').split(' — ')[-1])
         if uncounterable and effect != 'Unsupported': uncounterable_rows.append(str(index))
@@ -3966,7 +4016,7 @@ def compile_catalogue(snapshot, target):
         if factory.get('landfall_growth'):
             p,t=factory['landfall_growth']
             token_triggers='&[TriggeredAbility { condition: TriggerCondition::LandEntersYou, targets: TargetPlan::Single(TargetSpec::NONE), program: '+rust_program([grow_instruction('Source',p,t)])+' }]'
-        definitions.append(f"    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: \"\", type_line: {json.dumps(type_line, ensure_ascii=False)}, oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: Keywords({factory['keywords']}), deck_limit: None }}, effect: Effect::{effect}, triggers: {token_triggers}, activated: {rust_activations(token_abilities)}, enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0, loyalty: 0 }}, entry: EntryTapped::Never, kind: {kind}, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},")
+        definitions.append(f"    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: \"\", type_line: {json.dumps(type_line, ensure_ascii=False)}, oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: Keywords({factory['keywords']}), deck_limit: None }}, effect: Effect::{effect}, triggers: {token_triggers}, activated: {rust_activations(token_abilities)}, enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0, loyalty: 0, lore: 0 }}, entry: EntryTapped::Never, kind: {kind}, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},")
         token_infos.append(f"    TokenInfo {{ factory_identity: {json.dumps(name)}, name: {json.dumps(factory['name'])}, subtypes: {json.dumps(factory['subtypes'])}, colors: {factory['colors']} }},")
         color_masks.append(factory['colors'])
         marker = '__TOKEN_' + key + '__'
@@ -3984,7 +4034,7 @@ def compile_catalogue(snapshot, target):
         index=len(names);name='@emblem/'+key;names.append(name);color_masks.append(0)
         body=EMBLEM_DEFS[key]
         triggers='&[TriggeredAbility { condition: TriggerCondition::LifeGained { first_only: false, own_turn: false }, targets: TargetPlan::Single(TargetSpec::one(TargetRule::Player { opponent_only: true })), program: &[Instruction::LoseGainedLife(PlayerSet::Targeted)] }]'
-        definitions.append(f'Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: "", type_line: "", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: Keywords(0), deck_limit: None }}, effect: Effect::Emblem, triggers: {triggers}, activated: &[], enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0, loyalty: 0 }}, entry: EntryTapped::Never, kind: 0, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},')
+        definitions.append(f'Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: "", type_line: "", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: Keywords(0), deck_limit: None }}, effect: Effect::Emblem, triggers: {triggers}, activated: &[], enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0, loyalty: 0, lore: 0 }}, entry: EntryTapped::Never, kind: 0, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},')
         emblem_infos.append(f'EmblemInfo {{ oracle_text: {json.dumps(body)} }},')
         definitions=[row.replace('__EMBLEM_'+key+'__',f'Card({index})') for row in definitions]
     if len(names) > 65536:

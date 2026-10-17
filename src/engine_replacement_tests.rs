@@ -338,6 +338,7 @@ fn entry_loyalty_and_all_counter_kinds_are_replaced_while_normal_loyalty_activat
         settle(&mut g);
         let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
         let c = Counters {
+            lore: 0,
             plus_one: 1,
             minus_one: 1,
             stun: 1,
@@ -351,6 +352,7 @@ fn entry_loyalty_and_all_counter_kinds_are_replaced_while_normal_loyalty_activat
         assert_eq!(
             g.state.objects[bear as usize].counters,
             Counters {
+                lore: 0,
                 plus_one: 2,
                 minus_one: 2,
                 stun: 2,
