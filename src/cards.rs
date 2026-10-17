@@ -26,6 +26,22 @@ pub(crate) struct SpellMode {
     pub program: &'static [Instruction],
 }
 
+/// The four complete Gift payloads present in the pinned Standard catalogue.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum GiftKind {
+    Card,
+    Food,
+    Treasure,
+    TappedFish,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct GiftSpec {
+    pub kind: GiftKind,
+    pub token: Option<Card>,
+    pub promised_targets: TargetPlan,
+}
+
 /// A relationship between distinct bindings within one occurrence of target.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetGroupConstraint {
@@ -393,6 +409,21 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    GiveGift,
+    ReturnSpellToHand,
+    ProhibitCastingThisTurn,
+    PlayerHexproofThisTurn,
+    GrantPermanentsThisTurn(Keywords),
+    DamageWithController {
+        damage: i32,
+        controller_damage: i32,
+    },
+    IfGift {
+        promised: bool,
+        skip: usize,
+    },
+    /// Register an exact current target for a direct exile replacement until cleanup.
+    ExileIfDiesThisTurn,
     /// Queue a reflexive ability only when this exact Role actually enters attached.
     CreateRoleReflexive {
         token: Card,
@@ -1221,6 +1252,8 @@ pub(crate) enum TriggerCondition {
     SelfAttacksWhileSaddled,
     SelfEntersOrAttacksWhileSaddled,
     SelfSaddledFirst,
+    /// A paid promise belongs to this actual cast-to-battlefield entry event.
+    SelfGiftEnters,
     Foraged,
     FoodsSacrificed,
     Reflexive,
@@ -1893,6 +1926,9 @@ impl Card {
     /// Fixed optional kicker surcharge for this immutable whole-card definition.
     pub fn kicker_cost(self) -> Option<ManaCost> {
         generated::kicker_cost(self)
+    }
+    pub(crate) fn gift(self) -> Option<GiftSpec> {
+        generated::gift(self)
     }
     pub(crate) fn kicked_entry_counters(self) -> u16 {
         generated::kicked_entry_counters(self)
