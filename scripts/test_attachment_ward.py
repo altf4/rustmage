@@ -27,6 +27,7 @@ class AttachmentWardCompilerTests(unittest.TestCase):
     self.assertFalse(self.admitted(dict(c,oracle_text=c['oracle_text']+residual)),(n,residual))
    self.assertFalse(self.admitted(dict(c,oracle_text=c['oracle_text']+'\n(You win the game.)')),n)
    self.assertFalse(self.admitted(dict(c,oracle_text=c['oracle_text'].replace('exile target','Exile target')+'\n(You win the game.)')),n)
+   self.assertFalse(self.admitted(dict(c,oracle_text='\n'.join(' '+line for line in c['oracle_text'].splitlines())+'\n (You win the game.)')),n)
    changed=c['oracle_text'].replace('that player pays {1}.','that player pays {9}.').replace('that player pays {2}.','that player pays {9}.')
    if changed!=c['oracle_text']:self.assertFalse(self.admitted(dict(c,oracle_text=changed)),n)
   # Existing grammar consumers retain their audited Job select/equip reminders.

@@ -2840,7 +2840,7 @@ def activation_cost(text):
 
 def attachment_ward_route(card):
     """New typed attachment and linked-union routes, selected by grammar alone."""
-    text=re.sub(r'\([^()]*\)', '',card.get('oracle_text','')).casefold()
+    text='\n'.join(line.strip() for line in re.sub(r'\([^()]*\)', '',card.get('oracle_text','')).casefold().splitlines())
     return (re.search(r'(?m)^(?:enchanted|equipped) (?:creature|permanent)[^\n]*\bward\b',text) is not None
             or 'enchant artifact you control' in text.splitlines()
             or any(phrase in text for phrase in (
