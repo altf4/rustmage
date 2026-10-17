@@ -5450,11 +5450,11 @@ mod temporary_death_grants_tests;
 #[path = "engine_target_exclusion_tests.rs"]
 mod target_exclusion_tests;
 
-#[path = "engine_suspect.rs"]
-mod suspect;
 #[cfg(test)]
 #[path = "engine_battlefield_return_tests.rs"]
 mod battlefield_return_tests;
+#[path = "engine_suspect.rs"]
+mod suspect;
 
 #[cfg(test)]
 #[path = "engine_combat_restriction_tests.rs"]
