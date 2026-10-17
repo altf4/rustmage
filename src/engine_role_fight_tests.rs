@@ -566,3 +566,82 @@ fn composed_role_replacement_observations_bind_original_subject_and_leave_extra_
         settle(&mut g);
     }
 }
+
+#[test]
+fn combined_paid_temporary_death_grant_returns_fighter_owner_and_creates_independent_wicked_role() {
+    for p in [Player::P0, Player::P1] {
+        for foreign in [false, true] {
+            let mut g = setup(p);
+            let owner = if foreign { p.other() } else { p };
+            let own = named(&mut g, owner, "Grizzly Bears", Zone::Battlefield);
+            g.state.objects[own as usize].controller = p;
+            let foe = named(&mut g, p.other(), "Bygone Colossus", Zone::Battlefield);
+            let original = g.object_ref(own);
+            let grant = named(&mut g, p, "Not Dead After All", Zone::Hand);
+            let before = g.state.players[p.index()].mana;
+            act(&mut g, Action::AnnounceCast { card: grant });
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(own),
+                },
+            );
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            }
+            let pay = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .unwrap();
+            act(&mut g, pay);
+            assert_eq!(
+                before.iter().sum::<u32>() - g.state.players[p.index()].mana.iter().sum::<u32>(),
+                1
+            );
+            assert!(g.state.players[p.index()].mana[2] < before[2]);
+            settle(&mut g);
+            paid(&mut g, p, own, foreign);
+            to_reflexive(&mut g);
+            assert_eq!(g.stats(own).power, 4);
+            announce_fight(&mut g, Some(foe));
+            settle(&mut g);
+            assert_ne!(g.object_ref(own), original);
+            assert_eq!(
+                (
+                    g.object_view(own).zone,
+                    g.object_view(own).owner,
+                    g.object_view(own).controller
+                ),
+                (Zone::Battlefield, owner, owner)
+            );
+            assert!(g.object_view(own).tapped);
+            assert_eq!(g.object_view(own).damage, 0);
+            assert_eq!(g.stats(own).power, 3);
+            assert_eq!(g.object_view(foe).damage, 4);
+            assert!(
+                g.state
+                    .temporary_abilities
+                    .as_ref()
+                    .is_none_or(|grants| grants.is_empty())
+            );
+            let attached = g
+                .state
+                .roles
+                .as_ref()
+                .unwrap()
+                .attached
+                .iter()
+                .filter(|r| {
+                    g.on_battlefield(r.aura.card)
+                        && g.object_view(r.aura.card).attached_to == Some(g.object_ref(own))
+                })
+                .collect::<Vec<_>>();
+            assert_eq!(attached.len(), 1);
+            let role = g.object_view(attached[0].aura.card);
+            assert_eq!(role.card.role(), Some(crate::cards::RoleKind::Wicked));
+            assert_eq!((role.owner, role.controller), (p, p));
+            assert!(g.state.pending_triggers.is_empty());
+        }
+    }
+}
