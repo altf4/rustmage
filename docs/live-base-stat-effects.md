@@ -70,3 +70,7 @@ before entry events inspect derived stats. Continuous abilities of one source
 share a timestamp; live condition/value changes do not refresh it. The public
 choice exposes only objects committed to public entry, with exact pre-entry
 incarnations. This still admits zero cards and awaits focused validation.
+
+The first timestamp build at1308ddb found an unhandled new action in the baseline
+policy's exhaustive match. A deterministic legal-choice score now covers it; no
+test executed in that compilation-only failed run.
