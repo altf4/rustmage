@@ -1,11 +1,11 @@
 # Complete Role consumer follow-up — issue290
 
-This batch composes actual merged main `804f539567d2f50b27c801915a3eb5afd7f8d692`
+This batch composes actual merged main `c41c060c024626843b17cf292aab838d36fd6eb1`
 and adds twelve whole programs: Become Brutes, Cursed Courtier, Cut In,
 Diminisher Witch, Eriette's Whisper, Merry Bards, Protective Parents,
 Shatter the Oath, Spellbook Vendor, The Witch's Vanity, Unassuming Sage and
-Witch's Mark. The candidate supports 1,878/5,164 Standard identities, with
-3,286 gated; 40 Adventure faces, 13 Omen faces, 94 tokens and schema86.
+Witch's Mark. The candidate supports 1,879/5,164 Standard identities, with
+3,285 gated; 40 Adventure faces, 13 Omen faces, 94 tokens and schema86.
 The full all-Standard rules and training goal remains incomplete.
 
 The compiler distinguishes non-targeted exact-source attachment from targets,
@@ -33,8 +33,8 @@ colors and recipes remain identical, with only Diminisher Witch's required
 zero-reduction Bargain cost option added. All 34 declared Role inventory records
 match the snapshot's complete declared face fields; all 43 unique direct/shared
 Java source files match pinned revision `492369c7844b8d76479f0393ff9eb6b0b0cf30d7`,
-checkout bytes and SHA256. The inventory reports 24 implemented compiler bodies
-and ten gated bodies and never grants admission permission.
+checkout bytes and SHA256. The inventory reports 25 implemented compiler bodies
+and nine gated bodies and never grants admission permission.
 
 Native/public controls cover both seats, foreign-owned sources/recipients/fodder,
 source loss/reentry, printed and optional payments, declines, separate reflexive
@@ -54,7 +54,7 @@ and granted ability/attack obligations. They are not natural Standard terminals.
 `examples/standard_role_followup.py --library /absolute/path/librustmage.so`
 runs 100 naturally terminal Standard games, rotating all twelve bodies and seats.
 
-The corrected composed source has passed 29 focused compiler/provenance/Saga
+The corrected composed source has passed 40 focused compiler/provenance/Saga
 methods. Fresh native/Clippy, optimized library, full compiler/API and 100-game
 gates are pending for this corrected composition; earlier source's passing
 native/paid/100-game checks are historical evidence only. Two independent

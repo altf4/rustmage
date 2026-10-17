@@ -98,7 +98,7 @@ class RoleFollowupTests(unittest.TestCase):
    for variant in variants:
     self.assertFalse(self.compile_one(dict(card,oracle_text=variant))[1]['implemented'],(card['name'],variant))
  def test_exact_twelve_admissions_preserve_every_prior_program_and_recipe(self):
-  old=subprocess.check_output(['git','-C',str(g.ROOT),'show','804f539567d2f50b27c801915a3eb5afd7f8d692:src/generated/catalogue.rs'],text=True);new=(g.ROOT/'src/generated/catalogue.rs').read_text()
+  old=subprocess.check_output(['git','-C',str(g.ROOT),'show','c41c060c024626843b17cf292aab838d36fd6eb1:src/generated/catalogue.rs'],text=True);new=(g.ROOT/'src/generated/catalogue.rs').read_text()
   defs=lambda t:[l for l in t.splitlines() if l.lstrip().startswith('Definition {')]
   before,after=defs(old),defs(new);self.assertEqual(len(before),5331);self.assertEqual(len(after),5331)
   changed=[(a,b) for a,b in zip(before,after) if a!=b];self.assertEqual(len(changed),12)
