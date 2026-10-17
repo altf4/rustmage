@@ -58,7 +58,7 @@ class GraveyardRecoveryTests(unittest.TestCase):
                 ready=bool(dead and len(have_lands)>=8 and (name!='Coati Scavenger' or permanent_graves>=4) and (name!='Dundoolin Weaver' or creature_count>=3))
                 def score(a):
                     k=a['kind'];n=objects.get(a.get('card'),{}).get('card','')
-                    if k in ['Concede','Mulligan','Cast','BeginCast','Activate','BeginActivate']:return -10000
+                    if k in ['Concede','Mulligan','Cast','BeginCast','Activate','BeginActivate','AnnounceWarp','AnnounceExile','AnnounceFlashback','AnnouncePlotted','AnnouncePlot']:return -10000
                     if k=='AnnounceCast':
                         if actor==p and stage=='setup' and n==name and ready:return 3000
                         if stage=='finish':return 2500 if n in ['Bear Cub','Bygone Colossus',target_name] else -1000
@@ -69,7 +69,7 @@ class GraveyardRecoveryTests(unittest.TestCase):
                     if k=='ChooseMode':return 2700 if a['mode']==(1 if name in ["Archenemy's Charm","Rydia's Return",'White Widow, Free Agent'] else 0) else -1000
                     if k=='ChooseTarget':return 2700 if a['target']=={'Card':chosen} else -1000
                     if k=='Discard':
-                        if stage=='setup':return 2700 if n==target_name and not dead else 2200 if n in BASICS else -500
+                        if stage=='setup':return 2700 if n==target_name and not dead else 2200 if n in BASICS else -10000 if n==name and sum(v['card']==name for v in hand)==1 else -500
                         return 2700 if a['card']!=chosen else -500
                     if k=='PlayLand':return 2300-sum(v['card']==n for v in own)*4 if actor==p else 2200
                     if k=='TapMana':return 2200 if o['decision']=='pay_costs' else -1000
