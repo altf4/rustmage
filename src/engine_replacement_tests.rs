@@ -384,7 +384,7 @@ fn admitted_factory_closure_has_no_nested_entry_counter_event_including_offsprin
     let factories = Card::catalogue()
         .filter(|c| c.is_token())
         .collect::<Vec<_>>();
-    assert_eq!(factories.len(), 87);
+    assert_eq!(factories.len(), 88);
     for card in factories {
         assert_eq!(
             card.enters_counters(),
@@ -414,6 +414,7 @@ fn synthetic(g: &mut Game, source: CardId, code: &'static [Instruction], targets
         discards: [0; 2],
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
+        milled_selection: None,
         library: None,
         selection: None,
         target_library: None,

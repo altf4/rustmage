@@ -4,11 +4,14 @@ use crate::cards::{
     AmountValue, BattlefieldFilter, CastRelation, CostTurn, CountFilter, CountZone, CounterKind,
     CounterSubject, Counters, CreatureFilter, DamageQualification, DamageSubject, Effect,
     EffectChoiceKind, EmblemInfo, EntryCounterAmount, EntryPredicate, EntryTapped, Instruction,
-    ManaCost, ManaProduction, MillAmount, PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec,
-    SpellMode, StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetGroupConstraint,
-    TargetPlan, TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep,
-    payments,
+    ManaCost, ManaProduction, MillAmount, MilledCount, MilledDestination, MilledFilter,
+    MilledSelectionSpec, PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec, SpellMode,
+    StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetGroupConstraint, TargetPlan,
+    TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
+#[path = "engine_milled_selection.rs"]
+mod milled_selection;
+pub use milled_selection::MilledSelectionView;
 #[path = "engine_adventure.rs"]
 mod adventure;
 #[path = "engine_cast_timing.rs"]
@@ -21,7 +24,7 @@ pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 81;
+pub const OBSERVATION_SCHEMA: u32 = 83;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -338,6 +341,8 @@ define_actions! {
     RecoverMilled {
         object: Option<ObjectRef>,
     },
+    SelectMilled { object: ObjectRef },
+    FinishMilledSelection,
     ChooseEntryLife {
         pay: bool,
     },
@@ -962,6 +967,9 @@ enum Pending {
     ResolutionMana {
         player: Player,
     },
+    MilledSelection {
+        player: Player,
+    },
     RecoverMilled {
         player: Player,
         filter: RecoveryFilter,
@@ -1383,6 +1391,7 @@ pub struct Observation {
     pub target_library: Option<TargetLibraryView>,
     pub last_target_library_move: Option<TargetLibraryMovement>,
     pub recovery_choice: Option<RecoveryChoiceView>,
+    pub milled_choice: Option<MilledSelectionView>,
     pub search_choice: Option<SearchChoiceView>,
     pub search_distribution: Option<SearchDistributionView>,
     pub effect_choice: Option<EffectChoiceView>,
@@ -1633,6 +1642,7 @@ impl Game {
             | Pending::EffectChoice { player }
             | Pending::HandDefender { player }
             | Pending::Legend { player }
+            | Pending::MilledSelection { player }
             | Pending::RecoverMilled { player, .. }
             | Pending::EffectSearch { player }
             | Pending::EffectLibrarySelection { player }
@@ -2619,6 +2629,18 @@ impl Game {
                     }
                 }
             }
+            Pending::MilledSelection { .. } => {
+                if self.can_finish_milled_selection() && emit(Action::FinishMilledSelection) {
+                    return true;
+                }
+                for &object in &s.resolving.as_ref().unwrap().milled {
+                    if self.is_milled_selection_candidate(object)
+                        && emit(Action::SelectMilled { object })
+                    {
+                        return true;
+                    }
+                }
+            }
             Pending::RecoverMilled { player, filter } => {
                 if emit(Action::RecoverMilled { object: None }) {
                     return true;
@@ -3152,6 +3174,8 @@ impl Game {
                     self.continue_trigger_order();
                 }
             }
+            Action::SelectMilled { object } => self.select_milled(object),
+            Action::FinishMilledSelection => self.finish_milled_selection(),
             Action::RecoverMilled { object } => self.recover_milled(object),
             Action::ChooseSearch { card } => self.choose_search(card),
             Action::FinishSearch => self.finish_search(actor),
@@ -4226,6 +4250,7 @@ impl Game {
                 Pending::EffectLibrary { .. } => "library_choice",
                 Pending::EffectLibrarySelection { .. } => "library_selection",
                 Pending::RecoverMilled { .. } => "recover_milled",
+                Pending::MilledSelection { .. } => "milled_selection",
                 Pending::EffectSearch { .. } => {
                     if s.resolving
                         .as_ref()
@@ -4266,6 +4291,7 @@ impl Game {
                 library_count: s.players[i].library.len(),
                 hand_count: self.hand_count(if i == 0 { Player::P0 } else { Player::P1 }),
             }),
+            milled_choice: self.milled_selection_view(viewer),
             recovery_choice: match s.pending {
                 Pending::RecoverMilled { player, filter } => Some(RecoveryChoiceView {
                     player,
@@ -4631,6 +4657,10 @@ impl Game {
                         .explore
                         .as_ref()
                         .map_or(0, |_| std::mem::size_of::<ExploreChoiceView>())
+                        + resolution
+                            .milled_selection
+                            .as_ref()
+                            .map_or(0, |f| f.bytes())
                         + resolution.target_library.as_ref().map_or(0, |f| f.bytes())
                         + resolution.forage.as_ref().map_or(0, |f| f.bytes())
                         + resolution.evidence.as_ref().map_or(0, |f| f.bytes())
@@ -5213,3 +5243,7 @@ mod split_search_tests;
 #[cfg(test)]
 #[path = "engine_adventure_land_targets_tests.rs"]
 mod adventure_land_targets_tests;
+
+#[cfg(test)]
+#[path = "engine_milled_selection_tests.rs"]
+mod milled_selection_tests;

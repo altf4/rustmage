@@ -18,6 +18,7 @@ pub(super) struct Resolution {
     pub discards: [usize; 2],
     pub selected_discards: [Vec<CardId>; 2],
     pub milled: Vec<ObjectRef>,
+    pub milled_selection: Option<Box<super::milled_selection::MilledSelection>>,
     pub library: Option<LibraryChoice>,
     pub selection: Option<Box<super::library_selection::LibrarySelection>>,
     pub search: Option<Box<super::search::SearchChoice>>,
@@ -957,6 +958,7 @@ impl Game {
             forage: None,
             selected_discards: [Vec::new(), Vec::new()],
             milled: Vec::new(),
+            milled_selection: None,
             library: None,
             selection: None,
             target_library: None,
@@ -1369,6 +1371,11 @@ impl Game {
                             player: item.controller,
                             skip_to: resolution.pc + 1,
                         };
+                        return;
+                    }
+                }
+                Instruction::SelectMilled(spec) => {
+                    if self.start_milled_selection(spec) {
                         return;
                     }
                 }
