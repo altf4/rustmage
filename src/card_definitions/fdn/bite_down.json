@@ -3,10 +3,14 @@
   "catalogue_id": 423,
   "oracle_id": "623903de-3c04-4745-9af3-d7ec9fb2574d",
   "facts_sha256": "f57c2a033d24c631355b8a956b88850405b3c75e229091a3637380958492528b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c398f8fe387c6229f0bc5145d8ff1ccd9345168eecf90c2e7253e960c20efabf"
   },
-  "physical_metadata_sha256": "ccf25b862450d48f249ba0c3d66b9f6c21c65e613a95d07b0175420c28e0d4af"
+  "physical_metadata_sha256": "ccf25b862450d48f249ba0c3d66b9f6c21c65e613a95d07b0175420c28e0d4af",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BiteDown.java",
+  "java_sha256": "35198172c4af59ba6022a1eaa85d91d43b7682f3537aaf0053278b15683b6d7f",
+  "implementation": "Direct typed grouped targets and existing power-damage instruction; opponent creature or planeswalker recipient."
 }
