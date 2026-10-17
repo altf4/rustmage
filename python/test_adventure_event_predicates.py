@@ -61,7 +61,10 @@ class AdventureEventTests(unittest.TestCase):
       if n=='Bear Cub':return 2200 if not any(v['card']=='Bear Cub' and v['zone']=='Battlefield' and v['controller']==actor for v in objects.values()) else -1000
       return 2500 if actor==p and i==0 and n=='Shock' and not dead else -1000
      if k=='ChooseTarget':
-      return 2900 if (o['announcing'] and o['announcing']['card']==source and a['target'].get('Card')==target) or (o['announcing'] and o['announcing']['source_card']=='Shock' and a['target'].get('Player')==q) else -1000
+      ann=o['announcing']
+      if ann and ann['card']==source:return 2900 if a['target'].get('Card')==target else -1000
+      if ann and ann['source_card']=='Shock':return 2900 if a['target'].get('Player')==q else -1000
+      return 2300 if objects.get(a['target'].get('Card'),{}).get('controller')==actor else 1000
      if k=='PlayLand':return 1800-20*sum(v['card']==n and v['zone']=='Battlefield' and v['controller']==actor for v in objects.values())
      if k in ['TapMana','ActivateMana','AnnounceMana']:return 2100 if o['decision'] in ['pay_costs','resolution_mana'] and n in BASICS else -1000
      if k in ['PayCosts','PutTrigger','FinishTargets','FinishSearch','FinishAttackers','FinishBlockers','Keep','ChooseSpellCost']:return 2400
@@ -71,7 +74,7 @@ class AdventureEventTests(unittest.TestCase):
       return 2200 if n in ['Thrill of Possibility','Bygone Colossus','Chrome Companion','Shock'] else 1000
      if k=='Attack':
       if stage!='finish':return -1000
-      if actor==p and not attacked:return 2900 if a['card']==source else -1000
+      if not attacked:return 2900 if actor==p and a['card']==source else -1000
       return 2800 if event else -1000
      if k=='Pass':return 0
      return 1000
