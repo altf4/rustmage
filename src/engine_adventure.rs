@@ -113,6 +113,21 @@ impl Game {
                 });
         }
     }
+    pub(super) fn finish_omen(&mut self, item: &SpellView) {
+        if self.state.objects[item.card as usize].zone != Zone::Stack
+            || self.object_ref(item.card) != item.object
+        {
+            return;
+        }
+        let owner = self.state.objects[item.card as usize].owner;
+        let event = self.move_adventure_spell(item, Zone::Library);
+        if event.moved && event.destination == Zone::Library {
+            self.forget_library_top(owner);
+            self.state
+                .rng
+                .shuffle(&mut self.state.players[owner.index()].library);
+        }
+    }
     /// Real stack and announcement packets carry the chosen immutable definition.
     pub(super) fn effective_spell_card(&self, id: CardId) -> Card {
         if let Some(a) = &self.state.announcing
@@ -128,16 +143,14 @@ impl Game {
             .find(|s| s.kind == StackKind::Spell && s.card == id)
             .map_or(self.state.objects[id as usize].card, |s| s.source_card)
     }
-    pub(super) fn adventure_cast_available(
+    pub(super) fn alternate_cast_available(
         &self,
         actor: Player,
         id: CardId,
         sorcery: bool,
+        definition: Card,
     ) -> bool {
         let object = &self.state.objects[id as usize];
-        let Some(definition) = object.card.adventure_spell() else {
-            return false;
-        };
         // Adventure's own permission is normal-only. Another generic permission
         // remains independently usable; never deny by an "on adventure" flag.
         let generic_exile = object.zone == Zone::Exile

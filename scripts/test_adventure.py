@@ -37,11 +37,12 @@ class AdventureCompilerTests(unittest.TestCase):
     if 'Sacrifice this token: You gain 3 life.' not in f['oracle_text'] and 'Menace (' not in f['oracle_text']:continue
     c=copy.deepcopy(self.rows[name]);c['card_faces'][face]['oracle_text']=f['oracle_text'].replace('You gain 3 life.', 'You win the game.').replace("two or more creatures.","two or more creatures. You win the game.")
     with self.subTest(name=name,face=face):self.assertFalse(self.admitted(c))
- def test_real_omen_cards_never_get_adventure_permissions_or_admission(self):
+ def test_real_omen_cards_never_get_adventure_definitions(self):
   cards=[c for c in self.rows.values()if c.get('layout')=='adventure'and 'Omen'in c['card_faces'][1]['type_line']]
   self.assertEqual(len(cards),13)
   for c in cards:
-   with self.subTest(name=c['name']):self.assertIsNone(g.adventure_faces(c));self.assertFalse(self.admitted(c))
+   with self.subTest(name=c['name']):
+    self.assertIsNone(g.adventure_faces(c));self.assertEqual(self.compile(c)[1]['adventure_definitions'],0)
  def test_all_other_fifty_six_adventure_parents_remain_wholly_gated(self):
   cards=[c for c in self.rows.values()if c.get('layout')=='adventure'and 'Adventure'in c['card_faces'][1]['type_line']and c['name']not in NAMES]
   self.assertEqual(len(cards),56)

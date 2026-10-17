@@ -68,7 +68,7 @@ fn replay(g: &mut Game, a: Action, t: &mut Trace) {
         expected["revision"] = 0.into();
         actual["revision"] = 0.into();
         assert_eq!(actual, expected);
-        assert_eq!(g.observe(viewer).schema, 78);
+        assert_eq!(g.observe(viewer).schema, OBSERVATION_SCHEMA);
     }
 }
 fn idle(g: &Game) -> bool {
@@ -268,5 +268,90 @@ fn paid_adventure_front_with_ward_receives_doubled_saga_counters_after_real_turn
             "own Saga chapter must not trigger the recipient's Ward"
         );
         assert_eq!(t.casts, 6);
+    }
+}
+
+// The Saga is actually paid on its controller's turn. Seeded lands fund every
+// subsequent opponent cast/tax after a real turn boundary has drained fixture mana.
+fn omen_cross_setup(p: Player, blue: bool) -> (Game, Trace, CardId) {
+    let q = p.other();
+    let mut g = setup(q);
+    let mut t = Trace::default();
+    named(&mut g, q, "Bear Cub", Zone::Battlefield);
+    for _ in 0..8 {
+        named(&mut g, p, "Forest", Zone::Battlefield);
+    }
+    for _ in 0..6 {
+        named(
+            &mut g,
+            p,
+            if blue { "Island" } else { "Swamp" },
+            Zone::Battlefield,
+        );
+    }
+    let saga = named(&mut g, q, "Summon: Choco/Mog", Zone::Hand);
+    cast(&mut g, saga, false, &[], true, &mut t);
+    assert_eq!(g.object_view(saga).counters.lore, 1);
+    next_main(&mut g, p, &mut t);
+    let aura = named(&mut g, p, "Super Strength", Zone::Hand);
+    cast(&mut g, aura, false, &[saga], true, &mut t);
+    assert_eq!(g.object_view(aura).attached_to, Some(g.object_ref(saga)));
+    (g, t, saga)
+}
+#[test]
+fn paid_omen_against_foreign_warded_saga_shuffles_only_after_success_both_seats() {
+    for p in [Player::P0, Player::P1] {
+        for pay in [false, true] {
+            let (mut g, mut t, saga) = omen_cross_setup(p, true);
+            let card = named(
+                &mut g,
+                p,
+                "Dirgur Island Dragon // Skimming Strike",
+                Zone::Hand,
+            );
+            let rng = g.state.rng;
+            let drawn = g.state.players[p.index()].cards_drawn_this_turn;
+            replay(&mut g, Action::AnnounceOmen { card }, &mut t);
+            settle(&mut g, &[saga], pay, &mut t);
+            assert_eq!(
+                g.object_view(card).zone,
+                if pay { Zone::Library } else { Zone::Graveyard }
+            );
+            assert_eq!(g.object_view(saga).tapped, pay);
+            assert_eq!(g.object_view(saga).counters.lore, 1);
+            assert_eq!(
+                g.state.players[p.index()].cards_drawn_this_turn,
+                drawn + u64::from(pay)
+            );
+            assert_eq!(g.state.rng == rng, !pay);
+            assert_eq!(t.ward_paid, usize::from(pay));
+            assert_eq!(t.ward_declined, usize::from(!pay));
+            assert!(g.state.adventures.is_none());
+            assert!(g.state.exile_permissions.is_empty());
+        }
+    }
+}
+#[test]
+fn paid_purging_normal_etb_removes_saga_lore_only_after_recipient_ward_payment() {
+    for p in [Player::P0, Player::P1] {
+        for pay in [false, true] {
+            let (mut g, mut t, saga) = omen_cross_setup(p, false);
+            let card = named(
+                &mut g,
+                p,
+                "Purging Stormbrood // Absorb Essence",
+                Zone::Hand,
+            );
+            cast(&mut g, card, false, &[saga], pay, &mut t);
+            assert_eq!(g.object_view(card).zone, Zone::Battlefield);
+            assert_eq!(g.object_view(saga).counters.lore, u64::from(!pay));
+            assert_eq!(t.ward_paid, usize::from(pay));
+            assert_eq!(t.ward_declined, usize::from(!pay));
+            next_main(&mut g, p.other(), &mut t);
+            assert_eq!(g.object_view(saga).counters.lore, if pay { 1 } else { 2 });
+            settle(&mut g, &[], true, &mut t);
+            assert_eq!(g.object_view(saga).zone, Zone::Battlefield);
+            assert!(g.state.adventures.is_none());
+        }
     }
 }

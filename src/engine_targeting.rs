@@ -338,6 +338,9 @@ impl Game {
                     TargetPredicate::PowerAtLeast(n) => {
                         self.stats_without_hand(id, departing).power >= i128::from(n)
                     }
+                    TargetPredicate::PowerAtMost(n) => {
+                        self.stats_without_hand(id, departing).power <= i128::from(n)
+                    }
                     TargetPredicate::ToughnessAtLeast(n) => {
                         self.stats_without_hand(id, departing).toughness >= i128::from(n)
                     }
@@ -347,6 +350,9 @@ impl Game {
                     }
                     TargetPredicate::Colors(mask) => object.card.colors() & mask != 0,
                     TargetPredicate::Keyword(keyword) => self.keywords(id).contains(keyword),
+                    TargetPredicate::WithoutKeyword(keyword) => {
+                        !self.keywords(id).contains(keyword)
+                    }
                     TargetPredicate::Token => object.card.is_token(),
                     TargetPredicate::Subtype(subtype) => self.has_subtype(id, subtype),
                     TargetPredicate::Permanent => {

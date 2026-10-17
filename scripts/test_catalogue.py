@@ -37,7 +37,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
         rust,report=generate.compile_catalogue(snapshot,target)
         supported={c['name'] for c in report['cards'] if c['implemented']}
-        self.assertEqual(report["token_definitions"],86)
+        self.assertEqual(report["token_definitions"],87)
         manifest=json.loads((generate.ROOT/'docs/scalar-x-admissions.json').read_text())
         self.assertEqual([r['name'] for r in manifest['cards']],names)
         self.assertEqual(sum(len(r['sources']) for r in manifest['cards']),75)
@@ -1749,7 +1749,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for phrase,rule in [('artifact or enchantment spell','SpellArtifactEnchantment'),
                             ('artifact or creature spell','SpellArtifactCreature'),
                             ('red or green spell','SpellRedGreen'),('white or black spell','SpellWhiteBlack'),
-                            ('spell with mana value 2','SpellMana2'),('spell with mana value 4 or greater','SpellManaMin4')]:
+                            ('spell with mana value 2','SpellMana2'),('spell with mana value 2 or less','SpellManaMax2'),('spell with mana value 4 or greater','SpellManaMin4')]:
             self.assertEqual(generate.targeted_program('Counter target '+phrase+'.'),(rule,['Counter']))
             result=generate.targeted_program('Counter target '+phrase+' unless its controller pays {4}.')
             self.assertEqual(result[0],rule);self.assertIn('CounterUnlessPay',result[1][0])
@@ -1757,7 +1757,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for text in ['Counter target blue or red spell.','Counter target spell with mana value X.',
                      'Counter target spell unless its controller pays {X}.',
                      'Counter target artifact or enchantment spell you control.',
-                     'Counter target spell with mana value 2 or less.']:
+                     'Counter target spell with mana value 3 or less.']:
             self.assertIsNone(generate.targeted_program(text),text)
 
     def test_seven_restricted_counter_admissions_require_complete_bodies(self):
@@ -2118,6 +2118,7 @@ class CatalogueCompilerTests(unittest.TestCase):
     def test_removal_target_predicates_are_exact_and_unions_keep_qualifiers(self):
         cases={
             'Destroy target attacking or blocking creature.':'CreatureAttackingBlocking',
+            'Destroy target creature with power 3 or less.':'CreaturePowerMax3',
             'Exile target attacking creature.':'CreatureAttacking',
             'Destroy target creature with power or toughness 4 or greater.':'CreatureEitherMin4',
             'Destroy target artifact, enchantment, or creature with flying.':'ArtifactEnchantmentCreatureFlying',
@@ -2139,7 +2140,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             'Destroy target creature with total power and toughness 4 or greater.',
             'Destroy target artifact, enchantment, or creature with flying and reach.',
             'Exile target creature or a card from a graveyard.',
-            'Destroy target creature with power 3 or less.',
+            'Destroy target creature with power 2 or less.',
             'Destroy target creature. Its controller manifests dread.',
         ]:
             self.assertIsNone(generate.targeted_program(text),text)
@@ -2170,7 +2171,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         definitions=coverage['cards']
         for name,mask in [('Cat-Owl',3),('Forest',0),('Grizzly Bears',16),('Abandon Attachments',10)]:
             self.assertEqual(colors[next(i for i,c in enumerate(definitions) if c['name']==name)],mask)
-        self.assertEqual(len(colors),len(definitions)+coverage['adventure_definitions']+coverage['token_definitions']+coverage['emblem_definitions'])
+        self.assertEqual(len(colors),len(definitions)+coverage['adventure_definitions']+coverage['omen_definitions']+coverage['token_definitions']+coverage['emblem_definitions'])
 
     def test_missing_invalid_colors_fail_closed_even_with_fresh_checksum(self):
         import json,hashlib,copy

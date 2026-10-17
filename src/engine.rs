@@ -18,7 +18,7 @@ pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 78;
+pub const OBSERVATION_SCHEMA: u32 = 79;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -361,6 +361,7 @@ define_actions! {
     },
     AnnounceWarp { card: CardId },
     AnnounceAdventure { card: CardId },
+    AnnounceOmen { card: CardId },
     AnnouncePlot { card: CardId },
     PayPlot { payment: Mana },
     AnnouncePlotted { card: CardId },
@@ -618,6 +619,7 @@ pub enum CastMethod {
 pub enum CastFace {
     Normal,
     Adventure,
+    Omen,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CastInfo {
@@ -1420,9 +1422,9 @@ impl Game {
                 }
             }
             for &card in deck {
-                if card.is_token() || card.is_emblem() || card.adventure_parent().is_some() {
+                if card.is_token() || card.is_emblem() || card.inset_parent().is_some() {
                     return Err(Error::InvalidDeck(
-                        if card.adventure_parent().is_some() {
+                        if card.inset_parent().is_some() {
                             "inset spell definitions cannot be submitted in decks"
                         } else if card.is_emblem() {
                             "emblems cannot be submitted in decks"
@@ -2086,8 +2088,19 @@ impl Game {
                         return true;
                     }
                     if obj.card.adventure_spell().is_some()
-                        && self.adventure_cast_available(actor, card, sorcery)
+                        && self.alternate_cast_available(
+                            actor,
+                            card,
+                            sorcery,
+                            obj.card.adventure_spell().unwrap(),
+                        )
                         && emit(Action::AnnounceAdventure { card })
+                    {
+                        return true;
+                    }
+                    if let Some(definition) = obj.card.omen_spell()
+                        && self.alternate_cast_available(actor, card, sorcery, definition)
+                        && emit(Action::AnnounceOmen { card })
                     {
                         return true;
                     }
@@ -2771,13 +2784,21 @@ impl Game {
                 let item = self.cast_item(actor, card, [0; 6]);
                 self.open_payment_announcement(item, Counters::default(), None);
             }
-            Action::AnnounceAdventure { card } => {
-                let definition = self.state.objects[card as usize]
-                    .card
-                    .adventure_spell()
-                    .unwrap();
+            Action::AnnounceAdventure { card } | Action::AnnounceOmen { card } => {
+                let omen = matches!(action, Action::AnnounceOmen { .. });
+                let physical = self.state.objects[card as usize].card;
+                let definition = if omen {
+                    physical.omen_spell()
+                } else {
+                    physical.adventure_spell()
+                }
+                .unwrap();
                 let mut item = self.cast_item(actor, card, [0; 6]);
-                item.cast.as_mut().unwrap().face = CastFace::Adventure;
+                item.cast.as_mut().unwrap().face = if omen {
+                    CastFace::Omen
+                } else {
+                    CastFace::Adventure
+                };
                 item.cast.as_mut().unwrap().physical_card =
                     Some(self.state.objects[card as usize].card);
                 item.source_card = definition;
@@ -3216,7 +3237,7 @@ impl Game {
         } else {
             obj.card
         };
-        let inset = definition.adventure_parent().is_some();
+        let inset = definition.inset_parent().is_some();
         let stats = if inset {
             Stats {
                 power: 0,
@@ -5081,6 +5102,10 @@ mod cast_payment_layout_probe {
 #[cfg(test)]
 #[path = "engine_adventure_tests.rs"]
 mod adventure_tests;
+
+#[cfg(test)]
+#[path = "engine_omen_tests.rs"]
+mod omen_tests;
 
 #[cfg(test)]
 #[path = "engine_composition_tests.rs"]
