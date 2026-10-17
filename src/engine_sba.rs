@@ -247,7 +247,7 @@ impl Game {
         // Cancellation belongs to the frozen event, never a newly returned object.
         for (object, pairs) in batch.pairs {
             if self.object_ref(object.card) == object {
-                let counters = &mut self.state.objects[object.card as usize].counters.clone();
+                let counters = &mut self.state.objects[object.card as usize].counters;
                 counters.plus_one -= pairs;
                 counters.minus_one -= pairs;
             }

@@ -315,3 +315,27 @@ fn named_counter_doubling_and_capacity_failure_use_paid_rules_transactions() {
         }
     }
 }
+
+#[test]
+fn named_counter_state_based_pair_cancellation_mutates_live_storage_only() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = setup(player);
+        let creature = named(&mut game, player, "Bear Cub", Zone::Battlefield);
+        game.state.objects[creature as usize].counters = Counters::of(CounterKind::PlusOne, 3)
+            .with(CounterKind::MinusOne, 2)
+            .with(CounterKind::Soul, 4)
+            .with(CounterKind::Incubation, 2);
+        let frozen = game.object_view(creature);
+        checked(&mut game, Action::Pass);
+        let after = game.object_view(creature);
+        assert_eq!(after.counters.plus_one, 1);
+        assert_eq!(after.counters.minus_one, 0);
+        assert_eq!(after.counters.get(CounterKind::Soul), 4);
+        assert_eq!(after.counters.get(CounterKind::Incubation), 2);
+        assert_eq!(after.counters.total(), 7);
+        assert_eq!(frozen.counters.plus_one, 3);
+        assert_eq!(frozen.counters.minus_one, 2);
+        assert_eq!(frozen.counters.get(CounterKind::Soul), 4);
+        assert_eq!(after.zone, Zone::Battlefield);
+    }
+}

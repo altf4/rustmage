@@ -88,8 +88,8 @@ query does not itself admit new copy, rename or named-ability suppression cards.
 
 Live `Counters` owns sparse, canonically ordered values for incubation, bait,
 page, divinity, revival and soul counters. Use `Counters::of(kind, amount)` for a
-single-kind action payment and `get(kind)` to inspect any kind. Mixed payments
-can also be deserialized from the typed `named` list; zero, duplicate and hot-kind
+single-kind action payment, chain `.with(kind, amount)` for a mixed payment,
+and use `get(kind)` to inspect any kind. Mixed payments can also be deserialized from the typed `named` list; zero, duplicate and hot-kind
 entries there are rejected. Empty cold storage is omitted from JSON.
 
 The five existing counter fields stay inline. The additional runtime storage is

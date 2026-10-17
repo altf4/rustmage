@@ -1329,9 +1329,13 @@ impl Counters {
     }
     /// Construct an action's typed counter payment, including named counters.
     pub fn of(kind: CounterKind, amount: u64) -> Self {
-        let mut result = Self::default();
-        result.add(kind, amount);
-        result
+        Self::default().with(kind, amount)
+    }
+    /// Set one kind's count while constructing an owned mixed-kind payment.
+    /// A zero count removes that kind from sparse storage.
+    pub fn with(mut self, kind: CounterKind, amount: u64) -> Self {
+        self.set(kind, amount);
+        self
     }
     pub(crate) fn available(&self, kind: Option<CounterKind>) -> u128 {
         kind.map_or_else(|| self.total(), |kind| u128::from(self.get(kind)))

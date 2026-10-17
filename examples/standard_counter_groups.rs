@@ -113,7 +113,7 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
             },
             _ => None,
         };
-        let mut expected = old.counters;
+        let mut expected = old.counters.clone();
         match mode {
             Some(0) => expected.plus_one += 1,
             Some(1) => expected.minus_one += 2,
