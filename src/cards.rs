@@ -1,4 +1,5 @@
 use crate::capacity::CapacityExt;
+use crate::engine::GrantedSubtypes;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// Compact catalogue identity. The immutable definitions are shared across all
@@ -263,6 +264,7 @@ pub(crate) struct SearchSpec {
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
+    HandCreature,
     CollectEvidence(u16),
     Forage,
     ForageOrBlack,
@@ -350,6 +352,11 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    DiscardManaValueLifeLoss,
+    PutHandCreature,
+    JobSelect {
+        token: Card,
+    },
     MayPayMana {
         cost: ManaCost,
         skip: usize,
@@ -682,10 +689,10 @@ pub(crate) struct CreatureFilter {
 }
 
 impl CreatureFilter {
-    /// Earlier-layer facts only. Effective keywords are checked separately.
-    pub(crate) fn matches_intrinsic(
+    pub(crate) fn matches_characteristics(
         self,
         card: Card,
+        added: GrantedSubtypes,
         yours: bool,
         same: bool,
         attacking: bool,
@@ -695,7 +702,9 @@ impl CreatureFilter {
             1 => !yours,
             _ => true,
         }) && (!self.other || !same)
-            && self.subtype.is_none_or(|subtype| card.has_subtype(subtype))
+            && self
+                .subtype
+                .is_none_or(|subtype| card.has_subtype(subtype) || added.contains(subtype))
             && (!self.attacking || attacking)
             && self.tokens.is_none_or(|tokens| card.is_token() == tokens)
             && (!self.artifact || card.is_artifact())
@@ -714,9 +723,10 @@ pub(crate) struct KeywordGrant {
     pub keywords: Keywords,
 }
 impl KeywordGrant {
-    pub(crate) fn matches(
+    pub(crate) fn matches_characteristics(
         self,
         card: Card,
+        added: GrantedSubtypes,
         yours: bool,
         same: bool,
         attacking: bool,
@@ -731,7 +741,7 @@ impl KeywordGrant {
             && (!self.source_only || same)
             // A tribal noun may also describe a noncreature kindred permanent.
             && (self.filter.subtype.is_some() || card.is_creature())
-            && self.filter.matches_intrinsic(card, yours, same, attacking)
+            && self.filter.matches_characteristics(card, added, yours, same, attacking)
     }
 }
 
@@ -1010,6 +1020,8 @@ pub(crate) enum EntryPredicate {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    /// Immutable Equipment program, with the exact recipient as ability source.
+    Granted(&'static TriggerCondition),
     SelfAttacksWhileSaddled,
     SelfEntersOrAttacksWhileSaddled,
     SelfSaddledFirst,
@@ -1119,10 +1131,19 @@ pub(crate) enum TriggerCondition {
 }
 
 impl TriggerCondition {
+    pub(crate) fn is_granted(self) -> bool {
+        match self {
+            Self::Granted(_) | Self::GrantedAttacks => true,
+            Self::OncePerTurn(e)
+            | Self::DuringOpponentsTurn(e)
+            | Self::InterveningIf { event: e, .. } => e.is_granted(),
+            _ => false,
+        }
+    }
     pub(crate) fn requires_opponents_turn(self) -> bool {
         match self {
             Self::DuringOpponentsTurn(_) => true,
-            Self::OncePerTurn(event) | Self::InterveningIf { event, .. } => {
+            Self::Granted(event) | Self::OncePerTurn(event) | Self::InterveningIf { event, .. } => {
                 event.requires_opponents_turn()
             }
             _ => false,
@@ -1130,7 +1151,8 @@ impl TriggerCondition {
     }
     pub(crate) fn event(self) -> Self {
         match self {
-            Self::OncePerTurn(event)
+            Self::Granted(event)
+            | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
             | Self::InterveningIf { event, .. } => event.event(),
             event => event,
@@ -1139,9 +1161,9 @@ impl TriggerCondition {
     pub(crate) fn once_per_turn(self) -> bool {
         match self {
             Self::OncePerTurn(_) => true,
-            Self::InterveningIf { event, .. } | Self::DuringOpponentsTurn(event) => {
-                event.once_per_turn()
-            }
+            Self::Granted(event)
+            | Self::InterveningIf { event, .. }
+            | Self::DuringOpponentsTurn(event) => event.once_per_turn(),
             _ => false,
         }
     }
@@ -1197,11 +1219,6 @@ impl ActivationGuard {
             Self::Always | Self::OwnTurn => &[],
             Self::ControlSubtypeAny(types) => types,
         }
-    }
-    pub(crate) fn matches_card(self, card: Card) -> bool {
-        self.subtypes()
-            .iter()
-            .any(|subtype| card.has_subtype(subtype))
     }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -1366,11 +1383,17 @@ pub type Mana = [u32; 6];
 impl Card {
     /// Intrinsic colors (W=1, U=2, B=4, R=8, G=16), including both hybrid halves
     /// and token colors. Unsupported multiple-face identities describe the front.
+    pub(crate) fn attached_turn_keywords(self) -> Keywords {
+        generated::attached_turn_keywords(self)
+    }
+    pub(crate) fn attached_subtype(self) -> Option<&'static str> {
+        generated::attached_subtype(self)
+    }
     pub fn colors(self) -> u8 {
         generated::COLORS[self.index()]
     }
     /// Intrinsic subtype membership in every zone. Dynamic type/ability-changing
-    /// effects remain gated; changeling adds creature types, never other subtypes.
+    /// effects use Game/ObjectView membership; changeling adds creature types, never other subtypes.
     pub fn has_subtype(self, subtype: &str) -> bool {
         self.keywords().contains(Keywords::CHANGELING) && is_creature_type(subtype)
             || printed_subtype(self.info().type_line, subtype)

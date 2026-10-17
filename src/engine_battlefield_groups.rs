@@ -16,7 +16,7 @@ impl Game {
             && (filter.without == Keywords::NONE || !self.keywords(id).intersects(filter.without))
             && filter
                 .subtype
-                .is_none_or(|subtype| object.card.has_subtype(subtype))
+                .is_none_or(|subtype| self.has_subtype(id, subtype))
             && (filter.max_mana == u32::MAX
                 || object.card.fixed_mana_value() <= u64::from(filter.max_mana))
     }

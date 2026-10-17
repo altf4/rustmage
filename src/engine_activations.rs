@@ -54,9 +54,16 @@ impl Game {
         match guard {
             ActivationGuard::Always => true,
             ActivationGuard::OwnTurn => self.state.active == actor,
-            ActivationGuard::ControlSubtypeAny(_) => self.state.objects.iter().any(|o| {
-                o.zone == Zone::Battlefield && o.owner == actor && guard.matches_card(o.card)
-            }),
+            ActivationGuard::ControlSubtypeAny(_) => {
+                self.state.objects.iter().enumerate().any(|(id, o)| {
+                    o.zone == Zone::Battlefield
+                        && o.owner == actor
+                        && guard
+                            .subtypes()
+                            .iter()
+                            .any(|s| self.has_subtype(id as CardId, s))
+                })
+            }
         }
     }
     pub(super) fn activation_cost_available(

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "d76d3a46366db177a3508381a9676ae979952dfc77e87db00051bed5f8f0bb01",
+  "catalogue_version": "6308cd9852add06732f6c36123993b6b3a06a0a6b037f16442b78acaf1374822",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1691,
-  "implemented_total": 1697,
+  "implemented_standard_cards": 1707,
+  "implemented_total": 1713,
   "token_definitions": 83,
   "emblem_definitions": 1,
   "cards": [
@@ -1516,8 +1516,8 @@
     {
       "name": "Astrologian's Planisphere",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "At Knifepoint",
@@ -1966,8 +1966,8 @@
     {
       "name": "Bard's Bow",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Bard's Company",
@@ -2590,8 +2590,8 @@
     {
       "name": "Black Mage's Rod",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Black Panther, Vanguard",
@@ -5812,8 +5812,8 @@
     {
       "name": "Dark Knight's Greatsword",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Dark Leo & Shredder",
@@ -7024,8 +7024,8 @@
     {
       "name": "Dragoon's Lance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Dragoon's Wyvern",
@@ -15640,8 +15640,8 @@
     {
       "name": "Machinist's Arsenal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Madame Hydra",
@@ -17008,8 +17008,8 @@
     {
       "name": "Monk's Fist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Monoist Circuit-Feeder",
@@ -17692,8 +17692,8 @@
     {
       "name": "Ninja's Blades",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Nita, Forum Conciliator",
@@ -18568,8 +18568,8 @@
     {
       "name": "Paladin's Arms",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Palani's Hatcher",
@@ -20584,8 +20584,8 @@
     {
       "name": "Red Mage's Rapier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Red Room Recruit",
@@ -21904,8 +21904,8 @@
     {
       "name": "Sage's Nouliths",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Sagu Pummeler",
@@ -22006,8 +22006,8 @@
     {
       "name": "Samurai's Katana",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Samut, Hazoret's Champion",
@@ -25384,8 +25384,8 @@
     {
       "name": "Summoner's Grimoire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Sun Warriors",
@@ -27178,8 +27178,8 @@
     {
       "name": "Thief's Knife",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Thieving Otter",
@@ -29926,8 +29926,8 @@
     {
       "name": "Warrior's Sword",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Wartime Protestors",
@@ -30286,8 +30286,8 @@
     {
       "name": "White Mage's Staff",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "White Tiger, Ava Ayala",

@@ -211,9 +211,9 @@ fn ten_complete_paid_casts_equip_static_characteristics_attack_effects_and_resid
             let item = packet(&g);
             let event = item.attachment_trigger.as_ref().unwrap();
             assert_eq!(event.grantor, g.object_ref(e));
-            assert_eq!(event.attacker, g.object_ref(bear));
+            assert_eq!(event.recipient, g.object_ref(bear));
             assert_eq!(event.granted, i >= 5);
-            assert_eq!(event.defender, p.other());
+            assert_eq!(event.defender, Some(p.other()));
             assert_eq!(
                 item.source_card,
                 g.state.objects[if i >= 5 { bear } else { e } as usize].card
@@ -744,7 +744,7 @@ fn initialized_bytes_include_every_owned_attack_context_and_public_snapshots_kee
         assert_eq!(o.stack, g.state.stack);
         let json = serde_json::to_value(o).unwrap();
         assert_eq!(
-            json["stack"][0]["attachment_trigger"]["attacker"]["card"],
+            json["stack"][0]["attachment_trigger"]["recipient"]["card"],
             c
         );
     }

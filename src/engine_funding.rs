@@ -125,11 +125,16 @@ fn funding_cost_payments(pool: [u128; 6], cost: ActivationCost, mut emit: impl F
 fn concrete_payment(payment: [u64; 6]) -> Mana {
     payment.map(|n| u32::try_from(n).capacity("mana payment exhausted"))
 }
-fn reserve_obligations(goal: FundingGoal, object: Option<&Object>, keywords: Keywords) -> bool {
+fn reserve_obligations(
+    goal: FundingGoal,
+    object: Option<&Object>,
+    keywords: Keywords,
+    subtypes: GrantedSubtypes,
+) -> bool {
     goal.reserve.is_none_or(|(reference, spec)| {
         object.is_some_and(|o| {
             o.generation == reference.generation
-                && Game::additional_object_matches(spec, goal.actor, o, keywords)
+                && Game::additional_object_matches(spec, goal.actor, o, keywords, subtypes)
         })
     })
 }
@@ -215,7 +220,7 @@ impl<'g> FundingState<'g> {
                             || object.owner == goal.actor
                                 && subtypes
                                     .iter()
-                                    .any(|subtype| object.card.has_subtype(subtype))
+                                    .any(|subtype| game.has_subtype(*id as CardId, subtype))
                             || (object.owner == goal.actor
                                 && ((convoke && object.card.is_creature())
                                     || object.card.mana_color().is_some()
@@ -268,7 +273,22 @@ impl<'g> FundingState<'g> {
             goal.reserve
                 .and_then(|(r, _)| self.resources.iter().find(|o| o.id == r.card))
                 .map_or(Keywords::NONE, |r| self.keywords(r)),
+            goal.reserve.map_or(GrantedSubtypes::default(), |(r, _)| {
+                self.granted_subtypes(r.card)
+            }),
         ) && source_obligations(goal, object, keywords, self.life)
+    }
+    fn granted_subtypes(&self, id: CardId) -> GrantedSubtypes {
+        let lookup = |id| {
+            self.resources
+                .iter()
+                .find(|r| r.id == id)
+                .map(|r| &r.object)
+                .or_else(|| self.game.state.objects.get(id as usize))
+        };
+        lookup(id).map_or_else(GrantedSubtypes::default, |target| {
+            self.game.granted_subtypes_with(id, target, lookup)
+        })
     }
     fn stat_value(&self, value: StatValue, source: &Resource) -> i128 {
         self.game.stat_value_with(
@@ -294,6 +314,7 @@ impl<'g> FundingState<'g> {
                         (id, object)
                     })
             },
+            &|id| self.granted_subtypes(id),
             if source.object.owner == self.actor {
                 self.life
             } else {
@@ -316,6 +337,9 @@ impl<'g> FundingState<'g> {
                     && let Some(spec) = source.object.card.attachment_bonus()
                 {
                     keywords = keywords.union(spec.keywords);
+                    if source.object.owner == self.game.state.active {
+                        keywords = keywords.union(source.object.card.attached_turn_keywords());
+                    }
                 }
             }
         }
@@ -337,8 +361,9 @@ impl<'g> FundingState<'g> {
                         .is_none_or(|value| self.stat_value(value, source) != 0)
                         && (!grant.requires_life_gain
                             || self.life_gained[source.object.owner.index()])
-                        && grant.matches(
+                        && grant.matches_characteristics(
                             target.object.card,
+                            self.granted_subtypes(target.id),
                             target.object.owner == source.object.owner,
                             target.id == source.id
                                 && target.object.generation == source.object.generation,
@@ -360,7 +385,9 @@ impl<'g> FundingState<'g> {
             ActivationGuard::ControlSubtypeAny(_) => self.resources.iter().any(|r| {
                 r.object.zone == Zone::Battlefield
                     && r.object.owner == actor
-                    && guard.matches_card(r.object.card)
+                    && guard.subtypes().iter().any(|s| {
+                        r.object.card.has_subtype(s) || self.granted_subtypes(r.id).contains(s)
+                    })
             }),
         }
     }
@@ -732,6 +759,9 @@ impl Game {
             goal.reserve
                 .filter(|(r, _)| (r.card as usize) < self.state.objects.len())
                 .map_or(Keywords::NONE, |(r, _)| self.keywords(r.card)),
+            goal.reserve.map_or(GrantedSubtypes::default(), |(r, _)| {
+                self.granted_subtypes(r.card)
+            }),
         ) || !source_obligations(
             goal,
             object,
@@ -1760,5 +1790,57 @@ mod celebration_funding_tests {
                 }
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod job_subtype_tests {
+    use super::super::tests::{scenario, spawn};
+    use super::*;
+    #[test]
+    fn job_overlay_removes_exact_grant_before_reserved_subtype_payment() {
+        let mut g = scenario();
+        let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+        let sword = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Warrior's Sword").unwrap(),
+            Zone::Battlefield,
+        );
+        assert!(g.attach_equipment(g.object_ref(sword), g.object_ref(bear)));
+        let spec = AdditionalCost {
+            kind: EffectChoiceKind::Sacrifice,
+            filter: SacrificeFilter {
+                keywords: Keywords::NONE,
+                source_only: false,
+                kinds: 1,
+                nonland: false,
+                other: false,
+                tokens: None,
+                artifact_enchantment_or_token: false,
+                subtype: Some("Warrior"),
+            },
+        };
+        let goal = FundingGoal {
+            actor: Player::P0,
+            required: [0; 6],
+            generic: 0,
+            source: None,
+            reserve: Some((g.object_ref(bear), spec)),
+        };
+        assert!(g.can_fund(goal));
+        let mut virtual_state = FundingState::from_game(&g, goal);
+        assert!(virtual_state.granted_subtypes(bear).contains("Warrior"));
+        assert!(virtual_state.obligations(goal));
+        virtual_state
+            .resources
+            .iter_mut()
+            .find(|r| r.id == sword)
+            .unwrap()
+            .object
+            .zone = Zone::Graveyard;
+        assert!(!virtual_state.granted_subtypes(bear).contains("Warrior"));
+        assert!(!virtual_state.obligations(goal));
+        assert!(g.has_subtype(bear, "Warrior"));
     }
 }
