@@ -3,10 +3,25 @@
   "catalogue_id": 2611,
   "oracle_id": "95ce305f-34bc-4d6d-b7ba-ffd4b2a25336",
   "facts_sha256": "04d546bcd091b9a07a582488021e23ac16646ef32833279d07194e0b7f7dff28",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "236d78cb8b72023b197caea54ed861605dde82d2fbf710b1528e503fa6e6d16f"
   },
-  "physical_metadata_sha256": "a365d7a87a7714fb022898c691ba49272faf7c75ae8cd4f0533993b285e664a2"
+  "physical_metadata_sha256": "a365d7a87a7714fb022898c691ba49272faf7c75ae8cd4f0533993b285e664a2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MaelstromPulse.java",
+  "java_sha256": "21b576e187dbdcce3e5b9e2f71435e58d148965400c556984b84d6bcbeaea851",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyAllNamedPermanentsEffect.java",
+      "sha256": "0bf1aeda84a66373006b3959cad7f0d2c924eea5eec5fc4dac63843d83053a18"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+      "sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+    }
+  ]
 }

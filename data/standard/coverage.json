@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "089a0a8e7582733b33d6999c05ec79b946858b1b897d5157d4243b9840bead62",
+  "catalogue_version": "854e5582aef2de73c2b336873a5763932b38c6fd8cf10aeead9130b77eb259ef",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2032,
-  "implemented_total": 2038,
+  "implemented_standard_cards": 2053,
+  "implemented_total": 2059,
   "token_definitions": 97,
   "emblem_definitions": 1,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 167,
-      "complete": 100
+      "gated": 166,
+      "complete": 101
     },
     "eoc": {
       "total": 8,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 287,
-      "gated": 140
+      "complete": 305,
+      "gated": 122
     },
     "fin": {
       "total": 305,
@@ -93,8 +93,8 @@
     },
     "inr": {
       "total": 4,
-      "complete": 1,
-      "gated": 3
+      "complete": 2,
+      "gated": 2
     },
     "jmp": {
       "total": 2,
@@ -181,8 +181,8 @@
     },
     "tle": {
       "total": 5,
-      "complete": 3,
-      "gated": 2
+      "complete": 4,
+      "gated": 1
     },
     "tmc": {
       "total": 1,
@@ -1515,8 +1515,8 @@
     {
       "name": "Angel of Vitality",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/angel_of_vitality.rs",
       "set": "fdn"
     },
@@ -3891,8 +3891,8 @@
     {
       "name": "Bloodthirsty Conqueror",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/bloodthirsty_conqueror.rs",
       "set": "fdn"
     },
@@ -9603,8 +9603,8 @@
     {
       "name": "Dread Summons",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/dread_summons.rs",
       "set": "fdn"
     },
@@ -9843,8 +9843,8 @@
     {
       "name": "Duress",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/duress.rs",
       "set": "fdn"
     },
@@ -11379,8 +11379,8 @@
     {
       "name": "Exemplar of Light",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/exemplar_of_light.rs",
       "set": "fdn"
     },
@@ -12067,8 +12067,8 @@
     {
       "name": "Feed the Swarm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tle/feed_the_swarm.rs",
       "set": "tle"
     },
@@ -12235,8 +12235,8 @@
     {
       "name": "Fiendish Panda",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/fiendish_panda.rs",
       "set": "fdn"
     },
@@ -14115,8 +14115,8 @@
     {
       "name": "Giant Cindermaw",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/giant_cindermaw.rs",
       "set": "fdn"
     },
@@ -17691,8 +17691,8 @@
     {
       "name": "Inspiration from Beyond",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/inspiration_from_beyond.rs",
       "set": "fdn"
     },
@@ -17947,8 +17947,8 @@
     {
       "name": "Involuntary Employment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/involuntary_employment.rs",
       "set": "fdn"
     },
@@ -21099,8 +21099,8 @@
     {
       "name": "Maelstrom Pulse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/inr/maelstrom_pulse.rs",
       "set": "inr"
     },
@@ -21635,8 +21635,8 @@
     {
       "name": "Massacre Wurm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/massacre_wurm.rs",
       "set": "fdn"
     },
@@ -22195,8 +22195,8 @@
     {
       "name": "Midnight Snack",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/midnight_snack.rs",
       "set": "fdn"
     },
@@ -25507,8 +25507,8 @@
     {
       "name": "Pilfer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/pilfer.rs",
       "set": "fdn"
     },
@@ -26059,8 +26059,8 @@
     {
       "name": "Primal Might",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/primal_might.rs",
       "set": "fdn"
     },
@@ -27003,8 +27003,8 @@
     {
       "name": "Raise the Past",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/raise_the_past.rs",
       "set": "fdn"
     },
@@ -28515,8 +28515,8 @@
     {
       "name": "Rise of the Dark Realms",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/rise_of_the_dark_realms.rs",
       "set": "fdn"
     },
@@ -29147,8 +29147,8 @@
     {
       "name": "Run Away Together",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/run_away_together.rs",
       "set": "ecl"
     },
@@ -37411,8 +37411,8 @@
     {
       "name": "Tragic Banshee",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/tragic_banshee.rs",
       "set": "fdn"
     },
@@ -37771,8 +37771,8 @@
     {
       "name": "Trygon Predator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/trygon_predator.rs",
       "set": "fdn"
     },
@@ -39107,8 +39107,8 @@
     {
       "name": "Vengeful Bloodwitch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/vengeful_bloodwitch.rs",
       "set": "fdn"
     },

@@ -484,6 +484,19 @@ impl Game {
             }
         }
         self.finish_zone_events(&events, &[]);
+        for event in &events {
+            if event.moved && event.destination == Zone::Battlefield {
+                let placed_by = self
+                    .state
+                    .resolving
+                    .as_ref()
+                    .map_or(event.before.controller, |r| r.item.controller);
+                let counters = self.state.objects[event.after.card as usize].counters;
+                for kind in CounterKind::ALL {
+                    self.self_counters_added(event.after, kind, counters.get(kind), placed_by);
+                }
+            }
+        }
         for (reference, controller, subtype, amount) in life_results {
             if self.object_ref(reference.card) == reference
                 && self.on_battlefield(reference.card)
@@ -580,6 +593,7 @@ impl Game {
                     continue;
                 }
                 let p = replacements::CounterPlacement {
+                    placed_by: m.controller,
                     object: m.before.reference,
                     card: m.before.card,
                     owner: m.before.owner,

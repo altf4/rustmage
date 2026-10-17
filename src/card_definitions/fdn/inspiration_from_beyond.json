@@ -3,10 +3,30 @@
   "catalogue_id": 2185,
   "oracle_id": "be87e410-4302-43ee-b880-56eedf2b3648",
   "facts_sha256": "b3d3927fec9f8f0a87418f501c6f5f9b705bafa4fdf38265f68e5d08545253e5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "de14f725aa2d19b3001684ce622d584b72b12fd154ee26a84ef12d7f4573354a"
   },
-  "physical_metadata_sha256": "ce56766028d66aee33238b91dd55db9d81ff93a5f1b0341839a4dff4de6b786c"
+  "physical_metadata_sha256": "ce56766028d66aee33238b91dd55db9d81ff93a5f1b0341839a4dff4de6b786c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InspirationFromBeyond.java",
+  "java_sha256": "18e1d884936dcc3ff0fef5b93c21db51cac78dfadba0112aeb212652c47b5fc8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashbackAbility.java",
+      "sha256": "6a3cea9f6a49b61f425bf267cc280a991d4d1315322b11059cd0604e0dd76e87"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CastFromGraveyardAbility.java",
+      "sha256": "d960ebf54f87db2baf2a23785c181bdfea863a60d493eb66707ba64becc77be9"
+    }
+  ]
 }

@@ -153,6 +153,7 @@ fn counter_order_is_owned_exact_once_both_seats_and_effect_only_does_not_change_
             let mut c = Counters::default();
             c.add(CounterKind::PlusOne, 1);
             let placement = replacements::CounterPlacement {
+                placed_by: p,
                 object: g.object_ref(bear),
                 card: Card::from_name("Bear Cub").unwrap(),
                 owner: p,

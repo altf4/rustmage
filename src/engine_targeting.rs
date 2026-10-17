@@ -164,16 +164,32 @@ impl Game {
                 if target == Target::Card(source.card) {
                     return false;
                 }
+                let distinct = matches!(
+                    spec.rule,
+                    TargetRule::Grouped {
+                        constraint: TargetGroupConstraint::DifferentControllers,
+                        ..
+                    }
+                );
                 let bucket = if matches!(spec.rule, TargetRule::Grouped { .. }) {
                     let Target::Card(id) = target else {
                         return false;
                     };
-                    self.state.objects[id as usize].owner.index()
+                    let object = &self.state.objects[id as usize];
+                    if distinct {
+                        object.controller.index()
+                    } else {
+                        object.owner.index()
+                    }
                 } else {
                     0
                 };
                 count[bucket] += 1;
-                count[bucket] >= usize::from(spec.min)
+                if distinct {
+                    spec.min <= 1 || spec.min <= 2 && count[0] > 0 && count[1] > 0
+                } else {
+                    count[bucket] >= usize::from(spec.min)
+                }
             })
         };
         match plan {
@@ -194,16 +210,32 @@ impl Game {
             }
             let mut count = [0usize; 2];
             self.visit_targets(spec.rule, actor, source, |target| {
+                let distinct = matches!(
+                    spec.rule,
+                    TargetRule::Grouped {
+                        constraint: TargetGroupConstraint::DifferentControllers,
+                        ..
+                    }
+                );
                 let bucket = if matches!(spec.rule, TargetRule::Grouped { .. }) {
                     let Target::Card(id) = target else {
                         return false;
                     };
-                    self.state.objects[id as usize].owner.index()
+                    let object = &self.state.objects[id as usize];
+                    if distinct {
+                        object.controller.index()
+                    } else {
+                        object.owner.index()
+                    }
                 } else {
                     0
                 };
                 count[bucket] += 1;
-                count[bucket] >= usize::from(spec.min)
+                if distinct {
+                    spec.min <= 1 || spec.min <= 2 && count[0] > 0 && count[1] > 0
+                } else {
+                    count[bucket] >= usize::from(spec.min)
+                }
             })
         };
         match plan {
@@ -221,11 +253,7 @@ impl Game {
         chosen: &[BoundTarget],
         target: Target,
     ) -> bool {
-        let TargetRule::Grouped {
-            constraint: TargetGroupConstraint::SameGraveyard,
-            ..
-        } = rule
-        else {
+        let TargetRule::Grouped { constraint, .. } = rule else {
             return true;
         };
         let Target::Card(id) = target else {
@@ -234,9 +262,56 @@ impl Game {
         let Some(object) = self.state.objects.get(id as usize) else {
             return false;
         };
-        object.zone == Zone::Graveyard && chosen.iter().filter(|b| b.group == group).all(|b| {
-            matches!(b.target, Target::Card(other) if self.state.objects.get(other as usize).is_some_and(|o| o.owner == object.owner))
-        })
+        match constraint {
+            TargetGroupConstraint::SameGraveyard => object.zone == Zone::Graveyard && chosen.iter().filter(|b| b.group == group).all(|b| {
+                matches!(b.target, Target::Card(other) if self.state.objects.get(other as usize).is_some_and(|o| o.owner == object.owner))
+            }),
+            TargetGroupConstraint::DifferentControllers => object.zone == Zone::Battlefield && chosen.iter().filter(|b| b.group == group).all(|b| {
+                matches!(b.target, Target::Card(other) if self.state.objects.get(other as usize).is_some_and(|o| o.controller != object.controller))
+            }),
+        }
+    }
+
+    pub(super) fn resolution_target_relations_hold(
+        &self,
+        item: &SpellView,
+        bound: BoundTarget,
+        plan: TargetPlan,
+    ) -> bool {
+        if !plan.group(bound.group).is_some_and(|g| {
+            matches!(
+                g.rule,
+                TargetRule::Grouped {
+                    constraint: TargetGroupConstraint::DifferentControllers,
+                    ..
+                }
+            )
+        }) {
+            return true;
+        }
+        let Target::Card(id) = bound.target else {
+            return false;
+        };
+        let controller = self.state.objects[id as usize].controller;
+        item.targets
+            .iter()
+            .filter(|other| other.group == bound.group && other.target != bound.target)
+            .all(|other| {
+                let Target::Card(other_id) = other.target else {
+                    return false;
+                };
+                let other_controller =
+                    if self.same_target_object(*other) && self.on_battlefield(other_id) {
+                        Some(self.state.objects[other_id as usize].controller)
+                    } else {
+                        item.target_controller_lki.as_ref().and_then(|history| {
+                            history.iter().find_map(|(reference, player)| {
+                                (Some(*reference) == other.object).then_some(*player)
+                            })
+                        })
+                    };
+                other_controller.is_some_and(|other| other != controller)
+            })
     }
 
     pub(super) fn choose_mana_cost(&mut self, index: u16) {
@@ -374,11 +449,29 @@ impl Game {
         departing: Option<CardId>,
     ) -> bool {
         match rule {
-            TargetRule::Grouped {
-                base,
-                constraint: TargetGroupConstraint::SameGraveyard,
+            TargetRule::GraveCreaturePower {
+                excluded_subtype,
+                maximum,
             } => {
-                return matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| o.zone == Zone::Graveyard))
+                let Target::Card(id) = target else {
+                    return false;
+                };
+                return self.state.objects.get(id as usize).is_some_and(|object| {
+                    object.zone == Zone::Graveyard
+                        && object.owner == controller
+                        && object.card.is_creature()
+                        && !object.card.has_subtype(excluded_subtype)
+                        && self.object_ref(id) != source
+                        && maximum
+                            .is_some_and(|max| i128::from(object.card.fixed_mana_value()) <= max)
+                });
+            }
+            TargetRule::Grouped { base, constraint } => {
+                let zone = match constraint {
+                    TargetGroupConstraint::SameGraveyard => Zone::Graveyard,
+                    TargetGroupConstraint::DifferentControllers => Zone::Battlefield,
+                };
+                return matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| o.zone == zone))
                     && self
                         .target_matches_without_hand(*base, controller, source, target, departing);
             }
@@ -627,6 +720,7 @@ impl Game {
         SpellView {
             gift: None,
             source_move: None,
+            target_controller_lki: None,
             reflexive_subject: None,
             crew: None,
             cast_event: None,

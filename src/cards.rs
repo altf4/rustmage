@@ -52,6 +52,7 @@ pub(crate) struct GiftSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetGroupConstraint {
     SameGraveyard,
+    DifferentControllers,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -66,9 +67,16 @@ pub(crate) enum TargetRule {
         base: &'static TargetRule,
         predicate: &'static TargetPredicate,
     },
+    GraveCreaturePower {
+        excluded_subtype: &'static str,
+        maximum: Option<i128>,
+    },
     Creature,
     /// Bound to the captured attachment attack defender before target selection.
     DefendingCreature,
+    DamagedPlayerPermanent {
+        kinds: u8,
+    },
     CreatureOrVehicle {
         relation: i8,
     },
@@ -390,6 +398,7 @@ impl RecoveryFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum MillAmount {
+    ChosenX,
     Fixed(u16),
     ControllerLife,
 }
@@ -588,6 +597,12 @@ pub(crate) enum Instruction {
         exile: bool,
     },
     /// Freeze a non-targeted battlefield group, then return it simultaneously.
+    GainControlUntilEndTurn,
+    ReturnGraveyardCreatures {
+        players: PlayerSet,
+        maximum_mana_value: u64,
+    },
+    DestroyTargetNameGroup,
     ReturnBattlefield {
         filters: &'static [BattlefieldFilter],
         attacking: bool,
@@ -642,6 +657,11 @@ pub(crate) enum Instruction {
     Mill(PlayerSet, MillAmount),
     MayMill(u16),
     RecoverMilled(RecoveryFilter),
+    CollectGraveyard,
+    RevealHandDiscard {
+        excluded_kinds: u16,
+    },
+    DestroyLoseManaValue,
     SelectMilled(MilledSelectionSpec),
     AttachSource,
     TapAttached,
@@ -784,6 +804,7 @@ pub(crate) enum Instruction {
     GainLife(PlayerSet, u16),
     GainLifeScaled(PlayerSet, AmountValue),
     LoseLife(PlayerSet, u16),
+    LoseLifeScaled(PlayerSet, AmountValue),
     /// Each opponent loses the frozen amount; the controller gains it once.
     DrainLifeScaled(AmountValue),
     /// Optional block containing the following `skip` instructions.
@@ -877,8 +898,10 @@ pub(crate) enum AmountValue {
     Fixed(u16),
     /// Explicit immutable parameter of the resolving spell or its exact ETB packet.
     ChosenX,
+    MilledCreatures,
     Stat(StatValue),
     LifeGainedThisTurn,
+    LifeEventAmount,
     CardsDiscardedThisTurn,
     Multiple {
         value: &'static AmountValue,
@@ -1425,6 +1448,13 @@ pub(crate) enum TriggerCondition {
         combat_only: bool,
         opponent_only: bool,
         one_or_more: bool,
+    },
+    LifeLost {
+        relation: CastRelation,
+    },
+    SelfCountersAdded {
+        kind: CounterKind,
+        controller_only: bool,
     },
     LifeGained {
         first_only: bool,

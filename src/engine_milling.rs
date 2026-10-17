@@ -12,6 +12,10 @@ impl Game {
         // does as much as possible and never attempts a draw from an empty library.
         let maximum = match amount {
             MillAmount::Fixed(n) => usize::from(n),
+            MillAmount::ChosenX => {
+                usize::try_from(self.state.resolving.as_ref().unwrap().item.x.unwrap_or(0))
+                    .unwrap_or(usize::MAX)
+            }
             MillAmount::ControllerLife => {
                 usize::try_from(self.state.players[controller.index()].life.max(0))
                     .unwrap_or(usize::MAX)

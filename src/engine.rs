@@ -385,6 +385,7 @@ define_actions! {
         payment: Mana,
     },
     DeclineResolutionMana,
+    ChooseRevealedDiscard { object: ObjectRef },
     RecoverMilled {
         object: Option<ObjectRef>,
     },
@@ -744,6 +745,10 @@ pub struct ReflexiveSubjectView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    /// Allocated only after a targeted permanent departs; these are public facts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[allow(clippy::box_collection)]
+    pub target_controller_lki: Option<Box<Vec<(ObjectRef, Player)>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gift: Option<Box<GiftContext>>,
     pub reflexive_subject: Option<Box<ReflexiveSubjectView>>,
@@ -780,9 +785,51 @@ pub struct SpellView {
 }
 
 impl SpellView {
+    fn needs_target_controller_lki(&self) -> bool {
+        // Legacy event packets can have no typed ability entry. They cannot
+        // contain a typed relational target plan and must not enter program().
+        match self.kind {
+            StackKind::TriggeredAbility { ability }
+                if self
+                    .trigger_definition()
+                    .triggers()
+                    .get(ability as usize)
+                    .is_none() =>
+            {
+                return false;
+            }
+            StackKind::ActivatedAbility { ability }
+                if self
+                    .source_card
+                    .activations()
+                    .get(ability as usize)
+                    .is_none() =>
+            {
+                return false;
+            }
+            _ => {}
+        }
+        let needs = |spec: TargetSpec| {
+            matches!(
+                spec.rule,
+                TargetRule::Grouped {
+                    constraint: TargetGroupConstraint::DifferentControllers,
+                    ..
+                }
+            )
+        };
+        self.program().is_some_and(|(plan, _)| match plan {
+            TargetPlan::Single(spec) => needs(spec),
+            TargetPlan::Groups(groups) => groups.iter().copied().any(needs),
+        })
+    }
     /// Heap-owned continuation payloads; inline packet storage is counted by its container.
     pub(super) fn owned_bytes(&self) -> usize {
-        self.gift
+        self.target_controller_lki.as_ref().map_or(0, |v| {
+            std::mem::size_of::<Vec<(ObjectRef, Player)>>()
+                + v.len() * std::mem::size_of::<(ObjectRef, Player)>()
+        }) + self
+            .gift
             .as_ref()
             .map_or(0, |_| std::mem::size_of::<GiftContext>())
             + self
@@ -869,6 +916,46 @@ impl SpellView {
             StackKind::TriggeredAbility { ability } => {
                 let a = &self.trigger_definition().triggers()[ability as usize];
                 let targets = match a.targets {
+                    TargetPlan::Single(mut spec)
+                        if matches!(spec.rule, TargetRule::DamagedPlayerPermanent { .. }) =>
+                    {
+                        let TargetRule::DamagedPlayerPermanent { kinds } = spec.rule else {
+                            unreachable!()
+                        };
+                        let player = self
+                            .damage_event
+                            .expect("damage-bound target requires event")
+                            .player;
+                        spec.rule = TargetRule::Object {
+                            zone: TargetZone::Battlefield,
+                            kinds,
+                            relation: if player == self.controller { 0 } else { 1 },
+                            other: false,
+                            nonland: false,
+                            tapped: false,
+                            min_mana: 0,
+                            max_mana: u32::MAX,
+                        };
+                        TargetPlan::Single(spec)
+                    }
+                    TargetPlan::Single(mut spec)
+                        if matches!(
+                            spec.rule,
+                            TargetRule::GraveCreaturePower { maximum: None, .. }
+                        ) =>
+                    {
+                        let TargetRule::GraveCreaturePower {
+                            excluded_subtype, ..
+                        } = spec.rule
+                        else {
+                            unreachable!()
+                        };
+                        spec.rule = TargetRule::GraveCreaturePower {
+                            excluded_subtype,
+                            maximum: Some(self.source_facts.power),
+                        };
+                        TargetPlan::Single(spec)
+                    }
                     TargetPlan::Single(mut spec) if spec.rule == TargetRule::DefendingCreature => {
                         if let Some(event) = &self.attachment_trigger {
                             spec.rule = TargetRule::Object {
@@ -1027,7 +1114,7 @@ pub struct DamageEvent {
     pub combat: bool,
 }
 
-/// A public life-gain event captured when an observer triggers.
+/// A public life-gain or life-loss event captured when an observer triggers.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct LifeTriggerView {
     pub player: Player,
@@ -1117,6 +1204,11 @@ enum Pending {
     MilledSelection {
         player: Player,
     },
+    RevealedDiscard {
+        player: Player,
+        victim: Player,
+        excluded_kinds: u16,
+    },
     RecoverMilled {
         player: Player,
         filter: RecoveryFilter,
@@ -1198,6 +1290,8 @@ enum Pending {
 /// Card definitions are enum/static data, never cloned object graphs or trait objects.
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    #[allow(clippy::box_collection)]
+    temporary_controls: Option<Box<Vec<TemporaryControlView>>>,
     casting_prohibited: bool,
     #[allow(clippy::box_collection)]
     temporary_abilities: Option<Box<Vec<TemporaryAbilityView>>>,
@@ -1513,6 +1607,7 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    pub temporary_controls: Vec<TemporaryControlView>,
     pub casting_prohibited: bool,
     pub death_exile_replacements: Vec<ExileDeathReplacementView>,
     pub temporary_abilities: Vec<TemporaryAbilityView>,
@@ -1714,6 +1809,7 @@ impl Game {
         let mut game = Self {
             revision: 0,
             state: State {
+                temporary_controls: None,
                 casting_prohibited: false,
                 replacements: None,
                 objects: objects.into(),
@@ -1843,6 +1939,7 @@ impl Game {
             | Pending::Role { player }
             | Pending::Legend { player }
             | Pending::MilledSelection { player }
+            | Pending::RevealedDiscard { player, .. }
             | Pending::RecoverMilled { player, .. }
             | Pending::EffectSearch { player }
             | Pending::EffectLibrarySelection { player }
@@ -2934,6 +3031,23 @@ impl Game {
                     }
                 }
             }
+            Pending::RevealedDiscard {
+                victim,
+                excluded_kinds,
+                ..
+            } => {
+                for (id, object) in s.objects.iter().enumerate() {
+                    if object.zone == Zone::Hand
+                        && object.owner == victim
+                        && object.card.kind_mask() & excluded_kinds == 0
+                        && emit(Action::ChooseRevealedDiscard {
+                            object: self.object_ref(id as CardId),
+                        })
+                    {
+                        return true;
+                    }
+                }
+            }
             Pending::RecoverMilled { player, filter } => {
                 if emit(Action::RecoverMilled { object: None }) {
                     return true;
@@ -3504,6 +3618,10 @@ impl Game {
             }
             Action::SelectMilled { object } => self.select_milled(object),
             Action::FinishMilledSelection => self.finish_milled_selection(),
+            Action::ChooseRevealedDiscard { object } => {
+                self.discard_batch(&[object.card], None);
+                self.run_program();
+            }
             Action::RecoverMilled { object } => self.recover_milled(object),
             Action::ChooseSearch { card } => self.choose_search(card),
             Action::FinishSearch => self.finish_search(actor),
@@ -3926,6 +4044,7 @@ impl Game {
                 .retain(|spell| spell.kind != StackKind::Spell || spell.object != before.reference);
         }
         if before.zone == Zone::Battlefield {
+            self.forget_temporary_control(before.reference);
             self.forget_role(before.reference);
             self.forget_base_stats(before.reference);
             self.forget_live_static_source(before.reference);
@@ -3941,6 +4060,22 @@ impl Game {
                 .chain(self.state.resolving.iter_mut().map(|r| &mut r.item))
                 .chain(self.state.announcing.iter_mut().map(|a| &mut a.item))
             {
+                if item.needs_target_controller_lki()
+                    && item
+                        .targets
+                        .iter()
+                        .any(|bound| bound.object == Some(before.reference))
+                {
+                    let history = item
+                        .target_controller_lki
+                        .get_or_insert_with(|| Box::new(Vec::new()));
+                    if !history
+                        .iter()
+                        .any(|(object, _)| *object == before.reference)
+                    {
+                        history.push((before.reference, before.controller));
+                    }
+                }
                 if item.object == before.reference {
                     item.source_keywords = before.keywords;
                     item.source_tapped = before.tapped;
@@ -4229,6 +4364,7 @@ impl Game {
             player.hexproof_until_end_turn = false;
         }
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
+        self.expire_temporary_controls();
         self.state.temporary_abilities = None;
         self.expire_base_stats();
         self.expire_keyword_effects();
@@ -4308,6 +4444,7 @@ impl Game {
                 .collect::<Vec<_>>()
         });
         let events = dealt.as_deref().unwrap_or(events);
+        let mut losses = [0i128; 2];
         let mut gains: Vec<LifeGainEvent> = Vec::new();
         let mut gain_indices: std::collections::BTreeMap<DamageSource, usize> =
             std::collections::BTreeMap::new();
@@ -4317,7 +4454,10 @@ impl Game {
             }
             match event.target {
                 Target::Player(p) => {
-                    self.lose_life(p, event.amount);
+                    self.lose_life_unobserved(p, event.amount);
+                    losses[p.index()] = losses[p.index()]
+                        .checked_add(event.amount)
+                        .capacity("damage life-loss batch exhausted");
                 }
                 Target::Card(id) => {
                     let creature = self.is_creature(id);
@@ -4367,6 +4507,9 @@ impl Game {
                     });
                 }
             }
+        }
+        for player in [Player::P0, Player::P1] {
+            self.life_lost_event(player, losses[player.index()]);
         }
         for gain in &gains {
             self.gain_life(gain.source.controller, gain.amount);
@@ -4569,6 +4712,10 @@ impl Game {
                 .suspected
                 .as_ref()
                 .map_or_else(Vec::new, |v| v.as_ref().clone()),
+            temporary_controls: s
+                .temporary_controls
+                .as_ref()
+                .map_or_else(Vec::new, |v| v.as_ref().clone()),
             temporary_abilities: s
                 .temporary_abilities
                 .as_ref()
@@ -4625,6 +4772,7 @@ impl Game {
                 Pending::EffectMana { .. } => "mana_choice",
                 Pending::EffectLibrary { .. } => "library_choice",
                 Pending::EffectLibrarySelection { .. } => "library_selection",
+                Pending::RevealedDiscard { .. } => "revealed_discard",
                 Pending::RecoverMilled { .. } => "recover_milled",
                 Pending::MilledSelection { .. } => "milled_selection",
                 Pending::EffectSearch { .. } => {
@@ -5006,6 +5154,7 @@ impl Game {
     pub fn state_bytes(&self) -> usize {
         let s = &self.state;
         std::mem::size_of::<State>()
+            + self.temporary_control_bytes()
             + self.temporary_ability_bytes()
             + self.suspected_bytes()
             + self.death_exile_bytes()
@@ -5767,3 +5916,17 @@ mod fdn_utility_seven_tests;
 #[cfg(test)]
 #[path = "engine_fdn_tribal_seven_tests.rs"]
 mod fdn_tribal_seven_tests;
+
+#[path = "engine_zone_effects.rs"]
+mod zone_effects;
+pub use zone_effects::TemporaryControlView;
+#[cfg(test)]
+#[path = "engine_fdn_life_seven_tests.rs"]
+mod fdn_life_seven_tests;
+#[cfg(test)]
+#[path = "engine_fdn_private_seven_tests.rs"]
+mod fdn_private_seven_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_zone_seven_tests.rs"]
+mod fdn_zone_seven_tests;

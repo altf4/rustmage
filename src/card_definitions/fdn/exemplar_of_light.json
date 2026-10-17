@@ -3,10 +3,30 @@
   "catalogue_id": 1396,
   "oracle_id": "9ad730b5-8950-4215-9319-387e2970dd22",
   "facts_sha256": "26951030f725df4c095a543129d59509cedbe18e0bf8d44bb05403de5597da3b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b017ca387d65151b27b5632489a377de5619f91d02fe55f077ce2e080b67d79a"
   },
-  "physical_metadata_sha256": "8ac7eb3379bed1b73344066e5e1c6fa91eb99ab924ae1df6db8bb3661b80357b"
+  "physical_metadata_sha256": "8ac7eb3379bed1b73344066e5e1c6fa91eb99ab924ae1df6db8bb3661b80357b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/ExemplarOfLight.java",
+  "java_sha256": "390898895224012cd7075292f00227fed37e742bdd0c559a18ee7dc0303ea7ef",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/GainLifeControllerTriggeredAbility.java",
+      "sha256": "368075cdc13fc2b881bea0dfadfa1135166c6c412c0602260aa8f0597a927d58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ]
 }

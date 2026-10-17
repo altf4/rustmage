@@ -161,7 +161,24 @@ impl Game {
                     item.source_facts.power.max(0) as u128
                 }
             }
+            AmountValue::LifeEventAmount => {
+                item.life_event.expect("saved life event").amount.max(0) as u128
+            }
             AmountValue::ChosenX => u128::from(item.x.unwrap_or(0)),
+            AmountValue::MilledCreatures => self
+                .state
+                .resolving
+                .as_ref()
+                .unwrap()
+                .milled
+                .iter()
+                .filter(|reference| {
+                    let object = &self.state.objects[reference.card as usize];
+                    object.generation == reference.generation
+                        && object.zone == Zone::Graveyard
+                        && object.card.is_creature()
+                })
+                .count() as u128,
             AmountValue::Multiple { value, factor } => self
                 .item_amount(*value, item)
                 .checked_mul(u128::from(factor))

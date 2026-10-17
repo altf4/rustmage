@@ -3,10 +3,20 @@
   "catalogue_id": 3162,
   "oracle_id": "d13f0907-de39-4a90-940a-831740d7aa9b",
   "facts_sha256": "44fcfae21c7f9fee177283ab12a3b84d9cc882828d9cbeced59cd728b7b9fe35",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "224f469a67ca24eee65206e24c056f554c6c59eae39982e70a7385ca0457e6e0"
   },
-  "physical_metadata_sha256": "4e8a976f84c2ce7d47392ad0973b3f4406aa225061b1f9a66b92854a4a209f2a"
+  "physical_metadata_sha256": "4e8a976f84c2ce7d47392ad0973b3f4406aa225061b1f9a66b92854a4a209f2a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/Pilfer.java",
+  "java_sha256": "ac09ad24d573070375833ced3ea5d672f9fe84dc0d1b4184986e39ad8a6e66cd",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardCardYouChooseTargetEffect.java",
+      "sha256": "ee3872ce6e44f3605b5b71fa77669461c11e8312bd1fbb0a486c5730c463de3d"
+    }
+  ]
 }

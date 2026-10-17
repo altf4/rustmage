@@ -1,6 +1,6 @@
 //! Typed immutable programs and owned, snapshot-safe execution continuations.
 use super::*;
-use crate::cards::{CastFilter, CastTarget};
+use crate::cards::{CastFilter, CastTarget, StaticAbilityFragment};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
@@ -123,6 +123,11 @@ impl Game {
     }
 
     pub(super) fn lose_life(&mut self, player: Player, amount: i128) {
+        self.lose_life_unobserved(player, amount);
+        self.life_lost_event(player, amount);
+    }
+
+    pub(super) fn lose_life_unobserved(&mut self, player: Player, amount: i128) {
         if amount <= 0 {
             return;
         }
@@ -137,10 +142,106 @@ impl Game {
             .capacity("life lost this turn representation exhausted");
     }
 
+    pub(super) fn life_lost_event(&mut self, player: Player, amount: i128) {
+        if amount <= 0 {
+            return;
+        }
+        let sources: Vec<_> = self
+            .state
+            .life_sources
+            .iter()
+            .filter(|&&id| {
+                self.state.objects[id as usize]
+                    .card
+                    .triggers()
+                    .iter()
+                    .any(|a| matches!(a.condition.event(), TriggerCondition::LifeLost { .. }))
+            })
+            .map(|&id| self.object_view(id))
+            .collect();
+        for source in sources {
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if let TriggerCondition::LifeLost { relation } = ability.condition.event() {
+                    let related = match relation {
+                        CastRelation::You => source.controller == player,
+                        CastRelation::Opponent => source.controller != player,
+                        CastRelation::Any => true,
+                    };
+                    if related && self.queue_trigger(&source, index) {
+                        self.state.pending_triggers.last_mut().unwrap().life_event =
+                            Some(LifeTriggerView { player, amount });
+                    }
+                }
+            }
+        }
+    }
+
+    pub(super) fn self_counters_added(
+        &mut self,
+        object: ObjectRef,
+        kind: CounterKind,
+        amount: u64,
+        placed_by: Player,
+    ) {
+        if amount == 0
+            || !self.on_battlefield(object.card)
+            || self.object_ref(object.card) != object
+        {
+            return;
+        }
+        if !self.state.objects[object.card as usize].card.triggers().iter().any(|a| matches!(a.condition.event(), TriggerCondition::SelfCountersAdded { kind: expected, .. } if expected == kind)) { return; }
+        let source = self.object_view(object.card);
+        for (index, ability) in source.card.triggers().iter().enumerate() {
+            if let TriggerCondition::SelfCountersAdded {
+                kind: expected,
+                controller_only,
+            } = ability.condition.event()
+                && kind == expected
+                && (!controller_only || source.controller == placed_by)
+            {
+                self.queue_trigger(&source, index);
+            }
+        }
+    }
+
     pub(super) fn gain_life(&mut self, player: Player, amount: i128) {
         if amount <= 0 {
             return;
         }
+        // These additive replacements commute; each available source applies once.
+        // Prohibition takes precedence and creates no life-gain event (CR101.2).
+        let query = self.characteristic_query();
+        let mut additional = 0i128;
+        for &id in &self.state.static_sources {
+            let source = &self.state.objects[id as usize];
+            for group in source.card.static_ability_groups() {
+                for fragment in group.fragments {
+                    match fragment {
+                        StaticAbilityFragment::CantGainLife
+                            if query.continuous_fragment_available(id, |f| {
+                                matches!(f, StaticAbilityFragment::CantGainLife)
+                            }) =>
+                        {
+                            return;
+                        }
+                        StaticAbilityFragment::LifeGainAdditional(n)
+                            if source.controller == player
+                                && query.continuous_fragment_available(id, |f| {
+                                    matches!(f, StaticAbilityFragment::LifeGainAdditional(_))
+                                }) =>
+                        {
+                            additional = additional
+                                .checked_add(i128::from(*n))
+                                .capacity("life replacement exhausted");
+                        }
+                        _ => {}
+                    }
+                }
+            }
+        }
+        let amount = amount
+            .checked_add(additional)
+            .capacity("life replacement exhausted");
         let state = &mut self.state.players[player.index()];
         state.life = state
             .life
@@ -335,6 +436,8 @@ impl Game {
                     | TriggerCondition::CreatureDiesFiltered { .. }
                     | TriggerCondition::Sacrificed { .. }
                     | TriggerCondition::LifeGained { .. }
+                    | TriggerCondition::LifeLost { .. }
+                    | TriggerCondition::SelfCountersAdded { .. }
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SelfAttacksAlone
@@ -538,6 +641,7 @@ impl Game {
         self.state.pending_triggers.push(SpellView {
             gift: None,
             source_move: None,
+            target_controller_lki: None,
             reflexive_subject: None,
             crew: None,
             cast_event: None,
@@ -986,8 +1090,18 @@ impl Game {
         let was_targeted = !item.targets.is_empty();
         let spec = self.target_spec(&item);
         let target_source = item.target_source();
+        // Preserve the whole original target set for relational legality. A departed
+        // target still contributes its last controller, even though it cannot move.
+        // The empty common case allocates nothing.
+        let relation_illegal: Vec<_> = item
+            .targets
+            .iter()
+            .copied()
+            .filter(|bound| !self.resolution_target_relations_hold(&item, *bound, spec))
+            .collect();
         item.targets.retain(|bound| {
-            self.same_target_object(*bound)
+            !relation_illegal.contains(bound)
+                && self.same_target_object(*bound)
                 && spec.group(bound.group).is_some_and(|group| {
                     self.target_matches(group.rule, item.controller, target_source, bound.target)
                 })
@@ -1585,6 +1699,12 @@ impl Game {
                 Instruction::MoveBattlefield { filters, exile } => {
                     self.move_battlefield_group(&item, filters, exile);
                 }
+                Instruction::GainControlUntilEndTurn => self.gain_control_until_end_turn(&item),
+                Instruction::ReturnGraveyardCreatures {
+                    players,
+                    maximum_mana_value,
+                } => self.return_graveyard_creatures(&item, players, maximum_mana_value),
+                Instruction::DestroyTargetNameGroup => self.destroy_target_name_group(&item),
                 Instruction::ReturnBattlefield {
                     filters,
                     attacking,
@@ -1677,6 +1797,81 @@ impl Game {
                     if self.start_milled_selection(spec) {
                         return;
                     }
+                }
+                Instruction::CollectGraveyard => {
+                    self.state.resolving.as_mut().unwrap().milled = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(_, object)| {
+                            object.zone == Zone::Graveyard && object.owner == item.controller
+                        })
+                        .map(|(id, object)| ObjectRef {
+                            card: id as CardId,
+                            generation: object.generation,
+                        })
+                        .collect();
+                }
+                Instruction::RevealHandDiscard { excluded_kinds } => {
+                    let Some(victim) = self.program_players(PlayerSet::Targeted, &item).next()
+                    else {
+                        continue;
+                    };
+                    let hand: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(_, object)| object.zone == Zone::Hand && object.owner == victim)
+                        .map(|(id, _)| self.object_ref(id as CardId))
+                        .collect();
+                    for reference in &hand {
+                        if !self.state.known_hand.contains(reference) {
+                            self.state.known_hand.push(*reference);
+                        }
+                    }
+                    if hand.iter().any(|reference| {
+                        self.state.objects[reference.card as usize].card.kind_mask()
+                            & excluded_kinds
+                            == 0
+                    }) {
+                        self.state.pending = Pending::RevealedDiscard {
+                            player: item.controller,
+                            victim,
+                            excluded_kinds,
+                        };
+                        return;
+                    }
+                }
+                Instruction::DestroyLoseManaValue => {
+                    let loss: u64 = item
+                        .targets
+                        .iter()
+                        .filter_map(|bound| {
+                            if !self.same_target_object(*bound) {
+                                return None;
+                            }
+                            if let Target::Card(id) = bound.target {
+                                Some(self.state.objects[id as usize].card.fixed_mana_value())
+                            } else {
+                                None
+                            }
+                        })
+                        .sum();
+                    let destroy: Vec<_> = item
+                        .targets
+                        .iter()
+                        .copied()
+                        .filter(|bound| match bound.target {
+                            Target::Card(id) => {
+                                !self.keywords(id).contains(Keywords::INDESTRUCTIBLE)
+                            }
+                            _ => false,
+                        })
+                        .collect();
+                    self.move_target_batch(&destroy, Zone::Graveyard);
+                    self.lose_life(item.controller, i128::from(loss));
                 }
                 Instruction::RecoverMilled(filter) => {
                     if self
@@ -1980,6 +2175,13 @@ impl Game {
                     let players: Vec<_> = self.program_players(set, &item).collect();
                     for player in players {
                         self.gain_life(player, amount);
+                    }
+                }
+                Instruction::LoseLifeScaled(set, value) => {
+                    let amount = i128::try_from(self.item_amount(value, &item))
+                        .capacity("life loss amount exhausted");
+                    for player in self.program_players(set, &item) {
+                        self.lose_life(player, amount);
                     }
                 }
                 Instruction::LoseLife(set, amount) => {
