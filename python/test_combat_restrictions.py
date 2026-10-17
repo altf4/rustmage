@@ -74,6 +74,8 @@ class CombatRestrictionTests(unittest.TestCase):
      if k=='PlayLand':return 2200-20*sum(v['card']==n and v['controller']==actor and v['zone']=='Battlefield' for v in objects.values())
      if k in ['AnnounceMana','TapMana','ActivateMana']:return 3000 if o['decision'] in ['pay_costs','resolution_mana'] else -1000
      if k in ['Discard','Bottom']:
+      if actor==p and stage!='finish' and n=='Bear Cub' and name in ['Tiger-Dillo','Pacifism'] and ally is None and sum(v['card']==n for v in hand)<=1:return -1000
+      if actor==p and stage!='finish' and n=='Candy Trail' and name in ['Mouser Mark III','Technodrome'] and artifact is None and sum(v['card']==n for v in hand)<=1:return -1000
       if actor==p and stage!='finish' and ((n==name and sum(v['card']==name for v in hand)<=1) or (name=='The Lion-Turtle' and n in ['Abandon Attachments','Fancy Footwork'] and len(lessons)<3) or (name in ['Tiger-Dillo','Technodrome'] and n=='Fancy Footwork' and sum(v['card']==n for v in hand)<=1)):return -1000
       return 2500 if n in ['Disenchant','Chrome Companion','Candy Trail'] else 1200
      if k=='Attack':return 3600 if actor==p and (stage=='finish' or (stage=='positive' and a['card']==source) or (name=='Pacifism' and stage=='enable' and ally is not None and a['card']==ally['id'])) else -1000
