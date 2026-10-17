@@ -316,3 +316,95 @@ fn actual_reliquary_additional_sacrifice_and_screen_union_targets_are_complete()
         }
     }
 }
+
+#[test]
+fn static_snare_actual_opposing_attackers_reduce_payment_and_preserve_owned_counts() {
+    for p in [Player::P0, Player::P1] {
+        for count in [1, 2] {
+            let mut g = scenario();
+            g.state.active = p.other();
+            g.state.priority = p.other();
+            g.state.step = Step::Attackers;
+            g.state.pending = Pending::Attackers;
+            let mut attacking = Vec::new();
+            for _ in 0..count {
+                attacking.push(named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield));
+            }
+            for &id in &attacking {
+                replay(&mut g, Action::Attack { card: id });
+            }
+            replay(&mut g, Action::FinishAttackers);
+            let snare = named(&mut g, p, "Static Snare", Zone::Hand);
+            g.state.priority = p;
+            let reference = g.object_ref(snare);
+            assert_eq!(g.stat_value(StatValue::AttackingCreatures, reference, p), 0);
+            assert_eq!(
+                g.stat_value(StatValue::AllAttackingCreatures, reference, p),
+                count
+            );
+            assert_eq!(g.spell_reduction(p, snare), count as u32);
+            g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 4 - count as u32];
+            cast(&mut g, snare, None);
+            assert_eq!(
+                g.state.stack.last().unwrap().cast.unwrap().payment,
+                [1, 0, 0, 0, 0, 4 - count as u32]
+            );
+            settle(&mut g, attacking[0]);
+            assert_eq!(g.object_view(attacking[0]).zone, Zone::Exile);
+            g.move_object(snare, Zone::Graveyard);
+            assert_eq!(g.object_view(attacking[0]).zone, Zone::Battlefield);
+        }
+    }
+}
+#[test]
+fn mandatory_reliquary_cost_cannot_reuse_its_only_mana_sacrifice() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario();
+        g.state.active = p;
+        g.state.priority = p;
+        let pizza = named(&mut g, p, "Omni-Cheese Pizza", Zone::Battlefield);
+        let source = named(&mut g, p, "Dusk Rose Reliquary", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        let before = g.snapshot();
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: source })
+        );
+        assert_eq!(g.snapshot(), before);
+        let bear = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        replay(&mut g, Action::AnnounceCast { card: source });
+        let reference = g.object_ref(bear);
+        replay(&mut g, Action::ChooseAdditionalCost { object: reference });
+        let mana = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a,Action::ActivateMana{card,..}if *card==pizza))
+            .unwrap();
+        replay(&mut g, mana);
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        replay(&mut g, pay);
+        assert_eq!(g.object_view(pizza).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(source).zone, Zone::Stack);
+    }
+}
+#[test]
+fn noncast_opposing_ward_recipient_attachment_is_a_choice_not_a_target() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario();
+        let recipient = named(&mut g, p.other(), "Toadstool Admirer", Zone::Battlefield);
+        let source = named(&mut g, p, "Super Strength", Zone::Hand);
+        g.stage_entries(vec![g.entry_move(source, Zone::Battlefield, false)], None);
+        assert!(g.advance_entries());
+        let old = g.object_ref(recipient);
+        replay(&mut g, Action::ChooseAuraAttachment { object: old });
+        assert_eq!(g.object_view(source).attached_to, Some(old));
+        assert!(g.state.stack.is_empty());
+        assert!(g.state.pending_triggers.is_empty());
+        assert_eq!(g.attachment_recipient(source), Some(old));
+    }
+}

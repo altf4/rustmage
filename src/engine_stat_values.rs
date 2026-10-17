@@ -107,6 +107,13 @@ impl Game {
                         && self.state.attackers.iter().any(|a| a.card == *id)
                 })
                 .count() as i128,
+            StatValue::AllAttackingCreatures => objects()
+                .filter(|(id, o)| {
+                    o.zone == Zone::Battlefield
+                        && kinds(*id, o) & 1 != 0
+                        && self.state.attackers.iter().any(|a| a.card == *id)
+                })
+                .count() as i128,
             StatValue::SourceAttacking => i128::from(
                 attacking
                     && objects().any(|(id, o)| {

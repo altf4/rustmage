@@ -23,8 +23,8 @@ read in full; acceptance must cover these residuals as well as linked exile.
 All ten names are grammar-derived, with no name-specific admission override.
 
 Local schema77,1770 Standard/1776total,84 token recipes. Catalogue fingerprint
-`4a58441aad0d01f9c058ee473c7907023fcfe0430e70ab7b04e83ecfa30684b2`.
-Exactly10 complete definitions change against main d3f8;5245 definitions are
+`d676d3a798a26663fc0c0206d7ea5c8d2e359b5310c78a12bf176dd73ee80fca`.
+Exactly10 complete definitions change against main d3f8;5258 definitions are
 byte-identical. Helper changes also include the narrow default Aura representation
 and real new additional costs/equip/crew/cycling/reduction data; no claim of wholly
 byte-identical helper tables is made.
@@ -42,3 +42,20 @@ Checkpoint evidence: all1612 preexisting unit tests passed on initial core;
 8 new native groups passed on the full ten-admission core;4 focused compiler
 methods passed with complete-body/cost/layout/unknown-residual negatives.
 Full paid public-library,Standard and broad final acceptance are still pending.
+
+
+The acceptance pilot found Static Snare initially reused the controller-only
+attacker count, incorrectly charging5 during an opponent's attack. A distinct
+`AllAttackingCreatures` earlier-layer value now implements its unqualified
+cost reduction while all existing own-attacker consumers retain their previous
+value. Both-seat native actual one/two-attacker payments validate4/3 costs;
+real paid public regression and the Standard driver assert4 with one enemy
+attacker. Cost locking continues through the existing announcement kernel.
+Artifact-only Auras remain closed against static keyword/creature-conditional
+grants until their complete noncreature keyword routing is implemented.
+
+The corrected core passes1623 unit tests plus12 integration tests(all targets),
+including11 new native groups. Broad compiler baseline had337passing methods
+and one stale additional-cost-count fixture(10→11 due Reliquary); corrected
+fixture plus final five-method focused module passes6 methods in3.070s.
+Final public/Standard and fresh broad acceptance remain in progress.

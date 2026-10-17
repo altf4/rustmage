@@ -2239,7 +2239,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIn(name,supported)
         for name in ['Grab the Prize','Pumpkin Bombardment','Souls Lost','Fear of Isolation']:
             self.assertNotIn(name,supported)
-        self.assertEqual(rust.count('=> Some(AdditionalCost {'),10)
+        self.assertEqual(rust.count('=> Some(AdditionalCost {'),11)
         prefix='As an additional cost to cast this spell, '
         for cost in ['discard two cards.','you may discard a card.','sacrifice two creatures.',
                      'discard a card or pay {2}.','sacrifice an artifact or pay {2}.',

@@ -34,9 +34,14 @@ class AttachmentWardCompilerTests(unittest.TestCase):
   hard=self.rows['Hardlight Containment']
   for clause in ['Enchant land','Enchant artifact an opponent controls','Enchant artifact with mana value 2 or less','Enchant artifact or creature you control']:
    self.assertFalse(self.admitted(dict(hard,oracle_text=hard['oracle_text'].replace('Enchant artifact you control',clause))))
-  for line in ['Enchanted creature has ward {1}.','Enchanted creature gets +1/+1 and has ward {1}.']:
+  for line in ['Enchanted creature has ward {1}.','Enchanted creature gets +1/+1 and has ward {1}.','Enchanted permanent has flying.']:
    for text in ['Enchant artifact you control\n'+line,line+'\nEnchant artifact you control']:
     self.assertFalse(self.admitted(dict(hard,oracle_text=text)))
+ def test_static_snare_unqualified_attacker_count_is_distinct_from_owned_counts(self):
+  c,discount=g.extract_cost_reductions(self.rows['Static Snare'])
+  self.assertEqual(len(discount),1);self.assertIn('StatValue::AllAttackingCreatures',discount[0])
+  self.assertEqual(g.stat_value('attacking creatures'),'StatValue::AttackingCreatures')
+  self.assertNotIn('costs',c['oracle_text'])
  def test_exact_targets_and_live_subtype_ir(self):
   for text,kinds in [('target artifact or creature an opponent controls',17),('target artifact, creature, or enchantment an opponent controls',49)]:
    rule,program=g.targeted_program('exile '+text+' until this enchantment leaves the battlefield.')

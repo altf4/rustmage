@@ -150,6 +150,7 @@ def extract_cost_reductions(card):
                 quantity=candidate;amount=1;source_only=True;filt='CastFilter::Any'
         elif m:=re.fullmatch(r'(?:Vivid — )?This spell costs \{([0-9]+)\} less to cast for each (.+)\.',line):
             quantity=reduction_quantity(m[2]);amount=int(m[1]);source_only=True;filt='CastFilter::Any'
+            if m[2] in ('attacking creature','attacking creatures'):quantity='StatValue::AllAttackingCreatures'
             if '{X}' in card.get('mana_cost','') and amount==1 and m[2]=='creature you control with power 4 or greater':derived='SpellReductionAmount::CreaturePowerCount { minimum: 4 }'
             if m[2]=='creature that attacked this turn':derived=f'SpellReductionAmount::Attackers {{ factor: {amount} }}'
         elif m:=re.fullmatch(r'This spell costs \{X\} less to cast, where X is (?:the number of )?(.+)\.',line):
@@ -2881,7 +2882,7 @@ def aura_template(card):
             keywords|=TEXT_FLAGS[('this creature '+line[len('Enchanted creature '):]).casefold()]
         else:
             body.append(line.replace('When this Aura enters, ','When this enchantment enters, ').replace('until this Aura leaves the battlefield.','until this enchantment leaves the battlefield.'))
-    if relation is None or (kinds!=1 and creature_grants and attached_abilities): return None
+    if relation is None or (kinds!=1 and (creature_grants or power or toughness or keywords)): return None
     result=permanent_program_template(dict(card,type_line='Enchantment',oracle_text='\n'.join(body)))
     if result is None:return None
     effect,intrinsic,abilities,activations,enters=result

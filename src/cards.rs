@@ -654,6 +654,8 @@ pub(crate) enum StatValue {
     NonlandEntriesThisTurn,
     SourceAttacking,
     AttackingCreatures,
+    /// Unqualified all-player count; distinct from controller-owned attackers.
+    AllAttackingCreatures,
     SourceModified,
     Tokens(CountFilter),
     AtLeast {
