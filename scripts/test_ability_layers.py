@@ -43,6 +43,18 @@ class AbilityLayerIdentityTests(unittest.TestCase):
         self.assertEqual({f.layer for f in groups[0].fragments}, {Layer.ABILITY, Layer.MODIFY})
         self.assertEqual(groups[0].raw, card['oracle_text'])
 
+    def test_actual_live_static_parent_keeps_archon_group_and_later_only_providers(self):
+        for name, first in [('Maha, Its Feathers Night', Layer.BASE), ('Aettir and Priwen', Layer.BASE), ('Archon of the Wild Rose', Layer.ABILITY), ('Burden of Proof', Layer.BASE)]:
+            with self.subTest(name=name):
+                groups = self.groups(name)
+                live = [x for x in groups if any(f.kind.startswith('live_static_') for f in x.fragments)]
+                self.assertEqual(len(live), 1)
+                self.assertEqual(live[0].first_layer, first)
+                if name == 'Archon of the Wild Rose':
+                    self.assertEqual({f.layer for f in live[0].fragments}, {Layer.ABILITY, Layer.BASE})
+                if name == 'Burden of Proof':
+                    self.assertEqual({f.layer for f in live[0].fragments}, {Layer.BASE, Layer.MODIFY, Layer.RULE})
+
     def test_attachment_stats_and_granted_ward_share_one_group_with_original_raw(self):
         for name in ['Lavaspur Boots', 'Super Strength', 'Ethereal Armor']:
             with self.subTest(name=name):

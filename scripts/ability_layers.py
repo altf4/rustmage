@@ -16,6 +16,7 @@ class Layer(IntEnum):
     CDA = 70
     BASE = 71
     MODIFY = 72
+    RULE = 100
 
 
 @dataclass(frozen=True)
@@ -73,7 +74,17 @@ def continuous_groups(card, parser):
                 fragments.append(Fragment('intrinsic_keywords', Layer.ABILITY, mask & ~changeling))
         # These extractors may rewrite a combined stats/keyword clause. Pass the
         # residual onward WITH the same origin, never assign a new synthetic ID.
-        residual, dynamic, scaling = parser.extract_stat_rules(one)
+        residual, live = parser.extract_live_static_stats(one)
+        for effect in live:
+            if re.search(r'(?:power|toughness): Some\(', effect):
+                fragments.append(Fragment('live_static_base', Layer.BASE, effect))
+            if any(int(value) for value in re.findall(r'bonus_(?:power|toughness): (-?[0-9]+)', effect)):
+                fragments.append(Fragment('live_static_bonus', Layer.MODIFY, effect))
+            if int(re.search(r'keywords: Keywords\(([0-9]+)\)', effect)[1]):
+                fragments.append(Fragment('live_static_keywords', Layer.ABILITY, effect))
+            if 'cannot_block_subtype: Some(' in effect:
+                fragments.append(Fragment('live_static_block_restriction', Layer.RULE, effect))
+        residual, dynamic, scaling = parser.extract_stat_rules(residual)
         if dynamic is not None:
             fragments.append(Fragment('dynamic_stats', Layer.CDA, dynamic))
         fragments.extend(Fragment('scaling_modifiers', Layer.MODIFY, s) for s in scaling)
