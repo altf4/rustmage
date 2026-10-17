@@ -1,12 +1,12 @@
 use super::tests::{scenario, spawn};
 use super::*;
 
-fn named(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
+pub(super) fn named(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
     let card = Card::from_name(name).unwrap();
     assert!(card.is_supported(), "{name}");
     spawn(g, p, card, zone)
 }
-fn checked(g: &mut Game, action: Action) {
+pub(super) fn checked(g: &mut Game, action: Action) {
     let actor = g.actor().unwrap();
     let revision = g.revision();
     let index = g
@@ -83,7 +83,7 @@ fn settle_on(g: &mut Game, chosen: Option<Target>) {
     }
     panic!("unsettled {:?}", g.state.pending);
 }
-fn setup(p: Player) -> Game {
+pub(super) fn setup(p: Player) -> Game {
     let mut g = scenario();
     g.state.active = p;
     g.state.priority = p;
@@ -93,7 +93,7 @@ fn setup(p: Player) -> Game {
     g
 }
 
-fn settle(g: &mut Game) {
+pub(super) fn settle(g: &mut Game) {
     settle_on(g, None);
 }
 fn reject(g: &mut Game, a: Action) {
@@ -103,7 +103,7 @@ fn reject(g: &mut Game, a: Action) {
     assert_eq!(g.snapshot(), before);
     assert_eq!(g.revision(), rev);
 }
-fn cast(g: &mut Game, id: CardId, mode: Option<u16>, targets: &[Target]) {
+pub(super) fn cast(g: &mut Game, id: CardId, mode: Option<u16>, targets: &[Target]) {
     checked(g, Action::AnnounceCast { card: id });
     if let Some(mode) = mode {
         reject(g, Action::ChooseMode { mode: 3 });
@@ -137,7 +137,7 @@ fn cast(g: &mut Game, id: CardId, mode: Option<u16>, targets: &[Target]) {
     panic!("unpaid");
 }
 
-fn next_turn(g: &mut Game) {
+pub(super) fn next_turn(g: &mut Game) {
     let turn = g.state.turn;
     for _ in 0..100 {
         if g.state.turn != turn {

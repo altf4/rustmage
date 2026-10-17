@@ -1,0 +1,9 @@
+{
+  "name": "Fresh Start",
+  "oracle_id": "77f1734d-ea0b-4344-8a9e-9d1a34eb6164",
+  "facts_sha256": "a67c8a0b13309f270545872725bf4834605da9ff18ed7baa20d7a187416b8e65",
+  "complete": true,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FreshStart.java",
+  "java_sha256": "912021bd4546c753b0a4d4eb7f81ea76457d8800c551edb5159d0bc0b9bd6657"
+}

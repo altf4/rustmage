@@ -7,6 +7,12 @@ impl Game {
             return false;
         };
         object.zone == Zone::Battlefield
+            && self.continuous_fragment_available(source, |fragment| {
+                matches!(
+                    fragment,
+                    crate::cards::StaticAbilityFragment::CombatRestriction(..)
+                )
+            })
             && if attack { rule.attack } else { rule.block }
             && match rule.subject {
                 Subject::Source => source == subject,

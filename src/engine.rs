@@ -3746,6 +3746,7 @@ impl Game {
             let source = &self.state.objects[id as usize];
             source.zone == Zone::Battlefield
                 && source.controller != controller
+                && self.printed_abilities_available(id)
                 && source.card.opponent_entry_tapped() & kinds != 0
         })
     }
@@ -5708,3 +5709,7 @@ mod tiered_tests;
 #[cfg(test)]
 #[path = "engine_ability_timeline_tests.rs"]
 mod ability_timeline_tests;
+
+#[cfg(test)]
+#[path = "engine_ability_removal_tests.rs"]
+mod ability_removal_tests;

@@ -129,9 +129,13 @@ impl Game {
             0
         } else {
             self.state.static_sources.iter().fold(0, |mask, &id| {
-                mask | self.state.objects[id as usize]
-                    .card
-                    .entry_trigger_suppression()
+                if self.printed_abilities_available(id) {
+                    mask | self.state.objects[id as usize]
+                        .card
+                        .entry_trigger_suppression()
+                } else {
+                    mask
+                }
             })
         };
         for event in events {

@@ -1874,7 +1874,10 @@ impl Card {
         generated::additional_cost(self)
     }
     pub(crate) fn static_ability_groups(self) -> &'static [StaticAbilityGroup] {
-        generated::static_ability_groups(self)
+        authored::rules(self).map_or_else(
+            || generated::static_ability_groups(self),
+            |rules| rules.static_groups,
+        )
     }
     pub(crate) fn live_static_effects(self) -> &'static [LiveStaticEffect] {
         generated::live_static_effects(self)
@@ -1916,7 +1919,7 @@ impl Card {
         generated::role(self)
     }
     pub(crate) fn aura(self) -> Option<AuraSpec> {
-        generated::aura(self)
+        authored::rules(self).map_or_else(|| generated::aura(self), |rules| rules.aura)
     }
     pub(crate) fn attachment_bonus(self) -> Option<EquipmentSpec> {
         self.equipment().or_else(|| self.aura().map(|a| a.bonus))

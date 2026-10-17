@@ -5526,8 +5526,8 @@ def compile_catalogue(snapshot, target):
             types=original['type_line'].split(' — ')[0].split()
             kind=sum(bit for label,bit in [('Creature',1),('Land',2),('Sorcery',4),('Instant',8),('Artifact',16),('Enchantment',32),('Planeswalker',64),('Kindred',128),('Battle',256)] if label in types)
             rules='authored::'+direct['module']+'::RULES'
-            tags='&['+', '.join(json.dumps(k) for k in original.get('keywords',[]))+']'
-            definitions.append(f'    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: Some({json.dumps(original["oracle_id"])}), mana_cost: {json.dumps(original["mana_cost"])}, type_line: {json.dumps(original["type_line"])}, oracle_keywords: {tags}, standard_legal: true, legendary: {str(original["type_line"].startswith("Legendary ")).lower()}, implemented: true, keywords: {rules}.keywords, deck_limit: Some(4) }}, effect: {rules}.checked_effect(), triggers: {rules}.triggers, activated: {rules}.activated, enters: {rules}.enters, entry: {rules}.entry, kind: {kind}, basic: false, mana_color: None, colored: {colored}, generic: {generic} }},')
+            tags='&['+', '.join(quote(k) for k in original.get('keywords',[]))+']'
+            definitions.append(f'    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: Some({quote(original["oracle_id"])}), mana_cost: {quote(original["mana_cost"])}, type_line: {quote(original["type_line"])}, oracle_keywords: {tags}, standard_legal: true, legendary: {str(original["type_line"].startswith("Legendary ")).lower()}, implemented: true, keywords: {rules}.keywords, deck_limit: Some(4) }}, effect: {rules}.checked_effect(), triggers: {rules}.triggers, activated: {rules}.activated, enters: {rules}.enters, entry: {rules}.entry, kind: {kind}, basic: false, mana_color: None, colored: {colored}, generic: {generic} }},')
             color_masks.append(sum(1 << 'WUBRG'.index(c) for c in original.get('colors',[])))
             supported.append(index)
             coverage.append(dict(name=name,standard_legal=True,implemented=True,implementation='authored_rust',definition='src/card_definitions/'+direct['module']+'.rs'))
