@@ -4,9 +4,13 @@ An **in-process Rust library** for fast, deterministic Magic simulation and sear
 No JVM, client/server connection, or network protocol runs in the simulation loop.
 Python can load the same library directly using the included `ctypes` binding.
 
+New card behavior is [authored directly in typed Rust](docs/direct-card-authoring.md),
+using reusable engine effects and independent per-card files. Existing templates
+remain available; English rules parsing is not required for new definitions.
+
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,979 have executable rules so far,
-with 3,185 still gated. The catalogue includes 97 token recipes and one emblem;
+knows all 5,164 pinned Standard identities; 1,983 have executable rules so far,
+with 3,181 still gated. The catalogue includes 97 token recipes and one emblem;
 observations use schema 105.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e9f1407962cec25fd2dda0499145391033d316ba241d4cd1e69689e142bbf2d0",
+  "catalogue_version": "2b7dcb15c2ff61094071dce2d937cbc40f348da76cca62abbdadeb05128ff886",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1979,
-  "implemented_total": 1985,
+  "implemented_standard_cards": 1983,
+  "implemented_total": 1989,
   "token_definitions": 97,
   "emblem_definitions": 1,
   "cards": [
@@ -8446,8 +8446,9 @@
     {
       "name": "Explosive Derailment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "authored_rust",
+      "definition": "src/card_definitions/explosive_derailment.rs"
     },
     {
       "name": "Explosive Getaway",
@@ -13558,8 +13559,9 @@
     {
       "name": "Jailbreak Scheme",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "authored_rust",
+      "definition": "src/card_definitions/jailbreak_scheme.rs"
     },
     {
       "name": "Jasmine Dragon Tea Shop",
@@ -20836,8 +20838,9 @@
     {
       "name": "Requisition Raid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "authored_rust",
+      "definition": "src/card_definitions/requisition_raid.rs"
     },
     {
       "name": "Requiting Hex",
@@ -21790,8 +21793,9 @@
     {
       "name": "Rustler Rampage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "authored_rust",
+      "definition": "src/card_definitions/rustler_rampage.rs"
     },
     {
       "name": "Ruthless Lawbringer",

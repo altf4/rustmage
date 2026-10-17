@@ -2,7 +2,7 @@ use super::tests::{scenario, spawn};
 use super::*;
 
 fn named(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
-    let card = Card::from_name(name).unwrap();
+    let card = Card::from_name(name).expect(name);
     assert!(card.is_supported(), "{name}");
     spawn(g, p, card, zone)
 }
@@ -994,3 +994,6 @@ fn paid_genemorph_resolution_setter_and_tiered_multiply_vincent_return_compose()
         );
     }
 }
+
+#[path = "engine_direct_cards_tests.rs"]
+mod direct_cards;
