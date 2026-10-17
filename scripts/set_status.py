@@ -62,7 +62,9 @@ def status(root, manifest):
         card = facts[row['oracle_id']]
         if digest(card) != row['facts_sha256'] or card['name'] != row['name']:
             raise ValueError('set facts changed: ' + row['name'])
-        entry = coverage[row['name']]
+        entry = coverage.get(row['name'])
+        if entry is None:
+            entry = coverage[card.get('card_faces', [card])[0]['name']]
         (admitted if entry['implemented'] else gated).append(row['name'])
     return dict(set=manifest['set'], total_cards=len(seen) + len(manifest['unresolved']),
                 admitted_cards=len(admitted), gated_cards=len(gated), unresolved=manifest['unresolved'],

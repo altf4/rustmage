@@ -51,5 +51,16 @@ class SetStatusTests(unittest.TestCase):
             self.assertEqual([c['oracle_id'] for c in manifest['cards']], ['starter'])
             self.assertEqual(manifest['cards'][0]['printings'], [])
 
+    def test_multiface_membership_uses_one_physical_identity(self):
+        card=dict(name='Front // Back', oracle_id='both', card_faces=[dict(name='Front'),dict(name='Back')])
+        manifest=dict(set='TEST', card_count=1, unresolved=[], cards=[dict(name=card['name'],oracle_id='both',facts_sha256=set_status.digest(card))])
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            (root/'data/standard').mkdir(parents=True)
+            (root/'data/standard/cards.json').write_text(json.dumps(dict(cards=[card])))
+            (root/'data/standard/coverage.json').write_text(json.dumps(dict(cards=[dict(name='Front',implemented=True)])))
+            report=set_status.status(root,manifest)
+            self.assertEqual((report['total_cards'],report['admitted_cards']),(1,1))
+
 if __name__ == '__main__':
     unittest.main()
