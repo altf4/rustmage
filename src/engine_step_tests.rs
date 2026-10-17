@@ -372,10 +372,10 @@ fn every_admitted_step_source_is_indexed_removed_and_restored_by_zone_changes() 
         }
         let indexed_in = |zone| {
             card.triggers().iter().any(|a| {
-                matches!(
-                    a.condition.event(),
-                    TriggerCondition::AtStep { .. } | TriggerCondition::Chapter { .. }
-                ) && a.condition.origin().unwrap_or(TargetZone::Battlefield) == zone
+                (matches!(a.condition.event(), TriggerCondition::AtStep { .. })
+                    || zone == TargetZone::Battlefield
+                        && matches!(a.condition.event(), TriggerCondition::Chapter { .. }))
+                    && a.condition.origin().unwrap_or(TargetZone::Battlefield) == zone
             })
         };
         let expected = indexed_in(TargetZone::Battlefield);
