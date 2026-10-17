@@ -113,11 +113,11 @@ impl ReplacementState {
                 })
                 .sum::<usize>()
             + self.active.as_ref().map_or(0, |b| {
-                std::mem::size_of::<Event>()
-                    + match b {
-                        Event::Counters(b) => counter_bytes(b),
-                        Event::Tokens(b) => token_bytes(b),
-                    }
+                // The inline Option<Event> storage is already in size_of::<Self>().
+                match b {
+                    Event::Counters(b) => counter_bytes(b),
+                    Event::Tokens(b) => token_bytes(b),
+                }
             })
             + self
                 .attachment
@@ -760,4 +760,64 @@ impl Game {
 pub struct CreatedTokenChoiceView {
     pub source: ObjectRef,
     pub candidates: Vec<ObjectRef>,
+}
+
+#[cfg(test)]
+mod owned_memory_tests {
+    use super::*;
+    #[test]
+    fn inline_active_storage_is_counted_once_and_nested_owned_payloads_remain_counted() {
+        let mut frame = ReplacementState {
+            work: VecDeque::new(),
+            active: None,
+            attachment: None,
+            resume: None,
+            mode: ResumeMode::Program,
+        };
+        let empty = frame.bytes();
+        frame.active = Some(Event::Tokens(TokenBatch {
+            player: Player::P0,
+            groups: Vec::new(),
+            effect: true,
+            used: Vec::new(),
+            completion: TokenCompletion::None,
+        }));
+        assert_eq!(
+            frame.bytes(),
+            empty,
+            "activating empty inline storage allocates no owned payload"
+        );
+        let Some(Event::Tokens(batch)) = frame.active.as_mut() else {
+            unreachable!()
+        };
+        batch.groups.push(TokenGroupView {
+            token: Card::Forest,
+            amount: 1,
+            tapped: false,
+        });
+        batch.used.push((
+            ObjectRef {
+                card: 0,
+                generation: 0,
+            },
+            0,
+        ));
+        let payload =
+            std::mem::size_of::<TokenGroupView>() + std::mem::size_of::<(ObjectRef, u16)>();
+        assert_eq!(frame.bytes(), empty + payload);
+        let mut entry = entries::EntryBatch {
+            moves: Vec::new(),
+            choices: Vec::new(),
+            next: 0,
+            counter_next: 0,
+            counter_order: Vec::new(),
+            resume: None,
+            shuffle_after: None,
+            replacement_resume: None,
+        };
+        let without_outer = entry.bytes();
+        entry.replacement_resume = Some(Box::new(frame.clone()));
+        assert_eq!(entry.bytes(), without_outer + frame.bytes());
+        assert_eq!(entry.clone().bytes(), entry.bytes());
+    }
 }
