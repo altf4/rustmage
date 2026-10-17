@@ -59,3 +59,13 @@ including11 new native groups. Broad compiler baseline had337passing methods
 and one stale additional-cost-count fixture(10→11 due Reliquary); corrected
 fixture plus final five-method focused module passes6 methods in3.070s.
 Final public/Standard and fresh broad acceptance remain in progress.
+
+
+Final shared grantor check retains the original noncreature-source requirement
+for all attachments: a creature Aura cannot legally enchant(303.4d), and a
+creature Equipment cannot remain attached. This removes an unnecessary Aura
+exception from the initial checkpoint without changing any admitted reachable
+route. All56 real paid public cases pass on the corrected5495 core(83.805s);
+final fresh full-suite acceptance follows the final one-line guard restoration.
+Selected additional helper provenance includes linked exile,attachment,
+sacrifice costs,Ward counter-unless-pay and Static Snare's all-player count.

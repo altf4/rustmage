@@ -29,6 +29,18 @@
         {
           "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
           "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+          "java_sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
         }
       ]
     },
@@ -57,6 +69,14 @@
         {
           "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
           "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+          "java_sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
         }
       ]
     },
@@ -85,6 +105,14 @@
         {
           "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
           "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
         }
       ]
     },
@@ -113,6 +141,14 @@
         {
           "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
           "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
         }
       ]
     },
@@ -141,6 +177,14 @@
         {
           "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
           "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
         }
       ]
     },
@@ -169,6 +213,18 @@
         {
           "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
           "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+          "java_sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
         }
       ]
     },
@@ -197,6 +253,18 @@
         {
           "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
           "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+          "java_sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
         }
       ]
     },
@@ -225,6 +293,14 @@
         {
           "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
           "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
         }
       ]
     },
@@ -253,6 +329,10 @@
         {
           "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
           "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+          "java_sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
         }
       ]
     },
@@ -281,6 +361,18 @@
         {
           "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
           "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+          "java_sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionForEachSourceEffect.java",
+          "java_sha256": "47265899e05cec6a04b65519e61353b4684a7c0c1bdf6abf04af79ae4c7708eb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+          "java_sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
         }
       ]
     }

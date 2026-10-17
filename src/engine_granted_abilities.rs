@@ -5,7 +5,7 @@ impl Game {
         let giver = self.state.objects.get(grantor as usize)?;
         let recipient = giver.attached_to?;
         (giver.zone == Zone::Battlefield
-            && (giver.card.aura().is_some() || !self.is_creature(grantor))
+            && !self.is_creature(grantor)
             && self.on_battlefield(recipient.card)
             && self.object_ref(recipient.card) == recipient
             && if giver.card.aura().is_some() {
