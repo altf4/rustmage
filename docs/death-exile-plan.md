@@ -1,8 +1,9 @@
 # Temporary would-die replacement — issue313
 
-This is an inventory/planning checkpoint, not an admission change. Actual parent
-is c0232954838cf71203a5be7c0e8fc80a66f6bf26. All eighteen audited Standard cards
-remain gated at this checkpoint. The [full audit](death-exile-admissions.json)
+Implementation checkpoint: actual parent is
+5d103e7a3172e4742687d3f77f3ed814264b1532. Exactly eleven complete bodies now
+compile; seven retain their explicit full-body dependencies. Broad public and
+workload acceptance remain pending; this is not a delivery claim. The [full audit](death-exile-admissions.json)
 contains complete card metadata, 242 source records and 88 unique Java files at
 492369c7844b8d76479f0393ff9eb6b0b0cf30d7. Every pinned blob matches the checkout.
 Every explicit class import resolves; dependency wildcard imports are listed
@@ -40,3 +41,24 @@ prior canonical programs/helpers/colors/recipes; pin complete source provenance.
 All native/Clippy/compiler/API and natural Standard workload evidence must retain
 its exact source/library scope. Two independent NONAUTHOR final-head approvals
 are required before merge. Full Standard remains incomplete.
+
+
+The first native checkpoint `f17ef2c` passes ten groups, including sixty actual
+paid body/mode/seat/ownership cases for all eleven complete bodies and fifteen
+mode vectors. Additional actual paid controls cover temporary return-grant
+suppression after nonlethal damage plus Murder, caster-relative Lesson damage,
+color-union target exclusion, stale combined-mode targets, partially valid target
+groups and a paid Negate. Every announced action checks wrong-actor atomicity,
+raw/index equivalence, owned child survival after parent drop and restore/replay.
+Six primitive groups separately cover exact incarnation, token direct-exile
+visibility before token state actions, simultaneous marked/unmarked movement,
+sparse memory/observation ownership, source departure and cleanup expiry.
+
+All currently admitted would-die replacement rows have the same mandatory exile
+destination. Duplicate-source order is tested as idempotent; this does not claim
+an implemented choice UI for future conflicting battlefield-to-graveyard
+replacement destinations. The seven gated full bodies remain dependencies.
+The exact-target clause is unconditional on actual damage, unlike Torch the
+Tower's unimplemented actual-damage binding. No protection/prevention kernel is
+claimed by these tests. Earlier compile/fixture failures are retained in logs;
+none is relabeled as passing. Native paid claims begin at `f17ef2c`.

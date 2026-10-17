@@ -176,7 +176,7 @@ class AttachmentAttackTests(unittest.TestCase):
                     elif i == 5 and packet['source_card'] == name and isinstance(packet['kind'], dict) and packet['kind']['ActivatedAbility']['ability'] == 0:
                         root, baseline = packet, obs
                 after = self.replay(game, obs, j)
-                self.assertEqual(after['schema'], 89)
+                self.assertEqual(after['schema'], 92)
                 if frame:
                     window, library_count, grave_count = surveil
                     if after['library_choice']:
