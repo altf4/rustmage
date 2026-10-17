@@ -10,6 +10,8 @@ pub(super) struct EntryMove {
     pub attachment: Option<ObjectRef>,
     /// Owned completion tied to this move's actual successful public result.
     pub role_after: Option<(Card, Player)>,
+    /// Counters put on this object as part of entering by the surrounding effect.
+    pub effect_counter: Option<(CounterKind, u64)>,
     pub attacking: Option<CombatDefender>,
     pub skipped: bool,
     pub reveal_hand: bool,
@@ -144,6 +146,7 @@ impl Game {
             tapped,
             attachment: None,
             role_after: None,
+            effect_counter: None,
             attacking: None,
             skipped: false,
             reveal_hand: false,
@@ -176,6 +179,11 @@ impl Game {
                 movement.cast_payment,
                 movement.controller,
             );
+            if movement.destination == Zone::Battlefield
+                && let Some((kind, amount)) = movement.effect_counter
+            {
+                movement.counters.add(kind, amount);
+            }
             if movement.before.card.x_entry_counters() && movement.destination == Zone::Battlefield
             {
                 movement

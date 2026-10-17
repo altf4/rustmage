@@ -579,6 +579,13 @@ pub(crate) enum Instruction {
         power: i32,
         toughness: i32,
     },
+    GrantUntilEndTurn {
+        ability: u16,
+    },
+    ReturnGrantedSource {
+        counter: Option<(CounterKind, u64)>,
+        role: Option<Card>,
+    },
     GrantKeywords {
         subject: Subject,
         keywords: Keywords,

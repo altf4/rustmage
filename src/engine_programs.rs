@@ -198,6 +198,7 @@ impl Game {
         if !event.moved {
             return;
         }
+        self.temporary_departure_triggers(event);
         if event.before.zone == Zone::Battlefield && event.destination == Zone::Graveyard {
             // Departure triggers look back at the entire pre-event battlefield;
             // simultaneous departures still see each other exactly once.
@@ -421,7 +422,17 @@ impl Game {
         index: usize,
         event: &ZoneChange,
     ) -> bool {
-        if !self.queue_trigger(source, index) {
+        self.queue_zone_trigger_from(source, index, event, None)
+    }
+
+    pub(super) fn queue_zone_trigger_from(
+        &mut self,
+        source: &ObjectView,
+        index: usize,
+        event: &ZoneChange,
+        grant: Option<Box<AttachmentTriggerView>>,
+    ) -> bool {
+        if !self.queue_trigger_from(source, index, grant) {
             return false;
         }
         // Only the movement which actually triggered this ability may bind its
@@ -1853,6 +1864,12 @@ impl Game {
                             }
                         }
                     }
+                }
+                Instruction::GrantUntilEndTurn { ability } => {
+                    self.grant_temporary_ability(&item, ability)
+                }
+                Instruction::ReturnGrantedSource { counter, role } => {
+                    self.return_granted_source(&item, counter, role)
                 }
                 Instruction::GrantKeywords { subject, keywords } => match subject {
                     Subject::Entering => {
