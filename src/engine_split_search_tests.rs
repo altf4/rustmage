@@ -404,7 +404,7 @@ fn complete_troop_activation_requires_ready_untapped_body_and_two_mana_then_sacr
 fn zero_qualifying_forests_still_search_shuffles_then_shuffles_the_actual_omen_source() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
-        for id in g.state.players[p.index()].library.to_vec() {
+        for id in g.state.players[p.index()].library.iter().copied() {
             g.state.objects[id as usize].card = Card::Plains;
         }
         let source = begin(&mut g, p, true, false);
