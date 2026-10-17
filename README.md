@@ -5,8 +5,8 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,832 have executable rules so far,
-with 3,332 still gated. The catalogue includes 88 token recipes and one emblem;
+knows all 5,164 pinned Standard identities; 1,835 have executable rules so far,
+with 3,329 still gated. The catalogue includes 88 token recipes and one emblem;
 observations use schema 83.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
@@ -15,7 +15,7 @@ The first training target is [current Standard, pinned to October 15, 2026](docs
 [Warp](docs/warp.md) adds twelve complete Warp bodies plus two shared-rule bodies, with paid casting, counterable delayed exile and exact paid recast permissions.
 [Crew and Vehicles](docs/crew-vehicles.md) add24 complete bodies with private exact power costs, live battlefield animation, printed spell identity and sparse owned rollback state.
 [Single-face Sagas](docs/sagas.md) add twelve complete bodies with typed lore counters, ordinary chapter packets and exact-incarnation final-chapter sacrifice.
-[Adventure faces](docs/adventure.md) and [eight further complete pairs](docs/adventure-land-targets.md) and [exact milled selection](docs/adventure-milled-selection.md) provide thirty-three complete pairs with paid inset casts and owned normal-play exile permissions; [typed attachment Ward](docs/attachment-ward.md) adds ten complete bodies. Their [composition record](docs/review-pr-258.md) tracks combined validation.
+[Adventure faces](docs/adventure.md) and [eight further complete pairs](docs/adventure-land-targets.md) and [exact milled selection](docs/adventure-milled-selection.md) and [cast and attack events](docs/adventure-event-predicates.md) provide thirty-six complete pairs with paid inset casts and owned normal-play exile permissions; [typed attachment Ward](docs/attachment-ward.md) adds ten complete bodies. Their [composition record](docs/review-pr-258.md) tracks combined validation.
 [Omen spell faces](docs/omens.md) add all thirteen pinned complete pairs with chosen characteristics and owner-library shuffle completion. [Chosen-spell timing](docs/cast-timing.md) completes Whirlwing; [selected-face X](docs/selected-face-x.md) completes Scavenger. [Grouped graveyard targets](docs/single-graveyard.md) and [split search destinations](docs/split-library-search.md) complete the remaining pairs.
 [Job Select](docs/job-select.md) adds all sixteen complete Equipment bodies with live subtype grants,
 recipient-owned abilities and private Ninja/Summoner continuations.

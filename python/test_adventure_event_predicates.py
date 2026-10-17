@@ -35,7 +35,8 @@ class AdventureEventTests(unittest.TestCase):
     quiet=o['decision']=='priority' and not o['stack'] and not o['announcing'] and not o['resolving']
     if quiet and stage=='wait_inset':
      self.assertEqual(objects[source]['zone'],'Exile');self.assertTrue(any(v['object']==objects[source]['reference'] for v in o['adventures']))
-     if i==0:self.assertEqual(objects[target]['zone'],'Library')
+     if i==0:
+      move=o['last_target_library_move'];self.assertEqual(move['target_before']['card'],target);self.assertEqual(move['destination'],'Top');self.assertEqual(move['owner'],p);self.assertNotIn(target,objects)
      if i==1:self.assertEqual(objects[target]['zone'],'Hand')
      if i==2:self.assertEqual(objects[target]['power'],4)
      inset_effect=True;stage='normal'
