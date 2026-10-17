@@ -66,7 +66,7 @@ class PlotTests(unittest.TestCase):
     request=o['plot_payment']
     if request:
      self.assertEqual(actor,p);self.assertIsNone(g.observe(other)['plot_payment']);self.assertFalse(o['stack']);self.assertIsNone(o['announcing']);self.assertEqual(objects[request['object']['card']]['zone'],'Hand')
-     self.denied(g,o,{'kind':'Pass'});self.denied(g,dict(o,actor=other),{'kind':'PayPlot','payment':[0]*6})
+     self.denied(g,o,{'kind':'Pass'});self.denied(g,o,{'kind':'PayPlot','payment':[0]*6});self.denied(g,dict(o,actor=other),{'kind':'PayPlot','payment':[0]*6})
     if special and o['turn']==plotted_turn:
      self.denied(g,o,{'kind':'AnnouncePlotted','card':source})
     def score(a):
@@ -85,7 +85,6 @@ class PlotTests(unittest.TestCase):
        return 1750 if need or loan else -1000
       if n=='Shock':return 1850 if i in [1,11,12] and bears and not death and len(lands)>=6 and (special and o['turn']>plotted_turn if plotted else source_fundable) else -1000
       return -1000
-     if k=='ChooseTarget':return 2100 if a['target']=={'Card':bears[0]['id']} and bears else 1000
      if k=='PlayLand':
       n=objects[a['card']]['card'];count=sum(v['card']==n for v in own)
       return 1600 if n==preferred and count<2 else 1580 if n=='Forest' and count<2 else 1500-count*20
@@ -104,7 +103,7 @@ class PlotTests(unittest.TestCase):
     j=max(range(len(o['actions'])),key=lambda j:safe_score(o['actions'][j]));a=o['actions'][j];ann=o['announcing']
     if a['kind']=='AnnouncePlot':source=a['card']
     if a['kind']=='PayPlot':
-     before_count=o['players'][pi]['spells_cast_this_turn'];before_ref=request['object'];before_next=o['next_stack_id'] if 'next_stack_id'in o else None
+     before_count=o['players'][pi]['spells_cast_this_turn'];before_ref=request['object']
     if a['kind'] in ['AnnounceCast','AnnouncePlotted'] and objects[a['card']]['card']==name:source=a['card'];cast=True
     if a['kind']=='PayCosts' and ann and ann['kind']=='Spell':
      if ann['source_card']=='Shock':death=True;death_turn=o['turn']
@@ -114,6 +113,7 @@ class PlotTests(unittest.TestCase):
     if a['kind']=='PayPlot':
      special=True;plotted_turn=o['turn'];self.assertEqual(after['actor'],p);self.assertEqual(after['players'][pi]['spells_cast_this_turn'],before_count)
      permission=next(v for v in after['plotted_cards'] if v['object']['card']==source);self.assertEqual(permission['object']['generation'],before_ref['generation']+1);self.assertEqual(permission['plotted_turn'],plotted_turn);self.assertEqual(after['plotted_cards'],g.observe(other)['plotted_cards'])
+     for rejected in [{'kind':'AnnounceCast','card':source},{'kind':'AnnounceExile','card':source},{'kind':'BeginCast','card':source,'payment':[0]*6},{'kind':'Cast','card':source,'target':None,'payment':[0]*6}]:self.denied(g,after,rejected)
     if a['kind']=='PayCosts' and ann and ann['kind']=='Spell' and ann['source_card']==name:
      spell=next(v for v in after['stack'] if v['card']==source and v['kind']=='Spell');self.assertEqual(spell['cast']['origin'],'Exile' if plotted else 'Hand');self.assertEqual(spell['cast']['method'],'Plot' if plotted else 'Normal')
    self.fail(('no completed body',name,p,plotted))
