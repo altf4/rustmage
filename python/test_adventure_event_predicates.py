@@ -44,8 +44,8 @@ class AdventureEventTests(unittest.TestCase):
      self.assertEqual(objects[source]['zone'],'Battlefield');self.assertEqual(objects[source]['controller'],p);stage='finish'
     for packet in o['stack']:
      if packet['card']==source and isinstance(packet['kind'],dict) and 'TriggeredAbility' in packet['kind']:
-      if i<2:
-       self.assertEqual(packet['cast_event']['controller'],p if i==0 else q);self.assertEqual(packet['controller'],p)
+      self.assertEqual(packet['controller'],p)
+      if i==1:self.assertEqual(packet['cast_event']['controller'],q)
       event=True
     if i==2 and stage=='finish' and any(v['card'].endswith('Food Token') and v['owner']==p for v in own):event=True
     ready=quiet and len(lands)>=6 and (dead if i==0 else ally)
