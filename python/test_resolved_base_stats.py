@@ -139,7 +139,7 @@ class ResolvedBasePublicTests(unittest.TestCase):
       if stage=='setup'and name=='Atomic Microsizer'and n=='Bear Cub'and bear is None:return 4500
       if stage=='setup'and n=='Quick Study'and quiet and mana>=5:return 2800
       return -1000
-     if k=='AnnounceActivate':return 5000 if actor==p and a['card']==source and ((stage=='power'and a['ability']==1 and mana>=3)or(stage=='hand'and a['ability']==0 and handtown)or(stage=='equip'and a['ability']==0))else -1000
+     if k=='AnnounceActivate':return 5000 if actor==p and a['card']==source and ((stage=='power'and a['ability']==1 and mana>=3 and o['active']==p and not body['summoning_sick']and not body['tapped'])or(stage=='hand'and a['ability']==0 and handtown)or(stage=='equip'and a['ability']==0))else -1000
      if k=='ChooseTarget':return 5000 if a['target'].get('Card')==bear else -1000
      if k=='PutHandLand':return 5000 if objects[a['object']['card']]['card']in towns else -1000
      if k=='DeclineHandEntry':return -1000
