@@ -5213,3 +5213,7 @@ mod split_search_tests;
 #[cfg(test)]
 #[path = "engine_adventure_land_targets_tests.rs"]
 mod adventure_land_targets_tests;
+
+#[cfg(test)]
+#[path = "engine_graveyard_recovery_tests.rs"]
+mod graveyard_recovery_tests;
