@@ -45,7 +45,7 @@ capture; the simultaneous-movement path captures every pre-event view first.
 
 ## Verification scope
 
-The actual-main canonical check proves precisely ten changed definitions,
+The historical `5d103e7` parent canonical check proves precisely ten changed definitions,
 5,321 preserved definitions, all 888 prior helper arms preserved and three added
 helper arms; all recipes, aliases, colors and flag tables are unchanged. Six new
 compiler methods cover complete bodies, reserved-name variants, every generic
@@ -80,8 +80,15 @@ all 30 naturally drawn paid cases pass in 89.210s with 25,868 owned frames and
 30 vectors in 247.543s: 81,625 owned frames and 163,250 denials, with unchanged
 859 source inputs, driver/manifest/library metadata and optimized library hash.
 These are test workloads with repeated owned checks and Python/JSON overhead,
-not native engine speed measurements. The 275 existing public API methods are
-still running separately against the explicit fresh library and schema93.
+not native engine speed measurements. The full 275-method existing public API run
+at `ed7165d` completed in 1,328.766s: 272 methods passed, while three split-search
+methods produced ten subtest assertion failures because two older example scripts
+still expected schema89. There were no errors or skips; every frozen source and
+the library hash remained unchanged. At `af8e0ef`, only those three schema
+assertions in the two example files were corrected. All three affected methods
+then passed in 4.481s against the same explicit schema93 library, with all 859
+frozen source inputs and the library unchanged. The historical full run remains
+recorded as failed; the narrow rerun does not turn it into a green full run.
 The first API harness failed to redirect default library paths and was interrupted;
 its failed partial scope is preserved separately and is not a suite result.
 Two earlier paid-policy runs reached 14 cases before consuming opposing Opts
@@ -90,6 +97,10 @@ policies retain that failed scope and do not change engine production behavior.
 All 48 remaining base-stat family bodies are tracked in
 [issue324](https://github.com/altf4/rustmage/issues/324), including the eventual
 Oracle/rules-based implementation of the source-absent Galion.
+
+Delivery will compose the actual Gift and Suspect predecessors and use schema96;
+the schema93 evidence above remains scoped to the original historical parent.
+Fresh composed rules, canonical preservation and acceptance gates remain required.
 
 Independent whole-batch preliminary reviews found no production issues; final
 published-head confirmations and the final composed evidence are still required.
