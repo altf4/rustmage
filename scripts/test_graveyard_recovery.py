@@ -138,8 +138,8 @@ class GraveyardRecoveryTests(unittest.TestCase):
     def test_historical_recovery_union_preserves_prior_programs_helpers_colors_recipes(self):
         import subprocess
         old=subprocess.check_output(['git','-C',str(g.ROOT),'show','c676f59:src/generated/catalogue.rs'],text=True)
-        # Preserve the historical nineteen-card delivery; this batch has its
-        # own exact comparison against actual merged main in test_enchanted_draw.
+        # Historical recovery/source-binding proof remains pinned; subsequent
+        # families provide exact union proofs against their actual merged parent.
         new=subprocess.check_output(['git','-C',str(g.ROOT),'show','ce9a90a1867ce741387d3ed0a1aac0aa1592ca08:src/generated/catalogue.rs'],text=True)
         definitions=lambda text:[line for line in text.splitlines() if line.lstrip().startswith('Definition {')]
         before,after=definitions(old),definitions(new)

@@ -332,6 +332,7 @@ impl Game {
                     | TriggerCondition::LifeGained { .. }
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::SelfAttacks
+                    | TriggerCondition::SelfAttacksAlone
                     | TriggerCondition::SelfAttacksWhileSaddled
                     | TriggerCondition::SelfSaddledFirst
                     | TriggerCondition::EquippedAttacks
@@ -520,7 +521,8 @@ impl Game {
     /// A spell becomes cast only after every declaration and cost is complete.
     /// Completed insertion paths share this hook; abilities never count as casts.
     pub(super) fn push_stack_item(&mut self, item: SpellView) {
-        let cast = (item.kind == StackKind::Spell).then_some((item.controller, item.source_card));
+        let cast = (item.kind == StackKind::Spell && item.cast.is_some())
+            .then_some((item.controller, item.source_card));
         self.state.stack.push(item);
         let Some((caster, card)) = cast else { return };
         self.record_cast(caster, card, Some(self.state.stack.len() - 1));
@@ -540,30 +542,46 @@ impl Game {
         source: &ObjectView,
         targets: &[BoundTarget],
     ) -> bool {
-        self.cast_filter_matches_value(filter, card, card.fixed_mana_value(), source, targets)
+        self.cast_filter_matches_value(
+            filter,
+            card,
+            card.fixed_mana_value(),
+            source.controller,
+            source,
+            targets,
+        )
     }
     fn cast_filter_matches_value(
         &self,
         filter: CastFilter,
         card: Card,
         mana_value: u64,
+        caster: Player,
         source: &ObjectView,
         targets: &[BoundTarget],
     ) -> bool {
         match filter {
-            CastFilter::AnyOf(filters) => filters
-                .iter()
-                .any(|f| self.cast_filter_matches_value(*f, card, mana_value, source, targets)),
+            CastFilter::InstantSorceryOrdinal(wanted) => {
+                CastFilter::InstantSorcery.matches(card)
+                    && self.state.players[caster.index()].instant_sorcery_cast_this_turn == wanted
+            }
+            CastFilter::AnyOf(filters) => filters.iter().any(|f| {
+                self.cast_filter_matches_value(*f, card, mana_value, caster, source, targets)
+            }),
             CastFilter::ManaValueMaximum { filter, maximum } => {
                 mana_value <= maximum
-                    && self.cast_filter_matches_value(*filter, card, mana_value, source, targets)
+                    && self.cast_filter_matches_value(
+                        *filter, card, mana_value, caster, source, targets,
+                    )
             }
             CastFilter::ManaValueMinimum { filter, minimum } => {
                 mana_value >= minimum
-                    && self.cast_filter_matches_value(*filter, card, mana_value, source, targets)
+                    && self.cast_filter_matches_value(
+                        *filter, card, mana_value, caster, source, targets,
+                    )
             }
             CastFilter::Targeted { filter, target } => {
-                self.cast_filter_matches_value(*filter, card, mana_value, source, targets)
+                self.cast_filter_matches_value(*filter, card, mana_value, caster, source, targets)
                     && targets.iter().any(|bound| {
                         if let Target::Player(player) = bound.target {
                             return target == CastTarget::OpponentOrCreature
@@ -606,6 +624,12 @@ impl Game {
         let count = &mut self.state.players[caster.index()].spells_cast_this_turn;
         *count = count.checked_add(1).capacity("spell count exhausted");
         let ordinal = *count;
+        if CastFilter::InstantSorcery.matches(card) {
+            let count = &mut self.state.players[caster.index()].instant_sorcery_cast_this_turn;
+            *count = count
+                .checked_add(1)
+                .capacity("qualifying spell count exhausted");
+        }
         let cast_event = stack.and_then(|i| {
             let item = &self.state.stack[i];
             item.cast.map(|cast| CastPaymentEvent {
@@ -645,6 +669,7 @@ impl Game {
                             stack
                                 .map(|i| self.state.stack[i].mana_value())
                                 .unwrap_or_else(|| card.fixed_mana_value()),
+                            caster,
                             &source,
                             stack
                                 .map(|i| self.state.stack[i].targets.as_slice())
@@ -652,7 +677,13 @@ impl Game {
                         )
                         && wanted.is_none_or(|wanted| wanted == ordinal)
                         && self.queue_trigger_from(&source, index, grant.map(Box::new))
-                        && ability.condition.mana_spent_rule().is_some()
+                        && (ability.condition.mana_spent_rule().is_some()
+                            || ability.program.iter().any(|instruction| {
+                                matches!(
+                                    instruction,
+                                    Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
+                                )
+                            }))
                     {
                         self.state.pending_triggers.last_mut().unwrap().cast_event =
                             cast_event.map(Box::new);
@@ -816,10 +847,20 @@ impl Game {
         }
     }
 
+    #[cfg(test)]
     pub(super) fn attack_triggers(&mut self, source: &ObjectView) {
+        self.attack_triggers_for_declaration(source, 1);
+    }
+
+    pub(super) fn attack_triggers_for_declaration(
+        &mut self,
+        source: &ObjectView,
+        declared_count: usize,
+    ) {
         for (index, ability) in source.card.triggers().iter().enumerate() {
             if match ability.condition.event() {
                 TriggerCondition::SelfAttacks | TriggerCondition::SelfEntersOrAttacks => true,
+                TriggerCondition::SelfAttacksAlone => declared_count == 1,
                 TriggerCondition::SelfAttacksWhileSaddled
                 | TriggerCondition::SelfEntersOrAttacksWhileSaddled => source.saddled,
                 _ => false,
@@ -1019,6 +1060,15 @@ impl Game {
     ) -> impl Iterator<Item = Player> + use<> {
         let controller = item.controller;
         let players = match set {
+            PlayerSet::CastingPlayer => [
+                Some(
+                    item.cast_event
+                        .as_ref()
+                        .expect("casting player requires cast event")
+                        .controller,
+                ),
+                None,
+            ],
             PlayerSet::DamagedPlayer => [
                 Some(
                     item.damage_event

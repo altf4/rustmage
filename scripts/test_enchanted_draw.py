@@ -35,14 +35,14 @@ class EnchantedDrawCompilerTests(unittest.TestCase):
    self.assertFalse(self.compiled(dict(c,oracle_text=text+' (You win the game.)'))[1])
   self.assertIsNone(g.statement_program('you lose 65536 life and you draw an additional card.'))
  def test_exact_parent_generated_code_changes_only_one_definition(self):
-  old=subprocess.check_output(['git','-C',str(g.ROOT),'show','ce9a90a:src/generated/catalogue.rs'],text=True)
-  new=(g.ROOT/'src/generated/catalogue.rs').read_text()
-  rows=lambda s:[l for l in s.splitlines() if l.lstrip().startswith('Definition {')]
-  a,b=rows(old),rows(new);self.assertEqual(len(a),5328);self.assertEqual(len(a),len(b))
-  changed=[(x,y) for x,y in zip(a,b) if x!=y];self.assertEqual(len(changed),1)
-  self.assertIn('name: '+json.dumps(NAME)+',',changed[0][0]);self.assertIn('implemented: false',changed[0][0]);self.assertIn('implemented: true',changed[0][1])
-  def unrelated(s):return '\n'.join(l for l in s.splitlines() if not (l.startswith('pub const CATALOGUE_VERSION:') or 'pub const ALL:' in l or l in [v for pair in changed for v in pair]))
-  self.assertEqual(unrelated(old),unrelated(new))
+  from scripts.catalogue_preservation import canonical,assert_union
+  old=subprocess.check_output(['git','-C',str(g.ROOT),'show','804f539567d2f50b27c801915a3eb5afd7f8d692:src/generated/catalogue.rs'],text=True)
+  cards=json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards'];physical={c['oracle_id']:c['name'] for c in cards}
+  before=canonical(old,physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  report=assert_union(before,after,changed={NAME+'#0'},added=set(),helpers=set(),aliases={})
+  self.assertEqual(report['prior_definitions'],5331);self.assertEqual(report['preserved_definitions'],5330);self.assertEqual(report['token_recipes'],94)
+  mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unauthorized program'
+  with self.assertRaises(AssertionError):assert_union(before,mutant,changed={NAME+'#0'},added=set(),helpers=set(),aliases={})
  def test_complete_pinned_record_and_every_direct_java_import(self):
   manifest=json.loads((g.ROOT/'docs/enchanted-draw-admissions.json').read_text());row=manifest['cards'][0]
   for key in ['name','oracle_id','mana_cost','type_line','oracle_text']:self.assertEqual(row[key],self.card[key])
