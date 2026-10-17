@@ -5434,3 +5434,7 @@ mod temporary_death_grants_tests;
 #[cfg(test)]
 #[path = "engine_target_exclusion_tests.rs"]
 mod target_exclusion_tests;
+
+#[cfg(test)]
+#[path = "engine_battlefield_return_tests.rs"]
+mod battlefield_return_tests;
