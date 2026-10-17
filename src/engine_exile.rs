@@ -41,6 +41,26 @@ impl Game {
         if ids.is_empty() {
             return;
         }
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        for event in &events {
+            if event.moved && event.destination == Zone::Exile {
+                self.grant_exile_play_permission(player, event.after, next_turn);
+            }
+        }
+        self.finish_zone_events(&events, &[]);
+    }
+
+    pub(super) fn grant_exile_play_permission(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+        next_turn: bool,
+    ) {
+        if self.object_ref(object.card) != object
+            || self.state.objects[object.card as usize].zone != Zone::Exile
+        {
+            return;
+        }
         let expires_turn = self
             .state
             .turn
@@ -50,24 +70,48 @@ impl Game {
                 0
             })
             .capacity("exile permission deadline exhausted");
+        let at = self
+            .state
+            .exile_permissions
+            .partition_point(|p| p.object.card < object.card);
+        self.state.exile_permissions.insert(
+            at,
+            ExilePlayPermission {
+                object,
+                player,
+                expires_turn,
+            },
+        );
+    }
+
+    pub(super) fn exile_top_choose_play(
+        &mut self,
+        player: Player,
+        amount: u16,
+        next_turn: bool,
+    ) -> bool {
+        let ids: Vec<_> = self.state.players[player.index()]
+            .library
+            .iter()
+            .rev()
+            .take(usize::from(amount))
+            .copied()
+            .collect();
         let events = self.move_objects_raw(&ids, Zone::Exile);
-        for event in &events {
-            if event.moved && event.destination == Zone::Exile {
-                let at = self
-                    .state
-                    .exile_permissions
-                    .partition_point(|p| p.object.card < event.after.card);
-                self.state.exile_permissions.insert(
-                    at,
-                    ExilePlayPermission {
-                        object: event.after,
-                        player,
-                        expires_turn,
-                    },
-                );
-            }
-        }
+        self.state.resolving.as_mut().unwrap().milled = events
+            .iter()
+            .filter(|e| e.moved && e.destination == Zone::Exile)
+            .map(|e| e.after)
+            .collect();
         self.finish_zone_events(&events, &[]);
+        self.start_milled_selection(MilledSelectionSpec {
+            filter: MilledFilter::Any,
+            count: MilledCount::Range {
+                minimum: 1,
+                maximum: 1,
+            },
+            destination: MilledDestination::PlayPermission { next_turn },
+        })
     }
 
     pub(super) fn exile_until_source_leaves(&mut self, item: &SpellView) {
