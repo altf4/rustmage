@@ -4,7 +4,7 @@ from pathlib import Path
 spec=importlib.util.spec_from_file_location('saga_generator',Path(__file__).with_name('generate_catalogue.py'))
 g=importlib.util.module_from_spec(spec);spec.loader.exec_module(g)
 CORE=['Summon: Choco/Mog','Summon: Esper Ramuh','Summon: Fat Chocobo','Summon: G.F. Ifrit']
-NAMES=CORE+['Burn, Burn, Tree and Fern','Summon: Anima','Leaves from the Vine','Summon: Primal Garuda','Welcome to Sweettooth',"The Huntsman's Redemption",'Roar of Endless Song','Summon: Shiva']
+NAMES=CORE+['Burn, Burn, Tree and Fern','Summon: Anima','Leaves from the Vine','Summon: Primal Garuda','Welcome to Sweettooth',"The Huntsman's Redemption",'Roar of Endless Song','Summon: Shiva','Korvold and the Noble Thief']
 class SagaCompilerTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):cls.cards={c['name']:c for c in json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards']}
@@ -28,7 +28,7 @@ class SagaCompilerTests(unittest.TestCase):
    self.assertFalse(self.implemented(dict(c,oracle_text=text+'\n(You win the game.)')),name)
    if ' (If a permanent with a stun counter' in text:
     self.assertFalse(self.implemented(dict(c,oracle_text=text.replace('remove one from it instead.','draw a card instead.'))),name)
-   if ' (It\'s an artifact with' in text:
+   if ' (It\'s an artifact with' in text and 'You gain 3 life.' in text:
     self.assertFalse(self.implemented(dict(c,oracle_text=text.replace('You gain 3 life.','You win the game.'))),name)
  def test_real_composite_selectors_and_read_ahead_remain_closed(self):
   controls=[('Appeal to Eirdu',g.extract_convoke,'Convoke'),('Candy Grapple',g.extract_bargain,'Bargain'),("Djinn of Fool's Fall",g.extract_plot,'Plot'),('Burst Lightning',g.extract_kicker,'Kicker')]

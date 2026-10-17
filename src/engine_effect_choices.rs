@@ -27,7 +27,12 @@ impl Game {
         object: ObjectRef,
     ) -> bool {
         let o = &self.state.objects[object.card as usize];
-        if o.owner != player
+        let hand_choice = matches!(
+            choice.kind,
+            EffectChoiceKind::Discard | EffectChoiceKind::HandCreature
+        );
+        let entitled_player = if hand_choice { o.owner } else { o.controller };
+        if entitled_player != player
             || self.object_ref(object.card) != object
             || choice.selected[player.index()].contains(&object)
         {
@@ -125,7 +130,7 @@ impl Game {
         }
         for (id, o) in self.state.objects.iter().enumerate() {
             if o.zone == Zone::Battlefield
-                && o.owner == player.other()
+                && o.controller == player.other()
                 && o.card.is_planeswalker()
                 && emit(Action::ChooseHandDefender {
                     defender: CombatDefender::Planeswalker(self.object_ref(id as CardId)),
@@ -185,7 +190,7 @@ impl Game {
                     .enumerate()
                     .filter(|(id, o)| {
                         o.zone == Zone::Battlefield
-                            && o.owner == player
+                            && o.controller == player
                             && self.is_creature(*id as CardId)
                     })
                     .map(|(id, _)| self.object_view(id as CardId).power)
@@ -240,7 +245,7 @@ impl Game {
             if enchantment && choice.hand_defender.is_none() {
                 if self.state.objects.iter().any(|o| {
                     o.zone == Zone::Battlefield
-                        && o.owner == player.other()
+                        && o.controller == player.other()
                         && o.card.is_planeswalker()
                 }) {
                     self.state.pending = Pending::HandDefender { player };

@@ -14,19 +14,24 @@ impl Game {
         if self.can_play_adventure(player, card) || self.can_cast_warped(player, card) {
             return true;
         }
-        self.state
-            .exile_permissions
-            .binary_search_by_key(&card, |p| p.object.card)
-            .ok()
-            .is_some_and(|i| {
-                let p = self.state.exile_permissions[i];
-                p.player == player
-                    && p.object == self.object_ref(card)
-                    && p.expires_turn >= self.state.turn
-            })
+        self.state.exile_permissions.iter().any(|p| {
+            p.player == player
+                && p.object == self.object_ref(card)
+                && p.expires_turn >= self.state.turn
+        })
     }
     pub(super) fn exile_top_play(&mut self, player: Player, amount: u16, next_turn: bool) {
-        let ids: Vec<_> = self.state.players[player.index()]
+        self.exile_top_play_from(player, player, amount, next_turn);
+    }
+
+    pub(super) fn exile_top_play_from(
+        &mut self,
+        library_owner: Player,
+        player: Player,
+        amount: u16,
+        next_turn: bool,
+    ) {
+        let ids: Vec<_> = self.state.players[library_owner.index()]
             .library
             .iter()
             .rev()

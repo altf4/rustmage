@@ -76,7 +76,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Target::Card(id) => observation
                 .objects
                 .iter()
-                .any(|o| o.id == id && o.owner == actor),
+                .any(|o| o.id == id && o.controller == actor),
             Target::Spell(id) => observation.stack.iter().any(|item| {
                 item.kind == StackKind::Spell && item.card == id && item.controller == actor
             }),
@@ -89,7 +89,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             && aura.bonus.stats.toughness >= 0
             && !aura.bonus.keywords.contains(crate::Keywords::DEFENDER)
             && !aura.bonus.keywords.contains(crate::Keywords::CANT_BLOCK);
-        let own = matches!(target, Target::Card(id) if observation.objects.iter().any(|o|o.id==id && o.owner==actor));
+        let own = matches!(target, Target::Card(id) if observation.objects.iter().any(|o|o.id==id && o.controller==actor));
         if own == beneficial { 70 } else { -10 }
     };
     let score = |action: &Action| -> i128 {

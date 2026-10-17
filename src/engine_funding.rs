@@ -49,6 +49,7 @@ struct ResourceKey {
     used: u64,
     gained: Keywords,
     owned: bool,
+    controlled: bool,
     attacking: bool,
     identity: Option<CardId>,
     attached: Option<(CardId, u64)>,
@@ -238,7 +239,7 @@ impl<'g> FundingState<'g> {
         // mana sources, so virtual sacrifices invalidate later guarded moves.
         let mut subtypes = Vec::new();
         for object in &game.state.objects {
-            if object.zone == Zone::Battlefield && object.owner == goal.actor {
+            if object.zone == Zone::Battlefield && object.controller == goal.actor {
                 for ability in object.card.activations() {
                     if ability.mana_production().is_some() {
                         for subtype in ability.guard.subtypes() {
@@ -265,11 +266,11 @@ impl<'g> FundingState<'g> {
                         && (object.card.attachment_bonus().is_some()
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.owner == goal.actor
+                            || object.controller == goal.actor
                                 && subtypes
                                     .iter()
                                     .any(|subtype| game.has_subtype(*id as CardId, subtype))
-                            || (object.owner == goal.actor
+                            || (object.controller == goal.actor
                                 && ((convoke
                                     && game.object_kinds(*id as CardId, object) & 1 != 0)
                                     || object.card.mana_color().is_some()
@@ -340,7 +341,7 @@ impl<'g> FundingState<'g> {
                 card: source.id,
                 generation: source.object.generation,
             },
-            source.object.owner,
+            source.object.controller,
             &|| {
                 self.game
                     .state
@@ -359,10 +360,10 @@ impl<'g> FundingState<'g> {
             },
             &|id| self.granted_subtypes(id),
             &|id, o| self.game.object_kinds(id, o),
-            if source.object.owner == self.actor {
+            if source.object.controller == self.actor {
                 self.life
             } else {
-                self.game.state.players[source.object.owner.index()].life
+                self.game.state.players[source.object.controller.index()].life
             },
             self.game.state.attack_declared && source.attacking,
         )
@@ -384,7 +385,7 @@ impl<'g> FundingState<'g> {
                     && let Some(spec) = source.object.card.attachment_bonus()
                 {
                     keywords = keywords.union(spec.keywords);
-                    if source.object.owner == self.game.state.active {
+                    if source.object.controller == self.game.state.active {
                         keywords = keywords.union(source.object.card.attached_turn_keywords());
                     }
                 }
@@ -395,7 +396,9 @@ impl<'g> FundingState<'g> {
                 if source.object.zone != Zone::Battlefield {
                     continue;
                 }
-                if self.kinds(target) & 1 != 0 && target.object.owner == source.object.owner {
+                if self.kinds(target) & 1 != 0
+                    && target.object.controller == source.object.controller
+                {
                     for &(kind, grant) in source.object.card.counter_keyword_grants() {
                         if target.object.counters.get(kind) > 0 {
                             keywords = keywords.union(grant);
@@ -407,16 +410,16 @@ impl<'g> FundingState<'g> {
                         .condition
                         .is_none_or(|value| self.stat_value(value, source) != 0)
                         && (!grant.requires_life_gain
-                            || self.life_gained[source.object.owner.index()])
+                            || self.life_gained[source.object.controller.index()])
                         && grant.matches_characteristics(
                             target.object.card,
                             self.game.object_kinds(target.id, &target.object),
                             self.granted_subtypes(target.id),
-                            target.object.owner == source.object.owner,
+                            target.object.controller == source.object.controller,
                             target.id == source.id
                                 && target.object.generation == source.object.generation,
                             target.attacking,
-                            source.object.owner == self.active,
+                            source.object.controller == self.active,
                         )
                     {
                         keywords = keywords.union(grant.keywords);
@@ -432,7 +435,7 @@ impl<'g> FundingState<'g> {
             ActivationGuard::OwnTurn => self.active == actor,
             ActivationGuard::ControlSubtypeAny(_) => self.resources.iter().any(|r| {
                 r.object.zone == Zone::Battlefield
-                    && r.object.owner == actor
+                    && r.object.controller == actor
                     && guard.subtypes().iter().any(|s| {
                         r.object.card.has_subtype(s) || self.granted_subtypes(r.id).contains(s)
                     })
@@ -443,7 +446,7 @@ impl<'g> FundingState<'g> {
         let mut moves = Vec::new();
         for (resource, entry) in self.resources.iter().enumerate() {
             let object = &entry.object;
-            if object.zone != Zone::Battlefield || object.owner != goal.actor {
+            if object.zone != Zone::Battlefield || object.controller != goal.actor {
                 continue;
             }
             if !object.tapped
@@ -575,7 +578,10 @@ impl<'g> FundingState<'g> {
                 counters: r.object.counters,
                 used: r.object.used_abilities,
                 gained: r.object.gained_keywords,
+                // Ownership still determines whose graveyard receives a sacrificed
+                // resource; control determines who can use it before that move.
                 owned: r.object.owner == goal.actor,
+                controlled: r.object.controller == goal.actor,
                 attacking: r.attacking,
                 identity: linked.then_some(r.id),
                 attached: r.object.attached_to.map(|r| (r.card, r.generation)),
@@ -599,7 +605,7 @@ impl<'g> FundingState<'g> {
                 r.used,
                 r.gained,
                 r.attacking,
-                (r.owned, r.identity, r.attached),
+                (r.owned, r.controlled, r.identity, r.attached),
             )
         });
         FundingKey {
@@ -617,7 +623,7 @@ impl<'g> FundingState<'g> {
         let mut total = self.mana.into_iter().fold(0u128, u128::saturating_add);
         for resource in &self.resources {
             let object = &resource.object;
-            if object.zone != Zone::Battlefield || object.owner != self.actor {
+            if object.zone != Zone::Battlefield || object.controller != self.actor {
                 continue;
             }
             if !object.tapped {
@@ -648,7 +654,7 @@ impl<'g> FundingState<'g> {
         let mut upper = self.mana;
         for resource in &self.resources {
             let object = &resource.object;
-            if object.zone != Zone::Battlefield || object.owner != goal.actor {
+            if object.zone != Zone::Battlefield || object.controller != goal.actor {
                 continue;
             }
             let tap_ready = !object.tapped
@@ -730,7 +736,7 @@ impl<'g> FundingState<'g> {
         for r in &self.resources {
             let o = &r.object;
             if o.zone == Zone::Battlefield
-                && o.owner == self.actor
+                && o.controller == self.actor
                 && self.kinds(r) & 1 != 0
                 && !o.tapped
             {
@@ -792,7 +798,7 @@ impl<'g> FundingState<'g> {
                     .resources
                     .iter()
                     .filter(|r| {
-                        r.object.owner == self.actor
+                        r.object.controller == self.actor
                             && r.object.zone == Zone::Battlefield
                             && !r.object.card.is_token()
                             && r.object.card.activations().iter().any(|a| {

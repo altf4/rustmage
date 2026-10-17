@@ -51,15 +51,15 @@ impl Game {
         for (index, ability) in source.card.triggers().iter().enumerate() {
             let event = ability.condition.event();
             let matched = match event {
-                TriggerCondition::Ward => source.owner != item.controller,
+                TriggerCondition::Ward => source.controller != item.controller,
                 TriggerCondition::SelfTargeted {
                     relation,
                     spells_only,
                 } => {
                     (!spells_only || item.kind == StackKind::Spell)
                         && match relation {
-                            CastRelation::You => source.owner == item.controller,
-                            CastRelation::Opponent => source.owner != item.controller,
+                            CastRelation::You => source.controller == item.controller,
+                            CastRelation::Opponent => source.controller != item.controller,
                             CastRelation::Any => true,
                         }
                 }
@@ -76,7 +76,7 @@ impl Game {
                 });
             }
         }
-        if source.owner != item.controller {
+        if source.controller != item.controller {
             let grants: Vec<_> = self
                 .state
                 .attachment_sources

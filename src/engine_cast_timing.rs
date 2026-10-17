@@ -5,7 +5,7 @@ impl Game {
         self.state.static_sources.iter().any(|&source| {
             let object = &self.state.objects[source as usize];
             object.zone == Zone::Battlefield
-                && object.owner == actor
+                && object.controller == actor
                 && object
                     .card
                     .cast_timing_grants()

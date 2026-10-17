@@ -27,7 +27,7 @@ impl Game {
             .filter_map(|&id| {
                 let o = &self.state.objects[id as usize];
                 if o.zone != Zone::Battlefield
-                    || o.owner != self.state.active
+                    || o.controller != self.state.active
                     || o.card.saga_final_chapter().is_none()
                 {
                     return None;
@@ -36,6 +36,7 @@ impl Game {
                     object: self.object_ref(id),
                     card: o.card,
                     owner: o.owner,
+                    controller: o.controller,
                     subtypes: self.granted_subtypes(id),
                     kind: self.current_kinds(id),
                     amount: Counters {

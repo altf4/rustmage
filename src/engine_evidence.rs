@@ -316,7 +316,7 @@ impl Game {
         let sources = d.sources.clone();
         for id in sources {
             let source = self.object_view(id);
-            if source.owner == e.player {
+            if source.controller == e.player {
                 for (i, a) in source.card.triggers().iter().enumerate() {
                     if a.condition.event() == TriggerCondition::EvidenceCollected {
                         self.queue_trigger(&source, i);

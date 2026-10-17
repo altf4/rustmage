@@ -38,7 +38,7 @@ impl Game {
                         && attachment.attached_to == Some(source)
                         && (attachment.card.equipment().is_some()
                             || (attachment.card.aura().is_some()
-                                && attachment.owner == object.owner))
+                                && attachment.controller == object.controller))
                 }))
     }
 
@@ -90,8 +90,8 @@ impl Game {
                 facts.battlefield
                     && facts.is_creature()
                     && match filter.relation {
-                        0 => dealer.controller == source.owner,
-                        1 => dealer.controller != source.owner,
+                        0 => dealer.controller == source.controller,
+                        1 => dealer.controller != source.controller,
                         _ => true,
                     }
                     && (!filter.other || dealer.reference != source.reference)
@@ -151,7 +151,7 @@ impl Game {
                 let mut aggregate = std::collections::BTreeMap::new();
                 for (&(dealer, player, combat), &amount) in &hits {
                     if (combat_only && !combat)
-                        || (opponent_only && source.owner == player)
+                        || (opponent_only && source.controller == player)
                         || !self.damage_qualified(&source, dealer, subject)
                     {
                         continue;

@@ -35,8 +35,8 @@ impl Game {
                         TriggerStep::End => step == Step::End,
                     };
                     let related = match relation {
-                        CastRelation::You => source.owner == self.state.active,
-                        CastRelation::Opponent => source.owner != self.state.active,
+                        CastRelation::You => source.controller == self.state.active,
+                        CastRelation::Opponent => source.controller != self.state.active,
                         CastRelation::Any => true,
                     };
                     if matches_step && related {
@@ -94,7 +94,7 @@ impl Game {
             StepGuard::Always => return true,
             StepGuard::Outlaw => {
                 return self.state.objects.iter().enumerate().any(|(id, o)| {
-                    o.owner == player
+                    o.controller == player
                         && o.zone == Zone::Battlefield
                         && ["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
                             .iter()
@@ -132,7 +132,7 @@ impl Game {
         };
         let owned = |id: usize| {
             let o = &self.state.objects[id];
-            o.zone == Zone::Battlefield && o.owner == player
+            o.zone == Zone::Battlefield && o.controller == player
         };
         let creatures = || {
             self.state

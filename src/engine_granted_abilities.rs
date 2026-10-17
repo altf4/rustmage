@@ -9,7 +9,7 @@ impl Game {
             && self.on_battlefield(recipient.card)
             && self.object_ref(recipient.card) == recipient
             && if giver.card.aura().is_some() {
-                self.aura_can_enchant(giver.card, giver.owner, recipient)
+                self.aura_can_enchant(giver.card, giver.controller, recipient)
             } else {
                 self.is_creature(recipient.card)
             })
