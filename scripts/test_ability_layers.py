@@ -3,6 +3,7 @@ import json
 import unittest
 from scripts import generate_catalogue as g
 from scripts.ability_layers import Layer, continuous_groups
+from scripts.catalogue_preservation import canonical
 
 
 class AbilityLayerIdentityTests(unittest.TestCase):
@@ -42,6 +43,44 @@ class AbilityLayerIdentityTests(unittest.TestCase):
         self.assertEqual(len(groups), 1)
         self.assertEqual({f.layer for f in groups[0].fragments}, {Layer.ABILITY, Layer.MODIFY})
         self.assertEqual(groups[0].raw, card['oracle_text'])
+
+    def test_every_existing_stat_and_keyword_helper_reconstructs_exactly_from_groups(self):
+        cards = list(self.cards.values())
+        physical = {c['oracle_id']: c['name'] for c in cards}
+        catalogue = canonical((g.ROOT / 'src/generated/catalogue.rs').read_text(), physical)
+        families = {'static_modifiers', 'keyword_grants', 'scaling_modifiers',
+                    'enchanted_modifiers', 'counter_keyword_grants', 'dynamic_stats',
+                    'base_stat_setter', 'attached_subtype'}
+        checked = 0
+        for card in cards:
+            key = card['name'] + '#0'
+            expected = {fn: payload for (fn, definition), payload in catalogue['helpers'].items()
+                        if definition == key and fn in families}
+            if not expected:
+                continue
+            old = dict(g.TOKEN_DEFS)
+            groups = continuous_groups(card, g)
+            self.assertEqual(g.TOKEN_DEFS, old)
+            rows = {}
+            for group in groups:
+                for fragment in group.fragments:
+                    rows.setdefault(fragment.kind, []).append(fragment.payload)
+            for family, payload in expected.items():
+                with self.subTest(card=card['name'], family=family):
+                    values = rows.get(family, [])
+                    if family == 'attached_subtype':
+                        self.assertEqual(len(values), 1)
+                        actual = 'Some(' + json.dumps(values[0]) + '),'
+                    elif family in ('dynamic_stats', 'base_stat_setter'):
+                        self.assertEqual(len(values), 1)
+                        actual = 'Some(' + values[0] + '),'
+                    else:
+                        actual = '&[' + ', '.join(values) + '],'
+                    self.assertEqual(actual, payload)
+                    checked += 1
+        # Initial merged100 corpus has130 such helper arms. New parent arms must
+        # also reconstruct; this is not an exemption for future admissions.
+        self.assertGreaterEqual(checked, 130)
 
     def test_actual_live_static_parent_keeps_archon_group_and_later_only_providers(self):
         for name, first in [('Maha, Its Feathers Night', Layer.BASE), ('Aettir and Priwen', Layer.BASE), ('Archon of the Wild Rose', Layer.ABILITY), ('Burden of Proof', Layer.BASE)]:

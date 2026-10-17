@@ -43,6 +43,11 @@ def continuous_groups(card, parser):
     Every payload is the existing immutable executable recipe. The projection
     neither erases raw reminders for authentication nor changes admission.
     """
+    if isinstance(card.get('card_faces'), list):
+        faces = card['card_faces']
+        mechanic = 'Omen' if faces and faces[-1].get('type_line', '').endswith(' — Omen') else 'Adventure'
+        parsed = parser.adventure_faces(card, mechanic)
+        return continuous_groups(parsed[0], parser) if parsed is not None else ()
     raw = card.get('oracle_text')
     if not isinstance(raw, str):
         return ()
@@ -55,10 +60,24 @@ def continuous_groups(card, parser):
     equips = [s for s in lines if re.search(r'(?:^| — )Equip(?: |—)', s)]
     enchant = [s for s in lines if s.startswith('Enchant ')]
     job_header = lines[:1] if lines[:1] and lines[0] in ('Job select', parser.JOB_REMINDER) else []
+    vehicle = 'Vehicle' in card.get('type_line', '').split(' — ')[-1].split()
+    kicked, kicker = parser.extract_kicker(card)
+    kicker_body = parser.fixed_kicker_body(kicked) if kicker is not None else None
+    counter_reminder = " (It can deal excess combat damage to the player or planeswalker it's attacking.)"
     groups = []
     for index, original in enumerate(lines):
         fragments = []
         one = dict(card, oracle_text=original)
+        if vehicle and original.startswith(("This Vehicle's power", "This Vehicle's toughness")):
+            # Exact deictic conversion shared with the whole Crew parser. This
+            # is a characteristic clause, never a fabricated creature object.
+            one = dict(one, type_line='Artifact Creature', oracle_text=original.replace('This Vehicle', 'This creature'))
+        if (kicker_body is not None and kicker_body[-1]
+                and original.startswith('Each creature you control with a +1/+1 counter on it has ')
+                and original.endswith(counter_reminder)):
+            # The existing COMPLETE kicker body proves this exact counter-grant
+            # reminder slot. Keep its unmodified raw line as the group identity.
+            one = dict(one, oracle_text=original[:-len(counter_reminder)])
         # Changeling contributes types before ability removal. Keep that CDA
         # distinct from separate later static abilities on this same card.
         surface = original
