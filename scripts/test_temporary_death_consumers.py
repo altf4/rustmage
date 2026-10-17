@@ -30,7 +30,7 @@ class TemporaryDeathConsumerTests(unittest.TestCase):
    if row['name'] not in NAMES:self.assertFalse(self.compile(self.cards[row['name']])[1],row['name'])
  def test_actual_parent_exact_declared_family_only(self):
   from scripts.catalogue_preservation import canonical,assert_union
-  physical={c['oracle_id']:c['name'] for c in self.cards.values()};before=subprocess.check_output(['git','-C',str(g.ROOT),'show','c0232954838cf71203a5be7c0e8fc80a66f6bf26:src/generated/catalogue.rs'],text=True)
+  physical={c['oracle_id']:c['name'] for c in self.cards.values()};before=subprocess.check_output(['git','-C',str(g.ROOT),'show','5d103e7a3172e4742687d3f77f3ed814264b1532:src/generated/catalogue.rs'],text=True)
   prior=canonical(before,physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
   token='@token/f144ea316833bbffad6fa831'
   self.assertEqual({k:v for k,v in after['tokens'].items() if k not in prior['tokens']},{token:'TokenInfo { factory_identity: "@token/f144ea316833bbffad6fa831", name: "Detective Token", subtypes: "Detective", colors: 3 },'})
