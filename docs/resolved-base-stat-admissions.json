@@ -5,7 +5,7 @@
   "cards": [
     {
       "name": "Atomic Microsizer",
-      "status": "pending_complete_kernel",
+      "status": "implemented_complete",
       "oracle_id": "048c3b0b-48ef-42f5-a2af-90aa1d133296",
       "facts": {
         "layout": "normal",
@@ -83,7 +83,7 @@
     },
     {
       "name": "Belligerent Yearling",
-      "status": "pending_complete_kernel",
+      "status": "implemented_complete",
       "oracle_id": "2d785e3e-8e19-4eea-b09f-9a30c792dba1",
       "facts": {
         "layout": "normal",
@@ -395,7 +395,7 @@
     },
     {
       "name": "Genemorph Imago",
-      "status": "pending_complete_kernel",
+      "status": "implemented_complete",
       "oracle_id": "bf3a0585-3976-4078-8beb-6afa79f97027",
       "facts": {
         "layout": "normal",
@@ -497,7 +497,7 @@
     },
     {
       "name": "Moon Girl and Devil Dinosaur",
-      "status": "pending_complete_kernel",
+      "status": "implemented_complete",
       "oracle_id": "bfe0818b-ae13-4174-85c8-24b895d28df0",
       "facts": {
         "layout": "normal",
@@ -584,7 +584,7 @@
     },
     {
       "name": "PuPu UFO",
-      "status": "pending_complete_kernel",
+      "status": "implemented_complete",
       "oracle_id": "b1412eda-e3a4-41b2-932e-795a0ba0f7f8",
       "facts": {
         "layout": "normal",

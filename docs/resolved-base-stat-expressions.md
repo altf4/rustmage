@@ -1,5 +1,84 @@
 # Resolved signed base-stat expressions — issue #326
 
+## Actual-main delivery
+
+Actual merged main `a9380ec478646c42308c7284de197fa466db24d2` gains five complete
+bodies: Genemorph Imago, Moon Girl and Devil Dinosaur, Belligerent Yearling,
+PuPu UFO and Atomic Microsizer. Coverage is 1,960/5,164 Standard identities,
+3,204 gated, schema98, 95 token recipes. Full Standard remains unfinished.
+The 56-body base-stat inventory now has 13 complete and 43 gated bodies under
+issue324. PuPu also completes one of the seven historical hand-land dependencies;
+six remain in issue330. These audit inventories never authorize execution.
+
+Resolved values are captured once at resolution into fixed, signed layer-7b
+setters, independent of additive effects and the existing Role timestamp clock.
+Genemorph reads its controller's current land count, PuPu its controller's current
+Town count, and Yearling the exact entering incarnation's current signed power or
+its signed departure LKI. Later land changes, reentry or source return do not
+rebind those captured values. Sparse already-public subject facts participate in
+owned snapshots, observation and heap accounting without a new Object/SpellView
+field. Moon's actual second-draw setter/trample and once-per-turn artifact-entry
+draw remain independent.
+
+PuPu's complete flying, private optional untapped hand-land placement and paid
+Town-count activation compose the actual hand-land parent. Placement uses real
+entry replacements and does not consume a normal land play. Atomic reuses actual
+equip, static +1/+0 and equipped-creature attack events. Its whole optional-target
+clause grants unblockability and fixed 1/1 until cleanup, retaining additive
+bonuses and exact targets. No card-name dispatch or partial-body admission is used.
+The original-raw base-stat authentication guard remains mandatory for every
+caller, including new scalar and equipment clauses.
+
+The complete five-body audit pins 144 full Java/direct-import records, 105 unique
+files at `492369c7844b8d76479f0393ff9eb6b0b0cf30d7`. Strict actual-parent
+preservation changes exactly five definitions, preserves 5,327 definitions,
+all 911 parent helpers, colors, aliases, flags and 95 recipes, adding only Atomic's
+equipment helper. The original three-card prototype proof remains historical.
+All inherited Python/example policy ASTs are identical except schema97→98.
+
+Production source `3943ad7922b2e97c07807ecff32a6afd04b2536c` passes all 1,887
+native tests (1,875 unit +12 integration), all-target Clippy, formatting and
+generation checks. Paid native cases cover both seats, real foreign-owned sources,
+resolution-time land/Town changes versus opposing-owner decoys, negative power,
+source/subject death and reentry, actual owner return, Moon's independent events,
+PuPu's private entry/quota and Atomic's equip/zero-or-one targets/source departure
+and layer order. Each action verifies owned clone/index/raw/restore after parent
+drop, both observations and wrong-actor/stale rejection.
+
+The optimized immutable library is
+`/home/altf4/.cache/rustmage-immutable/resolved328-3943ad7-ec7a-schema98-396fef6a172a.so`,
+SHA256 `396fef6a172aae872dad71ad5bfaba46e6039d8aef6edecd4d5d8285650ecadf`,
+catalogue `ec7ab5b89bfa6b576492517b789af763ecd300cd0a86e6f9871f029bc5b3c85b`.
+
+Policy source `13cdb61ca15f0c1b724b0c0c8334b2f588431bd2` changes only the owned
+acceptance policy from3943; all other 895 tracked inputs, including every engine,
+generator, card-data and Rust test file, are identical. Frozen 896-file gates all
+pass:22 affected compiler methods (4.537s),12 naturally drawn paid body/choice/seat
+cases (20.558s,9,488 owned frames/18,976 denials), and the fixed100 Standard workload
+(163.825s,77,531 owned frames/155,062 denials), covering all12 vectors without retry
+or concession. All manifests and the exact library hash remain unchanged. After
+all jobs ended, audit statuses/PuPu remainder classification and one inherited
+test's metadata were corrected; all22 affected methods pass again (3.958s).
+No old-parent broad API run is relabeled as current delivery evidence.
+
+Historical actual97 fixture failures are retained. Nativev1 had two new fixture
+field-type errors;v2 correctly rejected an attempted Unsummon on a land. The
+fixture now uses a real paid Seismic Monstrosaur land sacrifice, andv3's10-group
+subset passes (0.22s). Initial new public4-case acceptance failed four cases:
+PuPu's zero-mana tap payment was incorrectly treated as another cast payment,
+and Atomic's target-selection priority chose its legal zero-target option while
+the fixture expected one. Correcting those two fixture rules passed both Atomic
+cases; PuPu then correctly exposed that its effect expired before the following
+turn's tap activation. Sequencing both abilities in the same legal non-summoning-
+sick turn passes both exact original PuPu seeds (3.467s). No engine, deck, seed or
+required witness was changed for these corrections. The failed runs remain failed.
+
+Every build/test job is terminal. Completed target non-SO outputs were cleaned
+while retaining every library's exact path/hash, manifests, logs and results.
+Two independent NONAUTHOR exact-final-head confirmations are required before merge.
+
+## Historical foundation prototype
+
 This is a prototype on the published PR #321 foundation
 `4b309a0763b4e8d12ebdb750ea098458f5f2c961`, not current-main delivery evidence.
 Observation schema 98 is reserved for the eventual composed delivery after

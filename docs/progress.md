@@ -301,3 +301,25 @@ all source/library identities, corrected fixtures/policy and remaining guards.
 Both introduced activated and inherited triggered modal string-marker forgeries
 are fixed with parser-owned bindings. An independently found pre-existing generic
 triggered-modal reminder gap remains a separate issue261 obligation.
+
+
+## Resolved signed base-stat expressions — PR328
+
+Actual schema97 maina938 gains five complete bodies: Genemorph Imago, Moon Girl
+and Devil Dinosaur, Belligerent Yearling, PuPu UFO and Atomic Microsizer. Coverage
+is1,960/5,164 (3,204 gated), schema98/95 recipes. Generic signed fixed7b snapshots
+read current controller resources or exact subject current/departure power; real
+hand-land entry/equip/optional targets reuse the existing kernels. Strict5 changes
+preserve5,327 definitions/all911 helpers and add only Atomic's equipment helper.
+Five full Java bodies/direct imports pin144 records/105 unique files. Base-family
+remaining43 and hand-land remaining6 retain whole-body gates; full Standard remains
+incomplete. Audit metadata is never permission input.
+
+Production3943 passes1,887native/Clippy/fmt/gen, immutable396f schema98 stays exact.
+Policy13cdb changes no production; all12 natural paid vectors pass (9,488 owned
+frames/18,976 denials),100fixed games pass (77,531owned/155,062denials),22affected
+compiler methods pass and22rerun after metadata-only audit corrections pass.
+Every896-file manifest/library is fixed, all jobs closed and terminal non-SO builds
+cleaned. Earlier prototype and new fixture failures retain their actual failed
+scopes in [the complete delivery record](resolved-base-stat-expressions.md).
+Two independent NONAUTHOR exact-final-head reviews remain required before merge.
