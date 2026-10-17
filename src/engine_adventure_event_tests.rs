@@ -445,3 +445,23 @@ fn viper_uses_chosen_face_mana_value_with_x_at_the_cast_event() {
         }
     }
 }
+
+#[test]
+fn a_noncast_spell_packet_does_not_consume_the_first_qualifying_cast() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = paid(&mut g, p, NAMES[0], None);
+        let total = g.state.players[p.index()].spells_cast_this_turn;
+        let id = named(&mut g, p, "Quick Study", Zone::Hand);
+        // Explicit noncast packet boundary, not an admitted spell-copy card.
+        let mut item = g.cast_item(p, id, [0; 6]);
+        item.cast = None;
+        g.push_stack_item(item);
+        drive(&mut g, None);
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, total);
+        assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 0);
+        assert_eq!(g.object_view(source).power, 1);
+        paid(&mut g, p, "Quick Study", None);
+        assert_eq!(g.object_view(source).power, 3);
+    }
+}

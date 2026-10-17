@@ -491,7 +491,8 @@ impl Game {
     /// A spell becomes cast only after every declaration and cost is complete.
     /// Completed insertion paths share this hook; abilities never count as casts.
     pub(super) fn push_stack_item(&mut self, item: SpellView) {
-        let cast = (item.kind == StackKind::Spell).then_some((item.controller, item.source_card));
+        let cast = (item.kind == StackKind::Spell && item.cast.is_some())
+            .then_some((item.controller, item.source_card));
         self.state.stack.push(item);
         let Some((caster, card)) = cast else { return };
         self.record_cast(caster, card, Some(self.state.stack.len() - 1));
