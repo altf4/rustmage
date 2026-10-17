@@ -135,6 +135,36 @@ def derived_reduction(text,card):
     if card.get('name') and text==card['name']+"'s power":return 'SpellReductionAmount::SourcePower'
     return None
 
+def extract_cast_timing_grants(card):
+    """Exact top-level permission; every other sentence stays for whole-body parsing."""
+    if card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str):
+        return card, []
+    # This metadata describes a static ability of a permanent on the battlefield.
+    # A spell instruction needs a duration-bearing resolution program instead.
+    kinds = card.get('type_line', '').split(' — ')[0].split()
+    if not any(kind in kinds for kind in ('Creature', 'Artifact', 'Enchantment', 'Land', 'Planeswalker', 'Battle')):
+        return card, []
+    # Do not expose the inherited broad parenthetical stripping to a new route.
+    # Audited two-face wrappers remove only authenticated reminders beforehand.
+    if '(' in card['oracle_text'] or ')' in card['oracle_text']:
+        return card, []
+    residual, grants = [], []
+    for original in card['oracle_text'].splitlines():
+        line = original.strip()
+        match = re.fullmatch(r'You may cast (.+) spells as though they had flash\.', line)
+        filters = None
+        if match:
+            nouns = match[1].split(' spells and ')
+            if 1 <= len(nouns) <= 2:
+                filters = [('CastFilter::Sorcery' if noun == 'sorcery' else reduction_filter(noun)) for noun in nouns]
+                if not all(filters): filters = None
+        if filters:
+            grants.extend(filters)
+        else:
+            residual.append(original)
+    return dict(card, oracle_text='\n'.join(residual)), grants
+
+
 def extract_cost_reductions(card):
     text=card.get('oracle_text')
     if not isinstance(text,str) or card.get('layout')!='normal':return card,[]
@@ -3909,6 +3939,7 @@ def compile_catalogue(snapshot, target):
     offspring_factories = {}
     hybrid_rows = []
     reduction_rows = []
+    cast_timing_rows = []
     target_reduction_rows = []
     entry_counter_rows = []
     equipment_rows = []
@@ -3923,7 +3954,19 @@ def compile_catalogue(snapshot, target):
             pt = [0 if original[axis] == '*' else int(original[axis]) for axis in ('power','toughness')]
             if max(pt) <= 2**127-1:
                 vehicle_stats_rows.append(f'        {index} => Some(Stats {{ power: {pt[0]}, toughness: {pt[1]} }}),')
-        card, uncounterable = extract_uncounterable(cards.get(name, {}))
+        timing_surface = original.get('oracle_text', '')
+        timing_seen = False
+        while True:
+            # Inspect each erasure stage: an outer reminder can surround a
+            # permission whose keywords themselves contain an inner reminder.
+            timing_seen |= re.search(r'\b(?:cast|play)\b.*\bas though\b',
+                                     ' '.join(timing_surface.split()), flags=re.I) is not None
+            stripped = re.sub(r'\([^()]*\)', '', timing_surface)
+            if stripped == timing_surface:break
+            timing_surface = stripped
+        # Detection never authenticates or changes the raw validation body.
+        card, timing_grants = extract_cast_timing_grants(cards.get(name, {}))
+        card, uncounterable = extract_uncounterable(card)
         card, entry_suppression = extract_entry_trigger_suppression(card)
         card, opponent_entry_tapped = extract_opponent_entry_tapped(card)
         card, cycling = cycling_abilities(card)
@@ -3962,7 +4005,7 @@ def compile_catalogue(snapshot, target):
         abilities = []
         entry = 'Never'
         land = land_template(card)
-        if name in legacy:
+        if name in legacy and not timing_seen:
             effect, fallback_cost, color = legacy[name]
             # Lands have no mana cost. Their legacy cost token encodes colour only.
             cost = '' if effect == 'Land' else card.get('mana_cost', fallback_cost)
@@ -4083,6 +4126,9 @@ def compile_catalogue(snapshot, target):
             if creature_entry != 'Never':entry=creature_entry
             activations = [*activations, *cycling]
             if len(activations) > 64: effect = 'Unsupported'; activations = []
+        # Rejected timing syntax/source shapes must not be revived by legacy selectors.
+        if timing_seen and not timing_grants:
+            effect = 'Unsupported'
         programs = {
             'Damage(3)': ('Any', ['Damage(3)']), 'Damage(2)': ('Any', ['Damage(2)']),
             'Grow': ('Creature', [grow_instruction('Targets', 3, 3)]), 'Draw': ('None', ['Draw(PlayerSet::Controller, 2)']),
@@ -4096,6 +4142,8 @@ def compile_catalogue(snapshot, target):
         elif effect == 'Spell':
             rule, program = spell
             effect = f'Spell({rust_targets(rule)}, {rust_program(program)})'
+        if timing_grants and not (effect.startswith(('Creature(', 'Aura(')) or effect in ('Permanent', 'Land')):
+            effect = 'Unsupported'
         offspring_key=None
         if offspring is not None and effect!='Unsupported':
             # Fixed copiable values only. The definition below preserves complete
@@ -4116,6 +4164,7 @@ def compile_catalogue(snapshot, target):
                 raise ValueError(f'invalid or missing starting loyalty: {name}')
             loyalty_rows.append(f'        {index} => {int(value)},')
         if effect != 'Unsupported':
+            if timing_grants:cast_timing_rows.append(f'        {index} => &[{", ".join(timing_grants)}],')
             if replacements:replacement_rows.append(f'        {index} => &[{", ".join(replacements)}],')
             if name not in internal_faces: supported.append(index)
             if job is not None:
@@ -4203,7 +4252,7 @@ def compile_catalogue(snapshot, target):
             color_masks.append(color)
             # Clone every compiled property table for the immutable copy; no
             # mutable copy/type-changing engine or runtime card-name dispatch.
-            for table in [static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,target_reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,offspring_rows]:
+            for table in [static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,cast_timing_rows,target_reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,offspring_rows]:
                 prefix=f'        {source_index} =>'
                 table.extend(row.replace(prefix,f'        {index} =>',1) for row in list(table) if row.startswith(prefix))
             offspring_copy_rows.append(f'        {index} => Some(__TOKEN_{key}__),')
@@ -4306,6 +4355,7 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', 'pub(super) fn flashback_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *flashback_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub const CREATURE_TYPES: &[&str] = &[', *('    '+json.dumps(name)+',' for name in creature_types), '];', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn target_cost_reduction(card: Card) -> Option<&'static TargetSpellReduction> {", '    match card.0 {', *target_reduction_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', "pub(super) fn cast_timing_grants(card: Card) -> &'static [CastFilter] {", '    match card.0 {', *cast_timing_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn cost_reductions(card: Card) -> &'static [SpellReduction] {", '    match card.0 {', *reduction_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn cost_alternatives(card: Card) -> &'static [ManaCost] {", '    match card.0 {', *hybrid_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn entry_counter_rules(card: Card) -> &'static [EntryCounterRule] {", '    match card.0 {', *entry_counter_rows, '        _ => &[],', '    }', '}', '']
