@@ -654,10 +654,12 @@ fn expanded_tribal_vocabulary_preserves_temporary_trigger_recipient_sets() {
 }
 
 #[test]
-fn every_admitted_continuous_source_is_registered_and_removed_on_zone_change() {
+fn every_admitted_battlefield_continuous_source_is_registered_and_removed_on_zone_change() {
     let mut g = scenario();
     let sources: Vec<_> = Card::catalogue()
-        .filter(|c| !c.keyword_grants().is_empty())
+        // Emblems are command-zone sources and cannot enter the battlefield.
+        // Their creation/registration is covered by the emblem scenarios.
+        .filter(|c| c.is_supported() && !c.is_emblem() && !c.keyword_grants().is_empty())
         .collect();
     assert!(sources.len() >= 9);
     for card in sources {

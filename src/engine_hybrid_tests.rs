@@ -98,7 +98,7 @@ fn attack(g: &mut Game, id: CardId) {
 }
 
 #[test]
-fn cost_equivalents_are_unique_and_canonical_preserves_printed_mana_value() {
+fn cost_options_are_unique_and_canonical_preserves_printed_mana_value() {
     for card in Card::catalogue().filter(|c| c.is_supported() && !c.is_land()) {
         let options = card.cost_options().collect::<Vec<_>>();
         assert!(!options.is_empty());
@@ -106,6 +106,15 @@ fn cost_equivalents_are_unique_and_canonical_preserves_printed_mana_value() {
             assert!(!options[..i].contains(cost), "{}", card.name());
             let total =
                 u64::from(cost.generic) + cost.colored.iter().map(|n| u64::from(*n)).sum::<u64>();
+            // Explicit card alternatives (conditional Edict, Eaten Alive's
+            // mana-instead-of-sacrifice route) need not equal printed MV.
+            // The first option remains canonical; all options remain unique.
+            if i > 0
+                && (card.cost_alternative_guard().is_some()
+                    || card.mana_alternative_replaces_additional(*cost))
+            {
+                continue;
+            }
             if card.info().mana_cost.contains("{2/") {
                 assert!(total <= card.fixed_mana_value());
                 if i == 0 {
