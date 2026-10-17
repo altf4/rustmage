@@ -5389,3 +5389,7 @@ mod adventure_event_tests;
 #[cfg(test)]
 #[path = "engine_role_tests.rs"]
 mod role_tests;
+
+#[cfg(test)]
+#[path = "engine_enchanted_draw_tests.rs"]
+mod enchanted_draw_tests;
