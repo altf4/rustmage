@@ -254,3 +254,36 @@ fn return_spell_cost_timing_and_empty_group_are_enforced() {
         assert_eq!(g.object_view(aether).zone, Zone::Graveyard);
     }
 }
+
+#[test]
+fn grouped_return_clears_death_grants_before_same_card_is_cast_again() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let grant = named(&mut g, p, "Fake Your Own Death", Zone::Hand);
+        cast(&mut g, grant, None, &[Target::Card(bear)]);
+        settle(&mut g);
+        let original = g.object_ref(bear);
+        assert_eq!(g.observe(p).temporary_abilities.len(), 1);
+        let river = named(&mut g, p, "River's Rebuke", Zone::Hand);
+        cast(&mut g, river, None, &[Target::Player(p)]);
+        settle(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Hand);
+        assert!(g.observe(p).temporary_abilities.is_empty());
+        cast(&mut g, bear, None, &[]);
+        settle(&mut g);
+        assert_ne!(g.object_ref(bear), original);
+        assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+        let stab = named(&mut g, p, "Stab", Zone::Hand);
+        cast(&mut g, stab, None, &[Target::Card(bear)]);
+        settle(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
+        assert!(g.state.objects.iter().all(|o| {
+            o.zone != Zone::Battlefield
+                || !o
+                    .card
+                    .token_info()
+                    .is_some_and(|t| t.name == "Treasure Token")
+        }));
+    }
+}
