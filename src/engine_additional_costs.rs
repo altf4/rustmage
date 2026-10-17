@@ -71,7 +71,22 @@ impl Game {
         cost: ManaCost,
         route: Option<ForageRoute>,
     ) -> bool {
-        let definition = self.effective_spell_card(card);
+        self.spell_can_fund_total_for_definition(
+            actor,
+            card,
+            cost,
+            route,
+            self.effective_spell_card(card),
+        )
+    }
+    pub(super) fn spell_can_fund_total_for_definition(
+        &self,
+        actor: Player,
+        card: CardId,
+        cost: ManaCost,
+        route: Option<ForageRoute>,
+        definition: Card,
+    ) -> bool {
         let base = FundingGoal {
             actor,
             required: cost.colored,

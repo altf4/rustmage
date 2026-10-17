@@ -174,23 +174,30 @@ impl Game {
             Effect::Spell(p, _) | Effect::Aura(p) => p,
             _ => return false,
         };
-        self.cast_targets_available(plan, actor, self.object_ref(id))
-            && definition.cost_options().any(|cost| {
-                let reduction = self.spell_reduction_for_definition(
-                    actor,
-                    id,
-                    definition.fixed_mana_value(),
-                    definition,
-                );
-                self.can_fund(FundingGoal {
-                    actor,
-                    required: cost.colored,
-                    generic: cost
-                        .generic
-                        .saturating_sub(u32::try_from(reduction).unwrap_or(u32::MAX)),
-                    reserve: None,
-                    source: None,
-                })
+        if !self.cast_targets_available(plan, actor, self.object_ref(id)) {
+            return false;
+        }
+        if definition.x_symbols() > 0 {
+            return !self
+                .scalar_x_intervals_for_definition(actor, id, definition)
+                .is_empty();
+        }
+        definition.cost_options().any(|cost| {
+            let reduction = self.spell_reduction_for_definition(
+                actor,
+                id,
+                definition.fixed_mana_value(),
+                definition,
+            );
+            self.can_fund(FundingGoal {
+                actor,
+                required: cost.colored,
+                generic: cost
+                    .generic
+                    .saturating_sub(u32::try_from(reduction).unwrap_or(u32::MAX)),
+                reserve: None,
+                source: None,
             })
+        })
     }
 }

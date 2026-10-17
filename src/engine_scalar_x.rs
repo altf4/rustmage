@@ -10,17 +10,33 @@ impl Game {
         base: ManaCost,
         x: u32,
     ) -> Option<ManaCost> {
-        let card = self.state.objects[id as usize].card;
+        self.scalar_x_total_for_definition(actor, id, base, x, self.effective_spell_card(id))
+    }
+    pub(super) fn scalar_x_total_for_definition(
+        &self,
+        actor: Player,
+        id: CardId,
+        base: ManaCost,
+        x: u32,
+        card: Card,
+    ) -> Option<ManaCost> {
         let mana_value = card.fixed_mana_value() + u64::from(card.x_symbols()) * u64::from(x);
         let raw = u64::from(base.generic) + u64::from(card.x_symbols()) * u64::from(x);
-        let discount = self.spell_reduction_at_mana_value(actor, id, mana_value);
+        let discount = self.spell_reduction_for_definition(actor, id, mana_value, card);
         Some(ManaCost {
             colored: base.colored,
             generic: u32::try_from(raw.saturating_sub(discount)).ok()?,
         })
     }
     pub(super) fn scalar_x_intervals(&self, actor: Player, id: CardId) -> Vec<XInterval> {
-        let card = self.state.objects[id as usize].card;
+        self.scalar_x_intervals_for_definition(actor, id, self.effective_spell_card(id))
+    }
+    pub(super) fn scalar_x_intervals_for_definition(
+        &self,
+        actor: Player,
+        id: CardId,
+        card: Card,
+    ) -> Vec<XInterval> {
         let symbols = u64::from(card.x_symbols());
         if symbols == 0 {
             return Vec::new();
@@ -82,8 +98,10 @@ impl Game {
         let (colored, generic) = card.cost();
         let base = ManaCost { colored, generic };
         let fundable = |x| {
-            self.scalar_x_total(actor, id, base, x)
-                .is_some_and(|cost| self.spell_can_fund_total(actor, id, cost, None))
+            self.scalar_x_total_for_definition(actor, id, base, x, card)
+                .is_some_and(|cost| {
+                    self.spell_can_fund_total_for_definition(actor, id, cost, None, card)
+                })
         };
         let mut intervals: Vec<XInterval> = Vec::new();
         for ends in cuts.windows(2) {

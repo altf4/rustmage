@@ -5,8 +5,8 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,811 have executable rules so far,
-with 3,353 still gated. The catalogue includes 87 token recipes and one emblem;
+knows all 5,164 pinned Standard identities; 1,817 have executable rules so far,
+with 3,347 still gated. The catalogue includes 87 token recipes and one emblem;
 observations use schema 79.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
@@ -16,7 +16,7 @@ The first training target is [current Standard, pinned to October 15, 2026](docs
 [Crew and Vehicles](docs/crew-vehicles.md) add24 complete bodies with private exact power costs, live battlefield animation, printed spell identity and sparse owned rollback state.
 [Single-face Sagas](docs/sagas.md) add twelve complete bodies with typed lore counters, ordinary chapter packets and exact-incarnation final-chapter sacrifice.
 [Adventure faces](docs/adventure.md) add nineteen complete pairs with paid inset casts and owned normal-play exile permissions; [typed attachment Ward](docs/attachment-ward.md) adds ten complete bodies. Their [composition record](docs/review-pr-258.md) tracks combined validation.
-[Omen spell faces](docs/omens.md) add ten complete pairs with chosen characteristics and owner-library shuffle completion. [Chosen-spell timing](docs/cast-timing.md) completes Whirlwing; three Omen parents remain gated.
+[Omen spell faces](docs/omens.md) add all thirteen pinned complete pairs with chosen characteristics and owner-library shuffle completion. [Chosen-spell timing](docs/cast-timing.md) completes Whirlwing; [selected-face X](docs/selected-face-x.md) completes Scavenger. [Grouped graveyard targets](docs/single-graveyard.md) and [split search destinations](docs/split-library-search.md) complete the remaining pairs.
 [Job Select](docs/job-select.md) adds all sixteen complete Equipment bodies with live subtype grants,
 recipient-owned abilities and private Ninja/Summoner continuations.
 [Plot](docs/plot.md) adds thirteen complete bodies with paid special actions and exact later-turn free casting.
