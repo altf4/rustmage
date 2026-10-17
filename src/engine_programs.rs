@@ -433,7 +433,8 @@ impl Game {
             let yours = source.controller == entered.controller;
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 let matched = match ability.condition.event() {
-                    TriggerCondition::ManaSpent { .. }
+                    TriggerCondition::InZone { .. }
+                    | TriggerCondition::ManaSpent { .. }
                     | TriggerCondition::Granted(_)
                     | TriggerCondition::OncePerTurn(_)
                     | TriggerCondition::DuringOpponentsTurn(_)
@@ -644,6 +645,21 @@ impl Game {
             .filter(|event| event.granted)
             .map_or(source.card, |event| event.granting_card);
         let condition = definition.triggers()[index].condition;
+        // Adding a graveyard observer must not also enable its unqualified
+        // battlefield abilities. Legacy hand-discard/cycling callers retain
+        // their existing pre-event source views and require no zone wrapper.
+        let origin_matches = condition
+            .origin()
+            .map_or(source.zone != Zone::Graveyard, |origin| {
+                source.zone
+                    == match origin {
+                        TargetZone::Battlefield => Zone::Battlefield,
+                        TargetZone::Graveyard => Zone::Graveyard,
+                    }
+            });
+        if !origin_matches {
+            return false;
+        }
         if condition.is_granted() != event.as_ref().is_some_and(|e| e.granted) {
             return false;
         }
@@ -1811,6 +1827,21 @@ impl Game {
                         && self.state.objects[item.card as usize].zone == zone
                     {
                         self.move_object(item.card, Zone::Hand);
+                    }
+                }
+                Instruction::PutSourceOnLibraryTop { origin } => {
+                    let zone = match origin {
+                        TargetZone::Battlefield => Zone::Battlefield,
+                        TargetZone::Graveyard => Zone::Graveyard,
+                    };
+                    if self.object_ref(item.card) == item.object
+                        && self.state.objects[item.card as usize].zone == zone
+                    {
+                        let owner = self.state.objects[item.card as usize].owner;
+                        let event = self.move_object(item.card, Zone::Library);
+                        if event.moved && event.destination == Zone::Library {
+                            self.remember_library_top(owner, event.after);
+                        }
                     }
                 }
                 Instruction::ReturnSourceToBattlefield { tapped } => {

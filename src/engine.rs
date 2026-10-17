@@ -4080,6 +4080,14 @@ impl Game {
             before.zone, destination,
             "same-zone moves are ordering operations"
         );
+        if before.zone == Zone::Graveyard
+            && before.card.triggers().iter().any(|a| {
+                a.condition.origin() == Some(TargetZone::Graveyard)
+                    && matches!(a.condition.event(), TriggerCondition::AtStep { .. })
+            })
+        {
+            self.state.step_sources.retain(|&source| source != id);
+        }
         self.capture_source_counter_departure(&before);
         self.clear_entry_value(before.reference);
         if before.zone == Zone::Battlefield {
@@ -4252,6 +4260,8 @@ impl Game {
             let (owner, card) = entry_identity;
             self.record_nonland_entry(owner, card);
             self.register_battlefield_sources(id);
+        } else if destination == Zone::Graveyard {
+            self.register_graveyard_sources(id);
         }
         if revealed_top && before.zone == Zone::Library && destination == Zone::Hand {
             let reference = self.object_ref(id);

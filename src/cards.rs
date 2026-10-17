@@ -761,6 +761,9 @@ pub(crate) enum Instruction {
         unpaid_skip: usize,
     },
     ReturnSourceToHand(TargetZone),
+    PutSourceOnLibraryTop {
+        origin: TargetZone,
+    },
     ReturnSourceToBattlefield {
         tapped: bool,
     },
@@ -1827,6 +1830,11 @@ pub(crate) enum EntryPredicate {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    /// Explicit printed source zone; legacy events keep their existing origins.
+    InZone {
+        zone: TargetZone,
+        event: &'static TriggerCondition,
+    },
     /// Historical lore threshold crossing; never a live resolution recheck.
     Chapter {
         number: u16,
@@ -1979,12 +1987,25 @@ pub(crate) enum TriggerCondition {
 }
 
 impl TriggerCondition {
+    pub(crate) fn origin(self) -> Option<TargetZone> {
+        match self {
+            Self::InZone { zone, .. } => Some(zone),
+            Self::Granted(event)
+            | Self::OncePerTurn(event)
+            | Self::DuringOpponentsTurn(event)
+            | Self::ManaSpent { event, .. }
+            | Self::When { event, .. }
+            | Self::InterveningIf { event, .. } => event.origin(),
+            _ => None,
+        }
+    }
     pub(crate) fn mana_spent_rule(self) -> Option<(u64, bool)> {
         match self {
             Self::ManaSpent {
                 minimum, increment, ..
             } => Some((minimum, increment)),
-            Self::Granted(e)
+            Self::InZone { event: e, .. }
+            | Self::Granted(e)
             | Self::OncePerTurn(e)
             | Self::DuringOpponentsTurn(e)
             | Self::When { event: e, .. }
@@ -1996,7 +2017,8 @@ impl TriggerCondition {
     pub(crate) fn is_granted(self) -> bool {
         match self {
             Self::Granted(_) | Self::GrantedAttacks => true,
-            Self::OncePerTurn(e)
+            Self::InZone { event: e, .. }
+            | Self::OncePerTurn(e)
             | Self::DuringOpponentsTurn(e)
             | Self::When { event: e, .. }
             | Self::InterveningIf { event: e, .. }
@@ -2007,7 +2029,8 @@ impl TriggerCondition {
     pub(crate) fn requires_opponents_turn(self) -> bool {
         match self {
             Self::DuringOpponentsTurn(_) => true,
-            Self::Granted(event)
+            Self::InZone { event, .. }
+            | Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
@@ -2017,7 +2040,8 @@ impl TriggerCondition {
     }
     pub(crate) fn event(self) -> Self {
         match self {
-            Self::Granted(event)
+            Self::InZone { event, .. }
+            | Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
             | Self::When { event, .. }
@@ -2029,7 +2053,8 @@ impl TriggerCondition {
     pub(crate) fn once_per_turn(self) -> bool {
         match self {
             Self::OncePerTurn(_) => true,
-            Self::Granted(event)
+            Self::InZone { event, .. }
+            | Self::Granted(event)
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. }
             | Self::ManaSpent { event, .. }
