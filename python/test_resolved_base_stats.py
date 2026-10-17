@@ -140,7 +140,7 @@ class ResolvedBasePublicTests(unittest.TestCase):
       if stage=='setup'and n=='Quick Study'and quiet and mana>=5:return 2800
       return -1000
      if k=='AnnounceActivate':return 5000 if actor==p and a['card']==source and ((stage=='power'and a['ability']==1 and mana>=3)or(stage=='hand'and a['ability']==0 and handtown)or(stage=='equip'and a['ability']==0))else -1000
-     if k=='ChooseTarget':return 4000 if a['target'].get('Card')==bear else -1000
+     if k=='ChooseTarget':return 5000 if a['target'].get('Card')==bear else -1000
      if k=='PutHandLand':return 5000 if objects[a['object']['card']]['card']in towns else -1000
      if k=='DeclineHandEntry':return -1000
      if k=='PlayLand':
@@ -170,6 +170,7 @@ class ResolvedBasePublicTests(unittest.TestCase):
     if k=='PayCosts'and o.get('announcing')and o['announcing']['card']==source:
      if stage=='waitpower':self.assertEqual(sum(a['payment']),3);power_paid=True
      elif stage=='waitequip':self.assertEqual(sum(a['payment']),2);equip_paid=True
+     elif stage=='waithand':self.assertEqual(sum(a['payment']),0)
      else:self.assertEqual(sum(a['payment']),2 if name=='PuPu UFO'else 1);cast_paid=True
     self.frame(g,o,index);frames+=1
    self.fail((name,p,seed,stage,frames))
