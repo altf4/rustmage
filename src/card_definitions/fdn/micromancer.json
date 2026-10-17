@@ -3,10 +3,46 @@
   "catalogue_id": 2743,
   "oracle_id": "d2605782-09f1-4d52-b3e7-5ec1442bd9b5",
   "facts_sha256": "66413e006d805447af589190bfe5611225bd39d6115b247d8d0a89ff6590ebe6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e93c64234e835e87a79fcde5bb43beca402c7294149167116c084399ec7aed45"
   },
-  "physical_metadata_sha256": "26f5093b5ea7f692cc87e616d96f0770eb46aa2ba1d3a969bfe6cc4b44c7ab35"
+  "physical_metadata_sha256": "26f5093b5ea7f692cc87e616d96f0770eb46aa2ba1d3a969bfe6cc4b44c7ab35",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/Micromancer.java",
+  "java_sha256": "2cefa710480c5478452ae8ca926842d9d332c6d0eddc0ad4eff16e73c9174bff",
+  "rules_tests": "src/engine_fdn_tutor_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/SearchEffect.java",
+      "sha256": "3bd01fb726f6f76df078d7bf1f7a84fe484cc02fa0b1ca8dff89a3a2f562be96"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterInstantOrSorceryCard.java",
+      "sha256": "db9067aef3b3de09992c261f493c6a4bee2e08850f8b9eec9a8a05f92674abfc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+      "sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+    }
+  ]
 }

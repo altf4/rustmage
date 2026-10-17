@@ -3,10 +3,41 @@
   "catalogue_id": 4892,
   "oracle_id": "556dd333-4066-41f7-98f6-41794754de71",
   "facts_sha256": "5720bd5de40513f5fe42fc430f8b26c10ac45e30cf1da91a81a1b90ce5b95d3a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7de85934ca1f502e8bc29de9fefcffdcc0389a3166842517d48d96c1bdfe8c0c"
   },
-  "physical_metadata_sha256": "8f00f85d4bfff0e2b2d9d8179601b03564b2cc01b9440606133d05a11737a47a"
+  "physical_metadata_sha256": "8f00f85d4bfff0e2b2d9d8179601b03564b2cc01b9440606133d05a11737a47a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VileEntomber.java",
+  "java_sha256": "64d31643445e6ddfae6c9bcbbd94756c63df87d62c2dc365b131faf09c7b4ea1",
+  "rules_tests": "src/engine_fdn_tutor_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/SearchEffect.java",
+      "sha256": "3bd01fb726f6f76df078d7bf1f7a84fe484cc02fa0b1ca8dff89a3a2f562be96"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInGraveyardEffect.java",
+      "sha256": "293f025fce90b44b6e97cab08bc41ef455c1b82b444c72b46c4dd958542ae939"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    }
+  ]
 }

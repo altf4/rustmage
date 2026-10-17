@@ -3,10 +3,41 @@
   "catalogue_id": 3622,
   "oracle_id": "14aefe99-fb60-4f1c-a71f-7ffbe94c8b13",
   "facts_sha256": "c417c839fd909bd80d964fdd5c4531758225ffe2df1b38ced0e962de9924ef0b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "31c8e977de4616ee7c20e5e2aaa945032257d43590b702fc079ff1059686d526"
   },
-  "physical_metadata_sha256": "bf6514cd01e7c4b69df8a836057b4d824463576c304d79ff38f2a355ba140515"
+  "physical_metadata_sha256": "bf6514cd01e7c4b69df8a836057b4d824463576c304d79ff38f2a355ba140515",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RuneScarredDemon.java",
+  "java_sha256": "8e29fa47e9a08728bb94ccc4352f236d9a24778eebe8ee084211de61d3f04740",
+  "rules_tests": "src/engine_fdn_tutor_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/SearchEffect.java",
+      "sha256": "3bd01fb726f6f76df078d7bf1f7a84fe484cc02fa0b1ca8dff89a3a2f562be96"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ]
 }

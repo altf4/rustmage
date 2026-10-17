@@ -1410,6 +1410,7 @@ pub struct LibraryChoiceView {
 #[derive(Clone, Debug, Serialize)]
 pub struct SearchChoiceView {
     pub filter: crate::SearchFilter,
+    pub minimum: u16,
     pub maximum: u16,
     pub destination: crate::SearchDestination,
     pub tapped: bool,
@@ -2951,7 +2952,9 @@ impl Game {
                         }
                     }
                 } else {
-                    if emit(Action::FinishSearch) {
+                    if choice.selected.len() >= usize::from(choice.minimum)
+                        && emit(Action::FinishSearch)
+                    {
                         return true;
                     }
                     if choice.selected.len() < usize::from(choice.spec.maximum) {
@@ -4857,6 +4860,7 @@ impl Game {
                     .filter(|choice| choice.battlefield.is_none())
                     .map(|choice| SearchChoiceView {
                         filter: choice.spec.filter,
+                        minimum: choice.minimum,
                         maximum: choice.spec.maximum,
                         destination: choice.spec.destination,
                         tapped: choice.spec.tapped,
@@ -5707,3 +5711,7 @@ mod fdn_recursion_tests;
 #[cfg(test)]
 #[path = "engine_fdn_power_damage_tests.rs"]
 mod fdn_power_damage_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_tutor_tests.rs"]
+mod fdn_tutor_tests;

@@ -253,6 +253,8 @@ pub(crate) struct LibrarySelectionSpec {
 /// Fixed qualities admitted by library-search instructions.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum SearchFilter {
+    Any,
+    ManaValue { minimum: u64, maximum: u64 },
     AnyOf(&'static [SearchFilter]),
     AllOf(&'static [SearchFilter]),
     Name(&'static str),
@@ -268,6 +270,10 @@ pub enum SearchFilter {
 impl SearchFilter {
     pub(crate) fn matches(self, card: Card) -> bool {
         match self {
+            Self::Any => true,
+            Self::ManaValue { minimum, maximum } => {
+                (minimum..=maximum).contains(&card.fixed_mana_value())
+            }
             Self::AnyOf(filters) => filters.iter().any(|filter| filter.matches(card)),
             Self::AllOf(filters) => filters.iter().all(|filter| filter.matches(card)),
             Self::Name(name) => card.token_info().map_or(card.name(), |info| info.name) == name,
@@ -287,6 +293,7 @@ impl SearchFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum SearchDestination {
+    Graveyard,
     /// Shuffle, then put the selected cards on top (last selected uppermost).
     Top,
     Hand,
@@ -645,6 +652,9 @@ pub(crate) enum Instruction {
     Scry(u16),
     Surveil(u16),
     Search(SearchSpec),
+    /// Unqualified search: find the maximum, or every remaining card if fewer.
+    /// Existing qualified searches retain their legal failure-to-find behavior.
+    SearchRequired(SearchSpec),
     SelectLibrary(LibrarySelectionSpec),
     Damage(i32),
     DamageScaled(AmountValue),

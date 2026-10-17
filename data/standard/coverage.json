@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "d2bccabd6fe21dd2ff1ccf89d96e61d560d1ca5c1ade3927fc6f2fef4240dfcb",
+  "catalogue_version": "68eb99862df3328a98120da19e511d3b5bbb2b85b538ee98ca4008ae93b06779",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1992,
-  "implemented_total": 1998,
+  "implemented_standard_cards": 1996,
+  "implemented_total": 2002,
   "token_definitions": 97,
   "emblem_definitions": 1,
   "adventure_definitions": 40,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 252,
-      "gated": 175
+      "complete": 256,
+      "gated": 171
     },
     "fin": {
       "total": 305,
@@ -12243,8 +12243,8 @@
     {
       "name": "Fierce Empath",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/fierce_empath.rs",
       "set": "fdn"
     },
@@ -22155,8 +22155,8 @@
     {
       "name": "Micromancer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/micromancer.rs",
       "set": "fdn"
     },
@@ -29187,8 +29187,8 @@
     {
       "name": "Rune-Scarred Demon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/rune_scarred_demon.rs",
       "set": "fdn"
     },
@@ -39347,8 +39347,8 @@
     {
       "name": "Vile Entomber",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/vile_entomber.rs",
       "set": "fdn"
     },

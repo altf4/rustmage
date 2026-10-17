@@ -1641,10 +1641,23 @@ impl Game {
                         return;
                     }
                 },
-                Instruction::Search(spec) => {
+                Instruction::Search(spec) | Instruction::SearchRequired(spec) => {
+                    let minimum = if matches!(instruction, Instruction::SearchRequired(_)) {
+                        assert_eq!(
+                            spec.filter,
+                            crate::SearchFilter::Any,
+                            "required searches must not require finding a hidden quality"
+                        );
+                        usize::from(spec.maximum)
+                            .min(self.state.players[item.controller.index()].library.len())
+                            as u16
+                    } else {
+                        0
+                    };
                     self.state.resolving.as_mut().unwrap().search =
                         Some(Box::new(search::SearchChoice {
                             spec,
+                            minimum,
                             selected: Vec::new(),
                             battlefield: None,
                         }));

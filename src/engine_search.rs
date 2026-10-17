@@ -5,6 +5,7 @@ use crate::SearchDestination;
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct SearchChoice {
     pub spec: SearchSpec,
+    pub minimum: u16,
     pub selected: Vec<CardId>,
     pub battlefield: Option<Vec<CardId>>,
 }
@@ -96,6 +97,14 @@ impl Game {
             self.run_program();
             return;
         }
+        // A private search does not disclose whether the previously known top
+        // was chosen or shuffled away. A singleton library is still deducible.
+        if choice.spec.destination == SearchDestination::Hand
+            && !choice.spec.reveal
+            && self.state.players[player.index()].library.len() > 1
+        {
+            self.forget_library_top(player);
+        }
         let moves = choice
             .selected
             .iter()
@@ -105,6 +114,7 @@ impl Game {
                         unreachable!("top search committed before entry moves")
                     }
                     SearchDestination::Hand => Zone::Hand,
+                    SearchDestination::Graveyard => Zone::Graveyard,
                     SearchDestination::Battlefield => Zone::Battlefield,
                     SearchDestination::BattlefieldThenHand { .. } => {
                         if choice
