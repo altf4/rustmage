@@ -32,6 +32,16 @@ pub(super) trait CharacteristicWorld {
         }
     }
 
+    /// Layer-five color query. Current admitted effects do not change colors.
+    fn colors(&self, id: CardId) -> u8 {
+        let object = self.object(id);
+        if object.zone == Zone::Stack {
+            self.game().effective_spell_card(id).colors()
+        } else {
+            object.card.colors()
+        }
+    }
+
     fn counter_subtype_keywords(&self, id: CardId) -> Keywords {
         let object = self.object(id);
         if object.zone != Zone::Battlefield || self.kinds(id) & 1 == 0 {
@@ -115,6 +125,7 @@ pub(super) trait CharacteristicWorld {
             &|id| self.subtypes(id),
             &|id, object| game.object_kinds(id, object),
             &|id| self.name(id),
+            &|id| self.colors(id),
             &|id| self.counter_amounts(id).has_any(),
             self.life(controller),
             game.state.attack_declared && self.attacking(source),

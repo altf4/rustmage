@@ -38,6 +38,7 @@ pub(crate) enum StaticAbilityFragment {
     ChosenCreatureType,
     ChosenModifier(ChosenModifier),
     PlayerHexproof,
+    QualifiedHexproof(SourceCharacteristicFilter),
     ControlledSpellsUncounterable(u16),
     LifeGainAdditional(u16),
     CantGainLife,

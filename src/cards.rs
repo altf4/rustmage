@@ -1094,6 +1094,11 @@ pub(crate) enum ResolvedStatValue {
     EnteringPower,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum SourceCharacteristicFilter {
+    Color(ChoiceColor),
+    Instant,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StatValue {
     Fixed(u16),
     TappedCount(CountFilter),
@@ -1117,6 +1122,15 @@ pub(crate) enum StatValue {
     LifeGainOccurredThisTurn,
     LifeGainedThisTurn,
     ControllerLife,
+    /// Boolean threshold relative to the rules configuration, not a printed 20.
+    ControllerLifeAboveStarting {
+        minimum: u16,
+    },
+    /// Boolean presence, rather than number of distinct colors.
+    HasColor {
+        filter: CountFilter,
+        color: ChoiceColor,
+    },
     Count(CountFilter),
     GreatestManaValue(CountFilter),
     DistinctNames(CountFilter),
@@ -2535,7 +2549,11 @@ impl Card {
         generated::DEFINITIONS[self.0 as usize].basic
     }
     pub fn is_instant(self) -> bool {
-        generated::DEFINITIONS[self.0 as usize].kind & 8 != 0
+        Self::kinds_are_instant(self.kind_mask())
+    }
+    /// One canonical Instant-kind interpretation for printed and live type queries.
+    pub(crate) const fn kinds_are_instant(kinds: u16) -> bool {
+        kinds & 8 != 0
     }
     pub(crate) fn effect(self) -> Effect {
         generated::DEFINITIONS[self.0 as usize].effect

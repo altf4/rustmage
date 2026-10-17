@@ -175,7 +175,7 @@ impl Game {
             Effect::Spell(p, _) | Effect::Aura(p) => p,
             _ => return false,
         };
-        if !self.cast_targets_available(plan, actor, self.object_ref(id)) {
+        if !self.cast_definition_targets_available(plan, actor, self.object_ref(id), definition) {
             return false;
         }
         if definition.x_symbols() > 0 {

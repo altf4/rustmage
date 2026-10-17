@@ -149,6 +149,22 @@ impl Announcement {
     }
 }
 
+#[derive(Clone, Copy)]
+struct TargetSourceCharacteristics<'a> {
+    reference: ObjectRef,
+    snapshot: Option<&'a DamageFacts>,
+    spell: Option<Card>,
+}
+impl<'a> TargetSourceCharacteristics<'a> {
+    fn from_item(item: &'a SpellView) -> Self {
+        Self {
+            reference: item.object,
+            snapshot: Some(&item.source_facts),
+            spell: (item.kind == StackKind::Spell).then_some(item.source_card),
+        }
+    }
+}
+
 impl Game {
     pub(super) fn target_spec(&self, item: &SpellView) -> TargetPlan {
         let plan = item
@@ -181,42 +197,70 @@ impl Game {
         actor: Player,
         source: ObjectRef,
     ) -> bool {
+        self.cast_definition_targets_available(
+            plan,
+            actor,
+            source,
+            self.state.objects[source.card as usize].card,
+        )
+    }
+    pub(super) fn cast_definition_targets_available(
+        &self,
+        plan: TargetPlan,
+        actor: Player,
+        source: ObjectRef,
+        definition: Card,
+    ) -> bool {
+        let qualification = Some(TargetSourceCharacteristics {
+            reference: source,
+            snapshot: None,
+            spell: Some(definition),
+        });
+        let departing =
+            (self.state.objects[source.card as usize].zone == Zone::Hand).then_some(source.card);
         let available = |spec: TargetSpec| {
             if spec.min == 0 {
                 return true;
             }
             let mut count = [0usize; 2];
-            self.visit_cast_targets(spec.rule, actor, source, |target| {
-                if target == Target::Card(source.card) {
-                    return false;
-                }
-                let distinct = matches!(
-                    spec.rule,
-                    TargetRule::Grouped {
-                        constraint: TargetGroupConstraint::DifferentControllers,
-                        ..
-                    }
-                );
-                let bucket = if matches!(spec.rule, TargetRule::Grouped { .. }) {
-                    let Target::Card(id) = target else {
+            self.visit_targets_without_hand(
+                spec.rule,
+                actor,
+                source,
+                departing,
+                qualification,
+                |target| {
+                    if target == Target::Card(source.card) {
                         return false;
-                    };
-                    let object = &self.state.objects[id as usize];
-                    if distinct {
-                        object.controller.index()
-                    } else {
-                        object.owner.index()
                     }
-                } else {
-                    0
-                };
-                count[bucket] += 1;
-                if distinct {
-                    spec.min <= 1 || spec.min <= 2 && count[0] > 0 && count[1] > 0
-                } else {
-                    count[bucket] >= usize::from(spec.min)
-                }
-            })
+                    let distinct = matches!(
+                        spec.rule,
+                        TargetRule::Grouped {
+                            constraint: TargetGroupConstraint::DifferentControllers,
+                            ..
+                        }
+                    );
+                    let bucket = if matches!(spec.rule, TargetRule::Grouped { .. }) {
+                        let Target::Card(id) = target else {
+                            return false;
+                        };
+                        let object = &self.state.objects[id as usize];
+                        if distinct {
+                            object.controller.index()
+                        } else {
+                            object.owner.index()
+                        }
+                    } else {
+                        0
+                    };
+                    count[bucket] += 1;
+                    if distinct {
+                        spec.min <= 1 || spec.min <= 2 && count[0] > 0 && count[1] > 0
+                    } else {
+                        count[bucket] >= usize::from(spec.min)
+                    }
+                },
+            )
         };
         match plan {
             TargetPlan::Single(spec) => available(spec),
@@ -230,39 +274,63 @@ impl Game {
         actor: Player,
         source: ObjectRef,
     ) -> bool {
+        self.targets_available_with(plan, actor, source, None)
+    }
+    pub(super) fn item_targets_available(&self, item: &SpellView, plan: TargetPlan) -> bool {
+        self.targets_available_with(
+            plan,
+            item.controller,
+            item.target_source(),
+            Some(TargetSourceCharacteristics::from_item(item)),
+        )
+    }
+    fn targets_available_with(
+        &self,
+        plan: TargetPlan,
+        actor: Player,
+        source: ObjectRef,
+        qualification: Option<TargetSourceCharacteristics<'_>>,
+    ) -> bool {
         let available = |spec: TargetSpec| {
             if spec.min == 0 {
                 return true;
             }
             let mut count = [0usize; 2];
-            self.visit_targets(spec.rule, actor, source, |target| {
-                let distinct = matches!(
-                    spec.rule,
-                    TargetRule::Grouped {
-                        constraint: TargetGroupConstraint::DifferentControllers,
-                        ..
-                    }
-                );
-                let bucket = if matches!(spec.rule, TargetRule::Grouped { .. }) {
-                    let Target::Card(id) = target else {
-                        return false;
-                    };
-                    let object = &self.state.objects[id as usize];
-                    if distinct {
-                        object.controller.index()
+            self.visit_targets_without_hand(
+                spec.rule,
+                actor,
+                source,
+                None,
+                qualification,
+                |target| {
+                    let distinct = matches!(
+                        spec.rule,
+                        TargetRule::Grouped {
+                            constraint: TargetGroupConstraint::DifferentControllers,
+                            ..
+                        }
+                    );
+                    let bucket = if matches!(spec.rule, TargetRule::Grouped { .. }) {
+                        let Target::Card(id) = target else {
+                            return false;
+                        };
+                        let object = &self.state.objects[id as usize];
+                        if distinct {
+                            object.controller.index()
+                        } else {
+                            object.owner.index()
+                        }
                     } else {
-                        object.owner.index()
+                        0
+                    };
+                    count[bucket] += 1;
+                    if distinct {
+                        spec.min <= 1 || spec.min <= 2 && count[0] > 0 && count[1] > 0
+                    } else {
+                        count[bucket] >= usize::from(spec.min)
                     }
-                } else {
-                    0
-                };
-                count[bucket] += 1;
-                if distinct {
-                    spec.min <= 1 || spec.min <= 2 && count[0] > 0 && count[1] > 0
-                } else {
-                    count[bucket] >= usize::from(spec.min)
-                }
-            })
+                },
+            )
         };
         match plan {
             TargetPlan::Single(spec) => available(spec),
@@ -445,9 +513,7 @@ impl Game {
                 return;
             };
             let item = &announcement.item;
-            if spec.max > 0
-                && self.visit_targets(spec.rule, item.controller, item.target_source(), |_| true)
-            {
+            if spec.max > 0 && self.visit_item_targets(item, spec.rule, |_| true) {
                 let player = item.controller;
                 self.state.announcing.as_mut().unwrap().spec = spec;
                 self.state.pending = Pending::Targets { player };
@@ -469,6 +535,104 @@ impl Game {
         }
     }
 
+    /// Only qualified recipients inspect source facts; ordinary targets keep their fast path.
+    fn qualified_hexproof_blocks(
+        &self,
+        id: CardId,
+        controller: Player,
+        source: ObjectRef,
+        qualification: Option<TargetSourceCharacteristics<'_>>,
+    ) -> bool {
+        let object = &self.state.objects[id as usize];
+        if object.zone != Zone::Battlefield || object.controller == controller {
+            return false;
+        }
+        let filters = || {
+            object
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|g| g.fragments)
+                .filter_map(|f| {
+                    if let crate::cards::StaticAbilityFragment::QualifiedHexproof(filter) = f {
+                        Some(*filter)
+                    } else {
+                        None
+                    }
+                })
+        };
+        if filters().next().is_none() {
+            return false;
+        }
+        let packets = || {
+            self.state
+                .stack
+                .iter()
+                .chain(&self.state.pending_triggers)
+                .chain(&self.state.ordering_triggers)
+                .chain(self.state.announcing.iter().map(|a| &a.item))
+                .chain(self.state.resolving.iter().map(|r| &r.item))
+        };
+        let qualification = qualification.or_else(|| {
+            packets()
+                .find(|item| item.target_source() == source || item.object == source)
+                .map(TargetSourceCharacteristics::from_item)
+        });
+        let source = qualification.map_or(source, |q| q.reference);
+        let current = self
+            .state
+            .objects
+            .get(source.card as usize)
+            .filter(|o| o.generation == source.generation);
+        let facts = if let Some(definition) = qualification.and_then(|q| q.spell) {
+            // A spell uses its chosen face even in preflight, before it reaches the stack.
+            Some((definition.colors(), definition.kind_mask()))
+        } else if let Some(current) = current {
+            Some((
+                ability_world::CharacteristicWorld::colors(self, source.card),
+                self.object_kinds(source.card, current),
+            ))
+        } else {
+            qualification
+                .and_then(|q| q.snapshot)
+                .map(|snapshot| (snapshot.colors(), snapshot.kinds))
+        };
+        let Some((colors, kinds)) = facts else {
+            return false;
+        };
+        let query = self.characteristic_query();
+        filters().any(|filter| {
+            let matches = match filter {
+                crate::cards::SourceCharacteristicFilter::Color(color) => {
+                    colors & (1u8 << color.index()) != 0
+                }
+                crate::cards::SourceCharacteristicFilter::Instant => Card::kinds_are_instant(kinds),
+            };
+            matches
+                && query.continuous_fragment_available(id, |fragment| {
+                    matches!(fragment,
+                crate::cards::StaticAbilityFragment::QualifiedHexproof(found) if *found == filter)
+                })
+        })
+    }
+
+    pub(super) fn item_target_matches(
+        &self,
+        item: &SpellView,
+        rule: TargetRule,
+        target: Target,
+    ) -> bool {
+        self.target_matches_without_hand(
+            rule,
+            item.controller,
+            item.target_source(),
+            target,
+            None,
+            Some(TargetSourceCharacteristics::from_item(item)),
+        )
+    }
+
+    #[cfg(test)]
     pub(super) fn target_matches(
         &self,
         rule: TargetRule,
@@ -476,7 +640,7 @@ impl Game {
         source: ObjectRef,
         target: Target,
     ) -> bool {
-        self.target_matches_without_hand(rule, controller, source, target, None)
+        self.target_matches_without_hand(rule, controller, source, target, None, None)
     }
     pub(super) fn cast_target_matches(
         &self,
@@ -491,7 +655,7 @@ impl Game {
             .get(source.card as usize)
             .filter(|o| o.zone == Zone::Hand && o.generation == source.generation)
             .map(|_| source.card);
-        self.target_matches_without_hand(rule, controller, source, target, departing)
+        self.target_matches_without_hand(rule, controller, source, target, departing, None)
     }
     fn target_matches_without_hand(
         &self,
@@ -500,6 +664,7 @@ impl Game {
         source: ObjectRef,
         target: Target,
         departing: Option<CardId>,
+        qualification: Option<TargetSourceCharacteristics<'_>>,
     ) -> bool {
         match rule {
             TargetRule::GraveCreatureSourcePower { maximum } => {
@@ -537,16 +702,36 @@ impl Game {
                     | TargetGroupConstraint::AttachedToGroup(_) => Zone::Battlefield,
                 };
                 return matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| o.zone == zone))
-                    && self
-                        .target_matches_without_hand(*base, controller, source, target, departing);
+                    && self.target_matches_without_hand(
+                        *base,
+                        controller,
+                        source,
+                        target,
+                        departing,
+                        qualification,
+                    );
             }
             TargetRule::Union(rules) => {
                 return rules.iter().any(|&rule| {
-                    self.target_matches_without_hand(rule, controller, source, target, departing)
+                    self.target_matches_without_hand(
+                        rule,
+                        controller,
+                        source,
+                        target,
+                        departing,
+                        qualification,
+                    )
                 });
             }
             TargetRule::Filtered { base, predicate } => {
-                if !self.target_matches_without_hand(*base, controller, source, target, departing) {
+                if !self.target_matches_without_hand(
+                    *base,
+                    controller,
+                    source,
+                    target,
+                    departing,
+                    qualification,
+                ) {
                     return false;
                 }
                 let Target::Card(id) = target else {
@@ -638,7 +823,8 @@ impl Game {
                 };
                 if obj.zone == Zone::Battlefield
                     && obj.controller != controller
-                    && self.keywords(id).contains(Keywords::HEXPROOF)
+                    && (self.keywords(id).contains(Keywords::HEXPROOF)
+                        || self.qualified_hexproof_blocks(id, controller, source, qualification))
                 {
                     return false;
                 }
@@ -702,6 +888,21 @@ impl Game {
         }
     }
 
+    pub(super) fn visit_item_targets(
+        &self,
+        item: &SpellView,
+        rule: TargetRule,
+        emit: impl FnMut(Target) -> bool,
+    ) -> bool {
+        self.visit_targets_without_hand(
+            rule,
+            item.controller,
+            item.target_source(),
+            None,
+            Some(TargetSourceCharacteristics::from_item(item)),
+            emit,
+        )
+    }
     pub(super) fn visit_targets(
         &self,
         rule: TargetRule,
@@ -709,7 +910,7 @@ impl Game {
         source: ObjectRef,
         emit: impl FnMut(Target) -> bool,
     ) -> bool {
-        self.visit_targets_without_hand(rule, controller, source, None, emit)
+        self.visit_targets_without_hand(rule, controller, source, None, None, emit)
     }
     pub(super) fn visit_cast_targets(
         &self,
@@ -724,7 +925,7 @@ impl Game {
             .get(source.card as usize)
             .filter(|o| o.zone == Zone::Hand && o.generation == source.generation)
             .map(|_| source.card);
-        self.visit_targets_without_hand(rule, controller, source, departing, emit)
+        self.visit_targets_without_hand(rule, controller, source, departing, None, emit)
     }
     fn visit_targets_without_hand(
         &self,
@@ -732,6 +933,7 @@ impl Game {
         controller: Player,
         source: ObjectRef,
         departing: Option<CardId>,
+        qualification: Option<TargetSourceCharacteristics<'_>>,
         mut emit: impl FnMut(Target) -> bool,
     ) -> bool {
         if rule == TargetRule::None {
@@ -739,16 +941,28 @@ impl Game {
         }
         for player in [Player::P0, Player::P1] {
             let target = Target::Player(player);
-            if self.target_matches_without_hand(rule, controller, source, target, departing)
-                && emit(target)
+            if self.target_matches_without_hand(
+                rule,
+                controller,
+                source,
+                target,
+                departing,
+                qualification,
+            ) && emit(target)
             {
                 return true;
             }
         }
         for id in 0..self.state.objects.len() {
             let target = Target::Card(id as CardId);
-            if self.target_matches_without_hand(rule, controller, source, target, departing)
-                && emit(target)
+            if self.target_matches_without_hand(
+                rule,
+                controller,
+                source,
+                target,
+                departing,
+                qualification,
+            ) && emit(target)
             {
                 return true;
             }
@@ -756,8 +970,14 @@ impl Game {
         for item in &self.state.stack {
             if item.kind == StackKind::Spell {
                 let target = Target::Spell(item.card);
-                if self.target_matches_without_hand(rule, controller, source, target, departing)
-                    && emit(target)
+                if self.target_matches_without_hand(
+                    rule,
+                    controller,
+                    source,
+                    target,
+                    departing,
+                    qualification,
+                ) && emit(target)
                 {
                     return true;
                 }
@@ -833,15 +1053,17 @@ impl Game {
     pub(super) fn start_announcement(&mut self, item: SpellView, trigger: bool) -> bool {
         let needs_mode = item.modes().is_some() && item.mode.is_none();
         if needs_mode
-            && !item.modes().unwrap().iter().any(|mode| {
-                self.targets_available(mode.targets, item.controller, item.target_source())
-            })
+            && !item
+                .modes()
+                .unwrap()
+                .iter()
+                .any(|mode| self.item_targets_available(&item, mode.targets))
         {
             assert!(trigger, "validated modal spell");
             return false;
         }
         let plan = self.target_spec(&item);
-        if !self.targets_available(plan, item.controller, item.target_source()) {
+        if !self.item_targets_available(&item, plan) {
             assert!(
                 trigger,
                 "validated spell announcement: {} ({plan:?})",
@@ -852,22 +1074,10 @@ impl Game {
         let has_choice = needs_mode
             || match plan {
                 TargetPlan::Single(spec) => {
-                    spec.max > 0
-                        && self.visit_targets(
-                            spec.rule,
-                            item.controller,
-                            item.target_source(),
-                            |_| true,
-                        )
+                    spec.max > 0 && self.visit_item_targets(&item, spec.rule, |_| true)
                 }
                 TargetPlan::Groups(groups) => groups.iter().any(|spec| {
-                    spec.max > 0
-                        && self.visit_targets(
-                            spec.rule,
-                            item.controller,
-                            item.target_source(),
-                            |_| true,
-                        )
+                    spec.max > 0 && self.visit_item_targets(&item, spec.rule, |_| true)
                 }),
             };
         if !has_choice {
@@ -906,15 +1116,15 @@ impl Game {
         production: Option<Mana>,
     ) {
         let plan = self.target_spec(&item);
-        let player = item.controller;
         assert!(
-            self.targets_available(plan, player, item.target_source())
+            self.item_targets_available(&item, plan)
                 || item.source_card.gift().is_some_and(|gift| {
-                    self.targets_available(gift.promised_targets, player, item.target_source())
+                    self.item_targets_available(&item, gift.promised_targets)
                 })
-                || item.source_card.kicked_targets().is_some_and(|plan| {
-                    self.targets_available(plan, player, item.target_source())
-                })
+                || item
+                    .source_card
+                    .kicked_targets()
+                    .is_some_and(|plan| { self.item_targets_available(&item, plan) })
         );
         let needs_mode = item.modes().is_some() && item.mode.is_none();
         self.state.announcing = Some(Announcement {

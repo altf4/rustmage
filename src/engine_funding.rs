@@ -2320,3 +2320,7 @@ mod named_counter_funding_tests {
 #[cfg(test)]
 #[path = "engine_entry_choices_world_tests.rs"]
 mod entry_choices_world_tests;
+
+#[cfg(test)]
+#[path = "engine_qualified_hexproof_world_tests.rs"]
+mod qualified_hexproof_world_tests;

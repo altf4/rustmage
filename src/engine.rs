@@ -1106,6 +1106,12 @@ pub struct DamageFacts {
     pub attacking: bool,
 }
 impl DamageFacts {
+    /// Frozen source colors. With the currently admitted layer-five effects these
+    /// are intrinsic to the captured effective card. Color-changing mechanics must
+    /// extend this LKI query together with CharacteristicWorld::colors.
+    pub(super) fn colors(&self) -> u8 {
+        self.card.colors()
+    }
     fn from_view(view: &ObjectView) -> Self {
         Self {
             controller: view.controller,
@@ -3050,10 +3056,9 @@ impl Game {
                     return true;
                 }
                 if count < announcement.spec.max {
-                    return self.visit_targets(
+                    return self.visit_item_targets(
+                        &announcement.item,
                         announcement.spec.rule,
-                        actor,
-                        announcement.item.target_source(),
                         |target| {
                             self.target_group_compatible(
                                 announcement.spec.rule,

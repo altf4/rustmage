@@ -1174,7 +1174,6 @@ impl Game {
         }
         let was_targeted = !item.targets.is_empty();
         let spec = self.target_spec(&item);
-        let target_source = item.target_source();
         // Preserve the whole original target set for relational legality. A departed
         // target still contributes its last controller, even though it cannot move.
         // The empty common case allocates nothing.
@@ -1184,13 +1183,16 @@ impl Game {
             .copied()
             .filter(|bound| !self.resolution_target_relations_hold(&item, *bound, spec))
             .collect();
-        item.targets.retain(|bound| {
+        // Retain the existing allocation while borrowing the packet's source facts.
+        let mut targets = std::mem::take(&mut item.targets);
+        targets.retain(|bound| {
             !relation_illegal.contains(bound)
                 && self.same_target_object(*bound)
-                && spec.group(bound.group).is_some_and(|group| {
-                    self.target_matches(group.rule, item.controller, target_source, bound.target)
-                })
+                && spec
+                    .group(bound.group)
+                    .is_some_and(|group| self.item_target_matches(&item, group.rule, bound.target))
         });
+        item.targets = targets;
         let valid = !was_targeted || !item.targets.is_empty();
         if !valid {
             if item.kind == StackKind::Spell {
