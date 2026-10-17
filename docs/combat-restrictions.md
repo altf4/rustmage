@@ -63,7 +63,7 @@ The engine correctly rejects attacks without a current enabling creature.
 Policy 8765b1a waits until Tiger-Dillo can legally attack before casting the
 one-turn enabling buff and returns to the enabling stage if the condition ends.
 The unchanged seed30902 passes in 1,342 frames with five paid casts; ten public
-body/seat cases pass in 19.449 seconds. The new fixed 100-game run is pending.
+body/seat cases pass in 19.449 seconds. The new fixed, unretried 100-game run passes in 198.991 seconds: 93,895 owned frames and 187,790 actor/revision denials, with all 827 execution inputs and the library hash unchanged.
 All of these policy revisions leave production Rust, card programs, decks, seeds,
 schema and optimized library unchanged. Every frozen execution file and library
 hash is verified per gate; no workload failure is relabeled as a pass.
