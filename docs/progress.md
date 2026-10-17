@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,866 executable Standard identities | 3,298 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,867 executable Standard identities | 3,297 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -94,3 +94,16 @@ events, 81,129 owned frames and 162,258 actor/revision denials. Exact parent uni
 and ten-manifest pinned provenance proofs pass. Two independent reviewers approve
 production; exact final published-head confirmation remains the merge gate.
 The full all-Standard and training goal remains incomplete.
+
+The [enchanted draw-step delivery](enchanted-draw.md) completes Lord Skitter's
+Blessing on actual Adventure main804f539: 1,867/5,164 executable Standard
+identities, 3,297 gated and schema86. Exact current-parent comparison retains
+5,330 prior definitions and all helpers, aliases, colors, recipes and flags.
+Fresh composition validation passes 1,766 native tests, all-target Clippy and
+formatting, 24 focused compiler/provenance methods, five unique public methods
+and both 100-game workloads: 153,682 owned frames and 307,364 denials combined.
+The separately frozen Blessing baseline passes all427 compiler and260 public
+methods; the actual Adventure parent passes430 compiler and261 public methods.
+Those broad runs retain their original source scopes. Two independent nonauthor
+final published-head approvals remain the delivery gate. Full Standard support
+and the complete training/search goal remain incomplete.
