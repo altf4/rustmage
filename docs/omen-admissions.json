@@ -268,8 +268,8 @@
           "oracle_text": "Put a +1/+1 counter on up to one target creature. Draw a card. (Then shuffle this card into its owner's library.)"
         }
       ],
-      "status": "gated_incomplete_residual",
-      "remaining_obligation": "Up to two target graveyard cards must be from one shared graveyard; selected-target compatibility remains unimplemented.",
+      "status": "complete_pair_admitted",
+      "remaining_obligation": null,
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/f/FeralDeathgorger.java",
