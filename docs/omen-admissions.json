@@ -1,0 +1,1151 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-16",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+  "scope": "All13 Standard Omen physical identities. Whole-pair admission requires complete normal/inset bodies. Direct explicit Java imports and shared Omen/ownership/shuffle infrastructure are full-file provenance records, not a claim that every transitive source was translated.",
+  "cards": [
+    {
+      "name": "Bloomvine Regent // Claim Territory",
+      "oracle_id": "da1e019c-2ffb-412d-90d7-f2e5e5c44c4b",
+      "faces": [
+        {
+          "name": "Bloomvine Regent",
+          "mana_cost": "{3}{G}{G}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying\nWhenever this creature or another Dragon you control enters, you gain 3 life.",
+          "power": "4",
+          "toughness": "5"
+        },
+        {
+          "name": "Claim Territory",
+          "mana_cost": "{2}{G}",
+          "type_line": "Sorcery — Omen",
+          "oracle_text": "Search your library for up to two basic Forest cards, reveal them, put one onto the battlefield tapped and the other into your hand, then shuffle. (Also shuffle this card.)"
+        }
+      ],
+      "status": "gated_incomplete_residual",
+      "remaining_obligation": "Search up to two basic Forest cards with split battlefield-tapped/hand destinations and subsequent search shuffle, then Omen completion shuffle.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BloomvineRegent.java",
+          "java_sha256": "7a36e59dd50cd9161518ac579e34488148efc9f523df194a7a967d16ad7d94e1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldThisOrAnotherTriggeredAbility.java",
+          "java_sha256": "2f5818fd959ec418604af2da920faa13d4eab583848e899591ef1a473a3b126f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutOntoBattlefieldTappedRestInHandEffect.java",
+          "java_sha256": "52b593d496c49f76c87e729cc95fb31bf44350f75df260960df6dd4132eea67f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/OmenCard.java",
+          "java_sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterCard.java",
+          "java_sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterBasicCard.java",
+          "java_sha256": "8c80c816be8541c94ea9963a7273a76a20532f075a20388a15a9d8bdf59e48f5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+          "java_sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+        }
+      ]
+    },
+    {
+      "name": "Dirgur Island Dragon // Skimming Strike",
+      "oracle_id": "23cda76b-6e47-4922-a38d-93f7aae1eb00",
+      "faces": [
+        {
+          "name": "Dirgur Island Dragon",
+          "mana_cost": "{5}{U}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying\nWard {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)",
+          "power": "4",
+          "toughness": "4"
+        },
+        {
+          "name": "Skimming Strike",
+          "mana_cost": "{1}{U}",
+          "type_line": "Instant — Omen",
+          "oracle_text": "Tap up to one target creature. Draw a card. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "status": "complete_pair_admitted",
+      "remaining_obligation": null,
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DirgurIslandDragon.java",
+          "java_sha256": "a888868c75f1f0565b9b65c0f3a41c148d3645c79a30f2ea0b6e4b400d9b6dca"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+          "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/OmenCard.java",
+          "java_sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Disruptive Stormbrood // Petty Revenge",
+      "oracle_id": "ec74ae5d-1284-443c-9842-18954f8cf5a8",
+      "faces": [
+        {
+          "name": "Disruptive Stormbrood",
+          "mana_cost": "{4}{G}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying\nWhen this creature enters, destroy up to one target artifact or enchantment.",
+          "power": "3",
+          "toughness": "3"
+        },
+        {
+          "name": "Petty Revenge",
+          "mana_cost": "{1}{B}",
+          "type_line": "Sorcery — Omen",
+          "oracle_text": "Destroy target creature with power 3 or less. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "status": "complete_pair_admitted",
+      "remaining_obligation": null,
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DisruptiveStormbrood.java",
+          "java_sha256": "ccfe1e86ddbfcb236c3d2f88fd97a47ae8c7d7375dd8ddf5353279a3f4e03241"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+          "java_sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+          "java_sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/OmenCard.java",
+          "java_sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ComparisonType.java",
+          "java_sha256": "33b0abc2b4214ece7d2f842b9f000d967dd8fb4e6cb073cb34eeab7e304731ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/PowerPredicate.java",
+          "java_sha256": "909b9038e02c0653920408059e987b6ee3cfad717900e62e78c597285f137dde"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Feral Deathgorger // Dusk Sight",
+      "oracle_id": "1722f814-2d4e-4d59-9b74-10ef8e89def9",
+      "faces": [
+        {
+          "name": "Feral Deathgorger",
+          "mana_cost": "{5}{B}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying, deathtouch\nWhen this creature enters, exile up to two target cards from a single graveyard.",
+          "power": "3",
+          "toughness": "5"
+        },
+        {
+          "name": "Dusk Sight",
+          "mana_cost": "{1}{B}",
+          "type_line": "Sorcery — Omen",
+          "oracle_text": "Put a +1/+1 counter on up to one target creature. Draw a card. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "status": "gated_incomplete_residual",
+      "remaining_obligation": "Up to two target graveyard cards must be from one shared graveyard; selected-target compatibility remains unimplemented.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FeralDeathgorger.java",
+          "java_sha256": "67ca8948aed368fd3d7a725393531fc49312b5d045c394a6520d9d74639b26a1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+          "java_sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/OmenCard.java",
+          "java_sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+          "java_sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInASingleGraveyard.java",
+          "java_sha256": "949cc145a9909c27e84176fa97ef96c73a3e59f445abda54b117c3318d7f1db9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Marang River Regent // Coil and Catch",
+      "oracle_id": "099b8d2c-b482-48dd-b6bc-dedf546d66c5",
+      "faces": [
+        {
+          "name": "Marang River Regent",
+          "mana_cost": "{4}{U}{U}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying\nWhen this creature enters, return up to two other target nonland permanents to their owners' hands.",
+          "power": "6",
+          "toughness": "7"
+        },
+        {
+          "name": "Coil and Catch",
+          "mana_cost": "{3}{U}",
+          "type_line": "Instant — Omen",
+          "oracle_text": "Draw three cards, then discard a card. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "status": "complete_pair_admitted",
+      "remaining_obligation": null,
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MarangRiverRegent.java",
+          "java_sha256": "94ad25920e5284672b8d1ed3adb4994ac690d7cff87493f4161ddf844fd86992"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+          "java_sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+          "java_sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/OmenCard.java",
+          "java_sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterNonlandPermanent.java",
+          "java_sha256": "451cffb8d2af71777225c79e09772339e74603483d0f32ad2cc65c88e3a73cb9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ]
+    },
+    {
+      "name": "Purging Stormbrood // Absorb Essence",
+      "oracle_id": "5e8086d5-ea48-4555-b65a-a33d08ba4afd",
+      "faces": [
+        {
+          "name": "Purging Stormbrood",
+          "mana_cost": "{4}{B}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying\nWard—Pay 2 life.\nWhen this creature enters, remove all counters from up to one target creature.",
+          "power": "4",
+          "toughness": "4"
+        },
+        {
+          "name": "Absorb Essence",
+          "mana_cost": "{1}{W}",
+          "type_line": "Instant — Omen",
+          "oracle_text": "Target creature gets +2/+2 and gains lifelink and hexproof until end of turn. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "status": "complete_pair_admitted",
+      "remaining_obligation": null,
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PurgingStormbrood.java",
+          "java_sha256": "418e347baeadfc0f82b0adee281f9ea8b47a164dd4abd41e2a24b0996978c8aa"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+          "java_sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/RemoveAllCountersPermanentTargetEffect.java",
+          "java_sha256": "9fa7d62e59c42dfb50663d177a111dfc82d85de36acf1413ffde01beb7aba8c1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+          "java_sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+          "java_sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/OmenCard.java",
+          "java_sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Riling Dawnbreaker // Signaling Roar",
+      "oracle_id": "1fc31651-70fe-4a58-9b7e-7359510bba51",
+      "faces": [
+        {
+          "name": "Riling Dawnbreaker",
+          "mana_cost": "{4}{W}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying, vigilance\nAt the beginning of combat on your turn, another target creature you control gets +1/+0 until end of turn.",
+          "power": "3",
+          "toughness": "4"
+        },
+        {
+          "name": "Signaling Roar",
+          "mana_cost": "{1}{W}",
+          "type_line": "Sorcery — Omen",
+          "oracle_text": "Create a 2/2 white Soldier creature token. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "status": "complete_pair_admitted",
+      "remaining_obligation": null,
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RilingDawnbreaker.java",
+          "java_sha256": "e16b2ea54d5352c7b3438a56bc7e4a49b5bc3f751c3fbc8bb933c409bfea1b51"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+          "java_sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/OmenCard.java",
+          "java_sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TargetController.java",
+          "java_sha256": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/Soldier22Token.java",
+          "java_sha256": "b9e82c3d87d8984cc4e5db9d9f7b3ecd37cfe6537ecac5bc5dca76952499570d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Runescale Stormbrood // Chilling Screech",
+      "oracle_id": "af7db15c-93af-4c7e-a028-42181d91a923",
+      "faces": [
+        {
+          "name": "Runescale Stormbrood",
+          "mana_cost": "{3}{R}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying\nWhenever you cast a noncreature spell or a Dragon spell, this creature gets +2/+0 until end of turn.",
+          "power": "2",
+          "toughness": "4"
+        },
+        {
+          "name": "Chilling Screech",
+          "mana_cost": "{1}{U}",
+          "type_line": "Instant — Omen",
+          "oracle_text": "Counter target spell with mana value 2 or less. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "status": "complete_pair_admitted",
+      "remaining_obligation": null,
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RunescaleStormbrood.java",
+          "java_sha256": "c1fa56dbb0bd524b95ff0e038144578d1f8375a898a843908490e7f02eda48db"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+          "java_sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+          "java_sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/OmenCard.java",
+          "java_sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ComparisonType.java",
+          "java_sha256": "33b0abc2b4214ece7d2f842b9f000d967dd8fb4e6cb073cb34eeab7e304731ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterSpell.java",
+          "java_sha256": "50fd3169b7ed9ae7f81bce450a44155f4326c657186c1ba6713e2d0f8c3e3a6c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+          "java_sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetSpell.java",
+          "java_sha256": "349d67f29235bc2e3ad846c3b177f18dc1097e87e80327a77c852667289f94cc"
+        }
+      ]
+    },
+    {
+      "name": "Sagu Wildling // Roost Seek",
+      "oracle_id": "7cee6d43-5dec-4989-85ec-c635ec783ec7",
+      "faces": [
+        {
+          "name": "Sagu Wildling",
+          "mana_cost": "{4}{G}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying\nWhen this creature enters, you gain 3 life.",
+          "power": "3",
+          "toughness": "3"
+        },
+        {
+          "name": "Roost Seek",
+          "mana_cost": "{G}",
+          "type_line": "Sorcery — Omen",
+          "oracle_text": "Search your library for a basic land card, reveal it, put it into your hand, then shuffle. (Also shuffle this card.)"
+        }
+      ],
+      "status": "complete_pair_admitted",
+      "remaining_obligation": null,
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SaguWildling.java",
+          "java_sha256": "2fc511fb2a772c8c164c0919bc686f3559d027a13c84f6c2000f9cac0deba18f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+          "java_sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/OmenCard.java",
+          "java_sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+          "java_sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+        }
+      ]
+    },
+    {
+      "name": "Scavenger Regent // Exude Toxin",
+      "oracle_id": "7e97a242-0bac-4f18-9228-e98ecca36254",
+      "faces": [
+        {
+          "name": "Scavenger Regent",
+          "mana_cost": "{3}{B}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying\nWard—Discard a card.",
+          "power": "4",
+          "toughness": "4"
+        },
+        {
+          "name": "Exude Toxin",
+          "mana_cost": "{X}{B}{B}",
+          "type_line": "Sorcery — Omen",
+          "oracle_text": "Each non-Dragon creature gets -X/-X until end of turn. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "status": "gated_incomplete_residual",
+      "remaining_obligation": "Chosen-inset variable X declaration/funding plus all non-Dragon -X/-X.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/ScavengerRegent.java",
+          "java_sha256": "5bffc5cb08aac47fe16661cedbbeb02501048f20ef56f9737beaa4211978c43a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+          "java_sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+          "java_sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+          "java_sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SignInversionDynamicValue.java",
+          "java_sha256": "4c4175b8acbc1aeafe355bcad4f1fece8983c36ee7b506fae1de38563dde6da0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+          "java_sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/OmenCard.java",
+          "java_sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        }
+      ]
+    },
+    {
+      "name": "Stormshriek Feral // Flush Out",
+      "oracle_id": "e24916ff-7566-4f27-8e31-732311a4a88c",
+      "faces": [
+        {
+          "name": "Stormshriek Feral",
+          "mana_cost": "{4}{R}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying, haste\n{1}{R}: This creature gets +1/+0 until end of turn.",
+          "power": "3",
+          "toughness": "3"
+        },
+        {
+          "name": "Flush Out",
+          "mana_cost": "{1}{R}",
+          "type_line": "Sorcery — Omen",
+          "oracle_text": "Discard a card. If you do, draw two cards. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "status": "complete_pair_admitted",
+      "remaining_obligation": null,
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StormshriekFeral.java",
+          "java_sha256": "ff9fb245334dc2d3cef7e6bfcfb3e8d933a5bfcf9733ab055b53bcb5f377a0e1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+          "java_sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+          "java_sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+          "java_sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/OmenCard.java",
+          "java_sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        }
+      ]
+    },
+    {
+      "name": "Twinmaw Stormbrood // Charring Bite",
+      "oracle_id": "ff812a78-3fe7-47bc-9984-1c2380cff5b1",
+      "faces": [
+        {
+          "name": "Twinmaw Stormbrood",
+          "mana_cost": "{5}{W}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying\nWhen this creature enters, you gain 5 life.",
+          "power": "5",
+          "toughness": "4"
+        },
+        {
+          "name": "Charring Bite",
+          "mana_cost": "{1}{R}",
+          "type_line": "Sorcery — Omen",
+          "oracle_text": "Charring Bite deals 5 damage to target creature without flying. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "status": "complete_pair_admitted",
+      "remaining_obligation": null,
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TwinmawStormbrood.java",
+          "java_sha256": "02813a5921b06a87adea75cd7e7c9d21f36dff61fd8222d9af244158ab21679d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DealsDamageToACreatureTriggeredAbility.java",
+          "java_sha256": "5aefa1ce2fe30cee71b8de23334fcf0945b60954b1af2297838bf4b99766931d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/OmenCard.java",
+          "java_sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AbilityPredicate.java",
+          "java_sha256": "6e8ecc0108fde867fbb47c3afbc24e5dd30a0e9de97efc5e06950498f0b32dda"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Whirlwing Stormbrood // Dynamic Soar",
+      "oracle_id": "4fbfc814-df10-4d61-ada9-c96cc8ee8d8c",
+      "faces": [
+        {
+          "name": "Whirlwing Stormbrood",
+          "mana_cost": "{4}{U}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flash\nFlying\nYou may cast sorcery spells and Dragon spells as though they had flash.",
+          "power": "4",
+          "toughness": "3"
+        },
+        {
+          "name": "Dynamic Soar",
+          "mana_cost": "{2}{G}",
+          "type_line": "Sorcery — Omen",
+          "oracle_text": "Put three +1/+1 counters on target creature you control. (Then shuffle this card into its owner's library.)"
+        }
+      ],
+      "status": "gated_incomplete_residual",
+      "remaining_obligation": "Global permission to cast sorcery and Dragon spells as though they had flash; must use chosen characteristics.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WhirlwingStormbrood.java",
+          "java_sha256": "3a3232054edaf9ef684006db5bb3ae2026dd6170d9f71951fcf4a3a02d8ed8bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/CastAsThoughItHadFlashAllEffect.java",
+          "java_sha256": "2e3ffc07fbe4e802fc19aec06b070c450381c4bf797a8f4458841e7df9f81cc9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/OmenCard.java",
+          "java_sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterCard.java",
+          "java_sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        }
+      ]
+    }
+  ],
+  "shared_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/cards/OmenCard.java",
+      "java_sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/OmenSpellCard.java",
+      "java_sha256": "a103edc55f20408a67f69a0be9d1c5d5d08133c3b25d43fde7614bee966678ba"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/SpellOptionCard.java",
+      "java_sha256": "f5ff4b85e6a90c3a131c70c3bc5b9f77bddc4290fd6c2d24723b8497cd716dc0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/SpellOptionCardSpellAbility.java",
+      "java_sha256": "f5f7a36e1184ee08bce58dd3f61a9f83375b6c597a5aedae4a37ef64a35131a5"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/ShuffleIntoLibrarySourceEffect.java",
+      "java_sha256": "bbb5942769ee34f8ca0539d82c4487bc0f39bcf14787978fe588240bccf4f8d0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "java_sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    }
+  ]
+}

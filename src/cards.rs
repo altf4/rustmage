@@ -77,10 +77,12 @@ pub(crate) enum TargetPredicate {
     Damaged,
     DealtDamage,
     PowerAtLeast(i32),
+    PowerAtMost(i32),
     ToughnessAtLeast(i32),
     PowerOrToughnessAtLeast(i32),
     Colors(u8),
     Keyword(Keywords),
+    WithoutKeyword(Keywords),
     Token,
     Subtype(&'static str),
     Nonbasic,
@@ -557,6 +559,7 @@ pub(crate) enum Instruction {
         amount: u32,
     },
     DoubleCounters,
+    RemoveAllCounters,
     PutCounters {
         subject: Subject,
         kind: CounterKind,
@@ -1557,6 +1560,16 @@ impl Card {
     /// Physical parent of an internal Adventure spell definition.
     pub fn adventure_parent(self) -> Option<Card> {
         generated::adventure_parent(self)
+    }
+    /// Immutable Omen inset spell; never a separate physical card.
+    pub fn omen_spell(self) -> Option<Card> {
+        generated::omen_spell(self)
+    }
+    pub fn omen_parent(self) -> Option<Card> {
+        generated::omen_parent(self)
+    }
+    pub fn inset_parent(self) -> Option<Card> {
+        self.adventure_parent().or_else(|| self.omen_parent())
     }
     pub fn warp_cost(self) -> Option<ManaCost> {
         generated::warp_cost(self)

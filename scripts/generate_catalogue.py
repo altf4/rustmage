@@ -1396,6 +1396,11 @@ def statement_program(text):
     text = strip_rule_label(text)
     if not text:return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if text=='discard a card. If you do, draw two cards.':
+        # Resolution is mandatory if a card exists. The guard skips both the
+        # discard and dependent draw when the hand is empty; no optional decline.
+        return ['If { guard: StepGuard::Threshold { value: StepValue::Hand, minimum: Some(1), maximum: None }, skip: 2 }',
+                object_choice('Discard','Controller',(1,sacrifice_spec('a permanent')[1])), 'Draw(PlayerSet::Controller, 2)']
     if selected:=library_selection_program(text):return selected
     if impulse:=exile_play_program(text):return impulse
     prefix='if you control an outlaw, '
@@ -1595,7 +1600,7 @@ TARGET_RULES = {
 }
 for _name,_kinds,_excluded in [('SpellCreature',1,0),('SpellNoncreature',0,1),('SpellInstantSorcery',12,0),('SpellArtifact',16,0),('SpellEnchantment',32,0),('SpellArtifactEnchantment',48,0),('SpellArtifactCreature',17,0)]:
     TARGET_RULES[_name]=f'TargetRule::SpellKinds {{ kinds: {_kinds}, excluded: {_excluded} }}'
-for _name,_colors,_minimum,_maximum in [('SpellRedGreen',24,0,'u64::MAX'),('SpellWhiteBlack',5,0,'u64::MAX'),('SpellMana2',0,2,2),('SpellManaMin4',0,4,'u64::MAX')]:
+for _name,_colors,_minimum,_maximum in [('SpellRedGreen',24,0,'u64::MAX'),('SpellWhiteBlack',5,0,'u64::MAX'),('SpellMana2',0,2,2),('SpellManaMax2',0,0,2),('SpellManaMin4',0,4,'u64::MAX')]:
     TARGET_RULES[_name]=f'TargetRule::SpellCharacteristics {{ colors: {_colors}, min_mana: {_minimum}, max_mana: {_maximum} }}'
 
 
@@ -1692,6 +1697,8 @@ for _name, _base, _predicate in [
     ('CreatureDamagedOpponent', 'CreatureOpponent', 'Damaged'),
     ('CreatureDealtDamageOpponent', 'CreatureOpponent', 'DealtDamage'),
     ('CreaturePowerMin3', 'Creature', 'PowerAtLeast(3)'),
+    ('CreaturePowerMax3', 'Creature', 'PowerAtMost(3)'),
+    ('CreatureWithoutFlying', 'Creature', 'WithoutKeyword(Keywords(1))'),
     ('CreaturePowerMin4', 'Creature', 'PowerAtLeast(4)'),
     ('CreatureToughnessMin4', 'Creature', 'ToughnessAtLeast(4)'),
     ('CreatureEitherMin4', 'Creature', 'PowerOrToughnessAtLeast(4)'),
@@ -1720,6 +1727,7 @@ for _name, _members in [
     TARGET_RULES[_name] = 'TargetRule::Union(&[' + ', '.join(TARGET_RULES[member] for member in _members) + '])'
 
 FIXED_DAMAGE_SUBJECTS = {
+    'target creature without flying':'CreatureWithoutFlying',
     'any target':'Any',
     'target creature':'Creature',
     'target creature an opponent controls':'CreatureOpponent',
@@ -1745,6 +1753,7 @@ REMOVAL_SUBJECTS = dict(EXILE_SUBJECTS, **{
     'target creature or planeswalker with mana value 3 or less': 'CreaturePlaneswalkerMax3',
     'target creature or planeswalker with mana value 3 or greater': 'CreaturePlaneswalkerMin3',
     'target creature with power 3 or greater': 'CreaturePowerMin3',
+    'target creature with power 3 or less': 'CreaturePowerMax3',
     'target creature with power 4 or greater': 'CreaturePowerMin4',
     'target creature with toughness 4 or greater': 'CreatureToughnessMin4',
     'target creature with power or toughness 4 or greater': 'CreatureEitherMin4',
@@ -1804,7 +1813,7 @@ COUNTER_TARGETS = {
     'target artifact or enchantment spell':'SpellArtifactEnchantment',
     'target artifact or creature spell':'SpellArtifactCreature',
     'target red or green spell':'SpellRedGreen','target white or black spell':'SpellWhiteBlack',
-    'target spell with mana value 2':'SpellMana2','target spell with mana value 4 or greater':'SpellManaMin4',
+    'target spell with mana value 2':'SpellMana2','target spell with mana value 2 or less':'SpellManaMax2','target spell with mana value 4 or greater':'SpellManaMin4',
 }
 
 
@@ -1920,6 +1929,10 @@ def targeted_program(text):
         if text.startswith(subject+' '):
             result=targeted_program('target creature '+text[len(subject)+1:])
             return (rule,result[1]) if result and result[0]=='Creature' else None
+    if text=="return up to two other target nonland permanents to their owners' hands.":
+        return ('OtherNonland',0,2),['ReturnToHand']
+    if text=='remove all counters from up to one target creature.':
+        return ('Creature',0,1),['RemoveAllCounters']
     # Exact single target moves. Owner choice never denotes a spell target.
     library_subjects={'target creature':'Creature','target artifact or creature':'ArtifactCreature','target nonland permanent':'Nonland'}
     if m:=re.fullmatch(r"(?:(target creature|target artifact or creature|target nonland permanent)'s owner|the owner of (target nonland permanent)) puts it on their choice of the top or bottom of their library\.",text):
@@ -2181,6 +2194,7 @@ def qualified_cast_prefix(line):
         'Whenever you cast an Equipment spell or a spell that targets a creature you control, ': 'AnyOf(&[CastFilter::Subtype("Equipment"), CastFilter::Targeted { filter: &CastFilter::Any, target: CastTarget::Creature(CastRelation::You) }])',
         'Whenever you cast an instant or sorcery spell that targets a creature, ': 'Targeted { filter: &CastFilter::InstantSorcery, target: CastTarget::Creature(CastRelation::Any) }',
         'Repartee — Whenever you cast an instant or sorcery spell that targets a creature, ': 'Targeted { filter: &CastFilter::InstantSorcery, target: CastTarget::Creature(CastRelation::Any) }',
+        'Whenever you cast a noncreature spell or a Dragon spell, ': 'AnyOf(&[CastFilter::Noncreature, CastFilter::Subtype("Dragon")])',
         'Whenever you cast a noncreature or Dragon spell, ': 'AnyOf(&[CastFilter::Noncreature, CastFilter::Subtype("Dragon")])',
         'Whenever you cast a Villain spell, ': 'Subtype("Villain")',
     }
@@ -3601,12 +3615,12 @@ def extract_replacements(card):
     return dict(card,oracle_text='\n'.join(residual)),specs
 
 
-def adventure_faces(card):
+def adventure_faces(card, mechanic="Adventure"):
     """Typed two-part physical card; the reminder is presentation, not its program."""
     faces = card.get('card_faces')
     if (card.get('layout') != 'adventure' or not isinstance(faces, list)
             or len(faces) != 2 or any(not isinstance(f, dict) for f in faces)
-            or faces[1].get('type_line') not in ('Instant — Adventure', 'Sorcery — Adventure')):
+            or faces[1].get('type_line') not in ('Instant — '+mechanic, 'Sorcery — '+mechanic)):
         return None
     if (card.get('oracle_text') not in (None, '')
             or card.get('name') != ' // '.join(f.get('name','') for f in faces)
@@ -3620,9 +3634,16 @@ def adventure_faces(card):
         if position and spell_cost_options(face['mana_cost']) is None:
             return None
         text = face['oracle_text']
-        if position and '(Then ' in text and not re.search(r' \(Then exile this card\. You may (?:cast the (?:creature|artifact|enchantment)|play the land) later from exile\.\)$', text):
+        if position and mechanic == 'Adventure' and '(Then ' in text and not re.search(r' \(Then exile this card\. You may (?:cast the (?:creature|artifact|enchantment)|play the land) later from exile\.\)$', text):
             return None
-        if position:
+        if position and mechanic == 'Omen':
+            # Only the exact two published Omen reminders are presentation.
+            text = re.sub(r' \(Then shuffle this card into its owner\'s library\.\)$| \(Also shuffle this card\.\)$', '', text)
+        if not position and mechanic == 'Omen':
+            text = re.sub(r'(?m)^(Ward (\{[0-9]+\})) \(Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays \2\.\)$', r'\1', text)
+        if mechanic == 'Omen' and ('(' in text or ')' in text):
+            return None
+        if position and mechanic == 'Adventure':
             # CR715 supplies this completion for every Adventure, independently of
             # whether Oracle includes reminder text. No residual sentence is erased.
             text = re.sub(r' \(Then exile this card\. You may (?:cast the (?:creature|artifact|enchantment)|play the land) later from exile\.\)', '', text)
@@ -3658,10 +3679,13 @@ def compile_catalogue(snapshot, target):
         raise ValueError(f'unreviewed deck construction exception: {sorted(unreviewed_exceptions)}')
     standard_names = set(cards)
     adventure_pairs = {}
+    omen_pairs = {}
     # Reuse the complete-body compiler for each genuine face, then admit only the
     # conjunction. This is not a normal-layout fallback for the physical parent.
     for parent, original in list(cards.items()):
-        faces = adventure_faces(original)
+        raw_faces = original.get("card_faces")
+        mechanic = "Omen" if isinstance(raw_faces, list) and raw_faces and isinstance(raw_faces[-1], dict) and raw_faces[-1].get("type_line", "").endswith(" — Omen") else "Adventure"
+        faces = adventure_faces(original, mechanic)
         if faces is None:
             continue
         payload = json.dumps(faces, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()
@@ -3682,12 +3706,13 @@ def compile_catalogue(snapshot, target):
                 or extract_target_cost_reduction(faces[1])[1] is not None
                 or extract_cost_reductions(faces[1])[1]):
             continue
-        key = '@adventure/' + original['oracle_id']
+        key = ('@omen/' if mechanic == 'Omen' else '@adventure/') + original['oracle_id']
         cards[parent], cards[key] = faces
-        adventure_pairs[parent] = key
+        (omen_pairs if mechanic == "Omen" else adventure_pairs)[parent] = key
     TOKEN_DEFS.clear()
     EMBLEM_DEFS.clear()
-    internal_faces = set(adventure_pairs.values())
+    inset_pairs = adventure_pairs | omen_pairs
+    internal_faces = set(inset_pairs.values())
     legacy = {name: (effect, cost, color) for name, effect, cost, color in LEGACY}
     names = list(legacy) + sorted((standard_names | set(target['banned_card_names'])) - set(legacy))
     names += sorted(internal_faces)
@@ -4067,7 +4092,7 @@ def compile_catalogue(snapshot, target):
              '#[rustfmt::skip]', f'pub(super) static DEFINITIONS: [Definition; {len(names)}] = [', *definitions, '];',
              '#[rustfmt::skip]', f'pub(super) static NAME_INDEX: [(&str, u16); {len(names)}] = [']
     aliases = {name:index for index,name in enumerate(names)}
-    for parent, face in adventure_pairs.items():
+    for parent, face in inset_pairs.items():
         aliases[cards[parent]['name']] = names.index(parent)
         aliases[cards[face]['name']] = names.index(face)
     lines[lines.index(next(v for v in lines if 'static NAME_INDEX:' in v))] = f'pub(super) static NAME_INDEX: [(&str, u16); {len(aliases)}] = ['
@@ -4082,11 +4107,16 @@ def compile_catalogue(snapshot, target):
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn plot_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *plot_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn adventure_identity(card: Card) -> Option<&'static str> {", '    match card.0 {',
-              *(f'        {names.index(parent)} => Some({json.dumps(parent,ensure_ascii=False)}),' for parent in adventure_pairs), '        _ => None,', '    }', '}', '']
+              *(f'        {names.index(parent)} => Some({json.dumps(parent,ensure_ascii=False)}),' for parent in inset_pairs), '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn adventure_spell(card: Card) -> Option<Card> {', '    match card.0 {',
               *(f'        {names.index(parent)} => Some(Card({names.index(face)})),' for parent,face in adventure_pairs.items()), '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn adventure_parent(card: Card) -> Option<Card> {', '    match card.0 {',
               *(f'        {names.index(face)} => Some(Card({names.index(parent)})),' for parent,face in adventure_pairs.items()), '        _ => None,', '    }', '}', '']
+    for method, pairs in [('omen', omen_pairs)]:
+        lines += ['#[rustfmt::skip]', f'pub(super) fn {method}_spell(card: Card) -> Option<Card> {{', '    match card.0 {',
+                  *(f'        {names.index(parent)} => Some(Card({names.index(face)})),' for parent,face in pairs.items()), '        _ => None,', '    }', '}', '']
+        lines += ['#[rustfmt::skip]', f'pub(super) fn {method}_parent(card: Card) -> Option<Card> {{', '    match card.0 {',
+                  *(f'        {names.index(face)} => Some(Card({names.index(parent)})),' for parent,face in pairs.items()), '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn warp_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *warp_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn vehicle_stats(card: Card) -> Option<Stats> {', '    match card.0 {', *vehicle_stats_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn replacement_effects(card: Card) -> &'static [ReplacementSpec] {", '    match card.0 {', *replacement_rows, '        _ => &[],', '    }', '}', '']
@@ -4119,7 +4149,7 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', 'pub(super) fn uncounterable(card: Card) -> bool {', '    ' + protection, '}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(standard_names),
         'implemented_standard_cards': sum(row['implemented'] and row['standard_legal'] for row in coverage),
-        'implemented_total': len(supported), 'token_definitions': len(used_tokens), 'emblem_definitions': len(used_emblems), 'cards': [r for r in coverage if r['name'] not in internal_faces], 'adventure_definitions': len(adventure_pairs)}
+        'implemented_total': len(supported), 'token_definitions': len(used_tokens), 'emblem_definitions': len(used_emblems), 'cards': [r for r in coverage if r['name'] not in internal_faces], 'adventure_definitions': len(adventure_pairs), 'omen_definitions': len(omen_pairs)}
 
 
 if __name__ == '__main__':

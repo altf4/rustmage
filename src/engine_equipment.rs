@@ -38,7 +38,7 @@ impl Game {
     pub(super) fn keywords(&self, id: CardId) -> Keywords {
         if self.state.objects[id as usize].zone == Zone::Stack {
             let definition = self.effective_spell_card(id);
-            if definition.adventure_parent().is_some() {
+            if definition.inset_parent().is_some() {
                 return definition.info().keywords;
             }
         }

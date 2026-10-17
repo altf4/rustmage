@@ -856,7 +856,10 @@ impl Game {
         let valid = !was_targeted || !item.targets.is_empty();
         if !valid {
             if item.kind == StackKind::Spell {
-                if item.cast.is_some_and(|c| c.face == CastFace::Adventure) {
+                if item
+                    .cast
+                    .is_some_and(|c| matches!(c.face, CastFace::Adventure | CastFace::Omen))
+                {
                     self.move_adventure_spell(&item, Zone::Graveyard);
                 } else {
                     self.move_object(item.card, Zone::Graveyard);
@@ -1056,6 +1059,8 @@ impl Game {
                 if item.kind == StackKind::Spell {
                     if item.cast.is_some_and(|c| c.face == CastFace::Adventure) {
                         self.finish_adventure(&item);
+                    } else if item.cast.is_some_and(|c| c.face == CastFace::Omen) {
+                        self.finish_omen(&item);
                     } else {
                         self.move_object(item.card, Zone::Graveyard);
                     }
@@ -1835,6 +1840,15 @@ impl Game {
                         })
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
+                }
+                Instruction::RemoveAllCounters => {
+                    for bound in &item.targets {
+                        if self.same_target_object(*bound)
+                            && let Target::Card(id) = bound.target
+                        {
+                            self.state.objects[id as usize].counters = Counters::default();
+                        }
+                    }
                 }
                 Instruction::PutCounters { .. } | Instruction::PutCountersScaled { .. } => {
                     let (subject, kind, amount) = match instruction {

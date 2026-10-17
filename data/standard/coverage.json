@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "28c25ea9ba0a30849ba1a51930f2dc64e8decf707eda3987e6d961b477c9efd4",
+  "catalogue_version": "3f7338068a8047b1aa9232dc6a0611ab5db88929a00c1240379684846f723091",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1779,
-  "implemented_total": 1785,
-  "token_definitions": 84,
+  "implemented_standard_cards": 1788,
+  "implemented_total": 1794,
+  "token_definitions": 85,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -6544,8 +6544,8 @@
     {
       "name": "Dirgur Island Dragon // Skimming Strike",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Discerning Financier",
@@ -6586,8 +6586,8 @@
     {
       "name": "Disruptive Stormbrood // Petty Revenge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Disruptor Wanderglyph",
@@ -15934,8 +15934,8 @@
     {
       "name": "Marang River Regent // Coil and Catch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Marauding Blight-Priest",
@@ -19714,8 +19714,8 @@
     {
       "name": "Purging Stormbrood // Absorb Essence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Purple Dragon Punks",
@@ -21160,8 +21160,8 @@
     {
       "name": "Riling Dawnbreaker // Signaling Roar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Rime Chill",
@@ -21754,8 +21754,8 @@
     {
       "name": "Runescale Stormbrood // Chilling Screech",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Ruric Thar, Biomagus",
@@ -21916,8 +21916,8 @@
     {
       "name": "Sagu Wildling // Roost Seek",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Sahagin",
@@ -25078,8 +25078,8 @@
     {
       "name": "Stormshriek Feral // Flush Out",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Stormsplitter",
@@ -28348,8 +28348,8 @@
     {
       "name": "Twinmaw Stormbrood // Charring Bite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Twinned Vision",
@@ -31106,5 +31106,6 @@
       "implementation": null
     }
   ],
-  "adventure_definitions": 19
+  "adventure_definitions": 19,
+  "omen_definitions": 9
 }
