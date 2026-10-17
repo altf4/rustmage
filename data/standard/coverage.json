@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "09d48f636ea8c4c5dea22bba908db188d7a1222a053af91d47ee0d91737469a3",
+  "catalogue_version": "7435d4dee1e84a7345dc91812ac8583eae8dccd3c37658ca42fb29211bc9a62d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1874,
-  "implemented_total": 1880,
+  "implemented_standard_cards": 1886,
+  "implemented_total": 1892,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -2218,8 +2218,8 @@
     {
       "name": "Become Brutes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Bedhead Beastie",
@@ -5632,8 +5632,8 @@
     {
       "name": "Cursed Courtier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Cursed Recording",
@@ -5650,8 +5650,8 @@
     {
       "name": "Cut In",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Cut Propulsion",
@@ -6484,8 +6484,8 @@
     {
       "name": "Diminisher Witch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "bargain_template"
     },
     {
       "name": "Dimir Guildgate",
@@ -8158,8 +8158,8 @@
     {
       "name": "Eriette's Whisper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Eriette, the Beguiler",
@@ -16372,8 +16372,8 @@
     {
       "name": "Merry Bards",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Messenger Hawk",
@@ -19582,8 +19582,8 @@
     {
       "name": "Protective Parents",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Protective Response",
@@ -22918,8 +22918,8 @@
     {
       "name": "Shatter the Oath",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Shattered Acolyte",
@@ -24064,8 +24064,8 @@
     {
       "name": "Spellbook Vendor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Spellgyre",
@@ -27124,7 +27124,7 @@
     {
       "name": "The Witch's Vanity",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -28522,8 +28522,8 @@
     {
       "name": "Unassuming Sage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Unauthorized Exit",
@@ -30580,8 +30580,8 @@
     {
       "name": "Witch's Mark",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Witchstalker Frenzy",

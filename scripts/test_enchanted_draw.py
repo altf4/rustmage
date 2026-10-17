@@ -34,7 +34,7 @@ class EnchantedDrawCompilerTests(unittest.TestCase):
    c=dict(self.card,oracle_text=text);self.assertTrue(self.compiled(c)[1])
    self.assertFalse(self.compiled(dict(c,oracle_text=text+' (You win the game.)'))[1])
   self.assertIsNone(g.statement_program('you lose 65536 life and you draw an additional card.'))
- def test_historical_blessing_delivery_changes_only_one_definition(self):
+ def test_historical_blessing_union_changes_only_one_definition(self):
   from scripts.catalogue_preservation import canonical,assert_union
   old=subprocess.check_output(['git','-C',str(g.ROOT),'show','804f539567d2f50b27c801915a3eb5afd7f8d692:src/generated/catalogue.rs'],text=True)
   cards=json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards'];physical={c['oracle_id']:c['name'] for c in cards}
