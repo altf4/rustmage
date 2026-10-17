@@ -451,7 +451,7 @@ fn score(o: &Observation, action: &Action, focal: Card, progress: &[Pilot; 2]) -
                     -1000
                 }
             } else if c == Card::from_name("Bygone Colossus").unwrap() {
-                if state.normal || all_done {
+                if state.main_verified || all_done {
                     1000
                 } else {
                     -1000
@@ -460,7 +460,7 @@ fn score(o: &Observation, action: &Action, focal: Card, progress: &[Pilot; 2]) -
                 -1000
             }
         }
-        Action::Cast { .. } | Action::BeginCast { .. } => -1000,
+        Action::Cast { .. } | Action::BeginCast { .. } | Action::AnnounceWarp { .. } => -1000,
         Action::AnnounceActivate { card, .. } => {
             if state.main_verified
                 && state.second
