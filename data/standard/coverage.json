@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "7178ff4f50a27aee9b84281e89938e3a31bcc7059176cb74d6a623e57b24b22d",
+  "catalogue_version": "920b5e78d081e3e8120b6eaaed14a7fd7b1c1afeecd6c81be958c85367fa108a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2130,
-  "implemented_total": 2136,
+  "implemented_standard_cards": 2134,
+  "implemented_total": 2140,
   "token_definitions": 102,
   "emblem_definitions": 2,
   "adventure_definitions": 40,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 375,
-      "gated": 52
+      "complete": 378,
+      "gated": 49
     },
     "fin": {
       "total": 305,
@@ -150,8 +150,8 @@
     },
     "soc": {
       "total": 24,
-      "complete": 9,
-      "gated": 15
+      "complete": 10,
+      "gated": 14
     },
     "sos": {
       "total": 264,
@@ -11546,8 +11546,8 @@
     {
       "name": "Extravagant Replication",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/extravagant_replication.rs",
       "set": "fdn"
     },
@@ -16706,8 +16706,8 @@
     {
       "name": "Homunculus Horde",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/homunculus_horde.rs",
       "set": "fdn"
     },
@@ -28570,8 +28570,8 @@
     {
       "name": "Rite of Replication",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/rite_of_replication.rs",
       "set": "soc"
     },
@@ -30450,8 +30450,8 @@
     {
       "name": "Self-Reflection",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/self_reflection.rs",
       "set": "fdn"
     },

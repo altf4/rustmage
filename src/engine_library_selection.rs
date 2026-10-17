@@ -117,7 +117,7 @@ impl Game {
             self.state
                 .objects
                 .iter()
-                .filter(|o| o.owner == owner && o.zone == Zone::Graveyard && !o.card.is_token())
+                .filter(|o| o.owner == owner && o.zone == Zone::Graveyard && !o.is_token())
         };
         let requested = match spec.count {
             LibrarySelectionCount::Fixed(n) => usize::from(n),

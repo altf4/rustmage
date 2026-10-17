@@ -1,3 +1,6 @@
+#[path = "engine_copies.rs"]
+mod copies;
+pub use copies::CopyRecipe;
 const STARTING_LIFE: i128 = 20;
 use crate::capacity::{CapacityExt, CapacitySignal};
 use crate::cards::{
@@ -603,6 +606,7 @@ fn first_player() -> Player {
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct Object {
     card: Card,
+    copy_token: bool,
     owner: Player,
     controller: Player,
     zone: Zone,
@@ -624,6 +628,9 @@ struct Object {
 }
 
 impl Object {
+    fn is_token(&self) -> bool {
+        self.copy_token || self.card.is_token()
+    }
     fn keywords(&self) -> Keywords {
         self.card.keywords().union(self.gained_keywords)
     }
@@ -1095,6 +1102,7 @@ struct DamageChoice {
 /// that deal damage from their hand or as spells.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 pub struct DamageFacts {
+    pub token: bool,
     pub controller: Player,
     pub kinds: u16,
     pub power: i128,
@@ -1108,6 +1116,9 @@ pub struct DamageFacts {
     pub attacking: bool,
 }
 impl DamageFacts {
+    pub(super) fn is_token(&self) -> bool {
+        self.token
+    }
     /// Frozen source colors. With the currently admitted layer-five effects these
     /// are intrinsic to the captured effective card. Color-changing mechanics must
     /// extend this LKI query together with CharacteristicWorld::colors.
@@ -1122,6 +1133,7 @@ impl DamageFacts {
             power_above_base: view.power_above_base,
             granted_subtypes: view.granted_subtypes,
             card: view.card,
+            token: view.is_token(),
             battlefield: view.zone == Zone::Battlefield,
             counter: view.counters.has_any(),
             plus_one: view.counters.plus_one > 0,
@@ -1372,6 +1384,7 @@ struct State {
     named_counters: Option<SharedVec<live_counters::NamedCounterRow>>,
     creature_damage_history: Option<SharedVec<CreatureDamageHistoryView>>,
     entry_values: entry_choices::Rows,
+    copy_recipes: copies::Rows,
     ability_resolutions: ability_resolutions::Rows,
     attacked_this_turn: SharedVec<ObjectRef>,
     creatures_died_this_turn: u64,
@@ -1483,11 +1496,16 @@ pub struct ObjectView {
     /// Frozen effective power exceeds its CR208.4b base, before damage/departure.
     pub power_above_base: bool,
     pub keywords: Keywords,
-    pub token: Option<&'static TokenInfo>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub copy_recipe: Option<CopyRecipe>,
+    pub token: Option<TokenInfo>,
     pub emblem: Option<&'static EmblemInfo>,
 }
 
 impl ObjectView {
+    pub fn is_token(&self) -> bool {
+        self.token.is_some()
+    }
     /// Captured rules name, retained even after this object changes or leaves play.
     pub fn name(&self) -> &'static str {
         self.name
@@ -1867,6 +1885,7 @@ impl Game {
                 let id = objects.len() as CardId;
                 objects.push(Object {
                     card,
+                    copy_token: false,
                     owner: p,
                     controller: p,
                     zone: Zone::Library,
@@ -1898,6 +1917,7 @@ impl Game {
                 named_counters: None,
                 creature_damage_history: None,
                 entry_values: None,
+                copy_recipes: None,
                 ability_resolutions: None,
                 attacked_this_turn: Vec::new().into(),
                 creatures_died_this_turn: 0,
@@ -2503,7 +2523,7 @@ impl Game {
             }
             Pending::Bottom { .. } | Pending::Discard | Pending::EffectDiscard { .. } => {
                 for (i, obj) in s.objects.iter().enumerate() {
-                    if obj.owner == actor && obj.zone == Zone::Hand && !obj.card.is_token() {
+                    if obj.owner == actor && obj.zone == Zone::Hand && !obj.is_token() {
                         if matches!(s.pending, Pending::EffectDiscard { .. })
                             && s.resolving.as_ref().unwrap().selected_discards[actor.index()]
                                 .contains(&(i as CardId))
@@ -2572,7 +2592,7 @@ impl Game {
                     }
                     if sorcery
                         && obj.zone == Zone::Hand
-                        && !obj.card.is_token()
+                        && !obj.is_token()
                         && obj
                             .card
                             .plot_cost()
@@ -2639,7 +2659,7 @@ impl Game {
                     let flashback =
                         obj.zone == Zone::Graveyard && obj.card.flashback_cost().is_some();
                     let exile = obj.zone == Zone::Exile && self.can_play_exiled(actor, card);
-                    if (obj.zone != Zone::Hand && !flashback && !exile) || obj.card.is_token() {
+                    if (obj.zone != Zone::Hand && !flashback && !exile) || obj.is_token() {
                         continue;
                     }
                     if obj.card.is_land() {
@@ -3906,7 +3926,7 @@ impl Game {
         self.state
             .objects
             .iter()
-            .filter(|o| o.owner == p && o.zone == Zone::Hand && !o.card.is_token())
+            .filter(|o| o.owner == p && o.zone == Zone::Hand && !o.is_token())
             .count()
     }
 
@@ -3996,7 +4016,7 @@ impl Game {
                 .filter(|&&id| {
                     let o = &self.state.objects[id as usize];
                     o.zone != Zone::Battlefield
-                        && !o.card.is_token()
+                        && !o.is_token()
                         && !o.card.is_emblem()
                         && (o.card.base_stat_setter().is_some()
                             || !o.card.live_static_effects().is_empty()
@@ -4156,8 +4176,12 @@ impl Game {
             destination
         };
         let destination = self.death_exile_destination(&before, destination);
-        // CR111.8: after leaving the battlefield, a token cannot move again.
-        if before.card.is_emblem() || (before.card.is_token() && before.zone != Zone::Battlefield) {
+        // Outside is an internal staging zone for newly allocated tokens. A
+        // ceased token is on the free list and cannot move again (CR111.8).
+        let fresh_token = before.zone == Zone::Outside && !self.state.free_tokens.contains(&id);
+        if before.card.is_emblem()
+            || (before.is_token() && before.zone != Zone::Battlefield && !fresh_token)
+        {
             return ZoneChange {
                 gift: None,
                 after: before.reference,
@@ -4347,10 +4371,17 @@ impl Game {
         // This ordered index enumerates library cards, not transient tokens.
         // Tokens still enter the actual zone and cease only at the next SBA;
         // CR111.6/111.8 prevent looking at, drawing, or moving them as cards.
-        if destination == Zone::Library && !obj.card.is_token() {
+        if destination == Zone::Library && !obj.is_token() {
             self.state.players[obj.owner.index()].library.push(id);
         }
         let entry_identity = (obj.controller, obj.card);
+        self.advance_copy_recipe(
+            before.reference,
+            ObjectRef {
+                card: id,
+                generation,
+            },
+        );
         self.set_counters(id, counters);
         if destination == Zone::Battlefield {
             let (owner, card) = entry_identity;
@@ -5417,6 +5448,7 @@ impl Game {
             + entry_choices::owned_bytes(&s.entry_values)
             + s.pending.owned_bytes()
             + ability_resolutions::owned_bytes(&s.ability_resolutions)
+            + copies::owned_bytes(&s.copy_recipes)
             + s.announcing
                 .as_ref()
                 .map_or(0, |a| a.counter_payment.owned_bytes())
@@ -6370,3 +6402,7 @@ mod event_counter_core_tests;
 #[cfg(test)]
 #[path = "engine_fdn_five_bounded_acceptance_tests.rs"]
 mod fdn_five_bounded_acceptance_tests;
+
+#[cfg(test)]
+#[path = "engine_runtime_copy_tests.rs"]
+mod runtime_copy_tests;

@@ -3,10 +3,58 @@
   "catalogue_id": 3545,
   "oracle_id": "fb60739e-1dc3-481d-a056-ad72e665c680",
   "facts_sha256": "3019ec67b9a9721e9fea643050d9ad2a78465f70162e916591636bafe74f1559",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5711010e61728ea9162509fcb6a4763c9a078b99f198d220ad0f3cf0fdd21ab5"
   },
-  "physical_metadata_sha256": "f6472e3452dcae80a11265b05a55697fec603796c186607d392154d2e33b6076"
+  "physical_metadata_sha256": "f6472e3452dcae80a11265b05a55697fec603796c186607d392154d2e33b6076",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RiteOfReplication.java",
+  "java_sha256": "b62b88d89f5590b940912d5aeca1316fe630204b9ca00ab7318f8c43cc405913",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/CopyTokenFunction.java",
+      "sha256": "ed8c0fe3b50030f54d3e32ddbabbdc1f7018c0da6878429821f54020c4d4ce1a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/CopyApplier.java",
+      "sha256": "82b30d931a3e310abd321918f97eb3ec6d8bf1e93bd665e7ddc66ed032a2fcdf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/EmptyCopyApplier.java",
+      "sha256": "b7a59355b96283deb3cb3cf79a0b2c00576637990d87efc64cd8aa82ede040ca"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/KickedCondition.java",
+      "sha256": "6c4e759d58e4d9a85bcf6d6262fcae06b43a04d08ffbf3c71d7d850dbfba5a04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/KickerAbility.java",
+      "sha256": "fa52c368056b1e9798f37a5af5bb70a0fe935aaf23a71dcf592a67eae3e13650"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "remaining_obligations": [
+    "Gated core fixture: whole-card consumer acceptance and independent runtime-copy core reviews remain pending."
+  ]
 }

@@ -753,7 +753,7 @@ mod core_tests {
                         .iter()
                         .filter(|o| o.owner == actor
                             && o.zone == Zone::Battlefield
-                            && o.card.is_token()
+                            && o.is_token()
                             && o.card.has_subtype("Clue"))
                         .count(),
                     1

@@ -402,6 +402,14 @@ impl Game {
         counters
     }
     fn commit_entries(&mut self, batch: EntryBatch) {
+        for movement in &batch.moves {
+            if movement.skipped
+                && movement.before.zone == Zone::Outside
+                && movement.before.is_token()
+            {
+                self.release_unentered_copy(movement.before.reference);
+            }
+        }
         let mut timestamp_order = batch.timestamp_order.clone();
         if !batch.timestamps_ready {
             // No group has multiple objects, so APNAP determines the order uniquely.
@@ -786,7 +794,7 @@ impl Game {
     fn entry_has_timestamp(m: &EntryMove) -> bool {
         m.destination == Zone::Battlefield
             && m.before.zone != Zone::Battlefield
-            && !m.before.card.is_token()
+            && (!m.before.is_token() || m.before.copy_recipe.is_some())
             && !m.before.card.is_emblem()
             && !m.skipped
             && (m.before.card.base_stat_setter().is_some()

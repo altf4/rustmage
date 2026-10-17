@@ -32,7 +32,7 @@ impl Game {
                     card: id,
                     generation: o.generation,
                 } != source)
-            && (!filter.cards_only || !o.card.is_token())
+            && (!filter.cards_only || !o.is_token())
             && (filter.kind == 0 || kinds(id, o) & filter.kind != 0)
             && kinds(id, o) & filter.exclude == 0
             && filter.subtype.is_none_or(|s| subtypes(id).has(o.card, s))
@@ -179,7 +179,7 @@ impl Game {
             ),
             StatValue::Tokens(filter) => objects()
                 .filter(|&(id, o)| {
-                    o.card.is_token()
+                    o.is_token()
                         && Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
                 })
                 .count() as i128,
@@ -276,7 +276,7 @@ impl Game {
                     .unwrap_or(0),
             ),
             StatValue::GraveyardCardTypes => objects()
-                .filter(|(_, o)| o.zone == Zone::Graveyard && !o.card.is_token())
+                .filter(|(_, o)| o.zone == Zone::Graveyard && !o.is_token())
                 .fold(0u16, |mask, (_, o)| mask | o.card.kind_mask())
                 .count_ones() as i128,
             StatValue::Sum(values) => values

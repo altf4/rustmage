@@ -49,15 +49,16 @@ impl Game {
         ));
         let owner = self.state.objects[object.card as usize].owner;
         let card = self.state.objects[object.card as usize].card;
+        let token = self.state.objects[object.card as usize].is_token();
         let prior_top = self.public_library_top(owner);
         let event = self.move_object(object.card, Zone::Library);
         if event.moved && event.destination == Zone::Library {
             let library = &mut self.state.players[owner.index()].library;
-            if !card.is_token() && destination == LibraryDestination::Bottom {
+            if !token && destination == LibraryDestination::Bottom {
                 assert_eq!(library.pop(), Some(object.card));
                 library.insert(0, object.card);
             }
-            if destination == LibraryDestination::Top && !card.is_token() {
+            if destination == LibraryDestination::Top && !token {
                 self.remember_library_top(owner, event.after);
             } else if let Some(prior) = prior_top
                 && self.state.players[owner.index()].library.last() == Some(&prior.card)

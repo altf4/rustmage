@@ -5,6 +5,7 @@ impl Game {
         assert!(factory.is_emblem());
         let id = CardId::try_from(self.state.objects.len()).capacity("object slots exhausted");
         self.state.objects.push(Object {
+            copy_token: false,
             card: factory,
             owner: controller,
             controller,

@@ -60,11 +60,11 @@ impl Game {
             o.owner
         }) == actor
             && o.zone == zone
-            && (!f.artifact_enchantment_or_token || kinds & 48 != 0 || o.card.is_token())
+            && (!f.artifact_enchantment_or_token || kinds & 48 != 0 || o.is_token())
             && (f.kinds == 0 || kinds & u16::from(f.kinds) != 0)
             && (!f.nonland || !o.card.is_land())
             && keywords.contains(f.keywords)
-            && f.tokens.is_none_or(|token| o.card.is_token() == token)
+            && f.tokens.is_none_or(|token| o.is_token() == token)
             && f.subtype
                 .is_none_or(|subtype| subtypes.has(o.card, subtype))
     }

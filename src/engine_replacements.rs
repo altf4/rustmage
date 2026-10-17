@@ -21,6 +21,8 @@ pub struct ReplacementChoiceView {
     pub object: Option<ObjectRef>,
     pub counters: Option<Counters>,
     pub tokens: Vec<TokenGroupView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub copy_recipes: Vec<Option<CopyRecipe>>,
     /// Parallel to tokens for Role events; None denotes an unbound replacement addition.
     /// Ordinary token and counter events use an empty vector.
     pub role_attachments: Vec<Option<ObjectRef>>,
@@ -79,6 +81,7 @@ pub(super) enum TokenCompletion {
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct TokenBatch {
+    recipes: Vec<Option<CopyRecipe>>,
     player: Player,
     groups: Vec<TokenGroupView>,
     effect: bool,
@@ -132,6 +135,7 @@ impl ReplacementState {
         };
         let token_bytes = |b: &TokenBatch| {
             b.groups.len() * std::mem::size_of::<TokenGroupView>()
+                + b.recipes.len() * std::mem::size_of::<Option<CopyRecipe>>()
                 + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
                 + match &b.completion {
                     TokenCompletion::Reflexive { item, .. } => {
@@ -608,11 +612,12 @@ impl Game {
             ReplacementSpec::AddToken(token) => {
                 // The added token inherits the event's tapped/attacking instructions.
                 let tapped = b.groups[0].tapped;
-                if let Some(g) = b
-                    .groups
-                    .iter_mut()
-                    .find(|g| g.token == token && g.tapped == tapped)
-                {
+                if let Some(index) = b.groups.iter().enumerate().position(|(index, g)| {
+                    g.token == token
+                        && g.tapped == tapped
+                        && b.recipes.get(index).is_none_or(Option::is_none)
+                }) {
+                    let g = &mut b.groups[index];
                     g.amount = g
                         .amount
                         .checked_add(1)
@@ -623,12 +628,18 @@ impl Game {
                         amount: 1,
                         tapped,
                     });
+                    if !b.recipes.is_empty() {
+                        b.recipes.push(None);
+                    }
                 }
             }
             ReplacementSpec::ReplaceArtifactTokens(token) => {
-                for g in &mut b.groups {
+                for (index, g) in b.groups.iter_mut().enumerate() {
                     if g.token.is_artifact() {
                         g.token = token;
+                        if let Some(recipe) = b.recipes.get_mut(index) {
+                            *recipe = None;
+                        }
                     }
                 }
             }
@@ -636,6 +647,37 @@ impl Game {
         }
         b.effect = true;
         b.used.push((choice.source, choice.ability));
+    }
+    pub(super) fn stage_copy_creation(&mut self, player: Player, recipe: CopyRecipe, amount: u128) {
+        if amount == 0 {
+            return;
+        }
+        let batch = TokenBatch {
+            recipes: vec![Some(recipe)],
+            player,
+            groups: vec![TokenGroupView {
+                token: recipe.definition,
+                amount,
+                tapped: false,
+            }],
+            effect: true,
+            used: Vec::new(),
+            completion: TokenCompletion::None,
+        };
+        if self.state.replacements.is_none() && self.token_replacements(&batch).is_empty() {
+            self.create_copy_groups(player, &batch.groups, &batch.recipes);
+            return;
+        }
+        let state = self.state.replacements.get_or_insert_with(|| {
+            Box::new(ReplacementState {
+                work: VecDeque::new(),
+                active: None,
+                attachment: None,
+                resume: None,
+                mode: ResumeMode::Program,
+            })
+        });
+        state.work.push_back(Work::Tokens(batch));
     }
     pub(super) fn stage_role_creation(
         &mut self,
@@ -664,6 +706,7 @@ impl Game {
             })
         });
         state.work.push_back(Work::Tokens(TokenBatch {
+            recipes: Vec::new(),
             player,
             groups,
             effect: true,
@@ -703,6 +746,7 @@ impl Game {
         }
 
         let batch = TokenBatch {
+            recipes: Vec::new(),
             player,
             groups: vec![TokenGroupView {
                 token,
@@ -796,6 +840,7 @@ impl Game {
                                     self.move_target_batch(&[bound], Zone::Graveyard);
                                 }
                                 state.work.push_front(Work::Tokens(TokenBatch {
+                                    recipes: Vec::new(),
                                     player,
                                     groups: vec![TokenGroupView {
                                         token,
@@ -898,6 +943,19 @@ impl Game {
                             let Some(Event::Tokens(batch)) = state.active.take() else {
                                 unreachable!()
                             };
+                            if !batch.recipes.is_empty() {
+                                self.create_copy_groups(
+                                    batch.player,
+                                    &batch.groups,
+                                    &batch.recipes,
+                                );
+                                if let Some(entry) = self.state.entry_batch.as_mut() {
+                                    assert!(entry.replacement_resume.is_none());
+                                    entry.replacement_resume = Some(state);
+                                    return self.advance_entries();
+                                }
+                                continue;
+                            }
                             if matches!(batch.completion, TokenCompletion::Mobilize) {
                                 self.start_mobilize_groups(batch.groups);
                             } else {
@@ -1083,6 +1141,7 @@ impl Game {
                 object: None,
                 counters: None,
                 tokens: Vec::new(),
+                copy_recipes: Vec::new(),
                 role_attachments: Vec::new(),
                 effects: self.damage_replacements(&batch.events[batch.next], &batch.used),
                 damage: Some(batch.events[batch.next]),
@@ -1098,6 +1157,7 @@ impl Game {
                     object: Some(p.object),
                     counters: Some(p.amount.clone()),
                     tokens: Vec::new(),
+                    copy_recipes: Vec::new(),
                     role_attachments: Vec::new(),
                     effects: self.counter_replacements(p, &batch.used),
                 })
@@ -1108,6 +1168,7 @@ impl Game {
                 object: None,
                 counters: None,
                 tokens: batch.groups.clone(),
+                copy_recipes: batch.recipes.clone(),
                 role_attachments: match &batch.completion {
                     TokenCompletion::RoleAttach(recipient) => batch
                         .groups
@@ -1154,6 +1215,7 @@ mod owned_memory_tests {
         };
         let empty = frame.bytes();
         frame.active = Some(Event::Tokens(TokenBatch {
+            recipes: Vec::new(),
             player: Player::P0,
             groups: Vec::new(),
             effect: true,
@@ -1225,6 +1287,7 @@ mod role_success_memory_tests {
             mode: ResumeMode::Program,
         };
         state.active = Some(Event::Tokens(TokenBatch {
+            recipes: Vec::new(),
             player: Player::P0,
             groups: Vec::new(),
             effect: true,

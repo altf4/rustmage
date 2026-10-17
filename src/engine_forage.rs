@@ -117,7 +117,7 @@ impl Game {
         self.state
             .objects
             .iter()
-            .filter(|o| o.zone == Zone::Graveyard && o.owner == player && !o.card.is_token())
+            .filter(|o| o.zone == Zone::Graveyard && o.owner == player && !o.is_token())
             .take(3)
             .count()
     }
@@ -197,7 +197,7 @@ impl Game {
         }
         match f.route {
             Some(ForageRoute::ExileThree) => {
-                o.zone == Zone::Graveyard && o.owner == p && !o.card.is_token()
+                o.zone == Zone::Graveyard && o.owner == p && !o.is_token()
             }
             Some(ForageRoute::Food) => {
                 self.additional_candidate(food_cost(), p, r, r)

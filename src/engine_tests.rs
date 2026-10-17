@@ -24,6 +24,7 @@ pub(super) fn pass_pair(game: &mut Game) {
 pub(super) fn spawn(game: &mut Game, p: Player, card: Card, zone: Zone) -> CardId {
     let id = game.state.objects.len() as CardId;
     game.state.objects.push(Object {
+        copy_token: false,
         card,
         owner: p,
         controller: p,

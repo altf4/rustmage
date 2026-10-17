@@ -382,7 +382,7 @@ impl Game {
                                 && (!f.nonland || !event.before.card.is_land())
                                 && event.before.keywords.contains(f.keywords)
                                 && f.tokens
-                                    .is_none_or(|token| event.before.card.is_token() == token)
+                                    .is_none_or(|token| event.before.is_token() == token)
                                 && f.subtype
                                     .is_none_or(|subtype| event.before.has_subtype(subtype))
                         }
@@ -397,6 +397,7 @@ impl Game {
                                 }
                                 && filter.matches_characteristics(
                                     event.before.card,
+                                    event.before.is_token(),
                                     event.before.kinds,
                                     event.before.granted_subtypes,
                                     event.before.controller == source.controller,
@@ -2114,6 +2115,36 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::CreateCopyToken { subject, amount } => {
+                    let definition = match subject {
+                        Subject::Source => Some(
+                            if self.on_battlefield(item.card)
+                                && self.object_ref(item.card) == item.object
+                            {
+                                self.state.objects[item.card as usize].card
+                            } else {
+                                item.source_card
+                            },
+                        ),
+                        Subject::Targets => item.targets.iter().find_map(|bound| {
+                            if self.same_target_object(*bound)
+                                && let Target::Card(id) = bound.target
+                            {
+                                Some(self.state.objects[id as usize].card)
+                            } else {
+                                None
+                            }
+                        }),
+                        _ => unreachable!("copy subject"),
+                    };
+                    if let Some(definition) = definition {
+                        self.stage_copy_creation(
+                            item.controller,
+                            CopyRecipe { definition },
+                            u128::from(amount),
+                        );
+                    }
+                }
                 Instruction::SelectGroup(group) => {
                     self.state.resolving.as_mut().unwrap().target_group = group;
                 }
@@ -2780,7 +2811,7 @@ impl Game {
                         .copied()
                         .filter(|&id| {
                             self.state.objects[id as usize].card.is_creature()
-                                && !self.state.objects[id as usize].card.is_token()
+                                && !self.state.objects[id as usize].is_token()
                         })
                         .collect();
                     let events = self.move_objects_raw(&ids, Zone::Exile);
