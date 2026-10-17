@@ -667,3 +667,49 @@ fn both_collateral_complete_bodies_keep_flash_cycling_and_intervening_if() {
         assert_eq!(g.state.players[p.index()].library.len(), library - 1);
     }
 }
+
+#[test]
+fn sparse_warp_storage_is_owned_and_reclaims_after_paid_recast() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = named(&mut g, p, "Bygone Colossus", Zone::Hand);
+        assert!(g.state.warp.is_none());
+        let baseline = g.state_bytes();
+        paid(&mut g, id, true);
+        settle(&mut g);
+        let state = g.state.warp.as_ref().unwrap();
+        assert_eq!(
+            state.bytes(),
+            std::mem::size_of::<warp::WarpState>() + std::mem::size_of::<warp::DelayedWarp>()
+        );
+        let registered = g.state_bytes();
+        let snap = g.snapshot();
+        let parent = g.clone();
+        let mut child = parent.clone();
+        drop(parent);
+        g.move_object(id, Zone::Hand);
+        to_end(&mut child);
+        settle(&mut child);
+        assert_eq!(child.state.objects[id as usize].zone, Zone::Exile);
+        assert_eq!(g.state.objects[id as usize].zone, Zone::Hand);
+        g.restore(&snap).unwrap();
+        assert_eq!(g.state_bytes(), registered);
+        to_end(&mut g);
+        settle(&mut g);
+        assert_eq!(
+            g.state.warp.as_ref().unwrap().bytes(),
+            std::mem::size_of::<warp::WarpState>() + std::mem::size_of::<WarpedCard>()
+        );
+        next_main(&mut g, p);
+        g.state.players[p.index()].mana = [40; 6];
+        paid(&mut g, id, false);
+        settle(&mut g);
+        assert!(g.state.warp.is_none());
+        println!(
+            "warp {p:?} baseline={baseline} registered={registered} box={} delayed={} permission={}",
+            std::mem::size_of::<warp::WarpState>(),
+            std::mem::size_of::<warp::DelayedWarp>(),
+            std::mem::size_of::<WarpedCard>()
+        );
+    }
+}

@@ -710,7 +710,7 @@ def static_permanent_template(card):
             filt = creature_filter(m[1])
             if filt is None or max(abs(int(m[2])), abs(int(m[3]))) > 32767: return None
             if m[4]:
-                extra=grant(m[1],m[4],False,requires_life_gain)
+                extra=grant(m[1],m[4],own_turn,requires_life_gain)
                 if extra is None: return None
                 grants.append(extra)
             modifiers.append(f'StaticModifier {{ own_turn: {str(own_turn).lower()}, requires_life_gain: {str(requires_life_gain).lower()}, filter: {filt}, stats: Stats {{ power: {int(m[2])}, toughness: {int(m[3])} }} }}')

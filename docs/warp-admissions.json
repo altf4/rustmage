@@ -1,0 +1,942 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-16",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+  "shared_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/MageInt.java",
+      "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+      "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/AbilityImpl.java",
+      "java_sha256": "7c70aa5739de67e806ff96174bde87f22457c5627fbacdd57075222b46c530af"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/DealsDamageToAPlayerAllTriggeredAbility.java",
+      "java_sha256": "681832895f797fe69d7a2b867b51d49337624b5060efd04ab92e38e8086c2161"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "java_sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/DiesThisOrAnotherTriggeredAbility.java",
+      "java_sha256": "4511f11fe0c29d6984fc30bc40f6c270865b68a607f740f7247998c33b80fe01"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+      "java_sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldThisOrAnotherTriggeredAbility.java",
+      "java_sha256": "2f5818fd959ec418604af2da920faa13d4eab583848e899591ef1a473a3b126f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+      "java_sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/LeavesBattlefieldTriggeredAbility.java",
+      "java_sha256": "c4061b0636d580e727a5f586192bff129fedfe84eaa6e1c1bc051c4981f2e274"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+      "java_sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+      "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/condition/common/MyTurnCondition.java",
+      "java_sha256": "a6c7cf96d2fdec34c9c999ad4b486627d257eeac9b7e7de139f104ac1ef45d90"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "java_sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/condition/common/YouGainedLifeCondition.java",
+      "java_sha256": "06cb6119ec0f7d00b3abe52e2b8df92be8c337fe2ce31ca0d213e9d04fbb89d3"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+      "java_sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "java_sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ControllerGainedLifeCount.java",
+      "java_sha256": "06b6225a857a623e5651806f49b75b4b55e99570818c8bccd12791342a322e58"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/LandsYouControlCount.java",
+      "java_sha256": "5d39300c382c862538f44ba6be1565cb60cfed952c2a95515f3d4b9daee3483e"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDamageValue.java",
+      "java_sha256": "2198ea2d400af0d1b03071469d9f85f92660dbe5101725ecb428a059d4264d26"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/AsThoughEffectImpl.java",
+      "java_sha256": "10ed5ff691248a18e61974fc1bd00c74d18518e42aa4fcdf767e3fb4990e0997"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+      "java_sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "java_sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/EntersBattlefieldWithXCountersEffect.java",
+      "java_sha256": "b4aae4bf8b6f794367dbed4450268a52dd4c494c8fd6aa6e7d62a14eacab30d7"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+      "java_sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "java_sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeTargetEffect.java",
+      "java_sha256": "cb540577a835c69b5b4bd5182c58715215e03ee165d349a7d19d388c03224e37"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutCardFromHandOntoBattlefieldEffect.java",
+      "java_sha256": "60ead6e7cba07c849019361189b61b541490b8f4ec1bdda1e91b3315a673788a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutSourceCountersOnTargetEffect.java",
+      "java_sha256": "320385417b879d53dfe01e4d3f58413732c5830ce57f6160001b43b9a7b69ac3"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "java_sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToBattlefieldUnderOwnerControlTargetEffect.java",
+      "java_sha256": "0fc807f72c6feeb241f8a5b7db20fd2ea9fd67206d5a13b91341b400742affeb"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "java_sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAllEffect.java",
+      "java_sha256": "fccf43cbeaa763aae8a75efc3f28c5e33dcd045398d9b1cf6a97270e4a9000e4"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/replacement/CreateTwiceThatManyTokensEffect.java",
+      "java_sha256": "69a7a85dbf7e5537041f4d1b6b633f76dfb0f73b429ef33dac9bcc648ec419c1"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "java_sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "java_sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/hint/ConditionHint.java",
+      "java_sha256": "272def725fb6168ac551239c85a0c7b4908d18ac1f51092cd7a5fd2e77e6d6ce"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+      "java_sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/hint/common/LandsYouControlHint.java",
+      "java_sha256": "0d426836c0b651641885b7eda5ea89a55a831428ea003df44497a81ae2f608d0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+      "java_sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "java_sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+      "java_sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "java_sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/Card.java",
+      "java_sha256": "86b9a512358a5c6814e62bc2f9cff87be07cf5a248e313686c137f0b76b798b0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+      "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+      "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+      "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/ComparisonType.java",
+      "java_sha256": "33b0abc2b4214ece7d2f842b9f000d967dd8fb4e6cb073cb34eeab7e304731ef"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+      "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+      "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+      "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/SetTargetPointer.java",
+      "java_sha256": "a8f2e34b69d3cf460248cf90b28dbea3bb31fa6c912d89a6fdb32b0fd46ad4e6"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+      "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+      "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/TargetController.java",
+      "java_sha256": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+      "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/FilterCard.java",
+      "java_sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+      "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledArtifactPermanent.java",
+      "java_sha256": "8de63b3da4500602a6f7dd4ec49817ff2bd727d6cd915dbdc94dbb09f9390d47"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+      "java_sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+      "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/common/FilterPermanentCard.java",
+      "java_sha256": "2af04f95edb47547b39271ca3c5024712fa9ba1728c5e2c7249d63fa8c411033"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/ObjectSourcePlayer.java",
+      "java_sha256": "0caa8e0aa45f57ac07bec12591861979c9ee35f9f76b57b30ec11234f2f2c794"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/ObjectSourcePlayerPredicate.java",
+      "java_sha256": "b0592932e613775e26f24f44f1faa95dcc20df826c86d4b592ff1479a1264973"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+      "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+      "java_sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/PermanentPredicate.java",
+      "java_sha256": "b3058a67b4c81d73f72d2c64de25d5501a16d7462278416017a7c8e13ee60d80"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TokenPredicate.java",
+      "java_sha256": "3213600d28e7e1f76d66cee4f781fb3eb01627759fa9306e22c42a6f6fb880da"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/Game.java",
+      "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/events/EntersTheBattlefieldEvent.java",
+      "java_sha256": "4cc0d9b3979ef54306666a8b28ffcc7fe39e132df0402621ddd382d17c363200"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/events/GameEvent.java",
+      "java_sha256": "3df463d33eff295607e700578e547cef896cf183e1dba3c41131a353f53cb7dc"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/events/NumberOfTriggersEvent.java",
+      "java_sha256": "09c3f80e824860142be1e3869e2e5371d331b8b4db6991f62ab33483e6d8cee6"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+      "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/DroneFlyingToken.java",
+      "java_sha256": "fffc012b26518e42321e3472616b12ebd4b8b58eadb8d2d5eb49323ff40d1900"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/HumanSoldierToken.java",
+      "java_sha256": "77dcfc2ab7882b2bfd80f1fb1402645cea67260e9df7dba02e1d8d58fcc6716d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/RobotToken.java",
+      "java_sha256": "4fb6db3bd46f1327a540499edabeaa4f1faf2668a60596007c13cbadec582fa0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/players/Player.java",
+      "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "java_sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "java_sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "java_sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+      "java_sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "java_sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/util/CardUtil.java",
+      "java_sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/watchers/common/ManaPaidSourceWatcher.java",
+      "java_sha256": "890808f5706f88165d4770eac155b605aed3adaacb41d5c2f5262535810d9a9e"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/watchers/common/PlayerGainedLifeWatcher.java",
+      "java_sha256": "675bf357c7d4ac2070d458899c0ff10c5dac7a6301b3ebd9e904b499453cc4b5"
+    }
+  ],
+  "cards": [
+    {
+      "name": "Bygone Colossus",
+      "mana_cost": "{9}",
+      "type_line": "Artifact Creature — Robot Giant",
+      "oracle_text": "Warp {3} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "9",
+      "toughness": "9",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BygoneColossus.java",
+          "java_sha256": "c6c158600332939c4e8fb1f5b0fac3853f492dd7e49a2c340c2eecf909e6e4ef"
+        }
+      ]
+    },
+    {
+      "name": "Drix Fatemaker",
+      "mana_cost": "{3}{G}",
+      "type_line": "Creature — Drix Wizard",
+      "oracle_text": "When this creature enters, put a +1/+1 counter on target creature.\nEach creature you control with a +1/+1 counter on it has trample.\nWarp {1}{G} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "3",
+      "toughness": "2",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DrixFatemaker.java",
+          "java_sha256": "26c8b028f09dc59928615f010261a2296a5bfb222ff359edf052c54d21b45eb4"
+        }
+      ]
+    },
+    {
+      "name": "Eusocial Engineering",
+      "mana_cost": "{3}{G}{G}",
+      "type_line": "Enchantment",
+      "oracle_text": "Landfall — Whenever a land you control enters, create a 2/2 colorless Robot artifact creature token.\nWarp {1}{G} (You may cast this card from your hand for its warp cost. Exile this enchantment at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/EusocialEngineering.java",
+          "java_sha256": "970cf60f8794de443a005b034ebfdca6b5fdfd24ec2915cd0569ae7803b56e9b"
+        }
+      ]
+    },
+    {
+      "name": "Germinating Wurm",
+      "mana_cost": "{4}{G}",
+      "type_line": "Creature — Plant Wurm",
+      "oracle_text": "When this creature enters, you gain 2 life.\nWarp {1}{G} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "5",
+      "toughness": "5",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GerminatingWurm.java",
+          "java_sha256": "b36691308108149615e1cc00374ee6fc757235519ef066da3828b5b3d9fbcd8a"
+        }
+      ]
+    },
+    {
+      "name": "Knight Luminary",
+      "mana_cost": "{3}{W}",
+      "type_line": "Creature — Human Knight",
+      "oracle_text": "When this creature enters, create a 1/1 white Human Soldier creature token.\nWarp {1}{W} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "3",
+      "toughness": "2",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KnightLuminary.java",
+          "java_sha256": "35a955aaaac34fa78f6a0af8cf57178466a3b923c49e6c5eee8596fba8713b1f"
+        }
+      ]
+    },
+    {
+      "name": "Mechanozoa",
+      "mana_cost": "{4}{U}{U}",
+      "type_line": "Artifact Creature — Robot Jellyfish",
+      "oracle_text": "When this creature enters, tap target artifact or creature an opponent controls and put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)\nWarp {2}{U} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "5",
+      "toughness": "5",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/Mechanozoa.java",
+          "java_sha256": "0f5b30f24c16444d41bf3b8373aaf6e9d6142d026628cc2fdfbd60a9c946bd8f"
+        }
+      ]
+    },
+    {
+      "name": "Memorial Team Leader",
+      "mana_cost": "{3}{R}",
+      "type_line": "Creature — Kavu Soldier",
+      "oracle_text": "During your turn, other creatures you control get +1/+0.\nWarp {1}{R} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "4",
+      "toughness": "3",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MemorialTeamLeader.java",
+          "java_sha256": "5b254aa8a37b717ffa17b4a4cb5e4ed259e17f86e95c32267b0908dc5c5b0df6"
+        }
+      ]
+    },
+    {
+      "name": "Nova Hellkite",
+      "mana_cost": "{3}{R}{R}",
+      "type_line": "Creature — Dragon",
+      "oracle_text": "Flying, haste\nWhen this creature enters, it deals 1 damage to target creature an opponent controls.\nWarp {2}{R} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "4",
+      "toughness": "5",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/n/NovaHellkite.java",
+          "java_sha256": "1a11add89245fa1e1b0e8c0a2d24f0652dc153a4db815ce2ef60f9c8ef56f527"
+        }
+      ]
+    },
+    {
+      "name": "Red Tiger Mechan",
+      "mana_cost": "{3}{R}",
+      "type_line": "Artifact Creature — Robot Cat",
+      "oracle_text": "Haste\nWarp {1}{R} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "3",
+      "toughness": "3",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RedTigerMechan.java",
+          "java_sha256": "82a54449a603f36b367563672e4e1fad8ddba423ae9b5ebea568db37ef3ae8f6"
+        }
+      ]
+    },
+    {
+      "name": "Sinister Cryologist",
+      "mana_cost": "{2}{U}",
+      "type_line": "Creature — Jellyfish Wizard",
+      "oracle_text": "When this creature enters, target creature an opponent controls gets -3/-0 until end of turn.\nWarp {U} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "2",
+      "toughness": "3",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SinisterCryologist.java",
+          "java_sha256": "86e914fa39f6398a3a9d7549d005b4b45d15a4753d170906f092ceed98867376"
+        }
+      ]
+    },
+    {
+      "name": "Starbreach Whale",
+      "mana_cost": "{4}{U}",
+      "type_line": "Creature — Whale",
+      "oracle_text": "Flying\nWhen this creature enters, surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)\nWarp {1}{U} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "3",
+      "toughness": "5",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StarbreachWhale.java",
+          "java_sha256": "579bc327bd3b0cd05977438e7422da247968feaa8a3bd8a7c91a29618f69d2c6"
+        }
+      ]
+    },
+    {
+      "name": "Weftblade Enhancer",
+      "mana_cost": "{5}{W}",
+      "type_line": "Creature — Drix Artificer",
+      "oracle_text": "When this creature enters, put a +1/+1 counter on each of up to two target creatures.\nWarp {2}{W} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "3",
+      "toughness": "4",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WeftbladeEnhancer.java",
+          "java_sha256": "1eadc73742dee9ef411aec06a391edd6d717950d97b840d182f42ebb0a25d7f4"
+        }
+      ]
+    },
+    {
+      "name": "Runaway Boulder",
+      "mana_cost": "{6}",
+      "type_line": "Artifact",
+      "oracle_text": "Flash\nWhen this artifact enters, it deals 6 damage to target creature an opponent controls.\nCycling {2} ({2}, Discard this card: Draw a card.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RunawayBoulder.java",
+          "java_sha256": "12c8415e8df4529f32bef2366a7d2f3335428bdeeaf077ff40f8b6cb3632f5d7"
+        }
+      ]
+    },
+    {
+      "name": "Waylaying Pirates",
+      "mana_cost": "{3}{U}",
+      "type_line": "Creature — Human Pirate",
+      "oracle_text": "When this creature enters, if you control an artifact, tap target artifact or creature an opponent controls and put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
+      "power": "3",
+      "toughness": "3",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WaylayingPirates.java",
+          "java_sha256": "7560fa0d51403846e96c6bcf1d59c4ee6cddc94f82d1066ff9659894d50d6344"
+        }
+      ]
+    }
+  ],
+  "gated": [
+    {
+      "name": "All-Fates Stalker",
+      "mana_cost": "{3}{W}",
+      "type_line": "Creature — Drix Assassin",
+      "oracle_text": "When this creature enters, exile up to one target non-Assassin creature until this creature leaves the battlefield.\nWarp {1}{W} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "2",
+      "toughness": "3",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AllFatesStalker.java",
+          "java_sha256": "2b65c04f5c66d72d4c0b921ad86af216c0566d31a5574e42647500708ce50c00"
+        }
+      ],
+      "gate": "Non-Assassin target exclusion plus source-linked temporary exile; residual parser is closed."
+    },
+    {
+      "name": "Anticausal Vestige",
+      "mana_cost": "{6}",
+      "type_line": "Creature — Eldrazi",
+      "oracle_text": "When this creature leaves the battlefield, draw a card, then you may put a permanent card with mana value less than or equal to the number of lands you control from your hand onto the battlefield tapped.\nWarp {4} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "7",
+      "toughness": "5",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AnticausalVestige.java",
+          "java_sha256": "91a01aa8f49bb0251157834c29d1330ac0709975e27abd307b0032e4a9f2ad78"
+        }
+      ],
+      "gate": "Leave-battlefield draw plus optional Hand permanent chosen by live lands/MV and tapped entry."
+    },
+    {
+      "name": "Astelli Reclaimer",
+      "mana_cost": "{3}{W}{W}",
+      "type_line": "Creature — Angel Warrior",
+      "oracle_text": "Flying\nWhen this creature enters, return target noncreature, nonland permanent card with mana value X or less from your graveyard to the battlefield, where X is the amount of mana spent to cast this creature.\nWarp {2}{W}",
+      "power": "5",
+      "toughness": "4",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AstelliReclaimer.java",
+          "java_sha256": "4f118477a56e92aece32f121cadefaea997ade3777c9cfe83017a642794e3b64"
+        }
+      ],
+      "gate": "Historical actual mana-paid amount controls graveyard target legality."
+    },
+    {
+      "name": "Broodguard Elite",
+      "mana_cost": "{X}{G}{G}",
+      "type_line": "Creature — Insect Knight",
+      "oracle_text": "This creature enters with X +1/+1 counters on it.\nWhen this creature leaves the battlefield, put its counters on target creature you control.\nWarp {X}{G} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "0",
+      "toughness": "0",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BroodguardElite.java",
+          "java_sha256": "bf1b1b86efa98db567b4b768ab8fe21ecced8c9adf16f9ba9ab708b5a5181a6d"
+        }
+      ],
+      "gate": "Variable-X ordinary/warp cost and leaving-source complete counter transfer."
+    },
+    {
+      "name": "Codecracker Hound",
+      "mana_cost": "{2}{U}",
+      "type_line": "Creature — Dog",
+      "oracle_text": "When this creature enters, look at the top two cards of your library. Put one into your hand and the other into your graveyard.\nWarp {2}{U} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "2",
+      "toughness": "1",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CodecrackerHound.java",
+          "java_sha256": "2e2fee41b8d8f01d44de813a6bd3c5c485c53e993e4aa74699f4d104f8ff677e"
+        }
+      ],
+      "gate": "Private top-two exactly-one-to-Hand/remainder-Graveyard selection."
+    },
+    {
+      "name": "Exalted Sunborn",
+      "mana_cost": "{3}{W}{W}",
+      "type_line": "Creature — Angel Wizard",
+      "oracle_text": "Flying, lifelink\nIf one or more tokens would be created under your control, twice that many of those tokens are created instead.\nWarp {1}{W} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "4",
+      "toughness": "5",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/ExaltedSunborn.java",
+          "java_sha256": "2359969079993a60354e63688432736b64ea06f4f843d89c6daa516f2724e225"
+        }
+      ],
+      "gate": "Global token-creation doubling replacement."
+    },
+    {
+      "name": "Haliya, Guided by Light",
+      "mana_cost": "{2}{W}",
+      "type_line": "Legendary Creature — Human Soldier",
+      "oracle_text": "Whenever Haliya or another creature or artifact you control enters, you gain 1 life.\nAt the beginning of your end step, draw a card if you've gained 3 or more life this turn.\nWarp {W} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "3",
+      "toughness": "3",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HaliyaGuidedByLight.java",
+          "java_sha256": "73f0864d894c89a9dcadaadeded1d030852a4b57abf390cd09c8e69a268680fe"
+        }
+      ],
+      "gate": "Self/other creature-or-artifact entry life plus end-step resolving-condition life>=3 draw (not intervening-if)."
+    },
+    {
+      "name": "Loading Zone",
+      "mana_cost": "{3}{G}",
+      "type_line": "Enchantment",
+      "oracle_text": "If one or more counters would be put on a creature, Spacecraft, or Planet you control, twice that many of each of those kinds of counters are put on it instead.\nWarp {G} (You may cast this card from your hand for its warp cost. Exile this enchantment at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LoadingZone.java",
+          "java_sha256": "d1d3d2af4d64b14f71563b159fd599e47f22cdc3ae4f3d9a9a53186ed912ce08"
+        }
+      ],
+      "gate": "Counter multiplication replacement for creature/Spacecraft/Planet recipients."
+    },
+    {
+      "name": "Mightform Harmonizer",
+      "mana_cost": "{2}{G}{G}",
+      "type_line": "Creature — Insect Druid",
+      "oracle_text": "Landfall — Whenever a land you control enters, double the power of target creature you control until end of turn.\nWarp {2}{G} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "4",
+      "toughness": "4",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MightformHarmonizer.java",
+          "java_sha256": "7a7cfcba6968922a633035065295f2945da6fa0232186b589fefdb5763ea04b9"
+        }
+      ],
+      "gate": "Landfall targeted doubling of live power until EOT."
+    },
+    {
+      "name": "Perigee Beckoner",
+      "mana_cost": "{4}{B}",
+      "type_line": "Creature — Horror",
+      "oracle_text": "When this creature enters, until end of turn, another target creature you control gets +2/+0 and gains \"When this creature dies, return it to the battlefield tapped under its owner's control.\"\nWarp {1}{B} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "4",
+      "toughness": "5",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PerigeeBeckoner.java",
+          "java_sha256": "304c56879e028f4a756e2ad9f4bea320428f8aae0111e8708b05ee6d861831df"
+        }
+      ],
+      "gate": "Temporary granted dies trigger returning exact recipient tapped under owner."
+    },
+    {
+      "name": "Pinnacle Emissary",
+      "mana_cost": "{1}{U}{R}",
+      "type_line": "Artifact Creature — Robot",
+      "oracle_text": "Whenever you cast an artifact spell, create a 1/1 colorless Drone artifact creature token with flying and \"This token can block only creatures with flying.\"\nWarp {U/R} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "3",
+      "toughness": "3",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PinnacleEmissary.java",
+          "java_sha256": "0650c80639c29ad123d0e692336abd2d1859a1d0d55c3086e7d242e79d5e7e49"
+        }
+      ],
+      "gate": "Hybrid Warp plus artifact-cast Drone with nonflying-block restriction."
+    },
+    {
+      "name": "Possibility Technician",
+      "mana_cost": "{2}{R}",
+      "type_line": "Creature — Kavu Artificer",
+      "oracle_text": "Whenever this creature or another Kavu you control enters, exile the top card of your library. For as long as that card remains exiled, you may play it if you control a Kavu.\nWarp {1}{R} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "3",
+      "toughness": "3",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PossibilityTechnician.java",
+          "java_sha256": "8a32740cc9dd42cf057d70f389d041f038df905b0012aaee25dbd1e19d7c0bcf"
+        }
+      ],
+      "gate": "Kavu entry observer and persistent Exile permission guarded by live control of Kavu."
+    },
+    {
+      "name": "Quantum Riddler",
+      "mana_cost": "{3}{U}{U}",
+      "type_line": "Creature — Sphinx",
+      "oracle_text": "Flying\nWhen this creature enters, draw a card.\nAs long as you have one or fewer cards in hand, if you would draw one or more cards, you draw that many cards plus one instead.\nWarp {1}{U}",
+      "power": "4",
+      "toughness": "6",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/q/QuantumRiddler.java",
+          "java_sha256": "09bdd91a3b4a1eb12dcaf72bf0f282f6cf9ad5e8eb580958467737bc906fd3b4"
+        }
+      ],
+      "gate": "Conditional Hand-size draw replacement, including actual multi-draw sequencing."
+    },
+    {
+      "name": "Rayblade Trooper",
+      "mana_cost": "{2}{W}",
+      "type_line": "Creature — Human Soldier",
+      "oracle_text": "When this creature enters, put a +1/+1 counter on target creature you control.\nWhenever a nontoken creature you control with a +1/+1 counter on it dies, create a 1/1 white Human Soldier creature token.\nWarp {1}{W} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "2",
+      "toughness": "2",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RaybladeTrooper.java",
+          "java_sha256": "7dcc7e9bcb978f85152bd898338d81ea616c86db7ba73e73824c989cc343990b"
+        }
+      ],
+      "gate": "ETB counter plus nontoken-with-counter death observer/LKI token creation."
+    },
+    {
+      "name": "Starfield Shepherd",
+      "mana_cost": "{3}{W}{W}",
+      "type_line": "Creature — Angel",
+      "oracle_text": "Flying\nWhen this creature enters, search your library for a basic Plains card or a creature card with mana value 1 or less, reveal it, put it into your hand, then shuffle.\nWarp {1}{W} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "3",
+      "toughness": "2",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StarfieldShepherd.java",
+          "java_sha256": "9af6b176a69a2e4a2368076426682c246cd435bed460f7a48db685d489bcc71d"
+        }
+      ],
+      "gate": "Library-search union basic Plains OR creature MV<=1, reveal/shuffle."
+    },
+    {
+      "name": "Starfield Vocalist",
+      "mana_cost": "{3}{U}",
+      "type_line": "Creature — Human Bard",
+      "oracle_text": "If a permanent entering the battlefield causes a triggered ability of a permanent you control to trigger, that ability triggers an additional time.\nWarp {1}{U} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "3",
+      "toughness": "4",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StarfieldVocalist.java",
+          "java_sha256": "b77346a3c2792abb65b1ef2636b56555c6507cf106027f02b9effe38840a40c3"
+        }
+      ],
+      "gate": "Permanent-entry-trigger multiplicity replacement."
+    },
+    {
+      "name": "Starwinder",
+      "mana_cost": "{5}{U}{U}",
+      "type_line": "Creature — Leviathan",
+      "oracle_text": "Whenever a creature you control deals combat damage to a player, you may draw that many cards.\nWarp {2}{U}{U} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "7",
+      "toughness": "7",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/Starwinder.java",
+          "java_sha256": "c62ad2d05662473912988bcf217ea05fd4ae970c2886a79abf0256894d53d381"
+        }
+      ],
+      "gate": "Optional draw equal to each friendly creature combat-damage-to-player event."
+    },
+    {
+      "name": "Susurian Voidborn",
+      "mana_cost": "{2}{B}",
+      "type_line": "Creature — Vampire Soldier",
+      "oracle_text": "Whenever this creature or another creature or artifact you control dies, target opponent loses 1 life and you gain 1 life.\nWarp {B} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "2",
+      "toughness": "2",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SusurianVoidborn.java",
+          "java_sha256": "0e77bac1102c5e4e6140910f9609299d5c75b05c12a0db3a3e8d17aa7ada1d59"
+        }
+      ],
+      "gate": "Self/other creature-or-artifact death observer with targeted opponent drain."
+    },
+    {
+      "name": "Timeline Culler",
+      "mana_cost": "{B}{B}",
+      "type_line": "Creature — Drix Warlock",
+      "oracle_text": "Haste\nYou may cast this card from your graveyard using its warp ability.\nWarp—{B}, Pay 2 life. (You may cast this card from your hand or graveyard for its warp cost. If you do, exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "2",
+      "toughness": "2",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TimelineCuller.java",
+          "java_sha256": "dfc726bbd1d817357696b2a814396010242a4ce721af55e9a0a892b95e0e9fc1"
+        }
+      ],
+      "gate": "Graveyard Warp permission and actual additional life payment."
+    },
+    {
+      "name": "Weftstalker Ardent",
+      "mana_cost": "{2}{R}",
+      "type_line": "Creature — Drix Artificer",
+      "oracle_text": "Whenever another creature or artifact you control enters, this creature deals 1 damage to each opponent.\nWarp {R} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "power": "2",
+      "toughness": "3",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WeftstalkerArdent.java",
+          "java_sha256": "d0cd89e77b261db2f05072b3a89dcc50d9df6a3cb1d75e00b7a4c8076010b5d9"
+        }
+      ],
+      "gate": "Other creature-or-artifact entry observer dealing to every opponent."
+    }
+  ]
+}
