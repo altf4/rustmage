@@ -75,7 +75,7 @@ class TemporaryDeathConsumerTests(unittest.TestCase):
     if stage=='wait_recast_grant' and quiet:
      self.assertTrue(any(x['recipient']==objects[recipient]['reference'] and x['granting_card']==name for x in o['temporary_abilities']));self.assertEqual(objects[recipient]['power'],4);self.assertFalse(any(x['object']['card']==source for x in o['warped_cards']));self.assertFalse(any(x['source']['card']==source for x in o['delayed_warp_exiles']));complete=True;stage='finish'
     available=ready_mana(p);required=[holding(name),bool(bears),available[2]>=2,sum(available)>=7,holding('Murder')]
-    if name=="Galuf's Final Act":required.append(len(bears)>=2)
+    if name in ["Galuf's Final Act",'Rabid Attack']:required.append(len(bears)>=2)
     if name=='Absolving Lammasu':required.extend([first_person is not None,bool(foes)])
     if name=='Convenient Target':required.extend([holding('Disenchant'),available[0]>=1,available[3]>=1])
     if name=='Reasonable Doubt':required.extend([available[1]>=1,any(x['card']=='Bear Cub' for x in hand(q))])
@@ -97,7 +97,7 @@ class TemporaryDeathConsumerTests(unittest.TestCase):
        if name=='Reasonable Doubt' and stage=='counter' and n==name:return 4500
       if actor==q and name=='Reasonable Doubt' and n=='Bear Cub' and stage=='await_spell':return 4500
       if n=='Bear Cub':
-       needed=2 if actor==p and name=="Galuf's Final Act" else 1
+       needed=2 if actor==p and name in ["Galuf's Final Act",'Rabid Attack'] else 1
        return 2400 if stage=='finish' or stage=='setup' and sum(x['card']=='Bear Cub' for x in own(actor))<needed else -1000
       if n=='Bygone Colossus':return 2300 if stage=='finish' else -1000
       if n=='Quick Study':return 2200 if stage=='setup' and quiet and sum(ready_mana(actor))>=5 else -1000

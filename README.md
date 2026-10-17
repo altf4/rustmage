@@ -6,7 +6,7 @@ Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
 knows all 5,164 pinned Standard identities; 1,950 have executable rules so far,
-with 3,214 still gated. The catalogue includes 94 token recipes and one emblem;
+with 3,214 still gated. The catalogue includes 95 token recipes and one emblem;
 observations use schema 96.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
@@ -20,6 +20,7 @@ The first training target is [current Standard, pinned to October 15, 2026](docs
 [Role move results and paid flash](docs/role-semantic-kernels.md) add six complete bodies with exact returned recipients, mass Role attachments, enchanted-creature lords and optional timing costs.
 [Timestamped base-stat layers](docs/base-stat-layers.md) add ten complete bodies with independent power/toughness setters, live static conditions and exact Role ordering; [the remaining 48-family tracker](https://github.com/altf4/rustmage/issues/324) retains every unfinished whole body.
 [Temporary creature death grants](docs/temporary-death-grants.md) add three complete spells with exact death-trigger bindings, owner returns, replacement-aware entry counters and sparse owned state.
+[Further death consumers and Suspect](docs/temporary-death-consumers.md) add nine complete bodies with persistent exact-incarnation designations, unbounded incremental targets, late death choices and paid owner-return continuations.
 [Shared Gift declarations](docs/gift-kernels.md) add seventeen complete bodies with pre-target promises, all four gift kinds, exact paid entry bindings and owned continuations.
 [Temporary would-die exile replacements](docs/death-exile-plan.md) add eleven complete bodies with exact incarnation bindings, source-aware cleanup expiry and owned replacement state.
 [Successful Role creation and reflexive fight](docs/role-success-fight.md) completes Curse of the Werefox with exact captured recipients, later optional targets and sparse owned continuations.

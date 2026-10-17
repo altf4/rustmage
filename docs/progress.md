@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,931 executable Standard identities | 3,233 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,950 executable Standard identities | 3,214 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -239,3 +239,44 @@ no issues; final exact-head confirmations are required before merge. All jobs
 are terminal, completed outputs cleaned, shared libraries retained at their
 original paths/hashes, and frozen source exports hash-verified into recoverable
 archives. Full Standard remains unfinished.
+
+
+The [temporary death consumers and Suspect batch](temporary-death-consumers.md)
+composes actual Gift/death-exile main02d8352 and adds nine complete bodies:
+1,940/5,164 executable Standard identities, 3,224 gated, schema95. Strict union
+preserves 5,322 other definitions and all906 parent helpers/old94 recipes, adding
+only the declared Detective factory and two helpers. All nine complete programs
+remain identical to the initial reviewed471 delivery; historical/current Gift,
+death-exile, combat and own sentinels retain exact independent scopes.
+
+Fresh composed production4a8 passes1,862 native tests, all-target Clippy/fmt,
+generator check and43 affected compiler methods. Final policy5a5 differs only in
+two Rabid readiness lines, with every other tracked byte identical; its20 paid
+natural Standard cases and entire unchanged fixed100 pass (90,675 owned replay
+frames/181,350 denials). The feature record preserves both historical failed100
+workloads, precise policy diagnostics, old481 compiler475/6fixture outcome and
+fresh affected corrections. Original277 API scope remains schema91/471, not a
+fresh schema95 broad run. All jobs are terminal and completed build non-SO outputs
+are cleaned with every shared library retained. Two independent NONAUTHOR exact
+final-head reviews are required before merge. Fifteen inventoried full consumers,
+including complete Tiered Vincent, remain gated; issue311 and full Standard stay open.
+
+
+## Timestamped base-stat layers — PR321
+
+This delivery adds ten complete bodies to the actual merged Suspect/Gift parent,
+bringing executable coverage to1,950/5,164, with3,214 gated,95 token recipes and
+observation schema96. Shared sparse exact-incarnation effects enforce7a→7b→7c,
+Cursed Role timestamps, live static predicates, fixed resolution recipients and
+cleanup/departure. Owned branches, replay, restore and public projections remain
+independent. Full56-card source/dependency inventory remains in the audit;48
+remaining base-stat bodies are tracked in issue324, and full Standard is unfinished.
+
+Composedf373 evidence:1870 native tests/Clippy/fmt/generator,50 affected compiler
+methods,30 paid natural cases, three corrected split-search API methods and the
+complete fixed100 workload all pass. The100 workload has81,625 owned replay frames
+and163,250 denials. New paid cross-rule cases cover zero-toughness state actions
+using death-exile replacement before death-return, and7-power dying LKI with
+owner-return/Suspect clearing old base layers. Final actual-parent preservation is
+checked separately. See base-stat-layers.md for exact source/library hashes and
+the historical failed schema assertions and missing-Git harness scope.

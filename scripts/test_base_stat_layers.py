@@ -5,7 +5,7 @@ from scripts.catalogue_preservation import canonical,assert_union
 NAMES={'Doc Ock, Sinister Scientist','Mirkwood Meditator','Multiply by Zero','Perfected Theory','Quandrix Charm','Snowmelt Stag','Turtle-Duck','Water Wings','Gateway Sneak','Snooping Page'}
 PARENT='5d103e7a3172e4742687d3f77f3ed814264b1532'
 DELIVERED='4b309a0'
-COMPOSED_PARENT='4a8fe17fb1521e6c49865f3245391d16e0471c38'
+COMPOSED_PARENT='c0c25197ce1fce2b8973c538455d49e2ffa46b23'
 class BaseStatTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):cls.all=json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards'];cls.cards={c['name']:c for c in cls.all if c['name'] in NAMES}
