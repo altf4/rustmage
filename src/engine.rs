@@ -6126,3 +6126,15 @@ mod card_quantities_tests;
 #[cfg(test)]
 #[path = "engine_subtype_layers_tests.rs"]
 mod subtype_layers_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_squire_librarian_tests.rs"]
+mod fdn_squire_librarian_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_drake_amulet_juggernaut_tests.rs"]
+mod fdn_drake_amulet_juggernaut_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_punisher_two_tests.rs"]
+mod fdn_punisher_two_tests;
