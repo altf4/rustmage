@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "5d784569ee69edd20994976409749c9e56507da9075539c37ec27956feb95640",
+  "catalogue_version": "1cc6eac47c44dc1f8aeb8192c49669b4caf59f48868a2e148c45628a1810dcf2",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2098,
-  "implemented_total": 2104,
+  "implemented_standard_cards": 2100,
+  "implemented_total": 2106,
   "token_definitions": 101,
   "emblem_definitions": 2,
   "adventure_definitions": 40,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 345,
-      "gated": 82
+      "complete": 347,
+      "gated": 80
     },
     "fin": {
       "total": 305,
@@ -27666,8 +27666,8 @@
     {
       "name": "Redcap Gutter-Dweller",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/redcap_gutter_dweller.rs",
       "set": "fdn"
     },
@@ -33754,8 +33754,8 @@
     {
       "name": "Strongbox Raider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/strongbox_raider.rs",
       "set": "fdn"
     },
