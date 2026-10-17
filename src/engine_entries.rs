@@ -29,6 +29,8 @@ pub(super) struct EntryBatch {
     pub counter_order: Vec<usize>,
     pub resume: Option<Pending>,
     pub shuffle_after: Option<Player>,
+    /// A surrounding effect waits for this immediate entry before its next event.
+    pub replacement_resume: Option<Box<replacements::ReplacementState>>,
 }
 impl EntryBatch {
     pub fn bytes(&self) -> usize {
@@ -36,6 +38,7 @@ impl EntryBatch {
             + self.moves.len() * std::mem::size_of::<EntryMove>()
             + self.choices.len() * std::mem::size_of::<usize>()
             + self.counter_order.len() * std::mem::size_of::<usize>()
+            + self.replacement_resume.as_ref().map_or(0, |f| f.bytes())
     }
 }
 #[derive(Clone, Debug, Serialize)]
@@ -203,6 +206,7 @@ impl Game {
             counter_order,
             resume: None,
             shuffle_after,
+            replacement_resume: None,
         };
         let counter_replacements = batch.moves.iter().any(|m| {
             m.destination == Zone::Battlefield
@@ -403,10 +407,16 @@ impl Game {
                     return true;
                 }
             }
-            let batch = *self.state.entry_batch.take().unwrap();
+            let mut batch = *self.state.entry_batch.take().unwrap();
             self.state.pending = batch.resume.clone().unwrap();
+            let replacement_resume = batch.replacement_resume.take();
             self.commit_entries(batch);
-            if self.state.resolving.is_some() {
+            if let Some(outer) = replacement_resume {
+                self.state.replacements = Some(outer);
+                if self.advance_replacements(true) {
+                    return true;
+                }
+            } else if self.state.resolving.is_some() {
                 self.run_program();
             }
             if self

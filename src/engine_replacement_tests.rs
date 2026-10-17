@@ -701,3 +701,90 @@ fn root_review_simultaneous_entry_counter_choices_follow_apnap_not_input_order()
         assert_eq!(choice.object, Some(g.object_ref(active_card)));
     }
 }
+
+#[test]
+fn immediate_until_return_entry_finishes_before_destroy_and_create_tokens() {
+    for p in [Player::P0, Player::P1] {
+        for doublers in [1, 2] {
+            let q = p.other();
+            let mut g = setup(p);
+            g.state.players[q.index()].mana = [50; 6];
+            for _ in 0..doublers {
+                named(&mut g, p, "Doubling Season", Zone::Battlefield);
+            }
+            named(&mut g, q, "Doubling Season", Zone::Battlefield);
+            named(&mut g, q, "Quina, Qu Gourmet", Zone::Battlefield);
+            let ajani = named(&mut g, p, "Ajani, Caller of the Pride", Zone::Exile);
+            let old = g.object_ref(ajani);
+            let light = named(&mut g, q, "Banishing Light", Zone::Battlefield);
+            g.state.exile_links.push(ExileLink {
+                source: g.object_ref(light),
+                exiled: old,
+                return_zone: Zone::Battlefield,
+            });
+            let spell = named(&mut g, p, "Get Lost", Zone::Hand);
+            replay(&mut g, Action::AnnounceCast { card: spell });
+            replay(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(light),
+                },
+            );
+            let mut counters_seen = false;
+            let mut maps_seen = false;
+            for _ in 0..100 {
+                if let Some(choice) = g.observe(g.actor().unwrap()).replacement_choice {
+                    if choice.kind == "Counters" {
+                        counters_seen = true;
+                        assert_eq!(g.actor(), Some(p));
+                        assert_eq!(choice.object, Some(old));
+                        assert_eq!(g.state.objects[ajani as usize].zone, Zone::Exile);
+                        assert!(
+                            g.state
+                                .entry_batch
+                                .as_ref()
+                                .unwrap()
+                                .replacement_resume
+                                .is_some()
+                        );
+                    } else {
+                        maps_seen = true;
+                        assert_eq!(g.actor(), Some(q));
+                        assert_eq!(g.state.objects[ajani as usize].zone, Zone::Battlefield);
+                        assert_eq!(
+                            g.state.objects[ajani as usize].counters.loyalty,
+                            4 << doublers
+                        );
+                        assert_ne!(old, g.object_ref(ajani));
+                        assert!(g.state.entry_batch.is_none());
+                    }
+                    let action = g
+                        .legal_actions()
+                        .into_iter()
+                        .find(|a| matches!(a, Action::ChooseReplacement { .. }))
+                        .unwrap();
+                    let mut child = {
+                        let parent = g.clone();
+                        let child = parent.clone();
+                        drop(parent);
+                        child
+                    };
+                    act(&mut child, action.clone());
+                    let wrong = g.actor().unwrap().other();
+                    reject(&mut g, wrong, action.clone(), Error::WrongActor);
+                    replay(&mut g, action);
+                    assert_eq!(g.snapshot(), child.snapshot());
+                } else if idle(&g) {
+                    break;
+                } else {
+                    pick(&mut g);
+                }
+            }
+            assert!(maps_seen);
+            assert_eq!(counters_seen, doublers == 2);
+            assert!(idle(&g));
+            assert_eq!(g.state.objects[light as usize].zone, Zone::Graveyard);
+            assert!(g.state.exile_links.is_empty());
+        }
+    }
+}

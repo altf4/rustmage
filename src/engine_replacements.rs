@@ -537,6 +537,14 @@ impl Game {
                                     used: Vec::new(),
                                     completion: TokenCompletion::None,
                                 }));
+                                // Leaving may immediately return an exiled permanent.
+                                // Finish its entry (including private/replacement choices)
+                                // before the next token event of the resolving effect.
+                                if let Some(batch) = self.state.entry_batch.as_mut() {
+                                    assert!(batch.replacement_resume.is_none());
+                                    batch.replacement_resume = Some(state);
+                                    return self.advance_entries();
+                                }
                             }
                         }
                         continue;
