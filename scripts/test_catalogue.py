@@ -37,7 +37,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
         rust,report=generate.compile_catalogue(snapshot,target)
         supported={c['name'] for c in report['cards'] if c['implemented']}
-        self.assertEqual(report["token_definitions"],94)
+        self.assertEqual(report["token_definitions"],95)
         manifest=json.loads((generate.ROOT/'docs/scalar-x-admissions.json').read_text())
         self.assertEqual([r['name'] for r in manifest['cards']],names)
         self.assertEqual(sum(len(r['sources']) for r in manifest['cards']),75)
@@ -1155,7 +1155,8 @@ class CatalogueCompilerTests(unittest.TestCase):
             c=next(c for c in snapshot['cards'] if c['name']==a['name']);self.assertEqual(c['oracle_text'],a['oracle_text']);self.assertIn(c['name'],supported)
             c=dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')
             self.assertIsNone(generate.permanent_program_template(c));self.assertIsNone(generate.land_template(c))
-        for name in ['Ice Cream Kitty','Agency Coroner','Intruding Soulrager',"Bolg's Company",'Technodrome','Memorial Vault','Sidisi, Regent of the Mire','Metalhead','Alquist Proft, Master Sleuth','Boneyard Desecrator','Rune-Brand Juggler']:
+        self.assertIn('Technodrome',supported)
+        for name in ['Ice Cream Kitty','Agency Coroner','Intruding Soulrager',"Bolg's Company",'Memorial Vault','Sidisi, Regent of the Mire','Metalhead','Alquist Proft, Master Sleuth','Boneyard Desecrator','Rune-Brand Juggler']:
             self.assertNotIn(name,supported)
 
     def test_creature_tapped_entry_extraction_is_exact_and_retains_counter_clause(self):
@@ -2389,8 +2390,8 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Moonrise Cleric','Noggle Robber','Pond Prophet','Pretending Poxbearers','Punk Frogs',
                      'Slithering Cryptid','Tempest Angler','Wandering Musicians']:
             self.assertIn(name,supported)
-        for name in ['Mouser Mark III',
-                     'Sokka, Lateral Strategist']:
+        self.assertIn('Mouser Mark III',supported)
+        for name in ['Sokka, Lateral Strategist']:
             self.assertNotIn(name,supported)
 
     def test_once_per_turn_wraps_complete_events_and_rejects_other_limit_meanings(self):

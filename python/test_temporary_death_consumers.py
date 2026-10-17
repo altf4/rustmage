@@ -119,7 +119,7 @@ class TemporaryDeathConsumerTests(unittest.TestCase):
      if k=='FinishTargets':return 2900
      if k in ['FinishAttackers','FinishBlockers']:return 2400
      if k=='Attack':return 2800 if stage=='finish' else -1000
-     if k in ['Discard','Bottom']:return -500 if stage!='finish' and n in [name,'Murder','Disenchant','Person of Interest','Bear Cub'] and sum(x['card']==n for x in hand(actor))<=1 else 1500
+     if k in ['Discard','Bottom']:return -500 if stage!='finish' and n in [name,'Murder','Disenchant','Person of Interest','Bear Cub'] and sum(objects.get(choice.get('card'),{}).get('card')==n for choice in o['actions'] if choice['kind']==k)<=1 else 1500
      if k=='Pass':return 0
      return 1000
     if name=="It Doesn't Add Up" and stage=='setup' and ready:recipient=bears[0]['id'];old=bears[0]['reference'];stage='bury'
