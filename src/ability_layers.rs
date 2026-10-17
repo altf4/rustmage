@@ -27,6 +27,7 @@ pub(crate) enum StaticAbilityFragment {
     Changeling,
     /// Predefined Cursed Role sets both axes in layer 7b.
     PredefinedRoleBase,
+    RemoveAttachedAbilities,
     AttachedSubtype(&'static str),
     AttachmentStats(Stats),
     AttachmentKeywords(Keywords),

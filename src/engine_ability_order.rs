@@ -6,6 +6,8 @@ use super::*;
 pub(super) struct GrantedAbilityKey {
     pub source: ObjectRef,
     pub ability: u16,
+    pub granting_card: Card,
+    pub grantor_controller: Player,
     pub timestamp: u64,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -15,8 +17,15 @@ pub(super) struct LayerSixObject {
     pub grants: Vec<GrantedAbilityKey>,
 }
 #[derive(Clone, Debug)]
+pub(super) struct LayerSixGrant {
+    pub recipient: CardId,
+    pub keywords: Keywords,
+    pub abilities: Vec<GrantedAbilityKey>,
+}
+#[derive(Clone, Debug)]
 pub(super) enum LayerSixAction {
     Remove,
+    GrantEach(Vec<LayerSixGrant>),
     Grant {
         keywords: Keywords,
         abilities: Vec<GrantedAbilityKey>,
@@ -148,9 +157,18 @@ pub(super) fn apply_layer_six(
         let effect = &effects[next];
         pending[next] = false;
         started[next] = true;
+        if let LayerSixAction::GrantEach(rows) = &effect.action {
+            for row in rows {
+                let object = &mut objects[row.recipient as usize];
+                object.keywords = object.keywords.union(row.keywords);
+                object.grants.extend_from_slice(&row.abilities);
+            }
+            continue;
+        }
         for &recipient in &effect.recipients {
             let object = &mut objects[recipient as usize];
             match &effect.action {
+                LayerSixAction::GrantEach(_) => unreachable!(),
                 LayerSixAction::Remove => {
                     object.printed = false;
                     object.keywords = Keywords::NONE;
@@ -222,6 +240,8 @@ mod tests {
                 generation: 8,
             },
             ability: 3,
+            granting_card: Card::GrizzlyBears,
+            grantor_controller: Player::P0,
             timestamp: 9,
         };
         for late in [false, true] {

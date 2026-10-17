@@ -27,7 +27,8 @@ impl Card {
                 group.fragments.iter().any(|fragment| {
                     matches!(
                         fragment,
-                        StaticAbilityFragment::KeywordGrant(..)
+                        StaticAbilityFragment::RemoveAttachedAbilities
+                            | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::AttachmentKeywords(..)
                             | StaticAbilityFragment::AttachedTurnKeywords(..)
                             | StaticAbilityFragment::AttachmentTrigger(..)

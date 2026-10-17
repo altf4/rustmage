@@ -48,6 +48,11 @@ impl Game {
     }
 
     pub(super) fn keywords(&self, id: CardId) -> Keywords {
+        if self.on_battlefield(id)
+            && let Some(evaluation) = self.evaluated_abilities()
+        {
+            return evaluation.result.objects[id as usize].keywords;
+        }
         if self.state.objects[id as usize].zone == Zone::Stack {
             let definition = self.effective_spell_card(id);
             if definition.inset_parent().is_some() {

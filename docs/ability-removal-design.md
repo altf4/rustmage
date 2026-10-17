@@ -125,3 +125,27 @@ exact paths and hashes. The earlier failing1903/3 run remains a failed scope.
 The22 source/provenance/raw controls also pass, including separate Changeling
 and flying origins when their independent abilities share one printed line.
 These gates cover the shared-query/timeline foundation, not removal-card acceptance.
+
+## Ordered borrowed-world projection
+
+The evaluator now builds each static effect from its immutable group and evaluates
+its recipients against the borrowed world. One group can grant distinct abilities
+or keyword sets to different recipients without inventing separate source clocks.
+Resolution-created keyword and triggered-ability grants preserve historical source,
+printed program definition, controller and timestamp independently of source presence.
+Started group identities remain available for later-layer fragments. Exact attachment
+links are separate from creature-only Equipment grant recipients; a future Stop Cold
+artifact recipient must not be discarded by that unrelated filter.
+
+After every paid chronology action the independently ordered projection is checked
+against the current executable keyword query, including owned restored branches.
+Three both-seat groups pass on the projection checkpoint. A second focused35-method
+native run passes after adding the allocation-free default dispatch and optional
+owned ObjectView ability snapshot. All924 inputs remain fixed;76,496,896 allocated
+bytes were cleaned and the SO preserved. The snapshot carries effective printed and
+nonkeyword grant identities only when a removal provider exists; default objects
+and spells gain no persistent cache or field.
+
+The removal fragment is not yet emitted by any accepted physical body. Remaining
+source/activation/trigger/replacement queries, departure LKI filtering and all four
+complete Aura consumers still need wiring before any admission or final acceptance.

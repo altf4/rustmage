@@ -126,6 +126,9 @@ mod roles;
 #[path = "engine_sba.rs"]
 mod sba;
 pub use roles::{RoleGroupView, RoleTimestampView};
+#[path = "engine_ability_evaluation.rs"]
+mod ability_evaluation;
+pub use ability_evaluation::{AbilityAvailabilityView, GrantedAbilityView};
 #[path = "engine_ability_order.rs"]
 mod ability_order;
 #[path = "engine_ability_timeline.rs"]
@@ -1270,6 +1273,9 @@ pub struct EndureChoiceView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ObjectView {
+    /// Frozen effective nonkeyword abilities only while a removal effect exists.
+    /// None is the allocation-free complete printed/default-grant case.
+    pub abilities: Option<Box<AbilityAvailabilityView>>,
     /// Current card-type bits; Card remains the immutable printed identity.
     pub kinds: u16,
     pub granted_subtypes: GrantedSubtypes,
@@ -3581,6 +3587,7 @@ impl Game {
             self.stats(id)
         };
         ObjectView {
+            abilities: self.ability_availability(id),
             kinds: self.current_kinds(id),
             granted_subtypes: self.granted_subtypes(id),
             saddled: self.is_saddled(self.object_ref(id)),

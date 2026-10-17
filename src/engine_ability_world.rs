@@ -43,14 +43,18 @@ pub(super) trait CharacteristicWorld {
             game.state.attack_declared && self.attacking(source),
         )
     }
-    fn attached(&self, source: ObjectRef, recipient: CardId) -> bool {
+    fn attachment_link(&self, source: ObjectRef, recipient: ObjectRef) -> bool {
         let object = self.object(source.card);
         object.zone == Zone::Battlefield
             && self.reference(source.card) == source
-            && self.object(recipient).zone == Zone::Battlefield
+            && self.object(recipient.card).zone == Zone::Battlefield
+            && self.reference(recipient.card) == recipient
+            && object.attached_to == Some(recipient)
+    }
+    fn attached(&self, source: ObjectRef, recipient: CardId) -> bool {
+        self.attachment_link(source, self.reference(recipient))
             && self.kinds(source.card) & 1 == 0
             && self.kinds(recipient) & 1 != 0
-            && object.attached_to == Some(self.reference(recipient))
     }
     fn live_applies(&self, source: ObjectRef, effect: &LiveStaticEffect, id: CardId) -> bool {
         let target = self.object(id);

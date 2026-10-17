@@ -33,6 +33,16 @@ fn checked(g: &mut Game, action: Action) {
             serde_json::to_value(branch.observe(player)).unwrap()
         );
     }
+    let evaluated = ability_evaluation::evaluate_abilities(g);
+    for (i, object) in g.state.objects.iter().enumerate() {
+        if object.zone == Zone::Battlefield {
+            assert_eq!(
+                evaluated.result.objects[i].keywords,
+                g.keywords(i as CardId),
+                "actual ordered keyword projection at {i}"
+            );
+        }
+    }
     let after = g.snapshot();
     g.restore(&before).unwrap();
     assert_eq!(
