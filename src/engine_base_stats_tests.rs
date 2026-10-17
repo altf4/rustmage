@@ -121,7 +121,12 @@ fn cast(g: &mut Game, id: CardId, mode: Option<u16>, targets: &[Target]) {
     panic!("unpaid");
 }
 fn activate(g: &mut Game, card: CardId) {
-    checked(g, Action::AnnounceActivate { card, ability: 0 });
+    let action = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a, Action::AnnounceActivate { card: id, ability: 0, .. } if *id==card))
+        .unwrap();
+    checked(g, action);
     for _ in 0..8 {
         if g.state.announcing.is_none() {
             return;
@@ -394,11 +399,11 @@ fn static_setters_keep_entry_timestamps_through_changing_current_conditions() {
         assert!(g.keywords(stag).contains(Keywords::VIGILANCE));
         activate(&mut g, stag);
         settle(&mut g);
-        assert!(g.keywords(stag).contains(Keywords::UNBLOCKABLE));
+        assert!(g.keywords(stag).contains(Keywords::CANT_BE_BLOCKED));
         let stamp = g.observe(p).base_stat_effects[0].timestamp;
         cleanup_checked(&mut g);
         assert_eq!((g.stats(stag).power, g.stats(stag).toughness), (2, 5));
-        assert!(!g.keywords(stag).contains(Keywords::UNBLOCKABLE));
+        assert!(!g.keywords(stag).contains(Keywords::CANT_BE_BLOCKED));
         assert_eq!(g.observe(p).base_stat_effects[0].timestamp, stamp);
         // Isolate the next own-turn condition without rewriting its entry timestamp.
         g.state.active = p;
@@ -472,7 +477,7 @@ fn landfall_optional_base_setting_binds_source_and_both_unblock_consumers_pay_fu
                 cast(&mut g, growth, None, &[Target::Card(bear)]);
                 settle(&mut g);
             }
-            assert!(g.keywords(source).contains(Keywords::UNBLOCKABLE));
+            assert!(g.keywords(source).contains(Keywords::CANT_BE_BLOCKED));
             g.state.objects[source as usize].summoning_sick = false;
             g.state.step = Step::Attackers;
             g.state.pending = Pending::Attackers;
@@ -499,7 +504,7 @@ fn landfall_optional_base_setting_binds_source_and_both_unblock_consumers_pay_fu
                 life - i128::from(name == "Snooping Page")
             );
             cleanup_checked(&mut g);
-            assert!(!g.keywords(source).contains(Keywords::UNBLOCKABLE));
+            assert!(!g.keywords(source).contains(Keywords::CANT_BE_BLOCKED));
         }
     }
 }
