@@ -130,6 +130,8 @@ mod sba;
 pub use roles::{RoleGroupView, RoleTimestampView};
 #[path = "engine_ability_evaluation.rs"]
 mod ability_evaluation;
+#[path = "engine_characteristic_query.rs"]
+mod characteristic_query;
 #[path = "engine_untap_rules.rs"]
 mod untap_rules;
 pub use ability_evaluation::{AbilityAvailabilityView, GrantedAbilityView};
@@ -3608,53 +3610,7 @@ impl Game {
     }
 
     fn object_view(&self, id: CardId) -> ObjectView {
-        let obj = &self.state.objects[id as usize];
-        let definition = if obj.zone == Zone::Stack {
-            self.effective_spell_card(id)
-        } else {
-            obj.card
-        };
-        let inset = definition.inset_parent().is_some();
-        let (base, stats) = if inset {
-            (Stats::default(), Stats::default())
-        } else {
-            self.layered_stats_without_hand(id, None)
-        };
-        ObjectView {
-            abilities: self.ability_availability(id),
-            kinds: self.current_kinds(id),
-            granted_subtypes: self.granted_subtypes(id),
-            saddled: self.is_saddled(self.object_ref(id)),
-            id,
-            reference: self.object_ref(id),
-            card: definition,
-            owner: obj.owner,
-            controller: obj.controller,
-            zone: obj.zone,
-            tapped: obj.tapped,
-            summoning_sick: obj.summoning_sick,
-            damage: obj.damage,
-            damaged_this_turn: obj.damaged_this_turn,
-            dealt_damage_this_turn: obj.dealt_damage_this_turn,
-            counters: obj.counters,
-            used_abilities: obj.used_abilities,
-            exhausted_abilities: obj.used_abilities & obj.card.exhaust_mask(),
-            attached_to: obj.attached_to,
-            modified: self.is_modified(id),
-            attacking: self.state.attackers.iter().any(|a| a.card == id),
-            power: stats.power,
-            toughness: stats.toughness,
-            power_above_base: obj.zone == Zone::Battlefield
-                && self.is_creature(id)
-                && stats.power > base.power,
-            keywords: if inset {
-                definition.info().keywords
-            } else {
-                self.keywords(id)
-            },
-            token: obj.card.token_info(),
-            emblem: obj.card.emblem_info(),
-        }
+        self.characteristic_query().object_view(id)
     }
 
     /// All real zone changes go through here. The library's default insertion is
@@ -4521,6 +4477,7 @@ impl Game {
     pub fn observe(&self, viewer: Player) -> Observation {
         let s = &self.state;
         let owns_choice = self.actor() == Some(viewer);
+        let query = self.characteristic_query();
         let objects = s
             .objects
             .iter()
@@ -4532,7 +4489,7 @@ impl Game {
                         || o.owner == viewer
                         || s.known_hand.contains(&self.object_ref(*i as CardId)))
             })
-            .map(|(i, _)| self.object_view(i as CardId))
+            .map(|(i, _)| query.object_view(i as CardId))
             .collect();
         Observation {
             casting_prohibited: s.casting_prohibited || self.static_casting_prohibited(viewer),
@@ -4876,18 +4833,18 @@ impl Game {
                         remaining: choice
                             .remaining
                             .iter()
-                            .map(|&id| self.object_view(id))
+                            .map(|&id| query.object_view(id))
                             .collect(),
-                        top: choice.top.iter().map(|&id| self.object_view(id)).collect(),
+                        top: choice.top.iter().map(|&id| query.object_view(id)).collect(),
                         bottom: choice
                             .bottom
                             .iter()
-                            .map(|&id| self.object_view(id))
+                            .map(|&id| query.object_view(id))
                             .collect(),
                         graveyard: choice
                             .graveyard
                             .iter()
-                            .map(|&id| self.object_view(id))
+                            .map(|&id| query.object_view(id))
                             .collect(),
                     })
             } else {
@@ -4907,7 +4864,7 @@ impl Game {
                         cards: s.players[viewer.index()]
                             .library
                             .iter()
-                            .map(|&id| self.object_view(id))
+                            .map(|&id| query.object_view(id))
                             .collect(),
                         selected: choice.selected.clone(),
                     })
@@ -4932,7 +4889,7 @@ impl Game {
                         candidates: choice
                             .selected
                             .iter()
-                            .map(|&id| self.object_view(id))
+                            .map(|&id| query.object_view(id))
                             .collect(),
                         battlefield: battlefield.clone(),
                     })
@@ -5738,3 +5695,7 @@ mod ability_removal_tests;
 #[cfg(test)]
 #[path = "engine_untapped_entry_tests.rs"]
 mod untapped_entry_tests;
+
+#[cfg(test)]
+#[path = "engine_query_tests.rs"]
+mod query_tests;
