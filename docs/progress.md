@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,896 executable Standard identities | 3,268 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,898 executable Standard identities | 3,266 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -184,3 +184,5 @@ composition runs. Initial new integration fixture failures and their test-only
 corrections remain recorded in [the delivery record](role-success-fight.md).
 Two independent NONAUTHOR exact-final-head approvals remain the merge gate.
 Full Standard/training support remains unfinished.
+
+The [simultaneous return kernel](battlefield-returns.md) composes actual Werefox main and admits complete Aetherize and River’s Rebuke: 1,898/5,164 identities, 3,266 gated, schema89. Fresh composed validation passes 1,819 native tests, all-target Clippy/fmt, thirty affected compiler methods, six paid parent/own API methods and 100 unretried natural Standard games (82,844 owned frames / 165,688 denials). The full original 452 compiler/269 API suites retain their original baseline scope. The feature record documents the historical-preservation test correction, exact source/library identities and pending independent final-head approvals.

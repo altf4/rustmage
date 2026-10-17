@@ -1717,6 +1717,31 @@ def battlefield_filters(subject):
     }.get(subject)
 
 
+def battlefield_return_program(text):
+    """Non-targeted permanent groups; the optional player alone is targeted."""
+    forms={
+        "return all attacking creatures to their owner's hand.":(1,False,True,'None','None'),
+        "return all creatures to their owners' hands.":(1,False,False,'None','None'),
+        "return all nonland permanents target player controls to their owner's hand.":(0,True,False,'Some(PlayerSet::Targeted)','Player'),
+    }
+    form=forms.get(text.casefold())
+    if not form:return None
+    kinds,nonland,attacking,players,target=form
+    return target,['ReturnBattlefield { filters: &['+battlefield_filter(kinds=kinds,nonland=nonland)+'], attacking: '+str(attacking).lower()+', players: '+players+' }']
+
+
+def battlefield_return_reminders_valid(card):
+    raw=card.get('oracle_text','')
+    if not isinstance(raw,str):return True
+    surface=raw;seen=False
+    while True:
+        seen |= re.search(r'\breturn (?:all|each) (?:attacking creatures|creatures|nonland permanents)\b',' '.join(surface.casefold().split())) is not None
+        stripped=re.sub(r'\([^()]*\)','',surface)
+        if stripped==surface:break
+        surface=stripped
+    return not seen or all(intrinsic_reminder_line_valid(line) for line in raw.splitlines() if '(' in line or ')' in line)
+
+
 def battlefield_move_program(text):
     result=None
     if text=='destroy all creatures. You gain 1 life for each creature destroyed this way.':
@@ -1879,6 +1904,8 @@ def statement_program(text):
         key=hashlib.sha256(body.encode()).hexdigest()[:24]
         EMBLEM_DEFS[key]=body
         return [f'CreateEmblem(__EMBLEM_{key}__)']
+    returned=battlefield_return_program(text)
+    if returned and returned[0]=='None':return returned[1]
     if result:=battlefield_move_program(text):return result
     if result:=battlefield_damage_program(text):return result
     if m:=re.fullmatch(r'this creature connives(?: ([0-9]+))?\.',text):
@@ -2494,6 +2521,8 @@ def targeted_program(text):
         result=targeted_program(text.replace('another target attacking creature you control','another target creature you control',1))
         return ('OtherCreatureAttackingYou',result[1]) if result and result[0]=='OtherCreatureYou' else None
     if result:=role_return_program(text):return result
+    returned=battlefield_return_program(text)
+    if returned and returned[0]!='None':return returned
     if result:=target_exclusion_program(text):return result
     if result:=role_program(text):return result
     if match:=re.fullmatch(r'destroy target creature an opponent controls with mana value ([0-9]+) or less\.',text):
@@ -4882,6 +4911,8 @@ def compile_catalogue(snapshot, target):
             effect = 'Unsupported'
         if not intrinsic_reminders_valid(original):
             effect = 'Unsupported'
+        if not battlefield_return_reminders_valid(original):
+            effect='Unsupported'
         if not target_exclusion_reminders_valid(original):
             effect='Unsupported'
         if not enchanted_draw_reminders_valid(original):
