@@ -24,7 +24,7 @@ pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 86;
+pub const OBSERVATION_SCHEMA: u32 = 89;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -681,8 +681,15 @@ pub struct TriggerSourceMoveView {
     pub destination: Zone,
 }
 
+/// A successful action's non-targeted subject, separate from source LKI.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct ReflexiveSubjectView {
+    pub object: ObjectRef,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    pub reflexive_subject: Option<Box<ReflexiveSubjectView>>,
     pub source_move: Option<Box<TriggerSourceMoveView>>,
     pub crew: Option<Box<CrewContext>>,
     pub cast_event: Option<Box<CastPaymentEvent>>,
@@ -716,6 +723,31 @@ pub struct SpellView {
 }
 
 impl SpellView {
+    /// Heap-owned continuation payloads; inline packet storage is counted by its container.
+    pub(super) fn owned_bytes(&self) -> usize {
+        self.source_move
+            .as_ref()
+            .map_or(0, |_| std::mem::size_of::<TriggerSourceMoveView>())
+            + self
+                .reflexive_subject
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<ReflexiveSubjectView>())
+            + self
+                .cast_event
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<CastPaymentEvent>())
+            + self.delayed_sacrifice.as_ref().map_or(0, |d| d.bytes())
+            + self.crew.as_ref().map_or(0, |c| c.bytes())
+            + self
+                .delayed_warp_exile
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<DelayedWarpExileView>())
+            + self.targets.len() * std::mem::size_of::<BoundTarget>()
+            + self
+                .attachment_trigger
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<AttachmentTriggerView>())
+    }
     /// Source-relative targets refer to the tracked public incarnation, without
     /// rebinding a later departure/reentry or replacing source LKI.
     pub(crate) fn target_source(&self) -> ObjectRef {
@@ -4826,26 +4858,7 @@ impl Game {
                 .chain(&s.ordering_triggers)
                 .chain(s.resolving.iter().map(|resolution| &resolution.item))
                 .chain(s.announcing.iter().map(|announcement| &announcement.item))
-                .map(|item| {
-                    item.source_move
-                        .as_ref()
-                        .map_or(0, |_| std::mem::size_of::<TriggerSourceMoveView>())
-                        + item
-                            .cast_event
-                            .as_ref()
-                            .map_or(0, |_| std::mem::size_of::<CastPaymentEvent>())
-                        + item.delayed_sacrifice.as_ref().map_or(0, |d| d.bytes())
-                        + item.crew.as_ref().map_or(0, |c| c.bytes())
-                        + item
-                            .delayed_warp_exile
-                            .as_ref()
-                            .map_or(0, |_| std::mem::size_of::<DelayedWarpExileView>())
-                        + item.targets.len() * std::mem::size_of::<BoundTarget>()
-                        + item
-                            .attachment_trigger
-                            .as_ref()
-                            .map_or(0, |_| std::mem::size_of::<AttachmentTriggerView>())
-                })
+                .map(SpellView::owned_bytes)
                 .sum::<usize>()
             + s.attackers.len() * std::mem::size_of::<Attacker>()
             + s.blocking.len() * std::mem::size_of::<CardId>()
@@ -5376,3 +5389,7 @@ mod enchanted_draw_tests;
 #[cfg(test)]
 #[path = "engine_role_followup_tests.rs"]
 mod role_followup_tests;
+
+#[cfg(test)]
+#[path = "engine_role_fight_tests.rs"]
+mod role_fight_tests;

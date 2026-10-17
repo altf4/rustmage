@@ -26,6 +26,50 @@ impl RoleState {
     }
 }
 impl Game {
+    pub(super) fn queue_reflexive(
+        &mut self,
+        item: &SpellView,
+        ability: u16,
+        subject: Option<ObjectRef>,
+    ) {
+        let mut reflexive = item.clone();
+        reflexive.id = self.next_stack_id();
+        reflexive.kind = StackKind::TriggeredAbility { ability };
+        reflexive.targets.clear();
+        reflexive.mode = None;
+        reflexive.reflexive_subject =
+            subject.map(|object| Box::new(ReflexiveSubjectView { object }));
+        self.state.pending_triggers.push(reflexive);
+    }
+    pub(super) fn resolve_role_reflexive(&mut self, item: &SpellView, token: Card, ability: u16) {
+        assert!(
+            token.role().is_some(),
+            "Role-success instruction requires a Role factory"
+        );
+        for bound in &item.targets {
+            if self.same_target_object(*bound)
+                && let Target::Card(id) = bound.target
+            {
+                let recipient = self.object_ref(id);
+                if self.aura_can_enchant(token, item.controller, recipient) {
+                    self.stage_token_creation(
+                        item.controller,
+                        token,
+                        1,
+                        false,
+                        replacements::TokenCompletion::RoleReflexive(Box::new(
+                            replacements::RoleReflexiveCompletion {
+                                recipient,
+                                token,
+                                item: item.clone(),
+                                ability,
+                            },
+                        )),
+                    );
+                }
+            }
+        }
+    }
     pub(super) fn next_role_timestamp(&mut self) -> u64 {
         let r = self.state.roles.get_or_insert_with(Default::default);
         r.clock = r.clock.checked_add(1).capacity("Role timestamps exhausted");

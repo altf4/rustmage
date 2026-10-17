@@ -142,7 +142,7 @@
     {
       "name": "Curse of the Werefox",
       "oracle_id": "64b41b54-ca22-41df-8bd3-dc4f7832fbb7",
-      "status": "gated_incomplete_body",
+      "status": "implemented",
       "faces": [
         {
           "name": "Curse of the Werefox",

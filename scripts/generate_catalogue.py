@@ -423,6 +423,36 @@ def role_reminder_text(text):
     return text
 
 
+def role_fight_text(text):
+    """Complete successful-Role/reflexive-fight grammar, including its reminder slot."""
+    if not isinstance(text, str): return None
+    match = re.fullmatch(r"(Create a (Cursed|Monster|Royal|Sorcerer|Wicked|Young Hero) Role token attached to target creature you control\. When you do, that creature fights up to one target creature you don't control\.)(?: \(([^()]*)\))?", text)
+    if match is None: return None
+    bare, kind, reminder = match.groups()
+    if reminder is not None:
+        role = ROLE_BODIES[kind]
+        role_forms = [role, 'If you control another Role on it, put that one into the graveyard. ' + role]
+        fight = 'Creatures that fight each deal damage equal to their power to the other.'
+        if reminder not in [fight, *role_forms, *(v + ' ' + fight for v in role_forms)]: return None
+    return kind, bare
+
+
+def role_fight_body(card):
+    """A fixed spell's whole body owns both the initial and reflexive programs."""
+    if (card.get('layout') != 'normal'
+            or card.get('type_line') not in ('Instant', 'Sorcery')
+            or spell_cost_options(card.get('mana_cost', '')) is None): return None
+    parsed = role_fight_text(card.get('oracle_text'))
+    if parsed is None: return None
+    kind, _ = parsed
+    # Reuse the exact existing predefined Role factory rather than inventing a recipe.
+    result = role_program('create a ' + kind + ' Role token attached to target creature you control.')
+    if result is None: return None
+    token = re.search(r'token: (__TOKEN_[a-f0-9]+__)', result[1][0])[1]
+    return ('Spell', 0, [('Reflexive', ['ReflexiveFight'], ('CreatureOpponent', 0, 1))],
+            ('CreatureYou', [f'CreateRoleReflexive {{ token: {token}, ability: 0 }}']))
+
+
 def role_consumer_reminders_valid(card):
     """Authenticate raw context for every production opened by Role consumers.
 
@@ -453,7 +483,8 @@ def role_consumer_reminders_valid(card):
         # This grammar already authenticates its header, all chapters, exact
         # Food/Role reminders and the matching final sacrifice number.
         return saga_body(card) is not None
-    authenticated = role_reminder_text(raw)
+    complete_fight = role_fight_text(raw)
+    authenticated = complete_fight[1] if complete_fight is not None else role_reminder_text(raw)
     authenticated = re.sub(
         r'^Bargain \(You may sacrifice an artifact, enchantment, or token as you cast this spell\.\)$',
         'Bargain', authenticated, flags=re.MULTILINE)
@@ -4551,6 +4582,10 @@ def compile_catalogue(snapshot, target):
         paid_body=actual_mana_body(card) if (plot is None and warp is None and not convoke and not cycling and not bargain and evidence is None and all(v is None for v in (flashback,offspring,kicker,additional,target_reduction)) and not reductions and not dynamic and not scaling) else None
         if paid_body is not None:
             effect,keywords,abilities,activations,enters=paid_body
+        role_fight = role_fight_body(original)
+        if role_fight is not None:
+            effect, keywords, abilities, spell = role_fight
+            activations=[];enters=[0,0,0]
         # Convoke applies only to complete fixed intrinsic bodies. No selector may
         # silently combine an unimplemented additional/alternative payment recipe.
         if convoke and (bargain or evidence is not None or cycling or any(v is not None for v in (flashback,offspring,kicker,additional,target_reduction)) or '{X}' in card.get('mana_cost','') or any(line.startswith(('Saddle ', 'Mobilize ')) for line in card.get('oracle_text','').splitlines())):
