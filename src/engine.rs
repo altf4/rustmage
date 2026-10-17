@@ -6177,3 +6177,15 @@ mod fdn_death_life_core_tests;
 #[cfg(test)]
 #[path = "engine_entry_choices_tests.rs"]
 mod entry_choices_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_choice_five_tests.rs"]
+mod fdn_choice_five_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_control_two_tests.rs"]
+mod fdn_control_two_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_death_demon_three_tests.rs"]
+mod fdn_death_demon_three_tests;

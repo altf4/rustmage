@@ -108,10 +108,11 @@ owns a copy-on-write overlay, including exact counter reservations in its key.
 replacement and entry payloads, excluding unused vector capacity consistently.
 
 Immutable card initializers retain their existing five-field `Counters` spelling
-through a private `InitialCounters` alias in generated module imports. New named
-entry counters use typed entry-counter rules or the surrounding entry effect;
-this storage change does not admit the Foundations consumers or implement
-their remaining triggers and costs. In particular, adding a counter as an
+through a private `InitialCounters` alias in generated module imports. Use
+`CardExtras::fixed_entry_counters` for fixed printed counters of any typed kind;
+these join the existing pre-entry counter event and its replacements. Dynamic
+chosen-type entry counters use `chosen_entry_counters`. Counter storage alone
+does not implement a card's remaining triggers and costs. In particular, adding a counter as an
 activation cost still needs its own rules implementation and tests.
 
 ## Chosen values and fixed control effects

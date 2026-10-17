@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c721e833dc5d0ea5a8f64c3e91feddc14803415e4b1493feb10b9b96580d9024",
+  "catalogue_version": "b550209c1ed4a2fe9f3c85a79bd7604c7a3395c996ddbfacdbf7b14f5a4e4391",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2107,
-  "implemented_total": 2113,
+  "implemented_standard_cards": 2117,
+  "implemented_total": 2123,
   "token_definitions": 102,
   "emblem_definitions": 2,
   "adventure_definitions": 40,
@@ -20,8 +20,8 @@
     },
     "blb": {
       "total": 261,
-      "complete": 112,
-      "gated": 149
+      "complete": 113,
+      "gated": 148
     },
     "cmm": {
       "total": 1,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 354,
-      "gated": 73
+      "complete": 362,
+      "gated": 65
     },
     "fin": {
       "total": 305,
@@ -101,7 +101,7 @@
     },
     "lcc": {
       "total": 1,
-      "gated": 1
+      "complete": 1
     },
     "lci": {
       "total": 273,
@@ -650,8 +650,8 @@
     {
       "name": "Adaptive Automaton",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/adaptive_automaton.rs",
       "set": "fdn"
     },
@@ -2786,8 +2786,8 @@
     {
       "name": "Banner of Kinship",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/banner_of_kinship.rs",
       "set": "fdn"
     },
@@ -7370,8 +7370,8 @@
     {
       "name": "Crossway Troublemakers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lcc/crossway_troublemakers.rs",
       "set": "lcc"
     },
@@ -8610,8 +8610,8 @@
     {
       "name": "Desecration Demon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/desecration_demon.rs",
       "set": "fdn"
     },
@@ -8754,8 +8754,8 @@
     {
       "name": "Diamond Mare",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/diamond_mare.rs",
       "set": "fdn"
     },
@@ -13674,8 +13674,8 @@
     {
       "name": "Garna, Bloodfist of Keld",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/garna_bloodfist_of_keld.rs",
       "set": "fdn"
     },
@@ -15794,8 +15794,8 @@
     {
       "name": "Harmless Offering",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/harmless_offering.rs",
       "set": "fdn"
     },
@@ -16274,8 +16274,8 @@
     {
       "name": "Heraldic Banner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/heraldic_banner.rs",
       "set": "fdn"
     },
@@ -38258,8 +38258,8 @@
     {
       "name": "Uncharted Haven",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/uncharted_haven.rs",
       "set": "blb"
     },
@@ -40938,8 +40938,8 @@
     {
       "name": "Wishclaw Talisman",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/wishclaw_talisman.rs",
       "set": "fdn"
     },
