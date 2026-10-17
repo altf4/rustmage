@@ -2,14 +2,29 @@
 use super::ability_timeline_tests::{cast, checked, named, settle, setup};
 use super::tests::spawn;
 use super::*;
+use crate::SearchFilter;
 
 #[test]
 fn paid_crypt_feaster_retains_its_string_name_on_the_battlefield_in_both_seats() {
     for player in [Player::P0, Player::P1] {
         let mut game = setup(player);
         let creature = named(&mut game, player, "Crypt Feaster", Zone::Hand);
-        assert!(!game.observe(player.other()).objects.iter().any(|object| object.id == creature));
-        assert_eq!(game.observe(player).objects.iter().find(|object| object.id == creature).unwrap().name(), "Crypt Feaster");
+        assert!(
+            !game
+                .observe(player.other())
+                .objects
+                .iter()
+                .any(|object| object.id == creature)
+        );
+        assert_eq!(
+            game.observe(player)
+                .objects
+                .iter()
+                .find(|object| object.id == creature)
+                .unwrap()
+                .name(),
+            "Crypt Feaster"
+        );
         game.state.players[player.index()].mana = [0, 0, 1, 0, 0, 3];
         cast(&mut game, creature, None, &[]);
         settle(&mut game);
@@ -20,13 +35,23 @@ fn paid_crypt_feaster_retains_its_string_name_on_the_battlefield_in_both_seats()
         assert_eq!(object.card.name(), name);
         for viewer in [player, player.other()] {
             let observation = game.observe(viewer);
-            assert_eq!(observation.schema, 114);
-            let visible = observation.objects.iter().find(|object| object.id == creature).unwrap();
-            assert_eq!(serde_json::to_value(visible).unwrap()["name"], "Crypt Feaster");
+            assert_eq!(observation.schema, OBSERVATION_SCHEMA);
+            let visible = observation
+                .objects
+                .iter()
+                .find(|object| object.id == creature)
+                .unwrap();
+            assert_eq!(
+                serde_json::to_value(visible).unwrap()["name"],
+                "Crypt Feaster"
+            );
         }
         assert_eq!(game.state.players[player.index()].mana, [0; 6]);
         let saved = game.snapshot();
-        let mut owned = { let parent = game.clone(); parent.clone() };
+        let mut owned = {
+            let parent = game.clone();
+            parent.clone()
+        };
         drop(game);
         assert_eq!(owned.object_view(creature).name(), name);
         owned.restore(&saved).unwrap();
@@ -68,7 +93,12 @@ fn different_factories_with_one_rules_name_are_destroyed_together_after_paid_cas
         let mut game = setup(player);
         let a = spawn(&mut game, player, left, Zone::Battlefield);
         let b = spawn(&mut game, player.other(), right, Zone::Battlefield);
-        let other = named(&mut game, player.other(), "Crypt Feaster", Zone::Battlefield);
+        let other = named(
+            &mut game,
+            player.other(),
+            "Crypt Feaster",
+            Zone::Battlefield,
+        );
         assert_eq!(game.object_view(a).name(), game.object_view(b).name());
         assert_eq!(game.object_view(a).name(), "Goblin Token");
         let pulse = named(&mut game, player, "Maelstrom Pulse", Zone::Hand);
@@ -93,13 +123,21 @@ fn named_and_copied_tokens_keep_string_names_in_owned_views() {
         let copied_token = spawn(&mut game, player, copy, Zone::Battlefield);
         let normal = spawn(&mut game, player, original, Zone::Battlefield);
         assert_eq!(game.object_view(named_token).name(), "Scion of the Deep");
-        assert_eq!(game.object_view(copied_token).name(), game.object_view(normal).name());
+        assert_eq!(
+            game.object_view(copied_token).name(),
+            game.object_view(normal).name()
+        );
         let frozen = game.object_view(copied_token);
         let saved = game.snapshot();
-        let branch = { let parent = game.clone(); parent.clone() };
+        let branch = {
+            let parent = game.clone();
+            parent.clone()
+        };
         game.move_object(copied_token, Zone::Graveyard);
         game.state_based_actions();
-        let goblin = Card::catalogue().find(|card| card.is_token() && card.name() == "Goblin Token").unwrap();
+        let goblin = Card::catalogue()
+            .find(|card| card.is_token() && card.name() == "Goblin Token")
+            .unwrap();
         game.create_tokens(player, goblin, 1, false);
         assert_eq!(game.object_view(copied_token).name(), "Goblin Token");
         assert_ne!(game.object_view(copied_token).reference, frozen.reference);
@@ -118,10 +156,19 @@ fn adventure_object_name_tracks_the_chosen_spell_face_then_the_physical_card() {
         let adventure = named(&mut game, player, "Intrepid Trufflesnout", Zone::Hand);
         assert_eq!(game.object_view(adventure).name(), "Intrepid Trufflesnout");
         checked(&mut game, Action::AnnounceAdventure { card: adventure });
-        checked(&mut game, Action::ChooseTarget { target: Target::Card(target) });
+        checked(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
         for _ in 0..8 {
-            if game.state.announcing.is_none() { break; }
-            let action = game.legal_actions().into_iter()
+            if game.state.announcing.is_none() {
+                break;
+            }
+            let action = game
+                .legal_actions()
+                .into_iter()
                 .find(|action| matches!(action, Action::FinishTargets | Action::PayCosts { .. }))
                 .unwrap();
             checked(&mut game, action);
@@ -130,7 +177,10 @@ fn adventure_object_name_tracks_the_chosen_spell_face_then_the_physical_card() {
         let stack_view = game.object_view(adventure);
         assert_eq!(stack_view.zone, Zone::Stack);
         assert_eq!(stack_view.name(), "Go Hog Wild");
-        assert_eq!(game.spell_characteristics().last().unwrap().name, stack_view.name());
+        assert_eq!(
+            game.spell_characteristics().last().unwrap().name,
+            stack_view.name()
+        );
         let saved = game.snapshot();
         settle(&mut game);
         assert_eq!(game.object_view(adventure).zone, Zone::Exile);

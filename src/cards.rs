@@ -1979,7 +1979,8 @@ impl Card {
     /// Actual rules name, shared as a regular string across all games.
     /// Token recipes may share a name; use `identity()` for stable lookup.
     pub fn name(self) -> &'static str {
-        self.token_info().map_or(self.info().name, |token| token.name)
+        self.token_info()
+            .map_or(self.info().name, |token| token.name)
     }
     pub fn is_legendary(self) -> bool {
         self.info().legendary
