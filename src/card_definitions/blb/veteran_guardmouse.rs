@@ -15,7 +15,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             },
             Instruction::GrantKeywords {
                 subject: Subject::Source,
-                keywords: Keywords(512),
+                keywords: Keywords::FIRST_STRIKE,
             },
             Instruction::Scry(1),
         ],
@@ -29,7 +29,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         cost_alternatives: &[ManaCost {
             colored: [1, 0, 0, 0, 0, 0],

@@ -6,7 +6,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         targets: TargetPlan::Single(TargetSpec::NONE),
         program: &[Instruction::GrantKeywords {
             subject: Subject::Source,
-            keywords: Keywords(1),
+            keywords: Keywords::FLYING,
         }],
     }],
     activated: &[],
@@ -18,6 +18,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

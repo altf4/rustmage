@@ -24,17 +24,17 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(32832),
+    keywords: Keywords::LIFELINK.union(Keywords::MENACE),
     static_groups: &[
         StaticAbilityGroup {
             line: 1,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(64))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::LIFELINK)],
         },
         StaticAbilityGroup {
             line: 2,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32768))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::MENACE)],
         },
     ],
     extras: &CardExtras {
@@ -42,12 +42,12 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 1,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(64))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::LIFELINK)],
             },
             StaticAbilityGroup {
                 line: 2,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32768))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::MENACE)],
             },
         ],
         kicker_cost: Some(ManaCost {

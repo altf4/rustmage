@@ -11,7 +11,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     deck_limit: None,
     aura: Some(AuraSpec {
         kinds: 1,
@@ -21,7 +21,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 1,
                 toughness: 1,
             },
-            keywords: Keywords(256),
+            keywords: Keywords::TRAMPLE,
         },
     }),
     static_groups: &[StaticAbilityGroup {
@@ -32,7 +32,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 1,
                 toughness: 1,
             }),
-            StaticAbilityFragment::AttachmentKeywords(Keywords(256)),
+            StaticAbilityFragment::AttachmentKeywords(Keywords::TRAMPLE),
         ],
     }],
     extras: &CardExtras {
@@ -44,7 +44,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 1,
                     toughness: 1,
                 },
-                keywords: Keywords(256),
+                keywords: Keywords::TRAMPLE,
             },
         }),
         static_ability_groups: &[StaticAbilityGroup {
@@ -55,7 +55,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 1,
                     toughness: 1,
                 }),
-                StaticAbilityFragment::AttachmentKeywords(Keywords(256)),
+                StaticAbilityFragment::AttachmentKeywords(Keywords::TRAMPLE),
             ],
         }],
         role: Some(RoleKind::Monster),

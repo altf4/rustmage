@@ -14,7 +14,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             targets: TargetPlan::Single(TargetSpec::NONE),
             program: &[Instruction::GrantKeywords {
                 subject: Subject::Source,
-                keywords: Keywords(16384),
+                keywords: Keywords::CANT_BE_BLOCKED,
             }],
         },
         TriggeredAbility {
@@ -40,6 +40,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

@@ -47,12 +47,14 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(8192),
+    keywords: Keywords::INDESTRUCTIBLE,
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(8192))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::INDESTRUCTIBLE,
+            )],
         },
         StaticAbilityGroup {
             line: 1,
@@ -62,7 +64,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 0,
                     toughness: 8,
                 }),
-                StaticAbilityFragment::AttachmentKeywords(Keywords(8)),
+                StaticAbilityFragment::AttachmentKeywords(Keywords::VIGILANCE),
             ],
         },
     ],
@@ -72,13 +74,15 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 0,
                 toughness: 8,
             },
-            keywords: Keywords(8),
+            keywords: Keywords::VIGILANCE,
         }),
         static_ability_groups: &[
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(8192))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                    Keywords::INDESTRUCTIBLE,
+                )],
             },
             StaticAbilityGroup {
                 line: 1,
@@ -88,7 +92,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                         power: 0,
                         toughness: 8,
                     }),
-                    StaticAbilityFragment::AttachmentKeywords(Keywords(8)),
+                    StaticAbilityFragment::AttachmentKeywords(Keywords::VIGILANCE),
                 ],
             },
         ],

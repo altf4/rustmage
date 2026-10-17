@@ -11,7 +11,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(256),
+    keywords: Keywords::TRAMPLE,
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
@@ -26,7 +26,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                             relation: 0,
                             other: false,
                             subtype: None,
-                            keyword: Keywords(0),
+                            keyword: Keywords::NONE,
                             attacking: false,
                             tokens: None,
                             artifact: false,
@@ -41,7 +41,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         StaticAbilityGroup {
             line: 1,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(256))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::TRAMPLE)],
         },
     ],
     extras: &CardExtras {
@@ -59,7 +59,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                                 relation: 0,
                                 other: false,
                                 subtype: None,
-                                keyword: Keywords(0),
+                                keyword: Keywords::NONE,
                                 attacking: false,
                                 tokens: None,
                                 artifact: false,
@@ -74,7 +74,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 1,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(256))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::TRAMPLE)],
             },
         ],
         cost_reductions: &[SpellReduction {
@@ -85,7 +85,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     relation: 0,
                     other: false,
                     subtype: None,
-                    keyword: Keywords(0),
+                    keyword: Keywords::NONE,
                     attacking: false,
                     tokens: None,
                     artifact: false,

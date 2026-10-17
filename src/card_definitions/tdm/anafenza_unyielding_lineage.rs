@@ -7,7 +7,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 relation: 0,
                 other: true,
                 subtype: None,
-                keyword: Keywords(0),
+                keyword: Keywords::NONE,
                 attacking: false,
                 tokens: Some(false),
                 artifact: false,
@@ -28,17 +28,19 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(544),
+    keywords: Keywords::FLASH.union(Keywords::FIRST_STRIKE),
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLASH)],
         },
         StaticAbilityGroup {
             line: 1,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(512))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::FIRST_STRIKE,
+            )],
         },
     ],
     extras: &CardExtras {
@@ -46,12 +48,14 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLASH)],
             },
             StaticAbilityGroup {
                 line: 1,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(512))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                    Keywords::FIRST_STRIKE,
+                )],
             },
         ],
         ..CardExtras::EMPTY

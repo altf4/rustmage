@@ -11,7 +11,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(9),
+    keywords: Keywords::FLYING.union(Keywords::VIGILANCE),
     extras: &CardExtras {
         vehicle_stats: Some(Stats {
             power: 2,

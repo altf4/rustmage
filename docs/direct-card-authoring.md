@@ -2,7 +2,8 @@
 
 Card behavior lives in `src/card_definitions/<set>/<slug>.rs`, with a sibling
 provenance JSON. Use `CardRules`, typed instructions/targets/costs and shared
-mechanics. `CardExtras` exposes the existing immutable mechanics directly; add a
+mechanics. Write keyword masks with named constants such as `Keywords::MENACE`,
+`Keywords::NONE` and `.union(...)` for combinations; avoid numeric constructors. `CardExtras` exposes the existing immutable mechanics directly; add a
 shared field or a small bespoke effect when needed. No Oracle text or LLM is used
 at runtime. The English compiler and its parser-only tests have been removed.
 

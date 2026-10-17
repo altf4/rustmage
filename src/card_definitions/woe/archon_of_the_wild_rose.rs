@@ -11,12 +11,12 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(1),
+    keywords: Keywords::FLYING,
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(1))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLYING)],
         },
         StaticAbilityGroup {
             line: 1,
@@ -35,7 +35,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                         toughness: Some(LiveStatValue::Fixed(4)),
                         bonus_power: 0,
                         bonus_toughness: 0,
-                        keywords: Keywords(1),
+                        keywords: Keywords::FLYING,
                         cannot_block_subtype: None,
                     },
                 ),
@@ -52,7 +52,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                         toughness: Some(LiveStatValue::Fixed(4)),
                         bonus_power: 0,
                         bonus_toughness: 0,
-                        keywords: Keywords(1),
+                        keywords: Keywords::FLYING,
                         cannot_block_subtype: None,
                     },
                 ),
@@ -64,7 +64,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(1))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLYING)],
             },
             StaticAbilityGroup {
                 line: 1,
@@ -83,7 +83,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                             toughness: Some(LiveStatValue::Fixed(4)),
                             bonus_power: 0,
                             bonus_toughness: 0,
-                            keywords: Keywords(1),
+                            keywords: Keywords::FLYING,
                             cannot_block_subtype: None,
                         },
                     ),
@@ -100,7 +100,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                             toughness: Some(LiveStatValue::Fixed(4)),
                             bonus_power: 0,
                             bonus_toughness: 0,
-                            keywords: Keywords(1),
+                            keywords: Keywords::FLYING,
                             cannot_block_subtype: None,
                         },
                     ),
@@ -118,7 +118,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             toughness: Some(LiveStatValue::Fixed(4)),
             bonus_power: 0,
             bonus_toughness: 0,
-            keywords: Keywords(1),
+            keywords: Keywords::FLYING,
             cannot_block_subtype: None,
         }],
         ..CardExtras::EMPTY

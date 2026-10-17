@@ -22,7 +22,7 @@ impl CardRules {
         effect: Effect::Unsupported,
         triggers: &[],
         activated: &[],
-        keywords: Keywords(0),
+        keywords: Keywords::NONE,
         enters: Counters {
             plus_one: 0,
             minus_one: 0,

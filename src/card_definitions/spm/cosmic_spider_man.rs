@@ -13,12 +13,16 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 relation: 0,
                 other: true,
                 subtype: Some("Spider"),
-                keyword: Keywords(0),
+                keyword: Keywords::NONE,
                 attacking: false,
                 tokens: None,
                 artifact: false,
             },
-            keywords: Keywords(837),
+            keywords: Keywords::FLYING
+                .union(Keywords::HASTE)
+                .union(Keywords::LIFELINK)
+                .union(Keywords::TRAMPLE)
+                .union(Keywords::FIRST_STRIKE),
         }],
     }],
     activated: &[],
@@ -30,17 +34,33 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(837),
+    keywords: Keywords::FLYING
+        .union(Keywords::HASTE)
+        .union(Keywords::LIFELINK)
+        .union(Keywords::TRAMPLE)
+        .union(Keywords::FIRST_STRIKE),
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(837))],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+            Keywords::FLYING
+                .union(Keywords::HASTE)
+                .union(Keywords::LIFELINK)
+                .union(Keywords::TRAMPLE)
+                .union(Keywords::FIRST_STRIKE),
+        )],
     }],
     extras: &CardExtras {
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(837))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::FLYING
+                    .union(Keywords::HASTE)
+                    .union(Keywords::LIFELINK)
+                    .union(Keywords::TRAMPLE)
+                    .union(Keywords::FIRST_STRIKE),
+            )],
         }],
         ..CardExtras::EMPTY
     },

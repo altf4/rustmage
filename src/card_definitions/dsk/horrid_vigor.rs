@@ -4,7 +4,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
         &[Instruction::GrantKeywords {
             subject: Subject::Targets,
-            keywords: Keywords(8320),
+            keywords: Keywords::DEATHTOUCH.union(Keywords::INDESTRUCTIBLE),
         }],
     ),
     triggers: &[],
@@ -17,6 +17,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

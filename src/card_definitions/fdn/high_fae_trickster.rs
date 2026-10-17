@@ -18,7 +18,7 @@ const GROUPS: &[StaticAbilityGroup] = &[
 ];
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(4, 2),
-    keywords: Keywords(Keywords::FLASH.0 | Keywords::FLYING.0),
+    keywords: Keywords::FLASH.union(Keywords::FLYING),
     static_groups: GROUPS,
     extras: &CardExtras {
         static_ability_groups: GROUPS,

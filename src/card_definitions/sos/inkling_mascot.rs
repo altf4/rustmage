@@ -14,7 +14,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         program: &[
             Instruction::GrantKeywords {
                 subject: Subject::Source,
-                keywords: Keywords(1),
+                keywords: Keywords::FLYING,
             },
             Instruction::Surveil(1),
         ],
@@ -28,6 +28,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

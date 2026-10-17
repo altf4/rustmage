@@ -19,14 +19,14 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     static_groups: &[StaticAbilityGroup {
         line: 1,
         first_layer: AbilityLayer::Ability,
         fragments: &[StaticAbilityFragment::CounterKeyword(
             0,
             CounterKind::PlusOne,
-            Keywords(256),
+            Keywords::TRAMPLE,
         )],
     }],
     extras: &CardExtras {
@@ -36,14 +36,14 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             fragments: &[StaticAbilityFragment::CounterKeyword(
                 0,
                 CounterKind::PlusOne,
-                Keywords(256),
+                Keywords::TRAMPLE,
             )],
         }],
         warp_cost: Some(ManaCost {
             colored: [0, 0, 0, 0, 1, 0],
             generic: 1,
         }),
-        counter_keyword_grants: &[(CounterKind::PlusOne, Keywords(256))],
+        counter_keyword_grants: &[(CounterKind::PlusOne, Keywords::TRAMPLE)],
         ..CardExtras::EMPTY
     },
     ..CardRules::EMPTY

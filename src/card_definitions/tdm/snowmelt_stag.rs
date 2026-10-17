@@ -24,7 +24,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         targets: TargetPlan::Single(TargetSpec::NONE),
         program: &[Instruction::GrantKeywords {
             subject: Subject::Source,
-            keywords: Keywords(16384),
+            keywords: Keywords::CANT_BE_BLOCKED,
         }],
         sorcery: false,
         once_per_turn: false,
@@ -37,12 +37,14 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(8),
+    keywords: Keywords::VIGILANCE,
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(8))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::VIGILANCE,
+            )],
         },
         StaticAbilityGroup {
             line: 1,
@@ -63,7 +65,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(8))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                    Keywords::VIGILANCE,
+                )],
             },
             StaticAbilityGroup {
                 line: 1,

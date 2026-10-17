@@ -38,6 +38,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(8192),
+    keywords: Keywords::INDESTRUCTIBLE,
     ..CardRules::EMPTY
 };

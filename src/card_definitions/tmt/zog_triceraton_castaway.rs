@@ -6,7 +6,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         targets: TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
         program: &[Instruction::GrantKeywords {
             subject: Subject::Targets,
-            keywords: Keywords(2048),
+            keywords: Keywords::CANT_BLOCK,
         }],
     }],
     activated: &[ActivatedAbility {
@@ -47,17 +47,21 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(258),
+    keywords: Keywords::REACH.union(Keywords::TRAMPLE),
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(258))],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+            Keywords::REACH.union(Keywords::TRAMPLE),
+        )],
     }],
     extras: &CardExtras {
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(258))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::REACH.union(Keywords::TRAMPLE),
+            )],
         }],
         ..CardExtras::EMPTY
     },

@@ -11,6 +11,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(768),
+    keywords: Keywords::TRAMPLE.union(Keywords::FIRST_STRIKE),
     ..CardRules::EMPTY
 };

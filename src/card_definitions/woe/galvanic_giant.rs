@@ -38,7 +38,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         adventure_identity: Some("Galvanic Giant // Storm Reading"),
         adventure_spell: Some(Card(5194)),

@@ -27,17 +27,17 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(64),
+    keywords: Keywords::LIFELINK,
     static_groups: &[StaticAbilityGroup {
         line: 1,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(64))],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::LIFELINK)],
     }],
     extras: &CardExtras {
         static_ability_groups: &[StaticAbilityGroup {
             line: 1,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(64))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::LIFELINK)],
         }],
         kicker_cost: Some(ManaCost {
             colored: [1, 0, 0, 0, 0, 0],

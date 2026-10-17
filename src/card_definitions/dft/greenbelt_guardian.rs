@@ -25,7 +25,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             targets: TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
             program: &[Instruction::GrantKeywords {
                 subject: Subject::Targets,
-                keywords: Keywords(256),
+                keywords: Keywords::TRAMPLE,
             }],
             sorcery: false,
             once_per_turn: false,
@@ -67,7 +67,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         exhaust_mask: 2,
         ..CardExtras::EMPTY

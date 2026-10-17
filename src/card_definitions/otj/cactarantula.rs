@@ -21,7 +21,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(2),
+    keywords: Keywords::REACH,
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
@@ -53,7 +53,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         StaticAbilityGroup {
             line: 1,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(2))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::REACH)],
         },
     ],
     extras: &CardExtras {
@@ -88,7 +88,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 1,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(2))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::REACH)],
             },
         ],
         cost_reductions: &[SpellReduction {

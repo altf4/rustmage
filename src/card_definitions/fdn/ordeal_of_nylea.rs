@@ -9,7 +9,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 0,
                 toughness: 0,
             },
-            keywords: Keywords(0),
+            keywords: Keywords::NONE,
         },
     }),
     extras: &CardExtras {
@@ -21,7 +21,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 0,
                     toughness: 0,
                 },
-                keywords: Keywords(0),
+                keywords: Keywords::NONE,
             },
         }),
         ..CardExtras::EMPTY
@@ -42,7 +42,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         TriggeredAbility {
             condition: TriggerCondition::Sacrificed {
                 filter: SacrificeFilter {
-                    keywords: Keywords(0),
+                    keywords: Keywords::NONE,
                     source_only: true,
                     kinds: 0,
                     nonland: false,

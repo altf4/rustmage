@@ -43,17 +43,21 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(130),
+    keywords: Keywords::REACH.union(Keywords::DEATHTOUCH),
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(130))],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+            Keywords::REACH.union(Keywords::DEATHTOUCH),
+        )],
     }],
     extras: &CardExtras {
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(130))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::REACH.union(Keywords::DEATHTOUCH),
+            )],
         }],
         ..CardExtras::EMPTY
     },

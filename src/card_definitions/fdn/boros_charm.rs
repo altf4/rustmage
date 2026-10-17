@@ -23,14 +23,16 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         SpellMode {
             text: "Permanents you control gain indestructible until end of turn.",
             targets: TargetPlan::Single(TargetSpec::NONE),
-            program: &[Instruction::GrantPermanentsThisTurn(Keywords(8192))],
+            program: &[Instruction::GrantPermanentsThisTurn(
+                Keywords::INDESTRUCTIBLE,
+            )],
         },
         SpellMode {
             text: "Target creature gains double strike until end of turn.",
             targets: TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
             program: &[Instruction::GrantKeywords {
                 subject: Subject::Targets,
-                keywords: Keywords(1024),
+                keywords: Keywords::DOUBLE_STRIKE,
             }],
         },
     ]),
@@ -44,6 +46,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

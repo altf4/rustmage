@@ -17,7 +17,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             Instruction::AttachSource,
             Instruction::GrantKeywords {
                 subject: Subject::Targets,
-                keywords: Keywords(12288),
+                keywords: Keywords::HEXPROOF.union(Keywords::INDESTRUCTIBLE),
             },
         ],
     }],
@@ -62,12 +62,12 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(32),
+    keywords: Keywords::FLASH,
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLASH)],
         },
         StaticAbilityGroup {
             line: 2,
@@ -77,7 +77,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 2,
                     toughness: 0,
                 }),
-                StaticAbilityFragment::AttachmentKeywords(Keywords(1)),
+                StaticAbilityFragment::AttachmentKeywords(Keywords::FLYING),
             ],
         },
     ],
@@ -87,13 +87,13 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 2,
                 toughness: 0,
             },
-            keywords: Keywords(1),
+            keywords: Keywords::FLYING,
         }),
         static_ability_groups: &[
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLASH)],
             },
             StaticAbilityGroup {
                 line: 2,
@@ -103,7 +103,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                         power: 2,
                         toughness: 0,
                     }),
-                    StaticAbilityFragment::AttachmentKeywords(Keywords(1)),
+                    StaticAbilityFragment::AttachmentKeywords(Keywords::FLYING),
                 ],
             },
         ],

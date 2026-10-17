@@ -47,7 +47,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     static_groups: &[StaticAbilityGroup {
         line: 1,
         first_layer: AbilityLayer::Type,
@@ -57,7 +57,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 2,
                 toughness: 2,
             }),
-            StaticAbilityFragment::AttachmentKeywords(Keywords(260)),
+            StaticAbilityFragment::AttachmentKeywords(Keywords::HASTE.union(Keywords::TRAMPLE)),
         ],
     }],
     extras: &CardExtras {
@@ -66,7 +66,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 2,
                 toughness: 2,
             },
-            keywords: Keywords(260),
+            keywords: Keywords::HASTE.union(Keywords::TRAMPLE),
         }),
         static_ability_groups: &[StaticAbilityGroup {
             line: 1,
@@ -77,7 +77,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 2,
                     toughness: 2,
                 }),
-                StaticAbilityFragment::AttachmentKeywords(Keywords(260)),
+                StaticAbilityFragment::AttachmentKeywords(Keywords::HASTE.union(Keywords::TRAMPLE)),
             ],
         }],
         attached_subtype: Some("Samurai"),

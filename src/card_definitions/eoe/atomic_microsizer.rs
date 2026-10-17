@@ -11,7 +11,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         program: &[
             Instruction::GrantKeywords {
                 subject: Subject::Targets,
-                keywords: Keywords(16384),
+                keywords: Keywords::CANT_BE_BLOCKED,
             },
             Instruction::SetBaseStats {
                 subject: Subject::Targets,
@@ -61,7 +61,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Modify,
@@ -76,7 +76,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 1,
                 toughness: 0,
             },
-            keywords: Keywords(0),
+            keywords: Keywords::NONE,
         }),
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,

@@ -20,22 +20,33 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(33610),
+    keywords: Keywords::REACH
+        .union(Keywords::VIGILANCE)
+        .union(Keywords::LIFELINK)
+        .union(Keywords::TRAMPLE)
+        .union(Keywords::FIRST_STRIKE)
+        .union(Keywords::MENACE),
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(514))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::REACH.union(Keywords::FIRST_STRIKE),
+            )],
         },
         StaticAbilityGroup {
             line: 1,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32776))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::VIGILANCE.union(Keywords::MENACE),
+            )],
         },
         StaticAbilityGroup {
             line: 2,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(320))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::LIFELINK.union(Keywords::TRAMPLE),
+            )],
         },
     ],
     extras: &CardExtras {
@@ -43,17 +54,23 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(514))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                    Keywords::REACH.union(Keywords::FIRST_STRIKE),
+                )],
             },
             StaticAbilityGroup {
                 line: 1,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32776))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                    Keywords::VIGILANCE.union(Keywords::MENACE),
+                )],
             },
             StaticAbilityGroup {
                 line: 2,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(320))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                    Keywords::LIFELINK.union(Keywords::TRAMPLE),
+                )],
             },
         ],
         ..CardExtras::EMPTY

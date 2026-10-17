@@ -11,7 +11,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(32896),
+    keywords: Keywords::DEATHTOUCH.union(Keywords::MENACE),
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
@@ -54,7 +54,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         StaticAbilityGroup {
             line: 1,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32896))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::DEATHTOUCH.union(Keywords::MENACE),
+            )],
         },
     ],
     extras: &CardExtras {
@@ -100,7 +102,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 1,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32896))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                    Keywords::DEATHTOUCH.union(Keywords::MENACE),
+                )],
             },
         ],
         cost_reductions: &[SpellReduction {

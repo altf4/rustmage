@@ -48,7 +48,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             },
             Instruction::GrantKeywords {
                 subject: Subject::Targets,
-                keywords: Keywords(1),
+                keywords: Keywords::FLYING,
             },
         ],
         sorcery: true,
@@ -62,7 +62,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         cost_alternatives: &[
             ManaCost {

@@ -18,7 +18,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     relation: 0,
                     other: true,
                     subtype: None,
-                    keyword: Keywords(128),
+                    keyword: Keywords::DEATHTOUCH,
                     attacking: false,
                     tokens: None,
                     artifact: false,
@@ -30,7 +30,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 players: PlayerSet::Opponent,
                 filter: SacrificeFilter {
                     artifact_enchantment_or_token: false,
-                    keywords: Keywords(0),
+                    keywords: Keywords::NONE,
                     source_only: false,
                     kinds: 1,
                     nonland: false,
@@ -52,17 +52,21 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(128),
+    keywords: Keywords::DEATHTOUCH,
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(128))],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+            Keywords::DEATHTOUCH,
+        )],
     }],
     extras: &CardExtras {
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(128))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::DEATHTOUCH,
+            )],
         }],
         ..CardExtras::EMPTY
     },

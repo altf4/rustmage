@@ -11,17 +11,24 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(298),
+    keywords: Keywords::REACH
+        .union(Keywords::VIGILANCE)
+        .union(Keywords::FLASH)
+        .union(Keywords::TRAMPLE),
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLASH)],
         },
         StaticAbilityGroup {
             line: 1,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(266))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::REACH
+                    .union(Keywords::VIGILANCE)
+                    .union(Keywords::TRAMPLE),
+            )],
         },
     ],
     extras: &CardExtras {
@@ -29,12 +36,16 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLASH)],
             },
             StaticAbilityGroup {
                 line: 1,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(266))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                    Keywords::REACH
+                        .union(Keywords::VIGILANCE)
+                        .union(Keywords::TRAMPLE),
+                )],
             },
         ],
         ..CardExtras::EMPTY

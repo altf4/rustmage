@@ -11,12 +11,20 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(8453),
+    keywords: Keywords::FLYING
+        .union(Keywords::HASTE)
+        .union(Keywords::TRAMPLE)
+        .union(Keywords::INDESTRUCTIBLE),
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(8453))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::FLYING
+                    .union(Keywords::HASTE)
+                    .union(Keywords::TRAMPLE)
+                    .union(Keywords::INDESTRUCTIBLE),
+            )],
         },
         StaticAbilityGroup {
             line: 1,
@@ -30,14 +38,17 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                         relation: 0,
                         other: true,
                         subtype: None,
-                        keyword: Keywords(0),
+                        keyword: Keywords::NONE,
                         attacking: false,
                         tokens: None,
                         artifact: true,
                     },
                     source_only: false,
                     own_turn: false,
-                    keywords: Keywords(8453),
+                    keywords: Keywords::FLYING
+                        .union(Keywords::HASTE)
+                        .union(Keywords::TRAMPLE)
+                        .union(Keywords::INDESTRUCTIBLE),
                 },
             )],
         },
@@ -47,7 +58,12 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(8453))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                    Keywords::FLYING
+                        .union(Keywords::HASTE)
+                        .union(Keywords::TRAMPLE)
+                        .union(Keywords::INDESTRUCTIBLE),
+                )],
             },
             StaticAbilityGroup {
                 line: 1,
@@ -61,14 +77,17 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                             relation: 0,
                             other: true,
                             subtype: None,
-                            keyword: Keywords(0),
+                            keyword: Keywords::NONE,
                             attacking: false,
                             tokens: None,
                             artifact: true,
                         },
                         source_only: false,
                         own_turn: false,
-                        keywords: Keywords(8453),
+                        keywords: Keywords::FLYING
+                            .union(Keywords::HASTE)
+                            .union(Keywords::TRAMPLE)
+                            .union(Keywords::INDESTRUCTIBLE),
                     },
                 )],
             },
@@ -80,14 +99,17 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 relation: 0,
                 other: true,
                 subtype: None,
-                keyword: Keywords(0),
+                keyword: Keywords::NONE,
                 attacking: false,
                 tokens: None,
                 artifact: true,
             },
             source_only: false,
             own_turn: false,
-            keywords: Keywords(8453),
+            keywords: Keywords::FLYING
+                .union(Keywords::HASTE)
+                .union(Keywords::TRAMPLE)
+                .union(Keywords::INDESTRUCTIBLE),
         }],
         ..CardExtras::EMPTY
     },

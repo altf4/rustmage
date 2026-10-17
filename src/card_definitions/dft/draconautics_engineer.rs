@@ -29,12 +29,12 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                         relation: 0,
                         other: true,
                         subtype: None,
-                        keyword: Keywords(0),
+                        keyword: Keywords::NONE,
                         attacking: false,
                         tokens: None,
                         artifact: false,
                     },
-                    keywords: Keywords(4),
+                    keywords: Keywords::HASTE,
                 },
                 Instruction::PutCounters {
                     subject: Subject::Source,
@@ -82,7 +82,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         exhaust_mask: 3,
         ..CardExtras::EMPTY

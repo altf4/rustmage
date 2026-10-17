@@ -87,17 +87,27 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(1036),
+    keywords: Keywords::HASTE
+        .union(Keywords::VIGILANCE)
+        .union(Keywords::DOUBLE_STRIKE),
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(1036))],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+            Keywords::HASTE
+                .union(Keywords::VIGILANCE)
+                .union(Keywords::DOUBLE_STRIKE),
+        )],
     }],
     extras: &CardExtras {
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(1036))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::HASTE
+                    .union(Keywords::VIGILANCE)
+                    .union(Keywords::DOUBLE_STRIKE),
+            )],
         }],
         exhaust_mask: 7,
         ..CardExtras::EMPTY

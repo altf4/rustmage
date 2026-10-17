@@ -9,7 +9,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         })),
         program: &[Instruction::GrantKeywords {
             subject: Subject::Targets,
-            keywords: Keywords(512),
+            keywords: Keywords::FIRST_STRIKE,
         }],
     }],
     activated: &[],
@@ -21,7 +21,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         cost_alternatives: &[ManaCost {
             colored: [1, 0, 0, 0, 0, 0],

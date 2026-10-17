@@ -6,7 +6,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         targets: TargetPlan::Single(TargetSpec::NONE),
         program: &[Instruction::GrantKeywords {
             subject: Subject::Attached,
-            keywords: Keywords(512),
+            keywords: Keywords::FIRST_STRIKE,
         }],
     }],
     activated: &[],
@@ -18,7 +18,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(32),
+    keywords: Keywords::FLASH,
     aura: Some(AuraSpec {
         kinds: 1,
         relation: -1,
@@ -27,14 +27,14 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 1,
                 toughness: 0,
             },
-            keywords: Keywords(4),
+            keywords: Keywords::HASTE,
         },
     }),
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLASH)],
         },
         StaticAbilityGroup {
             line: 3,
@@ -44,7 +44,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 1,
                     toughness: 0,
                 }),
-                StaticAbilityFragment::AttachmentKeywords(Keywords(4)),
+                StaticAbilityFragment::AttachmentKeywords(Keywords::HASTE),
             ],
         },
     ],
@@ -57,14 +57,14 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 1,
                     toughness: 0,
                 },
-                keywords: Keywords(4),
+                keywords: Keywords::HASTE,
             },
         }),
         static_ability_groups: &[
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(32))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLASH)],
             },
             StaticAbilityGroup {
                 line: 3,
@@ -74,7 +74,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                         power: 1,
                         toughness: 0,
                     }),
-                    StaticAbilityFragment::AttachmentKeywords(Keywords(4)),
+                    StaticAbilityFragment::AttachmentKeywords(Keywords::HASTE),
                 ],
             },
         ],

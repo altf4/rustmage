@@ -31,17 +31,21 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(129),
+    keywords: Keywords::FLYING.union(Keywords::DEATHTOUCH),
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(129))],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+            Keywords::FLYING.union(Keywords::DEATHTOUCH),
+        )],
     }],
     extras: &CardExtras {
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(129))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::FLYING.union(Keywords::DEATHTOUCH),
+            )],
         }],
         adventure_identity: Some("Feral Deathgorger // Dusk Sight"),
         omen_spell: Some(Card(5224)),

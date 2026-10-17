@@ -43,7 +43,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
@@ -52,7 +52,12 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 2,
                 toughness: 0,
             }),
-            StaticAbilityFragment::AttachmentKeywords(Keywords(780)),
+            StaticAbilityFragment::AttachmentKeywords(
+                Keywords::HASTE
+                    .union(Keywords::VIGILANCE)
+                    .union(Keywords::TRAMPLE)
+                    .union(Keywords::FIRST_STRIKE),
+            ),
         ],
     }],
     extras: &CardExtras {
@@ -61,7 +66,10 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 2,
                 toughness: 0,
             },
-            keywords: Keywords(780),
+            keywords: Keywords::HASTE
+                .union(Keywords::VIGILANCE)
+                .union(Keywords::TRAMPLE)
+                .union(Keywords::FIRST_STRIKE),
         }),
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,
@@ -71,7 +79,12 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 2,
                     toughness: 0,
                 }),
-                StaticAbilityFragment::AttachmentKeywords(Keywords(780)),
+                StaticAbilityFragment::AttachmentKeywords(
+                    Keywords::HASTE
+                        .union(Keywords::VIGILANCE)
+                        .union(Keywords::TRAMPLE)
+                        .union(Keywords::FIRST_STRIKE),
+                ),
             ],
         }],
         ..CardExtras::EMPTY

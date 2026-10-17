@@ -1,12 +1,12 @@
 // Directly authored from the paired complete Oracle and pinned XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(4, 3),
-    keywords: Keywords(256),
+    keywords: Keywords::TRAMPLE,
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(256))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::TRAMPLE)],
         },
         StaticAbilityGroup {
             line: 1,
@@ -19,7 +19,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(256))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::TRAMPLE)],
             },
             StaticAbilityGroup {
                 line: 1,

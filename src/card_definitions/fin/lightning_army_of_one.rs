@@ -11,6 +11,8 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(832),
+    keywords: Keywords::LIFELINK
+        .union(Keywords::TRAMPLE)
+        .union(Keywords::FIRST_STRIKE),
     ..CardRules::EMPTY
 };

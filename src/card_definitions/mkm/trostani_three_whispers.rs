@@ -25,7 +25,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             targets: TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
             program: &[Instruction::GrantKeywords {
                 subject: Subject::Targets,
-                keywords: Keywords(128),
+                keywords: Keywords::DEATHTOUCH,
             }],
             sorcery: false,
             once_per_turn: false,
@@ -55,7 +55,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             targets: TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
             program: &[Instruction::GrantKeywords {
                 subject: Subject::Targets,
-                keywords: Keywords(8),
+                keywords: Keywords::VIGILANCE,
             }],
             sorcery: false,
             once_per_turn: false,
@@ -82,7 +82,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             targets: TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
             program: &[Instruction::GrantKeywords {
                 subject: Subject::Targets,
-                keywords: Keywords(1024),
+                keywords: Keywords::DOUBLE_STRIKE,
             }],
             sorcery: false,
             once_per_turn: false,
@@ -96,7 +96,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         cost_alternatives: &[ManaCost {
             colored: [2, 0, 0, 0, 1, 0],

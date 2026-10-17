@@ -19,7 +19,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(2097152),
+    keywords: Keywords::NO_POWER_LE_TWO_BLOCKERS,
     extras: &CardExtras {
         offspring_cost: Some(ManaCost {
             colored: [0, 0, 0, 0, 0, 0],

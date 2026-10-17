@@ -5,12 +5,12 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         &[
             Instruction::GiveGift,
             Instruction::PlayerHexproofThisTurn,
-            Instruction::GrantPermanentsThisTurn(Keywords(4096)),
+            Instruction::GrantPermanentsThisTurn(Keywords::HEXPROOF),
             Instruction::IfGift {
                 promised: true,
                 skip: 1,
             },
-            Instruction::GrantPermanentsThisTurn(Keywords(8192)),
+            Instruction::GrantPermanentsThisTurn(Keywords::INDESTRUCTIBLE),
         ],
     ),
     triggers: &[],
@@ -23,7 +23,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         gift: {
             const SPEC: GiftSpec = GiftSpec {

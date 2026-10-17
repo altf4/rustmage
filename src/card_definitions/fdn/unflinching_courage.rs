@@ -11,7 +11,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     aura: Some(AuraSpec {
         kinds: 1,
         relation: -1,
@@ -20,7 +20,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 2,
                 toughness: 2,
             },
-            keywords: Keywords(320),
+            keywords: Keywords::LIFELINK.union(Keywords::TRAMPLE),
         },
     }),
     static_groups: &[StaticAbilityGroup {
@@ -31,7 +31,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 2,
                 toughness: 2,
             }),
-            StaticAbilityFragment::AttachmentKeywords(Keywords(320)),
+            StaticAbilityFragment::AttachmentKeywords(Keywords::LIFELINK.union(Keywords::TRAMPLE)),
         ],
     }],
     extras: &CardExtras {
@@ -43,7 +43,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 2,
                     toughness: 2,
                 },
-                keywords: Keywords(320),
+                keywords: Keywords::LIFELINK.union(Keywords::TRAMPLE),
             },
         }),
         static_ability_groups: &[StaticAbilityGroup {
@@ -54,7 +54,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 2,
                     toughness: 2,
                 }),
-                StaticAbilityFragment::AttachmentKeywords(Keywords(320)),
+                StaticAbilityFragment::AttachmentKeywords(
+                    Keywords::LIFELINK.union(Keywords::TRAMPLE),
+                ),
             ],
         }],
         ..CardExtras::EMPTY

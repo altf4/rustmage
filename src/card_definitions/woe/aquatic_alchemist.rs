@@ -23,7 +23,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         adventure_identity: Some("Aquatic Alchemist // Bubble Up"),
         adventure_spell: Some(Card(5208)),

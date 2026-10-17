@@ -11,7 +11,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             Instruction::IfBargained { skip: 1 },
             Instruction::GrantKeywords {
                 subject: Subject::Targets,
-                keywords: Keywords(65),
+                keywords: Keywords::FLYING.union(Keywords::LIFELINK),
             },
         ],
     ),
@@ -25,7 +25,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     extras: &CardExtras {
         bargain_reduction: Some(0),
         ..CardExtras::EMPTY

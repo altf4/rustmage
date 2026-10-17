@@ -43,11 +43,13 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::AttachmentKeywords(Keywords(1024))],
+        fragments: &[StaticAbilityFragment::AttachmentKeywords(
+            Keywords::DOUBLE_STRIKE,
+        )],
     }],
     extras: &CardExtras {
         equipment: Some(EquipmentSpec {
@@ -55,12 +57,14 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 0,
                 toughness: 0,
             },
-            keywords: Keywords(1024),
+            keywords: Keywords::DOUBLE_STRIKE,
         }),
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::AttachmentKeywords(Keywords(1024))],
+            fragments: &[StaticAbilityFragment::AttachmentKeywords(
+                Keywords::DOUBLE_STRIKE,
+            )],
         }],
         ..CardExtras::EMPTY
     },

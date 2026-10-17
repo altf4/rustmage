@@ -11,7 +11,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     aura: Some(AuraSpec {
         kinds: 1,
         relation: -1,
@@ -20,7 +20,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 0,
                 toughness: 0,
             },
-            keywords: Keywords(512),
+            keywords: Keywords::FIRST_STRIKE,
         },
     }),
     static_groups: &[StaticAbilityGroup {
@@ -47,7 +47,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     },
                 },
             ),
-            StaticAbilityFragment::AttachmentKeywords(Keywords(512)),
+            StaticAbilityFragment::AttachmentKeywords(Keywords::FIRST_STRIKE),
         ],
     }],
     extras: &CardExtras {
@@ -59,7 +59,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 0,
                     toughness: 0,
                 },
-                keywords: Keywords(512),
+                keywords: Keywords::FIRST_STRIKE,
             },
         }),
         static_ability_groups: &[StaticAbilityGroup {
@@ -86,7 +86,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                         },
                     },
                 ),
-                StaticAbilityFragment::AttachmentKeywords(Keywords(512)),
+                StaticAbilityFragment::AttachmentKeywords(Keywords::FIRST_STRIKE),
             ],
         }],
         scaling_modifiers: &[ScalingModifier {

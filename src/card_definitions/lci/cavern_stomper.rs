@@ -28,7 +28,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         targets: TargetPlan::Single(TargetSpec::NONE),
         program: &[Instruction::GrantKeywords {
             subject: Subject::Source,
-            keywords: Keywords(2097152),
+            keywords: Keywords::NO_POWER_LE_TWO_BLOCKERS,
         }],
         sorcery: false,
         once_per_turn: false,
@@ -41,6 +41,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

@@ -5,7 +5,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             text: "Destroy target creature with flying.",
             targets: TargetPlan::Single(TargetSpec::one(TargetRule::Filtered {
                 base: &TargetRule::Creature,
-                predicate: &TargetPredicate::Keyword(Keywords(1)),
+                predicate: &TargetPredicate::Keyword(Keywords::FLYING),
             })),
             program: &[Instruction::Destroy],
         },
@@ -29,7 +29,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 },
                 Instruction::GrantKeywords {
                     subject: Subject::Targets,
-                    keywords: Keywords(4352),
+                    keywords: Keywords::TRAMPLE.union(Keywords::HEXPROOF),
                 },
             ],
         },
@@ -44,6 +44,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

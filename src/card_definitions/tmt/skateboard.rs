@@ -60,7 +60,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(0),
+    keywords: Keywords::NONE,
     static_groups: &[StaticAbilityGroup {
         line: 1,
         first_layer: AbilityLayer::Ability,
@@ -69,7 +69,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 1,
                 toughness: 0,
             }),
-            StaticAbilityFragment::AttachmentKeywords(Keywords(4)),
+            StaticAbilityFragment::AttachmentKeywords(Keywords::HASTE),
         ],
     }],
     extras: &CardExtras {
@@ -78,7 +78,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 1,
                 toughness: 0,
             },
-            keywords: Keywords(4),
+            keywords: Keywords::HASTE,
         }),
         static_ability_groups: &[StaticAbilityGroup {
             line: 1,
@@ -88,7 +88,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     power: 1,
                     toughness: 0,
                 }),
-                StaticAbilityFragment::AttachmentKeywords(Keywords(4)),
+                StaticAbilityFragment::AttachmentKeywords(Keywords::HASTE),
             ],
         }],
         ..CardExtras::EMPTY

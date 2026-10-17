@@ -10,7 +10,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 players: PlayerSet::Opponent,
                 filter: SacrificeFilter {
                     artifact_enchantment_or_token: false,
-                    keywords: Keywords(0),
+                    keywords: Keywords::NONE,
                     source_only: false,
                     kinds: 0,
                     nonland: false,
@@ -34,12 +34,14 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         lore: 0,
     },
     entry: EntryTapped::Never,
-    keywords: Keywords(257),
+    keywords: Keywords::FLYING.union(Keywords::TRAMPLE),
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(257))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::FLYING.union(Keywords::TRAMPLE),
+            )],
         },
         StaticAbilityGroup {
             line: 2,
@@ -57,7 +59,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     toughness: Some(LiveStatValue::Fixed(1)),
                     bonus_power: 0,
                     bonus_toughness: 0,
-                    keywords: Keywords(0),
+                    keywords: Keywords::NONE,
                     cannot_block_subtype: None,
                 },
             )],
@@ -68,7 +70,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             StaticAbilityGroup {
                 line: 0,
                 first_layer: AbilityLayer::Ability,
-                fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(257))],
+                fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                    Keywords::FLYING.union(Keywords::TRAMPLE),
+                )],
             },
             StaticAbilityGroup {
                 line: 2,
@@ -86,7 +90,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                         toughness: Some(LiveStatValue::Fixed(1)),
                         bonus_power: 0,
                         bonus_toughness: 0,
-                        keywords: Keywords(0),
+                        keywords: Keywords::NONE,
                         cannot_block_subtype: None,
                     },
                 )],
@@ -103,7 +107,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             toughness: Some(LiveStatValue::Fixed(1)),
             bonus_power: 0,
             bonus_toughness: 0,
-            keywords: Keywords(0),
+            keywords: Keywords::NONE,
             cannot_block_subtype: None,
         }],
         ..CardExtras::EMPTY

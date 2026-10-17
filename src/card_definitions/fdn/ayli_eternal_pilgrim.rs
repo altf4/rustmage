@@ -1,7 +1,7 @@
 // Directly authored from complete Oracle and pinned XMage implementations.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(2, 3),
-    keywords: Keywords(128),
+    keywords: Keywords::DEATHTOUCH,
     activated: &[
         ActivatedAbility {
             exhaust: false,
@@ -91,13 +91,17 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(128))],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+            Keywords::DEATHTOUCH,
+        )],
     }],
     extras: &CardExtras {
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords(128))],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::DEATHTOUCH,
+            )],
         }],
         ..CardExtras::EMPTY
     },
