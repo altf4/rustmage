@@ -98,3 +98,19 @@ and native-stat-range controls to raw/source/canonical proof. These focused resu
 remain scoped to this e5-based prototype; current-main composition and final broad
 acceptance remain pending. Completed target outputs are cleaned immediately with
 every shared library retained at its original path and hash.
+
+## Current-main composition
+
+The final candidate is now composed onto actual main
+5d103e7a3172e4742687d3f77f3ed814264b1532, retaining all complete Werefox, simultaneous
+return and combat-restriction deliveries. Candidate coverage is1920. The strict
+proof in gift-main-preservation.json changes exactly the seventeen Gift bodies,
+retains5314 other definitions, all888 parent helper arms, all colors/aliases/flags,
+94 token recipes and the emblem. Every Gift definition and its eighteen declared
+helper arms are identical to the tested64a9806 checkpoint. Parent Role/reflexive
+continuations remain separate from Gift; their nested owned-byte accounting now
+includes a Gift context if present. The combat historical preservation test keeps
+its exact delivered5d proof and separately verifies all current combat programs
+and helpers, rather than expanding its allowed changes. Twenty-six affected
+compiler methods pass on this composition. Existing public schema assertions
+advance explicitly from89 to90 as metadata; policy logic is unchanged.

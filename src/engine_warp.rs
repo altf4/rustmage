@@ -88,6 +88,7 @@ impl Game {
             self.state.pending_triggers.push(SpellView {
                 source_move: None,
                 gift: None,
+                reflexive_subject: None,
                 delayed_warp_exile: Some(Box::new(view)),
                 crew: None,
                 cast_event: None,

@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "scope": "Two complete simultaneous battlefield-return bodies; full card Java records and explicit direct imports only, not a transitive port or execution whitelist",
+  "cards": [
+    {
+      "name": "Aetherize",
+      "oracle_id": "7c779721-cd1b-4696-9ae9-68ccc284ed2a",
+      "mana_cost": "{3}{U}",
+      "type_line": "Instant",
+      "oracle_text": "Return all attacking creatures to their owner's hand.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/Aetherize.java",
+          "java_sha256": "a410fe8bf999c459e94e096d3024b9d6c9d7507d034fa9782159a84e7cfe5487"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandFromBattlefieldAllEffect.java",
+          "java_sha256": "f8ea6d746634b1c78d29e989867a33b2f66c883130595784f62fb04f8e447d5f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        }
+      ]
+    },
+    {
+      "name": "River's Rebuke",
+      "oracle_id": "c52cfb41-18f3-4e73-b5e7-d75baf74e578",
+      "mana_cost": "{4}{U}{U}",
+      "type_line": "Sorcery",
+      "oracle_text": "Return all nonland permanents target player controls to their owner's hand.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RiversRebuke.java",
+          "java_sha256": "359fc25994ae96b494164ff084b8bfe0c45e3330d187852634299c86a68c03c1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Cards.java",
+          "java_sha256": "2ceaf2939456fd7356ea668af3c3aa642d7319455cf24ebf690109dce09db3d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardsImpl.java",
+          "java_sha256": "e3a32dd4f367a6429bd83cb8c1a1890e314b5dfbbedf8d61f4251797646dc1e0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPlayer.java",
+          "java_sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+        }
+      ]
+    }
+  ]
+}

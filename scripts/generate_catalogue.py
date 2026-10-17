@@ -74,6 +74,51 @@ def spell_cost_options(cost):
     # side of every two-brid symbol. Its total remains the printed mana value.
     return [(list(row[:6]),row[6]) for row in sorted(variants)]
 
+def extract_combat_restriction(card):
+    """Whole readonly source/Aura clauses; unrecognized conditions stay in body."""
+    if (card.get('layout')!='normal' or not isinstance(card.get('oracle_text'),str)
+            or permanent_type(card) not in ('Creature','Artifact Creature','Enchantment Creature','Artifact','Enchantment','Planeswalker')):return card,None
+    names=[card.get('name','')]
+    if card.get('type_line','').startswith('Legendary '):
+        names.extend([names[0].split(',')[0],names[0].split(' the ')[0]])
+    prefixes=['This creature',*filter(None,names)]
+    body=[];found=[]
+    for line in card['oracle_text'].splitlines():
+        if line=="Enchanted creature can't attack or block." and card.get('type_line','').endswith(' — Aura'):
+            found.append('CombatRestriction { subject: Subject::Attached, attack: true, block: true, unless: None }');continue
+        prefix=next((p for p in prefixes if line.startswith(p+" can't attack")),None)
+        match=re.fullmatch(re.escape(prefix)+r" can't attack( or block|)(?: unless (.+))?\.",line) if prefix else None
+        guard=None
+        if match:
+            condition=match[2]
+            if condition=='you control another artifact':
+                guard='StepGuard::Expression { value: StatValue::Count('+stat_count_filter('other artifacts you control')+'), minimum: Some(1), maximum: None }'
+            elif m:=re.fullmatch(r'you control another creature with power ([0-9]+) or greater',condition or ''):
+                if int(m[1])<=65535:guard='StepGuard::Threshold { value: StepValue::GreatestOtherCreaturePower, minimum: Some('+m[1]+'), maximum: None }'
+            elif m:=re.fullmatch(r'its power is ([0-9]+) or greater',condition or ''):
+                if int(m[1])<=65535:guard='StepGuard::SourcePowerAtLeast('+m[1]+')'
+            elif m:=re.fullmatch(r'there are (one|two|three|four|five|six|[0-9]+) or more (.+ cards) in your graveyard',condition or ''):
+                amount=COUNT_WORDS.get(m[1],int(m[1]) if m[1].isdigit() else None);filt=stat_count_filter(m[2]+' in your graveyard')
+                if amount is not None and amount<=65535 and filt:guard='StepGuard::Expression { value: StatValue::Count('+filt+'), minimum: Some('+str(amount)+'), maximum: None }'
+            if condition is None or guard:
+                found.append('CombatRestriction { subject: Subject::Source, attack: true, block: '+str(bool(match[1])).lower()+', unless: '+('Some('+guard+')' if guard else 'None')+' }');continue
+        body.append(line)
+    if len(found)!=1:return card,None
+    return dict(card,oracle_text='\n'.join(body)),found[0]
+
+
+def combat_restriction_reminders_valid(card):
+    raw=card.get('oracle_text','')
+    if not isinstance(raw,str):return True
+    surface=raw;seen=False
+    while True:
+        seen |= "can't attack" in ' '.join(surface.casefold().split())
+        stripped=re.sub(r'\([^()]*\)','',surface)
+        if stripped==surface:break
+        surface=stripped
+    return not seen or all(intrinsic_reminder_line_valid(line) for line in raw.splitlines() if '(' in line or ')' in line)
+
+
 def extract_target_cost_reduction(card):
     if card.get('layout')!='normal' or not isinstance(card.get('oracle_text'),str):return card,None
     def obj(kinds=0,relation=-1,tapped=False,min_mana=0,max_mana=4294967295):
@@ -425,6 +470,36 @@ def role_reminder_text(text):
     return text
 
 
+def role_fight_text(text):
+    """Complete successful-Role/reflexive-fight grammar, including its reminder slot."""
+    if not isinstance(text, str): return None
+    match = re.fullmatch(r"(Create a (Cursed|Monster|Royal|Sorcerer|Wicked|Young Hero) Role token attached to target creature you control\. When you do, that creature fights up to one target creature you don't control\.)(?: \(([^()]*)\))?", text)
+    if match is None: return None
+    bare, kind, reminder = match.groups()
+    if reminder is not None:
+        role = ROLE_BODIES[kind]
+        role_forms = [role, 'If you control another Role on it, put that one into the graveyard. ' + role]
+        fight = 'Creatures that fight each deal damage equal to their power to the other.'
+        if reminder not in [fight, *role_forms, *(v + ' ' + fight for v in role_forms)]: return None
+    return kind, bare
+
+
+def role_fight_body(card):
+    """A fixed spell's whole body owns both the initial and reflexive programs."""
+    if (card.get('layout') != 'normal'
+            or card.get('type_line') not in ('Instant', 'Sorcery')
+            or spell_cost_options(card.get('mana_cost', '')) is None): return None
+    parsed = role_fight_text(card.get('oracle_text'))
+    if parsed is None: return None
+    kind, _ = parsed
+    # Reuse the exact existing predefined Role factory rather than inventing a recipe.
+    result = role_program('create a ' + kind + ' Role token attached to target creature you control.')
+    if result is None: return None
+    token = re.search(r'token: (__TOKEN_[a-f0-9]+__)', result[1][0])[1]
+    return ('Spell', 0, [('Reflexive', ['ReflexiveFight'], ('CreatureOpponent', 0, 1))],
+            ('CreatureYou', [f'CreateRoleReflexive {{ token: {token}, ability: 0 }}']))
+
+
 def role_factory(kind):
     if kind not in ROLE_BODIES: raise ValueError('unknown predefined Role')
     factory = {'role':kind, 'name':kind, 'subtypes':'Aura Role', 'colors':0, 'keywords':0}
@@ -489,7 +564,8 @@ def role_consumer_reminders_valid(card):
         # This grammar already authenticates its header, all chapters, exact
         # Food/Role reminders and the matching final sacrifice number.
         return saga_body(card) is not None
-    authenticated = role_reminder_text(raw)
+    complete_fight = role_fight_text(raw)
+    authenticated = complete_fight[1] if complete_fight is not None else role_reminder_text(raw)
     authenticated = re.sub(
         r'^Bargain \(You may sacrifice an artifact, enchantment, or token as you cast this spell\.\)$',
         'Bargain', authenticated, flags=re.MULTILINE)
@@ -1686,6 +1762,31 @@ def battlefield_filters(subject):
     }.get(subject)
 
 
+def battlefield_return_program(text):
+    """Non-targeted permanent groups; the optional player alone is targeted."""
+    forms={
+        "return all attacking creatures to their owner's hand.":(1,False,True,'None','None'),
+        "return all creatures to their owners' hands.":(1,False,False,'None','None'),
+        "return all nonland permanents target player controls to their owner's hand.":(0,True,False,'Some(PlayerSet::Targeted)','Player'),
+    }
+    form=forms.get(text.casefold())
+    if not form:return None
+    kinds,nonland,attacking,players,target=form
+    return target,['ReturnBattlefield { filters: &['+battlefield_filter(kinds=kinds,nonland=nonland)+'], attacking: '+str(attacking).lower()+', players: '+players+' }']
+
+
+def battlefield_return_reminders_valid(card):
+    raw=card.get('oracle_text','')
+    if not isinstance(raw,str):return True
+    surface=raw;seen=False
+    while True:
+        seen |= re.search(r'\breturn (?:all|each) (?:attacking creatures|creatures|nonland permanents)\b',' '.join(surface.casefold().split())) is not None
+        stripped=re.sub(r'\([^()]*\)','',surface)
+        if stripped==surface:break
+        surface=stripped
+    return not seen or all(intrinsic_reminder_line_valid(line) for line in raw.splitlines() if '(' in line or ')' in line)
+
+
 def battlefield_move_program(text):
     result=None
     if text=='destroy all creatures. You gain 1 life for each creature destroyed this way.':
@@ -1848,6 +1949,8 @@ def statement_program(text):
         key=hashlib.sha256(body.encode()).hexdigest()[:24]
         EMBLEM_DEFS[key]=body
         return [f'CreateEmblem(__EMBLEM_{key}__)']
+    returned=battlefield_return_program(text)
+    if returned and returned[0]=='None':return returned[1]
     if result:=battlefield_move_program(text):return result
     if result:=battlefield_damage_program(text):return result
     if m:=re.fullmatch(r'this creature connives(?: ([0-9]+))?\.',text):
@@ -2463,6 +2566,8 @@ def targeted_program(text):
         result=targeted_program(text.replace('another target attacking creature you control','another target creature you control',1))
         return ('OtherCreatureAttackingYou',result[1]) if result and result[0]=='OtherCreatureYou' else None
     if result:=role_return_program(text):return result
+    returned=battlefield_return_program(text)
+    if returned and returned[0]!='None':return returned
     if result:=target_exclusion_program(text):return result
     if result:=role_program(text):return result
     if match:=re.fullmatch(r'destroy target creature an opponent controls with mana value ([0-9]+) or less\.',text):
@@ -4687,6 +4792,7 @@ def compile_catalogue(snapshot, target):
     static_rows = []
     enchanted_rows = []
     flash_surcharge_rows = []
+    combat_rows = []
     grant_rows = []
     dynamic_rows = []
     scaling_rows = []
@@ -4752,6 +4858,7 @@ def compile_catalogue(snapshot, target):
         # Detection never authenticates or changes the raw validation body.
         gift_card, gift_kind = extract_gift(original)
         card, timing_grants = extract_cast_timing_grants(gift_card)
+        card, combat = extract_combat_restriction(card)
         card, uncounterable = extract_uncounterable(card)
         card, entry_suppression = extract_entry_trigger_suppression(card)
         card, opponent_entry_tapped = extract_opponent_entry_tapped(card)
@@ -4888,6 +4995,10 @@ def compile_catalogue(snapshot, target):
             effect,keywords,abilities = gift_permanent
             promised_targets='None'
             activations=[];enters=[0,0,0]
+        role_fight = role_fight_body(original)
+        if role_fight is not None:
+            effect, keywords, abilities, spell = role_fight
+            activations=[];enters=[0,0,0]
         # Convoke applies only to complete fixed intrinsic bodies. No selector may
         # silently combine an unimplemented additional/alternative payment recipe.
         if convoke and (bargain or evidence is not None or cycling or any(v is not None for v in (flashback,offspring,kicker,additional,target_reduction)) or '{X}' in card.get('mana_cost','') or any(line.startswith(('Saddle ', 'Mobilize ')) for line in card.get('oracle_text','').splitlines())):
@@ -4960,6 +5071,10 @@ def compile_catalogue(snapshot, target):
             effect = 'Unsupported'
         if not intrinsic_reminders_valid(original):
             effect = 'Unsupported'
+        if not battlefield_return_reminders_valid(original):
+            effect='Unsupported'
+        if not combat_restriction_reminders_valid(original):
+            effect='Unsupported'
         if not target_exclusion_reminders_valid(original):
             effect='Unsupported'
         if not enchanted_draw_reminders_valid(original):
@@ -5047,6 +5162,7 @@ def compile_catalogue(snapshot, target):
                                 if gift_kind == 'TappedFish' else predefined_program('create a '+gift_kind+' token.'))
                     token='Some('+re.search(r'token: (__TOKEN_[a-f0-9]+__)',creation[0])[1]+')'
                 gift_rows.append(f'        {index} => {{ const SPEC: GiftSpec = GiftSpec {{ kind: GiftKind::{gift_kind}, token: {token}, promised_targets: {rust_targets(promised_targets)} }}; Some(SPEC) }},')
+            if combat:combat_rows.append(f'        {index} => Some({combat}),')
             if timing_grants:cast_timing_rows.append(f'        {index} => &[{", ".join(timing_grants)}],')
             if replacements:replacement_rows.append(f'        {index} => &[{", ".join(replacements)}],')
             if name not in internal_faces: supported.append(index)
@@ -5140,7 +5256,7 @@ def compile_catalogue(snapshot, target):
             color_masks.append(color)
             # Clone every compiled property table for the immutable copy; no
             # mutable copy/type-changing engine or runtime card-name dispatch.
-            for table in [static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,cast_timing_rows,target_reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,offspring_rows]:
+            for table in [combat_rows,static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,cast_timing_rows,target_reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,offspring_rows]:
                 prefix=f'        {source_index} =>'
                 table.extend(row.replace(prefix,f'        {index} =>',1) for row in list(table) if row.startswith(prefix))
             offspring_copy_rows.append(f'        {index} => Some(__TOKEN_{key}__),')
@@ -5227,6 +5343,7 @@ def compile_catalogue(snapshot, target):
     for index, (name, _, _, _) in enumerate(LEGACY):
         lines.append(f'    pub const {name.replace(" ", "")}: Card = Card({index});')
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn combat_restriction(card: Card) -> Option<CombatRestriction> {', '    match card.0 {', *combat_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn role(card: Card) -> Option<RoleKind> {', '    match card.0 {', *role_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn plot_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *plot_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn adventure_identity(card: Card) -> Option<&'static str> {", '    match card.0 {',

@@ -1,6 +1,23 @@
 //! Noncombat damage using current creature characteristics and distinct operands.
 use super::*;
 impl Game {
+    pub(super) fn reflexive_fight(&mut self, item: &SpellView) {
+        let Some(context) = &item.reflexive_subject else {
+            return;
+        };
+        // Only the opponent is targeted. Construct operands after target validation;
+        // the original creature is an exact captured reference, never a new target.
+        let mut operands = item.clone();
+        for target in &mut operands.targets {
+            target.group = 1;
+        }
+        operands.targets.push(BoundTarget {
+            target: Target::Card(context.object.card),
+            object: Some(context.object),
+            group: 0,
+        });
+        self.creature_power_damage(&operands, 0, 1, true);
+    }
     pub(super) fn creature_power_damage(
         &mut self,
         item: &SpellView,

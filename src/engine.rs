@@ -105,6 +105,8 @@ use funding::FundingGoal;
 mod battlefield_groups;
 #[path = "engine_blocking.rs"]
 mod blocking;
+#[path = "engine_combat_restrictions.rs"]
+mod combat_restrictions;
 #[path = "engine_effect_choices.rs"]
 mod effect_choices;
 #[path = "engine_exile.rs"]
@@ -697,10 +699,17 @@ pub struct TriggerSourceMoveView {
     pub destination: Zone,
 }
 
+/// A successful action's non-targeted subject, separate from source LKI.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct ReflexiveSubjectView {
+    pub object: ObjectRef,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gift: Option<Box<GiftContext>>,
+    pub reflexive_subject: Option<Box<ReflexiveSubjectView>>,
     pub source_move: Option<Box<TriggerSourceMoveView>>,
     pub crew: Option<Box<CrewContext>>,
     pub cast_event: Option<Box<CastPaymentEvent>>,
@@ -734,6 +743,35 @@ pub struct SpellView {
 }
 
 impl SpellView {
+    /// Heap-owned continuation payloads; inline packet storage is counted by its container.
+    pub(super) fn owned_bytes(&self) -> usize {
+        self.gift
+            .as_ref()
+            .map_or(0, |_| std::mem::size_of::<GiftContext>())
+            + self
+                .source_move
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<TriggerSourceMoveView>())
+            + self
+                .reflexive_subject
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<ReflexiveSubjectView>())
+            + self
+                .cast_event
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<CastPaymentEvent>())
+            + self.delayed_sacrifice.as_ref().map_or(0, |d| d.bytes())
+            + self.crew.as_ref().map_or(0, |c| c.bytes())
+            + self
+                .delayed_warp_exile
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<DelayedWarpExileView>())
+            + self.targets.len() * std::mem::size_of::<BoundTarget>()
+            + self
+                .attachment_trigger
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<AttachmentTriggerView>())
+    }
     /// Source-relative targets refer to the tracked public incarnation, without
     /// rebinding a later departure/reentry or replacing source LKI.
     pub(crate) fn target_source(&self) -> ObjectRef {
@@ -2537,6 +2575,7 @@ impl Game {
                         || obj.tapped
                         || (obj.summoning_sick && !self.keywords(card).contains(Keywords::HASTE))
                         || self.keywords(card).contains(Keywords::DEFENDER)
+                        || self.combat_restricted(card, true)
                         || s.selected_attackers.iter().any(|a| a.card == card)
                     {
                         continue;
@@ -4940,30 +4979,7 @@ impl Game {
                 .chain(&s.ordering_triggers)
                 .chain(s.resolving.iter().map(|resolution| &resolution.item))
                 .chain(s.announcing.iter().map(|announcement| &announcement.item))
-                .map(|item| {
-                    item.gift
-                        .as_ref()
-                        .map_or(0, |_| std::mem::size_of::<GiftContext>())
-                        + item
-                            .source_move
-                            .as_ref()
-                            .map_or(0, |_| std::mem::size_of::<TriggerSourceMoveView>())
-                        + item
-                            .cast_event
-                            .as_ref()
-                            .map_or(0, |_| std::mem::size_of::<CastPaymentEvent>())
-                        + item.delayed_sacrifice.as_ref().map_or(0, |d| d.bytes())
-                        + item.crew.as_ref().map_or(0, |c| c.bytes())
-                        + item
-                            .delayed_warp_exile
-                            .as_ref()
-                            .map_or(0, |_| std::mem::size_of::<DelayedWarpExileView>())
-                        + item.targets.len() * std::mem::size_of::<BoundTarget>()
-                        + item
-                            .attachment_trigger
-                            .as_ref()
-                            .map_or(0, |_| std::mem::size_of::<AttachmentTriggerView>())
-                })
+                .map(SpellView::owned_bytes)
                 .sum::<usize>()
             + s.attackers.len() * std::mem::size_of::<Attacker>()
             + s.blocking.len() * std::mem::size_of::<CardId>()
@@ -5496,6 +5512,9 @@ pub use temporary_abilities::TemporaryAbilityView;
 #[path = "engine_enchanted_draw_tests.rs"]
 mod enchanted_draw_tests;
 #[cfg(test)]
+#[path = "engine_role_fight_tests.rs"]
+mod role_fight_tests;
+#[cfg(test)]
 #[path = "engine_role_followup_tests.rs"]
 mod role_followup_tests;
 #[cfg(test)]
@@ -5505,3 +5524,11 @@ mod temporary_death_grants_tests;
 #[cfg(test)]
 #[path = "engine_target_exclusion_tests.rs"]
 mod target_exclusion_tests;
+
+#[cfg(test)]
+#[path = "engine_battlefield_return_tests.rs"]
+mod battlefield_return_tests;
+
+#[cfg(test)]
+#[path = "engine_combat_restriction_tests.rs"]
+mod combat_restriction_tests;

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "9f2e174d30625d66f7e1fcd60fb395d5a6866b7005f2cbdb9f0b9478ea85896f",
+  "catalogue_version": "19972a172c72c0a31952e1e818b9caf0b3639a26e0ff09e3f4b8a9805cbee87a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1912,
-  "implemented_total": 1918,
+  "implemented_standard_cards": 1920,
+  "implemented_total": 1926,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -448,8 +448,8 @@
     {
       "name": "Aetherize",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Aetherjacket",
@@ -5614,8 +5614,8 @@
     {
       "name": "Curse of the Werefox",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Curse-Marred Demon",
@@ -17206,8 +17206,8 @@
     {
       "name": "Mouser Mark III",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Mouth of the Storm",
@@ -18526,8 +18526,8 @@
     {
       "name": "Pacifism",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Pactdoll Terror",
@@ -21310,8 +21310,8 @@
     {
       "name": "River's Rebuke",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Riverchurn Monument",
@@ -26128,8 +26128,8 @@
     {
       "name": "Technodrome",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Tectonic Hazard",
@@ -26812,8 +26812,8 @@
     {
       "name": "The Lion-Turtle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "The Lonely Mountain",
@@ -27598,8 +27598,8 @@
     {
       "name": "Tiger-Dillo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Tiger-Seal",

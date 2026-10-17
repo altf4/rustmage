@@ -337,6 +337,7 @@ impl Game {
         SpellView {
             source_move: None,
             gift: None,
+            reflexive_subject: None,
             crew: None,
             cast_event: None,
             delayed_sacrifice: None,

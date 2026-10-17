@@ -34,11 +34,15 @@ class TemporaryDeathGrantCompilerTests(unittest.TestCase):
    self.assertEqual(norm(text.replace(json.dumps(name),json.dumps(renamed['name']))),norm(other))
    if name=='Undying Malice':self.assertIn('counter: Some((CounterKind::PlusOne, 1))',text)
    if name=='Fake Your Own Death':self.assertRegex(text,r'ReturnGrantedSource[^\n]+CreateTokens')
- def test_actual_main_union_preserves_every_unrelated_program_and_declared_ancestor(self):
+ def test_historical_delivered_union_preserves_current_programs_and_declared_ancestors(self):
   from scripts.catalogue_preservation import canonical,assert_union
   physical={c['oracle_id']:c['name'] for c in self.cards.values()}
   def frozen(ref):return canonical(subprocess.check_output(['git','-C',str(ROOT),'show',ref+':src/generated/catalogue.rs'],text=True),physical)
-  current=canonical((ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  live=canonical((ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  current=frozen('e5ebe64954635555938cd315b0f423953eb4e78f')
+  for name in ['Not Dead After All','Fake Your Own Death','Undying Malice']:
+   self.assertEqual(live['definitions'][name+'#0'],current['definitions'][name+'#0'])
+  for key,value in current['helpers'].items():self.assertEqual(live['helpers'][key],value)
   roles=['Return Triumphant','Twisted Sewer-Witch','Syr Armont, the Redeemer','Asinine Antics','A Tale for the Ages','Mystical Tether']
   exclusions=['Amazing Acrobatics','Coeurl','Decoy Ploy','Guerrilla Gorilla','Overwhelming Surge','Rock Soldiers','Sterling Keykeeper']
   own=['Not Dead After All','Fake Your Own Death','Undying Malice']

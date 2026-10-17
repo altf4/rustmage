@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,886 executable Standard identities | 3,278 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,903 executable Standard identities | 3,261 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -161,3 +161,30 @@ errors or skips. Policy logic is unchanged except explicit schema assertion
 metadata. Both independent reviewers clear production; exact final-head
 confirmations remain required before merge. Five further inventoried death-grant
 bodies, the rest of Standard and the wider training/search goal remain incomplete.
+
+
+PR #305 completes Curse of the Werefox on actual merged main `e5ebe649`:
+1,896/5,164 Standard identities execute, 3,268 remain gated, schema89. Exact
+preservation changes only that complete body, retaining 5,330 definitions and
+all 882 existing helpers, colors, flags, aliases and recipes. Its sparse owned
+Role-success continuation captures the original creature without retargeting;
+the opponent is chosen at the separate reflexive announcement. Doubled Roles
+queue one event; replacement-added Frogs do not qualify. The combined API exposes
+exact Role recipient bindings and leaves extra Frog groups unbound.
+
+Frozen composition `c865dcb` passes 1,802 unit plus 12 integration tests,
+all-target Clippy, formatting/generation, 36 affected compiler/provenance methods,
+and eleven fresh paid own/parent public methods (206.688 seconds). All 100 fresh
+fixed natural Standard games finish with 81,976 owned frames and 163,952 denials
+in 176.758 seconds; all 838 inputs stay fixed. Library SHA256 is
+`9fbc0236ba5352666b1c7f88f061ede2819a6cd5b73dc85e9c037673c56b4a9e`.
+Earlier full 453-method compiler and 270-method API gates passed at frozen
+`2cdb597`; their original source scope is retained, not relabeled as fresh
+composition runs. Initial new integration fixture failures and their test-only
+corrections remain recorded in [the delivery record](role-success-fight.md).
+Two independent NONAUTHOR exact-final-head approvals remain the merge gate.
+Full Standard/training support remains unfinished.
+
+The [simultaneous return kernel](battlefield-returns.md) composes actual Werefox main and admits complete Aetherize and River’s Rebuke: 1,898/5,164 identities, 3,266 gated, schema89. Fresh composed validation passes 1,819 native tests, all-target Clippy/fmt, thirty affected compiler methods, six paid parent/own API methods and 100 unretried natural Standard games (82,844 owned frames / 165,688 denials). The full original 452 compiler/269 API suites retain their original baseline scope. The feature record documents the historical-preservation test correction, exact source/library identities and pending independent final-head approvals.
+
+The [continuous combat restrictions](combat-restrictions.md) add five complete bodies on actual return main: 1,903/5,164 executable identities, 3,261 gated, schema89. The frozen composition passes 1,824 native tests, all-target Clippy/fmt, 35 affected compiler methods, seven paid own/parent API methods and 100 unretried naturally terminal Standard games (93,895 owned frames / 187,790 denials). Exact source/library identities, earlier failed policy workloads, generic raw guards, strict parent preservation and required independent final-head approvals are recorded in the feature document.

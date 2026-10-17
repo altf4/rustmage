@@ -1,0 +1,148 @@
+{
+  "schema": 1,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+  "release_notes": "https://magic.wizards.com/en/news/feature/wilds-of-eldraine-release-notes",
+  "scope": "Complete pinned physical-card metadata, entire card source including both nested effect classes, reflexive/Role/fixed-target shared implementations, and their resolvable direct imports. Not a claim to have rewritten every transitive Java dependency. Never consulted for admission.",
+  "card": {
+    "oracle_id": "64b41b54-ca22-41df-8bd3-dc4f7832fbb7",
+    "name": "Curse of the Werefox",
+    "layout": "normal",
+    "mana_cost": "{2}{G}",
+    "cmc": 3.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Create a Monster Role token attached to target creature you control. When you do, that creature fights up to one target creature you don't control. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1 and has trample. Creatures that fight each deal damage equal to their power to the other.)",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Role token",
+      "Fight"
+    ],
+    "all_parts": [
+      {
+        "id": "89148458-1fd6-48ef-a2d9-7b434c9723ec",
+        "component": "combo_piece",
+        "name": "Curse of the Werefox",
+        "type_line": "Sorcery"
+      },
+      {
+        "id": "6b8a810b-8538-41c3-a792-dbd1a1845faa",
+        "component": "token",
+        "name": "Monster // Sorcerer",
+        "type_line": "Token Enchantment — Aura Role // Token Enchantment — Aura Role"
+      }
+    ],
+    "reference_printing": {
+      "id": "89148458-1fd6-48ef-a2d9-7b434c9723ec",
+      "set": "woe",
+      "collector_number": "167",
+      "released_at": "2023-09-08"
+    }
+  },
+  "sources": [
+    {
+      "java_source": "Mage.Sets/src/mage/cards/c/CurseOfTheWerefox.java",
+      "java_sha256": "a2150bb71c01b5e99c3d7559e469fadd00cfd8bd4e855f16225575c149fa415b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/MageObject.java",
+      "java_sha256": "061a5412bcd48f83d961a10c987ddb072ab3ed3712ba70135305fb88565fa55a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/MageObjectReference.java",
+      "java_sha256": "41270277c5a846dce3442714757e4f0e3963e42ef4eea798d3667cdccb5afabc"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+      "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/DelayedTriggeredAbility.java",
+      "java_sha256": "6f74a2ccfd069f65ed3ae7e7c99a7d6933043d586b0c43e1c11f0d557f9e41ff"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "java_sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+      "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+      "java_sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/Card.java",
+      "java_sha256": "86b9a512358a5c6814e62bc2f9cff87be07cf5a248e313686c137f0b76b798b0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+      "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+      "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+      "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+      "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+      "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/RoleType.java",
+      "java_sha256": "dbf5a947685f6d81c10d8f4245efd85bd2ff637851682abf5a361f5b84744d1d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+      "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/Game.java",
+      "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/events/GameEvent.java",
+      "java_sha256": "3df463d33eff295607e700578e547cef896cf183e1dba3c41131a353f53cb7dc"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+      "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "java_sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/util/CardUtil.java",
+      "java_sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    }
+  ]
+}
