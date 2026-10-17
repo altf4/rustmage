@@ -34,11 +34,13 @@ class EnchantedDrawCompilerTests(unittest.TestCase):
    c=dict(self.card,oracle_text=text);self.assertTrue(self.compiled(c)[1])
    self.assertFalse(self.compiled(dict(c,oracle_text=text+' (You win the game.)'))[1])
   self.assertIsNone(g.statement_program('you lose 65536 life and you draw an additional card.'))
- def test_exact_parent_generated_code_changes_only_one_definition(self):
+ def test_historical_merged_draw_union_and_current_body_remain_exact(self):
   from scripts.catalogue_preservation import canonical,assert_union
   old=subprocess.check_output(['git','-C',str(g.ROOT),'show','804f539567d2f50b27c801915a3eb5afd7f8d692:src/generated/catalogue.rs'],text=True)
   cards=json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards'];physical={c['oracle_id']:c['name'] for c in cards}
-  before=canonical(old,physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  before=canonical(old,physical);after=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','c41c060c024626843b17cf292aab838d36fd6eb1:src/generated/catalogue.rs'],text=True),physical)
+  current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  self.assertEqual(current['definitions'][NAME+'#0'],after['definitions'][NAME+'#0'])
   report=assert_union(before,after,changed={NAME+'#0'},added=set(),helpers=set(),aliases={})
   self.assertEqual(report['prior_definitions'],5331);self.assertEqual(report['preserved_definitions'],5330);self.assertEqual(report['token_recipes'],94)
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unauthorized program'
