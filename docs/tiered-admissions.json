@@ -28,7 +28,7 @@
         ],
         "card_faces": null
       },
-      "status": "implemented_pending_final_union_and_gates",
+      "status": "implemented_complete_body",
       "tiers": [
         {
           "label": "Fire",
@@ -106,7 +106,7 @@
         ],
         "card_faces": null
       },
-      "status": "implemented_pending_final_union_and_gates",
+      "status": "implemented_complete_body",
       "tiers": [
         {
           "label": "Blizzard",
@@ -196,7 +196,7 @@
         ],
         "card_faces": null
       },
-      "status": "implemented_pending_final_union_and_gates",
+      "status": "implemented_complete_body",
       "tiers": [
         {
           "label": "Cure",
@@ -302,7 +302,7 @@
         ],
         "card_faces": null
       },
-      "status": "implemented_pending_final_union_and_gates",
+      "status": "implemented_complete_body",
       "tiers": [
         {
           "label": "Thunder",
@@ -386,7 +386,7 @@
         ],
         "card_faces": null
       },
-      "status": "implemented_pending_final_union_and_gates",
+      "status": "implemented_complete_body",
       "tiers": [
         {
           "label": "Somersault",
@@ -492,7 +492,7 @@
         ],
         "card_faces": null
       },
-      "status": "implemented_pending_final_union_and_gates",
+      "status": "implemented_complete_body",
       "tiers": [
         {
           "label": "Galian Beast",
@@ -1229,7 +1229,7 @@
           "released_at": "2024-11-15"
         }
       },
-      "status": "implemented_pending_final_union_and_gates",
+      "status": "implemented_complete_body",
       "sources": [
         {
           "java_source": "Mage/src/main/java/mage/abilities/Mode.java",
@@ -1315,7 +1315,7 @@
           "released_at": "2026-06-26"
         }
       },
-      "status": "implemented_pending_final_union_and_gates",
+      "status": "implemented_complete_body",
       "sources": [
         {
           "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
