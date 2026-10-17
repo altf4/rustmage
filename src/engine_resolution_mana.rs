@@ -23,7 +23,9 @@ impl Game {
         };
         let victim = &self.state.stack[index];
         if victim.kind == StackKind::Spell {
-            if victim.source_card.cannot_be_countered() {
+            if victim.source_card.cannot_be_countered()
+                || self.controlled_spells_uncounterable(victim.controller, victim.source_card)
+            {
                 return false;
             }
             self.move_object(

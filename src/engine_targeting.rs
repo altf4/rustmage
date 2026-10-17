@@ -574,8 +574,7 @@ impl Game {
         }
         match target {
             Target::Player(player) => {
-                (player == controller
-                    || !self.state.players[player.index()].hexproof_until_end_turn)
+                (player == controller || !self.player_has_hexproof(player))
                     && match rule {
                         TargetRule::Any => true,
                         TargetRule::Player { opponent_only } => {

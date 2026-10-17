@@ -1081,6 +1081,7 @@ struct DamageChoice {
 /// that deal damage from their hand or as spells.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 pub struct DamageFacts {
+    pub controller: Player,
     pub kinds: u16,
     pub power: i128,
     pub power_above_base: bool,
@@ -1095,6 +1096,7 @@ pub struct DamageFacts {
 impl DamageFacts {
     fn from_view(view: &ObjectView) -> Self {
         Self {
+            controller: view.controller,
             kinds: view.kinds,
             power: view.power,
             power_above_base: view.power_above_base,
@@ -4485,6 +4487,15 @@ impl Game {
     }
 
     fn apply_damage_batch(&mut self, events: &[DamageEvent]) -> Vec<LifeGainEvent> {
+        if self.damage_replacement_candidates_exist(events) {
+            self.stage_damage_replacements(events);
+            Vec::new()
+        } else {
+            self.commit_damage_batch(events)
+        }
+    }
+
+    fn commit_damage_batch(&mut self, events: &[DamageEvent]) -> Vec<LifeGainEvent> {
         // Avoid allocating on the ordinary, unprevented damage path.
         let prevented = |event: &DamageEvent| {
             event.combat
@@ -4696,8 +4707,9 @@ impl Game {
 
     fn deal_combat_damage(&mut self) {
         let hits = std::mem::take(&mut self.state.hits);
-        self.apply_damage_batch(&hits);
         self.give_priority();
+        self.apply_damage_batch(&hits);
+        self.advance_replacements(false);
     }
 
     /// Player-facing information only. Unrevealed opponent hands and RNG state
@@ -6060,3 +6072,6 @@ mod fdn_events_seven_tests;
 #[cfg(test)]
 #[path = "engine_fdn_library_eight_tests.rs"]
 mod fdn_library_eight_tests;
+#[cfg(test)]
+#[path = "engine_fdn_damage_five_tests.rs"]
+mod fdn_damage_five_tests;

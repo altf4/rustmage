@@ -3,10 +3,35 @@
   "catalogue_id": 2950,
   "oracle_id": "d9f1dc61-831e-4244-a2da-aa9da6fd5b50",
   "facts_sha256": "2d8ff5f88e92c7d2038182113526e7fee68f21d23fa8d5ff32092d3efdf6b2b0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0e7f523affbb9593a57c64453f44d76ee339f3ef0ddb1de038c9f1b25b315af8"
   },
-  "physical_metadata_sha256": "7aafb86f004bbad8c704d2b5480600eea6a87a26418c0628ee9e388189cad1b9"
+  "physical_metadata_sha256": "7aafb86f004bbad8c704d2b5480600eea6a87a26418c0628ee9e388189cad1b9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NivMizzetVisionary.java",
+  "java_sha256": "a7ac68b27a2d0628fa964071487b93a30e3a9a7a9fe69b9f04fc108859e574f3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SourceDealsNoncombatDamageToOpponentTriggeredAbility.java",
+      "sha256": "8dc471db3b8122ed908c233d118f7f85ef8a5899408d15ab5364f4691f9099b9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/MaximumHandSizeControllerEffect.java",
+      "sha256": "2ff5efca68eea0f1ed6e2f4d8365a2f7356727abd8f3485aaf07a91e6c4ed2c1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDamageValue.java",
+      "sha256": "2198ea2d400af0d1b03071469d9f85f92660dbe5101725ecb428a059d4264d26"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ]
 }

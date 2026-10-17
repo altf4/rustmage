@@ -3,10 +3,25 @@
   "catalogue_id": 918,
   "oracle_id": "291c7abf-9d64-4ba0-ae21-e3459edc9a95",
   "facts_sha256": "e8475a04a1a1653309cfbbf7d96abab582663e4829a66a87301c0e1197d4302a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "32d797d7e8b6db255204417fda68e89536c555b407428016d0e8d416282dc7cd"
   },
-  "physical_metadata_sha256": "a58f4d9cbbc93ef3e3aa46828061c4c41b19fb9af52d76caae48287bba8b722e"
+  "physical_metadata_sha256": "a58f4d9cbbc93ef3e3aa46828061c4c41b19fb9af52d76caae48287bba8b722e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CrystalBarricade.java",
+  "java_sha256": "96f7cfe4b83d9f75910eb4e9934e574394790fd5bd9affc2b74abfa0db35c660",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PreventAllNonCombatDamageToAllEffect.java",
+      "sha256": "027542a98805c6d6111a1ef4525727483a2034f09e5f3f51480dcc0723584fd8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControllerEffect.java",
+      "sha256": "745784dc889025c2006a64fe1b6a04dfde5aa2f18cafe51a92fd31696ad5f70d"
+    }
+  ]
 }
