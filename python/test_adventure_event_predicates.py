@@ -13,6 +13,8 @@ class AdventureEventTests(unittest.TestCase):
   for i in range(3):
    for p in ['P0','P1']:
     with self.subTest(card=NAMES[i],seat=p):self.scenario(i,p,2910+i)
+ def test_first_qualifier_witness_survives_long_setup_and_same_turn_inset(self):
+  for p in ['P0','P1']:self.scenario(0,p,2922)
  def test_inset_aliases_are_not_independent_deck_cards(self):
   for name in NAMES:
    with self.assertRaises(EngineError):
@@ -22,7 +24,7 @@ class AdventureEventTests(unittest.TestCase):
   deck=sum(([n]*8 for n in BASICS),[])+sum(([n]*4 for n in [name,'Bear Cub','Bygone Colossus','Chrome Companion','Quick Study','Shock','Thrill of Possibility']),[])
   self.assertEqual(len(deck),60)
   with Game([deck,deck],seed=seed,starting_player=p,deck_rules='Standard',library=library) as g:
-   stage='setup';source=None;target=None;frames=0;attacked=False;event=False;descriptors=set();inset_effect=False
+   stage='setup';source=None;target=None;frames=0;attacked=False;event=False;descriptors=set();inset_effect=False;entered_turn=None
    for iteration in range(30000):
     o=g.observe('P0')
     if o['outcome'] is not None:
@@ -41,12 +43,12 @@ class AdventureEventTests(unittest.TestCase):
      if i==2:self.assertEqual(objects[target]['power'],4)
      inset_effect=True;stage='normal'
     if quiet and stage=='wait_normal':
-     self.assertEqual(objects[source]['zone'],'Battlefield');self.assertEqual(objects[source]['controller'],p);stage='finish'
+     self.assertEqual(objects[source]['zone'],'Battlefield');self.assertEqual(objects[source]['controller'],p);stage='finish';entered_turn=o['turn']
     for packet in o['stack']:
      if packet['card']==source and isinstance(packet['kind'],dict) and 'TriggeredAbility' in packet['kind']:
       self.assertEqual(packet['controller'],p)
       if i==1:self.assertEqual(packet['cast_event']['controller'],q)
-      event=True
+      if i<2:event=True
     if i==2 and stage=='finish' and any(v['card'].endswith('Food Token') and v['owner']==p for v in own):event=True
     ready=quiet and len(lands)>=6 and (dead if i==0 else ally)
     def score(a):
@@ -56,7 +58,9 @@ class AdventureEventTests(unittest.TestCase):
      if k=='AnnounceExile':return 2900 if actor==p and stage=='normal' and a['card']==source else -1000
      if k=='AnnounceCast':
       if stage=='finish':
-       if n=='Quick Study':return 2500 if not event else 1600
+       if n=='Quick Study':
+        if event:return 1600
+        return 2500 if (i==0 and actor==p and o['turn']>entered_turn) or (i==1 and actor==q) else -1000
        return 2200 if n in ['Bear Cub','Bygone Colossus','Chrome Companion'] else -1000
       if n=='Bear Cub':return 2200 if not any(v['card']=='Bear Cub' and v['zone']=='Battlefield' and v['controller']==actor for v in objects.values()) else -1000
       return 2500 if actor==p and i==0 and n=='Shock' and not dead else -1000
@@ -69,6 +73,7 @@ class AdventureEventTests(unittest.TestCase):
      if k in ['TapMana','ActivateMana','AnnounceMana']:return 2100 if o['decision'] in ['pay_costs','resolution_mana'] and n in BASICS else -1000
      if k in ['PayCosts','PutTrigger','FinishTargets','FinishSearch','FinishAttackers','FinishBlockers','Keep','ChooseSpellCost']:return 2400
      if k in ['Discard','Bottom']:
+      if n=='Quick Study' and not event and ((i==0 and actor==p) or (i==1 and actor==q)) and sum(v['card']==n and v['zone']=='Hand' for v in o['objects'])<=1:return -1000
       if actor==p and stage!='finish' and n==name:return -1000
       if actor==p and stage=='setup' and n in BASICS and len([v for v in mine['objects'] if v['zone']=='Hand' and v['card'] in BASICS])<=2:return -500
       return 2200 if n in ['Thrill of Possibility','Bygone Colossus','Chrome Companion','Shock'] else 1000
