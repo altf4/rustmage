@@ -67,6 +67,9 @@ pub(crate) enum TargetRule {
         base: &'static TargetRule,
         predicate: &'static TargetPredicate,
     },
+    GraveCreatureSourcePower {
+        maximum: Option<i128>,
+    },
     GraveCreaturePower {
         excluded_subtype: &'static str,
         maximum: Option<i128>,
@@ -492,6 +495,14 @@ pub(crate) enum Instruction {
     /// Register an exact current target for a direct exile replacement until cleanup.
     ExileIfDiesThisTurn,
     /// Queue a reflexive ability only when this exact Role actually enters attached.
+    CreateTokensReflexive {
+        token: Card,
+        amount: u16,
+        ability: u16,
+    },
+    SacrificeSourceIfAttachedCounters {
+        minimum: u64,
+    },
     CreateRoleReflexive {
         token: Card,
         ability: u16,

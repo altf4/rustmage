@@ -6031,3 +6031,6 @@ impl Game {
 #[cfg(test)]
 #[path = "engine_fdn_cast_choices_four_tests.rs"]
 mod fdn_cast_choices_four_tests;
+#[cfg(test)]
+#[path = "engine_fdn_events_seven_tests.rs"]
+mod fdn_events_seven_tests;

@@ -3,10 +3,65 @@
   "catalogue_id": 3034,
   "oracle_id": "5fff2bf4-9e26-4815-9bf6-672ed7e55b96",
   "facts_sha256": "5b841a92790d5a1a63ad7bb7f0a602a94698e7ed170129d460824eb94440c751",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e15d00a0be4187c742e8a8605de2e192425f4941f4efb10afad1686b9a67b3a4"
   },
-  "physical_metadata_sha256": "3f3d9b883d3e29ee2721ea3bd6045625a2681b58ab947adc1d6d8e57246e2769"
+  "physical_metadata_sha256": "3f3d9b883d3e29ee2721ea3bd6045625a2681b58ab947adc1d6d8e57246e2769",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OrdealOfNylea.java",
+  "java_sha256": "4abc12c6fae9360d85ba8e77d09ded325e02547107f6fb4e6a5b6297c08089df",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksAttachedTriggeredAbility.java",
+      "sha256": "227a8e960c16f1e0930b065ad97af82479a4dd1f9b192254c1c785806c897c1b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SacrificeSourceTriggeredAbility.java",
+      "sha256": "aaf077484872644c7f9b2d70c878b76f7880edae52611abf89575e0cd6ffc60c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/AttachedToCounterCondition.java",
+      "sha256": "411fa7a8e5429cfc2ab0ed77656502be06ecc4fd7f8b64d049ad3f46b985574a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeSourceEffect.java",
+      "sha256": "67db08baf9a6cc6c7fad953388bdd2adb74e4c9af4c5e2f5483c8cc546bbb098"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAttachedEffect.java",
+      "sha256": "55e3fec3d9814fe3b997b35570bd5963d93b7ed65f65fa89dffef71f7d008be2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ]
 }

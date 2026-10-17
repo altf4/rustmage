@@ -63,6 +63,10 @@ pub(super) struct RoleReflexiveCompletion {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum TokenCompletion {
     None,
+    Reflexive {
+        item: Box<SpellView>,
+        ability: u16,
+    },
     JobAttach(ObjectRef),
     RoleAttach(ObjectRef),
     RoleReflexive(Box<RoleReflexiveCompletion>),
@@ -115,6 +119,9 @@ impl ReplacementState {
             b.groups.len() * std::mem::size_of::<TokenGroupView>()
                 + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
                 + match &b.completion {
+                    TokenCompletion::Reflexive { item, .. } => {
+                        std::mem::size_of::<SpellView>() + item.owned_bytes()
+                    }
                     TokenCompletion::RoleReflexive(c) => {
                         std::mem::size_of::<RoleReflexiveCompletion>() + c.item.owned_bytes()
                     }
@@ -699,8 +706,11 @@ impl Game {
                             if matches!(batch.completion, TokenCompletion::Mobilize) {
                                 self.start_mobilize_groups(batch.groups);
                             } else {
-                                let capture =
-                                    matches!(batch.completion, TokenCompletion::JobAttach(_));
+                                let capture = matches!(
+                                    batch.completion,
+                                    TokenCompletion::JobAttach(_)
+                                        | TokenCompletion::Reflexive { .. }
+                                );
                                 let created = match &batch.completion {
                                     TokenCompletion::RoleAttach(recipient) => self
                                         .create_attached_role_groups(
@@ -729,6 +739,12 @@ impl Game {
                                         capture,
                                     ),
                                 };
+                                if let TokenCompletion::Reflexive { item, ability } =
+                                    &batch.completion
+                                    && !created.is_empty()
+                                {
+                                    self.queue_reflexive(item, *ability, None);
+                                }
                                 if let TokenCompletion::RoleReflexive(c) = &batch.completion
                                     && created.iter().any(|r| {
                                         self.object_view(r.card).card == c.token

@@ -3,10 +3,35 @@
   "catalogue_id": 1425,
   "oracle_id": "903d114b-1899-4e67-bee3-af0673850388",
   "facts_sha256": "9ba023a706a9f076742cc76c30bc8e173a648ed53b053f2e1a2640304b176cb9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "10305a762cbf60fbcd27493618b716ee7edc58cb49348db52782fd58f2365c86"
   },
-  "physical_metadata_sha256": "7ceac997a79ca5b1292548098762a336dbac4d0915b52e55f630740bfcb2af18"
+  "physical_metadata_sha256": "7ceac997a79ca5b1292548098762a336dbac4d0915b52e55f630740bfcb2af18",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FaebloomTrick.java",
+  "java_sha256": "ad6f83ace5df8bcb757e0ae874f632372d1ca065c77c24cac991f7ff85cab099",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/FaerieToken.java",
+      "sha256": "434518af008341b6e9700fdab2f3df2e1fb10e758c89eb67c485317bffd0088a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+      "sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+    }
+  ]
 }
