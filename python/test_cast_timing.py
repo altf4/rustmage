@@ -33,7 +33,7 @@ class CastingTimingTests(unittest.TestCase):
                 for d in o["spell_characteristics"]:
                     if d["object"]["card"] in [source,inset,dragon,bilbo]:
                         descriptor.add((d["object"]["card"],d["face"]))
-                        if d["object"]["card"]==inset:
+                        if d["object"]["card"]==inset and d["face"]=="Omen":
                             self.assertEqual((d["name"],d["type_line"],d["mana_cost"]),("Dynamic Soar","Sorcery — Omen","{2}{G}"))
                 if quiet and stage=="wait_source":
                     self.assertEqual(objects[source]["zone"],"Battlefield")
