@@ -8,5 +8,38 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1e23d69d1685fc8d898e96bedb2be2dc53d0dcfe8d8e7e0773bf47370d5b3f51"
   },
-  "physical_metadata_sha256": "6ff37a1c822de8a99f80156f237d4802f2898bac48e44e6afa41926aae5c3d99"
+  "physical_metadata_sha256": "6ff37a1c822de8a99f80156f237d4802f2898bac48e44e6afa41926aae5c3d99",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BoltBend.java",
+  "java_sha256": "468644b6a7359a320666bd65cfd2c8921a6db17f76081002d681badf4ab24eef",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseNewTargetsTargetEffect.java",
+      "sha256": "8762550b9eca7d3e2b0c25d47479691b4520397965c98b7f3d8428d3a4438153"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/FerociousCondition.java",
+      "sha256": "4cb67672f9434ee2230c941595cd3489a6b27658508e5cadaa3cecacbc8e84fa"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/other/NumberOfTargetsPredicate.java",
+      "sha256": "2337a03e586eeadad6aa5b0deaecb46ad1e6175b86d758054835a51b872226e0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetStackObject.java",
+      "sha256": "99560fbe32eaeab547ae49a4777fd670f509879b2401942bfa1be73388292e0a"
+    }
+  ],
+  "remaining_obligations": [
+    "Draft: final rules tests, natural Foundations games, full validation and two independent final-head reviews pending."
+  ]
 }

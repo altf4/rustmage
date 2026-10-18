@@ -11,8 +11,14 @@ struct Retarget {
     item: SpellView,
     template: SpellView,
     remaining: u64,
-    index: usize,
     victim: Option<u64>,
+}
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct RetargetView {
+    pub item: SpellView,
+    pub original: Vec<BoundTarget>,
+    pub victim: Option<u64>,
+    pub remaining_copies: u64,
 }
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct CopyState {
@@ -200,6 +206,9 @@ impl Game {
         copy.controller = controller;
         copy.source_facts.controller = controller;
         copy.is_copy = true;
+        if let Some(cast) = &mut copy.cast {
+            cast.payment = [0; 6];
+        }
         copy.copy_event = None;
         copy.cast_event = None;
 
@@ -227,7 +236,6 @@ impl Game {
             item: copy,
             template,
             remaining: event.amount - 1,
-            index: 0,
             victim: None,
         });
         self.advance_copy_targets()
@@ -250,38 +258,70 @@ impl Game {
             item: victim.clone(),
             template: victim,
             remaining: 0,
-            index: 0,
             victim: Some(id),
         });
         self.advance_copy_targets()
     }
-    fn new_copy_target_legal(&self, r: &Retarget, target: Target) -> bool {
-        let old = r.item.targets[r.index];
-        if target == old.target || matches!(target, Target::Stack(id) if id == r.item.id) {
+    pub(super) fn delayed_spell_copy_view(&self) -> Vec<SpellView> {
+        self.state
+            .stack_copy_data
+            .as_ref()
+            .map_or_else(Vec::new, |s| s.delayed.clone())
+    }
+    pub(super) fn retarget_view(&self) -> Option<RetargetView> {
+        let r = self.state.stack_copy_data.as_ref()?.retarget.as_ref()?;
+        Some(RetargetView {
+            item: r.item.clone(),
+            original: r.template.targets.clone(),
+            victim: r.victim,
+            remaining_copies: r.remaining,
+        })
+    }
+    fn new_stack_target_legal(&self, r: &Retarget, index: usize, target: Target) -> bool {
+        let old = r.item.targets[index];
+        if self.bind_target(target) == (BoundTarget { group: 0, ..old })
+            || matches!(target, Target::Stack(id) if id == r.item.id)
+        {
             return false;
         }
         let Some(spec) = self.target_spec(&r.item).group(old.group) else {
             return false;
         };
         self.item_target_matches(&r.item, spec.rule, target)
-            && !r
-                .item
-                .targets
-                .iter()
-                .enumerate()
-                .any(|(i, b)| i != r.index && b.group == old.group && b.target == target)
-            && self.target_group_compatible(
-                spec.rule,
-                old.group,
-                &r.item
-                    .targets
-                    .iter()
-                    .enumerate()
-                    .filter(|(i, _)| *i != r.index)
-                    .map(|(_, b)| *b)
-                    .collect::<Vec<_>>(),
-                target,
-            )
+    }
+    fn stack_targets_finished(&self, r: &Retarget) -> bool {
+        let changed = r
+            .item
+            .targets
+            .iter()
+            .zip(&r.template.targets)
+            .any(|(a, b)| a != b);
+        if r.victim.is_some() && !changed {
+            return false;
+        }
+        let plan = self.target_spec(&r.item);
+        r.item.targets.iter().enumerate().all(|(index, bound)| {
+            if *bound == r.template.targets[index] {
+                return true;
+            }
+            let spec = plan.group(bound.group).unwrap();
+            self.item_target_matches(&r.item, spec.rule, bound.target)
+                && !r.item.targets.iter().enumerate().any(|(i, other)| {
+                    i != index && other.group == bound.group && other.target == bound.target
+                })
+                && self.target_group_compatible(
+                    spec.rule,
+                    bound.group,
+                    &r.item
+                        .targets
+                        .iter()
+                        .enumerate()
+                        .filter(|(i, _)| *i != index)
+                        .map(|(_, b)| *b)
+                        .collect::<Vec<_>>(),
+                    bound.target,
+                )
+        })
     }
     pub(super) fn visit_retarget_actions(&self, mut emit: impl FnMut(Action) -> bool) -> bool {
         let r = self
@@ -292,97 +332,128 @@ impl Game {
             .retarget
             .as_ref()
             .unwrap();
-        if r.victim.is_none() && emit(Action::KeepCopyTarget) {
+        if self.stack_targets_finished(r) && emit(Action::FinishStackTargets) {
             return true;
         }
-        let old = r.item.targets[r.index];
-        let spec = self.target_spec(&r.item).group(old.group).unwrap();
-        self.visit_item_targets(&r.item, spec.rule, |target| {
-            self.new_copy_target_legal(r, target) && emit(Action::ChangeCopyTarget { target })
-        })
+        for (index, old) in r.item.targets.iter().enumerate() {
+            // Restoring an inherited target is allowed even if it has become illegal.
+            if r.template.targets[index] != *old
+                && emit(Action::RestoreStackTarget {
+                    index: index as u32,
+                })
+            {
+                return true;
+            }
+            let spec = self.target_spec(&r.item).group(old.group).unwrap();
+            if self.visit_item_targets(&r.item, spec.rule, |target| {
+                self.new_stack_target_legal(r, index, target)
+                    && emit(Action::SetStackTarget {
+                        index: index as u32,
+                        target,
+                    })
+            }) {
+                return true;
+            }
+        }
+        false
     }
-    pub(super) fn finish_copy_target(&mut self, target: Option<Target>) {
-        let mut r = self
+    pub(super) fn set_stack_target(&mut self, index: u32, target: Target) {
+        let index = index as usize;
+        let mut bound = self.bind_target(target);
+        let r = self
             .state
             .stack_copy_data
             .as_mut()
             .unwrap()
             .retarget
-            .take()
+            .as_mut()
             .unwrap();
-        if let Some(target) = target {
-            let mut bound = self.bind_target(target);
-            bound.group = r.item.targets[r.index].group;
-            r.item.targets[r.index] = bound;
-        }
-        r.index += 1;
-        self.state.stack_copy_data.as_mut().unwrap().retarget = Some(r);
+        bound.group = r.item.targets[index].group;
+        r.item.targets[index] = bound;
+    }
+    pub(super) fn restore_stack_target(&mut self, index: u32) {
+        let r = self
+            .state
+            .stack_copy_data
+            .as_mut()
+            .unwrap()
+            .retarget
+            .as_mut()
+            .unwrap();
+        r.item.targets[index as usize] = r.template.targets[index as usize];
+    }
+    pub(super) fn finish_stack_targets(&mut self) {
+        self.commit_stack_targets();
         if !self.advance_copy_targets() {
             self.run_program();
         }
     }
-    fn advance_copy_targets(&mut self) -> bool {
-        loop {
-            let r = self
-                .state
-                .stack_copy_data
-                .as_ref()
-                .unwrap()
-                .retarget
-                .as_ref()
-                .unwrap();
-            if r.index < r.item.targets.len() {
-                // Mandatory target changes do nothing if no legal replacement exists.
-                let available = r.victim.is_none() || self.visit_retarget_actions(|_| true);
-                if available {
-                    self.state.pending = Pending::Retarget {
-                        player: self.state.resolving.as_ref().unwrap().item.controller,
-                    };
-                    return true;
-                }
-            }
-            let r = self
-                .state
-                .stack_copy_data
-                .as_mut()
-                .unwrap()
-                .retarget
-                .take()
-                .unwrap();
-            if let Some(id) = r.victim {
-                if let Some(index) = self.state.stack.iter().position(|s| s.id == id) {
-                    let previous = self.state.stack[index].clone();
-                    for bound in &r.item.targets {
-                        if !previous
-                            .targets
-                            .iter()
-                            .any(|old| old.target == bound.target)
-                        {
-                            self.target_becomes_bound(&previous, *bound);
-                        }
-                    }
-                    self.state.stack[index] = r.item;
-                }
-            } else {
-                let mut empty = r.item.clone();
-                empty.targets.clear();
+    fn commit_stack_targets(&mut self) {
+        let r = self
+            .state
+            .stack_copy_data
+            .as_ref()
+            .unwrap()
+            .retarget
+            .as_ref()
+            .unwrap()
+            .clone();
+        if let Some(id) = r.victim {
+            if let Some(index) = self.state.stack.iter().position(|s| s.id == id) {
+                let previous = self.state.stack[index].clone();
                 for bound in &r.item.targets {
-                    self.target_becomes_bound(&empty, *bound);
-                    empty.targets.push(*bound);
+                    if !previous
+                        .targets
+                        .iter()
+                        .any(|old| old.target == bound.target)
+                    {
+                        self.target_becomes_bound(&previous, *bound);
+                    }
                 }
-                self.state.stack.push(r.item.clone());
+                self.state.stack[index] = r.item.clone();
             }
-            if r.remaining == 0 {
-                self.release_stack_copy_state();
-                return false;
+        } else {
+            let mut empty = r.item.clone();
+            empty.targets.clear();
+            for bound in &r.item.targets {
+                self.target_becomes_bound(&empty, *bound);
+                empty.targets.push(*bound);
             }
+            self.state.stack.push(r.item.clone());
+        }
+        let state = self.state.stack_copy_data.as_mut().unwrap();
+        if r.remaining == 0 {
+            state.retarget = None;
+        } else {
             let copy = self.allocate_spell_copy(&r.template, r.item.controller);
             self.state.stack_copy_data.as_mut().unwrap().retarget = Some(Retarget {
                 item: copy,
-                index: 0,
                 remaining: r.remaining - 1,
                 ..r
             });
+        }
+    }
+    fn advance_copy_targets(&mut self) -> bool {
+        loop {
+            let Some(r) = self
+                .state
+                .stack_copy_data
+                .as_ref()
+                .and_then(|s| s.retarget.as_ref())
+            else {
+                self.release_stack_copy_state();
+                return false;
+            };
+            if !r.item.targets.is_empty()
+                && (r.victim.is_none() || self.visit_retarget_actions(|_| true))
+            {
+                self.state.pending = Pending::Retarget {
+                    player: self.state.resolving.as_ref().unwrap().item.controller,
+                };
+                return true;
+            }
+            // A mandatory retarget with no alternatives leaves its target unchanged.
+            self.commit_stack_targets();
         }
     }
 }

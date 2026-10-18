@@ -6,6 +6,7 @@ mod stack_copies;
 #[path = "engine_stack_copies_tests.rs"]
 mod stack_copies_tests;
 pub use copies::CopyRecipe;
+pub use stack_copies::{CopyEvent, RetargetView};
 const STARTING_LIFE: i128 = 20;
 use crate::capacity::{CapacityExt, CapacitySignal};
 use crate::cards::{
@@ -354,8 +355,9 @@ macro_rules! define_actions {
     }
 }
 define_actions! {
-    KeepCopyTarget,
-    ChangeCopyTarget { target: Target },
+    FinishStackTargets,
+    RestoreStackTarget { index: u32 },
+    SetStackTarget { index: u32, target: Target },
     ChooseCollectEvidence { collect: bool },
     ChooseEvidence { object: ObjectRef },
     FinishEvidence,
@@ -1785,6 +1787,8 @@ pub struct Observation {
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
+    pub retarget: Option<RetargetView>,
+    pub delayed_spell_copies: Vec<SpellView>,
     pub group_move_count: Option<u64>,
     pub optional_search_sequence: Option<OptionalSearchSequence>,
     pub announcing: Option<SpellView>,
@@ -3714,8 +3718,9 @@ impl Game {
                 self.choose_mana_cost(cost)
             }
             Action::ChooseMode { mode } => self.choose_mode(mode),
-            Action::KeepCopyTarget => self.finish_copy_target(None),
-            Action::ChangeCopyTarget { target } => self.finish_copy_target(Some(target)),
+            Action::FinishStackTargets => self.finish_stack_targets(),
+            Action::SetStackTarget { index, target } => self.set_stack_target(index, target),
+            Action::RestoreStackTarget { index } => self.restore_stack_target(index),
             Action::ChooseTarget { target } => {
                 let mut bound = self.bind_target(target);
                 let item = self.state.announcing.as_ref().unwrap().item.clone();
@@ -4252,7 +4257,8 @@ impl Game {
         // Outside is an internal staging zone for newly allocated tokens. A
         // ceased token is on the free list and cannot move again (CR111.8).
         let fresh_token = before.zone == Zone::Outside && !self.state.free_tokens.contains(&id);
-        if before.card.is_emblem()
+        if (self.state.objects[id as usize].spell_copy && before.zone != Zone::Stack)
+            || before.card.is_emblem()
             || (before.is_token() && before.zone != Zone::Battlefield && !fresh_token)
         {
             return ZoneChange {
@@ -5272,6 +5278,8 @@ impl Game {
                 })
                 .unwrap_or_default(),
             stack: s.stack.clone(),
+            retarget: self.retarget_view(),
+            delayed_spell_copies: self.delayed_spell_copy_view(),
             resolving: s
                 .resolving
                 .as_ref()

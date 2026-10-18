@@ -27,6 +27,7 @@ fn announce(g: &mut Game, card: CardId, targets: &[Target]) {
                         a,
                         Action::ChooseSpellCost { .. }
                             | Action::PayCosts { .. }
+                            | Action::Discard { .. }
                             | Action::FinishTargets
                     )
                 })
@@ -56,9 +57,10 @@ fn progress(g: &mut Game, stop_retarget: bool) {
                     a,
                     Action::Pass
                         | Action::PutTrigger { .. }
-                        | Action::KeepCopyTarget
+                        | Action::FinishStackTargets
                         | Action::FinishTargets
                         | Action::PayCosts { .. }
+                        | Action::Discard { .. }
                 )
             })
             .unwrap_or_else(|| panic!("settle {:?} {actions:?}", g.state.pending))
@@ -92,16 +94,19 @@ fn teach_copies_next_qualifying_cast_once_and_retargets_without_casting_again() 
         assert!(matches!(g.state.pending, Pending::Retarget { .. }));
         reject(
             &mut g,
-            Action::ChangeCopyTarget {
+            Action::SetStackTarget {
+                index: 0,
                 target: Target::Spell(shock),
             },
         );
         checked(
             &mut g,
-            Action::ChangeCopyTarget {
+            Action::SetStackTarget {
+                index: 0,
                 target: Target::Player(p),
             },
         );
+        checked(&mut g, Action::FinishStackTargets);
         assert_eq!(g.state.stack.iter().filter(|s| s.is_copy).count(), 1);
         let copy = g.state.stack.iter().find(|s| s.is_copy).unwrap().clone();
         assert_ne!(copy.card, shock);
@@ -148,7 +153,7 @@ fn storm_copies_fixed_prior_count_and_survives_source_and_original_departure() {
         assert!(g.counter_stack_item(id, false));
         g.move_object(storm, Zone::Graveyard);
         progress(&mut g, true);
-        checked(&mut g, Action::KeepCopyTarget);
+        checked(&mut g, Action::FinishStackTargets);
         assert_eq!(g.state.stack.iter().filter(|s| s.is_copy).count(), 1);
         progress(&mut g, false);
         assert_eq!(g.state.players[p.other().index()].life, 16);
@@ -167,10 +172,12 @@ fn copied_spell_has_its_own_counter_target_and_fizzles_independently() {
         progress(&mut g, true);
         checked(
             &mut g,
-            Action::ChangeCopyTarget {
+            Action::SetStackTarget {
+                index: 0,
                 target: Target::Card(b),
             },
         );
+        checked(&mut g, Action::FinishStackTargets);
         let copy = g.state.stack.iter().find(|s| s.is_copy).unwrap().clone();
         let counter = named(&mut g, p, "Negate", Zone::Hand);
         assert!(
@@ -200,21 +207,111 @@ fn bolt_bend_discounts_and_changes_an_ability_target_with_original_controller_le
         announce(&mut g, bend, &[Target::Stack(ability)]);
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
         progress(&mut g, true);
-        assert!(!g.legal_actions().contains(&Action::KeepCopyTarget));
+        assert!(!g.legal_actions().contains(&Action::FinishStackTargets));
         reject(
             &mut g,
-            Action::ChangeCopyTarget {
+            Action::SetStackTarget {
+                index: 0,
                 target: Target::Player(p),
             },
         );
         checked(
             &mut g,
-            Action::ChangeCopyTarget {
+            Action::SetStackTarget {
+                index: 0,
                 target: Target::Player(p.other()),
             },
         );
         progress(&mut g, false);
         assert_eq!(g.state.players[p.index()].life, 20);
         assert_eq!(g.state.players[p.other().index()].life, 19);
+    }
+}
+#[test]
+fn copy_target_set_can_swap_slots_and_rejects_incomplete_duplicate_choices() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        teach(&mut g, p);
+        let a = named(&mut g, p, "Bear Cub", Zone::Graveyard);
+        let b = named(&mut g, p, "Llanowar Elves", Zone::Graveyard);
+        let waltz = named(&mut g, p, "Macabre Waltz", Zone::Hand);
+        announce(&mut g, waltz, &[Target::Card(a), Target::Card(b)]);
+        progress(&mut g, true);
+        checked(
+            &mut g,
+            Action::SetStackTarget {
+                index: 0,
+                target: Target::Card(b),
+            },
+        );
+        reject(&mut g, Action::FinishStackTargets);
+        checked(
+            &mut g,
+            Action::SetStackTarget {
+                index: 1,
+                target: Target::Card(a),
+            },
+        );
+        assert_eq!(
+            g.observe(p).retarget.as_ref().unwrap().item.targets.len(),
+            2
+        );
+        checked(&mut g, Action::FinishStackTargets);
+        let copy = g.state.stack.iter().find(|s| s.is_copy).unwrap();
+        assert_eq!(
+            copy.targets.iter().map(|b| b.target).collect::<Vec<_>>(),
+            [Target::Card(b), Target::Card(a)]
+        );
+        progress(&mut g, false);
+        assert_eq!(
+            [a, b]
+                .iter()
+                .filter(|id| g.state.objects[**id as usize].zone == Zone::Hand)
+                .count(),
+            1
+        );
+        assert_eq!(g.state.objects[waltz as usize].zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn nontargeted_flashback_copy_draws_without_recasting_or_creating_exile_permission() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let twice = named(&mut g, p, "Think Twice", Zone::Graveyard);
+        teach(&mut g, p);
+        checked(&mut g, Action::AnnounceFlashback { card: twice });
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        progress(&mut g, false);
+        assert_eq!(g.state.objects[twice as usize].zone, Zone::Exile);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 2);
+        assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 2);
+        assert!(g.state.stack_copy_data.is_none());
+        assert!(
+            g.state
+                .objects
+                .iter()
+                .all(|o| !o.spell_copy || o.zone == Zone::Outside)
+        );
+    }
+}
+#[test]
+fn delayed_copy_ignores_opponent_casts_and_expires_on_turn_change() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        teach(&mut g, p);
+        assert_eq!(g.observe(p.other()).delayed_spell_copies.len(), 1);
+        checked(&mut g, Action::Pass);
+        let opponent = named(&mut g, p.other(), "Shock", Zone::Hand);
+        announce(&mut g, opponent, &[Target::Player(p)]);
+        progress(&mut g, false);
+        assert_eq!(g.observe(p).delayed_spell_copies.len(), 1);
+        assert_eq!(g.state.players[p.index()].life, 18);
+        super::ability_timeline_tests::next_turn(&mut g);
+        assert!(g.observe(p).delayed_spell_copies.is_empty());
     }
 }

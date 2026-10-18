@@ -8,5 +8,33 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0ed7fe887f4e6c8102f936f8bf49d27a7c3f7f1a3df611a76b4c78c223607e94"
   },
-  "physical_metadata_sha256": "62927d9b7313712893bcf2c746eeafa6cf39d86f7f5f968f1c8dd0ccb68b7baa"
+  "physical_metadata_sha256": "62927d9b7313712893bcf2c746eeafa6cf39d86f7f5f968f1c8dd0ccb68b7baa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PyromancersGoggles.java",
+  "java_sha256": "8f5a73eee1702c8da987831ea8536befdc677861c39fc973ae438ed239c11318",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyTargetStackObjectEffect.java",
+      "sha256": "b2e6312cd63002c83d7f2a3ac9d7240f1d5691bcd77156af2c0752cb28dc1172"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/RedManaAbility.java",
+      "sha256": "1648a5c546271d42dd7cb1e3b988d6be224431812867755b96dd633593a5b8ee"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+      "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    }
+  ],
+  "remaining_obligations": [
+    "Draft: final rules tests, natural Foundations games, full validation and two independent final-head reviews pending."
+  ]
 }

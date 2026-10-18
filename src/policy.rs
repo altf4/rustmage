@@ -229,6 +229,18 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::Mulligan => -100,
             Action::PlayLand { .. } => 90,
             Action::BeginCast { .. } => 80,
+            Action::FinishStackTargets => 5,
+            Action::RestoreStackTarget { .. } => -1,
+            Action::SetStackTarget { index, target } => observation
+                .retarget
+                .as_ref()
+                .and_then(|r| {
+                    r.item.program().map(|(_, p)| {
+                        target_score(p, *target)
+                            - target_score(p, r.item.targets[*index as usize].target)
+                    })
+                })
+                .unwrap_or(0),
             Action::ChooseTarget { target } => {
                 let item = observation.announcing.as_ref().unwrap();
                 if item.kind == StackKind::Spell && item.source_card.aura().is_some() {

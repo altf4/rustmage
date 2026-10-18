@@ -8,5 +8,33 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "11000aa1d924f469d5981d2cd64398cde168b78586c4cc6447ea557c7bdbfdc4"
   },
-  "physical_metadata_sha256": "fdabaaa765787d107f6d830ff282d0d0a5fbfed2db7570e99c28127732e364f5"
+  "physical_metadata_sha256": "fdabaaa765787d107f6d830ff282d0d0a5fbfed2db7570e99c28127732e364f5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TeachByExample.java",
+  "java_sha256": "e48cc7262e0360fa3275d37cd286ed87bb1b9f99fcf5c71b951ff2a5ac3ec1f0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyTargetStackObjectEffect.java",
+      "sha256": "b2e6312cd63002c83d7f2a3ac9d7240f1d5691bcd77156af2c0752cb28dc1172"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/CopyNextSpellDelayedTriggeredAbility.java",
+      "sha256": "40d1a8d8178748adf58bc8bd5bfeea6ab90afbcfe49d639a730d7ae1ed9c5a01"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/CastNextSpellDelayedTriggeredAbility.java",
+      "sha256": "a6b2f8fcd1d6e64faa8dfa3e5c3d07e0127ffdb31f8b046b619bd04768bce4cc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+      "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+    }
+  ],
+  "remaining_obligations": [
+    "Draft: final rules tests, natural Foundations games, full validation and two independent final-head reviews pending."
+  ]
 }
