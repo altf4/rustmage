@@ -1442,6 +1442,16 @@ impl Game {
     }
 
     pub(super) fn run_program(&mut self) {
+        // Casting during an effect suspends its owned program, including through
+        // additional-cost entry and replacement continuations.
+        if let Some(free) = &self.state.resolution_free_casts {
+            if self.state.announcing.is_none() && self.state.entry_batch.is_none() {
+                self.state.pending = Pending::ResolutionCasts {
+                    player: free.player,
+                };
+            }
+            return;
+        }
         loop {
             if self.advance_replacements(false) {
                 return;
@@ -1975,6 +1985,11 @@ impl Game {
                     self.start_connive(&item, subject, amount)
                 }
                 Instruction::GrantGraveyardCast(kind) => self.grant_graveyard_cast(&item, kind),
+                Instruction::ExileDiscardedWithStash => self.exile_discarded_with_stash(&item),
+                Instruction::ExileEachLibraryTopCastFree => {
+                    self.exile_each_top_cast_free(item.controller);
+                    return;
+                }
                 Instruction::CounterRelatedUnlessPayLife(amount) => {
                     if self.start_resolution_life(&item, amount) {
                         return;

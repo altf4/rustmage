@@ -8,5 +8,18 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4b565ed5d85aaf0072dfdf6b1ea1da833fa74d91da8138b00496ebd6d6496236"
   },
-  "physical_metadata_sha256": "8805741aa21b22e6a0e60b813fd6ad2e18fe3bef92f99d80b6dd19b52480230d"
+  "physical_metadata_sha256": "8805741aa21b22e6a0e60b813fd6ad2e18fe3bef92f99d80b6dd19b52480230d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EtaliPrimalStorm.java",
+  "java_sha256": "c0ff9a174890064bdb114ef16ee9814a33fed9a2cdedf12d7a8de3a07c579c5e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/CardUtil.java",
+      "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    }
+  ],
+  "remaining_obligations": [
+    "Focused rules validation and complete-batch acceptance pending"
+  ]
 }

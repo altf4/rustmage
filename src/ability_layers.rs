@@ -41,6 +41,8 @@ pub(crate) enum StaticAbilityFragment {
     LookAtLibraryTop,
     CastCreatureFromLibraryTop,
     SpendAnyManaForCreatures,
+    GraveyardPermanentTypes,
+    ForeignStashPlay,
     ControlAttached,
     AttachedCharacteristics(&'static AttachedCharacteristics),
     ChosenCreatureType,

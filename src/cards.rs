@@ -646,6 +646,8 @@ pub(crate) enum Instruction {
     },
     ChangeSingleStackTarget,
     GrantGraveyardCast(GraveyardCastKind),
+    ExileDiscardedWithStash,
+    ExileEachLibraryTopCastFree,
     CounterRelatedUnlessPayLife(u32),
     CreateCopyToken {
         subject: Subject,

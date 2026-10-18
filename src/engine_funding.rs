@@ -1159,10 +1159,13 @@ impl<'g> FundingState<'g> {
         }
         let adjusted = cast_origins::payment_goal(self, goal, self.purpose);
         if (if self.convoke {
-            convoke::payable(
+            convoke::payable_in(
+                self,
+                goal.actor,
+                self.purpose,
                 mana_lots::available(self.mana, &self.lots, self.purpose),
-                adjusted.required,
-                adjusted.generic,
+                goal.required,
+                goal.generic,
                 &self.convoke_masks(),
             )
         } else {
@@ -1298,7 +1301,10 @@ impl Game {
         goal: FundingGoal,
         purpose: mana_lots::Purpose,
     ) -> bool {
-        if convoke::payable(
+        if convoke::payable_in(
+            self,
+            goal.actor,
+            purpose,
             self.available_mana(goal.actor, purpose).map(u128::from),
             goal.required,
             goal.generic,
@@ -1537,7 +1543,13 @@ impl Game {
             {
                 return None;
             }
-            (frame.remaining.colored, frame.remaining.generic)
+            cast_origins::payment_requirements(
+                self,
+                a.item.controller,
+                self.purpose_for_item(&a.item),
+                frame.remaining.colored,
+                frame.remaining.generic,
+            )
         } else {
             let goal = self.funding_goal(a);
             let state = FundingState::from_game(self, &goal);
@@ -1579,7 +1591,10 @@ impl Game {
             return true;
         }
         if convoke
-            && convoke::payable(
+            && convoke::payable_in(
+                &state,
+                goal.actor,
+                state.purpose,
                 mana_lots::available(state.mana, &state.lots, state.purpose),
                 goal.required,
                 goal.generic,

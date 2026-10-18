@@ -1045,9 +1045,10 @@ impl Game {
         let outcome = self.spend_mana_for(
             actor,
             payment,
-            self.spell_mana_purpose(self.effective_spell_card(card)),
+            self.spell_mana_purpose_for_card(actor, card, self.effective_spell_card(card)),
         );
         self.state.passes = 0;
+        let stash_origin = self.foreign_stash(actor, card);
         let origin = self.state.objects[card as usize].zone;
         let before = self.object_view(card);
         let event = self.transition_object_under_control(
@@ -1065,6 +1066,7 @@ impl Game {
         let id = self.next_stack_id();
         let mut item = self.cast_preview(actor, card, origin, object, id, payment);
         item.mana_copy_sources = outcome.copies;
+        item.cast.as_mut().unwrap().stash_origin = stash_origin;
         item
     }
     pub(super) fn cast_preview(
@@ -1097,6 +1099,7 @@ impl Game {
                 face: CastFace::Normal,
                 payment,
                 origin,
+                stash_origin: self.foreign_stash(actor, card),
                 method: CastMethod::Normal,
                 flash_surcharge: false,
                 offspring: None,
@@ -1383,7 +1386,13 @@ impl Game {
         if announcement.trigger {
             self.continue_trigger_order();
         } else {
-            self.state.pending = Pending::Priority;
+            self.state.pending =
+                self.state
+                    .resolution_free_casts
+                    .as_ref()
+                    .map_or(Pending::Priority, |free| Pending::ResolutionCasts {
+                        player: free.player,
+                    });
             self.state.passes = 0;
         }
     }

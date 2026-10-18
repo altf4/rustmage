@@ -8,5 +8,12 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "11ec4b2d626c3a9a7e165b91f19150a8e21635d956f881333c5679ba8cc6e795"
   },
-  "physical_metadata_sha256": "21fce77cdc621e54da96a33a4752c703f94aa13f2d31d00a06f2e09c31367575"
+  "physical_metadata_sha256": "21fce77cdc621e54da96a33a4752c703f94aa13f2d31d00a06f2e09c31367575",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MuldrothaTheGravetide.java",
+  "java_sha256": "69fda3677c726581998b9b154dc5811ff1d4de963b089d56ba2c1542e605d606",
+  "xmage_dependencies": [],
+  "remaining_obligations": [
+    "Focused rules validation and complete-batch acceptance pending"
+  ]
 }

@@ -82,7 +82,7 @@ impl Game {
                     source: None,
                     reserve: None,
                 },
-                self.spell_mana_purpose(definition),
+                self.spell_mana_purpose_for_card(actor, card, definition),
             );
         }
         self.spell_can_fund_total(actor, card, cost, None)
@@ -110,7 +110,7 @@ impl Game {
         route: Option<ForageRoute>,
         definition: Card,
     ) -> bool {
-        let purpose = self.spell_mana_purpose(definition);
+        let purpose = self.spell_mana_purpose_for_card(actor, card, definition);
         let base = FundingGoal {
             actor,
             required: cost.colored,
