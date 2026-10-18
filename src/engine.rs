@@ -445,8 +445,8 @@ define_actions! {
     AnnounceCast {
         card: CardId,
     },
-    AnnounceFree { card: CardId, face: CastFace },
-    AnnounceGrantedFlashback { card: CardId },
+    AnnounceFree { card: CardId, face: CastFace, flash_surcharge: bool },
+    AnnounceGrantedFlashback { card: CardId, flash_surcharge: bool },
     PayResolutionLife,
     DeclineResolutionLife,
     AnnounceExile {
@@ -2759,15 +2759,21 @@ impl Game {
                     if !casting_prohibited && !obj.is_token() && !obj.card.is_land() {
                         if free_hand_cast && obj.zone == Zone::Hand {
                             for face in [CastFace::Normal, CastFace::Adventure, CastFace::Omen] {
-                                if self.permitted_cast_available(
-                                    actor,
-                                    card,
-                                    CastMethod::Free,
-                                    face,
-                                    sorcery,
-                                ) && emit(Action::AnnounceFree { card, face })
-                                {
-                                    return true;
+                                for flash_surcharge in [false, true] {
+                                    if self.permitted_cast_available(
+                                        actor,
+                                        card,
+                                        CastMethod::Free,
+                                        face,
+                                        sorcery,
+                                        flash_surcharge,
+                                    ) && emit(Action::AnnounceFree {
+                                        card,
+                                        face,
+                                        flash_surcharge,
+                                    }) {
+                                        return true;
+                                    }
                                 }
                             }
                         }
@@ -2778,22 +2784,28 @@ impl Game {
                                 CastMethod::Normal,
                                 CastFace::Normal,
                                 sorcery,
+                                false,
                             )
                             && emit(Action::AnnounceCast { card })
                         {
                             return true;
                         }
-                        if self.has_graveyard_cast(actor, card, GraveyardCastKind::Flashback)
-                            && self.permitted_cast_available(
-                                actor,
-                                card,
-                                CastMethod::GrantedFlashback,
-                                CastFace::Normal,
-                                sorcery,
-                            )
-                            && emit(Action::AnnounceGrantedFlashback { card })
-                        {
-                            return true;
+                        if self.has_graveyard_cast(actor, card, GraveyardCastKind::Flashback) {
+                            for flash_surcharge in [false, true] {
+                                if self.permitted_cast_available(
+                                    actor,
+                                    card,
+                                    CastMethod::GrantedFlashback,
+                                    CastFace::Normal,
+                                    sorcery,
+                                    flash_surcharge,
+                                ) && emit(Action::AnnounceGrantedFlashback {
+                                    card,
+                                    flash_surcharge,
+                                }) {
+                                    return true;
+                                }
+                            }
                         }
                     }
                     let flashback =
@@ -3573,18 +3585,27 @@ impl Game {
                     .capacity("mana representation exhausted");
                 self.state.passes = 0;
             }
-            Action::AnnounceFree { card, face } => {
+            Action::AnnounceFree {
+                card,
+                face,
+                flash_surcharge,
+            } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 self.set_cast_face(&mut item, face);
                 item.cast.as_mut().unwrap().method = CastMethod::Free;
+                item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
                 if item.source_card.x_symbols() > 0 {
                     item.x = Some(0);
                 }
                 self.open_payment_announcement(item, Counters::default(), None);
             }
-            Action::AnnounceGrantedFlashback { card } => {
+            Action::AnnounceGrantedFlashback {
+                card,
+                flash_surcharge,
+            } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 item.cast.as_mut().unwrap().method = CastMethod::GrantedFlashback;
+                item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
                 self.state.objects[card as usize].flashback = true;
                 self.open_payment_announcement(item, Counters::default(), None);
             }

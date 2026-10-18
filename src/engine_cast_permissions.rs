@@ -125,6 +125,7 @@ impl Game {
         method: CastMethod,
         face: CastFace,
         sorcery: bool,
+        flash_surcharge: bool,
     ) -> bool {
         let object = &self.state.objects[card as usize];
         let Some(definition) = (match face {
@@ -134,7 +135,11 @@ impl Game {
         }) else {
             return false;
         };
+        if flash_surcharge && definition.flash_surcharge().is_none() {
+            return false;
+        }
         if !sorcery
+            && !flash_surcharge
             && !definition.is_instant()
             && !definition.info().keywords.contains(Keywords::FLASH)
             && !self.cast_timing_granted(actor, definition)
@@ -145,6 +150,7 @@ impl Game {
             self.cast_preview(actor, card, object.zone, self.object_ref(card), 0, [0; 6]);
         self.set_cast_face(&mut item, face);
         item.cast.as_mut().unwrap().method = method;
+        item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
         if method == CastMethod::Free && definition.x_symbols() > 0 {
             item.x = Some(0);
         }

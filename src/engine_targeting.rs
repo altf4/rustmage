@@ -261,9 +261,6 @@ impl Game {
                     if target == Target::Card(source.card) {
                         return false;
                     }
-                    if target == Target::Card(source.card) {
-                        return false;
-                    }
                     let distinct = matches!(
                         spec.rule,
                         TargetRule::Grouped {

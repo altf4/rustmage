@@ -85,6 +85,7 @@ fn free(card: CardId) -> Action {
     Action::AnnounceFree {
         card,
         face: CastFace::Normal,
+        flash_surcharge: false,
     }
 }
 #[test]
@@ -116,7 +117,10 @@ fn casting_permissions_sphinx_paid_flash_attack_competing_costs_source_exit_and_
         );
         assert!(
             g.legal_actions()
-                .contains(&Action::AnnounceGrantedFlashback { card: spell })
+                .contains(&Action::AnnounceGrantedFlashback {
+                    card: spell,
+                    flash_surcharge: false
+                })
         );
         let original = g.object_ref(spell);
         let snapshot = g.snapshot();
@@ -135,7 +139,13 @@ fn casting_permissions_sphinx_paid_flash_attack_competing_costs_source_exit_and_
                 .legal_actions()
                 .contains(&Action::AnnounceFlashback { card: spell })
         );
-        checked(&mut child, Action::AnnounceGrantedFlashback { card: spell });
+        checked(
+            &mut child,
+            Action::AnnounceGrantedFlashback {
+                card: spell,
+                flash_surcharge: false,
+            },
+        );
         assert!(child.observe(p).graveyard_cast_permissions.is_empty());
         finish_cast(&mut child);
         let item = child.state.stack.last().unwrap();
@@ -163,10 +173,19 @@ fn casting_permissions_sphinx_additional_discard_cost_counter_exit_and_cleanup()
         g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 1];
         assert!(
             !g.legal_actions()
-                .contains(&Action::AnnounceGrantedFlashback { card: spell })
+                .contains(&Action::AnnounceGrantedFlashback {
+                    card: spell,
+                    flash_surcharge: false
+                })
         );
         let discard = fixture(&mut g, p, "Forest", Zone::Hand);
-        checked(&mut g, Action::AnnounceGrantedFlashback { card: spell });
+        checked(
+            &mut g,
+            Action::AnnounceGrantedFlashback {
+                card: spell,
+                flash_surcharge: false,
+            },
+        );
         advance(&mut g, |g| {
             matches!(g.state.pending, Pending::AdditionalCost { .. })
         });
@@ -380,6 +399,7 @@ fn casting_permissions_free_x_zero_kicker_and_alternate_faces_preserve_timing() 
             Action::AnnounceFree {
                 card: omen,
                 face: CastFace::Omen,
+                flash_surcharge: false,
             },
         );
         checked(
@@ -406,6 +426,7 @@ fn casting_permissions_free_x_zero_kicker_and_alternate_faces_preserve_timing() 
             Action::AnnounceFree {
                 card: adventure,
                 face: CastFace::Adventure,
+                flash_surcharge: false,
             },
         );
         finish_cast(&mut g);
@@ -420,6 +441,7 @@ fn casting_permissions_free_x_zero_kicker_and_alternate_faces_preserve_timing() 
             Action::AnnounceFree {
                 card: adventure,
                 face: CastFace::Normal,
+                flash_surcharge: false,
             },
         );
     }
@@ -435,7 +457,13 @@ fn casting_permissions_granted_flashback_x_and_zul_turn_expiry_are_owned() {
             g.state.step == Step::Main2 && g.state.pending == Pending::Priority
         });
         g.state.players[p.index()].mana = [0, 0, 2, 0, 0, 3];
-        checked(&mut g, Action::AnnounceGrantedFlashback { card: spell });
+        checked(
+            &mut g,
+            Action::AnnounceGrantedFlashback {
+                card: spell,
+                flash_surcharge: false,
+            },
+        );
         assert!(matches!(g.state.pending, Pending::X { .. }));
         reject(&mut g, Action::ChooseX { value: 4 });
         checked(&mut g, Action::ChooseX { value: 3 });
@@ -495,5 +523,107 @@ fn casting_permissions_ward_does_not_offer_payment_after_related_spell_is_counte
         settle(&mut g);
         assert_eq!(g.state.players[p.index()].life, life);
         assert_eq!(g.object_view(zul).zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn casting_permissions_free_flash_surcharge_pays_only_extra_cost_for_all_three_supported_bodies() {
+    for p in [Player::P0, Player::P1] {
+        for name in [
+            "Harbinger of the Tides",
+            "Mystical Tether",
+            "Asinine Antics",
+        ] {
+            let mut g = setup(p);
+            fixture(&mut g, p, "Omniscience", Zone::Battlefield);
+            let target = fixture(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            g.state.objects[target as usize].tapped = true;
+            let spell = fixture(&mut g, p, name, Zone::Hand);
+            g.state.active = p.other();
+            g.state.priority = p;
+            let action = Action::AnnounceFree {
+                card: spell,
+                face: CastFace::Normal,
+                flash_surcharge: true,
+            };
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+            reject(&mut g, action.clone());
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+            reject(&mut g, free(spell));
+            reject(&mut g, Action::AnnounceFlashSurcharge { card: spell });
+            checked(&mut g, action);
+            advance(&mut g, |g| {
+                matches!(g.state.pending, Pending::PayCosts { .. })
+            });
+            reject(&mut g, Action::PayCosts { payment: [0; 6] });
+            finish_cast(&mut g);
+            let cast = g.state.stack.last().unwrap().cast.unwrap();
+            assert_eq!(cast.method, CastMethod::Free);
+            assert!(cast.flash_surcharge);
+            assert_eq!(cast.payment, [0, 0, 0, 0, 0, 2]);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            settle(&mut g);
+            match name {
+                "Harbinger of the Tides" => assert_eq!(g.object_view(target).zone, Zone::Hand),
+                "Mystical Tether" => assert_eq!(g.object_view(target).zone, Zone::Exile),
+                "Asinine Antics" => assert_eq!(
+                    g.stats(target),
+                    Stats {
+                        power: 1,
+                        toughness: 1
+                    }
+                ),
+                _ => unreachable!(),
+            }
+        }
+    }
+}
+
+#[test]
+fn casting_permissions_sphinx_flashback_surcharge_retains_printed_cost_and_exile_replacement() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let sphinx = fixture(&mut g, p, "Sphinx of Forgotten Lore", Zone::Battlefield);
+        let target = fixture(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = fixture(&mut g, p, "Asinine Antics", Zone::Graveyard);
+        grant(&mut g, sphinx, spell);
+        let action = Action::AnnounceGrantedFlashback {
+            card: spell,
+            flash_surcharge: true,
+        };
+        g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 3];
+        reject(&mut g, action.clone());
+        g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 4];
+        reject(
+            &mut g,
+            Action::AnnounceGrantedFlashback {
+                card: spell,
+                flash_surcharge: false,
+            },
+        );
+        checked(&mut g, action);
+        advance(&mut g, |g| {
+            matches!(g.state.pending, Pending::PayCosts { .. })
+        });
+        reject(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 2, 0, 0, 0, 2],
+            },
+        );
+        finish_cast(&mut g);
+        let cast = g.state.stack.last().unwrap().cast.unwrap();
+        assert_eq!(cast.method, CastMethod::GrantedFlashback);
+        assert!(cast.flash_surcharge);
+        assert_eq!(cast.payment, [0, 2, 0, 0, 0, 4]);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(target),
+            Stats {
+                power: 1,
+                toughness: 1
+            }
+        );
+        assert_eq!(g.object_view(spell).zone, Zone::Exile);
     }
 }
