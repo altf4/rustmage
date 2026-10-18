@@ -123,6 +123,41 @@ impl Game {
             self.state.stack_copy_data = None;
         }
     }
+    pub(super) fn capture_mana_copies(&mut self, index: usize) {
+        let Some(sources) = self.state.stack[index].mana_copy_sources.take() else {
+            return;
+        };
+        let spell = self.state.stack[index].clone();
+        for (source, amount) in *sources {
+            for _ in 0..amount {
+                let mut trigger = spell.clone();
+                trigger.id = self.next_stack_id();
+                trigger.kind = StackKind::TriggeredAbility { ability: 0 };
+                trigger.card = source.object.card;
+                trigger.object = source.object;
+                trigger.source_card = source.card;
+                trigger.source_facts = source.facts;
+                trigger.source_keywords = source.keywords;
+                trigger.source_tapped = source.tapped;
+                trigger.source_attachment = None;
+                trigger.cast = None;
+                trigger.mode = None;
+                trigger.x = None;
+                trigger.gift = None;
+                trigger.cast_event = None;
+                trigger.source_counter_lki = None;
+                trigger.target_controller_lki = None;
+                trigger.is_copy = false;
+                trigger.targets.clear();
+                trigger.controller = source.controller;
+                trigger.copy_event = Some(Box::new(CopyEvent {
+                    spell: spell.clone(),
+                    amount: 1,
+                }));
+                self.state.pending_triggers.push(trigger);
+            }
+        }
+    }
     pub(super) fn capture_copy_cast(&mut self, stack: Option<usize>, first_trigger: usize) {
         let Some(index) = stack else { return };
         let spell = self.state.stack[index].clone();
@@ -211,6 +246,7 @@ impl Game {
             cast.payment = [0; 6];
         }
         copy.copy_event = None;
+        copy.mana_copy_sources = None;
         copy.cast_event = None;
 
         copy

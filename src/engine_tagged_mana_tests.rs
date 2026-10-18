@@ -437,6 +437,7 @@ fn tagged_mana_guided_scalar_domain_preserves_holes_and_correlated_rows() {
     let quality = Quality {
         restriction: ManaRestrictionView::Unrestricted,
         spell_bonus: ManaSpellBonusView::DragonCreatureHaste,
+        copy_source: None,
         retention: ManaRetention::Step,
     };
     let request = SpendRequest {

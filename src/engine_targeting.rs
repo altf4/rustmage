@@ -1004,7 +1004,7 @@ impl Game {
     }
 
     pub(super) fn cast_item(&mut self, actor: Player, card: CardId, payment: Mana) -> SpellView {
-        let haste = self.spend_mana_for(
+        let outcome = self.spend_mana_for(
             actor,
             payment,
             self.spell_mana_purpose(self.effective_spell_card(card)),
@@ -1021,7 +1021,7 @@ impl Game {
         );
         self.finish_zone_events(std::slice::from_ref(&event), &[]);
         let object = event.after;
-        if haste {
+        if outcome.haste {
             self.grant_stack_keywords(object, Keywords::HASTE);
         }
         let id = self.next_stack_id();
@@ -1033,6 +1033,7 @@ impl Game {
             crew: None,
             cast_event: None,
             copy_event: None,
+            mana_copy_sources: outcome.copies,
             is_copy: false,
             delayed_sacrifice: None,
             delayed_warp_exile: None,
@@ -1291,13 +1292,15 @@ impl Game {
                     announcement.counter_payment.clone(),
                 );
             } else {
-                if self.spend_mana_for(
+                let outcome = self.spend_mana_for(
                     announcement.item.controller,
                     payment,
                     self.purpose_for_item(&announcement.item),
-                ) {
+                );
+                if outcome.haste {
                     self.grant_stack_keywords(announcement.item.object, Keywords::HASTE);
                 }
+                announcement.item.mana_copy_sources = outcome.copies;
                 announcement.item.cast.as_mut().unwrap().payment = payment;
             }
         }

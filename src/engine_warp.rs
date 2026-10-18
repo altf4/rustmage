@@ -94,6 +94,7 @@ impl Game {
                 crew: None,
                 cast_event: None,
                 copy_event: None,
+                mana_copy_sources: None,
                 is_copy: false,
                 delayed_sacrifice: None,
                 x: None,

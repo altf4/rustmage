@@ -722,6 +722,7 @@ impl Game {
             crew: None,
             cast_event: None,
             copy_event: None,
+            mana_copy_sources: None,
             is_copy: false,
             delayed_sacrifice: None,
             delayed_warp_exile: None,
@@ -946,6 +947,9 @@ impl Game {
             }
         }
         self.capture_copy_cast(stack, first_trigger);
+        if let Some(index) = stack {
+            self.capture_mana_copies(index);
+        }
     }
 
     /// Apply one simultaneous tap event, then collect source-owned triggers.

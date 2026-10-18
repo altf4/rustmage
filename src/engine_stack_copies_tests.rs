@@ -9,6 +9,15 @@ fn named(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
 fn announce(g: &mut Game, card: CardId, targets: &[Target]) {
     checked(g, Action::AnnounceCast { card });
     for _ in 0..20 {
+        if let Some(range) = g.mana_lot_spend_range() {
+            checked(
+                g,
+                Action::ChooseManaLotSpend {
+                    amount: range.maximum,
+                },
+            );
+            continue;
+        }
         if g.state.announcing.is_none() {
             return;
         }
@@ -482,5 +491,143 @@ fn copied_teach_creates_its_own_delayed_trigger_without_consuming_the_next_cast(
         assert_eq!(g.state.players[p.other().index()].life, 14);
         assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 3);
         assert!(g.observe(p).delayed_spell_copies.is_empty());
+    }
+}
+fn tap_goggles(g: &mut Game, card: CardId) {
+    checked(
+        g,
+        Action::ActivateMana {
+            card,
+            ability: 0,
+            production: [0, 0, 0, 1, 0, 0],
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+        },
+    );
+}
+#[test]
+fn goggles_tagged_mana_copies_after_producer_departure_through_raw_paid_cast() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.state.players[p.index()].mana = [0; 6];
+        let goggles = named(&mut g, p, "Pyromancer's Goggles", Zone::Battlefield);
+        let source = g.object_ref(goggles);
+        tap_goggles(&mut g, goggles);
+        let lot = &g.observe(p).mana_lots[0];
+        assert_eq!(lot.spell_bonus, ManaSpellBonusView::CopyRedInstantSorcery);
+        assert_eq!(lot.copy_source.unwrap().object, source);
+        g.move_object(goggles, Zone::Graveyard);
+        let shock = named(&mut g, p, "Shock", Zone::Hand);
+        let cast = g.legal_actions().into_iter().find(|a| matches!(a, Action::Cast { card, target: Some(Target::Player(t)), .. } if *card == shock && *t == p.other())).unwrap();
+        checked(&mut g, cast);
+        let trigger = g
+            .state
+            .stack
+            .iter()
+            .find(|s| s.copy_event.is_some())
+            .unwrap();
+        assert_eq!(trigger.object, source);
+        assert_eq!(trigger.source_card.name(), "Pyromancer's Goggles");
+        assert_eq!(trigger.controller, p);
+        progress(&mut g, false);
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
+        assert!(g.mana_lots(p).is_empty());
+    }
+}
+#[test]
+fn goggles_mana_is_unrestricted_and_only_spent_red_instant_or_sorcery_mana_copies() {
+    for p in [Player::P0, Player::P1] {
+        for name in ["Bear Cub", "Fanatical Firebrand", "Think Twice"] {
+            let mut g = setup(p);
+            g.state.players[p.index()].mana = [0; 6];
+            let goggles = named(&mut g, p, "Pyromancer's Goggles", Zone::Battlefield);
+            tap_goggles(&mut g, goggles);
+            if name == "Bear Cub" {
+                g.state.players[p.index()].mana[4] = 1;
+            }
+            if name == "Think Twice" {
+                g.state.players[p.index()].mana[1] = 1;
+            }
+            let id = named(&mut g, p, name, Zone::Hand);
+            announce(&mut g, id, &[]);
+            progress(&mut g, false);
+            assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
+            assert!(g.state.stack_copy_data.is_none());
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert_eq!(
+                g.state.players[p.index()].cards_drawn_this_turn,
+                u64::from(name == "Think Twice")
+            );
+        }
+    }
+}
+#[test]
+fn each_goggles_mana_unit_creates_an_independent_copy_trigger() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.state.players[p.index()].mana = [0; 6];
+        let first = named(&mut g, p, "Pyromancer's Goggles", Zone::Battlefield);
+        tap_goggles(&mut g, first);
+        g.move_object(first, Zone::Graveyard);
+        let second = named(&mut g, p, "Pyromancer's Goggles", Zone::Battlefield);
+        tap_goggles(&mut g, second);
+        assert_eq!(g.mana_lots(p).len(), 2);
+        g.state.players[p.index()].mana[5] = 3;
+        let burst = named(&mut g, p, "Burst Lightning", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: burst });
+        checked(&mut g, Action::ChooseKicker { pay: true });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        pay(&mut g);
+        let copies: Vec<_> = g
+            .state
+            .stack
+            .iter()
+            .chain(g.state.ordering_triggers.iter())
+            .filter(|s| s.copy_event.is_some())
+            .collect();
+        assert_eq!(copies.len(), 2);
+        assert_ne!(copies[0].object, copies[1].object);
+        progress(&mut g, false);
+        assert_eq!(g.state.players[p.other().index()].life, 8);
+        assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 1);
+    }
+}
+#[test]
+fn mana_allocation_can_keep_goggles_mana_unspent_and_zero_payment_has_no_bonus() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.state.players[p.index()].mana = [0; 6];
+        let goggles = named(&mut g, p, "Pyromancer's Goggles", Zone::Battlefield);
+        tap_goggles(&mut g, goggles);
+        let before = g.snapshot();
+        let outcome = g.spend_mana_for(
+            p,
+            [0; 6],
+            g.spell_mana_purpose(Card::from_name("Shock").unwrap()),
+        );
+        assert_eq!(g.snapshot(), before);
+        assert!(!outcome.haste && outcome.copies.is_none());
+        g.state.players[p.index()].mana[3] += 1;
+        let shock = named(&mut g, p, "Shock", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: shock });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        pay(&mut g);
+        let range = g.mana_lot_spend_range().unwrap();
+        assert_eq!((range.minimum, range.maximum), (0, 1));
+        checked(&mut g, Action::ChooseManaLotSpend { amount: 0 });
+        progress(&mut g, false);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        assert_eq!(g.mana_lots(p)[0].amounts[3], 1);
     }
 }

@@ -316,6 +316,7 @@ pub(crate) enum ManaRestriction {
 pub(crate) enum ManaSpellBonus {
     None,
     DragonCreatureHaste,
+    CopyRedInstantSorcery,
 }
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, Serialize)]
 pub enum ManaRetention {
@@ -1947,6 +1948,8 @@ pub(crate) enum EntryPredicate {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    /// Delayed ability carried by a produced mana unit, independent of its source.
+    ManaSpentForSpell,
     /// Explicit printed source zone; legacy events keep their existing origins.
     InZone {
         zone: TargetZone,

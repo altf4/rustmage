@@ -1,6 +1,8 @@
 #[path = "engine_mana_lots.rs"]
 mod mana_lots;
-pub use mana_lots::{ManaLotSpendRange, ManaLotView, ManaRestrictionView, ManaSpellBonusView};
+pub use mana_lots::{
+    ManaCopySource, ManaLotSpendRange, ManaLotView, ManaRestrictionView, ManaSpellBonusView,
+};
 #[path = "engine_copies.rs"]
 mod copies;
 #[path = "engine_stack_copies.rs"]
@@ -797,6 +799,9 @@ pub struct SpellView {
     pub crew: Option<Box<CrewContext>>,
     pub cast_event: Option<Box<CastPaymentEvent>>,
     pub copy_event: Option<Box<stack_copies::CopyEvent>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[allow(clippy::box_collection)]
+    pub mana_copy_sources: Option<Box<Vec<(ManaCopySource, u64)>>>,
     pub is_copy: bool,
     pub delayed_sacrifice: Option<Box<DelayedSacrificeView>>,
     pub delayed_warp_exile: Option<Box<DelayedWarpExileView>>,
@@ -873,7 +878,10 @@ impl SpellView {
     }
     /// Heap-owned continuation payloads; inline packet storage is counted by its container.
     pub(super) fn owned_bytes(&self) -> usize {
-        self.copy_event.as_ref().map_or(0, |event| {
+        self.mana_copy_sources.as_ref().map_or(0, |sources| {
+            std::mem::size_of::<Vec<(ManaCopySource, u64)>>()
+                + sources.len() * std::mem::size_of::<(ManaCopySource, u64)>()
+        }) + self.copy_event.as_ref().map_or(0, |event| {
             std::mem::size_of::<stack_copies::CopyEvent>() + event.spell.owned_bytes()
         }) + self.source_counter_lki.as_ref().map_or(0, |facts| {
             std::mem::size_of::<Vec<SourceCounterQuantityView>>()
@@ -3697,9 +3705,11 @@ impl Game {
                     self.state.announcing.as_mut().unwrap().payment = Some(payment);
                 } else {
                     let item = self.state.stack.last().unwrap().clone();
-                    if self.spend_mana_for(actor, payment, self.purpose_for_item(&item)) {
+                    let outcome = self.spend_mana_for(actor, payment, self.purpose_for_item(&item));
+                    if outcome.haste {
                         self.grant_stack_keywords(item.object, Keywords::HASTE);
                     }
+                    self.state.stack.last_mut().unwrap().mana_copy_sources = outcome.copies;
                     self.state
                         .stack
                         .last_mut()
