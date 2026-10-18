@@ -485,3 +485,101 @@ fn cast_origins_vizier_mana_substitution_does_not_change_convoke_colors() {
         );
     }
 }
+#[test]
+fn cast_origins_etali_free_time_stop_exiles_remaining_stack_and_resets_actual_turn_quota() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let muldrotha = put(&mut g, p, "Muldrotha, the Gravetide", Zone::Battlefield);
+        let source = g.object_ref(muldrotha);
+        let lion = put(&mut g, p, "Savannah Lions", Zone::Graveyard);
+        checked(
+            &mut g,
+            graveyard_play(lion, source, PermanentType::Creature),
+        );
+        finish(&mut g);
+        settle(&mut g);
+        let next = put(&mut g, p, "Brineborn Cutthroat", Zone::Graveyard);
+        assert!(!g.legal_actions().contains(&graveyard_play(
+            next,
+            source,
+            PermanentType::Creature
+        )));
+        let etali = put(&mut g, p, "Etali, Primal Storm", Zone::Battlefield);
+        let stop = put(&mut g, p, "Time Stop", Zone::Library);
+        let shock = put(&mut g, p.other(), "Shock", Zone::Library);
+        etali_attack(&mut g, p, etali);
+        let object = g.object_ref(shock);
+        checked(&mut g, effect_cast(object));
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        finish(&mut g);
+        let object = g.object_ref(stop);
+        checked(&mut g, effect_cast(object));
+        finish(&mut g);
+        assert_eq!(g.state.stack.len(), 2);
+        checked(&mut g, Action::FinishResolutionCasts);
+        let turn = g.state.turn;
+        settle(&mut g);
+        assert_eq!(g.state.turn, turn + 1);
+        assert_eq!(g.state.active, p.other());
+        assert_eq!(g.state.objects[shock as usize].zone, Zone::Exile);
+        assert_eq!(g.state.objects[stop as usize].zone, Zone::Exile);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+        assert!(g.state.resolution_free_casts.is_none());
+        assert!(g.state.graveyard_type_uses.is_none());
+        assert!(!g.legal_actions().contains(&graveyard_play(
+            next,
+            source,
+            PermanentType::Creature
+        )));
+        super::ability_timeline_tests::next_turn(&mut g);
+        assert_eq!(g.state.active, p);
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 1];
+        assert!(
+            g.legal_actions()
+                .contains(&graveyard_play(next, source, PermanentType::Creature))
+        );
+    }
+}
+#[test]
+fn cast_origins_muldrotha_quotas_survive_cleanup_priority_and_retire_departed_sources() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let m = put(&mut g, p, "Muldrotha, the Gravetide", Zone::Battlefield);
+        let source = g.object_ref(m);
+        let card = put(&mut g, p, "Brineborn Cutthroat", Zone::Graveyard);
+        checked(
+            &mut g,
+            graveyard_play(card, source, PermanentType::Creature),
+        );
+        finish(&mut g);
+        settle(&mut g);
+        let next = put(&mut g, p, "Brineborn Cutthroat", Zone::Graveyard);
+        // A trigger awaiting placement gives a cleanup priority cycle; it does
+        // not make this a fresh turn or replenish the source's printed quota.
+        let rat = put(&mut g, p, "Burglar Rat", Zone::Battlefield);
+        let rat_view = g.object_view(rat);
+        assert!(g.queue_trigger(&rat_view, 0));
+        g.state.step = Step::Cleanup;
+        let turn = g.state.turn;
+        g.finish_cleanup();
+        assert_eq!(g.state.turn, turn);
+        assert!(
+            g.state
+                .graveyard_type_uses
+                .as_ref()
+                .is_some_and(|rows| !rows.is_empty())
+        );
+        assert!(!g.legal_actions().contains(&graveyard_play(
+            next,
+            source,
+            PermanentType::Creature
+        )));
+        g.move_object(m, Zone::Graveyard);
+        assert!(g.state.graveyard_type_uses.is_none());
+    }
+}
