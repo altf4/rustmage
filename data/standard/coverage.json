@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "72fb9e9d37048664818c09dff534c253fb60096dc386b00979dc15989ed6650c",
+  "catalogue_version": "cafaf2ba00332129e4ba45f5feb778248e975cd4ff5f5d2404d0d497ddff96e5",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2141,
-  "implemented_total": 2147,
+  "implemented_standard_cards": 2145,
+  "implemented_total": 2151,
   "token_definitions": 103,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 384,
-      "gated": 43
+      "complete": 387,
+      "gated": 40
     },
     "fin": {
       "total": 305,
@@ -122,8 +122,8 @@
     },
     "msc": {
       "total": 68,
-      "complete": 43,
-      "gated": 25
+      "complete": 44,
+      "gated": 24
     },
     "msh": {
       "total": 273,
@@ -5449,8 +5449,8 @@
     {
       "name": "Carnelian Orb of Dragonkind",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/carnelian_orb_of_dragonkind.rs",
       "set": "fdn"
     },
@@ -14097,8 +14097,8 @@
     {
       "name": "Giada, Font of Hope",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/giada_font_of_hope.rs",
       "set": "fdn"
     },
@@ -29761,8 +29761,8 @@
     {
       "name": "Savage Ventmaw",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/savage_ventmaw.rs",
       "set": "fdn"
     },
@@ -30265,8 +30265,8 @@
     {
       "name": "Secluded Courtyard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/secluded_courtyard.rs",
       "set": "msc"
     },

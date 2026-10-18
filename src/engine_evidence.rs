@@ -129,9 +129,13 @@ impl Game {
             reserve: None,
         };
         if collect {
-            self.can_fund_evidence(goal, card.collect_evidence_cost().unwrap())
+            self.can_fund_evidence_for(
+                goal,
+                card.collect_evidence_cost().unwrap(),
+                self.spell_mana_purpose(card),
+            )
         } else {
-            self.can_fund(goal)
+            self.can_fund_for(goal, self.spell_mana_purpose(card))
         }
     }
     pub(super) fn evidence_intent_fundable(&self, collect: bool) -> bool {

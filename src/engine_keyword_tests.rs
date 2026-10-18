@@ -234,7 +234,7 @@ fn granted_flying_changes_blocking_and_layer7_flying_anthem_immediately() {
             .iter()
             .any(|a| matches!(a,Action::Block{blocker,..} if *blocker==ground))
     );
-    g.state.objects[ground as usize].gained_keywords = Keywords::REACH;
+    g.grant_keyword_effects(&[ground], g.object_ref(ground), Keywords::REACH);
     assert!(
         g.legal_actions()
             .iter()

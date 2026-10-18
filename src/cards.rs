@@ -304,16 +304,68 @@ pub(crate) struct ChosenModifier {
     pub stats: Stats,
     pub source_counter: Option<CounterKind>,
 }
+/// Rules attached to produced mana, captured independently of its producer.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ManaRestriction {
+    Unrestricted,
+    SpellSubtype(&'static str),
+    ChosenCreatureSpellOrActivation,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ManaSpellBonus {
+    None,
+    DragonCreatureHaste,
+}
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, Serialize)]
+pub enum ManaRetention {
+    #[default]
+    Step,
+    Combat,
+    Turn,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct ManaQuality {
+    pub restriction: ManaRestriction,
+    pub spell_bonus: ManaSpellBonus,
+    pub retention: ManaRetention,
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ManaProduction {
+    Tagged {
+        production: &'static ManaProduction,
+        quality: &'static ManaQuality,
+    },
     ChosenColor,
     Fixed(Mana),
-    CountSubtype { color: u8, subtype: &'static str },
-    Choice { mask: u8, amount: u32 },
+    CountSubtype {
+        color: u8,
+        subtype: &'static str,
+    },
+    Choice {
+        mask: u8,
+        amount: u32,
+    },
 }
 impl ManaProduction {
+    pub(crate) const fn any_color(amount: u32) -> Self {
+        Self::Choice {
+            mask: (1 << ChoiceColor::White.index())
+                | (1 << ChoiceColor::Blue.index())
+                | (1 << ChoiceColor::Black.index())
+                | (1 << ChoiceColor::Red.index())
+                | (1 << ChoiceColor::Green.index()),
+            amount,
+        }
+    }
+    pub(crate) fn base(self) -> Self {
+        match self {
+            Self::Tagged { production, .. } => production.base(),
+            value => value,
+        }
+    }
     pub(crate) fn visit(self, mut emit: impl FnMut(Mana) -> bool) -> bool {
         match self {
+            Self::Tagged { production, .. } => production.visit(emit),
             Self::ChosenColor | Self::CountSubtype { .. } => {
                 panic!("dynamic mana requires a characteristic world")
             }

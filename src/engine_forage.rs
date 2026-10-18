@@ -127,9 +127,19 @@ impl Game {
         spec: AdditionalCost,
         route: Option<ForageRoute>,
     ) -> bool {
+        let purpose = self.funding_purpose(&goal);
+        self.forage_cost_fundable_for(goal, spec, route, purpose)
+    }
+    pub(super) fn forage_cost_fundable_for(
+        &self,
+        goal: FundingGoal,
+        spec: AdditionalCost,
+        route: Option<ForageRoute>,
+        purpose: mana_lots::Purpose,
+    ) -> bool {
         if route.is_none_or(|r| r == ForageRoute::ExileThree)
             && self.forage_graveyard_count(goal.actor) >= 3
-            && self.can_fund(goal.clone())
+            && self.can_fund_for(goal.clone(), purpose)
         {
             return true;
         }
@@ -141,10 +151,13 @@ impl Game {
                     goal.actor,
                     goal.source.as_ref().map_or(r, |s| s.0),
                     r,
-                ) && self.can_fund(FundingGoal {
-                    reserve: Some((r, food_cost())),
-                    ..goal.clone()
-                })
+                ) && self.can_fund_for(
+                    FundingGoal {
+                        reserve: Some((r, food_cost())),
+                        ..goal.clone()
+                    },
+                    purpose,
+                )
             })
         {
             return true;
@@ -156,7 +169,7 @@ impl Game {
             black.required[2] = black.required[2]
                 .checked_add(1)
                 .capacity("forage alternative mana cost exhausted");
-            return self.can_fund(black);
+            return self.can_fund_for(black, purpose);
         }
         false
     }
@@ -202,10 +215,13 @@ impl Game {
             Some(ForageRoute::Food) => {
                 self.additional_candidate(food_cost(), p, r, r)
                     && self.state.announcing.as_ref().is_none_or(|a| {
-                        self.can_fund(FundingGoal {
-                            reserve: Some((r, food_cost())),
-                            ..self.funding_goal(a)
-                        })
+                        self.can_fund_for(
+                            FundingGoal {
+                                reserve: Some((r, food_cost())),
+                                ..self.funding_goal(a)
+                            },
+                            self.purpose_for_item(&a.item),
+                        )
                     })
             }
             _ => false,

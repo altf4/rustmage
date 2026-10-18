@@ -12,9 +12,12 @@ impl ActivatedAbility {
 }
 
 impl Game {
+    pub(super) fn spend_mana(&mut self, actor: Player, payment: Mana) {
+        self.spend_mana_for(actor, payment, mana_lots::Purpose::Other);
+    }
     /// Payment origins have no independent effects in the admitted subset.
     /// Spend red that expires sooner first, retaining the longer-lived subset.
-    pub(super) fn spend_mana(&mut self, actor: Player, payment: Mana) {
+    pub(super) fn spend_ordinary_mana(&mut self, actor: Player, payment: Mana) {
         let player = &mut self.state.players[actor.index()];
         let ordinary_red = player.mana[3] - player.combat_red_mana;
         let retained_paid = payment[3].saturating_sub(ordinary_red);
@@ -483,7 +486,7 @@ impl Game {
         definition: &ActivatedAbility,
     ) {
         let cost: ActivationCost = definition.cost;
-        self.spend_mana(item.controller, payment);
+        self.spend_mana_for(item.controller, payment, self.purpose_for_item(item));
         self.lose_life(item.controller, i128::from(cost.life));
         let object = &mut self.state.objects[item.card as usize];
         if object.generation != item.object.generation || object.zone != definition.source_zone() {

@@ -38,6 +38,7 @@ pub(crate) struct StaticAbilityGroup {
 pub(crate) enum StaticAbilityFragment {
     AttachedCharacteristics(&'static AttachedCharacteristics),
     ChosenCreatureType,
+    OtherSubtypeEntryCounters(&'static str),
     ChosenModifier(ChosenModifier),
     PlayerHexproof,
     QualifiedHexproof(SourceCharacteristicFilter),

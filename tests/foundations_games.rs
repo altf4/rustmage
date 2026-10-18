@@ -749,6 +749,9 @@ fn run_matrix_actions_observed(
 #[path = "common/foundations_copy_games.rs"]
 mod copy_games;
 
+#[path = "common/foundations_mana_games.rs"]
+mod mana_games;
+
 #[path = "common/foundations_characteristic_modal_games.rs"]
 mod characteristic_modal_games;
 

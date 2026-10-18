@@ -183,7 +183,12 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
 ) -> Option<AbilityEvaluation> {
     (world.has_ability_removal()
         || world.game().state.roles.as_ref().is_some_and(|r| {
-            r.animations.iter().any(|row| {
+            r.keyword_effects.iter().any(|row| {
+                matches!(
+                    world.object(row.recipient.card).zone,
+                    Zone::Battlefield | Zone::Stack
+                ) && world.reference(row.recipient.card) == row.recipient
+            }) || r.animations.iter().any(|row| {
                 row.keywords != Keywords::NONE
                     && world.object(row.object.card).zone == Zone::Battlefield
                     && world.reference(row.object.card) == row.object
@@ -205,7 +210,11 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             let object = world.object(i as CardId);
             LayerSixObject {
                 printed: true,
-                keywords: object.card.keywords(),
+                keywords: if object.zone == Zone::Stack {
+                    game.effective_spell_card(i as CardId).keywords()
+                } else {
+                    object.card.keywords()
+                },
                 grants: Vec::new(),
                 mana: Vec::new(),
             }
@@ -296,7 +305,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
     if let Some(state) = &game.state.roles {
         for row in &state.keyword_effects {
             let object = world.object(row.recipient.card);
-            if object.zone == Zone::Battlefield
+            if matches!(object.zone, Zone::Battlefield | Zone::Stack)
                 && world.reference(row.recipient.card) == row.recipient
                 && row.expires_turn.is_none_or(|turn| turn == game.state.turn)
             {
@@ -407,8 +416,10 @@ pub(super) fn apply_rule_effects<W: CharacteristicWorld + ?Sized>(
     }
     if let Some(state) = &game.state.roles {
         for row in &state.keyword_effects {
-            if world.object(row.recipient.card).zone == Zone::Battlefield
-                && world.reference(row.recipient.card) == row.recipient
+            if matches!(
+                world.object(row.recipient.card).zone,
+                Zone::Battlefield | Zone::Stack
+            ) && world.reference(row.recipient.card) == row.recipient
                 && row.expires_turn.is_none_or(|turn| turn == game.state.turn)
             {
                 let object = &mut evaluation.result.objects[row.recipient.card as usize];

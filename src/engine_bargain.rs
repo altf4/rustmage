@@ -31,13 +31,16 @@ impl Game {
                 .saturating_sub(self.state.objects[card as usize].card.bargain_reduction());
         }
         let cost = self.reduced_spell_cost(actor, card, cost);
-        self.can_fund(FundingGoal {
-            actor,
-            required: cost.colored,
-            generic: cost.generic,
-            source: None,
-            reserve: sacrifice.map(|r| (r, COST)),
-        })
+        self.can_fund_for(
+            FundingGoal {
+                actor,
+                required: cost.colored,
+                generic: cost.generic,
+                source: None,
+                reserve: sacrifice.map(|r| (r, COST)),
+            },
+            self.spell_mana_purpose(self.effective_spell_card(card)),
+        )
     }
     pub(super) fn initial_bargain_fundable(
         &self,

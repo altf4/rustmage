@@ -308,8 +308,10 @@ impl CharacteristicQuery<'_> {
         (stats, keywords)
     }
     pub(super) fn keywords(&self, id: CardId) -> Keywords {
-        if self.on_battlefield(id)
-            && let Some(evaluation) = self.evaluation.as_ref()
+        if matches!(
+            self.state.objects[id as usize].zone,
+            Zone::Battlefield | Zone::Stack
+        ) && let Some(evaluation) = self.evaluation.as_ref()
         {
             return evaluation.result.objects[id as usize].keywords;
         }
