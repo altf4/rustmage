@@ -1,6 +1,7 @@
 //! Any-origin current-incarnation history and whole Nightmare-copy resolution.
 use super::ability_timeline_tests::{cast, checked, named, settle, setup};
 use super::*;
+use crate::CreatureType;
 fn gated(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
     super::tests::spawn(g, p, Card::from_name(name).unwrap(), zone)
 }
