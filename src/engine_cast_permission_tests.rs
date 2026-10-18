@@ -2,6 +2,7 @@
 use super::ability_timeline_tests::{cast, checked, next_turn, settle, setup};
 use super::tests::spawn;
 use super::*;
+use crate::cards::CreatureType;
 
 fn fixture(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
     spawn(g, p, Card::from_name(name).unwrap(), zone)
@@ -761,5 +762,140 @@ fn granted_flashback_additional_discard_cannot_spend_angel_only_mana() {
                 .iter()
                 .any(|o| o.card == Card::Island && o.zone == Zone::Graveyard)
         );
+    }
+}
+
+// Exercise the generic permission core with an already supported Adventure.
+// This calls the production grant directly, not Zul's Zombie-only target action:
+// Gollum is a Halfling. Paid Zul tests above independently verify that filter.
+fn direct_adventure_card_permission(g: &mut Game, p: Player, kind: GraveyardCastKind) -> CardId {
+    let source = fixture(g, p, "Zul Ashur, Lich Lord", Zone::Battlefield);
+    let card = fixture(
+        g,
+        p,
+        "Gollum, Silent Slinker // Meager Meal",
+        Zone::Graveyard,
+    );
+    let mut item = g.cast_preview(
+        p,
+        source,
+        Zone::Battlefield,
+        g.object_ref(source),
+        0,
+        [0; 6],
+    );
+    item.targets.push(g.bind_target(Target::Card(card)));
+    g.grant_graveyard_cast(&item, kind);
+    let event = g.transition_object(g.object_view(source), Zone::Graveyard, false);
+    g.finish_zone_events(&[event], &[]);
+    card
+}
+
+#[test]
+fn exact_card_permission_casts_normal_or_adventure_with_actual_face_mana_then_recasts() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let card = direct_adventure_card_permission(&mut g, p, GraveyardCastKind::Cast);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
+        let court = fixture(&mut g, p, "Secluded Courtyard", Zone::Battlefield);
+        g.set_entry_value(
+            g.object_ref(court),
+            EntryChoiceValue::CreatureType(CreatureType::from_name("Halfling").unwrap()),
+        );
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: court,
+                ability: 1,
+                production: [0, 0, 1, 0, 0, 0],
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+            },
+        );
+        let original = g.object_ref(card);
+        let choice = g.snapshot();
+        assert!(g.legal_actions().contains(&Action::AnnounceCast { card }));
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceAdventure { card })
+        );
+        reject(&mut g, Action::AnnounceAdventure { card });
+        checked(&mut g, Action::AnnounceCast { card });
+        finish_cast(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(card).zone, Zone::Battlefield);
+        g.restore(&choice).unwrap();
+        assert_eq!(g.object_ref(card), original);
+        g.add_mana(p, [0, 0, 1, 0, 0, 0]);
+        checked(&mut g, Action::AnnounceAdventure { card });
+        finish_cast(&mut g);
+        let item = g.state.stack.last().unwrap();
+        let cast = item.cast.unwrap();
+        assert_eq!(cast.origin, Zone::Graveyard);
+        assert_eq!(cast.face, CastFace::Adventure);
+        assert_eq!(cast.method, CastMethod::Normal);
+        assert_eq!(cast.payment, [0, 0, 1, 0, 0, 0]);
+        assert_eq!(item.source_card.name(), "Meager Meal");
+        assert!(!item.source_card.is_creature());
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 1, 0, 0, 3]);
+        assert!(!g.has_graveyard_cast(p, card, GraveyardCastKind::Cast));
+        settle(&mut g);
+        assert_eq!(g.object_view(card).zone, Zone::Exile);
+        assert!(g.can_play_adventure(p, card));
+        let exiled = g.object_ref(card);
+        assert_ne!(original, exiled);
+        checked(&mut g, Action::AnnounceExile { card });
+        finish_cast(&mut g);
+        let cast = g.state.stack.last().unwrap().cast.unwrap();
+        assert_eq!(cast.origin, Zone::Exile);
+        assert_eq!(cast.face, CastFace::Normal);
+        assert_eq!(cast.payment, [0, 0, 1, 0, 0, 3]);
+        settle(&mut g);
+        assert_eq!(g.object_view(card).zone, Zone::Battlefield);
+        assert!(!g.can_play_adventure(p, card));
+    }
+}
+
+#[test]
+fn alternate_graveyard_face_requires_exact_unexpired_card_permission_not_flashback() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let card = direct_adventure_card_permission(&mut g, p, GraveyardCastKind::Cast);
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceAdventure { card })
+        );
+        let permission = g.snapshot();
+        next_turn(&mut g);
+        advance(&mut g, |g| {
+            g.state.active == p
+                && g.state.step == Step::Main1
+                && g.state.pending == Pending::Priority
+        });
+        g.add_mana(p, [30; 6]);
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceAdventure { card })
+        );
+        reject(&mut g, Action::AnnounceAdventure { card });
+        g.restore(&permission).unwrap();
+        let old = g.object_ref(card);
+        for zone in [Zone::Hand, Zone::Graveyard] {
+            let event = g.transition_object(g.object_view(card), zone, false);
+            g.finish_zone_events(&[event], &[]);
+        }
+        assert_ne!(old, g.object_ref(card));
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceAdventure { card })
+        );
+        reject(&mut g, Action::AnnounceAdventure { card });
+        let mut g = setup(p);
+        let card = direct_adventure_card_permission(&mut g, p, GraveyardCastKind::Flashback);
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceAdventure { card })
+        );
+        reject(&mut g, Action::AnnounceAdventure { card });
     }
 }
