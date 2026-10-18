@@ -544,6 +544,28 @@ fn run_matrix_actions(
     expected_openings: &[&str],
     seeds: &[u64],
 ) {
+    run_matrix_actions_observed(
+        decks,
+        expected_casts,
+        expected_lands,
+        expected_mana_sources,
+        expected_openings,
+        seeds,
+        None,
+    );
+}
+
+type MatrixObserver<'a> = dyn FnMut(&rustmage::Observation, &rustmage::Observation, bool) + 'a;
+
+fn run_matrix_actions_observed(
+    decks: &[Vec<Card>],
+    expected_casts: &[&str],
+    expected_lands: &[&str],
+    expected_mana_sources: &[&str],
+    expected_openings: &[&str],
+    seeds: &[u64],
+    mut observer: Option<&mut MatrixObserver<'_>>,
+) {
     let mut opening_permanents = BTreeSet::new();
     let mut played_lands = BTreeSet::new();
     let mut used_mana_sources = BTreeSet::new();
@@ -608,7 +630,8 @@ fn run_matrix_actions(
                     triggered |= obs.stack.iter().any(|item| item.kind != StackKind::Spell);
                     token |= obs.objects.iter().any(|o| o.token.is_some());
                     combat |= !obs.attackers.is_empty();
-                    if decisions % 47 == 0 {
+                    let owned_replay = decisions % 47 == 0;
+                    if owned_replay {
                         let revision = game.revision();
                         let before = game.snapshot();
                         assert_eq!(
@@ -640,6 +663,9 @@ fn run_matrix_actions(
                         branches += 1;
                     } else {
                         game.apply(actor, action).unwrap();
+                    }
+                    if let Some(observer) = &mut observer {
+                        observer(&obs, &game.observe(actor), owned_replay);
                     }
                     decisions += 1;
                 }
@@ -680,3 +706,6 @@ fn run_matrix_actions(
         new_spells.len()
     );
 }
+
+#[path = "common/foundations_copy_games.rs"]
+mod copy_games;
