@@ -42,7 +42,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 Instruction::PutCounters { kind, .. } => Some(*kind == CounterKind::PlusOne),
                 Instruction::DoubleCounters => Some(true),
                 Instruction::GrantKeywords { .. } => Some(true),
-                Instruction::Connive { .. } => Some(true),
+                Instruction::Connive { .. }
+                | Instruction::CreateCopyToken { .. }
+                | Instruction::CreateCopyTokenWithExceptions { .. } => Some(true),
                 Instruction::Grow {
                     power, toughness, ..
                 }
@@ -258,6 +260,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             // Once a complete target set is legal, commit it instead of
             // revisiting optional edits (which may otherwise oscillate).
             Action::FinishStackTargets => 100,
+            Action::AllocateTargetAmount { amount } => 100 + i128::from(*amount),
             Action::RestoreStackTarget { .. } => -1,
             Action::SetStackTarget { index, target } => observation
                 .retarget

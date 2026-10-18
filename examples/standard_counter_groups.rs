@@ -19,9 +19,10 @@ fn deck(lands: &[(&str, usize)], spells: &[&str]) -> Vec<Card> {
 fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
     let name = item.source_card.name();
     let known = match item.kind {
-        StackKind::DelayedReturn | StackKind::DelayedSacrifice | StackKind::DelayedWarpExile => {
-            false
-        }
+        StackKind::CopyEndStepSacrifice
+        | StackKind::DelayedReturn
+        | StackKind::DelayedSacrifice
+        | StackKind::DelayedWarpExile => false,
         StackKind::Spell => matches!(
             name,
             "Darkness Descends" | "The Crystal's Chosen" | "Duty Beyond Death"

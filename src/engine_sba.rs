@@ -44,11 +44,12 @@ impl Game {
             pairs: Vec::new(),
             groups: Vec::new(),
             roles: Vec::new(),
-            lost: self
-                .state
-                .players
-                .each_ref()
-                .map(|p| p.life <= 0 || p.poison_counters >= 10 || p.attempted_empty_draw),
+            lost: self.allowed_game_losses(
+                self.state
+                    .players
+                    .each_ref()
+                    .map(|p| p.life <= 0 || p.poison_counters >= 10 || p.attempted_empty_draw),
+            ),
         };
         let mut legends: [std::collections::BTreeMap<&'static str, Vec<ObjectRef>>; 2] =
             std::array::from_fn(|_| std::collections::BTreeMap::new());
@@ -186,6 +187,12 @@ impl Game {
                 }
             }
             let batch = self.collect_sba_batch();
+            // Consume prevented empty-library draws at this actual SBA check.
+            for p in [Player::P0, Player::P1] {
+                if self.state.players[p.index()].attempted_empty_draw && self.cant_lose_game(p) {
+                    self.state.players[p.index()].attempted_empty_draw = false;
+                }
+            }
             let changed = !batch.deaths.is_empty()
                 || !batch.detached.is_empty()
                 || !batch.ceased.is_empty()
@@ -313,14 +320,6 @@ impl Game {
         }
         self.finish_zone_events(&events, &sources);
         self.state.pending = batch.resume;
-        self.state.outcome = match batch.lost {
-            [true, true] => Some(Outcome::Draw),
-            [true, false] => Some(Outcome::Winner(Player::P1)),
-            [false, true] => Some(Outcome::Winner(Player::P0)),
-            _ => None,
-        };
-        if self.state.outcome.is_some() {
-            self.state.pending = Pending::Terminal;
-        }
+        self.commit_game_losses(batch.lost);
     }
 }

@@ -1,3 +1,8 @@
+#[path = "engine_endgame.rs"]
+mod endgame;
+#[cfg(test)]
+#[path = "engine_endgame_tests.rs"]
+mod endgame_tests;
 #[cfg(test)]
 #[path = "engine_zone_replacement_tests.rs"]
 mod zone_replacement_tests;
@@ -17,7 +22,13 @@ mod stack_copies;
 #[path = "engine_stack_copies_tests.rs"]
 mod stack_copies_tests;
 pub use copies::CopyRecipe;
+#[path = "engine_copy_characteristics.rs"]
+mod copy_characteristics;
+pub use crate::cards::CopyExceptions;
+#[path = "engine_target_allocations.rs"]
+mod target_allocations;
 pub use stack_copies::{CopyEvent, RetargetView};
+pub use target_allocations::{TargetAllocation, TargetAmountChoiceView};
 const STARTING_LIFE: i128 = 20;
 use crate::capacity::{CapacityExt, CapacitySignal};
 use crate::cards::{
@@ -379,6 +390,7 @@ macro_rules! define_actions {
 define_actions! {
     ChooseZoneReplacement { effect: ZoneReplacementKind },
     FinishStackTargets,
+    AllocateTargetAmount { amount: u16 },
     RestoreStackTarget { index: u32 },
     SetStackTarget { index: u32, target: Target },
     ChooseCollectEvidence { collect: bool },
@@ -837,6 +849,11 @@ pub struct SpellView {
     pub cast_event: Option<Box<CastPaymentEvent>>,
     pub copy_event: Option<Box<stack_copies::CopyEvent>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_copy_recipe: Option<Box<CopyRecipe>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[allow(clippy::box_collection)]
+    pub target_allocations: Option<Box<Vec<TargetAllocation>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
     pub mana_copy_sources: Option<Box<Vec<(ManaCopySource, u64)>>>,
     pub is_copy: bool,
@@ -944,6 +961,10 @@ impl SpellView {
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<CastPaymentEvent>())
             + self
+                .source_copy_recipe
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<CopyRecipe>())
+            + self
                 .return_link
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<ReturnLinkView>())
@@ -957,6 +978,10 @@ impl SpellView {
                 .sacrificed_toughness
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<i128>())
+            + self.target_allocations.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<TargetAllocation>>()
+                    + rows.len() * std::mem::size_of::<TargetAllocation>()
+            })
             + self.targets.len() * std::mem::size_of::<BoundTarget>()
             + self
                 .attachment_trigger
@@ -1011,6 +1036,7 @@ impl SpellView {
             },
             StackKind::DelayedSacrifice
             | StackKind::DelayedWarpExile
+            | StackKind::CopyEndStepSacrifice
             | StackKind::DelayedReturn => None,
         }
     }
@@ -1113,6 +1139,9 @@ impl SpellView {
                     };
                     (plan, program)
                 }),
+            StackKind::CopyEndStepSacrifice => {
+                Some((TargetPlan::NONE, &[Instruction::SacrificeSource]))
+            }
             StackKind::DelayedReturn => {
                 Some((TargetPlan::NONE, &[Instruction::ResolveDelayedReturn]))
             }
@@ -1150,6 +1179,7 @@ pub enum StackKind {
     ActivatedAbility { ability: u16 },
     DelayedSacrifice,
     DelayedWarpExile,
+    CopyEndStepSacrifice,
     DelayedReturn,
 }
 
@@ -1262,6 +1292,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    TargetAmount {
+        player: Player,
+    },
     ZoneReplacement {
         player: Player,
     },
@@ -1458,6 +1491,7 @@ impl Pending {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    ending_turn: bool,
     zone_rules: Option<Box<zone_replacements::ZoneState>>,
     mana_lots: Option<Box<mana_lots::ManaState>>,
     controls: Option<Box<continuous_control::ControlState>>,
@@ -1488,6 +1522,8 @@ struct State {
     creature_damage_history: Option<SharedVec<CreatureDamageHistoryView>>,
     entry_values: entry_choices::Rows,
     copy_recipes: copies::Rows,
+    graveyard_entries: Option<SharedVec<ObjectRef>>,
+    nightmare_cull: Option<Box<copy_characteristics::NightmareCull>>,
     stack_copy_data: Option<Box<stack_copies::CopyState>>,
     modal_history: modal_history::Rows,
     ability_resolutions: ability_resolutions::Rows,
@@ -1837,6 +1873,7 @@ pub struct Observation {
     pub creatures_attacked_this_turn: usize,
     /// Actual battlefield-to-graveyard creature transitions this turn, including tokens.
     pub creatures_died_this_turn: u64,
+    pub graveyard_entries_this_turn: Vec<ObjectRef>,
     pub catalogue: &'static str,
     pub viewer: Player,
     pub revision: u64,
@@ -1873,6 +1910,7 @@ pub struct Observation {
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
     pub retarget: Option<RetargetView>,
+    pub target_amount: Option<TargetAmountChoiceView>,
     pub delayed_spell_copies: Vec<SpellView>,
     pub group_move_count: Option<u64>,
     pub optional_search_sequence: Option<OptionalSearchSequence>,
@@ -2029,6 +2067,7 @@ impl Game {
         let mut game = Self {
             revision: 0,
             state: State {
+                ending_turn: false,
                 mana_lots: None,
                 zone_rules: None,
                 controls: None,
@@ -2040,6 +2079,8 @@ impl Game {
                 creature_damage_history: None,
                 entry_values: None,
                 copy_recipes: None,
+                graveyard_entries: None,
+                nightmare_cull: None,
                 stack_copy_data: None,
                 modal_history: None,
                 ability_resolutions: None,
@@ -2197,6 +2238,7 @@ impl Game {
             | Pending::PayCosts { player }
             | Pending::Modes { player }
             | Pending::Retarget { player }
+            | Pending::TargetAmount { player }
             | Pending::Targets { player }
             | Pending::OrderTriggers { player }
             | Pending::TargetLibrary { player }
@@ -2417,6 +2459,9 @@ impl Game {
                     self.state_based_actions();
                     if self.state.entry_batch.is_some() {
                         continue;
+                    }
+                    if self.continue_ending_turn() {
+                        break;
                     }
                     self.prepare_triggers();
                 }
@@ -3405,6 +3450,14 @@ impl Game {
                     }
                 }
             }
+            Pending::TargetAmount { .. } => {
+                let choice = self.target_amount_choice().unwrap();
+                for amount in choice.minimum..=choice.maximum {
+                    if emit(Action::AllocateTargetAmount { amount }) {
+                        return true;
+                    }
+                }
+            }
             Pending::Retarget { .. } => return self.visit_retarget_actions(&mut emit),
             Pending::Targets { .. } => {
                 let announcement = s.announcing.as_ref().unwrap();
@@ -3861,6 +3914,7 @@ impl Game {
                     self.target_becomes_bound(&item, bound);
                     item.targets.push(bound);
                 }
+                item.allocate_single_target();
                 self.pay_activation(&mut item, payment, counter_payment);
                 self.push_stack_item(item);
                 self.state.passes = 0;
@@ -4015,6 +4069,7 @@ impl Game {
             }
             Action::ChooseMode { mode } => self.choose_mode(mode),
             Action::FinishStackTargets => self.finish_stack_targets(),
+            Action::AllocateTargetAmount { amount } => self.choose_target_amount(amount),
             Action::SetStackTarget { index, target } => self.set_stack_target(index, target),
             Action::RestoreStackTarget { index } => self.restore_stack_target(index),
             Action::ChooseTarget { target } => {
@@ -4823,6 +4878,7 @@ impl Game {
         if plan.shuffle {
             self.reveal_and_shuffle_zone_card(&before);
         }
+        self.copy_characteristic_zone_commit(&before, self.object_ref(id), destination);
         ZoneChange {
             gift: None,
             before,
@@ -4892,6 +4948,7 @@ impl Game {
         self.state.creature_damage_history = None;
         self.state.attacked_this_turn.clear();
         self.state.creatures_died_this_turn = 0;
+        self.state.graveyard_entries = None;
         for player in &mut self.state.players {
             player.nonland_permanents_entered_this_turn = 0;
             player.spells_cast_this_turn = 0;
@@ -5026,6 +5083,7 @@ impl Game {
             player.hexproof_until_end_turn = false;
         }
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
+        self.expire_spell_copies();
         self.expire_temporary_controls();
         self.state.temporary_abilities = None;
         self.expire_base_stats();
@@ -5052,6 +5110,15 @@ impl Game {
         // Losing temporary growth can expose lethal negative counters. Apply
         // SBAs before advancing the turn; CR514.3 gives an extra priority cycle.
         if !self.state.pending_triggers.is_empty()
+            || self
+                .allowed_game_losses(
+                    self.state
+                        .players
+                        .each_ref()
+                        .map(|p| p.life <= 0 || p.poison_counters >= 10 || p.attempted_empty_draw),
+                )
+                .into_iter()
+                .any(|lost| lost)
             || (expired_vehicles || expired_animations) && self.sba_required()
             || self.state.objects.iter().enumerate().any(|(id, obj)| {
                 obj.zone == Zone::Battlefield
@@ -5428,6 +5495,10 @@ impl Game {
             schema: OBSERVATION_SCHEMA,
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             creatures_died_this_turn: s.creatures_died_this_turn,
+            graveyard_entries_this_turn: s
+                .graveyard_entries
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.to_vec()),
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -5452,6 +5523,7 @@ impl Game {
                 Pending::Role { .. } => "role_rule",
                 Pending::Legend { .. } => "legend_rule",
                 Pending::Retarget { .. } => "retarget",
+                Pending::TargetAmount { .. } => "target_amount",
                 Pending::Targets { .. } => "targets",
                 Pending::Offspring { .. } => "offspring",
                 Pending::Bargain { .. } => "bargain",
@@ -5640,6 +5712,7 @@ impl Game {
                 .unwrap_or_default(),
             stack: s.stack.clone(),
             retarget: self.retarget_view(),
+            target_amount: self.target_amount_choice(),
             delayed_spell_copies: self.delayed_spell_copy_view(),
             resolving: s
                 .resolving
@@ -5911,6 +5984,10 @@ impl Game {
             + s.pending.owned_bytes()
             + ability_resolutions::owned_bytes(&s.ability_resolutions)
             + copies::owned_bytes(&s.copy_recipes)
+            + s.graveyard_entries.as_ref().map_or(0, |r| {
+                std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
+            })
+            + copy_characteristics::cull_bytes(&s.nightmare_cull)
             + stack_copies::owned_bytes(&s.stack_copy_data)
             + modal_history::owned_bytes(&s.modal_history)
             + cast_permissions::owned_bytes(&s.graveyard_cast_permissions)
@@ -6883,11 +6960,22 @@ mod layered_characteristic_tests;
 #[path = "engine_modal_history_tests.rs"]
 mod modal_history_tests;
 
+#[cfg(test)]
+#[path = "engine_copy_characteristics_tests.rs"]
+mod copy_characteristics_tests;
+
+#[cfg(test)]
+#[path = "engine_target_allocation_tests.rs"]
+mod target_allocation_tests;
+
 #[path = "engine_continuous_control.rs"]
 mod continuous_control;
 #[cfg(test)]
 #[path = "engine_continuous_control_tests.rs"]
 mod continuous_control_tests;
+#[cfg(test)]
+#[path = "engine_harvester_tests.rs"]
+mod harvester_tests;
 #[cfg(test)]
 #[path = "engine_return_links_tests.rs"]
 mod return_links_tests;

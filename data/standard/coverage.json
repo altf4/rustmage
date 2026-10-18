@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "2e6db73574b1b3ede05fe23f7bc8da74b8d1601ba3ab50fe2457e3d18180dac4",
+  "catalogue_version": "213a68525a9ccbd303ed8726ec9d44b848bba96dabb9fa91d5b969b1815e1751",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2163,
-  "implemented_total": 2169,
+  "implemented_standard_cards": 2169,
+  "implemented_total": 2175,
   "token_definitions": 104,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 403,
-      "gated": 24
+      "complete": 409,
+      "gated": 18
     },
     "fin": {
       "total": 305,
@@ -552,8 +552,8 @@
     {
       "name": "Abyssal Harvester",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/abyssal_harvester.rs",
       "set": "fdn"
     },
@@ -5928,8 +5928,8 @@
     {
       "name": "Chandra, Flameshaper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/chandra_flameshaper.rs",
       "set": "fdn"
     },
@@ -10432,8 +10432,8 @@
     {
       "name": "Electroduplicate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/electroduplicate.rs",
       "set": "fdn"
     },
@@ -16256,8 +16256,8 @@
     {
       "name": "Herald of Eternal Dawn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/herald_of_eternal_dawn.rs",
       "set": "fdn"
     },
@@ -21736,8 +21736,8 @@
     {
       "name": "Maze's End",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/maze_s_end.rs",
       "set": "fdn"
     },
@@ -37016,8 +37016,8 @@
     {
       "name": "Time Stop",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/time_stop.rs",
       "set": "fdn"
     },

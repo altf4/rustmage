@@ -579,8 +579,32 @@ fn run_matrix_actions_observed(
     expected_mana_sources: &[&str],
     expected_openings: &[&str],
     seeds: &[u64],
-    mut observer: Option<&mut MatrixObserver<'_>>,
+    observer: Option<&mut MatrixObserver<'_>>,
 ) {
+    run_matrix_actions_observed_with_stride(
+        decks,
+        expected_casts,
+        expected_lands,
+        expected_mana_sources,
+        expected_openings,
+        seeds,
+        observer,
+        47,
+    );
+}
+
+#[allow(clippy::too_many_arguments)] // Existing scenario inputs plus optional replay cadence.
+fn run_matrix_actions_observed_with_stride(
+    decks: &[Vec<Card>],
+    expected_casts: &[&str],
+    expected_lands: &[&str],
+    expected_mana_sources: &[&str],
+    expected_openings: &[&str],
+    seeds: &[u64],
+    mut observer: Option<&mut MatrixObserver<'_>>,
+    replay_stride: usize,
+) {
+    assert!(replay_stride > 0);
     let manifest: serde_json::Value =
         serde_json::from_str(include_str!("../data/sets/fdn.json")).unwrap();
     let members: BTreeSet<Card> = manifest["cards"]
@@ -673,7 +697,7 @@ fn run_matrix_actions_observed(
                     combat |= !obs.attackers.is_empty();
                     let fresh_permission_state = !obs.graveyard_cast_permissions.is_empty()
                         && replayed_graveyard_permissions != obs.graveyard_cast_permissions;
-                    let owned_replay = decisions % 47 == 0 || fresh_permission_state;
+                    let owned_replay = decisions % replay_stride == 0 || fresh_permission_state;
                     if fresh_permission_state {
                         replayed_graveyard_permissions = obs.graveyard_cast_permissions.clone();
                     }
@@ -776,6 +800,10 @@ mod casting_games;
 #[path = "common/foundations_stack_copy_games.rs"]
 mod stack_copy_games;
 
+#[path = "common/foundations_copy_exception_games.rs"]
+mod copy_exception_games;
+#[path = "common/foundations_endgame_games.rs"]
+mod endgame_games;
 #[path = "common/foundations_return_aura_games.rs"]
 mod return_aura_games;
 #[path = "common/foundations_zone_games.rs"]

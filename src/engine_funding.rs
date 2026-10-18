@@ -199,7 +199,7 @@ fn source_obligations(
         return true;
     };
     let ability = &definition.activations()[*index as usize];
-    if i128::from(ability.cost.life) > life {
+    if ability.cost.life != 0 && i128::from(ability.cost.life) > life {
         return false;
     }
     let current = object.filter(|object| {
@@ -399,6 +399,12 @@ impl<'g> FundingState<'g> {
         let mut keywords = target
             .object
             .keywords()
+            .union(
+                self.game
+                    .copied_keywords(ability_world::CharacteristicWorld::reference(
+                        self, target.id,
+                    )),
+            )
             .union(ability_world::CharacteristicWorld::counter_subtype_keywords(self, target.id));
         if target.object.zone == Zone::Battlefield && self.kinds(target) & 1 != 0 {
             let reference = ObjectRef {
@@ -1444,6 +1450,7 @@ impl Game {
                 a.additional_cost(),
             ),
             StackKind::TriggeredAbility { .. }
+            | StackKind::CopyEndStepSacrifice
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
             | StackKind::DelayedWarpExile => false,
@@ -1499,6 +1506,7 @@ impl Game {
                 }
             }
             StackKind::TriggeredAbility { .. }
+            | StackKind::CopyEndStepSacrifice
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
             | StackKind::DelayedWarpExile => unreachable!(),
@@ -2199,7 +2207,7 @@ mod conditional_keyword_tests {
             g.state.priority = p;
             let definition = Card::from_name("Omni-Cheese Pizza").unwrap();
             let original = named(&mut g, p, definition.name(), Zone::Battlefield);
-            g.stage_copy_creation(p, CopyRecipe { definition }, 1);
+            g.stage_copy_creation(p, CopyRecipe::new(definition), 1);
             super::super::ability_timeline_tests::settle(&mut g);
             let token = g
                 .state
