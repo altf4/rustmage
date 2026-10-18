@@ -155,7 +155,7 @@ fn foundations_private_choice_owned_sibling_rollouts() {
     assert_eq!(branches, 32);
     assert!(decisions > branches * 2, "no multi-action continuation");
     println!(
-        "FDN owned rollout verification: branches={branches}, decisions={decisions}, seconds={seconds:.6}, branches_per_second={:.3}, decisions_per_second={:.3}, maximum_root_state_bytes_excluding_capacity_and_allocator={maximum_state_bytes}; two natural private-choice roots, 96-step budget; cloning, snapshots and both-player observation checks included; trusted simulator, not hidden-information MCTS",
+        "FDN owned rollout verification: branches={branches}, decisions={decisions}, seconds={seconds:.6}, branches_per_second={:.3}, decisions_per_second={:.3}, maximum_root_state_bytes_excluding_capacity_and_allocator={maximum_state_bytes}; two natural private-choice roots, 96-step budget; cloning, snapshots and both-player JSON observation checks included; trusted simulator, not hidden-information MCTS",
         branches as f64 / seconds,
         decisions as f64 / seconds,
     );
