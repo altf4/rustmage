@@ -315,7 +315,8 @@ impl<'g> FundingState<'g> {
                         .source.as_ref()
                         .is_some_and(|(source, _, _, _)| source.card == *id as CardId)
                     || object.zone == Zone::Battlefield
-                        && (object.card.attachment_bonus().is_some()
+                        && (object.card.has_cast_origin_abilities()
+                            || object.card.attachment_bonus().is_some()
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
                             || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
@@ -973,6 +974,17 @@ impl<'g> FundingState<'g> {
         if self.total_mana_upper() < required {
             return false;
         }
+        // Substitution may be lost or restored by virtual sacrifices. Keep the
+        // color bound conservative; the exact leaf uses the overlay.
+        if matches!(self.purpose, mana_lots::Purpose::Spell(_))
+            && self.game.state.static_sources.iter().any(|&id| {
+                self.game.state.objects[id as usize]
+                    .card
+                    .has_cast_origin_abilities()
+            })
+        {
+            return true;
+        }
         // A virtual source departure can restore an ability under layer6.
         // The total upper bound remains conservative; color/readiness pruning
         // must not assume the current blanking is permanent for this search.
@@ -1128,18 +1140,19 @@ impl<'g> FundingState<'g> {
         if !self.obligations(goal) {
             return false;
         }
+        let adjusted = cast_origins::payment_goal(self, goal, self.purpose);
         if (if self.convoke {
             convoke::payable(
                 mana_lots::available(self.mana, &self.lots, self.purpose),
-                goal.required,
-                goal.generic,
+                adjusted.required,
+                adjusted.generic,
                 &self.convoke_masks(),
             )
         } else {
             payable(
                 mana_lots::available(self.mana, &self.lots, self.purpose),
-                goal.required,
-                goal.generic,
+                adjusted.required,
+                adjusted.generic,
             )
         }) && evidence.is_none_or(|n| self.evidence_value() >= u128::from(n))
         {
@@ -1243,11 +1256,12 @@ impl Game {
         ) {
             return false;
         }
+        let adjusted = cast_origins::payment_goal(self, &goal, purpose);
         // The common prefunded path needs no resource graph or heap allocations.
         if payable(
             self.available_mana(goal.actor, purpose),
-            goal.required,
-            goal.generic,
+            adjusted.required,
+            adjusted.generic,
         ) {
             return true;
         }
@@ -1332,6 +1346,7 @@ impl Game {
             return None;
         }
         let goal = self.funding_goal(a);
+        let goal = cast_origins::payment_goal(self, &goal, self.purpose_for_item(&a.item));
         Some(PaymentRequestView {
             required: goal.required,
             generic: goal.generic,
@@ -1510,7 +1525,13 @@ impl Game {
             if !state.obligations(&goal) || a.evidence.as_ref().is_some_and(|e| !e.complete) {
                 return None;
             }
-            (goal.required, goal.generic)
+            cast_origins::payment_requirements(
+                self,
+                a.item.controller,
+                self.purpose_for_item(&a.item),
+                goal.required,
+                goal.generic,
+            )
         };
         payable(pool.map(u128::from), required, generic).then_some(ManaPaymentDomain {
             available: pool,

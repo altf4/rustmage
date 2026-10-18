@@ -8,5 +8,23 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "301f7d03815389e023278b6d0918b3315497ad0c5506796455ebdc899a3a6553"
   },
-  "physical_metadata_sha256": "22239dcdcf74983cec8ada7e5c92df98f76c7c45f31d9ae3e39946a10209671e"
+  "physical_metadata_sha256": "22239dcdcf74983cec8ada7e5c92df98f76c7c45f31d9ae3e39946a10209671e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VizierOfTheMenagerie.java",
+  "java_sha256": "caaadf7b9d864566f91db7dda1acaa7c77b8359a6552a11e788ad8d568a3e23e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LookAtTopCardOfLibraryAnyTimeEffect.java",
+      "sha256": "8f40c1e9eeee58bb7d6fb63ad5d4c76cfb0da76c6b823bb0ffaf0274c1cf0f8f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayFromTopOfLibraryEffect.java",
+      "sha256": "85eb4f9d72b858df624abe15ea3797b67aa3b9dc05bd5e55d9037d3c42f474dd"
+    }
+  ],
+  "remaining_obligations": [
+    "Focused rules validation and complete-batch acceptance pending"
+  ]
 }

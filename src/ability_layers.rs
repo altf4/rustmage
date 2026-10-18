@@ -37,6 +37,9 @@ pub(crate) struct StaticAbilityGroup {
 )]
 pub(crate) enum StaticAbilityFragment {
     FreeHandCast,
+    LookAtLibraryTop,
+    CastCreatureFromLibraryTop,
+    SpendAnyManaForCreatures,
     AttachedCharacteristics(&'static AttachedCharacteristics),
     ChosenCreatureType,
     OtherSubtypeEntryCounters(&'static str),

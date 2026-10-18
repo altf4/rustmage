@@ -212,6 +212,9 @@ impl Game {
                 .cast_timing_grants()
                 .is_empty()
             || self.state.objects[id as usize].card.has_free_hand_cast()
+            || self.state.objects[id as usize]
+                .card
+                .has_cast_origin_abilities()
         {
             self.state.static_sources.push(id);
         }

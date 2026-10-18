@@ -36,6 +36,8 @@ mod milled_selection;
 pub use milled_selection::MilledSelectionView;
 #[path = "engine_adventure.rs"]
 mod adventure;
+#[path = "engine_cast_origins.rs"]
+mod cast_origins;
 #[cfg(test)]
 #[path = "engine_cast_permission_tests.rs"]
 mod cast_permission_tests;
@@ -43,6 +45,9 @@ mod cast_permission_tests;
 mod cast_permissions;
 #[path = "engine_cast_timing.rs"]
 mod cast_timing;
+#[cfg(test)]
+#[path = "engine_fdn_cast_origins_tests.rs"]
+mod fdn_cast_origins_tests;
 pub use crate::cards::GraveyardCastKind;
 pub use cast_permissions::GraveyardCastPermissionView;
 #[path = "engine_crew.rs"]
@@ -2773,6 +2778,7 @@ impl Game {
                     let authorized_origin = match obj.zone {
                         Zone::Battlefield => obj.controller == actor,
                         Zone::Hand | Zone::Graveyard => obj.owner == actor,
+                        Zone::Library => self.can_cast_library_top(actor, card),
                         Zone::Exile => {
                             self.can_play_exiled(actor, card)
                                 || self.plotted_cast_available(actor, card)
@@ -2924,7 +2930,10 @@ impl Game {
                     let flashback =
                         obj.zone == Zone::Graveyard && obj.card.flashback_cost().is_some();
                     let exile = obj.zone == Zone::Exile && self.can_play_exiled(actor, card);
-                    if (obj.zone != Zone::Hand && !flashback && !exile) || obj.is_token() {
+                    let library = self.can_cast_library_top(actor, card);
+                    if (obj.zone != Zone::Hand && !flashback && !exile && !library)
+                        || obj.is_token()
+                    {
                         continue;
                     }
                     if obj.card.is_land() {
@@ -5792,9 +5801,7 @@ impl Game {
                 .map(|c| (**c).clone()),
             last_explore: s.explore_data.as_ref().and_then(|d| d.last.clone()),
             known_library_top: std::array::from_fn(|i| {
-                s.explore_data
-                    .as_ref()
-                    .and_then(|d| d.known_top[i])
+                self.visible_library_top(viewer, if i == 0 { Player::P0 } else { Player::P1 })
                     .map(|object| RevealedLibraryCard {
                         object,
                         card: s.objects[object.card as usize].card,
