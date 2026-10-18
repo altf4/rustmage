@@ -593,6 +593,16 @@ mod allocation_occurrence_tests {
             checked(&mut g, Action::FinishTargets);
             checked(&mut g, Action::AllocateTargetAmount { amount: 3 });
             checked(&mut g, Action::AllocateTargetAmount { amount: 5 });
+            // Allocation precedes the ordinary activation-cost commit, even
+            // when the loyalty ability has no mana component.
+            while g.state.announcing.is_some() {
+                let action = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a, Action::PayCosts { .. }))
+                    .unwrap();
+                checked(&mut g, action);
+            }
             // Seed a generic retarget continuation around the actual paid packet.
             // Multi-target editing is generic; Bolt Bend's one-target restriction
             // cannot supply this multi-target fixture.
