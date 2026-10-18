@@ -4472,6 +4472,9 @@ impl Game {
                 generation,
             },
         );
+        if before.zone == Zone::Stack {
+            self.continue_stack_keywords(before.reference, self.object_ref(id), destination);
+        }
         self.set_counters(id, counters);
         if destination == Zone::Battlefield {
             let (owner, card) = entry_identity;

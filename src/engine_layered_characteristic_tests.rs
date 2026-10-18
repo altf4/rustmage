@@ -709,3 +709,47 @@ fn layered_characteristics_restored_planeswalker_does_not_reconnect_old_attack()
         );
     }
 }
+
+#[test]
+fn layered_characteristics_cast_keyword_effect_continues_exact_incarnation_not_copy() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = fixture(&mut g, p, "Bear Cub", Zone::Hand);
+        cast(&mut g, bear, None, &[]);
+        let spell = g.object_ref(bear);
+        g.grant_stack_keywords(spell, Keywords::HASTE);
+        let before = g.object_view(bear);
+        assert!(before.keywords.contains(Keywords::HASTE));
+        let timestamp = g
+            .state
+            .roles
+            .as_ref()
+            .unwrap()
+            .keyword_effects
+            .last()
+            .unwrap()
+            .timestamp;
+        settle(&mut g);
+        assert_ne!(g.object_ref(bear), spell);
+        assert!(g.keywords(bear).contains(Keywords::HASTE));
+        assert_eq!(
+            g.state
+                .roles
+                .as_ref()
+                .unwrap()
+                .keyword_effects
+                .last()
+                .unwrap()
+                .timestamp,
+            timestamp
+        );
+        let protection = aura(&mut g, p, "Witness Protection", bear, [0, 1, 0, 0, 0, 0]);
+        assert!(!g.keywords(bear).contains(Keywords::HASTE));
+        g.sacrifice_batch(&[(p, protection)]);
+        g.state_based_actions();
+        assert!(g.keywords(bear).contains(Keywords::HASTE));
+        g.move_object(bear, Zone::Hand);
+        assert!(!g.keywords(bear).contains(Keywords::HASTE));
+        assert!(before.keywords.contains(Keywords::HASTE));
+    }
+}

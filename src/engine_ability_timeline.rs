@@ -118,6 +118,46 @@ impl Game {
                 .retain(|row| row.recipient != reference);
         }
     }
+    /// A cast-spending effect follows only this spell's actual stack-to-battlefield move.
+    pub(super) fn grant_stack_keywords(&mut self, spell: ObjectRef, keywords: Keywords) {
+        assert_eq!(self.object_ref(spell.card), spell);
+        assert_eq!(self.state.objects[spell.card as usize].zone, Zone::Stack);
+        if keywords == Keywords::NONE {
+            return;
+        }
+        let timestamp = self.next_role_timestamp();
+        self.state
+            .roles
+            .as_mut()
+            .unwrap()
+            .keyword_effects
+            .push(KeywordEffectView {
+                recipient: spell,
+                origin: KeywordEffectOrigin::Resolution { source: spell },
+                keywords,
+                rules: Keywords::NONE,
+                timestamp,
+                expires_turn: Some(self.state.turn),
+            });
+    }
+    pub(super) fn continue_stack_keywords(
+        &mut self,
+        before: ObjectRef,
+        after: ObjectRef,
+        destination: Zone,
+    ) {
+        if let Some(state) = &mut self.state.roles {
+            if destination == Zone::Battlefield {
+                for row in &mut state.keyword_effects {
+                    if row.recipient == before {
+                        row.recipient = after;
+                    }
+                }
+            } else {
+                state.keyword_effects.retain(|row| row.recipient != before);
+            }
+        }
+    }
     pub(super) fn grant_keyword_effects(
         &mut self,
         ids: &[CardId],
