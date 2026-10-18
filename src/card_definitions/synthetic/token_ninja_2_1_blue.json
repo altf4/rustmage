@@ -1,0 +1,12 @@
+{
+  "name": "@token/ninja_2_1_blue",
+  "catalogue_id": 5340,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "ca1123c4e3a9dac52c68c6b5e13a47f57070483779f7aa135dcc49c2261d4729",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/Ninja21Token.java",
+  "java_sha256": "76cd4b32cbb39d567baa5d91a0527d32070f9e25b4dd2be00ac9c1679f156e69",
+  "xmage_dependencies": []
+}

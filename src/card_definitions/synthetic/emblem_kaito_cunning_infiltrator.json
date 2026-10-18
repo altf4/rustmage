@@ -1,0 +1,28 @@
+{
+  "name": "@emblem/kaito_cunning_infiltrator",
+  "catalogue_id": 5341,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "5617f4a27719b6b083ce915b1418eaf3ab4a5eab7bb677b459945e554d054994",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/command/emblems/KaitoCunningInfiltratorEmblem.java",
+  "java_sha256": "e89e3d5275372a190e4c60da04ae45eef38a44a7166bb458db01f94c85e0d9c7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Ninja21Token.java",
+      "sha256": "76cd4b32cbb39d567baa5d91a0527d32070f9e25b4dd2be00ac9c1679f156e69"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastAllTriggeredAbility.java",
+      "sha256": "7837dc850438ff0b6ee06931b9578252338a1abd3306475a94d92d1333df4988"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    }
+  ]
+}

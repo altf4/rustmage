@@ -504,10 +504,16 @@ fn foundations_every_admitted_card_in_set_only_full_games() {
         .filter(|card| card.is_supported())
         .collect();
     cards.sort_by_key(|card| (card.colors(), card.fixed_mana_value(), card.name()));
+    let (set_lands, spells): (Vec<_>, Vec<_>) = cards.iter().copied().partition(|c| c.is_land());
+    let groups: Vec<_> = spells.chunks(9).collect();
+    assert!(!groups.is_empty());
+    // Include every land alongside spells instead of creating all-land decks
+    // whose only usual route to an outcome is drawing an empty library.
+    let deck_count = groups.len().max(set_lands.len().div_ceil(6));
     let basics = ["Plains", "Island", "Swamp", "Mountain", "Forest"];
     let mut decks = Vec::new();
-    let mut covered = BTreeSet::new();
-    for group in cards.chunks(9) {
+    for index in 0..deck_count {
+        let group = groups[index % groups.len()];
         let colors = group.iter().fold(0u8, |mask, card| mask | card.colors());
         let mut lands: Vec<_> = basics
             .iter()
@@ -521,14 +527,23 @@ fn foundations_every_admitted_card_in_set_only_full_games() {
         let mut deck: Vec<_> = (0..24).map(|i| lands[i % lands.len()]).collect();
         for &card in group {
             deck.extend([card; 4]);
-            covered.insert(card.name());
         }
         while deck.len() < 60 {
             deck.push(lands[deck.len() % lands.len()]);
         }
         decks.push(deck);
     }
-    assert_eq!(covered.len(), cards.len());
+    for (index, land) in set_lands.into_iter().enumerate() {
+        let first = 4 * (index / deck_count);
+        decks[index % deck_count][first..first + 4].fill(land);
+    }
+    let covered: BTreeSet<_> = decks.iter().flatten().copied().collect();
+    assert_eq!(covered, cards.into_iter().collect());
+    assert!(
+        decks
+            .iter()
+            .all(|deck| deck.len() == 60 && deck.iter().any(|c| !c.is_land()))
+    );
     run_matrix(&decks, &[]);
 }
 
@@ -566,6 +581,21 @@ fn run_matrix_actions_observed(
     seeds: &[u64],
     mut observer: Option<&mut MatrixObserver<'_>>,
 ) {
+    let manifest: serde_json::Value =
+        serde_json::from_str(include_str!("../data/sets/fdn.json")).unwrap();
+    let members: BTreeSet<Card> = manifest["cards"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|row| Card::from_name(row["name"].as_str().unwrap()).unwrap())
+        .collect();
+    for card in decks.iter().flatten() {
+        assert!(
+            members.contains(card),
+            "non-Foundations card after deck edits: {}",
+            card.identity()
+        );
+    }
     let mut opening_permanents = BTreeSet::new();
     let mut played_lands = BTreeSet::new();
     let mut used_mana_sources = BTreeSet::new();
@@ -575,9 +605,13 @@ fn run_matrix_actions_observed(
     let mut combat = false;
     let mut branches = 0;
     let mut new_spells = BTreeSet::new();
+    let trace_games = std::env::var_os("RUSTMAGE_TRACE_GAMES").is_some();
     for pair in 0..decks.len() {
         for &seed in seeds {
             for starter in [Player::P0, Player::P1] {
+                if trace_games {
+                    eprintln!("FDN game start: pair={pair}, seed={seed}, starter={starter:?}");
+                }
                 let mut game = Game::new(Config {
                     decks: [decks[pair].clone(), decks[(pair + 1) % decks.len()].clone()],
                     seed,
@@ -671,6 +705,11 @@ fn run_matrix_actions_observed(
                 }
                 assert!(decisions > 50, "game ended before meaningful play");
                 total_decisions += decisions;
+                if trace_games {
+                    eprintln!(
+                        "FDN game complete: pair={pair}, seed={seed}, starter={starter:?}, decisions={decisions}"
+                    );
+                }
             }
         }
     }
@@ -712,3 +751,9 @@ mod copy_games;
 
 #[path = "common/foundations_mana_games.rs"]
 mod mana_games;
+
+#[path = "common/foundations_characteristic_modal_games.rs"]
+mod characteristic_modal_games;
+
+#[path = "common/foundations_kaito_games.rs"]
+mod kaito_games;
