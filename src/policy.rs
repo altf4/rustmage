@@ -211,9 +211,11 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 .objects
                 .iter()
                 .filter(|object| {
-                    object.owner == actor
-                        && matches!(object.zone, Zone::Hand | Zone::Battlefield)
-                        && object.has_subtype(typ.name())
+                    (match object.zone {
+                        Zone::Hand => object.owner == actor,
+                        Zone::Battlefield => object.controller == actor,
+                        _ => false,
+                    }) && object.has_subtype(typ.name())
                 })
                 .count() as i128,
             Action::ChooseEntryValue { .. } => 0,
