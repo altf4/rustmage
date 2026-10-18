@@ -178,7 +178,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     0
                 }
             }
-            Action::ChooseAdditionalCost { .. } => 60,
+            Action::ChooseAdditionalCost { .. } | Action::ChooseCreatureCounterCost { .. } => 60,
             Action::ChooseForageRoute { .. } | Action::ChooseForage { .. } => 60,
             Action::DeclineForage => -10,
             Action::ChooseConniver { .. } => 60,
@@ -207,6 +207,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             } => 81,
             Action::AnnounceFree { .. }
             | Action::AnnounceGrantedFlashback { .. }
+            | Action::AnnounceCounterGraveyard { .. }
             | Action::AnnounceCast { .. }
             | Action::AnnounceFlashSurcharge { .. }
             | Action::AnnounceWarp { .. }
@@ -214,7 +215,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceExile { .. }
             | Action::AnnounceFlashback { .. } => 79,
             Action::AnnouncePlot { .. } => 40,
-            Action::AnnounceActivate { .. } => 34,
+            Action::AnnounceActivate { .. } | Action::AnnounceAttachedAbility { .. } => 34,
             Action::AnnounceMana { .. } => -2,
             Action::PayCosts { .. } | Action::PayPlot { .. } => 100,
             Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,

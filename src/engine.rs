@@ -408,7 +408,7 @@ define_actions! {
     ChooseForage { object: ObjectRef },
     DeclineForage,
     AnnounceCounterGraveyard { card: CardId },
-    ChooseCreatureCounterCost { object: ObjectRef, kind: CounterKind },
+    ChooseCreatureCounterCost { object: ObjectRef, counter: CounterKind },
     AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
     ChooseAdditionalCost {
         object: ObjectRef,
@@ -954,6 +954,10 @@ impl SpellView {
                 .return_link
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<ReturnLinkView>())
+            + self
+                .creature_combat_event
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<CreatureCombatEventView>())
             + self.delayed_sacrifice.as_ref().map_or(0, |d| d.bytes())
             + self.crew.as_ref().map_or(0, |c| c.bytes())
             + self
@@ -3662,9 +3666,10 @@ impl Game {
             Action::DeclineResolutionMana => self.finish_resolution_payment(None),
             Action::PayResolutionLife => self.finish_resolution_life(true),
             Action::DeclineResolutionLife => self.finish_resolution_life(false),
-            Action::ChooseCreatureCounterCost { object, kind } => {
-                self.choose_creature_counter_cost(object, kind)
-            }
+            Action::ChooseCreatureCounterCost {
+                object,
+                counter: kind,
+            } => self.choose_creature_counter_cost(object, kind),
             Action::AnnounceCounterGraveyard { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 item.cast.as_mut().unwrap().method = CastMethod::GraveyardCounterCost;
@@ -6114,6 +6119,13 @@ impl Game {
                 .map_or(0, |v| {
                     std::mem::size_of::<Vec<ObjectRef>>()
                         + v.len() * std::mem::size_of::<ObjectRef>()
+                })
+            + s.announcing
+                .as_ref()
+                .and_then(|a| a.creature_counter_cost.as_ref())
+                .map_or(0, |v| {
+                    std::mem::size_of::<Vec<(ObjectRef, CounterKind)>>()
+                        + v.len() * std::mem::size_of::<(ObjectRef, CounterKind)>()
                 })
             + s.stack
                 .iter()

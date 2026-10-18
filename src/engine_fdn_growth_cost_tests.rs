@@ -210,12 +210,8 @@ fn fdn_growth_lathril_ten_distinct_other_elves_pay_as_cost_sick_elves_allowed() 
                 counter_payment: Counters::default(),
             },
         );
-        reject(
-            &mut g,
-            Action::ChooseAdditionalCost {
-                object: g.object_ref(l),
-            },
-        );
+        let source = g.object_ref(l);
+        reject(&mut g, Action::ChooseAdditionalCost { object: source });
         for (index, id) in elves.iter().enumerate() {
             let r = g.object_ref(*id);
             checked(&mut g, Action::ChooseAdditionalCost { object: r });
@@ -313,10 +309,26 @@ fn fdn_growth_fishing_paid_grant_attachment_counter_and_actual_untap() {
         g.untap_objects(&[c], untap_rules::UntapCause::Effect);
         settle(&mut g);
         assert_eq!(g.counter_count(pole, CounterKind::Bait), 0);
-        assert_eq!(tokens(&g, p, Card(5317)).len(), 1);
+        assert_eq!(
+            tokens(
+                &g,
+                p,
+                Card::from_name("@token/da26e55db634a438cfd544ee").unwrap()
+            )
+            .len(),
+            1
+        );
         g.untap_objects(&[c], untap_rules::UntapCause::Effect);
         settle(&mut g);
-        assert_eq!(tokens(&g, p, Card(5317)).len(), 1);
+        assert_eq!(
+            tokens(
+                &g,
+                p,
+                Card::from_name("@token/da26e55db634a438cfd544ee").unwrap()
+            )
+            .len(),
+            1
+        );
     }
 }
 #[test]
@@ -338,7 +350,13 @@ fn fdn_growth_greatwurm_mixed_counter_cost_graveyard_and_normal_hand_routes() {
             (b, CounterKind::PlusOne),
         ] {
             let object = g.object_ref(id);
-            checked(&mut g, Action::ChooseCreatureCounterCost { object, kind });
+            checked(
+                &mut g,
+                Action::ChooseCreatureCounterCost {
+                    object,
+                    counter: kind,
+                },
+            );
         }
         let act = g
             .legal_actions()

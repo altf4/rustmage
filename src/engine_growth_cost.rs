@@ -212,7 +212,12 @@ impl Game {
                     &selected,
                 );
                 selected.pop();
-                if available && emit(Action::ChooseCreatureCounterCost { object: r, kind }) {
+                if available
+                    && emit(Action::ChooseCreatureCounterCost {
+                        object: r,
+                        counter: kind,
+                    })
+                {
                     return true;
                 }
             }

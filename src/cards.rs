@@ -2782,7 +2782,8 @@ impl Card {
     pub(crate) fn grants_activation(self, index: u16) -> bool {
         self.static_ability_groups().iter().any(|g| {
             g.fragments
-                .contains(&StaticAbilityFragment::AttachmentActivation(index))
+                .iter()
+                .any(|f| matches!(f, StaticAbilityFragment::AttachmentActivation(i) if *i == index))
         })
     }
     pub(crate) fn activations(self) -> &'static [ActivatedAbility] {
