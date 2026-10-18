@@ -1,7 +1,9 @@
 #[path = "ability_layers.rs"]
 mod ability_layers;
 pub(crate) use ability_layers::{
-    AbilityLayer, StaticAbilityFragment, StaticAbilityGroup, UntapRestriction,
+    AbilityLayer, AnimationCreatureTypes, AnimationDuration, AnimationSpec,
+    AttachedCharacteristics, PermanentForm, StaticAbilityFragment, StaticAbilityGroup,
+    UntapRestriction,
 };
 
 use crate::capacity::CapacityExt;
@@ -849,6 +851,7 @@ pub(crate) enum Instruction {
     AddCombatRedScaled(AmountValue),
     Scry(u16),
     Surveil(u16),
+    AnimateSource(AnimationSpec),
     Search(SearchSpec),
     /// Capture the destroyed land's controller, then offer both optional basic searches.
     DestroyLandAndSearch,

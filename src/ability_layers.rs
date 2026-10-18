@@ -4,6 +4,7 @@ use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 #[repr(u8)]
 pub(crate) enum AbilityLayer {
+    Text = 3,
     Type = 4,
     #[expect(
         dead_code,
@@ -35,6 +36,7 @@ pub(crate) struct StaticAbilityGroup {
     reason = "Complete immutable typed origin payloads are preserved while legacy fast tables supply some values; do not discard during direct-definition migration"
 )]
 pub(crate) enum StaticAbilityFragment {
+    AttachedCharacteristics(&'static AttachedCharacteristics),
     ChosenCreatureType,
     ChosenModifier(ChosenModifier),
     PlayerHexproof,
@@ -106,4 +108,38 @@ pub(crate) enum StaticAbilityFragment {
 pub(crate) enum UntapRestriction {
     All,
     ControllerStep,
+}
+
+/// One printed Aura effect, shared across its earlier characteristic layers.
+#[derive(Clone, Copy, Debug)]
+pub(crate) enum PermanentForm {
+    Creature,
+    Land,
+}
+#[derive(Clone, Copy, Debug)]
+pub(crate) struct AttachedCharacteristics {
+    pub name: Option<&'static str>,
+    pub form: PermanentForm,
+    pub creature_types: &'static [&'static str],
+    pub colors: &'static [ChoiceColor],
+    pub base: Option<(i128, i128)>,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum AnimationDuration {
+    EndOfTurn,
+    Permanent,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum AnimationCreatureTypes {
+    Unchanged,
+    Named(&'static [&'static str]),
+    All,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct AnimationSpec {
+    pub artifact: bool,
+    pub creature_types: AnimationCreatureTypes,
+    pub base: Option<(i128, i128)>,
+    pub keywords: Keywords,
+    pub duration: AnimationDuration,
 }

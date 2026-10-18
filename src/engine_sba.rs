@@ -63,7 +63,7 @@ impl Game {
             if self.saga_sacrifice_required(id) {
                 batch.deaths.push(id);
             }
-            if object.card.is_planeswalker() && object.counters.loyalty == 0 {
+            if self.current_kinds(id) & 64 != 0 && object.counters.loyalty == 0 {
                 batch.deaths.push(id);
             }
             if object.card.aura().is_some() {
@@ -139,6 +139,18 @@ impl Game {
             return;
         }
         loop {
+            // CR506.4: a permanent that stops being a creature leaves combat.
+            let no_longer_creatures: Vec<_> = self
+                .state
+                .attackers
+                .iter()
+                .map(|a| a.card)
+                .chain(self.state.blocking.iter().copied())
+                .filter(|&id| !self.is_creature(id))
+                .collect();
+            for id in no_longer_creatures {
+                self.remove_from_combat(id, self.object_ref(id));
+            }
             let batch = self.collect_sba_batch();
             let changed = !batch.deaths.is_empty()
                 || !batch.detached.is_empty()

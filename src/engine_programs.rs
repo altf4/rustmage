@@ -2170,6 +2170,7 @@ impl Game {
                         return;
                     }
                 },
+                Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
                 Instruction::DestroyLandAndSearch => self.destroy_land_and_search(&item),
                 Instruction::Search(spec) | Instruction::SearchRequired(spec) => {
                     let minimum = if matches!(instruction, Instruction::SearchRequired(_)) {

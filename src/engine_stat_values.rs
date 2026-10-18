@@ -222,7 +222,7 @@ impl Game {
                 })
                 .fold(0u16, |mask, (id, object)| {
                     mask | if matches!(value, StatValue::Colors(_)) {
-                        u16::from(object.card.colors())
+                        u16::from(colors(id))
                     } else {
                         kinds(id, object)
                     }

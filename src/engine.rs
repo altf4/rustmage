@@ -53,6 +53,10 @@ pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
 pub use plot::{PlotPaymentView, PlottedCard};
 pub use warp::{DelayedWarpExileView, WarpedCard};
 
+#[path = "engine_characteristic_layers.rs"]
+mod characteristic_layers;
+pub use characteristic_layers::AnimationView;
+
 #[path = "engine_subtypes.rs"]
 mod subtypes;
 pub use subtypes::GrantedSubtypes;
@@ -1105,6 +1109,7 @@ pub struct DamageFacts {
     pub token: bool,
     pub controller: Player,
     pub kinds: u16,
+    pub colors: u8,
     pub power: i128,
     pub power_above_base: bool,
     pub granted_subtypes: GrantedSubtypes,
@@ -1119,16 +1124,15 @@ impl DamageFacts {
     pub(super) fn is_token(&self) -> bool {
         self.token
     }
-    /// Frozen source colors. With the currently admitted layer-five effects these
-    /// are intrinsic to the captured effective card. Color-changing mechanics must
-    /// extend this LKI query together with CharacteristicWorld::colors.
+    /// Effective colors frozen with the source's other last-known characteristics.
     pub(super) fn colors(&self) -> u8 {
-        self.card.colors()
+        self.colors
     }
     fn from_view(view: &ObjectView) -> Self {
         Self {
             controller: view.controller,
             kinds: view.kinds,
+            colors: view.colors,
             power: view.power,
             power_above_base: view.power_above_base,
             granted_subtypes: view.granted_subtypes,
@@ -1468,6 +1472,7 @@ pub struct ObjectView {
     pub abilities: Option<Box<AbilityAvailabilityView>>,
     /// Current card-type bits; Card remains the immutable printed identity.
     pub kinds: u16,
+    pub colors: u8,
     pub granted_subtypes: GrantedSubtypes,
     pub entry_choice: Option<EntryChoiceValue>,
     pub saddled: bool,
@@ -1702,6 +1707,7 @@ pub struct LegalActionSpace {
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
     pub creature_damage_history: Vec<CreatureDamageHistoryView>,
+    pub animations: Vec<AnimationView>,
     pub temporary_controls: Vec<TemporaryControlView>,
     pub casting_prohibited: bool,
     pub death_exile_replacements: Vec<ExileDeathReplacementView>,
@@ -3461,6 +3467,7 @@ impl Game {
                 item.source_card = definition;
                 item.source_keywords = definition.info().keywords;
                 item.source_facts.card = definition;
+                item.source_facts.colors = definition.colors();
                 item.source_facts.kinds = definition.kind_mask();
                 item.source_facts.power = 0;
                 self.open_payment_announcement(item, Counters::default(), None);
@@ -4271,6 +4278,7 @@ impl Game {
             self.forget_temporary_control(before.reference);
             self.forget_role(before.reference);
             self.forget_base_stats(before.reference);
+            self.forget_animations(before.reference);
             self.forget_creature_types(before.reference);
             self.forget_live_static_source(before.reference);
             self.forget_ability_source(before.reference);
@@ -4609,6 +4617,7 @@ impl Game {
         self.expire_temporary_controls();
         self.state.temporary_abilities = None;
         self.expire_base_stats();
+        self.expire_animations();
         self.expire_keyword_effects();
         self.state.death_exile_replacements = None;
         for player in &mut self.state.players {
@@ -4978,6 +4987,10 @@ impl Game {
                 .death_exile_replacements
                 .as_ref()
                 .map_or_else(Vec::new, |rules| rules.as_ref().clone()),
+            animations: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.animations.clone()),
             creature_damage_history: s
                 .creature_damage_history
                 .as_ref()
@@ -6406,3 +6419,7 @@ mod fdn_five_bounded_acceptance_tests;
 #[cfg(test)]
 #[path = "engine_runtime_copy_tests.rs"]
 mod runtime_copy_tests;
+
+#[cfg(test)]
+#[path = "engine_layered_characteristic_tests.rs"]
+mod layered_characteristic_tests;

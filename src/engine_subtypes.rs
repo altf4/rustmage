@@ -4,6 +4,25 @@
 use super::*;
 use serde::ser::{SerializeSeq, SerializeStruct};
 
+const LAND_TYPES: [&str; 17] = [
+    "Cave",
+    "Desert",
+    "Forest",
+    "Gate",
+    "Island",
+    "Lair",
+    "Locus",
+    "Mine",
+    "Mountain",
+    "Plains",
+    "Power-Plant",
+    "Sphere",
+    "Swamp",
+    "Tower",
+    "Town",
+    "Planet",
+    "Urza's",
+];
 const JOB_TYPES: [&str; 11] = [
     "Artificer",
     "Bard",
@@ -20,6 +39,9 @@ const JOB_TYPES: [&str; 11] = [
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord)]
 pub struct GrantedSubtypes {
     added: u16,
+    suppress_printed: bool,
+    land_only: bool,
+    all_creature_types: bool,
     chosen: Option<crate::cards::CreatureType>,
     /// None retains printed types (including changeling); Some replaces only
     /// creature types, preserving e.g. Equipment, Aura, Forest and Lesson.
@@ -29,7 +51,8 @@ impl GrantedSubtypes {
     /// Membership supplied by this overlay, excluding retained printed types.
     /// Use ObjectView::has_subtype for the full effective characteristic.
     pub fn contains(self, subtype: &str) -> bool {
-        self.chosen.is_some_and(|t| t.name() == subtype)
+        (self.all_creature_types && crate::cards::is_creature_type(subtype))
+            || self.chosen.is_some_and(|t| t.name() == subtype)
             || self
                 .creature_types
                 .is_some_and(|types| types.contains(&subtype))
@@ -41,7 +64,15 @@ impl GrantedSubtypes {
     pub(crate) fn has(self, card: Card, subtype: &str) -> bool {
         // Preserve the ordinary-card hot path: no taxonomy lookup, and printed
         // membership short-circuits the additional-type mask as before.
-        if self.creature_types.is_some() && crate::cards::is_creature_type(subtype) {
+        if self.land_only {
+            return self.contains(subtype)
+                || (!self.suppress_printed
+                    && LAND_TYPES.contains(&subtype)
+                    && card.has_subtype(subtype));
+        }
+        if self.suppress_printed
+            || (self.creature_types.is_some() && crate::cards::is_creature_type(subtype))
+        {
             self.contains(subtype)
         } else {
             card.has_subtype(subtype) || self.contains(subtype)
@@ -74,7 +105,10 @@ impl Serialize for GrantedSubtypes {
                 out.end()
             }
         }
-        let mut out = serializer.serialize_struct("GrantedSubtypes", 3)?;
+        let mut out = serializer.serialize_struct("GrantedSubtypes", 6)?;
+        out.serialize_field("suppress_printed", &self.suppress_printed)?;
+        out.serialize_field("land_only", &self.land_only)?;
+        out.serialize_field("all_creature_types", &self.all_creature_types)?;
         out.serialize_field("chosen", &self.chosen)?;
         out.serialize_field("added", &Added(self.added))?;
         out.serialize_field("creature_types", &self.creature_types)?;
@@ -109,27 +143,56 @@ impl Game {
         target: &Object,
         lookup: impl Fn(CardId) -> Option<&'a Object>,
         counter_count: impl Fn(CardId, CounterKind) -> u64,
+        kinds: impl Fn(CardId, &Object) -> u16,
+        mut changes: Vec<(u64, characteristic_layers::SubtypeChange)>,
     ) -> GrantedSubtypes {
         let mut mask = GrantedSubtypes::default();
-        if target.zone != Zone::Battlefield || self.object_kinds(id, target) & 1 == 0 {
+        if target.zone != Zone::Battlefield {
             return mask;
         }
         let reference = ObjectRef {
             card: id,
             generation: target.generation,
         };
-        // Find the latest resolving replacement first. All supported static
-        // subtype effects are additions, so only additions newer than it survive.
-        let latest = self.state.roles.as_ref().and_then(|state| {
-            state
-                .creature_types
-                .iter()
-                .filter(|row| row.recipient == reference)
-                .max_by_key(|row| row.timestamp)
-        });
-        let replacement_time = latest.map(|row| row.timestamp);
-        if let Some(row) = latest {
-            mask.replace_creature_types(row.types);
+        if let Some(state) = &self.state.roles {
+            changes.extend(
+                state
+                    .creature_types
+                    .iter()
+                    .filter(|row| row.recipient == reference)
+                    .map(|row| {
+                        (
+                            row.timestamp,
+                            characteristic_layers::SubtypeChange::Named(row.types, false),
+                        )
+                    }),
+            );
+        }
+        changes.sort_by_key(|row| row.0);
+        let replacement_time = changes.last().map(|row| row.0);
+        for (_, change) in changes {
+            match change {
+                characteristic_layers::SubtypeChange::LandOnly => {
+                    mask.replace_creature_types(&[]);
+                    mask.all_creature_types = false;
+                    mask.land_only = true;
+                }
+                characteristic_layers::SubtypeChange::All => {
+                    mask.replace_creature_types(&[]);
+                    mask.all_creature_types = true;
+                }
+                characteristic_layers::SubtypeChange::Named(types, all) => {
+                    mask.replace_creature_types(types);
+                    mask.all_creature_types = false;
+                    if all {
+                        mask.suppress_printed = true;
+                        mask.land_only = false;
+                    }
+                }
+            }
+        }
+        if kinds(id, target) & 1 == 0 {
+            return mask;
         }
         let source_time = |source: ObjectRef| {
             self.state
@@ -177,7 +240,7 @@ impl Game {
                 continue;
             };
             if o.zone == Zone::Battlefield
-                && self.object_kinds(source, o) & 1 == 0
+                && kinds(source, o) & 1 == 0
                 && o.attached_to == Some(reference)
                 && let Some(subtype) = o.card.attached_subtype()
                 && newer(ObjectRef {
@@ -200,6 +263,8 @@ impl Game {
                     o,
                     |source| self.state.objects.get(source as usize),
                     |source, kind| self.counter_count(source, kind),
+                    |id, object| self.object_kinds(id, object),
+                    characteristic_layers::subtype_changes(self, id),
                 )
             })
     }

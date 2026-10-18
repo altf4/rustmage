@@ -762,7 +762,9 @@ impl Game {
                         let stats = self.stats_without_hand(id, departing);
                         stats.power >= i128::from(n) || stats.toughness >= i128::from(n)
                     }
-                    TargetPredicate::Colors(mask) => object.card.colors() & mask != 0,
+                    TargetPredicate::Colors(mask) => {
+                        ability_world::CharacteristicWorld::colors(self, id) & mask != 0
+                    }
                     TargetPredicate::Keyword(keyword) => self.keywords(id).contains(keyword),
                     TargetPredicate::WithoutKeyword(keyword) => {
                         !self.keywords(id).contains(keyword)
