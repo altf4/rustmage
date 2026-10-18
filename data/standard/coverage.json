@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "968d830ac976fa9ac3702a9ab5372d979f99c0adb6c6bf522361cc2b9bbcf938",
+  "catalogue_version": "c74413f620bd501a8e68f0b86e21fa539c761210db103c6dcddcba5c738cc2e3",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2163,
-  "implemented_total": 2169,
+  "implemented_standard_cards": 2175,
+  "implemented_total": 2181,
   "token_definitions": 105,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 403,
-      "gated": 24
+      "complete": 415,
+      "gated": 12
     },
     "fin": {
       "total": 305,
@@ -552,8 +552,8 @@
     {
       "name": "Abyssal Harvester",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/abyssal_harvester.rs",
       "set": "fdn"
     },
@@ -5928,8 +5928,8 @@
     {
       "name": "Chandra, Flameshaper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/chandra_flameshaper.rs",
       "set": "fdn"
     },
@@ -10432,8 +10432,8 @@
     {
       "name": "Electroduplicate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/electroduplicate.rs",
       "set": "fdn"
     },
@@ -12504,8 +12504,8 @@
     {
       "name": "Fishing Pole",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/fishing_pole.rs",
       "set": "fdn"
     },
@@ -16256,8 +16256,8 @@
     {
       "name": "Herald of Eternal Dawn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/herald_of_eternal_dawn.rs",
       "set": "fdn"
     },
@@ -18936,8 +18936,8 @@
     {
       "name": "Kellan, Planar Trailblazer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/kellan_planar_trailblazer.rs",
       "set": "fdn"
     },
@@ -19840,8 +19840,8 @@
     {
       "name": "Lathril, Blade of the Elves",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/lathril_blade_of_the_elves.rs",
       "set": "fdn"
     },
@@ -21736,8 +21736,8 @@
     {
       "name": "Maze's End",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/maze_s_end.rs",
       "set": "fdn"
     },
@@ -24848,8 +24848,8 @@
     {
       "name": "Ovika, Enigma Goliath",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/ovika_enigma_goliath.rs",
       "set": "fdn"
     },
@@ -26752,8 +26752,8 @@
     {
       "name": "Quilled Greatwurm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/quilled_greatwurm.rs",
       "set": "fdn"
     },
@@ -37016,8 +37016,8 @@
     {
       "name": "Time Stop",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/time_stop.rs",
       "set": "fdn"
     },
@@ -40704,8 +40704,8 @@
     {
       "name": "Wildborn Preserver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/wildborn_preserver.rs",
       "set": "fdn"
     },

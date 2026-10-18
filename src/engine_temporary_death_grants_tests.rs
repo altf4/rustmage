@@ -371,7 +371,17 @@ fn sparse_registry_logical_memory_counts_each_grant_and_owned_clone() {
             let expected = std::mem::size_of::<Vec<TemporaryAbilityView>>()
                 + (i + 1) * std::mem::size_of::<TemporaryAbilityView>()
                 + std::mem::size_of::<roles::RoleState>();
-            assert_eq!(g.state_bytes(), baseline + expected);
+            // Each resolved granting spell is also an actual current-turn
+            // graveyard entry. This independent cold history is not grant storage.
+            let history = g.state.graveyard_entries.as_ref().unwrap();
+            assert_eq!(history.len(), i + 1);
+            for card in &spells[..=i] {
+                assert!(history.contains(&g.object_ref(*card)));
+                assert_eq!(g.object_view(*card).zone, Zone::Graveyard);
+            }
+            let history_bytes =
+                std::mem::size_of::<Vec<ObjectRef>>() + (i + 1) * std::mem::size_of::<ObjectRef>();
+            assert_eq!(g.state_bytes(), baseline + expected + history_bytes);
             let owned = {
                 let parent = g.clone();
                 parent.clone()

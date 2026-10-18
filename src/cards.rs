@@ -10,6 +10,36 @@ use crate::capacity::CapacityExt;
 use crate::engine::GrantedSubtypes;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
+/// Immutable additions made as part of a token-copy effect (CR707.9).
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
+pub struct CopyExceptions {
+    pub sacrifice_abilities: u16,
+    pub nightmare: bool,
+}
+impl CopyExceptions {
+    pub const NONE: Self = Self {
+        sacrifice_abilities: 0,
+        nightmare: false,
+    };
+    pub const HASTE_AND_SACRIFICE: Self = Self {
+        sacrifice_abilities: 1,
+        nightmare: false,
+    };
+    pub const NIGHTMARE: Self = Self {
+        sacrifice_abilities: 0,
+        nightmare: true,
+    };
+    pub fn union(self, other: Self) -> Self {
+        Self {
+            sacrifice_abilities: self
+                .sacrifice_abilities
+                .checked_add(other.sacrifice_abilities)
+                .capacity("copy sacrifice abilities"),
+            nightmare: self.nightmare || other.nightmare,
+        }
+    }
+}
+
 /// A temporary permission on one graveyard incarnation, independent of its grantor.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum GraveyardCastKind {
@@ -78,6 +108,7 @@ pub(crate) enum TargetRule {
         base: &'static TargetRule,
         predicate: &'static TargetPredicate,
     },
+    GraveCreatureEnteredThisTurn,
     GraveCreatureSourcePower {
         maximum: Option<i128>,
     },
@@ -535,6 +566,7 @@ pub enum EffectChoiceKind {
     Forage,
     ForageOrBlack,
     Sacrifice,
+    ReturnToHand,
     Discard,
 }
 
@@ -779,6 +811,17 @@ pub(crate) enum Instruction {
         amount: AmountValue,
     },
     SacrificeDelayedTokens,
+    SacrificeSource,
+    ExileAndCopyNightmare,
+    ExileOtherNightmares,
+    DamageDivided {
+        total: u16,
+    },
+    CreateCopyTokenWithExceptions {
+        subject: Subject,
+        amount: u16,
+        exceptions: CopyExceptions,
+    },
     ExileWarpedPermanent,
     Crew {
         minimum: u16,
@@ -816,6 +859,11 @@ pub(crate) enum Instruction {
     ModalOnce(&'static [SpellMode]),
     /// Immediately lose the game, independently of life total or state-based actions.
     LoseGame(PlayerSet),
+    WinIfDistinctSubtypeNames {
+        subtype: &'static str,
+        minimum: u16,
+    },
+    EndTurn,
     /// Definition-only modal trigger header; selected before targets, never executed.
     Modal(&'static [SpellMode]),
     /// Skip the following block when its live condition is false.

@@ -3,10 +3,35 @@
   "catalogue_id": 2006,
   "oracle_id": "4080f7e3-06d3-4d3d-9929-4e826cb66713",
   "facts_sha256": "98439e400b8a0ed360c9ca55c858e29ae7998227e43fc6ec01cb61a7c17aa1ce",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5948133cdeae6cc1df7b2331fe8069e64d2458eef82456a4d1fc875b46a71183"
   },
-  "physical_metadata_sha256": "9f154e13faf29fd5f5be945a4c05270d5bd53dc3c65b022ae4f68c72079cbacd"
+  "physical_metadata_sha256": "9f154e13faf29fd5f5be945a4c05270d5bd53dc3c65b022ae4f68c72079cbacd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HeraldOfEternalDawn.java",
+  "java_sha256": "23f479036dd7022b00ba890ba4f0cfc759d020606feaa8606d9d0019a100caf8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/CantLoseGameSourceControllerEffect.java",
+      "sha256": "313cf78f53b0fcb6bb9a6424caeeaf0afc8e5f324a2c9949285bc019aa4810ad"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ]
 }

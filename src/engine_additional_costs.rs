@@ -23,9 +23,9 @@ impl Game {
         };
         let controls_cost_object = match spec.kind {
             EffectChoiceKind::Discard => o.owner == actor,
-            EffectChoiceKind::Sacrifice | EffectChoiceKind::TapPermanents(_) => {
-                o.controller == actor
-            }
+            EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::ReturnToHand
+            | EffectChoiceKind::TapPermanents(_) => o.controller == actor,
             _ => false,
         };
         if !controls_cost_object
@@ -54,7 +54,9 @@ impl Game {
     ) -> bool {
         let zone = match spec.kind {
             EffectChoiceKind::Discard => Zone::Hand,
-            EffectChoiceKind::Sacrifice | EffectChoiceKind::TapPermanents(_) => Zone::Battlefield,
+            EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::ReturnToHand
+            | EffectChoiceKind::TapPermanents(_) => Zone::Battlefield,
             _ => return false,
         };
         let f = spec.filter;
@@ -282,6 +284,9 @@ impl Game {
             | EffectChoiceKind::Forage
             | EffectChoiceKind::ForageOrBlack => unreachable!(),
             EffectChoiceKind::Discard => self.discard_batch(&[object.card], None),
+            EffectChoiceKind::ReturnToHand => {
+                self.move_object(object.card, Zone::Hand);
+            }
             EffectChoiceKind::Sacrifice => {
                 if a.item.program().is_some_and(|(_, program)| {
                     program.iter().any(|i| {

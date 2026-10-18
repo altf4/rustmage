@@ -214,7 +214,10 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 keywords: if object.zone == Zone::Stack {
                     game.effective_spell_card(i as CardId).keywords()
                 } else {
-                    object.card.keywords()
+                    object
+                        .card
+                        .keywords()
+                        .union(game.copied_keywords(world.reference(i as CardId)))
                 },
                 grants: Vec::new(),
                 mana: Vec::new(),
