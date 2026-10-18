@@ -7241,11 +7241,11 @@ mod return_links_tests;
 mod attachment_death;
 
 #[cfg(test)]
+#[path = "engine_combat_allocation_tests.rs"]
+mod combat_allocation_tests;
+#[cfg(test)]
 #[path = "engine_fdn_growth_cost_tests.rs"]
 mod fdn_growth_cost_tests;
 #[cfg(test)]
 #[path = "engine_linked_choices_tests.rs"]
 mod linked_choices_tests;
-#[cfg(test)]
-#[path = "engine_combat_allocation_tests.rs"]
-mod combat_allocation_tests;

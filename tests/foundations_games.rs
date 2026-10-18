@@ -829,12 +829,12 @@ mod zone_games;
 
 #[path = "common/foundations_cast_origins_games.rs"]
 mod cast_origins_games;
+#[path = "common/foundations_combat_allocation_games.rs"]
+mod combat_allocation_games;
 #[path = "common/foundations_linked_choice_games.rs"]
 mod foundations_linked_choice_games;
 #[path = "common/foundations_growth_games.rs"]
 mod growth_games;
-#[path = "common/foundations_combat_allocation_games.rs"]
-mod combat_allocation_games;
 
 #[path = "common/foundations_owned_rollouts.rs"]
 mod owned_rollouts;
