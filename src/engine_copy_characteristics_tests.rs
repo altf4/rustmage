@@ -111,8 +111,8 @@ fn token_current_controller_owns_its_trigger_and_later_control_change_prevents_s
             .unwrap();
         assert_eq!(packet.controller, p.other());
         assert_eq!(packet.object, g.object_ref(token));
-        let reference = g.object_ref(token);
-        g.change_controller(reference, p);
+        let transfer = g.activation_item(p.other(), token, 0);
+        g.gain_control(&transfer, Subject::Source, PlayerSet::Opponent);
         settle(&mut g);
         assert!(g.on_battlefield(token));
         g.begin_step(Step::End);
