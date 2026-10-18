@@ -8,5 +8,23 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "84b6718293ca34be45b43d0b754f75082a34cb497ce7836fe9e23cb465b9618d"
   },
-  "physical_metadata_sha256": "72116b8f0acaf1d7ebf82bc281f67225c262b438b27ba12940ce6e07811ca126"
+  "physical_metadata_sha256": "72116b8f0acaf1d7ebf82bc281f67225c262b438b27ba12940ce6e07811ca126",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BiogenicUpgrade.java",
+  "java_sha256": "4f2f6daf7b0b7a0b5cbff2c5a41f4e67b4aad23f30c4e5e805e2b256cf63ae22",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/DistributeCountersEffect.java",
+      "sha256": "745e7d5d527b57c5dd4a8b5e477a62c2d856ae9731d1d575ec29891351978e62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    }
+  ],
+  "rules_references": [
+    "https://magic.wizards.com/en/news/feature/foundations-release-notes"
+  ]
 }

@@ -384,6 +384,11 @@ impl Game {
         let TargetRule::Grouped { constraint, .. } = rule else {
             return true;
         };
+        if let TargetGroupConstraint::OtherThanGroup(first) = constraint {
+            return chosen
+                .iter()
+                .all(|bound| bound.group != first || bound.target != target);
+        }
         let Target::Card(id) = target else {
             return false;
         };
@@ -391,6 +396,7 @@ impl Game {
             return false;
         };
         match constraint {
+            TargetGroupConstraint::OtherThanGroup(_) => unreachable!(),
             TargetGroupConstraint::AttachedToGroup(first_group) => object.zone == Zone::Battlefield
                 && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| {
                     self.same_target_object(*b) && object.attached_to == b.object
@@ -508,11 +514,7 @@ impl Game {
         // declarations precede targets, mana abilities and payment.
         if needs_mode {
             self.state.pending = Pending::Modes { player };
-        } else if a.pay_window
-            && a.item.kind == StackKind::Spell
-            && a.item.source_card.x_symbols() > 0
-            && a.item.x.is_none()
-        {
+        } else if a.pay_window && a.has_x_cost() && a.item.x.is_none() {
             self.state.pending = Pending::X { player };
         } else if a.needs_offspring() {
             self.state.pending = Pending::Offspring { player };

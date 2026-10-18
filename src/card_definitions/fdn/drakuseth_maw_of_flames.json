@@ -8,5 +8,23 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e4feed528e2e1bc93f4cd4b3ee2ce4f448caf26b92d761cdfb907d3f8a6e4427"
   },
-  "physical_metadata_sha256": "85a2377b1799f752f3b4196e503334c1be222a37993f2a526a6b3cf497f613b0"
+  "physical_metadata_sha256": "85a2377b1799f752f3b4196e503334c1be222a37993f2a526a6b3cf497f613b0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DrakusethMawOfFlames.java",
+  "java_sha256": "85e800ff898e46f26b477a88fca8eee7b60a54c886cf8b1eeaabbf380f66ba25",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetAndTargetEffect.java",
+      "sha256": "23bed77af2f847ef446bbb6c293ae9d3c1f8b38a50fb37eb828b628a34a6f27e"
+    }
+  ],
+  "rules_references": [
+    "https://magic.wizards.com/en/news/feature/foundations-release-notes"
+  ]
 }

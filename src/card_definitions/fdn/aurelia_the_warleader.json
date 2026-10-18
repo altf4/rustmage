@@ -8,5 +8,28 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ac43cbf26af861e2eac0db7b5c1c8cdf3b0dc2d804df5a159ef1af0219a66df5"
   },
-  "physical_metadata_sha256": "248543c33bb1429a011a07846baaf60136bd621998f480ec89a6281989d9c205"
+  "physical_metadata_sha256": "248543c33bb1429a011a07846baaf60136bd621998f480ec89a6281989d9c205",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AureliaTheWarleader.java",
+  "java_sha256": "ccba534faf078c1e92262f675d79e1bd43061c46299922aeb30e6f2229869e2d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksFirstTimeTriggeredAbility.java",
+      "sha256": "d7075c795fe65000b1c659f7494f7dab21866006c0ff535b3cc65a2be9eeda52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AdditionalCombatPhaseEffect.java",
+      "sha256": "52f33fcfab80ac5e2027406daace88dec6cd258ea19421a98551e2d34394efd3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapAllControllerEffect.java",
+      "sha256": "664d70dc64894ba9e46838bace1e88036662b3daee12d0914aa7d8e02c975cc4"
+    }
+  ],
+  "rules_references": [
+    "https://magic.wizards.com/en/news/feature/foundations-release-notes"
+  ]
 }

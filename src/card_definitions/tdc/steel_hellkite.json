@@ -8,5 +8,28 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2316fb2daa1ae06ca60f288e44c6c898c64088bd589cb3711fa57a643bb8ed79"
   },
-  "physical_metadata_sha256": "55533d59ec4649e5d190dcffdd8d7914c342f84c543514b06b8b2c2b17adaab0"
+  "physical_metadata_sha256": "55533d59ec4649e5d190dcffdd8d7914c342f84c543514b06b8b2c2b17adaab0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SteelHellkite.java",
+  "java_sha256": "03e30f15ba13ef4e43dd9c4e6eba8430876b9d746616b57df93488657f3b841e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LimitedTimesPerTurnActivatedAbility.java",
+      "sha256": "11b6039cca03fb60836b3339e38e2b2dccfb7a47bfa599964d14ebf12696cdf7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyAllEffect.java",
+      "sha256": "ff52578966339bd976dc24cb1505f5862e3ee9b7b1abf41d2d8fac78cb43b48d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    }
+  ],
+  "rules_references": [
+    "https://magic.wizards.com/en/news/feature/foundations-release-notes"
+  ]
 }

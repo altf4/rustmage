@@ -58,7 +58,7 @@ impl Game {
         true
     }
 
-    fn minimum_blockers(&self, attacker: CardId) -> usize {
+    pub(super) fn minimum_blockers(&self, attacker: CardId) -> usize {
         if has_attacker_keyword(self, attacker, Keywords::MIN_THREE_BLOCKERS) {
             3
         } else if has_attacker_keyword(self, attacker, Keywords::MENACE) {
@@ -69,16 +69,18 @@ impl Game {
     }
 
     pub(super) fn blocks_complete(&self) -> bool {
-        self.state.attackers.iter().all(|a| {
-            let count = self
-                .state
-                .selected_blocks
-                .iter()
-                .filter(|&&(_, id)| id == a.card)
-                .count();
-            (count == 0 || count >= self.minimum_blockers(a.card))
-                && (!has_attacker_keyword(self, a.card, Keywords::MAX_ONE_BLOCKER) || count <= 1)
-        })
+        self.block_requirements_complete()
+            && self.state.attackers.iter().all(|a| {
+                let count = self
+                    .state
+                    .selected_blocks
+                    .iter()
+                    .filter(|&&(_, id)| id == a.card)
+                    .count();
+                (count == 0 || count >= self.minimum_blockers(a.card))
+                    && (!has_attacker_keyword(self, a.card, Keywords::MAX_ONE_BLOCKER)
+                        || count <= 1)
+            })
     }
 
     pub(super) fn block_preserves_completion(&self, blocker: CardId, attacker: CardId) -> bool {
@@ -109,7 +111,7 @@ impl Game {
             .flat_map(|(id, remaining)| std::iter::repeat_n(id, remaining))
             .collect();
         if needs.is_empty() {
-            return true;
+            return self.block_requirements_preserved(blocker, attacker);
         }
         if needs
             .iter()
@@ -174,7 +176,7 @@ impl Game {
                 return false;
             }
         }
-        true
+        self.block_requirements_preserved(blocker, attacker)
     }
 }
 fn has_attacker_keyword(game: &Game, id: CardId, keyword: Keywords) -> bool {

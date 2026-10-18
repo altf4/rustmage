@@ -1333,7 +1333,7 @@ impl Game {
         if viewer != a.item.controller
             || a.additional_paid
             || !a.pay_window
-            || (a.item.source_card.x_symbols() > 0 && a.item.x.is_none())
+            || (a.has_x_cost() && a.item.x.is_none())
             || a.needs_offspring()
             || a.needs_kicker()
             || a.needs_gift()
@@ -1496,7 +1496,15 @@ impl Game {
                     reserve: self.announcement_reserve(announcement),
                     actor: announcement.item.controller,
                     required: announcement.cost.map_or(cost.colored, |c| c.colored),
-                    generic: announcement.cost.map_or(cost.generic, |c| c.generic),
+                    generic: announcement
+                        .cost
+                        .map_or(cost.generic, |c| c.generic)
+                        .checked_add(if announcement.has_x_cost() {
+                            announcement.item.x.unwrap_or(0)
+                        } else {
+                            0
+                        })
+                        .capacity("activation cost exhausted"),
                     source: Some((
                         announcement.item.object,
                         ability,

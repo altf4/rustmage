@@ -303,7 +303,7 @@ impl Game {
                     }
                     // A modal activation must choose its mode before targets and
                     // costs. Legacy direct actions cannot encode that declaration.
-                    if modes.is_some() {
+                    if modes.is_some() || ability.has_x_cost() {
                         return false;
                     }
                     // Direct actions have no owned external-cost selection.

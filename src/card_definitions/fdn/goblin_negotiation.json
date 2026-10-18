@@ -8,5 +8,23 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5fd5abd27b245bfd3bd81f65e5b61d0e868f9fd2ff89ce9f04cb2c7f41748939"
   },
-  "physical_metadata_sha256": "8cf858637bd4b5625f09e654681bfed41eed7be613834991d890dbacc61d083f"
+  "physical_metadata_sha256": "8cf858637bd4b5625f09e654681bfed41eed7be613834991d890dbacc61d083f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GoblinNegotiation.java",
+  "java_sha256": "2b5ddca8b900b9ce27b8e5954be22e80a6e809331f53d6f6ff6315ec7ec9f895",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+      "sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/GoblinToken.java",
+      "sha256": "16e001f88ad007f0445ce679eea218189f6c226eced65a5144fe17dfe7a72131"
+    }
+  ],
+  "rules_references": [
+    "https://magic.wizards.com/en/news/feature/foundations-release-notes"
+  ]
 }
