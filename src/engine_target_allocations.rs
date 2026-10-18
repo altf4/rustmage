@@ -33,11 +33,9 @@ impl SpellView {
             }]));
         }
     }
-    pub(super) fn retarget_allocation(&mut self, old: BoundTarget, new: BoundTarget) {
+    pub(super) fn retarget_allocation(&mut self, index: usize, new: BoundTarget) {
         if let Some(rows) = &mut self.target_allocations {
-            for row in rows.iter_mut().filter(|row| row.target == old) {
-                row.target = new;
-            }
+            rows[index].target = new;
         }
     }
 }

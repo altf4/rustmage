@@ -13,25 +13,28 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 /// Immutable additions made as part of a token-copy effect (CR707.9).
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
 pub struct CopyExceptions {
-    pub haste_and_sacrifice: bool,
+    pub sacrifice_abilities: u16,
     pub nightmare: bool,
 }
 impl CopyExceptions {
     pub const NONE: Self = Self {
-        haste_and_sacrifice: false,
+        sacrifice_abilities: 0,
         nightmare: false,
     };
     pub const HASTE_AND_SACRIFICE: Self = Self {
-        haste_and_sacrifice: true,
+        sacrifice_abilities: 1,
         nightmare: false,
     };
     pub const NIGHTMARE: Self = Self {
-        haste_and_sacrifice: false,
+        sacrifice_abilities: 0,
         nightmare: true,
     };
-    pub const fn union(self, other: Self) -> Self {
+    pub fn union(self, other: Self) -> Self {
         Self {
-            haste_and_sacrifice: self.haste_and_sacrifice || other.haste_and_sacrifice,
+            sacrifice_abilities: self
+                .sacrifice_abilities
+                .checked_add(other.sacrifice_abilities)
+                .capacity("copy sacrifice abilities"),
             nightmare: self.nightmare || other.nightmare,
         }
     }
@@ -837,7 +840,10 @@ pub(crate) enum Instruction {
     ModalOnce(&'static [SpellMode]),
     /// Immediately lose the game, independently of life total or state-based actions.
     LoseGame(PlayerSet),
-    WinIfDistinctSubtypeNames { subtype: &'static str, minimum: u16 },
+    WinIfDistinctSubtypeNames {
+        subtype: &'static str,
+        minimum: u16,
+    },
     EndTurn,
     /// Definition-only modal trigger header; selected before targets, never executed.
     Modal(&'static [SpellMode]),

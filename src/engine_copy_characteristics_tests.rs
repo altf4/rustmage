@@ -332,3 +332,95 @@ fn abandoning_copy_choices_ceases_only_the_exact_uncommitted_copy_and_keeps_futu
         assert!(g.delayed_spell_copy_view().is_empty());
     }
 }
+
+#[test]
+fn repeated_paid_copies_keep_independent_sacrifice_triggers_and_countering_one_is_not_enough() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let spell = named(&mut g, p, "Electroduplicate", Zone::Hand);
+        cast(&mut g, spell, None, &[Target::Card(bear)]);
+        settle(&mut g);
+        let first = g
+            .state
+            .copy_recipes
+            .as_ref()
+            .unwrap()
+            .last()
+            .unwrap()
+            .object
+            .card;
+        let spell = named(&mut g, p, "Electroduplicate", Zone::Hand);
+        cast(&mut g, spell, None, &[Target::Card(first)]);
+        settle(&mut g);
+        let second = g
+            .state
+            .copy_recipes
+            .as_ref()
+            .unwrap()
+            .last()
+            .unwrap()
+            .object;
+        assert_eq!(
+            g.copy_recipe(second)
+                .unwrap()
+                .exceptions
+                .sacrifice_abilities,
+            2
+        );
+        g.begin_step(Step::End);
+        // Put every ordinary triggered packet on the stack using owned actions.
+        g.prepare_triggers();
+        while !g.state.pending_triggers.is_empty() || !g.state.ordering_triggers.is_empty() {
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PutTrigger { .. }))
+                .unwrap();
+            checked(&mut g, action);
+        }
+        let triggers: Vec<_> = g
+            .state
+            .stack
+            .iter()
+            .filter(|s| s.kind == StackKind::CopyEndStepSacrifice && s.object == second)
+            .map(|s| s.id)
+            .collect();
+        assert_eq!(triggers.len(), 2);
+        assert_ne!(triggers[0], triggers[1]);
+        assert!(g.counter_stack_item(triggers[0], false));
+        assert!(g.on_battlefield(second.card));
+        assert!(g.state.stack.iter().any(|s| s.id == triggers[1]));
+        settle(&mut g);
+        assert_eq!(g.state.objects[second.card as usize].zone, Zone::Outside);
+        assert!(g.on_battlefield(bear));
+    }
+}
+
+#[test]
+fn copy_sacrifice_count_overflow_restores_the_current_paid_resolution() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = exception_copy(
+            &mut g,
+            p,
+            CopyExceptions {
+                sacrifice_abilities: u16::MAX,
+                nightmare: false,
+            },
+        );
+        let spell = named(&mut g, p, "Electroduplicate", Zone::Hand);
+        cast(&mut g, spell, None, &[Target::Card(source)]);
+        checked(&mut g, Action::Pass);
+        let before = g.snapshot();
+        let revision = g.revision();
+        assert_eq!(
+            g.apply(g.actor().unwrap(), Action::Pass),
+            Err(Error::CapacityExceeded(crate::CapacityExceeded {
+                resource: "copy sacrifice abilities"
+            }))
+        );
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(g.revision(), revision);
+    }
+}

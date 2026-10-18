@@ -9,7 +9,7 @@ impl Game {
     pub(super) fn copied_keywords(&self, object: ObjectRef) -> Keywords {
         if self
             .copy_recipe(object)
-            .is_some_and(|r| r.exceptions.haste_and_sacrifice)
+            .is_some_and(|r| r.exceptions.sacrifice_abilities != 0)
         {
             Keywords::HASTE
         } else {
@@ -52,20 +52,22 @@ impl Game {
             .into_iter()
             .flat_map(|r| r.iter())
             .filter(|r| {
-                r.recipe.exceptions.haste_and_sacrifice
+                r.recipe.exceptions.sacrifice_abilities != 0
                     && self.on_battlefield(r.object.card)
                     && self.object_ref(r.object.card) == r.object
                     && self.printed_abilities_available(r.object.card)
             })
-            .map(|r| r.object.card)
+            .map(|r| (r.object.card, r.recipe.exceptions.sacrifice_abilities))
             .collect();
-        for source in sources {
-            // Reuse the normal source-facts constructor; this is the token's
-            // own intrinsic trigger, not a source-independent delayed effect.
-            let mut item =
-                self.activation_item(self.state.objects[source as usize].controller, source, 0);
-            item.kind = StackKind::CopyEndStepSacrifice;
-            self.state.pending_triggers.push(item);
+        for (source, amount) in sources {
+            for _ in 0..amount {
+                // Reuse the normal source-facts constructor; this is the token's
+                // own intrinsic trigger, not a source-independent delayed effect.
+                let mut item =
+                    self.activation_item(self.state.objects[source as usize].controller, source, 0);
+                item.kind = StackKind::CopyEndStepSacrifice;
+                self.state.pending_triggers.push(item);
+            }
         }
     }
     pub(super) fn sacrifice_exact_source(&mut self, item: &SpellView) {
