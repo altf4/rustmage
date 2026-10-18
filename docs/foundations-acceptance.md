@@ -34,6 +34,20 @@ for every card, including inherited implementations.
 Accept the set only when all 517 cards have complete tested behavior, remaining
 obligations are resolved, and full-game evidence exercises the implemented set
 with legal decks and meaningful outcomes. Use two independent nonauthor reviews
-for final PRs. Then invoke the skill again to choose and complete the next full
-set. A metadata count, partial implementation or one smoke deck cannot waive this
-acceptance target.
+for final PRs. After Foundations acceptance, pause for the user before selecting
+or implementing another set. A metadata count, partial implementation or one smoke
+deck cannot waive this acceptance target.
+
+The final broad game matrix requires all 517 manifest identities to be supported;
+it must not silently reduce its workload to admitted cards. Deck inclusion is
+supplemented by the targeted rules tests and the mechanic-specific natural game
+observers. The final combined-head release validation and game results are pending.
+
+`owned_rollouts::foundations_private_choice_owned_sibling_rollouts` starts from a
+naturally reached private library choice in legal Foundations decks. It compares
+bounded raw/index sibling continuations after parent disposal, then restores and
+replays the saved choice. Its printed throughput includes cloning, snapshots,
+both players' observations and verification; it is a trusted simulator workload,
+not hidden-information MCTS. Final optimized measurements are pending the
+coordinated final-head run. Preserve the existing Freeform smoke benchmark as a
+separately labelled regression workload.
