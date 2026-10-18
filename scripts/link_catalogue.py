@@ -9,6 +9,26 @@ def quote(value):return json.dumps(value,ensure_ascii=False)
 def boolean(value):return str(value).lower()
 def physical_digest(metadata,card):
     return hashlib.sha256(canonical(dict(card=card,intrinsic_colors=metadata['colors'][card['index']]))).hexdigest()
+def validate_simple_mana_components(metadata, records):
+    """Check fixed printed components, skipping hybrid and other special symbols."""
+    checked = 0
+    for card in metadata['cards']:
+        if card['category'] != 'physical' or not records[card['index']]['complete']:
+            continue
+        cost = card['mana_cost']
+        if not re.fullmatch(r'(?:\{(?:[0-9]+|[WUBRGCX])\})*', cost):
+            continue
+        colored, generic = [0] * 6, 0
+        for symbol in re.findall(r'\{([^}]+)\}', cost):
+            if symbol.isdecimal():
+                generic += int(symbol)
+            elif symbol != 'X':
+                colored['WUBRGC'.index(symbol)] += 1
+        if card['colored'] != colored or card['generic'] != generic:
+            raise ValueError('fixed printed mana components changed: ' + card['name'])
+        checked += 1
+    return checked
+
 def load(root=ROOT):
     metadata=json.loads((root/'data/catalogue-identities.json').read_text())
     facts={c['oracle_id']:c for c in json.loads((root/'data/standard/cards.json').read_text())['cards']}
@@ -34,6 +54,7 @@ def load(root=ROOT):
         records[index]=dict(record,source=source,relative=source.relative_to(root).as_posix())
         fingerprint.extend(canonical(record));fingerprint.extend(source.read_bytes())
     if records.keys()!=by_id.keys():raise ValueError('missing card definitions: '+str(sorted(by_id.keys()-records.keys())))
+    validate_simple_mana_components(metadata, records)
     fingerprint.extend((directory/'mod.rs').read_bytes())
     return metadata,records,hashlib.sha256(fingerprint).hexdigest()
 def validate_synthetic_aliases(metadata):
