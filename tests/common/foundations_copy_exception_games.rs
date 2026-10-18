@@ -1,6 +1,6 @@
 //! Paid copy exceptions, graveyard history and loyalty in ordinary FDN games.
 use super::{deck, run_matrix_actions_observed};
-use rustmage::{Card, CastMethod, Observation, StackKind, Zone};
+use rustmage::{Action, Card, CastMethod, Observation, StackKind, Zone};
 use std::collections::BTreeSet;
 
 #[test]
@@ -10,7 +10,7 @@ fn foundations_copy_exception_cards_natural_games_and_owned_state() {
         &[
             "Burglar Rat",
             "Infestation Sage",
-            "Fanatical Firebrand",
+            "Gleaming Barrier",
             "Vampire Nighthawk",
             "Burst Lightning",
             "Macabre Waltz",
@@ -41,7 +41,12 @@ fn foundations_copy_exception_cards_natural_games_and_owned_state() {
     let mut loyalty = BTreeSet::new();
     let mut permission_used = false;
     let mut owned_copies = 0;
+    let mut plus_one_legal = 0;
     let mut observe = |before: &Observation, after: &Observation, owned: bool| {
+        plus_one_legal += usize::from(before.actions.iter().any(|action| {
+            matches!(action, Action::AnnounceActivate { card, ability: 1, .. }
+                if before.objects.iter().any(|o| o.id == *card && o.card.name() == "Chandra, Flameshaper"))
+        }));
         if owned
             && (before.objects.iter().any(|o| o.copy_recipe.is_some())
                 || before.target_amount.is_some()
@@ -66,7 +71,13 @@ fn foundations_copy_exception_cards_natural_games_and_owned_state() {
                         .any(|b| b.reference == permission.object && b.zone == Zone::Exile)
             });
         }
-        if let Some(source) = before.resolving.as_ref().or_else(|| before.stack.last()) {
+        let source = before.resolving.as_ref().or_else(|| {
+            before.stack.last().filter(|item| {
+                !after.stack.iter().any(|s| s.id == item.id)
+                    || after.resolving.as_ref().is_some_and(|s| s.id == item.id)
+            })
+        });
+        if let Some(source) = source {
             for object in &after.objects {
                 if object.zone == Zone::Battlefield
                     && !before
@@ -111,7 +122,7 @@ fn foundations_copy_exception_cards_natural_games_and_owned_state() {
         Some(&mut observe),
     );
     println!(
-        "Natural witnesses: copied_by={copied_by:?}, flashback={flashback}, loyalty={loyalty:?}, permission_used={permission_used}, owned={owned_copies}"
+        "Natural witnesses: copied_by={copied_by:?}, flashback={flashback}, loyalty={loyalty:?}, permission_used={permission_used}, owned={owned_copies}, plus_one_legal={plus_one_legal}"
     );
     for name in [
         "Abyssal Harvester",
