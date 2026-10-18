@@ -775,3 +775,6 @@ mod casting_games;
 
 #[path = "common/foundations_stack_copy_games.rs"]
 mod stack_copy_games;
+
+#[path = "common/foundations_copy_exception_games.rs"]
+mod copy_exception_games;

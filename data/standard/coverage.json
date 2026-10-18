@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "688394c7e971c39fc533f6cc901ae3163520a3f2406660c1ea11459811f21ae9",
+  "catalogue_version": "b36f9bba66750d543e9956dcf8d399a111a0d28a214cf3dde29642e9cd2f0845",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2152,
-  "implemented_total": 2158,
+  "implemented_standard_cards": 2155,
+  "implemented_total": 2161,
   "token_definitions": 103,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 393,
-      "gated": 34
+      "complete": 396,
+      "gated": 31
     },
     "fin": {
       "total": 305,
@@ -552,8 +552,8 @@
     {
       "name": "Abyssal Harvester",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/abyssal_harvester.rs",
       "set": "fdn"
     },
@@ -5928,8 +5928,8 @@
     {
       "name": "Chandra, Flameshaper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/chandra_flameshaper.rs",
       "set": "fdn"
     },
@@ -10432,8 +10432,8 @@
     {
       "name": "Electroduplicate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/electroduplicate.rs",
       "set": "fdn"
     },
