@@ -503,6 +503,7 @@ impl Game {
                     | TriggerCondition::GrantedAttacks
                     | TriggerCondition::SelfBecomesTapped
                     | TriggerCondition::SpellCast { .. }
+                    | TriggerCondition::ManaSpentForSpell
                     | TriggerCondition::AtStep { .. } => false,
                     TriggerCondition::PermanentEntersYou {
                         kinds,
