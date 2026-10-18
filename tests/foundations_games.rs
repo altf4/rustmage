@@ -566,6 +566,21 @@ fn run_matrix_actions_observed(
     seeds: &[u64],
     mut observer: Option<&mut MatrixObserver<'_>>,
 ) {
+    let manifest: serde_json::Value =
+        serde_json::from_str(include_str!("../data/sets/fdn.json")).unwrap();
+    let members: BTreeSet<Card> = manifest["cards"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|row| Card::from_name(row["name"].as_str().unwrap()).unwrap())
+        .collect();
+    for card in decks.iter().flatten() {
+        assert!(
+            members.contains(card),
+            "non-Foundations card after deck edits: {}",
+            card.identity()
+        );
+    }
     let mut opening_permanents = BTreeSet::new();
     let mut played_lands = BTreeSet::new();
     let mut used_mana_sources = BTreeSet::new();
