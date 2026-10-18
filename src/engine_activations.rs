@@ -94,6 +94,7 @@ impl Game {
         sorcery: bool,
     ) -> bool {
         self.printed_abilities_available(card)
+            && (ability.mana_production().is_some() || !self.named_activation_prohibited(card))
             && self.activation_guard_available(ability.guard, actor)
             && Self::object_activation_available_with_kinds(
                 &self.state.objects[card as usize],

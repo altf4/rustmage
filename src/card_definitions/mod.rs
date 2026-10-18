@@ -113,6 +113,7 @@ const fn object(kinds: u8) -> TargetRule {
     }
 }
 pub(super) struct CardExtras {
+    pub named_activation_lock: bool,
     pub zone_replacement: Option<ZoneReplacementRule>,
     pub opening_hand_battlefield: bool,
     pub activation_put_counters: &'static [(u16, CounterKind, u64)],
@@ -183,6 +184,7 @@ impl CardExtras {
         fixed_entry_counters: &[],
         cast_entry_counters: &[],
         hand_cast_entry_counters: &[],
+        named_activation_lock: false,
         entry_choice: None,
         chosen_entry_counters: None,
         static_modifiers: &[],

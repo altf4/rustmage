@@ -8,5 +8,28 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "52c9093d9b4d250533e43351c1e26e72011f23615d3c9ac8890ad05965d2d40f"
   },
-  "physical_metadata_sha256": "37a6d10fc3d843d3f3d62c8e3b853247b166261fbcca3018bdaa2474ffc3ab13"
+  "physical_metadata_sha256": "37a6d10fc3d843d3f3d62c8e3b853247b166261fbcca3018bdaa2474ffc3ab13",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CuratorOfDestinies.java",
+  "java_sha256": "8c87d4d1add405c61b4703ee83bb0da0d7c3aa1dccb3bdcc1c462b92e6dfde2f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CantBeCounteredSourceAbility.java",
+      "sha256": "ab592d3d97f245e6b3ca9971e1c559a7063c8717a4a5963b64564a13abd768de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "remaining_obligations": [
+    "Rules interactions, owned branching, full games and independent review pending."
+  ]
 }

@@ -1496,6 +1496,7 @@ impl Game {
             }
             let resolution = self.state.resolving.as_mut().unwrap();
             let Some(instruction) = resolution.program.get(resolution.pc).copied() else {
+                self.abandon_linked_choices();
                 let item = self.state.resolving.take().unwrap().item;
                 if item.kind == StackKind::Spell
                     && self.state.objects[item.card as usize].zone == Zone::Stack
@@ -1526,6 +1527,22 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::PartitionLibraryPiles(maximum) => {
+                    self.start_library_piles(item.controller, maximum);
+                    return;
+                }
+                Instruction::KeepOneOfEachPermanentType => {
+                    if self.start_keep_types(item.controller.other()) {
+                        return;
+                    }
+                }
+                Instruction::RememberOwnSacrifice => self.remember_own_sacrifice(),
+                Instruction::RecoverAnotherPermanent => {
+                    if self.recover_another_permanent(item.controller) {
+                        return;
+                    }
+                }
+                Instruction::ReturnLinkedExileToHand => self.return_linked_exile(item.object),
                 Instruction::CopyNextInstantSorcery => self.remember_next_spell_copy(&item),
                 Instruction::CopyCastSpell { .. } => {
                     if self.copy_captured_spell(&item) {

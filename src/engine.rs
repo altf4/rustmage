@@ -1,8 +1,11 @@
+#[path = "engine_linked_choices.rs"]
+mod linked_choices;
 #[cfg(test)]
 #[path = "engine_zone_replacement_tests.rs"]
 mod zone_replacement_tests;
 #[path = "engine_zone_replacements.rs"]
 mod zone_replacements;
+pub use linked_choices::{KeepTypesView, LibraryPile, LibraryPilesView, LinkedExileView};
 pub use zone_replacements::{ZoneReplacementChoiceView, ZoneReplacementKind, ZoneRevealView};
 #[path = "engine_mana_lots.rs"]
 mod mana_lots;
@@ -377,6 +380,9 @@ macro_rules! define_actions {
     }
 }
 define_actions! {
+    AssignLibraryPile { object: ObjectRef, pile: LibraryPile },
+    ChooseLibraryPile { pile: LibraryPile },
+    KeepPermanentType { object: ObjectRef },
     ChooseZoneReplacement { effect: ZoneReplacementKind },
     FinishStackTargets,
     RestoreStackTarget { index: u32 },
@@ -1262,6 +1268,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    LinkedChoice {
+        player: Player,
+    },
     ZoneReplacement {
         player: Player,
     },
@@ -1458,6 +1467,7 @@ impl Pending {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    linked_choices: Option<Box<linked_choices::ChoiceState>>,
     zone_rules: Option<Box<zone_replacements::ZoneState>>,
     mana_lots: Option<Box<mana_lots::ManaState>>,
     controls: Option<Box<continuous_control::ControlState>>,
@@ -1809,6 +1819,9 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    pub library_piles: Option<LibraryPilesView>,
+    pub keep_types: Option<KeepTypesView>,
+    pub linked_exile: Vec<LinkedExileView>,
     pub mana_lots: Vec<ManaLotView>,
     pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub creature_damage_history: Vec<CreatureDamageHistoryView>,
@@ -2030,6 +2043,7 @@ impl Game {
             revision: 0,
             state: State {
                 mana_lots: None,
+                linked_choices: None,
                 zone_rules: None,
                 controls: None,
                 temporary_controls: None,
@@ -2180,6 +2194,7 @@ impl Game {
             | Pending::AdditionalCost { player }
             | Pending::EntryTimestamp { player }
             | Pending::EntryReplacement { player }
+            | Pending::LinkedChoice { player }
             | Pending::EntryValue { player }
             | Pending::EntryLife { player }
             | Pending::AuraEntry { player }
@@ -2604,6 +2619,11 @@ impl Game {
                     }) {
                         return true;
                     }
+                }
+            }
+            Pending::LinkedChoice { .. } => {
+                if self.visit_linked_choices(&mut emit) {
+                    return true;
                 }
             }
             Pending::EntryValue { .. } => {
@@ -3620,6 +3640,9 @@ impl Game {
             Action::ChooseEntryReplacement { source, intrinsic } => {
                 self.choose_entry_tap_effect(source, intrinsic)
             }
+            Action::AssignLibraryPile { object, pile } => self.assign_library_pile(object, pile),
+            Action::ChooseLibraryPile { pile } => self.choose_library_pile(pile),
+            Action::KeepPermanentType { object } => self.choose_kept_type(object),
             Action::ChooseEntryValue { value } => self.choose_entry_value(value),
             Action::ChooseEntryLife { pay } => self.choose_entry_life(pay),
             Action::ChooseAuraAttachment { object } => self.choose_aura_attachment(object),
@@ -4338,6 +4361,7 @@ impl Game {
         if let [(actor, id)] = sacrifices {
             let mut event = self.move_object_raw(*id, Zone::Graveyard);
             event.sacrificed_by = Some(*actor);
+            self.record_own_sacrifices(std::slice::from_ref(&event));
             self.finish_zone_events(std::slice::from_ref(&event), &sources);
             return;
         }
@@ -4346,6 +4370,7 @@ impl Game {
         for (event, &(actor, _)) in events.iter_mut().zip(sacrifices) {
             event.sacrificed_by = Some(actor);
         }
+        self.record_own_sacrifices(&events);
         self.finish_zone_events(&events, &sources);
     }
 
@@ -5348,6 +5373,12 @@ impl Game {
             .map(|(i, _)| query.object_view(i as CardId))
             .collect();
         Observation {
+            library_piles: self.library_piles_view(viewer),
+            keep_types: self.keep_types_view(),
+            linked_exile: s
+                .linked_choices
+                .as_ref()
+                .map_or_else(Vec::new, |c| c.links.clone()),
             casting_prohibited: s.casting_prohibited || self.static_casting_prohibited(viewer),
             replacement_choice: self.replacement_choice(viewer),
             zone_replacement_choice: self.zone_choice_view(viewer),
@@ -5497,6 +5528,7 @@ impl Game {
                 Pending::HandDefender { .. } => "hand_defender",
                 Pending::EffectChoice { .. } => "effect_choice",
                 Pending::EntryTimestamp { .. } => "entry_timestamps",
+                Pending::LinkedChoice { .. } => "linked_choice",
                 Pending::EntryValue { .. } => "entry_value",
                 Pending::EntryLife { .. } => "entry_life",
                 Pending::EntryReplacement { .. } => "entry_replacement",
@@ -5906,6 +5938,7 @@ impl Game {
             })
             + 2 * std::mem::size_of::<Vec<CardId>>()
             + s.objects.len() * std::mem::size_of::<Object>()
+            + s.linked_choices.as_ref().map_or(0, |c| c.bytes())
             + live_counters::owned_bytes(&s.named_counters)
             + entry_choices::owned_bytes(&s.entry_values)
             + s.pending.owned_bytes()
@@ -6894,3 +6927,7 @@ mod return_links_tests;
 
 #[path = "engine_attachment_death.rs"]
 mod attachment_death;
+
+#[cfg(test)]
+#[path = "engine_linked_choices_tests.rs"]
+mod linked_choices_tests;

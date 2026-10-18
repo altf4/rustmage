@@ -113,6 +113,7 @@ impl Game {
                     SearchDestination::Top => {
                         unreachable!("top search committed before entry moves")
                     }
+                    SearchDestination::LinkedExile => Zone::Exile,
                     SearchDestination::Hand => Zone::Hand,
                     SearchDestination::Graveyard => Zone::Graveyard,
                     SearchDestination::Battlefield => Zone::Battlefield,
@@ -138,6 +139,9 @@ impl Game {
             })
             .collect();
         self.stage_entries(moves, Some(player));
+        if choice.spec.destination == SearchDestination::LinkedExile {
+            self.remember_linked_exile(&choice.selected);
+        }
         self.run_program();
     }
 }

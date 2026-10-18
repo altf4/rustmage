@@ -288,11 +288,13 @@ impl<'de> Deserialize<'de> for CreatureType {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum EntryChoiceValue {
+    CardName(crate::CardName),
     Color(ChoiceColor),
     CreatureType(CreatureType),
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EntryChoiceKind {
+    CardNameAfterOpponentHand,
     Color,
     CreatureType,
 }
@@ -300,7 +302,10 @@ impl EntryChoiceKind {
     pub(crate) fn matches(self, value: EntryChoiceValue) -> bool {
         matches!(
             (self, value),
-            (Self::Color, EntryChoiceValue::Color(_))
+            (
+                Self::CardNameAfterOpponentHand,
+                EntryChoiceValue::CardName(_)
+            ) | (Self::Color, EntryChoiceValue::Color(_))
                 | (Self::CreatureType, EntryChoiceValue::CreatureType(_))
         )
     }
@@ -495,6 +500,8 @@ impl SearchFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum SearchDestination {
+    /// Face-up exile linked to this exact source incarnation, without an automatic return.
+    LinkedExile,
     Graveyard,
     /// Shuffle, then put the selected cards on top (last selected uppermost).
     Top,
@@ -635,6 +642,11 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    PartitionLibraryPiles(u16),
+    KeepOneOfEachPermanentType,
+    RememberOwnSacrifice,
+    RecoverAnotherPermanent,
+    ReturnLinkedExileToHand,
     BlinkUntilEndStep {
         under_owner: bool,
     },
@@ -2762,6 +2774,9 @@ impl Card {
         authored::RULES[self.index()]
             .extras
             .opening_hand_battlefield
+    }
+    pub(crate) fn named_activation_lock(self) -> bool {
+        authored::RULES[self.index()].extras.named_activation_lock
     }
     pub(crate) fn entry_choice(self) -> Option<EntryChoiceKind> {
         authored::RULES[self.index()].extras.entry_choice
