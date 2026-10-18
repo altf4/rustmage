@@ -633,3 +633,98 @@ fn endgame_turn_copy_permission_expires_before_cleanup_trigger_priority() {
         settle(&mut g);
     }
 }
+
+#[test]
+fn endgame_time_stop_preserves_future_return_but_exiles_queued_return_once() {
+    for p in [Player::P0, Player::P1] {
+        for queued in [false, true] {
+            let mut g = setup(p);
+            let bear = fixture(&mut g, p, "Bear Cub", Zone::Battlefield);
+            paid(&mut g, p, "Charming Prince", &[]);
+            until(&mut g, |g| matches!(g.state.pending, Pending::Modes { .. }));
+            checked(&mut g, Action::ChooseMode { mode: 2 });
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(bear),
+                },
+            );
+            checked(&mut g, Action::FinishTargets);
+            settle(&mut g);
+            assert_eq!(g.object_view(bear).zone, Zone::Exile);
+            assert_eq!(g.observe(p).delayed_returns.len(), 1);
+            if queued {
+                until(&mut g, |g| g.state.step == Step::End);
+                assert!(g.observe(p).delayed_returns.is_empty());
+                assert!(
+                    g.state
+                        .stack
+                        .iter()
+                        .any(|s| s.kind == StackKind::DelayedReturn)
+                );
+                // The nonactive player initially has priority after trigger ordering.
+                if g.actor() != Some(p) {
+                    checked(&mut g, Action::Pass);
+                }
+            }
+            g.state.players[p.index()].mana = [30; 6];
+            let turn = g.state.turn;
+            paid(&mut g, p, "Time Stop", &[]);
+            until(&mut g, |g| g.state.turn > turn);
+            assert_eq!(g.object_view(bear).zone, Zone::Exile);
+            if queued {
+                assert!(g.observe(p).delayed_returns.is_empty());
+                next_turn(&mut g);
+                assert_eq!(g.object_view(bear).zone, Zone::Exile);
+            } else {
+                assert_eq!(g.observe(p).delayed_returns.len(), 1);
+                until(&mut g, |g| g.on_battlefield(bear));
+                assert!(g.observe(p).delayed_returns.is_empty());
+                assert_eq!(g.object_view(bear).controller, p);
+            }
+        }
+    }
+}
+
+#[test]
+fn endgame_time_stop_skips_copied_creatures_sacrifice_and_preserves_aura_control() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = fixture(&mut g, p, "Bear Cub", Zone::Battlefield);
+        checked(&mut g, Action::Pass);
+        paid(&mut g, p.other(), "Electroduplicate", &[Target::Card(bear)]);
+        settle(&mut g);
+        let token = g
+            .observe(p)
+            .objects
+            .iter()
+            .find(|o| o.zone == Zone::Battlefield && o.is_token() && o.name() == "Bear Cub")
+            .unwrap()
+            .reference;
+        assert_eq!(g.object_view(token.card).owner, p.other());
+        let confiscate = paid(&mut g, p, "Confiscate", &[Target::Card(token.card)]);
+        settle(&mut g);
+        assert_eq!(g.object_view(token.card).controller, p);
+        assert!(g.keywords(token.card).contains(Keywords::HASTE));
+        let turn = g.state.turn;
+        paid(&mut g, p, "Time Stop", &[]);
+        until(&mut g, |g| g.state.turn > turn);
+        assert_eq!(g.object_ref(token.card), token);
+        assert!(g.on_battlefield(token.card));
+        assert_eq!(g.object_view(token.card).controller, p);
+        assert_eq!(g.object_view(confiscate).attached_to, Some(token));
+        until(&mut g, |g| g.state.step == Step::End);
+        assert!(
+            g.state
+                .stack
+                .iter()
+                .any(|s| s.kind == StackKind::CopyEndStepSacrifice && s.controller == p)
+        );
+        until(&mut g, |g| {
+            g.state.objects[token.card as usize].zone == Zone::Outside
+        });
+        assert_ne!(g.object_ref(token.card), token);
+        assert_eq!(g.object_view(confiscate).zone, Zone::Graveyard);
+        assert!(g.on_battlefield(bear));
+    }
+}
