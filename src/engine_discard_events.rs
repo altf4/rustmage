@@ -130,7 +130,7 @@ impl Game {
                 .checked_add(u64::from(count))
                 .capacity("cards discarded this turn representation exhausted");
         }
-        self.finish_zone_events(&events, &[]);
+        self.finish_zone_events(events, &[]);
         for event in events.iter().filter(|event| event.moved) {
             let player = event.before.owner;
             let cycling = cycled == Some(event.before.reference);
@@ -191,17 +191,17 @@ impl Game {
         }
         match after {
             Some(DiscardAfter::LoseLife(player, amount)) => self.lose_life(player, amount),
-            Some(DiscardAfter::ConniveCounters(object, amount)) => {
-                if self.on_battlefield(object.card) && self.object_ref(object.card) == object {
-                    self.effect_counter(
-                        object.card,
-                        CounterKind::PlusOne,
-                        amount,
-                        replacements::ResumeMode::Program,
-                    );
-                }
+            Some(DiscardAfter::ConniveCounters(object, amount))
+                if self.on_battlefield(object.card) && self.object_ref(object.card) == object =>
+            {
+                self.effect_counter(
+                    object.card,
+                    CounterKind::PlusOne,
+                    amount,
+                    replacements::ResumeMode::Program,
+                );
             }
-            None => {}
+            _ => {}
         }
     }
     fn queue_discard_trigger(

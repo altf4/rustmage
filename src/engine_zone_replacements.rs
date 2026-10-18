@@ -229,20 +229,19 @@ impl Game {
                     .zone_rules
                     .as_mut()
                     .and_then(|r| r.replay.as_mut())
+                    && let Some(pick) = replay.base.picks.get(replay.next)
                 {
-                    if let Some(pick) = replay.base.picks.get(replay.next) {
-                        assert_eq!(
-                            (pick.object, pick.requested),
-                            (before.reference, requested),
-                            "exact zone replay prefix"
-                        );
-                        assert!(
-                            choices.contains(&pick.effect),
-                            "live zone replacement choice"
-                        );
-                        replay.next += 1;
-                        return Self::zone_plan(pick.effect);
-                    }
+                    assert_eq!(
+                        (pick.object, pick.requested),
+                        (before.reference, requested),
+                        "exact zone replay prefix"
+                    );
+                    assert!(
+                        choices.contains(&pick.effect),
+                        "live zone replacement choice"
+                    );
+                    replay.next += 1;
+                    return Self::zone_plan(pick.effect);
                 }
                 let request = Request {
                     object: before.reference,
