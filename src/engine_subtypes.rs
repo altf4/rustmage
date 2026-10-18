@@ -36,22 +36,36 @@ const JOB_TYPES: [&str; 11] = [
     "Warrior",
     "Wizard",
 ];
+// Eleven job grants and three projection flags fit in one existing word.
+const JOB_MASK: u16 = (1 << JOB_TYPES.len()) - 1;
+const SUPPRESS_PRINTED: u16 = 1 << JOB_TYPES.len();
+const LAND_ONLY: u16 = SUPPRESS_PRINTED << 1;
+const ALL_CREATURE_TYPES: u16 = LAND_ONLY << 1;
+const FLAGS_MASK: u16 = SUPPRESS_PRINTED | LAND_ONLY | ALL_CREATURE_TYPES;
+const _: () = assert!(JOB_TYPES.len() + 3 <= u16::BITS as usize);
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord)]
 pub struct GrantedSubtypes {
     added: u16,
-    suppress_printed: bool,
-    land_only: bool,
-    all_creature_types: bool,
     chosen: Option<crate::cards::CreatureType>,
     /// None retains printed types (including changeling); Some replaces only
     /// creature types, preserving e.g. Equipment, Aura, Forest and Lesson.
     creature_types: Option<&'static [&'static str]>,
 }
 impl GrantedSubtypes {
+    fn flag(self, bit: u16) -> bool {
+        self.added & bit != 0
+    }
+    fn set_flag(&mut self, bit: u16, value: bool) {
+        if value {
+            self.added |= bit;
+        } else {
+            self.added &= !bit;
+        }
+    }
     /// Membership supplied by this overlay, excluding retained printed types.
     /// Use ObjectView::has_subtype for the full effective characteristic.
     pub fn contains(self, subtype: &str) -> bool {
-        (self.all_creature_types && crate::cards::is_creature_type(subtype))
+        (self.flag(ALL_CREATURE_TYPES) && crate::cards::is_creature_type(subtype))
             || self.chosen.is_some_and(|t| t.name() == subtype)
             || self
                 .creature_types
@@ -64,13 +78,13 @@ impl GrantedSubtypes {
     pub(crate) fn has(self, card: Card, subtype: &str) -> bool {
         // Preserve the ordinary-card hot path: no taxonomy lookup, and printed
         // membership short-circuits the additional-type mask as before.
-        if self.land_only {
+        if self.flag(LAND_ONLY) {
             return self.contains(subtype)
-                || (!self.suppress_printed
+                || (!self.flag(SUPPRESS_PRINTED)
                     && LAND_TYPES.contains(&subtype)
                     && card.has_subtype(subtype));
         }
-        if self.suppress_printed
+        if self.flag(SUPPRESS_PRINTED)
             || (self.creature_types.is_some() && crate::cards::is_creature_type(subtype))
         {
             self.contains(subtype)
@@ -79,7 +93,7 @@ impl GrantedSubtypes {
         }
     }
     fn replace_creature_types(&mut self, types: &'static [&'static str]) {
-        self.added = 0;
+        self.added &= FLAGS_MASK;
         self.chosen = None;
         self.creature_types = Some(types);
     }
@@ -106,11 +120,11 @@ impl Serialize for GrantedSubtypes {
             }
         }
         let mut out = serializer.serialize_struct("GrantedSubtypes", 6)?;
-        out.serialize_field("suppress_printed", &self.suppress_printed)?;
-        out.serialize_field("land_only", &self.land_only)?;
-        out.serialize_field("all_creature_types", &self.all_creature_types)?;
+        out.serialize_field("suppress_printed", &self.flag(SUPPRESS_PRINTED))?;
+        out.serialize_field("land_only", &self.flag(LAND_ONLY))?;
+        out.serialize_field("all_creature_types", &self.flag(ALL_CREATURE_TYPES))?;
         out.serialize_field("chosen", &self.chosen)?;
-        out.serialize_field("added", &Added(self.added))?;
+        out.serialize_field("added", &Added(self.added & JOB_MASK))?;
         out.serialize_field("creature_types", &self.creature_types)?;
         out.end()
     }
@@ -174,19 +188,19 @@ impl Game {
             match change {
                 characteristic_layers::SubtypeChange::LandOnly => {
                     mask.replace_creature_types(&[]);
-                    mask.all_creature_types = false;
-                    mask.land_only = true;
+                    mask.set_flag(ALL_CREATURE_TYPES, false);
+                    mask.set_flag(LAND_ONLY, true);
                 }
                 characteristic_layers::SubtypeChange::All => {
                     mask.replace_creature_types(&[]);
-                    mask.all_creature_types = true;
+                    mask.set_flag(ALL_CREATURE_TYPES, true);
                 }
                 characteristic_layers::SubtypeChange::Named(types, all) => {
                     mask.replace_creature_types(types);
-                    mask.all_creature_types = false;
+                    mask.set_flag(ALL_CREATURE_TYPES, false);
                     if all {
-                        mask.suppress_printed = true;
-                        mask.land_only = false;
+                        mask.set_flag(SUPPRESS_PRINTED, true);
+                        mask.set_flag(LAND_ONLY, false);
                     }
                 }
             }

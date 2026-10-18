@@ -65,6 +65,7 @@ fn animations<W: CharacteristicWorld + ?Sized>(
             world.object(id).zone == Zone::Battlefield && row.object == world.reference(id)
         })
 }
+#[inline]
 pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
@@ -78,6 +79,29 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
     if object.zone != Zone::Battlefield {
         return result;
     }
+    if world.game().state.attachment_sources.is_empty()
+        && world
+            .game()
+            .state
+            .roles
+            .as_ref()
+            .is_none_or(|r| r.animations.is_empty())
+    {
+        if world
+            .game()
+            .state
+            .crew
+            .as_ref()
+            .is_some_and(|c| c.animated.binary_search(&world.reference(id)).is_ok())
+        {
+            result |= 17;
+        }
+        return result;
+    }
+    changed_kinds(world, id, result)
+}
+// Keep uncommon projection/sort work out of ordinary type queries.
+fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut result: u16) -> u16 {
     let mut changes: Vec<_> = aura_effects(world, id)
         .into_iter()
         .map(|(time, spec)| {
@@ -114,38 +138,64 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
     }
     result
 }
+#[inline]
 pub(super) fn name<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> &'static str {
+    let object = world.object(id);
+    if object.zone != Zone::Battlefield || world.game().state.attachment_sources.is_empty() {
+        return if object.zone == Zone::Stack {
+            world.game().effective_spell_card(id).name()
+        } else {
+            object.card.name()
+        };
+    }
+    changed_name(world, id)
+}
+fn changed_name<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> &'static str {
     aura_effects(world, id)
         .into_iter()
-        .filter_map(|(time, s)| s.name.map(|name| (time, name)))
+        .filter_map(|(t, s)| s.name.map(|name| (t, name)))
         .max_by_key(|e| e.0)
-        .map(|e| e.1)
-        .unwrap_or_else(|| {
-            if world.object(id).zone == Zone::Stack {
-                world.game().effective_spell_card(id).name()
-            } else {
-                world.object(id).card.name()
-            }
-        })
+        .map_or_else(|| world.object(id).card.name(), |e| e.1)
 }
+#[inline]
 pub(super) fn colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 {
+    let object = world.object(id);
+    if object.zone != Zone::Battlefield || world.game().state.attachment_sources.is_empty() {
+        return if object.zone == Zone::Stack {
+            world.game().effective_spell_card(id).colors()
+        } else {
+            object.card.colors()
+        };
+    }
+    changed_colors(world, id)
+}
+fn changed_colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 {
     aura_effects(world, id)
         .into_iter()
         .max_by_key(|e| e.0)
-        .map(|(_, spec)| {
-            spec.colors
-                .iter()
-                .fold(0, |mask, color| mask | (1 << color.index()))
-        })
-        .unwrap_or_else(|| {
-            if world.object(id).zone == Zone::Stack {
-                world.game().effective_spell_card(id).colors()
-            } else {
-                world.object(id).card.colors()
-            }
-        })
+        .map_or_else(
+            || world.object(id).card.colors(),
+            |(_, s)| s.colors.iter().fold(0, |mask, c| mask | (1 << c.index())),
+        )
 }
+#[inline]
 pub(super) fn base_changes<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> Vec<(u64, (i128, i128))> {
+    if world.game().state.attachment_sources.is_empty()
+        && world
+            .game()
+            .state
+            .roles
+            .as_ref()
+            .is_none_or(|r| r.animations.is_empty())
+    {
+        return Vec::new();
+    }
+    changed_base(world, id)
+}
+fn changed_base<W: CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
 ) -> Vec<(u64, (i128, i128))> {
@@ -162,7 +212,24 @@ pub(super) enum SubtypeChange {
     All,
     LandOnly,
 }
+#[inline]
 pub(super) fn subtype_changes<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> Vec<(u64, SubtypeChange)> {
+    if world.game().state.attachment_sources.is_empty()
+        && world
+            .game()
+            .state
+            .roles
+            .as_ref()
+            .is_none_or(|r| r.animations.is_empty())
+    {
+        return Vec::new();
+    }
+    changed_subtypes(world, id)
+}
+fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
 ) -> Vec<(u64, SubtypeChange)> {
