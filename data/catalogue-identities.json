@@ -5345,7 +5345,9 @@
     16,
     1,
     0,
-    2
+    2,
+    2,
+    0
   ],
   "aliases": [
     [
@@ -27749,6 +27751,12 @@
       "name": "Drake Token",
       "subtypes": "Drake",
       "colors": 2
+    },
+    {
+      "factory_identity": "@token/ninja_2_1_blue",
+      "name": "Ninja Token",
+      "subtypes": "Ninja",
+      "colors": 2
     }
   ],
   "emblems": [
@@ -27757,6 +27765,9 @@
     },
     {
       "oracle_text": "Creatures you control get +2/+2 and have vigilance, trample, and indestructible."
+    },
+    {
+      "oracle_text": "Whenever a player casts a spell, you create a 2/1 blue Ninja creature token."
     }
   ],
   "creature_types": [
@@ -28100,7 +28111,9 @@
     "GiantGrowth": 11,
     "Divination": 12,
     "Counterspell": 13,
-    "DrakeToken": 5339
+    "DrakeToken": 5339,
+    "KaitoNinjaToken": 5340,
+    "KaitoEmblem": 5341
   },
   "helper_interface": [
     [
@@ -180330,6 +180343,60 @@
       "standard_legal": false,
       "legendary": false,
       "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5340,
+      "module": "card_5340",
+      "path": "synthetic/token_ninja_2_1_blue.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/ninja_2_1_blue",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Ninja",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5341,
+      "module": "card_5341",
+      "path": "synthetic/emblem_kaito_cunning_infiltrator.rs",
+      "set": "synthetic",
+      "category": "emblem",
+      "name": "@emblem/kaito_cunning_infiltrator",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 0,
       "basic": false,
       "mana_color": null,
       "colored": [
