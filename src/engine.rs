@@ -169,6 +169,8 @@ pub use modal_history::ModalHistoryView;
 mod ability_evaluation;
 #[path = "engine_characteristic_query.rs"]
 mod characteristic_query;
+#[path = "engine_growth_cost.rs"]
+mod growth_cost;
 #[path = "engine_untap_rules.rs"]
 mod untap_rules;
 pub use ability_evaluation::{AbilityAvailabilityView, GrantedAbilityView};
@@ -401,6 +403,9 @@ define_actions! {
     ChooseForageRoute { route: ForageRoute },
     ChooseForage { object: ObjectRef },
     DeclineForage,
+    AnnounceCounterGraveyard { card: CardId },
+    ChooseCreatureCounterCost { object: ObjectRef, kind: CounterKind },
+    AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
     ChooseAdditionalCost {
         object: ObjectRef,
     },
@@ -755,6 +760,7 @@ struct PlayerState {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum CastMethod {
     Normal,
+    GraveyardCounterCost,
     Free,
     GrantedFlashback,
     Flashback,
@@ -853,6 +859,7 @@ pub struct SpellView {
     pub source_tapped: bool,
     pub source_attachment: Option<ObjectRef>,
     pub damage_event: Option<DamageTriggerView>,
+    pub creature_combat_event: Option<Box<CreatureCombatEventView>>,
     pub discard_event: Option<DiscardTriggerView>,
     pub draw_event: Option<DrawTriggerView>,
     pub life_event: Option<LifeTriggerView>,
@@ -1122,6 +1129,12 @@ pub struct StackLink {
 /// Frozen public context for a player-damage trigger. Aggregated 'one or more'
 /// events have no single dealer. These references never follow later incarnations.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct CreatureCombatEventView {
+    pub dealer: ObjectRef,
+    pub amount: u128,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct DamageTriggerView {
     pub dealer: Option<ObjectRef>,
     pub player: Player,
@@ -1247,6 +1260,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    ResolutionX {
+        player: Player,
+    },
     ZoneReplacement {
         player: Player,
     },
@@ -2146,6 +2162,7 @@ impl Game {
             | Pending::Crew { player }
             | Pending::Explore { player }
             | Pending::Bargain { player }
+            | Pending::ResolutionX { player }
             | Pending::X { player }
             | Pending::Kicker { player }
             | Pending::Gift { player }
@@ -2678,6 +2695,17 @@ impl Game {
                 }
             }
             Pending::AdditionalCost { .. } => {
+                if self
+                    .state
+                    .announcing
+                    .as_ref()
+                    .unwrap()
+                    .item
+                    .cast
+                    .is_some_and(|c| c.method == CastMethod::GraveyardCounterCost)
+                {
+                    return self.visit_creature_counter_cost(&mut emit);
+                }
                 for (id, _) in s.objects.iter().enumerate() {
                     let object = self.object_ref(id as CardId);
                     if self.additional_choice_available(object)
@@ -2798,6 +2826,11 @@ impl Game {
                     {
                         return true;
                     }
+                    if obj.zone == Zone::Battlefield
+                        && self.visit_attached_activations(card, actor, &mut emit)
+                    {
+                        return true;
+                    }
                     if matches!(obj.zone, Zone::Battlefield | Zone::Hand | Zone::Graveyard)
                         && self.visit_activations(card, actor, sorcery, &mut emit)
                     {
@@ -2889,6 +2922,20 @@ impl Game {
                                     }
                                 }
                             }
+                        }
+                        if obj.zone == Zone::Graveyard
+                            && obj.card.graveyard_counter_cost().is_some()
+                            && self.permitted_cast_available(
+                                actor,
+                                card,
+                                CastMethod::GraveyardCounterCost,
+                                CastFace::Normal,
+                                sorcery,
+                                false,
+                            )
+                            && emit(Action::AnnounceCounterGraveyard { card })
+                        {
+                            return true;
                         }
                         if self.has_graveyard_cast(actor, card, GraveyardCastKind::Cast)
                             && self.permitted_cast_available(
@@ -3307,7 +3354,7 @@ impl Game {
                     }
                 }
             }
-            Pending::X { .. } => {
+            Pending::X { .. } | Pending::ResolutionX { .. } => {
                 if let Some(domain) = self.x_choice() {
                     for range in domain.intervals {
                         if range.maximum - range.minimum <= 64 {
@@ -3593,6 +3640,17 @@ impl Game {
             Action::DeclineResolutionMana => self.finish_resolution_payment(None),
             Action::PayResolutionLife => self.finish_resolution_life(true),
             Action::DeclineResolutionLife => self.finish_resolution_life(false),
+            Action::ChooseCreatureCounterCost { object, kind } => {
+                self.choose_creature_counter_cost(object, kind)
+            }
+            Action::AnnounceCounterGraveyard { card } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                item.cast.as_mut().unwrap().method = CastMethod::GraveyardCounterCost;
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceAttachedAbility { grantor, ability } => {
+                self.announce_attached_ability(grantor, ability)
+            }
             Action::ChooseAdditionalCost { object } => self.choose_additional_cost(object),
             Action::ChooseEntryTimestamp { object } => self.choose_entry_timestamp(object),
             Action::ChooseEntryReplacement { source, intrinsic } => {
@@ -3947,6 +4005,23 @@ impl Game {
             Action::FinishSaddle => self.finish_saddle_payment(),
             Action::ChooseCrewer { object } => self.choose_crewer(object),
             Action::FinishCrew => self.finish_crew_payment(),
+            Action::ChooseX { value }
+                if matches!(self.state.pending, Pending::ResolutionX { .. }) =>
+            {
+                let item = {
+                    let r = self.state.resolving.as_mut().unwrap();
+                    r.item.x = Some(value);
+                    r.item.clone()
+                };
+                self.start_optional_resolution_payment(
+                    &item,
+                    ManaCost {
+                        colored: [0; 6],
+                        generic: value,
+                    },
+                    0,
+                );
+            }
             Action::ChooseX { value } => {
                 self.state.announcing.as_mut().unwrap().item.x = Some(value);
                 self.continue_announcement_choices(false);
@@ -5001,7 +5076,12 @@ impl Game {
         }
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.expire_temporary_controls();
-        self.state.temporary_abilities = None;
+        if let Some(grants) = &mut self.state.temporary_abilities {
+            grants.retain(|grant| grant.permanent);
+            if grants.is_empty() {
+                self.state.temporary_abilities = None;
+            }
+        }
         self.expire_base_stats();
         let expired_animations = self.expire_animations();
         self.expire_graveyard_cast_permissions();
@@ -5430,6 +5510,7 @@ impl Game {
                 Pending::Saddle { .. } => "saddle",
                 Pending::Crew { .. } => "crew",
                 Pending::Explore { .. } => "explore",
+                Pending::ResolutionX { .. } => "resolution_x",
                 Pending::X { .. } => "x",
                 Pending::EvidenceIntent { .. } => "evidence_intent",
                 Pending::Evidence { .. } => "evidence",
@@ -5992,6 +6073,13 @@ impl Game {
                 .as_ref()
                 .and_then(|a| a.forage.as_ref())
                 .map_or(0, |f| f.bytes())
+            + s.announcing
+                .as_ref()
+                .and_then(|a| a.additional_group.as_ref())
+                .map_or(0, |v| {
+                    std::mem::size_of::<Vec<ObjectRef>>()
+                        + v.len() * std::mem::size_of::<ObjectRef>()
+                })
             + s.stack
                 .iter()
                 .chain(&s.pending_triggers)

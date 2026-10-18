@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0c7e6f92ce0998cc85d558c631b203b6c6527429002300247f68e2cef8d2062d"
   },
-  "physical_metadata_sha256": "a6449bb1ecd87c684b8369ced52d19dcfc818e5abec76fd1f263af47ebd95f6b"
+  "physical_metadata_sha256": "a6449bb1ecd87c684b8369ced52d19dcfc818e5abec76fd1f263af47ebd95f6b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KellanPlanarTrailblazer.java",
+  "java_sha256": "6014f2545d3020d01674d8d4df26dec465cbca5fd52e400b8b242454704b85f5"
 }

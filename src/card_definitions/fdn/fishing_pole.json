@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "822d2c32c7616e27f627d7f3e1f571a91ea2e9d46bc61e62deaa8d0449ed7487"
   },
-  "physical_metadata_sha256": "30452443c04362433d0f00f828d06615c20b80655f2f861be7c04857a0459780"
+  "physical_metadata_sha256": "30452443c04362433d0f00f828d06615c20b80655f2f861be7c04857a0459780",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FishingPole.java",
+  "java_sha256": "454662cf2c984a625c1d534a96fb5b792c79adf361b23f51231f913bee70951a"
 }

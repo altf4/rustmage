@@ -218,6 +218,9 @@ impl Game {
     ) -> bool {
         let object = &self.state.objects[card as usize];
         for (index, ability) in object.card.activations().iter().enumerate() {
+            if object.card.grants_activation(index as u16) {
+                continue;
+            }
             if !self.activation_cost_available(card, ability, index, actor, sorcery) {
                 continue;
             }
@@ -442,6 +445,7 @@ impl Game {
             entering_object: None,
             evidence_collected: false,
             damage_event: None,
+            creature_combat_event: None,
             discard_event: None,
             draw_event: None,
             life_event: None,
@@ -518,6 +522,11 @@ impl Game {
         // changes the source incarnation. All other paid source costs are set.
         if cost.tap {
             self.tap_objects(&[item.card]);
+            if let Some(grant) = &item.attachment_trigger
+                && item.source_card.grants_activation(ability)
+            {
+                self.tap_objects(&[grant.grantor.card]);
+            }
         }
         if let Some((kind, amount)) = item.source_card.activation_put_counter(ability) {
             self.activation_cost_counters(item.object, kind, amount, item.controller);

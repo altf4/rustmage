@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b0c2579d971f66035038c08f9bfa811d1b42e058a00738870116cd9119a84e74"
   },
-  "physical_metadata_sha256": "4ae1fee2919ab3854c87480f4b53964199177307be0f20e1464e57656d9a9dec"
+  "physical_metadata_sha256": "4ae1fee2919ab3854c87480f4b53964199177307be0f20e1464e57656d9a9dec",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WildbornPreserver.java",
+  "java_sha256": "f3798bf965b84eba666604d3bf4d53f706e36ea40642a6f9b5a0e42b3642c1b8"
 }

@@ -134,6 +134,31 @@ impl Game {
         intervals
     }
     pub fn x_choice(&self) -> Option<XChoiceView> {
+        if let Pending::ResolutionX { player } = self.state.pending {
+            let mut lo = 0u64;
+            let mut hi = u64::from(u32::MAX) + 1;
+            while lo + 1 < hi {
+                let mid = lo + (hi - lo) / 2;
+                if self.can_fund(FundingGoal {
+                    actor: player,
+                    required: [0; 6],
+                    generic: mid as u32,
+                    reserve: None,
+                    source: None,
+                }) {
+                    lo = mid;
+                } else {
+                    hi = mid;
+                }
+            }
+            return Some(XChoiceView {
+                card: self.state.resolving.as_ref().unwrap().item.object,
+                intervals: vec![XInterval {
+                    minimum: 0,
+                    maximum: lo as u32,
+                }],
+            });
+        }
         if !matches!(self.state.pending, Pending::X { .. }) {
             return None;
         }
@@ -151,6 +176,10 @@ impl Game {
                     .map(u64::from)
                     .sum::<u64>(),
             ),
+            AmountValue::CastSpellManaValue => item
+                .cast_event
+                .as_ref()
+                .map_or(0, |e| u128::from(e.mana_value)),
             AmountValue::SpellColors => item
                 .cast_event
                 .as_ref()

@@ -1,16 +1,27 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete Oracle body authored from the paired pinned XMage source.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(2, 2),
     keywords: Keywords::REACH.union(Keywords::FLASH),
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::OtherFilteredEntersYou(
+                EntryPredicate::CreatureWithoutSubtype("Human"),
+            ),
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::May { skip: 1 },
+                Instruction::PayXReflexive { ability: 1 },
+            ],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Reflexive,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::PutCountersScaled {
+                subject: Subject::Source,
+                kind: CounterKind::PlusOne,
+                amount: AmountValue::ChosenX,
+            }],
+        },
+    ],
     ..CardRules::EMPTY
 };

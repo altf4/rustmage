@@ -245,6 +245,16 @@ impl Game {
             .unwrap();
         if let Some(payment) = payment {
             self.spend_mana(request.payer, payment);
+            if let Some(life) = request.life {
+                self.lose_life(request.payer, i128::from(life));
+            }
+            let r = self.state.resolving.as_ref().unwrap();
+            if let Some(Instruction::PayXReflexive { ability }) =
+                r.program.get(r.pc.saturating_sub(1))
+            {
+                let (item, ability) = (r.item.clone(), *ability);
+                self.queue_reflexive(&item, ability, None);
+            }
         } else {
             self.state.resolving.as_mut().unwrap().pc = request.unpaid_pc;
             if let Some(victim) = request.victim {

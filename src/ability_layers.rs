@@ -74,6 +74,7 @@ pub(crate) enum StaticAbilityFragment {
     AttachedTurnKeywords(Keywords),
     /// Stable index into the granting definition's immutable trigger array.
     AttachmentTrigger(u16),
+    AttachmentActivation(u16),
     /// Grants an independent tap mana ability to the attached permanent.
     AttachmentMana(ManaProduction),
     KeywordGrant(u16, KeywordGrant),

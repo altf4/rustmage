@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c5332c5a1597c8dd2769902ddddc1ae3569de61ef0204cc36130ceb9b8d10ff9"
   },
-  "physical_metadata_sha256": "42e8fb696f8d7806c0735d8a0e968334874e69927dbcd47a1ac0b3dec5d73841"
+  "physical_metadata_sha256": "42e8fb696f8d7806c0735d8a0e968334874e69927dbcd47a1ac0b3dec5d73841",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LathrilBladeOfTheElves.java",
+  "java_sha256": "96019f5c9472c991b314a3b0ae6330744027f179b6e1185002800f68f2c77e96"
 }

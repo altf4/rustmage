@@ -366,7 +366,17 @@ impl<'g> FundingState<'g> {
         let reserve = goal
             .reserve
             .and_then(|(r, _)| self.resources.iter().find(|s| s.id == r.card));
-        reserve_obligations(
+        self.game.state.announcing.as_ref().is_none_or(|a| {
+            a.additional_group.as_ref().is_none_or(|group| {
+                group.iter().all(|r| {
+                    let o = ability_world::CharacteristicWorld::object(self, r.card);
+                    o.zone == Zone::Battlefield
+                        && o.generation == r.generation
+                        && !o.tapped
+                        && o.controller == goal.actor
+                })
+            })
+        }) && reserve_obligations(
             goal,
             reserve.map(|r| &r.object),
             reserve.map_or(0, |r| self.kinds(r)),
@@ -1206,6 +1216,21 @@ impl Game {
         self.can_fund_for(goal, purpose)
     }
     pub(super) fn can_fund_for(&self, goal: FundingGoal, purpose: mana_lots::Purpose) -> bool {
+        if let Some(a) = &self.state.announcing
+            && !a.additional_paid
+            && a.item
+                .cast
+                .is_some_and(|c| c.method == CastMethod::GraveyardCounterCost)
+        {
+            return self.creature_counter_fundable(
+                goal,
+                purpose,
+                a.item.source_card.graveyard_counter_cost().unwrap(),
+                a.creature_counter_cost
+                    .as_ref()
+                    .map_or(&[], |v| v.as_slice()),
+            );
+        }
         let object = goal
             .source
             .as_ref()
@@ -1340,6 +1365,26 @@ impl Game {
         })
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        if a.item
+            .cast
+            .is_some_and(|c| c.method == CastMethod::GraveyardCounterCost)
+        {
+            let cost = self.reduced_spell_cost(a.item.controller, a.item.card, cost);
+            return self.creature_counter_fundable(
+                FundingGoal {
+                    actor: a.item.controller,
+                    required: cost.colored,
+                    generic: cost.generic,
+                    reserve: None,
+                    source: None,
+                },
+                self.purpose_for_item(&a.item),
+                a.item.source_card.graveyard_counter_cost().unwrap(),
+                a.creature_counter_cost
+                    .as_ref()
+                    .map_or(&[], |v| v.as_slice()),
+            );
+        }
         if a.item.kind == StackKind::Spell
             && a.item.cast.is_some_and(|c| c.method == CastMethod::Free)
         {
@@ -1627,6 +1672,12 @@ impl Game {
             .unwrap();
         if emit(Action::DeclineResolutionMana) {
             return true;
+        }
+        if request
+            .life
+            .is_some_and(|life| self.state.players[request.payer.index()].life < i128::from(life))
+        {
+            return false;
         }
         let goal = FundingGoal {
             reserve: None,
@@ -2999,5 +3050,92 @@ mod blanked_funding_bounds_tests {
                 "equivalent land subsets escaped memoization"
             );
         }
+    }
+}
+
+impl FundingState<'_> {
+    fn remove_creature_counter(&mut self, r: ObjectRef, kind: CounterKind) -> bool {
+        let Some(index) = self.resources.iter().position(|v| v.id == r.card) else {
+            return false;
+        };
+        let o = &self.resources[index].object;
+        if o.zone != Zone::Battlefield
+            || o.generation != r.generation
+            || o.controller != self.actor
+            || self.kinds(&self.resources[index]) & 1 == 0
+        {
+            return false;
+        }
+        let mut counters =
+            ability_world::CharacteristicWorld::counter_amounts(self, r.card).to_owned();
+        if counters.get(kind) == 0 {
+            return false;
+        }
+        counters.remove(kind, 1);
+        self.resources[index].object.counters = counters.hot();
+        live_counters::set(&mut self.named_counters, r, counters.named);
+        true
+    }
+    fn fund_after_creature_counters(
+        &self,
+        goal: &FundingGoal,
+        remaining: u16,
+        start: usize,
+    ) -> bool {
+        if remaining == 0 {
+            return self.reachable(goal, &mut HashSet::new());
+        }
+        for row in start..self.resources.len() * CounterKind::ALL.len() {
+            let resource = &self.resources[row / CounterKind::ALL.len()];
+            let r = ObjectRef {
+                card: resource.id,
+                generation: resource.object.generation,
+            };
+            let kind = CounterKind::ALL[row % CounterKind::ALL.len()];
+            if ability_world::CharacteristicWorld::counter_count(self, r.card, kind) == 0 {
+                continue;
+            }
+            let mut next = self.clone();
+            if next.remove_creature_counter(r, kind)
+                && next.fund_after_creature_counters(goal, remaining - 1, row)
+            {
+                return true;
+            }
+        }
+        false
+    }
+}
+impl Game {
+    pub(super) fn creature_counter_fundable(
+        &self,
+        goal: FundingGoal,
+        purpose: mana_lots::Purpose,
+        amount: u16,
+        selected: &[(ObjectRef, CounterKind)],
+    ) -> bool {
+        let mut world = FundingState::from_game_with_convoke(self, &goal, true);
+        world.convoke = false;
+        world.purpose = purpose;
+        for &(r, kind) in selected {
+            if !world.remove_creature_counter(r, kind) {
+                return false;
+            }
+        }
+        if selected.len() > usize::from(amount) {
+            return false;
+        }
+        let available = world
+            .resources
+            .iter()
+            .filter(|r| {
+                r.object.zone == Zone::Battlefield
+                    && r.object.controller == goal.actor
+                    && world.kinds(r) & 1 != 0
+            })
+            .map(|r| ability_world::CharacteristicWorld::counter_amounts(&world, r.id).total())
+            .sum::<u128>();
+        let remaining = amount - selected.len() as u16;
+        available >= u128::from(remaining)
+            && world.fund_after_creature_counters(&goal, remaining, 0)
     }
 }

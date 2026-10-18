@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "eeb1107b558551b48857ceed31b6c27cfe3cb4570e17ae0236cbfc9ae19b5633"
   },
-  "physical_metadata_sha256": "85c59e1f4465417ea51bbb2af5372d82096f00534c84a9e2012c23ca20c3c727"
+  "physical_metadata_sha256": "85c59e1f4465417ea51bbb2af5372d82096f00534c84a9e2012c23ca20c3c727",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OvikaEnigmaGoliath.java",
+  "java_sha256": "b7c9280e40b0372d035f2ece4b4ed967407a740fe9b7ac2fc8f9464e6fc98802"
 }
