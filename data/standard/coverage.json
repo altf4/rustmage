@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c7ec0253d8b1986bc4689ea5d0a7350a356a4cb6d8153758b8fd7f5919fc8208",
+  "catalogue_version": "3576be53cc560a671e28cbc62a7346d1706a8adc5350a2d57464c693dd69aafe",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2140,
-  "implemented_total": 2146,
+  "implemented_standard_cards": 2141,
+  "implemented_total": 2147,
   "token_definitions": 103,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 383,
-      "gated": 44
+      "complete": 384,
+      "gated": 43
     },
     "fin": {
       "total": 305,
@@ -18665,8 +18665,8 @@
     {
       "name": "Kaito, Cunning Infiltrator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/kaito_cunning_infiltrator.rs",
       "set": "fdn"
     },
