@@ -95,6 +95,24 @@ pub(super) fn controllers(game: &Game, object: impl Fn(CardId) -> Object) -> Vec
     // independent effects first regardless of timestamp. In a dependency loop,
     // ignore the cyclic dependencies and use timestamp order (CR613.8).
     while !effects.is_empty() {
+        let controller_of = |reference: ObjectRef| {
+            result
+                .iter()
+                .find(|row| row.object == reference)
+                .map_or_else(|| object(reference.card).controller, |row| row.controller)
+        };
+        let produces =
+            |effect: AppliedControl| effect.source.map_or(effect.controller, controller_of);
+        // CR613.8a requires an actual change to what the dependent effect does.
+        // A control assignment to the controller already projected is no dependency.
+        // Rebuild this relation after every effect, as required by CR613.8c.
+        let depends = |index: usize, other: usize| {
+            index != other
+                && effects[index].source.is_some_and(|source| {
+                    effects[other].object == source
+                        && produces(effects[other]) != controller_of(source)
+                })
+        };
         let reaches = |start: usize, goal: usize| {
             let mut seen = vec![false; effects.len()];
             let mut pending = vec![start];
@@ -103,14 +121,12 @@ pub(super) fn controllers(game: &Game, object: impl Fn(CardId) -> Object) -> Vec
                     continue;
                 }
                 seen[index] = true;
-                if let Some(source) = effects[index].source {
-                    for (next, effect) in effects.iter().enumerate() {
-                        if next != index && effect.object == source {
-                            if next == goal {
-                                return true;
-                            }
-                            pending.push(next);
+                for next in 0..effects.len() {
+                    if depends(index, next) {
+                        if next == goal {
+                            return true;
                         }
+                        pending.push(next);
                     }
                 }
             }
@@ -118,20 +134,11 @@ pub(super) fn controllers(game: &Game, object: impl Fn(CardId) -> Object) -> Vec
         };
         let chosen = (0..effects.len())
             .find(|&index| {
-                !effects.iter().enumerate().any(|(other, effect)| {
-                    other != index
-                        && effects[index].source == Some(effect.object)
-                        && !reaches(other, index)
-                })
+                !(0..effects.len()).any(|other| depends(index, other) && !reaches(other, index))
             })
             .unwrap_or(0);
+        let controller = produces(effects[chosen]);
         let effect = effects.remove(chosen);
-        let controller = effect.source.map_or(effect.controller, |source| {
-            result
-                .iter()
-                .find(|row| row.object == source)
-                .map_or_else(|| object(source.card).controller, |row| row.controller)
-        });
         if let Some(row) = result.iter_mut().find(|row| row.object == effect.object) {
             row.controller = controller;
         }

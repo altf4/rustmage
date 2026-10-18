@@ -300,3 +300,61 @@ fn destiny_departed_early_or_creature_exiled_does_not_trigger() {
         assert!(g.state.pending_triggers.is_empty());
     }
 }
+#[test]
+fn no_op_assignment_does_not_invent_a_three_aura_dependency_cycle() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let card = Card::from_name("Confiscate").unwrap();
+        let a = spawn(&mut g, p, card, Zone::Battlefield);
+        let b = spawn(&mut g, p.other(), card, Zone::Battlefield);
+        let c = spawn(&mut g, p.other(), card, Zone::Battlefield);
+        for (source, target) in [(a, b), (b, c), (c, a)] {
+            g.state.objects[source as usize].attached_to = Some(g.object_ref(target));
+            g.retimestamp_live_static_source(g.object_ref(source));
+        }
+        // A(P)->B, B(Q)->C, C(Q)->A, timestamps A/B/C. B assigning Q
+        // to C(Q) changes nothing: C is independent of B (613.8a), so
+        // C applies before A, then B. Reevaluate after every application
+        // (613.8c); a pointer-only graph incorrectly calls this a loop.
+        g.refresh_controllers();
+        for id in [a, b, c] {
+            assert_eq!(g.object_view(id).controller, p.other());
+        }
+        g.refresh_controllers();
+        for id in [a, b, c] {
+            assert_eq!(g.object_view(id).controller, p.other());
+        }
+        checked(&mut g, Action::Pass);
+    }
+}
+#[test]
+fn genuine_four_aura_cycle_uses_timestamp_then_reevaluates_changed_dependencies() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let card = Card::from_name("Confiscate").unwrap();
+        let a = spawn(&mut g, p, card, Zone::Battlefield);
+        let b = spawn(&mut g, p.other(), card, Zone::Battlefield);
+        let c = spawn(&mut g, p, card, Zone::Battlefield);
+        let d = spawn(&mut g, p.other(), card, Zone::Battlefield);
+        for (source, target) in [(a, b), (d, a), (c, d), (b, c)] {
+            g.state.objects[source as usize].attached_to = Some(g.object_ref(target));
+            g.retimestamp_live_static_source(g.object_ref(source));
+        }
+        // All four initial assignments change the next source's controller.
+        // 613.8b breaks that real loop with earliest timestamp A. Once B's
+        // controller becomes P, its assignment to C(P) is now a no-op; the
+        // remaining dependency relations must change under 613.8c.
+        g.refresh_controllers();
+        for id in [a, b, c, d] {
+            assert_eq!(g.object_view(id).controller, p);
+        }
+        let snapshot = g.snapshot();
+        let mut branch = {
+            let parent = g.clone();
+            parent.clone()
+        };
+        branch.refresh_controllers();
+        assert_eq!(branch.snapshot(), snapshot);
+        checked(&mut g, Action::Pass);
+    }
+}
