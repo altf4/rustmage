@@ -1,0 +1,12 @@
+{
+  "name": "@token/phyrexian_goblin_1_1_red",
+  "catalogue_id": 5343,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "13ffd55db04a0caca3e73c6bafeaf36d7668a53ce0dcd6cc6898fb1137dccd60",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/PhyrexianGoblinToken.java",
+  "java_sha256": "ccb2ac8df1ca3452507d6a4a2b3fe994af49e19a4fc272eed0f409bc24a5039b",
+  "xmage_dependencies": []
+}

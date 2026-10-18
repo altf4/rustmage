@@ -6982,3 +6982,7 @@ mod return_links_tests;
 
 #[path = "engine_attachment_death.rs"]
 mod attachment_death;
+
+#[cfg(test)]
+#[path = "engine_fdn_growth_cost_tests.rs"]
+mod fdn_growth_cost_tests;
