@@ -297,3 +297,68 @@ fn fdn_five_bounded_acceptance_ooze_paid_cast_attack_and_real_lethal_combat_hist
         );
     }
 }
+
+#[test]
+fn fdn_five_bounded_acceptance_axe_bonus_survives_unrelated_ability_removal() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let axe = paid(&mut g, p, "Leyline Axe", [0, 0, 0, 0, 0, 4]);
+        let wearer = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let other = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
+        checked(&mut g, activation(axe, 0, Some(wearer), [0, 0, 0, 0, 0, 3]));
+        settle(&mut g);
+        assert_eq!(
+            g.stats(wearer),
+            Stats {
+                power: 3,
+                toughness: 3
+            }
+        );
+
+        // Existing admitted card: an unrelated Cursed Role turns on ordered
+        // ability evaluation without changing the equipped creature's abilities.
+        let mage = named(&mut g, p, "Spiteful Hexmage", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 0];
+        cast(&mut g, mage, None, &[]);
+        let target = Action::ChooseTarget {
+            target: Target::Card(other),
+        };
+        until(&mut g, |g| g.legal_actions().contains(&target));
+        checked(&mut g, target);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(other),
+            Stats {
+                power: 1,
+                toughness: 1
+            }
+        );
+        assert!(super::ability_world::CharacteristicWorld::has_ability_removal(&g));
+        assert_eq!(
+            g.stats(wearer),
+            Stats {
+                power: 3,
+                toughness: 3
+            }
+        );
+        assert!(
+            g.keywords(wearer)
+                .contains(Keywords::DOUBLE_STRIKE.union(Keywords::TRAMPLE))
+        );
+
+        let bounce = named(&mut g, p, "Unsummon", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+        cast(&mut g, bounce, None, &[Target::Card(other)]);
+        settle(&mut g);
+        assert_eq!(g.object_view(other).zone, Zone::Hand);
+        assert!(!super::ability_world::CharacteristicWorld::has_ability_removal(&g));
+        assert_eq!(
+            g.stats(wearer),
+            Stats {
+                power: 3,
+                toughness: 3
+            }
+        );
+    }
+}

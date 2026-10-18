@@ -47,9 +47,15 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::AttachmentKeywords(
-            Keywords::DOUBLE_STRIKE.union(Keywords::TRAMPLE),
-        )],
+        fragments: &[
+            StaticAbilityFragment::AttachmentStats(Stats {
+                power: 1,
+                toughness: 1,
+            }),
+            StaticAbilityFragment::AttachmentKeywords(
+                Keywords::DOUBLE_STRIKE.union(Keywords::TRAMPLE),
+            ),
+        ],
     }],
     extras: &CardExtras {
         opening_hand_battlefield: true,
@@ -63,9 +69,15 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         static_ability_groups: &[StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::AttachmentKeywords(
-                Keywords::DOUBLE_STRIKE.union(Keywords::TRAMPLE),
-            )],
+            fragments: &[
+                StaticAbilityFragment::AttachmentStats(Stats {
+                    power: 1,
+                    toughness: 1,
+                }),
+                StaticAbilityFragment::AttachmentKeywords(
+                    Keywords::DOUBLE_STRIKE.union(Keywords::TRAMPLE),
+                ),
+            ],
         }],
         ..CardExtras::EMPTY
     },
