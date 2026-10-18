@@ -424,3 +424,104 @@ fn return_links_kykar_queued_mode_survives_departure_and_creature_cast_is_not_a_
         assert!(tokens[0].has_subtype("Spirit"));
     }
 }
+
+#[test]
+fn return_links_combined_simultaneous_control_aura_departure_preserves_death_controller() {
+    for p in [Player::P0, Player::P1] {
+        for reverse in [false, true] {
+            let mut g = setup(p);
+            let cat = named(&mut g, p.other(), "Nine-Lives Familiar", Zone::Battlefield);
+            g.set_counters(cat, Counters::of(CounterKind::Revival, 8));
+            let aura = named(&mut g, p, "Confiscate", Zone::Battlefield);
+            g.state.objects[aura as usize].attached_to = Some(g.object_ref(cat));
+            let reference = g.object_ref(aura);
+            g.retimestamp_live_static_source(reference);
+            g.refresh_controllers();
+            assert_eq!(g.object_view(cat).controller, p);
+            let ids = if reverse { [cat, aura] } else { [aura, cat] };
+            let bounds: Vec<_> = ids
+                .into_iter()
+                .map(|id| g.bind_target(Target::Card(id)))
+                .collect();
+            let mut owned = {
+                let parent = g.clone();
+                parent.clone()
+            };
+            g.move_target_batch(&bounds, Zone::Graveyard);
+            owned.move_target_batch(&bounds, Zone::Graveyard);
+            assert_eq!(g.snapshot(), owned.snapshot());
+            let trigger = g
+                .state
+                .pending_triggers
+                .iter()
+                .find(|item| item.source_card.name() == "Nine-Lives Familiar")
+                .unwrap();
+            assert_eq!(
+                trigger.controller, p,
+                "death uses the pre-event control world"
+            );
+            settle(&mut g, 0, None);
+            settle(&mut owned, 0, None);
+            let pending = g.snapshot();
+            end(&mut g);
+            end(&mut owned);
+            assert_eq!(g.snapshot(), owned.snapshot());
+            assert_eq!(g.object_view(cat).owner, p.other());
+            assert_eq!(g.object_view(cat).controller, p);
+            assert_eq!(g.counter_count(cat, CounterKind::Revival), 7);
+            let final_state = g.snapshot();
+            g.restore(&pending).unwrap();
+            end(&mut g);
+            assert_eq!(g.snapshot(), final_state);
+            assert_eq!(g.object_view(aura).zone, Zone::Graveyard);
+        }
+    }
+}
+
+#[test]
+fn return_links_animated_land_keeps_owned_effect_but_projects_subtypes_only_when_eligible() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        named(&mut g, p, "Valkyrie's Call", Zone::Battlefield);
+        named(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
+        let land = spawn(&mut g, p, Card::Forest, Zone::Battlefield);
+        // Reuse the same noncopiable crew animation overlay as copy-core tests.
+        g.state.crew = Some(Box::new(crew::CrewState {
+            animated: vec![g.object_ref(land)],
+            ..Default::default()
+        }));
+        g.state.objects[land as usize].growth = Stats {
+            power: 3,
+            toughness: 3,
+        };
+        assert!(g.is_creature(land));
+        kill(&mut g, p, land);
+        assert!(g.on_battlefield(land));
+        assert!(!g.is_creature(land));
+        assert!(!g.has_subtype(land, "Angel"));
+        assert_eq!(
+            g.counter_count(land, CounterKind::PlusOne),
+            1,
+            "Giada doesn't count a land as an entering Angel"
+        );
+        assert!(g.keywords(land).contains(Keywords::FLYING));
+        let before = g.snapshot();
+        let mut owned = {
+            let parent = g.clone();
+            parent.clone()
+        };
+        for game in [&mut g, &mut owned] {
+            game.state.crew = Some(Box::new(crew::CrewState {
+                animated: vec![game.object_ref(land)],
+                ..Default::default()
+            }));
+            assert!(game.is_creature(land));
+            assert!(game.has_subtype(land, "Angel"));
+            assert!(game.keywords(land).contains(Keywords::FLYING));
+        }
+        assert_eq!(g.snapshot(), owned.snapshot());
+        g.restore(&before).unwrap();
+        assert!(!g.has_subtype(land, "Angel"));
+        assert_eq!(g.counter_count(land, CounterKind::PlusOne), 1);
+    }
+}

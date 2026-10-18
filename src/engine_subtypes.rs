@@ -39,6 +39,7 @@ const JOB_TYPES: [&str; 13] = [
     "Demon",
 ];
 // Thirteen named grants and three projection flags fit in one existing word.
+const CREATURE_OR_KINDRED: u16 = 1 | 128;
 const JOB_MASK: u16 = (1 << JOB_TYPES.len()) - 1;
 const SUPPRESS_PRINTED: u16 = 1 << JOB_TYPES.len();
 const LAND_ONLY: u16 = SUPPRESS_PRINTED << 1;
@@ -198,8 +199,10 @@ impl Game {
         for (_, change) in changes {
             match change {
                 characteristic_layers::SubtypeChange::Add(types) => {
-                    for typ in types {
-                        mask.insert(typ);
+                    if kinds(id, target) & CREATURE_OR_KINDRED != 0 {
+                        for typ in types {
+                            mask.insert(typ);
+                        }
                     }
                 }
                 characteristic_layers::SubtypeChange::LandOnly => {
@@ -368,10 +371,12 @@ impl Game {
         {
             result.chosen = Some(typ);
         }
-        match m.return_modification.map(|(kind, _)| kind) {
-            Some(ReturnKind::Angel) => result.insert("Angel"),
-            Some(ReturnKind::Demon) => result.insert("Demon"),
-            _ => {}
+        if m.before.kinds & CREATURE_OR_KINDRED != 0 {
+            match m.return_modification.map(|(kind, _)| kind) {
+                Some(ReturnKind::Angel) => result.insert("Angel"),
+                Some(ReturnKind::Demon) => result.insert("Demon"),
+                _ => {}
+            }
         }
         result
     }
