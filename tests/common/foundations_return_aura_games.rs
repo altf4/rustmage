@@ -60,7 +60,7 @@ fn foundations_seven_return_aura_cards_natural_games_and_owned_links() {
                 owned_auras += 1;
             }
         }
-        for item in before.stack.iter().chain(before.resolving.iter()) {
+        for item in before.resolving.as_ref().or_else(|| before.stack.last()) {
             if let Some(link) = &item.return_link
                 && before
                     .objects
