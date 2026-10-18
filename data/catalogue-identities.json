@@ -28346,6 +28346,10 @@
     [
       "kicked_targets",
       "Option<TargetPlan>"
+    ],
+    [
+      "zone_replacement",
+      "Option<ZoneReplacementRule>"
     ]
   ],
   "cards": [

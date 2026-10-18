@@ -359,6 +359,7 @@ fn job_granted_ninja_actual_private_discard_causes_life_loss_not_damage() {
         g.state.objects[hero.card as usize].gained_keywords = Keywords::LIFELINK;
         let discard = named(&mut g, p, "Warrior's Sword", Zone::Hand);
         let event = DamageEvent {
+            preventable: true,
             source: g.damage_source(hero.card),
             target: Target::Player(p.other()),
             amount: 2,
@@ -543,6 +544,7 @@ fn job_sage_white_and_thief_grants_are_real_recipient_events() {
         let knife = named(&mut g, p.other(), "Thief's Knife", Zone::Battlefield);
         g.attach_equipment(g.object_ref(knife), g.object_ref(bear));
         let hit = DamageEvent {
+            preventable: true,
             source: g.damage_source(bear),
             target: Target::Player(p.other()),
             amount: 1,
@@ -675,6 +677,7 @@ fn job_ninja_discarded_x_is_zero_off_stack_and_late_life_overflow_rolls_back_onl
         let discard = named(&mut g, Player::P0, name, Zone::Hand);
         let old = g.object_ref(discard);
         g.player_damage_triggers(&[DamageEvent {
+            preventable: true,
             source: g.damage_source(hero.card),
             target: Target::Player(Player::P1),
             amount: 2,
@@ -789,6 +792,7 @@ fn job_ninja_empty_library_and_no_discarded_card_loses_zero_life() {
         }
         assert_eq!(g.hand_count(p), 0);
         g.player_damage_triggers(&[DamageEvent {
+            preventable: true,
             source: g.damage_source(hero.card),
             target: Target::Player(p.other()),
             amount: 2,

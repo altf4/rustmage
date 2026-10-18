@@ -113,6 +113,7 @@ const fn object(kinds: u8) -> TargetRule {
     }
 }
 pub(super) struct CardExtras {
+    pub zone_replacement: Option<ZoneReplacementRule>,
     pub opening_hand_battlefield: bool,
     pub activation_put_counters: &'static [(u16, CounterKind, u64)],
     pub fixed_entry_counters: &'static [(CounterKind, u64)],
@@ -176,6 +177,7 @@ pub(super) struct CardExtras {
 }
 impl CardExtras {
     pub const EMPTY: Self = Self {
+        zone_replacement: None,
         opening_hand_battlefield: false,
         activation_put_counters: &[],
         fixed_entry_counters: &[],

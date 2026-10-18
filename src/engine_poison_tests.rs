@@ -97,6 +97,7 @@ fn tokens(g: &Game, p: Player, subtype: &str) -> Vec<ObjectView> {
 }
 fn hit(g: &Game, id: CardId, p: Player, amount: i128, combat: bool) -> DamageEvent {
     DamageEvent {
+        preventable: true,
         source: g.damage_source(id),
         target: Target::Player(p),
         amount,

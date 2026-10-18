@@ -118,6 +118,7 @@ impl Game {
         let events: Vec<_> = recipients
             .into_iter()
             .map(|target| DamageEvent {
+                preventable: true,
                 source,
                 target,
                 amount: i128::from(amount),

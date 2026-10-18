@@ -1483,7 +1483,11 @@ impl Game {
                 .flat_map(|player| selected[player.index()].iter().copied())
                 .collect();
             if !discarded.is_empty() {
-                self.discard_batch(&discarded, None);
+                let cause = self.state.resolving.as_ref().unwrap().item.controller;
+                self.discard_batch_caused(&discarded, None, Some(cause));
+                if self.state.entry_batch.is_some() {
+                    return;
+                }
             }
             let resolution = self.state.resolving.as_mut().unwrap();
             let Some(instruction) = resolution.program.get(resolution.pc).copied() else {
@@ -1496,7 +1500,7 @@ impl Game {
                     } else if item.cast.is_some_and(|c| c.face == CastFace::Omen) {
                         self.finish_omen(&item);
                     } else {
-                        self.move_object(item.card, Zone::Graveyard);
+                        self.move_adventure_spell(&item, Zone::Graveyard);
                     }
                 }
                 self.give_priority();
@@ -1566,12 +1570,14 @@ impl Game {
                         {
                             let controller = self.state.objects[id as usize].controller;
                             events.push(DamageEvent {
+                                preventable: true,
                                 source,
                                 target: bound.target,
                                 amount: i128::from(damage),
                                 combat: false,
                             });
                             events.push(DamageEvent {
+                                preventable: true,
                                 source,
                                 target: Target::Player(controller),
                                 amount: i128::from(controller_damage),
@@ -2615,6 +2621,7 @@ impl Game {
                     };
                     let source = self.program_damage_source(&item);
                     let event = |target| DamageEvent {
+                        preventable: true,
                         source,
                         target,
                         amount,
