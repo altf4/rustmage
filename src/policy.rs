@@ -253,7 +253,14 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::Keep | Action::FinishOpeningHand => 100,
             Action::BeginOnBattlefield { .. } => 110,
             Action::Mulligan => -100,
-            Action::PlayLand { .. } => 90,
+            Action::PlayLand { .. }
+            | Action::PlayGraveyardPermanent {
+                permanent_type: crate::engine::PermanentType::Land,
+                ..
+            } => 90,
+            Action::PlayGraveyardPermanent { .. } => 79,
+            Action::CastExiledDuringResolution { .. } => 81,
+            Action::FinishResolutionCasts => -1,
             Action::BeginCast { .. } => 80,
             // Once a complete target set is legal, commit it instead of
             // revisiting optional edits (which may otherwise oscillate).

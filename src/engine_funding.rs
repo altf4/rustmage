@@ -614,6 +614,7 @@ impl<'g> FundingState<'g> {
                     |counters| {
                         let purpose = mana_lots::Purpose::Activation(mana_lots::Source {
                             card: object.card,
+                            foreign_stash: false,
                             kinds: self.kinds(entry),
                             subtypes: ability_world::CharacteristicWorld::subtypes(self, entry.id),
                         });
