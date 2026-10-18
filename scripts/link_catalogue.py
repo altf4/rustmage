@@ -36,7 +36,23 @@ def load(root=ROOT):
     if records.keys()!=by_id.keys():raise ValueError('missing card definitions: '+str(sorted(by_id.keys()-records.keys())))
     fingerprint.extend((directory/'mod.rs').read_bytes())
     return metadata,records,hashlib.sha256(fingerprint).hexdigest()
+def validate_synthetic_aliases(metadata):
+    aliases = dict(metadata['aliases'])
+    if len(aliases) != len(metadata['aliases']) or metadata['aliases'] != sorted(metadata['aliases']):
+        raise ValueError('catalogue aliases must be unique and sorted')
+    token_cards = [c for c in metadata['cards'] if c['category'] == 'token']
+    if len(token_cards) != len(metadata['tokens']):
+        raise ValueError('token metadata count mismatch')
+    identities = [(token['factory_identity'], card['index'])
+                  for card, token in zip(token_cards, metadata['tokens'])]
+    identities.extend((card['name'], card['index']) for card in metadata['cards']
+                      if card['category'] == 'emblem')
+    for identity, index in identities:
+        if aliases.get(identity) != index:
+            raise ValueError('missing or incorrect synthetic factory alias: ' + identity)
+
 def render(metadata,records,version):
+    validate_synthetic_aliases(metadata)
     cards=metadata['cards'];n=len(cards)
     registry=['// Module links only. Edit the independent per-set Rust files.']
     for c in cards:
