@@ -99,6 +99,7 @@ impl Game {
         let mut delayed = item.clone();
         delayed.kind = StackKind::TriggeredAbility { ability: 0 };
         delayed.cast = None;
+        delayed.is_copy = false;
         delayed.targets.clear();
         self.state
             .stack_copy_data
@@ -307,7 +308,10 @@ impl Game {
             let spec = plan.group(bound.group).unwrap();
             self.item_target_matches(&r.item, spec.rule, bound.target)
                 && !r.item.targets.iter().enumerate().any(|(i, other)| {
-                    i != index && other.group == bound.group && other.target == bound.target
+                    i != index
+                        && other.group == bound.group
+                        && other.target == bound.target
+                        && other.object == bound.object
                 })
                 && self.target_group_compatible(
                     spec.rule,

@@ -28,6 +28,7 @@ fn announce(g: &mut Game, card: CardId, targets: &[Target]) {
                         Action::ChooseSpellCost { .. }
                             | Action::PayCosts { .. }
                             | Action::Discard { .. }
+                            | Action::PayResolutionMana { .. }
                             | Action::FinishTargets
                     )
                 })
@@ -61,6 +62,7 @@ fn progress(g: &mut Game, stop_retarget: bool) {
                         | Action::FinishTargets
                         | Action::PayCosts { .. }
                         | Action::Discard { .. }
+                        | Action::PayResolutionMana { .. }
                 )
             })
             .unwrap_or_else(|| panic!("settle {:?} {actions:?}", g.state.pending))
@@ -196,6 +198,7 @@ fn bolt_bend_discounts_and_changes_an_ability_target_with_original_controller_le
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         named(&mut g, p, "Serra Angel", Zone::Battlefield);
+        let protected = named(&mut g, p, "Sphinx of the Final Word", Zone::Battlefield);
         let archer = named(&mut g, p.other(), "Fanatical Firebrand", Zone::Battlefield);
         g.state.priority = p.other();
         let action = g.legal_actions().into_iter().find(|a| matches!(a, Action::Activate { card, target: Some(Target::Player(t)), .. } if *card == archer && *t == p)).unwrap();
@@ -208,6 +211,13 @@ fn bolt_bend_discounts_and_changes_an_ability_target_with_original_controller_le
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
         progress(&mut g, true);
         assert!(!g.legal_actions().contains(&Action::FinishStackTargets));
+        reject(
+            &mut g,
+            Action::SetStackTarget {
+                index: 0,
+                target: Target::Card(protected),
+            },
+        );
         reject(
             &mut g,
             Action::SetStackTarget {
@@ -312,6 +322,165 @@ fn delayed_copy_ignores_opponent_casts_and_expires_on_turn_change() {
         assert_eq!(g.observe(p).delayed_spell_copies.len(), 1);
         assert_eq!(g.state.players[p.index()].life, 18);
         super::ability_timeline_tests::next_turn(&mut g);
+        assert!(g.observe(p).delayed_spell_copies.is_empty());
+    }
+}
+fn pay(g: &mut Game) {
+    let action = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a, Action::PayCosts { .. }))
+        .unwrap();
+    checked(g, action);
+}
+#[test]
+fn copies_preserve_mode_kicker_and_x_but_have_no_actual_mana_payment() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        teach(&mut g, p);
+        let burst = named(&mut g, p, "Burst Lightning", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: burst });
+        checked(&mut g, Action::ChooseKicker { pay: true });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        pay(&mut g);
+        progress(&mut g, true);
+        let packet = &g.observe(p).retarget.unwrap().item;
+        assert_eq!(packet.cast.unwrap().kicker, Some(true));
+        assert_eq!(packet.cast.unwrap().payment, [0; 6]);
+        reject(&mut g, Action::ChooseKicker { pay: false });
+        checked(&mut g, Action::FinishStackTargets);
+        progress(&mut g, false);
+        assert_eq!(g.state.players[p.other().index()].life, 12);
+        teach(&mut g, p);
+        let charm = named(&mut g, p, "Boros Charm", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: charm });
+        checked(&mut g, Action::ChooseMode { mode: 0 });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        pay(&mut g);
+        progress(&mut g, true);
+        assert_eq!(g.observe(p).retarget.unwrap().item.mode, Some(0));
+        reject(&mut g, Action::ChooseMode { mode: 1 });
+        checked(&mut g, Action::FinishStackTargets);
+        progress(&mut g, false);
+        assert_eq!(g.state.players[p.other().index()].life, 4);
+        teach(&mut g, p);
+        let finale = named(&mut g, p, "Finale of Revelation", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: finale });
+        checked(&mut g, Action::ChooseX { value: 2 });
+        pay(&mut g);
+        for _ in 0..10 {
+            if g.state.stack.iter().any(|s| s.is_copy) {
+                break;
+            }
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                .unwrap();
+            checked(&mut g, action);
+        }
+        let copy = g.state.stack.iter().find(|s| s.is_copy).unwrap();
+        assert_eq!(copy.x, Some(2));
+        assert_eq!(copy.mana_value(), 4);
+        assert_eq!(copy.cast.unwrap().payment, [0; 6]);
+        progress(&mut g, false);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 4);
+        assert_eq!(g.state.objects[finale as usize].zone, Zone::Exile);
+    }
+}
+#[test]
+fn inherited_target_triggers_a_separate_ward_bound_to_the_copy() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        teach(&mut g, p);
+        let terror = named(&mut g, p.other(), "Tolarian Terror", Zone::Battlefield);
+        let shock = named(&mut g, p, "Shock", Zone::Hand);
+        announce(&mut g, shock, &[Target::Card(terror)]);
+        progress(&mut g, true); // The original spell's ward was paid first.
+        checked(&mut g, Action::FinishStackTargets);
+        let copy = g.state.stack.iter().find(|s| s.is_copy).unwrap().clone();
+        for _ in 0..10 {
+            if matches!(g.state.pending, Pending::ResolutionMana { .. }) {
+                break;
+            }
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                .unwrap();
+            checked(&mut g, action);
+        }
+        assert_eq!(
+            g.state
+                .resolving
+                .as_ref()
+                .unwrap()
+                .mana_payment
+                .as_ref()
+                .unwrap()
+                .victim,
+            Some(copy.id)
+        );
+        checked(&mut g, Action::DeclineResolutionMana);
+        progress(&mut g, false);
+        assert_eq!(g.state.objects[copy.card as usize].zone, Zone::Outside);
+        assert_eq!(g.state.objects[terror as usize].damage, 2);
+        assert_eq!(g.state.objects[shock as usize].zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn storm_counts_only_earlier_casts_and_freezes_count_before_a_later_response() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        named(&mut g, p, "Thousand-Year Storm", Zone::Battlefield);
+        for _ in 0..2 {
+            let shock = named(&mut g, p, "Shock", Zone::Hand);
+            announce(&mut g, shock, &[Target::Player(p.other())]);
+            progress(&mut g, false);
+        }
+        let shock = named(&mut g, p, "Shock", Zone::Hand);
+        announce(&mut g, shock, &[Target::Player(p.other())]);
+        let original_count = |g: &Game| {
+            g.state.stack.iter().find_map(|s| {
+                s.copy_event
+                    .as_ref()
+                    .filter(|e| e.spell.card == shock)
+                    .map(|e| e.amount)
+            })
+        };
+        assert_eq!(original_count(&g), Some(2));
+        let draw = named(&mut g, p, "Think Twice", Zone::Hand);
+        announce(&mut g, draw, &[]);
+        assert_eq!(original_count(&g), Some(2));
+        progress(&mut g, false);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 4);
+        assert_eq!(g.state.players[p.other().index()].life, 8);
+        assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 4);
+    }
+}
+#[test]
+fn copied_teach_creates_its_own_delayed_trigger_without_consuming_the_next_cast() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        teach(&mut g, p);
+        teach(&mut g, p);
+        assert_eq!(g.observe(p).delayed_spell_copies.len(), 2);
+        assert!(g.observe(p).delayed_spell_copies.iter().all(|s| !s.is_copy));
+        let shock = named(&mut g, p, "Shock", Zone::Hand);
+        announce(&mut g, shock, &[Target::Player(p.other())]);
+        progress(&mut g, false);
+        assert_eq!(g.state.players[p.other().index()].life, 14);
+        assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 3);
         assert!(g.observe(p).delayed_spell_copies.is_empty());
     }
 }
