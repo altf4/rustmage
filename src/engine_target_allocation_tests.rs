@@ -247,3 +247,21 @@ fn chandra_plus_one_copies_controlled_creature_with_abilities_after_chandra_leav
         assert_eq!(g.state.objects[token as usize].zone, Zone::Outside);
     }
 }
+
+#[test]
+fn smoke_policy_values_an_own_creature_copy_over_an_untargeted_value_activation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = chandra(&mut g, p);
+        let creature = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let actions: Vec<_> = g.legal_actions().into_iter().filter(|a| {
+            matches!(a, Action::Activate { card, ability: 0, target: None, .. } if *card == id)
+                || matches!(a, Action::Activate { card, ability: 1, target: Some(Target::Card(target)), .. } if *card == id && *target == creature)
+        }).collect();
+        assert_eq!(actions.len(), 2);
+        assert!(matches!(
+            actions[crate::policy::smoke_index(&g, &actions)],
+            Action::Activate { ability: 1, target: Some(Target::Card(target)), .. } if target == creature
+        ));
+    }
+}

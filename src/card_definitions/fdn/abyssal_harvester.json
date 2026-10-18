@@ -3,7 +3,7 @@
   "catalogue_id": 43,
   "oracle_id": "68cc5065-0514-4adf-885f-da554e1db00a",
   "facts_sha256": "144d0407e41ec789951dc3b583484993b4fa89c45381988596d2a6916523c8b7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4df92f62a58ec952c5e2733bccb46bd2274ffd7b50916b117073d3fb4dd34845"
@@ -58,8 +58,5 @@
       "path": "Mage/src/main/java/mage/watchers/common/CardsPutIntoGraveyardWatcher.java",
       "sha256": "7adcba89bfd94638c279998a6175725be871324c3f70b3f05ab0b540f107b2a3"
     }
-  ],
-  "remaining_obligations": [
-    "Gated pending exact graveyard history, token-multiplier/cull sequencing rules tests, full validation, independent reviews, and candidate-staging approval."
   ]
 }

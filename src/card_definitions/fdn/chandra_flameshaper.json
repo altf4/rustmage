@@ -3,7 +3,7 @@
   "catalogue_id": 715,
   "oracle_id": "818f908c-9af6-4edc-bb0e-193bc830e2e4",
   "facts_sha256": "94666c70f4989990826e4e11bb5321d9fce7682f56d93b8a5c7552477981fa78",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "98b64159ffef016ef57db6dcc15e64468678c7d956a2c5abd088471b65d72d73"
@@ -93,8 +93,5 @@
       "path": "Mage/src/main/java/mage/target/TargetAmount.java",
       "sha256": "46aa93db7da9ec3cbaabb36e6d5646b1202e3a88777ba26fd034f2adfa2a1732"
     }
-  ],
-  "remaining_obligations": [
-    "Gated pending all three loyalty abilities rules tests, full validation, independent reviews, and candidate-staging approval."
   ]
 }

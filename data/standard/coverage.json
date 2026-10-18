@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "7bc5b71020135392f03b58c8c7b92ee136c066a4a385bfe4c2171395c3e52dac",
+  "catalogue_version": "213a68525a9ccbd303ed8726ec9d44b848bba96dabb9fa91d5b969b1815e1751",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2155,
-  "implemented_total": 2161,
-  "token_definitions": 103,
+  "implemented_standard_cards": 2169,
+  "implemented_total": 2175,
+  "token_definitions": 104,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
   "omen_definitions": 13,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 396,
-      "gated": 31
+      "complete": 409,
+      "gated": 18
     },
     "fin": {
       "total": 305,
@@ -149,8 +149,8 @@
     },
     "soc": {
       "total": 24,
-      "complete": 10,
-      "gated": 14
+      "complete": 11,
+      "gated": 13
     },
     "sos": {
       "total": 264,
@@ -552,8 +552,8 @@
     {
       "name": "Abyssal Harvester",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/abyssal_harvester.rs",
       "set": "fdn"
     },
@@ -1520,8 +1520,8 @@
     {
       "name": "Angelic Destiny",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/angelic_destiny.rs",
       "set": "soc"
     },
@@ -5928,8 +5928,8 @@
     {
       "name": "Chandra, Flameshaper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/chandra_flameshaper.rs",
       "set": "fdn"
     },
@@ -6016,8 +6016,8 @@
     {
       "name": "Charming Prince",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/charming_prince.rs",
       "set": "fdn"
     },
@@ -6832,8 +6832,8 @@
     {
       "name": "Confiscate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/confiscate.rs",
       "set": "fdn"
     },
@@ -7992,8 +7992,8 @@
     {
       "name": "Darksteel Colossus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/darksteel_colossus.rs",
       "set": "fdn"
     },
@@ -9768,8 +9768,8 @@
     {
       "name": "Dryad Militant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/dryad_militant.rs",
       "set": "fdn"
     },
@@ -10432,8 +10432,8 @@
     {
       "name": "Electroduplicate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/electroduplicate.rs",
       "set": "fdn"
     },
@@ -17488,8 +17488,8 @@
     {
       "name": "Infernal Vessel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/infernal_vessel.rs",
       "set": "fdn"
     },
@@ -19616,8 +19616,8 @@
     {
       "name": "Kykar, Zephyr Awakener",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/kykar_zephyr_awakener.rs",
       "set": "fdn"
     },
@@ -23760,8 +23760,8 @@
     {
       "name": "Nine-Lives Familiar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/nine_lives_familiar.rs",
       "set": "fdn"
     },
@@ -26240,8 +26240,8 @@
     {
       "name": "Progenitus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/progenitus.rs",
       "set": "fdn"
     },
@@ -38832,8 +38832,8 @@
     {
       "name": "Valkyrie's Call",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/valkyrie_s_call.rs",
       "set": "fdn"
     },
@@ -40800,8 +40800,8 @@
     {
       "name": "Wilt-Leaf Liege",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/wilt_leaf_liege.rs",
       "set": "fdn"
     },
