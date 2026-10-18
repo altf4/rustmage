@@ -3,7 +3,7 @@
   "catalogue_id": 1736,
   "oracle_id": "48e6d3d8-2f27-4017-acdd-40bce8cdbc02",
   "facts_sha256": "1e214afe1e454fda989e7b0f1ede5d4fc2cd6225528f40c25373f431385e37b2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "01caf2c58c607ca02d6e15a13c14a51a16f4a2d5672d21f602ee8ad8cc856fd7"
@@ -39,7 +39,5 @@
       "sha256": "ce56830a429737325b5010a205e0d800b41ac7f2e4c59367598f4fa99e1d246e"
     }
   ],
-  "remaining_obligations": [
-    "Gated mana core fixture: final rules tests, two independent core reviews and whole-card consumer acceptance are pending."
-  ]
+  "remaining_obligations": []
 }

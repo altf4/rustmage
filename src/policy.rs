@@ -205,6 +205,17 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ChooseMode { .. } => 50,
             Action::ChooseSearch { .. } | Action::ChooseSearchBattlefield { .. } => 60,
             Action::FinishSearch => 0,
+            Action::ChooseEntryValue {
+                value: crate::EntryChoiceValue::CreatureType(typ),
+            } => observation
+                .objects
+                .iter()
+                .filter(|object| {
+                    object.owner == actor
+                        && matches!(object.zone, Zone::Hand | Zone::Battlefield)
+                        && object.has_subtype(typ.name())
+                })
+                .count() as i128,
             Action::ChooseEntryValue { .. } => 0,
             Action::ChooseEntryLife { pay } => {
                 // Avoid voluntary lethal payment; the example still exercises
