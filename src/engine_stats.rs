@@ -103,8 +103,10 @@ impl Game {
                 ability.condition.event(),
                 TriggerCondition::DamagedCreatureDies
                     | TriggerCondition::SelfDies
+                    | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::SelfEntersOrDies
                     | TriggerCondition::CreatureDies { .. }
+                    | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
                     | TriggerCondition::CreatureDiesAttackState { .. }

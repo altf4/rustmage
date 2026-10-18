@@ -164,7 +164,7 @@ fn check(o: &Observation, l: &Ledger) -> u64 {
 }
 fn classify(s: &SpellView) -> Option<usize> {
     match s.kind {
-        StackKind::DelayedSacrifice | StackKind::DelayedWarpExile => {
+        StackKind::DelayedReturn | StackKind::DelayedSacrifice | StackKind::DelayedWarpExile => {
             panic!("no delayed producer in this fixture")
         }
         StackKind::TriggeredAbility { .. } => index(s.source_card),

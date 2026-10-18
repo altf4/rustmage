@@ -142,6 +142,7 @@ impl Game {
             return;
         }
         loop {
+            self.refresh_controllers();
             // CR506.4: a permanent that stops being a creature leaves combat.
             let no_longer_creatures: Vec<_> = self
                 .state

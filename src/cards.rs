@@ -151,6 +151,8 @@ impl TargetRule {
 /// Immutable live constraints; indirection keeps target plans compact in checkpoints.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetPredicate {
+    OwnedByController,
+    OtherThanSource,
     Blocking,
     Nontoken,
     Permanent,
@@ -643,6 +645,11 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    BlinkUntilEndStep {
+        under_owner: bool,
+    },
+    ReturnDeathCard(ReturnKind),
+    ResolveDelayedReturn,
     CopyNextInstantSorcery,
     CopyCastSpell {
         prior_spells: bool,
@@ -885,6 +892,7 @@ pub(crate) enum Instruction {
         unpaid_skip: usize,
     },
     ReturnSourceToHand(TargetZone),
+    ReturnSourceFromFirstPublicZoneToHand,
     PutSourceOnLibraryTop {
         origin: TargetZone,
     },
@@ -1413,6 +1421,7 @@ pub(crate) struct EquipmentSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct AuraSpec {
     /// Enchant object-kind union, evaluated using live characteristics.
+    /// Zero means any permanent, including Battles outside the narrow mask.
     pub kinds: u8,
     pub relation: i8,
     pub bonus: EquipmentSpec,
@@ -1998,7 +2007,21 @@ pub(crate) enum EntryPredicate {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ReturnDeathFilter {
+    SourceNonDemon,
+    SourceRevival,
+    ControlledNontokenNonAngel,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ReturnKind {
+    Demon,
+    Angel,
+    Revival,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    ReturnDeath(ReturnDeathFilter),
     /// Delayed ability carried by a produced mana unit, independent of its source.
     ManaSpentForSpell,
     /// Explicit printed source zone; legacy events keep their existing origins.
@@ -2080,6 +2103,7 @@ pub(crate) enum TriggerCondition {
         first_only: bool,
         own_turn: bool,
     },
+    AttachedCreatureDies,
     CreatureDies {
         relation: CastRelation,
         other: bool,
@@ -2803,6 +2827,9 @@ impl Card {
             .iter()
             .find(|(index, _, _)| *index == ability)
             .map(|(_, kind, amount)| (*kind, *amount))
+    }
+    pub(crate) fn cast_entry_counters(self) -> &'static [(CounterKind, u64)] {
+        authored::RULES[self.index()].extras.cast_entry_counters
     }
     pub(crate) fn hand_cast_entry_counters(self) -> &'static [(CounterKind, u64)] {
         authored::RULES[self.index()]

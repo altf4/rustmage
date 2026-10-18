@@ -285,7 +285,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             for packet in packets(&before) {
                 if let Some(k) = index(packet.source_card) {
                     match packet.kind {
-                        StackKind::DelayedSacrifice | StackKind::DelayedWarpExile => {
+                        StackKind::DelayedReturn
+                        | StackKind::DelayedSacrifice
+                        | StackKind::DelayedWarpExile => {
                             panic!("no delayed producer in this fixture")
                         }
                         StackKind::Spell => {

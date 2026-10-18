@@ -18,6 +18,7 @@ pub(super) struct EntryMove {
     pub life_bonus: Option<(Player, &'static str, u16)>,
     /// Counters put on this object as part of entering by the surrounding effect.
     pub effect_counter: Option<(CounterKind, u64)>,
+    pub return_modification: Option<(ReturnKind, ObjectRef)>,
     pub attacking: Option<CombatDefender>,
     pub skipped: bool,
     pub reveal_hand: bool,
@@ -164,7 +165,11 @@ impl Game {
             && !self
                 .keywords(target.card)
                 .contains(Keywords::PROTECTION_EVERYTHING)
-            && self.current_kinds(target.card) & u16::from(spec.kinds) != 0
+            && (if spec.kinds == 0 {
+                self.current_kinds(target.card) & (1 | 2 | 16 | 32 | 64 | 256) != 0
+            } else {
+                self.current_kinds(target.card) & u16::from(spec.kinds) != 0
+            })
             && match spec.relation {
                 0 => self.state.objects[target.card as usize].controller == controller,
                 1 => self.state.objects[target.card as usize].controller != controller,
@@ -184,6 +189,7 @@ impl Game {
             suspect_after: false,
             life_bonus: None,
             effect_counter: None,
+            return_modification: None,
             attacking: None,
             skipped: false,
             reveal_hand: false,
@@ -266,6 +272,11 @@ impl Game {
                 movement.cast_payment,
                 movement.controller,
             );
+            if movement.destination == Zone::Battlefield && movement.cast_origin.is_some() {
+                for &(kind, amount) in movement.before.card.cast_entry_counters() {
+                    movement.counters.add(kind, amount);
+                }
+            }
             if movement.destination == Zone::Battlefield && movement.cast_origin == Some(Zone::Hand)
             {
                 for &(kind, amount) in movement.before.card.hand_cast_entry_counters() {
@@ -486,6 +497,12 @@ impl Game {
             {
                 self.set_entry_value(event.after, value);
             }
+            if event.moved
+                && event.destination == Zone::Battlefield
+                && let Some((kind, source)) = movement.return_modification
+            {
+                self.apply_return_modification(event.after, kind, source);
+            }
             event.offspring_paid = movement.offspring_paid;
             event.kicked = movement.kicked;
             if event.moved && event.destination == Zone::Battlefield {
@@ -557,6 +574,7 @@ impl Game {
                 }
             }
         }
+        self.refresh_controllers();
         if let Some(context) = batch.discard_context {
             self.finish_discard_events(&events, context);
         } else {
