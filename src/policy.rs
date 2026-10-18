@@ -252,7 +252,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::Mulligan => -100,
             Action::PlayLand { .. } => 90,
             Action::BeginCast { .. } => 80,
-            Action::FinishStackTargets => 5,
+            // Once a complete target set is legal, commit it instead of
+            // revisiting optional edits (which may otherwise oscillate).
+            Action::FinishStackTargets => 100,
             Action::RestoreStackTarget { .. } => -1,
             Action::SetStackTarget { index, target } => observation
                 .retarget
