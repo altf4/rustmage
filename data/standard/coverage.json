@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "0213ac5b687c53d105ec01e5da579ae9757b0cd3f3d4e60c0110f70389bef637",
+  "catalogue_version": "9515564c60003a12e5bdea4f416b35d67db48a92517d38267815fb605a0a3dc5",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2173,
-  "implemented_total": 2179,
-  "token_definitions": 104,
+  "implemented_standard_cards": 2179,
+  "implemented_total": 2185,
+  "token_definitions": 105,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
   "omen_definitions": 13,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 412,
-      "gated": 15
+      "complete": 418,
+      "gated": 9
     },
     "fin": {
       "total": 305,
@@ -12504,8 +12504,8 @@
     {
       "name": "Fishing Pole",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/fishing_pole.rs",
       "set": "fdn"
     },
@@ -18936,8 +18936,8 @@
     {
       "name": "Kellan, Planar Trailblazer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/kellan_planar_trailblazer.rs",
       "set": "fdn"
     },
@@ -19840,8 +19840,8 @@
     {
       "name": "Lathril, Blade of the Elves",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/lathril_blade_of_the_elves.rs",
       "set": "fdn"
     },
@@ -24848,8 +24848,8 @@
     {
       "name": "Ovika, Enigma Goliath",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/ovika_enigma_goliath.rs",
       "set": "fdn"
     },
@@ -26752,8 +26752,8 @@
     {
       "name": "Quilled Greatwurm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/quilled_greatwurm.rs",
       "set": "fdn"
     },
@@ -40704,8 +40704,8 @@
     {
       "name": "Wildborn Preserver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/wildborn_preserver.rs",
       "set": "fdn"
     },

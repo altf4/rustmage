@@ -1,16 +1,29 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete Oracle body authored from the paired pinned XMage source.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(6, 6),
     keywords: Keywords::FLYING,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::Ward,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CounterRelatedUnlessPayManaLife {
+                cost: generic(3),
+                life: 3,
+            }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::SpellCast {
+                relation: CastRelation::You,
+                filter: CastFilter::Noncreature,
+                ordinal: None,
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CreateTokensWithTemporaryKeywords {
+                token: Card(5343),
+                amount: AmountValue::CastSpellManaValue,
+                keywords: Keywords::HASTE,
+            }],
+        },
+    ],
     ..CardRules::EMPTY
 };

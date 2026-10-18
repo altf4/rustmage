@@ -122,6 +122,71 @@ fn graveyard_play(card: CardId, permission: ObjectRef, permanent_type: Permanent
     }
 }
 #[test]
+fn cast_origins_greatwurm_counter_permission_and_muldrotha_quota_are_independent() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let muldrotha = put(&mut g, p, "Muldrotha, the Gravetide", Zone::Battlefield);
+        put(&mut g, p, "Vizier of the Menagerie", Zone::Battlefield);
+        let permission = g.object_ref(muldrotha);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.add_counter(bear, CounterKind::Bait, 6);
+        let counters = g.object_ref(bear);
+        let first = put(&mut g, p, "Quilled Greatwurm", Zone::Graveyard);
+        let second = put(&mut g, p, "Quilled Greatwurm", Zone::Graveyard);
+        let third = put(&mut g, p, "Quilled Greatwurm", Zone::Graveyard);
+        // Vizier substitutes actual mana for the green pips on either route;
+        // Greatwurm's own permission pays six counters without using Muldrotha.
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 6];
+        checked(&mut g, Action::AnnounceCounterGraveyard { card: first });
+        for _ in 0..6 {
+            checked(
+                &mut g,
+                Action::ChooseCreatureCounterCost {
+                    object: counters,
+                    counter: CounterKind::Bait,
+                },
+            );
+        }
+        finish(&mut g);
+        assert_eq!(g.counter_count(bear, CounterKind::Bait), 0);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert_eq!(
+            g.state.stack.last().unwrap().cast.unwrap().payment,
+            [0, 0, 0, 0, 0, 6]
+        );
+        settle(&mut g);
+        assert!(g.on_battlefield(first));
+        assert!(g.observe(p).graveyard_type_uses.is_empty());
+
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 6];
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCounterGraveyard { card: second })
+        );
+        checked(
+            &mut g,
+            graveyard_play(second, permission, PermanentType::Creature),
+        );
+        finish(&mut g);
+        assert_eq!(g.counter_count(bear, CounterKind::Bait), 0);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        settle(&mut g);
+        assert!(g.on_battlefield(second));
+        assert_eq!(g.observe(p).graveyard_type_uses.len(), 1);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 6];
+        let before = g.snapshot();
+        let revision = g.revision();
+        for action in [
+            Action::AnnounceCounterGraveyard { card: third },
+            graveyard_play(third, permission, PermanentType::Creature),
+        ] {
+            assert_eq!(g.apply(p, action), Err(Error::IllegalAction));
+            assert_eq!(g.snapshot(), before);
+            assert_eq!(g.revision(), revision);
+        }
+    }
+}
+#[test]
 fn cast_origins_muldrotha_multitype_choice_and_independent_source_incarnations() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);

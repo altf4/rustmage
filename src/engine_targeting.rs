@@ -15,6 +15,16 @@ pub(super) struct Announcement {
     pub pay_window: bool,
     pub production: Option<Mana>,
     pub additional: Option<ObjectRef>,
+    #[allow(
+        clippy::box_collection,
+        reason = "Rare growable tap selections use one pointer in ordinary announcements"
+    )]
+    pub additional_group: Option<Box<Vec<ObjectRef>>>,
+    #[allow(
+        clippy::box_collection,
+        reason = "Rare growable counter selections use one pointer in ordinary announcements"
+    )]
+    pub creature_counter_cost: Option<Box<Vec<(ObjectRef, CounterKind)>>>,
     pub forage: Option<Box<forage::ForageSelection>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
     pub convoke: Option<Box<convoke::ConvokeSelection>>,
@@ -24,6 +34,16 @@ pub(super) struct Announcement {
 impl Announcement {
     pub(super) fn additional_cost(&self) -> Option<AdditionalCost> {
         match self.item.kind {
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
+                    .is_some_and(|c| c.method == CastMethod::GraveyardCounterCost) =>
+            {
+                Some(Game::creature_counter_spec(
+                    self.item.source_card.graveyard_counter_cost().unwrap(),
+                ))
+            }
             StackKind::Spell if self.item.cast.is_some_and(|c| c.evidence == Some(true)) => Some(
                 evidence::cost(self.item.source_card.collect_evidence_cost().unwrap()),
             ),
@@ -1127,6 +1147,7 @@ impl Game {
             entering_object: None,
             evidence_collected: false,
             damage_event: None,
+            creature_combat_event: None,
             discard_event: None,
             draw_event: None,
             life_event: None,
@@ -1194,6 +1215,8 @@ impl Game {
             total_cost: None,
             counter_payment: Counters::default(),
             additional: None,
+            additional_group: None,
+            creature_counter_cost: None,
             forage: None,
             evidence: None,
             convoke: None,
@@ -1237,6 +1260,8 @@ impl Game {
             total_cost: None,
             counter_payment: counters,
             additional: None,
+            additional_group: None,
+            creature_counter_cost: None,
             forage: None,
             evidence: None,
             convoke: None,

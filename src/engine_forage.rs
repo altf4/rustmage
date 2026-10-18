@@ -106,10 +106,20 @@ impl Game {
         &self,
         a: &Announcement,
     ) -> Option<(ObjectRef, AdditionalCost)> {
+        if matches!(a.item.kind, StackKind::ActivatedAbility { .. })
+            && let Some(grant) = &a.item.attachment_trigger
+        {
+            return Some((grant.grantor, Self::attached_tap_spec()));
+        }
         if let Some(f) = &a.forage
             && f.route == Some(ForageRoute::Food)
         {
             return f.selected.first().copied().map(|r| (r, food_cost()));
+        }
+        if a.additional_cost()
+            .is_some_and(|s| matches!(s.kind, EffectChoiceKind::RemoveCreatureCounters(_)))
+        {
+            return None;
         }
         a.additional.map(|r| (r, a.additional_cost().unwrap()))
     }

@@ -83,7 +83,9 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),
-                TriggerCondition::PlayerDamaged { .. } | TriggerCondition::SourceDealtCombatDamage
+                TriggerCondition::PlayerDamaged { .. }
+                    | TriggerCondition::SourceDealtCombatDamage
+                    | TriggerCondition::ControlledCreatureCombatDamageOwnTurn
             )
         }) {
             self.state.damage_sources.push(id);
