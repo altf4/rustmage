@@ -2507,9 +2507,96 @@ mod qualified_hexproof_world_tests;
 
 #[cfg(test)]
 mod blanked_funding_bounds_tests {
-    use super::super::ability_timeline_tests::{cast, settle, setup};
+    use super::super::ability_timeline_tests::{cast, checked, settle, setup};
     use super::super::tests::spawn;
     use super::*;
+
+    #[test]
+    fn funding_animation_mana_projection_matches_ordered_layers_and_virtual_departure() {
+        fn compare(world: &impl ability_world::CharacteristicWorld) {
+            let evaluated = ability_evaluation::evaluate_abilities(world);
+            for id in 0..world.game().state.objects.len() {
+                let mut actual = world.granted_mana(id as CardId);
+                let mut expected = evaluated.result.objects[id].mana.clone();
+                actual.sort_by_key(|grant| grant.source.card);
+                expected.sort_by_key(|grant| grant.source.card);
+                assert_eq!(actual, expected, "mana grants at object {id}");
+            }
+        }
+        for player in [Player::P0, Player::P1] {
+            let mut game = setup(player);
+            let land = spawn(
+                &mut game,
+                player,
+                Card::from_name("Soulstone Sanctuary").unwrap(),
+                Zone::Battlefield,
+            );
+            for _ in 0..3 {
+                game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 4];
+                checked(
+                    &mut game,
+                    Action::Activate {
+                        card: land,
+                        ability: 1,
+                        target: None,
+                        payment: [0, 0, 0, 0, 0, 4],
+                        counter_payment: Counters::default(),
+                    },
+                );
+                settle(&mut game);
+            }
+            assert_eq!(game.state.roles.as_ref().unwrap().animations.len(), 3);
+            game.state.players[player.index()].mana = [30; 6];
+            let horizons = spawn(
+                &mut game,
+                player,
+                Card::from_name("New Horizons").unwrap(),
+                Zone::Hand,
+            );
+            cast(&mut game, horizons, None, &[Target::Card(land)]);
+            settle(&mut game);
+            compare(&game);
+            assert_eq!(
+                ability_world::CharacteristicWorld::granted_mana(&game, land).len(),
+                1
+            );
+            let goal = FundingGoal {
+                actor: player,
+                required: [0; 6],
+                generic: 1,
+                reserve: None,
+                source: None,
+            };
+            compare(&FundingState::from_game(&game, &goal));
+            let moon = spawn(
+                &mut game,
+                player,
+                Card::from_name("Imprisoned in the Moon").unwrap(),
+                Zone::Hand,
+            );
+            cast(&mut game, moon, None, &[Target::Card(land)]);
+            settle(&mut game);
+            compare(&game);
+            let world = FundingState::from_game(&game, &goal);
+            compare(&world);
+            let before = game.snapshot();
+            let mut departed = world.clone();
+            departed
+                .resources
+                .iter_mut()
+                .find(|r| r.id == moon)
+                .unwrap()
+                .object
+                .zone = Zone::Graveyard;
+            compare(&departed);
+            assert_eq!(
+                ability_world::CharacteristicWorld::granted_mana(&departed, land).len(),
+                1
+            );
+            compare(&world);
+            assert_eq!(game.snapshot(), before);
+        }
+    }
 
     fn blanked(player: Player, name: &str) -> (Game, CardId, Vec<CardId>) {
         let mut game = setup(player);
