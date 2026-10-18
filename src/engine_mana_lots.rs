@@ -15,18 +15,64 @@ pub enum ManaRestrictionView {
 pub enum ManaSpellBonusView {
     None,
     DragonCreatureHaste,
+    CopyRedInstantSorcery,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct ManaCopySource {
+    pub object: ObjectRef,
+    pub card: Card,
+    pub controller: Player,
+    pub facts: DamageFacts,
+    pub keywords: Keywords,
+    pub tapped: bool,
+}
+impl std::hash::Hash for ManaCopySource {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        std::hash::Hash::hash(&(self.object, self.card, self.controller.index()), state);
+    }
+}
+impl ManaCopySource {
+    fn capture<W: ability_world::CharacteristicWorld + ?Sized>(world: &W, source: CardId) -> Self {
+        let object = world.object(source);
+        let mut facts = world.game().damage_facts(source);
+        facts.card = object.card;
+        facts.controller = object.controller;
+        facts.kinds = world.kinds(source);
+        facts.colors = world.colors(source);
+        facts.granted_subtypes = world.subtypes(source);
+        facts.token = world.is_token(source);
+        facts.counter = world.counter_amounts(source).has_any();
+        facts.plus_one = world.counter_count(source, CounterKind::PlusOne) > 0;
+        facts.attacking = world.attacking(source);
+        Self {
+            object: world.reference(source),
+            card: object.card,
+            controller: object.controller,
+            facts,
+            keywords: world.game().keywords(source),
+            tapped: object.tapped,
+        }
+    }
+}
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub(super) struct SpendOutcome {
+    pub haste: bool,
+    #[allow(clippy::box_collection)]
+    pub copies: Option<Box<Vec<(ManaCopySource, u64)>>>,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub(super) struct Quality {
     pub restriction: ManaRestrictionView,
     pub spell_bonus: ManaSpellBonusView,
     pub retention: ManaRetention,
+    pub copy_source: Option<ManaCopySource>,
 }
 impl Quality {
     const ORDINARY: Self = Self {
         restriction: ManaRestrictionView::Unrestricted,
         spell_bonus: ManaSpellBonusView::None,
         retention: ManaRetention::Step,
+        copy_source: None,
     };
     pub(super) fn capture<W: ability_world::CharacteristicWorld + ?Sized>(
         world: &W,
@@ -51,9 +97,20 @@ impl Quality {
             spell_bonus: match quality.spell_bonus {
                 ManaSpellBonus::None => ManaSpellBonusView::None,
                 ManaSpellBonus::DragonCreatureHaste => ManaSpellBonusView::DragonCreatureHaste,
+                ManaSpellBonus::CopyRedInstantSorcery => ManaSpellBonusView::CopyRedInstantSorcery,
             },
             retention: quality.retention,
+            copy_source: (quality.spell_bonus == ManaSpellBonus::CopyRedInstantSorcery)
+                .then(|| ManaCopySource::capture(world, source)),
         }
+    }
+    fn same_rules(self, other: Self) -> bool {
+        let identity =
+            |source: Option<ManaCopySource>| source.map(|s| (s.object, s.card, s.controller));
+        self.restriction == other.restriction
+            && self.spell_bonus == other.spell_bonus
+            && self.retention == other.retention
+            && identity(self.copy_source) == identity(other.copy_source)
     }
     pub(super) fn eligible(self, purpose: Purpose) -> bool {
         match self.restriction {
@@ -120,6 +177,7 @@ pub struct ManaLotView {
     pub restriction: ManaRestrictionView,
     pub spell_bonus: ManaSpellBonusView,
     pub retention: ManaRetention,
+    pub copy_source: Option<ManaCopySource>,
     pub amounts: Mana,
 }
 /// One scalar allocation domain; large pools never enumerate a Cartesian product.
@@ -224,7 +282,7 @@ pub(super) fn add_lot(lots: &mut Vec<Lot>, quality: Quality, amounts: [u128; 6])
     if quality == Quality::ORDINARY || amounts == [0; 6] {
         return;
     }
-    if let Some(lot) = lots.iter_mut().find(|lot| lot.quality == quality) {
+    if let Some(lot) = lots.iter_mut().find(|lot| lot.quality.same_rules(quality)) {
         for (held, amount) in lot.amounts.iter_mut().zip(amounts) {
             *held = held
                 .checked_add(amount)
@@ -281,6 +339,22 @@ pub(super) fn ordinary(pool: [u128; 6], lots: &[Lot]) -> [u128; 6] {
 }
 
 impl Game {
+    pub(super) fn capture_mana_copy_source_departure(&mut self, before: &ObjectView) {
+        let Some(state) = &mut self.state.mana_lots else {
+            return;
+        };
+        for lots in &mut state.pools {
+            for lot in lots.iter_mut() {
+                if let Some(source) = &mut lot.quality.copy_source
+                    && source.object == before.reference
+                {
+                    source.facts = DamageFacts::from_view(before);
+                    source.keywords = before.keywords;
+                    source.tapped = before.tapped;
+                }
+            }
+        }
+    }
     pub(super) fn mana_lots(&self, actor: Player) -> &[Lot] {
         self.state
             .mana_lots
@@ -417,6 +491,7 @@ impl Game {
                         restriction: lot.quality.restriction,
                         spell_bonus: lot.quality.spell_bonus,
                         retention: lot.quality.retention,
+                        copy_source: lot.quality.copy_source,
                         amounts: lot
                             .amounts
                             .map(|n| u32::try_from(n).expect("concrete lot bound")),
@@ -528,13 +603,13 @@ impl Game {
         actor: Player,
         payment: Mana,
         purpose: Purpose,
-    ) -> bool {
+    ) -> SpendOutcome {
         if payment == [0; 6] {
-            return false;
+            return SpendOutcome::default();
         }
         if self.mana_lots(actor).is_empty() {
             self.spend_ordinary_mana(actor, payment);
-            return false;
+            return SpendOutcome::default();
         }
         let pool = self.state.players[actor.index()].mana.map(u128::from);
         let lots = self.state.mana_lots.as_ref().unwrap().pools[actor.index()].clone();
@@ -581,7 +656,7 @@ impl Game {
                 selected
             }
         };
-        let mut grants_haste = false;
+        let mut outcome = SpendOutcome::default();
         let state = self.state.mana_lots.as_mut().unwrap();
         let mut ordinary_payment = payment;
         for ((lot, original), allocation) in state.pools[actor.index()]
@@ -590,7 +665,17 @@ impl Game {
             .zip(selected)
         {
             if allocation != [0; 6] && original.quality.grants_haste(purpose) {
-                grants_haste = true
+                outcome.haste = true
+            }
+            if allocation != [0; 6]
+                && original.quality.spell_bonus == ManaSpellBonusView::CopyRedInstantSorcery
+                && matches!(purpose, Purpose::Spell(facts) if facts.kinds & (4 | 8) != 0 && facts.card.colors() & 8 != 0)
+            {
+                let amount = allocation.into_iter().map(u64::from).sum();
+                outcome.copies.get_or_insert_with(Default::default).push((
+                    original.quality.copy_source.expect("copy mana attribution"),
+                    amount,
+                ));
             }
             for color in 0..6 {
                 lot.amounts[color] -= u128::from(allocation[color]);
@@ -606,7 +691,7 @@ impl Game {
         for (held, paid) in player.mana.iter_mut().zip(payment) {
             *held -= paid
         }
-        grants_haste
+        outcome
     }
 }
 

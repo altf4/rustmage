@@ -437,6 +437,7 @@ fn tagged_mana_guided_scalar_domain_preserves_holes_and_correlated_rows() {
     let quality = Quality {
         restriction: ManaRestrictionView::Unrestricted,
         spell_bonus: ManaSpellBonusView::DragonCreatureHaste,
+        copy_source: None,
         retention: ManaRetention::Step,
     };
     let request = SpendRequest {
@@ -537,7 +538,7 @@ fn tagged_mana_orb_haste_is_not_copied_and_later_ability_removal_wins() {
             .iter()
             .enumerate()
             .find(|(_, o)| {
-                o.zone == Zone::Battlefield && o.copy_token && o.card.name() == "Shivan Dragon"
+                o.zone == Zone::Battlefield && o.is_copy_token() && o.card.name() == "Shivan Dragon"
             })
             .unwrap()
             .0 as CardId;

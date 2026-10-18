@@ -641,6 +641,12 @@ fn run_matrix_actions_observed(
                     let action = actions[index].clone();
                     assert!(!matches!(action, Action::Concede));
                     let obs = game.observe(actor);
+                    if trace_games && decisions >= 24_990 {
+                        eprintln!(
+                            "FDN stall trace: actor={actor:?}, turn={}, decision={}, action={action:?}, actions={actions:?}, retarget={:?}",
+                            obs.turn, obs.decision, obs.retarget
+                        );
+                    }
                     match &action {
                         Action::BeginOnBattlefield { object } => {
                             let chosen =
@@ -766,3 +772,6 @@ mod kaito_games;
 
 #[path = "common/foundations_casting_games.rs"]
 mod casting_games;
+
+#[path = "common/foundations_stack_copy_games.rs"]
+mod stack_copy_games;

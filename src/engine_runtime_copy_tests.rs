@@ -12,7 +12,7 @@ fn copies(g: &Game, name: &str) -> Vec<CardId> {
         .objects
         .iter()
         .enumerate()
-        .filter(|(_, o)| o.zone == Zone::Battlefield && o.copy_token && o.card.name() == name)
+        .filter(|(_, o)| o.zone == Zone::Battlefield && o.is_copy_token() && o.card.name() == name)
         .map(|(i, _)| i as CardId)
         .collect()
 }
