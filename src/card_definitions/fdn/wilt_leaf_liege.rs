@@ -3,11 +3,7 @@ const GREEN: LiveStaticEffect = colored(ChoiceColor::Green);
 const WHITE: LiveStaticEffect = colored(ChoiceColor::White);
 const fn colored(color: ChoiceColor) -> LiveStaticEffect {
     LiveStaticEffect {
-        recipients: LiveStatRecipients::ColoredCreatures {
-            relation: 0,
-            other: true,
-            color,
-        },
+        recipients: LiveStatRecipients::OtherColoredCreaturesYouControl(color),
         condition: None,
         power: None,
         toughness: None,

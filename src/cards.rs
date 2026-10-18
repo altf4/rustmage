@@ -1090,11 +1090,7 @@ pub enum LiveStatRecipients {
         other: bool,
         enchanted_by_controller: bool,
     },
-    ColoredCreatures {
-        relation: i8,
-        other: bool,
-        color: ChoiceColor,
-    },
+    OtherColoredCreaturesYouControl(ChoiceColor),
     Attached,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
