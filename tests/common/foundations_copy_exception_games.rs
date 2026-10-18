@@ -110,6 +110,9 @@ fn foundations_copy_exception_cards_natural_games_and_owned_state() {
         &[0, 1, 2, 3, 7, 13, 41, 73],
         Some(&mut observe),
     );
+    println!(
+        "Natural witnesses: copied_by={copied_by:?}, flashback={flashback}, loyalty={loyalty:?}, permission_used={permission_used}, owned={owned_copies}"
+    );
     for name in [
         "Abyssal Harvester",
         "Electroduplicate",
