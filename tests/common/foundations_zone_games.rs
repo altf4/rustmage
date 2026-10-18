@@ -1,6 +1,6 @@
 //! Whole zone-replacement/protection consumers in natural Foundations games.
 use super::{deck, run_matrix_actions_observed};
-use rustmage::{Card, Keywords, Observation, StackKind, Zone};
+use rustmage::{Card, CastFace, CastMethod, Keywords, Observation, StackKind, Zone};
 use std::collections::BTreeSet;
 
 #[test]
@@ -51,6 +51,7 @@ fn foundations_four_zone_cards_natural_games_and_owned_rule_state() {
     black[..4].fill(Card::Mountain);
     let mut shuffled = BTreeSet::new();
     let mut dryad_exile = false;
+    let mut dryad_routes = BTreeSet::new();
     let mut liege_discard = false;
     let mut liege_bonus = false;
     let mut protected_attack = false;
@@ -61,18 +62,42 @@ fn foundations_four_zone_cards_natural_games_and_owned_rule_state() {
                 shuffled.insert(reveal.card.name());
             }
         }
-        if before
-            .objects
-            .iter()
-            .any(|o| o.zone == Zone::Battlefield && o.name() == "Dryad Militant")
+        // These normal-face spells go to the graveyard after resolution.
+        // In particular, Think Twice's flashback self-exile is not evidence.
+        if let Some(item) = before.resolving.as_ref().or_else(|| before.stack.last())
+            && item.kind == StackKind::Spell
+            && !item.is_copy
+            && item.cast.is_some_and(|cast| {
+                cast.method == CastMethod::Normal
+                    && cast.origin == Zone::Hand
+                    && cast.face == CastFace::Normal
+            })
+            && (item.source_card.is_instant()
+                || item.source_card.info().type_line.contains("Sorcery"))
+            && ["Think Twice", "Pilfer", "Seize the Spoils"].contains(&item.source_card.name())
+            && (before
+                .resolving
+                .as_ref()
+                .is_some_and(|current| current.id == item.id)
+                || !after.stack.iter().any(|queued| queued.id == item.id))
+            && before
+                .objects
+                .iter()
+                .any(|o| o.reference == item.object && o.zone == Zone::Stack)
+            && before.objects.iter().any(|o| {
+                o.zone == Zone::Battlefield
+                    && o.name() == "Dryad Militant"
+                    && o.abilities
+                        .as_ref()
+                        .is_none_or(|abilities| abilities.printed)
+            })
+            && after
+                .objects
+                .iter()
+                .any(|o| o.id == item.card && o.zone == Zone::Exile && o.reference != item.object)
         {
-            dryad_exile |= before.stack.iter().any(|item| {
-                item.kind == StackKind::Spell
-                    && after
-                        .objects
-                        .iter()
-                        .any(|o| o.id == item.card && o.zone == Zone::Exile)
-            });
+            dryad_exile = true;
+            dryad_routes.insert(item.source_card.name());
         }
         liege_discard |= before.objects.iter().any(|old| {
             old.zone == Zone::Hand
@@ -142,6 +167,6 @@ fn foundations_four_zone_cards_natural_games_and_owned_rule_state() {
         "no owned replay with actual zone/protection providers"
     );
     println!(
-        "FDN zone witnesses: shuffles={shuffled:?}, Dryad exile, Liege discard/bonuses, Progenitus attack; owned rule replays={owned_zone_rules}"
+        "FDN zone witnesses: shuffles={shuffled:?}, ordinary Dryad exile={dryad_routes:?}, Liege discard/bonuses, Progenitus attack; owned rule replays={owned_zone_rules}"
     );
 }
