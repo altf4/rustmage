@@ -322,7 +322,8 @@ fn source_indices_follow_every_admitted_definition_and_round_trip_restore() {
         let death = card.triggers().iter().any(|a| {
             matches!(
                 a.condition.event(),
-                TriggerCondition::SelfDies
+                TriggerCondition::DamagedCreatureDies
+                    | TriggerCondition::SelfDies
                     | TriggerCondition::SelfEntersOrDies
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::PermanentToGraveyard { .. }

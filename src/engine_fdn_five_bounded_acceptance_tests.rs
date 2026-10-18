@@ -316,24 +316,14 @@ fn fdn_five_bounded_acceptance_axe_bonus_survives_unrelated_ability_removal() {
             }
         );
 
-        // Existing admitted card: an unrelated Cursed Role turns on ordered
-        // ability evaluation without changing the equipped creature's abilities.
-        let mage = named(&mut g, p, "Spiteful Hexmage", Zone::Hand);
-        g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 0];
-        cast(&mut g, mage, None, &[]);
-        let target = Action::ChooseTarget {
-            target: Target::Card(other),
-        };
-        until(&mut g, |g| g.legal_actions().contains(&target));
-        checked(&mut g, target);
+        // Existing admitted Aura removes abilities from a different creature,
+        // activating ordered evaluation without changing the wearer's abilities.
+        let stop = named(&mut g, p, "Stop Cold", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 3];
+        cast(&mut g, stop, None, &[Target::Card(other)]);
         settle(&mut g);
-        assert_eq!(
-            g.stats(other),
-            Stats {
-                power: 1,
-                toughness: 1
-            }
-        );
+        assert!(g.object_view(other).tapped);
+        assert_eq!(g.object_view(stop).attached_to, Some(g.object_ref(other)));
         assert!(super::ability_world::CharacteristicWorld::has_ability_removal(&g));
         assert_eq!(
             g.stats(wearer),
