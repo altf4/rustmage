@@ -9,7 +9,8 @@ invalid input, hidden observations, stale actions, independent branches,
 snapshot restore and a complete game. Existing tests are selected by name in
 `scripts/python_tests.py`.
 
-Documentation-only changes run a whitespace check and skip compilation. New
+Changes containing only Markdown or LICENSE run a whitespace check and skip
+compilation. Machine-read provenance JSON under docs/ still runs the full job. New
 commits cancel superseded runs for the same PR. The normal job timeout is 20
 minutes, with a 15-minute validation-step limit to leave room for diagnostics.
 There is no duplicate push workflow or platform matrix.

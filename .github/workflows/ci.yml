@@ -43,11 +43,10 @@ jobs:
         run: |
           python3 - <<'PY'
           import os, subprocess
-          from pathlib import Path
           code = True
           if os.environ['EVENT_NAME'] == 'pull_request':
               paths = subprocess.check_output(['git', 'diff', '--name-only', '--no-renames', '-z', 'HEAD^1', 'HEAD']).decode().split('\0')
-              code = any(p and not (p.endswith('.md') or p.startswith('docs/') or p == 'LICENSE') for p in paths)
+              code = any(p and not (p.endswith('.md') or p == 'LICENSE') for p in paths)
           with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
               print('code=' + str(code).lower(), file=out)
           if not code:
