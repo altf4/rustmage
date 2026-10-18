@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import ctypes
 import json
+import os
 from pathlib import Path
 import sys
 import threading
@@ -31,6 +32,8 @@ class Game:
     def __init__(self, decks, seed=0, starting_player="P0", deck_rules="Constructed", *, library=None):
         self._lock = threading.RLock()
         self._handle = None
+        if library is None:
+            library = os.environ.get("RUSTMAGE_LIBRARY")
         if library is None:
             filename = {"linux": "librustmage.so", "darwin": "librustmage.dylib", "win32": "rustmage.dll"}[sys.platform]
             library = Path(__file__).resolve().parents[1] / "target" / "release" / filename

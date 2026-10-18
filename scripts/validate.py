@@ -13,6 +13,8 @@ def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--release',action='store_true')
+    parser.add_argument('--python', choices=['none', 'smoke', 'full'], default='none',
+                        help='Run binding tests against the generated release library')
     parser.add_argument('--games',type=int,default=100)
     args=parser.parse_args()
     if args.games<1:parser.error('--games must be positive')
@@ -35,7 +37,11 @@ def main():
         ['cargo','clippy','--all-targets','--','-D','warnings'],
         ['cargo','test','--all-targets'],
     ]
-    if args.release:commands.extend([['cargo','build','--release','--lib','--bin','benchmark'],[str(target/'release/benchmark'),str(args.games)]])
+    if args.release or args.python != 'none':commands.extend([['cargo','build','--release','--lib','--bin','benchmark'],[str(target/'release/benchmark'),str(args.games)]])
+    if args.python != 'none':
+        env['RUSTMAGE_LIBRARY'] = str(target/'release/librustmage.so')
+        commands.append(['python3', 'scripts/python_tests.py', '--suite', args.python,
+                         '--report', str(report_dir/'python.json')])
     report=dict(head=head,terminal=False,target=str(target),phases=[]);start=time.monotonic();ok=False
     try:
         for index,cmd in enumerate(commands):
