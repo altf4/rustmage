@@ -354,6 +354,7 @@ fn linked_choices_liliana_keep_multitype_can_choose_same_or_distinct_permanents(
                 "Ajani, Caller of the Pride",
                 Zone::Battlefield,
             );
+            g.state.objects[pw as usize].counters.loyalty = 4;
             activate(&mut g, lili, 2);
             until(&mut g, |g| g.observe(p).keep_types.is_some());
             assert_eq!(g.object_view(lili).zone, Zone::Graveyard);
@@ -583,4 +584,141 @@ fn linked_choices_name_inventory_faces_invalid_names_and_cold_layout() {
     assert_eq!(std::mem::size_of::<Object>(), 144);
     assert_eq!(std::mem::size_of::<Pending>(), 40);
     assert_eq!(std::mem::size_of::<ManaProduction>(), 32);
+}
+
+#[test]
+fn linked_choices_brew_replaced_sacrifice_counts_but_pending_aura_sba_is_not_recoverable() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let colossus = card(&mut g, p, "Darksteel Colossus", Zone::Battlefield);
+        let recover = card(&mut g, p, "Forest", Zone::Graveyard);
+        let brew = card(&mut g, p, "Deadly Brew", Zone::Hand);
+        cast(&mut g, brew, None, &[]);
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::EffectChoice { .. })
+        });
+        let object = g.object_ref(colossus);
+        checked(&mut g, Action::Sacrifice { object });
+        assert_eq!(g.object_view(colossus).zone, Zone::Library);
+        assert_eq!(
+            g.observe(p).recovery_choice.unwrap().candidates,
+            vec![g.object_ref(recover)]
+        );
+        checked(&mut g, Action::RecoverMilled { object: None });
+        settled(&mut g);
+        let bear = card(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let aura = card(&mut g, p, "Stop Cold", Zone::Hand);
+        cast(&mut g, aura, None, &[Target::Card(bear)]);
+        settled(&mut g);
+        let brew = card(&mut g, p, "Deadly Brew", Zone::Hand);
+        cast(&mut g, brew, None, &[]);
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::EffectChoice { .. })
+        });
+        let object = g.object_ref(bear);
+        checked(&mut g, Action::Sacrifice { object });
+        assert_eq!(g.object_view(aura).zone, Zone::Battlefield);
+        assert!(
+            !g.observe(p)
+                .recovery_choice
+                .unwrap()
+                .candidates
+                .iter()
+                .any(|r| r.card == aura)
+        );
+        checked(&mut g, Action::RecoverMilled { object: None });
+        settled(&mut g);
+        assert_eq!(g.object_view(aura).zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn linked_choices_hoard_optional_decline_failure_to_find_and_stale_exile() {
+    for p in [Player::P0, Player::P1] {
+        for accept in [false, true] {
+            let mut g = setup(p);
+            let dragon = card(&mut g, p, "Hoarding Dragon", Zone::Hand);
+            cast(&mut g, dragon, None, &[]);
+            until(&mut g, |g| {
+                matches!(g.state.pending, Pending::EffectOptional { .. })
+            });
+            let rng = g.state.rng;
+            let library = g.state.players[p.index()].library.clone();
+            checked(&mut g, Action::ChooseOptional { accept });
+            if accept {
+                checked(&mut g, Action::FinishSearch);
+                assert_ne!(g.state.rng, rng);
+            } else {
+                assert_eq!(g.state.rng, rng);
+                assert_eq!(g.state.players[p.index()].library, library);
+            }
+            settled(&mut g);
+            assert!(g.observe(p).linked_exile.is_empty());
+        }
+        let mut g = setup(p);
+        let artifact = card(&mut g, p, "Mazemind Tome", Zone::Library);
+        let dragon = card(&mut g, p, "Hoarding Dragon", Zone::Hand);
+        cast(&mut g, dragon, None, &[]);
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::EffectOptional { .. })
+        });
+        checked(&mut g, Action::ChooseOptional { accept: true });
+        checked(&mut g, Action::ChooseSearch { card: artifact });
+        checked(&mut g, Action::FinishSearch);
+        settled(&mut g);
+        let exiled = g.object_ref(artifact);
+        g.move_object(artifact, Zone::Hand);
+        g.move_object(artifact, Zone::Exile);
+        assert_ne!(g.object_ref(artifact), exiled);
+        g.move_object(dragon, Zone::Graveyard);
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::EffectOptional { .. })
+        });
+        checked(&mut g, Action::ChooseOptional { accept: true });
+        settled(&mut g);
+        assert_eq!(g.object_view(artifact).zone, Zone::Exile);
+        assert!(g.observe(p).linked_exile.is_empty());
+    }
+}
+#[test]
+fn linked_choices_time_stop_keeps_existing_hoard_and_abandons_only_suspended_choices() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let artifact = card(&mut g, p, "Mazemind Tome", Zone::Library);
+        let dragon = card(&mut g, p, "Hoarding Dragon", Zone::Hand);
+        cast(&mut g, dragon, None, &[]);
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::EffectOptional { .. })
+        });
+        checked(&mut g, Action::ChooseOptional { accept: true });
+        checked(&mut g, Action::ChooseSearch { card: artifact });
+        checked(&mut g, Action::FinishSearch);
+        settled(&mut g);
+        let links = g.observe(p).linked_exile;
+        let stop = card(&mut g, p, "Time Stop", Zone::Hand);
+        cast(&mut g, stop, None, &[]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        assert_eq!(g.object_view(stop).zone, Zone::Exile);
+        assert_eq!(g.observe(p).linked_exile, links);
+        // No player receives priority during these choices. The cancellation hook
+        // also works on an owned branch with a suspended resolution continuation.
+        let mut suspended = setup(p);
+        let curator = card(&mut suspended, p, "Curator of Destinies", Zone::Hand);
+        cast(&mut suspended, curator, None, &[]);
+        until(&mut suspended, |g| g.observe(p).library_piles.is_some());
+        let library = suspended.state.players[p.index()].library.clone();
+        let snapshot = suspended.snapshot();
+        reject(&mut suspended, Action::Pass);
+        let mut branch = {
+            let parent = suspended.clone();
+            parent.clone()
+        };
+        branch.end_turn_effect();
+        assert!(branch.observe(p).library_piles.is_none());
+        assert!(branch.state.linked_choices.is_none());
+        assert_eq!(branch.state.players[p.index()].library, library);
+        assert_eq!(suspended.snapshot(), snapshot);
+        suspended.restore(&snapshot).unwrap();
+        assert!(suspended.observe(p).library_piles.is_some());
+    }
 }
