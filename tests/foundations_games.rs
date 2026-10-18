@@ -593,6 +593,7 @@ fn run_matrix_actions_observed(
     );
 }
 
+#[allow(clippy::too_many_arguments)] // Existing scenario inputs plus optional replay cadence.
 fn run_matrix_actions_observed_with_stride(
     decks: &[Vec<Card>],
     expected_casts: &[&str],
