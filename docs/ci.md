@@ -11,8 +11,8 @@ snapshot restore and a complete game. Existing tests are selected by name in
 
 Changes containing only Markdown or LICENSE run a whitespace check and skip
 compilation. Machine-read provenance JSON under docs/ still runs the full job. New
-commits cancel superseded runs for the same PR. The normal job timeout is 20
-minutes, with a 15-minute validation-step limit to leave room for diagnostics.
+commits cancel superseded runs for the same PR. The normal job timeout is 25
+minutes, with a 20-minute validation-step limit to leave room for diagnostics.
 There is no duplicate push workflow or platform matrix.
 
 All compilation and Python simulations use `scripts/resource_guard.py`. The
