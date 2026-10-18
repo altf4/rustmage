@@ -1132,6 +1132,9 @@ impl Game {
         counters: Counters,
         production: Option<Mana>,
     ) {
+        if production.is_some() {
+            self.capture_announced_mana_quality(&item);
+        }
         let plan = self.target_spec(&item);
         assert!(
             self.item_targets_available(&item, plan)
@@ -1305,7 +1308,7 @@ impl Game {
             announcement.item.controller
         };
         if let Some(production) = announcement.production {
-            self.add_mana(announcement.item.controller, production);
+            self.add_announced_mana(&announcement.item, production);
         } else {
             self.push_stack_item(announcement.item);
         }

@@ -774,3 +774,96 @@ fn tagged_mana_convoke_guidance_and_can_pay_exclude_non_angel_giada_mana() {
         assert_eq!(g.state.players[p.index()].mana, [1, 0, 0, 0, 0, 0]);
     }
 }
+
+#[test]
+fn tagged_mana_announced_producers_capture_quality_before_costs_and_departure() {
+    for p in [Player::P0, Player::P1] {
+        for (name, ability, production) in [
+            ("Carnelian Orb of Dragonkind", 0, [0, 0, 0, 1, 0, 0]),
+            ("Giada, Font of Hope", 0, [1, 0, 0, 0, 0, 0]),
+            ("Secluded Courtyard", 1, [1, 0, 0, 0, 0, 0]),
+        ] {
+            let mut g = setup(p);
+            g.state.players[p.index()].mana = [0; 6];
+            let source = named(
+                &mut g,
+                p,
+                name,
+                if name == "Secluded Courtyard" {
+                    Zone::Hand
+                } else {
+                    Zone::Battlefield
+                },
+            );
+            if name == "Secluded Courtyard" {
+                checked(&mut g, Action::PlayLand { card: source });
+                checked(
+                    &mut g,
+                    Action::ChooseEntryValue {
+                        value: EntryChoiceValue::CreatureType(
+                            CreatureType::from_name("Angel").unwrap(),
+                        ),
+                    },
+                );
+            }
+            checked(
+                &mut g,
+                Action::AnnounceMana {
+                    card: source,
+                    ability,
+                    counter_payment: Counters::default(),
+                    production,
+                },
+            );
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert!(
+                g.state
+                    .mana_lots
+                    .as_ref()
+                    .unwrap()
+                    .announcement_quality
+                    .is_some()
+            );
+            reject(
+                &mut g,
+                Action::PayCosts {
+                    payment: [0, 0, 0, 0, 0, 1],
+                },
+            );
+            checked(&mut g, Action::PayCosts { payment: [0; 6] });
+            assert_eq!(g.state.players[p.index()].mana, production);
+            assert!(
+                g.state
+                    .mana_lots
+                    .as_ref()
+                    .unwrap()
+                    .announcement_quality
+                    .is_none()
+            );
+            g.sacrifice_batch(&[(p, source)]);
+            let (spell, payment) = if name == "Carnelian Orb of Dragonkind" {
+                g.add_mana(p, [0, 0, 0, 5, 0, 0]);
+                ("Shivan Dragon", [0, 0, 0, 6, 0, 0])
+            } else {
+                assert_eq!(g.available_mana(p, Purpose::Other), [0; 6]);
+                g.add_mana(p, [1, 0, 0, 0, 0, 3]);
+                ("Serra Angel", [2, 0, 0, 0, 0, 3])
+            };
+            let spell = named(&mut g, p, spell, Zone::Hand);
+            checked(
+                &mut g,
+                Action::Cast {
+                    card: spell,
+                    target: None,
+                    payment,
+                },
+            );
+            settle(&mut g);
+            assert_eq!(g.object_view(spell).zone, Zone::Battlefield);
+            assert_eq!(
+                g.keywords(spell).contains(Keywords::HASTE),
+                name == "Carnelian Orb of Dragonkind"
+            );
+        }
+    }
+}

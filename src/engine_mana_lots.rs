@@ -149,6 +149,7 @@ pub(super) struct ManaState {
     pub pools: [SharedVec<Lot>; 2],
     pub prepared: Option<Vec<Vec<Mana>>>,
     pub effect_quality: Option<Quality>,
+    pub announcement_quality: Option<(ObjectRef, Quality)>,
     pub trace: Option<SpendRequest>,
     pub replay: Option<Vec<Mana>>,
     pub choice: Option<Box<SpendChoice>>,
@@ -306,6 +307,31 @@ impl Game {
             _ => None,
         }
     }
+    // Capture before announcement costs can remove the producer or its choice.
+    // The exact source reference identifies this announcement, not a live lookup.
+    pub(super) fn capture_announced_mana_quality(&mut self, item: &SpellView) {
+        let StackKind::ActivatedAbility { ability } = item.kind else {
+            return;
+        };
+        let quality = item.source_card.activations()[usize::from(ability)]
+            .mana_production()
+            .and_then(|production| self.mana_quality(production, item.object.card));
+        if let Some(quality) = quality {
+            self.state
+                .mana_lots
+                .get_or_insert_default()
+                .announcement_quality = Some((item.object, quality));
+        }
+    }
+    pub(super) fn add_announced_mana(&mut self, item: &SpellView, mana: Mana) {
+        let quality = self.state.mana_lots.as_mut().and_then(|state| {
+            state.announcement_quality.take().map(|(source, quality)| {
+                assert_eq!(source, item.object);
+                quality
+            })
+        });
+        self.add_quality_mana(item.controller, mana, quality);
+    }
     pub(super) fn add_quality_mana(&mut self, actor: Player, mana: Mana, quality: Option<Quality>) {
         self.add_mana(actor, mana);
         if let Some(quality) = quality
@@ -348,6 +374,7 @@ impl Game {
             state.pools.iter().all(|pool| pool.is_empty())
                 && state.choice.is_none()
                 && state.effect_quality.is_none()
+                && state.announcement_quality.is_none()
                 && state.replay.is_none()
                 && state.trace.is_none()
         }) {
@@ -705,6 +732,7 @@ impl Game {
                 && state.replay.is_none()
                 && state.choice.is_none()
                 && state.effect_quality.is_none()
+                && state.announcement_quality.is_none()
         }) {
             self.state.mana_lots = None
         }
