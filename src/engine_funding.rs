@@ -187,7 +187,7 @@ fn source_obligations(
     object: Option<&Object>,
     amounts: CounterAmounts<'_>,
     kinds: u16,
-    keywords: Keywords,
+    keywords: impl FnOnce() -> Keywords,
     life: i128,
 ) -> bool {
     let Some((source, index, counters, definition)) = goal.source.as_ref() else {
@@ -372,7 +372,7 @@ impl<'g> FundingState<'g> {
                 ability_world::CharacteristicWorld::counter_amounts(self, r.id)
             }),
             source.map_or(0, |r| self.kinds(r)),
-            source.map_or(Keywords::NONE, |r| self.keywords(r)),
+            || source.map_or(Keywords::NONE, |r| self.keywords(r)),
             self.life,
         )
     }
@@ -586,7 +586,7 @@ impl<'g> FundingState<'g> {
                         object,
                         ability_world::CharacteristicWorld::counter_amounts(self, entry.id),
                         self.kinds(entry),
-                        self.keywords(entry),
+                        || self.keywords(entry),
                         self.life,
                         ability,
                         index,
@@ -971,7 +971,7 @@ impl<'g> FundingState<'g> {
                         object,
                         ability_world::CharacteristicWorld::counter_amounts(self, resource.id),
                         self.kinds(resource),
-                        self.keywords(resource),
+                        || self.keywords(resource),
                         self.life,
                         ability,
                         index,
@@ -1173,9 +1173,11 @@ impl Game {
             object.map_or(0, |o| {
                 self.object_kinds(goal.source.as_ref().unwrap().0.card, o)
             }),
-            object.map_or(Keywords::NONE, |_| {
-                self.keywords(goal.source.as_ref().unwrap().0.card)
-            }),
+            || {
+                object.map_or(Keywords::NONE, |_| {
+                    self.keywords(goal.source.as_ref().unwrap().0.card)
+                })
+            },
             self.state.players[goal.actor.index()].life,
         ) {
             return false;
@@ -2510,6 +2512,101 @@ mod blanked_funding_bounds_tests {
     use super::super::ability_timeline_tests::{cast, checked, settle, setup};
     use super::super::tests::spawn;
     use super::*;
+
+    #[test]
+    fn funding_readiness_queries_haste_only_for_a_sick_creature_tap_cost() {
+        for player in [Player::P0, Player::P1] {
+            let mut game = setup(player);
+            let definition = Card::from_name("Soulstone Sanctuary").unwrap();
+            let land = spawn(&mut game, player, definition, Zone::Battlefield);
+            let object = &game.state.objects[land as usize];
+            let mut object = object.clone();
+            object.summoning_sick = true;
+            let check = |object: &Object, kinds, index, keywords| {
+                Game::object_activation_available_with_kinds(
+                    object,
+                    CounterAmounts::default(),
+                    kinds,
+                    keywords,
+                    20,
+                    &definition.activations()[index],
+                    index,
+                    player,
+                    true,
+                )
+            };
+            fn unnecessary() -> Keywords {
+                panic!("readiness evaluated irrelevant keywords")
+            }
+            // A land can be a creature in the current layer projection even
+            // though its immutable definition has no creature type.
+            assert!(check(&object, 3, 1, unnecessary as fn() -> Keywords));
+            assert!(check(&object, 2, 0, unnecessary as fn() -> Keywords));
+            object.summoning_sick = false;
+            assert!(check(&object, 3, 0, unnecessary as fn() -> Keywords));
+            object.summoning_sick = true;
+            object.tapped = true;
+            assert!(!check(&object, 3, 0, unnecessary as fn() -> Keywords));
+            object.tapped = false;
+            object.zone = Zone::Graveyard;
+            assert!(!check(&object, 3, 0, unnecessary as fn() -> Keywords));
+            object.zone = Zone::Battlefield;
+            object.controller = player.other();
+            assert!(!check(&object, 3, 0, unnecessary as fn() -> Keywords));
+            object.controller = player;
+            let mut goal = FundingGoal {
+                actor: player,
+                required: [0; 6],
+                generic: 0,
+                reserve: None,
+                source: None,
+            };
+            assert!(source_obligations(
+                &goal,
+                Some(&object),
+                CounterAmounts::default(),
+                3,
+                unnecessary,
+                20
+            ));
+            goal.source = Some((game.object_ref(land), 1, Counters::default(), definition));
+            assert!(source_obligations(
+                &goal,
+                Some(&object),
+                CounterAmounts::default(),
+                3,
+                unnecessary,
+                20
+            ));
+            assert!(source_obligations(
+                &goal,
+                None,
+                CounterAmounts::default(),
+                3,
+                unnecessary,
+                20
+            ));
+            goal.source = Some((game.object_ref(land), 0, Counters::default(), definition));
+            for (keywords, available) in [(Keywords::NONE, false), (Keywords::HASTE, true)] {
+                let calls = std::cell::Cell::new(0);
+                assert_eq!(
+                    source_obligations(
+                        &goal,
+                        Some(&object),
+                        CounterAmounts::default(),
+                        3,
+                        || {
+                            calls.set(calls.get() + 1);
+                            keywords
+                        },
+                        20
+                    ),
+                    available
+                );
+                assert_eq!(calls.get(), 1);
+            }
+        }
+    }
 
     #[test]
     fn funding_animation_mana_projection_matches_ordered_layers_and_virtual_departure() {

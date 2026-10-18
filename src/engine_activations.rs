@@ -96,7 +96,7 @@ impl Game {
                 &self.state.objects[card as usize],
                 self.counter_amounts(card),
                 self.current_kinds(card),
-                self.keywords(card),
+                || self.keywords(card),
                 self.state.players[actor.index()].life,
                 ability,
                 index,
@@ -122,7 +122,7 @@ impl Game {
                 named: None,
             },
             object.card.kind_mask(),
-            keywords,
+            || keywords,
             life,
             ability,
             index,
@@ -136,7 +136,7 @@ impl Game {
         object: &Object,
         counters: CounterAmounts<'_>,
         kinds: u16,
-        keywords: Keywords,
+        keywords: impl FnOnce() -> Keywords,
         life: i128,
         ability: &ActivatedAbility,
         index: usize,
@@ -154,7 +154,9 @@ impl Game {
         }
         if ability.cost.tap
             && (object.tapped
-                || (kinds & 1 != 0 && object.summoning_sick && !keywords.contains(Keywords::HASTE)))
+                || (kinds & 1 != 0
+                    && object.summoning_sick
+                    && !keywords().contains(Keywords::HASTE)))
         {
             return false;
         }
