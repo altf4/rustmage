@@ -775,3 +775,6 @@ mod casting_games;
 
 #[path = "common/foundations_stack_copy_games.rs"]
 mod stack_copy_games;
+
+#[path = "common/foundations_endgame_games.rs"]
+mod endgame_games;

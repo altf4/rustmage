@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "723f3a3a384aedd00eaba6ba39f4d4e4e40a3f367d9740978590bf1e1787263c",
+  "catalogue_version": "7bc5b71020135392f03b58c8c7b92ee136c066a4a385bfe4c2171395c3e52dac",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2152,
-  "implemented_total": 2158,
+  "implemented_standard_cards": 2155,
+  "implemented_total": 2161,
   "token_definitions": 103,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 393,
-      "gated": 34
+      "complete": 396,
+      "gated": 31
     },
     "fin": {
       "total": 305,
@@ -16256,8 +16256,8 @@
     {
       "name": "Herald of Eternal Dawn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/herald_of_eternal_dawn.rs",
       "set": "fdn"
     },
@@ -21736,8 +21736,8 @@
     {
       "name": "Maze's End",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/maze_s_end.rs",
       "set": "fdn"
     },
@@ -37016,8 +37016,8 @@
     {
       "name": "Time Stop",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/time_stop.rs",
       "set": "fdn"
     },
