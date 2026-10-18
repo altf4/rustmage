@@ -530,6 +530,7 @@ fn goggles_tagged_mana_copies_after_producer_departure_through_raw_paid_cast() {
         assert_eq!(trigger.object, source);
         assert_eq!(trigger.source_card.name(), "Pyromancer's Goggles");
         assert_eq!(trigger.controller, p);
+        assert!(trigger.source_tapped);
         progress(&mut g, false);
         assert_eq!(g.state.players[p.other().index()].life, 16);
         assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
@@ -630,5 +631,159 @@ fn mana_allocation_can_keep_goggles_mana_unspent_and_zero_payment_has_no_bonus()
         progress(&mut g, false);
         assert_eq!(g.state.players[p.other().index()].life, 18);
         assert_eq!(g.mana_lots(p)[0].amounts[3], 1);
+    }
+}
+
+#[test]
+fn bolt_bend_requires_full_cost_without_ferocious_and_does_nothing_without_alternative() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let growth = named(&mut g, p.other(), "Giant Growth", Zone::Hand);
+        g.state.priority = p.other();
+        announce(&mut g, growth, &[Target::Card(bear)]);
+        checked(&mut g, Action::Pass);
+        g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 0];
+        let bend = named(&mut g, p, "Bolt Bend", Zone::Hand);
+        reject(&mut g, Action::AnnounceCast { card: bend });
+        g.state.players[p.index()].mana[5] = 3;
+        announce(&mut g, bend, &[Target::Spell(growth)]);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        progress(&mut g, false);
+        assert_eq!(g.stats(bear).power, 5);
+        assert!(g.state.stack_copy_data.is_none());
+    }
+}
+#[test]
+fn bolt_bend_rejects_multiple_targets_even_after_one_original_target_becomes_illegal() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let a = named(&mut g, p.other(), "Bear Cub", Zone::Graveyard);
+        let b = named(&mut g, p.other(), "Llanowar Elves", Zone::Graveyard);
+        let waltz = named(&mut g, p.other(), "Macabre Waltz", Zone::Hand);
+        g.state.priority = p.other();
+        announce(&mut g, waltz, &[Target::Card(a), Target::Card(b)]);
+        checked(&mut g, Action::Pass);
+        let bend = named(&mut g, p, "Bolt Bend", Zone::Hand);
+        reject(&mut g, Action::AnnounceCast { card: bend });
+        g.move_object(a, Zone::Hand);
+        reject(&mut g, Action::AnnounceCast { card: bend });
+        assert_eq!(g.state.stack[0].targets.len(), 2);
+    }
+}
+#[test]
+fn copy_can_keep_departed_target_and_select_its_new_incarnation_in_another_slot() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        teach(&mut g, p);
+        let a = named(&mut g, p, "Bear Cub", Zone::Graveyard);
+        let b = named(&mut g, p, "Llanowar Elves", Zone::Graveyard);
+        let waltz = named(&mut g, p, "Macabre Waltz", Zone::Hand);
+        announce(&mut g, waltz, &[Target::Card(a), Target::Card(b)]);
+        g.move_object(a, Zone::Hand);
+        g.move_object(a, Zone::Graveyard);
+        progress(&mut g, true);
+        checked(
+            &mut g,
+            Action::SetStackTarget {
+                index: 1,
+                target: Target::Card(a),
+            },
+        );
+        let targets = &g.observe(p).retarget.unwrap().item.targets;
+        assert_eq!(targets[0].target, targets[1].target);
+        assert_ne!(targets[0].object, targets[1].object);
+        checked(&mut g, Action::FinishStackTargets);
+        progress(&mut g, false);
+        assert_eq!(g.state.objects[a as usize].zone, Zone::Graveyard);
+        assert_eq!(g.state.objects[b as usize].zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn choosing_a_new_creature_cannot_invalidate_unchanged_attached_equipment_target() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        teach(&mut g, p);
+        let a = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let b = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let gear_a = named(&mut g, p.other(), "Quick-Draw Katana", Zone::Battlefield);
+        let gear_b = named(&mut g, p.other(), "Quick-Draw Katana", Zone::Battlefield);
+        g.attach_equipment(g.object_ref(gear_a), g.object_ref(a));
+        g.attach_equipment(g.object_ref(gear_b), g.object_ref(b));
+        let annihilation = named(&mut g, p, "Fiery Annihilation", Zone::Hand);
+        announce(
+            &mut g,
+            annihilation,
+            &[Target::Card(a), Target::Card(gear_a)],
+        );
+        progress(&mut g, true);
+        checked(
+            &mut g,
+            Action::SetStackTarget {
+                index: 0,
+                target: Target::Card(b),
+            },
+        );
+        reject(&mut g, Action::FinishStackTargets);
+        checked(
+            &mut g,
+            Action::SetStackTarget {
+                index: 1,
+                target: Target::Card(gear_b),
+            },
+        );
+        checked(&mut g, Action::FinishStackTargets);
+        progress(&mut g, false);
+        for id in [a, b, gear_a, gear_b] {
+            assert_eq!(g.state.objects[id as usize].zone, Zone::Exile);
+        }
+    }
+}
+#[test]
+fn goggles_mana_keeps_ability_controller_after_source_control_changes() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.state.players[p.index()].mana = [0; 6];
+        let goggles = named(&mut g, p, "Pyromancer's Goggles", Zone::Battlefield);
+        tap_goggles(&mut g, goggles);
+        g.state.players[p.index()].mana[3] += 1;
+        g.state.players[p.index()].mana[5] = 2;
+        let offering = named(&mut g, p, "Harmless Offering", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: offering });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(goggles),
+            },
+        );
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 0, 2],
+            },
+        );
+        checked(&mut g, Action::ChooseManaLotSpend { amount: 0 });
+        progress(&mut g, false);
+        assert_eq!(g.state.objects[goggles as usize].controller, p.other());
+        assert_eq!(g.mana_lots(p)[0].amounts[3], 1);
+        let shock = named(&mut g, p, "Shock", Zone::Hand);
+        announce(&mut g, shock, &[Target::Player(p.other())]);
+        let trigger = g
+            .state
+            .stack
+            .iter()
+            .find(|s| s.copy_event.is_some())
+            .unwrap();
+        assert_eq!(trigger.controller, p);
+        assert_eq!(trigger.source_facts.controller, p.other());
+        assert!(trigger.source_tapped);
+        progress(&mut g, false);
+        assert_eq!(g.state.players[p.other().index()].life, 16);
     }
 }

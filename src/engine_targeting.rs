@@ -1053,7 +1053,9 @@ impl Game {
             self.grant_stack_keywords(object, Keywords::HASTE);
         }
         let id = self.next_stack_id();
-        self.cast_preview(actor, card, origin, object, id, payment)
+        let mut item = self.cast_preview(actor, card, origin, object, id, payment);
+        item.mana_copy_sources = outcome.copies;
+        item
     }
     pub(super) fn cast_preview(
         &self,
@@ -1072,7 +1074,7 @@ impl Game {
             crew: None,
             cast_event: None,
             copy_event: None,
-            mana_copy_sources: outcome.copies,
+            mana_copy_sources: None,
             is_copy: false,
             delayed_sacrifice: None,
             delayed_warp_exile: None,

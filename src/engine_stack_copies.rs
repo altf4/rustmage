@@ -128,7 +128,21 @@ impl Game {
             return;
         };
         let spell = self.state.stack[index].clone();
-        for (source, amount) in *sources {
+        for (mut source, amount) in *sources {
+            if self
+                .state
+                .objects
+                .get(source.object.card as usize)
+                .is_some_and(|o| {
+                    o.zone == Zone::Battlefield
+                        && self.object_ref(source.object.card) == source.object
+                })
+            {
+                let view = self.object_view(source.object.card);
+                source.facts = DamageFacts::from_view(&view);
+                source.keywords = view.keywords;
+                source.tapped = view.tapped;
+            }
             for _ in 0..amount {
                 let mut trigger = spell.clone();
                 trigger.id = self.next_stack_id();
@@ -326,6 +340,33 @@ impl Game {
         };
         self.item_target_matches(&r.item, spec.rule, target)
     }
+    fn stack_target_relations_hold(&self, item: &SpellView, index: usize) -> bool {
+        let bound = item.targets[index];
+        let plan = self.target_spec(item);
+        let spec = plan.group(bound.group).unwrap();
+        if matches!(
+            spec.rule,
+            TargetRule::Grouped {
+                constraint: TargetGroupConstraint::SameGraveyard,
+                ..
+            }
+        ) {
+            self.target_group_compatible(
+                spec.rule,
+                bound.group,
+                &item
+                    .targets
+                    .iter()
+                    .enumerate()
+                    .filter(|(i, _)| *i != index)
+                    .map(|(_, b)| *b)
+                    .collect::<Vec<_>>(),
+                bound.target,
+            )
+        } else {
+            self.resolution_target_relations_hold(item, bound, plan)
+        }
+    }
     fn stack_targets_finished(&self, r: &Retarget) -> bool {
         let changed = r
             .item
@@ -338,10 +379,15 @@ impl Game {
         }
         let plan = self.target_spec(&r.item);
         r.item.targets.iter().enumerate().all(|(index, bound)| {
-            if *bound == r.template.targets[index] {
-                return true;
-            }
             let spec = plan.group(bound.group).unwrap();
+            if *bound == r.template.targets[index] {
+                // An inherited illegal target may remain. A new choice cannot
+                // invalidate an unchanged target that was legal before the edits.
+                let was_legal = self.same_target_object(*bound)
+                    && self.item_target_matches(&r.template, spec.rule, bound.target)
+                    && self.stack_target_relations_hold(&r.template, index);
+                return !was_legal || self.stack_target_relations_hold(&r.item, index);
+            }
             self.item_target_matches(&r.item, spec.rule, bound.target)
                 && !r.item.targets.iter().enumerate().any(|(i, other)| {
                     i != index
@@ -349,18 +395,7 @@ impl Game {
                         && other.target == bound.target
                         && other.object == bound.object
                 })
-                && self.target_group_compatible(
-                    spec.rule,
-                    bound.group,
-                    &r.item
-                        .targets
-                        .iter()
-                        .enumerate()
-                        .filter(|(i, _)| *i != index)
-                        .map(|(_, b)| *b)
-                        .collect::<Vec<_>>(),
-                    bound.target,
-                )
+                && self.stack_target_relations_hold(&r.item, index)
         })
     }
     pub(super) fn visit_retarget_actions(&self, mut emit: impl FnMut(Action) -> bool) -> bool {

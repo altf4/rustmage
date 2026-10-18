@@ -104,6 +104,14 @@ impl Quality {
                 .then(|| ManaCopySource::capture(world, source)),
         }
     }
+    fn same_rules(self, other: Self) -> bool {
+        let identity =
+            |source: Option<ManaCopySource>| source.map(|s| (s.object, s.card, s.controller));
+        self.restriction == other.restriction
+            && self.spell_bonus == other.spell_bonus
+            && self.retention == other.retention
+            && identity(self.copy_source) == identity(other.copy_source)
+    }
     pub(super) fn eligible(self, purpose: Purpose) -> bool {
         match self.restriction {
             ManaRestrictionView::Unrestricted => true,
@@ -274,7 +282,7 @@ pub(super) fn add_lot(lots: &mut Vec<Lot>, quality: Quality, amounts: [u128; 6])
     if quality == Quality::ORDINARY || amounts == [0; 6] {
         return;
     }
-    if let Some(lot) = lots.iter_mut().find(|lot| lot.quality == quality) {
+    if let Some(lot) = lots.iter_mut().find(|lot| lot.quality.same_rules(quality)) {
         for (held, amount) in lot.amounts.iter_mut().zip(amounts) {
             *held = held
                 .checked_add(amount)
@@ -331,6 +339,22 @@ pub(super) fn ordinary(pool: [u128; 6], lots: &[Lot]) -> [u128; 6] {
 }
 
 impl Game {
+    pub(super) fn capture_mana_copy_source_departure(&mut self, before: &ObjectView) {
+        let Some(state) = &mut self.state.mana_lots else {
+            return;
+        };
+        for lots in &mut state.pools {
+            for lot in lots.iter_mut() {
+                if let Some(source) = &mut lot.quality.copy_source
+                    && source.object == before.reference
+                {
+                    source.facts = DamageFacts::from_view(before);
+                    source.keywords = before.keywords;
+                    source.tapped = before.tapped;
+                }
+            }
+        }
+    }
     pub(super) fn mana_lots(&self, actor: Player) -> &[Lot] {
         self.state
             .mana_lots

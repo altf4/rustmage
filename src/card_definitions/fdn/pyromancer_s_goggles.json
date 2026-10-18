@@ -32,6 +32,21 @@
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
       "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/stack/StackObjectImpl.java",
+      "sha256": "0c359dde94436a8623c6f9b27cf578af1e34686a9293d83b6cd59d24e1d7c462"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterInstantOrSorcerySpell.java",
+      "sha256": "b271d68baa3227e6b955ec16d8e4f56d1e8f0ef1548ee3fa5ef029f24f39e1ee"
     }
   ],
   "remaining_obligations": [

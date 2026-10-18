@@ -32,6 +32,11 @@
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
       "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/stack/StackObjectImpl.java",
+      "sha256": "0c359dde94436a8623c6f9b27cf578af1e34686a9293d83b6cd59d24e1d7c462"
     }
   ],
   "remaining_obligations": [

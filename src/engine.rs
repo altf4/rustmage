@@ -4414,6 +4414,7 @@ impl Game {
         entry_controller: Option<Player>,
     ) -> ZoneChange {
         let id = before.id;
+        self.capture_mana_copy_source_departure(&before);
         if before.zone == Zone::Stack {
             self.capture_stack_copy_departure(id);
         }
