@@ -42,7 +42,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 Instruction::PutCounters { kind, .. } => Some(*kind == CounterKind::PlusOne),
                 Instruction::DoubleCounters => Some(true),
                 Instruction::GrantKeywords { .. } => Some(true),
-                Instruction::Connive { .. } => Some(true),
+                Instruction::Connive { .. }
+                | Instruction::CreateCopyToken { .. }
+                | Instruction::CreateCopyTokenWithExceptions { .. } => Some(true),
                 Instruction::Grow {
                     power, toughness, ..
                 }
