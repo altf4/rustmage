@@ -641,6 +641,12 @@ fn run_matrix_actions_observed(
                     let action = actions[index].clone();
                     assert!(!matches!(action, Action::Concede));
                     let obs = game.observe(actor);
+                    if trace_games && decisions >= 24_990 {
+                        eprintln!(
+                            "FDN stall trace: turn={}, decision={}, action={action:?}, retarget={:?}",
+                            obs.turn, obs.decision, obs.retarget
+                        );
+                    }
                     match &action {
                         Action::BeginOnBattlefield { object } => {
                             let chosen =
