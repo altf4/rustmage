@@ -11,7 +11,10 @@ pub struct ExilePlayPermission {
 }
 impl Game {
     pub(super) fn can_play_exiled(&self, player: Player, card: CardId) -> bool {
-        if self.can_play_adventure(player, card) || self.can_cast_warped(player, card) {
+        if self.can_play_foreign_stash(player, card)
+            || self.can_play_adventure(player, card)
+            || self.can_cast_warped(player, card)
+        {
             return true;
         }
         self.state.exile_permissions.iter().any(|p| {

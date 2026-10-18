@@ -98,6 +98,48 @@ pub(super) fn payable(pool: [u128; 6], required: Mana, generic: u32, masks: &[u6
     }
     left == 0
 }
+/// Mana-type substitution applies to mana, never to a creature's convoke color.
+/// Treat actual mana as universal matching resources; Hall deficits still enforce
+/// colored creature contributions and {C} still cannot be paid by convoking.
+pub(super) fn payable_in<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    player: Player,
+    purpose: mana_lots::Purpose,
+    pool: [u128; 6],
+    required: Mana,
+    generic: u32,
+    masks: &[u64; 32],
+) -> bool {
+    if !cast_origins::spends_any_type(world, player, purpose) {
+        return payable(pool, required, generic, masks);
+    }
+    let mana = pool.into_iter().fold(0u128, u128::saturating_add);
+    let mut subset = *masks;
+    for bit in 0..5 {
+        for mask in 0..32 {
+            if mask & (1 << bit) != 0 {
+                subset[mask] += subset[mask ^ (1 << bit)];
+            }
+        }
+    }
+    let creatures = u128::from(subset[31]);
+    let total = required.into_iter().map(u128::from).sum::<u128>() + u128::from(generic);
+    if mana.saturating_add(creatures) < total || mana < u128::from(required[5]) {
+        return false;
+    }
+    let mut needs = [0u64; 32];
+    for mask in 1usize..32 {
+        let i = mask.trailing_zeros() as usize;
+        needs[mask] = needs[mask ^ (1 << i)] + u64::from(required[i]);
+        let unmatched =
+            u128::from(needs[mask]).saturating_sub(u128::from(subset[31] - subset[31 ^ mask]));
+        if unmatched + u128::from(required[5]) > mana {
+            return false;
+        }
+    }
+    true
+}
+
 impl Game {
     pub(super) fn convoke_eligible(&self, p: Player, r: ObjectRef) -> bool {
         self.state.objects.get(r.card as usize).is_some_and(|o| {
@@ -127,7 +169,10 @@ impl Game {
         let a = self.state.announcing.as_ref()?;
         let f = a.convoke.as_ref()?;
         let pool = self.available_mana(a.item.controller, self.purpose_for_item(&a.item));
-        let can_pay = payable(
+        let can_pay = payable_in(
+            self,
+            a.item.controller,
+            self.purpose_for_item(&a.item),
             pool.map(u128::from),
             f.remaining.colored,
             f.remaining.generic,
@@ -214,7 +259,15 @@ impl Game {
             ] {
                 let mut cost = f.remaining;
                 if contribution.apply(colors, &mut cost)
-                    && payable(pool.map(u128::from), cost.colored, cost.generic, &rest)
+                    && payable_in(
+                        self,
+                        p,
+                        self.purpose_for_item(&a.item),
+                        pool.map(u128::from),
+                        cost.colored,
+                        cost.generic,
+                        &rest,
+                    )
                     && emit(Action::ChooseConvoker {
                         object,
                         contribution,

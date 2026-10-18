@@ -315,7 +315,8 @@ impl<'g> FundingState<'g> {
                         .source.as_ref()
                         .is_some_and(|(source, _, _, _)| source.card == *id as CardId)
                     || object.zone == Zone::Battlefield
-                        && (game.state.controls.is_some() || object.card.attachment_bonus().is_some()
+                        && (game.state.controls.is_some() || object.card.has_cast_origin_abilities()
+                            || object.card.attachment_bonus().is_some()
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
                             || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
@@ -366,7 +367,17 @@ impl<'g> FundingState<'g> {
         let reserve = goal
             .reserve
             .and_then(|(r, _)| self.resources.iter().find(|s| s.id == r.card));
-        reserve_obligations(
+        self.game.state.announcing.as_ref().is_none_or(|a| {
+            a.additional_group.as_ref().is_none_or(|group| {
+                group.iter().all(|r| {
+                    let o = ability_world::CharacteristicWorld::object(self, r.card);
+                    o.zone == Zone::Battlefield
+                        && o.generation == r.generation
+                        && !o.tapped
+                        && o.controller == goal.actor
+                })
+            })
+        }) && reserve_obligations(
             goal,
             reserve.map(|r| &r.object),
             reserve.map_or(0, |r| self.kinds(r)),
@@ -619,6 +630,7 @@ impl<'g> FundingState<'g> {
                     |counters| {
                         let purpose = mana_lots::Purpose::Activation(mana_lots::Source {
                             card: object.card,
+                            foreign_stash: false,
                             kinds: self.kinds(entry),
                             subtypes: ability_world::CharacteristicWorld::subtypes(self, entry.id),
                         });
@@ -996,6 +1008,17 @@ impl<'g> FundingState<'g> {
         if self.total_mana_upper() < required {
             return false;
         }
+        // Substitution may be lost or restored by virtual sacrifices. Keep the
+        // color bound conservative; the exact leaf uses the overlay.
+        if matches!(self.purpose, mana_lots::Purpose::Spell(_))
+            && self.game.state.static_sources.iter().any(|&id| {
+                self.game.state.objects[id as usize]
+                    .card
+                    .has_cast_origin_abilities()
+            })
+        {
+            return true;
+        }
         // A virtual source departure can restore an ability under layer6.
         // The total upper bound remains conservative; color/readiness pruning
         // must not assume the current blanking is permanent for this search.
@@ -1151,8 +1174,12 @@ impl<'g> FundingState<'g> {
         if !self.obligations(goal) {
             return false;
         }
+        let adjusted = cast_origins::payment_goal(self, goal, self.purpose);
         if (if self.convoke {
-            convoke::payable(
+            convoke::payable_in(
+                self,
+                goal.actor,
+                self.purpose,
                 mana_lots::available(self.mana, &self.lots, self.purpose),
                 goal.required,
                 goal.generic,
@@ -1161,8 +1188,8 @@ impl<'g> FundingState<'g> {
         } else {
             payable(
                 mana_lots::available(self.mana, &self.lots, self.purpose),
-                goal.required,
-                goal.generic,
+                adjusted.required,
+                adjusted.generic,
             )
         }) && evidence.is_none_or(|n| self.evidence_value() >= u128::from(n))
         {
@@ -1229,6 +1256,33 @@ impl Game {
         self.can_fund_for(goal, purpose)
     }
     pub(super) fn can_fund_for(&self, goal: FundingGoal, purpose: mana_lots::Purpose) -> bool {
+        if let Some(a) = &self.state.announcing
+            && !a.additional_paid
+            && a.item
+                .cast
+                .is_some_and(|c| c.method == CastMethod::GraveyardCounterCost)
+        {
+            return self.creature_counter_fundable(
+                goal,
+                purpose,
+                a.item.source_card.graveyard_counter_cost().unwrap(),
+                a.creature_counter_cost
+                    .as_ref()
+                    .map_or(&[], |v| v.as_slice()),
+            );
+        }
+        if let Some(a) = &self.state.announcing
+            && !a.additional_paid
+            && let Some(group) = &a.additional_group
+        {
+            let spec = a.additional_cost().expect("selected tap cost");
+            if !group
+                .iter()
+                .all(|&r| self.additional_candidate(spec, a.item.controller, a.item.object, r))
+            {
+                return false;
+            }
+        }
         let object = goal
             .source
             .as_ref()
@@ -1266,11 +1320,12 @@ impl Game {
         ) {
             return false;
         }
+        let adjusted = cast_origins::payment_goal(self, &goal, purpose);
         // The common prefunded path needs no resource graph or heap allocations.
         if payable(
             self.available_mana(goal.actor, purpose),
-            goal.required,
-            goal.generic,
+            adjusted.required,
+            adjusted.generic,
         ) {
             return true;
         }
@@ -1290,7 +1345,10 @@ impl Game {
         goal: FundingGoal,
         purpose: mana_lots::Purpose,
     ) -> bool {
-        if convoke::payable(
+        if convoke::payable_in(
+            self,
+            goal.actor,
+            purpose,
             self.available_mana(goal.actor, purpose).map(u128::from),
             goal.required,
             goal.generic,
@@ -1355,6 +1413,7 @@ impl Game {
             return None;
         }
         let goal = self.funding_goal(a);
+        let goal = cast_origins::payment_goal(self, &goal, self.purpose_for_item(&a.item));
         Some(PaymentRequestView {
             required: goal.required,
             generic: goal.generic,
@@ -1363,6 +1422,26 @@ impl Game {
         })
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        if a.item
+            .cast
+            .is_some_and(|c| c.method == CastMethod::GraveyardCounterCost)
+        {
+            let cost = self.reduced_spell_cost(a.item.controller, a.item.card, cost);
+            return self.creature_counter_fundable(
+                FundingGoal {
+                    actor: a.item.controller,
+                    required: cost.colored,
+                    generic: cost.generic,
+                    reserve: None,
+                    source: None,
+                },
+                self.purpose_for_item(&a.item),
+                a.item.source_card.graveyard_counter_cost().unwrap(),
+                a.creature_counter_cost
+                    .as_ref()
+                    .map_or(&[], |v| v.as_slice()),
+            );
+        }
         if a.item.kind == StackKind::Spell
             && a.item.cast.is_some_and(|c| c.method == CastMethod::Free)
         {
@@ -1530,14 +1609,26 @@ impl Game {
             {
                 return None;
             }
-            (frame.remaining.colored, frame.remaining.generic)
+            cast_origins::payment_requirements(
+                self,
+                a.item.controller,
+                self.purpose_for_item(&a.item),
+                frame.remaining.colored,
+                frame.remaining.generic,
+            )
         } else {
             let goal = self.funding_goal(a);
             let state = FundingState::from_game(self, &goal);
             if !state.obligations(&goal) || a.evidence.as_ref().is_some_and(|e| !e.complete) {
                 return None;
             }
-            (goal.required, goal.generic)
+            cast_origins::payment_requirements(
+                self,
+                a.item.controller,
+                self.purpose_for_item(&a.item),
+                goal.required,
+                goal.generic,
+            )
         };
         payable(pool.map(u128::from), required, generic).then_some(ManaPaymentDomain {
             available: pool,
@@ -1566,7 +1657,10 @@ impl Game {
             return true;
         }
         if convoke
-            && convoke::payable(
+            && convoke::payable_in(
+                &state,
+                goal.actor,
+                state.purpose,
                 mana_lots::available(state.mana, &state.lots, state.purpose),
                 goal.required,
                 goal.generic,
@@ -1654,6 +1748,12 @@ impl Game {
             .unwrap();
         if emit(Action::DeclineResolutionMana) {
             return true;
+        }
+        if request
+            .life
+            .is_some_and(|life| self.state.players[request.payer.index()].life < i128::from(life))
+        {
+            return false;
         }
         let goal = FundingGoal {
             reserve: None,
@@ -3026,6 +3126,145 @@ mod blanked_funding_bounds_tests {
                 "equivalent land subsets escaped memoization"
             );
         }
+    }
+}
+
+type CounterCostFundingKey = (FundingKey, Vec<(ObjectRef, CounterKind, u64, bool)>);
+
+impl FundingState<'_> {
+    fn remove_creature_counter(&mut self, r: ObjectRef, kind: CounterKind) -> bool {
+        let Some(index) = self.resources.iter().position(|v| v.id == r.card) else {
+            return false;
+        };
+        let o = &self.resources[index].object;
+        if o.zone != Zone::Battlefield
+            || o.generation != r.generation
+            || o.controller != self.actor
+            || self.kinds(&self.resources[index]) & 1 == 0
+        {
+            return false;
+        }
+        let mut counters =
+            ability_world::CharacteristicWorld::counter_amounts(self, r.card).to_owned();
+        if counters.get(kind) == 0 {
+            return false;
+        }
+        counters.remove(kind, 1);
+        self.resources[index].object.counters = counters.hot();
+        live_counters::set(&mut self.named_counters, r, counters.named);
+        true
+    }
+    fn creature_counter_payment_possible(
+        &self,
+        amount: u16,
+        selected: &[(ObjectRef, CounterKind)],
+    ) -> bool {
+        if selected.len() > usize::from(amount) {
+            return false;
+        }
+        let mut after = self.clone();
+        for &(r, kind) in selected {
+            if !after.remove_creature_counter(r, kind) {
+                return false;
+            }
+        }
+        let available = after
+            .resources
+            .iter()
+            .filter(|r| {
+                r.object.zone == Zone::Battlefield
+                    && r.object.controller == self.actor
+                    && after.kinds(r) & 1 != 0
+            })
+            .map(|r| ability_world::CharacteristicWorld::counter_amounts(&after, r.id).total())
+            .sum::<u128>();
+        available >= u128::from(amount) - selected.len() as u128
+    }
+    fn fund_creature_counter_cost(
+        &self,
+        goal: &FundingGoal,
+        amount: u16,
+        selected: &[(ObjectRef, CounterKind)],
+        visited: &mut HashSet<CounterCostFundingKey>,
+    ) -> bool {
+        if !self.obligations(goal) {
+            return false;
+        }
+        // Mana abilities are activated before paying this nonmana cost. The
+        // chosen counters remain reserved, rather than being removed before
+        // counter-dependent mana production has been evaluated.
+        let adjusted = cast_origins::payment_goal(self, goal, self.purpose);
+        if payable(
+            mana_lots::available(self.mana, &self.lots, self.purpose),
+            adjusted.required,
+            adjusted.generic,
+        ) && self.creature_counter_payment_possible(amount, selected)
+        {
+            return true;
+        }
+        if !self.optimistic(goal) {
+            return false;
+        }
+        let facts = selected
+            .iter()
+            .map(|&(r, kind)| {
+                (
+                    r,
+                    kind,
+                    ability_world::CharacteristicWorld::counter_count(self, r.card, kind),
+                    ability_world::CharacteristicWorld::reference(self, r.card) == r
+                        && ability_world::CharacteristicWorld::object(self, r.card).zone
+                            == Zone::Battlefield
+                        && ability_world::CharacteristicWorld::object(self, r.card).controller
+                            == self.actor
+                        && ability_world::CharacteristicWorld::kinds(self, r.card) & 1 != 0,
+                )
+            })
+            .collect();
+        if !visited.insert((self.key(goal), facts)) {
+            return false;
+        }
+        for step in self.moves(goal) {
+            let mut next = self.clone();
+            next.apply(&step);
+            if next.fund_creature_counter_cost(goal, amount, selected, visited) {
+                return true;
+            }
+        }
+        false
+    }
+}
+impl Game {
+    pub(super) fn creature_counter_fundable(
+        &self,
+        goal: FundingGoal,
+        purpose: mana_lots::Purpose,
+        amount: u16,
+        selected: &[(ObjectRef, CounterKind)],
+    ) -> bool {
+        let mut world = FundingState::from_game_with_convoke(self, &goal, true);
+        world.convoke = false;
+        world.purpose = purpose;
+        let adds = self.state.objects.iter().any(|o| {
+            o.card.activations().iter().enumerate().any(|(index, a)| {
+                a.mana_production().is_some()
+                    && o.card.activation_put_counter(index as u16).is_some()
+            })
+        });
+        if !adds {
+            let upper = self
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter(|(_, o)| o.zone == Zone::Battlefield)
+                .map(|(id, _)| self.counter_amounts(id as CardId).total())
+                .sum::<u128>();
+            if upper < u128::from(amount) {
+                return false;
+            }
+        }
+        world.fund_creature_counter_cost(&goal, amount, selected, &mut HashSet::new())
     }
 }
 

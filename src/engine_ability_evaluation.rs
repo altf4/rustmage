@@ -92,7 +92,8 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: vec![GrantedManaAbility { source, production }],
             });
         }
-        StaticAbilityFragment::AttachmentTrigger(ability) => {
+        StaticAbilityFragment::AttachmentTrigger(ability)
+        | StaticAbilityFragment::AttachmentActivation(ability) => {
             if !world.attached(source, id) {
                 return None;
             }
@@ -245,6 +246,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::AttachmentKeywords(..)
                         | StaticAbilityFragment::AttachedTurnKeywords(..)
                         | StaticAbilityFragment::AttachmentTrigger(..)
+                        | StaticAbilityFragment::AttachmentActivation(..)
                         | StaticAbilityFragment::AttachmentMana(..)
                         | StaticAbilityFragment::CounterKeyword(..)
                         | StaticAbilityFragment::CounterKeywordOwnTurn(..)
@@ -349,7 +351,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             let object = world.object(grant.recipient.card);
             if object.zone == Zone::Battlefield
                 && world.reference(grant.recipient.card) == grant.recipient
-                && grant.expires_turn == game.state.turn
+                && (grant.permanent || grant.expires_turn == game.state.turn)
             {
                 effects.push(LayerSixEffect {
                     provider: None,

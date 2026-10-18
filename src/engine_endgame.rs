@@ -55,6 +55,7 @@ impl Game {
         self.state.pending_triggers.clear();
         self.state.ordering_triggers.clear();
         self.abandon_copy_continuations();
+        self.state.resolution_free_casts = None;
         // Include the currently resolving spell and any physical spell incarnation.
         let spells: Vec<_> = self
             .state

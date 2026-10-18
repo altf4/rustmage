@@ -489,6 +489,7 @@ impl Game {
                     | TriggerCondition::SelfDiscarded
                     | TriggerCondition::SelfCycled
                     | TriggerCondition::Discarded { .. }
+                    | TriggerCondition::ControlledCreatureCombatDamageOwnTurn
                     | TriggerCondition::SourceDealtCombatDamage
                     | TriggerCondition::DamagedCreatureDies
                     | TriggerCondition::StateCounterAtLeast { .. }
@@ -513,6 +514,7 @@ impl Game {
                     | TriggerCondition::SelfSaddledFirst
                     | TriggerCondition::EquippedAttacks
                     | TriggerCondition::GrantedAttacks
+                    | TriggerCondition::AttachedBecomesUntapped
                     | TriggerCondition::SelfBecomesTapped
                     | TriggerCondition::SpellCast { .. }
                     | TriggerCondition::ManaSpentForSpell
@@ -541,6 +543,9 @@ impl Game {
                                     TriggerCondition::FilteredEntersYou(_)
                                 ))
                             && match predicate {
+                                EntryPredicate::CreatureWithoutSubtype(subtype) => {
+                                    entered.is_creature() && !entered.has_subtype(subtype)
+                                }
                                 EntryPredicate::CreaturePowerAtLeast(minimum) => {
                                     entered.is_creature() && entered.power >= i128::from(minimum)
                                 }
@@ -760,6 +765,7 @@ impl Game {
             entering_object: None,
             evidence_collected: false,
             damage_event: None,
+            creature_combat_event: None,
             discard_event: None,
             draw_event: None,
             life_event: None,
@@ -903,6 +909,7 @@ impl Game {
         let cast_event = stack.and_then(|i| {
             let item = &self.state.stack[i];
             item.cast.map(|cast| CastPaymentEvent {
+                mana_value: item.mana_value(),
                 stack_id: item.id,
                 object: item.object,
                 card: item.source_card,
@@ -951,7 +958,8 @@ impl Game {
                             || ability.program.iter().any(|instruction| {
                                 matches!(
                                     instruction,
-                                    Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
+                                    Instruction::CreateTokensWithTemporaryKeywords { .. }
+                                        | Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
                                         | Instruction::PutCountersScaled {
                                             amount: AmountValue::SpellColors,
                                             ..
@@ -1448,6 +1456,16 @@ impl Game {
     }
 
     pub(super) fn run_program(&mut self) {
+        // Casting during an effect suspends its owned program, including through
+        // additional-cost entry and replacement continuations.
+        if let Some(free) = &self.state.resolution_free_casts {
+            if self.state.announcing.is_none() && self.state.entry_batch.is_none() {
+                self.state.pending = Pending::ResolutionCasts {
+                    player: free.player,
+                };
+            }
+            return;
+        }
         loop {
             if self.advance_replacements(false) {
                 return;
@@ -1981,6 +1999,11 @@ impl Game {
                     self.start_connive(&item, subject, amount)
                 }
                 Instruction::GrantGraveyardCast(kind) => self.grant_graveyard_cast(&item, kind),
+                Instruction::ExileDiscardedWithStash => self.exile_discarded_with_stash(&item),
+                Instruction::ExileEachLibraryTopCastFree => {
+                    self.exile_each_top_cast_free(item.controller);
+                    return;
+                }
                 Instruction::CounterRelatedUnlessPayLife(amount) => {
                     if self.start_resolution_life(&item, amount) {
                         return;
@@ -2337,6 +2360,26 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::CounterRelatedUnlessPayManaLife { cost, life } => {
+                    if self.start_resolution_payment(&item, cost, CounterSubject::Related, false, 0)
+                    {
+                        self.state
+                            .resolving
+                            .as_mut()
+                            .unwrap()
+                            .mana_payment
+                            .as_mut()
+                            .unwrap()
+                            .life = Some(life);
+                        return;
+                    }
+                }
+                Instruction::PayXReflexive { .. } => {
+                    self.state.pending = Pending::ResolutionX {
+                        player: item.controller,
+                    };
+                    return;
+                }
                 Instruction::MayPayMana { cost, skip } => {
                     self.start_optional_resolution_payment(&item, cost, skip);
                     return;
@@ -2355,6 +2398,56 @@ impl Game {
                             return;
                         }
                         self.create_tokens(item.controller, token, 1, false);
+                    }
+                }
+                Instruction::CreateTokensWithTemporaryKeywords {
+                    token,
+                    amount,
+                    keywords,
+                } => {
+                    let amount = self.item_amount(amount, &item);
+                    self.stage_token_creation(
+                        item.controller,
+                        token,
+                        amount,
+                        false,
+                        replacements::TokenCompletion::Keywords {
+                            source: item.object,
+                            keywords,
+                        },
+                    );
+                }
+                Instruction::PutCombatDealerCounters => {
+                    if let Some(event) = &item.creature_combat_event
+                        && self.on_battlefield(event.dealer.card)
+                        && self.object_ref(event.dealer.card) == event.dealer
+                    {
+                        let n = u64::try_from(event.amount).capacity("counter amount exhausted");
+                        self.effect_counters(
+                            vec![(event.dealer, Counters::of(CounterKind::PlusOne, n))],
+                            replacements::ResumeMode::Program,
+                        );
+                    }
+                }
+                Instruction::PutGrantorCounter(kind) => {
+                    if let Some(grant) = &item.attachment_trigger
+                        && self.on_battlefield(grant.grantor.card)
+                        && self.object_ref(grant.grantor.card) == grant.grantor
+                    {
+                        self.effect_counters(
+                            vec![(grant.grantor, Counters::of(kind, 1))],
+                            replacements::ResumeMode::Program,
+                        );
+                    }
+                }
+                Instruction::RemoveSourceCounterIfAny { kind, skip } => {
+                    if self.on_battlefield(item.card)
+                        && self.object_ref(item.card) == item.object
+                        && self.counter_count(item.card, kind) > 0
+                    {
+                        self.pay_counters(item.card, &Counters::of(kind, 1));
+                    } else {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
                 Instruction::CreateTokensScaled {
@@ -2559,9 +2652,7 @@ impl Game {
                 }
                 Instruction::UntapPlayerCreatures(players) => {
                     let recipients = self.player_creature_recipients(players, &item);
-                    for id in recipients {
-                        self.state.objects[id as usize].untap();
-                    }
+                    self.untap_objects(&recipients, untap_rules::UntapCause::Effect);
                 }
                 Instruction::PutPlayerCreatureCounters {
                     players,
@@ -2719,6 +2810,15 @@ impl Game {
                             }
                         }
                     }
+                }
+                Instruction::EvolveSource {
+                    required,
+                    types,
+                    stats,
+                    keywords,
+                    ability,
+                } => {
+                    self.evolve_source(&item, required, types, stats, keywords, ability);
                 }
                 Instruction::SetCreatureTypes { subject, types } => {
                     self.set_creature_types(&item, subject, types);

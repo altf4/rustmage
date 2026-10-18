@@ -143,6 +143,7 @@ pub(super) struct Source {
     pub card: Card,
     pub kinds: u16,
     pub subtypes: GrantedSubtypes,
+    pub foreign_stash: bool,
 }
 impl Source {
     fn has_subtype(self, subtype: &str) -> bool {
@@ -153,6 +154,7 @@ impl Source {
             card,
             kinds: card.kind_mask(),
             subtypes: GrantedSubtypes::default(),
+            foreign_stash: false,
         }
     }
 }
@@ -162,6 +164,7 @@ impl From<DamageFacts> for Source {
             card: facts.card,
             kinds: facts.kinds,
             subtypes: facts.granted_subtypes,
+            foreign_stash: false,
         }
     }
 }
@@ -579,7 +582,9 @@ impl Game {
     }
     pub(super) fn purpose_for_item(&self, item: &SpellView) -> Purpose {
         if item.kind == StackKind::Spell {
-            self.spell_mana_purpose(item.source_card)
+            let mut source = Source::printed(item.source_card);
+            source.foreign_stash = item.cast.is_some_and(|c| c.stash_origin);
+            Purpose::Spell(source)
         } else {
             let facts = if self
                 .state
@@ -595,6 +600,20 @@ impl Game {
             Purpose::Activation(facts.into())
         }
     }
+    pub(super) fn spell_mana_purpose_for_card(
+        &self,
+        actor: Player,
+        card: CardId,
+        definition: Card,
+    ) -> Purpose {
+        let mut source = Source::printed(definition);
+        source.foreign_stash = self.foreign_stash(actor, card)
+            || self.state.announcing.as_ref().is_some_and(|a| {
+                a.item.card == card && a.item.cast.is_some_and(|c| c.stash_origin)
+            });
+        Purpose::Spell(source)
+    }
+    #[cfg(test)]
     pub(super) fn spell_mana_purpose(&self, definition: Card) -> Purpose {
         Purpose::Spell(Source::printed(definition))
     }
@@ -705,7 +724,7 @@ impl Game {
         let (payment, purpose) = match action {
             Action::Cast { card, payment, .. } | Action::BeginCast { card, payment } => (
                 *payment,
-                self.spell_mana_purpose(self.effective_spell_card(*card)),
+                self.spell_mana_purpose_for_card(actor, *card, self.effective_spell_card(*card)),
             ),
             Action::Activate { card, payment, .. }
             | Action::BeginActivate { card, payment, .. }

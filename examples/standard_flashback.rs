@@ -322,6 +322,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             } else {
                                 Zone::Hand
                             },
+                            stash_origin: false,
                             method: info.method
                         }
                     );

@@ -10,6 +10,15 @@ pub(super) enum UntapCause {
 }
 impl Game {
     fn has_untap_rules(&self) -> bool {
+        if self.state.attachment_sources.iter().any(|&id| {
+            self.state.objects[id as usize]
+                .card
+                .triggers()
+                .iter()
+                .any(|a| a.condition.event() == TriggerCondition::AttachedBecomesUntapped)
+        }) {
+            return true;
+        }
         self.state
             .static_sources
             .iter()
@@ -99,9 +108,20 @@ impl Game {
             .copied()
             .filter(|&id| self.on_battlefield(id) && self.untap_allowed(id, cause))
             .collect();
+        let before: Vec<_> = allowed
+            .iter()
+            .copied()
+            .filter(|&id| self.state.objects[id as usize].tapped)
+            .map(|id| self.object_ref(id))
+            .collect();
         for id in allowed {
             self.state.objects[id as usize].untap();
         }
+        let untapped: Vec<_> = before
+            .into_iter()
+            .filter(|r| !self.state.objects[r.card as usize].tapped)
+            .collect();
+        self.attached_untap_triggers(&untapped);
     }
     pub(super) fn untap_active_player(&mut self) {
         if !self.has_untap_rules() {

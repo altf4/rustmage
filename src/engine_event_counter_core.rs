@@ -8,6 +8,7 @@ pub struct CreatureDamageHistoryView {
 }
 impl Game {
     pub(super) fn creature_damage_events(&mut self, events: &[DamageEvent]) {
+        self.controlled_combat_damage_triggers(events);
         for event in events {
             if event.amount <= 0 {
                 continue;
@@ -40,13 +41,13 @@ impl Game {
             .iter()
             .copied()
             .filter(|grant| {
-                grant.expires_turn == self.state.turn
+                (grant.permanent || grant.expires_turn == self.state.turn)
                     && self.on_battlefield(grant.recipient.card)
                     && self.object_ref(grant.recipient.card) == grant.recipient
                     && grant.granting_card.triggers()[usize::from(grant.ability)]
                         .condition
                         .event()
-                        == TriggerCondition::SourceDealtCombatDamage
+                        .is_growth_damage_event()
                     && events.iter().any(|event| {
                         event.amount > 0
                             && event.combat
@@ -71,7 +72,45 @@ impl Game {
                 defender: None,
                 granted: true,
             };
-            self.queue_trigger_from(&source, usize::from(grant.ability), Some(Box::new(context)));
+            let event = grant.granting_card.triggers()[usize::from(grant.ability)]
+                .condition
+                .event();
+            if let TriggerCondition::PlayerDamaged { .. } = event {
+                let mut hits = std::collections::BTreeMap::<Player, u128>::new();
+                for e in events {
+                    if e.amount > 0
+                        && e.combat
+                        && e.source.reference == grant.recipient
+                        && let Target::Player(player) = e.target
+                    {
+                        let n = hits.entry(player).or_default();
+                        *n = n
+                            .checked_add(e.amount as u128)
+                            .capacity("damage amount exhausted");
+                    }
+                }
+                for (player, amount) in hits {
+                    if self.queue_trigger_from(
+                        &source,
+                        usize::from(grant.ability),
+                        Some(Box::new(context)),
+                    ) {
+                        self.state.pending_triggers.last_mut().unwrap().damage_event =
+                            Some(DamageTriggerView {
+                                dealer: Some(grant.recipient),
+                                player,
+                                amount,
+                                combat: true,
+                            });
+                    }
+                }
+            } else {
+                self.queue_trigger_from(
+                    &source,
+                    usize::from(grant.ability),
+                    Some(Box::new(context)),
+                );
+            }
         }
     }
 

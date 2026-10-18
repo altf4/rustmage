@@ -3,10 +3,31 @@
   "catalogue_id": 4607,
   "oracle_id": "fd335b2f-e6a2-45ac-949e-a67278b21cb6",
   "facts_sha256": "39aa7c493aa4176379bc1509adca1374a98c0a2ac76133fc4a9713c241c5739a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d11ad8374a13a20cb385f0f9a37562dff5870e28b68a57d215fe3fdedb5e077e"
   },
-  "physical_metadata_sha256": "c657268ff16531e345e3ce9441ebd196e6101f1434951ee00fa0242d4fe36fa6"
+  "physical_metadata_sha256": "c657268ff16531e345e3ce9441ebd196e6101f1434951ee00fa0242d4fe36fa6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TinybonesBaubleBurglar.java",
+  "java_sha256": "84ba278d2502b9dbec12aa2b4005bbe0288b3ea3033848bd7e7f5264f6c683e0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardEachPlayerEffect.java",
+      "sha256": "f8ba858157ec21e41dbda51ea2176cba7c3e46cd51af4ff57e12af803f8fa24c"
+    }
+  ],
+  "remaining_obligations": []
 }

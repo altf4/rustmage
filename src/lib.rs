@@ -8,6 +8,8 @@ mod shared_vec;
 pub use capacity::CapacityExceeded;
 mod cards;
 mod engine;
+mod permanent_type;
+pub use permanent_type::PermanentType;
 mod ffi;
 pub mod policy;
 pub mod protocol;

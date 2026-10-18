@@ -1,16 +1,15 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete Oracle body authored from the paired pinned XMage source.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(7, 7),
     keywords: Keywords::TRAMPLE,
+    extras: &CardExtras {
+        graveyard_counter_cost: Some(6),
+        ..CardExtras::EMPTY
+    },
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::ControlledCreatureCombatDamageOwnTurn,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::PutCombatDealerCounters],
+    }],
     ..CardRules::EMPTY
 };

@@ -6,6 +6,8 @@ pub struct AdditionalCostView {
     pub kind: EffectChoiceKind,
     pub candidates: Vec<ObjectRef>,
     pub selected: Option<ObjectRef>,
+    pub selected_group: Vec<ObjectRef>,
+    pub creature_counter_payments: Vec<(ObjectRef, CounterKind)>,
     pub paid: bool,
 }
 impl Game {
@@ -21,7 +23,9 @@ impl Game {
         };
         let controls_cost_object = match spec.kind {
             EffectChoiceKind::Discard => o.owner == actor,
-            EffectChoiceKind::Sacrifice | EffectChoiceKind::ReturnToHand => o.controller == actor,
+            EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::ReturnToHand
+            | EffectChoiceKind::TapPermanents(_) => o.controller == actor,
             _ => false,
         };
         if !controls_cost_object
@@ -50,10 +54,15 @@ impl Game {
     ) -> bool {
         let zone = match spec.kind {
             EffectChoiceKind::Discard => Zone::Hand,
-            EffectChoiceKind::Sacrifice | EffectChoiceKind::ReturnToHand => Zone::Battlefield,
+            EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::ReturnToHand
+            | EffectChoiceKind::TapPermanents(_) => Zone::Battlefield,
             _ => return false,
         };
         let f = spec.filter;
+        if matches!(spec.kind, EffectChoiceKind::TapPermanents(_)) && o.tapped {
+            return false;
+        }
         (if zone == Zone::Battlefield {
             o.controller
         } else {
@@ -82,7 +91,7 @@ impl Game {
                     source: None,
                     reserve: None,
                 },
-                self.spell_mana_purpose(definition),
+                self.spell_mana_purpose_for_card(actor, card, definition),
             );
         }
         self.spell_can_fund_total(actor, card, cost, None)
@@ -110,7 +119,7 @@ impl Game {
         route: Option<ForageRoute>,
         definition: Card,
     ) -> bool {
-        let purpose = self.spell_mana_purpose(definition);
+        let purpose = self.spell_mana_purpose_for_card(actor, card, definition);
         let base = FundingGoal {
             actor,
             required: cost.colored,
@@ -152,6 +161,16 @@ impl Game {
             return self.can_fund(goal);
         };
         let source = goal.source.as_ref().expect("activation source").0;
+        if let EffectChoiceKind::TapPermanents(amount) = spec.kind {
+            // The source has a separate tap-symbol cost and cannot be paid twice.
+            let count = (0..self.state.objects.len())
+                .filter(|&id| {
+                    let r = self.object_ref(id as CardId);
+                    r != source && self.additional_candidate(spec, goal.actor, source, r)
+                })
+                .count();
+            return count >= usize::from(amount) && self.can_fund(goal);
+        }
         if let Some(n) = evidence::threshold(spec) {
             return self.can_collect_evidence(goal.actor, n) && self.can_fund(goal);
         }
@@ -172,6 +191,14 @@ impl Game {
         let Some(spec) = a.additional_cost() else {
             return false;
         };
+        if let EffectChoiceKind::TapPermanents(_) = spec.kind {
+            return object != a.item.object
+                && !a
+                    .additional_group
+                    .as_ref()
+                    .is_some_and(|v| v.contains(&object))
+                && self.additional_candidate(spec, a.item.controller, a.item.object, object);
+        }
         if !self.additional_candidate(spec, a.item.controller, a.item.object, object) {
             return false;
         }
@@ -181,6 +208,19 @@ impl Game {
     }
     pub(super) fn choose_additional_cost(&mut self, object: ObjectRef) {
         let a = self.state.announcing.as_mut().unwrap();
+        if let Some(AdditionalCost {
+            kind: EffectChoiceKind::TapPermanents(amount),
+            ..
+        }) = a.additional_cost()
+        {
+            let group = a
+                .additional_group
+                .get_or_insert_with(|| Box::new(Vec::new()));
+            group.push(object);
+            if group.len() < usize::from(amount) {
+                return;
+            }
+        }
         a.additional = Some(object);
         self.state.pending = Pending::PayCosts {
             player: a.item.controller,
@@ -190,6 +230,24 @@ impl Game {
         let Some(spec) = a.additional_cost() else {
             return;
         };
+        if let EffectChoiceKind::RemoveCreatureCounters(amount) = spec.kind {
+            let selected = a.creature_counter_cost.as_ref().unwrap();
+            assert_eq!(selected.len(), usize::from(amount));
+            for &(r, kind) in selected.iter() {
+                self.pay_counters(r.card, &Counters::of(kind, 1));
+            }
+            a.additional_paid = true;
+            return;
+        }
+        if let EffectChoiceKind::TapPermanents(amount) = spec.kind {
+            let group = a.additional_group.as_ref().expect("selected tap group");
+            assert_eq!(group.len(), usize::from(amount));
+            assert!(group.iter().all(|&r| r != a.item.object
+                && self.additional_candidate(spec, a.item.controller, a.item.object, r)));
+            self.tap_objects(&group.iter().map(|r| r.card).collect::<Vec<_>>());
+            a.additional_paid = true;
+            return;
+        }
         if evidence::threshold(spec).is_some() {
             self.commit_evidence(
                 a.evidence.as_ref().expect("selected evidence"),
@@ -216,7 +274,9 @@ impl Game {
             self.refresh_local_source_counter_quantities(&mut a.item);
         }
         match spec.kind {
-            EffectChoiceKind::UntapLands { .. }
+            EffectChoiceKind::RemoveCreatureCounters(_)
+            | EffectChoiceKind::TapPermanents(_)
+            | EffectChoiceKind::UntapLands { .. }
             | EffectChoiceKind::HandCreature
             | EffectChoiceKind::HandLand { .. }
             | EffectChoiceKind::LandCards { .. }
@@ -263,6 +323,14 @@ impl Game {
             kind: spec.kind,
             candidates,
             selected: a.additional,
+            creature_counter_payments: a
+                .creature_counter_cost
+                .as_ref()
+                .map_or_else(Vec::new, |v| v.as_ref().clone()),
+            selected_group: a
+                .additional_group
+                .as_ref()
+                .map_or_else(Vec::new, |v| v.as_ref().clone()),
             paid: a.additional_paid,
         })
     }

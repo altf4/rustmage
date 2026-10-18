@@ -10,6 +10,7 @@ pub struct TemporaryAbilityView {
     pub ability: u16,
     pub grantor_controller: Player,
     pub expires_turn: u32,
+    pub permanent: bool,
     pub timestamp: u64,
 }
 impl Game {
@@ -38,6 +39,7 @@ impl Game {
                 ability,
                 grantor_controller: item.controller,
                 expires_turn: self.state.turn,
+                permanent: false,
                 timestamp,
             };
             self.state
@@ -60,7 +62,7 @@ impl Game {
                 .copied()
                 .filter(|grant| {
                     grant.recipient == event.before.reference
-                        && grant.expires_turn == self.state.turn
+                        && (grant.permanent || grant.expires_turn == self.state.turn)
                         && event.before.grant_available(
                             grant.grantor,
                             grant.granting_card,

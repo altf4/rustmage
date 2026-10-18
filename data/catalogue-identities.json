@@ -5348,7 +5348,8 @@
     2,
     2,
     0,
-    1
+    1,
+    8
   ],
   "aliases": [
     [
@@ -5978,6 +5979,10 @@
     [
       "@token/ninja_2_1_blue",
       5340
+    ],
+    [
+      "@token/phyrexian_goblin_1_1_red",
+      5343
     ],
     [
       "@token/raccoon_3_3_green",
@@ -27776,6 +27781,12 @@
       "name": "Spirit Token",
       "subtypes": "Spirit",
       "colors": 1
+    },
+    {
+      "factory_identity": "@token/phyrexian_goblin_1_1_red",
+      "name": "Phyrexian Goblin Token",
+      "subtypes": "Phyrexian Goblin",
+      "colors": 8
     }
   ],
   "emblems": [
@@ -180446,6 +180457,33 @@
       "oracle_keywords": [
         "Flying"
       ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5343,
+      "module": "card_5343",
+      "path": "synthetic/token_phyrexian_goblin_1_1_red.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/phyrexian_goblin_1_1_red",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Phyrexian Goblin",
+      "oracle_keywords": [],
       "standard_legal": false,
       "legendary": false,
       "kind": 1,

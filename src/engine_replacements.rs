@@ -68,6 +68,10 @@ pub(super) struct RoleReflexiveCompletion {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum TokenCompletion {
     None,
+    Keywords {
+        source: ObjectRef,
+        keywords: Keywords,
+    },
     Reflexive {
         item: Box<SpellView>,
         ability: u16,
@@ -968,6 +972,7 @@ impl Game {
                                 let capture = matches!(
                                     batch.completion,
                                     TokenCompletion::JobAttach(_)
+                                        | TokenCompletion::Keywords { .. }
                                         | TokenCompletion::Reflexive { .. }
                                 );
                                 let created = match &batch.completion {
@@ -998,6 +1003,12 @@ impl Game {
                                         capture,
                                     ),
                                 };
+                                if let TokenCompletion::Keywords { source, keywords } =
+                                    batch.completion
+                                {
+                                    let ids = created.iter().map(|r| r.card).collect::<Vec<_>>();
+                                    self.grant_keyword_effects(&ids, source, keywords);
+                                }
                                 if let TokenCompletion::Reflexive { item, ability } =
                                     &batch.completion
                                     && !created.is_empty()

@@ -3,10 +3,50 @@
   "catalogue_id": 1537,
   "oracle_id": "2c1d3e9e-213e-492a-ad5a-91139d70bc0f",
   "facts_sha256": "b120e70441c0056ea56b554a85db8041a70238673f1cb5cca44ef48c28dd322e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "822d2c32c7616e27f627d7f3e1f571a91ea2e9d46bc61e62deaa8d0449ed7487"
   },
-  "physical_metadata_sha256": "30452443c04362433d0f00f828d06615c20b80655f2f861be7c04857a0459780"
+  "physical_metadata_sha256": "30452443c04362433d0f00f828d06615c20b80655f2f861be7c04857a0459780",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FishingPole.java",
+  "java_sha256": "454662cf2c984a625c1d534a96fb5b792c79adf361b23f51231f913bee70951a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/UseAttachedCost.java",
+      "sha256": "6c907cb4048b867ce78b0de04a0553c09af56c14b8914e2ec629c81820ba4281"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/RemoveCountersSourceCost.java",
+      "sha256": "6d8c1b5ff39cc2cd02e982807a027f4ff81fcce1cdeef232603904b26640a09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/FishNoAbilityToken.java",
+      "sha256": "0598de8f369665c2cb4293dd8b597db529a4c985cc766156b86e563038ffb541"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    }
+  ]
 }

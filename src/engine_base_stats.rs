@@ -9,6 +9,7 @@ pub struct BaseStatsEffectView {
     pub toughness: Option<i128>,
     pub timestamp: u64,
     pub static_source: bool,
+    pub permanent: bool,
 }
 /// Sparse facts only for exact entering subjects read by resolved expressions.
 /// Departure updates use the frozen pre-transition view, including simultaneous moves.
@@ -124,6 +125,7 @@ impl Game {
                 toughness: spec.toughness,
                 timestamp,
                 static_source: true,
+                permanent: false,
             });
     }
     pub(super) fn set_base_stats(
@@ -176,6 +178,7 @@ impl Game {
                 toughness,
                 timestamp,
                 static_source: false,
+                permanent: false,
             });
         }
     }
@@ -186,7 +189,9 @@ impl Game {
     }
     pub(super) fn expire_base_stats(&mut self) {
         if let Some(state) = &mut self.state.roles {
-            state.base_stats.retain(|effect| effect.static_source);
+            state
+                .base_stats
+                .retain(|effect| effect.static_source || effect.permanent);
             // Legal cleanup cannot begin with an unresolved stack or announcement.
             state.stat_subjects.clear();
         }
