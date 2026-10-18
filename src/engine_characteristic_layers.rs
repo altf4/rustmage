@@ -59,6 +59,7 @@ fn animations<W: CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
 ) -> impl Iterator<Item = &AnimationView> {
+    let recipient = (world.object(id).zone == Zone::Battlefield).then(|| world.reference(id));
     world
         .game()
         .state
@@ -66,9 +67,7 @@ fn animations<W: CharacteristicWorld + ?Sized>(
         .as_ref()
         .into_iter()
         .flat_map(|r| &r.animations)
-        .filter(move |row| {
-            world.object(id).zone == Zone::Battlefield && row.object == world.reference(id)
-        })
+        .filter(move |row| Some(row.object) == recipient)
 }
 #[inline]
 pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(

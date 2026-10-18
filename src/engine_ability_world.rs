@@ -133,7 +133,10 @@ pub(super) trait CharacteristicWorld {
         )
     }
     fn granted_mana(&self, id: CardId) -> Vec<ability_order::GrantedManaAbility> {
-        if let Some(evaluation) = ability_evaluation::evaluate_if_needed(self) {
+        // Animation grants only keywords. It cannot remove a provider's printed
+        // ability or change a mana grant, so only removal needs layer-six order.
+        if self.has_ability_removal() {
+            let evaluation = ability_evaluation::evaluate_abilities(self);
             return evaluation.result.objects[id as usize].mana.clone();
         }
         let mut result = Vec::new();
