@@ -230,7 +230,7 @@ fn endgame_maze_uses_current_distinct_names_and_prevented_win_is_not_deferred() 
         until(&mut g, |g| {
             matches!(g.state.pending, Pending::EffectSearch { .. })
         });
-        let rng = g.state.rng.clone();
+        let rng = g.state.rng;
         checked(&mut g, Action::FinishSearch);
         assert_ne!(
             g.state.rng, rng,

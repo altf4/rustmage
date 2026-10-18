@@ -107,7 +107,27 @@ impl Game {
             .delayed
             .push(delayed);
     }
+    /// Abandon only active choices; future delayed copy abilities keep their duration.
+    pub(super) fn abandon_copy_continuations(&mut self) {
+        let choice = self
+            .state
+            .stack_copy_data
+            .as_mut()
+            .and_then(|s| s.retarget.take());
+        self.state.nightmare_cull = None;
+        if let Some(r) = choice
+            && r.victim.is_none()
+            && r.item.is_copy
+            && self.object_ref(r.item.card) == r.item.object
+            && self.state.objects[r.item.card as usize].zone == Zone::Stack
+            && !self.state.stack.iter().any(|s| s.id == r.item.id)
+        {
+            self.move_object(r.item.card, Zone::Exile);
+        }
+        self.release_stack_copy_state();
+    }
     pub(super) fn expire_spell_copies(&mut self) {
+        self.abandon_copy_continuations();
         if let Some(state) = &mut self.state.stack_copy_data {
             state.delayed.clear();
         }
@@ -443,6 +463,7 @@ impl Game {
             .as_mut()
             .unwrap();
         bound.group = r.item.targets[index].group;
+        r.item.retarget_allocation(r.item.targets[index], bound);
         r.item.targets[index] = bound;
     }
     pub(super) fn restore_stack_target(&mut self, index: u32) {
@@ -454,7 +475,10 @@ impl Game {
             .retarget
             .as_mut()
             .unwrap();
-        r.item.targets[index as usize] = r.template.targets[index as usize];
+        let index = index as usize;
+        let restored = r.template.targets[index];
+        r.item.retarget_allocation(r.item.targets[index], restored);
+        r.item.targets[index] = restored;
     }
     pub(super) fn finish_stack_targets(&mut self) {
         self.commit_stack_targets();

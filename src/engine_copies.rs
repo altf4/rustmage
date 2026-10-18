@@ -6,8 +6,16 @@ use super::*;
 pub struct CopyRecipe {
     /// The complete immutable copiable definition, including fixed token exceptions.
     pub definition: Card,
+    pub exceptions: CopyExceptions,
 }
 impl CopyRecipe {
+    pub const fn new(definition: Card) -> Self {
+        Self {
+            definition,
+            exceptions: CopyExceptions::NONE,
+        }
+    }
+
     pub const fn factory_identity(self) -> &'static str {
         "Copy"
     }
@@ -52,10 +60,9 @@ impl Game {
         let object = &self.state.objects[id as usize];
         if object.is_copy_token() {
             Some(
-                CopyRecipe {
-                    definition: object.card,
-                }
-                .token_info(),
+                self.copy_recipe(self.object_ref(id))
+                    .expect("runtime copy recipe")
+                    .token_info(),
             )
         } else {
             object.card.token_info().copied()
@@ -174,6 +181,7 @@ impl Game {
             }
         }
         if !moves.is_empty() {
+            self.track_nightmare_copy_entries(&moves);
             self.stage_entries(moves, None);
         }
     }
