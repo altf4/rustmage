@@ -3193,10 +3193,11 @@ impl FundingState<'_> {
         // Mana abilities are activated before paying this nonmana cost. The
         // chosen counters remain reserved, rather than being removed before
         // counter-dependent mana production has been evaluated.
+        let adjusted = cast_origins::payment_goal(self, goal, self.purpose);
         if payable(
             mana_lots::available(self.mana, &self.lots, self.purpose),
-            goal.required,
-            goal.generic,
+            adjusted.required,
+            adjusted.generic,
         ) && self.creature_counter_payment_possible(amount, selected)
         {
             return true;

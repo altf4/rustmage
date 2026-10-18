@@ -126,7 +126,7 @@ fn cast_origins_greatwurm_counter_permission_and_muldrotha_quota_are_independent
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         let muldrotha = put(&mut g, p, "Muldrotha, the Gravetide", Zone::Battlefield);
-        put(&mut g, p, "Vizier of the Menagerie", Zone::Battlefield);
+        let vizier = put(&mut g, p, "Vizier of the Menagerie", Zone::Battlefield);
         let permission = g.object_ref(muldrotha);
         let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         g.add_counter(bear, CounterKind::Bait, 6);
@@ -184,6 +184,16 @@ fn cast_origins_greatwurm_counter_permission_and_muldrotha_quota_are_independent
             assert_eq!(g.snapshot(), before);
             assert_eq!(g.revision(), revision);
         }
+        g.add_counter(bear, CounterKind::Bait, 6);
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceCounterGraveyard { card: third })
+        );
+        g.move_object(vizier, Zone::Graveyard);
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCounterGraveyard { card: third })
+        );
     }
 }
 #[test]
@@ -370,6 +380,99 @@ fn cast_origins_tinybones_exact_discard_generation_source_departure_and_shared_c
         g.move_object(stale, Zone::Graveyard);
         settle(&mut g);
         assert_eq!(g.state.objects[stale as usize].zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn cast_origins_tinybones_paid_stash_allows_adventure_and_omen_with_actual_mana() {
+    for p in [Player::P0, Player::P1] {
+        for omen in [false, true] {
+            let mut g = setup(p);
+            let tiny = put(&mut g, p, "Tinybones, Bauble Burglar", Zone::Battlefield);
+            g.state.objects[tiny as usize].summoning_sick = false;
+            let (name, target) = if omen {
+                (
+                    "Twinmaw Stormbrood // Charring Bite",
+                    put(&mut g, p.other(), "Rampaging Baloths", Zone::Battlefield),
+                )
+            } else {
+                (
+                    "Fell Horseman // Deathly Ride",
+                    put(&mut g, p, "Bear Cub", Zone::Graveyard),
+                )
+            };
+            let card = put(&mut g, p.other(), name, Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 3];
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: tiny,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            finish(&mut g);
+            for _ in 0..50 {
+                if matches!(g.state.pending, Pending::EffectDiscard { .. }) {
+                    break;
+                }
+                checked(&mut g, Action::Pass);
+            }
+            checked(&mut g, Action::Discard { card });
+            settle(&mut g);
+            assert_eq!(g.state.objects[card as usize].zone, Zone::Exile);
+            assert_eq!(g.counter_count(card, CounterKind::Stash), 1);
+            let announce = if omen {
+                Action::AnnounceOmen { card }
+            } else {
+                Action::AnnounceAdventure { card }
+            };
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+            g.state.active = p.other();
+            assert!(!g.legal_actions().contains(&announce));
+            g.state.active = p;
+            checked(&mut g, announce);
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            finish(&mut g);
+            let cast = g.state.stack.last().unwrap().cast.unwrap();
+            assert!(cast.stash_origin);
+            assert_eq!(
+                cast.face,
+                if omen {
+                    CastFace::Omen
+                } else {
+                    CastFace::Adventure
+                }
+            );
+            assert_eq!(cast.payment, [0, 0, 0, 0, 0, 2]);
+            assert_eq!(g.counter_count(card, CounterKind::Stash), 0);
+            settle(&mut g);
+            assert_eq!(g.state.objects[card as usize].owner, p.other());
+            if omen {
+                assert_eq!(g.state.objects[target as usize].damage, 5);
+                assert_eq!(g.state.objects[card as usize].zone, Zone::Library);
+                assert!(g.state.players[p.other().index()].library.contains(&card));
+            } else {
+                assert_eq!(g.state.objects[target as usize].zone, Zone::Hand);
+                assert_eq!(g.state.objects[card as usize].zone, Zone::Exile);
+                assert!(g.can_play_adventure(p, card));
+                assert!(!g.can_play_foreign_stash(p, card));
+            }
+            // A creature-only library permission must not admit its spell face.
+            put(&mut g, p, "Vizier of the Menagerie", Zone::Battlefield);
+            let library = put(&mut g, p, name, Zone::Library);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 10];
+            let alternate = if omen {
+                Action::AnnounceOmen { card: library }
+            } else {
+                Action::AnnounceAdventure { card: library }
+            };
+            assert!(!g.legal_actions().contains(&alternate));
+        }
     }
 }
 #[test]
