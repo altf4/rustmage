@@ -6339,11 +6339,11 @@ mod fdn_events_seven_tests;
 #[path = "engine_fdn_exile_two_tests.rs"]
 mod fdn_exile_two_tests;
 #[cfg(test)]
-#[path = "engine_fdn_library_eight_tests.rs"]
-mod fdn_library_eight_tests;
-#[cfg(test)]
 #[path = "engine_fdn_kaito_tests.rs"]
 mod fdn_kaito_tests;
+#[cfg(test)]
+#[path = "engine_fdn_library_eight_tests.rs"]
+mod fdn_library_eight_tests;
 
 #[cfg(test)]
 #[path = "engine_object_name_tests.rs"]
