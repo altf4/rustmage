@@ -102,6 +102,9 @@ fn fdn_drake_paid_body_prowess_qualification_cleanup_and_ability_removal() {
         assert_eq!((g.object_view(h).power, g.object_view(h).toughness), (2, 4));
         g.finish_cleanup();
         assert_eq!((g.object_view(h).power, g.object_view(h).toughness), (1, 3));
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        // This fixture resumes a fresh main phase after cleanup emptied mana.
+        g.state.players[p.index()].mana = [30; 6];
         g.state.active = p;
         g.state.priority = p;
         g.state.step = Step::Main1;

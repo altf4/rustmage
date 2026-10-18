@@ -180,7 +180,7 @@ fn fdn_utility_flight_counter_flying_prevention_expiry_and_incarnation() {
         let mut g = setup(p);
         let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
         let source = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
-        g.state.objects[source as usize].gained_keywords = Keywords::LIFELINK;
+        g.grant_keyword_effects(&[source], g.object_ref(source), Keywords::LIFELINK);
         let spell = named(&mut g, p, "Fleeting Flight", Zone::Hand);
         let land = named(&mut g, p, "Forest", Zone::Battlefield);
         replay(&mut g, Action::AnnounceCast { card: spell });
