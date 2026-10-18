@@ -79,9 +79,16 @@ pub(super) trait CharacteristicWorld {
         })
     }
     fn printed_abilities_available(&self, id: CardId) -> bool {
-        self.object(id).zone != Zone::Battlefield
-            || ability_evaluation::evaluate_if_needed(self)
-                .is_none_or(|evaluation| evaluation.result.objects[id as usize].printed)
+        // Only an exact attached removal provider can remove printed abilities.
+        // Unrelated sources need no whole-world layer-six evaluation. Keep the
+        // full evaluator for candidates: competing effects may blank a provider.
+        let recipient = self.reference(id);
+        !self.game().state.roles.as_ref().is_some_and(|state| {
+            state
+                .ability_removal_sources
+                .iter()
+                .any(|&source| self.attachment_link(source, recipient))
+        }) || ability_evaluation::evaluate_abilities(self).result.objects[id as usize].printed
     }
 
     fn reference(&self, id: CardId) -> ObjectRef {

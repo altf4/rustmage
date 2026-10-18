@@ -2575,6 +2575,16 @@ mod blanked_funding_bounds_tests {
             let world = FundingState::from_game(&game, &goal);
             assert!(world.possible_color_upper()[4] >= 1);
             assert!(world.optimistic(&goal));
+            let evaluated = ability_evaluation::evaluate_abilities(&world);
+            for resource in &world.resources {
+                assert_eq!(
+                    ability_world::CharacteristicWorld::printed_abilities_available(
+                        &world,
+                        resource.id
+                    ),
+                    evaluated.result.objects[resource.id as usize].printed
+                );
+            }
             let mut first = world.clone();
             let mut second = world.clone();
             first
