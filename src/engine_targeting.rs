@@ -1004,7 +1004,11 @@ impl Game {
     }
 
     pub(super) fn cast_item(&mut self, actor: Player, card: CardId, payment: Mana) -> SpellView {
-        self.spend_mana(actor, payment);
+        let haste = self.spend_mana_for(
+            actor,
+            payment,
+            self.spell_mana_purpose(self.effective_spell_card(card)),
+        );
         self.state.passes = 0;
         let origin = self.state.objects[card as usize].zone;
         let before = self.object_view(card);
@@ -1017,6 +1021,9 @@ impl Game {
         );
         self.finish_zone_events(std::slice::from_ref(&event), &[]);
         let object = event.after;
+        if haste {
+            self.grant_stack_keywords(object, Keywords::HASTE);
+        }
         let id = self.next_stack_id();
         SpellView {
             gift: None,
@@ -1138,6 +1145,9 @@ impl Game {
         counters: Counters,
         production: Option<Mana>,
     ) {
+        if production.is_some() {
+            self.capture_announced_mana_quality(&item);
+        }
         let plan = self.target_spec(&item);
         assert!(
             self.item_targets_available(&item, plan)
@@ -1281,7 +1291,13 @@ impl Game {
                     announcement.counter_payment.clone(),
                 );
             } else {
-                self.spend_mana(announcement.item.controller, payment);
+                if self.spend_mana_for(
+                    announcement.item.controller,
+                    payment,
+                    self.purpose_for_item(&announcement.item),
+                ) {
+                    self.grant_stack_keywords(announcement.item.object, Keywords::HASTE);
+                }
                 announcement.item.cast.as_mut().unwrap().payment = payment;
             }
         }
@@ -1305,7 +1321,7 @@ impl Game {
             announcement.item.controller
         };
         if let Some(production) = announcement.production {
-            self.add_mana(announcement.item.controller, production);
+            self.add_announced_mana(&announcement.item, production);
         } else {
             self.push_stack_item(announcement.item);
         }

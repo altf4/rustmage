@@ -120,6 +120,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::AnnounceAdventure { .. } | Action::AnnounceOmen { .. } => 30,
+            Action::ChooseManaLotSpend { amount } => 120 + i128::from(*amount != 0),
             Action::ChooseEntryTimestamp { .. } => 120,
             Action::ChooseReplacement { .. } => 120,
             Action::ChooseCreatedToken { .. } => 120,
@@ -208,6 +209,19 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ChooseMode { .. } => 50,
             Action::ChooseSearch { .. } | Action::ChooseSearchBattlefield { .. } => 60,
             Action::FinishSearch => 0,
+            Action::ChooseEntryValue {
+                value: crate::EntryChoiceValue::CreatureType(typ),
+            } => observation
+                .objects
+                .iter()
+                .filter(|object| {
+                    (match object.zone {
+                        Zone::Hand => object.owner == actor,
+                        Zone::Battlefield => object.controller == actor,
+                        _ => false,
+                    }) && object.has_subtype(typ.name())
+                })
+                .count() as i128,
             Action::ChooseEntryValue { .. } => 0,
             Action::ChooseEntryLife { pay } => {
                 // Avoid voluntary lethal payment; the example still exercises

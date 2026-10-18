@@ -74,13 +74,16 @@ impl Game {
         let skips_additional = definition.mana_alternative_replaces_additional(cost);
         let cost = self.reduced_spell_cost(actor, card, cost);
         if skips_additional {
-            return self.can_fund(FundingGoal {
-                actor,
-                required: cost.colored,
-                generic: cost.generic,
-                source: None,
-                reserve: None,
-            });
+            return self.can_fund_for(
+                FundingGoal {
+                    actor,
+                    required: cost.colored,
+                    generic: cost.generic,
+                    source: None,
+                    reserve: None,
+                },
+                self.spell_mana_purpose(definition),
+            );
         }
         self.spell_can_fund_total(actor, card, cost, None)
     }
@@ -107,6 +110,7 @@ impl Game {
         route: Option<ForageRoute>,
         definition: Card,
     ) -> bool {
+        let purpose = self.spell_mana_purpose(definition);
         let base = FundingGoal {
             actor,
             required: cost.colored,
@@ -115,25 +119,28 @@ impl Game {
             reserve: None,
         };
         if definition.has_convoke() {
-            return self.can_fund_convoke(base);
+            return self.can_fund_convoke_for(base, purpose);
         }
         let Some(spec) = definition.additional_cost() else {
-            return self.can_fund(base);
+            return self.can_fund_for(base, purpose);
         };
         if forage::is_forage_cost(spec) {
             return if route == Some(ForageRoute::Black) {
-                self.can_fund(base)
+                self.can_fund_for(base, purpose)
             } else {
-                self.forage_cost_fundable(base, spec, route)
+                self.forage_cost_fundable_for(base, spec, route, purpose)
             };
         }
         self.state.objects.iter().enumerate().any(|(id, _)| {
             let object = self.object_ref(id as CardId);
             self.additional_candidate(spec, actor, self.object_ref(card), object)
-                && self.can_fund(FundingGoal {
-                    reserve: Some((object, spec)),
-                    ..base.clone()
-                })
+                && self.can_fund_for(
+                    FundingGoal {
+                        reserve: Some((object, spec)),
+                        ..base.clone()
+                    },
+                    purpose,
+                )
         })
     }
     pub(super) fn activation_can_fund(

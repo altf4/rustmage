@@ -40,6 +40,7 @@ pub(super) struct EntryBatch {
     pub choices: Vec<usize>,
     pub next: usize,
     pub counter_next: usize,
+    pub entry_bonuses_ready: bool,
     pub counter_order: Vec<usize>,
     pub timestamp_order: Vec<usize>,
     pub timestamps_ready: bool,
@@ -296,11 +297,12 @@ impl Game {
             .map(|(i, _)| i)
             .collect::<Vec<_>>();
         counter_order.sort_by_key(|&i| (moves[i].controller != self.state.active, i));
-        let batch = EntryBatch {
+        let mut batch = EntryBatch {
             moves,
             choices,
             next: 0,
             counter_next: 0,
+            entry_bonuses_ready: false,
             counter_order,
             timestamp_order: Vec::new(),
             timestamps_ready: false,
@@ -310,6 +312,11 @@ impl Game {
             tap_events,
             tap_next: 0,
         };
+        if batch.choices.is_empty() {
+            self.add_subtype_entry_counters(&mut batch.moves);
+            batch.entry_bonuses_ready = true;
+            Self::rebuild_entry_counter_order(&mut batch, self.state.active);
+        }
         let counter_replacements = batch.moves.iter().any(|m| {
             m.destination == Zone::Battlefield
                 && m.counters.has_any()
@@ -333,18 +340,19 @@ impl Game {
         }
     }
     pub(super) fn has_entry_counter_replacements(&self, card: Card) -> bool {
-        (card.enters_counters().total() > 0 || !card.entry_counter_rules().is_empty())
-            && (card
-                .replacement_effects()
-                .iter()
-                .any(|e| matches!(e, crate::cards::ReplacementSpec::Counters { .. }))
-                || self.state.static_sources.iter().any(|&id| {
-                    self.state.objects[id as usize]
-                        .card
-                        .replacement_effects()
-                        .iter()
-                        .any(|e| matches!(e, crate::cards::ReplacementSpec::Counters { .. }))
-                }))
+        self.has_subtype_entry_counter_provider()
+            || (card.enters_counters().total() > 0 || !card.entry_counter_rules().is_empty())
+                && (card
+                    .replacement_effects()
+                    .iter()
+                    .any(|e| matches!(e, crate::cards::ReplacementSpec::Counters { .. }))
+                    || self.state.static_sources.iter().any(|&id| {
+                        self.state.objects[id as usize]
+                            .card
+                            .replacement_effects()
+                            .iter()
+                            .any(|e| matches!(e, crate::cards::ReplacementSpec::Counters { .. }))
+                    }))
     }
     pub(super) fn pre_entry_counters(&self, before: &ObjectView, destination: Zone) -> Counters {
         self.pre_entry_counters_with_payment(before, destination, None, before.controller)
@@ -627,6 +635,13 @@ impl Game {
                     batch.moves[index].skipped = true;
                 }
                 batch.next += 1;
+            }
+            if !self.state.entry_batch.as_ref().unwrap().entry_bonuses_ready {
+                let mut batch = self.state.entry_batch.take().unwrap();
+                self.add_subtype_entry_counters(&mut batch.moves);
+                batch.entry_bonuses_ready = true;
+                Self::rebuild_entry_counter_order(&mut batch, self.state.active);
+                self.state.entry_batch = Some(batch);
             }
             while self.state.entry_batch.as_ref().unwrap().counter_next
                 < self.state.entry_batch.as_ref().unwrap().counter_order.len()
@@ -920,5 +935,87 @@ impl Game {
             candidates,
             selected,
         })
+    }
+}
+
+impl Game {
+    fn has_subtype_entry_counter_provider(&self) -> bool {
+        self.state.static_sources.iter().any(|&id| {
+            self.state.objects[id as usize].zone == Zone::Battlefield
+                && self.state.objects[id as usize]
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| {
+                        group.fragments.iter().any(|f| {
+                            matches!(
+                                f,
+                                crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
+                            )
+                        })
+                    })
+        })
+    }
+    fn rebuild_entry_counter_order(batch: &mut EntryBatch, active: Player) {
+        batch.counter_order = batch
+            .moves
+            .iter()
+            .enumerate()
+            .filter(|(_, m)| {
+                m.destination == Zone::Battlefield && !m.skipped && m.counters.has_any()
+            })
+            .map(|(index, _)| index)
+            .collect();
+        batch
+            .counter_order
+            .sort_by_key(|&i| (batch.moves[i].controller != active, i));
+    }
+    fn add_subtype_entry_counters(&self, moves: &mut [EntryMove]) {
+        // Only a live provider unlocks the battlefield count. Ordinary entry
+        // batches never acquire an all-object scan from this mechanic.
+        for &id in &self.state.static_sources {
+            let source = &self.state.objects[id as usize];
+            if source.zone != Zone::Battlefield {
+                continue;
+            }
+            for group in source.card.static_ability_groups() {
+                for fragment in group.fragments {
+                    let crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(subtype) =
+                        fragment
+                    else {
+                        continue;
+                    };
+                    if !self.continuous_fragment_available(id, |f| matches!(f,
+                        crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(s) if s == subtype)) { continue }
+                    let count = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(other, object)| {
+                            object.zone == Zone::Battlefield
+                                && object.controller == source.controller
+                                && self
+                                    .granted_subtypes(*other as CardId)
+                                    .has(object.card, subtype)
+                        })
+                        .count();
+                    for movement in moves.iter_mut() {
+                        if movement.destination == Zone::Battlefield
+                            && !movement.skipped
+                            && movement.controller == source.controller
+                            && movement.before.reference != self.object_ref(id)
+                            && Self::entry_choice_subtypes(movement)
+                                .has(movement.before.card, subtype)
+                        {
+                            movement.counters.add(
+                                CounterKind::PlusOne,
+                                u64::try_from(count).capacity("entry counter count exhausted"),
+                            );
+                        }
+                    }
+                }
+            }
+        }
     }
 }

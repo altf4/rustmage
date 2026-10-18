@@ -126,7 +126,7 @@ impl Game {
         }
         let a = self.state.announcing.as_ref()?;
         let f = a.convoke.as_ref()?;
-        let pool = self.state.players[a.item.controller.index()].mana;
+        let pool = self.available_mana(a.item.controller, self.purpose_for_item(&a.item));
         let can_pay = payable(
             pool.map(u128::from),
             f.remaining.colored,
@@ -183,7 +183,7 @@ impl Game {
         {
             return false;
         }
-        let pool = self.state.players[p.index()].mana;
+        let pool = self.available_mana(p, self.purpose_for_item(&a.item));
         let mut done = false;
         if let Some(domain) = self.mana_payment_domain() {
             domain.representatives(|payment| {
