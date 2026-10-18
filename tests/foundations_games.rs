@@ -590,9 +590,13 @@ fn run_matrix_actions_observed(
     let mut combat = false;
     let mut branches = 0;
     let mut new_spells = BTreeSet::new();
+    let trace_games = std::env::var_os("RUSTMAGE_TRACE_GAMES").is_some();
     for pair in 0..decks.len() {
         for &seed in seeds {
             for starter in [Player::P0, Player::P1] {
+                if trace_games {
+                    eprintln!("FDN game start: pair={pair}, seed={seed}, starter={starter:?}");
+                }
                 let mut game = Game::new(Config {
                     decks: [decks[pair].clone(), decks[(pair + 1) % decks.len()].clone()],
                     seed,
@@ -686,6 +690,11 @@ fn run_matrix_actions_observed(
                 }
                 assert!(decisions > 50, "game ended before meaningful play");
                 total_decisions += decisions;
+                if trace_games {
+                    eprintln!(
+                        "FDN game complete: pair={pair}, seed={seed}, starter={starter:?}, decisions={decisions}"
+                    );
+                }
             }
         }
     }
