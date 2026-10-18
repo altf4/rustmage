@@ -561,7 +561,7 @@ impl Game {
             group: 0,
             target,
             object: match target {
-                Target::Player(_) => None,
+                Target::Stack(_) | Target::Player(_) => None,
                 Target::Card(id) | Target::Spell(id) => Some(self.object_ref(id)),
             },
         }
@@ -830,11 +830,17 @@ impl Game {
                         _ => false,
                     }
             }
+            Target::Stack(id) => self
+                .state
+                .stack
+                .iter()
+                .any(|item| item.id == id && self.stack_target_rule_matches(rule, item)),
             Target::Spell(id) => self.state.stack.iter().any(|item| {
                 item.kind == StackKind::Spell
                     && item.card == id
                     && item.object != source
                     && match rule {
+                        TargetRule::SingleTargetStackObject => item.targets.len() == 1,
                         TargetRule::Spell => true,
                         TargetRule::SpellKinds { kinds, excluded } => {
                             (kinds == 0 || item.source_card.kind_mask() & u16::from(kinds) != 0)
@@ -913,6 +919,7 @@ impl Game {
 
     pub(super) fn same_target_object(&self, target: BoundTarget) -> bool {
         match target.target {
+            Target::Stack(id) => self.state.stack.iter().any(|item| item.id == id),
             Target::Player(_) => target.object.is_none(),
             Target::Card(id) | Target::Spell(id) => self
                 .state
@@ -1002,8 +1009,12 @@ impl Game {
             }
         }
         for item in &self.state.stack {
-            if item.kind == StackKind::Spell {
-                let target = Target::Spell(item.card);
+            {
+                let target = if item.kind == StackKind::Spell && !item.is_copy {
+                    Target::Spell(item.card)
+                } else {
+                    Target::Stack(item.id)
+                };
                 if self.target_matches_without_hand(
                     rule,
                     controller,
@@ -1021,7 +1032,7 @@ impl Game {
     }
 
     pub(super) fn cast_item(&mut self, actor: Player, card: CardId, payment: Mana) -> SpellView {
-        let haste = self.spend_mana_for(
+        let outcome = self.spend_mana_for(
             actor,
             payment,
             self.spell_mana_purpose(self.effective_spell_card(card)),
@@ -1038,11 +1049,13 @@ impl Game {
         );
         self.finish_zone_events(std::slice::from_ref(&event), &[]);
         let object = event.after;
-        if haste {
+        if outcome.haste {
             self.grant_stack_keywords(object, Keywords::HASTE);
         }
         let id = self.next_stack_id();
-        self.cast_preview(actor, card, origin, object, id, payment)
+        let mut item = self.cast_preview(actor, card, origin, object, id, payment);
+        item.mana_copy_sources = outcome.copies;
+        item
     }
     pub(super) fn cast_preview(
         &self,
@@ -1060,6 +1073,9 @@ impl Game {
             reflexive_subject: None,
             crew: None,
             cast_event: None,
+            copy_event: None,
+            mana_copy_sources: None,
+            is_copy: false,
             delayed_sacrifice: None,
             delayed_warp_exile: None,
             x: None,
@@ -1317,13 +1333,15 @@ impl Game {
                     announcement.counter_payment.clone(),
                 );
             } else {
-                if self.spend_mana_for(
+                let outcome = self.spend_mana_for(
                     announcement.item.controller,
                     payment,
                     self.purpose_for_item(&announcement.item),
-                ) {
+                );
+                if outcome.haste {
                     self.grant_stack_keywords(announcement.item.object, Keywords::HASTE);
                 }
+                announcement.item.mana_copy_sources = outcome.copies;
                 announcement.item.cast.as_mut().unwrap().payment = payment;
             }
         }

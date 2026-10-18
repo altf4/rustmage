@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "6800643c3b46a08fbbc5dda28184f0b0a6a64116f2d85b498361f5fae0985f97",
+  "catalogue_version": "efc70319e5e9bc540ef0977ac4ad02353b7964f6cb97b164cc8bd245560eaf25",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2148,
-  "implemented_total": 2154,
+  "implemented_standard_cards": 2152,
+  "implemented_total": 2158,
   "token_definitions": 103,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 390,
-      "gated": 37
+      "complete": 393,
+      "gated": 34
     },
     "fin": {
       "total": 305,
@@ -179,8 +179,7 @@
     },
     "tle": {
       "total": 5,
-      "complete": 4,
-      "gated": 1
+      "complete": 5
     },
     "tmc": {
       "total": 1,
@@ -4121,8 +4120,8 @@
     {
       "name": "Bolt Bend",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tle/bolt_bend.rs",
       "set": "tle"
     },
@@ -26569,8 +26568,8 @@
     {
       "name": "Pyromancer's Goggles",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/pyromancer_s_goggles.rs",
       "set": "fdn"
     },
@@ -34993,8 +34992,8 @@
     {
       "name": "Teach by Example",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/teach_by_example.rs",
       "set": "fdn"
     },
@@ -36657,8 +36656,8 @@
     {
       "name": "Thousand-Year Storm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/thousand_year_storm.rs",
       "set": "fdn"
     },

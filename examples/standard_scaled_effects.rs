@@ -121,7 +121,7 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
             o.id == id && o.zone == Zone::Battlefield && Some(o.reference) == bound.object
         }),
         Target::Player(_) => true,
-        Target::Spell(_) => false,
+        Target::Spell(_) | Target::Stack(_) => false,
     };
     if !live {
         return 0;

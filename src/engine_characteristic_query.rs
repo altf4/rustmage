@@ -681,7 +681,7 @@ impl CharacteristicQuery<'_> {
             } else {
                 self.keywords(id)
             },
-            copy_recipe: if obj.copy_token {
+            copy_recipe: if obj.is_copy_token() {
                 self.copy_recipe(self.object_ref(id))
             } else {
                 None

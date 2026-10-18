@@ -96,6 +96,7 @@ pub(crate) enum TargetRule {
     },
     Any,
     Spell,
+    SingleTargetStackObject,
     SpellKinds {
         kinds: u8,
         excluded: u8,
@@ -322,6 +323,7 @@ pub(crate) enum ManaRestriction {
 pub(crate) enum ManaSpellBonus {
     None,
     DragonCreatureHaste,
+    CopyRedInstantSorcery,
 }
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, Serialize)]
 pub enum ManaRetention {
@@ -631,6 +633,11 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    CopyNextInstantSorcery,
+    CopyCastSpell {
+        prior_spells: bool,
+    },
+    ChangeSingleStackTarget,
     GrantGraveyardCast(GraveyardCastKind),
     CounterRelatedUnlessPayLife(u32),
     CreateCopyToken {
@@ -1951,6 +1958,8 @@ pub(crate) enum EntryPredicate {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    /// Delayed ability carried by a produced mana unit, independent of its source.
+    ManaSpentForSpell,
     /// Explicit printed source zone; legacy events keep their existing origins.
     InZone {
         zone: TargetZone,
