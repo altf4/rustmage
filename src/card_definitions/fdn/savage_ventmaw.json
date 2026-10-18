@@ -8,5 +8,23 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "aff53471752ab3d0b29fd6e9c8ec65e8baa777e6ad457dc83734d2ca846ac17b"
   },
-  "physical_metadata_sha256": "16846dffb91d018cd9c07ae095195ab6f0f2b9a6e201d9a627a61d1493151c78"
+  "physical_metadata_sha256": "16846dffb91d018cd9c07ae095195ab6f0f2b9a6e201d9a627a61d1493151c78",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SavageVentmaw.java",
+  "java_sha256": "d1153edbdb2063f5fd556ae262632655b3b2599786440e2b39e82c66fd0ee3cf",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/UntilEndOfTurnManaEffect.java",
+      "sha256": "f56a0fca61a7d8a095d421213a59692e2ee9aaafe8138837ec632bbe3239e779"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    }
+  ],
+  "remaining_obligations": [
+    "Gated mana core fixture: final rules tests, two independent core reviews and whole-card consumer acceptance are pending."
+  ]
 }

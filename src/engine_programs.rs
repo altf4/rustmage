@@ -2160,19 +2160,25 @@ impl Game {
                         matches!(instruction, Instruction::Fight { .. }),
                     );
                 }
-                Instruction::AddMana(production) => match production.in_world(self, item.card) {
-                    ManaProduction::ChosenColor | ManaProduction::CountSubtype { .. } => {
-                        unreachable!("resolved production")
+                Instruction::AddMana(production) => {
+                    let quality = self.mana_quality(production, item.card);
+                    match production.base().in_world(self, item.card) {
+                        ManaProduction::ChosenColor
+                        | ManaProduction::CountSubtype { .. }
+                        | ManaProduction::Tagged { .. } => unreachable!("resolved production"),
+                        ManaProduction::Fixed(mana) => {
+                            self.add_quality_mana(item.controller, mana, quality)
+                        }
+                        production @ ManaProduction::Choice { .. } => {
+                            self.state.pending = Pending::EffectMana {
+                                player: item.controller,
+                                production,
+                                quality,
+                            };
+                            return;
+                        }
                     }
-                    ManaProduction::Fixed(mana) => self.add_mana(item.controller, mana),
-                    ManaProduction::Choice { .. } => {
-                        self.state.pending = Pending::EffectMana {
-                            player: item.controller,
-                            production,
-                        };
-                        return;
-                    }
-                },
+                }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
                 Instruction::DestroyLandAndSearch => self.destroy_land_and_search(&item),
                 Instruction::Search(spec) | Instruction::SearchRequired(spec) => {

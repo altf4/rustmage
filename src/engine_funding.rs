@@ -24,6 +24,8 @@ struct FundingState<'g> {
     life_gained: [bool; 2],
     active: Player,
     mana: [u128; 6],
+    lots: Vec<mana_lots::Lot>,
+    purpose: mana_lots::Purpose,
     life: i128,
     resources: Vec<Resource>,
     named_counters: live_counters::Rows,
@@ -74,6 +76,8 @@ struct FundingMove {
     payment: [u64; 6],
     counters: Counters,
     production: Mana,
+    quality: Option<mana_lots::Quality>,
+    allocation: Vec<[u64; 6]>,
 }
 #[derive(Hash, PartialEq, Eq)]
 struct ResourceKey {
@@ -97,6 +101,7 @@ struct ResourceKey {
 #[derive(Hash, PartialEq, Eq)]
 struct FundingKey {
     mana: [u128; 6],
+    lots: Vec<mana_lots::Lot>,
     life: i128,
     // Equivalent sources are interchangeable for feasibility. Protect the
     // enclosing ability's source separately, even if its printed card matches.
@@ -346,6 +351,8 @@ impl<'g> FundingState<'g> {
                 .map(|p| p.life_gained_this_turn > 0),
             active: game.state.active,
             mana: game.state.players[goal.actor.index()].mana.map(u128::from),
+            lots: game.mana_lots(goal.actor).to_vec(),
+            purpose: game.funding_purpose(goal),
             life: game.state.players[goal.actor.index()].life,
             resources,
             named_counters: game.state.named_counters.clone(),
@@ -538,6 +545,8 @@ impl<'g> FundingState<'g> {
                             payment: [0; 6],
                             counters: Counters::default(),
                             production,
+                            quality: None,
+                            allocation: Vec::new(),
                         });
                         false
                     });
@@ -561,6 +570,8 @@ impl<'g> FundingState<'g> {
                     payment: [0; 6],
                     counters: Counters::default(),
                     production,
+                    quality: None,
+                    allocation: Vec::new(),
                 });
             }
             for (index, ability) in object.card.activations().iter().enumerate() {
@@ -600,18 +611,42 @@ impl<'g> FundingState<'g> {
                     ability.cost,
                     ability_world::CharacteristicWorld::counter_amounts(self, entry.id),
                     |counters| {
-                        funding_cost_payments(self.mana, ability.cost, |payment| {
-                            production.in_world(self, entry.id).visit(|production| {
-                                moves.push(FundingMove {
-                                    resource,
-                                    ability: Some(index as u16),
-                                    grantor: None,
-                                    payment,
-                                    counters: counters.clone(),
-                                    production,
-                                });
-                                false
-                            });
+                        let purpose = mana_lots::Purpose::Activation(mana_lots::Source {
+                            card: object.card,
+                            kinds: self.kinds(entry),
+                            subtypes: ability_world::CharacteristicWorld::subtypes(self, entry.id),
+                        });
+                        let pool = mana_lots::available(self.mana, &self.lots, purpose);
+                        let quality = match production {
+                            ManaProduction::Tagged { quality, .. } => {
+                                Some(mana_lots::Quality::capture(self, entry.id, quality))
+                            }
+                            _ => None,
+                        };
+                        funding_cost_payments(pool, ability.cost, |payment| {
+                            mana_lots::visit_allocations(
+                                self.mana,
+                                &self.lots,
+                                purpose,
+                                payment,
+                                |allocation| {
+                                    production.base().in_world(self, entry.id).visit(
+                                        |production| {
+                                            moves.push(FundingMove {
+                                                resource,
+                                                ability: Some(index as u16),
+                                                grantor: None,
+                                                payment,
+                                                counters: counters.clone(),
+                                                production,
+                                                quality,
+                                                allocation: allocation.clone(),
+                                            });
+                                            false
+                                        },
+                                    );
+                                },
+                            );
                         });
                         false
                     },
@@ -634,6 +669,15 @@ impl<'g> FundingState<'g> {
         moves
     }
     fn apply(&mut self, step: &FundingMove) {
+        for (lot, allocation) in self.lots.iter_mut().zip(&step.allocation) {
+            for (held, paid) in lot.amounts.iter_mut().zip(allocation) {
+                *held -= u128::from(*paid);
+            }
+        }
+        self.lots.retain(|lot| lot.amounts != [0; 6]);
+        if let Some(quality) = step.quality {
+            mana_lots::add_lot(&mut self.lots, quality, step.production.map(u128::from));
+        }
         for (pool, paid) in self.mana.iter_mut().zip(step.payment) {
             *pool -= u128::from(paid);
         }
@@ -672,6 +716,7 @@ impl<'g> FundingState<'g> {
     fn key(&self, goal: &FundingGoal) -> FundingKey {
         // Attachment edges distinguish otherwise interchangeable mana sources.
         let linked = self.named_counters.is_some()
+            || self.game.state.entry_values.is_some()
             || self
                 .resources
                 .iter()
@@ -728,6 +773,7 @@ impl<'g> FundingState<'g> {
         });
         FundingKey {
             mana: self.mana,
+            lots: self.lots.clone(),
             life: self.life,
             resources,
             named_counters: self.named_counters.clone(),
@@ -956,13 +1002,17 @@ impl<'g> FundingState<'g> {
         }
         if (if self.convoke {
             convoke::payable(
-                self.mana,
+                mana_lots::available(self.mana, &self.lots, self.purpose),
                 goal.required,
                 goal.generic,
                 &self.convoke_masks(),
             )
         } else {
-            payable(self.mana, goal.required, goal.generic)
+            payable(
+                mana_lots::available(self.mana, &self.lots, self.purpose),
+                goal.required,
+                goal.generic,
+            )
         }) && evidence.is_none_or(|n| self.evidence_value() >= u128::from(n))
         {
             return true;
@@ -1024,6 +1074,10 @@ impl<'g> FundingState<'g> {
 }
 impl Game {
     pub(super) fn can_fund(&self, goal: FundingGoal) -> bool {
+        let purpose = self.funding_purpose(&goal);
+        self.can_fund_for(goal, purpose)
+    }
+    pub(super) fn can_fund_for(&self, goal: FundingGoal, purpose: mana_lots::Purpose) -> bool {
         let object = goal
             .source
             .as_ref()
@@ -1061,35 +1115,53 @@ impl Game {
         }
         // The common prefunded path needs no resource graph or heap allocations.
         if payable(
-            self.state.players[goal.actor.index()].mana,
+            self.available_mana(goal.actor, purpose),
             goal.required,
             goal.generic,
         ) {
             return true;
         }
-        FundingState::from_game(self, &goal).reachable(&goal, &mut HashSet::new())
+        let mut state = FundingState::from_game(self, &goal);
+        state.purpose = purpose;
+        state.reachable(&goal, &mut HashSet::new())
     }
     pub(super) fn can_fund_convoke(&self, goal: FundingGoal) -> bool {
+        let purpose = self.funding_purpose(&goal);
+        self.can_fund_convoke_for(goal, purpose)
+    }
+    pub(super) fn can_fund_convoke_for(
+        &self,
+        goal: FundingGoal,
+        purpose: mana_lots::Purpose,
+    ) -> bool {
         if convoke::payable(
-            self.state.players[goal.actor.index()].mana.map(u128::from),
+            self.available_mana(goal.actor, purpose).map(u128::from),
             goal.required,
             goal.generic,
             &self.convoke_masks(goal.actor, &[]),
         ) {
             return true;
         }
-        FundingState::from_game_with_convoke(self, &goal, true)
-            .reachable(&goal, &mut HashSet::new())
+        let mut state = FundingState::from_game_with_convoke(self, &goal, true);
+        state.purpose = purpose;
+        state.reachable(&goal, &mut HashSet::new())
     }
     pub(super) fn can_fund_evidence(&self, goal: FundingGoal, threshold: u16) -> bool {
+        let purpose = self.funding_purpose(&goal);
+        self.can_fund_evidence_for(goal, threshold, purpose)
+    }
+    pub(super) fn can_fund_evidence_for(
+        &self,
+        goal: FundingGoal,
+        threshold: u16,
+        purpose: mana_lots::Purpose,
+    ) -> bool {
         if self.can_collect_evidence(goal.actor, threshold) {
-            return self.can_fund(goal.clone());
+            return self.can_fund_for(goal.clone(), purpose);
         }
-        FundingState::from_game(self, &goal).reachable_with_evidence(
-            &goal,
-            Some(threshold),
-            &mut HashSet::new(),
-        )
+        let mut state = FundingState::from_game(self, &goal);
+        state.purpose = purpose;
+        state.reachable_with_evidence(&goal, Some(threshold), &mut HashSet::new())
     }
     pub(super) fn announcement_payment_request(
         &self,
@@ -1263,7 +1335,7 @@ impl Game {
             return None;
         }
         let a = self.state.announcing.as_ref()?;
-        let pool = self.state.players[a.item.controller.index()].mana;
+        let pool = self.available_mana(a.item.controller, self.purpose_for_item(&a.item));
         let (required, generic) = if let Some(frame) = &a.convoke {
             if !frame
                 .selected
@@ -1361,13 +1433,18 @@ impl Game {
         };
         let state = FundingState::from_game(self, &goal);
         let mut done = false;
-        funding_payments(state.mana, goal.required, goal.generic, |payment| {
-            if !done {
-                done = emit(Action::PayPlot {
-                    payment: concrete_payment(payment),
-                });
-            }
-        });
+        funding_payments(
+            mana_lots::available(state.mana, &state.lots, state.purpose),
+            goal.required,
+            goal.generic,
+            |payment| {
+                if !done {
+                    done = emit(Action::PayPlot {
+                        payment: concrete_payment(payment),
+                    });
+                }
+            },
+        );
         if done {
             return true;
         }
@@ -1401,13 +1478,18 @@ impl Game {
         };
         let state = FundingState::from_game(self, &goal);
         let mut done = false;
-        funding_payments(state.mana, goal.required, goal.generic, |payment| {
-            if !done {
-                done = emit(Action::PayResolutionMana {
-                    payment: concrete_payment(payment),
-                });
-            }
-        });
+        funding_payments(
+            mana_lots::available(state.mana, &state.lots, state.purpose),
+            goal.required,
+            goal.generic,
+            |payment| {
+                if !done {
+                    done = emit(Action::PayResolutionMana {
+                        payment: concrete_payment(payment),
+                    });
+                }
+            },
+        );
         if done {
             return true;
         }
@@ -1711,6 +1793,8 @@ mod own_turn_guard_tests {
                 life_gained: [false; 2],
                 active,
                 mana: [0; 6],
+                lots: Vec::new(),
+                purpose: mana_lots::Purpose::Other,
                 life: 20,
                 resources: Vec::new(),
                 named_counters: None,

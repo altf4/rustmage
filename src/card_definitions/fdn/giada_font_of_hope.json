@@ -8,5 +8,38 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "01caf2c58c607ca02d6e15a13c14a51a16f4a2d5672d21f602ee8ad8cc856fd7"
   },
-  "physical_metadata_sha256": "4d6f5fef32b6fbf97ae22b9a986eea5e812a5c963de3374314ea7271b28ff52d"
+  "physical_metadata_sha256": "4d6f5fef32b6fbf97ae22b9a986eea5e812a5c963de3374314ea7271b28ff52d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GiadaFontOfHope.java",
+  "java_sha256": "1fe3b9d2c001de9587b27299909ce0c32a37bdbae56f07a971904dc0167dc019",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/SimpleManaAbility.java",
+      "sha256": "ffbd6c3be6ec8684aa67a8fc907e8ac29726751ae3f37cda50a024843e650bba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ConditionalColoredManaAbility.java",
+      "sha256": "4ca1b322894c2f7924ad49114c8e57fdbbab4313acec60374aa74b144eb18493"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/conditional/ConditionalSpellManaBuilder.java",
+      "sha256": "ce56830a429737325b5010a205e0d800b41ac7f2e4c59367598f4fa99e1d246e"
+    }
+  ],
+  "remaining_obligations": [
+    "Gated mana core fixture: final rules tests, two independent core reviews and whole-card consumer acceptance are pending."
+  ]
 }

@@ -1,3 +1,6 @@
+#[path = "engine_mana_lots.rs"]
+mod mana_lots;
+pub use mana_lots::{ManaLotSpendRange, ManaLotView, ManaRestrictionView, ManaSpellBonusView};
 #[path = "engine_copies.rs"]
 mod copies;
 pub use copies::CopyRecipe;
@@ -485,6 +488,7 @@ define_actions! {
         counter_payment: Counters,
         production: Mana,
     },
+    ChooseManaLotSpend { amount: u32 },
     ChooseMana {
         production: Mana,
     },
@@ -1184,6 +1188,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    ManaLotSpend {
+        player: Player,
+    },
     Replacement {
         player: Player,
     },
@@ -1312,6 +1319,7 @@ enum Pending {
     EffectMana {
         player: Player,
         production: ManaProduction,
+        quality: Option<mana_lots::Quality>,
     },
     Targets {
         player: Player,
@@ -1368,6 +1376,7 @@ impl Pending {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    mana_lots: Option<Box<mana_lots::ManaState>>,
     #[allow(clippy::box_collection)]
     temporary_controls: Option<Box<Vec<TemporaryControlView>>>,
     casting_prohibited: bool,
@@ -1702,6 +1711,7 @@ impl XChoiceView {
 /// Complete action space: concrete choices, damage bounds and scalar intervals.
 #[derive(Clone, Debug, Serialize)]
 pub struct LegalActionSpace {
+    pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub mana_payment: Option<ManaPaymentDomain>,
     pub choices: Vec<Action>,
     pub x_choice: Option<XChoiceView>,
@@ -1710,6 +1720,8 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    pub mana_lots: Vec<ManaLotView>,
+    pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub creature_damage_history: Vec<CreatureDamageHistoryView>,
     pub animations: Vec<AnimationView>,
     pub temporary_controls: Vec<TemporaryControlView>,
@@ -1922,6 +1934,7 @@ impl Game {
         let mut game = Self {
             revision: 0,
             state: State {
+                mana_lots: None,
                 temporary_controls: None,
                 casting_prohibited: false,
                 replacements: None,
@@ -2033,7 +2046,8 @@ impl Game {
             | Pending::Mulligan(p)
             | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::Replacement { player }
+            Pending::ManaLotSpend { player }
+            | Pending::Replacement { player }
             | Pending::CreatedToken { player }
             | Pending::PlotPayment { player }
             | Pending::EvidenceIntent { player }
@@ -2088,6 +2102,7 @@ impl Game {
     /// Complete legal space, including damage assignments and scalar-X intervals.
     pub fn legal_action_space(&self) -> LegalActionSpace {
         LegalActionSpace {
+            mana_lot_spend: self.mana_lot_spend_range(),
             mana_payment: self.mana_payment_domain(),
             choices: self.legal_actions(),
             x_choice: self.x_choice(),
@@ -2145,7 +2160,11 @@ impl Game {
         let checkpoint = self.state.clone();
         let revision = self.revision;
         let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-            self.apply_transaction(actor, action)?;
+            if matches!(self.state.pending, Pending::ManaLotSpend { .. }) {
+                self.apply_mana_lot_choice(actor, action.clone())?;
+            } else {
+                self.apply_transaction(actor, action.clone())?;
+            }
             // Suspended programs defer SBAs, but every committed observation must
             // still have representable derived values. Ordinary resolutions have
             // already checked battlefield stats in the SBA pass.
@@ -2181,7 +2200,10 @@ impl Game {
             Ok(())
         }));
         match result {
-            Ok(Ok(())) => Ok(()),
+            Ok(Ok(())) => {
+                self.defer_mana_allocation(actor, action, checkpoint, revision);
+                Ok(())
+            }
             Ok(Err(error)) => {
                 self.state = checkpoint;
                 self.revision = revision;
@@ -2275,6 +2297,12 @@ impl Game {
     }
 
     fn visit_actions(&self, mut emit: impl FnMut(Action) -> bool) -> bool {
+        if self.state.mana_lots.is_none() {
+            return self.visit_unfiltered_actions(emit);
+        }
+        self.visit_unfiltered_actions(|action| self.mana_action_payable(&action) && emit(action))
+    }
+    fn visit_unfiltered_actions(&self, mut emit: impl FnMut(Action) -> bool) -> bool {
         let s = &self.state;
         let Some(actor) = self.actor() else {
             return false;
@@ -2284,8 +2312,29 @@ impl Game {
         }
         // This query is read-only: identical fixed spell costs share a funding
         // result. Cache capacity affects work only, never the admitted action set.
-        let mut spell_funding_cache: [Option<(Mana, u32, bool)>; 8] = [None; 8];
+        let mut spell_funding_cache: [Option<(Mana, u32, Card, bool)>; 8] = [None; 8];
         match s.pending {
+            Pending::ManaLotSpend { .. } => {
+                if let Some(range) = self.mana_lot_spend_range() {
+                    if range.maximum - range.minimum <= 64 {
+                        for amount in range.minimum..=range.maximum {
+                            if emit(Action::ChooseManaLotSpend { amount }) {
+                                return true;
+                            }
+                        }
+                    } else {
+                        for amount in [
+                            range.minimum,
+                            range.minimum + (range.maximum - range.minimum) / 2,
+                            range.maximum,
+                        ] {
+                            if emit(Action::ChooseManaLotSpend { amount }) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
             Pending::Replacement { .. } => {
                 if self.visit_replacement_actions(&mut emit) {
                     return true;
@@ -2776,24 +2825,29 @@ impl Game {
                             let cached = spell_funding_cache
                                 .iter()
                                 .flatten()
-                                .find(|(required, amount, _)| {
-                                    *required == colored && *amount == generic
+                                .find(|(required, amount, definition, _)| {
+                                    *required == colored
+                                        && *amount == generic
+                                        && *definition == obj.card
                                 })
-                                .map(|(_, _, result)| *result);
+                                .map(|(_, _, _, result)| *result);
                             if let Some(result) = cached {
                                 result
                             } else {
-                                let result = self.can_fund(FundingGoal {
-                                    reserve: None,
-                                    actor,
-                                    required: colored,
-                                    generic,
-                                    source: None,
-                                });
+                                let result = self.can_fund_for(
+                                    FundingGoal {
+                                        reserve: None,
+                                        actor,
+                                        required: colored,
+                                        generic,
+                                        source: None,
+                                    },
+                                    self.spell_mana_purpose(obj.card),
+                                );
                                 if let Some(slot) =
                                     spell_funding_cache.iter_mut().find(|slot| slot.is_none())
                                 {
-                                    *slot = Some((colored, generic, result));
+                                    *slot = Some((colored, generic, obj.card, result));
                                 }
                                 result
                             }
@@ -3567,12 +3621,21 @@ impl Game {
                 production,
             } => {
                 let mut item = self.activation_item(actor, card, ability);
+                let definition = self.state.objects[card as usize].card.activations()
+                    [ability as usize]
+                    .mana_production()
+                    .unwrap();
+                let quality = self.mana_quality(definition, card);
                 self.pay_activation(&mut item, payment, counter_payment);
-                self.add_mana(actor, production);
+                self.add_quality_mana(actor, production, quality);
                 self.reopen_evidence_after_mana_sacrifice(card);
             }
+            Action::ChooseManaLotSpend { .. } => unreachable!("allocation handled transactionally"),
             Action::ChooseMana { production } => {
-                self.add_mana(actor, production);
+                let Pending::EffectMana { quality, .. } = self.state.pending else {
+                    unreachable!()
+                };
+                self.add_quality_mana(actor, production, quality);
                 self.run_program();
             }
             Action::BeginActivate {
@@ -3596,7 +3659,10 @@ impl Game {
                 if self.start_announcement(item, false) {
                     self.state.announcing.as_mut().unwrap().payment = Some(payment);
                 } else {
-                    self.spend_mana(actor, payment);
+                    let item = self.state.stack.last().unwrap().clone();
+                    if self.spend_mana_for(actor, payment, self.purpose_for_item(&item)) {
+                        self.grant_stack_keywords(item.object, Keywords::HASTE);
+                    }
                     self.state
                         .stack
                         .last_mut()
@@ -4532,15 +4598,7 @@ impl Game {
                 | Step::FirstStrikeDamage
                 | Step::CombatDamage
         );
-        for player in &mut self.state.players {
-            let keep = if keep_combat {
-                player.combat_red_mana
-            } else {
-                0
-            };
-            player.mana = [0, 0, 0, keep, 0, 0];
-            player.combat_red_mana = keep;
-        }
+        self.clear_step_mana(keep_combat, self.state.step != Step::Cleanup);
         match self.state.step {
             Step::Upkeep => {
                 if self.state.turn == 1 {
@@ -4666,6 +4724,7 @@ impl Game {
             self.state_based_actions();
             return;
         }
+        self.clear_step_mana(false, false);
         self.state.active = self.state.active.other();
         self.state.turn = self
             .state
@@ -4949,6 +5008,8 @@ impl Game {
             casting_prohibited: s.casting_prohibited || self.static_casting_prohibited(viewer),
             replacement_choice: self.replacement_choice(viewer),
             created_token_choice: self.created_token_choice(),
+            mana_lots: self.mana_lot_views(),
+            mana_lot_spend: owns_choice.then(|| self.mana_lot_spend_range()).flatten(),
             mana_payment: owns_choice.then(|| self.mana_payment_domain()).flatten(),
             endure_choice: if owns_choice {
                 match s.pending {
@@ -5023,6 +5084,7 @@ impl Game {
             turn: s.turn,
             step: s.step,
             decision: match s.pending {
+                Pending::ManaLotSpend { .. } => "mana_lot_spend",
                 Pending::Replacement { .. } => "replacement",
                 Pending::CreatedToken { .. } => "created_token",
                 Pending::ResolutionMana { .. } => "resolution_mana",
