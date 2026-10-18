@@ -219,16 +219,19 @@ impl super::characteristic_query::CharacteristicQuery<'_> {
 
 impl Game {
     pub(super) fn named_activation_prohibited(&self, id: CardId) -> bool {
+        self.named_activation_prohibited_for_name(CharacteristicWorld::name(self, id))
+    }
+    pub(super) fn named_activation_prohibited_for_name(&self, name: &str) -> bool {
         let Some(rows) = self.state.entry_values.as_ref() else {
             return false;
         };
-        let name = CharacteristicWorld::name(self, id);
         rows.iter().any(|row| {
             let source = &self.state.objects[row.object.card as usize];
-            source.zone == Zone::Battlefield && self.object_ref(row.object.card) == row.object
+            source.zone == Zone::Battlefield
+                && self.object_ref(row.object.card) == row.object
                 && source.card.named_activation_lock()
                 && self.printed_abilities_available(row.object.card)
-                && matches!(row.value, EntryChoiceValue::CardName(chosen) if chosen.as_str() == name)
+                && matches!(row.value, EntryChoiceValue::CardName(chosen) if chosen.matches(name))
         })
     }
 }

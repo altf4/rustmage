@@ -459,7 +459,7 @@
     "Rampaging Ursaguana",
     "Ranger Squadron",
     "Rankle, Pitiless Trickster",
-    "Rasaad, Monk of Sel\u00fbne",
+    "Rasaad, Monk of Selûne",
     "Ravenous Pursuit",
     "Razor Demon",
     "Reckless Ringleader",
@@ -700,7 +700,8 @@
     "Zephyr Gull",
     "Zimone the Calculating // Simple Subtraction"
   ],
-  "rule": "CR201.4: Oracle card names; split, adventure, flip, meld and double-faced alternatives are separate names. Digital-only names are excluded.",
-  "name_count": 35261,
-  "packed_sha256": "10a3a249d7b4b1abab92ad6111ff9d7ba6b12a03beb89832db1a8f6a6f27c181"
+  "rule": "CR201.4 and 201.4g: Oracle card names, including interchangeable original names. Split, adventure, flip, meld and double-faced alternatives are separate names. Digital-only names and CR201.6 cosmetic alternate titles are excluded.",
+  "name_count": 35292,
+  "packed_sha256": "885dcb75ced43678c01a69b231eb0e9fe91a13a643734882619486b396739ae8",
+  "interchangeable_names": "data/interchangeable-card-names-source.json"
 }

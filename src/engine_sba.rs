@@ -89,7 +89,7 @@ impl Game {
             }
             if object.card.is_legendary() {
                 legends[object.controller.index()]
-                    .entry(self.object_name(id))
+                    .entry(crate::card_names::comparison_key(self.object_name(id)))
                     .or_default()
                     .push(self.object_ref(id));
             }

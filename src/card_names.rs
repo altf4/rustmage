@@ -3,9 +3,31 @@ use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
 
 const PACKED_NAMES: &str = include_str!("../data/card-names.txt");
+const PACKED_INTERCHANGEABLE: &str = include_str!("../data/interchangeable-card-names.tsv");
+type NamePair = (&'static str, &'static str);
+static INTERCHANGEABLE: OnceLock<Box<[NamePair]>> = OnceLock::new();
 static NAMES: OnceLock<Box<[&'static str]>> = OnceLock::new();
 fn names() -> &'static [&'static str] {
     NAMES.get_or_init(|| PACKED_NAMES.lines().collect())
+}
+/// A comparison key only: observations and selected names retain their spelling.
+/// Each original name maps to its interchangeable Oracle name (CR201.3).
+pub(crate) fn comparison_key(name: &str) -> &str {
+    let pairs = INTERCHANGEABLE.get_or_init(|| {
+        PACKED_INTERCHANGEABLE
+            .lines()
+            .map(|line| line.split_once('\t').expect("interchangeable name pair"))
+            .collect()
+    });
+    pairs
+        .binary_search_by_key(&name, |(original, _)| *original)
+        .map_or(name, |index| pairs[index].1)
+}
+/// Nameless objects never share a name, including with each other (CR201.2a).
+pub(crate) fn same_name(left: &str, right: &str) -> bool {
+    !left.is_empty()
+        && !right.is_empty()
+        && (left == right || comparison_key(left) == comparison_key(right))
 }
 /// An interned rules name. Public JSON contains its ordinary string, never an ID.
 /// Name choices include cards outside the currently implemented Standard pool.
@@ -17,6 +39,10 @@ impl CardName {
     }
     pub fn as_str(self) -> &'static str {
         names()[self.0 as usize]
+    }
+    /// Rules equality, including interchangeable Oracle names (CR201.4g).
+    pub fn matches(self, name: &str) -> bool {
+        same_name(self.as_str(), name)
     }
     pub fn all() -> impl Iterator<Item = Self> {
         (0..names().len() as u32).map(Self)
@@ -32,5 +58,49 @@ impl<'de> Deserialize<'de> for CardName {
         let name = String::deserialize(d)?;
         Self::from_name(&name)
             .ok_or_else(|| serde::de::Error::custom("not a selectable Oracle card name"))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn interchangeable_names_are_selectable_and_keep_the_chosen_string() {
+        let pairs: Vec<_> = PACKED_INTERCHANGEABLE
+            .lines()
+            .map(|line| line.split_once('\t').unwrap())
+            .collect();
+        assert_eq!(pairs.len(), 31);
+        for (original, oracle) in &pairs {
+            let a = CardName::from_name(original).unwrap();
+            let b = CardName::from_name(oracle).unwrap();
+            assert!(a.matches(oracle) && b.matches(original));
+            assert_eq!(comparison_key(original), comparison_key(oracle));
+            for name in [a, b] {
+                let wire = serde_json::to_value(name).unwrap();
+                assert_eq!(wire, name.as_str());
+                assert_eq!(serde_json::from_value::<CardName>(wire).unwrap(), name);
+            }
+        }
+        assert!(!same_name(
+            "Hawkins National Laboratory",
+            "Havengul Mystery"
+        ));
+        assert!(!same_name(
+            "Doric, Nature's Warden",
+            "Casal, Pathbreaker Owlbear"
+        ));
+        assert!(!same_name("Eleven, the Mage", "Wernog, Rider's Chaplain"));
+        assert!(!same_name("", ""));
+        assert!(same_name("Shivan Dragon", "Shivan Dragon"));
+        for cosmetic in ["Godzilla, King of the Monsters", "Dracula, Lord of Blood"] {
+            assert!(CardName::from_name(cosmetic).is_none());
+        }
+        assert!(!same_name(
+            "Godzilla, King of the Monsters",
+            "Zilortha, Strength Incarnate"
+        ));
+        assert!(!same_name("Dracula, Lord of Blood", "Voldaren Bloodcaster"));
     }
 }

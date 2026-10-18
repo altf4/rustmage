@@ -515,7 +515,7 @@ impl SearchFilter {
             }
             Self::AnyOf(filters) => filters.iter().any(|filter| filter.matches(card)),
             Self::AllOf(filters) => filters.iter().all(|filter| filter.matches(card)),
-            Self::Name(name) => card.name() == name,
+            Self::Name(name) => crate::card_names::same_name(card.name(), name),
             Self::Kinds(kinds) => card.kind_mask() & kinds != 0,
             // Card characteristics in the library; flashback is not flash.
             // Dynamic outside-battlefield ability grants remain gated.

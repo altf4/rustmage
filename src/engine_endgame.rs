@@ -45,7 +45,10 @@ impl Game {
                 && object.controller == player
                 && self.has_subtype(id as CardId, subtype)
             {
-                names.insert(self.object_name(id as CardId));
+                let name = self.object_name(id as CardId);
+                if !name.is_empty() {
+                    names.insert(crate::card_names::comparison_key(name));
+                }
             }
         }
         names.len()

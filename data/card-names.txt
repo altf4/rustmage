@@ -2882,6 +2882,7 @@ Bladewing, Deathless Tyrant
 Blanchwood Armor
 Blanchwood Prowler
 Blanchwood Treefolk
+Blanka, Ferocious Friend
 Blanket of Night
 Blaring Captain
 Blaring Recruiter
@@ -4916,6 +4917,7 @@ Chicken Egg
 Chicken Troupe
 Chicken à la King
 Chief Engineer
+Chief Jim Hopper
 Chief Magistrate of Mercadia
 Chief Warg's Company
 Chief of the Edge
@@ -5048,6 +5050,7 @@ Chronozoa
 Chthonian Nightmare
 Chub Toad
 Chulane, Teller of Tales
+Chun-Li, Countless Kicks
 Chupacabra Echo
 Churning Eddy
 Churning Reservoir
@@ -6686,6 +6689,7 @@ Daru Spiritualist
 Daru Stinger
 Daru Warchief
 Darwin, Adaptive Mutant
+Daryl, Hunter of Walkers
 Dash Hopes
 Dashing Bloodsucker
 Dathon and Picard at El-Adrel
@@ -7394,6 +7398,7 @@ Devout Monk
 Devout Witness
 Dewdrop Cure
 Dewdrop Spy
+Dhalsim, Pliable Pacifist
 Dhund Operative
 Diabolic Edict
 Diabolic Intent
@@ -7832,6 +7837,8 @@ Dora Milaje Elite
 Doran, Besieged by Time
 Doran, the Siege Tower
 Dori, Bearer of Friends
+Doric, Nature's Warden
+Doric, Owlbear Avenger
 Dormant Gomazoa
 Dormant Grove
 Dormant Sliver
@@ -8369,6 +8376,7 @@ Dust Elemental
 Dust Stalker
 Dust of Moments
 Dust to Dust
+Dustin, Gadget Genius
 Dusty Parlor
 Dusyut Earthcarver
 Dutiful Attendant
@@ -8445,6 +8453,7 @@ Dáin, Lord of the Iron Hills
 Déjà Vu
 Dúnedain Blade
 Dúnedain Rangers
+E. Honda, Sumo Champion
 ED-E, Lonesome Eyebot
 EPF Point Squad
 Eager Beaver
@@ -8593,6 +8602,7 @@ Edgewalker
 Edgewall Inn
 Edgewall Innkeeper
 Edgewall Pack
+Edgin, Larcenous Lutenist
 Edifice of Authority
 Edric, Spymaster of Trest
 Educated Detective
@@ -8748,6 +8758,7 @@ Elephant-Rat
 Elesh Norn
 Elesh Norn, Grand Cenobite
 Elesh Norn, Mother of Machines
+Eleven, the Mage
 Elf Replica
 Elfhame Druid
 Elfhame Palace
@@ -10864,6 +10875,7 @@ Forge Armor
 Forge Boss
 Forge Devil
 Forge of Heroes
+Forge, Neverwinter Charlatan
 Forgeborn Oreads
 Forgehammer Centurion
 Forger's Foundry
@@ -11979,6 +11991,7 @@ Glen Elendra Guardian
 Glen Elendra Liege
 Glen Elendra Pranksters
 Glen Elendra's Answer
+Glenn, the Voice of Calm
 Glidedive Duo
 Glider Kids
 Glider Staff
@@ -13027,6 +13040,7 @@ Guildpact Paragon
 Guildscorn Ward
 Guildsworn Prowler
 Guile
+Guile, Sonic Soldier
 Guiltfeeder
 Guilty Conscience
 Guise of Fire
@@ -13441,6 +13455,7 @@ Hawkeye, Clint Barton
 Hawkeye, Master Marksman
 Hawkeye, Trick Shot
 Hawkeye, Young Avenger
+Hawkins National Laboratory
 Haystack
 Haytham Kenway
 Haywire Mite
@@ -13963,6 +13978,7 @@ Hold the Gates
 Hold the Line
 Hold the Perimeter
 Holdout Settlement
+Holga, Relentless Rager
 Holistic Wisdom
 Hollow Dogs
 Hollow Marauder
@@ -16061,6 +16077,7 @@ Kemba's Skyguard
 Kemba, Kha Enduring
 Kemba, Kha Regent
 Kemuri-Onna
+Ken, Burning Brawler
 Kenessos, Priest of Thassa
 Kenku Artificer
 Kenrith's Transformation
@@ -17627,8 +17644,10 @@ Lu Bu, Master-at-Arms
 Lu Meng, Wu General
 Lu Su, Wu Advisor
 Lu Xun, Scholar General
+Lucas, the Sharpshooter
 Lucent Liminid
 Lucid Dreams
+Lucille
 Lucius the Eternal
 Luck Bobblehead
 Lucky Clover
@@ -18427,6 +18446,7 @@ Maw of the Mire
 Maw of the Obzedat
 Mawcor
 Mawloc
+Max, the Daredevil
 Maximize Altitude
 Maximize Velocity
 Maximum Carnage
@@ -18739,6 +18759,7 @@ Michelangelo, Weirdness to 11
 Michelangelo, the Heart
 Michiko Konda, Truth Seeker
 Michiko's Reign of Truth
+Michonne, Ruthless Survivor
 Micromancer
 Microscope
 Midgar, City of Mako
@@ -18797,6 +18818,7 @@ Mijae Djinn
 Mijo, the Bull
 Mikaeus, the Lunarch
 Mikaeus, the Unhallowed
+Mike, the Dungeon Master
 Mikey & Don, Party Planners
 Mikey & Leo, Chaos & Order
 Mikey & Mona, Mutant Sitters
@@ -18841,6 +18863,7 @@ Mind Drain
 Mind Drill Assailant
 Mind Extraction
 Mind Flayer
+Mind Flayer, the Shadow
 Mind Funeral
 Mind Games
 Mind Grind
@@ -20080,6 +20103,7 @@ Nefarious Imp
 Nefarious Lich
 Nefarox, Overlord of Grixis
 Nefashu
+Negan, the Cold-Blooded
 Negate
 Negative Zone Portal
 Neglected Heirloom
@@ -24245,6 +24269,7 @@ Ribtruss Roaster
 Richard Garfield, Ph.D.
 Riches
 Rick Jones, Destined Sidekick
+Rick, Steadfast Leader
 Rickety Gazebo
 Ricochet
 Ricochet Trap
@@ -24976,6 +25001,7 @@ Ryan Sinclair
 Rydia's Return
 Rydia, Summoner of Mist
 Rysorian Badger
+Ryu, World Warrior
 Ryusei, the Falling Star
 S.H.I.E.L.D. Deployment Drone
 S.H.I.E.L.D. Flying Car
@@ -26885,6 +26911,7 @@ Simic Signet
 Simic Sky Swallower
 Simic Slaw
 Simic, Value Engine
+Simon, Wild Magic Sorcerer
 Simoon
 Simple
 Simplify
@@ -30781,6 +30808,7 @@ The Underworld Fantasy Queen
 The Unknown Wizard
 The Unluckiest Planeswalker
 The Unspeakable
+The Upside Down
 The Ur-Dragon
 The Ur-Sphinx
 The Valeyard
@@ -34361,6 +34389,7 @@ Will of the Mardu
 Will of the Naga
 Will of the Sultai
 Will of the Temur
+Will the Wise
 Will, Scholar of Frost
 Will, Scion of Peace
 Will-Forged Golem
@@ -34862,6 +34891,7 @@ Xenagos's Strike
 Xenagos, God of Revels
 Xenagos, the Reveler
 Xenic Poltergeist
+Xenk, Paladin Unbroken
 Xenobotanist
 Xenograft
 Xenosquirrels
@@ -35063,6 +35093,7 @@ Zameck Guildmage
 Zamriel, Seraph of Steel
 Zanam Djinn
 Zanarkand, Ancient Metropolis
+Zangief, the Red Cyclone
 Zanikev Locust
 Zap
 Zar Ojanen, Scion of Efrava
