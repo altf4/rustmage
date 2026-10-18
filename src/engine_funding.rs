@@ -1132,6 +1132,9 @@ impl Game {
         state.purpose = purpose;
         state.reachable(&goal, &mut HashSet::new())
     }
+    // Numeric funding fixtures use the default-purpose convenience wrapper;
+    // runtime spell callers always provide their actual face purpose.
+    #[cfg(test)]
     pub(super) fn can_fund_convoke(&self, goal: FundingGoal) -> bool {
         let purpose = self.funding_purpose(&goal);
         self.can_fund_convoke_for(goal, purpose)
@@ -1384,7 +1387,7 @@ impl Game {
         }
         if convoke
             && convoke::payable(
-                state.mana,
+                mana_lots::available(state.mana, &state.lots, state.purpose),
                 goal.required,
                 goal.generic,
                 &state.convoke_masks(),

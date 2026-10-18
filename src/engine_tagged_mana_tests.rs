@@ -680,3 +680,97 @@ fn tagged_mana_three_lot_suspended_prefix_survives_parent_disposal_and_restore()
         assert_eq!(owned.object_view(dragon).zone, Zone::Battlefield);
     }
 }
+
+#[test]
+fn tagged_mana_convoke_guidance_and_can_pay_exclude_non_angel_giada_mana() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.state.players[p.index()].mana = [2, 0, 0, 0, 0, 0];
+        let giada = named(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
+        activate(&mut g, giada, 0, [1, 0, 0, 0, 0, 0]);
+        let forest = named(&mut g, p, "Forest", Zone::Battlefield);
+        let bears: Vec<_> = (0..3)
+            .map(|_| named(&mut g, p, "Bear Cub", Zone::Battlefield))
+            .collect();
+        let celebrant = named(&mut g, p, "Sun-Dappled Celebrant", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: celebrant });
+        reject(&mut g, Action::BeginConvoke);
+        checked(&mut g, Action::TapMana { card: forest });
+        checked(&mut g, Action::BeginConvoke);
+        for bear in bears {
+            let object = g.object_ref(bear);
+            checked(
+                &mut g,
+                Action::ChooseConvoker {
+                    object,
+                    contribution: ConvokeContribution::Generic,
+                },
+            );
+        }
+        assert!(g.convoke_choice().unwrap().can_pay);
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [2, 0, 0, 0, 1, 0],
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [1, 0, 0, 0, 0, 0]);
+
+        let mut g = setup(p);
+        g.state.players[p.index()].mana = [0; 6];
+        let giada = named(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
+        activate(&mut g, giada, 0, [1, 0, 0, 0, 0, 0]);
+        let first = named(&mut g, p, "Healer's Hawk", Zone::Battlefield);
+        let second = named(&mut g, p, "Healer's Hawk", Zone::Battlefield);
+        let bears: Vec<_> = (0..4)
+            .map(|_| named(&mut g, p, "Bear Cub", Zone::Battlefield))
+            .collect();
+        let celebrant = named(&mut g, p, "Sun-Dappled Celebrant", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: celebrant });
+        checked(&mut g, Action::BeginConvoke);
+        let object = g.object_ref(first);
+        reject(
+            &mut g,
+            Action::ChooseConvoker {
+                object,
+                contribution: ConvokeContribution::Generic,
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseConvoker {
+                object,
+                contribution: ConvokeContribution::White,
+            },
+        );
+        for bear in bears {
+            let object = g.object_ref(bear);
+            checked(
+                &mut g,
+                Action::ChooseConvoker {
+                    object,
+                    contribution: ConvokeContribution::Generic,
+                },
+            );
+        }
+        assert!(!g.convoke_choice().unwrap().can_pay);
+        reject(
+            &mut g,
+            Action::PayCosts {
+                payment: [1, 0, 0, 0, 0, 0],
+            },
+        );
+        let object = g.object_ref(second);
+        checked(
+            &mut g,
+            Action::ChooseConvoker {
+                object,
+                contribution: ConvokeContribution::White,
+            },
+        );
+        checked(&mut g, Action::PayCosts { payment: [0; 6] });
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [1, 0, 0, 0, 0, 0]);
+    }
+}
