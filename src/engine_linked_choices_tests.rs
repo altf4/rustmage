@@ -806,3 +806,94 @@ fn linked_choices_spyglass_names_granted_ability_recipient_not_equipment() {
         }
     }
 }
+
+#[test]
+fn linked_choices_spyglass_interchangeable_names_apply_to_both_spellings_and_restore() {
+    for p in [Player::P0, Player::P1] {
+        for (original, counterpart) in [
+            ("Eleven, the Mage", "Cecily, Haunted Mage"),
+            ("Will the Wise", "Wernog, Rider's Chaplain"),
+            ("Rick, Steadfast Leader", "Greymond, Avacyn's Stalwart"),
+            ("Hawkins National Laboratory", "Havengul Laboratory"),
+            ("Doric, Owlbear Avenger", "Casal, Pathbreaker Owlbear"),
+        ] {
+            for chosen in [original, counterpart] {
+                let mut g = setup(p);
+                let glass = spyglass(&mut g, p, chosen);
+                // These names are legal choices even though the corresponding
+                // non-Standard cards have no playable definitions in this pool.
+                assert!(g.named_activation_prohibited_for_name(original));
+                assert!(g.named_activation_prohibited_for_name(counterpart));
+                assert!(!g.named_activation_prohibited_for_name("Shivan Dragon"));
+                let saved = g.snapshot();
+                let mut branch = {
+                    let parent = g.clone();
+                    parent.clone()
+                };
+                branch.record_control(branch.object_ref(glass), p.other(), None);
+                assert!(branch.named_activation_prohibited_for_name(counterpart));
+                assert_eq!(
+                    serde_json::to_value(branch.object_view(glass)).unwrap()["entry_choice"]["CardName"],
+                    chosen
+                );
+                branch.move_object(glass, Zone::Graveyard);
+                assert!(!branch.named_activation_prohibited_for_name(original));
+                branch.restore(&saved).unwrap();
+                assert!(branch.named_activation_prohibited_for_name(counterpart));
+                assert_eq!(g.snapshot(), saved);
+            }
+        }
+    }
+}
+
+#[test]
+fn linked_choices_interchangeable_names_share_stat_count_keys_in_borrowed_worlds() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let ids: Vec<_> = (0..3)
+            .map(|_| card(&mut g, p, "Bear Cub", Zone::Battlefield))
+            .collect();
+        let source = g.object_ref(ids[2]);
+        let names = [
+            "Eleven, the Mage",
+            "Cecily, Haunted Mage",
+            "Wernog, Rider's Chaplain",
+        ];
+        let evaluate = |value| {
+            g.stat_value_with(
+                value,
+                source,
+                p,
+                &|| ids.iter().map(|&id| (id, &g.state.objects[id as usize])),
+                &|id| g.granted_subtypes(id),
+                &|id, o| g.object_kinds(id, o),
+                &|id| names[ids.iter().position(|&i| i == id).unwrap()],
+                &|_| 0,
+                &|_| false,
+                20,
+                false,
+            )
+        };
+        assert_eq!(
+            evaluate(StatValue::OtherNamedCreatures("Cecily, Haunted Mage")),
+            2
+        );
+        assert_eq!(
+            evaluate(StatValue::OtherNamedCreatures("Eleven, the Mage")),
+            2
+        );
+        assert_eq!(
+            evaluate(StatValue::DistinctNames(CountFilter {
+                zone: CountZone::Battlefield,
+                relation: 0,
+                kind: PermanentType::Creature.mask(),
+                exclude: 0,
+                subtype: None,
+                basic: false,
+                other: false,
+                cards_only: false,
+            })),
+            2
+        );
+    }
+}

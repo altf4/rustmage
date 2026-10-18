@@ -86,6 +86,14 @@ object. Future name-changing effects must extend the characteristic query rather
 than changing physical metadata or recomputing a departed object's name. This
 query does not itself admit new copy, rename or named-ability suppression cards.
 
+Interchangeable Oracle names use `CardName::matches` or the shared internal
+`card_names::same_name`; grouping/counting uses `card_names::comparison_key`.
+The small pinned name-pair table follows CR201.3 and CR201.4g, including each
+face separately. It affects comparisons without rewriting an object's name or
+the ordinary string chosen in an action. CR201.6 cosmetic alternate titles are
+not selectable names. Physical catalogue aliases still resolve to one definition;
+this metadata does not admit playable behavior for cards outside the pool.
+
 ## Named counters
 
 Live `Counters` owns sparse, canonically ordered values for incubation, bait,

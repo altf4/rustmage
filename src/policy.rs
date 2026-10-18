@@ -279,7 +279,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     .iter()
                     .chain(looked.into_iter().flatten())
                     .filter(|object| {
-                        object.name() == name.as_str()
+                        name.matches(object.name())
                             && object
                                 .card
                                 .activations()
