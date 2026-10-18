@@ -399,8 +399,24 @@ fn combat_allocation_hellkite_paid_x_destroys_current_nonlands_once_even_after_s
         let victim = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
         let own = named(&mut g, p, "Bear Cub", Zone::Battlefield);
         let land = named(&mut g, p.other(), "Forest", Zone::Battlefield);
-        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
-        activate_x(&mut g, hellkite, 2);
+        let funding_lands = [
+            named(&mut g, p, "Forest", Zone::Battlefield),
+            named(&mut g, p, "Forest", Zone::Battlefield),
+        ];
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: hellkite,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        assert!(g.observe(p.other()).x_choice.is_none());
+        checked(&mut g, Action::ChooseX { value: 2 });
+        for card in funding_lands {
+            checked(&mut g, Action::TapMana { card });
+        }
+        pay(&mut g);
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
         reject(
             &mut g,
@@ -422,7 +438,11 @@ fn combat_allocation_hellkite_zero_x_no_damage_is_legal_and_boost_repeats() {
     let mut g = setup(Player::P0);
     let h = named(&mut g, Player::P0, "Steel Hellkite", Zone::Battlefield);
     for _ in 0..2 {
-        g.state.players[0].mana = [0, 0, 0, 0, 0, 2];
+        g.state.players[0].mana = [0; 6];
+        let funding_lands = [
+            named(&mut g, Player::P0, "Forest", Zone::Battlefield),
+            named(&mut g, Player::P0, "Forest", Zone::Battlefield),
+        ];
         checked(
             &mut g,
             Action::AnnounceActivate {
@@ -431,7 +451,11 @@ fn combat_allocation_hellkite_zero_x_no_damage_is_legal_and_boost_repeats() {
                 counter_payment: Counters::default(),
             },
         );
+        for card in funding_lands {
+            checked(&mut g, Action::TapMana { card });
+        }
         pay(&mut g);
+        assert_eq!(g.state.players[0].mana, [0; 6]);
         settle(&mut g);
     }
     assert_eq!(g.stats(h).power, 7);
