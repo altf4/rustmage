@@ -5,12 +5,14 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(
-            Keywords::PROTECTION_EVERYTHING,
-        )],
+        fragments: &[
+            StaticAbilityFragment::IntrinsicKeywords(Keywords::PROTECTION_EVERYTHING),
+            StaticAbilityFragment::Replacement(0, ReplacementSpec::PreventAllDamageToSelf),
+        ],
     }],
     extras: &CardExtras {
         zone_replacement: Some(ZoneReplacementRule::RevealShuffleSelf),
+        replacement_effects: &[ReplacementSpec::PreventAllDamageToSelf],
         ..CardExtras::EMPTY
     },
     ..CardRules::EMPTY

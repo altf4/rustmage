@@ -418,6 +418,7 @@ fn zone_protection_targets_blocks_attachments_damage_and_countering_keep_distinc
             amount: 5,
             combat: false,
         }]);
+        g.advance_replacements(false);
         assert_eq!(g.object_view(progenitus).damage, 0);
         g.apply_damage_batch(&[DamageEvent {
             preventable: false,
@@ -540,6 +541,49 @@ fn zone_nested_mana_choice_preserves_controller_owner_and_exact_replay() {
                 settle(&mut g);
                 assert_eq!(g.counter_count(ghoul, CounterKind::PlusOne), 1);
             }
+        }
+    }
+}
+
+#[test]
+fn zone_protection_prevention_orders_with_doubling_and_excludes_unpreventable_damage() {
+    for p in [Player::P0, Player::P1] {
+        for prevent_first in [false, true] {
+            let mut g = setup(p);
+            let progenitus = paid(&mut g, p, "Progenitus", &[]);
+            settle(&mut g);
+            let dealer = fixture(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+            let doubler = fixture(&mut g, p.other(), "Twinflame Tyrant", Zone::Battlefield);
+            let source = g.damage_source(dealer);
+            g.apply_damage_batch(&[DamageEvent {
+                preventable: true,
+                source,
+                target: Target::Card(progenitus),
+                amount: 2,
+                combat: false,
+            }]);
+            assert!(g.advance_replacements(false));
+            assert_eq!(g.actor(), Some(p));
+            let view = g.observe(p).replacement_choice.unwrap();
+            assert_eq!(view.effects.len(), 2);
+            assert_eq!(view.damage.unwrap().amount, 2);
+            let chosen = if prevent_first { progenitus } else { doubler };
+            let action = g.legal_actions().into_iter().find(|a| matches!(a, Action::ChooseReplacement { source, .. } if source.card == chosen)).unwrap();
+            checked(&mut g, action);
+            assert!(g.state.replacements.is_none());
+            assert_eq!(g.object_view(progenitus).damage, 0);
+            assert!(!g.object_view(progenitus).damaged_this_turn);
+            assert!(!g.object_view(dealer).dealt_damage_this_turn);
+            g.apply_damage_batch(&[DamageEvent {
+                preventable: false,
+                source,
+                target: Target::Card(progenitus),
+                amount: 1,
+                combat: false,
+            }]);
+            assert!(!g.advance_replacements(false));
+            assert_eq!(g.object_view(progenitus).damage, 2);
+            assert!(g.object_view(dealer).dealt_damage_this_turn);
         }
     }
 }

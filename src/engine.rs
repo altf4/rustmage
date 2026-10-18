@@ -5083,10 +5083,9 @@ impl Game {
         // Avoid allocating on the ordinary, unprevented damage path.
         let prevented = |event: &DamageEvent| {
             event.preventable
-                && (matches!(event.target, Target::Card(id) if self.on_battlefield(id) && self.keywords(id).contains(Keywords::PROTECTION_EVERYTHING))
-                    || event.combat
-                        && (event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY)
-                            || matches!(event.target, Target::Card(id) if self.keywords(id).contains(Keywords::PREVENT_COMBAT_TO))))
+                && event.combat
+                && (event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY)
+                    || matches!(event.target, Target::Card(id) if self.keywords(id).contains(Keywords::PREVENT_COMBAT_TO)))
         };
         let dealt = events.iter().any(prevented).then(|| {
             events

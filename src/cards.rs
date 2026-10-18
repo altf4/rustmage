@@ -1419,6 +1419,7 @@ pub(crate) enum ReplacementSpec {
     DoubleCreatureDamage,
     DoubleOpponentDamage,
     PreventOtherCreatureNoncombatDamage,
+    PreventAllDamageToSelf,
     Counters {
         filter: ReplacementFilter,
         kind: Option<CounterKind>,
