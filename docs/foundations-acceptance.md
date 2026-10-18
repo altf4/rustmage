@@ -1,39 +1,65 @@
-# First full-set milestone: Foundations
+# Foundations acceptance
 
-Issue [355](https://github.com/altf4/rustmage/issues/355) tracks the first complete
-set. All-Standard remains the long-term goal, reached one verified set at a time.
-Foundations has the highest existing admission fraction: 314 of 517 unique cards
-at the selection baseline. The remaining 203 cards are gated. Those admission
-flags are implementation claims; inherited cards also need rules evidence.
+Issue [355](https://github.com/altf4/rustmage/issues/355) records merged coverage,
+remaining obligations and measured results for the first full-set milestone.
+Foundations began with 314 admitted identities; that historical subset is not
+the acceptance target. All-Standard remains the long-term goal.
 
 `data/sets/fdn.json` freezes all 517 physical Oracle identities, including the
 Beginner Box and Starter Collection. Its 771 XMage printings count cosmetic
 variants once. Reprints share one typed implementation; the directory owning a
-card does not define its full set membership. Authenticate and report status with:
+card does not define its set membership. Authenticate the complete inventory with:
 
 ```sh
 python3 -m scripts.set_status FDN --check
 ```
 
-Finish existing core dependencies, then use `rustmage-implement-set` for FDN-only
-batches. Every printed obligation and all faces, token recipes, costs, targets,
-choices, triggers and effects must work before a card is admitted. Missing shared
-mechanics include copying, persistent chosen colors/types, extra combats,
-prevention/replacement, target changes and alternate game-result rules. Each new
-mechanic receives interaction tests and owned branch/restore checks.
+Every printed obligation must work before a card is supported: costs, targets,
+choices, triggers, static and replacement effects, generated tokens and relevant
+source/controller/zone changes. Direct definitions and their source records live
+in `src/card_definitions/<set>/`; native rules tests exercise paid actions,
+interactions, hidden information, rejected actions and owned state. The final
+eleven-card integration is [PR454](https://github.com/altf4/rustmage/pull/454).
 
-`tests/foundations_games.rs` starts the end-to-end matrix with twenty naturally
-played Standard games: five single-color decks, two seeds, both starting seats.
-It reuses the existing policy, pays normal costs and checks terminal outcomes,
-combat, tokens, triggers, illegal-action atomicity and raw/index owned replay.
-Its 45 nonland identities and basics are an initial regression workload. Passing
-this matrix alone cannot certify the set. Extend gameplay coverage with the set's
-mechanics and interactions as missing cards land; preserve targeted rules tests
-for every card, including inherited implementations.
+`tests/foundations_games.rs` contains complete games with Standard-legal,
+Foundations-only decks, covering all colors and mechanic-specific workloads.
+The broad inventory matrix requires all 517 identities to be supported and
+included in its decks. Inclusion alone does not prove that a card was cast or
+that every obligation executed; targeted rules tests and the natural-game
+mechanic observers supply that evidence. The existing policy pays actual costs,
+checks terminal outcomes, rejects illegal actions and verifies raw/index replay.
 
-Accept the set only when all 517 cards have complete tested behavior, remaining
-obligations are resolved, and full-game evidence exercises the implemented set
-with legal decks and meaningful outcomes. Use two independent nonauthor reviews
-for final PRs. Then invoke the skill again to choose and complete the next full
-set. A metadata count, partial implementation or one smoke deck cannot waive this
-acceptance target.
+Run the frozen integrated source through the full validator:
+
+```sh
+python3 scripts/validate.py --release
+```
+
+It checks source provenance, formatting, native tests, all game matrices, strict
+Clippy and the release build. Retain its report, resource measurements and exact
+shared-library hashes; verify positive library admission/owned-state checks and
+two independent nonauthor reviews of the final published batch before merging.
+The tracking issue and final PR record actual results, including any failures.
+
+The bounded `owned_rollouts::foundations_private_choice_owned_sibling_rollouts`
+workload starts from naturally reached private library choices in legal
+Foundations games in both seats. It compares distinct multi-action raw/index
+sibling continuations after parent disposal, then restores and replays the saved
+choice. Run its optimized measurement through the resource guard:
+
+```sh
+python3 scripts/resource_guard.py -- cargo test --release --test foundations_games owned_rollouts::foundations_private_choice_owned_sibling_rollouts -- --exact --nocapture
+```
+
+Reported branch/decision rates include cloning, snapshots and both players' JSON
+observation equality checks. State bytes exclude unused capacity and allocator
+overhead. This measures trusted simulator verification, not hidden-information
+MCTS or neural inference. The separate Freeform smoke benchmark is a limited
+regression workload and must not be presented as full-set or XMage parity
+performance. Record optimized results with their exact source revision in issue
+355 and the final PR.
+
+Accept Foundations only after all 517 implementations and the combined rules,
+game and owned-search checks pass with no known outstanding obligations. Then
+**pause for the user to regroup before selecting or implementing another set**.
+Do not mark the all-Standard objective complete at this milestone.

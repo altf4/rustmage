@@ -14,6 +14,7 @@ pub struct EntryChoiceView {
     pub object: ObjectRef,
     pub card: Card,
     pub kind: EntryChoiceKind,
+    pub opponent_hand: Option<Vec<ObjectView>>,
     pub selected: Vec<(ObjectRef, EntryChoiceValue)>,
 }
 pub(super) fn owned_bytes(rows: &Rows) -> usize {
@@ -60,6 +61,9 @@ impl Game {
         let batch = self.state.entry_batch.as_ref().unwrap();
         let movement = &batch.moves[batch.choices[batch.next]];
         match movement.before.card.entry_choice().unwrap() {
+            EntryChoiceKind::CardNameAfterOpponentHand => {
+                crate::CardName::all().any(|name| emit(EntryChoiceValue::CardName(name)))
+            }
             EntryChoiceKind::Color => ChoiceColor::ALL
                 .into_iter()
                 .any(|c| emit(EntryChoiceValue::Color(c))),
@@ -116,6 +120,18 @@ impl Game {
             object: movement.before.reference,
             card: movement.before.card,
             kind: movement.before.card.entry_choice()?,
+            opponent_hand: (viewer == movement.controller
+                && movement.before.card.entry_choice()
+                    == Some(EntryChoiceKind::CardNameAfterOpponentHand))
+            .then(|| {
+                self.state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, o)| o.zone == Zone::Hand && o.owner == viewer.other())
+                    .map(|(id, _)| self.object_view(id as CardId))
+                    .collect()
+            }),
             selected: batch
                 .moves
                 .iter()
@@ -198,5 +214,24 @@ impl super::characteristic_query::CharacteristicQuery<'_> {
             }
         }
         result
+    }
+}
+
+impl Game {
+    pub(super) fn named_activation_prohibited(&self, id: CardId) -> bool {
+        self.named_activation_prohibited_for_name(CharacteristicWorld::name(self, id))
+    }
+    pub(super) fn named_activation_prohibited_for_name(&self, name: &str) -> bool {
+        let Some(rows) = self.state.entry_values.as_ref() else {
+            return false;
+        };
+        rows.iter().any(|row| {
+            let source = &self.state.objects[row.object.card as usize];
+            source.zone == Zone::Battlefield
+                && self.object_ref(row.object.card) == row.object
+                && source.card.named_activation_lock()
+                && self.printed_abilities_available(row.object.card)
+                && matches!(row.value, EntryChoiceValue::CardName(chosen) if chosen.matches(name))
+        })
     }
 }

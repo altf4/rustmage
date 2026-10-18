@@ -39,7 +39,11 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
         let beneficial = program
             .iter()
             .find_map(|instruction| match instruction {
-                Instruction::PutCounters { kind, .. } => Some(*kind == CounterKind::PlusOne),
+                Instruction::PutCounters { kind, .. }
+                | Instruction::DistributeCounters { kind, .. }
+                | Instruction::DoubleCounterKind { kind, .. } => {
+                    Some(*kind == CounterKind::PlusOne)
+                }
                 Instruction::DoubleCounters => Some(true),
                 Instruction::GrantKeywords { .. } => Some(true),
                 Instruction::Connive { .. }
@@ -119,6 +123,32 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             return -10;
         }
         match action {
+            Action::AssignLibraryPile { pile, .. } => {
+                let piles = observation.library_piles.as_ref().unwrap();
+                // A balanced split is a generic deterministic baseline, using only
+                // the chooser's visible counts rather than library/RNG state.
+                let down = piles.face_down_count <= piles.face_up.len();
+                i128::from((*pile == crate::LibraryPile::FaceDown) == down)
+            }
+            Action::ChooseLibraryPile { pile } => {
+                let piles = observation.library_piles.as_ref().unwrap();
+                // The opponent gives away the smaller pile without seeing the
+                // hidden identities. Both empty and face-down piles are legal.
+                -i128::try_from(if *pile == crate::LibraryPile::FaceDown {
+                    piles.face_down_count
+                } else {
+                    piles.face_up.len()
+                })
+                .unwrap()
+            }
+            Action::KeepPermanentType { object } => {
+                let permanent = observation
+                    .objects
+                    .iter()
+                    .find(|o| o.reference == *object)
+                    .unwrap();
+                permanent.power.max(0) + permanent.toughness.max(0)
+            }
             Action::ChooseExplore { graveyard, .. } => {
                 if *graveyard {
                     500
@@ -237,6 +267,36 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     }) && object.has_subtype(typ.name())
                 })
                 .count() as i128,
+            Action::ChooseEntryValue {
+                value: crate::EntryChoiceValue::CardName(name),
+            } => {
+                let looked = observation
+                    .entry_value
+                    .as_ref()
+                    .and_then(|choice| choice.opponent_hand.as_ref());
+                observation
+                    .objects
+                    .iter()
+                    .chain(looked.into_iter().flatten())
+                    .filter(|object| {
+                        name.matches(object.name())
+                            && object
+                                .card
+                                .activations()
+                                .iter()
+                                .any(|ability| ability.mana_production().is_none())
+                    })
+                    .map(|object| {
+                        if object.controller == actor {
+                            -20
+                        } else if object.zone == Zone::Battlefield {
+                            12
+                        } else {
+                            8
+                        }
+                    })
+                    .sum()
+            }
             Action::ChooseEntryValue { .. } => 0,
             Action::ChooseEntryLife { pay } => {
                 // Avoid voluntary lethal payment; the example still exercises

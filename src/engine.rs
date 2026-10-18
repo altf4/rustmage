@@ -3,11 +3,14 @@ mod endgame;
 #[cfg(test)]
 #[path = "engine_endgame_tests.rs"]
 mod endgame_tests;
+#[path = "engine_linked_choices.rs"]
+mod linked_choices;
 #[cfg(test)]
 #[path = "engine_zone_replacement_tests.rs"]
 mod zone_replacement_tests;
 #[path = "engine_zone_replacements.rs"]
 mod zone_replacements;
+pub use linked_choices::{KeepTypesView, LibraryPile, LibraryPilesView, LinkedExileView};
 pub use zone_replacements::{ZoneReplacementChoiceView, ZoneReplacementKind, ZoneRevealView};
 #[path = "engine_mana_lots.rs"]
 mod mana_lots;
@@ -131,6 +134,9 @@ mod forage;
 mod target_library;
 pub use forage::{ForageRoute, ForageView};
 pub use target_library::{TargetLibraryMovement, TargetLibraryView};
+#[path = "engine_combat_allocations.rs"]
+mod combat_allocations;
+pub use combat_allocations::CombatDamagePlayerView;
 #[path = "engine_scalar_x.rs"]
 mod scalar_x;
 #[path = "engine_spell_costs.rs"]
@@ -397,6 +403,9 @@ macro_rules! define_actions {
     }
 }
 define_actions! {
+    AssignLibraryPile { object: ObjectRef, pile: LibraryPile },
+    ChooseLibraryPile { pile: LibraryPile },
+    KeepPermanentType { object: ObjectRef },
     ChooseZoneReplacement { effect: ZoneReplacementKind },
     FinishStackTargets,
     AllocateTargetAmount { amount: u16 },
@@ -1321,6 +1330,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    LinkedChoice {
+        player: Player,
+    },
     ResolutionCasts {
         player: Player,
     },
@@ -1526,6 +1538,8 @@ impl Pending {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    linked_choices: Option<Box<linked_choices::ChoiceState>>,
+    combat_rules: Option<Box<combat_allocations::CombatRulesState>>,
     ending_turn: bool,
     zone_rules: Option<Box<zone_replacements::ZoneState>>,
     mana_lots: Option<Box<mana_lots::ManaState>>,
@@ -1882,9 +1896,15 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    pub library_piles: Option<LibraryPilesView>,
+    pub keep_types: Option<KeepTypesView>,
+    pub linked_exile: Vec<LinkedExileView>,
     pub mana_lots: Vec<ManaLotView>,
     pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub creature_damage_history: Vec<CreatureDamageHistoryView>,
+    pub additional_combats: u64,
+    pub must_be_blocked: Vec<ObjectRef>,
+    pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
     pub animations: Vec<AnimationView>,
     pub temporary_controls: Vec<TemporaryControlView>,
     pub casting_prohibited: bool,
@@ -2108,6 +2128,7 @@ impl Game {
             state: State {
                 ending_turn: false,
                 mana_lots: None,
+                linked_choices: None,
                 zone_rules: None,
                 controls: None,
                 temporary_controls: None,
@@ -2115,6 +2136,7 @@ impl Game {
                 replacements: None,
                 objects: objects.into(),
                 named_counters: None,
+                combat_rules: None,
                 creature_damage_history: None,
                 entry_values: None,
                 copy_recipes: None,
@@ -2264,6 +2286,7 @@ impl Game {
             | Pending::AdditionalCost { player }
             | Pending::EntryTimestamp { player }
             | Pending::EntryReplacement { player }
+            | Pending::LinkedChoice { player }
             | Pending::EntryValue { player }
             | Pending::EntryLife { player }
             | Pending::AuraEntry { player }
@@ -2692,6 +2715,11 @@ impl Game {
                     }) {
                         return true;
                     }
+                }
+            }
+            Pending::LinkedChoice { .. } => {
+                if self.visit_linked_choices(&mut emit) {
+                    return true;
                 }
             }
             Pending::EntryValue { .. } => {
@@ -3786,6 +3814,9 @@ impl Game {
             Action::ChooseEntryReplacement { source, intrinsic } => {
                 self.choose_entry_tap_effect(source, intrinsic)
             }
+            Action::AssignLibraryPile { object, pile } => self.assign_library_pile(object, pile),
+            Action::ChooseLibraryPile { pile } => self.choose_library_pile(pile),
+            Action::KeepPermanentType { object } => self.choose_kept_type(object),
             Action::ChooseEntryValue { value } => self.choose_entry_value(value),
             Action::ChooseEntryLife { pay } => self.choose_entry_life(pay),
             Action::ChooseAuraAttachment { object } => self.choose_aura_attachment(object),
@@ -4248,9 +4279,25 @@ impl Game {
                 })
             }
             Action::FinishAttackers => {
+                let first_attacks: Vec<_> = self
+                    .state
+                    .selected_attackers
+                    .iter()
+                    .filter(|a| {
+                        !self
+                            .state
+                            .attacked_this_turn
+                            .contains(&self.object_ref(a.card))
+                    })
+                    .map(|a| a.card)
+                    .collect();
                 let declared_count = self.state.selected_attackers.len();
                 self.commit_attackers_with(actor, |game, card| {
-                    game.attack_triggers_for_declaration(&game.object_view(card), declared_count);
+                    game.attack_triggers_for_declaration(
+                        &game.object_view(card),
+                        declared_count,
+                        first_attacks.contains(&card),
+                    );
                 });
                 self.give_priority();
             }
@@ -4537,6 +4584,7 @@ impl Game {
         if let [(actor, id)] = sacrifices {
             let mut event = self.move_object_raw(*id, Zone::Graveyard);
             event.sacrificed_by = Some(*actor);
+            self.record_own_sacrifices(std::slice::from_ref(&event));
             self.finish_zone_events(std::slice::from_ref(&event), &sources);
             return;
         }
@@ -4545,6 +4593,7 @@ impl Game {
         for (event, &(actor, _)) in events.iter_mut().zip(sacrifices) {
             event.sacrificed_by = Some(actor);
         }
+        self.record_own_sacrifices(&events);
         self.finish_zone_events(&events, &sources);
     }
 
@@ -5091,6 +5140,7 @@ impl Game {
         self.state.triggered_this_turn.clear();
         self.state.ability_resolutions = None;
         self.state.creature_damage_history = None;
+        self.state.combat_rules = None;
         self.state.attacked_this_turn.clear();
         self.state.creatures_died_this_turn = 0;
         self.state.graveyard_entries = None;
@@ -5201,7 +5251,11 @@ impl Game {
                 self.state.attack_declared = false;
                 self.state.blocks.clear();
                 self.state.first_strikers.clear();
-                self.begin_step(Step::Main2);
+                if self.take_additional_combat() {
+                    self.begin_step(Step::BeginCombat);
+                } else {
+                    self.begin_step(Step::Main2);
+                }
                 self.give_priority();
             }
             Step::Main2 => {
@@ -5223,6 +5277,10 @@ impl Game {
     }
 
     fn finish_cleanup(&mut self) {
+        if let Some(rules) = &mut self.state.combat_rules {
+            rules.must_be_blocked.clear();
+            rules.additional_combats = 0;
+        }
         self.state.casting_prohibited = false;
         for player in &mut self.state.players {
             player.hexproof_until_end_turn = false;
@@ -5414,6 +5472,7 @@ impl Game {
         for gain in &gains {
             self.gain_life(gain.source.controller, gain.amount);
         }
+        self.record_combat_and_excess_damage(events);
         self.creature_damage_events(events);
         self.player_damage_triggers(events);
         // Trigger events are recorded before SBAs, after the whole damage batch.
@@ -5568,6 +5627,12 @@ impl Game {
             .map(|(i, _)| query.object_view(i as CardId))
             .collect();
         Observation {
+            library_piles: self.library_piles_view(viewer),
+            keep_types: self.keep_types_view(),
+            linked_exile: s
+                .linked_choices
+                .as_ref()
+                .map_or_else(Vec::new, |c| c.links.clone()),
             casting_prohibited: s.casting_prohibited || self.static_casting_prohibited(viewer),
             replacement_choice: self.replacement_choice(viewer),
             zone_replacement_choice: self.zone_choice_view(viewer),
@@ -5646,6 +5711,15 @@ impl Game {
                 .as_ref()
                 .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             schema: OBSERVATION_SCHEMA,
+            additional_combats: s.combat_rules.as_ref().map_or(0, |r| r.additional_combats),
+            must_be_blocked: s
+                .combat_rules
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.must_be_blocked.clone()),
+            combat_damaged_players: s
+                .combat_rules
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.damaged_players.clone()),
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             creatures_died_this_turn: s.creatures_died_this_turn,
             graveyard_entries_this_turn: s
@@ -5724,6 +5798,7 @@ impl Game {
                 Pending::HandDefender { .. } => "hand_defender",
                 Pending::EffectChoice { .. } => "effect_choice",
                 Pending::EntryTimestamp { .. } => "entry_timestamps",
+                Pending::LinkedChoice { .. } => "linked_choice",
                 Pending::EntryValue { .. } => "entry_value",
                 Pending::EntryLife { .. } => "entry_life",
                 Pending::EntryReplacement { .. } => "entry_replacement",
@@ -6130,6 +6205,7 @@ impl Game {
             + self.return_links_bytes()
             + std::mem::size_of::<Vec<Object>>()
             + std::mem::size_of::<Vec<ObjectRef>>()
+            + s.combat_rules.as_ref().map_or(0, |r| r.owned_bytes())
             + (s.attacked_this_turn.len() + s.saddled.len()) * std::mem::size_of::<ObjectRef>()
             + s.saddle_payment.as_ref().map_or(0, |f| {
                 std::mem::size_of::<saddle::SaddlePayment>()
@@ -6137,6 +6213,7 @@ impl Game {
             })
             + 2 * std::mem::size_of::<Vec<CardId>>()
             + s.objects.len() * std::mem::size_of::<Object>()
+            + s.linked_choices.as_ref().map_or(0, |c| c.bytes())
             + live_counters::owned_bytes(&s.named_counters)
             + entry_choices::owned_bytes(&s.entry_values)
             + s.pending.owned_bytes()
@@ -7164,5 +7241,11 @@ mod return_links_tests;
 mod attachment_death;
 
 #[cfg(test)]
+#[path = "engine_combat_allocation_tests.rs"]
+mod combat_allocation_tests;
+#[cfg(test)]
 #[path = "engine_fdn_growth_cost_tests.rs"]
 mod fdn_growth_cost_tests;
+#[cfg(test)]
+#[path = "engine_linked_choices_tests.rs"]
+mod linked_choices_tests;

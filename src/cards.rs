@@ -94,6 +94,7 @@ pub(crate) enum TargetGroupConstraint {
     /// Attached to the exact object selected in another target group.
     AttachedToGroup(u16),
     DifferentControllers,
+    OtherThanGroup(u16),
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -319,11 +320,13 @@ impl<'de> Deserialize<'de> for CreatureType {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum EntryChoiceValue {
+    CardName(crate::CardName),
     Color(ChoiceColor),
     CreatureType(CreatureType),
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EntryChoiceKind {
+    CardNameAfterOpponentHand,
     Color,
     CreatureType,
 }
@@ -331,7 +334,10 @@ impl EntryChoiceKind {
     pub(crate) fn matches(self, value: EntryChoiceValue) -> bool {
         matches!(
             (self, value),
-            (Self::Color, EntryChoiceValue::Color(_))
+            (
+                Self::CardNameAfterOpponentHand,
+                EntryChoiceValue::CardName(_)
+            ) | (Self::Color, EntryChoiceValue::Color(_))
                 | (Self::CreatureType, EntryChoiceValue::CreatureType(_))
         )
     }
@@ -509,7 +515,7 @@ impl SearchFilter {
             }
             Self::AnyOf(filters) => filters.iter().any(|filter| filter.matches(card)),
             Self::AllOf(filters) => filters.iter().all(|filter| filter.matches(card)),
-            Self::Name(name) => card.name() == name,
+            Self::Name(name) => crate::card_names::same_name(card.name(), name),
             Self::Kinds(kinds) => card.kind_mask() & kinds != 0,
             // Card characteristics in the library; flashback is not flash.
             // Dynamic outside-battlefield ability grants remain gated.
@@ -526,6 +532,8 @@ impl SearchFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum SearchDestination {
+    /// Face-up exile linked to this exact source incarnation, without an automatic return.
+    LinkedExile,
     Graveyard,
     /// Shuffle, then put the selected cards on top (last selected uppermost).
     Top,
@@ -677,6 +685,11 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    PartitionLibraryPiles(u16),
+    KeepOneOfEachPermanentType,
+    RememberOwnSacrifice,
+    RecoverAnotherPermanent,
+    ReturnLinkedExileToHand,
     BlinkUntilEndStep {
         under_owner: bool,
     },
@@ -819,6 +832,21 @@ pub(crate) enum Instruction {
     DamageDivided {
         total: u16,
     },
+    DistributeCounters {
+        total: u16,
+        kind: CounterKind,
+    },
+    DamageByGroup {
+        first: i32,
+        other: i32,
+    },
+    DamageForExcess(AmountValue),
+    CreateExcessTokens(Card),
+    AdditionalCombat,
+    RequireBlocks(CreatureFilter),
+    /// Definition header: announce X as a generic activation mana cost.
+    ActivationX,
+    DestroyCombatDamagedPlayersPermanents,
     CreateCopyTokenWithExceptions {
         subject: Subject,
         amount: u16,
@@ -2200,6 +2228,7 @@ pub(crate) enum TriggerCondition {
     SelfDies,
     SelfEntersOrDies,
     SelfAttacks,
+    SelfFirstAttack,
     CreatureAttacksYou {
         colors: u8,
     },
@@ -2864,6 +2893,9 @@ impl Card {
         authored::RULES[self.index()]
             .extras
             .opening_hand_battlefield
+    }
+    pub(crate) fn named_activation_lock(self) -> bool {
+        authored::RULES[self.index()].extras.named_activation_lock
     }
     pub(crate) fn entry_choice(self) -> Option<EntryChoiceKind> {
         authored::RULES[self.index()].extras.entry_choice

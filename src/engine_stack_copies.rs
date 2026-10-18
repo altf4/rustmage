@@ -366,7 +366,8 @@ impl Game {
         if matches!(
             spec.rule,
             TargetRule::Grouped {
-                constraint: TargetGroupConstraint::SameGraveyard,
+                constraint: TargetGroupConstraint::SameGraveyard
+                    | TargetGroupConstraint::OtherThanGroup(_),
                 ..
             }
         ) {

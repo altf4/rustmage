@@ -226,6 +226,7 @@ impl Game {
                 self.lore_counters_added(event.after, 0);
             }
         }
+        self.prune_linked_exiles();
         self.bind_first_public_source_moves(events);
         if self.state.exile_links.is_empty()
             || !events

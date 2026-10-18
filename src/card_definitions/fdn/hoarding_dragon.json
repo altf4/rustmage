@@ -3,10 +3,41 @@
   "catalogue_id": 2052,
   "oracle_id": "d36d3c93-ed24-4447-9d15-3071f5c0989b",
   "facts_sha256": "35800d0dfb76285bb4af69a2d71e365feb97adfd2292708504a74db96ef44fef",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1336283ea5ea343d11425db43486be32db2e3aae23ff089c5001b3798771fdad"
   },
-  "physical_metadata_sha256": "e1f14ed0bdcbf8d50429941a593229cad91f76ff6ffc7464eaa73ddee78f2a9e"
+  "physical_metadata_sha256": "e1f14ed0bdcbf8d50429941a593229cad91f76ff6ffc7464eaa73ddee78f2a9e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HoardingDragon.java",
+  "java_sha256": "e43f807b1f07735b61051a5c93f15bf91f6ba06998ff586232f96b7dd844fb57",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetForSourceEffect.java",
+      "sha256": "74386ca760e2041bc0045bb0c007d29f306832b7933b2ee191aaaa43d2fa2690"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromExileForSourceEffect.java",
+      "sha256": "b0754ee22bda5e1936a52be104298ba4c6c54ac8252c2cf81054ec6da2959da6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "remaining_obligations": []
 }

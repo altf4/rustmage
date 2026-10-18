@@ -3,10 +3,28 @@
   "catalogue_id": 2289,
   "oracle_id": "216d3eed-cb07-40c5-869a-962e074e757d",
   "facts_sha256": "1f78cbdf200dd03edf5a47ed52cf1aab0380eef3c2522abd42d23b61df5d64a5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a865b2492da123bbe63dcd34f2b851929e09fe154efc9a4c4b672f39e5bd6c79"
   },
-  "physical_metadata_sha256": "be72f42409b8e83a5617806f5702e9699cca11444701b444ea80614470ebcbd3"
+  "physical_metadata_sha256": "be72f42409b8e83a5617806f5702e9699cca11444701b444ea80614470ebcbd3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JoragaInvocation.java",
+  "java_sha256": "70d79c7517c1592ccb888d332748c905b752b87f7fdeae579c17c25306be39f8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/MustBeBlockedByAtLeastOneTargetEffect.java",
+      "sha256": "a7b718f5db290094e2812e5ded044d13afd7d3eaf032b15b59204a2d050e7ef3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    }
+  ],
+  "rules_references": [
+    "https://magic.wizards.com/en/news/feature/foundations-release-notes"
+  ]
 }

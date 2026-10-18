@@ -45,7 +45,10 @@ impl Game {
                 && object.controller == player
                 && self.has_subtype(id as CardId, subtype)
             {
-                names.insert(self.object_name(id as CardId));
+                let name = self.object_name(id as CardId);
+                if !name.is_empty() {
+                    names.insert(crate::card_names::comparison_key(name));
+                }
             }
         }
         names.len()
@@ -55,6 +58,7 @@ impl Game {
         self.state.pending_triggers.clear();
         self.state.ordering_triggers.clear();
         self.abandon_copy_continuations();
+        self.abandon_linked_choices();
         self.state.resolution_free_casts = None;
         // Include the currently resolving spell and any physical spell incarnation.
         let spells: Vec<_> = self

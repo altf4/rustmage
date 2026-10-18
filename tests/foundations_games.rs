@@ -501,8 +501,15 @@ fn foundations_every_admitted_card_in_set_only_full_games() {
             Card::from_name(row["name"].as_str().unwrap())
                 .expect("full Foundations inventory must have a catalogue identity")
         })
-        .filter(|card| card.is_supported())
         .collect();
+    assert_eq!(cards.len(), 517, "full Foundations manifest changed");
+    for card in &cards {
+        assert!(
+            card.is_supported(),
+            "final FDN acceptance still gates {}",
+            card.identity()
+        );
+    }
     cards.sort_by_key(|card| (card.colors(), card.fixed_mana_value(), card.name()));
     let (set_lands, spells): (Vec<_>, Vec<_>) = cards.iter().copied().partition(|c| c.is_land());
     let groups: Vec<_> = spells.chunks(9).collect();
@@ -822,5 +829,12 @@ mod zone_games;
 
 #[path = "common/foundations_cast_origins_games.rs"]
 mod cast_origins_games;
+#[path = "common/foundations_combat_allocation_games.rs"]
+mod combat_allocation_games;
+#[path = "common/foundations_linked_choice_games.rs"]
+mod foundations_linked_choice_games;
 #[path = "common/foundations_growth_games.rs"]
 mod growth_games;
+
+#[path = "common/foundations_owned_rollouts.rs"]
+mod owned_rollouts;

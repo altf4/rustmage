@@ -94,6 +94,7 @@ impl Game {
         sorcery: bool,
     ) -> bool {
         self.printed_abilities_available(card)
+            && (ability.mana_production().is_some() || !self.named_activation_prohibited(card))
             && self.activation_guard_available(ability.guard, actor)
             && Self::object_activation_available_with_kinds(
                 &self.state.objects[card as usize],
@@ -306,7 +307,7 @@ impl Game {
                     }
                     // A modal activation must choose its mode before targets and
                     // costs. Legacy direct actions cannot encode that declaration.
-                    if modes.is_some() {
+                    if modes.is_some() || ability.has_x_cost() {
                         return false;
                     }
                     // Direct actions have no owned external-cost selection.

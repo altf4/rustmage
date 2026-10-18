@@ -177,7 +177,10 @@ impl Game {
             .filter_map(|(i, o)| {
                 (o.zone == Zone::Battlefield
                     && (i as CardId == id
-                        || !target_name.is_empty() && self.object_name(i as CardId) == target_name)
+                        || crate::card_names::same_name(
+                            self.object_name(i as CardId),
+                            target_name,
+                        ))
                     && !self
                         .keywords(i as CardId)
                         .contains(Keywords::INDESTRUCTIBLE))

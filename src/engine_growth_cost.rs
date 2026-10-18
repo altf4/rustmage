@@ -108,6 +108,8 @@ impl Game {
         for (index, ability) in giver.card.activations().iter().enumerate() {
             if !giver.card.grants_activation(index as u16)
                 || !source.grant_available(grantor, giver.card, index as u16, None)
+                || (ability.mana_production().is_none()
+                    && self.named_activation_prohibited(recipient.card))
                 || !Self::object_activation_available_with_kinds(
                     &self.state.objects[recipient.card as usize],
                     self.counter_amounts(recipient.card),

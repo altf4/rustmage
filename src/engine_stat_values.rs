@@ -146,7 +146,7 @@ impl Game {
                     o.controller == owner
                         && o.zone == Zone::Battlefield
                         && kinds(*id, o) & 1 != 0
-                        && names(*id) == name
+                        && crate::card_names::same_name(names(*id), name)
                         && (*id != source.card || o.generation != source.generation)
                 })
                 .count() as i128,
@@ -253,7 +253,8 @@ impl Game {
                     .filter(|&(id, o)| {
                         Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
                     })
-                    .map(|(id, _)| names(id))
+                    .map(|(id, _)| crate::card_names::comparison_key(names(id)))
+                    .filter(|name| !name.is_empty())
                     .collect();
                 names.sort_unstable();
                 names.dedup();

@@ -509,6 +509,7 @@ impl Game {
                     | TriggerCondition::OtherCreatureCountersAdded { .. }
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::SelfAttacks
+                    | TriggerCondition::SelfFirstAttack
                     | TriggerCondition::SelfAttacksAlone
                     | TriggerCondition::SelfAttacksWhileSaddled
                     | TriggerCondition::SelfSaddledFirst
@@ -1151,17 +1152,19 @@ impl Game {
 
     #[cfg(test)]
     pub(super) fn attack_triggers(&mut self, source: &ObjectView) {
-        self.attack_triggers_for_declaration(source, 1);
+        self.attack_triggers_for_declaration(source, 1, true);
     }
 
     pub(super) fn attack_triggers_for_declaration(
         &mut self,
         source: &ObjectView,
         declared_count: usize,
+        first_attack: bool,
     ) {
         for (index, ability) in source.card.triggers().iter().enumerate() {
             if match ability.condition.event() {
                 TriggerCondition::SelfAttacks | TriggerCondition::SelfEntersOrAttacks => true,
+                TriggerCondition::SelfFirstAttack => first_attack,
                 TriggerCondition::SelfAttacksAlone => declared_count == 1,
                 TriggerCondition::SelfAttacksWhileSaddled
                 | TriggerCondition::SelfEntersOrAttacksWhileSaddled => source.saddled,
@@ -1520,6 +1523,7 @@ impl Game {
             }
             let resolution = self.state.resolving.as_mut().unwrap();
             let Some(instruction) = resolution.program.get(resolution.pc).copied() else {
+                self.abandon_linked_choices();
                 let item = self.state.resolving.take().unwrap().item;
                 if item.kind == StackKind::Spell
                     && self.state.objects[item.card as usize].zone == Zone::Stack
@@ -1540,6 +1544,7 @@ impl Game {
             if !matches!(
                 instruction,
                 Instruction::Fight { .. }
+                    | Instruction::DamageByGroup { .. }
                     | Instruction::PowerDamage { .. }
                     | Instruction::GainControl {
                         controller: PlayerSet::Targeted,
@@ -1550,6 +1555,22 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::PartitionLibraryPiles(maximum) => {
+                    self.start_library_piles(item.controller, maximum);
+                    return;
+                }
+                Instruction::KeepOneOfEachPermanentType => {
+                    if self.start_keep_types(item.controller.other()) {
+                        return;
+                    }
+                }
+                Instruction::RememberOwnSacrifice => self.remember_own_sacrifice(),
+                Instruction::RecoverAnotherPermanent => {
+                    if self.recover_another_permanent(item.controller) {
+                        return;
+                    }
+                }
+                Instruction::ReturnLinkedExileToHand => self.return_linked_exile(item.object),
                 Instruction::CopyNextInstantSorcery => self.remember_next_spell_copy(&item),
                 Instruction::CopyCastSpell { .. } => {
                     if self.copy_captured_spell(&item) {
@@ -2204,6 +2225,20 @@ impl Game {
                 Instruction::ExileAndCopyNightmare => self.exile_and_copy_nightmare(&item),
                 Instruction::ExileOtherNightmares => self.exile_other_nightmares(item.controller),
                 Instruction::DamageDivided { .. } => self.damage_divided(&item),
+                Instruction::DistributeCounters { kind, .. } => {
+                    self.distribute_counters(&item, kind)
+                }
+                Instruction::DamageByGroup { first, other } => {
+                    self.damage_by_group(&item, first, other)
+                }
+                Instruction::DamageForExcess(amount) => self.damage_for_excess(&item, amount),
+                Instruction::CreateExcessTokens(token) => self.create_excess_tokens(&item, token),
+                Instruction::AdditionalCombat => self.add_combat(),
+                Instruction::RequireBlocks(filter) => self.require_blocks(&item, filter),
+                Instruction::ActivationX => (),
+                Instruction::DestroyCombatDamagedPlayersPermanents => {
+                    self.destroy_combat_damaged_players_permanents(&item)
+                }
                 Instruction::SelectGroup(group) => {
                     self.state.resolving.as_mut().unwrap().target_group = group;
                 }
