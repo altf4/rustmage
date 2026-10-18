@@ -151,6 +151,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
                             | crate::cards::StaticAbilityFragment::PlayerHexproof
+                            | crate::cards::StaticAbilityFragment::CantLoseGameAndOpponentsCantWin
                             | crate::cards::StaticAbilityFragment::ControlledSpellsUncounterable(_)
                             | crate::cards::StaticAbilityFragment::SelfUntap(_)
                             | crate::cards::StaticAbilityFragment::LifeGainAdditional(_)

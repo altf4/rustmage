@@ -523,6 +523,7 @@ pub enum EffectChoiceKind {
     Forage,
     ForageOrBlack,
     Sacrifice,
+    ReturnToHand,
     Discard,
 }
 
@@ -790,6 +791,8 @@ pub(crate) enum Instruction {
     ModalOnce(&'static [SpellMode]),
     /// Immediately lose the game, independently of life total or state-based actions.
     LoseGame(PlayerSet),
+    WinIfDistinctSubtypeNames { subtype: &'static str, minimum: u16 },
+    EndTurn,
     /// Definition-only modal trigger header; selected before targets, never executed.
     Modal(&'static [SpellMode]),
     /// Skip the following block when its live condition is false.

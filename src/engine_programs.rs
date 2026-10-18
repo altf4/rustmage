@@ -2480,17 +2480,26 @@ impl Game {
                     }
                 }
                 Instruction::CreateEmblem(factory) => self.create_emblem(item.controller, factory),
+                Instruction::EndTurn => {
+                    self.end_turn_effect();
+                    return;
+                }
+                Instruction::WinIfDistinctSubtypeNames { subtype, minimum } => {
+                    if self.distinct_subtype_names(item.controller, subtype) >= usize::from(minimum)
+                    {
+                        self.try_win_game(item.controller);
+                        if self.state.outcome.is_some() {
+                            self.state.resolving = None;
+                            return;
+                        }
+                    }
+                }
                 Instruction::LoseGame(set) => {
                     let mut lost = [false; 2];
                     for player in self.program_players(set, &item) {
                         lost[player.index()] = true;
                     }
-                    self.state.outcome = match lost {
-                        [true, true] => Some(Outcome::Draw),
-                        [true, false] => Some(Outcome::Winner(Player::P1)),
-                        [false, true] => Some(Outcome::Winner(Player::P0)),
-                        _ => None,
-                    };
+                    self.commit_game_losses(self.allowed_game_losses(lost));
                     if self.state.outcome.is_some() {
                         self.state.resolving = None;
                         self.state.pending = Pending::Terminal;

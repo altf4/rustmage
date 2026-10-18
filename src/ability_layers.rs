@@ -42,6 +42,7 @@ pub(crate) enum StaticAbilityFragment {
     OtherSubtypeEntryCounters(&'static str),
     ChosenModifier(ChosenModifier),
     PlayerHexproof,
+    CantLoseGameAndOpponentsCantWin,
     QualifiedHexproof(SourceCharacteristicFilter),
     ControlledSpellsUncounterable(u16),
     LifeGainAdditional(u16),

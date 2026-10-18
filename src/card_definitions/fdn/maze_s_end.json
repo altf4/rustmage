@@ -8,5 +8,60 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9301c95974fae3bfb67373df4042446637f352fbd6f575ca87a6a2e0f9bdc28a"
   },
-  "physical_metadata_sha256": "2ef917ed4595cd444b361745ac8aff782c8e9540b42eb1002072cac5ac2889a8"
+  "physical_metadata_sha256": "2ef917ed4595cd444b361745ac8aff782c8e9540b42eb1002072cac5ac2889a8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MazesEnd.java",
+  "java_sha256": "28d0c589fcbab57779a8ae9fa69b7469dfcc1969bd4f095215969c155765bffe",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
+      "sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ReturnToHandFromBattlefieldSourceCost.java",
+      "sha256": "7e1bb2d09f4079ce6a2652dd3a1be4e9ab490521f4d7d078c57724420ed91e80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+      "sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+      "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ]
 }

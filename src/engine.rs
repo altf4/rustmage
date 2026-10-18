@@ -1,3 +1,8 @@
+#[path = "engine_endgame.rs"]
+mod endgame;
+#[cfg(test)]
+#[path = "engine_endgame_tests.rs"]
+mod endgame_tests;
 #[cfg(test)]
 #[path = "engine_zone_replacement_tests.rs"]
 mod zone_replacement_tests;
@@ -1443,6 +1448,7 @@ impl Pending {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    ending_turn: bool,
     zone_rules: Option<Box<zone_replacements::ZoneState>>,
     mana_lots: Option<Box<mana_lots::ManaState>>,
     #[allow(clippy::box_collection)]
@@ -2009,6 +2015,7 @@ impl Game {
         let mut game = Self {
             revision: 0,
             state: State {
+                ending_turn: false,
                 mana_lots: None,
                 zone_rules: None,
                 temporary_controls: None,
@@ -2395,6 +2402,9 @@ impl Game {
                     self.state_based_actions();
                     if self.state.entry_batch.is_some() {
                         continue;
+                    }
+                    if self.continue_ending_turn() {
+                        break;
                     }
                     self.prepare_triggers();
                 }
@@ -5000,6 +5010,7 @@ impl Game {
             player.hexproof_until_end_turn = false;
         }
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
+        self.expire_spell_copies();
         self.expire_temporary_controls();
         self.state.temporary_abilities = None;
         self.expire_base_stats();
@@ -5026,6 +5037,15 @@ impl Game {
         // Losing temporary growth can expose lethal negative counters. Apply
         // SBAs before advancing the turn; CR514.3 gives an extra priority cycle.
         if !self.state.pending_triggers.is_empty()
+            || self
+                .allowed_game_losses(
+                    self.state
+                        .players
+                        .each_ref()
+                        .map(|p| p.life <= 0 || p.poison_counters >= 10 || p.attempted_empty_draw),
+                )
+                .into_iter()
+                .any(|lost| lost)
             || (expired_vehicles || expired_animations) && self.sba_required()
             || self.state.objects.iter().enumerate().any(|(id, obj)| {
                 obj.zone == Zone::Battlefield
