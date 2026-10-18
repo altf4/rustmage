@@ -3,7 +3,7 @@
   "catalogue_id": 2160,
   "oracle_id": "0e13c283-f462-441f-a8a5-0c75a59ff1d9",
   "facts_sha256": "079c142666a65e8a5d07d2ff666df2ff2109825ae9757c7abc07b5d622bc7a17",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "acf18d3b00baed80da1e9ed485c4e9af339f5d13bfbcee3d479fe6d35aced1d8"
@@ -12,9 +12,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/i/InfernalVessel.java",
   "java_sha256": "a17393892bfd9cd31e30be8ed1f6ad75c49e7a2e9b26e4b33817304a140fdf75",
-  "remaining_obligations": [
-    "Shared return rules and whole-card acceptance pending."
-  ],
+  "remaining_obligations": [],
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

@@ -3,7 +3,7 @@
   "catalogue_id": 726,
   "oracle_id": "c48d844c-3976-4fa5-8e0d-3f0e535e7619",
   "facts_sha256": "408f0d01b06bdc3c0190df94d2c09574ce963e9897bba0e5221e5f6357a4bf3e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f540c546cf3bd15d28debbe1779a4339c7b0e1c62269cdfdae54eded66c6caaa"
@@ -12,9 +12,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/c/CharmingPrince.java",
   "java_sha256": "6e71ad0077abdf6eeba3b9384b3758fc9887f290576fd91dcf94811cb9832a11",
-  "remaining_obligations": [
-    "Shared return rules and whole-card acceptance pending."
-  ],
+  "remaining_obligations": [],
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

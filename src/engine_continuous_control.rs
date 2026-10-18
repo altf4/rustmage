@@ -28,7 +28,7 @@ struct AppliedControl {
     timestamp: u64,
 }
 impl Card {
-    pub(super) fn controls_attached(self) -> bool {
+    pub(crate) fn controls_attached(self) -> bool {
         self.static_ability_groups().iter().any(|group| {
             group
                 .fragments

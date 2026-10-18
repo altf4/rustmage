@@ -3,7 +3,7 @@
   "catalogue_id": 164,
   "oracle_id": "8ba36878-0816-44c7-b543-8ebfc28c2ecd",
   "facts_sha256": "add8ea694c80c648364117f2df3a29146de40f348e5c631b207b9deb6df1341e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "55913a7f2bd4a24594b6c2af2c7a0a006f8a269b2e49464a98c9c4bde0f21f38"
@@ -48,5 +48,6 @@
       "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
       "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
     }
-  ]
+  ],
+  "remaining_obligations": []
 }
