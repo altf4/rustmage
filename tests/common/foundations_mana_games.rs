@@ -129,7 +129,7 @@ fn foundations_four_mana_cards_natural_games_and_owned_lot_state() {
             "Secluded Courtyard",
         ],
         &[],
-        &[7, 41],
+        &[0, 1, 2, 3, 7, 13, 41, 73],
         Some(&mut observe),
     );
     assert!(orb_haste, "no Orb-paid Dragon entered with haste");
