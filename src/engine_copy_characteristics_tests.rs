@@ -146,8 +146,10 @@ fn a_trigger_already_on_the_stack_survives_ability_loss_and_never_rebinds_a_new_
         let live = exception_copy(&mut g, p, CopyExceptions::HASTE_AND_SACRIFICE);
         g.begin_step(Step::End);
         g.prepare_triggers();
-        let witness = named(&mut g, p, "Witness Protection", Zone::Battlefield);
-        g.attach_equipment(g.object_ref(witness), g.object_ref(live));
+        let witness = named(&mut g, p, "Witness Protection", Zone::Hand);
+        let mut entry = g.entry_move(witness, Zone::Battlefield, false);
+        entry.attachment = Some(g.object_ref(live));
+        g.stage_entries(vec![entry], None);
         assert!(!g.printed_abilities_available(live));
         settle(&mut g);
         assert_eq!(g.state.objects[live as usize].zone, Zone::Outside);
@@ -185,5 +187,103 @@ fn source_copy_recipe_is_owned_lki_and_created_after_the_end_step_waits_for_the_
         g.restore(&before).unwrap();
         assert!(g.on_battlefield(token));
         checked(&mut g, Action::Pass);
+    }
+}
+
+#[test]
+fn gated_electroduplicate_pays_normal_and_flashback_costs_and_creates_copiable_abilities() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let other = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        g.state.objects[source as usize].growth = Stats {
+            power: 5,
+            toughness: 5,
+        };
+        let spell = super::tests::spawn(
+            &mut g,
+            p,
+            Card::from_name("Electroduplicate").unwrap(),
+            Zone::Hand,
+        );
+        g.state.players[p.index()].mana = [0, 0, 0, 3, 0, 0];
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        let before = g.snapshot();
+        assert_eq!(
+            g.apply(
+                p,
+                Action::ChooseTarget {
+                    target: Target::Card(other)
+                }
+            ),
+            Err(Error::IllegalAction)
+        );
+        assert_eq!(g.snapshot(), before);
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(source),
+            },
+        );
+        while g.state.announcing.is_some() {
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. } | Action::FinishTargets))
+                .unwrap();
+            checked(&mut g, action);
+        }
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        settle(&mut g);
+        assert_eq!(g.state.objects[spell as usize].zone, Zone::Graveyard);
+        let first = g.state.copy_recipes.as_ref().unwrap()[0].object.card;
+        assert_eq!(
+            g.stats(first),
+            Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+        assert!(g.keywords(first).contains(Keywords::HASTE));
+        g.begin_step(Step::End);
+        settle(&mut g);
+        assert_eq!(g.state.objects[first as usize].zone, Zone::Outside);
+        g.state.step = Step::Main1;
+        g.state.priority = p;
+        g.state.players[p.index()].mana = [0, 0, 0, 4, 0, 0];
+        checked(&mut g, Action::AnnounceFlashback { card: spell });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(source),
+            },
+        );
+        while g.state.announcing.is_some() {
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. } | Action::FinishTargets))
+                .unwrap();
+            checked(&mut g, action);
+        }
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        settle(&mut g);
+        assert_eq!(g.state.objects[spell as usize].zone, Zone::Exile);
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceFlashback { card: spell })
+        );
+        let second = g.state.copy_recipes.as_ref().unwrap()[0].object.card;
+        assert_eq!(
+            g.stats(second),
+            Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+        assert!(g.keywords(second).contains(Keywords::HASTE));
+        g.begin_step(Step::End);
+        settle(&mut g);
+        assert_eq!(g.state.objects[second as usize].zone, Zone::Outside);
     }
 }
