@@ -93,6 +93,7 @@ fn cast_origins_vizier_lost_ability_and_required_provider_reservation() {
         let vizier = put(&mut g, p, "Vizier of the Menagerie", Zone::Battlefield);
         let lion = put(&mut g, p, "Savannah Lions", Zone::Hand);
         let land = put(&mut g, p, "Wastes", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0; 6];
         assert!(
             g.legal_actions()
                 .contains(&Action::AnnounceCast { card: lion })
@@ -438,5 +439,49 @@ fn cast_origins_etali_free_x_zero_and_mandatory_additional_discard() {
         settle(&mut g);
         assert_eq!(g.state.objects[discard as usize].zone, Zone::Graveyard);
         assert_eq!(g.state.players[p.other().index()].life, 20);
+    }
+}
+#[test]
+fn cast_origins_vizier_mana_substitution_does_not_change_convoke_colors() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        put(&mut g, p, "Vizier of the Menagerie", Zone::Battlefield);
+        let mut bears = Vec::new();
+        for _ in 0..4 {
+            bears.push(put(&mut g, p, "Bear Cub", Zone::Battlefield));
+        }
+        let card = put(&mut g, p, "Sun-Dappled Celebrant", Zone::Hand); // {4}{W}{W}, convoke
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        assert!(!g.legal_actions().contains(&Action::AnnounceCast { card }));
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        checked(&mut g, Action::AnnounceCast { card });
+        checked(&mut g, Action::BeginConvoke);
+        for &bear in &bears {
+            let object = g.object_ref(bear);
+            assert!(!g.legal_actions().contains(&Action::ChooseConvoker {
+                object,
+                contribution: ConvokeContribution::White
+            }));
+            checked(
+                &mut g,
+                Action::ChooseConvoker {
+                    object,
+                    contribution: ConvokeContribution::Generic,
+                },
+            );
+        }
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 0, 2],
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.state.objects[card as usize].zone, Zone::Battlefield);
+        assert!(
+            bears
+                .into_iter()
+                .all(|id| g.state.objects[id as usize].tapped)
+        );
     }
 }
