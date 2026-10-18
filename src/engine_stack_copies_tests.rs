@@ -657,7 +657,7 @@ fn bolt_bend_requires_full_cost_without_ferocious_and_does_nothing_without_alter
 #[test]
 fn bolt_bend_rejects_multiple_targets_even_after_one_original_target_becomes_illegal() {
     for p in [Player::P0, Player::P1] {
-        let mut g = setup(p);
+        let mut g = setup(p.other());
         let a = named(&mut g, p.other(), "Bear Cub", Zone::Graveyard);
         let b = named(&mut g, p.other(), "Llanowar Elves", Zone::Graveyard);
         let waltz = named(&mut g, p.other(), "Macabre Waltz", Zone::Hand);
