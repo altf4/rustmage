@@ -30,7 +30,7 @@ impl Game {
         }
         // Surviving attackers remain blocked after their blockers leave combat.
     }
-    fn change_controller(&mut self, object: ObjectRef, controller: Player) {
+    pub(super) fn change_controller(&mut self, object: ObjectRef, controller: Player) {
         if !self.on_battlefield(object.card)
             || self.object_ref(object.card) != object
             || self.state.objects[object.card as usize].controller == controller
@@ -63,7 +63,7 @@ impl Game {
                 .temporary_controls
                 .get_or_insert_with(|| Box::new(Vec::new()))
                 .push(effect);
-            self.change_controller(effect.object, effect.controller);
+            self.record_control(effect.object, effect.controller, Some(self.state.turn));
         }
     }
     pub(super) fn gain_control(
@@ -87,7 +87,12 @@ impl Game {
             // their controllers, even when the new controller is already current.
             // Future temporary effects capture this controller as their baseline.
             self.forget_temporary_control(object);
-            self.change_controller(object, controller);
+            if let Some(state) = &mut self.state.controls {
+                state
+                    .effects
+                    .retain(|row| row.object != object || row.expires_turn.is_none());
+            }
+            self.record_control(object, controller, None);
         }
     }
     pub(super) fn forget_temporary_control(&mut self, object: ObjectRef) {
@@ -104,13 +109,11 @@ impl Game {
         }
     }
     pub(super) fn expire_temporary_controls(&mut self) {
-        if let Some(effects) = self.state.temporary_controls.take() {
-            // All current effects share this turn's cleanup. Reverse application
-            // restores the controller before the earliest surviving exact-object effect.
-            for effect in effects.iter().rev() {
-                self.change_controller(effect.object, effect.previous_controller);
-            }
+        self.state.temporary_controls = None;
+        if let Some(state) = &mut self.state.controls {
+            state.effects.retain(|row| row.expires_turn.is_none());
         }
+        self.refresh_controllers();
     }
     pub(super) fn temporary_control_bytes(&self) -> usize {
         self.state.temporary_controls.as_ref().map_or(0, |v| {

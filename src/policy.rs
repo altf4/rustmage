@@ -50,6 +50,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     power, toughness, ..
                 } => Some(*power >= 0 && *toughness >= 0),
                 Instruction::Untap
+                | Instruction::BlinkUntilEndStep { .. }
                 | Instruction::ReturnToBattlefield
                 | Instruction::ReturnToBattlefieldWithRole { .. }
                 | Instruction::ReturnToBattlefieldTapped
@@ -93,7 +94,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
     };
     let aura_score = |card: crate::Card, target: Target| {
         let aura = card.aura().unwrap();
-        let beneficial = aura.bonus.stats.power >= 0
+        let beneficial = !card.controls_attached()
+            && aura.bonus.stats.power >= 0
             && aura.bonus.stats.toughness >= 0
             && !aura.bonus.keywords.contains(crate::Keywords::DEFENDER)
             && !aura.bonus.keywords.contains(crate::Keywords::CANT_BLOCK);

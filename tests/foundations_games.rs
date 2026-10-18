@@ -775,3 +775,8 @@ mod casting_games;
 
 #[path = "common/foundations_stack_copy_games.rs"]
 mod stack_copy_games;
+
+#[path = "common/foundations_return_aura_games.rs"]
+mod return_aura_games;
+#[path = "common/foundations_zone_games.rs"]
+mod zone_games;

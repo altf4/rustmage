@@ -237,6 +237,7 @@ fn changed_base<W: CharacteristicWorld + ?Sized>(
 #[derive(Clone, Copy)]
 pub(super) enum SubtypeChange {
     Named(&'static [&'static str], bool),
+    Add(&'static [&'static str]),
     All,
     LandOnly,
 }

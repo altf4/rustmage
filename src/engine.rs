@@ -27,9 +27,10 @@ use crate::cards::{
     Effect, EffectChoiceKind, EmblemInfo, EntryChoiceKind, EntryChoiceValue, EntryCounterAmount,
     EntryPredicate, EntryTapped, InitialCounters, Instruction, ManaCost, ManaProduction,
     MillAmount, MilledCount, MilledDestination, MilledFilter, MilledSelectionSpec, NamedCounters,
-    PlayerSet, RecoveryFilter, ResolvedStatValue, SacrificeFilter, SearchSpec, SpellMode, StatExpr,
-    StatValue, Stats, StepGuard, StepValue, Subject, TargetGroupConstraint, TargetPlan,
-    TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
+    PlayerSet, RecoveryFilter, ResolvedStatValue, ReturnKind, SacrificeFilter, SearchSpec,
+    SpellMode, StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetGroupConstraint,
+    TargetPlan, TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep,
+    payments,
 };
 #[path = "engine_milled_selection.rs"]
 mod milled_selection;
@@ -75,6 +76,7 @@ mod warp;
 pub use cast_payments::{CastPaymentEvent, ManaPaymentDomain};
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
 pub use plot::{PlotPaymentView, PlottedCard};
+pub use return_links::{DelayedReturnView, ReturnLinkView};
 pub use warp::{DelayedWarpExileView, WarpedCard};
 
 #[path = "engine_characteristic_layers.rs"]
@@ -157,6 +159,8 @@ mod explore;
 mod fight;
 #[path = "engine_milling.rs"]
 mod milling;
+#[path = "engine_return_links.rs"]
+mod return_links;
 #[path = "engine_roles.rs"]
 mod roles;
 #[path = "engine_sba.rs"]
@@ -838,6 +842,7 @@ pub struct SpellView {
     pub is_copy: bool,
     pub delayed_sacrifice: Option<Box<DelayedSacrificeView>>,
     pub delayed_warp_exile: Option<Box<DelayedWarpExileView>>,
+    pub return_link: Option<Box<ReturnLinkView>>,
     /// Chosen X, retained independently by a spell and its own entry-trigger packets.
     pub x: Option<u32>,
     pub attachment_trigger: Option<Box<AttachmentTriggerView>>,
@@ -938,6 +943,10 @@ impl SpellView {
                 .cast_event
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<CastPaymentEvent>())
+            + self
+                .return_link
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<ReturnLinkView>())
             + self.delayed_sacrifice.as_ref().map_or(0, |d| d.bytes())
             + self.crew.as_ref().map_or(0, |c| c.bytes())
             + self
@@ -1000,7 +1009,9 @@ impl SpellView {
                 Some(Instruction::Modal(modes)) => Some(modes),
                 _ => None,
             },
-            StackKind::DelayedSacrifice | StackKind::DelayedWarpExile => None,
+            StackKind::DelayedSacrifice
+            | StackKind::DelayedWarpExile
+            | StackKind::DelayedReturn => None,
         }
     }
     pub(crate) fn program(&self) -> Option<(TargetPlan, &'static [Instruction])> {
@@ -1102,6 +1113,9 @@ impl SpellView {
                     };
                     (plan, program)
                 }),
+            StackKind::DelayedReturn => {
+                Some((TargetPlan::NONE, &[Instruction::ResolveDelayedReturn]))
+            }
             StackKind::DelayedSacrifice => {
                 Some((TargetPlan::NONE, &[Instruction::SacrificeDelayedTokens]))
             }
@@ -1136,6 +1150,7 @@ pub enum StackKind {
     ActivatedAbility { ability: u16 },
     DelayedSacrifice,
     DelayedWarpExile,
+    DelayedReturn,
 }
 
 /// The object being attacked; this is not a spell/ability target.
@@ -1445,6 +1460,7 @@ impl Pending {
 struct State {
     zone_rules: Option<Box<zone_replacements::ZoneState>>,
     mana_lots: Option<Box<mana_lots::ManaState>>,
+    controls: Option<Box<continuous_control::ControlState>>,
     #[allow(clippy::box_collection)]
     temporary_controls: Option<Box<Vec<TemporaryControlView>>>,
     casting_prohibited: bool,
@@ -1460,6 +1476,9 @@ struct State {
     // rather than an inline Vec header for games with no delayed obligation.
     #[allow(clippy::box_collection)]
     delayed_sacrifices: Option<Box<Vec<mobilize::DelayedBatch>>>,
+    // Cold pointer keeps games without delayed returns allocation-free.
+    #[allow(clippy::box_collection)]
+    delayed_returns: Option<Box<Vec<return_links::DelayedReturn>>>,
     mobilize: Option<Box<mobilize::MobilizePlan>>,
     saddled: Vec<ObjectRef>,
     saddle_payment: Option<Box<saddle::SaddlePayment>>,
@@ -1808,6 +1827,7 @@ pub struct Observation {
     pub endure_choice: Option<EndureChoiceView>,
     pub convoke_choice: Option<ConvokeChoiceView>,
     pub delayed_sacrifices: Vec<DelayedSacrificeView>,
+    pub delayed_returns: Vec<DelayedReturnView>,
     pub mobilize_choice: Option<MobilizeChoiceView>,
     pub saddle_choice: Option<SaddleChoiceView>,
     /// Complete scalar domain, visible only to its choosing actor.
@@ -2011,6 +2031,7 @@ impl Game {
             state: State {
                 mana_lots: None,
                 zone_rules: None,
+                controls: None,
                 temporary_controls: None,
                 casting_prohibited: false,
                 replacements: None,
@@ -2052,6 +2073,7 @@ impl Game {
                 explore_data: None,
                 evidence_data: None,
                 delayed_sacrifices: None,
+                delayed_returns: None,
                 mobilize: None,
                 saddled: Vec::new(),
                 saddle_payment: None,
@@ -4374,12 +4396,14 @@ impl Game {
                 (before, plan, tapped, counters)
             })
             .collect();
-        planned
+        let events = planned
             .into_iter()
             .map(|(before, plan, tapped, counters)| {
                 self.commit_planned_zone_move(before, plan, tapped, counters, None)
             })
-            .collect()
+            .collect();
+        self.refresh_controllers();
+        events
     }
 
     pub(super) fn opponent_entry_requires_tapped(&self, card: Card, controller: Player) -> bool {
@@ -4473,7 +4497,9 @@ impl Game {
             "choice-bearing entry must be staged"
         );
         let before = self.object_view(id);
-        self.transition_object(before, destination, tapped)
+        let event = self.transition_object(before, destination, tapped);
+        self.refresh_controllers();
+        event
     }
 
     fn transition_object(
@@ -5352,6 +5378,13 @@ impl Game {
             } else {
                 None
             },
+            delayed_returns: self
+                .state
+                .delayed_returns
+                .as_ref()
+                .map_or_else(Vec::new, |rows| {
+                    rows.iter().map(|r| r.view.clone()).collect()
+                }),
             delayed_sacrifices: self
                 .state
                 .delayed_sacrifices
@@ -5858,10 +5891,12 @@ impl Game {
             + self.mana_lot_bytes()
             + s.zone_rules.as_ref().map_or(0, |r| r.bytes())
             + self.temporary_control_bytes()
+            + self.control_bytes()
             + self.temporary_ability_bytes()
             + self.suspected_bytes()
             + self.death_exile_bytes()
             + self.mobilize_bytes()
+            + self.return_links_bytes()
             + std::mem::size_of::<Vec<Object>>()
             + std::mem::size_of::<Vec<ObjectRef>>()
             + (s.attacked_this_turn.len() + s.saddled.len()) * std::mem::size_of::<ObjectRef>()
@@ -6847,3 +6882,15 @@ mod layered_characteristic_tests;
 #[cfg(test)]
 #[path = "engine_modal_history_tests.rs"]
 mod modal_history_tests;
+
+#[path = "engine_continuous_control.rs"]
+mod continuous_control;
+#[cfg(test)]
+#[path = "engine_continuous_control_tests.rs"]
+mod continuous_control_tests;
+#[cfg(test)]
+#[path = "engine_return_links_tests.rs"]
+mod return_links_tests;
+
+#[path = "engine_attachment_death.rs"]
+mod attachment_death;

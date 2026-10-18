@@ -3,10 +3,31 @@
   "catalogue_id": 828,
   "oracle_id": "d599a38c-7719-443e-bb59-55bd43a8fee6",
   "facts_sha256": "fed5777425cb3220fdefc0d7550ddc4bf738aba354b87b66d0c50f04a4dd471e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "857074b7b616da5ef805f013a43fc70b926879b63bee5e9efda221618fe03dbb"
   },
-  "physical_metadata_sha256": "05689142971e956103ac165f48ecee61973162d5e5cfcf88fb428ab3a48ef926"
+  "physical_metadata_sha256": "05689142971e956103ac165f48ecee61973162d5e5cfcf88fb428ab3a48ef926",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/Confiscate.java",
+  "java_sha256": "7a30aa75cb6e8eddf008993c6ae3d76df09899f1740347e490228ec5ce3b203b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/ControlEnchantedEffect.java",
+      "sha256": "84e8b3f040dcdbb7be851fb8b5fcfab3620c38514f3b80d811577f9cce34a9b8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    }
+  ],
+  "remaining_obligations": []
 }
