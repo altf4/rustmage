@@ -831,7 +831,8 @@ impl<'g> FundingState<'g> {
                     // object (even in other zones) deliberately overestimates.
                     ManaProduction::CountSubtype { color, .. } => {
                         let mut mana = [0; 6];
-                        mana[usize::from(color)] = self.game.state.objects.len() as u64;
+                        mana[usize::from(color)] =
+                            u32::try_from(self.game.state.objects.len()).unwrap_or(u32::MAX);
                         ManaProduction::Fixed(mana)
                     }
                     _ => production.in_world(self, resource.id),
