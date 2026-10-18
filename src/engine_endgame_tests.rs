@@ -1,5 +1,5 @@
 //! Paid endgame scenarios reuse the shared raw/index owned-branch timeline driver.
-use super::ability_timeline_tests::{cast, checked, next_turn, settle, setup};
+use super::ability_timeline_tests::{checked, next_turn, settle, setup};
 use super::tests::spawn;
 use super::*;
 const GATES: [&str; 10] = [
@@ -19,8 +19,29 @@ fn fixture(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
 }
 fn paid(g: &mut Game, p: Player, name: &str, targets: &[Target]) -> CardId {
     let id = fixture(g, p, name, Zone::Hand);
-    cast(g, id, None, targets);
-    id
+    checked(g, Action::AnnounceCast { card: id });
+    for &target in targets {
+        checked(g, Action::ChooseTarget { target });
+    }
+    for _ in 0..8 {
+        if g.state.announcing.is_none() {
+            return id;
+        }
+        let action = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| {
+                matches!(
+                    a,
+                    Action::ChooseSpellCost { .. }
+                        | Action::FinishTargets
+                        | Action::PayCosts { .. }
+                )
+            })
+            .unwrap_or_else(|| panic!("unpaid cast {:?}", g.state.pending));
+        checked(g, action);
+    }
+    panic!("unfinished paid cast");
 }
 fn until(g: &mut Game, stop: impl Fn(&Game) -> bool) {
     for _ in 0..150 {
