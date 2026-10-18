@@ -2526,10 +2526,10 @@ mod blanked_funding_bounds_tests {
         let aura = spawn(
             &mut game,
             player,
-            Card::from_name("Stop Cold").unwrap(),
+            Card::from_name("Eaten by Piranhas").unwrap(),
             Zone::Hand,
         );
-        game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 3];
+        game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 1];
         cast(&mut game, aura, None, &[Target::Card(target)]);
         settle(&mut game);
         assert!(!game.printed_abilities_available(target));
