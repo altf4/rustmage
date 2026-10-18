@@ -79,9 +79,16 @@ pub(super) trait CharacteristicWorld {
         })
     }
     fn printed_abilities_available(&self, id: CardId) -> bool {
-        self.object(id).zone != Zone::Battlefield
-            || ability_evaluation::evaluate_if_needed(self)
-                .is_none_or(|evaluation| evaluation.result.objects[id as usize].printed)
+        // Only an exact attached removal provider can remove printed abilities.
+        // Unrelated sources need no whole-world layer-six evaluation. Keep the
+        // full evaluator for candidates: competing effects may blank a provider.
+        let recipient = self.reference(id);
+        !self.game().state.roles.as_ref().is_some_and(|state| {
+            state
+                .ability_removal_sources
+                .iter()
+                .any(|&source| self.attachment_link(source, recipient))
+        }) || ability_evaluation::evaluate_abilities(self).result.objects[id as usize].printed
     }
 
     fn reference(&self, id: CardId) -> ObjectRef {
@@ -126,7 +133,10 @@ pub(super) trait CharacteristicWorld {
         )
     }
     fn granted_mana(&self, id: CardId) -> Vec<ability_order::GrantedManaAbility> {
-        if let Some(evaluation) = ability_evaluation::evaluate_if_needed(self) {
+        // Animation grants only keywords. It cannot remove a provider's printed
+        // ability or change a mana grant, so only removal needs layer-six order.
+        if self.has_ability_removal() {
+            let evaluation = ability_evaluation::evaluate_abilities(self);
             return evaluation.result.objects[id as usize].mana.clone();
         }
         let mut result = Vec::new();

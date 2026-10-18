@@ -15,6 +15,17 @@ else:
     from source_paths import xmage_source
 
 class DirectCardTests(unittest.TestCase):
+    def test_synthetic_factory_aliases_are_checked_before_native_build(self):
+        import copy
+        metadata, _, _ = linker.load()
+        linker.validate_synthetic_aliases(metadata)
+        emblem = next(c for c in reversed(metadata['cards']) if c['category'] == 'emblem')
+        for identity in (metadata['tokens'][-1]['factory_identity'], emblem['name']):
+            changed = copy.deepcopy(metadata)
+            changed['aliases'] = [row for row in changed['aliases'] if row[0] != identity]
+            with self.assertRaisesRegex(ValueError, 'synthetic factory alias'):
+                linker.validate_synthetic_aliases(changed)
+
     def test_card_keywords_use_named_flags(self):
         raw_constructor = re.compile(r'\bKeywords\s*\(')
         for path in (linker.ROOT/'src/card_definitions').rglob('*.rs'):

@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "catalogue_version": "5c62c4172d4789f14f88484904d8b85af98267857aad522f708abbad7e82e572",
+  "catalogue_version": "72fb9e9d37048664818c09dff534c253fb60096dc386b00979dc15989ed6650c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2134,
-  "implemented_total": 2140,
-  "token_definitions": 102,
-  "emblem_definitions": 2,
+  "implemented_standard_cards": 2141,
+  "implemented_total": 2147,
+  "token_definitions": 103,
+  "emblem_definitions": 3,
   "adventure_definitions": 40,
   "omen_definitions": 13,
   "definition_ownership": {
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 378,
-      "gated": 49
+      "complete": 384,
+      "gated": 43
     },
     "fin": {
       "total": 305,
@@ -92,8 +92,7 @@
     },
     "inr": {
       "total": 4,
-      "complete": 3,
-      "gated": 1
+      "complete": 4
     },
     "jmp": {
       "total": 2,
@@ -7274,8 +7273,8 @@
     {
       "name": "Crawling Barrens",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/crawling_barrens.rs",
       "set": "fdn"
     },
@@ -8538,8 +8537,8 @@
     {
       "name": "Demonic Pact",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/demonic_pact.rs",
       "set": "fdn"
     },
@@ -10194,8 +10193,8 @@
     {
       "name": "Eaten by Piranhas",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/eaten_by_piranhas.rs",
       "set": "fdn"
     },
@@ -17426,8 +17425,8 @@
     {
       "name": "Imprisoned in the Moon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/inr/imprisoned_in_the_moon.rs",
       "set": "inr"
     },
@@ -18666,8 +18665,8 @@
     {
       "name": "Kaito, Cunning Infiltrator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/kaito_cunning_infiltrator.rs",
       "set": "fdn"
     },
@@ -32050,8 +32049,8 @@
     {
       "name": "Soulstone Sanctuary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/soulstone_sanctuary.rs",
       "set": "fdn"
     },
@@ -41026,8 +41025,8 @@
     {
       "name": "Witness Protection",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/witness_protection.rs",
       "set": "fdn"
     },

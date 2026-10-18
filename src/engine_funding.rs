@@ -187,7 +187,7 @@ fn source_obligations(
     object: Option<&Object>,
     amounts: CounterAmounts<'_>,
     kinds: u16,
-    keywords: Keywords,
+    keywords: impl FnOnce() -> Keywords,
     life: i128,
 ) -> bool {
     let Some((source, index, counters, definition)) = goal.source.as_ref() else {
@@ -372,7 +372,7 @@ impl<'g> FundingState<'g> {
                 ability_world::CharacteristicWorld::counter_amounts(self, r.id)
             }),
             source.map_or(0, |r| self.kinds(r)),
-            source.map_or(Keywords::NONE, |r| self.keywords(r)),
+            || source.map_or(Keywords::NONE, |r| self.keywords(r)),
             self.life,
         )
     }
@@ -586,7 +586,7 @@ impl<'g> FundingState<'g> {
                         object,
                         ability_world::CharacteristicWorld::counter_amounts(self, entry.id),
                         self.kinds(entry),
-                        self.keywords(entry),
+                        || self.keywords(entry),
                         self.life,
                         ability,
                         index,
@@ -701,7 +701,24 @@ impl<'g> FundingState<'g> {
                 owned: r.object.owner == goal.actor,
                 controlled: r.object.controller == goal.actor,
                 attacking: r.attacking,
-                identity: linked.then_some(r.id),
+                // Unattached, unmodified basic lands remain interchangeable even
+                // when an unrelated Aura is present. Keep exact identities for
+                // attachment participants, nonbasics and named-counter worlds.
+                identity: (linked
+                    && (self.named_counters.is_some()
+                        || !r.object.card.is_basic_land()
+                        || self.kinds(r) != r.object.card.kind_mask()
+                        || r.object.attached_to.is_some()
+                        || self.game.state.attachment_sources.iter().any(|&source| {
+                            let provider = ability_world::CharacteristicWorld::object(self, source);
+                            provider.zone == Zone::Battlefield
+                                && provider.attached_to
+                                    == Some(ObjectRef {
+                                        card: r.id,
+                                        generation: r.object.generation,
+                                    })
+                        })))
+                .then_some(r.id),
                 attached: r.object.attached_to.map(|r| (r.card, r.generation)),
             })
             .collect();
@@ -797,6 +814,106 @@ impl<'g> FundingState<'g> {
         }
         total
     }
+    // A removal provider may depart during funding and expose hidden printed
+    // abilities. Count all possible production, ignoring guards and sickness;
+    // each restriction we omit only raises this upper bound. No funding move
+    // untaps a source, creates a permanent, restores counters or gains life.
+    fn possible_color_upper(&self) -> [u128; 6] {
+        let mut upper = self.mana;
+        for resource in &self.resources {
+            let object = &resource.object;
+            if object.zone != Zone::Battlefield || object.controller != self.actor {
+                continue;
+            }
+            let mut add = |production: ManaProduction, uses: u128| {
+                let production = match production {
+                    // Types may be restored after an Aura leaves. Counting every
+                    // object (even in other zones) deliberately overestimates.
+                    ManaProduction::CountSubtype { color, .. } => {
+                        let mut mana = [0; 6];
+                        mana[usize::from(color)] =
+                            u32::try_from(self.game.state.objects.len()).unwrap_or(u32::MAX);
+                        ManaProduction::Fixed(mana)
+                    }
+                    _ => production.in_world(self, resource.id),
+                };
+                production.visit(|mana| {
+                    for i in 0..6 {
+                        upper[i] =
+                            upper[i].saturating_add(uses.saturating_mul(u128::from(mana[i])));
+                    }
+                    false
+                });
+            };
+            if !object.tapped {
+                if let Some(color) = object.card.mana_color() {
+                    let mut mana = [0; 6];
+                    mana[color] = 1;
+                    add(ManaProduction::Fixed(mana), 1);
+                }
+                if self.convoke {
+                    // A currently noncreature resource may regain creature type.
+                    add(
+                        ManaProduction::Choice {
+                            mask: 31,
+                            amount: 1,
+                        },
+                        1,
+                    );
+                }
+                for &source in &self.game.state.attachment_sources {
+                    let provider = ability_world::CharacteristicWorld::object(self, source);
+                    if provider.zone != Zone::Battlefield
+                        || provider.attached_to
+                            != Some(ObjectRef {
+                                card: resource.id,
+                                generation: object.generation,
+                            })
+                    {
+                        continue;
+                    }
+                    for group in provider.card.static_ability_groups() {
+                        for fragment in group.fragments {
+                            if let crate::cards::StaticAbilityFragment::AttachmentMana(production) =
+                                *fragment
+                            {
+                                add(production, 1);
+                            }
+                        }
+                    }
+                }
+            }
+            for ability in object.card.activations() {
+                let Some(production) = ability.mana_production() else {
+                    continue;
+                };
+                let cost = ability.cost;
+                if object.tapped && cost.tap {
+                    continue;
+                }
+                let mut uses =
+                    if cost.tap || cost.sacrifice || ability.once_per_turn || ability.exhaust {
+                        1
+                    } else {
+                        u128::MAX
+                    };
+                if cost.life > 0 {
+                    uses = uses.min(self.life.max(0) as u128 / u128::from(cost.life));
+                }
+                if let Some((kind, amount)) = cost.remove
+                    && amount > 0
+                {
+                    uses = uses.min(
+                        ability_world::CharacteristicWorld::counter_amounts(self, resource.id)
+                            .available(kind)
+                            / u128::from(amount),
+                    );
+                }
+                add(production, uses);
+            }
+        }
+        upper
+    }
     fn optimistic(&self, goal: &FundingGoal) -> bool {
         let required =
             u128::from(goal.generic) + goal.required.into_iter().map(u128::from).sum::<u128>();
@@ -807,7 +924,11 @@ impl<'g> FundingState<'g> {
         // The total upper bound remains conservative; color/readiness pruning
         // must not assume the current blanking is permanent for this search.
         if ability_world::CharacteristicWorld::has_ability_removal(self) {
-            return true;
+            let upper = self.possible_color_upper();
+            return upper
+                .into_iter()
+                .zip(goal.required)
+                .all(|(available, required)| available >= u128::from(required));
         }
         let mut upper = self.mana;
         for resource in &self.resources {
@@ -850,7 +971,7 @@ impl<'g> FundingState<'g> {
                         object,
                         ability_world::CharacteristicWorld::counter_amounts(self, resource.id),
                         self.kinds(resource),
-                        self.keywords(resource),
+                        || self.keywords(resource),
                         self.life,
                         ability,
                         index,
@@ -1052,9 +1173,11 @@ impl Game {
             object.map_or(0, |o| {
                 self.object_kinds(goal.source.as_ref().unwrap().0.card, o)
             }),
-            object.map_or(Keywords::NONE, |_| {
-                self.keywords(goal.source.as_ref().unwrap().0.card)
-            }),
+            || {
+                object.map_or(Keywords::NONE, |_| {
+                    self.keywords(goal.source.as_ref().unwrap().0.card)
+                })
+            },
             self.state.players[goal.actor.index()].life,
         ) {
             return false;
@@ -2383,3 +2506,301 @@ mod entry_choices_world_tests;
 #[cfg(test)]
 #[path = "engine_qualified_hexproof_world_tests.rs"]
 mod qualified_hexproof_world_tests;
+
+#[cfg(test)]
+mod blanked_funding_bounds_tests {
+    use super::super::ability_timeline_tests::{cast, checked, settle, setup};
+    use super::super::tests::spawn;
+    use super::*;
+
+    #[test]
+    fn funding_readiness_queries_haste_only_for_a_sick_creature_tap_cost() {
+        for player in [Player::P0, Player::P1] {
+            let mut game = setup(player);
+            let definition = Card::from_name("Soulstone Sanctuary").unwrap();
+            let land = spawn(&mut game, player, definition, Zone::Battlefield);
+            let object = &game.state.objects[land as usize];
+            let mut object = object.clone();
+            object.summoning_sick = true;
+            let check = |object: &Object, kinds, index, keywords| {
+                Game::object_activation_available_with_kinds(
+                    object,
+                    CounterAmounts::default(),
+                    kinds,
+                    keywords,
+                    20,
+                    &definition.activations()[index],
+                    index,
+                    player,
+                    true,
+                )
+            };
+            fn unnecessary() -> Keywords {
+                panic!("readiness evaluated irrelevant keywords")
+            }
+            // A land can be a creature in the current layer projection even
+            // though its immutable definition has no creature type.
+            assert!(check(&object, 3, 1, unnecessary as fn() -> Keywords));
+            assert!(check(&object, 2, 0, unnecessary as fn() -> Keywords));
+            object.summoning_sick = false;
+            assert!(check(&object, 3, 0, unnecessary as fn() -> Keywords));
+            object.summoning_sick = true;
+            object.tapped = true;
+            assert!(!check(&object, 3, 0, unnecessary as fn() -> Keywords));
+            object.tapped = false;
+            object.zone = Zone::Graveyard;
+            assert!(!check(&object, 3, 0, unnecessary as fn() -> Keywords));
+            object.zone = Zone::Battlefield;
+            object.controller = player.other();
+            assert!(!check(&object, 3, 0, unnecessary as fn() -> Keywords));
+            object.controller = player;
+            let mut goal = FundingGoal {
+                actor: player,
+                required: [0; 6],
+                generic: 0,
+                reserve: None,
+                source: None,
+            };
+            assert!(source_obligations(
+                &goal,
+                Some(&object),
+                CounterAmounts::default(),
+                3,
+                unnecessary,
+                20
+            ));
+            goal.source = Some((game.object_ref(land), 1, Counters::default(), definition));
+            assert!(source_obligations(
+                &goal,
+                Some(&object),
+                CounterAmounts::default(),
+                3,
+                unnecessary,
+                20
+            ));
+            assert!(source_obligations(
+                &goal,
+                None,
+                CounterAmounts::default(),
+                3,
+                unnecessary,
+                20
+            ));
+            goal.source = Some((game.object_ref(land), 0, Counters::default(), definition));
+            for (keywords, available) in [(Keywords::NONE, false), (Keywords::HASTE, true)] {
+                let calls = std::cell::Cell::new(0);
+                assert_eq!(
+                    source_obligations(
+                        &goal,
+                        Some(&object),
+                        CounterAmounts::default(),
+                        3,
+                        || {
+                            calls.set(calls.get() + 1);
+                            keywords
+                        },
+                        20
+                    ),
+                    available
+                );
+                assert_eq!(calls.get(), 1);
+            }
+        }
+    }
+
+    #[test]
+    fn funding_animation_mana_projection_matches_ordered_layers_and_virtual_departure() {
+        fn compare(world: &impl ability_world::CharacteristicWorld) {
+            let evaluated = ability_evaluation::evaluate_abilities(world);
+            for id in 0..world.game().state.objects.len() {
+                let mut actual = world.granted_mana(id as CardId);
+                let mut expected = evaluated.result.objects[id].mana.clone();
+                actual.sort_by_key(|grant| grant.source.card);
+                expected.sort_by_key(|grant| grant.source.card);
+                assert_eq!(actual, expected, "mana grants at object {id}");
+            }
+        }
+        for player in [Player::P0, Player::P1] {
+            let mut game = setup(player);
+            let land = spawn(
+                &mut game,
+                player,
+                Card::from_name("Soulstone Sanctuary").unwrap(),
+                Zone::Battlefield,
+            );
+            for _ in 0..3 {
+                game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 4];
+                checked(
+                    &mut game,
+                    Action::Activate {
+                        card: land,
+                        ability: 1,
+                        target: None,
+                        payment: [0, 0, 0, 0, 0, 4],
+                        counter_payment: Counters::default(),
+                    },
+                );
+                settle(&mut game);
+            }
+            assert_eq!(game.state.roles.as_ref().unwrap().animations.len(), 3);
+            game.state.players[player.index()].mana = [30; 6];
+            let horizons = spawn(
+                &mut game,
+                player,
+                Card::from_name("New Horizons").unwrap(),
+                Zone::Hand,
+            );
+            cast(&mut game, horizons, None, &[Target::Card(land)]);
+            settle(&mut game);
+            compare(&game);
+            assert_eq!(
+                ability_world::CharacteristicWorld::granted_mana(&game, land).len(),
+                1
+            );
+            let goal = FundingGoal {
+                actor: player,
+                required: [0; 6],
+                generic: 1,
+                reserve: None,
+                source: None,
+            };
+            compare(&FundingState::from_game(&game, &goal));
+            let moon = spawn(
+                &mut game,
+                player,
+                Card::from_name("Imprisoned in the Moon").unwrap(),
+                Zone::Hand,
+            );
+            cast(&mut game, moon, None, &[Target::Card(land)]);
+            settle(&mut game);
+            compare(&game);
+            let world = FundingState::from_game(&game, &goal);
+            compare(&world);
+            let before = game.snapshot();
+            let mut departed = world.clone();
+            departed
+                .resources
+                .iter_mut()
+                .find(|r| r.id == moon)
+                .unwrap()
+                .object
+                .zone = Zone::Graveyard;
+            compare(&departed);
+            assert_eq!(
+                ability_world::CharacteristicWorld::granted_mana(&departed, land).len(),
+                1
+            );
+            compare(&world);
+            assert_eq!(game.snapshot(), before);
+        }
+    }
+
+    fn blanked(player: Player, name: &str) -> (Game, CardId, Vec<CardId>) {
+        let mut game = setup(player);
+        let plains: Vec<_> = (0..18)
+            .map(|_| spawn(&mut game, player, Card::Plains, Zone::Battlefield))
+            .collect();
+        let target = spawn(
+            &mut game,
+            player,
+            Card::from_name(name).unwrap(),
+            Zone::Battlefield,
+        );
+        game.state.objects[target as usize].summoning_sick = false;
+        let aura = spawn(
+            &mut game,
+            player,
+            Card::from_name("Eaten by Piranhas").unwrap(),
+            Zone::Hand,
+        );
+        game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 1];
+        cast(&mut game, aura, None, &[Target::Card(target)]);
+        settle(&mut game);
+        assert!(!game.printed_abilities_available(target));
+        (game, aura, plains)
+    }
+    #[test]
+    fn blanked_funding_rejects_missing_and_insufficient_colors_without_search() {
+        for player in [Player::P0, Player::P1] {
+            let (mut game, _, _) = blanked(player, "Bear Cub");
+            let mut goal = FundingGoal {
+                actor: player,
+                required: [0, 1, 0, 0, 0, 0],
+                generic: 0,
+                reserve: None,
+                source: None,
+            };
+            let before = game.snapshot();
+            let world = FundingState::from_game(&game, &goal);
+            let mut visited = HashSet::new();
+            assert!(!world.optimistic(&goal));
+            assert!(!world.reachable(&goal, &mut visited));
+            assert!(visited.is_empty());
+            assert_eq!(game.snapshot(), before);
+            spawn(&mut game, player, Card::Island, Zone::Battlefield);
+            goal.required[1] = 2;
+            let world = FundingState::from_game(&game, &goal);
+            assert!(!world.optimistic(&goal));
+            assert!(!world.reachable(&goal, &mut visited));
+            assert!(visited.is_empty());
+        }
+    }
+    #[test]
+    fn blanked_funding_keeps_basic_equivalence_and_restorable_production() {
+        for player in [Player::P0, Player::P1] {
+            let (game, aura, plains) = blanked(player, "Llanowar Elves");
+            let goal = FundingGoal {
+                actor: player,
+                required: [0, 0, 0, 0, 1, 0],
+                generic: 0,
+                reserve: None,
+                source: None,
+            };
+            let world = FundingState::from_game(&game, &goal);
+            assert!(world.possible_color_upper()[4] >= 1);
+            assert!(world.optimistic(&goal));
+            let evaluated = ability_evaluation::evaluate_abilities(&world);
+            for resource in &world.resources {
+                assert_eq!(
+                    ability_world::CharacteristicWorld::printed_abilities_available(
+                        &world,
+                        resource.id
+                    ),
+                    evaluated.result.objects[resource.id as usize].printed
+                );
+            }
+            let mut first = world.clone();
+            let mut second = world.clone();
+            first
+                .resources
+                .iter_mut()
+                .find(|r| r.id == plains[0])
+                .unwrap()
+                .object
+                .tapped = true;
+            second
+                .resources
+                .iter_mut()
+                .find(|r| r.id == plains[1])
+                .unwrap()
+                .object
+                .tapped = true;
+            assert!(first.key(&goal) == second.key(&goal));
+            let mut departed = world.clone();
+            departed
+                .resources
+                .iter_mut()
+                .find(|r| r.id == aura)
+                .unwrap()
+                .object
+                .zone = Zone::Graveyard;
+            assert!(departed.reachable(&goal, &mut HashSet::new()));
+            let mut visited = HashSet::new();
+            assert!(!world.reachable(&goal, &mut visited));
+            assert!(
+                visited.len() <= plains.len() + 1,
+                "equivalent land subsets escaped memoization"
+            );
+        }
+    }
+}
