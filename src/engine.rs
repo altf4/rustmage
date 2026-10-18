@@ -14,7 +14,10 @@ pub use copies::CopyRecipe;
 #[path = "engine_copy_characteristics.rs"]
 mod copy_characteristics;
 pub use crate::cards::CopyExceptions;
+#[path = "engine_target_allocations.rs"]
+mod target_allocations;
 pub use stack_copies::{CopyEvent, RetargetView};
+pub use target_allocations::{TargetAllocation, TargetAmountChoiceView};
 const STARTING_LIFE: i128 = 20;
 use crate::capacity::{CapacityExt, CapacitySignal};
 use crate::cards::{
@@ -371,6 +374,7 @@ macro_rules! define_actions {
 }
 define_actions! {
     FinishStackTargets,
+    AllocateTargetAmount { amount: u16 },
     RestoreStackTarget { index: u32 },
     SetStackTarget { index: u32, target: Target },
     ChooseCollectEvidence { collect: bool },
@@ -832,6 +836,9 @@ pub struct SpellView {
     pub source_copy_recipe: Option<Box<CopyRecipe>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
+    pub target_allocations: Option<Box<Vec<TargetAllocation>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[allow(clippy::box_collection)]
     pub mana_copy_sources: Option<Box<Vec<(ManaCopySource, u64)>>>,
     pub is_copy: bool,
     pub delayed_sacrifice: Option<Box<DelayedSacrificeView>>,
@@ -950,6 +957,10 @@ impl SpellView {
                 .sacrificed_toughness
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<i128>())
+            + self.target_allocations.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<TargetAllocation>>()
+                    + rows.len() * std::mem::size_of::<TargetAllocation>()
+            })
             + self.targets.len() * std::mem::size_of::<BoundTarget>()
             + self
                 .attachment_trigger
@@ -1253,6 +1264,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    TargetAmount {
+        player: Player,
+    },
     Retarget {
         player: Player,
     },
@@ -1853,6 +1867,7 @@ pub struct Observation {
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
     pub retarget: Option<RetargetView>,
+    pub target_amount: Option<TargetAmountChoiceView>,
     pub delayed_spell_copies: Vec<SpellView>,
     pub group_move_count: Option<u64>,
     pub optional_search_sequence: Option<OptionalSearchSequence>,
@@ -2165,6 +2180,7 @@ impl Game {
             | Pending::PayCosts { player }
             | Pending::Modes { player }
             | Pending::Retarget { player }
+            | Pending::TargetAmount { player }
             | Pending::Targets { player }
             | Pending::OrderTriggers { player }
             | Pending::TargetLibrary { player }
@@ -3330,6 +3346,14 @@ impl Game {
                     }
                 }
             }
+            Pending::TargetAmount { .. } => {
+                let choice = self.target_amount_choice().unwrap();
+                for amount in choice.minimum..=choice.maximum {
+                    if emit(Action::AllocateTargetAmount { amount }) {
+                        return true;
+                    }
+                }
+            }
             Pending::Retarget { .. } => return self.visit_retarget_actions(&mut emit),
             Pending::Targets { .. } => {
                 let announcement = s.announcing.as_ref().unwrap();
@@ -3785,6 +3809,7 @@ impl Game {
                     self.target_becomes_bound(&item, bound);
                     item.targets.push(bound);
                 }
+                item.allocate_single_target();
                 self.pay_activation(&mut item, payment, counter_payment);
                 self.push_stack_item(item);
                 self.state.passes = 0;
@@ -3939,6 +3964,7 @@ impl Game {
             }
             Action::ChooseMode { mode } => self.choose_mode(mode),
             Action::FinishStackTargets => self.finish_stack_targets(),
+            Action::AllocateTargetAmount { amount } => self.choose_target_amount(amount),
             Action::SetStackTarget { index, target } => self.set_stack_target(index, target),
             Action::RestoreStackTarget { index } => self.restore_stack_target(index),
             Action::ChooseTarget { target } => {
@@ -5324,6 +5350,7 @@ impl Game {
                 Pending::Role { .. } => "role_rule",
                 Pending::Legend { .. } => "legend_rule",
                 Pending::Retarget { .. } => "retarget",
+                Pending::TargetAmount { .. } => "target_amount",
                 Pending::Targets { .. } => "targets",
                 Pending::Offspring { .. } => "offspring",
                 Pending::Bargain { .. } => "bargain",
@@ -5512,6 +5539,7 @@ impl Game {
                 .unwrap_or_default(),
             stack: s.stack.clone(),
             retarget: self.retarget_view(),
+            target_amount: self.target_amount_choice(),
             delayed_spell_copies: self.delayed_spell_copy_view(),
             resolving: s
                 .resolving
@@ -6755,3 +6783,7 @@ mod modal_history_tests;
 #[cfg(test)]
 #[path = "engine_copy_characteristics_tests.rs"]
 mod copy_characteristics_tests;
+
+#[cfg(test)]
+#[path = "engine_target_allocation_tests.rs"]
+mod target_allocation_tests;

@@ -443,6 +443,7 @@ impl Game {
             .as_mut()
             .unwrap();
         bound.group = r.item.targets[index].group;
+        r.item.retarget_allocation(r.item.targets[index], bound);
         r.item.targets[index] = bound;
     }
     pub(super) fn restore_stack_target(&mut self, index: u32) {
@@ -454,7 +455,10 @@ impl Game {
             .retarget
             .as_mut()
             .unwrap();
-        r.item.targets[index as usize] = r.template.targets[index as usize];
+        let index = index as usize;
+        let restored = r.template.targets[index];
+        r.item.retarget_allocation(r.item.targets[index], restored);
+        r.item.targets[index] = restored;
     }
     pub(super) fn finish_stack_targets(&mut self) {
         self.commit_stack_targets();

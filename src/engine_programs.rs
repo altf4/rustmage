@@ -723,6 +723,7 @@ impl Game {
             crew: None,
             cast_event: None,
             copy_event: None,
+            target_allocations: None,
             source_copy_recipe: source
                 .copy_recipe
                 .filter(|r| r.exceptions != CopyExceptions::NONE)
@@ -2148,6 +2149,7 @@ impl Game {
                     }
                 }
                 Instruction::SacrificeSource => self.sacrifice_exact_source(&item),
+                Instruction::DamageDivided { .. } => self.damage_divided(&item),
                 Instruction::SelectGroup(group) => {
                     self.state.resolving.as_mut().unwrap().target_group = group;
                 }

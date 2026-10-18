@@ -781,6 +781,9 @@ pub(crate) enum Instruction {
     },
     SacrificeDelayedTokens,
     SacrificeSource,
+    DamageDivided {
+        total: u16,
+    },
     CreateCopyTokenWithExceptions {
         subject: Subject,
         amount: u16,

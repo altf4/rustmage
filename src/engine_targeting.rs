@@ -1078,6 +1078,7 @@ impl Game {
             cast_event: None,
             copy_event: None,
             source_copy_recipe: None,
+            target_allocations: None,
             mana_copy_sources: None,
             is_copy: false,
             delayed_sacrifice: None,
@@ -1228,6 +1229,9 @@ impl Game {
     }
 
     pub(super) fn finish_announcement(&mut self) {
+        if self.start_target_amounts() {
+            return;
+        }
         if self.start_crew_payment() {
             return;
         }

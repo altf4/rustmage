@@ -8,5 +8,93 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "98b64159ffef016ef57db6dcc15e64468678c7d956a2c5abd088471b65d72d73"
   },
-  "physical_metadata_sha256": "bda8df2af14027912389d4174269a78f6d89c38f1b888bcf74bd2a201e201ee3"
+  "physical_metadata_sha256": "bda8df2af14027912389d4174269a78f6d89c38f1b888bcf74bd2a201e201ee3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ChandraFlameshaper.java",
+  "java_sha256": "6be4b9df4937048c8d979b4c044f8fa9cd5727923c9ce35f423fb85b6a435795",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/LoyaltyAbility.java",
+      "sha256": "9e648c878fd77eaa324aa746254377711cf4929573ed960055ee57f342b9ce79"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLoyaltyCost.java",
+      "sha256": "efe5edc4c58c5a3d697a1448642d7e251141eb54f3704ffee201f6ba3ed51365"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+      "sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/AtStepTriggeredAbility.java",
+      "sha256": "acaebe5709a15b181c6f315684db3969eb622d6dcc45f2994bf54c05b00d22af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeSourceEffect.java",
+      "sha256": "67db08baf9a6cc6c7fad953388bdd2adb74e4c9af4c5e2f5483c8cc546bbb098"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/CopyTokenFunction.java",
+      "sha256": "ed8c0fe3b50030f54d3e32ddbabbdc1f7018c0da6878429821f54020c4d4ce1a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageMultiEffect.java",
+      "sha256": "8abe9d89813203699d21532058cc5a3ffb2fc4cd247dc3cd960a076863a96818"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreatureOrPlaneswalkerAmount.java",
+      "sha256": "22effaf0185ed12d77e89b2f029cc456c1d38a81e1e14b3883b8580d7aa9dc51"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetPermanentAmount.java",
+      "sha256": "f70d05ef1e34e607a85ad43dc28b6c081bf696cbbbfeaaa8a26758737775b71b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetAmount.java",
+      "sha256": "46aa93db7da9ec3cbaabb36e6d5646b1202e3a88777ba26fd034f2adfa2a1732"
+    }
+  ],
+  "remaining_obligations": [
+    "Gated pending all three loyalty abilities rules tests, full validation, independent reviews, and candidate-staging approval."
+  ]
 }
