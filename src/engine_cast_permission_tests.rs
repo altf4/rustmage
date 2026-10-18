@@ -668,3 +668,98 @@ fn smoke_preserves_spare_sources_and_funds_announced_spells_both_seats() {
         assert_eq!(pick(&g), Action::Pass, "do not waste the remaining Island");
     }
 }
+
+fn restricted_angel_mana(g: &mut Game, p: Player) {
+    let giada = fixture(g, p, "Giada, Font of Hope", Zone::Battlefield);
+    checked(
+        g,
+        Action::ActivateMana {
+            card: giada,
+            ability: 0,
+            production: [1, 0, 0, 0, 0, 0],
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+        },
+    );
+}
+
+#[test]
+fn free_flash_surcharge_preserves_restricted_mana_and_zero_payment_gives_no_haste() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        fixture(&mut g, p, "Omniscience", Zone::Battlefield);
+        let spell = fixture(&mut g, p, "Harbinger of the Tides", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        restricted_angel_mana(&mut g, p);
+        g.state.active = p.other();
+        let action = Action::AnnounceFree {
+            card: spell,
+            face: CastFace::Normal,
+            flash_surcharge: true,
+        };
+        assert!(!g.legal_actions().contains(&action));
+        reject(&mut g, action.clone());
+        g.add_mana(p, [0, 0, 0, 0, 0, 2]);
+        checked(&mut g, action);
+        finish_cast(&mut g);
+        assert_eq!(
+            g.state.stack.last().unwrap().cast.unwrap().payment,
+            [0, 0, 0, 0, 0, 2]
+        );
+        assert_eq!(g.state.players[p.index()].mana, [1, 0, 0, 0, 0, 0]);
+
+        let mut g = setup(p);
+        fixture(&mut g, p, "Omniscience", Zone::Battlefield);
+        let dragon = fixture(&mut g, p, "Shivan Dragon", Zone::Hand);
+        let orb = fixture(&mut g, p, "Carnelian Orb of Dragonkind", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0; 6];
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: orb,
+                ability: 0,
+                production: [0, 0, 0, 1, 0, 0],
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(&mut g, free(dragon));
+        finish_cast(&mut g);
+        assert_eq!(g.state.stack.last().unwrap().cast.unwrap().payment, [0; 6]);
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 1, 0, 0]);
+        settle(&mut g);
+        assert!(!g.keywords(dragon).contains(Keywords::HASTE));
+    }
+}
+
+#[test]
+fn granted_flashback_additional_discard_cannot_spend_angel_only_mana() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let sphinx = fixture(&mut g, p, "Sphinx of Forgotten Lore", Zone::Battlefield);
+        let spell = fixture(&mut g, p, "Thrill of Possibility", Zone::Graveyard);
+        fixture(&mut g, p, "Island", Zone::Hand);
+        grant(&mut g, sphinx, spell);
+        g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 0];
+        restricted_angel_mana(&mut g, p);
+        let action = Action::AnnounceGrantedFlashback {
+            card: spell,
+            flash_surcharge: false,
+        };
+        assert!(!g.legal_actions().contains(&action));
+        reject(&mut g, action.clone());
+        g.add_mana(p, [0, 0, 0, 0, 0, 1]);
+        checked(&mut g, action);
+        finish_cast(&mut g);
+        let cast = g.state.stack.last().unwrap().cast.unwrap();
+        assert_eq!(cast.method, CastMethod::GrantedFlashback);
+        assert_eq!(cast.payment, [0, 0, 0, 1, 0, 1]);
+        assert_eq!(g.state.players[p.index()].mana, [1, 0, 0, 0, 0, 0]);
+        assert!(
+            g.state
+                .objects
+                .iter()
+                .any(|o| o.card == Card::Island && o.zone == Zone::Graveyard)
+        );
+    }
+}
