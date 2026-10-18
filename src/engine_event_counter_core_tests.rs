@@ -3,7 +3,7 @@ use super::tests::spawn;
 use super::*;
 fn fixture(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
     let card = Card::from_name(name).unwrap();
-    assert!(!card.is_supported(), "core fixtures stay gated");
+    assert_eq!(card.is_supported(), name != "Boggart Mischief");
     spawn(g, p, card, zone)
 }
 fn activate(g: &mut Game, id: CardId, index: u16, target: Option<Target>) {

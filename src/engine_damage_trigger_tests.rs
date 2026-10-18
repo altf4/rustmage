@@ -527,10 +527,12 @@ fn damage_observer_index_matches_all_admissions_and_snapshot_restoration() {
     let mut g = scenario();
     for &card in &Card::ALL {
         let id = spawn(&mut g, Player::P0, card, Zone::Battlefield);
-        let expected = card
-            .triggers()
-            .iter()
-            .any(|t| matches!(t.condition.event(), TriggerCondition::PlayerDamaged { .. }));
+        let expected = card.triggers().iter().any(|t| {
+            matches!(
+                t.condition.event(),
+                TriggerCondition::PlayerDamaged { .. } | TriggerCondition::SourceDealtCombatDamage
+            )
+        });
         assert_eq!(
             g.state.damage_sources.contains(&id),
             expected,

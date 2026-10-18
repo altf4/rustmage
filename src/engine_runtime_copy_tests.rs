@@ -1,4 +1,4 @@
-//! Gated runtime recipes exercised through production effects and owned branches.
+//! Admitted runtime recipes exercised through production effects and owned branches.
 use super::ability_timeline_tests::{cast, checked, settle, setup};
 use super::tests::spawn;
 use super::*;

@@ -6400,5 +6400,9 @@ mod search_pregame_tests;
 mod event_counter_core_tests;
 
 #[cfg(test)]
+#[path = "engine_fdn_five_bounded_acceptance_tests.rs"]
+mod fdn_five_bounded_acceptance_tests;
+
+#[cfg(test)]
 #[path = "engine_runtime_copy_tests.rs"]
 mod runtime_copy_tests;

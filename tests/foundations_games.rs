@@ -77,6 +77,7 @@ fn foundations_chosen_values_control_and_death_cards_full_games() {
         ],
         &["Uncharted Haven"],
         &["Uncharted Haven", "Heraldic Banner"],
+        &[],
         &[0, 1, 2, 3, 7, 13, 41, 73],
     );
 }
@@ -139,6 +140,65 @@ fn foundations_qualified_graveyard_and_resolution_cards_full_games() {
         ],
         &["Gruul Guildgate"],
         &["Gruul Guildgate"],
+        &[],
+        &[0, 1, 2, 3, 7, 13, 41, 73],
+    );
+}
+
+#[test]
+fn foundations_five_bounded_cards_natural_openings_combat_and_full_games() {
+    let mut decks = [
+        deck(
+            "Mountain",
+            &[
+                "Dropkick Bomber",
+                "Leyline Axe",
+                "Mazemind Tome",
+                "Frenzied Goblin",
+                "Goblin Smuggler",
+                "Krenko, Mob Boss",
+                "Goblin Surprise",
+                "Goblin Boarders",
+                "Heartfire Immolator",
+            ],
+        ),
+        deck(
+            "Forest",
+            &[
+                "Predator Ooze",
+                "Leyline Axe",
+                "Mazemind Tome",
+                "Llanowar Elves",
+                "Dwynen's Elite",
+                "Bear Cub",
+                "Garruk's Uprising",
+                "Affectionate Indrik",
+                "Primal Might",
+            ],
+        ),
+    ];
+    for deck in &mut decks {
+        for land in &mut deck[..4] {
+            *land = Card::from_name("Demolition Field").unwrap();
+        }
+    }
+    for land in &mut decks[0][4..8] {
+        *land = Card::from_name("Rogue's Passage").unwrap();
+    }
+    for land in &mut decks[1][4..8] {
+        *land = Card::from_name("Rugged Highlands").unwrap();
+    }
+    run_matrix_actions(
+        &decks,
+        &[
+            "Dropkick Bomber",
+            "Leyline Axe",
+            "Mazemind Tome",
+            "Predator Ooze",
+        ],
+        &["Demolition Field"],
+        &["Demolition Field"],
+        &["Leyline Axe"],
         &[0, 1, 2, 3, 7, 13, 41, 73],
     );
 }
@@ -473,7 +533,7 @@ fn foundations_every_admitted_card_in_set_only_full_games() {
 }
 
 fn run_matrix(decks: &[Vec<Card>], expected_casts: &[&str]) {
-    run_matrix_actions(decks, expected_casts, &[], &[], &[7, 41]);
+    run_matrix_actions(decks, expected_casts, &[], &[], &[], &[7, 41]);
 }
 
 fn run_matrix_actions(
@@ -481,8 +541,32 @@ fn run_matrix_actions(
     expected_casts: &[&str],
     expected_lands: &[&str],
     expected_mana_sources: &[&str],
+    expected_openings: &[&str],
     seeds: &[u64],
 ) {
+    run_matrix_actions_observed(
+        decks,
+        expected_casts,
+        expected_lands,
+        expected_mana_sources,
+        expected_openings,
+        seeds,
+        None,
+    );
+}
+
+type MatrixObserver<'a> = dyn FnMut(&rustmage::Observation, &rustmage::Observation, bool) + 'a;
+
+fn run_matrix_actions_observed(
+    decks: &[Vec<Card>],
+    expected_casts: &[&str],
+    expected_lands: &[&str],
+    expected_mana_sources: &[&str],
+    expected_openings: &[&str],
+    seeds: &[u64],
+    mut observer: Option<&mut MatrixObserver<'_>>,
+) {
+    let mut opening_permanents = BTreeSet::new();
     let mut played_lands = BTreeSet::new();
     let mut used_mana_sources = BTreeSet::new();
     let mut total_decisions = 0;
@@ -523,6 +607,11 @@ fn run_matrix_actions(
                     assert!(!matches!(action, Action::Concede));
                     let obs = game.observe(actor);
                     match &action {
+                        Action::BeginOnBattlefield { object } => {
+                            let chosen =
+                                obs.objects.iter().find(|o| o.reference == *object).unwrap();
+                            opening_permanents.insert(chosen.card.name());
+                        }
                         Action::PlayLand { card } => {
                             let object = obs.objects.iter().find(|o| o.id == *card).unwrap();
                             played_lands.insert(object.card.name());
@@ -541,7 +630,8 @@ fn run_matrix_actions(
                     triggered |= obs.stack.iter().any(|item| item.kind != StackKind::Spell);
                     token |= obs.objects.iter().any(|o| o.token.is_some());
                     combat |= !obs.attackers.is_empty();
-                    if decisions % 47 == 0 {
+                    let owned_replay = decisions % 47 == 0;
+                    if owned_replay {
                         let revision = game.revision();
                         let before = game.snapshot();
                         assert_eq!(
@@ -574,6 +664,9 @@ fn run_matrix_actions(
                     } else {
                         game.apply(actor, action).unwrap();
                     }
+                    if let Some(observer) = &mut observer {
+                        observer(&obs, &game.observe(actor), owned_replay);
+                    }
                     decisions += 1;
                 }
                 assert!(decisions > 50, "game ended before meaningful play");
@@ -589,6 +682,12 @@ fn run_matrix_actions(
         assert!(
             new_spells.contains(name),
             "new card was not cast in full games: {name}; observed spells={new_spells:?}"
+        );
+    }
+    for name in expected_openings {
+        assert!(
+            opening_permanents.contains(name),
+            "opening-hand permanent was not naturally placed: {name}"
         );
     }
     for name in expected_lands {
@@ -607,3 +706,6 @@ fn run_matrix_actions(
         new_spells.len()
     );
 }
+
+#[path = "common/foundations_copy_games.rs"]
+mod copy_games;
