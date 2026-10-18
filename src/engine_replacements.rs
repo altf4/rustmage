@@ -234,7 +234,7 @@ fn modify_counter(spec: ReplacementSpec, p: &mut CounterPlacement) {
     p.effect = true;
 }
 impl Game {
-    fn active_rule_fragment(
+    pub(super) fn active_rule_fragment(
         &self,
         id: CardId,
         predicate: impl Fn(&crate::cards::StaticAbilityFragment) -> bool,

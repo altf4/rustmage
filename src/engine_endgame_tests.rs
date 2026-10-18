@@ -456,3 +456,39 @@ fn endgame_time_stop_capacity_failure_restores_current_stack_phase_and_owned_sta
         assert_eq!(g.object_view(stop).zone, Zone::Exile);
     }
 }
+
+#[test]
+fn endgame_maze_source_cannot_fund_its_own_tap_cost_and_returns_to_owner() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        // A controlled land retains its owner, while its captured ability uses its controller.
+        let maze = fixture(&mut g, p.other(), "Maze's End", Zone::Battlefield);
+        g.state.objects[maze as usize].controller = p;
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        let announcement = Action::AnnounceActivate {
+            card: maze,
+            ability: 1,
+            counter_payment: Counters::default(),
+        };
+        assert!(!g.legal_actions().contains(&announcement));
+        let before = g.snapshot();
+        assert_eq!(g.apply(p, announcement.clone()), Err(Error::IllegalAction));
+        assert_eq!(g.snapshot(), before);
+        g.add_mana(p, [0, 0, 0, 0, 0, 1]);
+        let gate = fixture(&mut g, p, GATES[0], Zone::Library);
+        activate_maze(&mut g, maze);
+        assert_eq!(g.object_view(maze).zone, Zone::Hand);
+        assert_eq!(g.object_view(maze).owner, p.other());
+        assert_eq!(g.object_view(maze).controller, p.other());
+        assert_eq!(g.state.stack.last().unwrap().controller, p);
+        until(
+            &mut g,
+            |g| matches!(g.state.pending, Pending::EffectSearch { player } if player == p),
+        );
+        checked(&mut g, Action::ChooseSearch { card: gate });
+        checked(&mut g, Action::FinishSearch);
+        assert_eq!(g.object_view(gate).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(gate).controller, p);
+        assert_eq!(g.outcome(), None);
+    }
+}
