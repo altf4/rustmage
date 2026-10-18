@@ -3,7 +3,7 @@
   "catalogue_id": 4556,
   "oracle_id": "dd4cf149-2fae-40e5-b50b-639f6bcec65e",
   "facts_sha256": "1c350aa42af4bb3c9f25dc542c561f455d367abdd4abdcaa8b235201b2aa26db",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "db3c2ecb707eeedc9c87af61dac6c5188d49584b5d6fe6f44222c39a04218f7d"
@@ -23,8 +23,5 @@
       "path": "Mage/src/main/java/mage/game/stack/StackObjectImpl.java",
       "sha256": "0c359dde94436a8623c6f9b27cf578af1e34686a9293d83b6cd59d24e1d7c462"
     }
-  ],
-  "remaining_obligations": [
-    "Draft: final rules tests, natural Foundations games, full validation and two independent final-head reviews pending."
   ]
 }
