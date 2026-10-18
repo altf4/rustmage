@@ -322,6 +322,8 @@ fn abandoning_copy_choices_ceases_only_the_exact_uncommitted_copy_and_keeps_futu
                 .iter()
                 .any(|s| s.card == shock && s.kind == StackKind::Spell)
         );
+        // The end-turn caller abandons its resolving program separately from copy choices.
+        assert!(g.state.resolving.take().is_some());
         g.state.pending = Pending::Priority;
         settle(&mut g);
         assert_eq!(g.state.players[p.other().index()].life, 18);
