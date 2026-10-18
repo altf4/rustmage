@@ -866,6 +866,7 @@ pub(crate) enum Instruction {
         unpaid_skip: usize,
     },
     ReturnSourceToHand(TargetZone),
+    ReturnSourceFromFirstPublicZoneToHand,
     PutSourceOnLibraryTop {
         origin: TargetZone,
     },
@@ -2038,6 +2039,7 @@ pub(crate) enum TriggerCondition {
         first_only: bool,
         own_turn: bool,
     },
+    AttachedCreatureDies,
     CreatureDies {
         relation: CastRelation,
         other: bool,

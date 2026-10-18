@@ -335,6 +335,10 @@ impl Game {
             for source in death_sources {
                 for (index, ability) in source.card.triggers().iter().enumerate() {
                     let matched = match ability.condition.event() {
+                        TriggerCondition::AttachedCreatureDies => {
+                            event.before.is_creature()
+                                && source.attached_to == Some(event.before.reference)
+                        }
                         TriggerCondition::DamagedCreatureDies => {
                             event.before.is_creature()
                                 && self
@@ -485,6 +489,7 @@ impl Game {
                     | TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::SelfDies
                     | TriggerCondition::CreatureDies { .. }
+                    | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
                     | TriggerCondition::CreatureDiesAttackState { .. }
@@ -1862,6 +1867,9 @@ impl Game {
                         self.state.pending = Pending::EffectOptional { player, skip_to };
                         return;
                     }
+                }
+                Instruction::ReturnSourceFromFirstPublicZoneToHand => {
+                    self.return_source_from_first_public_zone_to_hand(&item);
                 }
                 Instruction::ReturnSourceToHand(origin) => {
                     let zone = match origin {

@@ -668,6 +668,22 @@ impl<'g> FundingState<'g> {
         });
         moves
     }
+    fn refresh_control_projection(&mut self) {
+        for row in continuous_control::controllers(self.game, |id| {
+            ability_world::CharacteristicWorld::object(self, id).clone()
+        }) {
+            if let Some(resource) = self
+                .resources
+                .iter_mut()
+                .find(|resource| resource.id == row.object.card)
+                && resource.object.controller != row.controller
+            {
+                resource.object.controller = row.controller;
+                resource.object.summoning_sick = true;
+                resource.attacking = false;
+            }
+        }
+    }
     fn apply(&mut self, step: &FundingMove) {
         for (lot, allocation) in self.lots.iter_mut().zip(&step.allocation) {
             for (held, paid) in lot.amounts.iter_mut().zip(allocation) {
@@ -707,20 +723,7 @@ impl<'g> FundingState<'g> {
         } else {
             object.tapped = true;
         }
-        for row in continuous_control::controllers(self.game, |id| {
-            ability_world::CharacteristicWorld::object(self, id).clone()
-        }) {
-            if let Some(resource) = self
-                .resources
-                .iter_mut()
-                .find(|resource| resource.id == row.object.card)
-                && resource.object.controller != row.controller
-            {
-                resource.object.controller = row.controller;
-                resource.object.summoning_sick = true;
-                resource.attacking = false;
-            }
-        }
+        self.refresh_control_projection();
         for (pool, produced) in self.mana.iter_mut().zip(step.production) {
             *pool = pool
                 .checked_add(u128::from(produced))
@@ -3012,6 +3015,55 @@ mod blanked_funding_bounds_tests {
                 visited.len() <= plains.len() + 1,
                 "equivalent land subsets escaped memoization"
             );
+        }
+    }
+}
+
+#[cfg(test)]
+mod continuous_control_tests {
+    use super::super::tests::{scenario, spawn};
+    use super::*;
+    #[test]
+    fn virtual_control_aura_departure_recomputes_mana_access_without_mutating_parent() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = scenario();
+            let land = spawn(&mut g, p.other(), Card::Plains, Zone::Battlefield);
+            let aura = spawn(
+                &mut g,
+                p,
+                Card::from_name("Confiscate").unwrap(),
+                Zone::Battlefield,
+            );
+            g.state.objects[aura as usize].attached_to = Some(g.object_ref(land));
+            g.retimestamp_live_static_source(g.object_ref(aura));
+            g.refresh_controllers();
+            let goal = FundingGoal {
+                actor: p,
+                required: [1, 0, 0, 0, 0, 0],
+                generic: 0,
+                reserve: None,
+                source: None,
+            };
+            let mut world = FundingState::from_game(&g, &goal);
+            assert!(world.reachable(&goal, &mut HashSet::new()));
+            let original = g.snapshot();
+            world
+                .resources
+                .iter_mut()
+                .find(|r| r.id == aura)
+                .unwrap()
+                .object
+                .zone = Zone::Graveyard;
+            world.refresh_control_projection();
+            assert_eq!(
+                ability_world::CharacteristicWorld::object(&world, land).controller,
+                p.other()
+            );
+            assert!(!world.reachable(&goal, &mut HashSet::new()));
+            assert_eq!(g.snapshot(), original);
+            g.move_object(aura, Zone::Graveyard);
+            assert_eq!(g.object_view(land).controller, p.other());
+            assert!(!FundingState::from_game(&g, &goal).reachable(&goal, &mut HashSet::new()));
         }
     }
 }

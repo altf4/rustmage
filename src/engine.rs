@@ -6749,3 +6749,6 @@ mod continuous_control;
 #[cfg(test)]
 #[path = "engine_continuous_control_tests.rs"]
 mod continuous_control_tests;
+
+#[path = "engine_attachment_death.rs"]
+mod attachment_death;

@@ -146,3 +146,157 @@ fn simultaneous_aura_departure_materializes_only_final_controller() {
         assert!(g.state.attackers.iter().any(|a| a.card == victim));
     }
 }
+fn destiny(g: &mut Game, owner: Player, target: CardId) -> CardId {
+    let source = spawn(
+        g,
+        owner,
+        Card::from_name("Angelic Destiny").unwrap(),
+        Zone::Battlefield,
+    );
+    g.state.objects[source as usize].attached_to = Some(g.object_ref(target));
+    g.retimestamp_live_static_source(g.object_ref(source));
+    source
+}
+#[test]
+fn destiny_adds_angel_stats_and_keywords_then_returns_to_its_owner_after_aura_sba() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let victim = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let source = destiny(&mut g, p.other(), victim);
+        assert_eq!(
+            g.stats(victim),
+            Stats {
+                power: 6,
+                toughness: 6
+            }
+        );
+        assert!(
+            g.keywords(victim)
+                .contains(Keywords::FLYING.union(Keywords::FIRST_STRIKE))
+        );
+        assert!(g.has_subtype(victim, "Angel"));
+        assert!(g.has_subtype(victim, "Bear"));
+        let actor = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        transfer(&mut g, actor, source, false);
+        g.move_object(victim, Zone::Graveyard);
+        assert_eq!(g.state.pending_triggers.len(), 1);
+        assert_eq!(g.state.pending_triggers[0].controller, p);
+        assert_eq!(g.state.pending_triggers[0].source_move, None);
+        g.state_based_actions();
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+        assert_eq!(
+            g.state.pending_triggers[0]
+                .source_move
+                .as_ref()
+                .unwrap()
+                .after,
+            g.object_ref(source)
+        );
+        super::ability_timeline_tests::settle(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Hand);
+        assert_eq!(g.object_view(source).owner, p.other());
+        assert_eq!(g.object_view(source).controller, p.other());
+    }
+}
+#[test]
+fn destiny_simultaneous_death_binds_actual_source_move_in_either_event_order() {
+    for p in [Player::P0, Player::P1] {
+        for reverse in [false, true] {
+            let mut g = setup(p);
+            let victim = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+            let source = destiny(&mut g, p, victim);
+            let sources = g.death_trigger_sources();
+            let ids = if reverse {
+                [source, victim]
+            } else {
+                [victim, source]
+            };
+            let events = g.move_objects_raw(&ids, Zone::Graveyard);
+            g.finish_zone_events(&events, &sources);
+            assert_eq!(g.state.pending_triggers.len(), 1);
+            let captured = g.state.pending_triggers[0].clone();
+            assert_eq!(
+                captured.source_attachment,
+                Some(
+                    events
+                        .iter()
+                        .find(|e| e.before.id == victim)
+                        .unwrap()
+                        .before
+                        .reference
+                )
+            );
+            assert_eq!(
+                captured.source_move.as_ref().unwrap().after,
+                g.object_ref(source)
+            );
+            super::ability_timeline_tests::settle(&mut g);
+            assert_eq!(g.object_view(source).zone, Zone::Hand);
+        }
+    }
+}
+#[test]
+fn destiny_does_not_rebind_a_second_source_move_even_if_it_returns_to_graveyard() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let victim = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let source = destiny(&mut g, p, victim);
+        g.move_object(victim, Zone::Graveyard);
+        g.state_based_actions();
+        let captured = g.state.pending_triggers[0].source_move.clone();
+        g.move_object(source, Zone::Exile);
+        g.move_object(source, Zone::Graveyard);
+        assert_eq!(g.state.pending_triggers[0].source_move, captured);
+        super::ability_timeline_tests::settle(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn destiny_first_public_exile_destination_uses_actual_event_and_owned_branches() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let victim = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let source = destiny(&mut g, p.other(), victim);
+        let observers = g.death_trigger_sources();
+        let old_source = g.object_view(source);
+        let old_victim = g.object_view(victim);
+        // Frozen simultaneous movement fixture, including a replaced Aura
+        // destination. Bind the actual event, never a guessed generation.
+        let first = g.transition_object(old_source, Zone::Exile, false);
+        let second = g.transition_object(old_victim, Zone::Graveyard, false);
+        g.finish_zone_events(&[first, second], &observers);
+        assert_eq!(
+            g.state.pending_triggers[0]
+                .source_move
+                .as_ref()
+                .unwrap()
+                .destination,
+            Zone::Exile
+        );
+        let mut branch = {
+            let parent = g.clone();
+            parent.clone()
+        };
+        super::ability_timeline_tests::settle(&mut branch);
+        super::ability_timeline_tests::settle(&mut g);
+        assert_eq!(g.snapshot(), branch.snapshot());
+        assert_eq!(g.object_view(source).zone, Zone::Hand);
+    }
+}
+#[test]
+fn destiny_departed_early_or_creature_exiled_does_not_trigger() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let victim = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let source = destiny(&mut g, p, victim);
+        g.move_object(source, Zone::Graveyard);
+        g.move_object(victim, Zone::Graveyard);
+        assert!(g.state.pending_triggers.is_empty());
+        let other = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let aura = destiny(&mut g, p, other);
+        g.move_object(other, Zone::Exile);
+        g.state_based_actions();
+        assert_eq!(g.object_view(aura).zone, Zone::Graveyard);
+        assert!(g.state.pending_triggers.is_empty());
+    }
+}

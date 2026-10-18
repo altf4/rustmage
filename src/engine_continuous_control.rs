@@ -184,7 +184,7 @@ impl Game {
                     .flatten()
             })
             .collect();
-        for target in targets {
+        for &target in &targets {
             self.ensure_control_base(target);
         }
         if self.state.controls.is_none() {
@@ -209,6 +209,13 @@ impl Game {
         let state = self.state.controls.as_mut().unwrap();
         state.bases.retain(|row| live.contains(&row.object));
         state.effects.retain(|row| live.contains(&row.object));
+        state.bases.retain(|row| {
+            state
+                .effects
+                .iter()
+                .any(|effect| effect.object == row.object)
+                || targets.contains(&row.object)
+        });
         if state.bases.is_empty() {
             self.state.controls = None;
         }
