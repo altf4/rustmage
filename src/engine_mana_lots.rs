@@ -28,7 +28,7 @@ pub struct ManaCopySource {
 }
 impl std::hash::Hash for ManaCopySource {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        std::hash::Hash::hash(&(self.object, self.card, self.controller), state);
+        std::hash::Hash::hash(&(self.object, self.card, self.controller.index()), state);
     }
 }
 impl ManaCopySource {
