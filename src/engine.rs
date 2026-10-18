@@ -6913,3 +6913,7 @@ mod copy_characteristics_tests;
 #[cfg(test)]
 #[path = "engine_target_allocation_tests.rs"]
 mod target_allocation_tests;
+
+#[cfg(test)]
+#[path = "engine_harvester_tests.rs"]
+mod harvester_tests;

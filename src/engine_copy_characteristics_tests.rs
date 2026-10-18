@@ -287,3 +287,39 @@ fn gated_electroduplicate_pays_normal_and_flashback_costs_and_creates_copiable_a
         assert_eq!(g.state.objects[second as usize].zone, Zone::Outside);
     }
 }
+
+#[test]
+fn abandoning_copy_choices_ceases_only_the_exact_uncommitted_copy_and_keeps_future_delays() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let teach = named(&mut g, p, "Teach by Example", Zone::Hand);
+        cast(&mut g, teach, None, &[]);
+        let saved = g.state.stack.last().unwrap().clone();
+        settle(&mut g);
+        let shock = named(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, None, &[Target::Player(p.other())]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        let draft = g.observe(p).retarget.unwrap().item;
+        assert!(draft.is_copy);
+        g.remember_next_spell_copy(&saved);
+        assert_eq!(g.delayed_spell_copy_view().len(), 1);
+        g.abandon_copy_continuations();
+        assert!(g.retarget_view().is_none());
+        assert_eq!(g.state.objects[draft.card as usize].zone, Zone::Outside);
+        assert!(!g.graveyard_entry_this_turn(g.object_ref(draft.card)));
+        assert_eq!(g.delayed_spell_copy_view().len(), 1);
+        assert!(
+            g.state
+                .stack
+                .iter()
+                .any(|s| s.card == shock && s.kind == StackKind::Spell)
+        );
+        g.state.pending = Pending::Priority;
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        assert_eq!(g.delayed_spell_copy_view().len(), 1);
+        g.expire_spell_copies();
+        assert!(g.delayed_spell_copy_view().is_empty());
+    }
+}
