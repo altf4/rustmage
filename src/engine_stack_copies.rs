@@ -107,7 +107,27 @@ impl Game {
             .delayed
             .push(delayed);
     }
+    /// Abandon only active choices; future delayed copy abilities keep their duration.
+    pub(super) fn abandon_copy_continuations(&mut self) {
+        let choice = self
+            .state
+            .stack_copy_data
+            .as_mut()
+            .and_then(|s| s.retarget.take());
+        self.state.nightmare_cull = None;
+        if let Some(r) = choice
+            && r.victim.is_none()
+            && r.item.is_copy
+            && self.object_ref(r.item.card) == r.item.object
+            && self.state.objects[r.item.card as usize].zone == Zone::Stack
+            && !self.state.stack.iter().any(|s| s.id == r.item.id)
+        {
+            self.move_object(r.item.card, Zone::Exile);
+        }
+        self.release_stack_copy_state();
+    }
     pub(super) fn expire_spell_copies(&mut self) {
+        self.abandon_copy_continuations();
         if let Some(state) = &mut self.state.stack_copy_data {
             state.delayed.clear();
         }
@@ -443,6 +463,7 @@ impl Game {
             .as_mut()
             .unwrap();
         bound.group = r.item.targets[index].group;
+        r.item.retarget_allocation(index, bound);
         r.item.targets[index] = bound;
     }
     pub(super) fn restore_stack_target(&mut self, index: u32) {
@@ -454,7 +475,10 @@ impl Game {
             .retarget
             .as_mut()
             .unwrap();
-        r.item.targets[index as usize] = r.template.targets[index as usize];
+        let index = index as usize;
+        let restored = r.template.targets[index];
+        r.item.retarget_allocation(index, restored);
+        r.item.targets[index] = restored;
     }
     pub(super) fn finish_stack_targets(&mut self) {
         self.commit_stack_targets();
@@ -528,6 +552,124 @@ impl Game {
             }
             // A mandatory retarget with no alternatives leaves its target unchanged.
             self.commit_stack_targets();
+        }
+    }
+}
+
+#[cfg(test)]
+mod allocation_occurrence_tests {
+    use super::super::ability_timeline_tests::{cast, checked, named, settle, setup};
+    use super::*;
+
+    #[test]
+    fn allocation_occurrences_survive_duplicate_swap_and_restore_with_owned_edits() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = setup(p);
+            let chandra = named(&mut g, p, "Chandra, Flameshaper", Zone::Hand);
+            cast(&mut g, chandra, None, &[]);
+            settle(&mut g);
+            let a = named(&mut g, p.other(), "Serra Angel", Zone::Battlefield);
+            let b = named(&mut g, p.other(), "Zetalpa, Primal Dawn", Zone::Battlefield);
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: chandra,
+                    ability: 2,
+                    counter_payment: Counters::default(),
+                },
+            );
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(a),
+                },
+            );
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(b),
+                },
+            );
+            checked(&mut g, Action::FinishTargets);
+            checked(&mut g, Action::AllocateTargetAmount { amount: 3 });
+            checked(&mut g, Action::AllocateTargetAmount { amount: 5 });
+            // Allocation precedes the ordinary activation-cost commit, even
+            // when the loyalty ability has no mana component.
+            while g.state.announcing.is_some() {
+                let action = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a, Action::PayCosts { .. }))
+                    .unwrap();
+                checked(&mut g, action);
+            }
+            // Seed a generic retarget continuation around the actual paid packet.
+            // Multi-target editing is generic; Bolt Bend's one-target restriction
+            // cannot supply this multi-target fixture.
+            let item = g.state.stack.last().unwrap().clone();
+            g.state
+                .stack_copy_data
+                .get_or_insert_with(Default::default)
+                .retarget = Some(Retarget {
+                template: item.clone(),
+                victim: Some(item.id),
+                item,
+                remaining: 0,
+            });
+            g.state.pending = Pending::Retarget { player: p };
+            let expect = |g: &Game, targets: [CardId; 2]| {
+                let r = g.retarget_view().unwrap();
+                let rows = r.item.target_allocations.unwrap();
+                assert_eq!(rows.iter().map(|v| v.amount).collect::<Vec<_>>(), [3, 5]);
+                assert_eq!(
+                    rows.iter().map(|v| v.target.target).collect::<Vec<_>>(),
+                    targets.map(Target::Card)
+                );
+                assert_eq!(
+                    r.item.targets.iter().map(|v| v.target).collect::<Vec<_>>(),
+                    targets.map(Target::Card)
+                );
+            };
+            checked(
+                &mut g,
+                Action::SetStackTarget {
+                    index: 0,
+                    target: Target::Card(b),
+                },
+            );
+            expect(&g, [b, b]);
+            checked(
+                &mut g,
+                Action::SetStackTarget {
+                    index: 1,
+                    target: Target::Card(a),
+                },
+            );
+            expect(&g, [b, a]);
+            checked(&mut g, Action::RestoreStackTarget { index: 0 });
+            expect(&g, [a, a]);
+            checked(&mut g, Action::RestoreStackTarget { index: 1 });
+            expect(&g, [a, b]);
+            checked(
+                &mut g,
+                Action::SetStackTarget {
+                    index: 0,
+                    target: Target::Card(b),
+                },
+            );
+            checked(
+                &mut g,
+                Action::SetStackTarget {
+                    index: 1,
+                    target: Target::Card(a),
+                },
+            );
+            expect(&g, [b, a]);
+            g.commit_stack_targets();
+            g.state.pending = Pending::Priority;
+            settle(&mut g);
+            assert_eq!(g.object_view(a).zone, Zone::Graveyard);
+            assert_eq!(g.object_view(b).damage, 3);
         }
     }
 }

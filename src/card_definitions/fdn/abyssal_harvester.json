@@ -3,10 +3,60 @@
   "catalogue_id": 43,
   "oracle_id": "68cc5065-0514-4adf-885f-da554e1db00a",
   "facts_sha256": "144d0407e41ec789951dc3b583484993b4fa89c45381988596d2a6916523c8b7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4df92f62a58ec952c5e2733bccb46bd2274ffd7b50916b117073d3fb4dd34845"
   },
-  "physical_metadata_sha256": "d848c57178353fe56867c4da53e4a11e1a170be21c6b4544724baa4e3c600606"
+  "physical_metadata_sha256": "d848c57178353fe56867c4da53e4a11e1a170be21c6b4544724baa4e3c600606",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AbyssalHarvester.java",
+  "java_sha256": "390bdd0d14297555200390e04732c7aa07e36180c322c1c08a615cccd18344db",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/CopyTokenFunction.java",
+      "sha256": "ed8c0fe3b50030f54d3e32ddbabbdc1f7018c0da6878429821f54020c4d4ce1a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInGraveyard.java",
+      "sha256": "906e86825eed8b6d1a0e9e72c0761aa181aabdc61abbf99fd526f2d3531020b7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreatureCard.java",
+      "sha256": "ee796c20588a1c0975306824c57d1c173bfa54b4afaf8c3526aaf32e15d02739"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/TokenPredicate.java",
+      "sha256": "3213600d28e7e1f76d66cee4f781fb3eb01627759fa9306e22c42a6f6fb880da"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/card/PutIntoGraveFromAnywhereThisTurnPredicate.java",
+      "sha256": "c2935fa1d4f1d97eb62fc90dd802089b75dd9abb516de4baafec0531d2f55c35"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/CardsPutIntoGraveyardWatcher.java",
+      "sha256": "7adcba89bfd94638c279998a6175725be871324c3f70b3f05ab0b540f107b2a3"
+    }
+  ]
 }

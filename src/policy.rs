@@ -42,7 +42,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 Instruction::PutCounters { kind, .. } => Some(*kind == CounterKind::PlusOne),
                 Instruction::DoubleCounters => Some(true),
                 Instruction::GrantKeywords { .. } => Some(true),
-                Instruction::Connive { .. } => Some(true),
+                Instruction::Connive { .. }
+                | Instruction::CreateCopyToken { .. }
+                | Instruction::CreateCopyTokenWithExceptions { .. } => Some(true),
                 Instruction::Grow {
                     power, toughness, ..
                 }
@@ -117,6 +119,32 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             return -10;
         }
         match action {
+            Action::AssignLibraryPile { pile, .. } => {
+                let piles = observation.library_piles.as_ref().unwrap();
+                // A balanced split is a generic deterministic baseline, using only
+                // the chooser's visible counts rather than library/RNG state.
+                let down = piles.face_down_count <= piles.face_up.len();
+                i128::from((*pile == crate::LibraryPile::FaceDown) == down)
+            }
+            Action::ChooseLibraryPile { pile } => {
+                let piles = observation.library_piles.as_ref().unwrap();
+                // The opponent gives away the smaller pile without seeing the
+                // hidden identities. Both empty and face-down piles are legal.
+                -i128::try_from(if *pile == crate::LibraryPile::FaceDown {
+                    piles.face_down_count
+                } else {
+                    piles.face_up.len()
+                })
+                .unwrap()
+            }
+            Action::KeepPermanentType { object } => {
+                let permanent = observation
+                    .objects
+                    .iter()
+                    .find(|o| o.reference == *object)
+                    .unwrap();
+                permanent.power.max(0) + permanent.toughness.max(0)
+            }
             Action::ChooseExplore { graveyard, .. } => {
                 if *graveyard {
                     500
@@ -258,6 +286,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             // Once a complete target set is legal, commit it instead of
             // revisiting optional edits (which may otherwise oscillate).
             Action::FinishStackTargets => 100,
+            Action::AllocateTargetAmount { amount } => 100 + i128::from(*amount),
             Action::RestoreStackTarget { .. } => -1,
             Action::SetStackTarget { index, target } => observation
                 .retarget

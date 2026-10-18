@@ -735,6 +735,11 @@ impl Game {
             crew: None,
             cast_event: None,
             copy_event: None,
+            target_allocations: None,
+            source_copy_recipe: source
+                .copy_recipe
+                .filter(|r| r.exceptions != CopyExceptions::NONE)
+                .map(Box::new),
             mana_copy_sources: None,
             is_copy: false,
             delayed_sacrifice: None,
@@ -1264,6 +1269,7 @@ impl Game {
         }
         let program = match item.kind {
             StackKind::TriggeredAbility { .. }
+            | StackKind::CopyEndStepSacrifice
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
             | StackKind::DelayedWarpExile
@@ -2175,36 +2181,23 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::CreateCopyToken { subject, amount } => {
-                    let definition = match subject {
-                        Subject::Source => Some(
-                            if self.on_battlefield(item.card)
-                                && self.object_ref(item.card) == item.object
-                            {
-                                self.state.objects[item.card as usize].card
-                            } else {
-                                item.source_card
-                            },
-                        ),
-                        Subject::Targets => item.targets.iter().find_map(|bound| {
-                            if self.same_target_object(*bound)
-                                && let Target::Card(id) = bound.target
-                            {
-                                Some(self.state.objects[id as usize].card)
-                            } else {
-                                None
-                            }
-                        }),
-                        _ => unreachable!("copy subject"),
-                    };
-                    if let Some(definition) = definition {
-                        self.stage_copy_creation(
-                            item.controller,
-                            CopyRecipe { definition },
-                            u128::from(amount),
-                        );
+                Instruction::CreateCopyToken { subject, amount }
+                | Instruction::CreateCopyTokenWithExceptions {
+                    subject, amount, ..
+                } => {
+                    if let Some(mut recipe) = self.recipe_for_subject(&item, subject) {
+                        if let Instruction::CreateCopyTokenWithExceptions { exceptions, .. } =
+                            instruction
+                        {
+                            recipe.exceptions = recipe.exceptions.union(exceptions);
+                        }
+                        self.stage_copy_creation(item.controller, recipe, u128::from(amount));
                     }
                 }
+                Instruction::SacrificeSource => self.sacrifice_exact_source(&item),
+                Instruction::ExileAndCopyNightmare => self.exile_and_copy_nightmare(&item),
+                Instruction::ExileOtherNightmares => self.exile_other_nightmares(item.controller),
+                Instruction::DamageDivided { .. } => self.damage_divided(&item),
                 Instruction::SelectGroup(group) => {
                     self.state.resolving.as_mut().unwrap().target_group = group;
                 }
@@ -2520,17 +2513,26 @@ impl Game {
                     }
                 }
                 Instruction::CreateEmblem(factory) => self.create_emblem(item.controller, factory),
+                Instruction::EndTurn => {
+                    self.end_turn_effect();
+                    return;
+                }
+                Instruction::WinIfDistinctSubtypeNames { subtype, minimum } => {
+                    if self.distinct_subtype_names(item.controller, subtype) >= usize::from(minimum)
+                    {
+                        self.try_win_game(item.controller);
+                        if self.state.outcome.is_some() {
+                            self.state.resolving = None;
+                            return;
+                        }
+                    }
+                }
                 Instruction::LoseGame(set) => {
                     let mut lost = [false; 2];
                     for player in self.program_players(set, &item) {
                         lost[player.index()] = true;
                     }
-                    self.state.outcome = match lost {
-                        [true, true] => Some(Outcome::Draw),
-                        [true, false] => Some(Outcome::Winner(Player::P1)),
-                        [false, true] => Some(Outcome::Winner(Player::P0)),
-                        _ => None,
-                    };
+                    self.commit_game_losses(self.allowed_game_losses(lost));
                     if self.state.outcome.is_some() {
                         self.state.resolving = None;
                         self.state.pending = Pending::Terminal;

@@ -342,7 +342,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         triggers[i] += 1;
                     }
                     StackKind::ActivatedAbility { .. } => assert!(s.source_card.is_token()),
-                    StackKind::DelayedReturn
+                    StackKind::CopyEndStepSacrifice
+                    | StackKind::DelayedReturn
                     | StackKind::DelayedSacrifice
                     | StackKind::DelayedWarpExile => {
                         panic!("no delayed producer in this fixture")

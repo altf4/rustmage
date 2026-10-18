@@ -106,10 +106,11 @@ fn linked_choices_curator_paid_uncounterable_private_partition_and_both_piles() 
             assert!(g.observe(p.other()).actions.is_empty());
             let refs: Vec<_> = top.iter().map(|&id| g.object_ref(id)).collect();
             reject(&mut g, Action::ChooseLibraryPile { pile: chosen });
+            let wrong = g.object_ref(sphinx);
             reject(
                 &mut g,
                 Action::AssignLibraryPile {
-                    object: g.object_ref(sphinx),
+                    object: wrong,
                     pile: chosen,
                 },
             );
@@ -166,7 +167,7 @@ fn linked_choices_curator_empty_pile_short_library_and_departed_source() {
     for p in [Player::P0, Player::P1] {
         for number in [0, 1, 3] {
             let mut g = setup(p);
-            let old = std::mem::take(&mut g.state.players[p.index()].library);
+            let old = g.state.players[p.index()].library.clone();
             for id in old {
                 g.move_object(id, Zone::Graveyard);
             }
@@ -211,7 +212,7 @@ fn linked_choices_brew_simultaneous_apnap_and_other_controller_owned_recovery() 
         let mut g = setup(p);
         let yours = card(&mut g, p, "Bear Cub", Zone::Battlefield);
         let stolen = card(&mut g, p, "Savannah Lions", Zone::Battlefield);
-        g.gain_control(stolen, p.other(), false);
+        g.record_control(g.object_ref(stolen), p.other(), None);
         let brew = card(&mut g, p, "Deadly Brew", Zone::Hand);
         cast(&mut g, brew, None, &[]);
         until(&mut g, |g| {
@@ -258,7 +259,7 @@ fn linked_choices_brew_token_or_stolen_sacrifice_qualifies_and_decline_is_option
         for token in [false, true] {
             let mut g = setup(p);
             let source = if token {
-                Card(5258)
+                Card::from_name("@token/47a984d1dc0d0363f137a7dd").unwrap()
             } else {
                 Card::from_name("Bear Cub").unwrap()
             };
@@ -269,7 +270,7 @@ fn linked_choices_brew_token_or_stolen_sacrifice_qualifies_and_decline_is_option
                 Zone::Battlefield,
             );
             if !token {
-                g.gain_control(own, p, false);
+                g.record_control(g.object_ref(own), p, None);
             }
             let recover = card(&mut g, p, "Forest", Zone::Graveyard);
             let brew = card(&mut g, p, "Deadly Brew", Zone::Hand);
@@ -398,7 +399,7 @@ fn linked_choices_liliana_keep_multitype_can_choose_same_or_distinct_permanents(
 fn linked_choices_hoard_paid_optional_search_link_and_owner_hand_after_control_change() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
-        let artifact = card(&mut g, p, "Sol Ring", Zone::Library);
+        let artifact = card(&mut g, p, "Mazemind Tome", Zone::Library);
         let dragon = card(&mut g, p, "Hoarding Dragon", Zone::Hand);
         cast(&mut g, dragon, None, &[]);
         until(&mut g, |g| {
@@ -411,7 +412,7 @@ fn linked_choices_hoard_paid_optional_search_link_and_owner_hand_after_control_c
         settled(&mut g);
         assert_eq!(g.object_view(artifact).zone, Zone::Exile);
         assert_eq!(g.observe(p.other()).linked_exile.len(), 1);
-        g.gain_control(dragon, p.other(), false);
+        g.record_control(g.object_ref(dragon), p.other(), None);
         g.move_object(dragon, Zone::Graveyard);
         until(&mut g, |g| {
             matches!(g.state.pending, Pending::EffectOptional { .. })
@@ -428,7 +429,7 @@ fn linked_choices_hoard_paid_optional_search_link_and_owner_hand_after_control_c
 fn linked_choices_hoard_departure_before_search_and_reentry_never_rebinds() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
-        let artifact = card(&mut g, p, "Sol Ring", Zone::Library);
+        let artifact = card(&mut g, p, "Mazemind Tome", Zone::Library);
         let dragon = card(&mut g, p, "Hoarding Dragon", Zone::Hand);
         cast(&mut g, dragon, None, &[]);
         until(&mut g, |g| {
@@ -522,6 +523,7 @@ fn linked_choices_spyglass_hand_graveyard_mana_and_ability_removal() {
         ] {
             let mut g = setup(p);
             let object = card(&mut g, p, name, zone);
+            card(&mut g, p, "Bear Cub", Zone::Battlefield);
             assert!(has_activation(&g, object));
             let glass = spyglass(&mut g, p, name);
             assert!(!has_activation(&g, object));

@@ -2,7 +2,7 @@
 use super::*;
 use crate::PermanentType;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum LibraryPile {
     FaceDown,
     FaceUp,
