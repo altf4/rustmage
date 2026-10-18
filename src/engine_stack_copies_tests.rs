@@ -383,6 +383,7 @@ fn copies_preserve_mode_kicker_and_x_but_have_no_actual_mana_payment() {
         progress(&mut g, false);
         assert_eq!(g.state.players[p.other().index()].life, 4);
         teach(&mut g, p);
+        g.state.players[p.index()].mana = [0, 4, 0, 0, 0, 0];
         let finale = named(&mut g, p, "Finale of Revelation", Zone::Hand);
         checked(&mut g, Action::AnnounceCast { card: finale });
         checked(&mut g, Action::ChooseX { value: 2 });

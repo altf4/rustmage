@@ -4312,7 +4312,11 @@ impl Game {
             self.capture_stack_copy_departure(id);
         }
         if before.zone == Zone::Stack && self.state.objects[id as usize].spell_copy {
-            self.state.stack.retain(|item| item.card != id);
+            self.state.stack.retain(|item| {
+                !(item.kind == StackKind::Spell
+                    && item.card == id
+                    && item.object == before.reference)
+            });
             let object = &mut self.state.objects[id as usize];
             object.zone = Zone::Outside;
             object.generation = object
