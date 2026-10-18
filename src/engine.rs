@@ -39,7 +39,8 @@ pub use milled_selection::MilledSelectionView;
 mod adventure;
 #[path = "engine_cast_origins.rs"]
 mod cast_origins;
-pub use cast_origins::{GraveyardTypeUse, PermanentType, ResolutionFreeCasts};
+use crate::PermanentType;
+pub use cast_origins::{GraveyardTypeUse, ResolutionFreeCasts};
 #[cfg(test)]
 #[path = "engine_cast_permission_tests.rs"]
 mod cast_permission_tests;

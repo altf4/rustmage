@@ -255,7 +255,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::Mulligan => -100,
             Action::PlayLand { .. }
             | Action::PlayGraveyardPermanent {
-                permanent_type: crate::engine::PermanentType::Land,
+                permanent_type: crate::PermanentType::Land,
                 ..
             } => 90,
             Action::PlayGraveyardPermanent { .. } => 79,

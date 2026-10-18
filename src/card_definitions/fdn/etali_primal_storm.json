@@ -3,7 +3,7 @@
   "catalogue_id": 1377,
   "oracle_id": "078def07-ae5d-4591-8db6-d156834aab97",
   "facts_sha256": "02bdfa591edc57d398909997803d5e89c490dbbbc68cf9f42fdc18f7718aab9c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4b565ed5d85aaf0072dfdf6b1ea1da833fa74d91da8138b00496ebd6d6496236"
@@ -19,7 +19,5 @@
       "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
     }
   ],
-  "remaining_obligations": [
-    "Focused rules validation and complete-batch acceptance pending"
-  ]
+  "remaining_obligations": []
 }

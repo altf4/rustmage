@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "20ef8482ed289c5b926c27c5bfb383136e66a40670b4d3cf6061a5c6b9f1f049",
+  "catalogue_version": "b9d57d00069b90130f87f0101faa3f989e9b836c0c1e2a43c0317574e29a445d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2163,
-  "implemented_total": 2169,
+  "implemented_standard_cards": 2167,
+  "implemented_total": 2173,
   "token_definitions": 104,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -43,8 +43,8 @@
     },
     "ecc": {
       "total": 7,
-      "gated": 3,
-      "complete": 4
+      "gated": 2,
+      "complete": 5
     },
     "ecl": {
       "total": 267,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 403,
-      "gated": 24
+      "complete": 406,
+      "gated": 21
     },
     "fin": {
       "total": 305,
@@ -11224,8 +11224,8 @@
     {
       "name": "Etali, Primal Storm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/etali_primal_storm.rs",
       "set": "fdn"
     },
@@ -23200,8 +23200,8 @@
     {
       "name": "Muldrotha, the Gravetide",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecc/muldrotha_the_gravetide.rs",
       "set": "ecc"
     },
@@ -37064,8 +37064,8 @@
     {
       "name": "Tinybones, Bauble Burglar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/tinybones_bauble_burglar.rs",
       "set": "fdn"
     },
@@ -39608,8 +39608,8 @@
     {
       "name": "Vizier of the Menagerie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/vizier_of_the_menagerie.rs",
       "set": "fdn"
     },
