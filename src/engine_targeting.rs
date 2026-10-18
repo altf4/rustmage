@@ -833,13 +833,13 @@ impl Game {
                 match rule {
                     TargetRule::CreatureOrVehicle { relation } => {
                         obj.zone == Zone::Battlefield
-                            && (self.is_creature(id) || obj.card.has_subtype("Vehicle"))
+                            && (self.is_creature(id) || self.has_subtype(id, "Vehicle"))
                             && (relation == -1 || (obj.controller == controller) == (relation == 0))
                     }
                     TargetRule::Creature => obj.zone == Zone::Battlefield && self.is_creature(id),
                     TargetRule::Any => {
                         obj.zone == Zone::Battlefield
-                            && (self.is_creature(id) || obj.card.is_planeswalker())
+                            && (self.is_creature(id) || self.current_kinds(id) & 64 != 0)
                     }
                     TargetRule::Object {
                         zone,
@@ -866,7 +866,7 @@ impl Game {
                                 } == controller)
                                     == (relation == 0))
                             && (!other || self.object_ref(id) != source)
-                            && (!nonland || !obj.card.is_land())
+                            && (!nonland || self.current_kinds(id) & 2 == 0)
                             && (!tapped || obj.tapped)
                             && ((min_mana == 0 && max_mana == u32::MAX) || {
                                 let value = obj.card.fixed_mana_value();

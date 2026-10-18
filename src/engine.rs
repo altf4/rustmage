@@ -4087,21 +4087,29 @@ impl Game {
         let object = &self.state.objects[id as usize];
         match object.card.entry_tapped() {
             EntryTapped::Never | EntryTapped::PayLife(_) => false,
-            EntryTapped::UnlessPlainsOrIsland => !self.state.objects.iter().any(|o| {
-                o.zone == Zone::Battlefield
-                    && o.controller == controller
-                    && (o.card.has_subtype("Plains") || o.card.has_subtype("Island"))
-            }),
-            EntryTapped::UnlessPlaneswalker => !self.state.objects.iter().any(|o| {
-                o.zone == Zone::Battlefield
-                    && o.controller == controller
-                    && o.card.kind_mask() & 64 != 0
-            }),
+            EntryTapped::UnlessPlainsOrIsland => {
+                !self.state.objects.iter().enumerate().any(|(id, o)| {
+                    o.zone == Zone::Battlefield
+                        && o.controller == controller
+                        && (self.has_subtype(id as CardId, "Plains")
+                            || self.has_subtype(id as CardId, "Island"))
+                })
+            }
+            EntryTapped::UnlessPlaneswalker => {
+                !self.state.objects.iter().enumerate().any(|(id, o)| {
+                    o.zone == Zone::Battlefield
+                        && o.controller == controller
+                        && self.current_kinds(id as CardId) & 64 != 0
+                })
+            }
             EntryTapped::Always => true,
             EntryTapped::OpponentsTurn => controller != self.state.active,
             EntryTapped::UnlessLowLife => self.state.players.iter().all(|p| p.life > 13),
-            EntryTapped::UnlessBasic => !self.state.objects.iter().any(|o| {
-                o.zone == Zone::Battlefield && o.controller == controller && o.card.is_basic_land()
+            EntryTapped::UnlessBasic => !self.state.objects.iter().enumerate().any(|(id, o)| {
+                o.zone == Zone::Battlefield
+                    && o.controller == controller
+                    && self.current_kinds(id as CardId) & 2 != 0
+                    && o.card.is_basic_land()
             }),
             EntryTapped::UnlessAtMostTwo | EntryTapped::UnlessAtLeastTwo => {
                 let lands = self
@@ -4113,7 +4121,7 @@ impl Game {
                         *other != id as usize
                             && o.zone == Zone::Battlefield
                             && o.controller == controller
-                            && o.card.is_land()
+                            && self.current_kinds(*other as CardId) & 2 != 0
                     })
                     .count();
                 match object.card.entry_tapped() {
@@ -4617,7 +4625,7 @@ impl Game {
         self.expire_temporary_controls();
         self.state.temporary_abilities = None;
         self.expire_base_stats();
-        self.expire_animations();
+        let expired_animations = self.expire_animations();
         self.expire_keyword_effects();
         self.state.death_exile_replacements = None;
         for player in &mut self.state.players {
@@ -4639,7 +4647,7 @@ impl Game {
         // Losing temporary growth can expose lethal negative counters. Apply
         // SBAs before advancing the turn; CR514.3 gives an extra priority cycle.
         if !self.state.pending_triggers.is_empty()
-            || expired_vehicles && self.sba_required()
+            || (expired_vehicles || expired_animations) && self.sba_required()
             || self.state.objects.iter().enumerate().any(|(id, obj)| {
                 obj.zone == Zone::Battlefield
                     && self.is_creature(id as CardId)
@@ -4722,8 +4730,9 @@ impl Game {
                 }
                 Target::Card(id) => {
                     let creature = self.is_creature(id);
+                    let planeswalker = self.current_kinds(id) & 64 != 0;
                     let obj = &mut self.state.objects[id as usize];
-                    if obj.card.is_planeswalker() {
+                    if planeswalker {
                         let removed = u128::try_from(event.amount)
                             .expect("positive damage")
                             .min(u128::from(obj.counters.loyalty))

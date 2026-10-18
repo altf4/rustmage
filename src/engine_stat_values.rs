@@ -36,7 +36,7 @@ impl Game {
             && (filter.kind == 0 || kinds(id, o) & filter.kind != 0)
             && kinds(id, o) & filter.exclude == 0
             && filter.subtype.is_none_or(|s| subtypes(id).has(o.card, s))
-            && (!filter.basic || o.card.is_basic_land())
+            && (!filter.basic || (kinds(id, o) & 2 != 0 && o.card.is_basic_land()))
     }
     pub(super) fn stat_value(&self, value: StatValue, source: ObjectRef, owner: Player) -> i128 {
         self.stat_value_without_hand(value, source, owner, None)

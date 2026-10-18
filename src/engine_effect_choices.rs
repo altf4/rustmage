@@ -79,7 +79,7 @@ impl Game {
             && self.keywords(object.card).contains(f.keywords)
             && (f.kinds == 0 || self.current_kinds(object.card) & u16::from(f.kinds) != 0)
             && (!f.source_only || object == choice.source)
-            && (!f.nonland || !o.card.is_land())
+            && (!f.nonland || self.current_kinds(object.card) & 2 == 0)
             && (!f.other || object != choice.source)
             && f.tokens.is_none_or(|token| o.is_token() == token)
             && f.subtype
@@ -227,7 +227,7 @@ impl Game {
         for (id, o) in self.state.objects.iter().enumerate() {
             if o.zone == Zone::Battlefield
                 && o.controller == player.other()
-                && o.card.is_planeswalker()
+                && self.current_kinds(id as CardId) & 64 != 0
                 && emit(Action::ChooseHandDefender {
                     defender: CombatDefender::Planeswalker(self.object_ref(id as CardId)),
                 })
@@ -377,10 +377,10 @@ impl Game {
                 && self.state.objects[reference.card as usize].card.kind_mask() & 32 != 0;
             let forced_tapped = matches!(choice.kind, EffectChoiceKind::HandLand { tapped: true });
             if enchantment && choice.hand_defender.is_none() {
-                if self.state.objects.iter().any(|o| {
+                if self.state.objects.iter().enumerate().any(|(id, o)| {
                     o.zone == Zone::Battlefield
                         && o.controller == player.other()
-                        && o.card.is_planeswalker()
+                        && self.current_kinds(id as CardId) & 64 != 0
                 }) {
                     self.state.pending = Pending::HandDefender { player };
                     return true;

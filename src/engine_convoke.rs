@@ -110,10 +110,12 @@ impl Game {
     }
     pub(super) fn convoke_masks(&self, p: Player, selected: &[ConvokePaymentView]) -> [u64; 32] {
         let mut masks = [0; 32];
-        for (id, o) in self.state.objects.iter().enumerate() {
+        for (id, _) in self.state.objects.iter().enumerate() {
             let r = self.object_ref(id as CardId);
             if self.convoke_eligible(p, r) && !selected.iter().any(|s| s.object == r) {
-                masks[usize::from(o.card.colors() & 31)] += 1;
+                masks[usize::from(
+                    ability_world::CharacteristicWorld::colors(self, id as CardId) & 31,
+                )] += 1;
             }
         }
         masks
@@ -154,7 +156,7 @@ impl Game {
         };
     }
     pub(super) fn choose_convoker(&mut self, object: ObjectRef, contribution: ConvokeContribution) {
-        let colors = self.state.objects[object.card as usize].card.colors();
+        let colors = ability_world::CharacteristicWorld::colors(self, object.card);
         let f = self
             .state
             .announcing
@@ -194,12 +196,12 @@ impl Game {
             return true;
         }
         let masks = self.convoke_masks(p, &f.selected);
-        for (id, o) in self.state.objects.iter().enumerate() {
+        for (id, _) in self.state.objects.iter().enumerate() {
             let object = self.object_ref(id as CardId);
             if !self.convoke_eligible(p, object) || f.selected.iter().any(|s| s.object == object) {
                 continue;
             }
-            let colors = o.card.colors();
+            let colors = ability_world::CharacteristicWorld::colors(self, id as CardId);
             let mut rest = masks;
             rest[usize::from(colors & 31)] -= 1;
             for contribution in [

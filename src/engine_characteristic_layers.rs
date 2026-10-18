@@ -221,9 +221,12 @@ impl Game {
             state.animations.retain(|r| r.object != object);
         }
     }
-    pub(super) fn expire_animations(&mut self) {
-        if let Some(state) = &mut self.state.roles {
-            state.animations.retain(|r| r.expires_turn.is_none());
-        }
+    pub(super) fn expire_animations(&mut self) -> bool {
+        let Some(state) = &mut self.state.roles else {
+            return false;
+        };
+        let before = state.animations.len();
+        state.animations.retain(|r| r.expires_turn.is_none());
+        state.animations.len() != before
     }
 }

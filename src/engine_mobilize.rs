@@ -55,7 +55,7 @@ impl Game {
                     o.generation == r.generation
                         && o.zone == Zone::Battlefield
                         && o.controller == p.other()
-                        && o.card.is_planeswalker()
+                        && self.current_kinds(r.card) & 64 != 0
                 })
             }
         }
@@ -77,7 +77,7 @@ impl Game {
         for (id, o) in self.state.objects.iter().enumerate() {
             if o.zone == Zone::Battlefield
                 && o.controller == p.other()
-                && o.card.is_planeswalker()
+                && self.current_kinds(id as CardId) & 64 != 0
                 && emit(Action::ChooseMobilizeDefender {
                     defender: CombatDefender::Planeswalker(self.object_ref(id as CardId)),
                 })
@@ -117,10 +117,10 @@ impl Game {
         defenders
             .try_reserve_exact(amount)
             .capacity("mobilize defender allocation exhausted");
-        let choice = self.state.objects.iter().any(|o| {
+        let choice = self.state.objects.iter().enumerate().any(|(id, o)| {
             o.zone == Zone::Battlefield
                 && o.controller == item.controller.other()
-                && o.card.is_planeswalker()
+                && self.current_kinds(id as CardId) & 64 != 0
         });
         if !choice {
             defenders.resize(amount, CombatDefender::Player(item.controller.other()));

@@ -204,7 +204,7 @@ impl Game {
                     .objects
                     .iter()
                     .enumerate()
-                    .filter(|(id, o)| owned(*id) && o.card.is_land())
+                    .filter(|(id, _)| owned(*id) && self.current_kinds(*id as CardId) & 2 != 0)
                     .count() as i128,
             ),
             StepValue::GreatestCreaturePower => creatures()

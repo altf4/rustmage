@@ -151,6 +151,36 @@ impl Game {
             for id in no_longer_creatures {
                 self.remove_from_combat(id, self.object_ref(id));
             }
+            // CR506.4c/d: losing planeswalker type ends only its defending role.
+            // Regaining that type later cannot reconnect the existing attack.
+            let invalid_defenders: Vec<_> = self
+                .state
+                .attackers
+                .iter()
+                .chain(&self.state.selected_attackers)
+                .filter_map(|a| match a.defender {
+                    Some(CombatDefender::Planeswalker(r))
+                        if !self.on_battlefield(r.card)
+                            || self.object_ref(r.card) != r
+                            || self.current_kinds(r.card) & 64 == 0 =>
+                    {
+                        Some(r)
+                    }
+                    _ => None,
+                })
+                .collect();
+            for attack in self
+                .state
+                .attackers
+                .iter_mut()
+                .chain(&mut self.state.selected_attackers)
+            {
+                if let Some(CombatDefender::Planeswalker(r)) = attack.defender
+                    && invalid_defenders.contains(&r)
+                {
+                    attack.defender = None;
+                }
+            }
             let batch = self.collect_sba_batch();
             let changed = !batch.deaths.is_empty()
                 || !batch.detached.is_empty()
