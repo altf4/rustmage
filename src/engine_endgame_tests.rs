@@ -494,3 +494,121 @@ fn endgame_maze_source_cannot_fund_its_own_tap_cost_and_returns_to_owner() {
         assert_eq!(g.outcome(), None);
     }
 }
+
+#[test]
+fn endgame_time_stop_keeps_future_endstep_warp_but_not_an_exiled_queued_trigger() {
+    for p in [Player::P0, Player::P1] {
+        for exile_queued in [false, true] {
+            let mut g = setup(p);
+            let warped = fixture(&mut g, p, "Bygone Colossus", Zone::Hand);
+            checked(&mut g, Action::AnnounceWarp { card: warped });
+            for _ in 0..8 {
+                if g.state.announcing.is_none() {
+                    break;
+                }
+                let action = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a, Action::FinishTargets | Action::PayCosts { .. }))
+                    .unwrap();
+                checked(&mut g, action);
+            }
+            settle(&mut g);
+            assert_eq!(g.observe(p).delayed_warp_exiles.len(), 1);
+            let turn = g.state.turn;
+            paid(&mut g, p, "Time Stop", &[]);
+            until(&mut g, |g| g.state.turn > turn);
+            assert_eq!(g.object_view(warped).zone, Zone::Battlefield);
+            assert_eq!(
+                g.observe(p).delayed_warp_exiles.len(),
+                1,
+                "next actual end step remains scheduled"
+            );
+            if !exile_queued {
+                until(&mut g, |g| g.object_view(warped).zone == Zone::Exile);
+                assert!(g.observe(p).delayed_warp_exiles.is_empty());
+            } else {
+                until(&mut g, |g| g.state.step == Step::End);
+                assert!(g.observe(p).delayed_warp_exiles.is_empty());
+                assert!(g.state.stack.iter().any(|s| s.delayed_warp_exile.is_some()));
+                checked(&mut g, Action::Pass);
+                g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 4];
+                let turn = g.state.turn;
+                paid(&mut g, p, "Time Stop", &[]);
+                until(&mut g, |g| g.state.turn > turn);
+                assert_eq!(g.object_view(warped).zone, Zone::Battlefield);
+                next_turn(&mut g);
+                assert_eq!(
+                    g.object_view(warped).zone,
+                    Zone::Battlefield,
+                    "an exiled one-shot trigger is not recreated"
+                );
+            }
+        }
+    }
+}
+#[test]
+fn endgame_copied_time_stop_ceases_exact_copy_and_exiles_original() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        paid(&mut g, p, "Teach by Example", &[]);
+        settle(&mut g);
+        assert_eq!(g.observe(p).delayed_spell_copies.len(), 1);
+        let original = paid(&mut g, p, "Time Stop", &[]);
+        until(&mut g, |g| {
+            g.state
+                .stack
+                .iter()
+                .any(|s| s.is_copy && s.source_card.name() == "Time Stop")
+        });
+        let copy = g
+            .state
+            .stack
+            .iter()
+            .find(|s| s.is_copy && s.source_card.name() == "Time Stop")
+            .unwrap()
+            .object;
+        let turn = g.state.turn;
+        until(&mut g, |g| g.state.turn > turn);
+        assert_eq!(g.object_view(original).zone, Zone::Exile);
+        assert_eq!(g.state.objects[copy.card as usize].zone, Zone::Outside);
+        assert_ne!(g.object_ref(copy.card), copy);
+        assert!(g.state.free_tokens.contains(&copy.card));
+        assert!(g.state.stack.is_empty());
+    }
+}
+#[test]
+fn endgame_turn_copy_permission_expires_before_cleanup_trigger_priority() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        fixture(&mut g, p, "Marauding Mako", Zone::Battlefield);
+        paid(&mut g, p, "Teach by Example", &[]);
+        settle(&mut g);
+        for _ in 0..8 {
+            fixture(&mut g, p, "Forest", Zone::Hand);
+        }
+        checked(&mut g, Action::Pass);
+        paid(&mut g, p.other(), "Time Stop", &[]);
+        until(&mut g, |g| g.state.pending == Pending::Discard);
+        assert_eq!(
+            g.observe(p).delayed_spell_copies.len(),
+            1,
+            "the copy permission survives the pre-cleanup boundary"
+        );
+        let action = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::Discard { .. }))
+            .unwrap();
+        checked(&mut g, action);
+        settle(&mut g);
+        assert_eq!(g.state.step, Step::Cleanup);
+        assert!(g.observe(p).delayed_spell_copies.is_empty());
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+        paid(&mut g, p, "Opt", &[]);
+        assert_eq!(g.state.stack.len(), 1);
+        assert!(!g.state.stack[0].is_copy);
+        assert!(g.state.pending_triggers.is_empty());
+        settle(&mut g);
+    }
+}
