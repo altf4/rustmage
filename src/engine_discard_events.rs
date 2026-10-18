@@ -175,6 +175,36 @@ impl Game {
                     let cycling = cycled.is_some_and(|reference| {
                         self.state.objects[reference.card as usize].owner == player
                     });
+                    if ability
+                        .program
+                        .contains(&Instruction::ExileDiscardedWithStash)
+                    {
+                        for discarded in events
+                            .iter()
+                            .filter(|event| event.moved && event.before.owner == player)
+                        {
+                            let prior = self.state.pending_triggers.len();
+                            self.queue_discard_trigger(
+                                &source,
+                                index,
+                                DiscardTriggerView {
+                                    player,
+                                    amount: 1,
+                                    cycling,
+                                },
+                            );
+                            if self.state.pending_triggers.len() > prior {
+                                self.state
+                                    .pending_triggers
+                                    .last_mut()
+                                    .unwrap()
+                                    .reflexive_subject = Some(Box::new(ReflexiveSubjectView {
+                                    object: discarded.after,
+                                }));
+                            }
+                        }
+                        continue;
+                    }
                     for _ in 0..if one_or_more { 1 } else { count } {
                         self.queue_discard_trigger(
                             &source,

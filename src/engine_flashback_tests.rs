@@ -125,6 +125,7 @@ fn all_nine_complete_bodies_cast_from_both_origins_and_have_independent_effects(
             assert_eq!(
                 root.cast,
                 Some(CastInfo {
+                    stash_origin: false,
                     gift: None,
                     physical_card: None,
                     flash_surcharge: false,

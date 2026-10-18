@@ -653,6 +653,7 @@ fn run_matrix_actions_observed_with_stride(
                 }
                 let mut decisions = 0;
                 let mut replayed_graveyard_permissions = Vec::new();
+                let mut replayed_cast_origins = None;
                 while game.outcome().is_none() {
                     assert!(
                         decisions < 25_000,
@@ -697,7 +698,17 @@ fn run_matrix_actions_observed_with_stride(
                     combat |= !obs.attackers.is_empty();
                     let fresh_permission_state = !obs.graveyard_cast_permissions.is_empty()
                         && replayed_graveyard_permissions != obs.graveyard_cast_permissions;
-                    let owned_replay = decisions % replay_stride == 0 || fresh_permission_state;
+                    let origins = (
+                        obs.graveyard_type_uses.clone(),
+                        obs.resolution_free_casts.clone(),
+                    );
+                    let fresh_origins = (!origins.0.is_empty() || origins.1.is_some())
+                        && replayed_cast_origins.as_ref() != Some(&origins);
+                    let owned_replay =
+                        decisions % replay_stride == 0 || fresh_permission_state || fresh_origins;
+                    if fresh_origins {
+                        replayed_cast_origins = Some(origins);
+                    }
                     if fresh_permission_state {
                         replayed_graveyard_permissions = obs.graveyard_cast_permissions.clone();
                     }
@@ -809,5 +820,9 @@ mod return_aura_games;
 #[path = "common/foundations_zone_games.rs"]
 mod zone_games;
 
+#[path = "common/foundations_cast_origins_games.rs"]
+mod cast_origins_games;
 #[path = "common/foundations_linked_choice_games.rs"]
 mod foundations_linked_choice_games;
+#[path = "common/foundations_growth_games.rs"]
+mod growth_games;

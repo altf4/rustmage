@@ -185,6 +185,8 @@ impl Game {
             pay_window: true,
             production: None,
             additional: None,
+            additional_group: None,
+            creature_counter_cost: None,
             forage: None,
             evidence: None,
             convoke: None,

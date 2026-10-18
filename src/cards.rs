@@ -555,10 +555,20 @@ pub(crate) struct SearchSpec {
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
-    UntapLands { maximum: u16 },
+    /// Choose distinct untapped permanents as a non-targeting activation cost.
+    TapPermanents(u16),
+    RemoveCreatureCounters(u16),
+    UntapLands {
+        maximum: u16,
+    },
     HandCreature,
-    HandLand { tapped: bool },
-    LandCards { maximum: u32, tapped: bool },
+    HandLand {
+        tapped: bool,
+    },
+    LandCards {
+        maximum: u32,
+        tapped: bool,
+    },
     CollectEvidence(u16),
     Forage,
     ForageOrBlack,
@@ -690,7 +700,14 @@ pub(crate) enum Instruction {
     },
     ChangeSingleStackTarget,
     GrantGraveyardCast(GraveyardCastKind),
+    ExileDiscardedWithStash,
+    ExileEachLibraryTopCastFree,
     CounterRelatedUnlessPayLife(u32),
+    /// One combined ward cost, paid atomically or the related item is countered.
+    CounterRelatedUnlessPayManaLife {
+        cost: ManaCost,
+        life: u32,
+    },
     CreateCopyToken {
         subject: Subject,
         amount: u16,
@@ -789,6 +806,10 @@ pub(crate) enum Instruction {
     },
     JobSelect {
         token: Card,
+    },
+    /// Choose and pay X during resolution, then create a separate reflexive trigger.
+    PayXReflexive {
+        ability: u16,
     },
     MayPayMana {
         cost: ManaCost,
@@ -970,6 +991,12 @@ pub(crate) enum Instruction {
     SelectMilled(MilledSelectionSpec),
     AttachSource,
     TapAttached,
+    PutGrantorCounter(CounterKind),
+    PutCombatDealerCounters,
+    RemoveSourceCounterIfAny {
+        kind: CounterKind,
+        skip: usize,
+    },
     ChooseObjects {
         kind: EffectChoiceKind,
         players: PlayerSet,
@@ -1047,6 +1074,14 @@ pub(crate) enum Instruction {
         dead_code,
         reason = "Core instruction is scenario-tested while complete-card consumers remain gated"
     )]
+    /// A permanent, exact-incarnation evolution, conditional at resolution.
+    EvolveSource {
+        required: &'static str,
+        types: &'static [&'static str],
+        stats: Option<Stats>,
+        keywords: Keywords,
+        ability: Option<u16>,
+    },
     SetCreatureTypes {
         subject: Subject,
         types: &'static [&'static str],
@@ -1124,6 +1159,11 @@ pub(crate) enum Instruction {
         subject: Subject,
         kind: CounterKind,
         amount: u32,
+    },
+    CreateTokensWithTemporaryKeywords {
+        token: Card,
+        amount: AmountValue,
+        keywords: Keywords,
     },
     CreateTokensScaled {
         token: Card,
@@ -1233,6 +1273,7 @@ pub(crate) enum AmountValue {
     ManaSpent,
     ColorsSpent,
     SpellColors,
+    CastSpellManaValue,
     SourcePower,
     #[allow(
         dead_code,
@@ -2020,6 +2061,7 @@ pub(crate) enum DamageSubject {
 /// Complete entry-time predicates over the post-event permanent.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum EntryPredicate {
+    CreatureWithoutSubtype(&'static str),
     CreaturePowerAtMost(i32),
     CreaturePowerAtLeast(i32),
     SubtypeAny(&'static [&'static str]),
@@ -2096,6 +2138,7 @@ pub(crate) enum TriggerCondition {
         spells_only: bool,
     },
     SourceDealtCombatDamage,
+    ControlledCreatureCombatDamageOwnTurn,
     DamagedCreatureDies,
     StateCounterAtLeast {
         kind: CounterKind,
@@ -2177,6 +2220,7 @@ pub(crate) enum TriggerCondition {
     EquippedAttacks,
     GrantedAttacks,
     SelfBecomesTapped,
+    AttachedBecomesUntapped,
     AttackDeclared {
         minimum: u16,
         power_min: Option<i32>,
@@ -2794,6 +2838,16 @@ impl Card {
         generated::keyword_grants(self)
     }
 
+    pub(crate) fn graveyard_counter_cost(self) -> Option<u16> {
+        authored::rules(self).and_then(|r| r.extras.graveyard_counter_cost)
+    }
+    pub(crate) fn grants_activation(self, index: u16) -> bool {
+        self.static_ability_groups().iter().any(|g| {
+            g.fragments
+                .iter()
+                .any(|f| matches!(f, StaticAbilityFragment::AttachmentActivation(i) if *i == index))
+        })
+    }
     pub(crate) fn activations(self) -> &'static [ActivatedAbility] {
         generated::DEFINITIONS[self.0 as usize].activated
     }

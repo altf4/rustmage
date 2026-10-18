@@ -747,3 +747,62 @@ fn linked_choices_name_policy_uses_visible_opponent_abilities_and_private_look()
         settled(&mut g);
     }
 }
+
+#[test]
+fn linked_choices_spyglass_names_granted_ability_recipient_not_equipment() {
+    for p in [Player::P0, Player::P1] {
+        for name in ["Bear Cub", "Fishing Pole"] {
+            let mut g = setup(p);
+            let pole = card(&mut g, p, "Fishing Pole", Zone::Hand);
+            cast(&mut g, pole, None, &[]);
+            settled(&mut g);
+            let bear = card(&mut g, p, "Bear Cub", Zone::Hand);
+            cast(&mut g, bear, None, &[]);
+            settled(&mut g);
+            g.state.objects[bear as usize].summoning_sick = false;
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: pole,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(bear),
+                },
+            );
+            until(&mut g, |g| g.state.announcing.is_none());
+            settled(&mut g);
+            let glass = spyglass(&mut g, p, name);
+            let activate = Action::AnnounceAttachedAbility {
+                grantor: g.object_ref(pole),
+                ability: 1,
+            };
+            if name == "Bear Cub" {
+                reject(&mut g, activate.clone());
+                assert!(!g.legal_actions().contains(&activate));
+                g.move_object(glass, Zone::Hand);
+            } else {
+                assert!(!has_activation(&g, pole));
+            }
+            let mana_before = g.state.players[p.index()].mana.iter().sum::<u32>();
+            checked(&mut g, activate);
+            let payment = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .unwrap();
+            checked(&mut g, payment);
+            settled(&mut g);
+            assert_eq!(
+                g.state.players[p.index()].mana.iter().sum::<u32>(),
+                mana_before - 1
+            );
+            assert!(g.object_view(pole).tapped && g.object_view(bear).tapped);
+            assert_eq!(g.counter_count(pole, CounterKind::Bait), 1);
+        }
+    }
+}

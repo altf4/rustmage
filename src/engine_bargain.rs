@@ -39,7 +39,7 @@ impl Game {
                 source: None,
                 reserve: sacrifice.map(|r| (r, COST)),
             },
-            self.spell_mana_purpose(self.effective_spell_card(card)),
+            self.spell_mana_purpose_for_card(actor, card, self.effective_spell_card(card)),
         )
     }
     pub(super) fn initial_bargain_fundable(

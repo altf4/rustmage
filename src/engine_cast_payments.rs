@@ -235,6 +235,7 @@ mod payment_regressions {
 /// Frozen identity and actual payment of the completed cast that caused a trigger.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CastPaymentEvent {
+    pub mana_value: u64,
     pub stack_id: u64,
     pub object: ObjectRef,
     pub card: Card,

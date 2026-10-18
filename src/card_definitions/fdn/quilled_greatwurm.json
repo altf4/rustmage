@@ -3,10 +3,45 @@
   "catalogue_id": 3318,
   "oracle_id": "01635d21-aeda-4754-9d94-68fcd0cd6556",
   "facts_sha256": "c8abcf60d717b9c6be00fb744bce418569a4008172aed8d5aa12095f8f2064cb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7f136712a0cc0a3b6cc0bc044a011a10a576f7561870bb121e188c1d30d084ce"
   },
-  "physical_metadata_sha256": "f5f482a48c1bd3221451f1a6674b9204b63bf340afbe66bb4d1282c6be1372c0"
+  "physical_metadata_sha256": "f5f482a48c1bd3221451f1a6674b9204b63bf340afbe66bb4d1282c6be1372c0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/q/QuilledGreatwurm.java",
+  "java_sha256": "4af8931ec9972ef0a8b7e92055c2fb3269ba8fc902b807e1790cf6268ecf46c2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsDamageToAnyTriggeredAbility.java",
+      "sha256": "db735c76ae795ddad881fdede2e466caf2df2c47b9b606ef41f3ddf76e79e125"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/RemoveCounterCost.java",
+      "sha256": "fbe3e23cc772d9043c2a5f1aa21d5d464d4878219cfc4143d6049bbdd6b05909"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDamageValue.java",
+      "sha256": "2198ea2d400af0d1b03071469d9f85f92660dbe5101725ecb428a059d4264d26"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/MyTurnCondition.java",
+      "sha256": "a6c7cf96d2fdec34c9c999ad4b486627d257eeac9b7e7de139f104ac1ef45d90"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ]
 }
