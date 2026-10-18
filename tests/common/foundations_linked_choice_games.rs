@@ -114,7 +114,7 @@ fn foundations_linked_choice_cards_natural_games_and_owned_private_choices() {
         &[blue, black],
         &expected,
         &[],
-        &["Hedron Archive", "Mazemind Tome", "Gilded Lotus"],
+        &["Hedron Archive", "Gilded Lotus"],
         &[],
         &[0, 1, 2, 3, 7, 13, 41, 73],
         Some(&mut observe),
