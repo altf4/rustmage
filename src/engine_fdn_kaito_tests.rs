@@ -2,6 +2,7 @@
 use super::ability_timeline_tests::{cast, checked, next_turn, settle, setup};
 use super::tests::spawn;
 use super::*;
+use crate::ChoiceColor;
 
 fn named(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
     spawn(g, p, Card::from_name(name).unwrap(), zone)
