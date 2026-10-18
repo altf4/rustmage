@@ -81,6 +81,10 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 .objects
                 .iter()
                 .any(|o| o.id == id && o.controller == actor),
+            Target::Stack(id) => observation
+                .stack
+                .iter()
+                .any(|item| item.id == id && item.controller == actor),
             Target::Spell(id) => observation.stack.iter().any(|item| {
                 item.kind == StackKind::Spell && item.card == id && item.controller == actor
             }),
@@ -249,6 +253,20 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::Mulligan => -100,
             Action::PlayLand { .. } => 90,
             Action::BeginCast { .. } => 80,
+            // Once a complete target set is legal, commit it instead of
+            // revisiting optional edits (which may otherwise oscillate).
+            Action::FinishStackTargets => 100,
+            Action::RestoreStackTarget { .. } => -1,
+            Action::SetStackTarget { index, target } => observation
+                .retarget
+                .as_ref()
+                .and_then(|r| {
+                    r.item.program().map(|(_, p)| {
+                        target_score(p, *target)
+                            - target_score(p, r.item.targets[*index as usize].target)
+                    })
+                })
+                .unwrap_or(0),
             Action::ChooseTarget { target } => {
                 let item = observation.announcing.as_ref().unwrap();
                 if item.kind == StackKind::Spell && item.source_card.aura().is_some() {

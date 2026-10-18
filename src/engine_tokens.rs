@@ -155,7 +155,7 @@ impl Game {
                     Some(id) => {
                         let old = &self.state.objects[id as usize];
                         assert_eq!(old.zone, Zone::Outside);
-                        assert!(old.is_token());
+                        assert!(old.is_token() || old.is_spell_copy());
                         (id, old.generation)
                     }
                     None => (
@@ -166,7 +166,7 @@ impl Game {
                 };
                 let object = Object {
                     card: token,
-                    copy_token: false,
+                    copy_kind: CopyKind::None,
                     owner: controller,
                     controller,
                     zone: Zone::Outside,

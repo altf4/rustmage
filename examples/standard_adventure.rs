@@ -128,7 +128,7 @@ fn damage(f: &Flight, o: &Observation, target: Target, amount: i128) {
                 assert!(before.damage + amount >= before.toughness);
             }
         }
-        Target::Spell(_) => panic!("damage cannot target a spell"),
+        Target::Spell(_) | Target::Stack(_) => panic!("damage cannot target a spell"),
     }
 }
 fn verify_adventure(i: usize, p: Player, f: &Flight, o: &Observation) {

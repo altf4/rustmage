@@ -254,7 +254,7 @@ fn layered_characteristics_sanctuary_animation_timestamps_against_removal_and_co
             .objects
             .iter()
             .enumerate()
-            .find(|(_, o)| o.copy_token && o.zone == Zone::Battlefield)
+            .find(|(_, o)| o.is_copy_token() && o.zone == Zone::Battlefield)
             .unwrap()
             .0 as CardId;
         assert_eq!(g.object_view(token).name(), "Soulstone Sanctuary");
