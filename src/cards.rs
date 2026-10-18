@@ -10,6 +10,33 @@ use crate::capacity::CapacityExt;
 use crate::engine::GrantedSubtypes;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
+/// Immutable additions made as part of a token-copy effect (CR707.9).
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
+pub struct CopyExceptions {
+    pub haste_and_sacrifice: bool,
+    pub nightmare: bool,
+}
+impl CopyExceptions {
+    pub const NONE: Self = Self {
+        haste_and_sacrifice: false,
+        nightmare: false,
+    };
+    pub const HASTE_AND_SACRIFICE: Self = Self {
+        haste_and_sacrifice: true,
+        nightmare: false,
+    };
+    pub const NIGHTMARE: Self = Self {
+        haste_and_sacrifice: false,
+        nightmare: true,
+    };
+    pub const fn union(self, other: Self) -> Self {
+        Self {
+            haste_and_sacrifice: self.haste_and_sacrifice || other.haste_and_sacrifice,
+            nightmare: self.nightmare || other.nightmare,
+        }
+    }
+}
+
 /// A temporary permission on one graveyard incarnation, independent of its grantor.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum GraveyardCastKind {
@@ -753,6 +780,12 @@ pub(crate) enum Instruction {
         amount: AmountValue,
     },
     SacrificeDelayedTokens,
+    SacrificeSource,
+    CreateCopyTokenWithExceptions {
+        subject: Subject,
+        amount: u16,
+        exceptions: CopyExceptions,
+    },
     ExileWarpedPermanent,
     Crew {
         minimum: u16,

@@ -425,6 +425,10 @@ impl Game {
             crew: None,
             cast_event: None,
             copy_event: None,
+            source_copy_recipe: self
+                .copy_recipe(self.object_ref(card))
+                .filter(|r| r.exceptions != CopyExceptions::NONE)
+                .map(Box::new),
             mana_copy_sources: None,
             is_copy: false,
             delayed_sacrifice: None,

@@ -7,6 +7,7 @@ impl Game {
             self.precombat_lore_counters();
         }
         if step == Step::End {
+            self.queue_copy_end_step_abilities();
             self.queue_delayed_sacrifices();
             self.queue_warp_exiles();
         }

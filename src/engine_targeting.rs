@@ -50,6 +50,7 @@ impl Announcement {
                     .additional
             }
             StackKind::TriggeredAbility { .. }
+            | StackKind::CopyEndStepSacrifice
             | StackKind::DelayedSacrifice
             | StackKind::DelayedWarpExile => None,
         }
@@ -88,6 +89,7 @@ impl Announcement {
                 .cost
                 .mana_options(),
             StackKind::TriggeredAbility { .. }
+            | StackKind::CopyEndStepSacrifice
             | StackKind::DelayedSacrifice
             | StackKind::DelayedWarpExile => {
                 unreachable!("triggered ability has no activation cost")
@@ -171,6 +173,7 @@ impl Announcement {
                     .alternatives
                     .is_empty(),
                 StackKind::TriggeredAbility { .. }
+                | StackKind::CopyEndStepSacrifice
                 | StackKind::DelayedSacrifice
                 | StackKind::DelayedWarpExile => false,
             }
@@ -1074,6 +1077,7 @@ impl Game {
             crew: None,
             cast_event: None,
             copy_event: None,
+            source_copy_recipe: None,
             mana_copy_sources: None,
             is_copy: false,
             delayed_sacrifice: None,

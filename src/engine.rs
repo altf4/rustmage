@@ -11,6 +11,9 @@ mod stack_copies;
 #[path = "engine_stack_copies_tests.rs"]
 mod stack_copies_tests;
 pub use copies::CopyRecipe;
+#[path = "engine_copy_characteristics.rs"]
+mod copy_characteristics;
+pub use crate::cards::CopyExceptions;
 pub use stack_copies::{CopyEvent, RetargetView};
 const STARTING_LIFE: i128 = 20;
 use crate::capacity::{CapacityExt, CapacitySignal};
@@ -826,6 +829,8 @@ pub struct SpellView {
     pub cast_event: Option<Box<CastPaymentEvent>>,
     pub copy_event: Option<Box<stack_copies::CopyEvent>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_copy_recipe: Option<Box<CopyRecipe>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
     pub mana_copy_sources: Option<Box<Vec<(ManaCopySource, u64)>>>,
     pub is_copy: bool,
@@ -931,6 +936,10 @@ impl SpellView {
                 .cast_event
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<CastPaymentEvent>())
+            + self
+                .source_copy_recipe
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<CopyRecipe>())
             + self.delayed_sacrifice.as_ref().map_or(0, |d| d.bytes())
             + self.crew.as_ref().map_or(0, |c| c.bytes())
             + self
@@ -993,7 +1002,9 @@ impl SpellView {
                 Some(Instruction::Modal(modes)) => Some(modes),
                 _ => None,
             },
-            StackKind::DelayedSacrifice | StackKind::DelayedWarpExile => None,
+            StackKind::DelayedSacrifice
+            | StackKind::DelayedWarpExile
+            | StackKind::CopyEndStepSacrifice => None,
         }
     }
     pub(crate) fn program(&self) -> Option<(TargetPlan, &'static [Instruction])> {
@@ -1095,6 +1106,9 @@ impl SpellView {
                     };
                     (plan, program)
                 }),
+            StackKind::CopyEndStepSacrifice => {
+                Some((TargetPlan::NONE, &[Instruction::SacrificeSource]))
+            }
             StackKind::DelayedSacrifice => {
                 Some((TargetPlan::NONE, &[Instruction::SacrificeDelayedTokens]))
             }
@@ -1129,6 +1143,7 @@ pub enum StackKind {
     ActivatedAbility { ability: u16 },
     DelayedSacrifice,
     DelayedWarpExile,
+    CopyEndStepSacrifice,
 }
 
 /// The object being attacked; this is not a spell/ability target.
@@ -6736,3 +6751,7 @@ mod layered_characteristic_tests;
 #[cfg(test)]
 #[path = "engine_modal_history_tests.rs"]
 mod modal_history_tests;
+
+#[cfg(test)]
+#[path = "engine_copy_characteristics_tests.rs"]
+mod copy_characteristics_tests;

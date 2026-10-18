@@ -45,9 +45,7 @@ fn runtime_copy_paid_values_are_copiable_and_token_identity_survives_owned_resto
         assert!(view.is_token());
         assert_eq!(
             view.copy_recipe,
-            Some(CopyRecipe {
-                definition: Card::from_name("Bear Cub").unwrap()
-            })
+            Some(CopyRecipe::new(Card::from_name("Bear Cub").unwrap()))
         );
         assert_eq!((g.stats(copy).power, g.stats(copy).toughness), (2, 2));
         assert!(!g.keywords(copy).contains(Keywords::FLYING));
@@ -90,13 +88,7 @@ fn runtime_copy_enters_with_fresh_printed_counters_not_source_counters() {
         cast(&mut g, source, None, &[]);
         settle(&mut g);
         assert_eq!(g.counter_count(source, CounterKind::Divinity), 1);
-        g.stage_copy_creation(
-            p,
-            CopyRecipe {
-                definition: g.state.objects[source as usize].card,
-            },
-            1,
-        );
+        g.stage_copy_creation(p, CopyRecipe::new(g.state.objects[source as usize].card), 1);
         let copy = copies(&g, "Myojin of Night's Reach")[0];
         assert_eq!(g.counter_count(copy, CounterKind::Divinity), 0);
         g.state_based_actions();
@@ -233,9 +225,7 @@ fn runtime_copy_fresh_entry_choices_and_counter_replacements() {
         // The copied walker gets fresh printed loyalty, not source loyalty.
         g.stage_copy_creation(
             p,
-            CopyRecipe {
-                definition: Card::from_name("Liliana, Dreadhorde General").unwrap(),
-            },
+            CopyRecipe::new(Card::from_name("Liliana, Dreadhorde General").unwrap()),
             1,
         );
         g.advance_replacements(false);
@@ -259,13 +249,7 @@ fn runtime_copy_aura_chooses_nontargeted_attachment_and_impossible_entry_creates
         settle(&mut g);
         assert!(g.keywords(bear).contains(Keywords::HEXPROOF));
         let pacifism = Card::from_name("Pacifism").unwrap();
-        g.stage_copy_creation(
-            p,
-            CopyRecipe {
-                definition: pacifism,
-            },
-            1,
-        );
+        g.stage_copy_creation(p, CopyRecipe::new(pacifism), 1);
         assert!(g.advance_entries());
         let object = g.object_ref(bear);
         checked(&mut g, Action::ChooseAuraAttachment { object });
@@ -273,25 +257,13 @@ fn runtime_copy_aura_chooses_nontargeted_attachment_and_impossible_entry_creates
         let copy = copies(&g, "Pacifism")[0];
         assert_eq!(g.object_view(copy).attached_to, Some(object));
         let mut empty = setup(p);
-        empty.stage_copy_creation(
-            p,
-            CopyRecipe {
-                definition: pacifism,
-            },
-            1,
-        );
+        empty.stage_copy_creation(p, CopyRecipe::new(pacifism), 1);
         empty.advance_entries();
         assert!(copies(&empty, "Pacifism").is_empty());
         assert!(empty.state.copy_recipes.is_none());
         assert_eq!(empty.state.free_tokens.len(), 1);
         // Reuse the impossible token slot without retaining its Aura factory.
-        empty.stage_copy_creation(
-            p,
-            CopyRecipe {
-                definition: Card::Forest,
-            },
-            1,
-        );
+        empty.stage_copy_creation(p, CopyRecipe::new(Card::Forest), 1);
         assert_eq!(copies(&empty, "Forest").len(), 1);
         assert!(empty.state.free_tokens.is_empty());
     }
@@ -420,7 +392,7 @@ fn runtime_copy_token_filters_frozen_damage_facts_and_speculative_bargain_cost()
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         let definition = Card::from_name("Bear Cub").unwrap();
-        g.stage_copy_creation(p, CopyRecipe { definition }, 1);
+        g.stage_copy_creation(p, CopyRecipe::new(definition), 1);
         let token = copies(&g, "Bear Cub")[0];
         let physical = fixture(&mut g, p, "Bear Cub", Zone::Battlefield);
         let source = fixture(&mut g, p, "High Fae Negotiator", Zone::Hand);

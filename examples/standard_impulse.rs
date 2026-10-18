@@ -61,7 +61,9 @@ fn outlaw(c: Card) -> bool {
 fn granting(s: &SpellView) -> Option<usize> {
     let i = family(s.source_card)?;
     let is = match s.kind {
-        StackKind::DelayedSacrifice | StackKind::DelayedWarpExile => {
+        StackKind::CopyEndStepSacrifice
+        | StackKind::DelayedSacrifice
+        | StackKind::DelayedWarpExile => {
             panic!("no delayed producer in this fixture")
         }
         StackKind::Spell => matches!(i, 1 | 11) || i == 12 && s.mode == Some(0),

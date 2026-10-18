@@ -215,13 +215,7 @@ fn pact_pending_old_incarnation_retains_history_after_reentry_and_new_copy_start
         choose(&mut g, 2, None);
         settle(&mut g);
         let source = g.object_view(pact);
-        g.stage_copy_creation(
-            p,
-            CopyRecipe {
-                definition: source.card,
-            },
-            1,
-        );
+        g.stage_copy_creation(p, CopyRecipe::new(source.card), 1);
         let copy = g
             .state
             .objects

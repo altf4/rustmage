@@ -441,7 +441,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && a.outcome.is_none()
             {
                 match s.kind {
-                    StackKind::DelayedSacrifice | StackKind::DelayedWarpExile => {
+                    StackKind::CopyEndStepSacrifice
+                    | StackKind::DelayedSacrifice
+                    | StackKind::DelayedWarpExile => {
                         panic!("no delayed producer in this fixture")
                     }
                     StackKind::TriggeredAbility { ability } => {

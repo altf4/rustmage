@@ -206,6 +206,7 @@ impl Game {
                 crew: None,
                 cast_event: None,
                 copy_event: None,
+                source_copy_recipe: None,
                 mana_copy_sources: None,
                 is_copy: false,
                 delayed_sacrifice: Some(Box::new(b.view)),
