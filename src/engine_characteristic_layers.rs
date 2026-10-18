@@ -26,10 +26,15 @@ fn aura_effects<W: CharacteristicWorld + ?Sized>(
         return Vec::new();
     }
     let mut effects = Vec::new();
-    for &source in &world.game().state.attachment_sources {
-        let object = world.object(source);
-        let reference = world.reference(source);
-        if object.zone != Zone::Battlefield || object.attached_to != Some(world.reference(id)) {
+    let Some(roles) = world.game().state.roles.as_ref() else {
+        return effects;
+    };
+    for &reference in &roles.characteristic_sources {
+        let object = world.object(reference.card);
+        if object.zone != Zone::Battlefield
+            || world.reference(reference.card) != reference
+            || object.attached_to != Some(world.reference(id))
+        {
             continue;
         }
         for group in object.card.static_ability_groups() {
@@ -79,7 +84,12 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
     if object.zone != Zone::Battlefield {
         return result;
     }
-    if world.game().state.attachment_sources.is_empty()
+    if world
+        .game()
+        .state
+        .roles
+        .as_ref()
+        .is_none_or(|r| r.characteristic_sources.is_empty())
         && world
             .game()
             .state
@@ -141,7 +151,14 @@ fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut res
 #[inline]
 pub(super) fn name<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> &'static str {
     let object = world.object(id);
-    if object.zone != Zone::Battlefield || world.game().state.attachment_sources.is_empty() {
+    if object.zone != Zone::Battlefield
+        || world
+            .game()
+            .state
+            .roles
+            .as_ref()
+            .is_none_or(|r| r.characteristic_sources.is_empty())
+    {
         return if object.zone == Zone::Stack {
             world.game().effective_spell_card(id).name()
         } else {
@@ -160,7 +177,14 @@ fn changed_name<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> &'sta
 #[inline]
 pub(super) fn colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 {
     let object = world.object(id);
-    if object.zone != Zone::Battlefield || world.game().state.attachment_sources.is_empty() {
+    if object.zone != Zone::Battlefield
+        || world
+            .game()
+            .state
+            .roles
+            .as_ref()
+            .is_none_or(|r| r.characteristic_sources.is_empty())
+    {
         return if object.zone == Zone::Stack {
             world.game().effective_spell_card(id).colors()
         } else {
@@ -183,7 +207,12 @@ pub(super) fn base_changes<W: CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
 ) -> Vec<(u64, (i128, i128))> {
-    if world.game().state.attachment_sources.is_empty()
+    if world
+        .game()
+        .state
+        .roles
+        .as_ref()
+        .is_none_or(|r| r.characteristic_sources.is_empty())
         && world
             .game()
             .state
@@ -217,7 +246,12 @@ pub(super) fn subtype_changes<W: CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
 ) -> Vec<(u64, SubtypeChange)> {
-    if world.game().state.attachment_sources.is_empty()
+    if world
+        .game()
+        .state
+        .roles
+        .as_ref()
+        .is_none_or(|r| r.characteristic_sources.is_empty())
         && world
             .game()
             .state

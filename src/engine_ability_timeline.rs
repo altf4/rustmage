@@ -30,6 +30,7 @@ impl Card {
                     matches!(
                         fragment,
                         StaticAbilityFragment::RemoveAttachedAbilities
+                            | StaticAbilityFragment::AttachedCharacteristics(..)
                             | StaticAbilityFragment::SourceCounterSubtype { .. }
                             | StaticAbilityFragment::SourceCounterKeywords { .. }
                             | StaticAbilityFragment::ChosenCreatureType
@@ -79,6 +80,22 @@ impl Game {
                 .ability_removal_sources
                 .push(source);
         }
+        if self.state.objects[id as usize]
+            .card
+            .static_ability_groups()
+            .iter()
+            .any(|group| {
+                group.fragments.iter().any(|fragment| {
+                    matches!(fragment, StaticAbilityFragment::AttachedCharacteristics(..))
+                })
+            })
+        {
+            self.state
+                .roles
+                .get_or_insert_with(Default::default)
+                .characteristic_sources
+                .push(source);
+        }
         self.state
             .roles
             .get_or_insert_with(Default::default)
@@ -92,6 +109,9 @@ impl Game {
                 .retain(|row| row.source != reference);
             state
                 .ability_removal_sources
+                .retain(|&source| source != reference);
+            state
+                .characteristic_sources
                 .retain(|&source| source != reference);
             state
                 .keyword_effects
