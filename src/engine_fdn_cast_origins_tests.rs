@@ -389,17 +389,13 @@ fn cast_origins_tinybones_paid_stash_allows_adventure_and_omen_with_actual_mana(
             let mut g = setup(p);
             let tiny = put(&mut g, p, "Tinybones, Bauble Burglar", Zone::Battlefield);
             g.state.objects[tiny as usize].summoning_sick = false;
-            let (name, target) = if omen {
-                (
-                    "Twinmaw Stormbrood // Charring Bite",
-                    put(&mut g, p.other(), "Rampaging Baloths", Zone::Battlefield),
-                )
+            let name = if omen {
+                "Twinmaw Stormbrood // Charring Bite"
             } else {
-                (
-                    "Fell Horseman // Deathly Ride",
-                    put(&mut g, p, "Bear Cub", Zone::Graveyard),
-                )
+                "Frolicking Familiar // Blow Off Steam"
             };
+            assert!(Card::from_name(name).unwrap().is_supported());
+            let target = put(&mut g, p.other(), "Rampaging Baloths", Zone::Battlefield);
             let card = put(&mut g, p.other(), name, Zone::Hand);
             g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 3];
             checked(
@@ -426,7 +422,8 @@ fn cast_origins_tinybones_paid_stash_allows_adventure_and_omen_with_actual_mana(
             } else {
                 Action::AnnounceAdventure { card }
             };
-            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+            let payment = [0, 0, 0, 0, 0, if omen { 2 } else { 1 }];
+            g.state.players[p.index()].mana = payment;
             g.state.active = p.other();
             assert!(!g.legal_actions().contains(&announce));
             g.state.active = p;
@@ -448,7 +445,7 @@ fn cast_origins_tinybones_paid_stash_allows_adventure_and_omen_with_actual_mana(
                     CastFace::Adventure
                 }
             );
-            assert_eq!(cast.payment, [0, 0, 0, 0, 0, 2]);
+            assert_eq!(cast.payment, payment);
             assert_eq!(g.counter_count(card, CounterKind::Stash), 0);
             settle(&mut g);
             assert_eq!(g.state.objects[card as usize].owner, p.other());
@@ -457,7 +454,7 @@ fn cast_origins_tinybones_paid_stash_allows_adventure_and_omen_with_actual_mana(
                 assert_eq!(g.state.objects[card as usize].zone, Zone::Library);
                 assert!(g.state.players[p.other().index()].library.contains(&card));
             } else {
-                assert_eq!(g.state.objects[target as usize].zone, Zone::Hand);
+                assert_eq!(g.state.objects[target as usize].damage, 1);
                 assert_eq!(g.state.objects[card as usize].zone, Zone::Exile);
                 assert!(g.can_play_adventure(p, card));
                 assert!(!g.can_play_foreign_stash(p, card));
