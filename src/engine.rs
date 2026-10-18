@@ -134,6 +134,9 @@ mod forage;
 mod target_library;
 pub use forage::{ForageRoute, ForageView};
 pub use target_library::{TargetLibraryMovement, TargetLibraryView};
+#[path = "engine_combat_allocations.rs"]
+mod combat_allocations;
+pub use combat_allocations::CombatDamagePlayerView;
 #[path = "engine_scalar_x.rs"]
 mod scalar_x;
 #[path = "engine_spell_costs.rs"]
@@ -1536,6 +1539,7 @@ impl Pending {
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
     linked_choices: Option<Box<linked_choices::ChoiceState>>,
+    combat_rules: Option<Box<combat_allocations::CombatRulesState>>,
     ending_turn: bool,
     zone_rules: Option<Box<zone_replacements::ZoneState>>,
     mana_lots: Option<Box<mana_lots::ManaState>>,
@@ -1898,6 +1902,9 @@ pub struct Observation {
     pub mana_lots: Vec<ManaLotView>,
     pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub creature_damage_history: Vec<CreatureDamageHistoryView>,
+    pub additional_combats: u64,
+    pub must_be_blocked: Vec<ObjectRef>,
+    pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
     pub animations: Vec<AnimationView>,
     pub temporary_controls: Vec<TemporaryControlView>,
     pub casting_prohibited: bool,
@@ -2129,6 +2136,7 @@ impl Game {
                 replacements: None,
                 objects: objects.into(),
                 named_counters: None,
+                combat_rules: None,
                 creature_damage_history: None,
                 entry_values: None,
                 copy_recipes: None,
@@ -4271,9 +4279,25 @@ impl Game {
                 })
             }
             Action::FinishAttackers => {
+                let first_attacks: Vec<_> = self
+                    .state
+                    .selected_attackers
+                    .iter()
+                    .filter(|a| {
+                        !self
+                            .state
+                            .attacked_this_turn
+                            .contains(&self.object_ref(a.card))
+                    })
+                    .map(|a| a.card)
+                    .collect();
                 let declared_count = self.state.selected_attackers.len();
                 self.commit_attackers_with(actor, |game, card| {
-                    game.attack_triggers_for_declaration(&game.object_view(card), declared_count);
+                    game.attack_triggers_for_declaration(
+                        &game.object_view(card),
+                        declared_count,
+                        first_attacks.contains(&card),
+                    );
                 });
                 self.give_priority();
             }
@@ -5116,6 +5140,7 @@ impl Game {
         self.state.triggered_this_turn.clear();
         self.state.ability_resolutions = None;
         self.state.creature_damage_history = None;
+        self.state.combat_rules = None;
         self.state.attacked_this_turn.clear();
         self.state.creatures_died_this_turn = 0;
         self.state.graveyard_entries = None;
@@ -5226,7 +5251,11 @@ impl Game {
                 self.state.attack_declared = false;
                 self.state.blocks.clear();
                 self.state.first_strikers.clear();
-                self.begin_step(Step::Main2);
+                if self.take_additional_combat() {
+                    self.begin_step(Step::BeginCombat);
+                } else {
+                    self.begin_step(Step::Main2);
+                }
                 self.give_priority();
             }
             Step::Main2 => {
@@ -5248,6 +5277,10 @@ impl Game {
     }
 
     fn finish_cleanup(&mut self) {
+        if let Some(rules) = &mut self.state.combat_rules {
+            rules.must_be_blocked.clear();
+            rules.additional_combats = 0;
+        }
         self.state.casting_prohibited = false;
         for player in &mut self.state.players {
             player.hexproof_until_end_turn = false;
@@ -5439,6 +5472,7 @@ impl Game {
         for gain in &gains {
             self.gain_life(gain.source.controller, gain.amount);
         }
+        self.record_combat_and_excess_damage(events);
         self.creature_damage_events(events);
         self.player_damage_triggers(events);
         // Trigger events are recorded before SBAs, after the whole damage batch.
@@ -5677,6 +5711,15 @@ impl Game {
                 .as_ref()
                 .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             schema: OBSERVATION_SCHEMA,
+            additional_combats: s.combat_rules.as_ref().map_or(0, |r| r.additional_combats),
+            must_be_blocked: s
+                .combat_rules
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.must_be_blocked.clone()),
+            combat_damaged_players: s
+                .combat_rules
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.damaged_players.clone()),
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             creatures_died_this_turn: s.creatures_died_this_turn,
             graveyard_entries_this_turn: s
@@ -6162,6 +6205,7 @@ impl Game {
             + self.return_links_bytes()
             + std::mem::size_of::<Vec<Object>>()
             + std::mem::size_of::<Vec<ObjectRef>>()
+            + s.combat_rules.as_ref().map_or(0, |r| r.owned_bytes())
             + (s.attacked_this_turn.len() + s.saddled.len()) * std::mem::size_of::<ObjectRef>()
             + s.saddle_payment.as_ref().map_or(0, |f| {
                 std::mem::size_of::<saddle::SaddlePayment>()
@@ -7202,3 +7246,6 @@ mod fdn_growth_cost_tests;
 #[cfg(test)]
 #[path = "engine_linked_choices_tests.rs"]
 mod linked_choices_tests;
+#[cfg(test)]
+#[path = "engine_combat_allocation_tests.rs"]
+mod combat_allocation_tests;

@@ -26,6 +26,23 @@ class DirectCardTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'synthetic factory alias'):
                 linker.validate_synthetic_aliases(changed)
 
+    def test_fixed_printed_mana_components_check_complete_simple_costs(self):
+        metadata, records, _ = linker.load()
+        self.assertGreater(linker.validate_simple_mana_components(metadata, records), 2000)
+        card = dict(next(c for c in metadata['cards'] if c['name'] == 'Goblin Negotiation'))
+        record = dict(records[card['index']], complete=True)
+        minimal = dict(cards=[card])
+        self.assertEqual(linker.validate_simple_mana_components(minimal, {card['index']: record}), 1)
+        card['colored'] = [0] * 6
+        with self.assertRaisesRegex(ValueError, 'fixed printed mana components changed: Goblin Negotiation'):
+            linker.validate_simple_mana_components(minimal, {card['index']: record})
+        record['complete'] = False
+        self.assertEqual(linker.validate_simple_mana_components(minimal, {card['index']: record}), 0)
+        record['complete'] = True
+        for special in ('{2/W}', '{W/U}', '{W/P}', '{S}'):
+            card['mana_cost'] = special
+            self.assertEqual(linker.validate_simple_mana_components(minimal, {card['index']: record}), 0)
+
     def test_card_keywords_use_named_flags(self):
         raw_constructor = re.compile(r'\bKeywords\s*\(')
         for path in (linker.ROOT/'src/card_definitions').rglob('*.rs'):

@@ -826,3 +826,5 @@ mod cast_origins_games;
 mod foundations_linked_choice_games;
 #[path = "common/foundations_growth_games.rs"]
 mod growth_games;
+#[path = "common/foundations_combat_allocation_games.rs"]
+mod combat_allocation_games;

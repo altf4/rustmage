@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e68b22c3210fda7755b5ca9f5139a0e5f5e9538b1dc4fffc1db7c1ed60252e18",
+  "catalogue_version": "94ad13938b33c74630daa116ee01b019ec264ecf8f72441ac20eff8c7b53bd24",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2184,
-  "implemented_total": 2190,
+  "implemented_standard_cards": 2190,
+  "implemented_total": 2196,
   "token_definitions": 105,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -63,8 +63,7 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 422,
-      "gated": 5
+      "complete": 427
     },
     "fin": {
       "total": 305,
@@ -164,8 +163,8 @@
     },
     "tdc": {
       "total": 15,
-      "gated": 3,
-      "complete": 12
+      "gated": 2,
+      "complete": 13
     },
     "tdm": {
       "total": 264,
@@ -2344,8 +2343,8 @@
     {
       "name": "Aurelia, the Warleader",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/aurelia_the_warleader.rs",
       "set": "fdn"
     },
@@ -3536,8 +3535,8 @@
     {
       "name": "Biogenic Upgrade",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/biogenic_upgrade.rs",
       "set": "fdn"
     },
@@ -9584,8 +9583,8 @@
     {
       "name": "Drakuseth, Maw of Flames",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/drakuseth_maw_of_flames.rs",
       "set": "fdn"
     },
@@ -14648,8 +14647,8 @@
     {
       "name": "Goblin Negotiation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/goblin_negotiation.rs",
       "set": "fdn"
     },
@@ -18520,8 +18519,8 @@
     {
       "name": "Joraga Invocation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/joraga_invocation.rs",
       "set": "fdn"
     },
@@ -33224,8 +33223,8 @@
     {
       "name": "Steel Hellkite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdc/steel_hellkite.rs",
       "set": "tdc"
     },

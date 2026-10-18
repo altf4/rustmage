@@ -19,7 +19,8 @@ impl SpellView {
             .1
             .iter()
             .find_map(|instruction| match instruction {
-                Instruction::DamageDivided { total } => Some(*total),
+                Instruction::DamageDivided { total }
+                | Instruction::DistributeCounters { total, .. } => Some(*total),
                 _ => None,
             })
     }

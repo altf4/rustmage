@@ -404,6 +404,11 @@ impl Game {
         let TargetRule::Grouped { constraint, .. } = rule else {
             return true;
         };
+        if let TargetGroupConstraint::OtherThanGroup(first) = constraint {
+            return chosen
+                .iter()
+                .all(|bound| bound.group != first || bound.target != target);
+        }
         let Target::Card(id) = target else {
             return false;
         };
@@ -411,6 +416,7 @@ impl Game {
             return false;
         };
         match constraint {
+            TargetGroupConstraint::OtherThanGroup(_) => unreachable!(),
             TargetGroupConstraint::AttachedToGroup(first_group) => object.zone == Zone::Battlefield
                 && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| {
                     self.same_target_object(*b) && object.attached_to == b.object
@@ -528,11 +534,7 @@ impl Game {
         // declarations precede targets, mana abilities and payment.
         if needs_mode {
             self.state.pending = Pending::Modes { player };
-        } else if a.pay_window
-            && a.item.kind == StackKind::Spell
-            && a.item.source_card.x_symbols() > 0
-            && a.item.x.is_none()
-        {
+        } else if a.pay_window && a.has_x_cost() && a.item.x.is_none() {
             self.state.pending = Pending::X { player };
         } else if a.needs_offspring() {
             self.state.pending = Pending::Offspring { player };
@@ -760,11 +762,12 @@ impl Game {
             }
             TargetRule::Grouped { base, constraint } => {
                 let zone = match constraint {
-                    TargetGroupConstraint::SameGraveyard => Zone::Graveyard,
+                    TargetGroupConstraint::SameGraveyard => Some(Zone::Graveyard),
                     TargetGroupConstraint::DifferentControllers
-                    | TargetGroupConstraint::AttachedToGroup(_) => Zone::Battlefield,
+                    | TargetGroupConstraint::AttachedToGroup(_) => Some(Zone::Battlefield),
+                    TargetGroupConstraint::OtherThanGroup(_) => None,
                 };
-                return matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| o.zone == zone))
+                return zone.is_none_or(|zone| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| o.zone == zone)))
                     && self.target_matches_without_hand(
                         *base,
                         controller,

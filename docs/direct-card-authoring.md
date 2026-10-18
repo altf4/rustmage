@@ -51,7 +51,9 @@ before advancing to the next set.
 Each paired record pins both the full Oracle facts and its reviewed physical
 metadata (including intrinsic colors). Changes to costs, types or legality in the
 identity manifest require an explicit per-card provenance update; the linker
-rejects accidental drift. Synthetic entries carry the same metadata pin.
+rejects accidental drift. For complete physical entries with ordinary numeric,
+W/U/B/R/G/C and X mana symbols, it also verifies the fixed typed mana components
+against the printed cost. Hybrid and other special symbols are explicitly skipped. Synthetic entries carry the same metadata pin.
 
 ## Portable source locations
 

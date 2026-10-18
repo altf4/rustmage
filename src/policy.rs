@@ -39,7 +39,11 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
         let beneficial = program
             .iter()
             .find_map(|instruction| match instruction {
-                Instruction::PutCounters { kind, .. } => Some(*kind == CounterKind::PlusOne),
+                Instruction::PutCounters { kind, .. }
+                | Instruction::DistributeCounters { kind, .. }
+                | Instruction::DoubleCounterKind { kind, .. } => {
+                    Some(*kind == CounterKind::PlusOne)
+                }
                 Instruction::DoubleCounters => Some(true),
                 Instruction::GrantKeywords { .. } => Some(true),
                 Instruction::Connive { .. }

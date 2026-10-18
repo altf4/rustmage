@@ -133,6 +133,51 @@ impl Game {
         }
         intervals
     }
+    fn activation_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
+        let StackKind::ActivatedAbility { ability } = a.item.kind else {
+            return Vec::new();
+        };
+        let definition = a.item.source_card.activations()[usize::from(ability)];
+        let base = a.cost.unwrap_or(ManaCost {
+            colored: definition.cost.colored,
+            generic: definition.cost.generic,
+        });
+        let fundable = |value: u32| {
+            base.generic.checked_add(value).is_some_and(|generic| {
+                self.activation_can_fund(
+                    FundingGoal {
+                        reserve: None,
+                        actor: a.item.controller,
+                        required: base.colored,
+                        generic,
+                        source: Some((
+                            a.item.object,
+                            ability,
+                            a.counter_payment.clone(),
+                            a.item.source_card,
+                        )),
+                    },
+                    a.additional_cost(),
+                )
+            })
+        };
+        if !fundable(0) {
+            return Vec::new();
+        }
+        let (mut low, mut high) = (0u32, u32::MAX - base.generic);
+        while low < high {
+            let middle = low + (high - low).div_ceil(2);
+            if fundable(middle) {
+                low = middle;
+            } else {
+                high = middle - 1;
+            }
+        }
+        vec![XInterval {
+            minimum: 0,
+            maximum: low,
+        }]
+    }
     pub fn x_choice(&self) -> Option<XChoiceView> {
         if let Pending::ResolutionX { player } = self.state.pending {
             let mut lo = 0u64;
@@ -165,7 +210,11 @@ impl Game {
         let a = self.state.announcing.as_ref()?;
         Some(XChoiceView {
             card: a.item.object,
-            intervals: self.scalar_x_intervals(a.item.controller, a.item.card),
+            intervals: if a.item.kind == StackKind::Spell {
+                self.scalar_x_intervals(a.item.controller, a.item.card)
+            } else {
+                self.activation_x_intervals(a)
+            },
         })
     }
     pub(super) fn item_amount(&self, value: AmountValue, item: &SpellView) -> u128 {

@@ -94,6 +94,7 @@ pub(crate) enum TargetGroupConstraint {
     /// Attached to the exact object selected in another target group.
     AttachedToGroup(u16),
     DifferentControllers,
+    OtherThanGroup(u16),
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -831,6 +832,21 @@ pub(crate) enum Instruction {
     DamageDivided {
         total: u16,
     },
+    DistributeCounters {
+        total: u16,
+        kind: CounterKind,
+    },
+    DamageByGroup {
+        first: i32,
+        other: i32,
+    },
+    DamageForExcess(AmountValue),
+    CreateExcessTokens(Card),
+    AdditionalCombat,
+    RequireBlocks(CreatureFilter),
+    /// Definition header: announce X as a generic activation mana cost.
+    ActivationX,
+    DestroyCombatDamagedPlayersPermanents,
     CreateCopyTokenWithExceptions {
         subject: Subject,
         amount: u16,
@@ -2212,6 +2228,7 @@ pub(crate) enum TriggerCondition {
     SelfDies,
     SelfEntersOrDies,
     SelfAttacks,
+    SelfFirstAttack,
     CreatureAttacksYou {
         colors: u8,
     },
