@@ -107,6 +107,7 @@ fn endgame_herald_flash_prevents_persistent_losses_and_ability_removal_restores_
         if g.actor() != Some(p.other()) {
             checked(&mut g, Action::Pass);
         }
+        g.state.players[p.other().index()].mana = [0, 1, 0, 0, 0, 1];
         paid(
             &mut g,
             p.other(),
@@ -254,6 +255,7 @@ fn endgame_time_stop_exiles_spells_and_skips_end_step_while_removing_combat() {
         until(&mut g, |g| g.state.pending == Pending::Attackers);
         checked(&mut g, Action::Attack { card: ball });
         checked(&mut g, Action::FinishAttackers);
+        g.state.players[p.index()].mana = [0, 3, 0, 0, 0, 4];
         let opt = paid(&mut g, p, "Opt", &[]);
         let stop = paid(&mut g, p, "Time Stop", &[]);
         let turn = g.state.turn;
@@ -349,7 +351,7 @@ fn endgame_herald_control_and_cleanup_restoration_change_the_protected_player_im
             Zone::Battlefield,
         );
         g.state.players[p.other().index()].life = 0;
-        paid(&mut g, p, "Act of Treason", &[Target::Card(herald)]);
+        paid(&mut g, p, "Involuntary Employment", &[Target::Card(herald)]);
         until(&mut g, |g| g.outcome().is_some());
         assert_eq!(g.object_view(herald).controller, p);
         assert_eq!(g.outcome(), Some(Outcome::Winner(p)));
@@ -360,7 +362,7 @@ fn endgame_herald_control_and_cleanup_restoration_change_the_protected_player_im
             "Herald of Eternal Dawn",
             Zone::Battlefield,
         );
-        paid(&mut g, p, "Act of Treason", &[Target::Card(herald)]);
+        paid(&mut g, p, "Involuntary Employment", &[Target::Card(herald)]);
         settle(&mut g);
         g.state.players[p.index()].life = 0;
         let turn = g.state.turn;
