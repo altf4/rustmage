@@ -873,6 +873,7 @@ pub(crate) enum Instruction {
         unpaid_skip: usize,
     },
     ReturnSourceToHand(TargetZone),
+    ReturnSourceFromFirstPublicZoneToHand,
     PutSourceOnLibraryTop {
         origin: TargetZone,
     },
@@ -1381,6 +1382,7 @@ pub(crate) struct EquipmentSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct AuraSpec {
     /// Enchant object-kind union, evaluated using live characteristics.
+    /// Zero means any permanent, including Battles outside the narrow mask.
     pub kinds: u8,
     pub relation: i8,
     pub bonus: EquipmentSpec,
@@ -2060,6 +2062,7 @@ pub(crate) enum TriggerCondition {
         first_only: bool,
         own_turn: bool,
     },
+    AttachedCreatureDies,
     CreatureDies {
         relation: CastRelation,
         other: bool,

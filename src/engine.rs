@@ -1460,6 +1460,7 @@ impl Pending {
 struct State {
     zone_rules: Option<Box<zone_replacements::ZoneState>>,
     mana_lots: Option<Box<mana_lots::ManaState>>,
+    controls: Option<Box<continuous_control::ControlState>>,
     #[allow(clippy::box_collection)]
     temporary_controls: Option<Box<Vec<TemporaryControlView>>>,
     casting_prohibited: bool,
@@ -2030,6 +2031,7 @@ impl Game {
             state: State {
                 mana_lots: None,
                 zone_rules: None,
+                controls: None,
                 temporary_controls: None,
                 casting_prohibited: false,
                 replacements: None,
@@ -4394,12 +4396,14 @@ impl Game {
                 (before, plan, tapped, counters)
             })
             .collect();
-        planned
+        let events = planned
             .into_iter()
             .map(|(before, plan, tapped, counters)| {
                 self.commit_planned_zone_move(before, plan, tapped, counters, None)
             })
-            .collect()
+            .collect();
+        self.refresh_controllers();
+        events
     }
 
     pub(super) fn opponent_entry_requires_tapped(&self, card: Card, controller: Player) -> bool {
@@ -4493,7 +4497,9 @@ impl Game {
             "choice-bearing entry must be staged"
         );
         let before = self.object_view(id);
-        self.transition_object(before, destination, tapped)
+        let event = self.transition_object(before, destination, tapped);
+        self.refresh_controllers();
+        event
     }
 
     fn transition_object(
@@ -5885,6 +5891,7 @@ impl Game {
             + self.mana_lot_bytes()
             + s.zone_rules.as_ref().map_or(0, |r| r.bytes())
             + self.temporary_control_bytes()
+            + self.control_bytes()
             + self.temporary_ability_bytes()
             + self.suspected_bytes()
             + self.death_exile_bytes()
@@ -6876,6 +6883,14 @@ mod layered_characteristic_tests;
 #[path = "engine_modal_history_tests.rs"]
 mod modal_history_tests;
 
+#[path = "engine_continuous_control.rs"]
+mod continuous_control;
+#[cfg(test)]
+#[path = "engine_continuous_control_tests.rs"]
+mod continuous_control_tests;
 #[cfg(test)]
 #[path = "engine_return_links_tests.rs"]
 mod return_links_tests;
+
+#[path = "engine_attachment_death.rs"]
+mod attachment_death;

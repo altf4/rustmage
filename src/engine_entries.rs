@@ -165,7 +165,11 @@ impl Game {
             && !self
                 .keywords(target.card)
                 .contains(Keywords::PROTECTION_EVERYTHING)
-            && self.current_kinds(target.card) & u16::from(spec.kinds) != 0
+            && (if spec.kinds == 0 {
+                self.current_kinds(target.card) & (1 | 2 | 16 | 32 | 64 | 256) != 0
+            } else {
+                self.current_kinds(target.card) & u16::from(spec.kinds) != 0
+            })
             && match spec.relation {
                 0 => self.state.objects[target.card as usize].controller == controller,
                 1 => self.state.objects[target.card as usize].controller != controller,
@@ -570,6 +574,7 @@ impl Game {
                 }
             }
         }
+        self.refresh_controllers();
         if let Some(context) = batch.discard_context {
             self.finish_discard_events(&events, context);
         } else {
