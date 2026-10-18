@@ -625,7 +625,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     continue;
                 }
                 match root.kind {
-                    StackKind::DelayedReturn
+                    StackKind::CopyEndStepSacrifice
+                    | StackKind::DelayedReturn
                     | StackKind::DelayedSacrifice
                     | StackKind::DelayedWarpExile => {
                         panic!("no delayed producer in this fixture")

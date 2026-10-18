@@ -3,10 +3,25 @@
   "catalogue_id": 4601,
   "oracle_id": "55bc6a7e-2356-48f0-a93a-8bf19044ee4b",
   "facts_sha256": "010ae36f0c58be630844b72de72e6e3ff92a7b5bec8171a70903abed6399a7a1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "176c4e1153cf6619f905be8a4a0076ef21b8d867bf2ad10e733a6e89e20e18aa"
   },
-  "physical_metadata_sha256": "610a96ebba950e93f0bdde27bee31651f46e72d0e6fcb8d42283426d83c51046"
+  "physical_metadata_sha256": "610a96ebba950e93f0bdde27bee31651f46e72d0e6fcb8d42283426d83c51046",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TimeStop.java",
+  "java_sha256": "190852578c3d08d9ce14d29385322100fa2287809b26c14cdf0855e828526930",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/EndTurnEffect.java",
+      "sha256": "2376c4cba56135f44b87bf304764e6392d76db05badcc1df26d2dc3b7d8bbe97"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/turn/Turn.java",
+      "sha256": "d99864b10671ac8cfb909097d3ab2fa50deb2cfdc63a4c0e54185402584558e2"
+    }
+  ]
 }

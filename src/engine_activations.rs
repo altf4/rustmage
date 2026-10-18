@@ -151,7 +151,7 @@ impl Game {
             || (ability.sorcery && !sorcery)
             || ((ability.once_per_turn || ability.exhaust)
                 && object.used_abilities & (1u64 << index) != 0)
-            || i128::from(ability.cost.life) > life
+            || (ability.cost.life != 0 && i128::from(ability.cost.life) > life)
         {
             return false;
         }
@@ -425,6 +425,11 @@ impl Game {
             crew: None,
             cast_event: None,
             copy_event: None,
+            target_allocations: None,
+            source_copy_recipe: self
+                .copy_recipe(self.object_ref(card))
+                .filter(|r| r.exceptions != CopyExceptions::NONE)
+                .map(Box::new),
             mana_copy_sources: None,
             is_copy: false,
             delayed_sacrifice: None,

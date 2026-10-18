@@ -23,7 +23,7 @@ const LAND_TYPES: [&str; 17] = [
     "Planet",
     "Urza's",
 ];
-const JOB_TYPES: [&str; 13] = [
+const JOB_TYPES: [&str; 14] = [
     "Artificer",
     "Bard",
     "Cleric",
@@ -37,28 +37,29 @@ const JOB_TYPES: [&str; 13] = [
     "Wizard",
     "Angel",
     "Demon",
+    "Nightmare",
 ];
-// Thirteen named grants and three projection flags fit in one existing word.
+// Fourteen named grants and three projection flags use the view's existing padding.
 const CREATURE_OR_KINDRED: u16 = 1 | 128;
-const JOB_MASK: u16 = (1 << JOB_TYPES.len()) - 1;
-const SUPPRESS_PRINTED: u16 = 1 << JOB_TYPES.len();
-const LAND_ONLY: u16 = SUPPRESS_PRINTED << 1;
-const ALL_CREATURE_TYPES: u16 = LAND_ONLY << 1;
-const FLAGS_MASK: u16 = SUPPRESS_PRINTED | LAND_ONLY | ALL_CREATURE_TYPES;
-const _: () = assert!(JOB_TYPES.len() + 3 <= u16::BITS as usize);
+const JOB_MASK: u32 = (1 << JOB_TYPES.len()) - 1;
+const SUPPRESS_PRINTED: u32 = 1 << JOB_TYPES.len();
+const LAND_ONLY: u32 = SUPPRESS_PRINTED << 1;
+const ALL_CREATURE_TYPES: u32 = LAND_ONLY << 1;
+const FLAGS_MASK: u32 = SUPPRESS_PRINTED | LAND_ONLY | ALL_CREATURE_TYPES;
+const _: () = assert!(JOB_TYPES.len() + 3 <= u32::BITS as usize);
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord)]
 pub struct GrantedSubtypes {
-    added: u16,
+    added: u32,
     chosen: Option<crate::cards::CreatureType>,
     /// None retains printed types (including changeling); Some replaces only
     /// creature types, preserving e.g. Equipment, Aura, Forest and Lesson.
     creature_types: Option<&'static [&'static str]>,
 }
 impl GrantedSubtypes {
-    fn flag(self, bit: u16) -> bool {
+    fn flag(self, bit: u32) -> bool {
         self.added & bit != 0
     }
-    fn set_flag(&mut self, bit: u16, value: bool) {
+    fn set_flag(&mut self, bit: u32, value: bool) {
         if value {
             self.added |= bit;
         } else {
@@ -110,7 +111,7 @@ impl GrantedSubtypes {
 }
 impl Serialize for GrantedSubtypes {
     fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-        struct Added(u16);
+        struct Added(u32);
         impl Serialize for Added {
             fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
                 let mut out = serializer.serialize_seq(Some(self.0.count_ones() as usize))?;
@@ -165,13 +166,21 @@ impl Game {
         mut changes: Vec<(u64, characteristic_layers::SubtypeChange)>,
     ) -> GrantedSubtypes {
         let mut mask = GrantedSubtypes::default();
-        if target.zone != Zone::Battlefield {
-            return mask;
-        }
         let reference = ObjectRef {
             card: id,
             generation: target.generation,
         };
+        if self
+            .copy_recipe(reference)
+            .is_some_and(|r| r.exceptions.nightmare)
+        {
+            mask.insert("Nightmare");
+        }
+        // Copy exceptions already exist while an owned token awaits entry.
+        // Later continuous type changes apply only on the battlefield.
+        if target.zone != Zone::Battlefield {
+            return mask;
+        }
         if let Some(state) = &self.state.roles {
             changes.extend(
                 state
@@ -363,6 +372,9 @@ impl Game {
 impl Game {
     pub(super) fn entry_choice_subtypes(m: &entries::EntryMove) -> GrantedSubtypes {
         let mut result = GrantedSubtypes::default();
+        if m.before.copy_recipe.is_some_and(|r| r.exceptions.nightmare) {
+            result.insert("Nightmare");
+        }
         if m.before.card.static_ability_groups().iter().any(|g| {
             g.fragments
                 .iter()
@@ -379,5 +391,37 @@ impl Game {
             }
         }
         result
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn all_named_grants_and_projection_flags_fit_without_growing_the_view() {
+        assert_eq!(std::mem::size_of::<GrantedSubtypes>(), 24);
+        assert_eq!(std::mem::size_of::<Object>(), 144);
+        assert_eq!(std::mem::size_of::<Pending>(), 40);
+        assert_eq!(std::mem::size_of::<ManaProduction>(), 32);
+        let mut view = GrantedSubtypes::default();
+        for subtype in JOB_TYPES {
+            view.insert(subtype);
+        }
+        for flag in [SUPPRESS_PRINTED, LAND_ONLY, ALL_CREATURE_TYPES] {
+            view.set_flag(flag, true);
+        }
+        let value = serde_json::to_value(view).unwrap();
+        assert_eq!(value["added"], serde_json::json!(JOB_TYPES));
+        for flag in ["suppress_printed", "land_only", "all_creature_types"] {
+            assert_eq!(value[flag], true);
+        }
+        view.replace_creature_types(&["Bear"]);
+        let replaced = serde_json::to_value(view).unwrap();
+        assert_eq!(replaced["added"], serde_json::json!([]));
+        assert_eq!(replaced["creature_types"], serde_json::json!(["Bear"]));
+        for flag in ["suppress_printed", "land_only", "all_creature_types"] {
+            assert_eq!(replaced[flag], true);
+        }
     }
 }

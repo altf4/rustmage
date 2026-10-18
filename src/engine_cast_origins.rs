@@ -340,3 +340,21 @@ impl Game {
         self.open_payment_announcement(item, Counters::default(), None);
     }
 }
+
+impl Game {
+    pub(super) fn forget_graveyard_type_source(&mut self, source: ObjectRef) {
+        if !self
+            .state
+            .graveyard_type_uses
+            .as_ref()
+            .is_some_and(|rows| rows.iter().any(|row| row.source == source))
+        {
+            return;
+        }
+        let rows = self.state.graveyard_type_uses.as_mut().unwrap();
+        rows.retain(|row| row.source != source);
+        if rows.is_empty() {
+            self.state.graveyard_type_uses = None;
+        }
+    }
+}

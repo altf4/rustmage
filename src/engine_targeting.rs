@@ -50,6 +50,7 @@ impl Announcement {
                     .additional
             }
             StackKind::TriggeredAbility { .. }
+            | StackKind::CopyEndStepSacrifice
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
             | StackKind::DelayedWarpExile => None,
@@ -89,6 +90,7 @@ impl Announcement {
                 .cost
                 .mana_options(),
             StackKind::TriggeredAbility { .. }
+            | StackKind::CopyEndStepSacrifice
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
             | StackKind::DelayedWarpExile => {
@@ -173,6 +175,7 @@ impl Announcement {
                     .alternatives
                     .is_empty(),
                 StackKind::TriggeredAbility { .. }
+                | StackKind::CopyEndStepSacrifice
                 | StackKind::DelayedSacrifice
                 | StackKind::DelayedReturn
                 | StackKind::DelayedWarpExile => false,
@@ -702,6 +705,11 @@ impl Game {
         qualification: Option<TargetSourceCharacteristics<'_>>,
     ) -> bool {
         match rule {
+            TargetRule::GraveCreatureEnteredThisTurn => {
+                return matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o|
+                    o.zone == Zone::Graveyard && !o.is_token() && o.card.is_creature()
+                    && self.graveyard_entry_this_turn(self.object_ref(id))));
+            }
             TargetRule::GraveCreatureSourcePower { maximum } => {
                 let Target::Card(id) = target else {
                     return false;
@@ -1086,6 +1094,8 @@ impl Game {
             crew: None,
             cast_event: None,
             copy_event: None,
+            source_copy_recipe: None,
+            target_allocations: None,
             mana_copy_sources: None,
             is_copy: false,
             delayed_sacrifice: None,
@@ -1238,6 +1248,9 @@ impl Game {
     }
 
     pub(super) fn finish_announcement(&mut self) {
+        if self.start_target_amounts() {
+            return;
+        }
         if self.start_crew_payment() {
             return;
         }
@@ -1325,8 +1338,10 @@ impl Game {
             && !announcement.additional_paid
         {
             if announcement.additional_cost().is_some_and(|spec| {
-                spec.kind == EffectChoiceKind::Sacrifice
-                    || forage::is_forage_cost(spec)
+                matches!(
+                    spec.kind,
+                    EffectChoiceKind::Sacrifice | EffectChoiceKind::ReturnToHand
+                ) || forage::is_forage_cost(spec)
                     || evidence::threshold(spec).is_some()
             }) && let Some(payment) = announcement.payment.take()
             {

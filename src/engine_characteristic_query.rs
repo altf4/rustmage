@@ -324,6 +324,7 @@ impl CharacteristicQuery<'_> {
         let target = &self.state.objects[id as usize];
         let mut keywords = target
             .keywords()
+            .union(self.copied_keywords(self.object_ref(id)))
             .union(self.attachment_bonus(id).1)
             .union(CharacteristicWorld::counter_subtype_keywords(self, id));
         if target.zone != Zone::Battlefield {
