@@ -215,7 +215,10 @@ fn combat_allocation_goblin_uses_actual_excess_damage_marked_damage_and_preventi
                 .state
                 .objects
                 .iter()
-                .filter(|o| o.zone == Zone::Battlefield && o.card == Card(5324))
+                .filter(|o| {
+                    o.zone == Zone::Battlefield
+                        && o.card == Card::from_name("@token/e58ebd913e8be25509b853b8").unwrap()
+                })
                 .count();
             assert_eq!(tokens, if prevent { 0 } else { 3 });
             assert_eq!(g.on_battlefield(target), prevent);
@@ -236,7 +239,8 @@ fn combat_allocation_goblin_damage_doubling_and_token_multiplication_are_separat
         g.state
             .objects
             .iter()
-            .filter(|o| o.zone == Zone::Battlefield && o.card == Card(5324))
+            .filter(|o| o.zone == Zone::Battlefield
+                && o.card == Card::from_name("@token/e58ebd913e8be25509b853b8").unwrap())
             .count(),
         8
     );
@@ -284,7 +288,8 @@ fn combat_allocation_aurelia_prior_attack_without_ability_does_not_trigger_late(
         "Aurelia, the Warleader",
         Zone::Battlefield,
     );
-    g.state.attacked_this_turn.push(g.object_ref(a));
+    let reference = g.object_ref(a);
+    g.state.attacked_this_turn.push(reference);
     attack(&mut g, &[a]);
     settle(&mut g);
     assert_eq!(g.observe(Player::P0).additional_combats, 0);

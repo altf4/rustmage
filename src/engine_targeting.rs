@@ -742,11 +742,12 @@ impl Game {
             }
             TargetRule::Grouped { base, constraint } => {
                 let zone = match constraint {
-                    TargetGroupConstraint::SameGraveyard => Zone::Graveyard,
+                    TargetGroupConstraint::SameGraveyard => Some(Zone::Graveyard),
                     TargetGroupConstraint::DifferentControllers
-                    | TargetGroupConstraint::AttachedToGroup(_) => Zone::Battlefield,
+                    | TargetGroupConstraint::AttachedToGroup(_) => Some(Zone::Battlefield),
+                    TargetGroupConstraint::OtherThanGroup(_) => None,
                 };
-                return matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| o.zone == zone))
+                return zone.is_none_or(|zone| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| o.zone == zone)))
                     && self.target_matches_without_hand(
                         *base,
                         controller,
