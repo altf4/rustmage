@@ -649,7 +649,8 @@ fn endgame_time_stop_preserves_future_return_but_exiles_queued_return_once() {
                     target: Target::Card(bear),
                 },
             );
-            checked(&mut g, Action::FinishTargets);
+            // The single trigger target commits immediately; no spell-cost
+            // announcement remains to finish after this target selection.
             settle(&mut g);
             assert_eq!(g.object_view(bear).zone, Zone::Exile);
             assert_eq!(g.observe(p).delayed_returns.len(), 1);
@@ -691,8 +692,7 @@ fn endgame_time_stop_skips_copied_creatures_sacrifice_and_preserves_aura_control
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         let bear = fixture(&mut g, p, "Bear Cub", Zone::Battlefield);
-        checked(&mut g, Action::Pass);
-        paid(&mut g, p.other(), "Electroduplicate", &[Target::Card(bear)]);
+        paid(&mut g, p, "Electroduplicate", &[Target::Card(bear)]);
         settle(&mut g);
         let token = g
             .observe(p)
@@ -701,7 +701,15 @@ fn endgame_time_stop_skips_copied_creatures_sacrifice_and_preserves_aura_control
             .find(|o| o.zone == Zone::Battlefield && o.is_token() && o.name() == "Bear Cub")
             .unwrap()
             .reference;
-        assert_eq!(g.object_view(token.card).owner, p.other());
+        assert_eq!(g.object_view(token.card).owner, p);
+        paid(
+            &mut g,
+            p,
+            "Harmless Offering",
+            &[Target::Player(p.other()), Target::Card(token.card)],
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(token.card).controller, p.other());
         let confiscate = paid(&mut g, p, "Confiscate", &[Target::Card(token.card)]);
         settle(&mut g);
         assert_eq!(g.object_view(token.card).controller, p);
