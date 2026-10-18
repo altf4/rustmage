@@ -504,10 +504,16 @@ fn foundations_every_admitted_card_in_set_only_full_games() {
         .filter(|card| card.is_supported())
         .collect();
     cards.sort_by_key(|card| (card.colors(), card.fixed_mana_value(), card.name()));
+    let (set_lands, spells): (Vec<_>, Vec<_>) = cards.iter().copied().partition(|c| c.is_land());
+    let groups: Vec<_> = spells.chunks(9).collect();
+    assert!(!groups.is_empty());
+    // Include every land alongside spells instead of creating all-land decks
+    // whose only usual route to an outcome is drawing an empty library.
+    let deck_count = groups.len().max(set_lands.len().div_ceil(6));
     let basics = ["Plains", "Island", "Swamp", "Mountain", "Forest"];
     let mut decks = Vec::new();
-    let mut covered = BTreeSet::new();
-    for group in cards.chunks(9) {
+    for index in 0..deck_count {
+        let group = groups[index % groups.len()];
         let colors = group.iter().fold(0u8, |mask, card| mask | card.colors());
         let mut lands: Vec<_> = basics
             .iter()
@@ -521,14 +527,23 @@ fn foundations_every_admitted_card_in_set_only_full_games() {
         let mut deck: Vec<_> = (0..24).map(|i| lands[i % lands.len()]).collect();
         for &card in group {
             deck.extend([card; 4]);
-            covered.insert(card.name());
         }
         while deck.len() < 60 {
             deck.push(lands[deck.len() % lands.len()]);
         }
         decks.push(deck);
     }
-    assert_eq!(covered.len(), cards.len());
+    for (index, land) in set_lands.into_iter().enumerate() {
+        let first = 4 * (index / deck_count);
+        decks[index % deck_count][first..first + 4].fill(land);
+    }
+    let covered: BTreeSet<_> = decks.iter().flatten().copied().collect();
+    assert_eq!(covered, cards.into_iter().collect());
+    assert!(
+        decks
+            .iter()
+            .all(|deck| deck.len() == 60 && deck.iter().any(|c| !c.is_land()))
+    );
     run_matrix(&decks, &[]);
 }
 
