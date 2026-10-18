@@ -800,10 +800,10 @@ mod casting_games;
 #[path = "common/foundations_stack_copy_games.rs"]
 mod stack_copy_games;
 
-#[path = "common/foundations_endgame_games.rs"]
-mod endgame_games;
 #[path = "common/foundations_copy_exception_games.rs"]
 mod copy_exception_games;
+#[path = "common/foundations_endgame_games.rs"]
+mod endgame_games;
 #[path = "common/foundations_return_aura_games.rs"]
 mod return_aura_games;
 #[path = "common/foundations_zone_games.rs"]
