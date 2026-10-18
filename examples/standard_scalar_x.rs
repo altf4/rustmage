@@ -141,7 +141,7 @@ fn score(o: &Observation, a: &Action, i: usize, paid: &[[u64; 2]; 12]) -> i32 {
                     -1000
                 }
             }
-            Target::Spell(_) => 2500,
+            Target::Spell(_) | Target::Stack(_) => 2500,
             Target::Card(id) => {
                 let v = object(*id);
                 if v.card.name() == "Bear Cub" && v.owner == p {
