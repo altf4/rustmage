@@ -1,26 +1,25 @@
 //! Candidate endgame consumers: real Standard-legal FDN decks and the shared smoke policy.
-use super::{deck, run_matrix_actions_observed};
+use super::run_matrix_actions_observed_with_stride;
 use rustmage::{Card, Observation, Outcome, Player, StackKind, Zone};
 use std::collections::BTreeSet;
 
 #[test]
 fn foundations_endgame_cards_natural_games_and_owned_continuations() {
-    // Only this deck contains Herald. Its opponent has ordinary removal, so a
-    // prevention effect cannot create an unavoidable two-Herald stalemate.
-    let white = deck(
-        "Plains",
-        &[
-            "Herald of Eternal Dawn",
-            "Day of Judgment",
-            "Pacifism",
-            "Resolute Reinforcements",
-            "Inspiring Overseer",
-            "Healer's Hawk",
-            "Leonin Vanguard",
-            "Angel of Vitality",
-            "Serra Angel",
-        ],
-    );
+    // Only one deck contains Herald. Pact supplies an actual lose-game
+    // obligation; Day of Judgment can end prevention without a forced outcome.
+    let mut white = vec![Card::Plains; 18];
+    white.extend([Card::Swamp; 18]);
+    for name in [
+        "Herald of Eternal Dawn",
+        "Demonic Pact",
+        "Day of Judgment",
+        "Gleaming Barrier",
+        "Crystal Barricade",
+        "Pacifism",
+    ] {
+        white.extend([Card::from_name(name).unwrap(); 4]);
+    }
+    assert_eq!(white.len(), 60);
     let mut gates = Vec::new();
     for name in [
         "Azorius Guildgate",
@@ -35,9 +34,9 @@ fn foundations_endgame_cards_natural_games_and_owned_continuations() {
         "Simic Guildgate",
         "Maze's End",
         "Time Stop",
-        "Opt",
-        "Krenko, Mob Boss",
-        "Banishing Light",
+        "Circuitous Route",
+        "Fog Bank",
+        "Gleaming Barrier",
     ] {
         gates.extend([Card::from_name(name).unwrap(); 4]);
     }
@@ -98,6 +97,16 @@ fn foundations_endgame_cards_natural_games_and_owned_continuations() {
                     }
                 }
             }
+            if source.source_card.name() == "Demonic Pact"
+                && source.mode == Some(3)
+                && matches!(source.kind, StackKind::TriggeredAbility { .. })
+                && after.resolving.is_none()
+                && !after.stack.iter().any(|v| v.id == source.id)
+                && live_herald(after, source.controller)
+                && after.outcome.is_none()
+            {
+                protected.insert(source.controller);
+            }
             if source.source_card.name() == "Time Stop"
                 && source.kind == StackKind::Spell
                 && before
@@ -123,7 +132,7 @@ fn foundations_endgame_cards_natural_games_and_owned_continuations() {
             }
         }
     };
-    run_matrix_actions_observed(
+    run_matrix_actions_observed_with_stride(
         &[white, gates],
         &["Herald of Eternal Dawn", "Time Stop"],
         &["Maze's End"],
@@ -131,6 +140,7 @@ fn foundations_endgame_cards_natural_games_and_owned_continuations() {
         &[],
         &[0, 1, 2, 3, 7, 13, 41, 73],
         Some(&mut observe),
+        13,
     );
     println!(
         "FDN endgame witnesses: Maze winners={maze_winners:?}; protected={protected:?}; Time Stop={stopped:?}; owned Herald/Maze/Stop={owned_herald}/{owned_maze}/{owned_stop}"
