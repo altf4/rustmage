@@ -703,6 +703,16 @@ fn fdn_growth_ovika_freezes_x_spell_value_and_token_doubling_after_source_leaves
         let mut g = setup(p);
         let o = paid(&mut g, p, "Ovika, Enigma Goliath");
         let _season = paid(&mut g, p, "Doubling Season");
+        let goblin = Card::from_name("@token/phyrexian_goblin_1_1_red").unwrap();
+        let earlier: Vec<_> = tokens(&g, p, goblin)
+            .into_iter()
+            .map(|id| g.object_ref(id))
+            .collect();
+        assert_eq!(
+            earlier.len(),
+            5,
+            "casting Doubling Season triggers Ovika before Season resolves"
+        );
         // The completed cast has mana value four, even after the spell and
         // observer have left. Every replacement-created token gets the effect.
         let spell = named(&mut g, p, "Mind Spring", Zone::Hand);
@@ -737,7 +747,18 @@ fn fdn_growth_ovika_freezes_x_spell_value_and_token_doubling_after_source_leaves
             p,
             Card::from_name("@token/phyrexian_goblin_1_1_red").unwrap(),
         );
-        assert_eq!(made.len(), 8);
+        assert_eq!(made.len(), 13);
+        assert!(
+            earlier
+                .iter()
+                .all(|r| made.contains(&r.card) && g.object_ref(r.card) == *r)
+        );
+        let newly_created: Vec<_> = made
+            .iter()
+            .copied()
+            .filter(|id| !earlier.contains(&g.object_ref(*id)))
+            .collect();
+        assert_eq!(newly_created.len(), 8);
         assert!(
             made.iter()
                 .all(|&id| g.keywords(id).contains(Keywords::HASTE))
