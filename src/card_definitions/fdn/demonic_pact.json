@@ -3,7 +3,7 @@
   "catalogue_id": 1041,
   "oracle_id": "19a2f0a0-9e68-4982-a5f5-b77d805befd7",
   "facts_sha256": "ca7169977d35693f4d905d0e99d5ad339840ea06e603e93bdde68b10e1abfe37",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "08633e47a22b677b401ee704d8bf3caaaeca77b6790ecd601889d79472e06b94"
@@ -48,9 +48,6 @@
       "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardTargetEffect.java",
       "sha256": "1011f870b5768153b7d9d7d194431db724bfc61844195b66efc06e759dae57a3"
     }
-  ],
-  "remaining_obligations": [
-    "Core fixture remains gated pending rules tests, independent reviews and complete-card acceptance."
   ],
   "rules_sources": [
     "https://media.wizards.com/2024/downloads/FDN_Release_Notes_dPeeQG7XyE/EN_FDN%20Release%20Notes%2008282024.pdf"
