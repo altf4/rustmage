@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "cafaf2ba00332129e4ba45f5feb778248e975cd4ff5f5d2404d0d497ddff96e5",
+  "catalogue_version": "e1a5343827435a3748fbef69fa2f615da2f82b184d3da675329bc33131fffe6c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2145,
-  "implemented_total": 2151,
+  "implemented_standard_cards": 2148,
+  "implemented_total": 2154,
   "token_definitions": 103,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 387,
-      "gated": 40
+      "complete": 390,
+      "gated": 37
     },
     "fin": {
       "total": 305,
@@ -24369,8 +24369,8 @@
     {
       "name": "Omniscience",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/omniscience.rs",
       "set": "fdn"
     },
@@ -32321,8 +32321,8 @@
     {
       "name": "Sphinx of Forgotten Lore",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/sphinx_of_forgotten_lore.rs",
       "set": "fdn"
     },
@@ -41641,8 +41641,8 @@
     {
       "name": "Zul Ashur, Lich Lord",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/zul_ashur_lich_lord.rs",
       "set": "fdn"
     },
