@@ -3,10 +3,25 @@
   "catalogue_id": 4556,
   "oracle_id": "dd4cf149-2fae-40e5-b50b-639f6bcec65e",
   "facts_sha256": "1c350aa42af4bb3c9f25dc542c561f455d367abdd4abdcaa8b235201b2aa26db",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "db3c2ecb707eeedc9c87af61dac6c5188d49584b5d6fe6f44222c39a04218f7d"
   },
-  "physical_metadata_sha256": "1b940d04c7b72161ecd36a053d69b167a2b5c6074cbebb9a8cef1fc24a63abca"
+  "physical_metadata_sha256": "1b940d04c7b72161ecd36a053d69b167a2b5c6074cbebb9a8cef1fc24a63abca",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/ThousandYearStorm.java",
+  "java_sha256": "f72f89ad3f5faf0fb268dea812dad1c73d85e5dd65dead2ab529ef6b9be4079d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/stack/StackObjectImpl.java",
+      "sha256": "0c359dde94436a8623c6f9b27cf578af1e34686a9293d83b6cd59d24e1d7c462"
+    }
+  ]
 }

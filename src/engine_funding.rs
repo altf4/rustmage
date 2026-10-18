@@ -2187,7 +2187,9 @@ mod conditional_keyword_tests {
                 .objects
                 .iter()
                 .enumerate()
-                .find(|(_, o)| o.copy_token && o.card == definition && o.zone == Zone::Battlefield)
+                .find(|(_, o)| {
+                    o.is_copy_token() && o.card == definition && o.zone == Zone::Battlefield
+                })
                 .map(|(id, _)| id as CardId)
                 .unwrap();
             for id in [original, token] {

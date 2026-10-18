@@ -227,7 +227,9 @@ fn pact_pending_old_incarnation_retains_history_after_reentry_and_new_copy_start
             .objects
             .iter()
             .enumerate()
-            .find(|(id, o)| *id != pact as usize && o.copy_token && o.card.name() == "Demonic Pact")
+            .find(|(id, o)| {
+                *id != pact as usize && o.is_copy_token() && o.card.name() == "Demonic Pact"
+            })
             .map(|(id, _)| id as CardId)
             .unwrap();
         assert!(g.queue_trigger(&g.object_view(copy), 0));

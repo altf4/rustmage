@@ -39,18 +39,7 @@ impl SpellView {
 impl Game {
     pub(super) fn return_targeted_spells_to_hand(&mut self, item: &SpellView) {
         for bound in &item.targets {
-            if let Target::Spell(card) = bound.target
-                && let Some(victim) = self
-                    .state
-                    .stack
-                    .iter()
-                    .find(|s| {
-                        s.kind == StackKind::Spell
-                            && s.card == card
-                            && Some(s.object) == bound.object
-                    })
-                    .cloned()
-            {
+            if let Some(victim) = self.bound_stack_item(bound).cloned() {
                 // A return is not a counter; uncounterable spells remain valid.
                 if victim
                     .cast
@@ -58,7 +47,7 @@ impl Game {
                 {
                     self.move_adventure_spell(&victim, Zone::Hand);
                 } else {
-                    self.move_object(card, Zone::Hand);
+                    self.move_object(victim.card, Zone::Hand);
                 }
             }
         }
