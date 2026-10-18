@@ -627,3 +627,44 @@ fn casting_permissions_sphinx_flashback_surcharge_retains_printed_cost_and_exile
         assert_eq!(g.object_view(spell).zone, Zone::Exile);
     }
 }
+
+#[test]
+fn smoke_preserves_spare_sources_and_funds_announced_spells_both_seats() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        for player in &mut g.state.players {
+            player.mana = [0; 6];
+        }
+        let first = fixture(&mut g, p, "Island", Zone::Battlefield);
+        let second = fixture(&mut g, p, "Island", Zone::Battlefield);
+        let pick = |g: &Game| {
+            let actions = g.legal_actions();
+            actions[crate::policy::smoke_index(g, &actions)].clone()
+        };
+        assert_eq!(pick(&g), Action::Pass, "empty hand must preserve mana");
+        fixture(&mut g, p, "Gigantosaurus", Zone::Hand);
+        assert_eq!(pick(&g), Action::Pass, "uncastable hand must preserve mana");
+        let spell = fixture(&mut g, p, "Opt", Zone::Hand);
+        assert_eq!(pick(&g), Action::AnnounceCast { card: spell });
+        for _ in 0..20 {
+            if g.state.stack.iter().any(|item| item.card == spell) {
+                break;
+            }
+            let action = pick(&g);
+            assert!(!matches!(action, Action::Pass | Action::Concede));
+            checked(&mut g, action);
+        }
+        let cast = g
+            .state
+            .stack
+            .iter()
+            .find(|item| item.card == spell)
+            .unwrap();
+        assert_eq!(cast.cast.unwrap().payment, [0, 1, 0, 0, 0, 0]);
+        assert_ne!(
+            g.state.objects[first as usize].tapped,
+            g.state.objects[second as usize].tapped
+        );
+        assert_eq!(pick(&g), Action::Pass, "do not waste the remaining Island");
+    }
+}

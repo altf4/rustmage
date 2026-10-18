@@ -38,6 +38,8 @@ fn foundations_three_casting_cards_natural_games_and_owned_permissions() {
     let mut granted_flashback_seats = BTreeSet::new();
     let mut zul_cast_seats = BTreeSet::new();
     let mut free_cast_seats = BTreeSet::new();
+    let mut cast_methods = BTreeMap::new();
+    let mut permission_announcements = 0;
     let mut owned_sphinx_replays = 0;
     let mut owned_zul_replays = 0;
     let mut observe = |before: &Observation, after: &Observation, owned_replay: bool| {
@@ -84,6 +86,7 @@ fn foundations_three_casting_cards_natural_games_and_owned_permissions() {
                         .iter()
                         .any(|p| p.object == permission.object)
                 );
+                permission_announcements += 1;
                 pending_permissions.insert((item.id, item.object), kind);
             }
         }
@@ -91,6 +94,9 @@ fn foundations_three_casting_cards_natural_games_and_owned_permissions() {
             item.kind == StackKind::Spell && !before.stack.iter().any(|old| old.id == item.id)
         }) {
             let cast = item.cast.unwrap();
+            *cast_methods
+                .entry(format!("{:?}/{:?}", cast.method, cast.origin))
+                .or_insert(0usize) += 1;
             let name = item.source_card.name();
             if [
                 "Sphinx of Forgotten Lore",
@@ -137,6 +143,9 @@ fn foundations_three_casting_cards_natural_games_and_owned_permissions() {
         &[],
         &[0, 1, 2, 3, 7, 13, 41, 73],
         Some(&mut observe),
+    );
+    println!(
+        "Casting witnesses: methods={cast_methods:?}, permission announcements={permission_announcements}, owned Sphinx={owned_sphinx_replays}, Zul={owned_zul_replays}; flashback={granted_flashback_seats:?}, Zul={zul_cast_seats:?}, free={free_cast_seats:?}"
     );
     for name in [
         "Sphinx of Forgotten Lore",

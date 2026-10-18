@@ -1,14 +1,17 @@
 //! Smoke policies for tests and benchmarks; not a training implementation.
 use crate::cards::{CounterKind, Effect, Instruction, PlayerSet};
-use crate::{Action, Game, StackKind, Step, Target, Zone};
+use crate::{Action, Game, StackKind, Target, Zone};
 
 /// Deterministic simple policy: keep, play lands, cast, attack, block, tap, pass.
 /// Uses only the acting player's observation and the offered action list.
 pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
     let actor = game.actor().expect("nonterminal game");
     let observation = game.observe(actor);
-    let tap_for_main =
-        observation.active == actor && matches!(observation.step, Step::Main1 | Step::Main2);
+    // Fundable declarations are offered before any speculative mana activation.
+    // Preserve spare sources for later steps once those declarations are exhausted.
+    let tap_for_payment = observation.announcing.is_some()
+        || observation.plot_payment.is_some()
+        || observation.payment_request.is_some();
     let resolution_mana_score = |payment: crate::Mana, production: crate::Mana| {
         let request = observation.resolution_payment.as_ref().unwrap();
         let pool = observation.players[actor.index()].mana;
@@ -259,7 +262,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 if observation.resolution_payment.is_some() {
                     return resolution_mana_score([0; 6], *production);
                 }
-                if tap_for_main {
+                if tap_for_payment {
                     20 + mana_score(&observation, *production)
                 } else {
                     -5
@@ -273,7 +276,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 if observation.resolution_payment.is_some() {
                     return resolution_mana_score(*payment, *production);
                 }
-                if tap_for_main {
+                if tap_for_payment {
                     20 + mana_score(&observation, *production)
                 } else {
                     -5
@@ -352,7 +355,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                         .unwrap()] = 1;
                     return resolution_mana_score([0; 6], production);
                 }
-                if tap_for_main { 10 } else { -20 }
+                if tap_for_payment { 10 } else { -20 }
             }
             Action::ChooseEntryReplacement { source, intrinsic } => {
                 let effect = observation
