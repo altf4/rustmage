@@ -808,3 +808,6 @@ mod endgame_games;
 mod return_aura_games;
 #[path = "common/foundations_zone_games.rs"]
 mod zone_games;
+
+#[path = "common/foundations_growth_games.rs"]
+mod growth_games;

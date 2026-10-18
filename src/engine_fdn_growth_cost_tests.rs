@@ -2,7 +2,7 @@ use super::ability_timeline_tests::{cast, checked, settle, setup};
 use super::tests::spawn;
 use super::*;
 
-// Candidate bodies remain admission-gated while these paid rules scenarios run.
+// Paid rules scenarios are shared by gated authoring and candidate validation.
 fn named(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
     spawn(g, p, Card::from_name(name).unwrap(), zone)
 }
