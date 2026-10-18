@@ -36,6 +36,7 @@ pub(super) struct EntryMove {
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EntryBatch {
+    pub discard_context: Option<discard_events::DiscardContext>,
     pub moves: Vec<EntryMove>,
     pub choices: Vec<usize>,
     pub next: usize,
@@ -55,6 +56,7 @@ pub(super) struct EntryBatch {
 impl EntryBatch {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
+            + self.discard_context.as_ref().map_or(0, |c| c.bytes())
             + self.moves.len() * std::mem::size_of::<EntryMove>()
             + self
                 .moves
@@ -159,6 +161,9 @@ impl Game {
         };
         self.on_battlefield(target.card)
             && self.object_ref(target.card) == target
+            && !self
+                .keywords(target.card)
+                .contains(Keywords::PROTECTION_EVERYTHING)
             && self.current_kinds(target.card) & u16::from(spec.kinds) != 0
             && match spec.relation {
                 0 => self.state.objects[target.card as usize].controller == controller,
@@ -194,10 +199,21 @@ impl Game {
             counters: Counters::default(),
         }
     }
-    pub(super) fn stage_entries(
+    pub(super) fn stage_entries(&mut self, moves: Vec<EntryMove>, shuffle_after: Option<Player>) {
+        self.stage_entries_inner(moves, shuffle_after, None);
+    }
+    pub(super) fn stage_discard_entries(
+        &mut self,
+        moves: Vec<EntryMove>,
+        context: discard_events::DiscardContext,
+    ) {
+        self.stage_entries_inner(moves, None, Some(context));
+    }
+    fn stage_entries_inner(
         &mut self,
         mut moves: Vec<EntryMove>,
         shuffle_after: Option<Player>,
+        discard_context: Option<discard_events::DiscardContext>,
     ) {
         assert!(
             self.state.entry_batch.is_none(),
@@ -298,6 +314,7 @@ impl Game {
             .collect::<Vec<_>>();
         counter_order.sort_by_key(|&i| (moves[i].controller != self.state.active, i));
         let mut batch = EntryBatch {
+            discard_context,
             moves,
             choices,
             next: 0,
@@ -540,7 +557,11 @@ impl Game {
                 }
             }
         }
-        self.finish_zone_events(&events, &[]);
+        if let Some(context) = batch.discard_context {
+            self.finish_discard_events(&events, context);
+        } else {
+            self.finish_zone_events(&events, &[]);
+        }
         for (reference, controller, subtype, amount) in life_results {
             if self.object_ref(reference.card) == reference
                 && self.on_battlefield(reference.card)

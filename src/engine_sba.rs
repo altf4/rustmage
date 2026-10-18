@@ -79,7 +79,10 @@ impl Game {
                     || target == self.object_ref(id)
                     || !self.on_battlefield(target.card)
                     || self.object_ref(target.card) != target
-                    || !self.is_creature(target.card))
+                    || !self.is_creature(target.card)
+                    || self
+                        .keywords(target.card)
+                        .contains(Keywords::PROTECTION_EVERYTHING))
             {
                 batch.detached.push(self.object_ref(id));
             }

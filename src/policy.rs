@@ -192,6 +192,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::Concede => -1000,
+            Action::ChooseZoneReplacement { .. } => 50,
             Action::Sacrifice { .. } => 50,
             Action::DeclineEffectPayment => -1,
             Action::AnnounceFree {

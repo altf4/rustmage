@@ -261,6 +261,7 @@ fn captured_damage_dealer_remains_a_hero_and_ally_after_departure() {
     let old = g.damage_source(c);
     g.move_object(c, Zone::Graveyard);
     g.player_damage_triggers(&[DamageEvent {
+        preventable: true,
         source: old,
         target: Target::Player(Player::P1),
         amount: 1,
@@ -273,6 +274,7 @@ fn captured_damage_dealer_remains_a_hero_and_ally_after_departure() {
     assert_eq!(g.state.players[0].library.len(), 19);
     let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
     g.player_damage_triggers(&[DamageEvent {
+        preventable: true,
         source: g.damage_source(bear),
         target: Target::Player(Player::P1),
         amount: 2,

@@ -21,6 +21,7 @@ fn replay(g: &mut Game, a: Action) {
 }
 fn hit(g: &Game, source: CardId, player: Player, amount: i128, combat: bool) -> DamageEvent {
     DamageEvent {
+        preventable: true,
         source: g.damage_source(source),
         target: Target::Player(player),
         amount,

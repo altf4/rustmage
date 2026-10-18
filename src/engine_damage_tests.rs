@@ -119,6 +119,7 @@ fn deathtouch_and_lifelink_use_last_known_source_and_noncombat_damage() {
     // A changed source slot cannot change the already captured attribution.
     game.state.objects[nighthawk as usize].card = Card::Forest;
     let gains = game.apply_damage_batch(&[DamageEvent {
+        preventable: true,
         source,
         target: Target::Card(giant),
         amount: 1,
@@ -129,6 +130,7 @@ fn deathtouch_and_lifelink_use_last_known_source_and_noncombat_damage() {
     game.state_based_actions();
     assert_eq!(game.state.objects[giant as usize].zone, Zone::Graveyard);
     let gains = game.apply_damage_batch(&[DamageEvent {
+        preventable: true,
         source,
         target: Target::Player(Player::P1),
         amount: 0,
@@ -170,18 +172,21 @@ fn lifelink_groups_simultaneous_targets_by_source_and_uses_wide_life_totals() {
     let b = game.damage_source(soldier);
     let gains = game.apply_damage_batch(&[
         DamageEvent {
+            preventable: true,
             source: a,
             target: Target::Card(giant),
             amount: 1,
             combat: true,
         },
         DamageEvent {
+            preventable: true,
             source: a,
             target: Target::Player(Player::P1),
             amount: 2,
             combat: true,
         },
         DamageEvent {
+            preventable: true,
             source: b,
             target: Target::Player(Player::P1),
             amount: 2,

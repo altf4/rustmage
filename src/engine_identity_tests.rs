@@ -159,6 +159,7 @@ fn damage_source_ref_retains_departed_incarnation() {
     assert_ne!(source.reference, game.object_ref(card));
     assert!(source.keywords.contains(Keywords::LIFELINK));
     let gains = game.apply_damage_batch(&[DamageEvent {
+        preventable: true,
         source,
         target: Target::Player(Player::P1),
         amount: 1,

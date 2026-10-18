@@ -94,12 +94,14 @@ fn simultaneous_damage_records_both_losses_even_when_lifelink_makes_the_source_c
     let damage = g.damage_source(source);
     let events = [
         DamageEvent {
+            preventable: true,
             source: damage,
             target: Target::Player(Player::P0),
             amount: 2,
             combat: true,
         },
         DamageEvent {
+            preventable: true,
             source: damage,
             target: Target::Player(Player::P1),
             amount: 2,
@@ -118,6 +120,7 @@ fn simultaneous_damage_records_both_losses_even_when_lifelink_makes_the_source_c
         Target::Card(walker),
     ] {
         g.apply_damage_batch(&[DamageEvent {
+            preventable: true,
             source: damage,
             target,
             amount: if matches!(target, Target::Player(_)) {

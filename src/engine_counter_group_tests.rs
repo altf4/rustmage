@@ -538,6 +538,7 @@ fn huge_counter_stats_damage_lifelink_trigger_amounts_and_json_remain_exact() {
     let power = g.stats(fear).power;
     assert!(power > i128::from(u64::MAX));
     let event = DamageEvent {
+        preventable: true,
         source: g.damage_source(fear),
         target: Target::Player(Player::P1),
         amount: power,

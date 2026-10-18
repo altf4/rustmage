@@ -92,6 +92,7 @@ fn paid(g: &mut Game, p: Player, n: &str) -> CardId {
 }
 fn hit(g: &Game, id: CardId, target: Target, n: i128, combat: bool) -> DamageEvent {
     DamageEvent {
+        preventable: true,
         source: g.damage_source(id),
         target,
         amount: n,
@@ -217,6 +218,7 @@ fn fdn_damage_five_gratuitous_all_recipients_creature_lki_and_tyrant_any_source(
         let source = g.damage_source(bear);
         g.move_object(bear, Zone::Graveyard);
         g.apply_damage_batch(&[DamageEvent {
+            preventable: true,
             source,
             target: Target::Card(wall),
             amount: 1,
@@ -468,6 +470,7 @@ fn fdn_damage_five_departed_source_controller_lki_differs_from_ability_controlle
         assert!(dealer.facts.is_creature());
         named(&mut g, p.other(), "Gratuitous Violence", Zone::Battlefield);
         g.apply_damage_batch(&[DamageEvent {
+            preventable: true,
             source: dealer,
             target: Target::Player(p),
             amount: 1,

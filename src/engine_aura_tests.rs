@@ -582,6 +582,7 @@ fn granted_lifelink_belongs_to_creature_controller_not_aura_controller() {
     let bear = named(&mut g, Player::P1, "Grizzly Bears", Zone::Battlefield);
     enter_attached(&mut g, Player::P0, "Unflinching Courage", bear);
     g.apply_damage_batch(&[DamageEvent {
+        preventable: true,
         source: g.damage_source(bear),
         target: Target::Player(Player::P0),
         amount: 4,

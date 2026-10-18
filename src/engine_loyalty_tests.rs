@@ -103,6 +103,7 @@ fn marked_damage_deathtouch_lifelink_and_player_damage_events_are_distinct() {
     let w = walker(&mut g, Player::P1, "Vivien Reid");
     let source = named(&mut g, Player::P0, "Vampire Nighthawk", Zone::Battlefield);
     g.apply_damage_batch(&[DamageEvent {
+        preventable: true,
         source: g.damage_source(source),
         target: Target::Card(w),
         amount: 1,
@@ -125,6 +126,7 @@ fn huge_damage_removes_only_available_counters_without_narrowing_the_event() {
     let source = named(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
     g.state.objects[w as usize].counters.loyalty = u64::MAX;
     g.apply_damage_batch(&[DamageEvent {
+        preventable: true,
         source: g.damage_source(source),
         target: Target::Card(w),
         amount: i128::from(u64::MAX) - 1,
@@ -132,6 +134,7 @@ fn huge_damage_removes_only_available_counters_without_narrowing_the_event() {
     }]);
     assert_eq!(g.object_view(w).counters.loyalty, 1);
     g.apply_damage_batch(&[DamageEvent {
+        preventable: true,
         source: g.damage_source(source),
         target: Target::Card(w),
         amount: i128::MAX,

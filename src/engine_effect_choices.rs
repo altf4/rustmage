@@ -432,9 +432,20 @@ impl Game {
                 .iter()
                 .map(|&id| i128::from(self.state.objects[id as usize].card.fixed_mana_value()))
                 .sum();
-            self.discard_batch(&ids, None);
+            let cause = self.state.resolving.as_ref().unwrap().item.controller;
+            self.discard_batch_caused(&ids, None, Some(cause));
             if let Some(player) = choice.discard_mana_value_life {
-                self.lose_life(player, mana_value);
+                if let Some(context) = self
+                    .state
+                    .entry_batch
+                    .as_mut()
+                    .and_then(|b| b.discard_context.as_mut())
+                {
+                    context.after =
+                        Some(discard_events::DiscardAfter::LoseLife(player, mana_value));
+                } else {
+                    self.lose_life(player, mana_value);
+                }
             }
         } else {
             let sacrifices: Vec<_> = [self.state.active, self.state.active.other()]
