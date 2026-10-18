@@ -289,7 +289,7 @@ impl<'g> FundingState<'g> {
             if object.zone == Zone::Battlefield && object.controller == goal.actor {
                 for ability in object.card.activations() {
                     if let Some(production) = ability.mana_production() {
-                        if let ManaProduction::CountSubtype { subtype, .. } = production
+                        if let ManaProduction::CountSubtype { subtype, .. } = production.base()
                             && !subtypes.contains(&subtype)
                         {
                             subtypes.push(subtype);
@@ -716,7 +716,6 @@ impl<'g> FundingState<'g> {
     fn key(&self, goal: &FundingGoal) -> FundingKey {
         // Attachment edges distinguish otherwise interchangeable mana sources.
         let linked = self.named_counters.is_some()
-            || self.game.state.entry_values.is_some()
             || self
                 .resources
                 .iter()
@@ -746,7 +745,15 @@ impl<'g> FundingState<'g> {
                 owned: r.object.owner == goal.actor,
                 controlled: r.object.controller == goal.actor,
                 attacking: r.attacking,
-                identity: linked.then_some(r.id),
+                identity: (linked
+                    || self
+                        .game
+                        .entry_value(ObjectRef {
+                            card: r.id,
+                            generation: r.object.generation,
+                        })
+                        .is_some())
+                .then_some(r.id),
                 attached: r.object.attached_to.map(|r| (r.card, r.generation)),
             })
             .collect();

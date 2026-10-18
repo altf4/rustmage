@@ -31,7 +31,7 @@ fn reject(g: &mut Game, action: Action) {
 fn tagged_mana_orb_paid_cast_chooses_real_haste_and_owned_transaction() {
     assert_eq!(std::mem::size_of::<Object>(), 144);
     assert_eq!(std::mem::size_of::<ManaProduction>(), 32);
-    assert_eq!(std::mem::size_of::<Pending>(), 48);
+    assert_eq!(std::mem::size_of::<Pending>(), 40);
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         g.state.players[p.index()].mana = [0, 0, 0, 7, 0, 0];
@@ -55,6 +55,11 @@ fn tagged_mana_orb_paid_cast_chooses_real_haste_and_owned_transaction() {
         assert!(!g.observe(p.other()).objects.iter().any(|o| o.id == dragon));
         reject(&mut g, Action::ChooseManaLotSpend { amount: 2 });
         let choice = g.snapshot();
+        let mut conceded = g.clone();
+        conceded.apply(p.other(), Action::Concede).unwrap();
+        assert_eq!(conceded.outcome(), Some(Outcome::Winner(p)));
+        assert!(conceded.legal_action_space().mana_lot_spend.is_none());
+        assert_eq!(g.snapshot(), choice);
         checked(&mut g, Action::ChooseManaLotSpend { amount: 0 });
         settle(&mut g);
         assert!(!g.keywords(dragon).contains(Keywords::HASTE));

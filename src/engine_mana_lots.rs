@@ -358,6 +358,9 @@ impl Game {
 
 impl Game {
     pub(super) fn mana_lot_spend_range(&self) -> Option<ManaLotSpendRange> {
+        if !matches!(self.state.pending, Pending::ManaLotSpend { .. }) {
+            return None;
+        }
         let choice = self.state.mana_lots.as_ref()?.choice.as_ref()?;
         let lot = choice.cursor / 6;
         let color = choice.cursor % 6;
@@ -434,11 +437,12 @@ impl Game {
         actor: Player,
         action: Action,
     ) -> Result<(), Error> {
+        if action == Action::Concede {
+            self.state.mana_lots.as_mut().unwrap().choice = None;
+            return self.apply_transaction(actor, action);
+        }
         if self.actor() != Some(actor) {
             return Err(Error::WrongActor);
-        }
-        if action == Action::Concede {
-            return self.apply_transaction(actor, action);
         }
         let Action::ChooseManaLotSpend { amount } = action else {
             return Err(Error::IllegalAction);

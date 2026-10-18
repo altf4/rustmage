@@ -158,3 +158,50 @@ fn tagged_mana_funding_virtual_moon_departure_restores_intrinsic_and_granted_man
         assert_eq!(g.snapshot(), before);
     }
 }
+
+#[test]
+fn tagged_mana_funding_chosen_sources_do_not_distinguish_interchangeable_basic_lands() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let court = named(&mut g, p, "Secluded Courtyard", Zone::Battlefield);
+        g.set_entry_value(
+            g.object_ref(court),
+            EntryChoiceValue::CreatureType(CreatureType::from_name("Angel").unwrap()),
+        );
+        let first = named(&mut g, p, "Forest", Zone::Battlefield);
+        let second = named(&mut g, p, "Forest", Zone::Battlefield);
+        let goal = FundingGoal {
+            actor: p,
+            required: [0; 6],
+            generic: 1,
+            source: None,
+            reserve: None,
+        };
+        let world = FundingState::from_game(&g, &goal);
+        let moves = world.moves(&goal);
+        let a = moves
+            .iter()
+            .find(|step| world.resources[step.resource].id == first)
+            .unwrap();
+        let b = moves
+            .iter()
+            .find(|step| world.resources[step.resource].id == second)
+            .unwrap();
+        let mut left = world.clone();
+        left.apply(a);
+        let mut right = world.clone();
+        right.apply(b);
+        assert!(
+            left.key(&goal) == right.key(&goal),
+            "a chosen Courtyard must not make ordinary Forest subsets distinct"
+        );
+        let key = world.key(&goal);
+        assert!(key.resources.iter().any(|r| r.identity == Some(court)));
+        assert!(
+            key.resources
+                .iter()
+                .filter(|r| r.definition == Card::Forest.index())
+                .all(|r| r.identity.is_none())
+        );
+    }
+}
