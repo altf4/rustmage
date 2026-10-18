@@ -315,7 +315,7 @@ impl<'g> FundingState<'g> {
                         .source.as_ref()
                         .is_some_and(|(source, _, _, _)| source.card == *id as CardId)
                     || object.zone == Zone::Battlefield
-                        && (object.card.attachment_bonus().is_some()
+                        && (game.state.controls.is_some() || object.card.attachment_bonus().is_some()
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
                             || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
@@ -706,6 +706,20 @@ impl<'g> FundingState<'g> {
             }
         } else {
             object.tapped = true;
+        }
+        for row in continuous_control::controllers(self.game, |id| {
+            ability_world::CharacteristicWorld::object(self, id).clone()
+        }) {
+            if let Some(resource) = self
+                .resources
+                .iter_mut()
+                .find(|resource| resource.id == row.object.card)
+                && resource.object.controller != row.controller
+            {
+                resource.object.controller = row.controller;
+                resource.object.summoning_sick = true;
+                resource.attacking = false;
+            }
         }
         for (pool, produced) in self.mana.iter_mut().zip(step.production) {
             *pool = pool

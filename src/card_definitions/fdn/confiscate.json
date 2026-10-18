@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "857074b7b616da5ef805f013a43fc70b926879b63bee5e9efda221618fe03dbb"
   },
-  "physical_metadata_sha256": "05689142971e956103ac165f48ecee61973162d5e5cfcf88fb428ab3a48ef926"
+  "physical_metadata_sha256": "05689142971e956103ac165f48ecee61973162d5e5cfcf88fb428ab3a48ef926",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/Confiscate.java",
+  "java_sha256": "7a30aa75cb6e8eddf008993c6ae3d76df09899f1740347e490228ec5ce3b203b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/ControlEnchantedEffect.java",
+      "sha256": "84e8b3f040dcdbb7be851fb8b5fcfab3620c38514f3b80d811577f9cce34a9b8"
+    }
+  ]
 }

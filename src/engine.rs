@@ -1392,6 +1392,7 @@ impl Pending {
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
     mana_lots: Option<Box<mana_lots::ManaState>>,
+    controls: Option<Box<continuous_control::ControlState>>,
     #[allow(clippy::box_collection)]
     temporary_controls: Option<Box<Vec<TemporaryControlView>>>,
     casting_prohibited: bool,
@@ -1952,6 +1953,7 @@ impl Game {
             revision: 0,
             state: State {
                 mana_lots: None,
+                controls: None,
                 temporary_controls: None,
                 casting_prohibited: false,
                 replacements: None,
@@ -4244,12 +4246,14 @@ impl Game {
                 )
             })
             .collect();
-        before
+        let events = before
             .into_iter()
             .map(|(before, tapped, counters)| {
                 self.transition_object_with_counters(before, destination, tapped, counters)
             })
-            .collect()
+            .collect();
+        self.refresh_controllers();
+        events
     }
 
     pub(super) fn opponent_entry_requires_tapped(&self, card: Card, controller: Player) -> bool {
@@ -4343,7 +4347,9 @@ impl Game {
             "choice-bearing entry must be staged"
         );
         let before = self.object_view(id);
-        self.transition_object(before, destination, tapped)
+        let event = self.transition_object(before, destination, tapped);
+        self.refresh_controllers();
+        event
     }
 
     fn transition_object(
@@ -5658,6 +5664,7 @@ impl Game {
         std::mem::size_of::<State>()
             + self.mana_lot_bytes()
             + self.temporary_control_bytes()
+            + self.control_bytes()
             + self.temporary_ability_bytes()
             + self.suspected_bytes()
             + self.death_exile_bytes()
@@ -6646,3 +6653,9 @@ mod layered_characteristic_tests;
 #[cfg(test)]
 #[path = "engine_modal_history_tests.rs"]
 mod modal_history_tests;
+
+#[path = "engine_continuous_control.rs"]
+mod continuous_control;
+#[cfg(test)]
+#[path = "engine_continuous_control_tests.rs"]
+mod continuous_control_tests;

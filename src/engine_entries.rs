@@ -159,7 +159,11 @@ impl Game {
         };
         self.on_battlefield(target.card)
             && self.object_ref(target.card) == target
-            && self.current_kinds(target.card) & u16::from(spec.kinds) != 0
+            && (if spec.kinds == 0 {
+                self.current_kinds(target.card) & (1 | 2 | 16 | 32 | 64 | 256) != 0
+            } else {
+                self.current_kinds(target.card) & u16::from(spec.kinds) != 0
+            })
             && match spec.relation {
                 0 => self.state.objects[target.card as usize].controller == controller,
                 1 => self.state.objects[target.card as usize].controller != controller,
@@ -540,6 +544,7 @@ impl Game {
                 }
             }
         }
+        self.refresh_controllers();
         self.finish_zone_events(&events, &[]);
         for (reference, controller, subtype, amount) in life_results {
             if self.object_ref(reference.card) == reference
