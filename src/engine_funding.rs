@@ -748,23 +748,28 @@ impl<'g> FundingState<'g> {
                 // Unattached, unmodified basic lands remain interchangeable even
                 // when an unrelated Aura is present. Keep exact identities for
                 // attachment participants, nonbasics and named-counter worlds.
-                identity: (self.game.entry_value(ObjectRef {
-                    card: r.id,
-                    generation: r.object.generation,
-                }).is_some() || (linked
-                    && (self.named_counters.is_some()
-                        || !r.object.card.is_basic_land()
-                        || self.kinds(r) != r.object.card.kind_mask()
-                        || r.object.attached_to.is_some()
-                        || self.game.state.attachment_sources.iter().any(|&source| {
-                            let provider = ability_world::CharacteristicWorld::object(self, source);
-                            provider.zone == Zone::Battlefield
-                                && provider.attached_to
-                                    == Some(ObjectRef {
-                                        card: r.id,
-                                        generation: r.object.generation,
-                                    })
-                        }))))
+                identity: (self
+                    .game
+                    .entry_value(ObjectRef {
+                        card: r.id,
+                        generation: r.object.generation,
+                    })
+                    .is_some()
+                    || (linked
+                        && (self.named_counters.is_some()
+                            || !r.object.card.is_basic_land()
+                            || self.kinds(r) != r.object.card.kind_mask()
+                            || r.object.attached_to.is_some()
+                            || self.game.state.attachment_sources.iter().any(|&source| {
+                                let provider =
+                                    ability_world::CharacteristicWorld::object(self, source);
+                                provider.zone == Zone::Battlefield
+                                    && provider.attached_to
+                                        == Some(ObjectRef {
+                                            card: r.id,
+                                            generation: r.object.generation,
+                                        })
+                            }))))
                 .then_some(r.id),
                 attached: r.object.attached_to.map(|r| (r.card, r.generation)),
             })
@@ -874,7 +879,7 @@ impl<'g> FundingState<'g> {
                 continue;
             }
             let mut add = |production: ManaProduction, uses: u128| {
-                let production = match production {
+                let production = match production.base() {
                     // Types may be restored after an Aura leaves. Counting every
                     // object (even in other zones) deliberately overestimates.
                     ManaProduction::CountSubtype { color, .. } => {
