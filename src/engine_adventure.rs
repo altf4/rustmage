@@ -161,7 +161,8 @@ impl Game {
                         && r.object == self.object_ref(id)
                         && r.expires_turn >= self.state.turn
                 }));
-        if object.zone != Zone::Hand && !generic_exile {
+        let generic_graveyard = self.has_graveyard_cast(actor, id, GraveyardCastKind::Cast);
+        if object.zone != Zone::Hand && !generic_exile && !generic_graveyard {
             return false;
         }
         if !sorcery
@@ -190,17 +191,17 @@ impl Game {
                 definition.fixed_mana_value(),
                 definition,
             );
-            self.can_fund_for(
-                FundingGoal {
-                    actor,
-                    required: cost.colored,
+            self.spell_can_fund_total_for_definition(
+                actor,
+                id,
+                ManaCost {
+                    colored: cost.colored,
                     generic: cost
                         .generic
                         .saturating_sub(u32::try_from(reduction).unwrap_or(u32::MAX)),
-                    reserve: None,
-                    source: None,
                 },
-                self.spell_mana_purpose(definition),
+                None,
+                definition,
             )
         })
     }
