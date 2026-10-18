@@ -12,7 +12,7 @@ fn foundations_stack_copy_cards_natural_games_and_owned_continuations() {
             "Thousand-Year Storm",
             "Pyromancer's Goggles",
             "Bolt Bend",
-            "Shock",
+            "Burst Lightning",
             "Fanatical Firebrand",
             "Krenko, Mob Boss",
             "Shivan Dragon",
