@@ -14,7 +14,8 @@ const fn ability(
             generic,
             alternatives: &[],
             additional: None,
-            mana_component: false,
+            // Both {2} and {X}, including X = 0, open a mana-payment window.
+            mana_component: true,
             tap: false,
             sacrifice: false,
             exile_self: false,
