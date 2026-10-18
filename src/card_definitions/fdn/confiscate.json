@@ -17,6 +17,16 @@
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/ControlEnchantedEffect.java",
       "sha256": "84e8b3f040dcdbb7be851fb8b5fcfab3620c38514f3b80d811577f9cce34a9b8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
     }
   ]
 }
