@@ -1341,6 +1341,36 @@ impl Game {
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
         if a.item.kind == StackKind::Spell
+            && a.item.cast.is_some_and(|c| c.method == CastMethod::Free)
+        {
+            let definition = a.item.source_card;
+            let mut total = Self::with_kicker_cost(
+                Self::with_offspring_cost(
+                    cost,
+                    definition,
+                    a.item.cast.is_some_and(|c| c.offspring == Some(true)),
+                ),
+                definition,
+                a.item.cast.is_some_and(|c| c.kicker == Some(true)),
+            );
+            total.generic = total.generic.saturating_sub(
+                u32::try_from(self.spell_reduction_for_definition(
+                    a.item.controller,
+                    a.item.card,
+                    definition.fixed_mana_value(),
+                    definition,
+                ))
+                .unwrap_or(u32::MAX),
+            );
+            return self.spell_can_fund_total_for_definition(
+                a.item.controller,
+                a.item.card,
+                total,
+                None,
+                definition,
+            );
+        }
+        if a.item.kind == StackKind::Spell
             && !self.spell_cost_option_available(a.item.controller, a.item.card, cost)
         {
             return false;
