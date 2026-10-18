@@ -1,0 +1,109 @@
+name: CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      python_suite:
+        description: Python tests (full is manual and records per-test timings)
+        type: choice
+        options: [smoke, full]
+        default: smoke
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Native and Python tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: ${{ inputs.python_suite == 'full' && 60 || 20 }}
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      RUSTUP_TOOLCHAIN: '1.98.0'
+      PYTHON_SUITE: ${{ inputs.python_suite || 'smoke' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+
+      - name: Classify changed files
+        id: scope
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          python3 - <<'PY'
+          import os, subprocess
+          from pathlib import Path
+          code = True
+          if os.environ['EVENT_NAME'] == 'pull_request':
+              paths = subprocess.check_output(['git', 'diff', '--name-only', '--no-renames', '-z', 'HEAD^1', 'HEAD']).decode().split('\0')
+              code = any(p and not (p.endswith('.md') or p.startswith('docs/') or p == 'LICENSE') for p in paths)
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
+              print('code=' + str(code).lower(), file=out)
+          if not code:
+              print('Documentation-only change: native build and Python tests are unnecessary.')
+          PY
+          git diff --check HEAD^1 HEAD
+
+      - name: Prepare bounded Linux runner
+        if: steps.scope.outputs.code == 'true'
+        run: |
+          test -f /sys/fs/cgroup/cgroup.controllers
+          sudo loginctl enable-linger "$(id -un)"
+          sudo systemctl start "user@$(id -u).service"
+          export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+          export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
+          systemctl --user show-environment > /dev/null
+          mkdir -p "$HOME/.cache/rustmage-ci"
+          {
+            echo "XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR"
+            echo "DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS"
+            echo "XDG_CACHE_HOME=$HOME/.cache/rustmage-ci"
+            echo "RUSTMAGE_XMAGE_SOURCE=$RUNNER_TEMP/mage"
+          } >> "$GITHUB_ENV"
+          rustup toolchain install "$RUSTUP_TOOLCHAIN" --profile minimal --component rustfmt --component clippy
+
+      - name: Cache downloaded Rust dependencies
+        if: steps.scope.outputs.code == 'true'
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/registry/src
+          key: cargo-downloads-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
+
+      - name: Fetch pinned XMage sources
+        if: steps.scope.outputs.code == 'true'
+        run: |
+          revision=$(python3 -c "import json; print(json.load(open('data/standard/xmage-inventory.json'))['xmage_source_commit'])")
+          git init "$RUSTMAGE_XMAGE_SOURCE"
+          git -C "$RUSTMAGE_XMAGE_SOURCE" remote add origin https://github.com/magefree/mage.git
+          git -C "$RUSTMAGE_XMAGE_SOURCE" fetch --depth=1 origin "$revision"
+          git -C "$RUSTMAGE_XMAGE_SOURCE" checkout --detach FETCH_HEAD
+
+      - name: Verify resource guard without allocation probes
+        if: steps.scope.outputs.code == 'true'
+        run: python3 -m unittest scripts.test_resource_guard -v 2>&1 | tee "$XDG_CACHE_HOME/resource-guard.log"
+
+      - name: Full native validation and Python tests
+        if: steps.scope.outputs.code == 'true'
+        run: python3 scripts/validate.py --release --python "$PYTHON_SUITE" 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
+
+      - name: Preserve diagnostics
+        if: always() && steps.scope.outputs.code == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ci-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 7
+          if-no-files-found: warn
+          path: |
+            ~/.cache/rustmage-ci/*.log
+            ~/.cache/rustmage-ci/rustmage-build-reports/*.json
+            ~/.cache/rustmage-ci/rustmage-validation-*/report/*
