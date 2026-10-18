@@ -2246,6 +2246,7 @@ impl Game {
             if !legal {
                 return Err(Error::IllegalAction);
             }
+            self.prepare_mana_allocations(&action);
             self.apply_legal(actor, action);
             // Resolution is atomic with respect to SBAs and priority, even when
             // a program is suspended for an optional effect or discard choice.
@@ -2316,7 +2317,13 @@ impl Game {
         match s.pending {
             Pending::ManaLotSpend { .. } => {
                 if let Some(range) = self.mana_lot_spend_range() {
-                    if range.maximum - range.minimum <= 64 {
+                    if let Some(values) = &range.values {
+                        for &amount in values.iter().take(64) {
+                            if emit(Action::ChooseManaLotSpend { amount }) {
+                                return true;
+                            }
+                        }
+                    } else if range.maximum - range.minimum <= 64 {
                         for amount in range.minimum..=range.maximum {
                             if emit(Action::ChooseManaLotSpend { amount }) {
                                 return true;
@@ -5529,6 +5536,7 @@ impl Game {
     pub fn state_bytes(&self) -> usize {
         let s = &self.state;
         std::mem::size_of::<State>()
+            + self.mana_lot_bytes()
             + self.temporary_control_bytes()
             + self.temporary_ability_bytes()
             + self.suspected_bytes()

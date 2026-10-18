@@ -1250,6 +1250,7 @@ mod owned_memory_tests {
             choices: Vec::new(),
             next: 0,
             counter_next: 0,
+            entry_bonuses_ready: false,
             counter_order: Vec::new(),
             timestamp_order: Vec::new(),
             timestamps_ready: false,

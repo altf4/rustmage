@@ -1146,10 +1146,6 @@ impl Game {
         state.purpose = purpose;
         state.reachable(&goal, &mut HashSet::new())
     }
-    pub(super) fn can_fund_evidence(&self, goal: FundingGoal, threshold: u16) -> bool {
-        let purpose = self.funding_purpose(&goal);
-        self.can_fund_evidence_for(goal, threshold, purpose)
-    }
     pub(super) fn can_fund_evidence_for(
         &self,
         goal: FundingGoal,
@@ -2467,3 +2463,74 @@ mod entry_choices_world_tests;
 #[cfg(test)]
 #[path = "engine_qualified_hexproof_world_tests.rs"]
 mod qualified_hexproof_world_tests;
+
+impl Game {
+    /// A mana ability in an enclosing guided payment window must leave some
+    /// completion of that window. Reuse its exact resource search, retaining
+    /// complete plans so later scalar choices cannot mix incompatible prefixes.
+    pub(super) fn prepare_mana_allocations(&mut self, action: &Action) {
+        let Action::ActivateMana { payment, .. } = action else {
+            return;
+        };
+        let Some(actor) = self.actor() else { return };
+        if *payment == [0; 6]
+            || self.mana_lots(actor).is_empty()
+            || self
+                .state
+                .mana_lots
+                .as_ref()
+                .is_some_and(|state| state.replay.is_some())
+        {
+            return;
+        }
+        let (goal, convoke, evidence) = match self.state.pending {
+            Pending::PayCosts { .. } | Pending::Convoke { .. } => {
+                let a = self.state.announcing.as_ref().unwrap();
+                (
+                    self.funding_goal(a),
+                    a.item.kind == StackKind::Spell && a.item.source_card.has_convoke(),
+                    a.evidence.as_ref().map(|e| e.threshold),
+                )
+            }
+            Pending::PlotPayment { .. } => {
+                let request = self.plot_payment().unwrap();
+                (
+                    FundingGoal {
+                        actor,
+                        required: request.cost.colored,
+                        generic: request.cost.generic,
+                        reserve: None,
+                        source: None,
+                    },
+                    false,
+                    None,
+                )
+            }
+            _ => return,
+        };
+        let world = FundingState::from_game_with_convoke(self, &goal, convoke);
+        let mut viable = Vec::new();
+        for step in world.moves(&goal) {
+            if world.action(&step) != *action {
+                continue;
+            }
+            let mut next = world.clone();
+            next.apply(&step);
+            if next.reachable_with_evidence(&goal, evidence, &mut HashSet::new()) {
+                let allocation = step
+                    .allocation
+                    .iter()
+                    .map(|row| row.map(|n| u32::try_from(n).expect("concrete action payment")))
+                    .collect::<Vec<_>>();
+                if !viable.contains(&allocation) {
+                    viable.push(allocation)
+                }
+            }
+        }
+        assert!(
+            !viable.is_empty(),
+            "validated guided mana action has a completion"
+        );
+        self.state.mana_lots.as_mut().unwrap().prepared = Some(viable);
+    }
+}

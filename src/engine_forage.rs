@@ -215,10 +215,13 @@ impl Game {
             Some(ForageRoute::Food) => {
                 self.additional_candidate(food_cost(), p, r, r)
                     && self.state.announcing.as_ref().is_none_or(|a| {
-                        self.can_fund_for(FundingGoal {
-                            reserve: Some((r, food_cost())),
-                            ..self.funding_goal(a)
-                        })
+                        self.can_fund_for(
+                            FundingGoal {
+                                reserve: Some((r, food_cost())),
+                                ..self.funding_goal(a)
+                            },
+                            self.purpose_for_item(&a.item),
+                        )
                     })
             }
             _ => false,

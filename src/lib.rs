@@ -17,7 +17,7 @@ pub use cards::{
     CATALOGUE_VERSION, CREATURE_TYPES, Card, CardInfo, ChoiceColor, CounterKind, Counters,
     CreatureType, EffectChoiceKind, EmblemInfo, EntryChoiceKind, EntryChoiceValue, GiftKind,
     Keywords, LiveStatCondition, LiveStatRecipients, LiveStatValue, LiveStaticEffect, Mana,
-    ManaCost, MilledDestination, MilledFilter, RecoveryFilter, SearchDestination, SearchFilter,
-    TokenInfo, is_creature_type,
+    ManaCost, ManaRetention, MilledDestination, MilledFilter, RecoveryFilter, SearchDestination,
+    SearchFilter, TokenInfo, is_creature_type,
 };
 pub use engine::*;

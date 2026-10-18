@@ -116,6 +116,7 @@ pub(super) struct Lot {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ManaLotView {
     pub player: Player,
+    pub lot: usize,
     pub restriction: ManaRestrictionView,
     pub spell_bonus: ManaSpellBonusView,
     pub retention: ManaRetention,
@@ -124,19 +125,29 @@ pub struct ManaLotView {
 /// One scalar allocation domain; large pools never enumerate a Cartesian product.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ManaLotSpendRange {
+    /// Original action whose costs remain uncommitted during this choice.
+    pub action: Action,
     pub lot: usize,
     pub color: usize,
     pub minimum: u32,
     pub maximum: u32,
+    /// When present, this exact sorted set refines the interval (guided mana
+    /// windows can have holes). None means every integer in the interval.
+    pub values: Option<Vec<u32>>,
 }
 impl ManaLotSpendRange {
     pub fn contains(&self, amount: u32) -> bool {
         (self.minimum..=self.maximum).contains(&amount)
+            && self
+                .values
+                .as_ref()
+                .is_none_or(|values| values.binary_search(&amount).is_ok())
     }
 }
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct ManaState {
-    pub pools: [Vec<Lot>; 2],
+    pub pools: [SharedVec<Lot>; 2],
+    pub prepared: Option<Vec<Vec<Mana>>>,
     pub trace: Option<SpendRequest>,
     pub replay: Option<Vec<Mana>>,
     pub choice: Option<Box<SpendChoice>>,
@@ -146,7 +157,8 @@ pub(super) struct SpendRequest {
     actor: Player,
     purpose: Purpose,
     payment: Mana,
-    lots: Vec<Lot>,
+    lots: SharedVec<Lot>,
+    viable: Option<Vec<Vec<Mana>>>,
     ordinary: [u128; 6],
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -159,26 +171,43 @@ pub(super) struct SpendChoice {
     cursor: usize,
 }
 impl SpendChoice {
+    fn bounds(&self, lot: usize, color: usize) -> (u32, u32, Option<Vec<u32>>) {
+        if let Some(plans) = &self.request.viable {
+            let mut values: Vec<_> = plans.iter().map(|plan| plan[lot][color]).collect();
+            values.sort_unstable();
+            values.dedup();
+            let minimum = *values.first().expect("guided allocation remains feasible");
+            let maximum = *values.last().unwrap();
+            let holes = u64::from(maximum - minimum) + 1 != values.len() as u64;
+            return (minimum, maximum, holes.then_some(values));
+        }
+        let (minimum, maximum) = allocation_range(
+            &self.request.lots,
+            self.request.ordinary,
+            self.request.purpose,
+            self.remaining,
+            lot,
+            color,
+        );
+        (
+            u32::try_from(minimum).expect("concrete payment"),
+            u32::try_from(maximum).expect("concrete payment"),
+            None,
+        )
+    }
     fn range(&mut self) -> Option<ManaLotSpendRange> {
         while self.cursor < self.request.lots.len() * 6 {
             let lot = self.cursor / 6;
             let color = self.cursor % 6;
-            let (minimum, maximum) = allocation_range(
-                &self.request.lots,
-                self.request.ordinary,
-                self.request.purpose,
-                self.remaining,
-                lot,
-                color,
-            );
-            let minimum = u32::try_from(minimum).expect("payment is concrete");
-            let maximum = u32::try_from(maximum).expect("payment is concrete");
+            let (minimum, maximum, values) = self.bounds(lot, color);
             if minimum != maximum {
                 return Some(ManaLotSpendRange {
+                    action: self.action.clone(),
                     lot,
                     color,
                     minimum,
                     maximum,
+                    values,
                 });
             }
             self.allocations[lot][color] = minimum;
@@ -313,7 +342,7 @@ impl Game {
             player.mana = keep;
         }
         if self.state.mana_lots.as_ref().is_some_and(|state| {
-            state.pools.iter().all(Vec::is_empty)
+            state.pools.iter().all(|pool| pool.is_empty())
                 && state.choice.is_none()
                 && state.replay.is_none()
                 && state.trace.is_none()
@@ -328,19 +357,14 @@ impl Game {
         let choice = self.state.mana_lots.as_ref()?.choice.as_ref()?;
         let lot = choice.cursor / 6;
         let color = choice.cursor % 6;
-        let (minimum, maximum) = allocation_range(
-            &choice.request.lots,
-            choice.request.ordinary,
-            choice.request.purpose,
-            choice.remaining,
-            lot,
-            color,
-        );
+        let (minimum, maximum, values) = choice.bounds(lot, color);
         Some(ManaLotSpendRange {
+            action: choice.action.clone(),
             lot,
             color,
-            minimum: u32::try_from(minimum).expect("concrete payment"),
-            maximum: u32::try_from(maximum).expect("concrete payment"),
+            minimum,
+            maximum,
+            values,
         })
     }
     pub(super) fn mana_lot_views(&self) -> Vec<ManaLotView> {
@@ -352,7 +376,9 @@ impl Game {
             .flat_map(|player| {
                 state.pools[player.index()]
                     .iter()
-                    .map(move |lot| ManaLotView {
+                    .enumerate()
+                    .map(move |(index, lot)| ManaLotView {
+                        lot: index,
                         player,
                         restriction: lot.quality.restriction,
                         spell_bonus: lot.quality.spell_bonus,
@@ -376,7 +402,10 @@ impl Game {
             .mana_lots
             .as_mut()
             .and_then(|state| state.trace.take());
-        let Some(request) = request else { return };
+        let Some(request) = request else {
+            self.compact_mana_lots();
+            return;
+        };
         let mut choice = SpendChoice {
             allocations: vec![[0; 6]; request.lots.len()],
             remaining: request.payment.map(u128::from),
@@ -386,6 +415,7 @@ impl Game {
             request,
         };
         if choice.range().is_none() {
+            self.compact_mana_lots();
             return;
         }
         // Discard the tentative pure-state transaction using apply's original
@@ -424,6 +454,10 @@ impl Game {
         choice.allocations[range.lot][range.color] = amount;
         choice.remaining[range.color] -= u128::from(amount);
         choice.cursor += 1;
+        if let Some(plans) = &mut choice.request.viable {
+            plans.retain(|plan| plan[range.lot][range.color] == amount);
+            debug_assert!(!plans.is_empty());
+        }
         if choice.range().is_some() {
             self.state.mana_lots.as_mut().unwrap().choice = Some(choice);
             self.revision = self.revision.checked_add(1).capacity("revision exhausted");
@@ -468,7 +502,7 @@ impl Game {
             return false;
         }
         let pool = self.state.players[actor.index()].mana.map(u128::from);
-        let lots = self.mana_lots(actor).to_vec();
+        let lots = self.state.mana_lots.as_ref().unwrap().pools[actor.index()].clone();
         let ordinary = ordinary(pool, &lots);
         let available = available(pool, &lots, purpose);
         assert!(
@@ -484,24 +518,33 @@ impl Game {
         } else {
             let state = self.state.mana_lots.as_mut().unwrap();
             assert!(state.trace.is_none(), "one committed payment per action");
+            let viable = state.prepared.take();
             state.trace = Some(SpendRequest {
+                viable: viable.clone(),
                 actor,
                 purpose,
                 payment,
                 lots: lots.clone(),
                 ordinary,
             });
-            let mut remaining = payment.map(u128::from);
-            let mut selected = vec![[0; 6]; lots.len()];
-            for (i, allocation) in selected.iter_mut().enumerate() {
-                for color in 0..6 {
-                    let (minimum, _) =
-                        allocation_range(&lots, ordinary, purpose, remaining, i, color);
-                    allocation[color] = u32::try_from(minimum).expect("concrete payment bound");
-                    remaining[color] -= minimum;
+            if let Some(viable) = viable {
+                viable
+                    .into_iter()
+                    .next()
+                    .expect("guided allocation is feasible")
+            } else {
+                let mut remaining = payment.map(u128::from);
+                let mut selected = vec![[0; 6]; lots.len()];
+                for (i, allocation) in selected.iter_mut().enumerate() {
+                    for color in 0..6 {
+                        let (minimum, _) =
+                            allocation_range(&lots, ordinary, purpose, remaining, i, color);
+                        allocation[color] = u32::try_from(minimum).expect("concrete payment bound");
+                        remaining[color] -= minimum;
+                    }
                 }
+                selected
             }
-            selected
         };
         let mut grants_haste = false;
         let state = self.state.mana_lots.as_mut().unwrap();
@@ -715,7 +758,7 @@ mod tests {
             g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
             let giada = named(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
             activate(&mut g, giada, 0, [1, 0, 0, 0, 0, 0]);
-            let chaplain = named(&mut g, p, "Daybreak Chaplain", Zone::Hand);
+            let chaplain = named(&mut g, p, "Ajani's Pridemate", Zone::Hand);
             assert!(
                 !g.legal_actions()
                     .contains(&Action::AnnounceCast { card: chaplain })
@@ -815,11 +858,242 @@ mod tests {
             checked(&mut g, Action::FinishAttackers);
             settle(&mut g);
             assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 3, 3, 0]);
-            g.clear_step_mana(false, true);
-            assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 3, 3, 0]);
-            g.clear_step_mana(false, false);
+            let turn = g.state.turn;
+            let mut saw_main2 = false;
+            for _ in 0..60 {
+                if g.state.turn != turn {
+                    break;
+                }
+                assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 3, 3, 0]);
+                saw_main2 |= g.state.step == Step::Main2;
+                let action = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|action| {
+                        matches!(
+                            action,
+                            Action::Pass
+                                | Action::FinishBlockers
+                                | Action::FinishAttackers
+                                | Action::Discard { .. }
+                        )
+                    })
+                    .unwrap();
+                checked(&mut g, action);
+            }
+            assert!(saw_main2);
+            assert_ne!(g.state.turn, turn);
             assert_eq!(g.state.players[p.index()].mana, [0; 6]);
             assert!(g.state.mana_lots.is_none());
         }
+    }
+    #[test]
+    fn tagged_mana_guided_scarecrow_cannot_strand_enclosing_angel_cost() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = setup(p);
+            g.state.players[p.index()].mana = [0, 0, 0, 3, 0, 0];
+            for (kind, production) in [
+                ("Scarecrow", [0, 0, 0, 1, 0, 0]),
+                ("Angel", [1, 0, 0, 0, 0, 0]),
+            ] {
+                let court = named(&mut g, p, "Secluded Courtyard", Zone::Battlefield);
+                g.set_entry_value(
+                    g.object_ref(court),
+                    EntryChoiceValue::CreatureType(CreatureType::from_name(kind).unwrap()),
+                );
+                activate(&mut g, court, 1, production);
+            }
+            let prismite = named(&mut g, p, "Scarecrow Guide", Zone::Battlefield);
+            let angel = named(&mut g, p, "Serra Angel", Zone::Hand);
+            checked(&mut g, Action::AnnounceCast { card: angel });
+            let before = g.snapshot();
+            checked(
+                &mut g,
+                Action::ActivateMana {
+                    card: prismite,
+                    ability: 0,
+                    payment: [0, 0, 0, 1, 0, 0],
+                    counter_payment: Counters::default(),
+                    production: [1, 0, 0, 0, 0, 0],
+                },
+            );
+            // Paying ordinary red strands this announced spell. The exact
+            // guided allocation must instead spend one Scarecrow-only unit.
+            assert_eq!(
+                g.available_mana(
+                    p,
+                    g.spell_mana_purpose(Card::from_name("Serra Angel").unwrap())
+                ),
+                [2, 0, 0, 3, 0, 0]
+            );
+            assert!(g.mana_lot_spend_range().is_none());
+            reject(&mut g, Action::ChooseManaLotSpend { amount: 0 });
+            checked(
+                &mut g,
+                Action::PayCosts {
+                    payment: [2, 0, 0, 3, 0, 0],
+                },
+            );
+            settle(&mut g);
+            assert_eq!(g.object_view(angel).zone, Zone::Battlefield);
+            assert!(g.state.mana_lots.is_none());
+            g.restore(&before).unwrap();
+            assert!(g.legal_actions().iter().any(
+                |action| matches!(action, Action::ActivateMana { card, .. } if *card == prismite)
+            ));
+        }
+    }
+    #[test]
+    fn tagged_mana_courtyard_pays_real_creature_card_activations_in_hand_and_graveyard() {
+        for p in [Player::P0, Player::P1] {
+            for (kind, name, zone, ordinary, payment) in [
+                (
+                    "Dinosaur",
+                    "Soaring Sandwing",
+                    Zone::Hand,
+                    [0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 1, 0, 1],
+                ),
+                (
+                    "Zombie",
+                    "Suspicious Shambler",
+                    Zone::Graveyard,
+                    [0, 0, 1, 0, 0, 4],
+                    [0, 0, 2, 0, 0, 4],
+                ),
+            ] {
+                let mut g = setup(p);
+                g.state.players[p.index()].mana = ordinary;
+                let courtyard = named(&mut g, p, "Secluded Courtyard", Zone::Battlefield);
+                g.set_entry_value(
+                    g.object_ref(courtyard),
+                    EntryChoiceValue::CreatureType(CreatureType::from_name(kind).unwrap()),
+                );
+                let production = if zone == Zone::Hand {
+                    [0, 0, 0, 1, 0, 0]
+                } else {
+                    [0, 0, 1, 0, 0, 0]
+                };
+                activate(&mut g, courtyard, 1, production);
+                let source = named(&mut g, p, name, zone);
+                checked(
+                    &mut g,
+                    Action::AnnounceActivate {
+                        card: source,
+                        ability: 0,
+                        counter_payment: Counters::default(),
+                    },
+                );
+                checked(&mut g, Action::PayCosts { payment });
+                assert_ne!(g.object_view(source).zone, zone);
+                assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            }
+        }
+    }
+    #[test]
+    fn tagged_mana_giada_counts_fresh_chosen_angel_and_respects_ability_removal() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = setup(p);
+            let giada = named(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
+            let automaton = named(&mut g, p, "Adaptive Automaton", Zone::Hand);
+            cast(&mut g, automaton, None, &[]);
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            checked(
+                &mut g,
+                Action::ChooseEntryValue {
+                    value: EntryChoiceValue::CreatureType(
+                        CreatureType::from_name("Angel").unwrap(),
+                    ),
+                },
+            );
+            settle(&mut g);
+            assert_eq!(g.counter_count(automaton, CounterKind::PlusOne), 1);
+            let stop = named(&mut g, p.other(), "Stop Cold", Zone::Battlefield);
+            g.state.objects[stop as usize].attached_to = Some(g.object_ref(giada));
+            assert!(!g.printed_abilities_available(giada));
+            let angel = named(&mut g, p, "Serra Angel", Zone::Hand);
+            cast(&mut g, angel, None, &[]);
+            settle(&mut g);
+            assert_eq!(g.counter_count(angel, CounterKind::PlusOne), 0);
+        }
+    }
+    #[test]
+    fn tagged_mana_giada_unproduced_restricted_source_funds_only_matching_spell() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = setup(p);
+            g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 3];
+            named(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
+            let angel = named(&mut g, p, "Serra Angel", Zone::Hand);
+            assert!(
+                g.legal_actions()
+                    .contains(&Action::AnnounceCast { card: angel })
+            );
+            assert!(
+                g.state.mana_lots.is_none(),
+                "funding must not manufacture real mana"
+            );
+            checked(&mut g, Action::AnnounceCast { card: angel });
+            let ability = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::ActivateMana { .. }))
+                .unwrap();
+            checked(&mut g, ability);
+            checked(
+                &mut g,
+                Action::PayCosts {
+                    payment: [2, 0, 0, 0, 0, 3],
+                },
+            );
+            settle(&mut g);
+            assert_eq!(g.counter_count(angel, CounterKind::PlusOne), 1);
+        }
+    }
+}
+
+impl Game {
+    fn compact_mana_lots(&mut self) {
+        if self.state.mana_lots.as_ref().is_some_and(|state| {
+            state.pools.iter().all(|pool| pool.is_empty())
+                && state.trace.is_none()
+                && state.prepared.is_none()
+                && state.replay.is_none()
+                && state.choice.is_none()
+        }) {
+            self.state.mana_lots = None
+        }
+    }
+    pub(super) fn mana_lot_bytes(&self) -> usize {
+        fn plans_bytes(plans: &Option<Vec<Vec<Mana>>>) -> usize {
+            plans.as_ref().map_or(0, |plans| {
+                plans.len() * std::mem::size_of::<Vec<Mana>>()
+                    + plans
+                        .iter()
+                        .map(|plan| plan.len() * std::mem::size_of::<Mana>())
+                        .sum::<usize>()
+            })
+        }
+        let Some(state) = &self.state.mana_lots else {
+            return 0;
+        };
+        std::mem::size_of::<ManaState>()
+            + state
+                .pools
+                .iter()
+                .map(|pool| pool.len() * std::mem::size_of::<Lot>())
+                .sum::<usize>()
+            + plans_bytes(&state.prepared)
+            + state
+                .replay
+                .as_ref()
+                .map_or(0, |plan| plan.len() * std::mem::size_of::<Mana>())
+            + state.choice.as_ref().map_or(0, |choice| {
+                std::mem::size_of::<SpendChoice>()
+                    + choice.allocations.len() * std::mem::size_of::<Mana>()
+                    + choice.request.lots.len() * std::mem::size_of::<Lot>()
+                    + plans_bytes(&choice.request.viable)
+                    + choice.pending.owned_bytes()
+            })
     }
 }

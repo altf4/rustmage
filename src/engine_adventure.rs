@@ -190,15 +190,18 @@ impl Game {
                 definition.fixed_mana_value(),
                 definition,
             );
-            self.can_fund(FundingGoal {
-                actor,
-                required: cost.colored,
-                generic: cost
-                    .generic
-                    .saturating_sub(u32::try_from(reduction).unwrap_or(u32::MAX)),
-                reserve: None,
-                source: None,
-            })
+            self.can_fund_for(
+                FundingGoal {
+                    actor,
+                    required: cost.colored,
+                    generic: cost
+                        .generic
+                        .saturating_sub(u32::try_from(reduction).unwrap_or(u32::MAX)),
+                    reserve: None,
+                    source: None,
+                },
+                self.spell_mana_purpose(definition),
+            )
         })
     }
 }
