@@ -286,6 +286,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if let Some(k) = index(packet.source_card) {
                     match packet.kind {
                         StackKind::CopyEndStepSacrifice
+                        | StackKind::DelayedReturn
                         | StackKind::DelayedSacrifice
                         | StackKind::DelayedWarpExile => {
                             panic!("no delayed producer in this fixture")

@@ -228,6 +228,10 @@ fn harvester_waits_for_actual_copy_entry_choices_and_uses_current_type_and_contr
             .card;
         assert_eq!(g.state.objects[entering as usize].zone, Zone::Outside);
         assert!(g.object_view(entering).has_subtype("Nightmare"));
+        assert!(
+            Game::entry_choice_subtypes(&g.entry_move(entering, Zone::Battlefield, false))
+                .contains("Nightmare")
+        );
         assert!(g.on_battlefield(old));
         let transfer = g.activation_item(p.other(), becoming_friendly, 0);
         g.gain_control(&transfer, Subject::Source, PlayerSet::Opponent);

@@ -1,16 +1,24 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed port of Confiscate: its static ability starts in layer two.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Aura(one(TargetRule::Filtered {
+        base: &object(0),
+        predicate: &TargetPredicate::Permanent,
+    })),
+    aura: Some(AuraSpec {
+        kinds: 0,
+        relation: -1,
+        bonus: EquipmentSpec {
+            stats: Stats {
+                power: 0,
+                toughness: 0,
+            },
+            keywords: Keywords::NONE,
+        },
+    }),
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Control,
+        fragments: &[StaticAbilityFragment::ControlAttached],
+    }],
     ..CardRules::EMPTY
 };

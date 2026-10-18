@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "b36f9bba66750d543e9956dcf8d399a111a0d28a214cf3dde29642e9cd2f0845",
+  "catalogue_version": "69f84389f644f33b1b749bf30a572d8b5c06c59cb86aaa8180ecc520f1190cfc",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2155,
-  "implemented_total": 2161,
-  "token_definitions": 103,
+  "implemented_standard_cards": 2166,
+  "implemented_total": 2172,
+  "token_definitions": 104,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
   "omen_definitions": 13,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 396,
-      "gated": 31
+      "complete": 406,
+      "gated": 21
     },
     "fin": {
       "total": 305,
@@ -149,8 +149,8 @@
     },
     "soc": {
       "total": 24,
-      "complete": 10,
-      "gated": 14
+      "complete": 11,
+      "gated": 13
     },
     "sos": {
       "total": 264,
@@ -1520,8 +1520,8 @@
     {
       "name": "Angelic Destiny",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/angelic_destiny.rs",
       "set": "soc"
     },
@@ -6016,8 +6016,8 @@
     {
       "name": "Charming Prince",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/charming_prince.rs",
       "set": "fdn"
     },
@@ -6832,8 +6832,8 @@
     {
       "name": "Confiscate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/confiscate.rs",
       "set": "fdn"
     },
@@ -7992,8 +7992,8 @@
     {
       "name": "Darksteel Colossus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/darksteel_colossus.rs",
       "set": "fdn"
     },
@@ -9768,8 +9768,8 @@
     {
       "name": "Dryad Militant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/dryad_militant.rs",
       "set": "fdn"
     },
@@ -17488,8 +17488,8 @@
     {
       "name": "Infernal Vessel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/infernal_vessel.rs",
       "set": "fdn"
     },
@@ -19616,8 +19616,8 @@
     {
       "name": "Kykar, Zephyr Awakener",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/kykar_zephyr_awakener.rs",
       "set": "fdn"
     },
@@ -23760,8 +23760,8 @@
     {
       "name": "Nine-Lives Familiar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/nine_lives_familiar.rs",
       "set": "fdn"
     },
@@ -26240,8 +26240,8 @@
     {
       "name": "Progenitus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/progenitus.rs",
       "set": "fdn"
     },
@@ -38832,8 +38832,8 @@
     {
       "name": "Valkyrie's Call",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/valkyrie_s_call.rs",
       "set": "fdn"
     },
@@ -40800,8 +40800,8 @@
     {
       "name": "Wilt-Leaf Liege",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/wilt_leaf_liege.rs",
       "set": "fdn"
     },

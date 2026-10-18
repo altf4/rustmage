@@ -212,6 +212,7 @@ impl Game {
                 is_copy: false,
                 delayed_sacrifice: Some(Box::new(b.view)),
                 delayed_warp_exile: None,
+                return_link: None,
                 x: None,
                 attachment_trigger: None,
                 cast: None,

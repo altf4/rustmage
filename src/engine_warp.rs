@@ -91,6 +91,7 @@ impl Game {
                 gift: None,
                 reflexive_subject: None,
                 delayed_warp_exile: Some(Box::new(view)),
+                return_link: None,
                 crew: None,
                 cast_event: None,
                 copy_event: None,
