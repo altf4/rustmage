@@ -173,8 +173,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ChooseForageRoute { .. } | Action::ChooseForage { .. } => 60,
             Action::DeclineForage => -10,
             Action::ChooseConniver { .. } => 60,
-            Action::PayResolutionMana { .. } => 100,
-            Action::DeclineResolutionMana => -1,
+            Action::PayResolutionMana { .. } | Action::PayResolutionLife => 100,
+            Action::DeclineResolutionMana | Action::DeclineResolutionLife => -1,
             Action::ChooseAuraAttachment { object } => aura_score(
                 observation.aura_entry.as_ref().unwrap().card,
                 Target::Card(object.card),
@@ -191,7 +191,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::Concede => -1000,
             Action::Sacrifice { .. } => 50,
             Action::DeclineEffectPayment => -1,
-            Action::AnnounceCast { .. }
+            Action::AnnounceFree { .. }
+            | Action::AnnounceGrantedFlashback { .. }
+            | Action::AnnounceCast { .. }
             | Action::AnnounceFlashSurcharge { .. }
             | Action::AnnounceWarp { .. }
             | Action::AnnouncePlotted { .. }

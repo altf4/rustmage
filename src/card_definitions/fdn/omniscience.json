@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "75493ef4611728d35ff90f93256af9a8b07fbfa7661c903b187baebc601df3e5"
   },
-  "physical_metadata_sha256": "9c7ab394ff42aca483b44910d0e8cfab761d5dcb4998ecb1b3b2f559c88af993"
+  "physical_metadata_sha256": "9c7ab394ff42aca483b44910d0e8cfab761d5dcb4998ecb1b3b2f559c88af993",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/CastFromHandWithoutPayingManaCostEffect.java",
+      "sha256": "21f6707d883b719f93109cf5687fe1141e7cd80c13ea464ba9bbb1b4f0f20ca8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/AlternativeCostSourceAbility.java",
+      "sha256": "b0a55dc753a0b65f6075dd417a1cf6237599541a1e79d99c85aff3ccc0e73f98"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/Omniscience.java",
+  "java_sha256": "3e3cf8aa8c124f9cea6ed1bbf6f61addea6caa8e72cb21602c8918984aafac8e"
 }

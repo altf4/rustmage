@@ -22,8 +22,15 @@ mod milled_selection;
 pub use milled_selection::MilledSelectionView;
 #[path = "engine_adventure.rs"]
 mod adventure;
+#[cfg(test)]
+#[path = "engine_cast_permission_tests.rs"]
+mod cast_permission_tests;
+#[path = "engine_cast_permissions.rs"]
+mod cast_permissions;
 #[path = "engine_cast_timing.rs"]
 mod cast_timing;
+pub use crate::cards::GraveyardCastKind;
+pub use cast_permissions::GraveyardCastPermissionView;
 #[path = "engine_crew.rs"]
 mod crew;
 #[path = "engine_saddle.rs"]
@@ -438,6 +445,10 @@ define_actions! {
     AnnounceCast {
         card: CardId,
     },
+    AnnounceFree { card: CardId, face: CastFace },
+    AnnounceGrantedFlashback { card: CardId },
+    PayResolutionLife,
+    DeclineResolutionLife,
     AnnounceExile {
         card: CardId,
     },
@@ -710,11 +721,13 @@ struct PlayerState {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum CastMethod {
     Normal,
+    Free,
+    GrantedFlashback,
     Flashback,
     Plot,
     Warp,
 }
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum CastFace {
     Normal,
     Adventure,
@@ -1263,6 +1276,9 @@ enum Pending {
     ResolutionMana {
         player: Player,
     },
+    ResolutionLife {
+        player: Player,
+    },
     MilledSelection {
         player: Player,
     },
@@ -1420,6 +1436,7 @@ struct State {
     attachment_sources: Vec<CardId>,
     exile_links: Vec<ExileLink>,
     exile_permissions: Vec<ExilePlayPermission>,
+    graveyard_cast_permissions: cast_permissions::Rows,
     adventures: Option<Box<adventure::AdventureState>>,
     plot: Option<Box<plot::PlotState>>,
     warp: Option<Box<warp::WarpState>>,
@@ -1758,6 +1775,7 @@ pub struct Observation {
     pub modal_history: Vec<ModalHistoryView>,
     pub exile_links: Vec<ExileLink>,
     pub exile_permissions: Vec<ExilePlayPermission>,
+    pub graveyard_cast_permissions: Vec<GraveyardCastPermissionView>,
     pub adventures: Vec<AdventurePermission>,
     pub spell_characteristics: Vec<SpellCharacteristicsView>,
     pub plotted_cards: Vec<PlottedCard>,
@@ -1962,6 +1980,7 @@ impl Game {
                 attachment_sources: Vec::new(),
                 exile_links: Vec::new(),
                 exile_permissions: Vec::new(),
+                graveyard_cast_permissions: None,
                 temporary_abilities: None,
                 suspected: None,
                 death_exile_replacements: None,
@@ -2065,6 +2084,7 @@ impl Game {
             | Pending::SpellCost { player }
             | Pending::ActivationCost { player }
             | Pending::ConniveOrder { player }
+            | Pending::ResolutionLife { player }
             | Pending::ResolutionMana { player }
             | Pending::AdditionalCost { player }
             | Pending::EntryTimestamp { player }
@@ -2422,6 +2442,13 @@ impl Game {
                     return true;
                 }
             }
+            Pending::ResolutionLife { .. } => {
+                if emit(Action::DeclineResolutionLife)
+                    || self.can_pay_resolution_life() && emit(Action::PayResolutionLife)
+                {
+                    return true;
+                }
+            }
             Pending::ResolutionMana { .. } => {
                 if self.visit_resolution_payment(&mut emit) {
                     return true;
@@ -2627,6 +2654,7 @@ impl Game {
                     && s.stack.is_empty();
                 let casting_prohibited =
                     s.casting_prohibited || self.static_casting_prohibited(actor);
+                let free_hand_cast = self.free_hand_cast_available(actor);
                 for (i, obj) in s.objects.iter().enumerate() {
                     let card = i as CardId;
                     let authorized_origin = match obj.zone {
@@ -2727,6 +2755,46 @@ impl Game {
                         && emit(Action::AnnounceOmen { card })
                     {
                         return true;
+                    }
+                    if !casting_prohibited && !obj.is_token() && !obj.card.is_land() {
+                        if free_hand_cast && obj.zone == Zone::Hand {
+                            for face in [CastFace::Normal, CastFace::Adventure, CastFace::Omen] {
+                                if self.permitted_cast_available(
+                                    actor,
+                                    card,
+                                    CastMethod::Free,
+                                    face,
+                                    sorcery,
+                                ) && emit(Action::AnnounceFree { card, face })
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                        if self.has_graveyard_cast(actor, card, GraveyardCastKind::Cast)
+                            && self.permitted_cast_available(
+                                actor,
+                                card,
+                                CastMethod::Normal,
+                                CastFace::Normal,
+                                sorcery,
+                            )
+                            && emit(Action::AnnounceCast { card })
+                        {
+                            return true;
+                        }
+                        if self.has_graveyard_cast(actor, card, GraveyardCastKind::Flashback)
+                            && self.permitted_cast_available(
+                                actor,
+                                card,
+                                CastMethod::GrantedFlashback,
+                                CastFace::Normal,
+                                sorcery,
+                            )
+                            && emit(Action::AnnounceGrantedFlashback { card })
+                        {
+                            return true;
+                        }
                     }
                     let flashback =
                         obj.zone == Zone::Graveyard && obj.card.flashback_cost().is_some();
@@ -3396,6 +3464,8 @@ impl Game {
             }
             Action::PayResolutionMana { payment } => self.finish_resolution_payment(Some(payment)),
             Action::DeclineResolutionMana => self.finish_resolution_payment(None),
+            Action::PayResolutionLife => self.finish_resolution_life(true),
+            Action::DeclineResolutionLife => self.finish_resolution_life(false),
             Action::ChooseAdditionalCost { object } => self.choose_additional_cost(object),
             Action::ChooseEntryTimestamp { object } => self.choose_entry_timestamp(object),
             Action::ChooseEntryReplacement { source, intrinsic } => {
@@ -3502,6 +3572,21 @@ impl Game {
                     .checked_add(1)
                     .capacity("mana representation exhausted");
                 self.state.passes = 0;
+            }
+            Action::AnnounceFree { card, face } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                self.set_cast_face(&mut item, face);
+                item.cast.as_mut().unwrap().method = CastMethod::Free;
+                if item.source_card.x_symbols() > 0 {
+                    item.x = Some(0);
+                }
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceGrantedFlashback { card } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                item.cast.as_mut().unwrap().method = CastMethod::GrantedFlashback;
+                self.state.objects[card as usize].flashback = true;
+                self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceCast { card } | Action::AnnounceExile { card } => {
                 let item = self.cast_item(actor, card, [0; 6]);
@@ -4335,6 +4420,9 @@ impl Game {
             .generation
             .checked_add(1)
             .capacity("object generation exhausted");
+        if before.zone == Zone::Graveyard {
+            self.forget_graveyard_cast_permission(before.reference);
+        }
         let revealed_top = self.public_library_top(before.owner) == Some(before.reference);
         if before.zone == Zone::Library && revealed_top || destination == Zone::Library {
             self.forget_library_top(before.owner);
@@ -4706,6 +4794,7 @@ impl Game {
         self.state.temporary_abilities = None;
         self.expire_base_stats();
         let expired_animations = self.expire_animations();
+        self.expire_graveyard_cast_permissions();
         self.expire_keyword_effects();
         self.state.death_exile_replacements = None;
         for player in &mut self.state.players {
@@ -5102,6 +5191,7 @@ impl Game {
                 Pending::Replacement { .. } => "replacement",
                 Pending::CreatedToken { .. } => "created_token",
                 Pending::ResolutionMana { .. } => "resolution_mana",
+                Pending::ResolutionLife { .. } => "resolution_life",
                 Pending::ConniveOrder { .. } => "connive_order",
                 Pending::OpeningHand { .. } => "opening_hand",
                 Pending::OptionalSearch(_) => "optional_search",
@@ -5226,6 +5316,10 @@ impl Game {
             exile_links: s.exile_links.clone(),
             spell_characteristics: self.spell_characteristics(),
             exile_permissions: s.exile_permissions.clone(),
+            graveyard_cast_permissions: s
+                .graveyard_cast_permissions
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.to_vec()),
             adventures: s
                 .adventures
                 .as_ref()
@@ -5326,6 +5420,7 @@ impl Game {
                 .map(|p| resolution_mana::ResolutionPaymentView {
                     payer: p.payer,
                     cost: p.cost,
+                    life: p.life,
                     victim: p.victim,
                     exile: p.exile,
                 }),
@@ -5561,6 +5656,7 @@ impl Game {
             + ability_resolutions::owned_bytes(&s.ability_resolutions)
             + copies::owned_bytes(&s.copy_recipes)
             + modal_history::owned_bytes(&s.modal_history)
+            + cast_permissions::owned_bytes(&s.graveyard_cast_permissions)
             + s.announcing
                 .as_ref()
                 .map_or(0, |a| a.counter_payment.owned_bytes())

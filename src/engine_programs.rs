@@ -1940,6 +1940,12 @@ impl Game {
                 Instruction::Connive { subject, amount } => {
                     self.start_connive(&item, subject, amount)
                 }
+                Instruction::GrantGraveyardCast(kind) => self.grant_graveyard_cast(&item, kind),
+                Instruction::CounterRelatedUnlessPayLife(amount) => {
+                    if self.start_resolution_life(&item, amount) {
+                        return;
+                    }
+                }
                 Instruction::CounterUnlessPayScaled { amount, exile } => {
                     let generic = u32::try_from(self.item_amount(amount, &item))
                         .capacity("counter payment exhausted");

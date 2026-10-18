@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "50ad7a23214c7ecac4696101c832229d0460ea12f5e9b053002c707091a2d1ec"
   },
-  "physical_metadata_sha256": "831070b8222b5ed82da079d5904bdfc98a0b353d0858aeecaab80c595314662f"
+  "physical_metadata_sha256": "831070b8222b5ed82da079d5904bdfc98a0b353d0858aeecaab80c595314662f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainFlashbackTargetEffect.java",
+      "sha256": "a31c4c77af35bdd83e3e259a3d4546236e5017d4a9b037f92c309e2e8927beed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashbackAbility.java",
+      "sha256": "6a3cea9f6a49b61f425bf267cc280a991d4d1315322b11059cd0604e0dd76e87"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CastFromGraveyardAbility.java",
+      "sha256": "d960ebf54f87db2baf2a23785c181bdfea863a60d493eb66707ba64becc77be9"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SphinxOfForgottenLore.java",
+  "java_sha256": "aaa38ffd8b612903f8a4eb8dcbe5689da9b2c9d734d3ed21c9e0902ee987dac6"
 }

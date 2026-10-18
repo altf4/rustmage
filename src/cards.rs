@@ -10,6 +10,13 @@ use crate::capacity::CapacityExt;
 use crate::engine::GrantedSubtypes;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
+/// A temporary permission on one graveyard incarnation, independent of its grantor.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum GraveyardCastKind {
+    Cast,
+    Flashback,
+}
+
 /// Compact catalogue identity. The immutable definitions are shared across all
 /// games; no card strings, JSON, or rule objects are cloned into game states.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -624,6 +631,8 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    GrantGraveyardCast(GraveyardCastKind),
+    CounterRelatedUnlessPayLife(u32),
     CreateCopyToken {
         subject: Subject,
         amount: u16,
