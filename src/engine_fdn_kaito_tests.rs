@@ -244,6 +244,7 @@ fn fdn_kaito_per_creature_combat_damage_counts_not_fragments_or_other_sources() 
         let foreign = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
         let artifact = named(&mut g, p, "Hedron Archive", Zone::Battlefield);
         let event = |source, player, amount, combat| DamageEvent {
+            preventable: true,
             source: g.damage_source(source),
             target: Target::Player(player),
             amount,
@@ -262,6 +263,7 @@ fn fdn_kaito_per_creature_combat_damage_counts_not_fragments_or_other_sources() 
         assert_eq!(g.counter_count(kaito, CounterKind::Loyalty), 5);
         named(&mut g, p, "Doubling Season", Zone::Battlefield);
         let event = DamageEvent {
+            preventable: true,
             source: g.damage_source(first),
             target: Target::Player(p.other()),
             amount: 1,

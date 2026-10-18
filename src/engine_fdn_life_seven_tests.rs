@@ -174,12 +174,14 @@ fn fdn_life_seven_conqueror_actual_loss_damage_batch_and_departed_source() {
         let damage = g.damage_source(dealer);
         g.apply_damage_batch(&[
             DamageEvent {
+                preventable: true,
                 source: damage,
                 target: Target::Player(p.other()),
                 amount: 2,
                 combat: true,
             },
             DamageEvent {
+                preventable: true,
                 source: damage,
                 target: Target::Player(p.other()),
                 amount: 3,

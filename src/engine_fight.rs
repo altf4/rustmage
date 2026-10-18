@@ -72,6 +72,7 @@ impl Game {
     fn creatures_deal_power_damage(&mut self, source: CardId, recipient: CardId, fight: bool) {
         let power = self.stats(source).power.max(0);
         let source_damage = DamageEvent {
+            preventable: true,
             source: self.damage_source(source),
             target: Target::Card(recipient),
             amount: if fight && source == recipient {
@@ -87,6 +88,7 @@ impl Game {
             self.apply_damage_batch(&[source_damage]);
         } else {
             let return_damage = DamageEvent {
+                preventable: true,
                 source: self.damage_source(recipient),
                 target: Target::Card(source),
                 amount: self.stats(recipient).power.max(0),

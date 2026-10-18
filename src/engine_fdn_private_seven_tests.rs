@@ -269,6 +269,7 @@ fn fdn_private_trygon_only_combat_damage_bound_player_targets_optional_destroy_s
             let enemy = named(&mut g, p.other(), "Goldvein Pick", Zone::Battlefield);
             let own = named(&mut g, p, "Goldvein Pick", Zone::Battlefield);
             let event = DamageEvent {
+                preventable: true,
                 source: g.damage_source(predator),
                 target: Target::Player(p.other()),
                 amount: 2,
@@ -277,6 +278,7 @@ fn fdn_private_trygon_only_combat_damage_bound_player_targets_optional_destroy_s
             g.apply_damage_batch(&[event]);
             assert!(g.state.pending_triggers.is_empty());
             let event = DamageEvent {
+                preventable: true,
                 source: g.damage_source(predator),
                 target: Target::Player(p.other()),
                 amount: 2,

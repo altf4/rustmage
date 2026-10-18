@@ -870,6 +870,11 @@ impl Game {
                     return false;
                 };
                 if obj.zone == Zone::Battlefield
+                    && self.keywords(id).contains(Keywords::PROTECTION_EVERYTHING)
+                {
+                    return false;
+                }
+                if obj.zone == Zone::Battlefield
                     && obj.controller != controller
                     && (self.keywords(id).contains(Keywords::HEXPROOF)
                         || self.qualified_hexproof_blocks(id, controller, source, qualification))

@@ -105,6 +105,7 @@ impl Game {
                 target: row.target.target,
                 amount: i128::from(row.amount),
                 combat: false,
+                preventable: true,
             })
             .collect();
         self.apply_damage_batch(&events);

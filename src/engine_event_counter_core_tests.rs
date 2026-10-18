@@ -12,6 +12,7 @@ fn activate(g: &mut Game, id: CardId, index: u16, target: Option<Target>) {
 }
 fn damage(g: &Game, id: CardId, target: Target, amount: i128, combat: bool) -> DamageEvent {
     DamageEvent {
+        preventable: true,
         source: g.damage_source(id),
         target,
         amount,

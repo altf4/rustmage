@@ -185,6 +185,11 @@ pub(super) trait CharacteristicWorld {
         }
         let member = match effect.recipients {
             LiveStatRecipients::Attached => provider.attached_to == Some(self.reference(id)),
+            LiveStatRecipients::OtherColoredCreaturesYouControl(color) => {
+                target.controller == provider.controller
+                    && self.reference(id) != source
+                    && self.colors(id) & (1 << color.index()) != 0
+            }
             LiveStatRecipients::Creatures {
                 relation,
                 other,

@@ -294,8 +294,13 @@ impl Game {
                         event.source.controller == object.controller
                             && self.damage_recipient_controller(event) != object.controller
                     }
+                    ReplacementSpec::PreventAllDamageToSelf => {
+                        event.preventable
+                            && matches!(event.target, Target::Card(target) if self.on_battlefield(target) && self.object_ref(target) == source)
+                    }
                     ReplacementSpec::PreventOtherCreatureNoncombatDamage => {
-                        !event.combat
+                        event.preventable
+                            && !event.combat
                             && matches!(event.target, Target::Card(target) if self.on_battlefield(target) && self.is_creature(target) && self.object_ref(target) != source && self.state.objects[target as usize].controller == object.controller)
                     }
                     _ => false,
@@ -319,7 +324,8 @@ impl Game {
                     .checked_mul(2)
                     .capacity("damage replacement quantity exhausted")
             }
-            ReplacementSpec::PreventOtherCreatureNoncombatDamage => event.amount = 0,
+            ReplacementSpec::PreventOtherCreatureNoncombatDamage
+            | ReplacementSpec::PreventAllDamageToSelf => event.amount = 0,
             _ => unreachable!(),
         }
     }
@@ -1246,6 +1252,7 @@ mod owned_memory_tests {
             std::mem::size_of::<TokenGroupView>() + std::mem::size_of::<(ObjectRef, u16)>();
         assert_eq!(frame.bytes(), empty + payload);
         let mut entry = entries::EntryBatch {
+            discard_context: None,
             moves: Vec::new(),
             choices: Vec::new(),
             next: 0,

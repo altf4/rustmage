@@ -593,6 +593,7 @@ fn primitive_zero_damage_is_not_a_condition_for_unconditional_target_replacement
         let item = rule_item(&mut g, p, target);
         let source = g.damage_source(item.card);
         let dealt = g.apply_damage_batch(&[DamageEvent {
+            preventable: true,
             source,
             target: Target::Card(target),
             amount: 0,

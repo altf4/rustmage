@@ -121,6 +121,7 @@ fn activate(g: &mut Game, card: CardId, targets: &[CardId]) {
 }
 fn hit(g: &mut Game, source: CardId, target: CardId, combat: bool, amount: i128) {
     let e = DamageEvent {
+        preventable: true,
         source: g.damage_source(source),
         target: Target::Card(target),
         amount,

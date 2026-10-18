@@ -492,6 +492,7 @@ fn fdn_program_seven_koma_uncounterable_ward_four_and_combat_only_tokens() {
         let k = named(&mut g, p, "Koma, World-Eater", Zone::Battlefield);
         for combat in [false, true] {
             let event = DamageEvent {
+                preventable: true,
                 source: g.damage_source(k),
                 target: Target::Player(p.other()),
                 amount: 1,

@@ -304,6 +304,7 @@ fn felidar_paid_up_to_two_other_targets_partial_illegality_and_lifelink() {
             assert!(g.keywords(cat).contains(Keywords::LIFELINK));
             let life = g.state.players[p.index()].life;
             let event = DamageEvent {
+                preventable: true,
                 source: g.damage_source(cat),
                 target: Target::Player(p.other()),
                 amount: 2,

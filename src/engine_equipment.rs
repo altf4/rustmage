@@ -50,6 +50,9 @@ impl Game {
             || !self.on_battlefield(target.card)
             || self.object_ref(target.card) != target
             || !self.is_creature(target.card)
+            || self
+                .keywords(target.card)
+                .contains(Keywords::PROTECTION_EVERYTHING)
         {
             return false;
         }

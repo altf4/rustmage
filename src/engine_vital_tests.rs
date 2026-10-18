@@ -115,18 +115,21 @@ fn simultaneous_lifelink_is_one_gain_per_source_and_observers_see_it_before_sbas
     let source_b = g.damage_source(b);
     let gains = g.apply_damage_batch(&[
         DamageEvent {
+            preventable: true,
             source: source_a,
             target: Target::Player(Player::P1),
             amount: 2,
             combat: true,
         },
         DamageEvent {
+            preventable: true,
             source: source_a,
             target: Target::Card(cat),
             amount: 1,
             combat: true,
         },
         DamageEvent {
+            preventable: true,
             source: source_b,
             target: Target::Player(Player::P1),
             amount: 3,
