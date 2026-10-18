@@ -451,7 +451,18 @@ impl CharacteristicQuery<'_> {
                 }
             }
         }
-        self.apply_live_base_stat_layers(id, stats, &mut power_time, &mut toughness_time)
+        stats = self.apply_live_base_stat_layers(id, stats, &mut power_time, &mut toughness_time);
+        for (time, (power, toughness)) in characteristic_layers::base_changes(self, id) {
+            if power_time.is_none_or(|old| time > old) {
+                stats.power = power;
+                power_time = Some(time);
+            }
+            if toughness_time.is_none_or(|old| time > old) {
+                stats.toughness = toughness;
+                toughness_time = Some(time);
+            }
+        }
+        stats
     }
     fn live_static_applies(
         &self,
@@ -636,6 +647,7 @@ impl CharacteristicQuery<'_> {
         ObjectView {
             abilities: self.ability_availability(id),
             kinds: self.current_kinds(id),
+            colors: CharacteristicWorld::colors(self, id),
             granted_subtypes: self.granted_subtypes(id),
             entry_choice: self.entry_value(self.object_ref(id)),
             saddled: self.is_saddled(self.object_ref(id)),

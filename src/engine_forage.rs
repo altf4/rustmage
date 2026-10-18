@@ -63,10 +63,10 @@ impl Game {
         sources: &[ObjectView],
     ) {
         for source in sources {
-            if sacrifices.iter().any(|&(player, id)| {
-                player == source.controller
-                    && self.state.objects[id as usize].card.has_subtype("Food")
-            }) {
+            if sacrifices
+                .iter()
+                .any(|&(player, id)| player == source.controller && self.has_subtype(id, "Food"))
+            {
                 for (index, a) in source.card.triggers().iter().enumerate() {
                     if a.condition.event() == TriggerCondition::FoodsSacrificed {
                         self.queue_trigger(source, index);

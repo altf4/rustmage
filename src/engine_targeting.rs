@@ -456,6 +456,10 @@ impl Game {
     }
 
     pub(super) fn declare_mode(&mut self, mode: u16, plan: TargetPlan) {
+        let item = &self.state.announcing.as_ref().unwrap().item;
+        if let Some(key) = modal_history::key(item) {
+            self.record_modal_choice(key, mode);
+        }
         let announcement = self.state.announcing.as_mut().unwrap();
         announcement.item.mode = Some(mode);
         announcement.plan = plan;
@@ -762,7 +766,9 @@ impl Game {
                         let stats = self.stats_without_hand(id, departing);
                         stats.power >= i128::from(n) || stats.toughness >= i128::from(n)
                     }
-                    TargetPredicate::Colors(mask) => object.card.colors() & mask != 0,
+                    TargetPredicate::Colors(mask) => {
+                        ability_world::CharacteristicWorld::colors(self, id) & mask != 0
+                    }
                     TargetPredicate::Keyword(keyword) => self.keywords(id).contains(keyword),
                     TargetPredicate::WithoutKeyword(keyword) => {
                         !self.keywords(id).contains(keyword)
@@ -831,13 +837,13 @@ impl Game {
                 match rule {
                     TargetRule::CreatureOrVehicle { relation } => {
                         obj.zone == Zone::Battlefield
-                            && (self.is_creature(id) || obj.card.has_subtype("Vehicle"))
+                            && (self.is_creature(id) || self.has_subtype(id, "Vehicle"))
                             && (relation == -1 || (obj.controller == controller) == (relation == 0))
                     }
                     TargetRule::Creature => obj.zone == Zone::Battlefield && self.is_creature(id),
                     TargetRule::Any => {
                         obj.zone == Zone::Battlefield
-                            && (self.is_creature(id) || obj.card.is_planeswalker())
+                            && (self.is_creature(id) || self.current_kinds(id) & 64 != 0)
                     }
                     TargetRule::Object {
                         zone,
@@ -864,7 +870,7 @@ impl Game {
                                 } == controller)
                                     == (relation == 0))
                             && (!other || self.object_ref(id) != source)
-                            && (!nonland || !obj.card.is_land())
+                            && (!nonland || self.current_kinds(id) & 2 == 0)
                             && (!tapped || obj.tapped)
                             && ((min_mana == 0 && max_mana == u32::MAX) || {
                                 let value = obj.card.fixed_mana_value();
@@ -1057,7 +1063,11 @@ impl Game {
                 .modes()
                 .unwrap()
                 .iter()
-                .any(|mode| self.item_targets_available(&item, mode.targets))
+                .enumerate()
+                .any(|(index, mode)| {
+                    self.modal_choice_unused(&item, index)
+                        && self.item_targets_available(&item, mode.targets)
+                })
         {
             assert!(trigger, "validated modal spell");
             return false;

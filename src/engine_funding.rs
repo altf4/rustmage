@@ -469,7 +469,7 @@ impl<'g> FundingState<'g> {
                         && grant.matches_characteristics(
                             target.object.card,
                             target.object.is_token(),
-                            self.game.object_kinds(target.id, &target.object),
+                            self.kinds(target),
                             self.granted_subtypes(target.id),
                             target.object.controller == source.object.controller,
                             target.id == source.id
@@ -915,7 +915,7 @@ impl<'g> FundingState<'g> {
                 && self.kinds(r) & 1 != 0
                 && !o.tapped
             {
-                masks[o.card.colors() as usize & 31] += 1;
+                masks[ability_world::CharacteristicWorld::colors(self, r.id) as usize & 31] += 1;
             }
         }
         masks

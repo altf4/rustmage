@@ -181,9 +181,15 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
 pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
     world: &W,
 ) -> Option<AbilityEvaluation> {
-    world
-        .has_ability_removal()
-        .then(|| evaluate_abilities(world))
+    (world.has_ability_removal()
+        || world.game().state.roles.as_ref().is_some_and(|r| {
+            r.animations.iter().any(|row| {
+                row.keywords != Keywords::NONE
+                    && world.object(row.object.card).zone == Zone::Battlefield
+                    && world.reference(row.object.card) == row.object
+            })
+        }))
+    .then(|| evaluate_abilities(world))
 }
 
 pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> AbilityEvaluation {
@@ -236,10 +242,6 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 )
             });
             let effect = if removes || provides {
-                assert!(
-                    !(removes && provides),
-                    "removal and independent grants require distinct continuous-effect recipes"
-                );
                 let time = timestamp(game, source);
                 let recipients: Vec<_> = if removes {
                     object
@@ -250,10 +252,8 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 } else {
                     Vec::new()
                 };
-                let action = if removes {
-                    LayerSixAction::Remove
-                } else {
-                    let mut rows = Vec::new();
+                let mut rows = Vec::new();
+                if provides {
                     for (target, _) in game.state.objects.iter().enumerate() {
                         for fragment in origin.fragments {
                             if let Some(row) =
@@ -263,6 +263,14 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                             }
                         }
                     }
+                }
+                let action = if removes {
+                    if provides {
+                        LayerSixAction::RemoveAndGrant(rows)
+                    } else {
+                        LayerSixAction::Remove
+                    }
+                } else {
                     LayerSixAction::GrantEach(rows)
                 };
                 let index = effects.len();
@@ -297,6 +305,25 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                     started_earlier: false,
                     timestamp: row.timestamp,
                     recipients: vec![row.recipient.card],
+                    action: LayerSixAction::Grant {
+                        keywords: row.keywords,
+                        abilities: Vec::new(),
+                    },
+                });
+            }
+        }
+    }
+    if let Some(state) = &game.state.roles {
+        for row in &state.animations {
+            if world.object(row.object.card).zone == Zone::Battlefield
+                && world.reference(row.object.card) == row.object
+                && row.keywords != Keywords::NONE
+            {
+                effects.push(LayerSixEffect {
+                    provider: None,
+                    started_earlier: true,
+                    timestamp: row.timestamp,
+                    recipients: vec![row.object.card],
                     action: LayerSixAction::Grant {
                         keywords: row.keywords,
                         abilities: Vec::new(),

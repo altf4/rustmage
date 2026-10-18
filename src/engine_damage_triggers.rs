@@ -52,6 +52,7 @@ impl Game {
             token: object.is_token(),
             controller: object.controller,
             kinds: self.current_kinds(id),
+            colors: ability_world::CharacteristicWorld::colors(self, id),
             power: stats.power,
             power_above_base: creature && stats.power > base.power,
             granted_subtypes: self.granted_subtypes(id),

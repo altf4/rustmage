@@ -24,22 +24,10 @@ pub(super) trait CharacteristicWorld {
     /// Effective string name in this actual or speculative object world.
     /// Name-changing effects belong here, before later characteristic layers.
     fn name(&self, id: CardId) -> &'static str {
-        let object = self.object(id);
-        if object.zone == Zone::Stack {
-            self.game().effective_spell_card(id).name()
-        } else {
-            object.card.name()
-        }
+        characteristic_layers::name(self, id)
     }
-
-    /// Layer-five color query. Current admitted effects do not change colors.
     fn colors(&self, id: CardId) -> u8 {
-        let object = self.object(id);
-        if object.zone == Zone::Stack {
-            self.game().effective_spell_card(id).colors()
-        } else {
-            object.card.colors()
-        }
+        characteristic_layers::colors(self, id)
     }
 
     fn is_token(&self, id: CardId) -> bool {
@@ -103,7 +91,7 @@ pub(super) trait CharacteristicWorld {
         }
     }
     fn kinds(&self, id: CardId) -> u16 {
-        self.game().object_kinds(id, self.object(id))
+        characteristic_layers::kinds(self, id, self.object(id))
     }
     fn subtypes(&self, id: CardId) -> GrantedSubtypes {
         self.game().granted_subtypes_with(
@@ -111,6 +99,8 @@ pub(super) trait CharacteristicWorld {
             self.object(id),
             |source| Some(self.object(source)),
             |source, kind| self.counter_count(source, kind),
+            |id, _| self.kinds(id),
+            characteristic_layers::subtype_changes(self, id),
         )
     }
     fn value(&self, value: StatValue, source: CardId) -> i128 {
@@ -127,7 +117,7 @@ pub(super) trait CharacteristicWorld {
                 })
             },
             &|id| self.subtypes(id),
-            &|id, object| game.object_kinds(id, object),
+            &|id, _| self.kinds(id),
             &|id| self.name(id),
             &|id| self.colors(id),
             &|id| self.counter_amounts(id).has_any(),

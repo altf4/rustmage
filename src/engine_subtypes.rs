@@ -4,6 +4,25 @@
 use super::*;
 use serde::ser::{SerializeSeq, SerializeStruct};
 
+const LAND_TYPES: [&str; 17] = [
+    "Cave",
+    "Desert",
+    "Forest",
+    "Gate",
+    "Island",
+    "Lair",
+    "Locus",
+    "Mine",
+    "Mountain",
+    "Plains",
+    "Power-Plant",
+    "Sphere",
+    "Swamp",
+    "Tower",
+    "Town",
+    "Planet",
+    "Urza's",
+];
 const JOB_TYPES: [&str; 11] = [
     "Artificer",
     "Bard",
@@ -17,6 +36,13 @@ const JOB_TYPES: [&str; 11] = [
     "Warrior",
     "Wizard",
 ];
+// Eleven job grants and three projection flags fit in one existing word.
+const JOB_MASK: u16 = (1 << JOB_TYPES.len()) - 1;
+const SUPPRESS_PRINTED: u16 = 1 << JOB_TYPES.len();
+const LAND_ONLY: u16 = SUPPRESS_PRINTED << 1;
+const ALL_CREATURE_TYPES: u16 = LAND_ONLY << 1;
+const FLAGS_MASK: u16 = SUPPRESS_PRINTED | LAND_ONLY | ALL_CREATURE_TYPES;
+const _: () = assert!(JOB_TYPES.len() + 3 <= u16::BITS as usize);
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord)]
 pub struct GrantedSubtypes {
     added: u16,
@@ -26,10 +52,21 @@ pub struct GrantedSubtypes {
     creature_types: Option<&'static [&'static str]>,
 }
 impl GrantedSubtypes {
+    fn flag(self, bit: u16) -> bool {
+        self.added & bit != 0
+    }
+    fn set_flag(&mut self, bit: u16, value: bool) {
+        if value {
+            self.added |= bit;
+        } else {
+            self.added &= !bit;
+        }
+    }
     /// Membership supplied by this overlay, excluding retained printed types.
     /// Use ObjectView::has_subtype for the full effective characteristic.
     pub fn contains(self, subtype: &str) -> bool {
-        self.chosen.is_some_and(|t| t.name() == subtype)
+        (self.flag(ALL_CREATURE_TYPES) && crate::cards::is_creature_type(subtype))
+            || self.chosen.is_some_and(|t| t.name() == subtype)
             || self
                 .creature_types
                 .is_some_and(|types| types.contains(&subtype))
@@ -41,14 +78,22 @@ impl GrantedSubtypes {
     pub(crate) fn has(self, card: Card, subtype: &str) -> bool {
         // Preserve the ordinary-card hot path: no taxonomy lookup, and printed
         // membership short-circuits the additional-type mask as before.
-        if self.creature_types.is_some() && crate::cards::is_creature_type(subtype) {
+        if self.flag(LAND_ONLY) {
+            return self.contains(subtype)
+                || (!self.flag(SUPPRESS_PRINTED)
+                    && LAND_TYPES.contains(&subtype)
+                    && card.has_subtype(subtype));
+        }
+        if self.flag(SUPPRESS_PRINTED)
+            || (self.creature_types.is_some() && crate::cards::is_creature_type(subtype))
+        {
             self.contains(subtype)
         } else {
             card.has_subtype(subtype) || self.contains(subtype)
         }
     }
     fn replace_creature_types(&mut self, types: &'static [&'static str]) {
-        self.added = 0;
+        self.added &= FLAGS_MASK;
         self.chosen = None;
         self.creature_types = Some(types);
     }
@@ -74,9 +119,12 @@ impl Serialize for GrantedSubtypes {
                 out.end()
             }
         }
-        let mut out = serializer.serialize_struct("GrantedSubtypes", 3)?;
+        let mut out = serializer.serialize_struct("GrantedSubtypes", 6)?;
+        out.serialize_field("suppress_printed", &self.flag(SUPPRESS_PRINTED))?;
+        out.serialize_field("land_only", &self.flag(LAND_ONLY))?;
+        out.serialize_field("all_creature_types", &self.flag(ALL_CREATURE_TYPES))?;
         out.serialize_field("chosen", &self.chosen)?;
-        out.serialize_field("added", &Added(self.added))?;
+        out.serialize_field("added", &Added(self.added & JOB_MASK))?;
         out.serialize_field("creature_types", &self.creature_types)?;
         out.end()
     }
@@ -109,27 +157,56 @@ impl Game {
         target: &Object,
         lookup: impl Fn(CardId) -> Option<&'a Object>,
         counter_count: impl Fn(CardId, CounterKind) -> u64,
+        kinds: impl Fn(CardId, &Object) -> u16,
+        mut changes: Vec<(u64, characteristic_layers::SubtypeChange)>,
     ) -> GrantedSubtypes {
         let mut mask = GrantedSubtypes::default();
-        if target.zone != Zone::Battlefield || self.object_kinds(id, target) & 1 == 0 {
+        if target.zone != Zone::Battlefield {
             return mask;
         }
         let reference = ObjectRef {
             card: id,
             generation: target.generation,
         };
-        // Find the latest resolving replacement first. All supported static
-        // subtype effects are additions, so only additions newer than it survive.
-        let latest = self.state.roles.as_ref().and_then(|state| {
-            state
-                .creature_types
-                .iter()
-                .filter(|row| row.recipient == reference)
-                .max_by_key(|row| row.timestamp)
-        });
-        let replacement_time = latest.map(|row| row.timestamp);
-        if let Some(row) = latest {
-            mask.replace_creature_types(row.types);
+        if let Some(state) = &self.state.roles {
+            changes.extend(
+                state
+                    .creature_types
+                    .iter()
+                    .filter(|row| row.recipient == reference)
+                    .map(|row| {
+                        (
+                            row.timestamp,
+                            characteristic_layers::SubtypeChange::Named(row.types, false),
+                        )
+                    }),
+            );
+        }
+        changes.sort_by_key(|row| row.0);
+        let replacement_time = changes.last().map(|row| row.0);
+        for (_, change) in changes {
+            match change {
+                characteristic_layers::SubtypeChange::LandOnly => {
+                    mask.replace_creature_types(&[]);
+                    mask.set_flag(ALL_CREATURE_TYPES, false);
+                    mask.set_flag(LAND_ONLY, true);
+                }
+                characteristic_layers::SubtypeChange::All => {
+                    mask.replace_creature_types(&[]);
+                    mask.set_flag(ALL_CREATURE_TYPES, true);
+                }
+                characteristic_layers::SubtypeChange::Named(types, all) => {
+                    mask.replace_creature_types(types);
+                    mask.set_flag(ALL_CREATURE_TYPES, false);
+                    if all {
+                        mask.set_flag(SUPPRESS_PRINTED, true);
+                        mask.set_flag(LAND_ONLY, false);
+                    }
+                }
+            }
+        }
+        if kinds(id, target) & 1 == 0 {
+            return mask;
         }
         let source_time = |source: ObjectRef| {
             self.state
@@ -177,7 +254,7 @@ impl Game {
                 continue;
             };
             if o.zone == Zone::Battlefield
-                && self.object_kinds(source, o) & 1 == 0
+                && kinds(source, o) & 1 == 0
                 && o.attached_to == Some(reference)
                 && let Some(subtype) = o.card.attached_subtype()
                 && newer(ObjectRef {
@@ -200,6 +277,8 @@ impl Game {
                     o,
                     |source| self.state.objects.get(source as usize),
                     |source, kind| self.counter_count(source, kind),
+                    |id, object| self.object_kinds(id, object),
+                    characteristic_layers::subtype_changes(self, id),
                 )
             })
     }

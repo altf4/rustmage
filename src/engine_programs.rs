@@ -379,7 +379,7 @@ impl Game {
                                 && (!f.source_only || source.reference == event.before.reference)
                                 && (!f.other || source.reference != event.before.reference)
                                 && (f.kinds == 0 || event.before.kinds & u16::from(f.kinds) != 0)
-                                && (!f.nonland || !event.before.card.is_land())
+                                && (!f.nonland || event.before.kinds & 2 == 0)
                                 && event.before.keywords.contains(f.keywords)
                                 && f.tokens
                                     .is_none_or(|token| event.before.is_token() == token)
@@ -1022,7 +1022,8 @@ impl Game {
                         .iter()
                         .filter(|attacker| {
                             self.state.objects[attacker.card as usize].controller == actor
-                                && self.state.objects[attacker.card as usize].card.colors() & colors
+                                && ability_world::CharacteristicWorld::colors(self, attacker.card)
+                                    & colors
                                     != 0
                         })
                         .count();
@@ -1751,7 +1752,9 @@ impl Game {
                 Instruction::Reflexive { ability } => {
                     self.queue_reflexive(&item, ability, None);
                 }
-                Instruction::Modal(_) => unreachable!("unselected modal ability executed"),
+                Instruction::Modal(_) | Instruction::ModalOnce(_) => {
+                    unreachable!("unselected modal ability executed")
+                }
                 Instruction::Explore(subject) => {
                     if self.start_explore(&item, subject) {
                         return;
@@ -2170,6 +2173,7 @@ impl Game {
                         return;
                     }
                 },
+                Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
                 Instruction::DestroyLandAndSearch => self.destroy_land_and_search(&item),
                 Instruction::Search(spec) | Instruction::SearchRequired(spec) => {
                     let minimum = if matches!(instruction, Instruction::SearchRequired(_)) {
@@ -2450,6 +2454,23 @@ impl Game {
                     }
                 }
                 Instruction::CreateEmblem(factory) => self.create_emblem(item.controller, factory),
+                Instruction::LoseGame(set) => {
+                    let mut lost = [false; 2];
+                    for player in self.program_players(set, &item) {
+                        lost[player.index()] = true;
+                    }
+                    self.state.outcome = match lost {
+                        [true, true] => Some(Outcome::Draw),
+                        [true, false] => Some(Outcome::Winner(Player::P1)),
+                        [false, true] => Some(Outcome::Winner(Player::P0)),
+                        _ => None,
+                    };
+                    if self.state.outcome.is_some() {
+                        self.state.resolving = None;
+                        self.state.pending = Pending::Terminal;
+                        return;
+                    }
+                }
                 Instruction::LoseGainedLife(set) => {
                     let amount = item
                         .life_event
@@ -3052,9 +3073,7 @@ impl Game {
                         .filter(|&&bound| {
                             self.same_target_object(bound)
                                 && match bound.target {
-                                    Target::Card(id) => {
-                                        self.state.objects[id as usize].card.has_subtype(subtype)
-                                    }
+                                    Target::Card(id) => self.has_subtype(id, subtype),
                                     _ => false,
                                 }
                         })

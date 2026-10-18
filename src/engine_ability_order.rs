@@ -32,6 +32,7 @@ pub(super) struct LayerSixGrant {
 #[derive(Clone, Debug)]
 pub(super) enum LayerSixAction {
     Remove,
+    RemoveAndGrant(Vec<LayerSixGrant>),
     GrantEach(Vec<LayerSixGrant>),
     Grant {
         keywords: Keywords,
@@ -153,7 +154,10 @@ pub(super) fn apply_layer_six(
             for (j, other) in effects.iter().enumerate() {
                 if i != j
                     && pending[j]
-                    && matches!(other.action, LayerSixAction::Remove)
+                    && matches!(
+                        other.action,
+                        LayerSixAction::Remove | LayerSixAction::RemoveAndGrant(_)
+                    )
                     && other.recipients.contains(&source)
                 {
                     dependencies[i].push(j);
@@ -164,7 +168,18 @@ pub(super) fn apply_layer_six(
         let effect = &effects[next];
         pending[next] = false;
         started[next] = true;
-        if let LayerSixAction::GrantEach(rows) = &effect.action {
+        if let LayerSixAction::RemoveAndGrant(_) = &effect.action {
+            for &recipient in &effect.recipients {
+                let object = &mut objects[recipient as usize];
+                object.printed = false;
+                object.keywords = Keywords::NONE;
+                object.grants.clear();
+                object.mana.clear();
+            }
+        }
+        if let LayerSixAction::GrantEach(rows) | LayerSixAction::RemoveAndGrant(rows) =
+            &effect.action
+        {
             for row in rows {
                 let object = &mut objects[row.recipient as usize];
                 object.keywords = object.keywords.union(row.keywords);
@@ -176,7 +191,7 @@ pub(super) fn apply_layer_six(
         for &recipient in &effect.recipients {
             let object = &mut objects[recipient as usize];
             match &effect.action {
-                LayerSixAction::GrantEach(_) => unreachable!(),
+                LayerSixAction::GrantEach(_) | LayerSixAction::RemoveAndGrant(_) => unreachable!(),
                 LayerSixAction::Remove => {
                     object.printed = false;
                     object.keywords = Keywords::NONE;

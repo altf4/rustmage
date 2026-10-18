@@ -53,6 +53,10 @@ pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
 pub use plot::{PlotPaymentView, PlottedCard};
 pub use warp::{DelayedWarpExileView, WarpedCard};
 
+#[path = "engine_characteristic_layers.rs"]
+mod characteristic_layers;
+pub use characteristic_layers::AnimationView;
+
 #[path = "engine_subtypes.rs"]
 mod subtypes;
 pub use subtypes::GrantedSubtypes;
@@ -134,6 +138,9 @@ mod roles;
 #[path = "engine_sba.rs"]
 mod sba;
 pub use roles::{RoleGroupView, RoleTimestampView};
+#[path = "engine_modal_history.rs"]
+mod modal_history;
+pub use modal_history::ModalHistoryView;
 #[path = "engine_ability_evaluation.rs"]
 mod ability_evaluation;
 #[path = "engine_characteristic_query.rs"]
@@ -921,7 +928,7 @@ impl SpellView {
                 .program
                 .first()
             {
-                Some(Instruction::Modal(modes)) => Some(modes),
+                Some(Instruction::Modal(modes) | Instruction::ModalOnce(modes)) => Some(modes),
                 _ => None,
             },
             StackKind::ActivatedAbility { ability } => match self.source_card.activations()
@@ -1105,6 +1112,7 @@ pub struct DamageFacts {
     pub token: bool,
     pub controller: Player,
     pub kinds: u16,
+    pub colors: u8,
     pub power: i128,
     pub power_above_base: bool,
     pub granted_subtypes: GrantedSubtypes,
@@ -1119,16 +1127,15 @@ impl DamageFacts {
     pub(super) fn is_token(&self) -> bool {
         self.token
     }
-    /// Frozen source colors. With the currently admitted layer-five effects these
-    /// are intrinsic to the captured effective card. Color-changing mechanics must
-    /// extend this LKI query together with CharacteristicWorld::colors.
+    /// Effective colors frozen with the source's other last-known characteristics.
     pub(super) fn colors(&self) -> u8 {
-        self.card.colors()
+        self.colors
     }
     fn from_view(view: &ObjectView) -> Self {
         Self {
             controller: view.controller,
             kinds: view.kinds,
+            colors: view.colors,
             power: view.power,
             power_above_base: view.power_above_base,
             granted_subtypes: view.granted_subtypes,
@@ -1385,6 +1392,7 @@ struct State {
     creature_damage_history: Option<SharedVec<CreatureDamageHistoryView>>,
     entry_values: entry_choices::Rows,
     copy_recipes: copies::Rows,
+    modal_history: modal_history::Rows,
     ability_resolutions: ability_resolutions::Rows,
     attacked_this_turn: SharedVec<ObjectRef>,
     creatures_died_this_turn: u64,
@@ -1468,6 +1476,7 @@ pub struct ObjectView {
     pub abilities: Option<Box<AbilityAvailabilityView>>,
     /// Current card-type bits; Card remains the immutable printed identity.
     pub kinds: u16,
+    pub colors: u8,
     pub granted_subtypes: GrantedSubtypes,
     pub entry_choice: Option<EntryChoiceValue>,
     pub saddled: bool,
@@ -1702,6 +1711,7 @@ pub struct LegalActionSpace {
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
     pub creature_damage_history: Vec<CreatureDamageHistoryView>,
+    pub animations: Vec<AnimationView>,
     pub temporary_controls: Vec<TemporaryControlView>,
     pub casting_prohibited: bool,
     pub death_exile_replacements: Vec<ExileDeathReplacementView>,
@@ -1733,6 +1743,8 @@ pub struct Observation {
     pub decision: &'static str,
     pub players: [PlayerView; 2],
     pub objects: Vec<ObjectView>,
+    /// Public modes already chosen for exact source incarnations.
+    pub modal_history: Vec<ModalHistoryView>,
     pub exile_links: Vec<ExileLink>,
     pub exile_permissions: Vec<ExilePlayPermission>,
     pub adventures: Vec<AdventurePermission>,
@@ -1918,6 +1930,7 @@ impl Game {
                 creature_damage_history: None,
                 entry_values: None,
                 copy_recipes: None,
+                modal_history: None,
                 ability_resolutions: None,
                 attacked_this_turn: Vec::new().into(),
                 creatures_died_this_turn: 0,
@@ -2235,6 +2248,7 @@ impl Game {
                 break;
             }
         }
+        self.prune_modal_history();
         self.revision = self.revision.checked_add(1).capacity("revision exhausted");
         Ok(())
     }
@@ -3461,6 +3475,7 @@ impl Game {
                 item.source_card = definition;
                 item.source_keywords = definition.info().keywords;
                 item.source_facts.card = definition;
+                item.source_facts.colors = definition.colors();
                 item.source_facts.kinds = definition.kind_mask();
                 item.source_facts.power = 0;
                 self.open_payment_announcement(item, Counters::default(), None);
@@ -4080,21 +4095,29 @@ impl Game {
         let object = &self.state.objects[id as usize];
         match object.card.entry_tapped() {
             EntryTapped::Never | EntryTapped::PayLife(_) => false,
-            EntryTapped::UnlessPlainsOrIsland => !self.state.objects.iter().any(|o| {
-                o.zone == Zone::Battlefield
-                    && o.controller == controller
-                    && (o.card.has_subtype("Plains") || o.card.has_subtype("Island"))
-            }),
-            EntryTapped::UnlessPlaneswalker => !self.state.objects.iter().any(|o| {
-                o.zone == Zone::Battlefield
-                    && o.controller == controller
-                    && o.card.kind_mask() & 64 != 0
-            }),
+            EntryTapped::UnlessPlainsOrIsland => {
+                !self.state.objects.iter().enumerate().any(|(id, o)| {
+                    o.zone == Zone::Battlefield
+                        && o.controller == controller
+                        && (self.has_subtype(id as CardId, "Plains")
+                            || self.has_subtype(id as CardId, "Island"))
+                })
+            }
+            EntryTapped::UnlessPlaneswalker => {
+                !self.state.objects.iter().enumerate().any(|(id, o)| {
+                    o.zone == Zone::Battlefield
+                        && o.controller == controller
+                        && self.current_kinds(id as CardId) & 64 != 0
+                })
+            }
             EntryTapped::Always => true,
             EntryTapped::OpponentsTurn => controller != self.state.active,
             EntryTapped::UnlessLowLife => self.state.players.iter().all(|p| p.life > 13),
-            EntryTapped::UnlessBasic => !self.state.objects.iter().any(|o| {
-                o.zone == Zone::Battlefield && o.controller == controller && o.card.is_basic_land()
+            EntryTapped::UnlessBasic => !self.state.objects.iter().enumerate().any(|(id, o)| {
+                o.zone == Zone::Battlefield
+                    && o.controller == controller
+                    && self.current_kinds(id as CardId) & 2 != 0
+                    && o.card.is_basic_land()
             }),
             EntryTapped::UnlessAtMostTwo | EntryTapped::UnlessAtLeastTwo => {
                 let lands = self
@@ -4106,7 +4129,7 @@ impl Game {
                         *other != id as usize
                             && o.zone == Zone::Battlefield
                             && o.controller == controller
-                            && o.card.is_land()
+                            && self.current_kinds(*other as CardId) & 2 != 0
                     })
                     .count();
                 match object.card.entry_tapped() {
@@ -4271,6 +4294,7 @@ impl Game {
             self.forget_temporary_control(before.reference);
             self.forget_role(before.reference);
             self.forget_base_stats(before.reference);
+            self.forget_animations(before.reference);
             self.forget_creature_types(before.reference);
             self.forget_live_static_source(before.reference);
             self.forget_ability_source(before.reference);
@@ -4609,6 +4633,7 @@ impl Game {
         self.expire_temporary_controls();
         self.state.temporary_abilities = None;
         self.expire_base_stats();
+        let expired_animations = self.expire_animations();
         self.expire_keyword_effects();
         self.state.death_exile_replacements = None;
         for player in &mut self.state.players {
@@ -4630,7 +4655,7 @@ impl Game {
         // Losing temporary growth can expose lethal negative counters. Apply
         // SBAs before advancing the turn; CR514.3 gives an extra priority cycle.
         if !self.state.pending_triggers.is_empty()
-            || expired_vehicles && self.sba_required()
+            || (expired_vehicles || expired_animations) && self.sba_required()
             || self.state.objects.iter().enumerate().any(|(id, obj)| {
                 obj.zone == Zone::Battlefield
                     && self.is_creature(id as CardId)
@@ -4713,8 +4738,9 @@ impl Game {
                 }
                 Target::Card(id) => {
                     let creature = self.is_creature(id);
+                    let planeswalker = self.current_kinds(id) & 64 != 0;
                     let obj = &mut self.state.objects[id as usize];
-                    if obj.card.is_planeswalker() {
+                    if planeswalker {
                         let removed = u128::try_from(event.amount)
                             .expect("positive damage")
                             .min(u128::from(obj.counters.loyalty))
@@ -4978,6 +5004,10 @@ impl Game {
                 .death_exile_replacements
                 .as_ref()
                 .map_or_else(Vec::new, |rules| rules.as_ref().clone()),
+            animations: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.animations.clone()),
             creature_damage_history: s
                 .creature_damage_history
                 .as_ref()
@@ -5113,6 +5143,10 @@ impl Game {
             evidence: self.evidence_view(viewer),
             last_evidence: s.evidence_data.as_ref().and_then(|d| d.last.clone()),
             objects,
+            modal_history: s
+                .modal_history
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.to_vec()),
             exile_links: s.exile_links.clone(),
             spell_characteristics: self.spell_characteristics(),
             exile_permissions: s.exile_permissions.clone(),
@@ -5449,6 +5483,7 @@ impl Game {
             + s.pending.owned_bytes()
             + ability_resolutions::owned_bytes(&s.ability_resolutions)
             + copies::owned_bytes(&s.copy_recipes)
+            + modal_history::owned_bytes(&s.modal_history)
             + s.announcing
                 .as_ref()
                 .map_or(0, |a| a.counter_payment.owned_bytes())
@@ -6406,3 +6441,11 @@ mod fdn_five_bounded_acceptance_tests;
 #[cfg(test)]
 #[path = "engine_runtime_copy_tests.rs"]
 mod runtime_copy_tests;
+
+#[cfg(test)]
+#[path = "engine_layered_characteristic_tests.rs"]
+mod layered_characteristic_tests;
+
+#[cfg(test)]
+#[path = "engine_modal_history_tests.rs"]
+mod modal_history_tests;

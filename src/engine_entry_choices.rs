@@ -148,7 +148,7 @@ pub(super) fn modifier_bonus<W: CharacteristicWorld + ?Sized>(
         world.game().entry_value(world.reference(source)),
     ) {
         (EntryChoiceKind::Color, Some(EntryChoiceValue::Color(c))) => {
-            object.card.colors() & (1 << c.index()) != 0
+            world.colors(target) & (1 << c.index()) != 0
         }
         (EntryChoiceKind::CreatureType, Some(EntryChoiceValue::CreatureType(t))) => {
             world.subtypes(target).has(object.card, t.name())

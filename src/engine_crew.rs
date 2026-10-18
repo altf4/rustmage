@@ -76,25 +76,9 @@ impl ActivatedAbility {
 impl Game {
     /// One borrowed query serves real objects and speculative funding overlays.
     pub(super) fn object_kinds(&self, id: CardId, object: &Object) -> u16 {
-        let mut kinds = if object.zone == Zone::Stack {
-            self.effective_spell_card(id).kind_mask()
-        } else {
-            object.card.kind_mask()
-        };
-        if object.zone == Zone::Battlefield
-            && self.state.crew.as_ref().is_some_and(|c| {
-                c.animated
-                    .binary_search(&ObjectRef {
-                        card: id,
-                        generation: object.generation,
-                    })
-                    .is_ok()
-            })
-        {
-            kinds |= 17;
-        }
-        kinds
+        characteristic_layers::kinds(self, id, object)
     }
+
     pub(super) fn current_kinds(&self, id: CardId) -> u16 {
         self.object_kinds(id, &self.state.objects[id as usize])
     }
@@ -305,6 +289,16 @@ impl Game {
         if !self.on_battlefield(item.card) || self.object_ref(item.card) != item.object {
             return;
         }
+        self.animate_source(
+            item,
+            crate::cards::AnimationSpec {
+                artifact: true,
+                creature_types: crate::cards::AnimationCreatureTypes::Unchanged,
+                base: None,
+                keywords: Keywords::NONE,
+                duration: crate::cards::AnimationDuration::EndOfTurn,
+            },
+        );
         let state = self.state.crew.get_or_insert_with(Default::default);
         if let Err(at) = state.animated.binary_search(&item.object) {
             state
