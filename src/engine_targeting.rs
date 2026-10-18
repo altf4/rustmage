@@ -51,6 +51,7 @@ impl Announcement {
             }
             StackKind::TriggeredAbility { .. }
             | StackKind::DelayedSacrifice
+            | StackKind::DelayedReturn
             | StackKind::DelayedWarpExile => None,
         }
     }
@@ -89,6 +90,7 @@ impl Announcement {
                 .mana_options(),
             StackKind::TriggeredAbility { .. }
             | StackKind::DelayedSacrifice
+            | StackKind::DelayedReturn
             | StackKind::DelayedWarpExile => {
                 unreachable!("triggered ability has no activation cost")
             }
@@ -172,6 +174,7 @@ impl Announcement {
                     .is_empty(),
                 StackKind::TriggeredAbility { .. }
                 | StackKind::DelayedSacrifice
+                | StackKind::DelayedReturn
                 | StackKind::DelayedWarpExile => false,
             }
     }
@@ -772,6 +775,8 @@ impl Game {
                 // The base rule validates the object index and zone before this lookup.
                 let object = &self.state.objects[id as usize];
                 return match *predicate {
+                    TargetPredicate::OwnedByController => object.owner == controller,
+                    TargetPredicate::OtherThanSource => self.object_ref(id) != source,
                     TargetPredicate::Blocking => self.state.blocking.contains(&id),
                     TargetPredicate::Nontoken => !object.is_token(),
                     TargetPredicate::Attacking => self.state.attackers.iter().any(|a| a.card == id),
@@ -1083,6 +1088,7 @@ impl Game {
             is_copy: false,
             delayed_sacrifice: None,
             delayed_warp_exile: None,
+            return_link: None,
             x: None,
             attachment_trigger: None,
             cast: Some(CastInfo {

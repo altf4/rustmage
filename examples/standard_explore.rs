@@ -357,7 +357,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && let Some(item) = &before.announcing
             {
                 match item.kind {
-                    StackKind::DelayedSacrifice | StackKind::DelayedWarpExile => {
+                    StackKind::DelayedReturn
+                    | StackKind::DelayedSacrifice
+                    | StackKind::DelayedWarpExile => {
                         panic!("no delayed producer in this fixture")
                     }
                     StackKind::Spell => {

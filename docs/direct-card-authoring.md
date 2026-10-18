@@ -138,3 +138,26 @@ controls the permanent. It does not implement control that lasts only while an
 Aura remains attached. `CreatureDiesAttackState` tests the frozen death event,
 and `MayPayControllerLife` checks affordability before offering its branch; its
 program must explicitly perform the life loss and subsequent effects.
+
+
+## Continuous control and attached-creature death
+
+Use a static group beginning at `AbilityLayer::Control` with
+`StaticAbilityFragment::ControlAttached` for an Aura whose controller continuously
+controls its enchanted permanent. The sparse control timeline retains exact-object
+baselines and fixed/EOT effects; the live controller is its derived cache. Control
+assignments only create dependencies when they would change what another effect
+does. Dependencies are reevaluated after each application, with timestamp ordering
+for actual loops. Whole simultaneous movement batches materialize the final
+controllers once, avoiding intermediate combat removal or summoning sickness.
+Speculative funding recomputes its private projection after virtual departures.
+An `AuraSpec` kind mask of zero means any permanent, including Battles.
+
+`TriggerCondition::AttachedCreatureDies` belongs to the attachment and tests its
+frozen exact recipient, not the recipient's own abilities. For an Aura returning
+itself, use `Instruction::ReturnSourceFromFirstPublicZoneToHand`. This narrowly
+opts the packet into the existing `source_move` context for its first actual
+battlefield-to-graveyard/exile movement, including a later Aura SBA. It binds only
+once, preserves source LKI and rejects subsequent departures/reentries. It can
+also return the unchanged live source. This tracking does not rebind unrelated
+death observers or infer a zone-change generation.

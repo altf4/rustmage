@@ -92,7 +92,7 @@ fn cast_origins_vizier_lost_ability_and_required_provider_reservation() {
         let mut g = setup(p);
         let vizier = put(&mut g, p, "Vizier of the Menagerie", Zone::Battlefield);
         let lion = put(&mut g, p, "Savannah Lions", Zone::Hand);
-        let land = put(&mut g, p, "Radiant Fountain", Zone::Battlefield);
+        let land = put(&mut g, p, "Wastes", Zone::Battlefield);
         assert!(
             g.legal_actions()
                 .contains(&Action::AnnounceCast { card: lion })

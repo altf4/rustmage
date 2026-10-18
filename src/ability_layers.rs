@@ -4,6 +4,7 @@ use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 #[repr(u8)]
 pub(crate) enum AbilityLayer {
+    Control = 2,
     Text = 3,
     Type = 4,
     #[expect(
@@ -40,6 +41,7 @@ pub(crate) enum StaticAbilityFragment {
     LookAtLibraryTop,
     CastCreatureFromLibraryTop,
     SpendAnyManaForCreatures,
+    ControlAttached,
     AttachedCharacteristics(&'static AttachedCharacteristics),
     ChosenCreatureType,
     OtherSubtypeEntryCounters(&'static str),
