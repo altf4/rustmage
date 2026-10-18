@@ -52,7 +52,11 @@ fn cast(g: &mut Game, id: CardId, _mode: Option<u16>, targets: &[Target]) {
         checked(g, Action::ChooseTarget { target });
     }
     for _ in 0..10 {
-        if g.state.objects[id as usize].zone == Zone::Stack {
+        if g.state
+            .announcing
+            .as_ref()
+            .is_none_or(|a| a.item.kind != StackKind::Spell || a.item.card != id)
+        {
             return;
         }
         let a = g
@@ -260,5 +264,163 @@ fn return_links_kykar_noncreature_modes_flying_spirit_and_owner_return() {
                 assert_eq!(tokens[0].power, 1);
             }
         }
+    }
+}
+
+fn reject(g: &mut Game, action: Action) {
+    let before = g.snapshot();
+    let revision = g.revision();
+    assert_eq!(
+        g.apply(g.actor().unwrap(), action),
+        Err(Error::IllegalAction)
+    );
+    assert_eq!(g.snapshot(), before);
+    assert_eq!(g.revision(), revision);
+}
+#[test]
+fn return_links_prince_rejects_self_and_foreign_owned_then_ignores_stale_exile() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let own = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        g.state.objects[own as usize].controller = p.other();
+        let foreign = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+        g.state.objects[foreign as usize].controller = p;
+        let prince = named(&mut g, p, "Charming Prince", Zone::Hand);
+        cast(&mut g, prince, None, &[]);
+        for _ in 0..8 {
+            if g.legal_actions().contains(&Action::ChooseMode { mode: 2 }) {
+                break;
+            }
+            checked(&mut g, Action::Pass);
+        }
+        checked(&mut g, Action::ChooseMode { mode: 2 });
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(prince),
+            },
+        );
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(foreign),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(own),
+            },
+        );
+        settle(&mut g, 2, None);
+        assert_eq!(g.observe(p).delayed_returns.len(), 1);
+        let exiled = g.object_ref(own);
+        g.move_object(own, Zone::Graveyard);
+        g.move_object(own, Zone::Exile);
+        assert_ne!(g.object_ref(own), exiled);
+        end(&mut g);
+        assert_eq!(g.state.objects[own as usize].zone, Zone::Exile);
+    }
+}
+#[test]
+fn return_links_familiar_counter_replacements_apply_again_and_vessel_owner_is_distinct() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        named(&mut g, p, "Doubling Season", Zone::Battlefield);
+        let cat = named(&mut g, p, "Nine-Lives Familiar", Zone::Hand);
+        paid(&mut g, cat);
+        assert_eq!(g.counter_count(cat, CounterKind::Revival), 16);
+        kill(&mut g, p, cat);
+        end(&mut g);
+        assert_eq!(g.counter_count(cat, CounterKind::Revival), 30);
+        g.state.step = Step::Main1;
+        g.state.priority = p;
+        let vessel = named(&mut g, p, "Infernal Vessel", Zone::Hand);
+        paid(&mut g, vessel);
+        g.state.objects[vessel as usize].controller = p.other();
+        kill(&mut g, p, vessel);
+        assert!(g.on_battlefield(vessel));
+        assert_eq!(g.state.objects[vessel as usize].controller, p);
+    }
+}
+#[test]
+fn return_links_death_effective_types_ability_removal_and_call_filters() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let vessel = named(&mut g, p, "Infernal Vessel", Zone::Hand);
+        paid(&mut g, vessel);
+        let aura = named(&mut g, p, "Witness Protection", Zone::Hand);
+        cast(&mut g, aura, None, &[Target::Card(vessel)]);
+        settle(&mut g, 0, None);
+        kill(&mut g, p, vessel);
+        assert_eq!(g.state.objects[vessel as usize].zone, Zone::Graveyard);
+        named(&mut g, p, "Valkyrie's Call", Zone::Battlefield);
+        let angel = named(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
+        kill(&mut g, p, angel);
+        assert_eq!(g.state.objects[angel as usize].zone, Zone::Graveyard);
+        let token = named(
+            &mut g,
+            p,
+            "@token/spirit_1_1_white_flying",
+            Zone::Battlefield,
+        );
+        kill(&mut g, p, token);
+        assert!(!g.on_battlefield(token));
+        let bear = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        g.sacrifice_batch(&[(p, bear)]);
+        g.move_object(bear, Zone::Hand);
+        g.move_object(bear, Zone::Graveyard);
+        settle(&mut g, 0, None);
+        assert_eq!(g.state.objects[bear as usize].zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn return_links_blinked_token_still_queues_delay_but_cannot_return_or_bind_reused_slot() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let token = named(
+            &mut g,
+            p,
+            "@token/spirit_1_1_white_flying",
+            Zone::Battlefield,
+        );
+        let prince = named(&mut g, p, "Charming Prince", Zone::Hand);
+        cast(&mut g, prince, None, &[]);
+        settle(&mut g, 2, Some(token));
+        assert!(!g.on_battlefield(token));
+        assert_eq!(g.observe(p).delayed_returns.len(), 1);
+        let delayed = g.observe(p).delayed_returns[0].returning.object;
+        let mut owned = {
+            let parent = g.clone();
+            parent.clone()
+        };
+        end(&mut g);
+        end(&mut owned);
+        assert_eq!(g.snapshot(), owned.snapshot());
+        assert!(!g.on_battlefield(token));
+        assert_ne!(g.object_ref(token), delayed);
+    }
+}
+#[test]
+fn return_links_kykar_queued_mode_survives_departure_and_creature_cast_is_not_a_trigger() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let kykar = named(&mut g, p, "Kykar, Zephyr Awakener", Zone::Hand);
+        paid(&mut g, kykar);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Hand);
+        paid(&mut g, bear);
+        assert!(g.observe(p).objects.iter().all(|o| !o.is_token()));
+        let spell = named(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, spell, None, &[Target::Player(p.other())]);
+        g.move_object(kykar, Zone::Graveyard);
+        settle(&mut g, 1, None);
+        let tokens: Vec<_> = g
+            .observe(p)
+            .objects
+            .into_iter()
+            .filter(|o| o.is_token())
+            .collect();
+        assert_eq!(tokens.len(), 1);
+        assert!(tokens[0].has_subtype("Spirit"));
     }
 }

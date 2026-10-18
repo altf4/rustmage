@@ -18,7 +18,7 @@ pub(super) struct EntryMove {
     pub life_bonus: Option<(Player, &'static str, u16)>,
     /// Counters put on this object as part of entering by the surrounding effect.
     pub effect_counter: Option<(CounterKind, u64)>,
-    pub return_modification: Option<ReturnKind>,
+    pub return_modification: Option<(ReturnKind, ObjectRef)>,
     pub attacking: Option<CombatDefender>,
     pub skipped: bool,
     pub reveal_hand: bool,
@@ -478,9 +478,9 @@ impl Game {
             }
             if event.moved
                 && event.destination == Zone::Battlefield
-                && let Some(kind) = movement.return_modification
+                && let Some((kind, source)) = movement.return_modification
             {
-                self.apply_return_modification(event.after, kind);
+                self.apply_return_modification(event.after, kind, source);
             }
             event.offspring_paid = movement.offspring_paid;
             event.kicked = movement.kicked;

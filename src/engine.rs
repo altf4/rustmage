@@ -1422,6 +1422,8 @@ struct State {
     // rather than an inline Vec header for games with no delayed obligation.
     #[allow(clippy::box_collection)]
     delayed_sacrifices: Option<Box<Vec<mobilize::DelayedBatch>>>,
+    // Cold pointer keeps games without delayed returns allocation-free.
+    #[allow(clippy::box_collection)]
     delayed_returns: Option<Box<Vec<return_links::DelayedReturn>>>,
     mobilize: Option<Box<mobilize::MobilizePlan>>,
     saddled: Vec<ObjectRef>,

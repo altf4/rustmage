@@ -368,7 +368,7 @@ impl Game {
         {
             result.chosen = Some(typ);
         }
-        match m.return_modification {
+        match m.return_modification.map(|(kind, _)| kind) {
             Some(ReturnKind::Angel) => result.insert("Angel"),
             Some(ReturnKind::Demon) => result.insert("Demon"),
             _ => {}

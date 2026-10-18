@@ -428,10 +428,11 @@ impl Game {
                         }
                         _ => false,
                     };
-                    if matched && self.queue_zone_trigger(source, index, event) {
-                        if matches!(ability.condition.event(), TriggerCondition::ReturnDeath(_)) {
-                            self.capture_return_death(event);
-                        }
+                    if matched
+                        && self.queue_zone_trigger(source, index, event)
+                        && matches!(ability.condition.event(), TriggerCondition::ReturnDeath(_))
+                    {
+                        self.capture_return_death(event);
                     }
                 }
             }

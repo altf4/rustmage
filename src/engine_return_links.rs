@@ -122,11 +122,15 @@ impl Game {
                     CounterKind::PlusOne,
                     if kind == ReturnKind::Demon { 2 } else { 1 },
                 ));
-                self.stage_linked_return(&link, Some(kind));
+                self.stage_linked_return(&link, Some((kind, item.object)));
             }
         }
     }
-    fn stage_linked_return(&mut self, link: &ReturnLinkView, modification: Option<ReturnKind>) {
+    fn stage_linked_return(
+        &mut self,
+        link: &ReturnLinkView,
+        modification: Option<(ReturnKind, ObjectRef)>,
+    ) {
         if !self
             .state
             .objects
@@ -162,7 +166,12 @@ impl Game {
             self.stage_linked_return(link, None);
         }
     }
-    pub(super) fn apply_return_modification(&mut self, recipient: ObjectRef, kind: ReturnKind) {
+    pub(super) fn apply_return_modification(
+        &mut self,
+        recipient: ObjectRef,
+        kind: ReturnKind,
+        source: ObjectRef,
+    ) {
         let (types, keywords): (&'static [&'static str], _) = match kind {
             ReturnKind::Demon => (&["Demon"], Keywords::NONE),
             ReturnKind::Angel => (&["Angel"], Keywords::FLYING),
@@ -174,7 +183,7 @@ impl Game {
             .creature_types
             .push(subtypes::CreatureTypesEffectView {
                 recipient,
-                source: recipient,
+                source,
                 types,
                 additional: true,
                 timestamp,
@@ -182,7 +191,7 @@ impl Game {
         if keywords != Keywords::NONE {
             state.keyword_effects.push(KeywordEffectView {
                 recipient,
-                origin: KeywordEffectOrigin::Resolution { source: recipient },
+                origin: KeywordEffectOrigin::Resolution { source },
                 keywords,
                 rules: Keywords::NONE,
                 timestamp,
