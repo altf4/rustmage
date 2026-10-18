@@ -91,7 +91,7 @@ fn foundations_copy_exception_cards_natural_games_and_owned_state() {
                             copied_by.insert("Abyssal Harvester");
                         }
                         "Electroduplicate" | "Chandra, Flameshaper"
-                            if recipe.exceptions.haste_and_sacrifice =>
+                            if recipe.exceptions.sacrifice_abilities != 0 =>
                         {
                             copied_by.insert(source.source_card.name());
                         }
