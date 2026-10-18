@@ -766,3 +766,6 @@ mod kaito_games;
 
 #[path = "common/foundations_casting_games.rs"]
 mod casting_games;
+
+#[path = "common/foundations_stack_copy_games.rs"]
+mod stack_copy_games;
