@@ -15,7 +15,15 @@ pub(super) struct Announcement {
     pub pay_window: bool,
     pub production: Option<Mana>,
     pub additional: Option<ObjectRef>,
+    #[allow(
+        clippy::box_collection,
+        reason = "Rare growable tap selections use one pointer in ordinary announcements"
+    )]
     pub additional_group: Option<Box<Vec<ObjectRef>>>,
+    #[allow(
+        clippy::box_collection,
+        reason = "Rare growable counter selections use one pointer in ordinary announcements"
+    )]
     pub creature_counter_cost: Option<Box<Vec<(ObjectRef, CounterKind)>>>,
     pub forage: Option<Box<forage::ForageSelection>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
