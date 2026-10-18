@@ -389,3 +389,70 @@ fn endgame_simultaneous_herald_death_uses_pre_event_loss_restrictions() {
         );
     }
 }
+
+#[test]
+fn endgame_negative_life_allows_zero_life_mana_costs_in_actual_and_funding_paths() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        paid(&mut g, p, "Herald of Eternal Dawn", &[]);
+        settle(&mut g);
+        let orb = fixture(&mut g, p, "Carnelian Orb of Dragonkind", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0; 6];
+        g.state.players[p.index()].life = -5;
+        let shock = fixture(&mut g, p, "Shock", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: shock });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            checked(&mut g, Action::FinishTargets);
+        }
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: orb,
+                ability: 0,
+                production: [0, 0, 0, 1, 0, 0],
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, -5);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        assert_eq!(g.outcome(), None);
+    }
+}
+#[test]
+fn endgame_time_stop_capacity_failure_restores_current_stack_phase_and_owned_state() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let opt = paid(&mut g, p, "Opt", &[]);
+        let stop = paid(&mut g, p, "Time Stop", &[]);
+        checked(&mut g, Action::Pass);
+        let revision = g.revision;
+        g.revision = u64::MAX;
+        let current = g.snapshot();
+        assert!(matches!(
+            g.apply(p.other(), Action::Pass),
+            Err(Error::CapacityExceeded(_))
+        ));
+        assert_eq!(g.snapshot(), current);
+        assert_eq!(g.revision, u64::MAX);
+        assert_eq!(g.object_view(opt).zone, Zone::Stack);
+        assert_eq!(g.object_view(stop).zone, Zone::Stack);
+        g.revision = revision;
+        checked(&mut g, Action::Pass);
+        assert_eq!(g.object_view(opt).zone, Zone::Exile);
+        assert_eq!(g.object_view(stop).zone, Zone::Exile);
+    }
+}

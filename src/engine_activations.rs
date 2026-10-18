@@ -151,7 +151,7 @@ impl Game {
             || (ability.sorcery && !sorcery)
             || ((ability.once_per_turn || ability.exhaust)
                 && object.used_abilities & (1u64 << index) != 0)
-            || i128::from(ability.cost.life) > life
+            || (ability.cost.life != 0 && i128::from(ability.cost.life) > life)
         {
             return false;
         }

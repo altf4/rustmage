@@ -199,7 +199,7 @@ fn source_obligations(
         return true;
     };
     let ability = &definition.activations()[*index as usize];
-    if i128::from(ability.cost.life) > life {
+    if ability.cost.life != 0 && i128::from(ability.cost.life) > life {
         return false;
     }
     let current = object.filter(|object| {
