@@ -638,11 +638,18 @@ fn first_player() -> Player {
     Player::P0
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(u8)]
+enum CopyKind {
+    None,
+    Token,
+    Spell,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct Object {
     card: Card,
-    copy_token: bool,
-    spell_copy: bool,
+    copy_kind: CopyKind,
     owner: Player,
     controller: Player,
     zone: Zone,
@@ -664,8 +671,14 @@ struct Object {
 }
 
 impl Object {
+    fn is_copy_token(&self) -> bool {
+        self.copy_kind == CopyKind::Token
+    }
+    fn is_spell_copy(&self) -> bool {
+        self.copy_kind == CopyKind::Spell
+    }
     fn is_token(&self) -> bool {
-        self.copy_token || self.card.is_token()
+        self.is_copy_token() || self.card.is_token()
     }
     fn keywords(&self) -> Keywords {
         self.card.keywords().union(self.gained_keywords)
@@ -1956,8 +1969,7 @@ impl Game {
                 let id = objects.len() as CardId;
                 objects.push(Object {
                     card,
-                    copy_token: false,
-                    spell_copy: false,
+                    copy_kind: CopyKind::None,
                     owner: p,
                     controller: p,
                     zone: Zone::Library,
@@ -4418,7 +4430,7 @@ impl Game {
         if before.zone == Zone::Stack {
             self.capture_stack_copy_departure(id);
         }
-        if before.zone == Zone::Stack && self.state.objects[id as usize].spell_copy {
+        if before.zone == Zone::Stack && self.state.objects[id as usize].is_spell_copy() {
             self.state.stack.retain(|item| {
                 !(item.kind == StackKind::Spell
                     && item.card == id
@@ -4455,7 +4467,7 @@ impl Game {
         // Outside is an internal staging zone for newly allocated tokens. A
         // ceased token is on the free list and cannot move again (CR111.8).
         let fresh_token = before.zone == Zone::Outside && !self.state.free_tokens.contains(&id);
-        if (self.state.objects[id as usize].spell_copy && before.zone != Zone::Stack)
+        if (self.state.objects[id as usize].is_spell_copy() && before.zone != Zone::Stack)
             || before.card.is_emblem()
             || (before.is_token() && before.zone != Zone::Battlefield && !fresh_token)
         {

@@ -225,8 +225,7 @@ impl Game {
         };
         let object = Object {
             card: template.source_card,
-            copy_token: false,
-            spell_copy: true,
+            copy_kind: CopyKind::Spell,
             owner: controller,
             controller,
             zone: Zone::Stack,

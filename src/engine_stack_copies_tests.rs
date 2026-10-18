@@ -136,7 +136,7 @@ fn teach_copies_next_qualifying_cast_once_and_retargets_without_casting_again() 
         g.create_tokens(p, factory, 1, false);
         assert_eq!(g.state.objects[copy.card as usize].zone, Zone::Battlefield);
         assert!(g.state.objects[copy.card as usize].is_token());
-        assert!(!g.state.objects[copy.card as usize].spell_copy);
+        assert!(!g.state.objects[copy.card as usize].is_spell_copy());
         assert_ne!(g.object_ref(copy.card), copy.object);
         assert_eq!(g.state.objects[shock as usize].zone, Zone::Graveyard);
         let second = named(&mut g, p, "Shock", Zone::Hand);
@@ -325,7 +325,7 @@ fn nontargeted_flashback_copy_draws_without_recasting_or_creating_exile_permissi
             g.state
                 .objects
                 .iter()
-                .all(|o| !o.spell_copy || o.zone == Zone::Outside)
+                .all(|o| !o.is_spell_copy() || o.zone == Zone::Outside)
         );
     }
 }

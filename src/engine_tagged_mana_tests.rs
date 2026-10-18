@@ -538,7 +538,7 @@ fn tagged_mana_orb_haste_is_not_copied_and_later_ability_removal_wins() {
             .iter()
             .enumerate()
             .find(|(_, o)| {
-                o.zone == Zone::Battlefield && o.copy_token && o.card.name() == "Shivan Dragon"
+                o.zone == Zone::Battlefield && o.is_copy_token() && o.card.name() == "Shivan Dragon"
             })
             .unwrap()
             .0 as CardId;

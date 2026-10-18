@@ -50,7 +50,7 @@ impl Game {
     }
     pub(super) fn object_token_info(&self, id: CardId) -> Option<TokenInfo> {
         let object = &self.state.objects[id as usize];
-        if object.copy_token {
+        if object.is_copy_token() {
             Some(
                 CopyRecipe {
                     definition: object.card,
@@ -118,7 +118,7 @@ impl Game {
             for _ in 0..group.amount {
                 let (id, generation) = if let Some(id) = self.state.free_tokens.pop() {
                     let old = &self.state.objects[id as usize];
-                    assert!((old.is_token() || old.spell_copy) && old.zone == Zone::Outside);
+                    assert!((old.is_token() || old.is_spell_copy()) && old.zone == Zone::Outside);
                     (id, old.generation)
                 } else {
                     (
@@ -129,8 +129,11 @@ impl Game {
                 };
                 let object = Object {
                     card: group.token,
-                    copy_token: recipe.is_some(),
-                    spell_copy: false,
+                    copy_kind: if recipe.is_some() {
+                        CopyKind::Token
+                    } else {
+                        CopyKind::None
+                    },
                     owner: player,
                     controller: player,
                     zone: Zone::Outside,
