@@ -31,11 +31,15 @@ impl Announcement {
                 Some(bargain::COST)
             }
             StackKind::Spell
-                if self.cost.is_some_and(|cost| {
-                    self.item
-                        .source_card
-                        .mana_alternative_replaces_additional(cost)
-                }) =>
+                if self
+                    .item
+                    .cast
+                    .is_some_and(|c| c.method == CastMethod::Normal)
+                    && self.cost.is_some_and(|cost| {
+                        self.item
+                            .source_card
+                            .mana_alternative_replaces_additional(cost)
+                    }) =>
             {
                 None
             }
@@ -66,7 +70,12 @@ impl Announcement {
                 std::iter::once(self.item.source_card.flashback_cost().unwrap())
                     .chain([].iter().copied())
             }
-            StackKind::Spell if self.item.cast.is_some_and(|c| c.method == CastMethod::Plot) => {
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
+                    .is_some_and(|c| matches!(c.method, CastMethod::Plot | CastMethod::Free)) =>
+            {
                 std::iter::once(ManaCost {
                     colored: [0; 6],
                     generic: 0,
@@ -84,16 +93,32 @@ impl Announcement {
                 unreachable!("triggered ability has no activation cost")
             }
         };
-        options.filter_map(|cost| {
-            Game::with_tiered_mana(
-                Game::with_flash_surcharge(
-                    cost,
-                    self.item.source_card,
-                    self.item.cast.is_some_and(|c| c.flash_surcharge),
-                ),
-                &self.item,
-            )
-        })
+        options
+            .filter(|cost| {
+                self.item
+                    .cast
+                    .is_none_or(|cast| cast.method != CastMethod::GrantedFlashback)
+                    || (self.item.source_card.cost_alternative_guard().is_none()
+                        && !self
+                            .item
+                            .source_card
+                            .mana_alternative_replaces_additional(*cost))
+                    || *cost
+                        == ManaCost {
+                            colored: self.item.source_card.cost().0,
+                            generic: self.item.source_card.cost().1,
+                        }
+            })
+            .filter_map(|cost| {
+                Game::with_tiered_mana(
+                    Game::with_flash_surcharge(
+                        cost,
+                        self.item.source_card,
+                        self.item.cast.is_some_and(|c| c.flash_surcharge),
+                    ),
+                    &self.item,
+                )
+            })
     }
     pub(super) fn needs_evidence(&self) -> bool {
         self.pay_window
@@ -133,7 +158,10 @@ impl Announcement {
                     self.item.cast.is_none_or(|cast| {
                         !matches!(
                             cast.method,
-                            CastMethod::Flashback | CastMethod::Plot | CastMethod::Warp
+                            CastMethod::Flashback
+                                | CastMethod::Plot
+                                | CastMethod::Warp
+                                | CastMethod::Free
                         )
                     }) && self.item.source_card.has_hybrid_cost()
                 }
@@ -1025,6 +1053,17 @@ impl Game {
             self.grant_stack_keywords(object, Keywords::HASTE);
         }
         let id = self.next_stack_id();
+        self.cast_preview(actor, card, origin, object, id, payment)
+    }
+    pub(super) fn cast_preview(
+        &self,
+        actor: Player,
+        card: CardId,
+        origin: Zone,
+        object: ObjectRef,
+        id: u64,
+        payment: Mana,
+    ) -> SpellView {
         SpellView {
             gift: None,
             source_move: None,

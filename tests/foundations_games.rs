@@ -628,6 +628,7 @@ fn run_matrix_actions_observed(
                     );
                 }
                 let mut decisions = 0;
+                let mut replayed_graveyard_permissions = Vec::new();
                 while game.outcome().is_none() {
                     assert!(
                         decisions < 25_000,
@@ -664,7 +665,12 @@ fn run_matrix_actions_observed(
                     triggered |= obs.stack.iter().any(|item| item.kind != StackKind::Spell);
                     token |= obs.objects.iter().any(|o| o.token.is_some());
                     combat |= !obs.attackers.is_empty();
-                    let owned_replay = decisions % 47 == 0;
+                    let fresh_permission_state = !obs.graveyard_cast_permissions.is_empty()
+                        && replayed_graveyard_permissions != obs.graveyard_cast_permissions;
+                    let owned_replay = decisions % 47 == 0 || fresh_permission_state;
+                    if fresh_permission_state {
+                        replayed_graveyard_permissions = obs.graveyard_cast_permissions.clone();
+                    }
                     if owned_replay {
                         let revision = game.revision();
                         let before = game.snapshot();
@@ -757,3 +763,6 @@ mod characteristic_modal_games;
 
 #[path = "common/foundations_kaito_games.rs"]
 mod kaito_games;
+
+#[path = "common/foundations_casting_games.rs"]
+mod casting_games;

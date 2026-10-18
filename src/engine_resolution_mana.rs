@@ -4,6 +4,7 @@ use super::*;
 pub(super) struct ResolutionPayment {
     pub payer: Player,
     pub cost: ManaCost,
+    pub life: Option<u32>,
     pub victim: Option<u64>,
     pub exile: bool,
     pub unpaid_pc: usize,
@@ -12,6 +13,7 @@ pub(super) struct ResolutionPayment {
 pub struct ResolutionPaymentView {
     pub payer: Player,
     pub cost: ManaCost,
+    pub life: Option<u32>,
     pub victim: Option<u64>,
     pub exile: bool,
 }
@@ -143,6 +145,7 @@ impl Game {
         resolution.mana_payment = Some(Box::new(ResolutionPayment {
             payer: victim.controller,
             cost,
+            life: None,
             victim: Some(victim.id),
             exile,
             unpaid_pc,
@@ -164,6 +167,7 @@ impl Game {
         resolution.mana_payment = Some(Box::new(ResolutionPayment {
             payer: item.controller,
             cost,
+            life: None,
             victim: None,
             exile: false,
             unpaid_pc,
@@ -171,6 +175,64 @@ impl Game {
         self.state.pending = Pending::ResolutionMana {
             player: item.controller,
         };
+    }
+    pub(super) fn start_resolution_life(&mut self, item: &SpellView, amount: u32) -> bool {
+        let related = item.related_stack.expect("ward stack association");
+        let Some(victim) = self
+            .state
+            .stack
+            .iter()
+            .find(|spell| spell.id == related.id)
+            .map(|spell| StackLink {
+                id: spell.id,
+                controller: spell.controller,
+            })
+        else {
+            return false;
+        };
+        let resolution = self.state.resolving.as_mut().unwrap();
+        resolution.mana_payment = Some(Box::new(ResolutionPayment {
+            payer: victim.controller,
+            cost: ManaCost {
+                colored: [0; 6],
+                generic: 0,
+            },
+            life: Some(amount),
+            victim: Some(victim.id),
+            exile: false,
+            unpaid_pc: resolution.pc,
+        }));
+        self.state.pending = Pending::ResolutionLife {
+            player: victim.controller,
+        };
+        true
+    }
+    pub(super) fn can_pay_resolution_life(&self) -> bool {
+        let request = self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .mana_payment
+            .as_ref()
+            .unwrap();
+        self.state.players[request.payer.index()].life >= i128::from(request.life.unwrap())
+    }
+    pub(super) fn finish_resolution_life(&mut self, pay: bool) {
+        let request = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .mana_payment
+            .take()
+            .unwrap();
+        if pay {
+            self.lose_life(request.payer, i128::from(request.life.unwrap()));
+        } else if let Some(victim) = request.victim {
+            self.counter_stack_item(victim, false);
+        }
+        self.run_program();
     }
     pub(super) fn finish_resolution_payment(&mut self, payment: Option<Mana>) {
         let request = self
