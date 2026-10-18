@@ -181,6 +181,7 @@ impl Game {
             }
         }
         if !moves.is_empty() {
+            self.track_nightmare_copy_entries(&moves);
             self.stage_entries(moves, None);
         }
     }

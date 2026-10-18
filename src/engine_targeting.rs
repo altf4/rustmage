@@ -702,6 +702,11 @@ impl Game {
         qualification: Option<TargetSourceCharacteristics<'_>>,
     ) -> bool {
         match rule {
+            TargetRule::GraveCreatureEnteredThisTurn => {
+                return matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o|
+                    o.zone == Zone::Graveyard && !o.is_token() && o.card.is_creature()
+                    && self.graveyard_entry_this_turn(self.object_ref(id))));
+            }
             TargetRule::GraveCreatureSourcePower { maximum } => {
                 let Target::Card(id) = target else {
                     return false;

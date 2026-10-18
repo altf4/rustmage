@@ -77,3 +77,103 @@ impl Game {
         }
     }
 }
+
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub(super) struct NightmareCull {
+    candidates: Vec<ObjectRef>,
+    protected: Vec<ObjectRef>,
+}
+pub(super) fn cull_bytes(cull: &Option<Box<NightmareCull>>) -> usize {
+    cull.as_ref().map_or(0, |c| {
+        std::mem::size_of::<NightmareCull>()
+            + (c.candidates.len() + c.protected.len()) * std::mem::size_of::<ObjectRef>()
+    })
+}
+impl Game {
+    pub(super) fn graveyard_entry_this_turn(&self, object: ObjectRef) -> bool {
+        self.state.graveyard_entries.as_ref().is_some_and(|rows| {
+            rows.binary_search_by_key(&object.card, |r| r.card)
+                .is_ok_and(|at| rows[at] == object)
+        })
+    }
+    /// Called only after a real successful transition, with its final destination.
+    pub(super) fn copy_characteristic_zone_commit(
+        &mut self,
+        before: &ObjectView,
+        after: ObjectRef,
+        destination: Zone,
+    ) {
+        if let Some(rows) = &mut self.state.graveyard_entries
+            && let Ok(at) = rows.binary_search_by_key(&before.id, |r| r.card)
+        {
+            rows.remove(at);
+        }
+        if destination == Zone::Graveyard && !before.is_token() && !before.card.is_emblem() {
+            let rows = self
+                .state
+                .graveyard_entries
+                .get_or_insert_with(Default::default);
+            let at = rows.partition_point(|r| r.card < after.card);
+            rows.insert(at, after);
+        }
+        if self
+            .state
+            .graveyard_entries
+            .as_ref()
+            .is_some_and(|r| r.is_empty())
+        {
+            self.state.graveyard_entries = None;
+        }
+        if let Some(cull) = &mut self.state.nightmare_cull
+            && let Some(at) = cull.candidates.iter().position(|r| *r == before.reference)
+        {
+            cull.candidates.swap_remove(at);
+            if destination == Zone::Battlefield {
+                cull.protected.push(after);
+            }
+        }
+    }
+    pub(super) fn track_nightmare_copy_entries(&mut self, moves: &[entries::EntryMove]) {
+        if let Some(cull) = &mut self.state.nightmare_cull {
+            cull.candidates
+                .extend(moves.iter().map(|m| m.before.reference));
+        }
+    }
+    pub(super) fn exile_and_copy_nightmare(&mut self, item: &SpellView) {
+        let Some(id) = item.targets.iter().find_map(|b| match b.target {
+            Target::Card(id) => Some(id),
+            _ => None,
+        }) else {
+            return;
+        };
+        // Capture printed graveyard values before the attempted move. Failure or
+        // replacement of that move does not cancel the following copy instruction.
+        let mut recipe = CopyRecipe::new(self.state.objects[id as usize].card);
+        recipe.exceptions = CopyExceptions::NIGHTMARE;
+        self.move_object(id, Zone::Exile);
+        self.state.nightmare_cull = Some(Default::default());
+        self.stage_copy_creation(item.controller, recipe, 1);
+    }
+    pub(super) fn exile_other_nightmares(&mut self, player: Player) {
+        let Some(cull) = self.state.nightmare_cull.take() else {
+            return;
+        };
+        let ids: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, o)| {
+                let id = id as CardId;
+                (o.zone == Zone::Battlefield
+                    && o.controller == player
+                    && o.is_token()
+                    && self.has_subtype(id, "Nightmare")
+                    && !cull.protected.contains(&self.object_ref(id)))
+                .then_some(id)
+            })
+            .collect();
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        self.finish_zone_events(&events, &[]);
+    }
+}

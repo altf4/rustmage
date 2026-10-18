@@ -17,7 +17,14 @@ fn chandra(g: &mut Game, p: Player) -> CardId {
     id
 }
 fn announce(g: &mut Game, id: CardId, ability: u16, targets: &[Target]) {
-    checked(g, Action::AnnounceActivate { card: id, ability });
+    checked(
+        g,
+        Action::AnnounceActivate {
+            card: id,
+            ability,
+            counter_payment: Counters::default(),
+        },
+    );
     for &target in targets {
         checked(g, Action::ChooseTarget { target });
     }
@@ -63,7 +70,14 @@ fn chandra_zero_target_minus_four_is_legal_and_locks_every_loyalty_ability() {
         assert!(g.state.stack.last().unwrap().target_allocations.is_none());
         settle(&mut g);
         for ability in 0..3 {
-            reject(&mut g, Action::AnnounceActivate { card: id, ability });
+            reject(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: id,
+                    ability,
+                    counter_payment: Counters::default(),
+                },
+            );
         }
         assert_eq!(g.state.players[p.index()].life, 20);
         assert_eq!(g.state.players[p.other().index()].life, 20);
@@ -200,6 +214,7 @@ fn chandra_plus_one_copies_controlled_creature_with_abilities_after_chandra_leav
             Action::AnnounceActivate {
                 card: id,
                 ability: 1,
+                counter_payment: Counters::default(),
             },
         );
         reject(

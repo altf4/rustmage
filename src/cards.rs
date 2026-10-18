@@ -105,6 +105,7 @@ pub(crate) enum TargetRule {
         base: &'static TargetRule,
         predicate: &'static TargetPredicate,
     },
+    GraveCreatureEnteredThisTurn,
     GraveCreatureSourcePower {
         maximum: Option<i128>,
     },
@@ -781,6 +782,8 @@ pub(crate) enum Instruction {
     },
     SacrificeDelayedTokens,
     SacrificeSource,
+    ExileAndCopyNightmare,
+    ExileOtherNightmares,
     DamageDivided {
         total: u16,
     },

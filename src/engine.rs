@@ -1485,6 +1485,8 @@ struct State {
     creature_damage_history: Option<SharedVec<CreatureDamageHistoryView>>,
     entry_values: entry_choices::Rows,
     copy_recipes: copies::Rows,
+    graveyard_entries: Option<SharedVec<ObjectRef>>,
+    nightmare_cull: Option<Box<copy_characteristics::NightmareCull>>,
     stack_copy_data: Option<Box<stack_copies::CopyState>>,
     modal_history: modal_history::Rows,
     ability_resolutions: ability_resolutions::Rows,
@@ -1831,6 +1833,7 @@ pub struct Observation {
     pub creatures_attacked_this_turn: usize,
     /// Actual battlefield-to-graveyard creature transitions this turn, including tokens.
     pub creatures_died_this_turn: u64,
+    pub graveyard_entries_this_turn: Vec<ObjectRef>,
     pub catalogue: &'static str,
     pub viewer: Player,
     pub revision: u64,
@@ -2033,6 +2036,8 @@ impl Game {
                 creature_damage_history: None,
                 entry_values: None,
                 copy_recipes: None,
+                graveyard_entries: None,
+                nightmare_cull: None,
                 stack_copy_data: None,
                 modal_history: None,
                 ability_resolutions: None,
@@ -4733,6 +4738,7 @@ impl Game {
                 self.state.known_hand.push(reference);
             }
         }
+        self.copy_characteristic_zone_commit(&before, self.object_ref(id), destination);
         ZoneChange {
             gift: None,
             before,
@@ -4802,6 +4808,7 @@ impl Game {
         self.state.creature_damage_history = None;
         self.state.attacked_this_turn.clear();
         self.state.creatures_died_this_turn = 0;
+        self.state.graveyard_entries = None;
         for player in &mut self.state.players {
             player.nonland_permanents_entered_this_turn = 0;
             player.spells_cast_this_turn = 0;
@@ -5327,6 +5334,10 @@ impl Game {
             schema: OBSERVATION_SCHEMA,
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             creatures_died_this_turn: s.creatures_died_this_turn,
+            graveyard_entries_this_turn: s
+                .graveyard_entries
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.to_vec()),
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -5808,6 +5819,10 @@ impl Game {
             + s.pending.owned_bytes()
             + ability_resolutions::owned_bytes(&s.ability_resolutions)
             + copies::owned_bytes(&s.copy_recipes)
+            + s.graveyard_entries.as_ref().map_or(0, |r| {
+                std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
+            })
+            + copy_characteristics::cull_bytes(&s.nightmare_cull)
             + stack_copies::owned_bytes(&s.stack_copy_data)
             + modal_history::owned_bytes(&s.modal_history)
             + cast_permissions::owned_bytes(&s.graveyard_cast_permissions)
