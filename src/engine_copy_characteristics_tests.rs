@@ -293,7 +293,14 @@ fn abandoning_copy_choices_ceases_only_the_exact_uncommitted_copy_and_keeps_futu
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         let teach = named(&mut g, p, "Teach by Example", Zone::Hand);
-        cast(&mut g, teach, None, &[]);
+        checked(&mut g, Action::AnnounceCast { card: teach });
+        checked(&mut g, Action::ChooseSpellCost { cost: 0 });
+        let payment = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, payment);
         let saved = g.state.stack.last().unwrap().clone();
         settle(&mut g);
         let shock = named(&mut g, p, "Shock", Zone::Hand);

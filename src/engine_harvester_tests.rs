@@ -216,6 +216,18 @@ fn harvester_waits_for_actual_copy_entry_choices_and_uses_current_type_and_contr
         checked(&mut g, Action::Pass);
         checked(&mut g, Action::Pass);
         assert!(matches!(g.state.pending, Pending::EntryValue { .. }));
+        let entering = g
+            .state
+            .copy_recipes
+            .as_ref()
+            .unwrap()
+            .iter()
+            .find(|r| r.recipe.definition.name() == "Adaptive Automaton")
+            .unwrap()
+            .object
+            .card;
+        assert_eq!(g.state.objects[entering as usize].zone, Zone::Outside);
+        assert!(g.object_view(entering).has_subtype("Nightmare"));
         assert!(g.on_battlefield(old));
         let transfer = g.activation_item(p.other(), becoming_friendly, 0);
         g.gain_control(&transfer, Subject::Source, PlayerSet::Opponent);

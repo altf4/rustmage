@@ -162,9 +162,6 @@ impl Game {
         mut changes: Vec<(u64, characteristic_layers::SubtypeChange)>,
     ) -> GrantedSubtypes {
         let mut mask = GrantedSubtypes::default();
-        if target.zone != Zone::Battlefield {
-            return mask;
-        }
         let reference = ObjectRef {
             card: id,
             generation: target.generation,
@@ -174,6 +171,11 @@ impl Game {
             .is_some_and(|r| r.exceptions.nightmare)
         {
             mask.insert("Nightmare");
+        }
+        // Copy exceptions already exist while an owned token awaits entry.
+        // Later continuous type changes apply only on the battlefield.
+        if target.zone != Zone::Battlefield {
+            return mask;
         }
         if let Some(state) = &self.state.roles {
             changes.extend(
