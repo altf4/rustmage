@@ -1248,6 +1248,18 @@ impl Game {
                     .map_or(&[], |v| v.as_slice()),
             );
         }
+        if let Some(a) = &self.state.announcing
+            && !a.additional_paid
+            && let Some(group) = &a.additional_group
+        {
+            let spec = a.additional_cost().expect("selected tap cost");
+            if !group
+                .iter()
+                .all(|&r| self.additional_candidate(spec, a.item.controller, a.item.object, r))
+            {
+                return false;
+            }
+        }
         let object = goal
             .source
             .as_ref()
@@ -3072,6 +3084,8 @@ mod blanked_funding_bounds_tests {
     }
 }
 
+type CounterCostFundingKey = (FundingKey, Vec<(ObjectRef, CounterKind, u64, bool)>);
+
 impl FundingState<'_> {
     fn remove_creature_counter(&mut self, r: ObjectRef, kind: CounterKind) -> bool {
         let Some(index) = self.resources.iter().position(|v| v.id == r.card) else {
@@ -3095,29 +3109,79 @@ impl FundingState<'_> {
         live_counters::set(&mut self.named_counters, r, counters.named);
         true
     }
-    fn fund_after_creature_counters(
+    fn creature_counter_payment_possible(
+        &self,
+        amount: u16,
+        selected: &[(ObjectRef, CounterKind)],
+    ) -> bool {
+        if selected.len() > usize::from(amount) {
+            return false;
+        }
+        let mut after = self.clone();
+        for &(r, kind) in selected {
+            if !after.remove_creature_counter(r, kind) {
+                return false;
+            }
+        }
+        let available = after
+            .resources
+            .iter()
+            .filter(|r| {
+                r.object.zone == Zone::Battlefield
+                    && r.object.controller == self.actor
+                    && after.kinds(r) & 1 != 0
+            })
+            .map(|r| ability_world::CharacteristicWorld::counter_amounts(&after, r.id).total())
+            .sum::<u128>();
+        available >= u128::from(amount) - selected.len() as u128
+    }
+    fn fund_creature_counter_cost(
         &self,
         goal: &FundingGoal,
-        remaining: u16,
-        start: usize,
+        amount: u16,
+        selected: &[(ObjectRef, CounterKind)],
+        visited: &mut HashSet<CounterCostFundingKey>,
     ) -> bool {
-        if remaining == 0 {
-            return self.reachable(goal, &mut HashSet::new());
+        if !self.obligations(goal) {
+            return false;
         }
-        for row in start..self.resources.len() * CounterKind::ALL.len() {
-            let resource = &self.resources[row / CounterKind::ALL.len()];
-            let r = ObjectRef {
-                card: resource.id,
-                generation: resource.object.generation,
-            };
-            let kind = CounterKind::ALL[row % CounterKind::ALL.len()];
-            if ability_world::CharacteristicWorld::counter_count(self, r.card, kind) == 0 {
-                continue;
-            }
+        // Mana abilities are activated before paying this nonmana cost. The
+        // chosen counters remain reserved, rather than being removed before
+        // counter-dependent mana production has been evaluated.
+        if payable(
+            mana_lots::available(self.mana, &self.lots, self.purpose),
+            goal.required,
+            goal.generic,
+        ) && self.creature_counter_payment_possible(amount, selected)
+        {
+            return true;
+        }
+        if !self.optimistic(goal) {
+            return false;
+        }
+        let facts = selected
+            .iter()
+            .map(|&(r, kind)| {
+                (
+                    r,
+                    kind,
+                    ability_world::CharacteristicWorld::counter_count(self, r.card, kind),
+                    ability_world::CharacteristicWorld::reference(self, r.card) == r
+                        && ability_world::CharacteristicWorld::object(self, r.card).zone
+                            == Zone::Battlefield
+                        && ability_world::CharacteristicWorld::object(self, r.card).controller
+                            == self.actor
+                        && ability_world::CharacteristicWorld::kinds(self, r.card) & 1 != 0,
+                )
+            })
+            .collect();
+        if !visited.insert((self.key(goal), facts)) {
+            return false;
+        }
+        for step in self.moves(goal) {
             let mut next = self.clone();
-            if next.remove_creature_counter(r, kind)
-                && next.fund_after_creature_counters(goal, remaining - 1, row)
-            {
+            next.apply(&step);
+            if next.fund_creature_counter_cost(goal, amount, selected, visited) {
                 return true;
             }
         }
@@ -3135,27 +3199,26 @@ impl Game {
         let mut world = FundingState::from_game_with_convoke(self, &goal, true);
         world.convoke = false;
         world.purpose = purpose;
-        for &(r, kind) in selected {
-            if !world.remove_creature_counter(r, kind) {
+        let adds = self.state.objects.iter().any(|o| {
+            o.card.activations().iter().enumerate().any(|(index, a)| {
+                a.mana_production().is_some()
+                    && o.card.activation_put_counter(index as u16).is_some()
+            })
+        });
+        if !adds {
+            let upper = self
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter(|(_, o)| o.zone == Zone::Battlefield)
+                .map(|(id, _)| self.counter_amounts(id as CardId).total())
+                .sum::<u128>();
+            if upper < u128::from(amount) {
                 return false;
             }
         }
-        if selected.len() > usize::from(amount) {
-            return false;
-        }
-        let available = world
-            .resources
-            .iter()
-            .filter(|r| {
-                r.object.zone == Zone::Battlefield
-                    && r.object.controller == goal.actor
-                    && world.kinds(r) & 1 != 0
-            })
-            .map(|r| ability_world::CharacteristicWorld::counter_amounts(&world, r.id).total())
-            .sum::<u128>();
-        let remaining = amount - selected.len() as u16;
-        available >= u128::from(remaining)
-            && world.fund_after_creature_counters(&goal, remaining, 0)
+        world.fund_creature_counter_cost(&goal, amount, selected, &mut HashSet::new())
     }
 }
 
