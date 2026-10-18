@@ -23,7 +23,7 @@ const LAND_TYPES: [&str; 17] = [
     "Planet",
     "Urza's",
 ];
-const JOB_TYPES: [&str; 11] = [
+const JOB_TYPES: [&str; 13] = [
     "Artificer",
     "Bard",
     "Cleric",
@@ -35,8 +35,10 @@ const JOB_TYPES: [&str; 11] = [
     "Shaman",
     "Warrior",
     "Wizard",
+    "Angel",
+    "Demon",
 ];
-// Eleven job grants and three projection flags fit in one existing word.
+// Thirteen named grants and three projection flags fit in one existing word.
 const JOB_MASK: u16 = (1 << JOB_TYPES.len()) - 1;
 const SUPPRESS_PRINTED: u16 = 1 << JOB_TYPES.len();
 const LAND_ONLY: u16 = SUPPRESS_PRINTED << 1;
