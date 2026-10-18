@@ -13,6 +13,10 @@ on:
 permissions:
   contents: read
 
+defaults:
+  run:
+    shell: bash
+
 concurrency:
   group: ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -93,8 +97,18 @@ jobs:
         run: python3 -m unittest scripts.test_resource_guard -v 2>&1 | tee "$XDG_CACHE_HOME/resource-guard.log"
 
       - name: Full native validation and Python tests
+        timeout-minutes: ${{ inputs.python_suite == 'full' && 50 || 15 }}
         if: steps.scope.outputs.code == 'true'
         run: python3 scripts/validate.py --release --python "$PYTHON_SUITE" 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
+
+      # systemd owns the process tree. Stop it even if the waiting CLI was
+      # cancelled, before collecting partial logs on this disposable VM.
+      - name: Stop any remaining build processes
+        if: always() && steps.scope.outputs.code == 'true'
+        run: |
+          if [[ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]]; then
+            systemctl --user stop rustmage-builds.slice
+          fi
 
       - name: Preserve diagnostics
         if: always() && steps.scope.outputs.code == 'true'
@@ -103,6 +117,7 @@ jobs:
           name: ci-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
           retention-days: 7
           if-no-files-found: warn
+          include-hidden-files: true
           path: |
             ~/.cache/rustmage-ci/*.log
             ~/.cache/rustmage-ci/rustmage-build-reports/*.json

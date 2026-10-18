@@ -11,7 +11,8 @@ snapshot restore and a complete game. Existing tests are selected by name in
 
 Documentation-only changes run a whitespace check and skip compilation. New
 commits cancel superseded runs for the same PR. The normal job timeout is 20
-minutes. There is no duplicate push workflow or platform matrix.
+minutes, with a 15-minute validation-step limit to leave room for diagnostics.
+There is no duplicate push workflow or platform matrix.
 
 All compilation and Python simulations use `scripts/resource_guard.py`. The
 runner initializes a systemd user manager, then verifies the existing 6 GiB
@@ -22,9 +23,10 @@ the inventory's pinned revision for provenance tests; Java is not compiled.
 
 To measure the full Python suite, open **Actions → CI → Run workflow** and select
 `full` for `python_suite`. This manual job runs native validation plus full Python
-discovery with a 60-minute ceiling. Full Python tests never run automatically.
+discovery with a 50-minute validation-step limit and 60-minute job ceiling. Full Python tests never run automatically.
 Each test writes a flushed start/finish timing record, so an interrupted run
-still identifies the unfinished test. Until this suite is measured, its total
+still identifies the unfinished test. An always-run cleanup stops remaining
+systemd build processes before collecting diagnostics. Until this suite is measured, its total
 runtime and current passing status remain unverified.
 
 CI retains diagnostic logs, resource reports, validation results and Python
