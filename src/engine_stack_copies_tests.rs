@@ -127,6 +127,17 @@ fn teach_copies_next_qualifying_cast_once_and_retargets_without_casting_again() 
         assert_eq!(g.state.players[p.index()].life, 18);
         assert_eq!(g.state.players[p.other().index()].life, 18);
         assert_eq!(g.state.objects[copy.card as usize].zone, Zone::Outside);
+        let factory = Card::catalogue()
+            .find(|c| {
+                c.token_info()
+                    .is_some_and(|info| info.name == "Goblin Token")
+            })
+            .unwrap();
+        g.create_tokens(p, factory, 1, false);
+        assert_eq!(g.state.objects[copy.card as usize].zone, Zone::Battlefield);
+        assert!(g.state.objects[copy.card as usize].is_token());
+        assert!(!g.state.objects[copy.card as usize].spell_copy);
+        assert_ne!(g.object_ref(copy.card), copy.object);
         assert_eq!(g.state.objects[shock as usize].zone, Zone::Graveyard);
         let second = named(&mut g, p, "Shock", Zone::Hand);
         announce(&mut g, second, &[Target::Player(p.other())]);
@@ -785,5 +796,46 @@ fn goggles_mana_keeps_ability_controller_after_source_control_changes() {
         assert!(trigger.source_tapped);
         progress(&mut g, false);
         assert_eq!(g.state.players[p.other().index()].life, 16);
+    }
+}
+
+#[test]
+fn smoke_policy_finishes_mandatory_changed_target_instead_of_undoing_it() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Fanatical Firebrand", Zone::Battlefield);
+        let action = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| {
+                matches!(a,
+            Action::Activate { card, target: Some(Target::Player(t)), .. }
+                if *card == source && *t == p.other())
+            })
+            .unwrap();
+        checked(&mut g, action);
+        let ability = g.state.stack.last().unwrap().id;
+        let bend = named(&mut g, p, "Bolt Bend", Zone::Hand);
+        announce(&mut g, bend, &[Target::Stack(ability)]);
+        progress(&mut g, true);
+        checked(
+            &mut g,
+            Action::SetStackTarget {
+                index: 0,
+                target: Target::Player(p),
+            },
+        );
+        let actions = g.legal_actions();
+        assert!(actions.contains(&Action::SetStackTarget {
+            index: 0,
+            target: Target::Player(p.other())
+        }));
+        assert_eq!(
+            actions[crate::policy::smoke_index(&g, &actions)],
+            Action::FinishStackTargets
+        );
+        checked(&mut g, Action::FinishStackTargets);
+        progress(&mut g, false);
+        assert_eq!(g.state.players[p.index()].life, 19);
     }
 }
