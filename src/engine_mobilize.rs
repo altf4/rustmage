@@ -207,6 +207,7 @@ impl Game {
                 cast_event: None,
                 delayed_sacrifice: Some(Box::new(b.view)),
                 delayed_warp_exile: None,
+                return_link: None,
                 x: None,
                 attachment_trigger: None,
                 cast: None,

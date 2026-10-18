@@ -8,5 +8,43 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "acf18d3b00baed80da1e9ed485c4e9af339f5d13bfbcee3d479fe6d35aced1d8"
   },
-  "physical_metadata_sha256": "2e3408a1693b4863a7c8e0857b41b0dc518d53d703e4969e4ae4a11d8bc200fb"
+  "physical_metadata_sha256": "2e3408a1693b4863a7c8e0857b41b0dc518d53d703e4969e4ae4a11d8bc200fb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InfernalVessel.java",
+  "java_sha256": "a17393892bfd9cd31e30be8ed1f6ad75c49e7a2e9b26e4b33817304a140fdf75",
+  "remaining_obligations": [
+    "Shared return rules and whole-card acceptance pending."
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ZoneChangeTriggeredAbility.java",
+      "sha256": "2387eb4e53ef69a480b3ad72111ccdd5f994528cb727378c65c941a46c44d7ed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldWithCounterTargetEffect.java",
+      "sha256": "0e7f52f88746be4b6bbb9acafadcf25b3ad14633151a2868726600cb1af9434c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardSubTypeTargetEffect.java",
+      "sha256": "4a5b785143060689d498ae3f97610eac0103c628160a52505c1d6fcad298384f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+    }
+  ]
 }

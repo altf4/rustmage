@@ -143,6 +143,8 @@ impl TargetRule {
 /// Immutable live constraints; indirection keeps target plans compact in checkpoints.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetPredicate {
+    OwnedByController,
+    OtherThanSource,
     Blocking,
     Nontoken,
     Permanent,
@@ -624,6 +626,11 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    BlinkUntilEndStep {
+        under_owner: bool,
+    },
+    ReturnDeathCard(ReturnKind),
+    ResolveDelayedReturn,
     CreateCopyToken {
         subject: Subject,
         amount: u16,
@@ -1940,7 +1947,21 @@ pub(crate) enum EntryPredicate {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ReturnDeathFilter {
+    SourceNonDemon,
+    SourceRevival,
+    ControlledNontokenNonAngel,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ReturnKind {
+    Demon,
+    Angel,
+    Revival,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    ReturnDeath(ReturnDeathFilter),
     /// Explicit printed source zone; legacy events keep their existing origins.
     InZone {
         zone: TargetZone,
@@ -2723,6 +2744,9 @@ impl Card {
             .iter()
             .find(|(index, _, _)| *index == ability)
             .map(|(_, kind, amount)| (*kind, *amount))
+    }
+    pub(crate) fn cast_entry_counters(self) -> &'static [(CounterKind, u64)] {
+        authored::RULES[self.index()].extras.cast_entry_counters
     }
     pub(crate) fn hand_cast_entry_counters(self) -> &'static [(CounterKind, u64)] {
         authored::RULES[self.index()]

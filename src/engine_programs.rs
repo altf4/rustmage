@@ -348,6 +348,9 @@ impl Game {
                                         })
                                     })
                         }
+                        TriggerCondition::ReturnDeath(filter) => {
+                            self.return_death_matches(filter, source, event)
+                        }
                         TriggerCondition::SelfDies | TriggerCondition::SelfEntersOrDies => {
                             source.reference == event.before.reference
                         }
@@ -425,8 +428,10 @@ impl Game {
                         }
                         _ => false,
                     };
-                    if matched {
-                        self.queue_zone_trigger(source, index, event);
+                    if matched && self.queue_zone_trigger(source, index, event) {
+                        if matches!(ability.condition.event(), TriggerCondition::ReturnDeath(_)) {
+                            self.capture_return_death(event);
+                        }
                     }
                 }
             }
@@ -484,6 +489,7 @@ impl Game {
                     | TriggerCondition::StateCounterAtLeast { .. }
                     | TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::SelfDies
+                    | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
@@ -723,6 +729,7 @@ impl Game {
             cast_event: None,
             delayed_sacrifice: None,
             delayed_warp_exile: None,
+            return_link: None,
             x: None,
             attachment_trigger: event,
             cast: None,
@@ -1243,6 +1250,7 @@ impl Game {
         let program = match item.kind {
             StackKind::TriggeredAbility { .. }
             | StackKind::DelayedSacrifice
+            | StackKind::DelayedReturn
             | StackKind::DelayedWarpExile
             | StackKind::ActivatedAbility { .. } => {
                 item.program().expect("selected ability program").1
@@ -1280,6 +1288,7 @@ impl Game {
                             })
                     }) || item.x.is_some()
                         || !item.source_card.hand_cast_entry_counters().is_empty()
+                        || !item.source_card.cast_entry_counters().is_empty()
                         || item.source_card.entry_choice().is_some()
                         || self.has_entry_counter_replacements(item.source_card)
                     {
@@ -1858,6 +1867,11 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::BlinkUntilEndStep { under_owner } => {
+                    self.blink_until_end_step(&item, under_owner)
+                }
+                Instruction::ReturnDeathCard(kind) => self.return_death_card(&item, kind),
+                Instruction::ResolveDelayedReturn => self.resolve_delayed_return(&item),
                 Instruction::ReturnSourceToHand(origin) => {
                     let zone = match origin {
                         TargetZone::Battlefield => Zone::Battlefield,

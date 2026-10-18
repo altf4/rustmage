@@ -8,5 +8,28 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d20f4eae8a589d0b8724c39e7b5b97faf48f552f789dd973e2278dfaa0ad0667"
   },
-  "physical_metadata_sha256": "25dbb9b56a7ef6abf7553c6d039cb1378f70b49a0e6d968edb4ad222c721d91d"
+  "physical_metadata_sha256": "25dbb9b56a7ef6abf7553c6d039cb1378f70b49a0e6d968edb4ad222c721d91d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/ValkyriesCall.java",
+  "java_sha256": "8d51d207b4ec6c09caf7d086b881e26d1d730abb21f3f3ad1ee6c95f6677fcc6",
+  "remaining_obligations": [
+    "Shared return rules and whole-card acceptance pending."
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+    }
+  ]
 }

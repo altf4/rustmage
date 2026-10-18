@@ -5347,7 +5347,8 @@
     0,
     2,
     2,
-    0
+    0,
+    1
   ],
   "aliases": [
     [
@@ -5985,6 +5986,10 @@
     [
       "@token/scion_of_the_deep",
       5334
+    ],
+    [
+      "@token/spirit_1_1_white_flying",
+      5342
     ],
     [
       "A Killer Among Us",
@@ -27765,6 +27770,12 @@
       "name": "Ninja Token",
       "subtypes": "Ninja",
       "colors": 2
+    },
+    {
+      "factory_identity": "@token/spirit_1_1_white_flying",
+      "name": "Spirit Token",
+      "subtypes": "Spirit",
+      "colors": 1
     }
   ],
   "emblems": [
@@ -180405,6 +180416,35 @@
       "standard_legal": false,
       "legendary": false,
       "kind": 0,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5342,
+      "module": "card_5342",
+      "path": "synthetic/token_spirit_1_1_white_flying.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/spirit_1_1_white_flying",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Spirit",
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
       "basic": false,
       "mana_color": null,
       "colored": [

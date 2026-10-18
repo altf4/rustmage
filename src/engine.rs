@@ -13,9 +13,10 @@ use crate::cards::{
     Effect, EffectChoiceKind, EmblemInfo, EntryChoiceKind, EntryChoiceValue, EntryCounterAmount,
     EntryPredicate, EntryTapped, InitialCounters, Instruction, ManaCost, ManaProduction,
     MillAmount, MilledCount, MilledDestination, MilledFilter, MilledSelectionSpec, NamedCounters,
-    PlayerSet, RecoveryFilter, ResolvedStatValue, SacrificeFilter, SearchSpec, SpellMode, StatExpr,
-    StatValue, Stats, StepGuard, StepValue, Subject, TargetGroupConstraint, TargetPlan,
-    TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
+    PlayerSet, RecoveryFilter, ResolvedStatValue, ReturnKind, SacrificeFilter, SearchSpec,
+    SpellMode, StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetGroupConstraint,
+    TargetPlan, TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep,
+    payments,
 };
 #[path = "engine_milled_selection.rs"]
 mod milled_selection;
@@ -54,6 +55,7 @@ mod warp;
 pub use cast_payments::{CastPaymentEvent, ManaPaymentDomain};
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
 pub use plot::{PlotPaymentView, PlottedCard};
+pub use return_links::{DelayedReturnView, ReturnLinkView};
 pub use warp::{DelayedWarpExileView, WarpedCard};
 
 #[path = "engine_characteristic_layers.rs"]
@@ -136,6 +138,8 @@ mod explore;
 mod fight;
 #[path = "engine_milling.rs"]
 mod milling;
+#[path = "engine_return_links.rs"]
+mod return_links;
 #[path = "engine_roles.rs"]
 mod roles;
 #[path = "engine_sba.rs"]
@@ -786,6 +790,7 @@ pub struct SpellView {
     pub cast_event: Option<Box<CastPaymentEvent>>,
     pub delayed_sacrifice: Option<Box<DelayedSacrificeView>>,
     pub delayed_warp_exile: Option<Box<DelayedWarpExileView>>,
+    pub return_link: Option<Box<ReturnLinkView>>,
     /// Chosen X, retained independently by a spell and its own entry-trigger packets.
     pub x: Option<u32>,
     pub attachment_trigger: Option<Box<AttachmentTriggerView>>,
@@ -881,6 +886,10 @@ impl SpellView {
                 .cast_event
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<CastPaymentEvent>())
+            + self
+                .return_link
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<ReturnLinkView>())
             + self.delayed_sacrifice.as_ref().map_or(0, |d| d.bytes())
             + self.crew.as_ref().map_or(0, |c| c.bytes())
             + self
@@ -943,7 +952,9 @@ impl SpellView {
                 Some(Instruction::Modal(modes)) => Some(modes),
                 _ => None,
             },
-            StackKind::DelayedSacrifice | StackKind::DelayedWarpExile => None,
+            StackKind::DelayedSacrifice
+            | StackKind::DelayedWarpExile
+            | StackKind::DelayedReturn => None,
         }
     }
     pub(crate) fn program(&self) -> Option<(TargetPlan, &'static [Instruction])> {
@@ -1045,6 +1056,9 @@ impl SpellView {
                     };
                     (plan, program)
                 }),
+            StackKind::DelayedReturn => {
+                Some((TargetPlan::NONE, &[Instruction::ResolveDelayedReturn]))
+            }
             StackKind::DelayedSacrifice => {
                 Some((TargetPlan::NONE, &[Instruction::SacrificeDelayedTokens]))
             }
@@ -1079,6 +1093,7 @@ pub enum StackKind {
     ActivatedAbility { ability: u16 },
     DelayedSacrifice,
     DelayedWarpExile,
+    DelayedReturn,
 }
 
 /// The object being attacked; this is not a spell/ability target.
@@ -1391,6 +1406,7 @@ struct State {
     // rather than an inline Vec header for games with no delayed obligation.
     #[allow(clippy::box_collection)]
     delayed_sacrifices: Option<Box<Vec<mobilize::DelayedBatch>>>,
+    delayed_returns: Option<Box<Vec<return_links::DelayedReturn>>>,
     mobilize: Option<Box<mobilize::MobilizePlan>>,
     saddled: Vec<ObjectRef>,
     saddle_payment: Option<Box<saddle::SaddlePayment>>,
@@ -1735,6 +1751,7 @@ pub struct Observation {
     pub endure_choice: Option<EndureChoiceView>,
     pub convoke_choice: Option<ConvokeChoiceView>,
     pub delayed_sacrifices: Vec<DelayedSacrificeView>,
+    pub delayed_returns: Vec<DelayedReturnView>,
     pub mobilize_choice: Option<MobilizeChoiceView>,
     pub saddle_choice: Option<SaddleChoiceView>,
     /// Complete scalar domain, visible only to its choosing actor.
@@ -1973,6 +1990,7 @@ impl Game {
                 explore_data: None,
                 evidence_data: None,
                 delayed_sacrifices: None,
+                delayed_returns: None,
                 mobilize: None,
                 saddled: Vec::new(),
                 saddle_payment: None,
@@ -5047,6 +5065,13 @@ impl Game {
             } else {
                 None
             },
+            delayed_returns: self
+                .state
+                .delayed_returns
+                .as_ref()
+                .map_or_else(Vec::new, |rows| {
+                    rows.iter().map(|r| r.view.clone()).collect()
+                }),
             delayed_sacrifices: self
                 .state
                 .delayed_sacrifices
@@ -5546,6 +5571,7 @@ impl Game {
             + self.suspected_bytes()
             + self.death_exile_bytes()
             + self.mobilize_bytes()
+            + self.return_links_bytes()
             + std::mem::size_of::<Vec<Object>>()
             + std::mem::size_of::<Vec<ObjectRef>>()
             + (s.attacked_this_turn.len() + s.saddled.len()) * std::mem::size_of::<ObjectRef>()
@@ -6529,3 +6555,7 @@ mod layered_characteristic_tests;
 #[cfg(test)]
 #[path = "engine_modal_history_tests.rs"]
 mod modal_history_tests;
+
+#[cfg(test)]
+#[path = "engine_return_links_tests.rs"]
+mod return_links_tests;

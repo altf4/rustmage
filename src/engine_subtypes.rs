@@ -23,7 +23,7 @@ const LAND_TYPES: [&str; 17] = [
     "Planet",
     "Urza's",
 ];
-const JOB_TYPES: [&str; 11] = [
+const JOB_TYPES: [&str; 13] = [
     "Artificer",
     "Bard",
     "Cleric",
@@ -35,8 +35,10 @@ const JOB_TYPES: [&str; 11] = [
     "Shaman",
     "Warrior",
     "Wizard",
+    "Angel",
+    "Demon",
 ];
-// Eleven job grants and three projection flags fit in one existing word.
+// Thirteen named grants and three projection flags fit in one existing word.
 const JOB_MASK: u16 = (1 << JOB_TYPES.len()) - 1;
 const SUPPRESS_PRINTED: u16 = 1 << JOB_TYPES.len();
 const LAND_ONLY: u16 = SUPPRESS_PRINTED << 1;
@@ -136,6 +138,7 @@ pub struct CreatureTypesEffectView {
     pub recipient: ObjectRef,
     pub source: ObjectRef,
     pub types: &'static [&'static str],
+    pub additional: bool,
     pub timestamp: u64,
 }
 impl ObjectView {
@@ -177,15 +180,28 @@ impl Game {
                     .map(|row| {
                         (
                             row.timestamp,
-                            characteristic_layers::SubtypeChange::Named(row.types, false),
+                            if row.additional {
+                                characteristic_layers::SubtypeChange::Add(row.types)
+                            } else {
+                                characteristic_layers::SubtypeChange::Named(row.types, false)
+                            },
                         )
                     }),
             );
         }
         changes.sort_by_key(|row| row.0);
-        let replacement_time = changes.last().map(|row| row.0);
+        let replacement_time = changes
+            .iter()
+            .rev()
+            .find(|(_, change)| !matches!(change, characteristic_layers::SubtypeChange::Add(_)))
+            .map(|row| row.0);
         for (_, change) in changes {
             match change {
+                characteristic_layers::SubtypeChange::Add(types) => {
+                    for typ in types {
+                        mask.insert(typ);
+                    }
+                }
                 characteristic_layers::SubtypeChange::LandOnly => {
                     mask.replace_creature_types(&[]);
                     mask.set_flag(ALL_CREATURE_TYPES, false);
@@ -327,6 +343,7 @@ impl Game {
                 recipient,
                 source: item.object,
                 types,
+                additional: false,
                 timestamp,
             });
         }
@@ -350,6 +367,11 @@ impl Game {
         }) && let Some(EntryChoiceValue::CreatureType(typ)) = m.choice
         {
             result.chosen = Some(typ);
+        }
+        match m.return_modification {
+            Some(ReturnKind::Angel) => result.insert("Angel"),
+            Some(ReturnKind::Demon) => result.insert("Demon"),
+            _ => {}
         }
         result
     }

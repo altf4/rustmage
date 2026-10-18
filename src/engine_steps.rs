@@ -8,6 +8,7 @@ impl Game {
         }
         if step == Step::End {
             self.queue_delayed_sacrifices();
+            self.queue_delayed_returns();
             self.queue_warp_exiles();
         }
         let sources: Vec<_> = self

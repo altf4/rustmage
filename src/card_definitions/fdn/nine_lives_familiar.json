@@ -8,5 +8,63 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "86f7c6762828a0a94c5fadfaedf0f300a5b20f36f5ac2fe66dd6c0f8fe0a1a8b"
   },
-  "physical_metadata_sha256": "72d168b33c5e6142f2e1615977cf8c698d788c39fda2e206e97e95d8e88ee245"
+  "physical_metadata_sha256": "72d168b33c5e6142f2e1615977cf8c698d788c39fda2e206e97e95d8e88ee245",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NineLivesFamiliar.java",
+  "java_sha256": "bcafb8496d9b048dda29b9feece500d501226efff9399f24089e64c1f43a5632",
+  "remaining_obligations": [
+    "Shared return rules and whole-card acceptance pending."
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+      "sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ZoneChangeTriggeredAbility.java",
+      "sha256": "2387eb4e53ef69a480b3ad72111ccdd5f994528cb727378c65c941a46c44d7ed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+      "sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CastFromEverywhereSourceCondition.java",
+      "sha256": "2d091ae95c227de0b227151a9b315cf5370e50f5e0f5177f5e50d8ab3825c4ba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+      "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToBattlefieldEffect.java",
+      "sha256": "16cae19ce2e7af02a635cb76afbd5f1139e792df2170daa35f5692a12412f54b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToBattlefieldWithCounterEffect.java",
+      "sha256": "b2e498c7be8b60c53c88c09ed1e81bf5eb78154ec9f2f0e1af0f48ee8c61ed0d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+    }
+  ]
 }

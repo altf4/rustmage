@@ -18,6 +18,7 @@ pub(super) struct EntryMove {
     pub life_bonus: Option<(Player, &'static str, u16)>,
     /// Counters put on this object as part of entering by the surrounding effect.
     pub effect_counter: Option<(CounterKind, u64)>,
+    pub return_modification: Option<ReturnKind>,
     pub attacking: Option<CombatDefender>,
     pub skipped: bool,
     pub reveal_hand: bool,
@@ -179,6 +180,7 @@ impl Game {
             suspect_after: false,
             life_bonus: None,
             effect_counter: None,
+            return_modification: None,
             attacking: None,
             skipped: false,
             reveal_hand: false,
@@ -250,6 +252,11 @@ impl Game {
                 movement.cast_payment,
                 movement.controller,
             );
+            if movement.destination == Zone::Battlefield && movement.cast_origin.is_some() {
+                for &(kind, amount) in movement.before.card.cast_entry_counters() {
+                    movement.counters.add(kind, amount);
+                }
+            }
             if movement.destination == Zone::Battlefield && movement.cast_origin == Some(Zone::Hand)
             {
                 for &(kind, amount) in movement.before.card.hand_cast_entry_counters() {
@@ -468,6 +475,12 @@ impl Game {
                 && let Some(value) = movement.choice
             {
                 self.set_entry_value(event.after, value);
+            }
+            if event.moved
+                && event.destination == Zone::Battlefield
+                && let Some(kind) = movement.return_modification
+            {
+                self.apply_return_modification(event.after, kind);
             }
             event.offspring_paid = movement.offspring_paid;
             event.kicked = movement.kicked;

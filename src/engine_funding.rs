@@ -1398,6 +1398,7 @@ impl Game {
             ),
             StackKind::TriggeredAbility { .. }
             | StackKind::DelayedSacrifice
+            | StackKind::DelayedReturn
             | StackKind::DelayedWarpExile => false,
         }
     }
@@ -1452,6 +1453,7 @@ impl Game {
             }
             StackKind::TriggeredAbility { .. }
             | StackKind::DelayedSacrifice
+            | StackKind::DelayedReturn
             | StackKind::DelayedWarpExile => unreachable!(),
         }
     }

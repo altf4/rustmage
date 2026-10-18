@@ -8,5 +8,53 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f540c546cf3bd15d28debbe1779a4339c7b0e1c62269cdfdae54eded66c6caaa"
   },
-  "physical_metadata_sha256": "a3d89abf76913d561928a0aaa91d4ae8773a873159bb26a5e87552d2cd0bca25"
+  "physical_metadata_sha256": "a3d89abf76913d561928a0aaa91d4ae8773a873159bb26a5e87552d2cd0bca25",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CharmingPrince.java",
+  "java_sha256": "6e71ad0077abdf6eeba3b9384b3758fc9887f290576fd91dcf94811cb9832a11",
+  "remaining_obligations": [
+    "Shared return rules and whole-card acceptance pending."
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+      "sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileReturnBattlefieldNextEndStepTargetEffect.java",
+      "sha256": "e99352ec388fe5d84b253f86650b40687823087cf045653115c708eed09ef786"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToBattlefieldUnderOwnerControlTargetEffect.java",
+      "sha256": "0fc807f72c6feeb241f8a5b7db20fd2ea9fd67206d5a13b91341b400742affeb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToBattlefieldUnderYourControlTargetEffect.java",
+      "sha256": "74449a872e162e05c8786a448131888148ed869002fce1bf9eb67884f2920e65"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+      "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+    }
+  ]
 }
