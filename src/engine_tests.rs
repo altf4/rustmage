@@ -25,6 +25,7 @@ pub(super) fn spawn(game: &mut Game, p: Player, card: Card, zone: Zone) -> CardI
     let id = game.state.objects.len() as CardId;
     game.state.objects.push(Object {
         copy_token: false,
+        spell_copy: false,
         card,
         owner: p,
         controller: p,

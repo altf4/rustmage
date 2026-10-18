@@ -89,6 +89,7 @@ pub(crate) enum TargetRule {
     },
     Any,
     Spell,
+    SingleTargetStackObject,
     SpellKinds {
         kinds: u8,
         excluded: u8,
@@ -572,6 +573,11 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    CopyNextInstantSorcery,
+    CopyCastSpell {
+        prior_spells: bool,
+    },
+    ChangeSingleStackTarget,
     CreateCopyToken {
         subject: Subject,
         amount: u16,

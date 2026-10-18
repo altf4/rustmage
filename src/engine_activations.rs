@@ -421,6 +421,8 @@ impl Game {
             reflexive_subject: None,
             crew: None,
             cast_event: None,
+            copy_event: None,
+            is_copy: false,
             delayed_sacrifice: None,
             delayed_warp_exile: None,
             x: None,

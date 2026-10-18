@@ -124,21 +124,10 @@ impl Game {
         let victim = match subject {
             CounterSubject::Related => Some(item.related_stack.expect("ward stack association")),
             CounterSubject::Targets => item.targets.iter().find_map(|target| {
-                let Target::Spell(card) = target.target else {
-                    return None;
-                };
-                self.state
-                    .stack
-                    .iter()
-                    .find(|s| {
-                        s.kind == StackKind::Spell
-                            && s.card == card
-                            && Some(s.object) == target.object
-                    })
-                    .map(|s| StackLink {
-                        id: s.id,
-                        controller: s.controller,
-                    })
+                self.bound_stack_item(target).map(|s| StackLink {
+                    id: s.id,
+                    controller: s.controller,
+                })
             }),
         };
         let resolution = self.state.resolving.as_mut().unwrap();

@@ -205,6 +205,8 @@ impl Game {
                 reflexive_subject: None,
                 crew: None,
                 cast_event: None,
+                copy_event: None,
+                is_copy: false,
                 delayed_sacrifice: Some(Box::new(b.view)),
                 delayed_warp_exile: None,
                 x: None,

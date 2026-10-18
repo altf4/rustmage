@@ -78,6 +78,10 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 .objects
                 .iter()
                 .any(|o| o.id == id && o.controller == actor),
+            Target::Stack(id) => observation
+                .stack
+                .iter()
+                .any(|item| item.id == id && item.controller == actor),
             Target::Spell(id) => observation.stack.iter().any(|item| {
                 item.kind == StackKind::Spell && item.card == id && item.controller == actor
             }),

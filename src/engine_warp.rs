@@ -93,6 +93,8 @@ impl Game {
                 delayed_warp_exile: Some(Box::new(view)),
                 crew: None,
                 cast_event: None,
+                copy_event: None,
+                is_copy: false,
                 delayed_sacrifice: None,
                 x: None,
                 attachment_trigger: None,

@@ -118,7 +118,7 @@ impl Game {
             for _ in 0..group.amount {
                 let (id, generation) = if let Some(id) = self.state.free_tokens.pop() {
                     let old = &self.state.objects[id as usize];
-                    assert!(old.is_token() && old.zone == Zone::Outside);
+                    assert!((old.is_token() || old.spell_copy) && old.zone == Zone::Outside);
                     (id, old.generation)
                 } else {
                     (
@@ -130,6 +130,7 @@ impl Game {
                 let object = Object {
                     card: group.token,
                     copy_token: recipe.is_some(),
+                    spell_copy: false,
                     owner: player,
                     controller: player,
                     zone: Zone::Outside,

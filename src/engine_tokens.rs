@@ -167,6 +167,7 @@ impl Game {
                 let object = Object {
                     card: token,
                     copy_token: false,
+                    spell_copy: false,
                     owner: controller,
                     controller,
                     zone: Zone::Outside,

@@ -1,5 +1,10 @@
 #[path = "engine_copies.rs"]
 mod copies;
+#[path = "engine_stack_copies.rs"]
+mod stack_copies;
+#[cfg(test)]
+#[path = "engine_stack_copies_tests.rs"]
+mod stack_copies_tests;
 pub use copies::CopyRecipe;
 const STARTING_LIFE: i128 = 20;
 use crate::capacity::{CapacityExt, CapacitySignal};
@@ -298,6 +303,8 @@ pub enum Target {
     Player(Player),
     Card(CardId),
     Spell(CardId),
+    /// Exact identity of a spell copy or ability on the stack.
+    Stack(u64),
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -347,6 +354,8 @@ macro_rules! define_actions {
     }
 }
 define_actions! {
+    KeepCopyTarget,
+    ChangeCopyTarget { target: Target },
     ChooseCollectEvidence { collect: bool },
     ChooseEvidence { object: ObjectRef },
     FinishEvidence,
@@ -614,6 +623,7 @@ fn first_player() -> Player {
 struct Object {
     card: Card,
     copy_token: bool,
+    spell_copy: bool,
     owner: Player,
     controller: Player,
     zone: Zone,
@@ -780,6 +790,8 @@ pub struct SpellView {
     pub source_move: Option<Box<TriggerSourceMoveView>>,
     pub crew: Option<Box<CrewContext>>,
     pub cast_event: Option<Box<CastPaymentEvent>>,
+    pub copy_event: Option<Box<stack_copies::CopyEvent>>,
+    pub is_copy: bool,
     pub delayed_sacrifice: Option<Box<DelayedSacrificeView>>,
     pub delayed_warp_exile: Option<Box<DelayedWarpExileView>>,
     /// Chosen X, retained independently by a spell and its own entry-trigger packets.
@@ -855,7 +867,9 @@ impl SpellView {
     }
     /// Heap-owned continuation payloads; inline packet storage is counted by its container.
     pub(super) fn owned_bytes(&self) -> usize {
-        self.source_counter_lki.as_ref().map_or(0, |facts| {
+        self.copy_event.as_ref().map_or(0, |event| {
+            std::mem::size_of::<stack_copies::CopyEvent>() + event.spell.owned_bytes()
+        }) + self.source_counter_lki.as_ref().map_or(0, |facts| {
             std::mem::size_of::<Vec<SourceCounterQuantityView>>()
                 + facts.len() * std::mem::size_of::<SourceCounterQuantityView>()
         }) + self.target_controller_lki.as_ref().map_or(0, |v| {
@@ -1184,6 +1198,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    Retarget {
+        player: Player,
+    },
     Replacement {
         player: Player,
     },
@@ -1392,6 +1409,7 @@ struct State {
     creature_damage_history: Option<SharedVec<CreatureDamageHistoryView>>,
     entry_values: entry_choices::Rows,
     copy_recipes: copies::Rows,
+    stack_copy_data: Option<Box<stack_copies::CopyState>>,
     modal_history: modal_history::Rows,
     ability_resolutions: ability_resolutions::Rows,
     attacked_this_turn: SharedVec<ObjectRef>,
@@ -1898,6 +1916,7 @@ impl Game {
                 objects.push(Object {
                     card,
                     copy_token: false,
+                    spell_copy: false,
                     owner: p,
                     controller: p,
                     zone: Zone::Library,
@@ -1930,6 +1949,7 @@ impl Game {
                 creature_damage_history: None,
                 entry_values: None,
                 copy_recipes: None,
+                stack_copy_data: None,
                 modal_history: None,
                 ability_resolutions: None,
                 attacked_this_turn: Vec::new().into(),
@@ -2072,6 +2092,7 @@ impl Game {
             | Pending::EffectMana { player, .. }
             | Pending::PayCosts { player }
             | Pending::Modes { player }
+            | Pending::Retarget { player }
             | Pending::Targets { player }
             | Pending::OrderTriggers { player }
             | Pending::TargetLibrary { player }
@@ -3127,6 +3148,7 @@ impl Game {
                     }
                 }
             }
+            Pending::Retarget { .. } => return self.visit_retarget_actions(&mut emit),
             Pending::Targets { .. } => {
                 let announcement = s.announcing.as_ref().unwrap();
                 let count = announcement
@@ -3692,6 +3714,8 @@ impl Game {
                 self.choose_mana_cost(cost)
             }
             Action::ChooseMode { mode } => self.choose_mode(mode),
+            Action::KeepCopyTarget => self.finish_copy_target(None),
+            Action::ChangeCopyTarget { target } => self.finish_copy_target(Some(target)),
             Action::ChooseTarget { target } => {
                 let mut bound = self.bind_target(target);
                 let item = self.state.announcing.as_ref().unwrap().item.clone();
@@ -4192,6 +4216,32 @@ impl Game {
         entry_controller: Option<Player>,
     ) -> ZoneChange {
         let id = before.id;
+        if before.zone == Zone::Stack {
+            self.capture_stack_copy_departure(id);
+        }
+        if before.zone == Zone::Stack && self.state.objects[id as usize].spell_copy {
+            self.state.stack.retain(|item| item.card != id);
+            let object = &mut self.state.objects[id as usize];
+            object.zone = Zone::Outside;
+            object.generation = object
+                .generation
+                .checked_add(1)
+                .capacity("object generation exhausted");
+            self.state.free_tokens.push(id);
+            return ZoneChange {
+                gift: None,
+                after: self.object_ref(id),
+                destination: Zone::Outside,
+                before,
+                moved: false,
+                sacrificed_by: None,
+                offspring_paid: false,
+                kicked: false,
+                bargained: false,
+                x: 0,
+                evidence_collected: false,
+            };
+        }
         let destination = if before.zone == Zone::Stack && self.state.objects[id as usize].flashback
         {
             Zone::Exile
@@ -4483,6 +4533,7 @@ impl Game {
 
     fn begin_turn(&mut self) {
         self.clear_crew_history();
+        self.expire_spell_copies();
         self.state.triggered_this_turn.clear();
         self.state.ability_resolutions = None;
         self.state.creature_damage_history = None;
@@ -4757,7 +4808,9 @@ impl Game {
                     obj.deathtouch_since_sba |=
                         creature && event.source.keywords.contains(Keywords::DEATHTOUCH);
                 }
-                Target::Spell(_) => unreachable!("damage cannot target stack objects"),
+                Target::Stack(_) | Target::Spell(_) => {
+                    unreachable!("damage cannot target stack objects")
+                }
             }
             // An ability can retain a departed source's last-known reference;
             // do not transfer this history to its new zone incarnation.
@@ -5035,6 +5088,7 @@ impl Game {
                 Pending::PlotPayment { .. } => "plot_payment",
                 Pending::Role { .. } => "role_rule",
                 Pending::Legend { .. } => "legend_rule",
+                Pending::Retarget { .. } => "retarget",
                 Pending::Targets { .. } => "targets",
                 Pending::Offspring { .. } => "offspring",
                 Pending::Bargain { .. } => "bargain",
@@ -5483,6 +5537,7 @@ impl Game {
             + s.pending.owned_bytes()
             + ability_resolutions::owned_bytes(&s.ability_resolutions)
             + copies::owned_bytes(&s.copy_recipes)
+            + stack_copies::owned_bytes(&s.stack_copy_data)
             + modal_history::owned_bytes(&s.modal_history)
             + s.announcing
                 .as_ref()

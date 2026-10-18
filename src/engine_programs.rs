@@ -721,6 +721,8 @@ impl Game {
             reflexive_subject: None,
             crew: None,
             cast_event: None,
+            copy_event: None,
+            is_copy: false,
             delayed_sacrifice: None,
             delayed_warp_exile: None,
             x: None,
@@ -759,7 +761,7 @@ impl Game {
     /// A spell becomes cast only after every declaration and cost is complete.
     /// Completed insertion paths share this hook; abilities never count as casts.
     pub(super) fn push_stack_item(&mut self, item: SpellView) {
-        let cast = (item.kind == StackKind::Spell && item.cast.is_some())
+        let cast = (item.kind == StackKind::Spell && item.cast.is_some() && !item.is_copy)
             .then_some((item.controller, item.source_card));
         self.state.stack.push(item);
         let Some((caster, card)) = cast else { return };
@@ -868,6 +870,7 @@ impl Game {
     }
 
     pub(super) fn record_cast(&mut self, caster: Player, card: Card, stack: Option<usize>) {
+        let first_trigger = self.state.pending_triggers.len();
         let count = &mut self.state.players[caster.index()].spells_cast_this_turn;
         *count = count.checked_add(1).capacity("spell count exhausted");
         let ordinal = *count;
@@ -942,6 +945,7 @@ impl Game {
                 }
             }
         }
+        self.capture_copy_cast(stack, first_trigger);
     }
 
     /// Apply one simultaneous tap event, then collect source-owned triggers.
@@ -1498,6 +1502,17 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::CopyNextInstantSorcery => self.remember_next_spell_copy(&item),
+                Instruction::CopyCastSpell { .. } => {
+                    if self.copy_captured_spell(&item) {
+                        return;
+                    }
+                }
+                Instruction::ChangeSingleStackTarget => {
+                    if self.change_single_stack_target(&item) {
+                        return;
+                    }
+                }
                 Instruction::IfThisAbilityResolutionNumber { number, skip } => {
                     if self.ability_resolution_number(&item) != number {
                         self.state.resolving.as_mut().unwrap().pc += skip;
@@ -1583,17 +1598,8 @@ impl Game {
                 }
                 Instruction::CounterAndCreateForController { token, amount } => {
                     for bound in &item.targets {
-                        if let Target::Spell(card) = bound.target
-                            && let Some((id, controller)) = self
-                                .state
-                                .stack
-                                .iter()
-                                .find(|v| {
-                                    v.kind == StackKind::Spell
-                                        && v.card == card
-                                        && Some(v.object) == bound.object
-                                })
-                                .map(|v| (v.id, v.controller))
+                        if let Some((id, controller)) =
+                            self.bound_stack_item(bound).map(|v| (v.id, v.controller))
                         {
                             self.counter_stack_item(id, false);
                             self.create_tokens(controller, token, u128::from(amount), false);
@@ -1602,13 +1608,7 @@ impl Game {
                 }
                 Instruction::CounterThenDrawIfDiscounted => {
                     for bound in &item.targets {
-                        if let Target::Spell(card) = bound.target
-                            && let Some(victim) = self.state.stack.iter().find(|v| {
-                                v.kind == StackKind::Spell
-                                    && v.card == card
-                                    && Some(v.object) == bound.object
-                            })
-                        {
+                        if let Some(victim) = self.bound_stack_item(bound) {
                             let draw =
                                 victim.cast.map_or(0, CastInfo::mana_spent) < victim.mana_value();
                             let id = victim.id;
@@ -2991,20 +2991,8 @@ impl Game {
                 }
                 Instruction::Counter => {
                     for bound in &item.targets {
-                        if let Target::Spell(card) = bound.target {
-                            let victim = self
-                                .state
-                                .stack
-                                .iter()
-                                .find(|s| {
-                                    s.kind == StackKind::Spell
-                                        && s.card == card
-                                        && Some(s.object) == bound.object
-                                })
-                                .map(|s| s.id);
-                            if let Some(id) = victim {
-                                self.counter_stack_item(id, false);
-                            }
+                        if let Some(id) = self.bound_stack_item(bound).map(|s| s.id) {
+                            self.counter_stack_item(id, false);
                         }
                     }
                 }
