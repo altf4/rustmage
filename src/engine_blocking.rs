@@ -31,6 +31,7 @@ impl Game {
         if self.blocker_subtype_excluded(attacker, blocker)
             || self.live_static_forbids_block(blocker, attacker)
             || keywords.contains(Keywords::CANT_BE_BLOCKED)
+            || keywords.contains(Keywords::PROTECTION_EVERYTHING)
             || keywords.contains(Keywords::NO_HUMAN_BLOCKERS) && self.has_subtype(blocker, "Human")
             || keywords.contains(Keywords::NO_TOKEN_BLOCKERS) && b.is_token()
             || keywords.contains(Keywords::FLYING)

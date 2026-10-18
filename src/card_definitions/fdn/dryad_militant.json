@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fdcc365cc8bb62ed82626248c8741e1a53bf35382eaf7045344de38f0fa71427"
   },
-  "physical_metadata_sha256": "aaa01eff56c7b6426e386286527906ce398a0ac0e5b39095429187075bfe55af"
+  "physical_metadata_sha256": "aaa01eff56c7b6426e386286527906ce398a0ac0e5b39095429187075bfe55af",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DryadMilitant.java",
+  "java_sha256": "f06d8897e1625c825ef38837a491084f173afe35494aff27a69ae80a538802c0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/GraveyardFromAnywhereExileReplacementEffect.java",
+      "sha256": "f2234484cde3a8148ea5ea49244dea8bb74ef2106f5682453a85341448c85a78"
+    }
+  ]
 }

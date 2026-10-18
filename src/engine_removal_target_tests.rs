@@ -666,6 +666,7 @@ fn damage_dealer_history_is_distinct_from_recipient_and_does_not_follow_a_depart
     let dealer = named(&mut g, Player::P1, "Bear Cub", Zone::Battlefield);
     let recipient = named(&mut g, Player::P1, "Hill Giant", Zone::Battlefield);
     let event = DamageEvent {
+        preventable: true,
         source: g.damage_source(dealer),
         target: Target::Card(recipient),
         amount: 1,
@@ -712,6 +713,7 @@ fn damage_dealer_history_is_distinct_from_recipient_and_does_not_follow_a_depart
     g.apply_damage_batch(&[event]);
     assert!(!g.object_view(dealer).dealt_damage_this_turn);
     g.apply_damage_batch(&[DamageEvent {
+        preventable: true,
         source: g.damage_source(dealer),
         target: Target::Player(Player::P0),
         amount: 1,

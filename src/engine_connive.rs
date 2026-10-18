@@ -137,7 +137,28 @@ impl Game {
                         .count(),
                 )
                 .capacity("connive count exhausted");
-                self.discard_batch(&discarded, None);
+                let cause = self.state.resolving.as_ref().unwrap().item.controller;
+                self.discard_batch_caused(&discarded, None, Some(cause));
+                if let Some(context) = self
+                    .state
+                    .entry_batch
+                    .as_mut()
+                    .and_then(|b| b.discard_context.as_mut())
+                {
+                    context.after = Some(discard_events::DiscardAfter::ConniveCounters(
+                        current.object,
+                        u64::from(nonlands),
+                    ));
+                    self.state
+                        .resolving
+                        .as_mut()
+                        .unwrap()
+                        .connive
+                        .as_mut()
+                        .unwrap()
+                        .current = None;
+                    return true;
+                }
                 if self.on_battlefield(current.object.card)
                     && self.object_ref(current.object.card) == current.object
                 {

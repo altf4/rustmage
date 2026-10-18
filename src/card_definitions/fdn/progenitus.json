@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f0d48c9d636974f548544162480628e07cfb47ccd9123dc05b9864e1a300fdc0"
   },
-  "physical_metadata_sha256": "5f5243093c4ccf8a226b56c2a6ffed7dbf9efa4042504cda9b61463d40f0e74f"
+  "physical_metadata_sha256": "5f5243093c4ccf8a226b56c2a6ffed7dbf9efa4042504cda9b61463d40f0e74f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/Progenitus.java",
+  "java_sha256": "b91b0299b9af01c8bb35af87c6404861b5006bb4b75a978951cbf3ebbebff389",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/PutIntoGraveFromAnywhereSourceAbility.java",
+      "sha256": "a2a10e96687e328675c9984dce68297ec5ff6eb039999176ff45d27c1900e9a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/RevealAndShuffleIntoLibrarySourceEffect.java",
+      "sha256": "4d5f4d3b7529856f871618488a1ca79ebdecd815e62a40b080a085fe07f0757b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProtectionFromEverythingAbility.java",
+      "sha256": "3cb07feb7b91c563e3cacfe6bdbe1344fdee992f3c1533e507dfeb5410612391"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProtectionAbility.java",
+      "sha256": "9e9e989ed896c2061243d8db26a7d6a364116b654a8477bbeb52c613e9d943cd"
+    }
+  ]
 }

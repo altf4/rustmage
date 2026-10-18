@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "06f4bca40bc300353e109d33894528fb4d8fd22276f66be08ffad455fdde7763"
   },
-  "physical_metadata_sha256": "13ce3fc3d0d8a6fb41ed4332f93d06025c0a009f3b2c08980646a765a75329b2"
+  "physical_metadata_sha256": "13ce3fc3d0d8a6fb41ed4332f93d06025c0a009f3b2c08980646a765a75329b2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WiltLeafLiege.java",
+  "java_sha256": "ab6a5e308ff8b4e3642f4dbee74bfbb611b12b7a496b34488aa4e3479d341af7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DiscardOntoBattlefieldEffect.java",
+      "sha256": "9b24e887f678699bb2dd66b1b56ba89cc4811f3c43c98cfce6d924732c4262d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+      "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+    }
+  ]
 }

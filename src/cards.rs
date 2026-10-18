@@ -1090,6 +1090,7 @@ pub enum LiveStatRecipients {
         other: bool,
         enchanted_by_controller: bool,
     },
+    OtherColoredCreaturesYouControl(ChoiceColor),
     Attached,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -1414,6 +1415,7 @@ pub(crate) enum ReplacementSpec {
     DoubleCreatureDamage,
     DoubleOpponentDamage,
     PreventOtherCreatureNoncombatDamage,
+    PreventAllDamageToSelf,
     Counters {
         filter: ReplacementFilter,
         kind: Option<CounterKind>,
@@ -2281,6 +2283,14 @@ impl ActivatedAbility {
     }
 }
 
+/// Immutable zone replacement behavior; each of these replaces a graveyard event.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ZoneReplacementRule {
+    RevealShuffleSelf,
+    ExileInstantSorceryCards,
+    OpponentDiscardToBattlefield,
+}
+
 /// Implemented static keyword flags. Other keyword cards remain unsupported.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize)]
 #[serde(transparent)]
@@ -2316,6 +2326,7 @@ impl Keywords {
     pub const PREVENT_COMBAT_TO: Self = Self(16777216);
     pub const PREVENT_COMBAT_BY: Self = Self(33554432);
     pub const NO_HUMAN_BLOCKERS: Self = Self(67108864);
+    pub const PROTECTION_EVERYTHING: Self = Self(134217728);
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
     }
@@ -2839,6 +2850,9 @@ impl Card {
     /// The fixed alternative mana cost for casting this complete card from its graveyard.
     pub fn flashback_cost(self) -> Option<ManaCost> {
         generated::flashback_cost(self)
+    }
+    pub(crate) fn zone_replacement(self) -> Option<ZoneReplacementRule> {
+        generated::zone_replacement(self)
     }
     pub(crate) fn cost_options(self) -> ManaCostOptions {
         let definition = &generated::DEFINITIONS[self.0 as usize];

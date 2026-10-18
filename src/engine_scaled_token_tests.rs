@@ -446,12 +446,14 @@ fn germinate_reads_later_gains_on_resolution_and_lifelink_counts_exact_event_amo
     let source = g.damage_source(source);
     g.apply_damage_batch(&[
         DamageEvent {
+            preventable: true,
             source,
             target: Target::Player(Player::P1),
             amount: 2,
             combat: true,
         },
         DamageEvent {
+            preventable: true,
             source,
             target: Target::Card(b),
             amount: 3,

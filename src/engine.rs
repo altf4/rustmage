@@ -1,3 +1,9 @@
+#[cfg(test)]
+#[path = "engine_zone_replacement_tests.rs"]
+mod zone_replacement_tests;
+#[path = "engine_zone_replacements.rs"]
+mod zone_replacements;
+pub use zone_replacements::{ZoneReplacementChoiceView, ZoneReplacementKind, ZoneRevealView};
 #[path = "engine_mana_lots.rs"]
 mod mana_lots;
 pub use mana_lots::{
@@ -367,6 +373,7 @@ macro_rules! define_actions {
     }
 }
 define_actions! {
+    ChooseZoneReplacement { effect: ZoneReplacementKind },
     FinishStackTargets,
     RestoreStackTarget { index: u32 },
     SetStackTarget { index: u32, target: Target },
@@ -1217,6 +1224,8 @@ pub struct DamageSource {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct DamageEvent {
+    /// False for damage explicitly made unpreventable by its event or effect.
+    pub preventable: bool,
     pub source: DamageSource,
     pub target: Target,
     pub amount: i128,
@@ -1238,6 +1247,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    ZoneReplacement {
+        player: Player,
+    },
     Retarget {
         player: Player,
     },
@@ -1431,6 +1443,7 @@ impl Pending {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    zone_rules: Option<Box<zone_replacements::ZoneState>>,
     mana_lots: Option<Box<mana_lots::ManaState>>,
     #[allow(clippy::box_collection)]
     temporary_controls: Option<Box<Vec<TemporaryControlView>>>,
@@ -1787,6 +1800,8 @@ pub struct Observation {
     pub temporary_abilities: Vec<TemporaryAbilityView>,
     pub suspected: Vec<ObjectRef>,
     pub replacement_choice: Option<ReplacementChoiceView>,
+    pub zone_replacement_choice: Option<ZoneReplacementChoiceView>,
+    pub zone_reveals: Vec<ZoneRevealView>,
     pub created_token_choice: Option<CreatedTokenChoiceView>,
     /// Complete exact numeric cost-payment space, visible only to its actor.
     pub mana_payment: Option<ManaPaymentDomain>,
@@ -1995,6 +2010,7 @@ impl Game {
             revision: 0,
             state: State {
                 mana_lots: None,
+                zone_rules: None,
                 temporary_controls: None,
                 casting_prohibited: false,
                 replacements: None,
@@ -2078,6 +2094,14 @@ impl Game {
                 game.draw(p);
             }
         }
+        if game
+            .state
+            .objects
+            .iter()
+            .any(|o| o.card.zone_replacement().is_some())
+        {
+            game.state.zone_rules = Some(Box::default());
+        }
         Ok(game)
     }
 
@@ -2108,7 +2132,8 @@ impl Game {
             | Pending::Mulligan(p)
             | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::ManaLotSpend { player }
+            Pending::ZoneReplacement { player }
+            | Pending::ManaLotSpend { player }
             | Pending::Replacement { player }
             | Pending::CreatedToken { player }
             | Pending::PlotPayment { player }
@@ -2222,6 +2247,8 @@ impl Game {
     /// and revision unchanged. No user-supplied IDs are used to index before validation.
     pub fn apply(&mut self, actor: Player, action: Action) -> Result<(), Error> {
         let deferred_action = self.state.mana_lots.is_some().then(|| action.clone());
+        // Cold mechanic presence avoids an extra action clone in ordinary games.
+        let zone_action = self.state.zone_rules.is_some().then(|| action.clone());
         let checkpoint = self.state.clone();
         let revision = self.revision;
         let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
@@ -2276,14 +2303,49 @@ impl Game {
                 self.revision = revision;
                 Err(error)
             }
-            Err(payload) => {
-                self.state = checkpoint;
-                self.revision = revision;
-                match payload.downcast::<CapacitySignal>() {
-                    Ok(signal) => Err(Error::CapacityExceeded(signal.0)),
-                    Err(payload) => std::panic::resume_unwind(payload),
+            Err(payload) => match payload.downcast::<zone_replacements::Request>() {
+                Ok(request) => {
+                    if self
+                        .state
+                        .mana_lots
+                        .as_ref()
+                        .is_some_and(|r| r.trace.is_some())
+                    {
+                        let saved = checkpoint.clone();
+                        self.defer_mana_allocation(
+                            actor,
+                            zone_action.clone().expect("zone action"),
+                            checkpoint,
+                            revision,
+                        );
+                        if matches!(self.state.pending, Pending::ManaLotSpend { .. }) {
+                            return Ok(());
+                        }
+                        return self.suspend_zone_replacement(
+                            *request,
+                            saved,
+                            actor,
+                            zone_action,
+                            revision,
+                        );
+                    }
+                    self.suspend_zone_replacement(
+                        *request,
+                        checkpoint,
+                        actor,
+                        zone_action,
+                        revision,
+                    )
                 }
-            }
+                Err(payload) => {
+                    self.state = checkpoint;
+                    self.revision = revision;
+                    match payload.downcast::<CapacitySignal>() {
+                        Ok(signal) => Err(Error::CapacityExceeded(signal.0)),
+                        Err(payload) => std::panic::resume_unwind(payload),
+                    }
+                }
+            },
         }
     }
     fn apply_transaction(&mut self, actor: Player, action: Action) -> Result<(), Error> {
@@ -2313,6 +2375,7 @@ impl Game {
             if !legal {
                 return Err(Error::IllegalAction);
             }
+            self.clear_zone_reveals();
             self.prepare_mana_allocations(&action);
             self.apply_legal(actor, action);
             // Resolution is atomic with respect to SBAs and priority, even when
@@ -2382,6 +2445,11 @@ impl Game {
         // result. Cache capacity affects work only, never the admitted action set.
         let mut spell_funding_cache: [Option<(Mana, u32, Card, bool)>; 8] = [None; 8];
         match s.pending {
+            Pending::ZoneReplacement { .. } => {
+                if self.zone_choice_actions(&mut emit) {
+                    return true;
+                }
+            }
             Pending::ManaLotSpend { .. } => {
                 if let Some(range) = self.mana_lot_spend_range() {
                     if let Some(values) = &range.values {
@@ -3505,6 +3573,7 @@ impl Game {
 
     fn apply_legal(&mut self, actor: Player, action: Action) {
         match action {
+            Action::ChooseZoneReplacement { effect } => self.choose_zone_replacement(effect),
             Action::ChooseReplacement { source, ability } => {
                 self.choose_replacement(source, ability)
             }
@@ -4039,7 +4108,8 @@ impl Game {
             Action::SelectMilled { object } => self.select_milled(object),
             Action::FinishMilledSelection => self.finish_milled_selection(),
             Action::ChooseRevealedDiscard { object } => {
-                self.discard_batch(&[object.card], None);
+                let cause = self.state.resolving.as_ref().unwrap().item.controller;
+                self.discard_batch_caused(&[object.card], None, Some(cause));
                 self.run_program();
             }
             Action::RecoverMilled { object } => self.recover_milled(object),
@@ -4289,16 +4359,25 @@ impl Game {
                 let view = self.object_view(id);
                 let counters = self.pre_entry_counters(&view, destination);
                 (
+                    self.freeze_zone_rules(&view, destination, None),
                     view,
                     destination == Zone::Battlefield && self.enters_tapped(id),
                     counters,
                 )
             })
             .collect();
-        before
+        // Replacement decisions precede the entire simultaneous commit.
+        let planned: Vec<_> = before
             .into_iter()
-            .map(|(before, tapped, counters)| {
-                self.transition_object_with_counters(before, destination, tapped, counters)
+            .map(|(rules, before, tapped, counters)| {
+                let plan = self.plan_zone_move(&before, destination, rules);
+                (before, plan, tapped, counters)
+            })
+            .collect();
+        planned
+            .into_iter()
+            .map(|(before, plan, tapped, counters)| {
+                self.commit_planned_zone_move(before, plan, tapped, counters, None)
             })
             .collect()
     }
@@ -4425,6 +4504,19 @@ impl Game {
         counters: Counters,
         entry_controller: Option<Player>,
     ) -> ZoneChange {
+        let rules = self.freeze_zone_rules(&before, destination, None);
+        let plan = self.plan_zone_move(&before, destination, rules);
+        self.commit_planned_zone_move(before, plan, tapped, counters, entry_controller)
+    }
+
+    fn commit_planned_zone_move(
+        &mut self,
+        before: ObjectView,
+        plan: zone_replacements::Plan,
+        tapped: bool,
+        counters: Counters,
+        entry_controller: Option<Player>,
+    ) -> ZoneChange {
         let id = before.id;
         self.capture_mana_copy_source_departure(&before);
         if before.zone == Zone::Stack {
@@ -4457,13 +4549,7 @@ impl Game {
                 evidence_collected: false,
             };
         }
-        let destination = if before.zone == Zone::Stack && self.state.objects[id as usize].flashback
-        {
-            Zone::Exile
-        } else {
-            destination
-        };
-        let destination = self.death_exile_destination(&before, destination);
+        let destination = plan.destination;
         // Outside is an internal staging zone for newly allocated tokens. A
         // ceased token is on the free list and cannot move again (CR111.8).
         let fresh_token = before.zone == Zone::Outside && !self.state.free_tokens.contains(&id);
@@ -4475,6 +4561,22 @@ impl Game {
                 gift: None,
                 after: before.reference,
                 destination: before.zone,
+                before,
+                moved: false,
+                sacrificed_by: None,
+                offspring_paid: false,
+                kicked: false,
+                bargained: false,
+                x: 0,
+                evidence_collected: false,
+            };
+        }
+        if before.zone == Zone::Library && destination == Zone::Library && plan.shuffle {
+            self.reveal_and_shuffle_zone_card(&before);
+            return ZoneChange {
+                gift: None,
+                after: before.reference,
+                destination,
                 before,
                 moved: false,
                 sacrificed_by: None,
@@ -4691,6 +4793,9 @@ impl Game {
             if !self.state.known_hand.contains(&reference) {
                 self.state.known_hand.push(reference);
             }
+        }
+        if plan.shuffle {
+            self.reveal_and_shuffle_zone_card(&before);
         }
         ZoneChange {
             gift: None,
@@ -4956,6 +5061,7 @@ impl Game {
     fn queue_hit(&mut self, source: DamageSource, target: Target, amount: i128, combat: bool) {
         if amount > 0 {
             self.state.hits.push(DamageEvent {
+                preventable: true,
                 source,
                 target,
                 amount,
@@ -4976,7 +5082,8 @@ impl Game {
     fn commit_damage_batch(&mut self, events: &[DamageEvent]) -> Vec<LifeGainEvent> {
         // Avoid allocating on the ordinary, unprevented damage path.
         let prevented = |event: &DamageEvent| {
-            event.combat
+            event.preventable
+                && event.combat
                 && (event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY)
                     || matches!(event.target, Target::Card(id) if self.keywords(id).contains(Keywords::PREVENT_COMBAT_TO)))
         };
@@ -5217,6 +5324,8 @@ impl Game {
         Observation {
             casting_prohibited: s.casting_prohibited || self.static_casting_prohibited(viewer),
             replacement_choice: self.replacement_choice(viewer),
+            zone_replacement_choice: self.zone_choice_view(viewer),
+            zone_reveals: self.zone_reveals(),
             created_token_choice: self.created_token_choice(),
             mana_lots: self.mana_lot_views(),
             mana_lot_spend: owns_choice.then(|| self.mana_lot_spend_range()).flatten(),
@@ -5295,6 +5404,7 @@ impl Game {
             step: s.step,
             decision: match s.pending {
                 Pending::ManaLotSpend { .. } => "mana_lot_spend",
+                Pending::ZoneReplacement { .. } => "zone_replacement",
                 Pending::Replacement { .. } => "replacement",
                 Pending::CreatedToken { .. } => "created_token",
                 Pending::ResolutionMana { .. } => "resolution_mana",
@@ -5746,6 +5856,7 @@ impl Game {
         let s = &self.state;
         std::mem::size_of::<State>()
             + self.mana_lot_bytes()
+            + s.zone_rules.as_ref().map_or(0, |r| r.bytes())
             + self.temporary_control_bytes()
             + self.temporary_ability_bytes()
             + self.suspected_bytes()

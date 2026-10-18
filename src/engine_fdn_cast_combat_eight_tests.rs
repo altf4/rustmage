@@ -336,6 +336,7 @@ fn fdn_cast_combat_eight_stromkirk_human_changeling_blockers_and_combat_only_cou
         assert!(!g.can_block_pair(human, source));
         for combat in [false, true] {
             let damage = DamageEvent {
+                preventable: true,
                 source: g.damage_source(source),
                 target: Target::Player(p.other()),
                 amount: 1,
@@ -347,6 +348,7 @@ fn fdn_cast_combat_eight_stromkirk_human_changeling_blockers_and_combat_only_cou
         }
         assert_eq!(g.state.objects[source as usize].counters.plus_one, 1);
         let damage = DamageEvent {
+            preventable: true,
             source: g.damage_source(source),
             target: Target::Player(p.other()),
             amount: 1,

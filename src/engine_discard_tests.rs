@@ -315,6 +315,7 @@ fn simultaneous_each_player_discards_preserve_privacy_and_group_per_player_apnap
             .collect()
     });
     g.apply_damage_batch(&[DamageEvent {
+        preventable: true,
         source: g.damage_source(dragon),
         target: Target::Player(Player::P1),
         amount: 1,
