@@ -232,6 +232,7 @@ impl ManaProduction {
         source: CardId,
     ) -> Self {
         match self {
+            Self::Tagged { production, .. } => production.in_world(world, source),
             Self::ChosenColor => {
                 let mut mana = [0; 6];
                 if let Some(EntryChoiceValue::Color(color)) =

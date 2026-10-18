@@ -619,7 +619,7 @@ impl<'g> FundingState<'g> {
                         let pool = mana_lots::available(self.mana, &self.lots, purpose);
                         let quality = match production {
                             ManaProduction::Tagged { quality, .. } => {
-                                Some(mana_lots::Quality::capture(self, entry.id, quality))
+                                Some(mana_lots::Quality::capture(self, entry.id, *quality))
                             }
                             _ => None,
                         };
@@ -2534,3 +2534,7 @@ impl Game {
         self.state.mana_lots.as_mut().unwrap().prepared = Some(viable);
     }
 }
+
+#[cfg(test)]
+#[path = "engine_tagged_mana_funding_tests.rs"]
+mod tagged_mana_funding_tests;

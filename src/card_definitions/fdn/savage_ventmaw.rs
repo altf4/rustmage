@@ -6,7 +6,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         targets: TargetPlan::NONE,
         program: &[Instruction::AddMana(ManaProduction::Tagged {
             production: &ManaProduction::Fixed([0, 0, 0, 3, 3, 0]),
-            quality: ManaQuality {
+            quality: &ManaQuality {
                 restriction: ManaRestriction::Unrestricted,
                 spell_bonus: ManaSpellBonus::None,
                 retention: ManaRetention::Turn,

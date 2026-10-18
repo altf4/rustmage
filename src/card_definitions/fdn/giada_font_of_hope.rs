@@ -24,7 +24,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         targets: TargetPlan::NONE,
         program: &[Instruction::AddMana(ManaProduction::Tagged {
             production: &ManaProduction::Fixed([1, 0, 0, 0, 0, 0]),
-            quality: ManaQuality {
+            quality: &ManaQuality {
                 restriction: ManaRestriction::SpellSubtype("Angel"),
                 spell_bonus: ManaSpellBonus::None,
                 retention: ManaRetention::Step,

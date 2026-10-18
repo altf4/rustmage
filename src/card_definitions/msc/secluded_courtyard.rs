@@ -51,7 +51,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             targets: TargetPlan::NONE,
             program: &[Instruction::AddMana(ManaProduction::Tagged {
                 production: &ManaProduction::any_color(1),
-                quality: ManaQuality {
+                quality: &ManaQuality {
                     restriction: ManaRestriction::ChosenCreatureSpellOrActivation,
                     spell_bonus: ManaSpellBonus::None,
                     retention: ManaRetention::Step,

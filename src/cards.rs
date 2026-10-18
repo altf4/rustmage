@@ -333,7 +333,7 @@ pub(crate) struct ManaQuality {
 pub(crate) enum ManaProduction {
     Tagged {
         production: &'static ManaProduction,
-        quality: ManaQuality,
+        quality: &'static ManaQuality,
     },
     ChosenColor,
     Fixed(Mana),

@@ -148,6 +148,7 @@ impl ManaLotSpendRange {
 pub(super) struct ManaState {
     pub pools: [SharedVec<Lot>; 2],
     pub prepared: Option<Vec<Vec<Mana>>>,
+    pub effect_quality: Option<Quality>,
     pub trace: Option<SpendRequest>,
     pub replay: Option<Vec<Mana>>,
     pub choice: Option<Box<SpendChoice>>,
@@ -299,7 +300,9 @@ impl Game {
         source: CardId,
     ) -> Option<Quality> {
         match production {
-            ManaProduction::Tagged { quality, .. } => Some(Quality::capture(self, source, quality)),
+            ManaProduction::Tagged { quality, .. } => {
+                Some(Quality::capture(self, source, *quality))
+            }
             _ => None,
         }
     }
@@ -344,6 +347,7 @@ impl Game {
         if self.state.mana_lots.as_ref().is_some_and(|state| {
             state.pools.iter().all(|pool| pool.is_empty())
                 && state.choice.is_none()
+                && state.effect_quality.is_none()
                 && state.replay.is_none()
                 && state.trace.is_none()
         }) {
@@ -685,372 +689,8 @@ impl Game {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::super::ability_timeline_tests::{cast, checked, settle, setup};
-    use super::super::tests::spawn;
-    use super::*;
-
-    fn named(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
-        spawn(g, p, Card::from_name(name).unwrap(), zone)
-    }
-    fn activate(g: &mut Game, card: CardId, ability: u16, production: Mana) {
-        checked(
-            g,
-            Action::ActivateMana {
-                card,
-                ability,
-                production,
-                payment: [0; 6],
-                counter_payment: Counters::default(),
-            },
-        );
-    }
-    fn reject(g: &mut Game, action: Action) {
-        let before = g.snapshot();
-        let revision = g.revision();
-        assert_eq!(
-            g.apply(g.actor().unwrap(), action),
-            Err(Error::IllegalAction)
-        );
-        assert_eq!(before, g.snapshot());
-        assert_eq!(revision, g.revision());
-    }
-    #[test]
-    fn tagged_mana_orb_paid_cast_chooses_real_haste_and_owned_transaction() {
-        assert_eq!(std::mem::size_of::<Object>(), 144);
-        for p in [Player::P0, Player::P1] {
-            let mut g = setup(p);
-            g.state.players[p.index()].mana = [0, 0, 0, 7, 0, 0];
-            let orb = named(&mut g, p, "Carnelian Orb of Dragonkind", Zone::Battlefield);
-            activate(&mut g, orb, 0, [0, 0, 0, 1, 0, 0]);
-            let dragon = named(&mut g, p, "Shivan Dragon", Zone::Hand);
-            checked(
-                &mut g,
-                Action::Cast {
-                    card: dragon,
-                    target: None,
-                    payment: [0, 0, 0, 6, 0, 0],
-                },
-            );
-            assert_eq!(g.object_view(dragon).zone, Zone::Hand);
-            assert_eq!(g.state.players[p.index()].mana[3], 8);
-            let range = g.mana_lot_spend_range().unwrap();
-            assert_eq!((range.minimum, range.maximum), (0, 1));
-            assert!(g.observe(p).mana_lot_spend.is_some());
-            assert!(g.observe(p.other()).mana_lot_spend.is_none());
-            assert!(!g.observe(p.other()).objects.iter().any(|o| o.id == dragon));
-            reject(&mut g, Action::ChooseManaLotSpend { amount: 2 });
-            let choice = g.snapshot();
-            checked(&mut g, Action::ChooseManaLotSpend { amount: 0 });
-            settle(&mut g);
-            assert!(!g.keywords(dragon).contains(Keywords::HASTE));
-            g.restore(&choice).unwrap();
-            checked(&mut g, Action::ChooseManaLotSpend { amount: 1 });
-            settle(&mut g);
-            assert!(g.keywords(dragon).contains(Keywords::HASTE));
-            assert_eq!(g.state.players[p.index()].mana[3], 2);
-        }
-    }
-    #[test]
-    fn tagged_mana_giada_restricts_raw_announced_and_funding_spells() {
-        for p in [Player::P0, Player::P1] {
-            let mut g = setup(p);
-            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
-            let giada = named(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
-            activate(&mut g, giada, 0, [1, 0, 0, 0, 0, 0]);
-            let chaplain = named(&mut g, p, "Ajani's Pridemate", Zone::Hand);
-            assert!(
-                !g.legal_actions()
-                    .contains(&Action::AnnounceCast { card: chaplain })
-            );
-            reject(
-                &mut g,
-                Action::Cast {
-                    card: chaplain,
-                    target: None,
-                    payment: [1, 0, 0, 0, 0, 1],
-                },
-            );
-            assert_eq!(g.available_mana(p, Purpose::Other), [0, 0, 0, 0, 0, 1]);
-            let angel = named(&mut g, p, "Serra Angel", Zone::Hand);
-            g.add_mana(p, [1, 0, 0, 0, 0, 2]);
-            cast(&mut g, angel, None, &[]);
-            settle(&mut g);
-            assert_eq!(g.object_view(angel).zone, Zone::Battlefield);
-            assert_eq!(g.counter_amounts(angel).get(CounterKind::PlusOne), 1);
-        }
-    }
-    #[test]
-    fn tagged_mana_courtyard_captures_type_after_producer_departure() {
-        for p in [Player::P0, Player::P1] {
-            let mut g = setup(p);
-            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 0];
-            let courtyard = named(&mut g, p, "Secluded Courtyard", Zone::Hand);
-            checked(&mut g, Action::PlayLand { card: courtyard });
-            let angel = CreatureType::from_name("Angel").unwrap();
-            checked(
-                &mut g,
-                Action::ChooseEntryValue {
-                    value: EntryChoiceValue::CreatureType(angel),
-                },
-            );
-            activate(&mut g, courtyard, 1, [1, 0, 0, 0, 0, 0]);
-            g.sacrifice_batch(&[(p, courtyard)]);
-            assert_eq!(g.object_view(courtyard).zone, Zone::Graveyard);
-            assert_eq!(
-                g.mana_lots(p)[0].quality.restriction,
-                ManaRestrictionView::CreatureSpellOrActivation(angel)
-            );
-            let serra = Card::from_name("Serra Angel").unwrap();
-            assert_eq!(
-                g.available_mana(p, g.spell_mana_purpose(serra)),
-                [1, 0, 0, 0, 0, 0]
-            );
-            assert_eq!(g.available_mana(p, Purpose::Other), [0; 6]);
-            let creature = Source::printed(serra);
-            assert_eq!(
-                g.available_mana(p, Purpose::Activation(creature)),
-                [1, 0, 0, 0, 0, 0]
-            );
-            g.add_mana(p, [1, 0, 0, 0, 0, 3]);
-            let spell = named(&mut g, p, "Serra Angel", Zone::Hand);
-            cast(&mut g, spell, None, &[]);
-            settle(&mut g);
-            assert_eq!(g.object_view(spell).zone, Zone::Battlefield);
-        }
-    }
-    #[test]
-    fn tagged_mana_giada_simultaneous_entries_count_pre_event_angels_and_double() {
-        for p in [Player::P0, Player::P1] {
-            let mut g = setup(p);
-            named(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
-            named(&mut g, p, "Serra Angel", Zone::Battlefield);
-            named(&mut g, p, "Doubling Season", Zone::Battlefield);
-            let a = named(&mut g, p, "Inspiring Overseer", Zone::Graveyard);
-            let b = named(&mut g, p, "Serra Angel", Zone::Graveyard);
-            let moves = [a, b]
-                .into_iter()
-                .map(|id| g.entry_move(id, Zone::Battlefield, false))
-                .collect();
-            g.stage_entries(moves, None);
-            g.advance_entries();
-            while matches!(g.state.pending, Pending::Replacement { .. }) {
-                let action = g
-                    .legal_actions()
-                    .into_iter()
-                    .find(|a| *a != Action::Concede)
-                    .unwrap();
-                checked(&mut g, action);
-            }
-            assert_eq!(g.counter_amounts(a).get(CounterKind::PlusOne), 4);
-            assert_eq!(g.counter_amounts(b).get(CounterKind::PlusOne), 4);
-        }
-    }
-    #[test]
-    fn tagged_mana_ventmaw_attack_retains_both_colors_until_actual_turn_end() {
-        for p in [Player::P0, Player::P1] {
-            let mut g = setup(p);
-            g.state.players[p.index()].mana = [0; 6];
-            let ventmaw = named(&mut g, p, "Savage Ventmaw", Zone::Battlefield);
-            g.state.step = Step::Attackers;
-            g.state.pending = Pending::Attackers;
-            checked(&mut g, Action::Attack { card: ventmaw });
-            checked(&mut g, Action::FinishAttackers);
-            settle(&mut g);
-            assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 3, 3, 0]);
-            let turn = g.state.turn;
-            let mut saw_main2 = false;
-            for _ in 0..60 {
-                if g.state.turn != turn {
-                    break;
-                }
-                assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 3, 3, 0]);
-                saw_main2 |= g.state.step == Step::Main2;
-                let action = g
-                    .legal_actions()
-                    .into_iter()
-                    .find(|action| {
-                        matches!(
-                            action,
-                            Action::Pass
-                                | Action::FinishBlockers
-                                | Action::FinishAttackers
-                                | Action::Discard { .. }
-                        )
-                    })
-                    .unwrap();
-                checked(&mut g, action);
-            }
-            assert!(saw_main2);
-            assert_ne!(g.state.turn, turn);
-            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
-            assert!(g.state.mana_lots.is_none());
-        }
-    }
-    #[test]
-    fn tagged_mana_guided_scarecrow_cannot_strand_enclosing_angel_cost() {
-        for p in [Player::P0, Player::P1] {
-            let mut g = setup(p);
-            g.state.players[p.index()].mana = [0, 0, 0, 3, 0, 0];
-            for (kind, production) in [
-                ("Scarecrow", [0, 0, 0, 1, 0, 0]),
-                ("Angel", [1, 0, 0, 0, 0, 0]),
-            ] {
-                let court = named(&mut g, p, "Secluded Courtyard", Zone::Battlefield);
-                g.set_entry_value(
-                    g.object_ref(court),
-                    EntryChoiceValue::CreatureType(CreatureType::from_name(kind).unwrap()),
-                );
-                activate(&mut g, court, 1, production);
-            }
-            let prismite = named(&mut g, p, "Scarecrow Guide", Zone::Battlefield);
-            let angel = named(&mut g, p, "Serra Angel", Zone::Hand);
-            checked(&mut g, Action::AnnounceCast { card: angel });
-            let before = g.snapshot();
-            checked(
-                &mut g,
-                Action::ActivateMana {
-                    card: prismite,
-                    ability: 0,
-                    payment: [0, 0, 0, 1, 0, 0],
-                    counter_payment: Counters::default(),
-                    production: [1, 0, 0, 0, 0, 0],
-                },
-            );
-            // Paying ordinary red strands this announced spell. The exact
-            // guided allocation must instead spend one Scarecrow-only unit.
-            assert_eq!(
-                g.available_mana(
-                    p,
-                    g.spell_mana_purpose(Card::from_name("Serra Angel").unwrap())
-                ),
-                [2, 0, 0, 3, 0, 0]
-            );
-            assert!(g.mana_lot_spend_range().is_none());
-            reject(&mut g, Action::ChooseManaLotSpend { amount: 0 });
-            checked(
-                &mut g,
-                Action::PayCosts {
-                    payment: [2, 0, 0, 3, 0, 0],
-                },
-            );
-            settle(&mut g);
-            assert_eq!(g.object_view(angel).zone, Zone::Battlefield);
-            assert!(g.state.mana_lots.is_none());
-            g.restore(&before).unwrap();
-            assert!(g.legal_actions().iter().any(
-                |action| matches!(action, Action::ActivateMana { card, .. } if *card == prismite)
-            ));
-        }
-    }
-    #[test]
-    fn tagged_mana_courtyard_pays_real_creature_card_activations_in_hand_and_graveyard() {
-        for p in [Player::P0, Player::P1] {
-            for (kind, name, zone, ordinary, payment) in [
-                (
-                    "Dinosaur",
-                    "Soaring Sandwing",
-                    Zone::Hand,
-                    [0, 0, 0, 0, 0, 1],
-                    [0, 0, 0, 1, 0, 1],
-                ),
-                (
-                    "Zombie",
-                    "Suspicious Shambler",
-                    Zone::Graveyard,
-                    [0, 0, 1, 0, 0, 4],
-                    [0, 0, 2, 0, 0, 4],
-                ),
-            ] {
-                let mut g = setup(p);
-                g.state.players[p.index()].mana = ordinary;
-                let courtyard = named(&mut g, p, "Secluded Courtyard", Zone::Battlefield);
-                g.set_entry_value(
-                    g.object_ref(courtyard),
-                    EntryChoiceValue::CreatureType(CreatureType::from_name(kind).unwrap()),
-                );
-                let production = if zone == Zone::Hand {
-                    [0, 0, 0, 1, 0, 0]
-                } else {
-                    [0, 0, 1, 0, 0, 0]
-                };
-                activate(&mut g, courtyard, 1, production);
-                let source = named(&mut g, p, name, zone);
-                checked(
-                    &mut g,
-                    Action::AnnounceActivate {
-                        card: source,
-                        ability: 0,
-                        counter_payment: Counters::default(),
-                    },
-                );
-                checked(&mut g, Action::PayCosts { payment });
-                assert_ne!(g.object_view(source).zone, zone);
-                assert_eq!(g.state.players[p.index()].mana, [0; 6]);
-            }
-        }
-    }
-    #[test]
-    fn tagged_mana_giada_counts_fresh_chosen_angel_and_respects_ability_removal() {
-        for p in [Player::P0, Player::P1] {
-            let mut g = setup(p);
-            let giada = named(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
-            let automaton = named(&mut g, p, "Adaptive Automaton", Zone::Hand);
-            cast(&mut g, automaton, None, &[]);
-            checked(&mut g, Action::Pass);
-            checked(&mut g, Action::Pass);
-            checked(
-                &mut g,
-                Action::ChooseEntryValue {
-                    value: EntryChoiceValue::CreatureType(
-                        CreatureType::from_name("Angel").unwrap(),
-                    ),
-                },
-            );
-            settle(&mut g);
-            assert_eq!(g.counter_count(automaton, CounterKind::PlusOne), 1);
-            let stop = named(&mut g, p.other(), "Stop Cold", Zone::Battlefield);
-            g.state.objects[stop as usize].attached_to = Some(g.object_ref(giada));
-            assert!(!g.printed_abilities_available(giada));
-            let angel = named(&mut g, p, "Serra Angel", Zone::Hand);
-            cast(&mut g, angel, None, &[]);
-            settle(&mut g);
-            assert_eq!(g.counter_count(angel, CounterKind::PlusOne), 0);
-        }
-    }
-    #[test]
-    fn tagged_mana_giada_unproduced_restricted_source_funds_only_matching_spell() {
-        for p in [Player::P0, Player::P1] {
-            let mut g = setup(p);
-            g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 3];
-            named(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
-            let angel = named(&mut g, p, "Serra Angel", Zone::Hand);
-            assert!(
-                g.legal_actions()
-                    .contains(&Action::AnnounceCast { card: angel })
-            );
-            assert!(
-                g.state.mana_lots.is_none(),
-                "funding must not manufacture real mana"
-            );
-            checked(&mut g, Action::AnnounceCast { card: angel });
-            let ability = g
-                .legal_actions()
-                .into_iter()
-                .find(|a| matches!(a, Action::ActivateMana { .. }))
-                .unwrap();
-            checked(&mut g, ability);
-            checked(
-                &mut g,
-                Action::PayCosts {
-                    payment: [2, 0, 0, 0, 0, 3],
-                },
-            );
-            settle(&mut g);
-            assert_eq!(g.counter_count(angel, CounterKind::PlusOne), 1);
-        }
-    }
-}
+#[path = "engine_tagged_mana_tests.rs"]
+mod tests;
 
 impl Game {
     fn compact_mana_lots(&mut self) {
@@ -1060,6 +700,7 @@ impl Game {
                 && state.prepared.is_none()
                 && state.replay.is_none()
                 && state.choice.is_none()
+                && state.effect_quality.is_none()
         }) {
             self.state.mana_lots = None
         }
@@ -1078,6 +719,7 @@ impl Game {
             return 0;
         };
         std::mem::size_of::<ManaState>()
+            + 2 * std::mem::size_of::<Vec<Lot>>()
             + state
                 .pools
                 .iter()
@@ -1093,6 +735,24 @@ impl Game {
                     + choice.allocations.len() * std::mem::size_of::<Mana>()
                     + choice.request.lots.len() * std::mem::size_of::<Lot>()
                     + plans_bytes(&choice.request.viable)
+                    + match &choice.action {
+                        Action::Activate {
+                            counter_payment, ..
+                        }
+                        | Action::ActivateMana {
+                            counter_payment, ..
+                        }
+                        | Action::BeginActivate {
+                            counter_payment, ..
+                        }
+                        | Action::AnnounceActivate {
+                            counter_payment, ..
+                        }
+                        | Action::AnnounceMana {
+                            counter_payment, ..
+                        } => counter_payment.owned_bytes(),
+                        _ => 0,
+                    }
                     + choice.pending.owned_bytes()
             })
     }

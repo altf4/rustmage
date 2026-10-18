@@ -1319,7 +1319,6 @@ enum Pending {
     EffectMana {
         player: Player,
         production: ManaProduction,
-        quality: Option<mana_lots::Quality>,
     },
     Targets {
         player: Player,
@@ -2157,13 +2156,14 @@ impl Game {
     /// Mutation happens only after complete validation. Rejected actions leave state
     /// and revision unchanged. No user-supplied IDs are used to index before validation.
     pub fn apply(&mut self, actor: Player, action: Action) -> Result<(), Error> {
+        let deferred_action = self.state.mana_lots.is_some().then(|| action.clone());
         let checkpoint = self.state.clone();
         let revision = self.revision;
         let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
             if matches!(self.state.pending, Pending::ManaLotSpend { .. }) {
-                self.apply_mana_lot_choice(actor, action.clone())?;
+                self.apply_mana_lot_choice(actor, action)?;
             } else {
-                self.apply_transaction(actor, action.clone())?;
+                self.apply_transaction(actor, action)?;
             }
             // Suspended programs defer SBAs, but every committed observation must
             // still have representable derived values. Ordinary resolutions have
@@ -2201,7 +2201,9 @@ impl Game {
         }));
         match result {
             Ok(Ok(())) => {
-                self.defer_mana_allocation(actor, action, checkpoint, revision);
+                if let Some(action) = deferred_action {
+                    self.defer_mana_allocation(actor, action, checkpoint, revision);
+                }
                 Ok(())
             }
             Ok(Err(error)) => {
@@ -3639,9 +3641,11 @@ impl Game {
             }
             Action::ChooseManaLotSpend { .. } => unreachable!("allocation handled transactionally"),
             Action::ChooseMana { production } => {
-                let Pending::EffectMana { quality, .. } = self.state.pending else {
-                    unreachable!()
-                };
+                let quality = self
+                    .state
+                    .mana_lots
+                    .as_mut()
+                    .and_then(|state| state.effect_quality.take());
                 self.add_quality_mana(actor, production, quality);
                 self.run_program();
             }

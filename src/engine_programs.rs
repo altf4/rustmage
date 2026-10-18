@@ -2173,8 +2173,11 @@ impl Game {
                             self.state.pending = Pending::EffectMana {
                                 player: item.controller,
                                 production,
-                                quality,
                             };
+                            if quality.is_some() {
+                                self.state.mana_lots.get_or_insert_default().effect_quality =
+                                    quality;
+                            }
                             return;
                         }
                     }
