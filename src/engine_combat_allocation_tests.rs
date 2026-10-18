@@ -2,7 +2,12 @@
 use super::ability_timeline_tests::{cast, checked, next_turn, settle, setup};
 use super::*;
 fn named(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
-    super::tests::spawn(g, p, Card::from_name(name).unwrap(), zone)
+    super::tests::spawn(
+        g,
+        p,
+        Card::from_name(name).unwrap_or_else(|| panic!("missing catalogue fixture: {name}")),
+        zone,
+    )
 }
 fn reject(g: &mut Game, action: Action) {
     let before = g.snapshot();
@@ -131,8 +136,8 @@ fn combat_allocation_drakuseth_paid_attack_three_distinct_targets_and_source_lki
         cast(&mut g, drak, None, &[]);
         settle(&mut g);
         g.state.objects[drak as usize].summoning_sick = false;
-        let a = named(&mut g, p.other(), "Colossal Dreadmaw", Zone::Battlefield);
-        let b = named(&mut g, p.other(), "Colossal Dreadmaw", Zone::Battlefield);
+        let a = named(&mut g, p.other(), "Rampaging Baloths", Zone::Battlefield);
+        let b = named(&mut g, p.other(), "Rampaging Baloths", Zone::Battlefield);
         attack(&mut g, &[drak]);
         checked(
             &mut g,
@@ -205,7 +210,7 @@ fn combat_allocation_goblin_uses_actual_excess_damage_marked_damage_and_preventi
             if prevent {
                 named(&mut g, p.other(), "Crystal Barricade", Zone::Battlefield);
             }
-            let target = named(&mut g, p.other(), "Colossal Dreadmaw", Zone::Battlefield);
+            let target = named(&mut g, p.other(), "Rampaging Baloths", Zone::Battlefield);
             g.state.objects[target as usize].damage = 2;
             let spell = named(&mut g, p, "Goblin Negotiation", Zone::Hand);
             g.state.players[p.index()].mana = [0, 0, 0, 9, 0, 0];
@@ -231,7 +236,7 @@ fn combat_allocation_goblin_damage_doubling_and_token_multiplication_are_separat
     let mut g = setup(Player::P0);
     named(&mut g, Player::P0, "Twinflame Tyrant", Zone::Battlefield);
     named(&mut g, Player::P0, "Doubling Season", Zone::Battlefield);
-    let target = named(&mut g, Player::P1, "Colossal Dreadmaw", Zone::Battlefield);
+    let target = named(&mut g, Player::P1, "Rampaging Baloths", Zone::Battlefield);
     let spell = named(&mut g, Player::P0, "Goblin Negotiation", Zone::Hand);
     cast_x(&mut g, spell, 5, target);
     settle(&mut g);
