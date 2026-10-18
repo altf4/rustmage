@@ -22,7 +22,10 @@ fn reject(g: &mut Game, action: Action) {
 fn finish(g: &mut Game, sacrifice: Option<CardId>) {
     for _ in 0..80 {
         if g.state.announcing.is_none()
-            || matches!(g.state.pending, Pending::ZoneReplacement { .. })
+            || matches!(
+                g.state.pending,
+                Pending::ZoneReplacement { .. } | Pending::ManaLotSpend { .. }
+            )
         {
             return;
         }
@@ -291,6 +294,7 @@ fn zone_wilt_hybrid_two_colors_and_opponent_discard_use_real_entry_triggers() {
             let mut g = setup(p);
             g.state.players[p.index()].mana = [white, 0, 0, 0, 3 - white, 1];
             let green = fixture(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+            g.state.objects[green as usize].tapped = true;
             let white_creature = fixture(&mut g, p, "Savannah Lions", Zone::Battlefield);
             let both = fixture(&mut g, p, "Dryad Militant", Zone::Battlefield);
             let enemy = fixture(&mut g, p.other(), "Dryad Militant", Zone::Battlefield);
@@ -444,5 +448,98 @@ fn zone_protection_targets_blocks_attachments_damage_and_countering_keep_distinc
             Zone::Library,
             "non-targeted destruction still works"
         );
+    }
+}
+
+#[test]
+fn zone_nested_mana_choice_preserves_controller_owner_and_exact_replay() {
+    for owner in [Player::P0, Player::P1] {
+        for amount in [0, 1] {
+            for effect in [
+                ZoneReplacementKind::Exile,
+                ZoneReplacementKind::RevealShuffle,
+            ] {
+                let controller = owner.other();
+                let mut g = setup(controller);
+                // A controlled permanent keeps its owner's library destination.
+                let colossus = fixture(&mut g, owner, "Darksteel Colossus", Zone::Battlefield);
+                g.state.objects[colossus as usize].controller = controller;
+                let ghoul = paid(&mut g, controller, "Hungry Ghoul", &[]);
+                settle(&mut g);
+                paid(
+                    &mut g,
+                    controller,
+                    "Scorching Dragonfire",
+                    &[Target::Card(colossus)],
+                );
+                settle(&mut g);
+                let orb = fixture(
+                    &mut g,
+                    controller,
+                    "Carnelian Orb of Dragonkind",
+                    Zone::Battlefield,
+                );
+                g.state.players[controller.index()].mana = [0, 0, 0, 1, 0, 0];
+                checked(
+                    &mut g,
+                    Action::ActivateMana {
+                        card: orb,
+                        ability: 0,
+                        production: [0, 0, 0, 1, 0, 0],
+                        payment: [0; 6],
+                        counter_payment: Counters::default(),
+                    },
+                );
+                let libraries = [
+                    g.state.players[0].library.len(),
+                    g.state.players[1].library.len(),
+                ];
+                let deaths = g.state.creatures_died_this_turn;
+                checked(
+                    &mut g,
+                    Action::AnnounceActivate {
+                        card: ghoul,
+                        ability: 0,
+                        counter_payment: Counters::default(),
+                    },
+                );
+                finish(&mut g, Some(colossus));
+                assert!(
+                    matches!(g.state.pending, Pending::ManaLotSpend { player } if player == controller)
+                );
+                assert_eq!(g.object_view(colossus).zone, Zone::Battlefield);
+                checked(&mut g, Action::ChooseManaLotSpend { amount });
+                assert!(
+                    matches!(g.state.pending, Pending::ZoneReplacement { player } if player == controller)
+                );
+                assert_eq!(
+                    g.observe(controller).zone_replacement_choice.unwrap().owner,
+                    owner
+                );
+                assert!(g.observe(owner).zone_replacement_choice.is_none());
+                checked(&mut g, Action::ChooseZoneReplacement { effect });
+                assert_eq!(
+                    g.object_view(colossus).zone,
+                    if effect == ZoneReplacementKind::Exile {
+                        Zone::Exile
+                    } else {
+                        Zone::Library
+                    }
+                );
+                assert_eq!(
+                    g.state.players[owner.index()].library.len(),
+                    libraries[owner.index()]
+                        + usize::from(effect == ZoneReplacementKind::RevealShuffle)
+                );
+                assert_eq!(
+                    g.state.players[controller.index()].library.len(),
+                    libraries[controller.index()]
+                );
+                assert_eq!(g.state.players[controller.index()].mana, [0, 0, 0, 1, 0, 0]);
+                assert_eq!(g.state.creatures_died_this_turn, deaths);
+                settle(&mut g);
+                assert_eq!(g.counter_count(ghoul, CounterKind::PlusOne), 1);
+            }
+        }
     }
 }
