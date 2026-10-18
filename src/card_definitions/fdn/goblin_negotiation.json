@@ -8,7 +8,7 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5fd5abd27b245bfd3bd81f65e5b61d0e868f9fd2ff89ce9f04cb2c7f41748939"
   },
-  "physical_metadata_sha256": "8cf858637bd4b5625f09e654681bfed41eed7be613834991d890dbacc61d083f",
+  "physical_metadata_sha256": "65f54e54cd9150d1461309b0950f9319276f11c3d8854df29612f1b88242ade4",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/g/GoblinNegotiation.java",
   "java_sha256": "2b5ddca8b900b9ce27b8e5954be22e80a6e809331f53d6f6ff6315ec7ec9f895",

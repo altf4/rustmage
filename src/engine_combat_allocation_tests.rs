@@ -36,6 +36,15 @@ fn cast_x(g: &mut Game, id: CardId, x: u32, target: CardId) {
             target: Target::Card(target),
         },
     );
+    let request = g.announcement_payment_request(g.actor().unwrap()).unwrap();
+    assert_eq!(request.required, [0, 0, 0, 2, 0, 0]);
+    assert_eq!(request.generic, x);
+    reject(
+        g,
+        Action::PayCosts {
+            payment: [0, 0, 0, x, 0, 0],
+        },
+    );
     pay(g);
 }
 fn activate_x(g: &mut Game, id: CardId, x: u32) {
@@ -213,6 +222,8 @@ fn combat_allocation_goblin_uses_actual_excess_damage_marked_damage_and_preventi
             let target = named(&mut g, p.other(), "Rampaging Baloths", Zone::Battlefield);
             g.state.objects[target as usize].damage = 2;
             let spell = named(&mut g, p, "Goblin Negotiation", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 9];
+            reject(&mut g, Action::AnnounceCast { card: spell });
             g.state.players[p.index()].mana = [0, 0, 0, 9, 0, 0];
             cast_x(&mut g, spell, 7, target);
             settle(&mut g);
@@ -238,6 +249,7 @@ fn combat_allocation_goblin_damage_doubling_and_token_multiplication_are_separat
     named(&mut g, Player::P0, "Doubling Season", Zone::Battlefield);
     let target = named(&mut g, Player::P1, "Rampaging Baloths", Zone::Battlefield);
     let spell = named(&mut g, Player::P0, "Goblin Negotiation", Zone::Hand);
+    g.state.players[0].mana = [0, 0, 0, 7, 0, 0];
     cast_x(&mut g, spell, 5, target);
     settle(&mut g);
     assert_eq!(
