@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "6df26e036d40932e84e97046374791f8fffc979ddef75236f469645cfbd5bef9",
+  "catalogue_version": "aeb99d89cfd91091382680b8c01f9f9a2d63363a075f7a0cc2c8e61ab2a7889e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2169,
-  "implemented_total": 2175,
+  "implemented_standard_cards": 2174,
+  "implemented_total": 2180,
   "token_definitions": 104,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 409,
-      "gated": 18
+      "complete": 413,
+      "gated": 14
     },
     "fin": {
       "total": 305,
@@ -149,8 +149,8 @@
     },
     "soc": {
       "total": 24,
-      "complete": 11,
-      "gated": 13
+      "complete": 12,
+      "gated": 12
     },
     "sos": {
       "total": 264,
@@ -7624,8 +7624,8 @@
     {
       "name": "Curator of Destinies",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/curator_of_destinies.rs",
       "set": "fdn"
     },
@@ -8160,8 +8160,8 @@
     {
       "name": "Deadly Brew",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/deadly_brew.rs",
       "set": "soc"
     },
@@ -16624,8 +16624,8 @@
     {
       "name": "Hoarding Dragon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/hoarding_dragon.rs",
       "set": "fdn"
     },
@@ -20272,8 +20272,8 @@
     {
       "name": "Liliana, Dreadhorde General",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/liliana_dreadhorde_general.rs",
       "set": "fdn"
     },
@@ -31968,8 +31968,8 @@
     {
       "name": "Sorcerous Spyglass",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/sorcerous_spyglass.rs",
       "set": "fdn"
     },

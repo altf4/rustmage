@@ -722,3 +722,28 @@ fn linked_choices_time_stop_keeps_existing_hoard_and_abandons_only_suspended_cho
         assert!(suspended.observe(p).library_piles.is_some());
     }
 }
+
+#[test]
+fn linked_choices_name_policy_uses_visible_opponent_abilities_and_private_look() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let hidden = card(&mut g, p.other(), "Shivan Dragon", Zone::Hand);
+        card(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let glass = card(&mut g, p, "Sorcerous Spyglass", Zone::Hand);
+        cast(&mut g, glass, None, &[]);
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::EntryValue { .. })
+        });
+        assert!(!g.observe(p).objects.iter().any(|o| o.id == hidden));
+        let actions = g.legal_actions();
+        let chosen = actions[crate::policy::smoke_index(&g, &actions)].clone();
+        assert_eq!(
+            chosen,
+            Action::ChooseEntryValue {
+                value: EntryChoiceValue::CardName(CardName::from_name("Shivan Dragon").unwrap())
+            }
+        );
+        checked(&mut g, chosen);
+        settled(&mut g);
+    }
+}

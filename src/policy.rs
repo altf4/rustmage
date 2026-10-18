@@ -262,6 +262,36 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     }) && object.has_subtype(typ.name())
                 })
                 .count() as i128,
+            Action::ChooseEntryValue {
+                value: crate::EntryChoiceValue::CardName(name),
+            } => {
+                let looked = observation
+                    .entry_value
+                    .as_ref()
+                    .and_then(|choice| choice.opponent_hand.as_ref());
+                observation
+                    .objects
+                    .iter()
+                    .chain(looked.into_iter().flatten())
+                    .filter(|object| {
+                        object.name() == name.as_str()
+                            && object
+                                .card
+                                .activations()
+                                .iter()
+                                .any(|ability| ability.mana_production().is_none())
+                    })
+                    .map(|object| {
+                        if object.controller == actor {
+                            -20
+                        } else if object.zone == Zone::Battlefield {
+                            12
+                        } else {
+                            8
+                        }
+                    })
+                    .sum()
+            }
             Action::ChooseEntryValue { .. } => 0,
             Action::ChooseEntryLife { pay } => {
                 // Avoid voluntary lethal payment; the example still exercises
