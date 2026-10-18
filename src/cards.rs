@@ -718,6 +718,10 @@ pub(crate) enum Instruction {
     Reflexive {
         ability: u16,
     },
+    /// Definition-only triggered header whose modes may each be chosen once per source incarnation.
+    ModalOnce(&'static [SpellMode]),
+    /// Immediately lose the game, independently of life total or state-based actions.
+    LoseGame(PlayerSet),
     /// Definition-only modal trigger header; selected before targets, never executed.
     Modal(&'static [SpellMode]),
     /// Skip the following block when its live condition is false.

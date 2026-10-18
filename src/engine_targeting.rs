@@ -456,6 +456,10 @@ impl Game {
     }
 
     pub(super) fn declare_mode(&mut self, mode: u16, plan: TargetPlan) {
+        let item = &self.state.announcing.as_ref().unwrap().item;
+        if let Some(key) = modal_history::key(item) {
+            self.record_modal_choice(key, mode);
+        }
         let announcement = self.state.announcing.as_mut().unwrap();
         announcement.item.mode = Some(mode);
         announcement.plan = plan;
@@ -1059,7 +1063,11 @@ impl Game {
                 .modes()
                 .unwrap()
                 .iter()
-                .any(|mode| self.item_targets_available(&item, mode.targets))
+                .enumerate()
+                .any(|(index, mode)| {
+                    self.modal_choice_unused(&item, index)
+                        && self.item_targets_available(&item, mode.targets)
+                })
         {
             assert!(trigger, "validated modal spell");
             return false;

@@ -138,6 +138,9 @@ mod roles;
 #[path = "engine_sba.rs"]
 mod sba;
 pub use roles::{RoleGroupView, RoleTimestampView};
+#[path = "engine_modal_history.rs"]
+mod modal_history;
+pub use modal_history::ModalHistoryView;
 #[path = "engine_ability_evaluation.rs"]
 mod ability_evaluation;
 #[path = "engine_characteristic_query.rs"]
@@ -925,7 +928,7 @@ impl SpellView {
                 .program
                 .first()
             {
-                Some(Instruction::Modal(modes)) => Some(modes),
+                Some(Instruction::Modal(modes) | Instruction::ModalOnce(modes)) => Some(modes),
                 _ => None,
             },
             StackKind::ActivatedAbility { ability } => match self.source_card.activations()
@@ -1389,6 +1392,7 @@ struct State {
     creature_damage_history: Option<SharedVec<CreatureDamageHistoryView>>,
     entry_values: entry_choices::Rows,
     copy_recipes: copies::Rows,
+    modal_history: modal_history::Rows,
     ability_resolutions: ability_resolutions::Rows,
     attacked_this_turn: SharedVec<ObjectRef>,
     creatures_died_this_turn: u64,
@@ -1739,6 +1743,8 @@ pub struct Observation {
     pub decision: &'static str,
     pub players: [PlayerView; 2],
     pub objects: Vec<ObjectView>,
+    /// Public modes already chosen for exact source incarnations.
+    pub modal_history: Vec<ModalHistoryView>,
     pub exile_links: Vec<ExileLink>,
     pub exile_permissions: Vec<ExilePlayPermission>,
     pub adventures: Vec<AdventurePermission>,
@@ -1924,6 +1930,7 @@ impl Game {
                 creature_damage_history: None,
                 entry_values: None,
                 copy_recipes: None,
+                modal_history: None,
                 ability_resolutions: None,
                 attacked_this_turn: Vec::new().into(),
                 creatures_died_this_turn: 0,
@@ -2241,6 +2248,7 @@ impl Game {
                 break;
             }
         }
+        self.prune_modal_history();
         self.revision = self.revision.checked_add(1).capacity("revision exhausted");
         Ok(())
     }
@@ -5135,6 +5143,10 @@ impl Game {
             evidence: self.evidence_view(viewer),
             last_evidence: s.evidence_data.as_ref().and_then(|d| d.last.clone()),
             objects,
+            modal_history: s
+                .modal_history
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.to_vec()),
             exile_links: s.exile_links.clone(),
             spell_characteristics: self.spell_characteristics(),
             exile_permissions: s.exile_permissions.clone(),
@@ -5471,6 +5483,7 @@ impl Game {
             + s.pending.owned_bytes()
             + ability_resolutions::owned_bytes(&s.ability_resolutions)
             + copies::owned_bytes(&s.copy_recipes)
+            + modal_history::owned_bytes(&s.modal_history)
             + s.announcing
                 .as_ref()
                 .map_or(0, |a| a.counter_payment.owned_bytes())
@@ -6432,3 +6445,7 @@ mod runtime_copy_tests;
 #[cfg(test)]
 #[path = "engine_layered_characteristic_tests.rs"]
 mod layered_characteristic_tests;
+
+#[cfg(test)]
+#[path = "engine_modal_history_tests.rs"]
+mod modal_history_tests;

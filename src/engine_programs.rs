@@ -1752,7 +1752,9 @@ impl Game {
                 Instruction::Reflexive { ability } => {
                     self.queue_reflexive(&item, ability, None);
                 }
-                Instruction::Modal(_) => unreachable!("unselected modal ability executed"),
+                Instruction::Modal(_) | Instruction::ModalOnce(_) => {
+                    unreachable!("unselected modal ability executed")
+                }
                 Instruction::Explore(subject) => {
                     if self.start_explore(&item, subject) {
                         return;
@@ -2452,6 +2454,23 @@ impl Game {
                     }
                 }
                 Instruction::CreateEmblem(factory) => self.create_emblem(item.controller, factory),
+                Instruction::LoseGame(set) => {
+                    let mut lost = [false; 2];
+                    for player in self.program_players(set, &item) {
+                        lost[player.index()] = true;
+                    }
+                    self.state.outcome = match lost {
+                        [true, true] => Some(Outcome::Draw),
+                        [true, false] => Some(Outcome::Winner(Player::P1)),
+                        [false, true] => Some(Outcome::Winner(Player::P0)),
+                        _ => None,
+                    };
+                    if self.state.outcome.is_some() {
+                        self.state.resolving = None;
+                        self.state.pending = Pending::Terminal;
+                        return;
+                    }
+                }
                 Instruction::LoseGainedLife(set) => {
                     let amount = item
                         .life_event

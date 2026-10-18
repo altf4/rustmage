@@ -8,5 +8,51 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "08633e47a22b677b401ee704d8bf3caaaeca77b6790ecd601889d79472e06b94"
   },
-  "physical_metadata_sha256": "7cb48a9ea57909257cea1855fac44e80229fe6683607acd7e82d1ae03e88ce6b"
+  "physical_metadata_sha256": "7cb48a9ea57909257cea1855fac44e80229fe6683607acd7e82d1ae03e88ce6b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DemonicPact.java",
+  "java_sha256": "a44b6f3897f3202a1451c448fca49ad0dfd2bfebc44319bb50084c7c3c5fbb2d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Modes.java",
+      "sha256": "aba1a0699596a6f1db972182990d248cad9f8a59146211b4902ceb0a26c882b1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+      "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseGameSourceControllerEffect.java",
+      "sha256": "404bbc96fd8b58a2b995037b0cabce4ff96f247f595fc75b3a176b81556f69e9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardTargetEffect.java",
+      "sha256": "1011f870b5768153b7d9d7d194431db724bfc61844195b66efc06e759dae57a3"
+    }
+  ],
+  "remaining_obligations": [
+    "Core fixture remains gated pending rules tests, independent reviews and complete-card acceptance."
+  ],
+  "rules_sources": [
+    "https://media.wizards.com/2024/downloads/FDN_Release_Notes_dPeeQG7XyE/EN_FDN%20Release%20Notes%2008282024.pdf"
+  ]
 }
