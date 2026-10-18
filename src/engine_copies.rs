@@ -60,7 +60,13 @@ impl Game {
         let object = &self.state.objects[id as usize];
         if object.is_copy_token() {
             Some(
+                // Ceasing releases the sparse recipe, but the reusable Outside
+                // slot retains token identity so it cannot move as a physical
+                // card. Live copies still require their exact-incarnation recipe.
                 self.copy_recipe(self.object_ref(id))
+                    .or_else(|| {
+                        (object.zone == Zone::Outside).then(|| CopyRecipe::new(object.card))
+                    })
                     .expect("runtime copy recipe")
                     .token_info(),
             )

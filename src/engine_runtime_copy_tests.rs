@@ -62,6 +62,8 @@ fn runtime_copy_paid_values_are_copiable_and_token_identity_survives_owned_resto
         child.give_priority();
         settle(&mut child);
         assert_eq!(child.object_view(copy).zone, Zone::Outside);
+        assert!(child.object_view(copy).is_token());
+        assert_eq!(child.object_view(copy).name(), "Bear Cub");
         assert!(child.copy_recipe(child.object_ref(copy)).is_none());
         let ceased = child.snapshot();
         for destination in [
@@ -429,5 +431,54 @@ fn runtime_copy_token_filters_frozen_damage_facts_and_speculative_bargain_cost()
         assert!(g.state.copy_recipes.is_none());
         assert!(facts.is_token());
         assert_eq!(g.state.players[p.index()].life, STARTING_LIFE + 3);
+    }
+}
+
+#[test]
+fn ceased_copy_views_keep_token_identity_without_polluting_physical_graveyard_history() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = fixture(&mut g, p, "Bear Cub", Zone::Battlefield);
+        reflect(&mut g, p, bear);
+        let token = copies(&g, "Bear Cub")[0];
+        let original_token = g.object_ref(token);
+        let frozen = g.object_view(token);
+        g.sacrifice_batch(&[(p, token), (p, bear)]);
+        g.state_based_actions();
+        g.give_priority();
+        settle(&mut g);
+        let ceased = g.object_view(token);
+        assert_eq!(ceased.zone, Zone::Outside);
+        assert!(ceased.is_token());
+        assert!(ceased.copy_recipe.is_none());
+        assert!(frozen.is_token());
+        assert_eq!(frozen.reference, original_token);
+        let history = g.observe(p).graveyard_entries_this_turn;
+        assert!(history.contains(&g.object_ref(bear)));
+        assert!(!history.iter().any(|r| r.card == token));
+        let before = g.snapshot();
+        let mut owned = {
+            let parent = g.clone();
+            parent.clone()
+        };
+        owned.restore(&before).unwrap();
+        assert!(owned.object_view(token).is_token());
+        assert_eq!(owned.observe(p).graveyard_entries_this_turn, history);
+        assert!(!owned.move_object(token, Zone::Battlefield).moved);
+        assert_eq!(owned.snapshot(), before);
+        g.stage_copy_creation(
+            p,
+            CopyRecipe::new(Card::from_name("Serra Angel").unwrap()),
+            1,
+        );
+        settle(&mut g);
+        assert_eq!(copies(&g, "Serra Angel"), [token]);
+        assert_ne!(g.object_ref(token), original_token);
+        assert_eq!(
+            g.object_view(token).copy_recipe.unwrap().definition.name(),
+            "Serra Angel"
+        );
+        assert_eq!(owned.object_view(token).zone, Zone::Outside);
+        assert!(owned.object_view(token).copy_recipe.is_none());
     }
 }
