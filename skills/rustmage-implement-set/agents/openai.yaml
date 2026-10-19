@@ -1,4 +1,4 @@
 interface:
-  display_name: "Implement Rustmage Cards"
-  short_description: "Implement complete typed Rust card batches"
-  default_prompt: "Use $rustmage-implement-set to finish core dependencies, then implement and verify a complete card batch."
+  display_name: "Implement a Rustmage Set"
+  short_description: "Finish every card in a chosen Standard set"
+  default_prompt: "Use $rustmage-implement-set to implement and verify every card in my chosen Standard set, resuming its per-set progress record until acceptance passes."
