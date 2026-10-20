@@ -6,6 +6,11 @@ manually maintain a second membership manifest. Reuse existing records and
 acceptance evidence. Keep work for different sets in separate ledgers even when
 they share engine changes or canonical reprint definitions.
 
+Keep batches and prerequisites local until the entire selected set is implemented
+and its set-level validation passes. Track progress in the issue and this ledger;
+do not create draft or intermediate PRs. Record one completed-set PR only after
+that gate, followed by its two independent nonauthor reviews.
+
 Use the following structure, adapting the tables to the set's size. This is a
 record of facts, not a checklist to mark complete on intent alone.
 
@@ -30,8 +35,9 @@ reauthoring it. Distinguish these states:
 - Unresolved source or identity: membership remains counted.
 - Gated: some behavior or its evidence is missing.
 - Implementing: named owner, worktree/branch and dependency.
-- Tested candidate: all obligations covered locally; review/integration pending.
-- Reviewed: two eligible reviews at the specified published head.
+- Tested candidate: all obligations covered locally; local set integration or
+  full-set completion pending.
+- Reviewed: two eligible reviews at the completed-set PR's published head.
 - Merged and verified: included at the recorded integration revision with passing
   validation. This still does not by itself certify full-set games.
 
@@ -41,8 +47,10 @@ what can proceed independently and the next action that would resolve it.
 
 ## Batches, reviews and game coverage
 
-Record each batch's owned paths, base revision, shared mechanics, source pins,
-PR URL, review identities/SHAs, findings/resolutions and integration commit.
+Record each local batch's owned paths, base revision, shared mechanics, source
+pins, local review findings and integration commit on the set branch. Once the
+entire set is implemented and validated, record its single PR URL and final
+review identities/SHAs and findings/resolutions.
 Reviewers must be independent of all authored ancestors included in their review.
 A substantive diff change requires fresh relevant review evidence.
 
@@ -66,7 +74,8 @@ measurement separate from this set's gameplay and search workloads.
 
 Keep this section current before handing off or ending a session:
 
-- Current commit/branch, dirty owned files, active PRs and integration dependencies.
+- Current commit/branch, dirty owned files and local integration dependencies;
+  the completed-set PR URL only if its publication gate has already passed.
 - The next concrete implementation/test/review action, plus unclaimed next batch.
 - Source pins and fetch commands; necessary source artifacts and hashes.
 - Active process/session/unit IDs, command, immutable input commit and log/target
@@ -80,7 +89,9 @@ Keep this section current before handing off or ending a session:
 
 Keep bulky logs under `~/.cache` and link portable summaries in the ledger/PR.
 Before changing machines, preserve necessary evidence in repository records or
-accessible CI/PR artifacts: a private absolute cache path alone is not a handoff.
+accessible issue artifacts, or CI/PR artifacts after the publication gate: a
+private absolute cache path alone is not a handoff. Do not open a premature PR
+just to preserve evidence.
 Never delete an active output, useful uncommitted work or a required library.
 
 When all acceptance gates pass, record the accepted revision and finish the

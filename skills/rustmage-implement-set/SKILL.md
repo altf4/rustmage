@@ -19,6 +19,13 @@ or permission to choose is supplied, ask only for the set. There is no mandatory
 Foundations-first sequence. Stop at the selected set; another set is a separate
 milestone unless the user requested more.
 
+**Open exactly one implementation PR for the selected set, only after every
+card is fully implemented and all set-level validation below passes.** Keep
+intermediate card batches, shared mechanics and source-intake work on local
+branches/worktrees, integrating them into the set branch. Do not open draft,
+partial-set, per-batch or prerequisite-mechanic PRs. The tracking issue and
+per-set ledger carry progress until the complete set is ready to publish.
+
 ## Start or resume
 
 1. Locate the active Rustmage checkout; read `AGENTS.md` and
@@ -97,7 +104,7 @@ play. Keep immutable definitions shared and mutable game state owned. Preserve
 legality, deterministic random state, hidden information, transactional failures,
 last-known information, layers, control, zones and exact object incarnations.
 
-### Test, integrate and review
+### Test and integrate locally
 
 Use existing scenario helpers and actual paid legal actions. Cover each printed
 obligation and meaningful adversarial interactions: invalid/partly invalid
@@ -107,11 +114,11 @@ atomicity, deterministic replay, owned raw/indexed branches, parent disposal and
 restore for affected behavior. Prefer focused rules scenarios to new per-card
 bots. Parser mutation suites are irrelevant to directly authored Rust.
 
-Use GitHub issues and PRs. Parallel authors, when used, need isolated worktrees,
-disjoint card/test files and one owner per shared mechanic. Record base commits,
+Use the GitHub tracking issue while work is in progress. Parallel authors need
+isolated worktrees, disjoint card/test files and one owner per shared mechanic. Record base commits,
 source pins and dependencies. The integrator alone regenerates catalogue/module
 links; never hand-edit generated artifacts or let the linker interpret wording.
-For a ready integration, run:
+Integrate batches into the local set branch. For a ready local integration, run:
 
 ```sh
 python3 scripts/link_catalogue.py
@@ -128,28 +135,21 @@ Never bypass the guard or use allocation/OOM probes. Keep logs/reports under
 poll the same process after observation timeouts. Clean only completed disposable
 outputs, retaining required shared libraries at their exact paths/hashes.
 
-Obtain two independent nonauthor reviews of the final published PR head. Use
-independent reviewer subagents when available, or independent human reviewers;
-a review must exclude the reviewer's authored ancestors. Give reviewers the
-Oracle/XMage sources, entire diff, obligation ledger and test evidence. Record
-reviewer identities and exact reviewed SHA. Fix findings and refresh invalidated
-reviews. No reviewer availability means “review pending,” never a waiver or two
-self-reviews. Integrate under the user's repository permissions; absent merge
-permission, keep reviewed work on resumable branches and report that boundary.
-
 Update the set ledger and issue after each batch. Keep admitted, locally tested,
-reviewed and merged counts distinct. Select the next batch immediately; do not
-end with an offer to continue merely because one batch or PR is finished.
+locally reviewed and upstream-merged counts distinct. Local reviews can catch
+problems early but do not replace the final published-head reviews. Select the
+next batch immediately; do not stop merely because one local batch is finished.
 
-## Set acceptance and handoff
+## Finish the entire set before opening its PR
 
-Accept the selected set only when:
+Before opening any implementation PR, require all of the following on the
+combined local set branch:
 
 - The complete frozen membership is reconciled, with zero unresolved identities
   and no unimplemented printed obligations. All required tokens/faces work and
   preexisting implementations have adequate rules evidence.
-- Meaningful rules/interaction tests, provenance/link checks, release validation
-  and independent reviews pass on the integrated revision. New metadata alone
+- Meaningful rules/interaction tests, provenance/link checks and release
+  validation pass on the integrated local revision. New metadata alone
   does not establish gameplay support.
 - Complete games with legal set-only decks cover every color and the set's
   mechanics, decisions and terminal outcomes. Use `tests/foundations_games.rs`
@@ -160,6 +160,24 @@ Accept the selected set only when:
   verified across these workloads. Measure simulation throughput on declared
   workloads with seeds, build/revision and hardware context. The validator's
   Freeform smoke benchmark is only a regression measurement.
+
+Only then publish one PR containing the entire set implementation, its shared
+mechanics, source updates, tests and acceptance evidence. Obtain two independent
+nonauthor reviews of that final published PR head. Use independent reviewer
+subagents when available, or independent human reviewers; a review must exclude
+the reviewer's authored ancestors. Give reviewers the Oracle/XMage sources,
+entire diff, obligation ledger and test evidence. Record reviewer identities and
+exact reviewed SHA. Fix findings in the same PR, rerun affected checks and refresh
+invalidated reviews. No reviewer availability means “review pending,” never a
+waiver or two self-reviews.
+
+Final set acceptance additionally requires those reviews and resolution of all
+findings. Merge under the user's repository permissions; absent merge permission,
+leave the completed, reviewed set in its PR and report that boundary. An
+interruption or blocker before the implementation and validation gates pass
+requires a checkpoint, not an early PR.
+
+## Report and hand off
 
 Record supported cards/total, shared mechanics, remaining blockers, reviews,
 validation reports and measurements in `docs/sets/<code>.md` and the issue.

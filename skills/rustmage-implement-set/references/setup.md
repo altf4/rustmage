@@ -129,7 +129,9 @@ python3 -m unittest scripts.test_direct_cards scripts.test_set_status scripts.te
 A set missing from the target/inventory needs source-intake work before
 `set_status --freeze` can succeed. There is **no automatic behavior importer**.
 A new manifest cannot manufacture Oracle facts, catalogue identities or Rust
-implementations. Do the following on a dedicated branch before dependent batches:
+implementations. Do the following on a local branch before dependent batches,
+then integrate into the local set branch. Include this prerequisite work in the
+single completed-set PR; do not open a separate source-intake or dependency PR:
 
 1. Verify the requested date, full set membership, releases and bans using
    [Wizards Standard](https://magic.wizards.com/en/formats/standard), the
