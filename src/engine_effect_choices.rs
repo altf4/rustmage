@@ -108,6 +108,7 @@ impl Game {
         }
         let f = choice.filter;
         o.zone == Zone::Battlefield
+            && (!matches!(choice.kind, EffectChoiceKind::TapPermanents(_)) || !o.tapped)
             && self.keywords(object.card).contains(f.keywords)
             && (f.kinds == 0 || self.current_kinds(object.card) & u16::from(f.kinds) != 0)
             && (!f.source_only || object == choice.source)
@@ -485,6 +486,14 @@ impl Game {
                 matches!(choice.kind, EffectChoiceKind::Blight(_)),
                 replacements::ResumeMode::Program,
             );
+        } else if matches!(choice.kind, EffectChoiceKind::TapPermanents(_)) {
+            let ids = choice
+                .selected
+                .iter()
+                .flatten()
+                .map(|object| object.card)
+                .collect::<Vec<_>>();
+            self.tap_objects(&ids);
         } else if choice.kind == EffectChoiceKind::PowerDifferenceBoost {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
             let selected = &choice.selected[item.controller.index()];

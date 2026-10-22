@@ -447,6 +447,7 @@ define_actions! {
     PutHandLand { object: ObjectRef },
     SelectLand { object: ObjectRef },
     ChooseCreature { object: ObjectRef },
+    TapForEffect { object: ObjectRef },
     FinishLandSelection,
     DeclineHandEntry,
     ChooseHandDefender { defender: CombatDefender },
@@ -2916,6 +2917,7 @@ impl Game {
                             EffectChoiceKind::Blight(_) | EffectChoiceKind::BlightCost(_) => {
                                 Action::Blight { object }
                             }
+                            EffectChoiceKind::TapPermanents(_) => Action::TapForEffect { object },
                             EffectChoiceKind::Sacrifice => Action::Sacrifice { object },
                             EffectChoiceKind::PowerDifferenceBoost => {
                                 Action::ChooseCreature { object }
@@ -4597,7 +4599,8 @@ impl Game {
             | Action::PutHandCreature { object }
             | Action::PutHandLand { object }
             | Action::SelectLand { object }
-            | Action::ChooseCreature { object } => self.choose_effect_object(actor, object),
+            | Action::ChooseCreature { object }
+            | Action::TapForEffect { object } => self.choose_effect_object(actor, object),
             Action::FinishLandSelection => {
                 self.finish_land_selection();
                 self.run_program();

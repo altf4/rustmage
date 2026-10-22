@@ -4317,3 +4317,296 @@ fn spiral_into_solitude_blight_cost_cannot_use_enemy_or_counter_prohibited_creat
         assert_eq!(g.object_view(bear).zone, Zone::Exile);
     }
 }
+
+fn attack_tap_payment(g: &mut Game, source: CardId) -> bool {
+    thoughtweft_attack(g, &[source]);
+    advance_to_tap_payment(g)
+}
+fn advance_to_tap_payment(g: &mut Game) -> bool {
+    g.prepare_triggers();
+    for _ in 0..30 {
+        if matches!(g.state.pending, Pending::EffectChoice { .. }) {
+            return true;
+        }
+        if g.state.pending == Pending::Priority
+            && g.state.stack.is_empty()
+            && g.state.resolving.is_none()
+            && g.state.announcing.is_none()
+            && g.state.pending_triggers.is_empty()
+            && g.state.ordering_triggers.is_empty()
+        {
+            return false;
+        }
+        let action = if g.state.pending == Pending::Priority {
+            Action::Pass
+        } else {
+            g.legal_actions()
+                .into_iter()
+                .find(|a| {
+                    matches!(
+                        a,
+                        Action::PutTrigger { .. } | Action::PayCosts { .. } | Action::FinishTargets
+                    )
+                })
+                .unwrap()
+        };
+        checked(g, action);
+    }
+    panic!("attack trigger did not reach payment");
+}
+fn guide_target(g: &mut Game, target: CardId) {
+    g.prepare_triggers();
+    let target = Target::Card(target);
+    for _ in 0..20 {
+        if g.legal_actions().contains(&Action::ChooseTarget { target }) {
+            checked(g, Action::ChooseTarget { target });
+            finish_cast_choices(g);
+            settle(g);
+            return;
+        }
+        let action = if g.state.pending == Pending::Priority {
+            Action::Pass
+        } else {
+            g.legal_actions()
+                .into_iter()
+                .find(|a| {
+                    matches!(
+                        a,
+                        Action::PutTrigger { .. } | Action::PayCosts { .. } | Action::FinishTargets
+                    )
+                })
+                .unwrap()
+        };
+        checked(g, action);
+    }
+    panic!("reflexive target not offered");
+}
+
+#[test]
+fn gravelgill_scoundrel_vigilance_optional_tap_is_exact_nontarget_and_unblockable_expires() {
+    for p in [Player::P0, Player::P1] {
+        for pay in [false, true] {
+            let mut g = setup(p);
+            let source = cast_named(&mut g, p, "Gravelgill Scoundrel");
+            let witness = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+            g.state.objects[witness as usize].summoning_sick = true;
+            let enemy = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+            let tapped = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+            g.tap_objects(&[tapped]);
+            let source_ref = g.object_ref(source);
+            g.grant_keyword_effects(&[witness], source_ref, Keywords::HEXPROOF);
+            assert!(attack_tap_payment(&mut g, source));
+            assert!(!g.object_view(source).tapped);
+            for invalid in [source, enemy, tapped] {
+                let object = g.object_ref(invalid);
+                reject_atomic(&mut g, Action::TapForEffect { object });
+            }
+            if pay {
+                let object = g.object_ref(witness);
+                checked(&mut g, Action::TapForEffect { object });
+            } else {
+                checked(&mut g, Action::DeclineEffectPayment);
+            }
+            settle(&mut g);
+            assert_eq!(g.object_view(witness).tapped, pay);
+            assert_eq!(g.keywords(source).contains(Keywords::CANT_BE_BLOCKED), pay);
+            // A nontarget tap cost may use a summoning-sick, hexproof witness.
+            assert!(g.object_view(witness).summoning_sick);
+            if pay {
+                let object = g.object_ref(source);
+                g.remove_abilities_exact(&[object], crate::cards::AnimationDuration::EndOfTurn);
+                assert!(g.keywords(source).contains(Keywords::CANT_BE_BLOCKED));
+                g.state.pending = Pending::Blockers;
+                g.state.priority = p.other();
+                reject_atomic(
+                    &mut g,
+                    Action::Block {
+                        blocker: enemy,
+                        attacker: source,
+                    },
+                );
+            }
+            g.finish_cleanup();
+            assert!(!g.keywords(source).contains(Keywords::CANT_BE_BLOCKED));
+        }
+    }
+}
+
+#[test]
+fn gravelgill_scoundrel_no_witness_skips_and_old_trigger_never_grants_to_new_incarnation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = cast_named(&mut g, p, "Gravelgill Scoundrel");
+        assert!(!attack_tap_payment(&mut g, source));
+        assert!(!g.keywords(source).contains(Keywords::CANT_BE_BLOCKED));
+        let mut g = setup(p);
+        let source = cast_named(&mut g, p, "Gravelgill Scoundrel");
+        thoughtweft_attack(&mut g, &[source]);
+        g.move_object(source, Zone::Hand);
+        g.move_object(source, Zone::Battlefield);
+        assert!(advance_to_tap_payment(&mut g));
+        // "Another" compares exact objects. This new incarnation is another
+        // permanent relative to the old trigger, but cannot receive its grant.
+        let object = g.object_ref(source);
+        checked(&mut g, Action::TapForEffect { object });
+        settle(&mut g);
+        assert!(g.object_view(source).tapped);
+        assert!(!g.keywords(source).contains(Keywords::CANT_BE_BLOCKED));
+    }
+}
+
+#[test]
+fn meanders_guide_merfolk_payment_includes_noncreature_changeling_then_reflexive_targets_own_small_creature()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = cast_named(&mut g, p, "Meanders Guide");
+        let witness = spawn(
+            &mut g,
+            p,
+            Card::from_name("Firdoch Core").unwrap(),
+            Zone::Battlefield,
+        );
+        let wrong_type = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let enemy = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Brineborn Cutthroat").unwrap(),
+            Zone::Battlefield,
+        );
+        let target = spawn(&mut g, p, Card::GrizzlyBears, Zone::Graveyard);
+        let too_large = spawn(&mut g, p, Card::HillGiant, Zone::Graveyard);
+        let enemy_grave = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Graveyard);
+        let land = spawn(&mut g, p, Card::Forest, Zone::Graveyard);
+        assert!(!g.is_creature(witness));
+        assert!(g.has_subtype(witness, "Merfolk"));
+        assert!(attack_tap_payment(&mut g, source));
+        assert!(g.object_view(source).tapped);
+        assert!(
+            !g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::ChooseTarget { .. }))
+        );
+        for invalid in [wrong_type, enemy, source] {
+            let object = g.object_ref(invalid);
+            reject_atomic(&mut g, Action::TapForEffect { object });
+        }
+        let object = g.object_ref(witness);
+        checked(&mut g, Action::TapForEffect { object });
+        assert!(g.object_view(witness).tapped);
+        g.prepare_triggers();
+        for invalid in [too_large, enemy_grave, land] {
+            reject_atomic(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(invalid),
+                },
+            );
+        }
+        guide_target(&mut g, target);
+        assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+        assert!(!g.object_view(target).tapped);
+        assert!(g.object_view(target).summoning_sick);
+    }
+}
+
+#[test]
+fn meanders_guide_may_decline_or_pay_without_graveyard_targets_and_never_taps_already_tapped_merfolk()
+ {
+    for p in [Player::P0, Player::P1] {
+        for pay in [false, true] {
+            let mut g = setup(p);
+            let source = cast_named(&mut g, p, "Meanders Guide");
+            let witness = spawn(
+                &mut g,
+                p,
+                Card::from_name("Brineborn Cutthroat").unwrap(),
+                Zone::Battlefield,
+            );
+            let tapped = spawn(
+                &mut g,
+                p,
+                Card::from_name("Brineborn Cutthroat").unwrap(),
+                Zone::Battlefield,
+            );
+            g.tap_objects(&[tapped]);
+            assert!(attack_tap_payment(&mut g, source));
+            let object = g.object_ref(tapped);
+            reject_atomic(&mut g, Action::TapForEffect { object });
+            if pay {
+                let object = g.object_ref(witness);
+                checked(&mut g, Action::TapForEffect { object });
+            } else {
+                checked(&mut g, Action::DeclineEffectPayment);
+            }
+            settle(&mut g);
+            assert_eq!(g.object_view(witness).tapped, pay);
+            assert!(g.state.stack.is_empty());
+            assert!(g.state.announcing.is_none());
+        }
+    }
+}
+
+#[test]
+fn meanders_guide_captured_controller_can_pay_after_source_changes_controller_or_leaves() {
+    for p in [Player::P0, Player::P1] {
+        for leaves in [false, true] {
+            let mut g = setup(p);
+            let source = cast_named(&mut g, p, "Meanders Guide");
+            let witness = spawn(
+                &mut g,
+                p,
+                Card::from_name("Brineborn Cutthroat").unwrap(),
+                Zone::Battlefield,
+            );
+            let target = spawn(&mut g, p, Card::GrizzlyBears, Zone::Graveyard);
+            thoughtweft_attack(&mut g, &[source]);
+            if leaves {
+                g.move_object(source, Zone::Graveyard);
+            } else {
+                let object = g.object_ref(source);
+                g.change_controller(object, p.other());
+            }
+            assert!(advance_to_tap_payment(&mut g));
+            assert_eq!(g.actor(), Some(p));
+            let object = g.object_ref(witness);
+            checked(&mut g, Action::TapForEffect { object });
+            guide_target(&mut g, if leaves { source } else { target });
+            let returned = if leaves { source } else { target };
+            assert_eq!(g.object_view(returned).zone, Zone::Battlefield);
+            assert_eq!(g.object_view(returned).controller, p);
+        }
+    }
+}
+
+#[test]
+fn meanders_guide_reflexive_target_is_bound_before_response_and_does_not_follow_graveyard_reentry()
+{
+    let mut g = setup(Player::P0);
+    let source = cast_named(&mut g, Player::P0, "Meanders Guide");
+    let witness = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Brineborn Cutthroat").unwrap(),
+        Zone::Battlefield,
+    );
+    let target = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Graveyard);
+    assert!(attack_tap_payment(&mut g, source));
+    let object = g.object_ref(witness);
+    checked(&mut g, Action::TapForEffect { object });
+    g.prepare_triggers();
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    finish_cast_choices(&mut g);
+    let old = g.object_ref(target);
+    g.move_object(target, Zone::Hand);
+    g.move_object(target, Zone::Graveyard);
+    assert_ne!(old, g.object_ref(target));
+    settle(&mut g);
+    assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+    assert!(g.object_view(witness).tapped);
+}
