@@ -7,12 +7,42 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
+from scripts import resource_guard
 from scripts.resource_limits import bounded_group
 
 ROOT = Path(__file__).resolve().parents[1]
 GUARD = ROOT/'scripts/resource_guard.py'
 
 class ResourceGuardTests(unittest.TestCase):
+    def test_stopped_unit_without_command_report_fails_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory)/'completion.json'
+            with patch.object(sys, 'argv', ['resource_guard', '--report', str(report), '--', 'unused']), \
+                 patch.dict(os.environ, XDG_CACHE_HOME=directory), \
+                 patch.object(resource_guard, 'bounded_group', return_value=None), \
+                 patch.object(resource_guard.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0)):
+                self.assertNotEqual(resource_guard.main(), 0)
+            data = json.loads(report.read_text())
+            self.assertTrue(data['terminal'])
+            self.assertTrue(data['incomplete_metrics'])
+            self.assertNotEqual(data['exit_code'], 0)
+            self.assertEqual(data['unit_exit_code'], 0)
+
+    def test_completed_command_report_preserves_success(self):
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory)/'completion.json'
+            def run(command, **kwargs):
+                if command[0] == 'systemd-run':
+                    report.write_text(json.dumps({'terminal': True, 'exit_code': 0}))
+                return subprocess.CompletedProcess(command, 0)
+            with patch.object(sys, 'argv', ['resource_guard', '--report', str(report), '--', 'unused']), \
+                 patch.dict(os.environ, XDG_CACHE_HOME=directory), \
+                 patch.object(resource_guard, 'bounded_group', return_value=None), \
+                 patch.object(resource_guard.subprocess, 'run', side_effect=run):
+                self.assertEqual(resource_guard.main(), 0)
+            self.assertNotIn('incomplete_metrics', json.loads(report.read_text()))
+
     def run_guard(self, command, **kwargs):
         return subprocess.run([sys.executable, str(GUARD), '--', *command], cwd=ROOT,
                               text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs)

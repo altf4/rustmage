@@ -83,10 +83,15 @@ def main():
                   sys.executable, str(Path(__file__).resolve()), '--inside', '--report', str(report), '--', *command]
     result = subprocess.run(invocation)
     if not report.exists():
-        report.write_text(json.dumps(dict(command=command, terminal=True, exit_code=result.returncode,
+        # systemd may report a successful explicit stop although the command
+        # never completed. Missing child metrics cannot certify command success.
+        exit_code = result.returncode or 1
+        report.write_text(json.dumps(dict(command=command, terminal=True, exit_code=exit_code,
+            unit_exit_code=result.returncode,
             memory_max_bytes=MAX_MEMORY, incomplete_metrics=True,
-            note='Unit failed or exceeded its memory limit before it could write metrics; inspect systemd journal.'), indent=2)+'\n')
+            note='Managed command did not produce a completion report; inspect systemd journal.'), indent=2)+'\n')
         print('Resource report: '+str(report), file=sys.stderr)
+        return exit_code
     return result.returncode
 
 if __name__ == '__main__':
