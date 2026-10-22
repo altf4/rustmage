@@ -4293,3 +4293,195 @@ fn unrelated_static_sources_do_not_prohibit_draw_and_two_arias_have_independent_
         assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
     }
 }
+fn endblaze_cast(g: &mut Game, p: Player, target: CardId, x: u32) -> CardId {
+    // Keep this bounded scenario's complete X domain enumerable for raw/index parity.
+    for amount in &mut g.state.players[p.index()].mana {
+        *amount = (*amount).min(6);
+    }
+    while g.actor() != Some(p) {
+        advance(g);
+    }
+    let spell = named(g, p, "End-Blaze Epiphany", Zone::Hand);
+    checked(g, Action::AnnounceCast { card: spell });
+    checked(g, Action::ChooseX { value: x });
+    checked(
+        g,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    let pay = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a, Action::PayCosts { .. }))
+        .unwrap();
+    checked(g, pay);
+    spell
+}
+fn endblaze_choose(g: &mut Game) {
+    g.prepare_triggers();
+    for _ in 0..100 {
+        if matches!(g.state.pending, Pending::MilledSelection { .. }) {
+            return;
+        }
+        advance(g);
+    }
+    panic!("missing End-Blaze exile choice");
+}
+#[test]
+fn end_blaze_epiphany_lethal_x_damage_creates_delayed_trigger_before_state_based_death() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let victim = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        let unchosen = named(&mut g, p, "Forest", Zone::Library);
+        let chosen = named(&mut g, p, "Lightning Bolt", Zone::Library);
+        endblaze_cast(&mut g, p, victim, 2);
+        endblaze_choose(&mut g);
+        assert_eq!(g.object_view(victim).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(chosen).zone, Zone::Exile);
+        assert_eq!(g.object_view(unchosen).zone, Zone::Exile);
+        assert!(g.observe(p.other()).milled_choice.is_none());
+        assert_eq!(
+            g.observe(p)
+                .milled_choice
+                .as_ref()
+                .unwrap()
+                .candidates
+                .len(),
+            2
+        );
+        reject(&mut g, Action::FinishMilledSelection);
+        let object = g.object_ref(victim);
+        reject(&mut g, Action::SelectMilled { object });
+        let object = g.object_ref(chosen);
+        checked(&mut g, Action::SelectMilled { object });
+        settle(&mut g);
+        assert!(g.can_play_exiled(p, chosen));
+        assert!(!g.can_play_exiled(p.other(), chosen));
+        assert!(!g.can_play_exiled(p, unchosen));
+        checked(&mut g, Action::AnnounceExile { card: chosen });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 17);
+    }
+}
+#[test]
+fn end_blaze_epiphany_zero_x_watch_uses_later_signed_death_power_without_overwriting_x() {
+    for p in [Player::P0, Player::P1] {
+        for power in [-2, 0, 5] {
+            let mut g = hexing_setup(p);
+            let victim = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+            endblaze_cast(&mut g, p, victim, 0);
+            settle(&mut g);
+            assert_eq!(g.observe(p).delayed_deaths.len(), 1);
+            let item = g.activation_item(p.other(), victim, 0);
+            g.set_base_stats(&item, Subject::Source, Some(power), Some(8));
+            let old = g.object_ref(victim);
+            g.move_object(victim, Zone::Graveyard);
+            g.prepare_triggers();
+            let pending = g
+                .state
+                .pending_triggers
+                .iter()
+                .chain(g.state.stack.iter())
+                .chain(g.state.ordering_triggers.iter())
+                .chain(g.state.announcing.iter().map(|a| &a.item))
+                .find(|s| s.source_card == Card::from_name("End-Blaze Epiphany").unwrap())
+                .unwrap();
+            assert_eq!(pending.x, Some(0));
+            assert_eq!(pending.death_event.as_ref().unwrap().object, old);
+            assert_eq!(pending.death_event.as_ref().unwrap().power, power);
+            let library = g.state.players[p.index()].library.len();
+            settle(&mut g);
+            assert_eq!(
+                g.state.players[p.index()].library.len(),
+                library - power.max(0) as usize
+            );
+            assert_eq!(g.observe(p).exile_permissions.len(), usize::from(power > 0));
+        }
+    }
+}
+#[test]
+fn end_blaze_epiphany_lost_target_and_blinked_or_exiled_watch_never_create_permissions() {
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..4 {
+            let mut g = hexing_setup(p);
+            let victim = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+            endblaze_cast(&mut g, p, victim, 0);
+            if mode == 0 {
+                g.move_object(victim, Zone::Hand);
+            }
+            settle(&mut g);
+            if mode == 1 {
+                g.move_object(victim, Zone::Hand);
+                g.move_object(victim, Zone::Battlefield);
+                g.move_object(victim, Zone::Graveyard);
+            } else if mode == 2 {
+                g.move_object(victim, Zone::Exile);
+            } else if mode == 3 {
+                g.finish_cleanup();
+                g.move_object(victim, Zone::Graveyard);
+            }
+            settle(&mut g);
+            assert!(g.observe(p).delayed_deaths.is_empty());
+            assert!(g.observe(p).exile_permissions.is_empty());
+        }
+    }
+}
+#[test]
+fn end_blaze_epiphany_permission_survives_current_turn_and_expires_at_casters_next_cleanup() {
+    for p in [Player::P0, Player::P1] {
+        for during_your_turn in [false, true] {
+            let mut g = hexing_setup(if during_your_turn { p } else { p.other() });
+            let victim = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+            let land = named(&mut g, p, "Forest", Zone::Library);
+            endblaze_cast(&mut g, p, victim, 2);
+            endblaze_choose(&mut g);
+            let object = g.object_ref(land);
+            checked(&mut g, Action::SelectMilled { object });
+            settle(&mut g);
+            assert!(g.can_play_exiled(p, land));
+            let deadline = g.state.turn + if during_your_turn { 2 } else { 1 };
+            assert_eq!(g.observe(p).exile_permissions[0].expires_turn, deadline);
+            while g.state.turn < deadline {
+                g.finish_cleanup();
+            }
+            assert!(g.can_play_exiled(p, land));
+            assert_eq!(g.state.active, p);
+            g.state.step = Step::Main1;
+            g.state.priority = p;
+            checked(&mut g, Action::PlayLand { card: land });
+            assert_eq!(g.object_view(land).zone, Zone::Battlefield);
+            g.finish_cleanup();
+            assert!(g.observe(p).exile_permissions.is_empty());
+        }
+    }
+}
+
+#[test]
+fn end_blaze_epiphany_watched_noncreature_has_no_power_when_it_dies() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let victim = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        endblaze_cast(&mut g, p, victim, 0);
+        settle(&mut g);
+        hexing_open(
+            &mut g,
+            p,
+            "Imprisoned in the Moon",
+            Some(Target::Card(victim)),
+        );
+        hexing_finish(&mut g, true);
+        assert!(!g.is_creature(victim));
+        let library = g.state.players[p.index()].library.clone();
+        g.move_object(victim, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].library, library);
+        assert!(g.observe(p).exile_permissions.is_empty());
+    }
+}

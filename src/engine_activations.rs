@@ -440,6 +440,7 @@ impl Game {
         self.state.passes = 0;
         SpellView {
             source_move: None,
+            death_event: None,
             creature_action_event: None,
             transform_stamp: None,
             source_chosen_type: self.source_chosen_creature_type(self.object_ref(card)),

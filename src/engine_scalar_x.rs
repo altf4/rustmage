@@ -264,6 +264,12 @@ impl Game {
                 .copied()
                 .unwrap_or(0)
                 .max(0) as u128,
+            AmountValue::DeathEventPower => item
+                .death_event
+                .as_ref()
+                .expect("saved death event")
+                .power
+                .max(0) as u128,
             AmountValue::DamageEventAmount => item.damage_event.expect("saved damage event").amount,
             AmountValue::SourceCounterQuantity(kind) => self
                 .source_counter_quantity_live(item.object, kind)

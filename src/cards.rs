@@ -1002,6 +1002,10 @@ pub(crate) enum Instruction {
         amount: u16,
         next_turn: bool,
     },
+    ExileTopChoosePlayScaled {
+        amount: AmountValue,
+        next_turn: bool,
+    },
     ExileTopPlay {
         amount: u16,
         next_turn: bool,
@@ -1494,6 +1498,7 @@ pub(crate) enum AmountValue {
         reason = "Core quantity is scenario-tested while its consumer cards remain gated"
     )]
     DamageEventAmount,
+    DeathEventPower,
     #[allow(
         dead_code,
         reason = "Core quantity is scenario-tested while its consumer cards remain gated"

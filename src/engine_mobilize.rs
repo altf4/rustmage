@@ -241,6 +241,7 @@ impl Game {
             let controller = b.view.controller;
             self.state.pending_triggers.push(SpellView {
                 source_move: None,
+                death_event: None,
                 creature_action_event: None,
                 transform_stamp: None,
                 source_chosen_type: None,

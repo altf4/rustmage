@@ -76,6 +76,14 @@ impl Game {
                 continue;
             }
             let mut item = row.item;
+            item.death_event = Some(Box::new(DeathEventView {
+                object: event.before.reference,
+                power: if event.before.is_creature() {
+                    event.before.power
+                } else {
+                    0
+                },
+            }));
             item.id = self.next_stack_id();
             item.kind = StackKind::TriggeredAbility {
                 ability: row.view.ability,

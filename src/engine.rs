@@ -926,8 +926,16 @@ pub struct ReflexiveSubjectView {
     pub object: ObjectRef,
 }
 
+/// Public frozen characteristics of the exact object whose death caused this trigger.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct DeathEventView {
+    pub object: ObjectRef,
+    pub power: i128,
+}
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub death_event: Option<Box<DeathEventView>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transform_stamp: Option<Box<u64>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1032,9 +1040,13 @@ impl SpellView {
     }
     /// Heap-owned continuation payloads; inline packet storage is counted by its container.
     pub(super) fn owned_bytes(&self) -> usize {
-        self.transform_stamp
+        self.death_event
             .as_ref()
-            .map_or(0, |_| std::mem::size_of::<u64>())
+            .map_or(0, |_| std::mem::size_of::<DeathEventView>())
+            + self
+                .transform_stamp
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<u64>())
             + self.mana_copy_sources.as_ref().map_or(0, |sources| {
                 std::mem::size_of::<Vec<(ManaCopySource, u64)>>()
                     + sources.len() * std::mem::size_of::<(ManaCopySource, u64)>()

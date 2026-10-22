@@ -809,6 +809,7 @@ impl Game {
         self.state.pending_triggers.push(SpellView {
             gift: None,
             source_move: None,
+            death_event: None,
             creature_action_event: None,
             transform_stamp: None,
             source_chosen_type: match source.entry_choice {
@@ -2584,7 +2585,18 @@ impl Game {
                     self.state.pending = Pending::EffectSearch { player };
                     return;
                 }
-                Instruction::ExileTopChoosePlay { amount, next_turn } => {
+                Instruction::ExileTopChoosePlay { .. }
+                | Instruction::ExileTopChoosePlayScaled { .. } => {
+                    let (amount, next_turn) = match instruction {
+                        Instruction::ExileTopChoosePlay { amount, next_turn } => {
+                            (amount, next_turn)
+                        }
+                        Instruction::ExileTopChoosePlayScaled { amount, next_turn } => (
+                            u16::try_from(self.item_amount(amount, &item)).unwrap_or(u16::MAX),
+                            next_turn,
+                        ),
+                        _ => unreachable!(),
+                    };
                     if self.exile_top_choose_play(item.controller, amount, next_turn) {
                         return;
                     }
