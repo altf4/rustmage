@@ -102,6 +102,16 @@ pub(super) trait CharacteristicWorld {
                 && self.can_receive_counters(source))
     }
 
+    fn graveyard_has_subtype(&self, actor: Player, subtype: &'static str) -> bool {
+        (0..self.game().state.objects.len()).any(|index| {
+            let id = index as CardId;
+            let object = self.object(id);
+            object.zone == Zone::Graveyard
+                && object.owner == actor
+                && !object.is_token()
+                && self.subtypes(id).has(object.card, subtype)
+        })
+    }
     fn chosen_creature_type_applies(&self, source: ObjectRef, id: CardId) -> bool {
         let provider = self.object(source.card);
         let target = self.object(id);

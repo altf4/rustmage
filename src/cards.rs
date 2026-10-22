@@ -628,6 +628,8 @@ pub(crate) struct SearchSpec {
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
+    /// A controlled permanent or revealed hand card witnesses a casting cost.
+    Behold,
     ExileFromHand,
     /// Put this many -1/-1 counters on one chosen creature you control.
     /// This is a non-targeting resolution choice, including optional payments.
@@ -2576,6 +2578,7 @@ pub(crate) enum ActivationOrigin {
 /// Starting restrictions, not costs that must still hold during payment.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ActivationGuard {
+    GraveyardSubtype(&'static str),
     ControlColorsAtLeast(u8),
     Always,
     OwnTurn,
@@ -2586,7 +2589,8 @@ pub(crate) enum ActivationGuard {
 impl ActivationGuard {
     pub(crate) fn subtypes(self) -> &'static [&'static str] {
         match self {
-            Self::ControlColorsAtLeast(_)
+            Self::GraveyardSubtype(_)
+            | Self::ControlColorsAtLeast(_)
             | Self::Always
             | Self::OwnTurn
             | Self::ControlLandsAtLeast(_)

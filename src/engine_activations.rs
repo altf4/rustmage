@@ -56,6 +56,9 @@ impl Game {
 
     pub(super) fn activation_guard_available(&self, guard: ActivationGuard, actor: Player) -> bool {
         match guard {
+            ActivationGuard::GraveyardSubtype(subtype) => self
+                .characteristic_query()
+                .graveyard_has_subtype(actor, subtype),
             ActivationGuard::ControlColorsAtLeast(minimum) => {
                 self.characteristic_query()
                     .controlled_colors(actor)

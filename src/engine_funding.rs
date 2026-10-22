@@ -592,6 +592,9 @@ impl<'g> FundingState<'g> {
     }
     fn guard_available(&self, guard: ActivationGuard, actor: Player) -> bool {
         match guard {
+            ActivationGuard::GraveyardSubtype(subtype) => {
+                ability_world::CharacteristicWorld::graveyard_has_subtype(self, actor, subtype)
+            }
             ActivationGuard::ControlColorsAtLeast(minimum) => {
                 ability_world::CharacteristicWorld::controlled_colors(self, actor).count_ones()
                     >= u32::from(minimum)

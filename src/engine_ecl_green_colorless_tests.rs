@@ -2839,3 +2839,174 @@ fn ecl_green_growth_granted_mana_bonus_is_separate_and_overflow_restores_tap_and
         assert_eq!(g.revision(), revision);
     }
 }
+
+#[test]
+fn ecl_green_lys_behold_accepts_permanent_or_hand_elf_including_kindred_and_reveals_only_on_payment()
+ {
+    for p in [Player::P0, Player::P1] {
+        for hand in [false, true] {
+            for kindred in [false, true] {
+                let mut g = setup(p);
+                let witness = named(
+                    &mut g,
+                    p,
+                    if kindred {
+                        "Morcant's Eyes"
+                    } else {
+                        "Llanowar Elves"
+                    },
+                    if hand { Zone::Hand } else { Zone::Battlefield },
+                );
+                if !hand {
+                    let reference = g.object_ref(witness);
+                    g.grant_keyword_effects(
+                        &[witness],
+                        reference,
+                        Keywords::HEXPROOF.union(Keywords::PROTECTION_EVERYTHING),
+                    );
+                }
+                let wrong = named(&mut g, p, "Bear Cub", Zone::Hand);
+                let opponent = named(&mut g, p.other(), "Llanowar Elves", Zone::Battlefield);
+                let source = named(&mut g, p, "Lys Alana Dignitary", Zone::Hand);
+                g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 1];
+                checked(&mut g, Action::AnnounceCast { card: source });
+                checked(&mut g, Action::ChooseSpellCost { cost: 0 });
+                for card in [wrong, opponent, source] {
+                    let object = g.object_ref(card);
+                    reject(&mut g, Action::ChooseAdditionalCost { object });
+                }
+                assert!(g.observe(p.other()).additional_cost.is_none());
+                let object = g.object_ref(witness);
+                checked(&mut g, Action::ChooseAdditionalCost { object });
+                assert!(!g.observe(p.other()).known_hand.contains(&object));
+                reject(&mut g, Action::PayCosts { payment: [0; 6] });
+                assert!(!g.observe(p.other()).known_hand.contains(&object));
+                checked(
+                    &mut g,
+                    Action::PayCosts {
+                        payment: [0, 0, 0, 0, 1, 1],
+                    },
+                );
+                assert_eq!(
+                    g.object_view(witness).zone,
+                    if hand { Zone::Hand } else { Zone::Battlefield }
+                );
+                assert_eq!(g.observe(p.other()).known_hand.contains(&object), hand);
+                settle(&mut g);
+                assert_eq!(
+                    g.stats(source),
+                    Stats {
+                        power: 2,
+                        toughness: 3
+                    }
+                );
+                assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+            }
+        }
+    }
+}
+
+#[test]
+fn ecl_green_lys_extra_mana_route_cannot_behold_source_and_free_cast_still_requires_choice() {
+    for p in [Player::P0, Player::P1] {
+        for free in [false, true] {
+            let mut g = setup(p);
+            if free {
+                named(&mut g, p, "Omniscience", Zone::Battlefield);
+            }
+            let source = named(&mut g, p, "Lys Alana Dignitary", Zone::Hand);
+            let action = if free {
+                Action::AnnounceFree {
+                    card: source,
+                    face: CastFace::Normal,
+                    flash_surcharge: false,
+                }
+            } else {
+                Action::AnnounceCast { card: source }
+            };
+            g.state.players[p.index()].mana = if free { [0; 6] } else { [0, 0, 0, 0, 1, 1] };
+            reject(&mut g, action.clone());
+            g.state.players[p.index()].mana = if free {
+                [0, 0, 0, 0, 0, 2]
+            } else {
+                [0, 0, 0, 0, 1, 3]
+            };
+            checked(&mut g, action);
+            reject(&mut g, Action::ChooseSpellCost { cost: 0 });
+            checked(&mut g, Action::ChooseSpellCost { cost: 1 });
+            assert!(g.observe(p).additional_cost.is_none());
+            pay(&mut g);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            settle(&mut g);
+            assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+        }
+    }
+}
+
+#[test]
+fn ecl_green_lys_behold_witness_can_tap_for_same_cast_and_graveyard_card_guard_ignores_owner_control()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let witness = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        g.state.objects[witness as usize].summoning_sick = false;
+        let land = named(&mut g, p, "Forest", Zone::Battlefield);
+        let source = named(&mut g, p, "Lys Alana Dignitary", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        checked(&mut g, Action::AnnounceCast { card: source });
+        checked(&mut g, Action::ChooseSpellCost { cost: 0 });
+        let object = g.object_ref(witness);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
+        checked(&mut g, Action::TapMana { card: witness });
+        checked(&mut g, Action::TapMana { card: land });
+        pay(&mut g);
+        assert!(g.object_view(witness).tapped);
+        settle(&mut g);
+        g.state.objects[source as usize].summoning_sick = false;
+        let action = Action::AnnounceMana {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+            production: [0, 0, 0, 0, 2, 0],
+        };
+        reject(&mut g, action.clone());
+        let foreign = named(&mut g, p.other(), "Morcant's Eyes", Zone::Graveyard);
+        reject(&mut g, action.clone());
+        let elf = named(&mut g, p, "Morcant's Eyes", Zone::Graveyard);
+        // Cards in a graveyard are checked by owner, not retained former control.
+        g.state.objects[elf as usize].controller = p.other();
+        g.state.players[p.index()].mana = [0; 6];
+        checked(&mut g, action);
+        g.move_object(elf, Zone::Exile);
+        // This is a restriction on starting the activation, not a later guard.
+        pay(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 0, 2, 0]);
+        assert!(g.object_view(source).tapped);
+        assert_eq!(g.object_view(foreign).owner, p.other());
+    }
+}
+
+#[test]
+fn ecl_green_lys_mana_route_may_decline_eligible_private_hand_witness() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let witness = named(&mut g, p, "Llanowar Elves", Zone::Hand);
+        let source = named(&mut g, p, "Lys Alana Dignitary", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 3];
+        checked(&mut g, Action::AnnounceCast { card: source });
+        assert!(
+            g.legal_actions()
+                .contains(&Action::ChooseSpellCost { cost: 0 })
+        );
+        checked(&mut g, Action::ChooseSpellCost { cost: 1 });
+        pay(&mut g);
+        assert!(
+            !g.observe(p.other())
+                .known_hand
+                .contains(&g.object_ref(witness))
+        );
+        assert_eq!(g.object_view(witness).zone, Zone::Hand);
+        settle(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+    }
+}

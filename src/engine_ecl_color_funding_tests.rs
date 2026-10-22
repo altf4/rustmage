@@ -253,3 +253,100 @@ fn ecl_green_growth_bonus_funding_is_owned_and_unrestricted_beside_restricted_ma
         assert_eq!(world.mana_tap_bonus(land, false), [0, 1, 0, 0, 0, 0]);
     }
 }
+
+#[test]
+fn ecl_green_behold_owned_funding_preserves_live_or_hand_witness_but_allows_tapping() {
+    for p in [Player::P0, Player::P1] {
+        for hand in [false, true] {
+            let mut g = setup(p);
+            let witness = named(
+                &mut g,
+                p,
+                "Llanowar Elves",
+                if hand { Zone::Hand } else { Zone::Battlefield },
+            );
+            g.state.objects[witness as usize].summoning_sick = false;
+            let source = named(&mut g, p, "Lys Alana Dignitary", Zone::Hand);
+            let spec = g.state.objects[source as usize]
+                .card
+                .additional_cost()
+                .unwrap();
+            let goal = FundingGoal {
+                actor: p,
+                required: [0; 6],
+                generic: 0,
+                source: None,
+                reserve: Some((g.object_ref(witness), spec)),
+            };
+            let world = FundingState::from_game(&g, &goal);
+            assert!(world.obligations(&goal));
+            let mut tapped = world.clone();
+            tapped
+                .resources
+                .iter_mut()
+                .find(|resource| resource.id == witness)
+                .unwrap()
+                .object
+                .tapped = true;
+            assert!(tapped.obligations(&goal));
+            let mut departed = world.clone();
+            departed
+                .resources
+                .iter_mut()
+                .find(|resource| resource.id == witness)
+                .unwrap()
+                .object
+                .zone = Zone::Graveyard;
+            assert!(!departed.obligations(&goal));
+            assert!(world.obligations(&goal));
+            if !hand {
+                assert!(!world.guard_available(ActivationGuard::GraveyardSubtype("Elf"), p));
+                assert!(departed.guard_available(ActivationGuard::GraveyardSubtype("Elf"), p));
+            }
+            let mut stale = world.clone();
+            stale
+                .resources
+                .iter_mut()
+                .find(|resource| resource.id == witness)
+                .unwrap()
+                .object
+                .generation += 1;
+            assert!(!stale.obligations(&goal));
+        }
+        let mut g = setup(p);
+        let token = named(
+            &mut g,
+            p,
+            "@token/shapeshifter_1_1_colorless_changeling",
+            Zone::Graveyard,
+        );
+        let guard = ActivationGuard::GraveyardSubtype("Elf");
+        assert!(!g.activation_guard_available(guard, p));
+        let source = named(&mut g, p, "Lys Alana Dignitary", Zone::Hand);
+        let spec = g.state.objects[source as usize]
+            .card
+            .additional_cost()
+            .unwrap();
+        let battlefield_token = named(
+            &mut g,
+            p,
+            "@token/shapeshifter_1_1_colorless_changeling",
+            Zone::Battlefield,
+        );
+        assert!(g.additional_candidate(
+            spec,
+            p,
+            g.object_ref(source),
+            g.object_ref(battlefield_token)
+        ));
+        g.move_object(battlefield_token, Zone::Hand);
+        assert!(!g.additional_candidate(
+            spec,
+            p,
+            g.object_ref(source),
+            g.object_ref(battlefield_token)
+        ));
+        assert!(!g.activation_guard_available(guard, p));
+        assert!(g.state.objects[token as usize].is_token());
+    }
+}
