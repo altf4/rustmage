@@ -24,7 +24,14 @@ impl Game {
             }
             let definition = source.card;
             for (index, ability) in definition.triggers().iter().enumerate() {
-                if ability.condition.event() != TriggerCondition::CreatureAttacksOrBlocksYou {
+                let qualifies = match ability.condition.event() {
+                    TriggerCondition::CreatureAttacksOrBlocksYou => true,
+                    TriggerCondition::ControlledCreatureAttacksAlone => {
+                        kind == CreatureActionKind::Attack && creatures.len() == 1
+                    }
+                    _ => false,
+                };
+                if !qualifies {
                     continue;
                 }
                 for &id in creatures {
@@ -40,6 +47,22 @@ impl Game {
                 }
             }
         }
+    }
+    pub(super) fn grow_creature_action_scaled(&mut self, item: &SpellView, value: AmountValue) {
+        let Some(event) = item.creature_action_event.as_ref() else {
+            return;
+        };
+        let id = event.object.card;
+        if !self.on_battlefield(id) || self.object_ref(id) != event.object || !self.is_creature(id)
+        {
+            return;
+        }
+        let amount = i128::try_from(self.item_amount(value, item))
+            .capacity("creature growth amount exhausted");
+        self.state.objects[id as usize].growth += Stats {
+            power: amount,
+            toughness: amount,
+        };
     }
     pub(super) fn grow_creature_action_difference(&mut self, item: &SpellView) {
         let Some(event) = item.creature_action_event.as_ref() else {

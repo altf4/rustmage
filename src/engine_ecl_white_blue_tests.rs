@@ -2590,3 +2590,225 @@ fn harmonized_crescendo_zero_matching_permanents_draws_zero_without_library_loss
         assert!(g.outcome().is_none());
     }
 }
+
+fn thoughtweft_attack(g: &mut Game, attackers: &[CardId]) {
+    g.state.step = Step::Attackers;
+    g.state.pending = Pending::Attackers;
+    for &card in attackers {
+        g.state.objects[card as usize].summoning_sick = false;
+        checked(g, Action::Attack { card });
+    }
+    checked(g, Action::FinishAttackers);
+}
+
+#[test]
+fn thoughtweft_imbuer_paid_body_can_buff_itself_and_only_single_declarations_trigger() {
+    for p in [Player::P0, Player::P1] {
+        for alone in [false, true] {
+            let mut g = setup(p);
+            let source = spawn(
+                &mut g,
+                p,
+                Card::from_name("Thoughtweft Imbuer").unwrap(),
+                Zone::Hand,
+            );
+            cast(&mut g, source, None);
+            settle(&mut g);
+            let bear = spawn(
+                &mut g,
+                p,
+                Card::from_name("Bear Cub").unwrap(),
+                Zone::Battlefield,
+            );
+            spawn(
+                &mut g,
+                p.other(),
+                Card::from_name("Reluctant Dounguard").unwrap(),
+                Zone::Battlefield,
+            );
+            let attackers = if alone {
+                vec![source]
+            } else {
+                vec![source, bear]
+            };
+            thoughtweft_attack(&mut g, &attackers);
+            assert!(
+                !g.legal_actions()
+                    .iter()
+                    .any(|action| matches!(action, Action::ChooseTarget { .. }))
+            );
+            settle(&mut g);
+            assert_eq!(
+                g.stats(source),
+                Stats {
+                    power: if alone { 1 } else { 0 },
+                    toughness: if alone { 6 } else { 5 }
+                }
+            );
+            assert_eq!(
+                g.stats(bear),
+                Stats {
+                    power: 2,
+                    toughness: 2
+                }
+            );
+            g.finish_cleanup();
+            assert_eq!(
+                g.stats(source),
+                Stats {
+                    power: 0,
+                    toughness: 5
+                }
+            );
+        }
+    }
+}
+
+#[test]
+fn thoughtweft_imbuer_resolution_count_includes_kindred_changeling_and_survives_source_or_recipient_control_changes()
+ {
+    for p in [Player::P0, Player::P1] {
+        for changed in [0, 1, 2] {
+            let mut g = setup(p);
+            let source = spawn(
+                &mut g,
+                p,
+                Card::from_name("Thoughtweft Imbuer").unwrap(),
+                Zone::Battlefield,
+            );
+            spawn(
+                &mut g,
+                p,
+                Card::from_name("Clachan Festival").unwrap(),
+                Zone::Battlefield,
+            );
+            spawn(
+                &mut g,
+                p,
+                Card::from_name("Prideful Feastling").unwrap(),
+                Zone::Battlefield,
+            );
+            spawn(
+                &mut g,
+                p.other(),
+                Card::from_name("Reluctant Dounguard").unwrap(),
+                Zone::Battlefield,
+            );
+            let bear = spawn(
+                &mut g,
+                p,
+                Card::from_name("Bear Cub").unwrap(),
+                Zone::Battlefield,
+            );
+            thoughtweft_attack(&mut g, &[bear]);
+            match changed {
+                0 => {
+                    g.move_object(source, Zone::Graveyard);
+                }
+                1 => {
+                    let object = g.object_ref(source);
+                    g.change_controller(object, p.other());
+                }
+                _ => {
+                    let object = g.object_ref(bear);
+                    g.change_controller(object, p.other());
+                }
+            }
+            settle(&mut g);
+            let amount = if changed == 2 { 3 } else { 2 };
+            assert_eq!(
+                g.stats(bear),
+                Stats {
+                    power: 2 + amount,
+                    toughness: 2 + amount
+                }
+            );
+            spawn(
+                &mut g,
+                p,
+                Card::from_name("Reluctant Dounguard").unwrap(),
+                Zone::Battlefield,
+            );
+            assert_eq!(g.stats(bear).power, 2 + amount);
+        }
+    }
+}
+
+#[test]
+fn thoughtweft_imbuer_exact_attacker_binding_ignores_departed_incarnations_and_later_attackers() {
+    for reentered in [false, true] {
+        let mut g = setup(Player::P0);
+        spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Thoughtweft Imbuer").unwrap(),
+            Zone::Battlefield,
+        );
+        let bear = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        thoughtweft_attack(&mut g, &[bear]);
+        if reentered {
+            g.move_object(bear, Zone::Hand);
+            g.move_object(bear, Zone::Battlefield);
+        } else {
+            g.state.attackers.clear();
+        }
+        let later = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        settle(&mut g);
+        assert_eq!(g.stats(bear).power, if reentered { 2 } else { 3 });
+        assert_eq!(g.stats(later).power, 2);
+    }
+}
+
+#[test]
+fn thoughtweft_imbuer_multiple_observers_stack_and_opposing_declarations_do_not_trigger() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let first = spawn(
+            &mut g,
+            p,
+            Card::from_name("Thoughtweft Imbuer").unwrap(),
+            Zone::Battlefield,
+        );
+        spawn(
+            &mut g,
+            p,
+            Card::from_name("Thoughtweft Imbuer").unwrap(),
+            Zone::Battlefield,
+        );
+        thoughtweft_attack(&mut g, &[first]);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(first),
+            Stats {
+                power: 4,
+                toughness: 9
+            }
+        );
+        let mut g = setup(p.other());
+        spawn(
+            &mut g,
+            p,
+            Card::from_name("Thoughtweft Imbuer").unwrap(),
+            Zone::Battlefield,
+        );
+        let enemy = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        thoughtweft_attack(&mut g, &[enemy]);
+        settle(&mut g);
+        assert_eq!(g.stats(enemy).power, 2);
+    }
+}

@@ -901,6 +901,7 @@ pub(crate) enum Instruction {
     },
     SacrificeDelayedTokens,
     GrowCreatureActionPowerToughnessDifference,
+    GrowCreatureActionScaled(AmountValue),
     SacrificeSourceByController,
     SacrificeSource,
     ExileAndCopyNightmare,
@@ -2373,6 +2374,7 @@ pub(crate) enum TriggerCondition {
     SelfAttacks,
     SelfFirstAttack,
     CreatureAttacksOrBlocksYou,
+    ControlledCreatureAttacksAlone,
     CreatureAttacksYou {
         colors: u8,
     },

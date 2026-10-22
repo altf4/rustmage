@@ -545,6 +545,7 @@ impl Game {
                     | TriggerCondition::LifeLost { .. }
                     | TriggerCondition::SelfCountersAdded { .. }
                     | TriggerCondition::CreatureAttacksOrBlocksYou
+                    | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::OtherCreatureCountersAdded { .. }
                     | TriggerCondition::AttackDeclared { .. }
@@ -2392,6 +2393,9 @@ impl Game {
                         }
                         self.stage_copy_creation(item.controller, recipe, u128::from(amount));
                     }
+                }
+                Instruction::GrowCreatureActionScaled(value) => {
+                    self.grow_creature_action_scaled(&item, value)
                 }
                 Instruction::GrowCreatureActionPowerToughnessDifference => {
                     self.grow_creature_action_difference(&item)

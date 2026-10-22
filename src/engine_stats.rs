@@ -59,6 +59,7 @@ impl Game {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::CreatureAttacksOrBlocksYou
+                    | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::AttackDeclared { .. }
             )
