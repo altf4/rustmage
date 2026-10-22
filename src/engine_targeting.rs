@@ -361,6 +361,14 @@ impl Game {
             if spec.min == 0 {
                 return true;
             }
+            if !self.shared_type_targets_available(
+                spec,
+                (actor, source, departing, qualification),
+                &[],
+                false,
+            ) {
+                return false;
+            }
             let mut count = [0usize; 2];
             self.visit_targets_without_hand(
                 spec.rule,
@@ -434,6 +442,14 @@ impl Game {
             if spec.min == 0 {
                 return true;
             }
+            if !self.shared_type_targets_available(
+                spec,
+                (actor, source, None, qualification),
+                &[],
+                false,
+            ) {
+                return false;
+            }
             let mut count = [0usize; 2];
             self.visit_targets_without_hand(
                 spec.rule,
@@ -475,6 +491,80 @@ impl Game {
             TargetPlan::Single(spec) | TargetPlan::ScaledSingle { spec, .. } => available(spec),
             TargetPlan::Groups(groups) => groups.iter().copied().all(available),
         }
+    }
+
+    pub(super) fn item_shared_type_targets_available(
+        &self,
+        item: &SpellView,
+        spec: TargetSpec,
+        selected: &[Target],
+        closed: bool,
+    ) -> bool {
+        self.shared_type_targets_available(
+            spec,
+            (
+                item.controller,
+                item.target_source(),
+                None,
+                Some(TargetSourceCharacteristics::from_item(item)),
+            ),
+            selected,
+            closed,
+        )
+    }
+    /// A relational target prefix must extend to the whole mandatory group.
+    /// Counting unrelated cards admits modes that can never finish (e.g. Unbury).
+    fn shared_type_targets_available(
+        &self,
+        spec: TargetSpec,
+        context: (
+            Player,
+            ObjectRef,
+            Option<CardId>,
+            Option<TargetSourceCharacteristics<'_>>,
+        ),
+        selected: &[Target],
+        closed: bool,
+    ) -> bool {
+        if !matches!(
+            spec.rule,
+            TargetRule::Grouped {
+                constraint: TargetGroupConstraint::SharedCreatureType,
+                ..
+            }
+        ) {
+            return true;
+        }
+        if selected.is_empty() && spec.min == 0 {
+            return true;
+        }
+        if closed && selected.len() < usize::from(spec.min) {
+            return false;
+        }
+        let (actor, source, departing, qualification) = context;
+        let mut available = Vec::new();
+        self.visit_targets_without_hand(
+            spec.rule,
+            actor,
+            source,
+            departing,
+            qualification,
+            |target| {
+                if target != Target::Card(source.card) && !selected.contains(&target) {
+                    available.push(target);
+                }
+                false
+            },
+        );
+        crate::cards::CREATURE_TYPES.iter().any(|kind| {
+            let matches =
+                |target: &Target| matches!(*target, Target::Card(id) if self.has_subtype(id, kind));
+            selected.iter().all(matches)
+                && (selected.len() >= usize::from(spec.min)
+                    || !closed
+                        && selected.len() + available.iter().filter(|t| matches(t)).count()
+                            >= usize::from(spec.min))
+        })
     }
 
     /// Graveyard identity is its owner's player, never the battlefield controller.

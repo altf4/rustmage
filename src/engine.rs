@@ -8140,3 +8140,6 @@ mod ecl_goliath_tests;
 #[cfg(test)]
 #[path = "engine_ecl_inherited_br_tests.rs"]
 mod ecl_inherited_br_tests;
+#[cfg(test)]
+#[path = "engine_ecl_shared_type_completion_tests.rs"]
+mod ecl_shared_type_completion_tests;
