@@ -577,3 +577,230 @@ fn optional_resolution_blight_cost_is_not_doubled_by_doubling_season() {
     assert_eq!(g.counter_count(id, CounterKind::MinusOne), 2);
     assert_eq!(g.state.players[0].life, 19);
 }
+#[test]
+fn aunties_sentence_reveals_full_hand_but_discards_only_nonland_permanents() {
+    for p in [Player::P0, Player::P1] {
+        for has_permanent in [false, true] {
+            let mut g = setup(p);
+            let land = named(&mut g, p.other(), "Forest", Zone::Hand);
+            let instant = named(&mut g, p.other(), "Shock", Zone::Hand);
+            let creature =
+                has_permanent.then(|| named(&mut g, p.other(), "Grizzly Bears", Zone::Hand));
+            let id = named(&mut g, p, "Auntie's Sentence", Zone::Hand);
+            assert!(!g.observe(p).objects.iter().any(|o| o.id == land));
+            checked(&mut g, Action::AnnounceCast { card: id });
+            checked(&mut g, Action::ChooseMode { mode: 0 });
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(p),
+                },
+            );
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(p.other()),
+                },
+            );
+            if let Some(creature) = creature {
+                for _ in 0..100 {
+                    if matches!(g.state.pending, Pending::RevealedDiscard { .. }) {
+                        break;
+                    }
+                    advance(&mut g);
+                }
+                for excluded in [land, instant] {
+                    let object = g.object_ref(excluded);
+                    reject(&mut g, Action::ChooseRevealedDiscard { object });
+                    assert!(g.observe(p).objects.iter().any(|o| o.id == excluded));
+                }
+                let object = g.object_ref(creature);
+                checked(&mut g, Action::ChooseRevealedDiscard { object });
+                settle(&mut g);
+                assert_eq!(g.state.objects[creature as usize].zone, Zone::Graveyard);
+            } else {
+                settle(&mut g);
+            }
+            assert_eq!(g.state.objects[land as usize].zone, Zone::Hand);
+            assert_eq!(g.state.objects[instant as usize].zone, Zone::Hand);
+        }
+    }
+}
+#[test]
+fn aunties_sentence_second_mode_shrinks_any_creature_until_cleanup() {
+    let mut g = setup(Player::P0);
+    let creature = named(&mut g, Player::P1, "Heirloom Auntie", Zone::Battlefield);
+    let id = named(&mut g, Player::P0, "Auntie's Sentence", Zone::Hand);
+    targeted(&mut g, id, Some(1), &[Target::Card(creature)]);
+    assert_eq!(
+        g.stats(creature),
+        Stats {
+            power: 2,
+            toughness: 2
+        }
+    );
+    g.finish_cleanup();
+    assert_eq!(
+        g.stats(creature),
+        Stats {
+            power: 4,
+            toughness: 4
+        }
+    );
+}
+#[test]
+fn gloom_ripper_counts_own_elves_in_both_zones_with_optional_opponent_target() {
+    for p in [Player::P0, Player::P1] {
+        for optional in [false, true] {
+            let mut g = setup(p);
+            let own = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+            named(&mut g, p, "Graveshifter", Zone::Graveyard);
+            named(&mut g, p.other(), "Llanowar Elves", Zone::Battlefield);
+            let foe = named(&mut g, p.other(), "Heirloom Auntie", Zone::Battlefield);
+            let id = named(&mut g, p, "Gloom Ripper", Zone::Hand);
+            checked(&mut g, Action::AnnounceCast { card: id });
+            for _ in 0..100 {
+                if matches!(g.state.pending, Pending::Targets { .. }) {
+                    break;
+                }
+                advance(&mut g);
+            }
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(foe),
+                },
+            );
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(own),
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(own),
+                },
+            );
+            if optional {
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(foe),
+                    },
+                );
+            } else {
+                checked(&mut g, Action::FinishTargets);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.stats(own),
+                Stats {
+                    power: 4,
+                    toughness: 1
+                }
+            );
+            assert_eq!(g.stats(foe).toughness, if optional { 1 } else { 4 });
+            g.finish_cleanup();
+            assert_eq!(
+                g.stats(own),
+                Stats {
+                    power: 1,
+                    toughness: 1
+                }
+            );
+            assert_eq!(g.stats(foe).toughness, 4);
+        }
+    }
+}
+#[test]
+fn boggart_mischief_optional_blight_creates_goblins_and_drains_for_owned_goblin_deaths() {
+    for p in [Player::P0, Player::P1] {
+        for pay in [false, true] {
+            let mut g = setup(p);
+            let witness = named(&mut g, p, "Goblin Piker", Zone::Battlefield);
+            let id = named(&mut g, p, "Boggart Mischief", Zone::Hand);
+            checked(&mut g, Action::AnnounceCast { card: id });
+            until_blight(&mut g);
+            if pay {
+                let object = g.object_ref(witness);
+                checked(&mut g, Action::Blight { object });
+            } else {
+                checked(&mut g, Action::DeclineEffectPayment);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.observe(p)
+                    .objects
+                    .iter()
+                    .filter(|o| o.controller == p && o.zone == Zone::Battlefield && o.is_token())
+                    .count(),
+                if pay { 2 } else { 0 }
+            );
+            assert_eq!(g.state.players[p.index()].life, if pay { 21 } else { 20 });
+            assert_eq!(
+                g.state.players[p.other().index()].life,
+                if pay { 19 } else { 20 }
+            );
+            let opponent = named(&mut g, p.other(), "Goblin Piker", Zone::Battlefield);
+            g.move_object(opponent, Zone::Graveyard);
+            let non_goblin = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+            g.move_object(non_goblin, Zone::Graveyard);
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].life, if pay { 21 } else { 20 });
+            let goblin = named(&mut g, p, "Goblin Piker", Zone::Battlefield);
+            g.move_object(goblin, Zone::Graveyard);
+            g.prepare_triggers();
+            g.move_object(id, Zone::Exile);
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].life, if pay { 22 } else { 21 });
+            assert_eq!(
+                g.state.players[p.other().index()].life,
+                if pay { 18 } else { 19 }
+            );
+        }
+        let mut g = setup(p);
+        let id = named(&mut g, p, "Boggart Mischief", Zone::Hand);
+        cast(&mut g, id);
+        assert!(!g.observe(p).objects.iter().any(|o| o.is_token()));
+    }
+}
+#[test]
+fn gutsplitter_gang_can_pay_decline_or_lose_source_before_its_first_main_trigger() {
+    for p in [Player::P0, Player::P1] {
+        for branch in 0..3 {
+            let mut g = setup(p);
+            let id = named(&mut g, p, "Gutsplitter Gang", Zone::Hand);
+            cast(&mut g, id);
+            g.begin_step(Step::Main1);
+            g.prepare_triggers();
+            if branch == 2 {
+                g.move_object(id, Zone::Exile);
+            } else {
+                until_blight(&mut g);
+                if branch == 0 {
+                    let object = g.object_ref(id);
+                    checked(&mut g, Action::Blight { object });
+                } else {
+                    checked(&mut g, Action::DeclineEffectPayment);
+                }
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.state.players[p.index()].life,
+                if branch == 0 { 20 } else { 17 }
+            );
+            assert_eq!(
+                g.counter_count(id, CounterKind::MinusOne),
+                if branch == 0 { 2 } else { 0 }
+            );
+            g.begin_step(Step::Main2);
+            settle(&mut g);
+            assert_eq!(
+                g.state.players[p.index()].life,
+                if branch == 0 { 20 } else { 17 }
+            );
+        }
+    }
+}
