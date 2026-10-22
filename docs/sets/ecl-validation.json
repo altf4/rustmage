@@ -1719,5 +1719,47 @@
       "fdc11f74",
       "16b2229c"
     ]
+  },
+  "entry_cost_search_cycles": {
+    "commit": "1972ad0e",
+    "problem": "Repeated optional Omni copy replacements allocate fresh epochs and would evade raw snapshot cycle detection",
+    "fix": "Analysis-only alpha-renaming of uncommitted copy epochs, preserving relative order and every committed row; earlier equivalent clocks dominate later clocks to retain exact timestamp capacity",
+    "actual_behavior": "Every actual repeated replacement remains available and allocates a fresh epoch; no gameplay copy limit",
+    "focused": {
+      "conspire_passed": 14,
+      "seconds": 1.85,
+      "report": "<cache>/rustmage-build-reports/31f6a4a8e6b84b589b7c2da2fd77dba8.json"
+    },
+    "copy_entry": {
+      "passed": 31,
+      "seconds": 0.99,
+      "report": "<cache>/rustmage-build-reports/3e93f79d939e4aeabbb1245104da1853.json"
+    },
+    "clippy": {
+      "seconds": 40.81,
+      "report": "<cache>/rustmage-build-reports/2f497def5f774c04a3ebc73587406c74.json"
+    }
+  },
+  "funding_color_performance": {
+    "source_commit": "57396242f0e68d3c4a48743eb707162ec7e62ad5",
+    "integrated_commit": "6ed710ba",
+    "problem": "Impossible Kinbinding WW counted Flamebraider restricted white production though only one eligible white source existed",
+    "fix": "Under the same conservative closed/no-converter guard, per-color upper bounds use eligible pool and production; preserve broad fallback otherwise",
+    "funding": {
+      "passed": 116,
+      "seconds": 3.89,
+      "report": "<cache>/rustmage-build-reports/ce75adb138d24c2c848fd791f69e5b57.json"
+    },
+    "clippy": {
+      "seconds": 41.35,
+      "report": "<cache>/rustmage-build-reports/d77270e1c951456db1ca65cd7760067a.json"
+    },
+    "exact_prefix_438": {
+      "actions": 111,
+      "legal_action_seconds": 0.000287997,
+      "observation_seconds": 0.000319581
+    },
+    "diagnostic_report": "<cache>/rustmage-build-reports/bbe99cce8b7d4b83ac1e15fe31d43286.json",
+    "scope": "Targeted debug timings, not complete simulation throughput"
   }
 }
