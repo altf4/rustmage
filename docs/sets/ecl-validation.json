@@ -2,15 +2,17 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 69,
+  "newly_tested_physical_cards": 83,
   "newly_tested_names": [
     "Adept Watershaper",
     "Ashling's Command",
     "Assert Perfection",
     "Auntie's Sentence",
+    "Aurora Awakener",
     "Barbed Bloodletter",
     "Bark of Doran",
     "Blighted Blackthorn",
+    "Bloodline Bidding",
     "Bloom Tender",
     "Boggart Mischief",
     "Bogslither's Embrace",
@@ -19,6 +21,7 @@
     "Bristlebane Battler",
     "Bristlebane Outrider",
     "Burning Curiosity",
+    "Catharsis",
     "Chaos Spewer",
     "Chronicle of Victory",
     "Cinder Strike",
@@ -26,15 +29,20 @@
     "Crib Swap",
     "Dawn-Blessed Pennant",
     "Dawnhand Eulogist",
+    "Deceit",
     "Deepchannel Duelist",
     "Dose of Dawnglow",
     "Dream Seizer",
     "Eclipsed Realms",
+    "Emptiness",
     "Encumbered Reejerey",
+    "Evershrike's Gift",
     "Firdoch Core",
     "Flaring Cinder",
     "Formidable Speaker",
     "Gallant Fowlknight",
+    "Gathering Stone",
+    "Glamer Gifter",
     "Glen Elendra Guardian",
     "Gloom Ripper",
     "Goatnap",
@@ -50,7 +58,9 @@
     "Noggle the Mind",
     "Personify",
     "Pitiless Fists",
+    "Prismatic Undercurrents",
     "Pummeler for Hire",
+    "Pyrrhic Strike",
     "Reaping Willow",
     "Reluctant Dounguard",
     "Requiting Hex",
@@ -70,12 +80,16 @@
     "Tributary Vaulter",
     "Trystan's Command",
     "Unbury",
+    "Vibrance",
     "Vinebred Brawler",
     "Voracious Tome-Skimmer",
-    "Wary Farmer"
+    "Wanderbrine Trapper",
+    "Wary Farmer",
+    "Wild Unraveling",
+    "Wistfulness"
   ],
-  "current_admission_flags": 176,
-  "remaining_gated": 97,
+  "current_admission_flags": 190,
+  "remaining_gated": 83,
   "inherited_evidence_audit": "pending",
   "locally_reviewed": 0,
   "final_published_reviews": 0,
@@ -84,9 +98,9 @@
   "focused_integration": {
     "command": "python3 scripts/resource_guard.py -- cargo test --lib ecl_",
     "exit": 0,
-    "tests": 93,
-    "test_seconds": 2.68,
-    "resource_report": "<cache>/rustmage-build-reports/2552ff2be78b4c218787ef958013f7c1.json"
+    "tests": 118,
+    "test_seconds": 3.5,
+    "resource_report": "<cache>/rustmage-build-reports/5a725d0ce6b54ab6887170167d8941ce.json"
   },
   "natural_games": {
     "command": "python3 scripts/resource_guard.py -- cargo test --test lorwyn_eclipsed_games -- --nocapture",
@@ -113,13 +127,13 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T16:32:03.684792+00:00",
-    "elapsed_seconds": 4156.467941,
-    "newly_verified_cards": 69,
-    "cards_per_hour": 59.76227978321366,
+    "end_utc": "2026-10-22T16:47:31.935626+00:00",
+    "elapsed_seconds": 5084.718775,
+    "newly_verified_cards": 83,
+    "cards_per_hour": 58.76431189648241,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
-  "focused_scope": "93 scenarios at revision preceding Adept Watershaper; later integrated batches have author tests, combined rerun pending",
+  "focused_scope": "118 scenarios at9b29008c; later integrated batches have author tests, full combined rerun pending",
   "full_release_validation": {
     "status": "failed; regression fixed, rerun pending",
     "head": "73fd6de7",
@@ -129,5 +143,32 @@
     "foundations_games_passed": 21,
     "failure": "unrelated attachment queried for missing layer-four timestamp; corrected in6d2ff19a",
     "seconds": 394.549094267
+  },
+  "regression_recheck": {
+    "command": "guarded cargo test --test foundations_games characteristic_modal_games::foundations_six_characteristic_modal_cards_full_games_and_owned_effect_state",
+    "exit": 0,
+    "tests": 1,
+    "seconds": 56.22,
+    "resource_report": "<cache>/rustmage-build-reports/e3287cc4139d443cb65ceb58e4bf6735.json"
+  },
+  "incarnations": {
+    "revision": "e8289fce",
+    "focused_scenarios": 12,
+    "native_run": {
+      "passed": 2618,
+      "failed": 1,
+      "ignored": 1,
+      "seconds": 64.51,
+      "resource_report": "<cache>/rustmage-build-reports/8faa0a451f204187a686f63d5e8a25e2.json",
+      "failure": "Existing alternative-mana-value invariant omitted evoke costs; fixture corrected."
+    },
+    "affected_invariant_recheck": {
+      "passed": 1,
+      "resource_report": "<cache>/rustmage-build-reports/86e73f889e8142ea9acb7a7edf40f121.json"
+    },
+    "source_tests": {
+      "command": "python3 -m unittest scripts.test_direct_cards",
+      "passed": 7
+    }
   }
 }

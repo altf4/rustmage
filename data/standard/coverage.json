@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "81473a17452cd77c1a0b8a38c336b707f9988c317009fb663819a6a0390d8e1c",
+  "catalogue_version": "e5e114215a6319d5ae2d4a6e0ac7ef8fbcc7105d00e9720d4bfdb8b2eda69ebb",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2271,
-  "implemented_total": 2277,
+  "implemented_standard_cards": 2273,
+  "implemented_total": 2279,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 85,
-      "complete": 182
+      "gated": 83,
+      "complete": 184
     },
     "eoc": {
       "total": 8,
@@ -14327,8 +14327,8 @@
     {
       "name": "Glamer Gifter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/glamer_gifter.rs",
       "set": "ecl"
     },
@@ -39919,8 +39919,8 @@
     {
       "name": "Wanderbrine Trapper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/wanderbrine_trapper.rs",
       "set": "ecl"
     },

@@ -238,7 +238,7 @@
       "name": "Aurora Awakener",
       "definition": "src/card_definitions/ecl/aurora_awakener.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Aurora Awakener",
@@ -253,7 +253,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/aurora_awakener.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "15febce7-8320-4591-9535-ef11c8adecc2",
@@ -427,7 +431,7 @@
       "name": "Bloodline Bidding",
       "definition": "src/card_definitions/ecl/bloodline_bidding.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Bloodline Bidding",
@@ -442,7 +446,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/bloodline_bidding.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "0c23fefe-9891-4dd8-9bb1-eebdb3274e31",
@@ -889,7 +897,7 @@
       "name": "Catharsis",
       "definition": "src/card_definitions/ecl/catharsis.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Catharsis",
@@ -905,7 +913,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_evoke_tests.rs",
+        "src/card_definitions/ecl/catharsis.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "ba0a815c-1dfe-47c1-890f-496c670124f3",
@@ -1453,7 +1465,7 @@
       "name": "Deceit",
       "definition": "src/card_definitions/ecl/deceit.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Deceit",
@@ -1469,7 +1481,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_evoke_tests.rs",
+        "src/card_definitions/ecl/deceit.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "c892d28c-4a78-4a7f-b8d5-c3663b819c5e",
@@ -1852,7 +1868,7 @@
       "name": "Emptiness",
       "definition": "src/card_definitions/ecl/emptiness.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Emptiness",
@@ -1868,7 +1884,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_evoke_tests.rs",
+        "src/card_definitions/ecl/emptiness.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "7668f7bc-9a43-4024-87c3-995aa0a65aaa",
@@ -1944,7 +1964,7 @@
       "name": "Evershrike's Gift",
       "definition": "src/card_definitions/ecl/evershrike_s_gift.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Evershrike's Gift",
@@ -1960,7 +1980,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/evershrike_s_gift.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "a75445d3-1303-4bb5-89ad-26ea93fecd48",
@@ -2354,7 +2378,7 @@
       "name": "Gathering Stone",
       "definition": "src/card_definitions/ecl/gathering_stone.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Gathering Stone",
@@ -2370,7 +2394,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/gathering_stone.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "77e5e7e3-b97b-4953-9df4-1aee509fbf2a",
@@ -2424,7 +2452,7 @@
       "name": "Glamer Gifter",
       "definition": "src/card_definitions/ecl/glamer_gifter.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Glamer Gifter",
@@ -2440,7 +2468,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/glamer_gifter.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "a7b0d897-38c0-4f90-81e8-3c5b8d31a607",
@@ -4252,7 +4284,7 @@
       "name": "Prismatic Undercurrents",
       "definition": "src/card_definitions/ecl/prismatic_undercurrents.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Prismatic Undercurrents",
@@ -4267,7 +4299,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/prismatic_undercurrents.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "c840b89b-81be-4644-8bb5-35d14b1bc620",
@@ -4345,7 +4381,7 @@
       "name": "Pyrrhic Strike",
       "definition": "src/card_definitions/ecl/pyrrhic_strike.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Pyrrhic Strike",
@@ -4362,7 +4398,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/pyrrhic_strike.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "854cac11-9a22-4dea-8c1b-c49a4858a754",
@@ -6073,7 +6113,7 @@
       "name": "Vibrance",
       "definition": "src/card_definitions/ecl/vibrance.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Vibrance",
@@ -6089,7 +6129,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_evoke_tests.rs",
+        "src/card_definitions/ecl/vibrance.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "5fffd840-1e6e-4f5d-b847-802f9a25eb5c",
@@ -6191,7 +6235,7 @@
       "name": "Wanderbrine Trapper",
       "definition": "src/card_definitions/ecl/wanderbrine_trapper.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Wanderbrine Trapper",
@@ -6205,7 +6249,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/wanderbrine_trapper.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "6c0f6673-bc24-4c84-b4e7-736283ffd60e",
@@ -6301,7 +6349,7 @@
       "name": "Wild Unraveling",
       "definition": "src/card_definitions/ecl/wild_unraveling.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Wild Unraveling",
@@ -6316,7 +6364,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/wild_unraveling.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "6c34674f-856b-4062-87d5-6ed73d9a9855",
@@ -6367,7 +6419,7 @@
       "name": "Wistfulness",
       "definition": "src/card_definitions/ecl/wistfulness.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Wistfulness",
@@ -6383,7 +6435,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_evoke_tests.rs",
+        "src/card_definitions/ecl/wistfulness.json",
+        "docs/sets/ecl-validation.json"
+      ]
     }
   ]
 }
