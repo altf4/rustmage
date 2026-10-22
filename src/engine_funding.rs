@@ -342,7 +342,7 @@ impl<'g> FundingState<'g> {
                             || object.card.attachment_bonus().is_some()
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::ChosenCreatureKeywords(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::ChosenCreatureKeywords(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -484,6 +484,16 @@ impl<'g> FundingState<'g> {
                                 if ability_world::CharacteristicWorld::chosen_creature_type_applies(self, ability_world::CharacteristicWorld::reference(self, source.id), target.id) => {
                                     keywords = keywords.union(grant)
                                 }
+                            crate::cards::StaticAbilityFragment::ControlledTappedKeywords {
+                                other,
+                                keywords: grant,
+                            } if target.object.controller == source.object.controller
+                                && target.object.tapped
+                                && self.kinds(target) & 1 != 0
+                                && (!other || target.id != source.id) =>
+                            {
+                                keywords = keywords.union(grant)
+                            }
                             crate::cards::StaticAbilityFragment::DeathBaronLord
                                 if ability_world::CharacteristicWorld::death_baron_applies(
                                     self,
@@ -3490,6 +3500,61 @@ mod ecl_source_untapped_tests {
         assert_eq!(
             world.stat_value(StatValue::SourceUntapped, &world.resources[index]),
             actual.stat_value(StatValue::SourceUntapped, actual.object_ref(id), Player::P0)
+        );
+    }
+}
+
+#[cfg(test)]
+mod ecl_tapped_keyword_tests {
+    use super::super::tests::{scenario, spawn};
+    use super::*;
+    #[test]
+    fn ecl_tapped_keyword_actual_virtual_recipient_and_provider_departure_agree() {
+        let mut g = scenario();
+        let source = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Adept Watershaper").unwrap(),
+            Zone::Battlefield,
+        );
+        let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+        let goal = FundingGoal {
+            reserve: None,
+            actor: Player::P0,
+            required: [0; 6],
+            generic: 0,
+            source: None,
+        };
+        let mut actual = g.clone();
+        let mut world = FundingState::from_game_with_convoke(&g, &goal, true);
+        let bear_index = world.resources.iter().position(|r| r.id == bear).unwrap();
+        assert!(
+            !world
+                .keywords(&world.resources[bear_index])
+                .contains(Keywords::INDESTRUCTIBLE)
+        );
+        world.resources[bear_index].object.tapped = true;
+        actual.tap_objects(&[bear]);
+        assert!(
+            world
+                .keywords(&world.resources[bear_index])
+                .contains(Keywords::INDESTRUCTIBLE)
+        );
+        assert_eq!(
+            world.keywords(&world.resources[bear_index]),
+            actual.keywords(bear)
+        );
+        world
+            .resources
+            .iter_mut()
+            .find(|r| r.id == source)
+            .unwrap()
+            .object
+            .zone = Zone::Graveyard;
+        actual.move_object(source, Zone::Graveyard);
+        assert_eq!(
+            world.keywords(&world.resources[bear_index]),
+            actual.keywords(bear)
         );
     }
 }

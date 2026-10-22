@@ -148,6 +148,16 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             value
         }
+        StaticAbilityFragment::ControlledTappedKeywords { other, keywords } => {
+            if !own
+                || world.kinds(id) & 1 == 0
+                || !target.tapped
+                || (other && world.reference(id) == source)
+            {
+                return None;
+            }
+            keywords
+        }
         StaticAbilityFragment::KeywordGrant(_, grant)
         | StaticAbilityFragment::StaticRuleGrant(_, grant) => {
             if grant
@@ -258,6 +268,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::CounterKeywordOwnTurn(..)
                         | StaticAbilityFragment::DeathBaronLord
                         | StaticAbilityFragment::ChosenCreatureKeywords(..)
+                        | StaticAbilityFragment::ControlledTappedKeywords { .. }
                         | StaticAbilityFragment::KeywordGrant(..)
                         | StaticAbilityFragment::LiveKeywords(..)
                 )

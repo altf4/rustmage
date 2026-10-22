@@ -354,6 +354,16 @@ impl CharacteristicQuery<'_> {
                                 id,
                             ) =>
                         {
+                            keywords = keywords.union(grant);
+                        }
+                        StaticAbilityFragment::ControlledTappedKeywords {
+                            other,
+                            keywords: grant,
+                        } if object.controller == target.controller
+                            && target.tapped
+                            && self.is_creature(id)
+                            && (!other || source != id) =>
+                        {
                             keywords = keywords.union(grant)
                         }
                         StaticAbilityFragment::DeathBaronLord

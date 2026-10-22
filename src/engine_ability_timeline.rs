@@ -37,6 +37,7 @@ impl Card {
                             | StaticAbilityFragment::ChosenCreatureType
                             | StaticAbilityFragment::AttachedSubtype(..)
                             | StaticAbilityFragment::AttachedAllCreatureTypes
+                            | StaticAbilityFragment::ControlledTappedKeywords { .. }
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::AttachmentKeywords(..)
                             | StaticAbilityFragment::AttachedTurnKeywords(..)

@@ -939,3 +939,45 @@ fn illusion_spinners_untapped_hexproof_exact_incarnation_and_ability_removal() {
     );
     assert!(g.keywords(source).contains(Keywords::HEXPROOF));
 }
+
+#[test]
+fn adept_watershaper_other_tapped_owned_creatures_survive_lethal_damage_until_source_leaves() {
+    let mut g = setup(Player::P0);
+    let source = cast_named(&mut g, Player::P0, "Adept Watershaper");
+    let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    let enemy = spawn(&mut g, Player::P1, Card::GrizzlyBears, Zone::Battlefield);
+    assert!(!g.keywords(bear).contains(Keywords::INDESTRUCTIBLE));
+    g.tap_objects(&[source, bear, enemy]);
+    assert!(!g.keywords(source).contains(Keywords::INDESTRUCTIBLE));
+    assert!(!g.keywords(enemy).contains(Keywords::INDESTRUCTIBLE));
+    assert!(g.keywords(bear).contains(Keywords::INDESTRUCTIBLE));
+    spell(&mut g, Player::P0, "Lightning Bolt", &[Target::Card(bear)]);
+    settle(&mut g);
+    assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+    g.move_object(source, Zone::Graveyard);
+    g.state_based_actions();
+    assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
+}
+#[test]
+fn adept_watershaper_control_changes_untapping_and_ability_removal_update_grants() {
+    let mut g = setup(Player::P0);
+    let source = cast_named(&mut g, Player::P0, "Adept Watershaper");
+    let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    let enemy = spawn(&mut g, Player::P1, Card::GrizzlyBears, Zone::Battlefield);
+    g.tap_objects(&[bear, enemy]);
+    assert!(g.keywords(bear).contains(Keywords::INDESTRUCTIBLE));
+    g.record_control(g.object_ref(source), Player::P1, None);
+    assert!(!g.keywords(bear).contains(Keywords::INDESTRUCTIBLE));
+    assert!(g.keywords(enemy).contains(Keywords::INDESTRUCTIBLE));
+    g.untap_objects(&[enemy], untap_rules::UntapCause::Effect);
+    assert!(!g.keywords(enemy).contains(Keywords::INDESTRUCTIBLE));
+    g.tap_objects(&[enemy]);
+    spell(
+        &mut g,
+        Player::P0,
+        "Noggle the Mind",
+        &[Target::Card(source)],
+    );
+    settle(&mut g);
+    assert!(!g.keywords(enemy).contains(Keywords::INDESTRUCTIBLE));
+}

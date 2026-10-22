@@ -87,6 +87,10 @@ pub(crate) enum StaticAbilityFragment {
     AttachmentActivation(u16),
     /// Grants an independent tap mana ability to the attached permanent.
     AttachmentMana(ManaProduction),
+    ControlledTappedKeywords {
+        other: bool,
+        keywords: Keywords,
+    },
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
     StaticModifier(u16, StaticModifier),
