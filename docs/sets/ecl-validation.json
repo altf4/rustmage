@@ -1707,6 +1707,54 @@
       "guard_exit": 1,
       "log": "<cache>/ecl-acceptance-strict-273-development.log",
       "scope": "all273 support required, unchanged220-game workload; later mana-heavy theme still requires performance investigation"
+    },
+    {
+      "head": "5180907b0770dd9662edb5686dba09830c79afd0",
+      "status": "failed final mechanic execution coverage assertion; not acceptance",
+      "resource_report": "42f48a66d0bf4d85a7783d0454c0f8a8",
+      "log": "<cache>/ecl-acceptance-strict-273-fixed.log",
+      "games": 220,
+      "decisions": 143102,
+      "owned_branches": 2841,
+      "private_decisions": 513,
+      "seconds": 205.909780401,
+      "wins": [
+        109,
+        111
+      ],
+      "gameplay_checks": "All games terminated naturally; privacy, rejected actions, owned branching/restore and complete journal replay passed.",
+      "coverage_gaps": [
+        "graveyard entry copy tokens created",
+        "Dream Harvest free casts"
+      ],
+      "actual_execution": {
+        "Forest affinity casts paid": 14,
+        "basic landcycling activations paid": 33,
+        "behold type choices": 9,
+        "blight choices": 169,
+        "conspire costs paid": 4,
+        "conspire spell copies created": 4,
+        "conspire triggers created": 4,
+        "convoke contributions": 280,
+        "copy tokens entered": 77,
+        "counter removal choices": 39,
+        "dream counter free cast choices": 1,
+        "dream counters committed to exile": 5,
+        "evoke casts paid": 71,
+        "exile casts committed": 54,
+        "free casts committed": 46,
+        "linked free cast declarations": 3,
+        "persist returns with minus counter": 2,
+        "physical permanent copies applied": 114,
+        "proliferation choices": 2,
+        "resolution cast choices": 6,
+        "spell copies created": 20,
+        "surveil choices committed": 122,
+        "token copy effects applied": 4,
+        "transform events": 158,
+        "vivid discounted casts paid": 41,
+        "wither creature damage events": 12
+      }
     }
   ],
   "resource_completion_guard": {
@@ -1761,5 +1809,37 @@
     },
     "diagnostic_report": "<cache>/rustmage-build-reports/bbe99cce8b7d4b83ac1e15fe31d43286.json",
     "scope": "Targeted debug timings, not complete simulation throughput"
+  },
+  "funding_tap_witness_performance": {
+    "source_commit": "43dd3759",
+    "integrated_commit": "5180907b0770dd9662edb5686dba09830c79afd0",
+    "problem": "Twilight theme seed19 P0 prefixes3022/3194 counted Springleaf Drum mana despite zero creatures, repeatedly exploring impossible red payments for twelve Meek Attack copies.",
+    "fix": "Within the conservative closed-resource guard, omit production requiring more untapped creature tap witnesses than exist; disable this bound where characteristic changes or resource restoration can invalidate it.",
+    "funding": {
+      "tests": 117,
+      "seconds": 3.93,
+      "resource_report": "c41d03e97dbb43acbd5bc901b2ea1ea1"
+    },
+    "clippy": {
+      "exit": 0,
+      "seconds": 40.86,
+      "resource_report": "60e2e0fe954b48e29af0e74d74048096"
+    },
+    "exact_prefix_debug_timings": {
+      "3022": {
+        "legal_actions_ms": 1.010996,
+        "observe_ms": 1.075806
+      },
+      "3194": {
+        "legal_actions_ms": 1.01608,
+        "observe_ms": 1.093357
+      }
+    },
+    "focused_diagnostics": {
+      "tests": 6,
+      "seconds": 6.12,
+      "resource_report": "79a120c679bf475e8596826a82e247d1"
+    },
+    "coverage": "Both-seat actual paid Meek Attack using a freshly entered creature as Drum witness, plus negative zero-creature fixture and owned branch checks."
   }
 }
