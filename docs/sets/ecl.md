@@ -70,6 +70,14 @@ Harvest free casts were not observed. This is diagnostic evidence, not accepted
 set validation. Resource report `42f48a66d0bf4d85a7783d0454c0f8a8` and
 `<cache>/ecl-acceptance-strict-273-fixed.log` preserve that outcome.
 
+The committed harness at `1207a753` preserves those 220 games and adds 16
+reanimation games, for **236 final games**. A focused 24-game proof passed in
+26.68 seconds with 19,883 replayed actions, 428 owned branches, 109 private
+decisions, **23 actual Dream Harvest free casts** and **27 actual graveyard-copy
+tokens**. The Harvest detector now binds the exiled object at announcement to
+the later committed spell ID. All 20 mechanic requirements remain enforced.
+The full 236-game combined run remains pending.
+
 Three conservative mana-funding bounds removed repeated impossible-payment
 searches involving restricted mana, missing eligible colors and missing creature
 tap witnesses. Exact formerly slow queries now take approximately 0.3–1.1 ms;
