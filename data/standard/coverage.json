@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ced02bfb1f625febe7a2acd20d244f585130c5d827af81cb7ca9dd13cf9a18d5",
+  "catalogue_version": "e7478a20b7cfde573219b9cae0dfe0294119ac78ce9b43112232aa51cf083aa6",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2329,
-  "implemented_total": 2335,
+  "implemented_standard_cards": 2330,
+  "implemented_total": 2336,
   "token_definitions": 109,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "complete": 240,
-      "gated": 27
+      "complete": 241,
+      "gated": 26
     },
     "eoc": {
       "total": 8,
@@ -31991,8 +31991,8 @@
     {
       "name": "Soul Immolation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/soul_immolation.rs",
       "set": "ecl"
     },

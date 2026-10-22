@@ -21,8 +21,8 @@ The frozen manifest accounts for every identity. The [per-card obligation ledger
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **246/273**, comprising **107 inherited** and **139 newly
-implemented/tested physical candidates**; **27 remain gated**. Twenty inherited
+Admission flags: **247/273**, comprising **107 inherited** and **140 newly
+implemented/tested physical candidates**; **26 remain gated**. Twenty inherited
 cards have passed source/rules audit;87 inherited cards remain. No final published reviews or newly merged cards. All new
 names and per-card obligations appear in the linked JSON ledgers. Three tested
 synthetic token recipes are outside the physical denominator.
@@ -149,3 +149,5 @@ Both Oko faces, the Elk token and independent chosen-type emblem are integrated.
 Chitinous Graspling,Chomping Changeling,Changeling Wayfinder,Shore Lurker,and Glister Bairn have complete pinned source audits. Existing changeling,optional search/removal,vivid and library interaction suites are supplemented by paid hybrid bodies in both seats and both private surveil destinations. All eight inherited scenarios pass0.31seconds.20/107 audited;87 inherited cards remain. Admission245/273;28 gated.
 
 Curious Colossus is integrated with a resolution-frozen opponent creature group and permanent ability/type/base-stat effects.432 ECL author-branch scenarios pass15.74seconds;44 subtype regressions pass0.25seconds; Clippy passes. Scenarios preserve existing counters,growth,artifact types and colors,keep changeling types through later ability loss,and check later layers,control changes,cleanup and blink. Actual Rhys removal of Abigale keyword counters and subsequent persist also passes. Admission246/273;27 gated.
+
+Soul Immolation is integrated with bounded nonmana X,mandatory X-sized blight payment,and simultaneous opponent/player-creature damage. All2,912 native regressions pass78.39seconds on the author branch,including133 black/red scenarios. Blight quantities preserve the full u32 scalar domain; zero payment requires a controlled creature but creates no counter placement. Forced blight now permits choosing a counter-prohibited creature,with placement correctly suppressed. Current September25 CR701.68a/b were independently rechecked. Admission247/273;26 gated.

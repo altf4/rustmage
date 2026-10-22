@@ -5340,7 +5340,7 @@
       "name": "Soul Immolation",
       "definition": "src/card_definitions/ecl/soul_immolation.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Soul Immolation",
@@ -5355,7 +5355,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/soul_immolation.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "762679dd-4345-43c3-929b-15959443aeb0",
