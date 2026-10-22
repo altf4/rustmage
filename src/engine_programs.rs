@@ -1664,6 +1664,9 @@ impl Game {
                 Instruction::PlayerHexproofThisTurn => {
                     self.state.players[item.controller.index()].hexproof_until_end_turn = true;
                 }
+                Instruction::GrantChosenCreatureTypeKeywords { other, keywords } => {
+                    self.grant_chosen_creature_type_keywords(&item, other, keywords)
+                }
                 Instruction::GrantBattlefieldKeywords { filters, keywords } => {
                     self.grant_battlefield_keywords(&item, filters, keywords)
                 }

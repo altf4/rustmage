@@ -2020,3 +2020,187 @@ fn ecl_green_aurora_zero_colors_does_not_reveal_and_short_library_allows_declini
         }
     }
 }
+
+fn settle_safewright(g: &mut Game) {
+    g.prepare_triggers();
+    for _ in 0..80 {
+        if g.state.pending == Pending::Priority
+            && g.state.stack.is_empty()
+            && g.state.resolving.is_none()
+            && g.state.pending_triggers.is_empty()
+        {
+            return;
+        }
+        let action = if matches!(g.state.pending, Pending::ResolutionCreatureType { .. }) {
+            Action::ChooseCreatureType {
+                creature_type: crate::cards::CreatureType::from_name("Elf").unwrap(),
+            }
+        } else if g.state.pending == Pending::Priority {
+            Action::Pass
+        } else {
+            panic!("unexpected Safewright phase {:?}", g.state.pending);
+        };
+        checked(g, action);
+    }
+    panic!("Safewright failed to finish");
+}
+#[test]
+fn ecl_green_selfless_flash_grants_other_chosen_permanents_and_actual_hexproof_indestructible() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p.other());
+        let elf = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let kindred = named(&mut g, p, "Firdoch Core", Zone::Battlefield);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let foe = named(&mut g, p.other(), "Llanowar Elves", Zone::Battlefield);
+        let source = named(&mut g, p, "Selfless Safewright", Zone::Hand);
+        checked(&mut g, Action::Pass);
+        cast(&mut g, source, None, &[]);
+        settle_safewright(&mut g);
+        assert_eq!(
+            g.stats(source),
+            Stats {
+                power: 4,
+                toughness: 2
+            }
+        );
+        for id in [elf, kindred] {
+            assert!(
+                g.keywords(id)
+                    .contains(Keywords::HEXPROOF.union(Keywords::INDESTRUCTIBLE))
+            );
+        }
+        for id in [source, bear, foe] {
+            assert!(
+                !g.keywords(id)
+                    .intersects(Keywords::HEXPROOF.union(Keywords::INDESTRUCTIBLE))
+            );
+        }
+        let shock = named(&mut g, p.other(), "Shock", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: shock });
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(elf),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p),
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        checked(&mut g, Action::Pass);
+        let murder = named(&mut g, p, "Murder", Zone::Hand);
+        cast(&mut g, murder, None, &[Target::Card(elf)]);
+        settle(&mut g);
+        assert_eq!(g.object_view(elf).zone, Zone::Battlefield);
+        let later = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        assert!(!g.keywords(later).contains(Keywords::INDESTRUCTIBLE));
+        g.move_object(source, Zone::Graveyard);
+        assert!(g.keywords(kindred).contains(Keywords::INDESTRUCTIBLE));
+        super::ability_timeline_tests::next_turn(&mut g);
+        for id in [elf, kindred] {
+            assert!(
+                !g.keywords(id)
+                    .intersects(Keywords::HEXPROOF.union(Keywords::INDESTRUCTIBLE))
+            );
+        }
+    }
+}
+#[test]
+fn ecl_green_selfless_exact_source_exclusion_survives_departure_control_and_reentry() {
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..3 {
+            let mut g = setup(p);
+            let elf = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+            let foe = named(&mut g, p.other(), "Llanowar Elves", Zone::Battlefield);
+            let source = named(&mut g, p, "Selfless Safewright", Zone::Hand);
+            cast(&mut g, source, None, &[]);
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            if mode == 1 {
+                let item = g.state.stack.last().unwrap().clone();
+                g.gain_control(&item, Subject::Source, PlayerSet::Opponent);
+            } else {
+                g.move_object(source, Zone::Graveyard);
+                if mode == 2 {
+                    let movement = g.entry_move(source, Zone::Battlefield, false);
+                    g.stage_entries(vec![movement], None);
+                    g.advance_entries();
+                }
+            }
+            settle_safewright(&mut g);
+            assert!(g.keywords(elf).contains(Keywords::INDESTRUCTIBLE));
+            assert!(!g.keywords(foe).contains(Keywords::INDESTRUCTIBLE));
+            if mode == 1 {
+                assert_eq!(g.object_view(source).controller, p.other());
+                assert!(!g.keywords(source).contains(Keywords::INDESTRUCTIBLE));
+            }
+            if mode == 2 {
+                assert!(g.keywords(source).contains(Keywords::INDESTRUCTIBLE));
+            }
+            g.move_object(elf, Zone::Exile);
+            g.move_object(elf, Zone::Battlefield);
+            assert!(!g.keywords(elf).contains(Keywords::INDESTRUCTIBLE));
+        }
+    }
+}
+#[test]
+fn ecl_green_selfless_convoke_pays_green_and_generic_with_distinct_sick_creatures() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let mut helpers = Vec::new();
+        for i in 0..5 {
+            helpers.push(named(
+                &mut g,
+                p,
+                if i < 2 { "Bear Cub" } else { "Savannah Lions" },
+                Zone::Battlefield,
+            ));
+        }
+        let enemy = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let source = named(&mut g, p, "Selfless Safewright", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        checked(&mut g, Action::AnnounceCast { card: source });
+        checked(&mut g, Action::BeginConvoke);
+        let object = g.object_ref(enemy);
+        reject(
+            &mut g,
+            Action::ChooseConvoker {
+                object,
+                contribution: ConvokeContribution::Green,
+            },
+        );
+        for (i, id) in helpers.iter().copied().enumerate() {
+            let object = g.object_ref(id);
+            let contribution = if i < 2 {
+                ConvokeContribution::Green
+            } else {
+                ConvokeContribution::Generic
+            };
+            checked(
+                &mut g,
+                Action::ChooseConvoker {
+                    object,
+                    contribution,
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseConvoker {
+                    object,
+                    contribution,
+                },
+            );
+        }
+        pay(&mut g);
+        for id in helpers {
+            assert!(g.object_view(id).tapped);
+        }
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        settle_safewright(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+    }
+}

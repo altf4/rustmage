@@ -31,6 +31,31 @@ impl Game {
             })
             .collect()
     }
+    pub(super) fn grant_chosen_creature_type_keywords(
+        &mut self,
+        item: &SpellView,
+        other: bool,
+        keywords: Keywords,
+    ) {
+        let kind = self
+            .resolution_chosen_creature_type()
+            .expect("preceding creature type choice");
+        let recipients: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                (object.zone == Zone::Battlefield
+                    && object.controller == item.controller
+                    && (!other || self.object_ref(id) != item.object)
+                    && self.has_subtype(id, kind.name()))
+                .then_some(id)
+            })
+            .collect();
+        self.grant_keyword_effects(&recipients, item.object, keywords);
+    }
     pub(super) fn grant_battlefield_keywords(
         &mut self,
         item: &SpellView,

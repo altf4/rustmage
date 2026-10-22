@@ -767,6 +767,10 @@ pub(crate) enum Instruction {
     ProhibitCastingThisTurn,
     PlayerHexproofThisTurn,
     GrantPermanentsThisTurn(Keywords),
+    GrantChosenCreatureTypeKeywords {
+        other: bool,
+        keywords: Keywords,
+    },
     GrantBattlefieldKeywords {
         filters: &'static [BattlefieldFilter],
         keywords: Keywords,
