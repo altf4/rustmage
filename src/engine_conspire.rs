@@ -260,17 +260,6 @@ impl Game {
         if a.item.id != c.stack_id {
             return true;
         }
-        // Earlier optional declarations do not yet have fixed target/cost domains.
-        if !matches!(
-            self.state.pending,
-            Pending::ConspireIntent { .. }
-                | Pending::ConspirePayment { .. }
-                | Pending::PayCosts { .. }
-        ) && self.state.entry_batch.is_none()
-            && self.state.replacements.is_none()
-        {
-            return true;
-        }
         if !self.conspire_has_payment()
             && !matches!(action, Action::ChooseConspire { pay: true, .. })
         {

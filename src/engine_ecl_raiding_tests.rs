@@ -74,7 +74,11 @@ fn finish_copies(g: &mut Game) {
             .find(|a| {
                 matches!(
                     a,
-                    Action::FinishStackTargets | Action::Pass | Action::PutTrigger { .. }
+                    Action::FinishStackTargets
+                        | Action::Pass
+                        | Action::PutTrigger { .. }
+                        | Action::DeclineEffectPayment
+                        | Action::ChooseOptional { accept: false }
                 )
             })
             .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
@@ -454,5 +458,148 @@ fn ecl_raiding_kirol_copies_the_intrinsic_conspire_trigger_without_paying_conspi
         checked(&mut g, Action::PayCosts { payment: [0; 6] });
         finish_copies(&mut g);
         assert_eq!(g.state.players[p.other().index()].life, 14);
+    }
+}
+#[test]
+fn ecl_raiding_convoke_and_conspire_cannot_tap_the_same_colored_donors() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = schemes(&mut g, p);
+        let a = named(&mut g, p, "Shadow Urchin", Zone::Battlefield);
+        let b = named(&mut g, p, "Bile-Vial Boggart", Zone::Battlefield);
+        let c = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let d = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let spell = named(&mut g, p, "Bloodline Bidding", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 6, 0, 0, 0];
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        intent(&mut g, source, true);
+        checked(&mut g, Action::BeginConvoke);
+        let object = g.object_ref(a);
+        reject(
+            &mut g,
+            Action::ChooseConvoker {
+                object,
+                contribution: ConvokeContribution::Black,
+            },
+        );
+        for id in [c, d] {
+            let object = g.object_ref(id);
+            checked(
+                &mut g,
+                Action::ChooseConvoker {
+                    object,
+                    contribution: ConvokeContribution::Generic,
+                },
+            );
+        }
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 6, 0, 0, 0],
+            },
+        );
+        pay_pair(&mut g, source, a, b);
+        finish_copies(&mut g);
+        assert!([a, b, c, d].into_iter().all(|id| g.object_view(id).tapped));
+    }
+}
+#[test]
+fn ecl_raiding_free_noncreature_permanent_copy_enters_without_creating_a_token_event() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = schemes(&mut g, p);
+        named(&mut g, p, "Omniscience", Zone::Battlefield);
+        let a = named(&mut g, p, "Shadow Urchin", Zone::Battlefield);
+        let b = named(&mut g, p, "Bile-Vial Boggart", Zone::Battlefield);
+        let spell = named(&mut g, p, "Boggart Mischief", Zone::Hand);
+        checked(
+            &mut g,
+            Action::AnnounceFree {
+                card: spell,
+                face: CastFace::Normal,
+                flash_surcharge: false,
+            },
+        );
+        intent(&mut g, source, true);
+        checked(&mut g, Action::PayCosts { payment: [0; 6] });
+        pay_pair(&mut g, source, a, b);
+        finish_copies(&mut g);
+        let permanents = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, o)| {
+                o.zone == Zone::Battlefield
+                    && o.card == Card::from_name("Boggart Mischief").unwrap()
+            })
+            .collect::<Vec<_>>();
+        assert_eq!(permanents.len(), 2);
+        assert_eq!(permanents.iter().filter(|(_, o)| o.is_token()).count(), 1);
+        assert!(!g.state.players[p.index()].token_creation_attempted_this_turn);
+    }
+}
+#[test]
+fn ecl_raiding_aura_spell_copy_retargets_and_enters_attached_with_its_own_etb() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = schemes(&mut g, p);
+        let a = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let b = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let spell = named(&mut g, p, "Gilt-Leaf's Embrace", Zone::Hand);
+        g.state.players[p.index()].mana = [30; 6];
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        intent(&mut g, source, true);
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(a),
+            },
+        );
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        pay_pair(&mut g, source, a, b);
+        for _ in 0..30 {
+            if matches!(g.state.pending, Pending::Retarget { .. }) {
+                break;
+            }
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                .unwrap();
+            checked(&mut g, action);
+        }
+        checked(
+            &mut g,
+            Action::SetStackTarget {
+                index: 0,
+                target: Target::Card(b),
+            },
+        );
+        checked(&mut g, Action::FinishStackTargets);
+        finish_copies(&mut g);
+        for id in [a, b] {
+            assert_eq!(g.stats(id).power, 4);
+            assert!(
+                g.keywords(id)
+                    .contains(Keywords::TRAMPLE.union(Keywords::INDESTRUCTIBLE))
+            );
+        }
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.zone == Zone::Battlefield
+                    && o.card == Card::from_name("Gilt-Leaf's Embrace").unwrap()
+                    && o.is_token())
+                .count(),
+            1
+        );
+        assert!(!g.state.players[p.index()].token_creation_attempted_this_turn);
     }
 }
