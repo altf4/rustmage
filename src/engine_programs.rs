@@ -1667,6 +1667,16 @@ impl Game {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
+                Instruction::CounterAndDrawForController { amount } => {
+                    for bound in &item.targets {
+                        if let Some((id, controller)) =
+                            self.bound_stack_item(bound).map(|v| (v.id, v.controller))
+                        {
+                            self.counter_stack_item(id, false);
+                            self.draw_many(controller, u128::from(amount));
+                        }
+                    }
+                }
                 Instruction::CounterAndCreateForController { token, amount } => {
                     for bound in &item.targets {
                         if let Some((id, controller)) =

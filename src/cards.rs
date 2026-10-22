@@ -795,6 +795,10 @@ pub(crate) enum Instruction {
         skip: usize,
     },
     CounterThenDrawIfDiscounted,
+    /// Attempt to counter a spell, then its captured controller draws regardless of success.
+    CounterAndDrawForController {
+        amount: u16,
+    },
     /// Countering may fail; the spell's captured current controller still creates tokens.
     CounterAndCreateForController {
         token: Card,

@@ -599,3 +599,90 @@ fn noggle_removes_colored_flying_vigilance_and_reverses_on_aura_departure() {
             .contains(Keywords::FLYING.union(Keywords::VIGILANCE))
     );
 }
+
+fn guardian_setup() -> (Game, CardId) {
+    let mut g = setup(Player::P1);
+    g.state.priority = Player::P0;
+    let source = cast_named(&mut g, Player::P0, "Glen Elendra Guardian");
+    assert_eq!(g.object_view(source).counters.minus_one, 1);
+    assert!(g.keywords(source).contains(Keywords::FLYING));
+    assert_eq!(
+        g.stats(source),
+        Stats {
+            power: 2,
+            toughness: 3
+        }
+    );
+    (g, source)
+}
+fn guardian_counter(g: &mut Game, source: CardId, victim: CardId) {
+    checked(g, Action::Pass);
+    let action = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| {
+            matches!(a,
+        Action::BeginActivate {card, ability: 0, ..} if *card == source)
+        })
+        .unwrap();
+    checked(g, action);
+    checked(
+        g,
+        Action::ChooseTarget {
+            target: Target::Spell(victim),
+        },
+    );
+}
+#[test]
+fn glen_elendra_guardian_flash_paid_counter_draw_and_source_departure() {
+    for departure in [false, true] {
+        let (mut g, source) = guardian_setup();
+        let bolt = spell(
+            &mut g,
+            Player::P1,
+            "Lightning Bolt",
+            &[Target::Player(Player::P0)],
+        );
+        let hand = g.hand_count(Player::P1);
+        guardian_counter(&mut g, source, bolt);
+        assert_eq!(g.object_view(source).counters.minus_one, 0);
+        if departure {
+            g.move_object(source, Zone::Graveyard);
+        }
+        settle(&mut g);
+        assert_eq!(g.object_view(bolt).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[0].life, 20);
+        assert_eq!(g.hand_count(Player::P1), hand + 1);
+    }
+}
+#[test]
+fn glen_elendra_guardian_any_named_counter_pays_and_uncounterable_still_draws() {
+    let (mut g, source) = guardian_setup();
+    g.set_counters(source, Counters::of(CounterKind::Soul, 1));
+    spawn(
+        &mut g,
+        Player::P1,
+        Card::from_name("Sphinx of the Final Word").unwrap(),
+        Zone::Battlefield,
+    );
+    let bolt = spell(
+        &mut g,
+        Player::P1,
+        "Lightning Bolt",
+        &[Target::Player(Player::P0)],
+    );
+    let hand = g.hand_count(Player::P1);
+    guardian_counter(&mut g, source, bolt);
+    assert!(g.object_view(source).counters.is_empty());
+    settle(&mut g);
+    assert_eq!(g.hand_count(Player::P1), hand + 1);
+    assert_eq!(g.state.players[0].life, 17);
+}
+#[test]
+fn glen_elendra_guardian_cannot_target_creature_spells() {
+    let (mut g, source) = guardian_setup();
+    spell(&mut g, Player::P1, "Grizzly Bears", &[]);
+    checked(&mut g, Action::Pass);
+    assert!(!g.legal_actions().iter().any(|a| matches!(a,
+        Action::BeginActivate {card, ..} | Action::Activate {card, ..} if *card == source)));
+}
