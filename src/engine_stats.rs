@@ -58,7 +58,8 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),
-                TriggerCondition::CreatureAttacksYou { .. }
+                TriggerCondition::CreatureAttacksOrBlocksYou
+                    | TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::AttackDeclared { .. }
             )
         }) {

@@ -543,6 +543,7 @@ impl Game {
                     | TriggerCondition::LifeGained { .. }
                     | TriggerCondition::LifeLost { .. }
                     | TriggerCondition::SelfCountersAdded { .. }
+                    | TriggerCondition::CreatureAttacksOrBlocksYou
                     | TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::OtherCreatureCountersAdded { .. }
                     | TriggerCondition::AttackDeclared { .. }
@@ -777,6 +778,7 @@ impl Game {
         self.state.pending_triggers.push(SpellView {
             gift: None,
             source_move: None,
+            creature_action_event: None,
             source_chosen_type: match source.entry_choice {
                 Some(EntryChoiceValue::CreatureType(kind)) => Some(kind),
                 _ => None,
@@ -1087,6 +1089,8 @@ impl Game {
     /// One event per completed declaration, irrespective of whether its observer attacked.
     pub(super) fn declaration_triggers(&mut self, actor: Player) {
         self.attachment_attack_triggers(actor);
+        let creatures: Vec<_> = self.state.attackers.iter().map(|a| a.card).collect();
+        self.creature_action_triggers(actor, &creatures, CreatureActionKind::Attack);
         let sources: Vec<_> = self
             .state
             .attack_sources
@@ -2359,6 +2363,9 @@ impl Game {
                         }
                         self.stage_copy_creation(item.controller, recipe, u128::from(amount));
                     }
+                }
+                Instruction::GrowCreatureActionPowerToughnessDifference => {
+                    self.grow_creature_action_difference(&item)
                 }
                 Instruction::SacrificeSourceByController => {
                     if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {

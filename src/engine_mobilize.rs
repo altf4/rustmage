@@ -200,6 +200,7 @@ impl Game {
             let controller = b.view.controller;
             self.state.pending_triggers.push(SpellView {
                 source_move: None,
+                creature_action_event: None,
                 source_chosen_type: None,
                 target_controller_lki: None,
                 gift: None,

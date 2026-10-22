@@ -1181,6 +1181,7 @@ impl Game {
         SpellView {
             gift: None,
             source_move: None,
+            creature_action_event: None,
             source_chosen_type: None,
             target_controller_lki: None,
             reflexive_subject: None,

@@ -876,6 +876,7 @@ pub(crate) enum Instruction {
         amount: AmountValue,
     },
     SacrificeDelayedTokens,
+    GrowCreatureActionPowerToughnessDifference,
     SacrificeSourceByController,
     SacrificeSource,
     ExileAndCopyNightmare,
@@ -1965,6 +1966,8 @@ pub(crate) enum CastTarget {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum CastFilter {
+    /// Contextual spell-cost predicate, evaluated against the casting object.
+    CreatureToughnessGreaterThanPower,
     SourceChosenColor,
     SourceChosenCreatureType,
     PermanentAdventure,
@@ -2011,7 +2014,8 @@ impl CastFilter {
                     && card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
             }
             // Contextual cast observers use Game::cast_filter_matches instead.
-            Self::SourceChosenColor
+            Self::CreatureToughnessGreaterThanPower
+            | Self::SourceChosenColor
             | Self::SourceChosenCreatureType
             | Self::Targeted { .. }
             | Self::InstantSorceryOrdinal(_) => false,
@@ -2334,6 +2338,7 @@ pub(crate) enum TriggerCondition {
     SelfEntersOrDies,
     SelfAttacks,
     SelfFirstAttack,
+    CreatureAttacksOrBlocksYou,
     CreatureAttacksYou {
         colors: u8,
     },

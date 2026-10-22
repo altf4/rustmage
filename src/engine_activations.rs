@@ -423,6 +423,7 @@ impl Game {
         self.state.passes = 0;
         SpellView {
             source_move: None,
+            creature_action_event: None,
             source_chosen_type: self.source_chosen_creature_type(self.object_ref(card)),
             target_controller_lki: None,
             gift: None,

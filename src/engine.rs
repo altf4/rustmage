@@ -1,3 +1,5 @@
+#[path = "engine_creature_actions.rs"]
+mod creature_actions;
 #[path = "engine_entry_history.rs"]
 mod entry_history;
 pub use entry_history::CreatureEntryHistoryView;
@@ -885,6 +887,17 @@ pub struct TriggerSourceMoveView {
     pub destination: Zone,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum CreatureActionKind {
+    Attack,
+    Block,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct CreatureActionEventView {
+    pub object: ObjectRef,
+    pub kind: CreatureActionKind,
+}
+
 /// A successful action's non-targeted subject, separate from source LKI.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ReflexiveSubjectView {
@@ -893,6 +906,8 @@ pub struct ReflexiveSubjectView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub creature_action_event: Option<Box<CreatureActionEventView>>,
     /// Public source choice frozen before activation costs can move the source.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_chosen_type: Option<crate::cards::CreatureType>,
@@ -1032,6 +1047,10 @@ impl SpellView {
                 .creature_combat_event
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<CreatureCombatEventView>())
+            + self
+                .creature_action_event
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<CreatureActionEventView>())
             + self.delayed_sacrifice.as_ref().map_or(0, |d| d.bytes())
             + self.crew.as_ref().map_or(0, |c| c.bytes())
             + self
@@ -4427,9 +4446,13 @@ impl Game {
                     .blocking
                     .extend(self.state.selected_blocks.iter().map(|&(b, _)| b));
                 self.state.blocks.append(&mut self.state.selected_blocks);
+                let mut creatures = self.state.blocking.clone();
+                creatures.sort_unstable();
+                creatures.dedup();
                 for attacker in &mut self.state.attackers {
                     attacker.blocked = self.state.blocks.iter().any(|&(_, a)| a == attacker.card);
                 }
+                self.creature_action_triggers(actor, &creatures, CreatureActionKind::Block);
                 self.give_priority();
             }
             Action::AssignDamage { target, amount } => {
@@ -7431,3 +7454,7 @@ mod ecl_commands_tests;
 #[cfg(test)]
 #[path = "engine_ecl_evoke_tests.rs"]
 mod ecl_evoke_tests;
+
+#[cfg(test)]
+#[path = "engine_ecl_doran_tests.rs"]
+mod ecl_doran_tests;

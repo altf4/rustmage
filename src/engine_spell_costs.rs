@@ -233,6 +233,10 @@ impl Game {
         let applies = |rule: &crate::cards::SpellReduction, source: CardId| {
             let object = &self.state.objects[source as usize];
             (match rule.filter {
+                crate::cards::CastFilter::CreatureToughnessGreaterThanPower => {
+                    let stats = self.stats_without_hand(id, departing);
+                    definition.is_creature() && stats.toughness > stats.power
+                }
                 crate::cards::CastFilter::SourceChosenCreatureType => self
                     .source_chosen_creature_type(self.object_ref(source))
                     .is_some_and(|kind| definition.has_subtype(kind.name())),
