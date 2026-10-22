@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ddee4cd32ec8e56d83640af3c14c20fe8d5c952dcf9013ed2002e3e1602ee33c",
+  "catalogue_version": "2fa4d581b9097fb612558c7036965c7535e74f4fab1eceb25687fd6bc0bebc1e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2278,
-  "implemented_total": 2284,
+  "implemented_standard_cards": 2281,
+  "implemented_total": 2287,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 78,
-      "complete": 189
+      "gated": 75,
+      "complete": 192
     },
     "eoc": {
       "total": 8,
@@ -9295,8 +9295,8 @@
     {
       "name": "Doran, Besieged by Time",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/doran_besieged_by_time.rs",
       "set": "ecl"
     },
@@ -16399,8 +16399,8 @@
     {
       "name": "Hexing Squelcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/hexing_squelcher.rs",
       "set": "ecl"
     },
@@ -26391,8 +26391,8 @@
     {
       "name": "Puca's Eye",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/puca_s_eye.rs",
       "set": "ecl"
     },
