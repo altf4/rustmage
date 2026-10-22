@@ -134,19 +134,39 @@
   "current_admission_flags": 233,
   "remaining_gated": 40,
   "inherited_evidence_audit": {
-    "audited": 5,
+    "audited": 10,
     "total": 107,
     "names": [
       "Plains",
       "Island",
       "Swamp",
       "Mountain",
-      "Forest"
+      "Forest",
+      "Gangly Stompling",
+      "Goldmeadow Nomad",
+      "Merrow Skyswimmer",
+      "Flock Impostor",
+      "Rooftop Percher"
     ],
     "scenario": "src/engine_ecl_inherited_tests.rs",
     "source_commit": "7902fbe1",
     "native_scenario_seconds": 0.07,
-    "resource_report": "<cache>/rustmage-build-reports/8d0bb0e17b154289baf7b778fd70b206.json"
+    "resource_report": "<cache>/rustmage-build-reports/8d0bb0e17b154289baf7b778fd70b206.json",
+    "creature_group": {
+      "names": [
+        "Gangly Stompling",
+        "Goldmeadow Nomad",
+        "Merrow Skyswimmer",
+        "Flock Impostor",
+        "Rooftop Percher"
+      ],
+      "source_commit": "28245c01",
+      "scenario": "src/engine_ecl_inherited_tests.rs",
+      "tests_including_basics": 5,
+      "seconds": 0.18,
+      "resource_report": "<cache>/rustmage-build-reports/ca5281f985dc40a393afab98e110f6f4.json",
+      "additional_existing_evidence": "src/engine_convoke.rs: all nine native convoke spells,real costs,both controllers,full hybrid options"
+    }
   },
   "locally_reviewed": 0,
   "final_published_reviews": 0,

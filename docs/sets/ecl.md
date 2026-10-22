@@ -17,13 +17,13 @@ Oracle facts: `data/standard/cards.json`; canonical ownership:
 
 ## Card obligations and evidence
 
-The frozen manifest accounts for every identity. The [per-card obligation ledger](ecl-obligations.json) records every face and printed rules line with canonical ownership. Five inherited basic lands have passed source/rules audit;102 inherited cards remain.
+The frozen manifest accounts for every identity. The [per-card obligation ledger](ecl-obligations.json) records every face and printed rules line with canonical ownership. Ten inherited cards have passed source/rules audit;97 inherited cards remain.
 
 ## Current implementation checkpoint (2026-10-22)
 
 Admission flags: **233/273**, comprising **107 inherited** and **126 newly
-implemented/tested physical candidates**; **40 remain gated**. Five inherited
-basic lands have passed source/rules audit;102 inherited cards remain. No final published reviews or newly merged cards. All new
+implemented/tested physical candidates**; **40 remain gated**. Ten inherited
+cards have passed source/rules audit;97 inherited cards remain. No final published reviews or newly merged cards. All new
 names and per-card obligations appear in the linked JSON ledgers. Three tested
 synthetic token recipes are outside the physical denominator.
 
@@ -111,3 +111,7 @@ Both Eirdu/Isilu faces are implemented,including live/speculative creature-spell
 ## Verified checkpoint232
 
 The232-card fixed-input release passed all8phases in556.81seconds:2,845 native tests (one ignored),all9 catalogue checks,all22 Foundations game suites,ECL games,Clippy/provenance,release build and benchmark. Peak3.3GiB;1,102,700,544 disposable bytes cleaned. The three authored source formatting inputs were fixed before validation and recorded afterward in5201786d; exact hashes and required retained libraries are in the report. Mornsong Aria is integrated afterward for233/273 admitted,40 gated; its four focused scenarios and90 shared search regressions pass. Subsequent shared-slot verification is allowed to finish before another long full run.
+
+## Inherited audit10/107
+
+Gangly Stompling,Goldmeadow Nomad,Merrow Skyswimmer,Flock Impostor,and Rooftop Percher now have complete pinned source audits and actual paid interaction evidence. Scenarios verify both seats,hybrid routes,trample with real blockers,graveyard exile as cost and sorcery timing,exact token colors/types,opponent-turn flash with owner bounce,and partial graveyard target failure. Five inherited scenarios including the basic-land matrix pass0.18seconds; existing complete convoke/hybrid rule scenarios provide additional Merrow evidence.97 inherited cards remain unaudited.

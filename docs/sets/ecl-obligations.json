@@ -2294,7 +2294,7 @@
       "name": "Flock Impostor",
       "definition": "src/card_definitions/ecl/flock_impostor.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Flock Impostor",
@@ -2311,7 +2311,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/flock_impostor.json"
+      ]
     },
     {
       "oracle_id": "11ceb2db-021e-422d-976e-7bfe3b67a8aa",
@@ -2419,7 +2422,7 @@
       "name": "Gangly Stompling",
       "definition": "src/card_definitions/ecl/gangly_stompling.rs",
       "owner": "integrator",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Gangly Stompling",
@@ -2434,7 +2437,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/gangly_stompling.json"
+      ]
     },
     {
       "oracle_id": "9f6d6e90-7462-46e5-bf2f-725b4badc394",
@@ -2710,7 +2716,7 @@
       "name": "Goldmeadow Nomad",
       "definition": "src/card_definitions/ecl/goldmeadow_nomad.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Goldmeadow Nomad",
@@ -2724,7 +2730,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/goldmeadow_nomad.json"
+      ]
     },
     {
       "oracle_id": "9207facd-fbf9-4faa-ac44-6c0bcac81551",
@@ -3669,7 +3678,7 @@
       "name": "Merrow Skyswimmer",
       "definition": "src/card_definitions/ecl/merrow_skyswimmer.rs",
       "owner": "integrator",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Merrow Skyswimmer",
@@ -3685,7 +3694,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/merrow_skyswimmer.json"
+      ]
     },
     {
       "oracle_id": "79bc2c6d-b03d-4ceb-b468-293378ec73ae",
@@ -4806,7 +4818,7 @@
       "name": "Rooftop Percher",
       "definition": "src/card_definitions/ecl/rooftop_percher.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Rooftop Percher",
@@ -4822,7 +4834,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/rooftop_percher.json"
+      ]
     },
     {
       "oracle_id": "290faa28-450e-4797-9a8f-642d8af3f82a",
