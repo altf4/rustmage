@@ -528,6 +528,7 @@ impl Game {
                     | TriggerCondition::InterveningIf { .. } => {
                         unreachable!("unwrapped event")
                     }
+                    TriggerCondition::SelfEntersIfCast => same && event.cast_payment.is_some(),
                     TriggerCondition::SelfEvokedEnters => same && event.evoked,
                     TriggerCondition::SelfEntersManaSpent { color, minimum } => {
                         same && event
@@ -1413,6 +1414,12 @@ impl Game {
                                 })
                         })
                         || item.x.is_some()
+                        || item.source_card.triggers().iter().any(|ability| {
+                            matches!(
+                                ability.condition.event(),
+                                TriggerCondition::SelfEntersIfCast
+                            )
+                        })
                         || !item.source_card.hand_cast_entry_counters().is_empty()
                         || !item.source_card.cast_entry_counters().is_empty()
                         || item.source_card.entry_choice().is_some()
@@ -3767,6 +3774,56 @@ impl Game {
                         })
                         .collect();
                     self.stage_entries(moves, None);
+                }
+                Instruction::ReturnToHandCounted => {
+                    let ids: Vec<_> = item
+                        .targets
+                        .iter()
+                        .copied()
+                        .filter(|&bound| self.same_target_object(bound))
+                        .filter_map(|bound| match bound.target {
+                            Target::Card(id) => Some(id),
+                            _ => None,
+                        })
+                        .collect();
+                    let events = self.move_objects_raw(&ids, Zone::Hand);
+                    let count = events
+                        .iter()
+                        .filter(|event| {
+                            event.moved
+                                && event.before.zone == Zone::Battlefield
+                                && event.destination == Zone::Hand
+                        })
+                        .count();
+                    self.state.resolving.as_mut().unwrap().moved_count =
+                        Some(u64::try_from(count).capacity("returned permanent count exhausted"));
+                    self.finish_zone_events(&events, &[]);
+                }
+                Instruction::CreateTokensMoved { token } => {
+                    let amount = self
+                        .state
+                        .resolving
+                        .as_ref()
+                        .unwrap()
+                        .moved_count
+                        .unwrap_or(0);
+                    self.create_tokens(item.controller, token, u128::from(amount), false);
+                }
+                Instruction::ReturnCreaturesWithoutSubtype(subtype) => {
+                    let ids: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(id, object)| {
+                            object.zone == Zone::Battlefield
+                                && self.is_creature(*id as CardId)
+                                && !self.has_subtype(*id as CardId, subtype)
+                        })
+                        .map(|(id, _)| id as CardId)
+                        .collect();
+                    let events = self.move_objects_raw(&ids, Zone::Hand);
+                    self.finish_zone_events(&events, &[]);
                 }
                 Instruction::ReturnToHandDrawForSubtype(subtype) => {
                     // Capture the legal target before changing its incarnation.

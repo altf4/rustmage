@@ -1360,6 +1360,11 @@ pub(crate) enum Instruction {
     ExileUntilSourceLeaves,
     ExileGraveyard(PlayerSet),
     ReturnToHand,
+    ReturnToHandCounted,
+    ReturnCreaturesWithoutSubtype(&'static str),
+    CreateTokensMoved {
+        token: Card,
+    },
     /// Capture a legal graveyard target's subtype, return it, then draw for a match.
     ReturnToHandDrawForSubtype(&'static str),
     BottomLibrary,
@@ -2520,6 +2525,8 @@ pub(crate) enum TriggerCondition {
         ordinal: Option<u64>,
     },
     SelfEnters,
+    /// Entry qualified by the exact actual cast, including a cast without mana payment.
+    SelfEntersIfCast,
     SelfEntersOrTransforms,
     SourceCombatDamagePlayerOrPlaneswalker,
     SelfTransforms,

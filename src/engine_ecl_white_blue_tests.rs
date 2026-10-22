@@ -5579,3 +5579,481 @@ fn rhys_exact_counter_removal_updates_keyword_counter_grants_on_partial_and_zero
         assert_eq!(g.counter_count(target, CounterKind::MinusOne), 1);
     }
 }
+
+fn farewell_tokens(g: &Game, p: Player) -> Vec<CardId> {
+    let token = Card::from_name("@token/2cff3b0b2f34a41fce4cd46b").unwrap();
+    g.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter_map(|(id, object)| {
+            (object.zone == Zone::Battlefield && object.controller == p && object.card == token)
+                .then_some(id as CardId)
+        })
+        .collect()
+}
+
+#[test]
+fn wanderwine_farewell_returns_one_or_two_exact_nonland_permanents_and_creates_real_tokens() {
+    for p in [Player::P0, Player::P1] {
+        for two in [false, true] {
+            let mut g = setup(p);
+            let core = spawn(
+                &mut g,
+                p,
+                Card::from_name("Firdoch Core").unwrap(),
+                Zone::Battlefield,
+            );
+            assert!(!g.is_creature(core));
+            let first = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+            let second = spawn(
+                &mut g,
+                p.other(),
+                Card::from_name("Juggernaut").unwrap(),
+                Zone::Battlefield,
+            );
+            let original = g.object_ref(first);
+            g.change_controller(original, p);
+            let land = spawn(&mut g, p.other(), Card::Island, Zone::Battlefield);
+            let source = spawn(
+                &mut g,
+                p,
+                Card::from_name("Wanderwine Farewell").unwrap(),
+                Zone::Hand,
+            );
+            checked(&mut g, Action::AnnounceCast { card: source });
+            reject_atomic(&mut g, Action::FinishTargets);
+            reject_atomic(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(land),
+                },
+            );
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(first),
+                },
+            );
+            reject_atomic(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(first),
+                },
+            );
+            if two {
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(second),
+                    },
+                );
+                reject_atomic(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(core),
+                    },
+                );
+            }
+            finish_cast_choices(&mut g);
+            settle(&mut g);
+            assert_eq!(g.object_view(first).zone, Zone::Hand);
+            assert_eq!(g.object_view(first).owner, p.other());
+            assert_eq!(
+                g.object_view(second).zone,
+                if two { Zone::Hand } else { Zone::Battlefield }
+            );
+            let tokens = farewell_tokens(&g, p);
+            assert_eq!(tokens.len(), if two { 2 } else { 1 });
+            for token in tokens {
+                assert_eq!(
+                    g.stats(token),
+                    Stats {
+                        power: 1,
+                        toughness: 1
+                    }
+                );
+                assert_eq!(g.object_view(token).colors, 3);
+                assert!(g.has_subtype(token, "Merfolk"));
+                assert!(!g.object_view(token).tapped);
+            }
+        }
+    }
+}
+
+#[test]
+fn wanderwine_farewell_merfolk_condition_is_checked_after_bounce_and_token_departures_count() {
+    for p in [Player::P0, Player::P1] {
+        for return_last_merfolk in [false, true] {
+            let mut g = setup(p);
+            let core = spawn(
+                &mut g,
+                p,
+                Card::from_name("Firdoch Core").unwrap(),
+                Zone::Battlefield,
+            );
+            let token = spawn(
+                &mut g,
+                p.other(),
+                Card::from_name("@token/c48e9e904360e4cee1deeed8").unwrap(),
+                Zone::Battlefield,
+            );
+            let targets = if return_last_merfolk {
+                vec![Target::Card(core), Target::Card(token)]
+            } else {
+                vec![Target::Card(token)]
+            };
+            spell(&mut g, p, "Wanderwine Farewell", &targets);
+            settle(&mut g);
+            assert_eq!(
+                farewell_tokens(&g, p).len(),
+                usize::from(!return_last_merfolk)
+            );
+            // The ceased token's allocator slot may already hold the new Merfolk.
+            if return_last_merfolk {
+                assert_eq!(g.object_view(token).zone, Zone::Outside);
+                assert_eq!(g.object_view(core).zone, Zone::Hand);
+            }
+        }
+        let mut g = setup(p);
+        let bear = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+        spell(&mut g, p, "Wanderwine Farewell", &[Target::Card(bear)]);
+        settle(&mut g);
+        assert!(farewell_tokens(&g, p).is_empty());
+        assert_eq!(g.object_view(bear).zone, Zone::Hand);
+    }
+}
+
+#[test]
+fn wanderwine_farewell_partial_target_failure_counts_only_actual_return_and_all_invalid_fizzles() {
+    for all_invalid in [false, true] {
+        let mut g = setup(Player::P0);
+        spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Firdoch Core").unwrap(),
+            Zone::Battlefield,
+        );
+        let a = spawn(&mut g, Player::P1, Card::GrizzlyBears, Zone::Battlefield);
+        let b = spawn(&mut g, Player::P1, Card::HillGiant, Zone::Battlefield);
+        spell(
+            &mut g,
+            Player::P0,
+            "Wanderwine Farewell",
+            &[Target::Card(a), Target::Card(b)],
+        );
+        g.move_object(a, Zone::Exile);
+        g.move_object(a, Zone::Battlefield);
+        if all_invalid {
+            g.move_object(b, Zone::Graveyard);
+        }
+        settle(&mut g);
+        assert_eq!(g.object_view(a).zone, Zone::Battlefield);
+        assert_eq!(
+            farewell_tokens(&g, Player::P0).len(),
+            usize::from(!all_invalid)
+        );
+        assert_eq!(
+            g.object_view(b).zone,
+            if all_invalid {
+                Zone::Graveyard
+            } else {
+                Zone::Hand
+            }
+        );
+    }
+}
+
+#[test]
+fn wanderwine_farewell_convoke_uses_distinct_sick_creatures_and_pays_colored_and_generic_costs() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let a = spawn(
+            &mut g,
+            p,
+            Card::from_name("Brineborn Cutthroat").unwrap(),
+            Zone::Battlefield,
+        );
+        let b = spawn(
+            &mut g,
+            p,
+            Card::from_name("Brineborn Cutthroat").unwrap(),
+            Zone::Battlefield,
+        );
+        let bear = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        for id in [a, b, bear] {
+            g.state.objects[id as usize].summoning_sick = true;
+        }
+        let target = spawn(&mut g, p.other(), Card::HillGiant, Zone::Battlefield);
+        let source = spawn(
+            &mut g,
+            p,
+            Card::from_name("Wanderwine Farewell").unwrap(),
+            Zone::Hand,
+        );
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 4];
+        checked(&mut g, Action::AnnounceCast { card: source });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        checked(&mut g, Action::FinishTargets);
+        checked(&mut g, Action::BeginConvoke);
+        for (id, contribution) in [
+            (a, ConvokeContribution::Blue),
+            (b, ConvokeContribution::Blue),
+            (bear, ConvokeContribution::Generic),
+        ] {
+            let object = g.object_ref(id);
+            checked(
+                &mut g,
+                Action::ChooseConvoker {
+                    object,
+                    contribution,
+                },
+            );
+            reject_atomic(
+                &mut g,
+                Action::ChooseConvoker {
+                    object,
+                    contribution,
+                },
+            );
+        }
+        finish_cast_choices(&mut g);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert!([a, b, bear].iter().all(|&id| g.object_view(id).tapped));
+        assert_eq!(farewell_tokens(&g, p).len(), 1);
+    }
+}
+
+#[test]
+fn sunderflock_greatest_elemental_mana_value_reduces_only_generic_and_includes_kindred_permanents()
+{
+    for p in [Player::P0, Player::P1] {
+        for name in [None, Some("Firdoch Core"), Some("Sunderflock")] {
+            let mut g = setup(p);
+            let reduction = name.map_or(0, |name| {
+                let card = Card::from_name(name).unwrap();
+                let id = spawn(&mut g, p, card, Zone::Battlefield);
+                assert!(g.has_subtype(id, "Elemental"));
+                // Keep the provider available for reduction, but not as extra mana.
+                g.state.objects[id as usize].tapped = true;
+                card.fixed_mana_value()
+            });
+            // An opposing nine-mana Elemental is not part of your reduction.
+            spawn(
+                &mut g,
+                p.other(),
+                Card::from_name("Sunderflock").unwrap(),
+                Zone::Battlefield,
+            );
+            let id = spawn(
+                &mut g,
+                p,
+                Card::from_name("Sunderflock").unwrap(),
+                Zone::Hand,
+            );
+            let generic = 7u32.saturating_sub(u32::try_from(reduction).unwrap());
+            g.state.players[p.index()].mana = [0, 1, 0, 0, 0, generic];
+            reject_atomic(&mut g, Action::AnnounceCast { card: id });
+            g.state.players[p.index()].mana = [0, 2, 0, 0, 0, generic];
+            checked(&mut g, Action::AnnounceCast { card: id });
+            finish_cast_choices(&mut g);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            settle(&mut g);
+            assert_eq!(
+                g.stats(id),
+                Stats {
+                    power: 5,
+                    toughness: 5
+                }
+            );
+            assert!(g.keywords(id).contains(Keywords::FLYING));
+        }
+    }
+}
+
+#[test]
+fn sunderflock_cast_trigger_returns_current_non_elemental_creatures_simultaneously_to_owners() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let enemy = spawn(&mut g, p.other(), Card::HillGiant, Zone::Battlefield);
+        let object = g.object_ref(enemy);
+        g.change_controller(object, p);
+        g.grant_keyword_effects(
+            &[enemy],
+            object,
+            Keywords::HEXPROOF.union(Keywords::INDESTRUCTIBLE),
+        );
+        let changeling = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("@token/shapeshifter_1_1_colorless_changeling").unwrap(),
+            Zone::Battlefield,
+        );
+        let core = spawn(
+            &mut g,
+            p,
+            Card::from_name("Firdoch Core").unwrap(),
+            Zone::Battlefield,
+        );
+        let source = spell(&mut g, p, "Sunderflock", &[]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        let late = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+        g.move_object(source, Zone::Graveyard);
+        settle(&mut g);
+        for id in [bear, enemy, late] {
+            assert_eq!(g.object_view(id).zone, Zone::Hand);
+        }
+        assert_eq!(g.object_view(enemy).owner, p.other());
+        for id in [changeling, core] {
+            assert_eq!(g.object_view(id).zone, Zone::Battlefield);
+        }
+    }
+}
+
+#[test]
+fn sunderflock_free_cast_is_still_cast_but_direct_entry_blink_and_spell_copy_are_not() {
+    for p in [Player::P0, Player::P1] {
+        for route in 0..4 {
+            let mut g = setup(p);
+            let bear = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+            let source = if route == 0 {
+                spawn(
+                    &mut g,
+                    p,
+                    Card::from_name("Omniscience").unwrap(),
+                    Zone::Battlefield,
+                );
+                let source = spawn(
+                    &mut g,
+                    p,
+                    Card::from_name("Sunderflock").unwrap(),
+                    Zone::Hand,
+                );
+                g.state.players[p.index()].mana = [0; 6];
+                checked(
+                    &mut g,
+                    Action::AnnounceFree {
+                        card: source,
+                        face: CastFace::Normal,
+                        flash_surcharge: false,
+                    },
+                );
+                finish_cast_choices(&mut g);
+                source
+            } else if route == 3 {
+                let source = spell(&mut g, p, "Sunderflock", &[]);
+                // Exact permanent-copy qualification, without inventing a new copy-spell consumer.
+                g.state.stack.last_mut().unwrap().is_copy = true;
+                source
+            } else {
+                let source = spawn(
+                    &mut g,
+                    p,
+                    Card::from_name("Sunderflock").unwrap(),
+                    Zone::Graveyard,
+                );
+                g.move_object(source, Zone::Battlefield);
+                if route == 2 {
+                    g.move_object(source, Zone::Exile);
+                    g.move_object(source, Zone::Battlefield);
+                }
+                source
+            };
+            settle(&mut g);
+            assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+            assert_eq!(
+                g.object_view(bear).zone,
+                if route == 0 {
+                    Zone::Hand
+                } else {
+                    Zone::Battlefield
+                }
+            );
+        }
+    }
+}
+
+#[test]
+fn sunderflock_cost_funding_observes_current_elemental_types_and_restores_after_aura_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let provider = spawn(
+            &mut g,
+            p,
+            Card::from_name("Sunderflock").unwrap(),
+            Zone::Battlefield,
+        );
+        let aura = spell(&mut g, p, "Noggle the Mind", &[Target::Card(provider)]);
+        settle(&mut g);
+        assert!(!g.has_subtype(provider, "Elemental"));
+        let source = spawn(
+            &mut g,
+            p,
+            Card::from_name("Sunderflock").unwrap(),
+            Zone::Hand,
+        );
+        g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 6];
+        reject_atomic(&mut g, Action::AnnounceCast { card: source });
+        g.move_object(aura, Zone::Graveyard);
+        assert!(g.has_subtype(provider, "Elemental"));
+        g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 0];
+        checked(&mut g, Action::AnnounceCast { card: source });
+        finish_cast_choices(&mut g);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert_eq!(g.object_view(provider).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn wanderwine_farewell_waits_for_linked_return_entry_choice_before_checking_merfolk_and_uses_saved_count()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let automaton = spell(&mut g, p, "Adaptive Automaton", &[]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        let elf = crate::cards::CreatureType::from_name("Elf").unwrap();
+        checked(
+            &mut g,
+            Action::ChooseEntryValue {
+                value: crate::EntryChoiceValue::CreatureType(elf),
+            },
+        );
+        settle(&mut g);
+        assert!(!g.has_subtype(automaton, "Merfolk"));
+        g.state.active = p.other();
+        g.state.priority = p.other();
+        let light = cast_named(&mut g, p.other(), "Banishing Light");
+        assert_eq!(g.object_view(automaton).zone, Zone::Exile);
+        g.state.active = p;
+        g.state.priority = p;
+        spell(&mut g, p, "Wanderwine Farewell", &[Target::Card(light)]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        assert!(matches!(g.state.pending, Pending::EntryValue { .. }));
+        assert_eq!(g.state.resolving.as_ref().unwrap().moved_count, Some(1));
+        assert!(farewell_tokens(&g, p).is_empty());
+        let merfolk = crate::cards::CreatureType::from_name("Merfolk").unwrap();
+        checked(
+            &mut g,
+            Action::ChooseEntryValue {
+                value: crate::EntryChoiceValue::CreatureType(merfolk),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(light).zone, Zone::Hand);
+        assert_eq!(g.object_view(automaton).zone, Zone::Battlefield);
+        assert!(g.has_subtype(automaton, "Merfolk"));
+        assert_eq!(farewell_tokens(&g, p).len(), 1);
+    }
+}
