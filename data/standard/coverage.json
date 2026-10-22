@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "6ad0519b6c01afe8af21e146dbf9a6a9857097aabf56d8e21e2df0993437920e",
+  "catalogue_version": "a086178249d7ef1f72d2b5c9fd8e91ce935a89f2c5bd203544c67810a501411e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2204,
-  "implemented_total": 2210,
+  "implemented_standard_cards": 2215,
+  "implemented_total": 2221,
   "token_definitions": 105,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 152,
-      "complete": 115
+      "gated": 141,
+      "complete": 126
     },
     "eoc": {
       "total": 8,
@@ -3799,8 +3799,8 @@
     {
       "name": "Blighted Blackthorn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/blighted_blackthorn.rs",
       "set": "ecl"
     },
@@ -4319,8 +4319,8 @@
     {
       "name": "Boulder Dash",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/boulder_dash.rs",
       "set": "ecl"
     },
@@ -7279,8 +7279,8 @@
     {
       "name": "Creakwood Safewright",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/creakwood_safewright.rs",
       "set": "ecl"
     },
@@ -8063,8 +8063,8 @@
     {
       "name": "Dawnhand Eulogist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/dawnhand_eulogist.rs",
       "set": "ecl"
     },
@@ -9647,8 +9647,8 @@
     {
       "name": "Dream Seizer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/dream_seizer.rs",
       "set": "ecl"
     },
@@ -14607,8 +14607,8 @@
     {
       "name": "Goatnap",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/goatnap.rs",
       "set": "ecl"
     },
@@ -16143,8 +16143,8 @@
     {
       "name": "Heirloom Auntie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/heirloom_auntie.rs",
       "set": "ecl"
     },
@@ -23439,8 +23439,8 @@
     {
       "name": "Nameless Inversion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/nameless_inversion.rs",
       "set": "ecl"
     },
@@ -30159,8 +30159,8 @@
     {
       "name": "Scuzzback Scrounger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/scuzzback_scrounger.rs",
       "set": "ecl"
     },
@@ -32063,8 +32063,8 @@
     {
       "name": "Sourbread Auntie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/sourbread_auntie.rs",
       "set": "ecl"
     },
@@ -38247,8 +38247,8 @@
     {
       "name": "Unbury",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/unbury.rs",
       "set": "ecl"
     },

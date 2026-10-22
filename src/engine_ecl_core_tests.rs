@@ -298,7 +298,7 @@ fn ecl_entry_history_tracks_reincarnation_and_simultaneous_tokens() {
             1
         );
         let parent = g.clone();
-        let token = Card::from_name("@token/soldier_1_1_white").unwrap();
+        let token = Card::from_name("@token/626a64b3de0602628359e30d").unwrap();
         g.create_tokens(p, token, 2, false);
         assert_eq!(
             g.creature_entries_this_turn(p, g.object_ref(farmer), true),
@@ -360,7 +360,18 @@ fn ecl_flaring_cinder_optional_discard_cost_and_cast_threshold() {
             settle(&mut g);
             let large = named(&mut g, p, "Hill Giant", Zone::Hand);
             cast(&mut g, large, None, &[]);
-            assert_eq!(g.state.pending_triggers.len(), 1);
+            assert_eq!(
+                g.state
+                    .pending_triggers
+                    .iter()
+                    .chain(g.state.stack.iter())
+                    .filter(
+                        |item| item.source_card == Card::from_name("Flaring Cinder").unwrap()
+                            && matches!(item.kind, StackKind::TriggeredAbility { .. })
+                    )
+                    .count(),
+                1
+            );
             settle(&mut g);
         }
     }

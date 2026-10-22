@@ -2890,6 +2890,44 @@ impl Game {
                     let ids = self.keyword_subjects(&item, subject);
                     self.grant_keyword_effects(&ids, item.object, keywords);
                 }
+                Instruction::CreateTokensForTargetPlayer {
+                    token,
+                    amount,
+                    tapped,
+                } => {
+                    if let Some(player) = self.program_players(PlayerSet::Targeted, &item).next() {
+                        self.create_tokens(player, token, amount, tapped);
+                    }
+                }
+                Instruction::ModifyTargetPlayerCreatures {
+                    power,
+                    toughness,
+                    keywords,
+                } => {
+                    if let Some(player) = self.program_players(PlayerSet::Targeted, &item).next() {
+                        let affected: Vec<_> = self
+                            .state
+                            .objects
+                            .iter()
+                            .enumerate()
+                            .filter(|(id, o)| {
+                                o.zone == Zone::Battlefield
+                                    && o.controller == player
+                                    && self.is_creature(*id as CardId)
+                            })
+                            .map(|(id, _)| id as CardId)
+                            .collect();
+                        for &id in &affected {
+                            self.state.objects[id as usize].growth += Stats {
+                                power: i128::from(power),
+                                toughness: i128::from(toughness),
+                            };
+                        }
+                        if keywords != Keywords::NONE {
+                            self.grant_keyword_effects(&affected, item.object, keywords);
+                        }
+                    }
+                }
                 Instruction::GrantCreatures { filter, keywords } => {
                     let affected: Vec<_> = (0..self.state.objects.len())
                         .map(|id| id as CardId)

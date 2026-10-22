@@ -1196,6 +1196,16 @@ pub(crate) enum Instruction {
         amount: AmountValue,
         tapped: bool,
     },
+    CreateTokensForTargetPlayer {
+        token: Card,
+        amount: u16,
+        tapped: bool,
+    },
+    ModifyTargetPlayerCreatures {
+        power: i32,
+        toughness: i32,
+        keywords: Keywords,
+    },
     CreateTokens {
         token: Card,
         amount: u16,
