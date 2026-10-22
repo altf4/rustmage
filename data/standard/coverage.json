@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "d0db2cd0f8e661176a48e70063530ac7baedbcf5a87228425a2a2fd201911ca9",
+  "catalogue_version": "81473a17452cd77c1a0b8a38c336b707f9988c317009fb663819a6a0390d8e1c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2264,
-  "implemented_total": 2270,
+  "implemented_standard_cards": 2271,
+  "implemented_total": 2277,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 92,
-      "complete": 175
+      "gated": 85,
+      "complete": 182
     },
     "eoc": {
       "total": 8,
@@ -2359,8 +2359,8 @@
     {
       "name": "Aurora Awakener",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/aurora_awakener.rs",
       "set": "ecl"
     },
@@ -5655,8 +5655,8 @@
     {
       "name": "Catharsis",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/catharsis.rs",
       "set": "ecl"
     },
@@ -8303,8 +8303,8 @@
     {
       "name": "Deceit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/deceit.rs",
       "set": "ecl"
     },
@@ -10783,8 +10783,8 @@
     {
       "name": "Emptiness",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/emptiness.rs",
       "set": "ecl"
     },
@@ -26143,8 +26143,8 @@
     {
       "name": "Prismatic Undercurrents",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/prismatic_undercurrents.rs",
       "set": "ecl"
     },
@@ -39263,8 +39263,8 @@
     {
       "name": "Vibrance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/vibrance.rs",
       "set": "ecl"
     },
@@ -40959,8 +40959,8 @@
     {
       "name": "Wistfulness",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/wistfulness.rs",
       "set": "ecl"
     },
