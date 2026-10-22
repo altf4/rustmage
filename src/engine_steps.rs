@@ -7,6 +7,11 @@ impl Game {
             self.precombat_lore_counters();
         }
         if step == Step::End {
+            // Expire before beginning-of-end-step triggers: a permission created
+            // during that step waits for the following actual matching step.
+            self.state
+                .exile_permissions
+                .retain(|p| p.next_end_step != Some(self.state.active));
             self.queue_copy_end_step_abilities();
             self.queue_delayed_sacrifices();
             self.queue_delayed_returns();

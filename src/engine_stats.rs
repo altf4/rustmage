@@ -112,6 +112,7 @@ impl Game {
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::PermanentCardsToGraveyard { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
+                    | TriggerCondition::ControlledCreatureWithCountersDies
                     | TriggerCondition::CreatureDiesAttackState { .. }
                     | TriggerCondition::FoodsSacrificed
                     | TriggerCondition::Sacrificed { .. }

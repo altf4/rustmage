@@ -418,6 +418,11 @@ impl Game {
                         TriggerCondition::SelfDies | TriggerCondition::SelfEntersOrDies => {
                             source.reference == event.before.reference
                         }
+                        TriggerCondition::ControlledCreatureWithCountersDies => {
+                            event.before.is_creature()
+                                && event.before.controller == source.controller
+                                && event.before.counters.has_any()
+                        }
                         TriggerCondition::CreatureDies {
                             relation,
                             other,
@@ -492,11 +497,20 @@ impl Game {
                         }
                         _ => false,
                     };
-                    if matched
-                        && self.queue_zone_trigger(source, index, event)
-                        && matches!(ability.condition.event(), TriggerCondition::ReturnDeath(_))
-                    {
-                        self.capture_return_death(event);
+                    if matched && self.queue_zone_trigger(source, index, event) {
+                        if matches!(ability.condition.event(), TriggerCondition::ReturnDeath(_)) {
+                            self.capture_return_death(event);
+                        }
+                        if ability.condition.event()
+                            == TriggerCondition::ControlledCreatureWithCountersDies
+                        {
+                            self.state.pending_triggers.last_mut().unwrap().death_event =
+                                Some(Box::new(DeathEventView {
+                                    object: event.before.reference,
+                                    counter_total: event.before.counters.total(),
+                                    power: event.before.power,
+                                }));
+                        }
                     }
                 }
             }
@@ -574,6 +588,7 @@ impl Game {
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::PermanentCardsToGraveyard { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
+                    | TriggerCondition::ControlledCreatureWithCountersDies
                     | TriggerCondition::CreatureDiesAttackState { .. }
                     | TriggerCondition::Sacrificed { .. }
                     | TriggerCondition::LifeGained { .. }
@@ -2725,6 +2740,10 @@ impl Game {
                     if self.exile_top_choose_play(item.controller, amount, next_turn) {
                         return;
                     }
+                }
+                Instruction::ExileDeathCounterTotalUntilNextEnd => {
+                    let amount = self.item_amount(AmountValue::DeathEventCounterTotal, &item);
+                    self.exile_top_until_next_end(item.controller, amount);
                 }
                 Instruction::ExileTopPlay { amount, next_turn } => {
                     self.exile_top_play(item.controller, amount, next_turn);

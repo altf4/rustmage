@@ -961,6 +961,7 @@ pub struct ReflexiveSubjectView {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct DeathEventView {
     pub object: ObjectRef,
+    pub counter_total: u128,
     pub power: i128,
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -5910,7 +5911,7 @@ impl Game {
         self.state.saddled.clear();
         self.state
             .exile_permissions
-            .retain(|p| p.expires_turn > self.state.turn);
+            .retain(|p| p.next_end_step.is_some() || p.expires_turn > self.state.turn);
         // Damage removal and expiration of until-end-of-turn effects are simultaneous.
         for obj in &mut self.state.objects {
             obj.damage = 0;
@@ -8028,3 +8029,6 @@ pub use linked_free_cast::{LinkedFreeCastApprovalView, LinkedFreeCastUseView};
 #[cfg(test)]
 #[path = "engine_ecl_maralen_tests.rs"]
 mod ecl_maralen_tests;
+#[cfg(test)]
+#[path = "engine_ecl_shadow_urchin_tests.rs"]
+mod ecl_shadow_urchin_tests;

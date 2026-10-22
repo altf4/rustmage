@@ -520,6 +520,7 @@ fn hand_land_actual_foreign_exile_permissions_keep_caster_private_hand_and_land_
                 object: g.object_ref(source),
                 player: p,
                 expires_turn: g.state.turn,
+                next_end_step: None,
             });
             checked(&mut g, Action::AnnounceExile { card: source });
             reach_land_choice(&mut g);

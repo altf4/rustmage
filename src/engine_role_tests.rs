@@ -789,6 +789,7 @@ fn paid_asinine_flash_cost_timing_foreign_rights_and_nontarget_hexproof_both_sea
                     object: g.object_ref(spell),
                     player: p,
                     expires_turn: g.state.turn,
+                    next_end_step: None,
                 });
             }
             if flash {
@@ -872,6 +873,7 @@ fn paid_mystical_tether_optional_flash_keeps_linked_return_and_foreign_owner_rou
             object: g.object_ref(spell),
             player: p,
             expires_turn: g.state.turn,
+            next_end_step: None,
         });
         let before = g.state.players[p.index()].mana;
         act(&mut g, Action::AnnounceFlashSurcharge { card: spell });

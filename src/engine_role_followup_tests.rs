@@ -160,6 +160,7 @@ fn announce(g: &mut Game, p: Player, n: &str, foreign: bool) -> CardId {
             object: g.object_ref(id),
             player: p,
             expires_turn: g.state.turn,
+            next_end_step: None,
         });
         g.state.exile_permissions.sort_by_key(|v| v.object.card);
         act(g, Action::AnnounceExile { card: id });

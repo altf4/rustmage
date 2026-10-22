@@ -1048,6 +1048,7 @@ pub(crate) enum Instruction {
         amount: AmountValue,
         next_turn: bool,
     },
+    ExileDeathCounterTotalUntilNextEnd,
     ExileTopPlay {
         amount: u16,
         next_turn: bool,
@@ -1589,6 +1590,7 @@ pub(crate) enum AmountValue {
     )]
     DamageEventAmount,
     DeathEventPower,
+    DeathEventCounterTotal,
     #[allow(
         dead_code,
         reason = "Core quantity is scenario-tested while its consumer cards remain gated"
@@ -2529,6 +2531,7 @@ pub(crate) enum TriggerCondition {
         filter: CreatureFilter,
     },
     /// Match the departing creature's pre-event combat membership.
+    ControlledCreatureWithCountersDies,
     CreatureDiesAttackState {
         filter: CreatureFilter,
         attacking: bool,

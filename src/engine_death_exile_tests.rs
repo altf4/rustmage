@@ -341,6 +341,7 @@ fn all_eleven_paid_whole_bodies_every_mode_both_seats_and_foreign_spell_ownershi
                         object: g.object_ref(spell),
                         player: p,
                         expires_turn: g.state.turn,
+                        next_end_step: None,
                     });
                 }
                 let mut targets = Vec::new();

@@ -355,6 +355,12 @@ impl Game {
                 .copied()
                 .unwrap_or(0)
                 .max(0) as u128,
+            AmountValue::DeathEventCounterTotal => {
+                item.death_event
+                    .as_ref()
+                    .expect("saved death event")
+                    .counter_total
+            }
             AmountValue::DeathEventPower => item
                 .death_event
                 .as_ref()

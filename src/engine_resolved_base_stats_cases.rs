@@ -7,6 +7,7 @@ without_mana: false,
         object: g.object_ref(source),
         player: p,
         expires_turn: g.state.turn,
+        next_end_step: None,
     });
     checked(g, Action::AnnounceExile { card: source });
     while g.state.announcing.is_some() {

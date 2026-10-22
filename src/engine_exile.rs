@@ -8,10 +8,42 @@ pub struct ExilePlayPermission {
     pub object: ObjectRef,
     pub player: Player,
     pub expires_turn: u32,
+    /// Expires immediately before this player's next actual end step begins.
+    pub next_end_step: Option<Player>,
     pub cast_only: bool,
     pub without_mana: bool,
 }
 impl Game {
+    pub(super) fn exile_top_until_next_end(&mut self, player: Player, amount: u128) {
+        // Bound by the actual owned library, never narrow a potentially huge counter total.
+        let ids: Vec<_> = self.state.players[player.index()]
+            .library
+            .iter()
+            .rev()
+            .copied()
+            .take(usize::try_from(amount).unwrap_or(usize::MAX))
+            .collect();
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        for event in &events {
+            if event.moved && event.destination == Zone::Exile {
+                let row = ExilePlayPermission {
+                    object: event.after,
+                    player,
+                    expires_turn: u32::MAX,
+                    next_end_step: Some(player),
+                    cast_only: false,
+                    without_mana: false,
+                };
+                let at = self
+                    .state
+                    .exile_permissions
+                    .partition_point(|p| p.object.card < row.object.card);
+                self.state.exile_permissions.insert(at, row);
+            }
+        }
+        self.finish_zone_events(&events, &[]);
+    }
+
     pub(super) fn exile_until_mana_value_free_cast(
         &mut self,
         owner: Player,
@@ -152,6 +184,7 @@ impl Game {
                 object,
                 player,
                 expires_turn,
+                next_end_step: None,
                 cast_only,
                 without_mana,
             },
