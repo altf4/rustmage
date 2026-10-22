@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "1e5dfa51d52cd273440f8e7bc85a80f0a64fc36dd5e06e29b77c027e24fc767e",
+  "catalogue_version": "d0db2cd0f8e661176a48e70063530ac7baedbcf5a87228425a2a2fd201911ca9",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2259,
-  "implemented_total": 2265,
+  "implemented_standard_cards": 2264,
+  "implemented_total": 2270,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 97,
-      "complete": 170
+      "gated": 92,
+      "complete": 175
     },
     "eoc": {
       "total": 8,
@@ -3871,8 +3871,8 @@
     {
       "name": "Bloodline Bidding",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/bloodline_bidding.rs",
       "set": "ecl"
     },
@@ -11295,8 +11295,8 @@
     {
       "name": "Evershrike's Gift",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/evershrike_s_gift.rs",
       "set": "ecl"
     },
@@ -13799,8 +13799,8 @@
     {
       "name": "Gathering Stone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/gathering_stone.rs",
       "set": "ecl"
     },
@@ -26583,8 +26583,8 @@
     {
       "name": "Pyrrhic Strike",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/pyrrhic_strike.rs",
       "set": "ecl"
     },
@@ -40695,8 +40695,8 @@
     {
       "name": "Wild Unraveling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/wild_unraveling.rs",
       "set": "ecl"
     },
