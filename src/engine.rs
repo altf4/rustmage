@@ -671,6 +671,7 @@ pub enum LibraryDestination {
     Bottom,
     Graveyard,
     Shuffle,
+    SecondFromTop,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -2769,7 +2770,15 @@ impl Game {
                     .targets[0]
                     .object
                     .unwrap();
-                for destination in [LibraryDestination::Top, LibraryDestination::Bottom] {
+                let top = s
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .target_library
+                    .as_ref()
+                    .unwrap()
+                    .top;
+                for destination in [top, LibraryDestination::Bottom] {
                     if emit(Action::ChooseLibraryDestination {
                         object,
                         destination,

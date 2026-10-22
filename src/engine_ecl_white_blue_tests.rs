@@ -3402,3 +3402,328 @@ fn rimefire_torque_multiple_delayed_activations_stack_and_unused_observers_expir
     g.finish_cleanup();
     assert!(g.observe(Player::P0).delayed_spell_copies.is_empty());
 }
+
+fn wait_library_owner(g: &mut Game) {
+    checked(g, Action::Pass);
+    checked(g, Action::Pass);
+    assert!(matches!(g.state.pending, Pending::TargetLibrary { .. }));
+}
+fn library_destination(g: &mut Game, victim: CardId, destination: LibraryDestination) {
+    let object = g.object_ref(victim);
+    checked(
+        g,
+        Action::ChooseLibraryDestination {
+            object,
+            destination,
+        },
+    );
+    settle(g);
+}
+
+#[test]
+fn temporal_cleansing_foreign_controller_owner_choice_second_or_bottom_and_short_libraries_are_exact()
+ {
+    for p in [Player::P0, Player::P1] {
+        for size in [0, 1, 3] {
+            for destination in [
+                LibraryDestination::SecondFromTop,
+                LibraryDestination::Bottom,
+            ] {
+                let mut g = setup(p);
+                let owner = p.other();
+                let old = g.state.players[owner.index()].library.clone();
+                for id in old {
+                    g.move_object(id, Zone::Graveyard);
+                }
+                for _ in 0..size {
+                    spawn(&mut g, owner, Card::Island, Zone::Library);
+                }
+                let before = g.state.players[owner.index()].library.clone();
+                let old_top = before.last().map(|&id| g.object_ref(id));
+                if let Some(top) = old_top {
+                    g.remember_library_top(owner, top);
+                }
+                let victim = spawn(
+                    &mut g,
+                    owner,
+                    Card::from_name("Bear Cub").unwrap(),
+                    Zone::Battlefield,
+                );
+                let object = g.object_ref(victim);
+                g.change_controller(object, p);
+                spell(&mut g, p, "Temporal Cleansing", &[Target::Card(victim)]);
+                wait_library_owner(&mut g);
+                assert_eq!(g.actor(), Some(owner));
+                assert!(g.observe(owner).target_library.is_some());
+                assert!(g.observe(p).target_library.is_none());
+                reject_atomic(
+                    &mut g,
+                    Action::ChooseLibraryDestination {
+                        object,
+                        destination: LibraryDestination::Top,
+                    },
+                );
+                let mut branch = {
+                    let parent = g.clone();
+                    parent.clone()
+                };
+                library_destination(&mut branch, victim, destination);
+                let mut expected = before;
+                let index = if destination == LibraryDestination::Bottom {
+                    0
+                } else {
+                    expected.len().saturating_sub(1)
+                };
+                expected.insert(index, victim);
+                assert_eq!(branch.state.players[owner.index()].library, expected);
+                assert_eq!(branch.object_view(victim).zone, Zone::Library);
+                if destination == LibraryDestination::SecondFromTop {
+                    assert_eq!(
+                        branch.public_library_top(owner),
+                        old_top.or_else(|| Some(branch.object_ref(victim)))
+                    );
+                }
+                assert_eq!(
+                    branch
+                        .observe(owner)
+                        .last_target_library_move
+                        .unwrap()
+                        .destination,
+                    destination
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn temporal_cleansing_convoke_pays_exact_cost_rejects_lands_and_invalid_incarnation_fizzles() {
+    let mut g = setup(Player::P0);
+    let blue = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Brineborn Cutthroat").unwrap(),
+        Zone::Battlefield,
+    );
+    let bear = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Bear Cub").unwrap(),
+        Zone::Battlefield,
+    );
+    let land = spawn(&mut g, Player::P1, Card::Island, Zone::Battlefield);
+    let victim = spawn(
+        &mut g,
+        Player::P1,
+        Card::from_name("Mazemind Tome").unwrap(),
+        Zone::Battlefield,
+    );
+    let source = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Temporal Cleansing").unwrap(),
+        Zone::Hand,
+    );
+    g.state.players[0].mana = [0, 0, 0, 0, 0, 2];
+    checked(&mut g, Action::AnnounceCast { card: source });
+    reject_atomic(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(land),
+        },
+    );
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(victim),
+        },
+    );
+    checked(&mut g, Action::BeginConvoke);
+    for (id, contribution) in [
+        (blue, ConvokeContribution::Blue),
+        (bear, ConvokeContribution::Generic),
+    ] {
+        let object = g.object_ref(id);
+        checked(
+            &mut g,
+            Action::ChooseConvoker {
+                object,
+                contribution,
+            },
+        );
+    }
+    finish_cast_choices(&mut g);
+    assert!(g.object_view(blue).tapped && g.object_view(bear).tapped);
+    assert_eq!(g.state.players[0].mana, [0; 6]);
+    g.move_object(victim, Zone::Hand);
+    g.move_object(victim, Zone::Battlefield);
+    settle(&mut g);
+    assert_eq!(g.object_view(victim).zone, Zone::Battlefield);
+    assert!(g.state.players[1].library.iter().all(|&id| id != victim));
+    assert!(g.state.resolving.is_none());
+}
+
+#[test]
+fn temporal_cleansing_target_tokens_cease_without_inserting_library_cards() {
+    for destination in [
+        LibraryDestination::SecondFromTop,
+        LibraryDestination::Bottom,
+    ] {
+        let mut g = setup(Player::P0);
+        let token = spawn(
+            &mut g,
+            Player::P1,
+            Card::from_name("@token/c48e9e904360e4cee1deeed8").unwrap(),
+            Zone::Battlefield,
+        );
+        let before = g.state.players[1].library.clone();
+        spell(
+            &mut g,
+            Player::P0,
+            "Temporal Cleansing",
+            &[Target::Card(token)],
+        );
+        wait_library_owner(&mut g);
+        library_destination(&mut g, token, destination);
+        assert_eq!(g.state.players[1].library, before);
+        assert_eq!(g.object_view(token).zone, Zone::Outside);
+    }
+}
+
+#[test]
+fn swat_away_moves_uncounterable_spells_by_owner_choice_without_countering() {
+    for p in [Player::P0, Player::P1] {
+        for destination in [LibraryDestination::Top, LibraryDestination::Bottom] {
+            let mut g = setup(p);
+            let victim = spell(&mut g, p, "Sphinx of the Final Word", &[]);
+            let stack = g.state.stack.last().unwrap().id;
+            assert!(!g.counter_stack_item(stack, false));
+            checked(&mut g, Action::Pass);
+            spell(&mut g, p.other(), "Swat Away", &[Target::Spell(victim)]);
+            wait_library_owner(&mut g);
+            assert_eq!(g.actor(), Some(p));
+            assert!(g.observe(p.other()).target_library.is_none());
+            library_destination(&mut g, victim, destination);
+            let library = &g.state.players[p.index()].library;
+            assert_eq!(
+                if destination == LibraryDestination::Top {
+                    library.last()
+                } else {
+                    library.first()
+                },
+                Some(&victim)
+            );
+            assert_eq!(g.object_view(victim).zone, Zone::Library);
+            assert!(!g.state.stack.iter().any(|item| item.card == victim));
+        }
+    }
+}
+
+#[test]
+fn swat_away_discount_requires_creature_attacking_player_and_stops_after_it_leaves() {
+    for p in [Player::P0, Player::P1] {
+        for walker_attack in [false, true] {
+            let mut g = setup(p.other());
+            let attacker = spawn(
+                &mut g,
+                p.other(),
+                Card::from_name("Bear Cub").unwrap(),
+                Zone::Battlefield,
+            );
+            let walker = spawn(
+                &mut g,
+                p,
+                Card::from_name("Vivien Reid").unwrap(),
+                Zone::Battlefield,
+            );
+            g.set_counters(walker, Counters::of(CounterKind::Loyalty, 5));
+            g.state.step = Step::Attackers;
+            g.state.pending = Pending::Attackers;
+            g.state.objects[attacker as usize].summoning_sick = false;
+            let defender = g.object_ref(walker);
+            checked(
+                &mut g,
+                if walker_attack {
+                    Action::AttackPlaneswalker {
+                        card: attacker,
+                        defender,
+                    }
+                } else {
+                    Action::Attack { card: attacker }
+                },
+            );
+            checked(&mut g, Action::FinishAttackers);
+            checked(&mut g, Action::Pass);
+            let source = spawn(&mut g, p, Card::from_name("Swat Away").unwrap(), Zone::Hand);
+            g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 0];
+            let available = g
+                .legal_actions()
+                .contains(&Action::AnnounceCast { card: source });
+            assert_eq!(available, !walker_attack);
+            if !walker_attack {
+                checked(&mut g, Action::AnnounceCast { card: source });
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(attacker),
+                    },
+                );
+                finish_cast_choices(&mut g);
+                assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+                wait_library_owner(&mut g);
+                library_destination(&mut g, attacker, LibraryDestination::Bottom);
+            } else {
+                g.move_object(attacker, Zone::Hand);
+                assert!(
+                    !g.legal_actions()
+                        .contains(&Action::AnnounceCast { card: source })
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn swat_away_spell_copies_cease_without_library_insertion_and_original_still_resolves() {
+    let mut g = setup(Player::P0);
+    let teach = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Teach by Example").unwrap(),
+        Zone::Hand,
+    );
+    checked(&mut g, Action::AnnounceCast { card: teach });
+    let choice = g
+        .legal_actions()
+        .into_iter()
+        .find(|action| matches!(action, Action::ChooseSpellCost { .. }))
+        .unwrap();
+    checked(&mut g, choice);
+    finish_cast_choices(&mut g);
+    settle(&mut g);
+    spell(&mut g, Player::P0, "Shock", &[Target::Player(Player::P1)]);
+    checked(&mut g, Action::Pass);
+    checked(&mut g, Action::Pass);
+    assert!(matches!(g.state.pending, Pending::Retarget { .. }));
+    checked(&mut g, Action::FinishStackTargets);
+    let copy_item = g
+        .state
+        .stack
+        .iter()
+        .find(|item| item.is_copy)
+        .unwrap()
+        .clone();
+    let copy = copy_item.card;
+    let before = g.state.players[0].library.clone();
+    spell(
+        &mut g,
+        Player::P0,
+        "Swat Away",
+        &[Target::Stack(copy_item.id)],
+    );
+    wait_library_owner(&mut g);
+    library_destination(&mut g, copy, LibraryDestination::Top);
+    assert_eq!(g.state.players[0].library, before);
+    assert_eq!(g.object_view(copy).zone, Zone::Outside);
+    assert_eq!(g.state.players[1].life, 18);
+}

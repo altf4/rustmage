@@ -203,6 +203,7 @@ pub(super) trait CharacteristicWorld {
             &|id| self.counter_amounts(id).has_any(),
             self.life(controller),
             game.state.attack_declared && self.attacking(source),
+            &|id| self.attacking(id),
         )
     }
     /// Capture before the tap costs remove the land or its attached providers.

@@ -872,6 +872,7 @@ fn linked_choices_interchangeable_names_share_stat_count_keys_in_borrowed_worlds
                 &|_| false,
                 20,
                 false,
+                &|_| false,
             )
         };
         assert_eq!(

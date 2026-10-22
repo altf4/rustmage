@@ -77,7 +77,16 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
         self.resources
             .iter()
             .find(|resource| resource.id == id)
-            .is_some_and(|resource| resource.attacking)
+            .map_or_else(
+                || {
+                    self.game
+                        .state
+                        .attackers
+                        .iter()
+                        .any(|attacker| attacker.card == id)
+                },
+                |resource| resource.attacking,
+            )
     }
 }
 
@@ -3884,5 +3893,79 @@ mod ecl_counter_prohibition_tests {
         assert!(!world.obligations(&goal));
         // Finish the paid Aura's trigger after restoring independent original state.
         settle(&mut actual);
+    }
+}
+
+#[cfg(test)]
+mod ecl_attacking_you_tests {
+    use super::super::ability_timeline_tests::setup;
+    use super::super::tests::spawn;
+    use super::*;
+    #[test]
+    fn ecl_attacking_you_actual_and_borrowed_departure_and_combat_status_agree() {
+        let mut g = setup(Player::P0);
+        let attacker = spawn(
+            &mut g,
+            Player::P1,
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        let source = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Swat Away").unwrap(),
+            Zone::Hand,
+        );
+        g.state.attack_declared = true;
+        g.state.attackers.push(Attacker {
+            card: attacker,
+            blocked: false,
+            defender: Some(CombatDefender::Player(Player::P0)),
+        });
+        let value = StatValue::CreaturesAttackingYou;
+        let goal = FundingGoal {
+            actor: Player::P0,
+            required: [0; 6],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        let parent = g.snapshot();
+        let mut world = FundingState::from_game(&g, &goal);
+        assert_eq!(
+            ability_world::CharacteristicWorld::value(&world, value, source),
+            1
+        );
+        world.resources.push(Resource {
+            id: attacker,
+            attacking: true,
+            object: g.state.objects[attacker as usize].clone(),
+            color_override: None,
+        });
+        let row = world
+            .resources
+            .iter_mut()
+            .find(|row| row.id == attacker)
+            .unwrap();
+        row.attacking = false;
+        assert_eq!(
+            ability_world::CharacteristicWorld::value(&world, value, source),
+            0
+        );
+        let row = world
+            .resources
+            .iter_mut()
+            .find(|row| row.id == attacker)
+            .unwrap();
+        row.attacking = true;
+        row.object.zone = Zone::Graveyard;
+        assert_eq!(
+            ability_world::CharacteristicWorld::value(&world, value, source),
+            0
+        );
+        assert_eq!(g.snapshot(), parent);
+        drop(world);
+        g.move_object(attacker, Zone::Graveyard);
+        assert_eq!(g.stat_value(value, g.object_ref(source), Player::P0), 0);
     }
 }

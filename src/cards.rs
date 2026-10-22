@@ -1289,6 +1289,7 @@ pub(crate) enum Instruction {
     TopLibrary,
     AdditionalLandPlays(u64),
     OwnerLibrary,
+    OwnerLibrarySecondFromTop,
     ShuffleTargetIntoLibrary,
     ShuffleGraveyardIntoLibrary,
     DoubleTargetPower,
@@ -1520,6 +1521,7 @@ pub(crate) enum StatValue {
     OtherNamedCreatures(&'static str),
     /// Unqualified all-player count; distinct from controller-owned attackers.
     AllAttackingCreatures,
+    CreaturesAttackingYou,
     SourceModified,
     Tokens(CountFilter),
     AtLeast {

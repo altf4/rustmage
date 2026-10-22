@@ -70,6 +70,12 @@ impl Game {
             self.state.players[owner.index()].life,
             self.state.attack_declared
                 && self.state.attackers.iter().any(|a| a.card == source.card),
+            &|id| {
+                self.state
+                    .attackers
+                    .iter()
+                    .any(|attacker| attacker.card == id)
+            },
         )
     }
     /// The same earlier-layer evaluator serves concrete state and a borrowed
@@ -88,6 +94,7 @@ impl Game {
         has_counters: &impl Fn(CardId) -> bool,
         life: i128,
         attacking: bool,
+        attacking_object: &impl Fn(CardId) -> bool,
     ) -> i128
     where
         F: Fn() -> I,
@@ -114,6 +121,7 @@ impl Game {
                     has_counters,
                     life,
                     attacking,
+                    attacking_object,
                 ) == 0,
             ),
             StatValue::ControllerHandSize => objects()
@@ -128,6 +136,18 @@ impl Game {
             StatValue::CardsDrawnThisTurn => {
                 i128::from(self.state.players[owner.index()].cards_drawn_this_turn)
             }
+            StatValue::CreaturesAttackingYou => objects()
+                .filter(|(id, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.controller != owner
+                        && attacking_object(*id)
+                        && kinds(*id, object) & 1 != 0
+                        && self.state.attackers.iter().any(|attacker| {
+                            attacker.card == *id
+                                && attacker.defender == Some(CombatDefender::Player(owner))
+                        })
+                })
+                .count() as i128,
             StatValue::AttackingCreatures => objects()
                 .filter(|(id, o)| {
                     o.controller == owner
@@ -205,6 +225,7 @@ impl Game {
                     has_counters,
                     life,
                     attacking,
+                    attacking_object,
                 ) >= i128::from(minimum),
             ),
             StatValue::SpellsCastThisTurn => {
@@ -304,6 +325,7 @@ impl Game {
                         has_counters,
                         life,
                         attacking,
+                        attacking_object,
                     )
                 })
                 .try_fold(0i128, i128::checked_add)
