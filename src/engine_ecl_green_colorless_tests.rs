@@ -368,9 +368,238 @@ fn ecl_green_firdoch_changeling_any_mana_paid_animation_and_cleanup() {
         assert!(!g.is_creature(core));
         assert!(g.has_subtype(core, "Elf"));
         g.state.objects[core as usize].summoning_sick = false;
-        if g.actor() != Some(p) { checked(&mut g, Action::Pass); }
+        if g.actor() != Some(p) {
+            checked(&mut g, Action::Pass);
+        }
         let a = g.legal_actions().into_iter().find(|a| matches!(a, Action::ActivateMana { card, production, .. } if *card == core && production[2] == 1)).unwrap();
         checked(&mut g, a);
         assert!(g.object_view(core).tapped);
+    }
+}
+fn choose_trigger_target(g: &mut Game, target: CardId) {
+    g.prepare_triggers();
+    for _ in 0..40 {
+        if g.legal_actions().contains(&Action::ChooseTarget {
+            target: Target::Card(target),
+        }) {
+            return;
+        }
+        let a = if g.state.pending == Pending::Priority {
+            Action::Pass
+        } else {
+            g.legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PutTrigger { .. } | Action::FinishTargets))
+                .unwrap()
+        };
+        checked(g, a);
+    }
+    panic!("target choice never offered");
+}
+#[test]
+fn ecl_green_brawler_paid_attack_elf_target_and_live_block_requirement() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let brawler = named(&mut g, p, "Vinebred Brawler", Zone::Hand);
+        cast(&mut g, brawler, None, &[]);
+        settle(&mut g);
+        let elf = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let foe = named(&mut g, p.other(), "Llanowar Elves", Zone::Battlefield);
+        g.state.objects[brawler as usize].summoning_sick = false;
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        checked(&mut g, Action::Attack { card: brawler });
+        checked(&mut g, Action::Attack { card: bear });
+        checked(&mut g, Action::FinishAttackers);
+        choose_trigger_target(&mut g, elf);
+        for invalid in [brawler, bear, foe] {
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(invalid),
+                },
+            );
+        }
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(elf),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(
+            g.stats(elf),
+            Stats {
+                power: 3,
+                toughness: 2
+            }
+        );
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        assert_eq!(g.block_requirement_weight(brawler), 1);
+        reject(&mut g, Action::FinishBlockers);
+        reject(
+            &mut g,
+            Action::Block {
+                blocker: foe,
+                attacker: bear,
+            },
+        );
+        checked(
+            &mut g,
+            Action::Block {
+                blocker: foe,
+                attacker: brawler,
+            },
+        );
+        checked(&mut g, Action::FinishBlockers);
+    }
+}
+#[test]
+fn ecl_green_brawler_losing_ability_removes_requirement() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let brawler = named(&mut g, p, "Vinebred Brawler", Zone::Battlefield);
+        let aura = named(&mut g, p, "Witness Protection", Zone::Hand);
+        cast(&mut g, aura, None, &[Target::Card(brawler)]);
+        settle(&mut g);
+        assert_eq!(g.block_requirement_weight(brawler), 0);
+        let foe = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        checked(&mut g, Action::Attack { card: brawler });
+        checked(&mut g, Action::FinishAttackers);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        assert!(g.legal_actions().contains(&Action::FinishBlockers));
+        let _ = foe;
+    }
+}
+#[test]
+fn ecl_green_pummeler_gain_uses_live_giant_power_and_entry_controller() {
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..4 {
+            let mut g = setup(p);
+            named(&mut g, p.other(), "Bygone Colossus", Zone::Battlefield);
+            if mode >= 2 {
+                let giant = named(&mut g, p, "Skyraker Giant", Zone::Battlefield);
+                g.state.objects[giant as usize].growth.power = 3;
+            }
+            let spell = named(&mut g, p, "Pummeler for Hire", Zone::Hand);
+            cast(&mut g, spell, None, &[]);
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            if mode == 1 || mode == 3 {
+                g.move_object(spell, Zone::Exile);
+            }
+            let life = g.state.players[p.index()].life;
+            settle(&mut g);
+            assert_eq!(
+                g.state.players[p.index()].life - life,
+                if mode >= 2 {
+                    7
+                } else if mode == 1 {
+                    0
+                } else {
+                    4
+                }
+            );
+            if mode != 1 && mode != 3 {
+                assert!(
+                    g.keywords(spell)
+                        .contains(Keywords::REACH.union(Keywords::VIGILANCE))
+                );
+            }
+        }
+    }
+}
+#[test]
+fn ecl_green_charge_draw_uses_creature_history_at_resolution_and_fizzles() {
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..6 {
+            let mut g = setup(p);
+            let target = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let entrant = named(
+                &mut g,
+                if mode == 2 { p.other() } else { p },
+                "Bear Cub",
+                Zone::Hand,
+            );
+            if mode != 0 && mode != 4 {
+                g.move_object(entrant, Zone::Battlefield);
+            }
+            if mode == 3 {
+                g.move_object(entrant, Zone::Graveyard);
+            }
+            let spell = named(&mut g, p, "Thoughtweft Charge", Zone::Hand);
+            cast(&mut g, spell, None, &[Target::Card(target)]);
+            let hand = g
+                .state
+                .objects
+                .iter()
+                .filter(|o| o.owner == p && o.zone == Zone::Hand)
+                .count();
+            if mode == 4 {
+                g.move_object(entrant, Zone::Battlefield);
+            }
+            if mode == 5 {
+                g.move_object(target, Zone::Exile);
+            }
+            settle(&mut g);
+            let after = g
+                .state
+                .objects
+                .iter()
+                .filter(|o| o.owner == p && o.zone == Zone::Hand)
+                .count();
+            assert_eq!(after, hand + usize::from([1, 3, 4].contains(&mode)) - usize::from(mode == 4));
+            if mode != 5 {
+                assert_eq!(
+                    g.stats(target),
+                    Stats {
+                        power: 5,
+                        toughness: 5
+                    }
+                );
+            }
+        }
+    }
+}
+#[test]
+fn ecl_green_outrider_excludes_current_incarnation_and_tracks_departed_other_entries() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let outrider = named(&mut g, p, "Bristlebane Outrider", Zone::Hand);
+        cast(&mut g, outrider, None, &[]);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(outrider),
+            Stats {
+                power: 3,
+                toughness: 5
+            }
+        );
+        assert!(
+            g.keywords(outrider)
+                .contains(Keywords::NO_POWER_LE_TWO_BLOCKERS)
+        );
+        let foe = named(&mut g, p.other(), "Bear Cub", Zone::Hand);
+        g.move_object(foe, Zone::Battlefield);
+        assert_eq!(g.stats(outrider).power, 3);
+        let own = named(&mut g, p, "Bear Cub", Zone::Hand);
+        cast(&mut g, own, None, &[]);
+        settle(&mut g);
+        assert_eq!(g.stats(outrider).power, 5);
+        g.move_object(own, Zone::Graveyard);
+        assert_eq!(g.stats(outrider).power, 5);
+        super::ability_timeline_tests::next_turn(&mut g);
+        assert_eq!(g.stats(outrider).power, 3);
+        g.move_object(outrider, Zone::Exile);
+        g.move_object(outrider, Zone::Battlefield);
+        assert_eq!(g.stats(outrider).power, 3);
+        g.move_object(outrider, Zone::Exile);
+        g.move_object(outrider, Zone::Battlefield);
+        assert_eq!(g.stats(outrider).power, 5);
     }
 }

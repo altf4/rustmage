@@ -178,13 +178,27 @@ impl Game {
         rules.must_be_blocked.extend(recipients);
     }
     pub(super) fn block_requirement_weight(&self, id: CardId) -> usize {
-        self.state.combat_rules.as_ref().map_or(0, |rules| {
-            rules
-                .must_be_blocked
+        let printed_requirement = self.on_battlefield(id)
+            && self.state.objects[id as usize]
+                .card
+                .static_ability_groups()
                 .iter()
-                .filter(|&&r| r == self.object_ref(id))
-                .count()
-        })
+                .any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(fragment, crate::cards::StaticAbilityFragment::MustBeBlocked)
+                    })
+                })
+            && self.continuous_fragment_available(id, |fragment| {
+                matches!(fragment, crate::cards::StaticAbilityFragment::MustBeBlocked)
+            });
+        usize::from(printed_requirement)
+            + self.state.combat_rules.as_ref().map_or(0, |rules| {
+                rules
+                    .must_be_blocked
+                    .iter()
+                    .filter(|&&r| r == self.object_ref(id))
+                    .count()
+            })
     }
     pub(super) fn destroy_combat_damaged_players_permanents(&mut self, item: &SpellView) {
         let mut damaged = [false; 2];

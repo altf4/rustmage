@@ -1318,6 +1318,7 @@ pub(crate) enum AmountValue {
     SpellColors,
     CastSpellManaValue,
     SourcePower,
+    GreatestCreaturePower(CreatureFilter),
     #[allow(
         dead_code,
         reason = "Core quantity is scenario-tested while its consumer cards remain gated"

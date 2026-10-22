@@ -252,6 +252,16 @@ impl Game {
                         .and_then(|facts| facts.iter().find(|fact| fact.kind == kind))
                         .map_or(0, |fact| u128::from(fact.count))
                 }),
+            AmountValue::GreatestCreaturePower(filter) => {
+                let query = self.characteristic_query();
+                (0..self.state.objects.len())
+                    .map(|id| id as CardId)
+                    .filter(|&id| query.creature_matches(filter, item.controller, item.object, id))
+                    .map(|id| query.stats(id).power)
+                    .max()
+                    .unwrap_or(0)
+                    .max(0) as u128
+            }
             AmountValue::SourcePower => {
                 if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
                     self.stats(item.card).power.max(0) as u128
