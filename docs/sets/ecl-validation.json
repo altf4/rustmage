@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 162,
+  "newly_tested_physical_cards": 163,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -89,6 +89,7 @@
     "Kirol, Attentive First-Year",
     "Kithkeeper",
     "Lasting Tarfire",
+    "Lavaleaper",
     "Liminal Hold",
     "Lluwen, Imperfect Naturalist",
     "Loch Mare",
@@ -167,8 +168,8 @@
     "Winnowing",
     "Wistfulness"
   ],
-  "current_admission_flags": 269,
-  "remaining_gated": 4,
+  "current_admission_flags": 270,
+  "remaining_gated": 3,
   "inherited_evidence_audit": {
     "audited": 60,
     "total": 107,
@@ -415,10 +416,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T22:06:29.145824+00:00",
-    "elapsed_seconds": 24221.928973,
-    "newly_verified_cards": 162,
-    "cards_per_hour": 24.07735571556207,
+    "end_utc": "2026-10-22T22:13:36.421979+00:00",
+    "elapsed_seconds": 24649.205128,
+    "newly_verified_cards": 163,
+    "cards_per_hour": 23.806041491107994,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "Combined260-card ECL scenarios; Kirol separately focused-tested after this combined run.",
@@ -1366,5 +1367,69 @@
     "native_seconds": 89.79,
     "native_report": "<cache>/rustmage-build-reports/f824532466974bb781c8ea3fdd685a02.json",
     "clippy": "<cache>/rustmage-build-reports/10e2a58f4cfb43e3a35b3c93b04e1357.json"
+  },
+  "lavaleaper": {
+    "source_commit": "f2f99803",
+    "focused_tests": 10,
+    "focused_seconds": 0.08,
+    "focused_report": "<cache>/rustmage-build-reports/0cf05dfd9a8741c48350ecc6dbd6235a.json",
+    "native_tests": 3120,
+    "ignored": 1,
+    "native_seconds": 91.98,
+    "native_report": "<cache>/rustmage-build-reports/35eec57de418488cbce264bb252abc3c.json",
+    "clippy": "<cache>/rustmage-build-reports/9d242e2120c948cda32f1397ad65014f.json",
+    "layout_bytes": {
+      "State": 3296,
+      "Object": 144,
+      "SpellView": 528,
+      "Announcement": 960,
+      "Resolution": 864,
+      "CastInfo": 40
+    }
+  },
+  "shared_type_target_completion": {
+    "source_commit": "fcacad17",
+    "tests": 2,
+    "seconds": 0.05,
+    "report": "<cache>/rustmage-build-reports/a99e1123700f42a4b596b51185e9c447.json",
+    "clippy": "<cache>/rustmage-build-reports/069e2fda26fc45deab049f63a34f287d.json",
+    "finding": "Full supported-pool games exposed Unbury mode/prefix admission with unrelated graveyard cards; mandatory shared-type groups now need complete compatible distinct targets."
+  },
+  "preliminary_entire_pool_games": {
+    "supported_subset": 266,
+    "frozen_total": 273,
+    "source_commit": "fcacad17",
+    "catalogue": "f415f32c5ec166343dbcad7ec262beae18daa5888bdfdad3d914221ad8d17eb8",
+    "games": 116,
+    "terminal_games": 116,
+    "pairs": 29,
+    "seeds": [
+      0,
+      7
+    ],
+    "starting_players": [
+      "P0",
+      "P1"
+    ],
+    "decisions": 67131,
+    "owned_branches": 1231,
+    "private_decisions": 125,
+    "seconds": 53.822693,
+    "decisions_per_second": 1247.262,
+    "actual_execution": {
+      "behold_declaration": 4,
+      "blight": 89,
+      "cast_during_resolution": 1,
+      "convoke": 187,
+      "linked_free_cast": 1,
+      "proliferate": 1,
+      "remove_counters": 20,
+      "stack_copy": 10,
+      "transform": 8
+    },
+    "resource_report": "<cache>/rustmage-build-reports/065ec95b5afe4209bc7d232bd00031c4.json",
+    "log": "<cache>/rustmage-ecl-pool266-all-pairs.log",
+    "profile": "debug; includes policy, both-observer privacy checks and periodic JSON/raw/index/parent-disposal/replay/restore",
+    "acceptance": "Preliminary supported subset only; final273/273 and themed mechanism execution still pending."
   }
 }

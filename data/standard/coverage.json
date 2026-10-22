@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ac62bd39a261b9fa0afc6d4e1e135e2f0d30aa51dbe5e1023cd61b39d773179b",
+  "catalogue_version": "742ed69d5e11f4b788fbf3efd6209b5f60583225c7c68066116c909a215776c4",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2352,
-  "implemented_total": 2358,
+  "implemented_standard_cards": 2353,
+  "implemented_total": 2359,
   "token_definitions": 110,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "complete": 263,
-      "gated": 4
+      "complete": 264,
+      "gated": 3
     },
     "eoc": {
       "total": 8,
@@ -19863,8 +19863,8 @@
     {
       "name": "Lavaleaper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/lavaleaper.rs",
       "set": "ecl"
     },

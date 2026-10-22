@@ -3567,7 +3567,7 @@
       "name": "Lavaleaper",
       "definition": "src/card_definitions/ecl/lavaleaper.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Lavaleaper",
@@ -3582,7 +3582,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/lavaleaper.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "101407b4-e7e8-4aff-84a2-a97947358b88",
