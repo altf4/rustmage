@@ -4080,7 +4080,7 @@
       "name": "Morningtide's Light",
       "definition": "src/card_definitions/ecl/morningtide_s_light.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Morningtide's Light",
@@ -4096,7 +4096,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/morningtide_s_light.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "8ca2f668-2a4d-4a1e-abcc-093ccbc29295",

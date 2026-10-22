@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "67fc8c617bca8485b9a61b5df15d63aaa71c032c11ca8bd6aef02442cb8a755d",
+  "catalogue_version": "60e5358d81b7129d1a8e33d15236f96edcb0d5ab24c586cb5d51ca7793a87011",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2344,
-  "implemented_total": 2350,
+  "implemented_standard_cards": 2345,
+  "implemented_total": 2351,
   "token_definitions": 110,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "complete": 255,
-      "gated": 12
+      "complete": 256,
+      "gated": 11
     },
     "eoc": {
       "total": 8,
@@ -23039,8 +23039,8 @@
     {
       "name": "Morningtide's Light",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/morningtide_s_light.rs",
       "set": "ecl"
     },

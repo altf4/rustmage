@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 154,
+  "newly_tested_physical_cards": 155,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -95,6 +95,7 @@
     "Meek Attack",
     "Mirrormind Crown",
     "Moonshadow",
+    "Morningtide's Light",
     "Mornsong Aria",
     "Mudbutton Cursetosser",
     "Mutable Explorer",
@@ -159,8 +160,8 @@
     "Winnowing",
     "Wistfulness"
   ],
-  "current_admission_flags": 261,
-  "remaining_gated": 12,
+  "current_admission_flags": 262,
+  "remaining_gated": 11,
   "inherited_evidence_audit": {
     "audited": 34,
     "total": 107,
@@ -337,10 +338,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T20:59:28.990737+00:00",
-    "elapsed_seconds": 20201.773886,
-    "newly_verified_cards": 154,
-    "cards_per_hour": 27.443134604343033,
+    "end_utc": "2026-10-22T21:07:54.511180+00:00",
+    "elapsed_seconds": 20707.294329,
+    "newly_verified_cards": 155,
+    "cards_per_hour": 26.947026064073288,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "Combined260-card ECL scenarios; Kirol separately focused-tested after this combined run.",
