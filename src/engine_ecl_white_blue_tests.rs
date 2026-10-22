@@ -3,6 +3,8 @@ use super::ability_timeline_tests::{checked, settle, setup};
 use super::tests::{cast, spawn};
 use super::*;
 use crate::ChoiceColor;
+#[path = "engine_ecl_white_blue_inherited_tests.rs"]
+mod inherited_final;
 
 fn mare(g: &mut Game, p: Player) -> CardId {
     let id = spawn(g, p, Card::from_name("Loch Mare").unwrap(), Zone::Hand);
@@ -7504,5 +7506,529 @@ fn inherited_wu_tanufel_rimespeaker_counts_only_own_mana_value_four_and_queued_d
         assert_eq!(g.hand_count(p), 2);
         assert_eq!(g.state.players[p.index()].library.len(), 19);
         assert_eq!(g.object_view(giant).zone, Zone::Battlefield);
+    }
+}
+
+fn taster_advance_to_choice(g: &mut Game) -> bool {
+    g.prepare_triggers();
+    for _ in 0..60 {
+        if g.state
+            .resolving
+            .as_ref()
+            .and_then(|r| r.choice.as_ref())
+            .is_some_and(|c| c.kind == EffectChoiceKind::RevealHandThenExile)
+        {
+            return true;
+        }
+        if g.state.pending == Pending::Priority
+            && g.state.stack.is_empty()
+            && g.state.resolving.is_none()
+            && g.state.announcing.is_none()
+            && g.state.pending_triggers.is_empty()
+        {
+            return false;
+        }
+        let actions = g.legal_actions();
+        let action = if g.state.pending == Pending::Priority {
+            Action::Pass
+        } else {
+            actions
+                .iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .or_else(|| actions.iter().find(|a| matches!(a, Action::FinishTargets)))
+                .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
+                .unwrap()
+                .clone()
+        };
+        checked(g, action);
+    }
+    panic!("Taster reveal did not become ready");
+}
+fn taster_reveal(g: &mut Game, id: CardId) {
+    let object = g.object_ref(id);
+    checked(g, Action::RevealHandCard { object });
+}
+fn taster_single(p: Player, name: &str) -> (Game, CardId, CardId) {
+    let mut g = setup(p);
+    spawn(
+        &mut g,
+        p,
+        Card::from_name("Boggart Mischief").unwrap(),
+        Zone::Battlefield,
+    );
+    let stolen = spawn(
+        &mut g,
+        p.other(),
+        Card::from_name(name).unwrap(),
+        Zone::Hand,
+    );
+    let source = spell(&mut g, p, "Taster of Wares", &[]);
+    assert!(taster_advance_to_choice(&mut g));
+    assert_eq!(g.actor(), Some(p.other()));
+    assert_eq!(
+        g.observe(p.other())
+            .effect_choice
+            .as_ref()
+            .unwrap()
+            .hand_reveal
+            .as_ref()
+            .unwrap()
+            .required,
+        1
+    );
+    taster_reveal(&mut g, stolen);
+    settle(&mut g);
+    assert_eq!(g.object_view(stolen).zone, Zone::Exile);
+    (g, source, stolen)
+}
+#[test]
+fn taster_of_wares_private_goblin_permanent_count_reveal_then_public_caster_exile_and_any_type_counterspell()
+ {
+    assert_eq!(std::mem::size_of::<CastInfo>(), 40);
+    for stash in [false, true] {
+        for any_mana in [false, true] {
+            let flags = CastOriginPermissions::new(stash, any_mana);
+            assert_eq!(
+                serde_json::to_value(flags).unwrap(),
+                serde_json::json!({
+                    "stash_origin": stash, "exile_any_mana": any_mana
+                })
+            );
+        }
+    }
+    assert_eq!(std::mem::size_of::<Object>(), 144);
+    assert_eq!(std::mem::size_of::<Pending>(), 40);
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let kindred = spawn(
+            &mut g,
+            p,
+            Card::from_name("Boggart Mischief").unwrap(),
+            Zone::Battlefield,
+        );
+        assert!(!g.is_creature(kindred));
+        assert!(g.has_subtype(kindred, "Goblin"));
+        spawn(
+            &mut g,
+            p,
+            Card::from_name("@token/shapeshifter_1_1_colorless_changeling").unwrap(),
+            Zone::Battlefield,
+        );
+        spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("@token/shapeshifter_1_1_colorless_changeling").unwrap(),
+            Zone::Battlefield,
+        );
+        spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let cards = ["Shock", "Negate", "Grizzly Bears", "Forest"].map(|name| {
+            spawn(
+                &mut g,
+                p.other(),
+                Card::from_name(name).unwrap(),
+                Zone::Hand,
+            )
+        });
+        let source = spell(&mut g, p, "Taster of Wares", &[]);
+        assert!(taster_advance_to_choice(&mut g));
+        assert_eq!(
+            g.stats(source),
+            Stats {
+                power: 3,
+                toughness: 2
+            }
+        );
+        assert_eq!(g.actor(), Some(p.other()));
+        assert!(g.observe(p).effect_choice.is_none());
+        assert_eq!(
+            g.observe(p.other())
+                .effect_choice
+                .as_ref()
+                .unwrap()
+                .hand_reveal
+                .as_ref()
+                .unwrap()
+                .required,
+            3
+        );
+        let mut alternative = g.clone();
+        alternative.state.objects[cards[3] as usize].card = Card::Island;
+        assert_eq!(
+            serde_json::to_value(g.observe(p)).unwrap(),
+            serde_json::to_value(alternative.observe(p)).unwrap()
+        );
+        let stale = g.object_ref(cards[0]);
+        taster_reveal(&mut g, cards[0]);
+        reject_atomic(&mut g, Action::RevealHandCard { object: stale });
+        reject_atomic(&mut g, Action::DeclineEffectPayment);
+        assert!(!g.observe(p).objects.iter().any(|o| o.id == cards[0]));
+        taster_reveal(&mut g, cards[1]);
+        assert!(g.observe(p).effect_choice.is_none());
+        assert!(g.observe(p).known_hand.is_empty());
+        taster_reveal(&mut g, cards[2]);
+        assert_eq!(g.actor(), Some(p));
+        let view = g.observe(p).effect_choice.unwrap();
+        assert!(view.hand_reveal.unwrap().revealed);
+        assert_eq!(view.candidates.len(), 3);
+        assert_eq!(
+            view.candidates,
+            g.observe(p.other()).effect_choice.unwrap().candidates
+        );
+        for &id in &cards[..3] {
+            assert!(g.observe(p).known_hand.contains(&g.object_ref(id)));
+        }
+        assert!(!g.observe(p).objects.iter().any(|o| o.id == cards[3]));
+        let hidden = g.object_ref(cards[3]);
+        reject_atomic(&mut g, Action::ExileHandCard { object: hidden });
+        let object = g.object_ref(cards[1]);
+        checked(&mut g, Action::ExileHandCard { object });
+        settle(&mut g);
+        let permission = g
+            .observe(p)
+            .exile_permissions
+            .into_iter()
+            .find(|row| row.object.card == cards[1])
+            .unwrap();
+        assert_eq!(permission.player, p);
+        assert_eq!(permission.source, Some(g.object_ref(source)));
+        assert!(permission.any_mana);
+        assert!(permission.cast_only);
+        assert_eq!(g.object_view(cards[1]).owner, p.other());
+        for &id in &[cards[0], cards[2]] {
+            assert!(g.observe(p).known_hand.contains(&g.object_ref(id)));
+        }
+        take_test_priority(&mut g, p.other());
+        let shock = spell(&mut g, p.other(), "Shock", &[Target::Player(p)]);
+        take_test_priority(&mut g, p);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        checked(&mut g, Action::AnnounceExile { card: cards[1] });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Spell(shock),
+            },
+        );
+        finish_cast_choices(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        let cast = g.state.stack.last().unwrap().cast.unwrap();
+        assert!(cast.exile_any_mana());
+        assert_eq!(cast.origin, Zone::Exile);
+        settle(&mut g);
+        assert_eq!(g.object_view(shock).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(cards[1]).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].life, 20);
+        assert!(g.observe(p).exile_permissions.is_empty());
+        g.move_object(cards[1], Zone::Exile);
+        reject_atomic(&mut g, Action::AnnounceExile { card: cards[1] });
+    }
+}
+#[test]
+fn taster_of_wares_single_reveal_nonspells_exile_without_cast_or_land_play_permission() {
+    for p in [Player::P0, Player::P1] {
+        for name in ["Grizzly Bears", "Forest"] {
+            let (mut g, source, stolen) = taster_single(p, name);
+            assert_eq!(
+                g.stats(source),
+                Stats {
+                    power: 3,
+                    toughness: 2
+                }
+            );
+            assert!(g.observe(p).exile_permissions.is_empty());
+            reject_atomic(&mut g, Action::AnnounceExile { card: stolen });
+            if name == "Forest" {
+                reject_atomic(&mut g, Action::PlayLand { card: stolen });
+            }
+        }
+    }
+}
+#[test]
+fn taster_of_wares_control_loss_ends_permission_permanently_even_when_control_returns() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, source, stolen) = taster_single(p, "Shock");
+        assert_eq!(g.observe(p).exile_permissions.len(), 1);
+        super::ability_timeline_tests::next_turn(&mut g);
+        g.state.step = Step::Main1;
+        g.state.players[p.other().index()].mana = [30; 6];
+        take_test_priority(&mut g, p.other());
+        spell(
+            &mut g,
+            p.other(),
+            "Involuntary Employment",
+            &[Target::Card(source)],
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(source).controller, p.other());
+        assert!(g.observe(p).exile_permissions.is_empty());
+        super::ability_timeline_tests::next_turn(&mut g);
+        assert_eq!(g.object_view(source).controller, p);
+        assert!(g.observe(p).exile_permissions.is_empty());
+        take_test_priority(&mut g, p);
+        reject_atomic(&mut g, Action::AnnounceExile { card: stolen });
+    }
+}
+#[test]
+fn taster_of_wares_ability_loss_keeps_permission_but_source_blink_ends_it() {
+    for p in [Player::P0, Player::P1] {
+        for blink in [false, true] {
+            let (mut g, source, stolen) = taster_single(p, "Shock");
+            g.remove_abilities_exact(
+                &[g.object_ref(source)],
+                crate::cards::AnimationDuration::Permanent,
+            );
+            assert_eq!(g.observe(p).exile_permissions.len(), 1);
+            if blink {
+                let before = g.object_ref(source);
+                spell(&mut g, p, "Personify", &[Target::Card(source)]);
+                settle(&mut g);
+                assert_ne!(g.object_ref(source), before);
+                assert!(g.observe(p).exile_permissions.is_empty());
+                reject_atomic(&mut g, Action::AnnounceExile { card: stolen });
+            } else {
+                super::ability_timeline_tests::next_turn(&mut g);
+                take_test_priority(&mut g, p);
+                g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+                checked(&mut g, Action::AnnounceExile { card: stolen });
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Player(p.other()),
+                    },
+                );
+                finish_cast_choices(&mut g);
+                settle(&mut g);
+                assert_eq!(g.state.players[p.other().index()].life, 18);
+                assert_eq!(g.object_view(stolen).zone, Zone::Graveyard);
+            }
+        }
+    }
+}
+fn taster_stop_at_trigger(g: &mut Game, source: CardId) {
+    g.prepare_triggers();
+    for _ in 0..40 {
+        if g.state.stack.iter().any(|item| {
+            item.card == source && matches!(item.kind, StackKind::TriggeredAbility { .. })
+        }) {
+            return;
+        }
+        let actions = g.legal_actions();
+        let action = if g.state.pending == Pending::Priority {
+            Action::Pass
+        } else {
+            actions
+                .iter()
+                .find(|a| matches!(a, Action::FinishTargets))
+                .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
+                .unwrap()
+                .clone()
+        };
+        checked(g, action);
+    }
+    panic!("Taster ETB trigger did not reach stack");
+}
+#[test]
+fn taster_of_wares_counts_live_goblins_at_resolution_and_permission_requires_exact_controlled_source()
+ {
+    for p in [Player::P0, Player::P1] {
+        for other_goblin in [false, true] {
+            for response in ["Lightning Bolt", "Noggle the Mind"] {
+                let mut g = setup(p);
+                if other_goblin {
+                    spawn(
+                        &mut g,
+                        p,
+                        Card::from_name("Boggart Mischief").unwrap(),
+                        Zone::Battlefield,
+                    );
+                }
+                let stolen = spawn(
+                    &mut g,
+                    p.other(),
+                    Card::from_name("Negate").unwrap(),
+                    Zone::Hand,
+                );
+                let source = spell(&mut g, p, "Taster of Wares", &[]);
+                taster_stop_at_trigger(&mut g, source);
+                take_test_priority(&mut g, p.other());
+                spell(&mut g, p.other(), response, &[Target::Card(source)]);
+                let choice = taster_advance_to_choice(&mut g);
+                assert_eq!(choice, other_goblin);
+                if choice {
+                    assert_eq!(
+                        g.observe(p.other())
+                            .effect_choice
+                            .as_ref()
+                            .unwrap()
+                            .hand_reveal
+                            .as_ref()
+                            .unwrap()
+                            .required,
+                        1
+                    );
+                    taster_reveal(&mut g, stolen);
+                    settle(&mut g);
+                    assert_eq!(g.object_view(stolen).zone, Zone::Exile);
+                    assert_eq!(
+                        g.observe(p).exile_permissions.len(),
+                        usize::from(response == "Noggle the Mind")
+                    );
+                } else {
+                    assert_eq!(g.object_view(stolen).zone, Zone::Hand);
+                    assert!(g.observe(p).exile_permissions.is_empty());
+                }
+            }
+        }
+        let mut empty = setup(p);
+        let source = spell(&mut empty, p, "Taster of Wares", &[]);
+        assert!(!taster_advance_to_choice(&mut empty));
+        assert_eq!(empty.object_view(source).zone, Zone::Battlefield);
+        assert!(empty.observe(p).exile_permissions.is_empty());
+    }
+}
+#[test]
+fn taster_of_wares_any_type_intent_survives_sacrificing_source_as_the_stolen_spells_casting_cost() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, source, stolen) = taster_single(p, "Eaten Alive");
+        let target = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+        let announce = Action::AnnounceExile { card: stolen };
+        g.state.active = p.other();
+        g.state.priority = p;
+        reject_atomic(&mut g, announce.clone());
+        g.state.active = p;
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        checked(&mut g, announce);
+        let item = &g.state.announcing.as_ref().unwrap().item;
+        assert!(item.cast.unwrap().exile_any_mana());
+        assert_eq!(
+            cast_origins::payment_requirements(
+                &g,
+                p,
+                g.purpose_for_item(item),
+                [0, 0, 0, 0, 0, 1],
+                0
+            ),
+            ([0; 6], 1)
+        );
+        for _ in 0..30 {
+            if g.state.announcing.is_none() {
+                break;
+            }
+            let actions = g.legal_actions();
+            let witness = g.object_ref(source);
+            let action=actions.iter().find(|a|matches!(a,Action::ChooseSpellCost{cost:0})).or_else(||actions.iter().find(|a|matches!(a,Action::ChooseTarget{target:Target::Card(id)} if *id==target))).or_else(||actions.iter().find(|a|matches!(a,Action::ChooseAdditionalCost{object} if *object==witness))).or_else(||actions.iter().find(|a|matches!(a,Action::PayCosts{..} | Action::FinishTargets))).unwrap_or_else(|| panic!("pending {:?}, actions {:?}", g.state.pending, actions)).clone();
+            checked(&mut g, action);
+        }
+        assert!(g.state.announcing.is_none());
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert!(
+            g.state
+                .stack
+                .iter()
+                .find(|item| item.card == stolen && item.kind == StackKind::Spell)
+                .unwrap()
+                .cast
+                .unwrap()
+                .exile_any_mana()
+        );
+        assert!(g.observe(p).exile_permissions.is_empty());
+        settle(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Exile);
+        assert_eq!(g.object_view(stolen).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn taster_of_wares_source_not_controlled_when_permission_would_be_created_still_exiles_without_grant()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        spawn(
+            &mut g,
+            p,
+            Card::from_name("Boggart Mischief").unwrap(),
+            Zone::Battlefield,
+        );
+        spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("High Fae Trickster").unwrap(),
+            Zone::Battlefield,
+        );
+        let stolen = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Shock").unwrap(),
+            Zone::Hand,
+        );
+        let source = spell(&mut g, p, "Taster of Wares", &[]);
+        taster_stop_at_trigger(&mut g, source);
+        take_test_priority(&mut g, p.other());
+        spell(
+            &mut g,
+            p.other(),
+            "Involuntary Employment",
+            &[Target::Card(source)],
+        );
+        assert!(taster_advance_to_choice(&mut g));
+        assert_eq!(g.object_view(source).controller, p.other());
+        assert_eq!(
+            g.observe(p.other())
+                .effect_choice
+                .unwrap()
+                .hand_reveal
+                .unwrap()
+                .required,
+            1
+        );
+        taster_reveal(&mut g, stolen);
+        settle(&mut g);
+        assert_eq!(g.object_view(stolen).zone, Zone::Exile);
+        assert!(g.observe(p).exile_permissions.is_empty());
+    }
+}
+#[test]
+fn taster_of_wares_old_trigger_cannot_bind_permission_to_a_new_source_incarnation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let negate = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Negate").unwrap(),
+            Zone::Hand,
+        );
+        let shock = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Shock").unwrap(),
+            Zone::Hand,
+        );
+        let source = spell(&mut g, p, "Taster of Wares", &[]);
+        taster_stop_at_trigger(&mut g, source);
+        let original = g.object_ref(source);
+        take_test_priority(&mut g, p);
+        spell(&mut g, p, "Personify", &[Target::Card(source)]);
+        assert!(taster_advance_to_choice(&mut g));
+        let returned = g.object_ref(source);
+        assert_ne!(returned, original);
+        assert_eq!(
+            g.state.resolving.as_ref().unwrap().item.object,
+            returned,
+            "new ETB must resolve first"
+        );
+        taster_reveal(&mut g, negate);
+        taster_reveal(&mut g, shock);
+        let selected = g.object_ref(negate);
+        checked(&mut g, Action::ExileHandCard { object: selected });
+        assert_eq!(g.observe(p).exile_permissions.len(), 1);
+        assert_eq!(g.observe(p).exile_permissions[0].source, Some(returned));
+        assert!(taster_advance_to_choice(&mut g));
+        taster_reveal(&mut g, shock);
+        settle(&mut g);
+        let permissions = g.observe(p).exile_permissions;
+        assert_eq!(permissions.len(), 1);
+        assert_eq!(permissions[0].object.card, negate);
+        assert_eq!(permissions[0].source, Some(returned));
+        assert_eq!(g.object_view(shock).zone, Zone::Exile);
     }
 }

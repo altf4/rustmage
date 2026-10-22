@@ -28,6 +28,7 @@ impl Game {
                 blight_copy_attacking: false,
                 counter_removal: None,
                 entry_life_bonus: None,
+                hand_reveal: None,
                 proliferate: Some(Box::new(ProliferateSelection {
                     selected_players: 0,
                 })),

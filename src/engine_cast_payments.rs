@@ -66,6 +66,13 @@ impl ManaPaymentDomain {
     }
 }
 impl CastInfo {
+    pub const fn stash_origin(self) -> bool {
+        self.origin_permissions.stash_origin()
+    }
+    pub const fn exile_any_mana(self) -> bool {
+        self.origin_permissions.exile_any_mana()
+    }
+
     pub fn mana_spent(self) -> u64 {
         self.payment.into_iter().map(u64::from).sum()
     }

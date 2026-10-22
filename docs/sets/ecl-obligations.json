@@ -85,7 +85,7 @@
       "name": "Appeal to Eirdu",
       "definition": "src/card_definitions/ecl/appeal_to_eirdu.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Appeal to Eirdu",
@@ -100,14 +100,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_inherited_tests.rs",
+        "src/card_definitions/ecl/appeal_to_eirdu.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "b9dee727-8ad8-42e0-93c6-5ef91d3f7309",
       "name": "Aquitect's Defenses",
       "definition": "src/card_definitions/ecl/aquitect_s_defenses.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Aquitect's Defenses",
@@ -124,7 +128,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_inherited_tests.rs",
+        "src/card_definitions/ecl/aquitect_s_defenses.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "9651d197-a408-4665-a292-58d5471f4ffc",
@@ -1629,7 +1637,7 @@
       "name": "Disruptor of Currents",
       "definition": "src/card_definitions/ecl/disruptor_of_currents.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Disruptor of Currents",
@@ -1645,7 +1653,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_inherited_tests.rs",
+        "src/card_definitions/ecl/disruptor_of_currents.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "dd35a377-0865-4b25-bd0f-aaead29a9f0e",
@@ -2631,7 +2643,7 @@
       "name": "Glamermite",
       "definition": "src/card_definitions/ecl/glamermite.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Glamermite",
@@ -2649,7 +2661,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_inherited_tests.rs",
+        "src/card_definitions/ecl/glamermite.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "97febf6b-302c-4c41-8838-eef7c7353bdc",
@@ -3298,7 +3314,7 @@
       "name": "Keep Out",
       "definition": "src/card_definitions/ecl/keep_out.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Keep Out",
@@ -3314,7 +3330,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_inherited_tests.rs",
+        "src/card_definitions/ecl/keep_out.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "da35de40-6fde-4018-bda8-b0ae91ed872a",
@@ -3647,7 +3667,7 @@
       "name": "Lofty Dreams",
       "definition": "src/card_definitions/ecl/lofty_dreams.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Lofty Dreams",
@@ -3664,7 +3684,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_inherited_tests.rs",
+        "src/card_definitions/ecl/lofty_dreams.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "c8bf2dce-7bcd-45cb-bf15-f53e24333a01",
@@ -3864,7 +3888,7 @@
       "name": "Mirrorform",
       "definition": "src/card_definitions/ecl/mirrorform.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Mirrorform",
@@ -3878,7 +3902,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_copy_entry_tests.rs",
+        "src/card_definitions/ecl/mirrorform.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "353db389-b829-4e66-85d5-6018bc87c3e0",
@@ -4627,7 +4655,7 @@
       "name": "Protective Response",
       "definition": "src/card_definitions/ecl/protective_response.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Protective Response",
@@ -4642,7 +4670,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_inherited_tests.rs",
+        "src/card_definitions/ecl/protective_response.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "499b4cf9-2aaa-45a0-8362-77b727b7f7cc",
@@ -4957,7 +4989,7 @@
       "name": "Rimekin Recluse",
       "definition": "src/card_definitions/ecl/rimekin_recluse.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Rimekin Recluse",
@@ -4971,14 +5003,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_inherited_tests.rs",
+        "src/card_definitions/ecl/rimekin_recluse.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "0bdebad7-a05e-439a-b5a9-241a2d09f943",
       "name": "Riverguard's Reflexes",
       "definition": "src/card_definitions/ecl/riverguard_s_reflexes.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Riverguard's Reflexes",
@@ -4992,7 +5028,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_inherited_tests.rs",
+        "src/card_definitions/ecl/riverguard_s_reflexes.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "3dc73517-0767-46ae-bc8d-ee378237a509",
@@ -5025,7 +5065,7 @@
       "name": "Run Away Together",
       "definition": "src/card_definitions/ecl/run_away_together.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Run Away Together",
@@ -5039,7 +5079,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_inherited_tests.rs",
+        "src/card_definitions/ecl/run_away_together.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "6e04a375-303e-43ba-bca1-4e959711a7f6",
@@ -5320,7 +5364,7 @@
       "name": "Shinestriker",
       "definition": "src/card_definitions/ecl/shinestriker.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Shinestriker",
@@ -5335,7 +5379,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_inherited_tests.rs",
+        "src/card_definitions/ecl/shinestriker.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "4288ba56-ddd0-4bd9-ba61-daf03e9f2d7f",
@@ -5543,7 +5591,7 @@
       "name": "Spell Snare",
       "definition": "src/card_definitions/ecl/spell_snare.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Spell Snare",
@@ -5557,7 +5605,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_inherited_tests.rs",
+        "src/card_definitions/ecl/spell_snare.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "e35d4c62-5211-4785-b683-a83719195d87",
@@ -5789,7 +5841,7 @@
       "name": "Stratosoarer",
       "definition": "src/card_definitions/ecl/stratosoarer.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Stratosoarer",
@@ -5805,14 +5857,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_inherited_tests.rs",
+        "src/card_definitions/ecl/stratosoarer.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "e7b88da3-7dd1-45f8-b555-98ad838b2917",
       "name": "Summit Sentinel",
       "definition": "src/card_definitions/ecl/summit_sentinel.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Summit Sentinel",
@@ -5826,14 +5882,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_inherited_tests.rs",
+        "src/card_definitions/ecl/summit_sentinel.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "27c87371-697e-4ca6-a7f4-d99215d908bc",
       "name": "Sun-Dappled Celebrant",
       "definition": "src/card_definitions/ecl/sun_dappled_celebrant.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Sun-Dappled Celebrant",
@@ -5848,7 +5908,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_inherited_tests.rs",
+        "src/card_definitions/ecl/sun_dappled_celebrant.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "c01b221f-3993-43ab-8cde-b42fb344e2a7",
@@ -6073,7 +6137,7 @@
       "name": "Taster of Wares",
       "definition": "src/card_definitions/ecl/taster_of_wares.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Taster of Wares",
@@ -6087,7 +6151,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/taster_of_wares.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "f413a83d-a40d-434c-b20a-4c707c0527fa",
@@ -6267,7 +6335,7 @@
       "name": "Timid Shieldbearer",
       "definition": "src/card_definitions/ecl/timid_shieldbearer.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Timid Shieldbearer",
@@ -6281,7 +6349,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_inherited_tests.rs",
+        "src/card_definitions/ecl/timid_shieldbearer.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "991f4eec-cf3e-4554-ba88-c44bb0d255f0",
@@ -6529,7 +6601,7 @@
       "name": "Unwelcome Sprite",
       "definition": "src/card_definitions/ecl/unwelcome_sprite.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Unwelcome Sprite",
@@ -6544,7 +6616,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_inherited_tests.rs",
+        "src/card_definitions/ecl/unwelcome_sprite.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "52867cdd-8bf2-4cae-bb8d-0f16a18a455b",

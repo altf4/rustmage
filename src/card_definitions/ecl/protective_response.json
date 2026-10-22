@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3dc18f2c97ec2f5ae8687f40f14236b5162e06e368af8752b42409a2df5a0e01"
   },
-  "physical_metadata_sha256": "08f3d03a143ad32bacd8f428947f8539d38419d248e4c2e0aacc5be44ec649c5"
+  "physical_metadata_sha256": "08f3d03a143ad32bacd8f428947f8539d38419d248e4c2e0aacc5be44ec649c5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/ProtectiveResponse.java",
+  "java_sha256": "788f99e221d11a18865c8707873530adf299a42ebf0e3eea9a2932c982c497d6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ConvokeAbility.java",
+      "sha256": "207ace9818509f0db681504b423fb592693ab197c0e52decbefac3550c73abdf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetAttackingOrBlockingCreature.java",
+      "sha256": "9189ffcb3f50a8a262aa70b884d39333a1b1681897b0957724c77eb0bb163f09"
+    }
+  ]
 }

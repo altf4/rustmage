@@ -419,6 +419,8 @@ fn ecl_maralen_new_copy_ability_instance_uses_only_new_links_and_gets_independen
                 object,
                 recipe: CopyRecipe::new(definition),
                 ability_origin: 42,
+                native: Some(CopyRecipe::new(definition)),
+                loyalty_used_turn: None,
             }]
             .into(),
         );

@@ -48,6 +48,7 @@ impl Game {
                 counter_removal: None,
                 proliferate: None,
                 entry_life_bonus: None,
+                hand_reveal: None,
             }));
         self.advance_keep_shared_types()
     }

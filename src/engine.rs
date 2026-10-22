@@ -42,7 +42,7 @@ mod stack_copies;
 #[cfg(test)]
 #[path = "engine_stack_copies_tests.rs"]
 mod stack_copies_tests;
-pub use copies::{CopyRecipe, SourceCopyFacts};
+pub use copies::{CopyFaces, CopyOriginView, CopyRecipe, SourceCopyFacts};
 #[path = "engine_copy_characteristics.rs"]
 mod copy_characteristics;
 pub use crate::cards::CopyExceptions;
@@ -113,8 +113,13 @@ mod tiered;
 #[path = "engine_warp.rs"]
 mod warp;
 pub use cast_payments::{CastPaymentEvent, ManaPaymentDomain};
+pub use hand_reveal::HandRevealView;
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
 pub use plot::{PlotPaymentView, PlottedCard};
+
+#[path = "engine_hand_reveal.rs"]
+mod hand_reveal;
+
 pub use return_links::{DelayedReturnView, PlayerDamageShieldView, ReturnCardView, ReturnLinkView};
 pub use warp::{DelayedWarpExileView, WarpedCard};
 
@@ -502,6 +507,7 @@ define_actions! {
     },
     ChooseExplore { object: ObjectRef, graveyard: bool },
     ExileHandCard { object: ObjectRef },
+    RevealHandCard { object: ObjectRef },
     ExileGraveyardCard { object: ObjectRef },
     ChooseBeholdType { creature_type: Option<crate::cards::CreatureType> },
     ChooseOptionalAdditionalCost {
@@ -771,6 +777,7 @@ fn first_player() -> Player {
 #[repr(u8)]
 enum CopyKind {
     None,
+    Physical,
     Token,
     Spell,
 }
@@ -807,7 +814,7 @@ impl Object {
         self.copy_kind == CopyKind::Spell
     }
     fn is_token(&self) -> bool {
-        self.is_copy_token() || self.card.is_token()
+        self.is_copy_token() || self.copy_kind != CopyKind::Physical && self.card.is_token()
     }
     fn keywords(&self) -> Keywords {
         self.card.keywords().union(self.gained_keywords)
@@ -894,6 +901,39 @@ pub enum CastFace {
     Adventure,
     Omen,
 }
+/// Independent origin qualifications packed into one byte of the common cast packet.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CastOriginPermissions {
+    Neither,
+    ForeignStash,
+    ExileAnyMana,
+    Both,
+}
+impl CastOriginPermissions {
+    pub const fn new(stash: bool, any_mana: bool) -> Self {
+        match (stash, any_mana) {
+            (false, false) => Self::Neither,
+            (true, false) => Self::ForeignStash,
+            (false, true) => Self::ExileAnyMana,
+            (true, true) => Self::Both,
+        }
+    }
+    pub const fn stash_origin(self) -> bool {
+        matches!(self, Self::ForeignStash | Self::Both)
+    }
+    pub const fn exile_any_mana(self) -> bool {
+        matches!(self, Self::ExileAnyMana | Self::Both)
+    }
+}
+impl Serialize for CastOriginPermissions {
+    fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut view = serializer.serialize_struct("CastOriginPermissions", 2)?;
+        view.serialize_field("stash_origin", &self.stash_origin())?;
+        view.serialize_field("exile_any_mana", &self.exile_any_mana())?;
+        view.end()
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CastInfo {
     /// A non-targeted promise, declared before targets; absent until chosen.
@@ -906,8 +946,9 @@ pub struct CastInfo {
     /// Actual mana spent on this cast, including additional mana costs.
     pub payment: Mana,
     pub origin: Zone,
-    /// Counter qualification captured before the exile-to-stack transition.
-    pub stash_origin: bool,
+    /// Qualifications captured before the exile-to-stack transition and payments.
+    #[serde(flatten)]
+    pub origin_permissions: CastOriginPermissions,
     pub method: CastMethod,
     /// Optional additional mana paid to obtain this spell's flash timing.
     pub flash_surcharge: bool,
@@ -2019,6 +2060,7 @@ pub struct RecoveryChoiceView {
 #[derive(Clone, Debug, Serialize)]
 pub struct EffectChoiceView {
     pub kind: EffectChoiceKind,
+    pub hand_reveal: Option<HandRevealView>,
     pub counter_removal: Option<CounterRemovalDomain>,
     pub proliferate: Option<ProliferateChoiceView>,
     pub amount: u16,
@@ -2164,6 +2206,7 @@ pub struct Observation {
     pub triggered_this_turn: Vec<TriggerUse>,
     pub pending_trigger_multiplicities: Vec<TriggerMultiplicityView>,
     pub conspire: Option<ConspireCastView>,
+    pub copy_origins: Vec<copies::CopyOriginView>,
     pub ability_resolutions: Vec<AbilityResolutionView>,
     pub role_choices: Vec<RoleGroupView>,
     pub role_timestamps: Vec<RoleTimestampView>,
@@ -3085,6 +3128,13 @@ impl Game {
                                 Action::ChooseCreature { object }
                             }
                             EffectChoiceKind::ExileFromHand => Action::ExileHandCard { object },
+                            EffectChoiceKind::RevealHandThenExile => {
+                                if choice.hand_reveal.as_ref().unwrap().revealed {
+                                    Action::ExileHandCard { object }
+                                } else {
+                                    Action::RevealHandCard { object }
+                                }
+                            }
                             EffectChoiceKind::ExileGraveyardCard => {
                                 Action::ExileGraveyardCard { object }
                             }
@@ -4889,7 +4939,8 @@ impl Game {
                 }
                 self.advance_damage_choices();
             }
-            Action::ExileHandCard { object }
+            Action::RevealHandCard { object }
+            | Action::ExileHandCard { object }
             | Action::ExileGraveyardCard { object }
             | Action::PutHandCreature { object }
             | Action::PutHandLand { object }
@@ -5446,7 +5497,10 @@ impl Game {
         let destination = plan.destination;
         // Outside is an internal staging zone for newly allocated tokens. A
         // ceased token is on the free list and cannot move again (CR111.8).
-        let fresh_token = before.zone == Zone::Outside && !self.state.free_tokens.contains(&id);
+        let fresh_token = before.zone == Zone::Outside && !self.state.free_tokens.contains(&id)
+            || before.zone == Zone::Stack
+                && self.state.objects[id as usize].is_copy_token()
+                && self.copy_recipe(before.reference).is_some();
         if (self.state.objects[id as usize].is_spell_copy() && before.zone != Zone::Stack)
             || before.card.is_emblem()
             || (before.is_token() && before.zone != Zone::Battlefield && !fresh_token)
@@ -5502,6 +5556,7 @@ impl Game {
         self.capture_source_counter_departure(&before);
         self.clear_entry_value(before.reference);
         if before.zone == Zone::Battlefield {
+            self.end_source_exile_permissions(before.reference);
             self.clear_suspected_reference(before.reference);
             self.forget_graveyard_type_source(before.reference);
         }
@@ -5651,9 +5706,16 @@ impl Game {
             // A surviving attacker remains blocked after its last blocker leaves.
         }
         self.forget_transform_history(before.reference);
+        let native = self
+            .native_copy_recipe(before.reference)
+            .map(|recipe| recipe.definition);
+        if before.zone == Zone::Battlefield && !before.is_token() {
+            self.clear_copy_recipe(before.reference);
+        }
         let obj = &mut self.state.objects[id as usize];
         if before.zone == Zone::Battlefield && !obj.is_token() {
-            obj.card = obj.card.front_face();
+            obj.card = native.unwrap_or(obj.card).front_face();
+            obj.copy_kind = CopyKind::None;
         }
         obj.zone = destination;
         // Only stack and battlefield objects have independent control.
@@ -6622,6 +6684,7 @@ impl Game {
                 .copied(),
             triggered_this_turn: s.triggered_this_turn.clone(),
             conspire: self.conspire_view().cloned(),
+            copy_origins: self.copy_origins_view(),
             pending_trigger_multiplicities: s
                 .roles
                 .as_ref()
@@ -8111,8 +8174,18 @@ mod ecl_shadow_urchin_tests;
 mod dream_exile;
 pub use dream_exile::DreamExileView;
 #[cfg(test)]
+#[path = "engine_ecl_copy_entry_tests.rs"]
+mod ecl_copy_entry_tests;
+#[cfg(test)]
 #[path = "engine_ecl_goliath_tests.rs"]
 mod ecl_goliath_tests;
 #[cfg(test)]
 #[path = "engine_ecl_raiding_tests.rs"]
 mod ecl_raiding_tests;
+
+#[cfg(test)]
+#[path = "engine_ecl_inherited_br_tests.rs"]
+mod ecl_inherited_br_tests;
+#[cfg(test)]
+#[path = "engine_ecl_shared_type_completion_tests.rs"]
+mod ecl_shared_type_completion_tests;

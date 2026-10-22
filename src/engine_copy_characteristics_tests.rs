@@ -4,6 +4,7 @@ use super::*;
 
 fn exception_copy(g: &mut Game, p: Player, exceptions: CopyExceptions) -> CardId {
     let recipe = CopyRecipe {
+        faces: copies::CopyFaces::Definition,
         definition: Card::from_name("Bear Cub").unwrap(),
         exceptions,
     };
@@ -408,6 +409,7 @@ fn copy_sacrifice_count_overflow_restores_the_current_paid_resolution() {
                 sacrifice_abilities: u16::MAX,
                 haste: true,
                 nightmare: false,
+                changeling: false,
             },
         );
         let spell = named(&mut g, p, "Electroduplicate", Zone::Hand);

@@ -12,6 +12,8 @@ pub struct ExilePlayPermission {
     pub next_end_step: Option<Player>,
     pub cast_only: bool,
     pub without_mana: bool,
+    pub source: Option<ObjectRef>,
+    pub any_mana: bool,
 }
 impl Game {
     pub(super) fn exile_top_until_next_end(&mut self, player: Player, amount: u128) {
@@ -33,6 +35,10 @@ impl Game {
                     next_end_step: Some(player),
                     cast_only: false,
                     without_mana: false,
+
+                    source: None,
+
+                    any_mana: false,
                 };
                 let at = self
                     .state
@@ -42,6 +48,50 @@ impl Game {
             }
         }
         self.finish_zone_events(&events, &[]);
+    }
+    pub(super) fn end_source_exile_permissions(&mut self, source: ObjectRef) {
+        self.state
+            .exile_permissions
+            .retain(|permission| permission.source != Some(source));
+    }
+    pub(super) fn exile_cast_spends_any_mana(&self, player: Player, card: CardId) -> bool {
+        self.state.objects[card as usize].zone == Zone::Exile
+            && self.state.exile_permissions.iter().any(|permission| {
+                permission.player == player
+                    && permission.object == self.object_ref(card)
+                    && permission.any_mana
+                    && permission.expires_turn >= self.state.turn
+            })
+    }
+    pub(super) fn grant_source_bound_exile_cast(&mut self, item: &SpellView, object: ObjectRef) {
+        if !self.on_battlefield(item.object.card)
+            || self.object_ref(item.object.card) != item.object
+            || self.state.objects[item.object.card as usize].controller != item.controller
+            || self.object_ref(object.card) != object
+            || self.state.objects[object.card as usize].zone != Zone::Exile
+            || !crate::cards::CastFilter::InstantSorcery
+                .matches(self.state.objects[object.card as usize].card)
+        {
+            return;
+        }
+        let at = self
+            .state
+            .exile_permissions
+            .partition_point(|permission| permission.object.card < object.card);
+        self.state.exile_permissions.insert(
+            at,
+            ExilePlayPermission {
+                object,
+                player: item.controller,
+                expires_turn: u32::MAX,
+                cast_only: true,
+                without_mana: false,
+                source: Some(item.object),
+                any_mana: true,
+
+                next_end_step: None,
+            },
+        );
     }
 
     pub(super) fn exile_until_mana_value_free_cast(
@@ -67,7 +117,10 @@ impl Game {
             let event = self.move_object(id, Zone::Exile);
             if event.moved && event.destination == Zone::Exile {
                 value = value
-                    .checked_add(u128::from(event.before.card.fixed_mana_value()))
+                    .checked_add(u128::from(event.before.copy_recipe.as_ref().map_or_else(
+                        || event.before.card.fixed_mana_value(),
+                        |recipe| recipe.mana_value(),
+                    )))
                     .capacity("exiled mana value exhausted");
                 self.grant_exile_free_cast_permission(player, event.after);
             }
@@ -187,6 +240,8 @@ impl Game {
                 next_end_step: None,
                 cast_only,
                 without_mana,
+                source: None,
+                any_mana: false,
             },
         );
     }

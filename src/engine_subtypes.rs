@@ -174,11 +174,20 @@ impl Game {
             card: id,
             generation: target.generation,
         };
-        if self
-            .copy_recipe(reference)
-            .is_some_and(|r| r.exceptions.nightmare)
+        if (target.zone == Zone::Battlefield || target.is_token())
+            && self
+                .copy_recipe(reference)
+                .is_some_and(|r| r.exceptions.nightmare)
         {
             mask.insert("Nightmare");
+        }
+        if (target.zone == Zone::Battlefield || target.is_token())
+            && self
+                .copy_recipe(reference)
+                .is_some_and(|r| r.exceptions.changeling)
+            && kinds(id, target) & CREATURE_OR_KINDRED != 0
+        {
+            mask.set_flag(ALL_CREATURE_TYPES, true);
         }
         // Copy exceptions already exist while an owned token awaits entry.
         // Later continuous type changes apply only on the battlefield.

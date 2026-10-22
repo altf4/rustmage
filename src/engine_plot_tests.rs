@@ -505,6 +505,8 @@ fn plot_permissions_and_ordinary_paid_exile_rights_are_independent_and_one_shot(
             player: p,
             expires_turn: g.state.turn,
             next_end_step: None,
+            source: None,
+            any_mana: false,
         });
         assert!(
             g.legal_actions()

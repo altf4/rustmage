@@ -6,12 +6,85 @@ impl Game {
         self.copy_recipe(object)
             .unwrap_or_else(|| CopyRecipe::new(self.state.objects[object.card as usize].card))
     }
-    pub(super) fn copied_keywords(&self, object: ObjectRef) -> Keywords {
-        if self.copy_recipe(object).is_some_and(|r| r.exceptions.haste) {
-            Keywords::HASTE
-        } else {
-            Keywords::NONE
+    pub(super) fn copy_permanents_exact(&mut self, recipients: &[ObjectRef], recipe: CopyRecipe) {
+        let mut recipients: Vec<_> = recipients
+            .iter()
+            .copied()
+            .filter(|r| self.on_battlefield(r.card) && self.object_ref(r.card) == *r)
+            .collect();
+        recipients.sort_unstable_by_key(|r| r.card);
+        recipients.dedup();
+        if recipients.is_empty() {
+            return;
         }
+        for reference in &recipients {
+            self.unregister_intrinsic_sources(reference.card);
+        }
+        let timestamp = self.next_role_timestamp();
+        for reference in &recipients {
+            let id = reference.card;
+            let old = self.state.objects[id as usize].clone();
+            let native = self
+                .native_copy_recipe(*reference)
+                .unwrap_or_else(|| self.copiable_recipe(*reference));
+            let loyalty_used_turn = if old.used_abilities & old.card.loyalty_mask() != 0 {
+                Some(self.state.turn)
+            } else {
+                self.state.copy_recipes.as_ref().and_then(|rows| {
+                    rows.iter()
+                        .find(|row| row.object == *reference)
+                        .and_then(|row| row.loyalty_used_turn)
+                })
+            };
+            self.clear_copy_recipe(*reference);
+            let copied = recipe.overlay(native);
+            let rows = self.state.copy_recipes.get_or_insert_with(Default::default);
+            let at = rows.partition_point(|row| row.object.card < id);
+            rows.insert(
+                at,
+                copies::CopyRow {
+                    object: *reference,
+                    recipe: copied,
+                    native: Some(native),
+                    loyalty_used_turn,
+                    ability_origin: timestamp,
+                },
+            );
+            let object = &mut self.state.objects[id as usize];
+            object.card = copied.definition;
+            object.copy_kind = if old.is_token() {
+                CopyKind::Token
+            } else {
+                CopyKind::Physical
+            };
+            // A copy effect does not create an object. Once-per-planeswalker loyalty use persists.
+            object.used_abilities = if loyalty_used_turn == Some(self.state.turn) {
+                copied.definition.loyalty_mask()
+            } else {
+                0
+            };
+            self.clear_entry_value(*reference);
+        }
+        for reference in &recipients {
+            self.register_battlefield_sources(reference.card);
+        }
+        // Gained static effects have the timestamp of this single copy effect, even across recipients.
+        for reference in &recipients {
+            self.set_static_source_timestamp(*reference, timestamp);
+        }
+        self.refresh_controllers();
+    }
+    pub(super) fn copied_keywords(&self, object: ObjectRef) -> Keywords {
+        let mut result = Keywords::NONE;
+        if let Some(recipe) = self.copy_recipe(object) {
+            if recipe.exceptions.haste {
+                result = result.union(Keywords::HASTE);
+            }
+            if recipe.exceptions.changeling {
+                result = result.union(Keywords::CHANGELING);
+            }
+        }
+        result
     }
     pub(super) fn recipe_for_subject(
         &self,

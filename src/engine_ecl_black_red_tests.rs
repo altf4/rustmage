@@ -2952,6 +2952,7 @@ fn exact_ability_removal_orders_intrinsic_copiable_and_resolution_keywords_and_e
     for p in [Player::P0, Player::P1] {
         let mut g = hexing_setup(p);
         let recipe = CopyRecipe {
+            faces: copies::CopyFaces::Definition,
             definition: Card::from_name("Bear Cub").unwrap(),
             exceptions: crate::cards::CopyExceptions::HASTE_AND_SACRIFICE,
         };
@@ -5897,6 +5898,8 @@ fn dawnhand_copy_epochs_keep_queued_exile_packets_separate_from_new_linked_abili
                 object: reference,
                 recipe: CopyRecipe::new(definition),
                 ability_origin: 42,
+                native: Some(CopyRecipe::new(definition)),
+                loyalty_used_turn: None,
             }]
             .into(),
         );

@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "eb3dd672949ce99180a5ec52b555809adb017c24c65bdadfe53ad931885084b8"
   },
-  "physical_metadata_sha256": "201fc615642304081e819ac312e74a3d25b477c65f772dbd893089c4e2fd1617"
+  "physical_metadata_sha256": "201fc615642304081e819ac312e74a3d25b477c65f772dbd893089c4e2fd1617",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SummitSentinel.java",
+  "java_sha256": "43df91b871256248f44cbe61c98637e8bfcc232222c0adb4547df1d330d0ae18",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ]
 }

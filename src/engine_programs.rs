@@ -853,7 +853,11 @@ impl Game {
             target_allocations: None,
             source_copy_recipe: source
                 .copy_recipe
-                .filter(|r| r.exceptions != CopyExceptions::NONE || source.copy_ability_origin != 0)
+                .filter(|r| {
+                    r.exceptions != CopyExceptions::NONE
+                        || r.faces != CopyFaces::Definition
+                        || source.copy_ability_origin != 0
+                })
                 .map(|recipe| {
                     Box::new(SourceCopyFacts {
                         recipe,
@@ -1435,10 +1439,11 @@ impl Game {
             }
             StackKind::Spell => match item.source_card.effect() {
                 Effect::Aura(_) => {
+                    self.normalize_permanent_spell_copy(&item);
                     let target = item.targets[0].object.unwrap();
                     let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
                     movement.attachment = Some(target);
-                    movement.cast_payment = item.cast.map(|c| c.payment);
+                    movement.cast_payment = item.cast.filter(|_| !item.is_copy).map(|c| c.payment);
                     movement.cast_origin = item.cast.filter(|_| !item.is_copy).map(|c| c.origin);
                     movement.gift = item.gift_context().map(Box::new);
                     movement.warp_controller = item
@@ -1450,6 +1455,7 @@ impl Game {
                     return;
                 }
                 Effect::Creature(..) | Effect::Permanent => {
+                    self.normalize_permanent_spell_copy(&item);
                     if !item.source_card.evoke_costs().is_empty()
                         || item.cast.is_some_and(|c| {
                             c.offspring == Some(true)
@@ -1483,7 +1489,7 @@ impl Game {
                             .cast
                             .filter(|c| c.method == CastMethod::Warp)
                             .map(|_| item.controller);
-                        movement.evoked = !item.is_copy && item.cast.is_some_and(|c| c.evoked);
+                        movement.evoked = item.cast.is_some_and(|c| c.evoked);
                         movement.cast_payment =
                             item.cast.filter(|_| !item.is_copy).map(|c| c.payment);
                         movement.cast_origin =
@@ -1766,6 +1772,11 @@ impl Game {
                 Instruction::PartitionLibraryPiles(maximum) => {
                     self.start_library_piles(item.controller, maximum);
                     return;
+                }
+                Instruction::RevealHandForControlledCast(amount) => {
+                    if self.start_hand_reveal_for_cast(&item, amount) {
+                        return;
+                    }
                 }
                 Instruction::KeepSharedCreatureTypes => {
                     if self.start_keep_shared_types(&item) {
@@ -2520,7 +2531,7 @@ impl Game {
                                 return None;
                             }
                             if let Target::Card(id) = bound.target {
-                                Some(self.state.objects[id as usize].card.fixed_mana_value())
+                                Some(self.object_mana_value(id))
                             } else {
                                 None
                             }
@@ -2602,6 +2613,23 @@ impl Game {
                             .unwrap()
                             .blight_copy_attacking = true;
                         return;
+                    }
+                }
+                Instruction::CopyControlledNonlandsFromTarget => {
+                    if let Some(recipe) = self.recipe_for_subject(&item, Subject::Targets) {
+                        let recipients: Vec<_> = self
+                            .state
+                            .objects
+                            .iter()
+                            .enumerate()
+                            .filter(|(id, o)| {
+                                o.zone == Zone::Battlefield
+                                    && o.controller == item.controller
+                                    && self.current_kinds(*id as CardId) & 2 == 0
+                            })
+                            .map(|(id, _)| self.object_ref(id as CardId))
+                            .collect();
+                        self.copy_permanents_exact(&recipients, recipe);
                     }
                 }
                 Instruction::CreateCopyToken { subject, amount }

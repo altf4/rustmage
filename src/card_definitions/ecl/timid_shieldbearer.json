@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e00b575d71e1b949932abdb227e906d1f5783c1b57937c0c742c9cf91e747e79"
   },
-  "physical_metadata_sha256": "ac77b5eb2999a3f152c8c7b30bf02b1f573eab94e3720d650fc7d3ce94503817"
+  "physical_metadata_sha256": "ac77b5eb2999a3f152c8c7b30bf02b1f573eab94e3720d650fc7d3ce94503817",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TimidShieldbearer.java",
+  "java_sha256": "4ef647ce8b2a47ed0d091e0cb07369cebab0c844c6643bffb0784d927541e923",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    }
+  ]
 }

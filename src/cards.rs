@@ -16,27 +16,36 @@ pub struct CopyExceptions {
     pub sacrifice_abilities: u16,
     pub haste: bool,
     pub nightmare: bool,
+    pub changeling: bool,
 }
 impl CopyExceptions {
     pub const NONE: Self = Self {
         sacrifice_abilities: 0,
         haste: false,
         nightmare: false,
+        changeling: false,
     };
     pub const HASTE_AND_SACRIFICE: Self = Self {
         sacrifice_abilities: 1,
         haste: true,
         nightmare: false,
+        changeling: false,
     };
     pub const SACRIFICE_ONLY: Self = Self {
         sacrifice_abilities: 1,
         haste: false,
         nightmare: false,
+        changeling: false,
     };
     pub const NIGHTMARE: Self = Self {
         sacrifice_abilities: 0,
         haste: false,
         nightmare: true,
+        changeling: false,
+    };
+    pub const CHANGELING: Self = Self {
+        changeling: true,
+        ..Self::NONE
     };
     pub fn union(self, other: Self) -> Self {
         Self {
@@ -46,6 +55,7 @@ impl CopyExceptions {
                 .capacity("copy sacrifice abilities"),
             haste: self.haste || other.haste,
             nightmare: self.nightmare || other.nightmare,
+            changeling: self.changeling || other.changeling,
         }
     }
 }
@@ -675,6 +685,7 @@ pub enum EffectChoiceKind {
     PowerDifferenceBoost,
     /// The resolving spell controller chooses one creature for each player.
     KeepSharedCreatureTypes,
+    RevealHandThenExile,
     RemoveCounters,
     Proliferate,
     /// Choose distinct untapped permanents as a non-targeting activation cost.
@@ -823,6 +834,7 @@ pub(crate) enum Instruction {
     PartitionLibraryPiles(u16),
     KeepOneOfEachPermanentType,
     KeepSharedCreatureTypes,
+    RevealHandForControlledCast(AmountValue),
     RememberOwnSacrifice,
     RecoverAnotherPermanent,
     ReturnLinkedExileToHand,
@@ -865,6 +877,7 @@ pub(crate) enum Instruction {
     },
     /// Optional blight cost followed immediately by a tapped attacking copy.
     MayBlightCopyAttacking,
+    CopyControlledNonlandsFromTarget,
     CreateCopyToken {
         subject: Subject,
         amount: u16,

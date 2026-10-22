@@ -265,6 +265,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::Blight { .. }
             | Action::ChooseCreature { .. }
             | Action::ExileHandCard { .. }
+            | Action::RevealHandCard { .. }
             | Action::ExileGraveyardCard { .. }
             | Action::TapForEffect { .. }
             | Action::ChooseCounterRemoval { .. } => 50,

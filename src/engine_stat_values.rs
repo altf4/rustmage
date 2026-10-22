@@ -276,7 +276,7 @@ impl Game {
                     .filter(|&(id, o)| {
                         Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
                     })
-                    .map(|(_, o)| o.card.fixed_mana_value())
+                    .map(|(id, o)| self.mana_value_with_object(id, o))
                     .collect();
                 values.sort_unstable();
                 values.dedup();
@@ -306,7 +306,7 @@ impl Game {
                     .filter(|&(id, o)| {
                         Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
                     })
-                    .map(|(_, o)| o.card.fixed_mana_value())
+                    .map(|(id, o)| self.mana_value_with_object(id, o))
                     .max()
                     .unwrap_or(0),
             ),

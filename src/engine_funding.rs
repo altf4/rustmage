@@ -836,7 +836,8 @@ impl<'g> FundingState<'g> {
                         let purpose = mana_lots::Purpose::Activation(mana_lots::Source {
                             card: object.card,
                             foreign_stash: false,
-                            mana_value: object.card.fixed_mana_value(),
+                            exile_any_mana: false,
+                            mana_value: self.game.mana_value_with_object(entry.id, object),
                             kinds: self.kinds(entry),
                             subtypes: ability_world::CharacteristicWorld::subtypes(self, entry.id),
                         });
@@ -951,6 +952,14 @@ impl<'g> FundingState<'g> {
             live_counters::set(&mut self.named_counters, reference, counters.named);
             if cost.sacrifice {
                 object.zone = Zone::Graveyard;
+                if !object.is_token() {
+                    object.card = self
+                        .game
+                        .native_copy_recipe(reference)
+                        .map_or(object.card, |r| r.definition)
+                        .front_face();
+                    object.copy_kind = CopyKind::None;
+                }
                 object.counters = InitialCounters::default();
                 live_counters::set(&mut self.named_counters, reference, None);
             }
@@ -4160,6 +4169,7 @@ mod ecl_convoke_grant_tests {
             kinds: 1,
             subtypes: GrantedSubtypes::default(),
             foreign_stash: false,
+            exile_any_mana: false,
             mana_value: 2,
         };
         let mut world = FundingState::from_game_with_convoke(&g, &goal, true);
