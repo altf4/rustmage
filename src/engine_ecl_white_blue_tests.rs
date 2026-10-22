@@ -2013,3 +2013,361 @@ fn kithkeeper_requires_three_distinct_untapped_creatures_and_can_repeat_after_un
         g.untap_objects(&[source, bear, token], untap_rules::UntapCause::Effect);
     }
 }
+
+#[test]
+fn blossombind_paid_aura_preserves_existing_counters_blocks_untap_and_ordinary_counter_effects() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        g.set_counters(
+            bear,
+            Counters::of(CounterKind::PlusOne, 1).with(CounterKind::Stun, 1),
+        );
+        let aura = spell(&mut g, p, "Blossombind", &[Target::Card(bear)]);
+        settle(&mut g);
+        assert!(g.object_view(bear).tapped);
+        assert_eq!(g.counter_count(bear, CounterKind::PlusOne), 1);
+        assert_eq!(g.counter_count(bear, CounterKind::Stun), 1);
+        assert!(!g.can_receive_counters(bear));
+        spell(&mut g, p, "Snakeskin Veil", &[Target::Card(bear)]);
+        settle(&mut g);
+        assert_eq!(g.counter_count(bear, CounterKind::PlusOne), 1);
+        assert!(g.keywords(bear).contains(Keywords::HEXPROOF));
+        spell(&mut g, p, "Shore Up", &[Target::Card(bear)]);
+        settle(&mut g);
+        assert!(g.object_view(bear).tapped);
+        assert_eq!(g.counter_count(bear, CounterKind::Stun), 1);
+        g.untap_objects(&[bear], untap_rules::UntapCause::ControllerStep(p));
+        assert!(g.object_view(bear).tapped);
+        assert_eq!(g.counter_count(bear, CounterKind::Stun), 1);
+        g.move_object(aura, Zone::Graveyard);
+        assert!(g.can_receive_counters(bear));
+        g.untap_objects(&[bear], untap_rules::UntapCause::Effect);
+        assert!(g.object_view(bear).tapped);
+        assert_eq!(g.counter_count(bear, CounterKind::Stun), 0);
+        g.untap_objects(&[bear], untap_rules::UntapCause::Effect);
+        assert!(!g.object_view(bear).tapped);
+    }
+}
+#[test]
+fn blossombind_enter_trigger_uses_departure_attachment_and_exact_recipient_incarnation() {
+    for reenter in [false, true] {
+        let mut g = setup(Player::P0);
+        let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+        let aura = spell(&mut g, Player::P0, "Blossombind", &[Target::Card(bear)]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        assert!(!g.object_view(bear).tapped);
+        g.move_object(aura, Zone::Graveyard);
+        if reenter {
+            g.move_object(bear, Zone::Hand);
+            g.move_object(bear, Zone::Battlefield);
+        }
+        settle(&mut g);
+        assert_eq!(g.object_view(bear).tapped, !reenter);
+        assert!(g.can_receive_counters(bear));
+    }
+}
+#[test]
+fn blossombind_prevents_optional_and_mandatory_blight_costs_without_removing_counter_costs() {
+    let mut g = setup(Player::P0);
+    let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    spell(&mut g, Player::P0, "Blossombind", &[Target::Card(bear)]);
+    settle(&mut g);
+    let enemy = spawn(&mut g, Player::P1, Card::HillGiant, Zone::Battlefield);
+    let id = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Cinder Strike").unwrap(),
+        Zone::Hand,
+    );
+    checked(&mut g, Action::AnnounceCast { card: id });
+    let object = g.object_ref(bear);
+    reject_atomic(
+        &mut g,
+        Action::ChooseOptionalAdditionalCost {
+            object: Some(object),
+        },
+    );
+    checked(
+        &mut g,
+        Action::ChooseOptionalAdditionalCost { object: None },
+    );
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(enemy),
+        },
+    );
+    finish_cast_choices(&mut g);
+    settle(&mut g);
+    assert_eq!(g.object_view(enemy).damage, 2);
+    let source = mare(&mut g, Player::P0);
+    spell(&mut g, Player::P0, "Blossombind", &[Target::Card(source)]);
+    settle(&mut g);
+    activate(&mut g, source, 0, None);
+    settle(&mut g);
+    assert_eq!(g.counter_count(source, CounterKind::MinusOne), 2);
+    assert!(!g.can_receive_counters(source));
+}
+#[test]
+fn blossombind_blink_ends_old_prohibition_and_entry_counters_are_placed_normally() {
+    let mut g = setup(Player::P0);
+    let source = mare(&mut g, Player::P0);
+    let aura = spell(&mut g, Player::P0, "Blossombind", &[Target::Card(source)]);
+    settle(&mut g);
+    spell(&mut g, Player::P0, "Personify", &[Target::Card(source)]);
+    settle(&mut g);
+    assert_eq!(g.object_view(aura).zone, Zone::Graveyard);
+    assert_eq!(g.counter_count(source, CounterKind::MinusOne), 3);
+    assert!(g.can_receive_counters(source));
+    assert!(!g.object_view(source).tapped);
+}
+#[test]
+fn blossombind_wither_deals_damage_and_gains_life_without_marks_or_counters() {
+    let mut g = setup(Player::P0);
+    let source = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Healer's Hawk").unwrap(),
+        Zone::Battlefield,
+    );
+    let bear = spawn(&mut g, Player::P1, Card::GrizzlyBears, Zone::Battlefield);
+    spell(&mut g, Player::P0, "Blossombind", &[Target::Card(bear)]);
+    settle(&mut g);
+    let equipment = cast_named(&mut g, Player::P0, "Barbed Bloodletter");
+    assert_eq!(
+        g.object_view(equipment).attached_to,
+        Some(g.object_ref(source))
+    );
+    assert!(
+        g.keywords(source)
+            .contains(Keywords::WITHER.union(Keywords::LIFELINK))
+    );
+    spell(
+        &mut g,
+        Player::P0,
+        "Rabid Bite",
+        &[Target::Card(source), Target::Card(bear)],
+    );
+    settle(&mut g);
+    assert_eq!(g.state.players[0].life, 22);
+    assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+    assert_eq!(g.object_view(bear).damage, 0);
+    assert_eq!(g.counter_count(bear, CounterKind::MinusOne), 0);
+    assert!(g.object_view(bear).damaged_this_turn);
+}
+
+fn animate_counter_rule_fixture(g: &mut Game, id: CardId) {
+    let p = g.object_view(id).controller;
+    let item = g.activation_item(p, id, 0);
+    g.animate_source(
+        &item,
+        crate::cards::AnimationSpec {
+            artifact: false,
+            creature_types: crate::cards::AnimationCreatureTypes::Unchanged,
+            base: Some((4, 4)),
+            keywords: Keywords::NONE,
+            duration: crate::cards::AnimationDuration::Permanent,
+        },
+    );
+    g.state.objects[id as usize].summoning_sick = false;
+}
+#[test]
+fn blossombind_counter_cost_is_forbidden_even_before_its_tap_trigger_resolves() {
+    let mut g = setup(Player::P0);
+    let tome = cast_named(&mut g, Player::P0, "Mazemind Tome");
+    animate_counter_rule_fixture(&mut g, tome);
+    let activation = Action::AnnounceActivate {
+        card: tome,
+        ability: 0,
+        counter_payment: Counters::default(),
+    };
+    assert!(g.legal_actions().contains(&activation));
+    let aura = spell(&mut g, Player::P0, "Blossombind", &[Target::Card(tome)]);
+    checked(&mut g, Action::Pass);
+    checked(&mut g, Action::Pass);
+    assert!(!g.object_view(tome).tapped);
+    reject_atomic(&mut g, activation.clone());
+    assert_eq!(g.counter_count(tome, CounterKind::Page), 0);
+    spell(&mut g, Player::P0, "Disenchant", &[Target::Card(aura)]);
+    checked(&mut g, Action::Pass);
+    checked(&mut g, Action::Pass);
+    assert!(g.can_receive_counters(tome));
+    assert!(!g.object_view(tome).tapped);
+    checked(&mut g, activation);
+    finish_cast_choices(&mut g);
+    settle(&mut g);
+    assert_eq!(g.counter_count(tome, CounterKind::Page), 1);
+    assert!(g.object_view(tome).tapped);
+}
+#[test]
+fn blossombind_positive_loyalty_cannot_be_paid_but_negative_loyalty_can() {
+    let mut g = setup(Player::P0);
+    let walker = cast_named(&mut g, Player::P0, "Vivien Reid");
+    animate_counter_rule_fixture(&mut g, walker);
+    let aura = spell(&mut g, Player::P0, "Blossombind", &[Target::Card(walker)]);
+    settle(&mut g);
+    reject_atomic(
+        &mut g,
+        Action::AnnounceActivate {
+            card: walker,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    checked(
+        &mut g,
+        Action::AnnounceActivate {
+            card: walker,
+            ability: 1,
+            counter_payment: Counters::default(),
+        },
+    );
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(aura),
+        },
+    );
+    finish_cast_choices(&mut g);
+    assert_eq!(g.counter_count(walker, CounterKind::Loyalty), 2);
+    settle(&mut g);
+    assert_eq!(g.object_view(aura).zone, Zone::Graveyard);
+    assert!(g.can_receive_counters(walker));
+}
+#[test]
+fn blossombind_blocks_blight_payment_routes_and_optional_resolution_payment() {
+    let mut g = setup(Player::P0);
+    let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    spell(&mut g, Player::P0, "Blossombind", &[Target::Card(bear)]);
+    settle(&mut g);
+    cast_named(&mut g, Player::P0, "Boggart Mischief");
+    assert_eq!(
+        g.state
+            .objects
+            .iter()
+            .filter(|o| o.zone == Zone::Battlefield
+                && o.controller == Player::P0
+                && o.card.is_creature())
+            .count(),
+        1
+    );
+    assert_eq!(g.counter_count(bear, CounterKind::MinusOne), 0);
+    g.state.priority = Player::P1;
+    let bolt = spell(
+        &mut g,
+        Player::P1,
+        "Lightning Bolt",
+        &[Target::Player(Player::P0)],
+    );
+    checked(&mut g, Action::Pass);
+    let id = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Wild Unraveling").unwrap(),
+        Zone::Hand,
+    );
+    g.state.players[0].mana = [0, 2, 0, 0, 0, 1];
+    checked(&mut g, Action::AnnounceCast { card: id });
+    reject_atomic(&mut g, Action::ChooseSpellCost { cost: 0 });
+    checked(&mut g, Action::ChooseSpellCost { cost: 1 });
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Spell(bolt),
+        },
+    );
+    finish_cast_choices(&mut g);
+    settle(&mut g);
+    assert_eq!(g.state.players[0].life, 20);
+    assert_eq!(g.counter_count(bear, CounterKind::MinusOne), 0);
+}
+#[test]
+fn blossombind_selected_land_untap_effect_honors_prohibition_before_stun() {
+    let mut g = setup(Player::P0);
+    let land = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Soulstone Sanctuary").unwrap(),
+        Zone::Battlefield,
+    );
+    checked(
+        &mut g,
+        Action::AnnounceActivate {
+            card: land,
+            ability: 1,
+            counter_payment: Counters::default(),
+        },
+    );
+    finish_cast_choices(&mut g);
+    settle(&mut g);
+    g.set_counters(land, Counters::of(CounterKind::Stun, 1));
+    spell(&mut g, Player::P0, "Blossombind", &[Target::Card(land)]);
+    settle(&mut g);
+    let other = spawn(&mut g, Player::P0, Card::Forest, Zone::Battlefield);
+    g.tap_objects(&[other]);
+    g.set_counters(other, Counters::of(CounterKind::Stun, 1));
+    for _ in 0..12 {
+        spawn(&mut g, Player::P0, Card::Forest, Zone::Library);
+    }
+    let id = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Finale of Revelation").unwrap(),
+        Zone::Hand,
+    );
+    g.state.players[Player::P0.index()].mana = [0, 12, 0, 0, 0, 0];
+    checked(&mut g, Action::AnnounceCast { card: id });
+    checked(&mut g, Action::ChooseX { value: 10 });
+    finish_cast_choices(&mut g);
+    checked(&mut g, Action::Pass);
+    checked(&mut g, Action::Pass);
+    assert!(matches!(g.state.pending, Pending::EffectChoice { .. }));
+    for id in [land, other] {
+        let object = g.object_ref(id);
+        checked(&mut g, Action::SelectLand { object });
+    }
+    checked(&mut g, Action::FinishLandSelection);
+    settle(&mut g);
+    assert!(g.object_view(land).tapped);
+    assert_eq!(g.counter_count(land, CounterKind::Stun), 1);
+    assert!(g.object_view(other).tapped);
+    assert_eq!(g.counter_count(other, CounterKind::Stun), 0);
+}
+
+#[test]
+fn blossombind_keeps_applicable_counter_replacement_choices_but_commits_no_counters() {
+    let mut g = setup(Player::P0);
+    let bear = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Bear Cub").unwrap(),
+        Zone::Battlefield,
+    );
+    spell(&mut g, Player::P0, "Blossombind", &[Target::Card(bear)]);
+    settle(&mut g);
+    let doubling = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Doubling Season").unwrap(),
+        Zone::Battlefield,
+    );
+    spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Michelangelo, Weirdness to 11").unwrap(),
+        Zone::Battlefield,
+    );
+    g.effect_counter(
+        bear,
+        CounterKind::PlusOne,
+        1,
+        replacements::ResumeMode::Pending,
+    );
+    assert!(g.advance_replacements(false));
+    let source = g.object_ref(doubling);
+    checked(&mut g, Action::ChooseReplacement { source, ability: 1 });
+    settle(&mut g);
+    assert_eq!(g.counter_count(bear, CounterKind::PlusOne), 0);
+}

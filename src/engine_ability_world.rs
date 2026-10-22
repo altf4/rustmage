@@ -71,6 +71,37 @@ pub(super) trait CharacteristicWorld {
         result
     }
 
+    fn can_receive_counters(&self, id: CardId) -> bool {
+        !self.game().state.attachment_sources.iter().any(|&source| {
+            let provider = self.object(source);
+            provider.zone == Zone::Battlefield
+                && provider.card.static_ability_groups().iter().any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(
+                            fragment,
+                            crate::cards::StaticAbilityFragment::AttachedCounterProhibition
+                        )
+                    })
+                })
+                && self.attached(self.reference(source), id)
+                && self.printed_abilities_available(source)
+        })
+    }
+    fn activation_counter_cost_allowed(
+        &self,
+        source: CardId,
+        definition: Card,
+        index: u16,
+        ability: &ActivatedAbility,
+    ) -> bool {
+        !(ability.cost.loyalty.is_some_and(|amount| amount > 0)
+            || definition
+                .activation_put_counter(index)
+                .is_some_and(|(_, amount)| amount > 0))
+            || (self.object(source).zone == ability.source_zone()
+                && self.can_receive_counters(source))
+    }
+
     fn chosen_creature_type_applies(&self, source: ObjectRef, id: CardId) -> bool {
         let provider = self.object(source.card);
         let target = self.object(id);

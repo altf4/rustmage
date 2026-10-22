@@ -82,6 +82,7 @@ pub(crate) enum StaticAbilityFragment {
     AttachmentKeywords(Keywords),
     AttachmentRule(Keywords),
     AttachmentCombatToughnessIfGreater,
+    AttachedCounterProhibition,
     AttachedTurnKeywords(Keywords),
     /// Stable index into the granting definition's immutable trigger array.
     AttachmentTrigger(u16),

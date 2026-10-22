@@ -212,7 +212,10 @@ fn source_obligations(
         || ability.cost.discard
         || ability.cost.exile_self
         || ability.cost.remove.is_some()
-        || ability.cost.loyalty.is_some();
+        || ability.cost.loyalty.is_some()
+        || definition
+            .activation_put_counter(*index)
+            .is_some_and(|(_, amount)| amount > 0);
     if let Some(object) = current {
         Game::object_activation_available_with_kinds(
             object,
@@ -392,32 +395,54 @@ impl<'g> FundingState<'g> {
         let reserve = goal
             .reserve
             .and_then(|(r, _)| self.resources.iter().find(|s| s.id == r.card));
-        self.game.state.announcing.as_ref().is_none_or(|a| {
-            a.additional_group.as_ref().is_none_or(|group| {
-                group.iter().all(|r| {
-                    let o = ability_world::CharacteristicWorld::object(self, r.card);
-                    o.zone == Zone::Battlefield
-                        && o.generation == r.generation
-                        && !o.tapped
-                        && o.controller == goal.actor
+        let counter_cost_allowed =
+            goal.source
+                .as_ref()
+                .is_none_or(|(source, index, _, definition)| {
+                    ability_world::CharacteristicWorld::activation_counter_cost_allowed(
+                        self,
+                        source.card,
+                        *definition,
+                        *index,
+                        &definition.activations()[usize::from(*index)],
+                    )
+                })
+                && goal.reserve.is_none_or(|(reference, spec)| {
+                    !matches!(spec.kind, EffectChoiceKind::BlightCost(_))
+                        || ability_world::CharacteristicWorld::can_receive_counters(
+                            self,
+                            reference.card,
+                        )
+                });
+        counter_cost_allowed
+            && self.game.state.announcing.as_ref().is_none_or(|a| {
+                a.additional_group.as_ref().is_none_or(|group| {
+                    group.iter().all(|r| {
+                        let o = ability_world::CharacteristicWorld::object(self, r.card);
+                        o.zone == Zone::Battlefield
+                            && o.generation == r.generation
+                            && !o.tapped
+                            && o.controller == goal.actor
+                    })
                 })
             })
-        }) && reserve_obligations(
-            goal,
-            reserve.map(|r| &r.object),
-            reserve.map_or(0, |r| self.kinds(r)),
-            reserve.map_or(Keywords::NONE, |r| self.keywords(r)),
-            reserve.map_or(GrantedSubtypes::default(), |r| self.granted_subtypes(r.id)),
-        ) && source_obligations(
-            goal,
-            source.map(|r| &r.object),
-            source.map_or(CounterAmounts::default(), |r| {
-                ability_world::CharacteristicWorld::counter_amounts(self, r.id)
-            }),
-            source.map_or(0, |r| self.kinds(r)),
-            || source.map_or(Keywords::NONE, |r| self.keywords(r)),
-            self.life,
-        )
+            && reserve_obligations(
+                goal,
+                reserve.map(|r| &r.object),
+                reserve.map_or(0, |r| self.kinds(r)),
+                reserve.map_or(Keywords::NONE, |r| self.keywords(r)),
+                reserve.map_or(GrantedSubtypes::default(), |r| self.granted_subtypes(r.id)),
+            )
+            && source_obligations(
+                goal,
+                source.map(|r| &r.object),
+                source.map_or(CounterAmounts::default(), |r| {
+                    ability_world::CharacteristicWorld::counter_amounts(self, r.id)
+                }),
+                source.map_or(0, |r| self.kinds(r)),
+                || source.map_or(Keywords::NONE, |r| self.keywords(r)),
+                self.life,
+            )
     }
     fn granted_subtypes(&self, id: CardId) -> GrantedSubtypes {
         ability_world::CharacteristicWorld::subtypes(self, id)
@@ -714,6 +739,13 @@ impl<'g> FundingState<'g> {
                     continue;
                 }
                 if !self.guard_available(ability.guard, goal.actor)
+                    || !ability_world::CharacteristicWorld::activation_counter_cost_allowed(
+                        self,
+                        entry.id,
+                        object.card,
+                        index as u16,
+                        ability,
+                    )
                     || !Game::object_activation_available_with_kinds(
                         object,
                         ability_world::CharacteristicWorld::counter_amounts(self, entry.id),
@@ -1186,6 +1218,13 @@ impl<'g> FundingState<'g> {
                             && *pending as usize == index
                     })
                     || !self.guard_available(ability.guard, goal.actor)
+                    || !ability_world::CharacteristicWorld::activation_counter_cost_allowed(
+                        self,
+                        resource.id,
+                        object.card,
+                        index as u16,
+                        ability,
+                    )
                     || !Game::object_activation_available_with_kinds(
                         object,
                         ability_world::CharacteristicWorld::counter_amounts(self, resource.id),
@@ -1398,6 +1437,25 @@ impl Game {
         self.can_fund_for(goal, purpose)
     }
     pub(super) fn can_fund_for(&self, goal: FundingGoal, purpose: mana_lots::Purpose) -> bool {
+        if !goal
+            .source
+            .as_ref()
+            .is_none_or(|(source, index, _, definition)| {
+                ability_world::CharacteristicWorld::activation_counter_cost_allowed(
+                    self,
+                    source.card,
+                    *definition,
+                    *index,
+                    &definition.activations()[usize::from(*index)],
+                )
+            })
+            || goal.reserve.is_some_and(|(reference, spec)| {
+                matches!(spec.kind, EffectChoiceKind::BlightCost(_))
+                    && !self.can_receive_counters(reference.card)
+            })
+        {
+            return false;
+        }
         if let Some(a) = &self.state.announcing
             && !a.additional_paid
             && a.item
@@ -3677,3 +3735,76 @@ mod ecl_tap_group_source_tests {
 #[cfg(test)]
 #[path = "engine_ecl_color_funding_tests.rs"]
 mod ecl_color_funding_tests;
+
+#[cfg(test)]
+mod ecl_counter_prohibition_tests {
+    use super::super::ability_timeline_tests::{cast, checked, settle, setup};
+    use super::super::tests::spawn;
+    use super::*;
+    #[test]
+    fn ecl_counter_prohibition_borrowed_departure_and_counter_cost_readiness_match_actual() {
+        let mut g = setup(Player::P0);
+        let tome = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Mazemind Tome").unwrap(),
+            Zone::Battlefield,
+        );
+        let item = g.activation_item(Player::P0, tome, 0);
+        g.animate_source(
+            &item,
+            crate::cards::AnimationSpec {
+                artifact: false,
+                creature_types: crate::cards::AnimationCreatureTypes::Unchanged,
+                base: Some((4, 4)),
+                keywords: Keywords::NONE,
+                duration: crate::cards::AnimationDuration::Permanent,
+            },
+        );
+        g.state.objects[tome as usize].summoning_sick = false;
+        let aura = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Blossombind").unwrap(),
+            Zone::Hand,
+        );
+        cast(&mut g, aura, None, &[Target::Card(tome)]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        let definition = g.object_view(tome).card;
+        let goal = FundingGoal {
+            actor: Player::P0,
+            required: [0; 6],
+            generic: 0,
+            reserve: None,
+            source: Some((g.object_ref(tome), 0, Counters::default(), definition)),
+        };
+        let before = g.snapshot();
+        let mut world = FundingState::from_game_with_convoke(&g, &goal, true);
+        assert!(!ability_world::CharacteristicWorld::can_receive_counters(
+            &world, tome
+        ));
+        assert!(!world.obligations(&goal));
+        assert!(!g.can_fund(goal.clone()));
+        world
+            .resources
+            .iter_mut()
+            .find(|r| r.id == aura)
+            .unwrap()
+            .object
+            .zone = Zone::Graveyard;
+        let mut actual = g.clone();
+        actual.move_object(aura, Zone::Graveyard);
+        assert!(ability_world::CharacteristicWorld::can_receive_counters(
+            &world, tome
+        ));
+        assert!(world.obligations(&goal));
+        assert!(actual.can_fund(goal.clone()));
+        assert_eq!(g.snapshot(), before);
+        let object = world.resources.iter_mut().find(|r| r.id == tome).unwrap();
+        object.object.zone = Zone::Graveyard;
+        assert!(!world.obligations(&goal));
+        // Finish the paid Aura's trigger after restoring independent original state.
+        settle(&mut actual);
+    }
+}

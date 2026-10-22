@@ -481,6 +481,9 @@ impl Game {
     pub(super) fn evaluated_abilities(&self) -> Option<AbilityEvaluation> {
         evaluate_if_needed(self)
     }
+    pub(super) fn can_receive_counters(&self, id: CardId) -> bool {
+        CharacteristicWorld::can_receive_counters(self, id)
+    }
     pub(super) fn printed_abilities_available(&self, id: CardId) -> bool {
         CharacteristicWorld::printed_abilities_available(self, id)
     }

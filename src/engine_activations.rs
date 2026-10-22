@@ -101,6 +101,13 @@ impl Game {
         sorcery: bool,
     ) -> bool {
         self.printed_abilities_available(card)
+            && ability_world::CharacteristicWorld::activation_counter_cost_allowed(
+                self,
+                card,
+                self.state.objects[card as usize].card,
+                index as u16,
+                ability,
+            )
             && (ability.mana_production().is_some() || !self.named_activation_prohibited(card))
             && self.activation_guard_available(ability.guard, actor)
             && Self::object_activation_available_with_kinds(

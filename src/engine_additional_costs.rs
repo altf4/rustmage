@@ -42,6 +42,11 @@ impl Game {
             | EffectChoiceKind::TapPermanents(_) => o.controller == actor,
             _ => false,
         };
+        if matches!(spec.kind, EffectChoiceKind::BlightCost(_))
+            && !self.can_receive_counters(object.card)
+        {
+            return false;
+        }
         if !controls_cost_object
             || self.object_ref(object.card) != object
             || object == source && (spec.kind == EffectChoiceKind::Discard || spec.filter.other)

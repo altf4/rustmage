@@ -431,6 +431,7 @@ impl Game {
                     .counters = p.amount.clone();
             } else if self.on_battlefield(p.object.card)
                 && self.object_ref(p.object.card) == p.object
+                && self.can_receive_counters(p.object.card)
             {
                 let before = self.state.objects[p.object.card as usize].counters.lore;
                 for kind in CounterKind::ALL {
@@ -628,6 +629,9 @@ impl Game {
                     .any(|e| matches!(e, ReplacementSpec::Counters { .. }))
             })
         {
+            if !self.can_receive_counters(id) {
+                return;
+            }
             let before = self.state.objects[id as usize].counters.lore;
             self.add_counter(id, kind, amount);
             let placed_by = self

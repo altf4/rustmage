@@ -35,6 +35,7 @@ impl Game {
             return o.zone == Zone::Battlefield
                 && o.controller == player
                 && self.is_creature(object.card)
+                && self.can_receive_counters(object.card)
                 && self.object_ref(object.card) == object
                 && !choice.selected[player.index()].contains(&object);
         }
@@ -191,9 +192,14 @@ impl Game {
             .take()
             .unwrap();
         if matches!(choice.kind, EffectChoiceKind::UntapLands { .. }) {
-            for object in choice.selected.iter().flatten() {
-                self.state.objects[object.card as usize].tapped = false;
-            }
+            let ids: Vec<_> = choice
+                .selected
+                .iter()
+                .flatten()
+                .filter(|object| self.object_ref(object.card) == **object)
+                .map(|object| object.card)
+                .collect();
+            self.untap_objects(&ids, untap_rules::UntapCause::Effect);
             return;
         }
         let EffectChoiceKind::LandCards { tapped, .. } = choice.kind else {
