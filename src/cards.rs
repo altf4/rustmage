@@ -2087,6 +2087,9 @@ pub(crate) struct CombatRestriction {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepGuard {
+    YourMainPhase {
+        expected: bool,
+    },
     SourceCounters {
         kind: CounterKind,
         minimum: Option<u64>,

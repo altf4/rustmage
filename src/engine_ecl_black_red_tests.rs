@@ -1443,3 +1443,111 @@ fn free_or_cost_requires_additional_payment_and_colored_additional_mana_is_prese
         }
     }
 }
+
+#[test]
+fn dose_of_dawnglow_checks_resolving_main_phase_and_blights_returned_creature_as_effect() {
+    for p in [Player::P0, Player::P1] {
+        for (active, step, blight) in [
+            (p, Step::Main1, false),
+            (p, Step::Main2, false),
+            (p, Step::BeginCombat, true),
+            (p.other(), Step::Main1, true),
+        ] {
+            for doubled in [false, true] {
+                let mut g = setup(p);
+                g.state.active = active;
+                g.state.step = step;
+                if doubled {
+                    named(&mut g, p, "Doubling Season", Zone::Battlefield);
+                }
+                let returned = named(&mut g, p, "Gigantosaurus", Zone::Graveyard);
+                let enemy = named(&mut g, p.other(), "Gigantosaurus", Zone::Graveyard);
+                let id = named(&mut g, p, "Dose of Dawnglow", Zone::Hand);
+                checked(&mut g, Action::AnnounceCast { card: id });
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(enemy),
+                    },
+                );
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(returned),
+                    },
+                );
+                while g.state.announcing.is_some() {
+                    advance(&mut g);
+                }
+                if blight {
+                    for _ in 0..30 {
+                        if g.legal_actions().contains(&Action::Blight {
+                            object: g.object_ref(returned),
+                        }) {
+                            break;
+                        }
+                        advance(&mut g);
+                    }
+                    let object = g.object_ref(returned);
+                    checked(&mut g, Action::Blight { object });
+                }
+                settle(&mut g);
+                assert_eq!(g.state.objects[returned as usize].zone, Zone::Battlefield);
+                assert_eq!(
+                    g.counter_count(returned, CounterKind::MinusOne),
+                    if blight {
+                        if doubled { 4 } else { 2 }
+                    } else {
+                        0
+                    }
+                );
+            }
+        }
+    }
+}
+#[test]
+fn dose_of_dawnglow_dead_target_suppresses_blight_and_returned_one_one_can_die() {
+    for p in [Player::P0, Player::P1] {
+        for invalid in [false, true] {
+            let mut g = setup(p);
+            g.state.step = Step::BeginCombat;
+            let returned = named(&mut g, p, "Llanowar Elves", Zone::Graveyard);
+            let witness = named(&mut g, p, "Gigantosaurus", Zone::Battlefield);
+            let id = named(&mut g, p, "Dose of Dawnglow", Zone::Hand);
+            checked(&mut g, Action::AnnounceCast { card: id });
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(returned),
+                },
+            );
+            while g.state.announcing.is_some() {
+                advance(&mut g);
+            }
+            if invalid {
+                g.move_object(returned, Zone::Exile);
+            } else {
+                for _ in 0..30 {
+                    if g.legal_actions().contains(&Action::Blight {
+                        object: g.object_ref(returned),
+                    }) {
+                        break;
+                    }
+                    advance(&mut g);
+                }
+                let object = g.object_ref(returned);
+                checked(&mut g, Action::Blight { object });
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.state.objects[returned as usize].zone,
+                if invalid {
+                    Zone::Exile
+                } else {
+                    Zone::Graveyard
+                }
+            );
+            assert_eq!(g.counter_count(witness, CounterKind::MinusOne), 0);
+        }
+    }
+}

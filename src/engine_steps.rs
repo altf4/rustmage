@@ -119,6 +119,11 @@ impl Game {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
             StepGuard::Always => return true,
+            StepGuard::YourMainPhase { expected } => {
+                return (self.state.active == player
+                    && matches!(self.state.step, Step::Main1 | Step::Main2))
+                    == expected;
+            }
             StepGuard::SourceCounters {
                 kind,
                 minimum,
