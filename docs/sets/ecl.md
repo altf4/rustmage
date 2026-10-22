@@ -43,7 +43,7 @@ Rimefire Torque are integrated. The213-card run passed all2,768 native tests;
 the remaining transform-name catalogue invariant is fixed and all9 catalogue
 tests pass. Subsequent integrated cards include both Trystan faces, Champions of
 the Perfect, Mudbutton Cursetosser, Soulbright Seeker, Moonshadow, Temporal
-Cleansing and Swat Away. A220-card release validation is next.
+Cleansing and Swat Away. Scarblade’s Malice is integrated, bringing admission to221/273. The220-card attempts found a malformed source pin and an exhaustive example match; both are fixed. A fresh release validation is next.
 
 Shared mechanics include mandatory and optional blight costs versus effects,
 wither as a damage result, exact mana-funding tap witnesses, entry-time creature
@@ -80,7 +80,7 @@ restore checkpoints. Debug workload: **5,719 decisions in 1.777491 seconds**,
 snapshots. This is subset regression evidence, not complete-set acceptance.
 See the JSON for seeds, revision, compiler, hardware, and artifact reports.
 
-The validation JSON records the measured implementation interval and current cards/hour for88 newly locally tested physical candidates. This excludes inherited certification, independent final review, and upstream merge.
+The validation JSON records the measured implementation interval and current cards/hour for114 newly locally tested physical candidates. This excludes inherited certification, independent final review, and upstream merge.
 
 ## Resume and remaining work
 

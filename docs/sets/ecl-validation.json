@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 113,
+  "newly_tested_physical_cards": 114,
   "newly_tested_names": [
     "Adept Watershaper",
     "Ashling's Command",
@@ -89,6 +89,7 @@
     "Rimefire Torque",
     "Safewright Cavalry",
     "Sapling Nursery",
+    "Scarblade's Malice",
     "Scuzzback Scrounger",
     "Selfless Safewright",
     "Shimmerwilds Growth",
@@ -118,8 +119,8 @@
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 220,
-  "remaining_gated": 53,
+  "current_admission_flags": 221,
+  "remaining_gated": 52,
   "inherited_evidence_audit": "pending",
   "locally_reviewed": 0,
   "final_published_reviews": 0,
@@ -157,11 +158,11 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T18:07:06.789318+00:00",
-    "elapsed_seconds": 9859.572467,
-    "newly_verified_cards": 113,
-    "cards_per_hour": 41.25939551248901,
-    "scope": "Local whole-card focused verification; excludes inherited audit, final review and merge. Full release pass at195cards; later attempts/rechecks recorded separately."
+    "end_utc": "2026-10-22T18:20:47.405774+00:00",
+    "elapsed_seconds": 10680.188923,
+    "newly_verified_cards": 114,
+    "cards_per_hour": 38.426286553433094,
+    "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "196 integrated ECL scenarios passed at bb92026c with generated catalogue1fbc9bcda08f4079d26ed30456add7c4c31131f6ef2563e732a179a74fc3e0a3",
   "full_release_validation": {

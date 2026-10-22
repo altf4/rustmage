@@ -4894,7 +4894,7 @@
       "name": "Scarblade's Malice",
       "definition": "src/card_definitions/ecl/scarblade_s_malice.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Scarblade's Malice",
@@ -4908,7 +4908,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/scarblade_s_malice.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "af38d683-77a3-4599-ad2a-1c293ae01d45",

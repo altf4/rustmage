@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "3028da599dc0286fbed5114978f7cf9b553db73f3d0414cbbcf8903e3cc162fa",
+  "catalogue_version": "9f15a042f34b9e31c994e2706c0149876ec0672e8b43e98716daafc85e35d404",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2303,
-  "implemented_total": 2309,
+  "implemented_standard_cards": 2304,
+  "implemented_total": 2310,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 53,
-      "complete": 214
+      "gated": 52,
+      "complete": 215
     },
     "eoc": {
       "total": 8,
@@ -29903,8 +29903,8 @@
     {
       "name": "Scarblade's Malice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/scarblade_s_malice.rs",
       "set": "ecl"
     },
