@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "428fd154016a9abee93c2c9ad3890c5cdfb8d8aa162aedb93655b15b423ab56a",
+  "catalogue_version": "bf1ef7fbc895ef05a89bf492a3330bbadb0dc2e6ca9d356087464922d7ab0e7a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2312,
-  "implemented_total": 2318,
+  "implemented_standard_cards": 2315,
+  "implemented_total": 2321,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 44,
-      "complete": 223
+      "gated": 41,
+      "complete": 226
     },
     "eoc": {
       "total": 8,
@@ -10391,8 +10391,8 @@
     {
       "name": "Eirdu, Carrier of Dawn // Isilu, Carrier of Twilight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/eirdu_carrier_of_dawn_isilu_carrier_of_twilight.rs",
       "set": "ecl"
     },
@@ -15039,8 +15039,8 @@
     {
       "name": "Gravelgill Scoundrel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/gravelgill_scoundrel.rs",
       "set": "ecl"
     },
@@ -21751,8 +21751,8 @@
     {
       "name": "Meanders Guide",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/meanders_guide.rs",
       "set": "ecl"
     },

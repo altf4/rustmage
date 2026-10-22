@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 122,
+  "newly_tested_physical_cards": 125,
   "newly_tested_names": [
     "Adept Watershaper",
     "Ashling's Command",
@@ -45,6 +45,7 @@
     "Dose of Dawnglow",
     "Dream Seizer",
     "Eclipsed Realms",
+    "Eirdu, Carrier of Dawn // Isilu, Carrier of Twilight",
     "Emptiness",
     "Encumbered Reejerey",
     "Evershrike's Gift",
@@ -60,6 +61,7 @@
     "Glen Elendra Guardian",
     "Gloom Ripper",
     "Goatnap",
+    "Gravelgill Scoundrel",
     "Gristle Glutton",
     "Grub's Command",
     "Gutsplitter Gang",
@@ -74,6 +76,7 @@
     "Liminal Hold",
     "Loch Mare",
     "Lys Alana Dignitary",
+    "Meanders Guide",
     "Moonshadow",
     "Mudbutton Cursetosser",
     "Mutable Explorer",
@@ -127,8 +130,8 @@
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 229,
-  "remaining_gated": 44,
+  "current_admission_flags": 232,
+  "remaining_gated": 41,
   "inherited_evidence_audit": {
     "audited": 5,
     "total": 107,
@@ -180,10 +183,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T18:43:58.661278+00:00",
-    "elapsed_seconds": 12071.444427,
-    "newly_verified_cards": 122,
-    "cards_per_hour": 36.38338416384112,
+    "end_utc": "2026-10-22T18:50:12.430753+00:00",
+    "elapsed_seconds": 12445.213902,
+    "newly_verified_cards": 125,
+    "cards_per_hour": 36.15847855597589,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "196 integrated ECL scenarios passed at bb92026c with generated catalogue1fbc9bcda08f4079d26ed30456add7c4c31131f6ef2563e732a179a74fc3e0a3",
@@ -234,6 +237,22 @@
       "command": "python3 -m unittest scripts.test_direct_cards",
       "passed": 7
     }
+  },
+  "regression_benchmark": {
+    "head": "7f001174976c55a93d6e738041c82192af57999d",
+    "workload": "Freeform smoke regression,100games seeds0..99; native policy/observations; no JSON/model/tensor work; not ECL acceptance",
+    "cpu": "Intel Core Ultra5 335, x86_64,8cores",
+    "compiler": "rustc1.98.0(88d9e12ae2026-08-18)",
+    "clone_ns": 212.57445,
+    "decisions": 49832,
+    "decisions_per_second": 216499.06945630937,
+    "games": 100,
+    "games_per_second": 434.45791751547074,
+    "initial_state_bytes_excluding_capacity_and_allocator": 21048,
+    "max_decisions_per_game": 1129,
+    "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+    "restore_ns": 190.39887,
+    "seconds": 0.23017189
   },
   "doran": {
     "commit": "4bc474cc",
@@ -326,20 +345,16 @@
     },
     "scope": "195 admission flags at0ae35121; later integrated batches have focused tests, final entire-set run remains pending."
   },
-  "regression_benchmark": {
-    "head": "7f001174976c55a93d6e738041c82192af57999d",
-    "workload": "Freeform smoke regression,100games seeds0..99; native policy/observations; no JSON/model/tensor work; not ECL acceptance",
-    "cpu": "Intel Core Ultra5 335, x86_64,8cores",
-    "compiler": "rustc1.98.0(88d9e12ae2026-08-18)",
-    "clone_ns": 212.57445,
-    "decisions": 49832,
-    "decisions_per_second": 216499.06945630937,
-    "games": 100,
-    "games_per_second": 434.45791751547074,
-    "initial_state_bytes_excluding_capacity_and_allocator": 21048,
-    "max_decisions_per_game": 1129,
-    "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
-    "restore_ns": 190.39887,
-    "seconds": 0.23017189
+  "eirdu": {
+    "source_commit": "57b0fd53",
+    "integration_commit": "b171dc44",
+    "focused_ecl_tests": 301,
+    "focused_seconds": 9.42,
+    "focused_resource_report": "<cache>/rustmage-build-reports/11966da0e55846dabaf4f31a24205a87.json",
+    "funding_tests": 106,
+    "funding_seconds": 3.13,
+    "funding_resource_report": "<cache>/rustmage-build-reports/8917b5a3e11346f1852ac94e9555e714.json",
+    "native_regression": "2803 passed; only inherited Moonshadow source-index assertion failed on older author base; fixed12633035 already passed combined228 release",
+    "source_pins": "all integrated authored Java provenance unittest passed1.937s"
   }
 }

@@ -1855,7 +1855,7 @@
       "name": "Eirdu, Carrier of Dawn // Isilu, Carrier of Twilight",
       "definition": "src/card_definitions/ecl/eirdu_carrier_of_dawn_isilu_carrier_of_twilight.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Eirdu, Carrier of Dawn",
@@ -1884,7 +1884,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_transform_tests.rs",
+        "src/card_definitions/ecl/eirdu_carrier_of_dawn_isilu_carrier_of_twilight.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "079f0d7f-57a5-4101-a9e3-c5a57148b3fb",
@@ -2749,7 +2753,7 @@
       "name": "Gravelgill Scoundrel",
       "definition": "src/card_definitions/ecl/gravelgill_scoundrel.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Gravelgill Scoundrel",
@@ -2764,7 +2768,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/gravelgill_scoundrel.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "1eebc02a-9a64-49b0-8322-c5ce671457ce",
@@ -3615,7 +3623,7 @@
       "name": "Meanders Guide",
       "definition": "src/card_definitions/ecl/meanders_guide.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Meanders Guide",
@@ -3629,7 +3637,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/meanders_guide.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "b9fff42d-31cf-4edf-8353-4a3b996bb77b",

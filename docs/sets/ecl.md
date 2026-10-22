@@ -17,13 +17,13 @@ Oracle facts: `data/standard/cards.json`; canonical ownership:
 
 ## Card obligations and evidence
 
-The frozen manifest accounts for every identity. The [per-card obligation ledger](ecl-obligations.json) records every face and printed rules line with canonical ownership. All inherited cards still require evidence audit.
+The frozen manifest accounts for every identity. The [per-card obligation ledger](ecl-obligations.json) records every face and printed rules line with canonical ownership. Five inherited basic lands have passed source/rules audit;102 inherited cards remain.
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **220/273**, comprising **107 inherited** and **113 newly
-implemented/tested physical candidates**; **53 remain gated**. Inherited evidence
-still needs audit. No final published reviews or newly merged cards. All new
+Admission flags: **232/273**, comprising **107 inherited** and **125 newly
+implemented/tested physical candidates**; **41 remain gated**. Five inherited
+basic lands have passed source/rules audit;102 inherited cards remain. No final published reviews or newly merged cards. All new
 names and per-card obligations appear in the linked JSON ledgers. Three tested
 synthetic token recipes are outside the physical denominator.
 
@@ -103,3 +103,7 @@ remain open.
 Revision `7f001174` passed all8 release phases in553.77seconds:2,826 native tests (one ignored),9 catalogue tests,all22 Foundations game suites and ECL games,Clippy,provenance,release build and benchmark. Shared memory peak3.3GiB;1,100,824,576 disposable bytes cleaned. Required libraries and exact SHA hashes remain at the paths recorded in `ecl-validation.json`. Freeform regression:49,832decisions/0.23017189seconds=216,499.07decisions/s;clone212.57ns,restore190.40ns. This is regression measurement,not full-set ECL acceptance.
 
 Spiral into Solitude brings admission to229/273. The inherited evidence audit now covers all5 basic lands against full pinned sources and actual land play/mana payments with both players,private observations,invalid-action atomicity,and owned raw/index replay/restore (0.07seconds).102 inherited definitions still need the evidence audit.
+
+## Eirdu and optional tap integration
+
+Both Eirdu/Isilu faces are implemented,including live/speculative creature-spell convoke and other nontoken creatures’ persist with frozen departure LKI,owner returns,and counter entry.301 ECL scenarios passed9.42seconds;106 funding regressions passed3.13seconds. All integrated Java provenance passes. Gravelgill Scoundrel and Meanders Guide add paid optional tap choices and a post-payment reflexive return;306 ECL scenarios passed10.05seconds on the author branch. Combined232-card release verification follows.
