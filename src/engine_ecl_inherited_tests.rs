@@ -442,3 +442,68 @@ fn ecl_inherited_shore_lurker_paid_body_and_private_surveillance_both_destinatio
         }
     }
 }
+#[test]
+fn ecl_inherited_keyword_changelings_paid_hybrids_both_seats_and_real_combat() {
+    for p in [Player::P0, Player::P1] {
+        for name in [
+            "Feisty Spikeling",
+            "Mischievous Sneakling",
+            "Prideful Feastling",
+        ] {
+            let definition = Card::from_name(name).unwrap();
+            for (index, cost) in definition.cost_options().enumerate() {
+                let mut g = setup(p);
+                if name == "Mischievous Sneakling" {
+                    g.state.active = p.other();
+                    g.state.priority = p;
+                }
+                let id = named(&mut g, p, name, Zone::Hand);
+                let mut payment = cost.colored;
+                payment[5] = cost.generic;
+                g.state.players[p.index()].mana = payment;
+                checked(&mut g, Action::AnnounceCast { card: id });
+                checked(&mut g, Action::ChooseSpellCost { cost: index as u16 });
+                checked(&mut g, Action::PayCosts { payment });
+                settle(&mut g);
+                assert!(g.has_subtype(id, "Elf") && g.has_subtype(id, "Merfolk"));
+                let expected = match name {
+                    "Feisty Spikeling" => Stats {
+                        power: 2,
+                        toughness: 1,
+                    },
+                    "Mischievous Sneakling" => Stats {
+                        power: 2,
+                        toughness: 2,
+                    },
+                    _ => Stats {
+                        power: 2,
+                        toughness: 3,
+                    },
+                };
+                assert_eq!(g.stats(id), expected);
+                let extra = match name {
+                    "Feisty Spikeling" => Keywords::FIRST_STRIKE,
+                    "Mischievous Sneakling" => Keywords::FLASH,
+                    _ => Keywords::LIFELINK,
+                };
+                assert!(g.keywords(id).contains(Keywords::CHANGELING.union(extra)));
+                if name == "Feisty Spikeling" {
+                    g.state.active = p.other();
+                    assert!(!g.keywords(id).contains(Keywords::FIRST_STRIKE));
+                }
+                if name == "Prideful Feastling" {
+                    g.state.objects[id as usize].summoning_sick = false;
+                    g.state.step = Step::Attackers;
+                    g.state.pending = Pending::Attackers;
+                    checked(&mut g, Action::Attack { card: id });
+                    checked(&mut g, Action::FinishAttackers);
+                    settle(&mut g);
+                    g.state.step = Step::Blockers;
+                    g.advance_step();
+                    assert_eq!(g.state.players[p.index()].life, 22);
+                    assert_eq!(g.state.players[p.other().index()].life, 18);
+                }
+            }
+        }
+    }
+}
