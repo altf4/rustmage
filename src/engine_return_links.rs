@@ -100,15 +100,12 @@ impl Game {
                 Zone::Exile | Zone::Graveyard | Zone::Command
             )
         {
-            self.stage_linked_return(
-                &ReturnLinkView {
-                    object: movement.after,
-                    zone: movement.destination,
-                    controller: owner,
-                    counter: None,
-                },
-                None,
-            );
+            self.after_departure(programs::ProgramContinuation::Return(ReturnLinkView {
+                object: movement.after,
+                zone: movement.destination,
+                controller: owner,
+                counter: None,
+            }));
         }
     }
     pub(super) fn blink_until_end_step(&mut self, item: &SpellView, under_owner: bool) {
@@ -160,7 +157,7 @@ impl Game {
             }
         }
     }
-    fn stage_linked_return(
+    pub(super) fn stage_linked_return(
         &mut self,
         link: &ReturnLinkView,
         modification: Option<(ReturnKind, ObjectRef)>,

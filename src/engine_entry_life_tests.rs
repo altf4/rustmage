@@ -56,6 +56,7 @@ fn program(g: &mut Game, code: &'static [Instruction]) {
     let id = named(g, Player::P0, "Shock", Zone::Hand);
     let item = g.cast_item(Player::P0, id, [0; 6]);
     g.state.resolving = Some(Resolution {
+        continuation: None,
         explore: None,
         evidence: None,
         connive: None,

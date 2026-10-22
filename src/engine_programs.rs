@@ -4,6 +4,7 @@ use crate::cards::{CastFilter, CastTarget, StaticAbilityFragment};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
+    pub continuation: Option<Box<ProgramContinuation>>,
     pub connive: Option<Box<super::connive::ConniveSequence>>,
     pub explore: Option<Box<ExploreChoiceView>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
@@ -26,6 +27,17 @@ pub(super) struct Resolution {
     pub choice: Option<Box<super::effect_choices::EffectChoice>>,
 }
 
+/// Owned work that must follow all immediate entries caused by a departure.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) enum ProgramContinuation {
+    Return(ReturnLinkView),
+    CreateTokens {
+        controller: Player,
+        token: Card,
+        amount: u16,
+    },
+}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct LibraryChoice {
     pub surveil: bool,
@@ -36,6 +48,25 @@ pub(super) struct LibraryChoice {
 }
 
 impl Game {
+    pub(super) fn after_departure(&mut self, continuation: ProgramContinuation) {
+        if self.state.entry_batch.is_some() {
+            let saved = &mut self.state.resolving.as_mut().unwrap().continuation;
+            assert!(saved.is_none(), "one program continuation at a time");
+            *saved = Some(Box::new(continuation));
+        } else {
+            self.apply_program_continuation(continuation);
+        }
+    }
+    fn apply_program_continuation(&mut self, continuation: ProgramContinuation) {
+        match continuation {
+            ProgramContinuation::Return(link) => self.stage_linked_return(&link, None),
+            ProgramContinuation::CreateTokens {
+                controller,
+                token,
+                amount,
+            } => self.create_tokens(controller, token, u128::from(amount), false),
+        }
+    }
     pub(super) fn entering_subject(&self, item: &SpellView) -> Option<CardId> {
         item.entering_object
             .filter(|object| {
@@ -1362,6 +1393,7 @@ impl Game {
         }
         assert!(self.state.resolving.is_none());
         self.state.resolving = Some(Resolution {
+            continuation: None,
             explore: None,
             evidence: None,
             connive: None,
@@ -1483,6 +1515,11 @@ impl Game {
                     .is_some()
             {
                 return;
+            }
+            // Take before resuming: the resumed work may itself suspend another entry.
+            if let Some(continuation) = self.state.resolving.as_mut().unwrap().continuation.take() {
+                self.apply_program_continuation(*continuation);
+                continue;
             }
             if self.advance_optional_searches() {
                 return;
@@ -1953,7 +1990,11 @@ impl Game {
                     {
                         let controller = self.state.objects[id as usize].controller;
                         self.move_object(id, Zone::Exile);
-                        self.create_tokens(controller, token, u128::from(amount), false);
+                        self.after_departure(ProgramContinuation::CreateTokens {
+                            controller,
+                            token,
+                            amount,
+                        });
                     }
                 }
                 Instruction::BlinkUntilEndStep { under_owner } => {

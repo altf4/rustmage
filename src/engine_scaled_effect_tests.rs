@@ -347,6 +347,7 @@ fn scaled_amount_ir_rejects_unrepresentable_damage_gain_and_multiplication_atomi
             group: 0,
         });
         g.state.resolving = Some(Resolution {
+            continuation: None,
             explore: None,
             evidence: None,
             item,

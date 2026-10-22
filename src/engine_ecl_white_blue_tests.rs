@@ -428,6 +428,12 @@ fn personify_finishes_returned_entry_choice_before_creating_token() {
     checked(&mut g, Action::Pass);
     assert!(matches!(g.state.pending, Pending::EntryValue { .. }));
     assert_eq!(changelings(&g, Player::P0), 0);
+    // Dispose the source branch while the returned card's own entry is suspended.
+    let mut g = {
+        let child = g.clone();
+        drop(g);
+        child
+    };
     checked(
         &mut g,
         Action::ChooseEntryValue {
@@ -685,4 +691,53 @@ fn glen_elendra_guardian_cannot_target_creature_spells() {
     checked(&mut g, Action::Pass);
     assert!(!g.legal_actions().iter().any(|a| matches!(a,
         Action::BeginActivate {card, ..} | Action::Activate {card, ..} if *card == source)));
+}
+
+#[test]
+fn immediate_exile_programs_wait_for_departure_linked_entry_choices() {
+    for name in ["Personify", "Crib Swap"] {
+        let mut g = setup(Player::P0);
+        let returning = spawn(
+            &mut g,
+            Player::P1,
+            Card::from_name("Diamond Mare").unwrap(),
+            Zone::Battlefield,
+        );
+        g.state.objects[returning as usize].tapped = true;
+        let exiler = cast_named(&mut g, Player::P0, "Henchbots");
+        assert_eq!(g.object_view(returning).zone, Zone::Exile);
+        spell(&mut g, Player::P0, name, &[Target::Card(exiler)]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        assert!(matches!(
+            g.state.pending,
+            Pending::EntryValue { player: Player::P1 }
+        ));
+        assert_eq!(g.object_view(exiler).zone, Zone::Exile);
+        assert_eq!(changelings(&g, Player::P0), 0);
+        assert!(g.state.resolving.as_ref().unwrap().continuation.is_some());
+        let snapshot = g.snapshot();
+        let bytes = g.state_bytes();
+        let mut child = g.clone();
+        drop(g);
+        child.restore(&snapshot).unwrap();
+        assert_eq!(child.state_bytes(), bytes);
+        checked(
+            &mut child,
+            Action::ChooseEntryValue {
+                value: EntryChoiceValue::Color(ChoiceColor::Blue),
+            },
+        );
+        settle(&mut child);
+        assert_eq!(child.object_view(returning).zone, Zone::Battlefield);
+        assert_eq!(
+            child.object_view(exiler).zone,
+            if name == "Personify" {
+                Zone::Battlefield
+            } else {
+                Zone::Exile
+            }
+        );
+        assert_eq!(changelings(&child, Player::P0), 1);
+    }
 }
