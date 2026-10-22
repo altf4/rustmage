@@ -1,0 +1,12 @@
+{
+  "source": "https://api.scryfall.com/cards/search?q=set%3Aecl&unique=cards&order=name",
+  "retrieved_utc": "2026-10-22T15:27:49.204233+00:00",
+  "page_sha256": [
+    "d55227397b4cb37e9adb4eba946f94aad401f721b504b26485b558a020e8d226",
+    "0823a633c9f7484be53bc9e77c2c7d8fde45a4254c2928363ae062cd31508ee1"
+  ],
+  "scryfall_physical_identities": 273,
+  "frozen_identities": 273,
+  "missing_from_frozen": [],
+  "absent_from_live": []
+}

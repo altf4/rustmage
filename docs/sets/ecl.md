@@ -10,15 +10,14 @@ Tracking issue: https://github.com/altf4/rustmage/issues/462. No implementation 
 Pinned XMage revision: `492369c7844b8d76479f0393ff9eb6b0b0cf30d7`.
 Membership: [frozen manifest](../../data/sets/ecl.json), 273 physical identities
 from 413 pinned XMage printings; zero identities unresolved against pinned facts.
-Independent printing reconciliation is pending. Initial admission: 107/273;
+Independent Scryfall set reconciliation matches all 273 physical identities (2026-10-22); see [reconciliation evidence](ecl-membership-reconciliation.json). Initial admission: 107/273;
 166 gated. Admission is inherited coverage, not whole-card certification.
 Oracle facts: `data/standard/cards.json`; canonical ownership:
 `data/catalogue-identities.json`. Banned members remain in scope.
 
 ## Card obligations and evidence
 
-The frozen manifest accounts for every identity. Per-card obligation/evidence
-ledger is being prepared; all inherited cards require evidence audit.
+The frozen manifest accounts for every identity. The [per-card obligation ledger](ecl-obligations.json) records every face and printed rules line with canonical ownership. All inherited cards still require evidence audit.
 
 ## Batches, reviews and game coverage
 
