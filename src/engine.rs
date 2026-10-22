@@ -1,3 +1,6 @@
+#[path = "engine_delayed_deaths.rs"]
+mod delayed_deaths;
+pub use delayed_deaths::DelayedDeathView;
 #[path = "engine_transform.rs"]
 mod transform;
 pub use transform::TransformHistoryView;
@@ -2059,6 +2062,7 @@ pub struct Observation {
     pub ability_source_timestamps: Vec<AbilitySourceTimestampView>,
     pub keyword_effects: Vec<KeywordEffectView>,
     pub ability_removal_effects: Vec<AbilityRemovalEffectView>,
+    pub delayed_deaths: Vec<DelayedDeathView>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
@@ -5558,6 +5562,7 @@ impl Game {
         let expired_colors = self.expire_color_effects();
         self.expire_graveyard_cast_permissions();
         self.expire_keyword_effects();
+        self.expire_delayed_deaths();
         self.state.death_exile_replacements = None;
         for player in &mut self.state.players {
             player.extra_land_plays_remaining = 0;
@@ -6219,6 +6224,12 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.ability_removal_effects.clone()),
+            delayed_deaths: s.roles.as_ref().map_or_else(Vec::new, |r| {
+                r.delayed_deaths
+                    .iter()
+                    .map(|row| row.view.clone())
+                    .collect()
+            }),
             role_timestamps: s
                 .roles
                 .as_ref()

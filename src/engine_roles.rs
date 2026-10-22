@@ -32,6 +32,7 @@ pub(super) struct RoleState {
     pub ability_removal_sources: Vec<ObjectRef>,
     pub ability_removal_effects: Vec<AbilityRemovalEffectView>,
     pub characteristic_sources: Vec<ObjectRef>,
+    pub delayed_deaths: Vec<delayed_deaths::DelayedDeath>,
 }
 impl RoleState {
     pub fn bytes(&self) -> usize {
@@ -49,6 +50,13 @@ impl RoleState {
             + self.ability_removal_sources.len() * std::mem::size_of::<ObjectRef>()
             + self.ability_removal_effects.len() * std::mem::size_of::<AbilityRemovalEffectView>()
             + self.characteristic_sources.len() * std::mem::size_of::<ObjectRef>()
+            + self
+                .delayed_deaths
+                .iter()
+                .map(|row| {
+                    std::mem::size_of::<delayed_deaths::DelayedDeath>() + row.item.owned_bytes()
+                })
+                .sum::<usize>()
     }
 }
 impl Game {

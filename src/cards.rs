@@ -1252,6 +1252,9 @@ pub(crate) enum Instruction {
     },
     SacrificeAbilitySource,
     ExileSourceGainLifeIfMoved(u16),
+    DelayedDeathThisTurn {
+        ability: u16,
+    },
     GrantUntilEndTurn {
         ability: u16,
     },

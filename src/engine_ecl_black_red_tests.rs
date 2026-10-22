@@ -3577,3 +3577,245 @@ fn moonshadow_event_guard_and_controller_capture_do_not_bind_a_later_source_inca
         assert!(g.state.pending_triggers.is_empty());
     }
 }
+
+fn malice_elves(g: &Game, p: Player) -> Vec<CardId> {
+    g.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter_map(|(id, o)| {
+            let id = id as CardId;
+            (o.zone == Zone::Battlefield
+                && o.controller == p
+                && o.is_token()
+                && g.has_subtype(id, "Elf")
+                && g.object_view(id).colors == 20)
+                .then_some(id)
+        })
+        .collect()
+}
+fn malice(g: &mut Game, p: Player, target: CardId) -> CardId {
+    let spell = hexing_open(g, p, "Scarblade's Malice", Some(Target::Card(target)));
+    hexing_finish(g, true);
+    spell
+}
+#[test]
+fn scarblades_malice_grants_actual_deathtouch_lifelink_and_creates_the_complete_black_green_elf() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let enemy = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        let spell = malice(&mut g, p, source);
+        assert_eq!(g.state.objects[spell as usize].zone, Zone::Graveyard);
+        assert!(
+            g.keywords(source)
+                .contains(Keywords::DEATHTOUCH.union(Keywords::LIFELINK))
+        );
+        assert_eq!(g.observe(p).delayed_deaths.len(), 1);
+        let bite = named(&mut g, p, "Bite Down", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: bite });
+        for card in [source, enemy] {
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(card),
+                },
+            );
+        }
+        settle(&mut g);
+        assert_eq!(g.state.objects[enemy as usize].zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].life, 21);
+        assert!(malice_elves(&g, p).is_empty());
+        let kill = named(&mut g, p, "Cinder Strike", Zone::Hand);
+        optional_cast(&mut g, kill, None, Some(Target::Card(source)));
+        settle(&mut g);
+        let elves = malice_elves(&g, p);
+        assert_eq!(elves.len(), 1);
+        assert_eq!(
+            g.stats(elves[0]),
+            crate::cards::Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+        assert!(!g.state.objects[elves[0] as usize].tapped);
+        assert!(
+            !g.keywords(elves[0])
+                .intersects(Keywords::DEATHTOUCH.union(Keywords::LIFELINK))
+        );
+        assert!(g.observe(p).delayed_deaths.is_empty());
+    }
+}
+#[test]
+fn scarblades_malice_delayed_trigger_keeps_the_spell_controller_after_control_change_and_ability_loss()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let creature = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        malice(&mut g, p, creature);
+        let reference = g.object_ref(creature);
+        g.remove_abilities_exact(&[reference], crate::cards::AnimationDuration::Permanent);
+        assert!(
+            !g.keywords(creature)
+                .intersects(Keywords::DEATHTOUCH.union(Keywords::LIFELINK))
+        );
+        let item = g.activation_item(p.other(), creature, 0);
+        g.gain_control(&item, Subject::Source, PlayerSet::Controller);
+        let kill = named(&mut g, p, "Cinder Strike", Zone::Hand);
+        optional_cast(&mut g, kill, None, Some(Target::Card(creature)));
+        settle(&mut g);
+        assert_eq!(malice_elves(&g, p).len(), 1);
+        assert!(malice_elves(&g, p.other()).is_empty());
+    }
+}
+#[test]
+fn scarblades_malice_multiple_independent_watches_each_trigger_once_for_a_token_death() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        g.stage_copy_creation(
+            p,
+            CopyRecipe::new(Card::from_name("Grizzly Bears").unwrap()),
+            1,
+        );
+        settle(&mut g);
+        let creature = g
+            .state
+            .copy_recipes
+            .as_ref()
+            .unwrap()
+            .last()
+            .unwrap()
+            .object
+            .card;
+        let before = g.object_ref(creature);
+        malice(&mut g, p, creature);
+        malice(&mut g, p, creature);
+        assert_eq!(g.observe(p).delayed_deaths.len(), 2);
+        let kill = named(&mut g, p, "Cinder Strike", Zone::Hand);
+        optional_cast(&mut g, kill, None, Some(Target::Card(creature)));
+        settle(&mut g);
+        assert_ne!(
+            g.object_ref(creature),
+            before,
+            "new Elf token may reuse the departed token slot"
+        );
+        assert_eq!(malice_elves(&g, p).len(), 2);
+        assert!(g.observe(p).delayed_deaths.is_empty());
+    }
+}
+#[test]
+fn scarblades_malice_blink_and_non_graveyard_departures_remove_only_the_exact_watch() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let creature = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        malice(&mut g, p, creature);
+        g.move_object(creature, Zone::Exile);
+        assert!(g.observe(p).delayed_deaths.is_empty());
+        g.move_object(creature, Zone::Battlefield);
+        g.move_object(creature, Zone::Graveyard);
+        settle(&mut g);
+        assert!(malice_elves(&g, p).is_empty());
+    }
+}
+#[test]
+fn scarblades_malice_expires_before_cleanup_sba_deaths_and_repeated_cleanup_does_not_rearm_it() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let creature = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        malice(&mut g, p, creature);
+        hexing_open(&mut g, p, "Giant Growth", Some(Target::Card(creature)));
+        hexing_finish(&mut g, true);
+        g.effect_counter(
+            creature,
+            CounterKind::MinusOne,
+            3,
+            replacements::ResumeMode::Pending,
+        );
+        assert!(g.stats(creature).toughness > 0);
+        g.finish_cleanup();
+        settle(&mut g);
+        assert_eq!(g.state.objects[creature as usize].zone, Zone::Graveyard);
+        assert!(malice_elves(&g, p).is_empty());
+        assert!(g.observe(p).delayed_deaths.is_empty());
+        g.finish_cleanup();
+        assert!(g.observe(p).delayed_deaths.is_empty());
+    }
+}
+#[test]
+fn scarblades_malice_illegal_and_lost_targets_cannot_create_watches_and_turn_end_clears_keywords() {
+    for p in [Player::P0, Player::P1] {
+        for disappear in [false, true] {
+            let mut g = hexing_setup(p);
+            let creature = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+            let enemy = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+            let spell = named(&mut g, p, "Scarblade's Malice", Zone::Hand);
+            checked(&mut g, Action::AnnounceCast { card: spell });
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(enemy),
+                },
+            );
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(creature),
+                },
+            );
+            for _ in 0..100 {
+                if g.state.announcing.is_none() {
+                    break;
+                }
+                advance(&mut g);
+            }
+            if disappear {
+                g.move_object(creature, Zone::Hand);
+            }
+            settle(&mut g);
+            if disappear {
+                assert!(g.observe(p).delayed_deaths.is_empty());
+            } else {
+                assert_eq!(g.observe(p).delayed_deaths.len(), 1);
+                g.finish_cleanup();
+                assert!(
+                    !g.keywords(creature)
+                        .intersects(Keywords::DEATHTOUCH.union(Keywords::LIFELINK))
+                );
+                assert!(g.observe(p).delayed_deaths.is_empty());
+            }
+        }
+    }
+}
+#[test]
+fn scarblades_malice_delayed_ability_is_independent_of_the_resolved_uncounterable_spell() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        named(&mut g, p, "Hexing Squelcher", Zone::Battlefield);
+        let creature = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        malice(&mut g, p, creature);
+        g.move_object(creature, Zone::Graveyard);
+        g.prepare_triggers();
+        for _ in 0..100 {
+            if g.state
+                .stack
+                .iter()
+                .any(|item| item.source_card == Card::from_name("Scarblade's Malice").unwrap())
+            {
+                break;
+            }
+            advance(&mut g);
+        }
+        let item = g
+            .state
+            .stack
+            .iter()
+            .find(|item| item.source_card == Card::from_name("Scarblade's Malice").unwrap())
+            .unwrap();
+        assert_eq!(item.kind, StackKind::TriggeredAbility { ability: 0 });
+        let id = item.id;
+        assert!(g.counter_stack_item(id, false));
+        settle(&mut g);
+        assert!(malice_elves(&g, p).is_empty());
+        assert!(g.observe(p).delayed_deaths.is_empty());
+    }
+}

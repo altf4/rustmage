@@ -372,6 +372,7 @@ impl Game {
         if !event.moved {
             return;
         }
+        self.delayed_death_events(event);
         self.temporary_departure_triggers(event);
         // Self departure uses the event's frozen LKI for every destination,
         // including simultaneous bounce/exile and replacement-modified moves.
@@ -3119,6 +3120,9 @@ impl Game {
                             self.gain_life(item.controller, i128::from(life));
                         }
                     }
+                }
+                Instruction::DelayedDeathThisTurn { ability } => {
+                    self.delay_target_death_this_turn(&item, ability)
                 }
                 Instruction::GrantUntilEndTurn { ability } => {
                     self.grant_temporary_ability(&item, ability)
