@@ -1679,7 +1679,7 @@
       "name": "Dream Harvest",
       "definition": "src/card_definitions/ecl/dream_harvest.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Dream Harvest",
@@ -1693,7 +1693,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_dream_harvest_tests.rs",
+        "src/card_definitions/ecl/dream_harvest.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "c7e4bc5d-e1d9-4fbc-8d53-0cec73086828",

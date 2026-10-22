@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "a6f82d430f771451980011c1f617a1d39b30095d9789ca533e2f772d5a9f1a9f",
+  "catalogue_version": "607ebc29e4be288bb7308ffc68832e0a843911533a1e9849431b271f926fa9c4",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2337,
-  "implemented_total": 2343,
+  "implemented_standard_cards": 2338,
+  "implemented_total": 2344,
   "token_definitions": 109,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "complete": 248,
-      "gated": 19
+      "complete": 249,
+      "gated": 18
     },
     "eoc": {
       "total": 8,
@@ -9639,8 +9639,8 @@
     {
       "name": "Dream Harvest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/dream_harvest.rs",
       "set": "ecl"
     },
