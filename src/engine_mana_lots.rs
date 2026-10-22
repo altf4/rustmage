@@ -728,7 +728,8 @@ impl Game {
             ),
             Action::Activate { card, payment, .. }
             | Action::BeginActivate { card, payment, .. }
-            | Action::ActivateMana { card, payment, .. } => (
+            | Action::ActivateMana { card, payment, .. }
+            | Action::ActivateManaWithTapCost { card, payment, .. } => (
                 *payment,
                 Purpose::Activation(self.damage_facts(*card).into()),
             ),
@@ -872,6 +873,14 @@ impl Game {
                     + choice.request.lots.len() * std::mem::size_of::<Lot>()
                     + plans_bytes(&choice.request.viable)
                     + match &choice.action {
+                        Action::ActivateManaWithTapCost {
+                            counter_payment,
+                            objects,
+                            ..
+                        } => {
+                            counter_payment.owned_bytes()
+                                + objects.len() * std::mem::size_of::<ObjectRef>()
+                        }
                         Action::Activate {
                             counter_payment, ..
                         }

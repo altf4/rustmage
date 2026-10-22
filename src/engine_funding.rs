@@ -71,6 +71,7 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
 #[derive(Clone)]
 struct FundingMove {
     resource: usize,
+    external_taps: Vec<usize>,
     ability: Option<u16>,
     grantor: Option<ObjectRef>,
     payment: [u64; 6],
@@ -303,6 +304,16 @@ impl<'g> FundingState<'g> {
                 }
             }
         }
+        let has_external_tap_mana = game.state.objects.iter().any(|object| {
+            object.zone == Zone::Battlefield
+                && object.controller == goal.actor
+                && object.card.activations().iter().any(|ability| {
+                    ability.mana_production().is_some()
+                        && ability.cost.additional.is_some_and(|cost| {
+                            matches!(cost.kind, EffectChoiceKind::TapPermanents(_))
+                        })
+                })
+        });
         let resources = game
             .state
             .objects
@@ -325,7 +336,8 @@ impl<'g> FundingState<'g> {
                                     .iter()
                                     .any(|subtype| game.has_subtype(*id as CardId, subtype))
                             || (object.controller == goal.actor
-                                && ((convoke
+                                && ((has_external_tap_mana
+                                    || convoke
                                     && game.object_kinds(*id as CardId, object) & 1 != 0)
                                     || object.card.mana_color().is_some()
                                     || game.object_kinds(*id as CardId, object) & 2 != 0
@@ -541,6 +553,63 @@ impl<'g> FundingState<'g> {
             }),
         }
     }
+    fn external_tap_groups(
+        &self,
+        source: usize,
+        additional: Option<AdditionalCost>,
+    ) -> Vec<Vec<usize>> {
+        let Some(spec) = additional else {
+            return vec![Vec::new()];
+        };
+        let EffectChoiceKind::TapPermanents(amount) = spec.kind else {
+            return Vec::new();
+        };
+        let candidates: Vec<_> = self
+            .resources
+            .iter()
+            .enumerate()
+            .filter_map(|(index, resource)| {
+                (index != source
+                    && !spec.filter.source_only
+                    && Game::additional_object_matches(
+                        spec,
+                        self.actor,
+                        &resource.object,
+                        self.kinds(resource),
+                        self.keywords(resource),
+                        self.granted_subtypes(resource.id),
+                    ))
+                .then_some(index)
+            })
+            .collect();
+        fn combinations(
+            candidates: &[usize],
+            amount: usize,
+            selected: &mut Vec<usize>,
+            result: &mut Vec<Vec<usize>>,
+        ) {
+            if amount == 0 {
+                result.push(selected.clone());
+                return;
+            }
+            for (index, &candidate) in candidates.iter().enumerate() {
+                if candidates.len() - index < amount {
+                    break;
+                }
+                selected.push(candidate);
+                combinations(&candidates[index + 1..], amount - 1, selected, result);
+                selected.pop();
+            }
+        }
+        let mut result = Vec::new();
+        combinations(
+            &candidates,
+            usize::from(amount),
+            &mut Vec::new(),
+            &mut result,
+        );
+        result
+    }
     fn moves(&self, goal: &FundingGoal) -> Vec<FundingMove> {
         let mut moves = Vec::new();
         for (resource, entry) in self.resources.iter().enumerate() {
@@ -556,6 +625,7 @@ impl<'g> FundingState<'g> {
                 for grant in ability_world::CharacteristicWorld::granted_mana(self, entry.id) {
                     grant.production.visit(|production| {
                         moves.push(FundingMove {
+                            external_taps: Vec::new(),
                             resource,
                             ability: None,
                             grantor: Some(grant.source),
@@ -581,6 +651,7 @@ impl<'g> FundingState<'g> {
                 let mut production = [0; 6];
                 production[color] = 1;
                 moves.push(FundingMove {
+                    external_taps: Vec::new(),
                     resource,
                     ability: None,
                     grantor: None,
@@ -650,16 +721,22 @@ impl<'g> FundingState<'g> {
                                 |allocation| {
                                     production.base().in_world(self, entry.id).visit(
                                         |production| {
-                                            moves.push(FundingMove {
+                                            for external_taps in self.external_tap_groups(
                                                 resource,
-                                                ability: Some(index as u16),
-                                                grantor: None,
-                                                payment,
-                                                counters: counters.clone(),
-                                                production,
-                                                quality,
-                                                allocation: allocation.clone(),
-                                            });
+                                                ability.cost.additional,
+                                            ) {
+                                                moves.push(FundingMove {
+                                                    external_taps,
+                                                    resource,
+                                                    ability: Some(index as u16),
+                                                    grantor: None,
+                                                    payment,
+                                                    counters: counters.clone(),
+                                                    production,
+                                                    quality,
+                                                    allocation: allocation.clone(),
+                                                });
+                                            }
                                             false
                                         },
                                     );
@@ -740,6 +817,9 @@ impl<'g> FundingState<'g> {
             }
         } else {
             object.tapped = true;
+        }
+        for &resource in &step.external_taps {
+            self.resources[resource].object.tapped = true;
         }
         self.refresh_control_projection();
         for (pool, produced) in self.mana.iter_mut().zip(step.production) {
@@ -1236,6 +1316,28 @@ impl<'g> FundingState<'g> {
                 card,
                 grantor,
                 production: step.production,
+            };
+        }
+        if let Some(ability) = step.ability
+            && !step.external_taps.is_empty()
+        {
+            return Action::ActivateManaWithTapCost {
+                card,
+                ability,
+                payment: concrete_payment(step.payment),
+                counter_payment: step.counters.clone(),
+                production: step.production,
+                objects: step
+                    .external_taps
+                    .iter()
+                    .map(|&index| {
+                        let r = &self.resources[index];
+                        ObjectRef {
+                            card: r.id,
+                            generation: r.object.generation,
+                        }
+                    })
+                    .collect(),
             };
         }
         match step.ability {
@@ -2769,7 +2871,9 @@ impl Game {
     /// completion of that window. Reuse its exact resource search, retaining
     /// complete plans so later scalar choices cannot mix incompatible prefixes.
     pub(super) fn prepare_mana_allocations(&mut self, action: &Action) {
-        let Action::ActivateMana { payment, .. } = action else {
+        let (Action::ActivateMana { payment, .. }
+        | Action::ActivateManaWithTapCost { payment, .. }) = action
+        else {
             return;
         };
         let Some(actor) = self.actor() else { return };

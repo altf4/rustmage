@@ -75,6 +75,14 @@ impl ZoneState {
             base.bytes
                 + base.picks.len() * std::mem::size_of::<Pick>()
                 + match &base.action {
+                    Action::ActivateManaWithTapCost {
+                        counter_payment,
+                        objects,
+                        ..
+                    } => {
+                        counter_payment.owned_bytes()
+                            + objects.len() * std::mem::size_of::<ObjectRef>()
+                    }
                     Action::Activate {
                         counter_payment, ..
                     }

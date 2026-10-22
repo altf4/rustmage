@@ -3,10 +3,56 @@
   "catalogue_id": 1514,
   "oracle_id": "126c75c0-414b-4e55-8747-2b5566ce716f",
   "facts_sha256": "52afed9db8eb7b9ad43aa711cb52b58871628a8dfec3cd32dd25afe27e68b005",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c7093e620d589f1fcb2a9f8aa02207ab062ca6c50d28e598aa64db5111605080"
   },
-  "physical_metadata_sha256": "e7de9d6f4f00eab425e7554330bbbdadde83f4826c40c24ad8df5167a0b9f31c"
+  "physical_metadata_sha256": "e7de9d6f4f00eab425e7554330bbbdadde83f4826c40c24ad8df5167a0b9f31c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FirdochCore.java",
+  "java_sha256": "1d36467bb67fc5b05debce76fd7f0229972cfa62837458d73da1182388f31b63",
+  "rules_tests": "src/engine_ecl_green_colorless_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyColorEffect.java",
+      "sha256": "1ab49b0ed403a80a0daed4883b432e65e47e38a72d5e4ebca87894284c4fa085"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ChangelingAbility.java",
+      "sha256": "2a5c6f3233f1edbd054fad23cc7103334aa5bff6702da1f1e42ceb3a0cb8c177"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/IsAllCreatureTypesSourceEffect.java",
+      "sha256": "6c340da9dc171835b171f118084f41d65fcbcdc629b20c0d0c14f5c2bd727cd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureSourceEffect.java",
+      "sha256": "e4f35026b08e3f86b0822d43ed5b03cf2458e1b2ed5829627dd5c617cd5d597a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/custom/CreatureToken.java",
+      "sha256": "71de72a2543d4471901857cc0d58c1a06c383b25760e2a59e46b094862b2f31c"
+    }
+  ]
 }

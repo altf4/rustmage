@@ -360,7 +360,12 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     -5
                 }
             }
-            Action::ActivateMana {
+            Action::ActivateManaWithTapCost {
+                production,
+                payment,
+                ..
+            }
+            | Action::ActivateMana {
                 production,
                 payment,
                 ..

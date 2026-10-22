@@ -555,6 +555,15 @@ define_actions! {
         payment: Mana,
         counter_payment: Counters,
     },
+    // Atomic mana activation with exact non-targeting tap-cost witnesses.
+    ActivateManaWithTapCost {
+        card: CardId,
+        ability: u16,
+        payment: Mana,
+        counter_payment: Counters,
+        production: Mana,
+        objects: Vec<ObjectRef>,
+    },
     ActivateMana {
         card: CardId,
         ability: u16,
@@ -4087,6 +4096,25 @@ impl Game {
                 self.push_stack_item(item);
                 self.state.passes = 0;
             }
+            Action::ActivateManaWithTapCost {
+                card,
+                ability,
+                payment,
+                counter_payment,
+                production,
+                objects,
+            } => {
+                let mut item = self.activation_item(actor, card, ability);
+                let definition = self.state.objects[card as usize].card.activations()
+                    [ability as usize]
+                    .mana_production()
+                    .unwrap();
+                let quality = self.mana_quality(definition, card);
+                self.tap_objects(&objects.iter().map(|object| object.card).collect::<Vec<_>>());
+                self.pay_activation(&mut item, payment, counter_payment);
+                self.add_quality_mana(actor, production, quality);
+                self.reopen_evidence_after_mana_sacrifice(card);
+            }
             Action::ActivateMana {
                 card,
                 ability,
@@ -7277,3 +7305,6 @@ mod ecl_core_tests;
 #[cfg(test)]
 #[path = "engine_ecl_white_blue_tests.rs"]
 mod ecl_white_blue_tests;
+#[cfg(test)]
+#[path = "engine_ecl_green_colorless_tests.rs"]
+mod ecl_green_colorless_tests;
