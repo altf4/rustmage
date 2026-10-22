@@ -797,6 +797,7 @@ impl Object {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct PlayerState {
+    put_counter_on_creature_this_turn: bool,
     hexproof_until_end_turn: bool,
     extra_land_plays_remaining: u64,
     no_maximum_hand_size: bool,
@@ -1795,6 +1796,7 @@ pub struct ZoneChange {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
+    pub put_counter_on_creature_this_turn: bool,
     pub hexproof_until_end_turn: bool,
     /// Additional land plays granted until the current turn ends.
     pub extra_land_plays_remaining: u64,
@@ -2146,6 +2148,7 @@ impl Game {
         }
         let mut objects = Vec::with_capacity(config.decks.iter().map(Vec::len).sum());
         let mut players = std::array::from_fn(|_| PlayerState {
+            put_counter_on_creature_this_turn: false,
             hexproof_until_end_turn: false,
             extra_land_plays_remaining: 0,
             no_maximum_hand_size: false,
@@ -5341,6 +5344,7 @@ impl Game {
         self.state.creatures_died_this_turn = 0;
         self.state.graveyard_entries = None;
         for player in &mut self.state.players {
+            player.put_counter_on_creature_this_turn = false;
             player.nonland_permanents_entered_this_turn = 0;
             player.spells_cast_this_turn = 0;
             player.instant_sorcery_cast_this_turn = 0;
@@ -6030,6 +6034,7 @@ impl Game {
                 Pending::Terminal => "terminal",
             },
             players: std::array::from_fn(|i| PlayerView {
+                put_counter_on_creature_this_turn: s.players[i].put_counter_on_creature_this_turn,
                 hexproof_until_end_turn: s.players[i].hexproof_until_end_turn,
                 extra_land_plays_remaining: s.players[i].extra_land_plays_remaining,
                 no_maximum_hand_size: self.no_maximum_hand_size(if i == 0 {

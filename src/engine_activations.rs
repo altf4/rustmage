@@ -539,6 +539,12 @@ impl Game {
                 object.counters.loyalty -= u64::from(change.unsigned_abs());
             } else {
                 self.add_counter(item.card, CounterKind::Loyalty, change as u64);
+                self.self_counters_added(
+                    item.object,
+                    CounterKind::Loyalty,
+                    change as u64,
+                    item.controller,
+                );
             }
         }
         // Capture the tap event before a subsequent sacrifice/discard/exile

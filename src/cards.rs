@@ -2151,6 +2151,7 @@ pub(crate) struct CombatRestriction {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepGuard {
+    PutCounterOnCreatureThisTurn,
     YourMainPhase {
         expected: bool,
     },

@@ -119,6 +119,7 @@ impl Game {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
             StepGuard::Always => return true,
+            StepGuard::PutCounterOnCreatureThisTurn => return p.put_counter_on_creature_this_turn,
             StepGuard::YourMainPhase { expected } => {
                 return (self.state.active == player
                     && matches!(self.state.step, Step::Main1 | Step::Main2))

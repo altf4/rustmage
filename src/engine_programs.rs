@@ -210,6 +210,14 @@ impl Game {
         }
     }
 
+    pub(super) fn record_creature_counter_put(&mut self, object: ObjectRef, placed_by: Player) {
+        if self.on_battlefield(object.card)
+            && self.object_ref(object.card) == object
+            && self.is_creature(object.card)
+        {
+            self.state.players[placed_by.index()].put_counter_on_creature_this_turn = true;
+        }
+    }
     pub(super) fn self_counters_added(
         &mut self,
         object: ObjectRef,
@@ -223,6 +231,7 @@ impl Game {
         {
             return;
         }
+        self.record_creature_counter_put(object, placed_by);
         self.queue_state_counter_triggers();
         if !self.state.counter_sources.is_empty() {
             let recipient = self.object_view(object.card);

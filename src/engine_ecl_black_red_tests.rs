@@ -2309,3 +2309,248 @@ fn hexing_squelcher_ward_counters_an_activated_ability_even_if_its_controller_ha
         assert_eq!(g.state.objects[source as usize].zone, Zone::Graveyard);
     }
 }
+
+fn lasting_end(g: &mut Game) {
+    g.begin_step(Step::End);
+    g.prepare_triggers();
+    settle(g);
+}
+#[test]
+fn lasting_tarfire_observes_paid_blight_even_when_its_witness_dies_and_each_players_end_step() {
+    for p in [Player::P0, Player::P1] {
+        for active in [p, p.other()] {
+            let mut g = hexing_setup(p);
+            named(&mut g, p, "Lasting Tarfire", Zone::Battlefield);
+            named(&mut g, p.other(), "Lasting Tarfire", Zone::Battlefield);
+            let witness = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+            let target = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+            let spell = named(&mut g, p, "Cinder Strike", Zone::Hand);
+            optional_cast(&mut g, spell, Some(witness), Some(Target::Card(target)));
+            settle(&mut g);
+            assert_eq!(g.state.objects[witness as usize].zone, Zone::Graveyard);
+            assert!(g.observe(p).players[p.index()].put_counter_on_creature_this_turn);
+            assert!(!g.observe(p).players[p.other().index()].put_counter_on_creature_this_turn);
+            g.state.active = active;
+            lasting_end(&mut g);
+            assert_eq!(g.state.players[p.other().index()].life, 18);
+            assert_eq!(g.state.players[p.index()].life, 20);
+        }
+    }
+}
+#[test]
+fn lasting_tarfire_attributes_wither_to_the_damage_controller_not_recipient_or_doubling_controller()
+{
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        named(&mut g, p, "Lasting Tarfire", Zone::Battlefield);
+        named(&mut g, p.other(), "Lasting Tarfire", Zone::Battlefield);
+        let source = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        bloodletter(&mut g, p, source);
+        g.state.objects[source as usize].owner = p.other();
+        let target = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        named(&mut g, p.other(), "Doubling Season", Zone::Battlefield);
+        let id = named(&mut g, p, "Bite Down", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: id });
+        for card in [source, target] {
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(card),
+                },
+            );
+        }
+        settle(&mut g);
+        assert_eq!(g.counter_count(target, CounterKind::MinusOne), 4);
+        assert!(g.state.players[p.index()].put_counter_on_creature_this_turn);
+        assert!(!g.state.players[p.other().index()].put_counter_on_creature_this_turn);
+        lasting_end(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        assert_eq!(g.state.players[p.index()].life, 20);
+    }
+}
+#[test]
+fn lasting_tarfire_ignores_zero_and_noncreature_counters_and_keeps_history_after_cancellation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let enchantment = named(&mut g, p, "Lasting Tarfire", Zone::Battlefield);
+        let creature = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        g.effect_counter(
+            creature,
+            CounterKind::PlusOne,
+            0,
+            replacements::ResumeMode::Pending,
+        );
+        g.effect_counter(
+            enchantment,
+            CounterKind::Lore,
+            1,
+            replacements::ResumeMode::Pending,
+        );
+        assert!(!g.state.players[p.index()].put_counter_on_creature_this_turn);
+        lasting_end(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+        // The first counter predates this turn; the new opposite counter counts
+        // even though state-based actions subsequently cancel both counters.
+        g.state.objects[creature as usize].counters.plus_one = 1;
+        g.effect_counter(
+            creature,
+            CounterKind::MinusOne,
+            1,
+            replacements::ResumeMode::Pending,
+        );
+        checked(&mut g, Action::Pass);
+        assert_eq!(g.counter_count(creature, CounterKind::PlusOne), 0);
+        assert_eq!(g.counter_count(creature, CounterKind::MinusOne), 0);
+        lasting_end(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        g.finish_cleanup();
+        assert!(!g.state.players[p.index()].put_counter_on_creature_this_turn);
+        lasting_end(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+    }
+}
+#[test]
+fn lasting_tarfire_records_actual_entry_counters_under_the_entering_controller() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        named(&mut g, p, "Lasting Tarfire", Zone::Battlefield);
+        named(&mut g, p.other(), "Lasting Tarfire", Zone::Battlefield);
+        let creature = named(&mut g, p.other(), "Heirloom Auntie", Zone::Graveyard);
+        let mut movement = g.entry_move(creature, Zone::Battlefield, false);
+        movement.controller = p;
+        g.stage_entries(vec![movement], None);
+        g.advance_entries();
+        settle(&mut g);
+        assert_eq!(g.state.objects[creature as usize].owner, p.other());
+        assert_eq!(g.state.objects[creature as usize].controller, p);
+        assert_eq!(g.counter_count(creature, CounterKind::MinusOne), 2);
+        assert!(g.state.players[p.index()].put_counter_on_creature_this_turn);
+        assert!(!g.state.players[p.other().index()].put_counter_on_creature_this_turn);
+        lasting_end(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+    }
+}
+#[test]
+fn lasting_tarfire_prohibited_counter_placements_and_wither_damage_do_not_create_history() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        named(&mut g, p, "Lasting Tarfire", Zone::Battlefield);
+        named(&mut g, p.other(), "Lasting Tarfire", Zone::Battlefield);
+        let source = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        bloodletter(&mut g, p, source);
+        let target = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        hexing_open(&mut g, p, "Blossombind", Some(Target::Card(target)));
+        hexing_finish(&mut g, true);
+        assert!(!g.can_receive_counters(target));
+        g.effect_counter(
+            target,
+            CounterKind::PlusOne,
+            1,
+            replacements::ResumeMode::Pending,
+        );
+        assert!(!g.state.players[p.other().index()].put_counter_on_creature_this_turn);
+        let id = named(&mut g, p, "Bite Down", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: id });
+        for card in [source, target] {
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(card),
+                },
+            );
+        }
+        settle(&mut g);
+        assert!(!g.state.players[p.index()].put_counter_on_creature_this_turn);
+        assert!(!g.state.players[p.other().index()].put_counter_on_creature_this_turn);
+        assert_eq!(g.state.objects[target as usize].damage, 0);
+        assert_eq!(g.counter_count(target, CounterKind::MinusOne), 0);
+        lasting_end(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 20);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+    }
+}
+#[test]
+fn lasting_tarfire_captures_trigger_controller_and_resets_only_at_the_next_turn() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let enchantment = named(&mut g, p, "Lasting Tarfire", Zone::Battlefield);
+        let creature = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        g.begin_step(Step::End);
+        g.prepare_triggers();
+        settle(&mut g);
+        g.effect_counter(
+            creature,
+            CounterKind::Stun,
+            1,
+            replacements::ResumeMode::Pending,
+        );
+        settle(&mut g);
+        assert_eq!(
+            g.state.players[p.other().index()].life,
+            20,
+            "counter after beginning does not create a retrospective trigger"
+        );
+        g.begin_step(Step::End);
+        g.prepare_triggers();
+        let packet = g
+            .state
+            .stack
+            .iter()
+            .chain(&g.state.pending_triggers)
+            .find(|item| item.card == enchantment)
+            .unwrap()
+            .clone();
+        g.gain_control(&packet, Subject::Source, PlayerSet::Opponent);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        assert_eq!(g.state.objects[enchantment as usize].controller, p.other());
+        g.state.step = Step::Cleanup;
+        g.effect_counter(
+            creature,
+            CounterKind::Stun,
+            1,
+            replacements::ResumeMode::Pending,
+        );
+        assert!(g.state.players[p.index()].put_counter_on_creature_this_turn);
+        g.finish_cleanup();
+        assert!(!g.state.players[p.index()].put_counter_on_creature_this_turn);
+    }
+}
+#[test]
+fn lasting_tarfire_records_a_positive_loyalty_cost_on_an_animated_planeswalker() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        named(&mut g, p, "Lasting Tarfire", Zone::Battlefield);
+        let walker = named(&mut g, p, "Ajani, Caller of the Pride", Zone::Battlefield);
+        g.state.objects[walker as usize].counters.loyalty = 3;
+        // Generic animation fixture preserves the planeswalker card and its
+        // printed loyalty ability, so the positive loyalty cost is the placement.
+        let item = g.activation_item(p, walker, 0);
+        g.animate_source(
+            &item,
+            crate::cards::AnimationSpec {
+                artifact: false,
+                creature_types: crate::cards::AnimationCreatureTypes::Unchanged,
+                base: Some((4, 4)),
+                keywords: Keywords::NONE,
+                duration: crate::cards::AnimationDuration::EndOfTurn,
+            },
+        );
+        assert!(g.is_creature(walker));
+        checked(
+            &mut g,
+            Action::Activate {
+                card: walker,
+                ability: 0,
+                target: None,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.counter_count(walker, CounterKind::Loyalty), 4);
+        assert!(g.state.players[p.index()].put_counter_on_creature_this_turn);
+        lasting_end(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+    }
+}
