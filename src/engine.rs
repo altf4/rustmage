@@ -452,6 +452,7 @@ define_actions! {
     KeepPermanentType { object: ObjectRef },
     ChooseZoneReplacement { effect: ZoneReplacementKind },
     FinishStackTargets,
+    ChooseSpellCopy { copy: bool },
     AllocateTargetAmount { amount: u16 },
     RestoreStackTarget { index: u32 },
     SetStackTarget { index: u32, target: Target },
@@ -1490,6 +1491,10 @@ enum Pending {
     ZoneReplacement {
         player: Player,
     },
+    SpellCopy {
+        player: Player,
+        keywords: Keywords,
+    },
     Retarget {
         player: Player,
     },
@@ -2511,6 +2516,7 @@ impl Game {
             | Pending::PayCosts { player }
             | Pending::Modes { player }
             | Pending::Retarget { player }
+            | Pending::SpellCopy { player, .. }
             | Pending::TargetAmount { player }
             | Pending::Targets { player }
             | Pending::OrderTriggers { player }
@@ -3952,6 +3958,13 @@ impl Game {
                     }
                 }
             }
+            Pending::SpellCopy { .. } => {
+                if emit(Action::ChooseSpellCopy { copy: false })
+                    || emit(Action::ChooseSpellCopy { copy: true })
+                {
+                    return true;
+                }
+            }
             Pending::Retarget { .. } => return self.visit_retarget_actions(&mut emit),
             Pending::Targets { .. } => {
                 let announcement = s.announcing.as_ref().unwrap();
@@ -4733,6 +4746,15 @@ impl Game {
                 self.choose_mana_cost(cost)
             }
             Action::ChooseMode { mode } => self.choose_mode(mode),
+            Action::ChooseSpellCopy { copy } => {
+                let Pending::SpellCopy { keywords, .. } = self.state.pending else {
+                    unreachable!("validated copy decision");
+                };
+                let item = self.state.resolving.as_ref().unwrap().item.clone();
+                if !copy || !self.copy_captured_spell_with_keywords(&item, keywords) {
+                    self.run_program();
+                }
+            }
             Action::FinishStackTargets => self.finish_stack_targets(),
             Action::AllocateTargetAmount { amount } => self.choose_target_amount(amount),
             Action::SetStackTarget { index, target } => self.set_stack_target(index, target),
@@ -6399,6 +6421,7 @@ impl Game {
                 Pending::PlotPayment { .. } => "plot_payment",
                 Pending::Role { .. } => "role_rule",
                 Pending::Legend { .. } => "legend_rule",
+                Pending::SpellCopy { .. } => "spell_copy",
                 Pending::Retarget { .. } => "retarget",
                 Pending::TargetAmount { .. } => "target_amount",
                 Pending::Targets { .. } => "targets",

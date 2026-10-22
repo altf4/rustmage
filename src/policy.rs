@@ -408,6 +408,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::BeginCast { .. } => 80,
             // Once a complete target set is legal, commit it instead of
             // revisiting optional edits (which may otherwise oscillate).
+            Action::ChooseSpellCopy { copy } => {
+                if *copy {
+                    100
+                } else {
+                    10
+                }
+            }
             Action::FinishStackTargets => 100,
             Action::AllocateTargetAmount { amount } => 100 + i128::from(*amount),
             Action::RestoreStackTarget { .. } => -1,

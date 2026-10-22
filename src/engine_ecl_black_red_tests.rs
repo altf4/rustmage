@@ -5963,3 +5963,303 @@ fn dawnhand_copy_epochs_keep_queued_exile_packets_separate_from_new_linked_abili
         assert_eq!(g.linked_counter_permission(p, old_card, reference), Some(3));
     }
 }
+
+fn spinerock_open(g: &mut Game, p: Player, target: CardId) -> (CardId, SpellView) {
+    let source = named(g, p, "Spinerock Tyrant", Zone::Battlefield);
+    let spell = hexing_open(g, p, "Shock", Some(Target::Card(target)));
+    let original = g
+        .state
+        .stack
+        .iter()
+        .find(|item| item.kind == StackKind::Spell && item.card == spell)
+        .unwrap()
+        .clone();
+    (source, original)
+}
+fn spinerock_choice(g: &mut Game) {
+    for _ in 0..50 {
+        if matches!(g.state.pending, Pending::SpellCopy { .. }) {
+            return;
+        }
+        advance(g);
+    }
+    panic!("no optional copy decision: {:?}", g.state.pending);
+}
+#[test]
+fn spinerock_paid_body_flying_wither_and_actual_blocked_combat() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Spinerock Tyrant", Zone::Hand);
+        cast(&mut g, source);
+        assert_eq!(
+            g.stats(source),
+            Stats {
+                power: 6,
+                toughness: 6
+            }
+        );
+        assert!(
+            g.keywords(source)
+                .contains(Keywords::FLYING.union(Keywords::WITHER))
+        );
+        g.state.objects[source as usize].summoning_sick = false;
+        let blocker = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        let reference = g.object_ref(blocker);
+        g.grant_keyword_effects(&[blocker], reference, Keywords::REACH);
+        g.state.attackers.push(Attacker {
+            defender: Some(CombatDefender::Player(p.other())),
+            card: source,
+            blocked: true,
+        });
+        g.state.blocks.push((blocker, source));
+        g.state.blocking.push(blocker);
+        g.state.step = Step::Blockers;
+        g.give_priority();
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        assert_eq!(g.counter_count(blocker, CounterKind::MinusOne), 6);
+        assert_eq!(g.object_view(blocker).damage, 0);
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn spinerock_optional_copy_decline_leaves_original_damage_unmodified() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let target = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        let (_, original) = spinerock_open(&mut g, p, target);
+        spinerock_choice(&mut g);
+        assert!(!g.keywords(original.card).contains(Keywords::WITHER));
+        checked(&mut g, Action::ChooseSpellCopy { copy: false });
+        settle(&mut g);
+        assert_eq!(g.object_view(target).damage, 2);
+        assert_eq!(g.counter_count(target, CounterKind::MinusOne), 0);
+        assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 1);
+    }
+}
+#[test]
+fn spinerock_copy_and_original_gain_wither_independently_and_retarget_owned() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let target = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        let second = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        let (source, original) = spinerock_open(&mut g, p, target);
+        spinerock_choice(&mut g);
+        checked(&mut g, Action::ChooseSpellCopy { copy: true });
+        let copying = g.retarget_view().unwrap().item;
+        assert!(g.keywords(original.card).contains(Keywords::WITHER));
+        assert!(g.keywords(copying.card).contains(Keywords::WITHER));
+        assert!(!copying.source_keywords.contains(Keywords::WITHER));
+        for recipient in [original.object, copying.object] {
+            assert!(
+                g.state
+                    .roles
+                    .as_ref()
+                    .unwrap()
+                    .keyword_effects
+                    .iter()
+                    .any(|row| {
+                        row.recipient == recipient
+                            && row.origin
+                                == KeywordEffectOrigin::Resolution {
+                                    source: g.object_ref(source),
+                                }
+                            && row.expires_turn.is_none()
+                    })
+            );
+        }
+        checked(
+            &mut g,
+            Action::SetStackTarget {
+                index: 0,
+                target: Target::Card(second),
+            },
+        );
+        checked(&mut g, Action::FinishStackTargets);
+        g.move_object(source, Zone::Graveyard);
+        settle(&mut g);
+        for id in [target, second] {
+            assert_eq!(g.counter_count(id, CounterKind::MinusOne), 2);
+            assert_eq!(g.object_view(id).damage, 0);
+        }
+        assert_eq!(g.object_view(copying.card).zone, Zone::Outside);
+        assert!(!g.keywords(original.card).contains(Keywords::WITHER));
+        assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 1);
+    }
+}
+#[test]
+fn spinerock_captured_spell_copy_survives_countered_original_and_departed_dragon() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let target = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        let (source, original) = spinerock_open(&mut g, p, target);
+        g.move_object(source, Zone::Graveyard);
+        checked(&mut g, Action::Pass);
+        let negate = hexing_open(
+            &mut g,
+            p.other(),
+            "Negate",
+            Some(Target::Spell(original.card)),
+        );
+        spinerock_choice(&mut g);
+        assert_eq!(g.object_view(original.card).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(negate).zone, Zone::Graveyard);
+        checked(&mut g, Action::ChooseSpellCopy { copy: true });
+        checked(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.counter_count(target, CounterKind::MinusOne), 2);
+        assert_eq!(g.object_view(target).damage, 0);
+    }
+}
+#[test]
+fn spinerock_target_instances_exclude_zero_two_and_repeated_same_object_groups() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Spinerock Tyrant", Zone::Battlefield);
+        let draw = named(&mut g, p, "Divination", Zone::Hand);
+        cast(&mut g, draw);
+        assert!(g.state.stack.is_empty());
+        let donor = named(&mut g, p, "Gigantosaurus", Zone::Battlefield);
+        let target = named(&mut g, p.other(), "Appendage Amalgam", Zone::Battlefield);
+        let spell = named(&mut g, p, "Pyrrhic Strike", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        let donor_ref = g.object_ref(donor);
+        checked(
+            &mut g,
+            Action::ChooseOptionalAdditionalCost {
+                object: Some(donor_ref),
+            },
+        );
+        checked(&mut g, Action::ChooseMode { mode: 2 });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        kindle_pay(&mut g);
+        let packet = g
+            .state
+            .stack
+            .iter()
+            .find(|item| item.card == spell && item.kind == StackKind::Spell)
+            .unwrap();
+        assert_eq!(packet.targets.len(), 2);
+        assert_eq!(packet.targets[0].target, packet.targets[1].target);
+        assert!(
+            g.state
+                .pending_triggers
+                .iter()
+                .chain(&g.state.stack)
+                .all(|item| item.card != source || item.copy_event.is_none())
+        );
+        settle(&mut g);
+    }
+}
+#[test]
+fn spinerock_other_players_single_target_cast_does_not_trigger() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Spinerock Tyrant", Zone::Battlefield);
+        let target = named(&mut g, p, "Gigantosaurus", Zone::Battlefield);
+        g.state.priority = p.other();
+        hexing_open(&mut g, p.other(), "Shock", Some(Target::Card(target)));
+        assert!(
+            g.state
+                .pending_triggers
+                .iter()
+                .chain(&g.state.stack)
+                .all(|item| item.card != source || item.copy_event.is_none())
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(target).damage, 2);
+        assert_eq!(g.counter_count(target, CounterKind::MinusOne), 0);
+    }
+}
+#[test]
+fn spinerock_failed_optional_copy_is_atomic_and_does_not_grant_wither() {
+    let p = Player::P0;
+    let mut g = hexing_setup(p);
+    let target = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+    let (_, original) = spinerock_open(&mut g, p, target);
+    spinerock_choice(&mut g);
+    g.state.next_stack_id = u64::MAX;
+    let before = g.snapshot();
+    let revision = g.revision();
+    let views = [
+        serde_json::to_value(g.observe(p)).unwrap(),
+        serde_json::to_value(g.observe(p.other())).unwrap(),
+    ];
+    assert!(matches!(
+        g.apply(p, Action::ChooseSpellCopy { copy: true }),
+        Err(Error::CapacityExceeded(_))
+    ));
+    assert_eq!(g.snapshot(), before);
+    assert_eq!(g.revision(), revision);
+    assert_eq!(serde_json::to_value(g.observe(p)).unwrap(), views[0]);
+    assert_eq!(
+        serde_json::to_value(g.observe(p.other())).unwrap(),
+        views[1]
+    );
+    assert!(!g.keywords(original.card).contains(Keywords::WITHER));
+    checked(&mut g, Action::ChooseSpellCopy { copy: false });
+    settle(&mut g);
+}
+#[test]
+fn spinerock_granted_wither_is_not_inherited_by_an_unrelated_spell_copy() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        // Storm will make exactly one independent copy of the second spell.
+        hexing_open(&mut g, p, "Shock", Some(Target::Player(p.other())));
+        settle(&mut g);
+        let storm = named(&mut g, p, "Thousand-Year Storm", Zone::Battlefield);
+        let target = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        let (source, original) = spinerock_open(&mut g, p, target);
+        assert!(matches!(g.state.pending, Pending::OrderTriggers { .. }));
+        let storm_id = g
+            .state
+            .ordering_triggers
+            .iter()
+            .find(|s| s.card == storm)
+            .unwrap()
+            .id;
+        checked(&mut g, Action::PutTrigger { id: storm_id });
+        // Put Spinerock above Storm; its own copy resolves first.
+        if matches!(g.state.pending, Pending::OrderTriggers { .. }) {
+            let source_id = g
+                .state
+                .ordering_triggers
+                .iter()
+                .find(|s| s.card == source)
+                .unwrap()
+                .id;
+            checked(&mut g, Action::PutTrigger { id: source_id });
+        }
+        spinerock_choice(&mut g);
+        checked(&mut g, Action::ChooseSpellCopy { copy: true });
+        let own_copy = g.retarget_view().unwrap().item;
+        assert!(g.keywords(own_copy.card).contains(Keywords::WITHER));
+        checked(&mut g, Action::FinishStackTargets);
+        for _ in 0..50 {
+            if g.retarget_view().is_some() {
+                break;
+            }
+            advance(&mut g);
+        }
+        assert_eq!(g.counter_count(target, CounterKind::MinusOne), 2);
+        let storm_copy = g.retarget_view().unwrap().item;
+        assert!(!g.keywords(storm_copy.card).contains(Keywords::WITHER));
+        assert!(g.keywords(original.card).contains(Keywords::WITHER));
+        checked(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.counter_count(target, CounterKind::MinusOne), 4);
+        assert_eq!(g.object_view(target).damage, 2);
+        assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 2);
+    }
+}

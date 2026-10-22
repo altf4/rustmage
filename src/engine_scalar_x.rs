@@ -76,7 +76,7 @@ impl Game {
                         thresholds(*f, base, symbols, end, cuts);
                     }
                 }
-                CastFilter::Targeted { filter, .. } => {
+                CastFilter::Targeted { filter, .. } | CastFilter::TargetCount { filter, .. } => {
                     thresholds(*filter, base, symbols, end, cuts)
                 }
                 _ => {}

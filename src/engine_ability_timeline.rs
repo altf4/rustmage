@@ -171,6 +171,15 @@ impl Game {
     }
     /// A cast-spending effect follows only this spell's actual stack-to-battlefield move.
     pub(super) fn grant_stack_keywords(&mut self, spell: ObjectRef, keywords: Keywords) {
+        self.grant_stack_keywords_expiring(spell, spell, keywords, Some(self.state.turn));
+    }
+    pub(super) fn grant_stack_keywords_expiring(
+        &mut self,
+        spell: ObjectRef,
+        source: ObjectRef,
+        keywords: Keywords,
+        expires_turn: Option<u32>,
+    ) {
         assert_eq!(self.object_ref(spell.card), spell);
         assert_eq!(self.state.objects[spell.card as usize].zone, Zone::Stack);
         if keywords == Keywords::NONE {
@@ -179,17 +188,16 @@ impl Game {
         let timestamp = self.next_role_timestamp();
         self.state
             .roles
-            .as_mut()
-            .unwrap()
+            .get_or_insert_with(Default::default)
             .keyword_effects
             .push(KeywordEffectView {
                 expires_before_turn: None,
                 recipient: spell,
-                origin: KeywordEffectOrigin::Resolution { source: spell },
+                origin: KeywordEffectOrigin::Resolution { source },
                 keywords,
                 rules: Keywords::NONE,
                 timestamp,
-                expires_turn: Some(self.state.turn),
+                expires_turn,
             });
     }
     pub(super) fn continue_stack_keywords(

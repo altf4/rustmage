@@ -983,6 +983,12 @@ impl Game {
                         *filter, card, mana_value, caster, source, context,
                     )
             }
+            CastFilter::TargetCount { filter, count } => {
+                targets.len() == usize::from(count)
+                    && self.cast_filter_matches_value(
+                        *filter, card, mana_value, caster, source, targets,
+                    )
+            }
             CastFilter::Targeted { filter, target } => {
                 self.cast_filter_matches_value(*filter, card, mana_value, caster, source, context)
                     && targets.iter().any(|bound| {
@@ -1798,6 +1804,19 @@ impl Game {
                 }
                 Instruction::CopyCastSpell { .. } => {
                     if self.copy_captured_spell(&item) {
+                        return;
+                    }
+                }
+                Instruction::MayCopyCastSpellWithKeywords(keywords) => {
+                    if item
+                        .copy_event
+                        .as_ref()
+                        .is_some_and(|event| event.amount > 0)
+                    {
+                        self.state.pending = Pending::SpellCopy {
+                            player: item.controller,
+                            keywords,
+                        };
                         return;
                     }
                 }

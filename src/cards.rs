@@ -847,6 +847,7 @@ pub(crate) enum Instruction {
     CopyCastSpell {
         prior_spells: bool,
     },
+    MayCopyCastSpellWithKeywords(Keywords),
     ChangeSingleStackTarget,
     GrantGraveyardCast(GraveyardCastKind),
     ExileDiscardedWithStash,
@@ -2224,6 +2225,10 @@ pub(crate) enum CastFilter {
         filter: &'static CastFilter,
         target: CastTarget,
     },
+    TargetCount {
+        filter: &'static CastFilter,
+        count: u16,
+    },
     ManaValueMaximum {
         filter: &'static CastFilter,
         maximum: u64,
@@ -2250,6 +2255,7 @@ impl CastFilter {
             | Self::SourceChosenColor
             | Self::SourceChosenCreatureType
             | Self::Targeted { .. }
+            | Self::TargetCount { .. }
             | Self::InstantSorceryOrdinal(_) => false,
             Self::Multicolored => card.colors().count_ones() >= 2,
             Self::Colors { filter, mask } => {
