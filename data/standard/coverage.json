@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "0741b3ec777ba05a33b575c396368a6366c5ae9e58368dd44815a323a49b5ec1",
+  "catalogue_version": "ea5efa363f0ebf6e75c4f9530f39d560435e74e4ce055de1a616a099b7b78308",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2339,
-  "implemented_total": 2345,
+  "implemented_standard_cards": 2340,
+  "implemented_total": 2346,
   "token_definitions": 110,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "complete": 250,
-      "gated": 17
+      "complete": 251,
+      "gated": 16
     },
     "eoc": {
       "total": 8,
@@ -1143,8 +1143,8 @@
     {
       "name": "Ajani, Outland Chaperone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/ajani_outland_chaperone.rs",
       "set": "ecl"
     },

@@ -58,7 +58,7 @@
       "name": "Ajani, Outland Chaperone",
       "definition": "src/card_definitions/ecl/ajani_outland_chaperone.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Ajani, Outland Chaperone",
@@ -74,7 +74,11 @@
           "loyalty": "3"
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/ajani_outland_chaperone.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "cea09261-41a2-43e5-bf43-c4097e6615c6",
