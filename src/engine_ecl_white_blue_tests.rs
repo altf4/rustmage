@@ -122,3 +122,82 @@ fn loch_mare_invalid_target_keeps_paid_cost_and_does_not_stun_reentry() {
     assert_eq!(g.object_view(target).counters.stun, 0);
     assert_eq!(g.object_view(source).counters.minus_one, 1);
 }
+
+fn cast_named(g: &mut Game, p: Player, name: &str) -> CardId {
+    let id = spawn(g, p, Card::from_name(name).unwrap(), Zone::Hand);
+    cast(g, id, None);
+    settle(g);
+    id
+}
+
+#[test]
+fn encumbered_reejerey_removes_on_tap_only_while_counter_exists() {
+    let mut g = setup(Player::P0);
+    let id = cast_named(&mut g, Player::P0, "Encumbered Reejerey");
+    assert_eq!(g.object_view(id).counters.minus_one, 3);
+    for left in (0..3).rev() {
+        g.tap_objects(&[id]);
+        settle(&mut g);
+        assert_eq!(g.object_view(id).counters.minus_one, left);
+        // Becoming tapped requires an actual untapped-to-tapped event.
+        g.tap_objects(&[id]);
+        assert!(g.state.pending_triggers.is_empty());
+        g.untap_objects(&[id], untap_rules::UntapCause::Effect);
+    }
+    g.tap_objects(&[id]);
+    assert!(g.state.pending_triggers.is_empty());
+    assert_eq!(
+        g.stats(id),
+        Stats {
+            power: 5,
+            toughness: 4
+        }
+    );
+}
+
+#[test]
+fn reluctant_dounguard_qualifies_only_other_owned_entries_and_exact_source() {
+    let mut g = setup(Player::P0);
+    let id = cast_named(&mut g, Player::P0, "Reluctant Dounguard");
+    assert_eq!(g.object_view(id).counters.minus_one, 2);
+    let other = spawn(&mut g, Player::P1, Card::GrizzlyBears, Zone::Hand);
+    g.move_object(other, Zone::Battlefield);
+    settle(&mut g);
+    assert_eq!(g.object_view(id).counters.minus_one, 2);
+    cast_named(&mut g, Player::P0, "Grizzly Bears");
+    assert_eq!(g.object_view(id).counters.minus_one, 1);
+    let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Hand);
+    g.move_object(bear, Zone::Battlefield);
+    g.prepare_triggers();
+    // The queued trigger cannot remove a counter from a new incarnation.
+    g.move_object(id, Zone::Hand);
+    g.move_object(id, Zone::Battlefield);
+    settle(&mut g);
+    assert_eq!(g.object_view(id).counters.minus_one, 2);
+    cast_named(&mut g, Player::P0, "Grizzly Bears");
+    cast_named(&mut g, Player::P0, "Grizzly Bears");
+    assert_eq!(g.object_view(id).counters.minus_one, 0);
+    let last = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Hand);
+    g.move_object(last, Zone::Battlefield);
+    assert!(g.state.pending_triggers.is_empty());
+}
+
+#[test]
+fn gallant_fowlknight_boosts_resolution_group_and_expires_at_cleanup() {
+    let mut g = setup(Player::P0);
+    let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    let enemy = spawn(&mut g, Player::P1, Card::GrizzlyBears, Zone::Battlefield);
+    let fowl = cast_named(&mut g, Player::P0, "Gallant Fowlknight");
+    assert_eq!(g.stats(bear).power, 3);
+    assert_eq!(g.stats(enemy).power, 2);
+    assert_eq!(g.stats(fowl).power, 4);
+    assert!(g.keywords(fowl).contains(Keywords::FIRST_STRIKE));
+    assert!(!g.keywords(bear).contains(Keywords::FIRST_STRIKE));
+    let late = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Hand);
+    g.move_object(late, Zone::Battlefield);
+    assert_eq!(g.stats(late).power, 2);
+    g.move_object(fowl, Zone::Graveyard);
+    assert_eq!(g.stats(bear).power, 3);
+    g.finish_cleanup();
+    assert_eq!(g.stats(bear).power, 2);
+}

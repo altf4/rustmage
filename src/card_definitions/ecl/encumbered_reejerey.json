@@ -3,10 +3,45 @@
   "catalogue_id": 1328,
   "oracle_id": "7668f7bc-9a43-4024-87c3-995aa0a65aaa",
   "facts_sha256": "fabf47ff8599b8b0f6175420c74db8aa733e0ced1087f270cb837248dcb64d58",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e8f8223a562b083209a1abe5b66abcc13c954963f5b9c6387c71cf24c4a3734e"
   },
-  "physical_metadata_sha256": "638082710c3eb4225846bdde1648d8adf1d965d6d2c56f513c4a27bb698920c3"
+  "physical_metadata_sha256": "638082710c3eb4225846bdde1648d8adf1d965d6d2c56f513c4a27bb698920c3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EncumberedReejerey.java",
+  "java_sha256": "23f3b2ae3324caa04e69991aea525b842cffdd61c64ea3968b81120f99b5473e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldWithCountersAbility.java",
+      "sha256": "b34c7e6346705407d2a8519d8afdebd93b393745b995bbbce928753c35eacd59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+      "sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceHasCounterCondition.java",
+      "sha256": "1d9315e6b952df62a1bbe5cf57ce6d75c095866a5a3d8d661cf45a7b44e3b549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/RemoveCounterSourceEffect.java",
+      "sha256": "a2c61bdfe90b158533c99757444cecf8c13beaebd1d442be4ed27ebf7d4d807d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+      "sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+    }
+  ]
 }
