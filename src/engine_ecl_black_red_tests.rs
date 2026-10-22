@@ -1551,3 +1551,167 @@ fn dose_of_dawnglow_dead_target_suppresses_blight_and_returned_one_one_can_die()
         }
     }
 }
+
+fn wait_type_choice(g: &mut Game) {
+    for _ in 0..100 {
+        if matches!(g.state.pending, Pending::ResolutionCreatureType { .. }) {
+            return;
+        }
+        advance(g);
+    }
+    panic!("type choice missing");
+}
+#[test]
+fn bloodline_bidding_chooses_pinned_type_at_resolution_and_returns_only_own_creature_cards() {
+    assert!(serde_json::from_str::<crate::cards::CreatureType>("\"All\"").is_err());
+    assert!(serde_json::from_str::<crate::cards::CreatureType>("\"Equipment\"").is_err());
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        named(&mut g, p, "Impact Tremors", Zone::Battlefield);
+        let elf = named(&mut g, p, "Llanowar Elves", Zone::Graveyard);
+        let archdruid = named(&mut g, p, "Elvish Archdruid", Zone::Graveyard);
+        let changeling = named(&mut g, p, "Prideful Feastling", Zone::Graveyard);
+        let kindred = named(&mut g, p, "Nameless Inversion", Zone::Graveyard);
+        let nonelf = named(&mut g, p, "Gigantosaurus", Zone::Graveyard);
+        let enemy = named(&mut g, p.other(), "Llanowar Elves", Zone::Graveyard);
+        let hand = named(&mut g, p, "Llanowar Elves", Zone::Hand);
+        let id = named(&mut g, p, "Bloodline Bidding", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: id });
+        assert!(g.observe(p).resolution_creature_type.is_none());
+        wait_type_choice(&mut g);
+        assert_eq!(
+            g.legal_actions()
+                .iter()
+                .filter(|a| matches!(a, Action::ChooseCreatureType { .. }))
+                .count(),
+            crate::CREATURE_TYPES.len()
+        );
+        let kind = crate::cards::CreatureType::from_name("Elf").unwrap();
+        checked(
+            &mut g,
+            Action::ChooseCreatureType {
+                creature_type: kind,
+            },
+        );
+        settle(&mut g);
+        for object in [elf, archdruid, changeling] {
+            assert_eq!(g.state.objects[object as usize].zone, Zone::Battlefield);
+            assert_eq!(g.state.objects[object as usize].controller, p);
+        }
+        for object in [kindred, nonelf, enemy] {
+            assert_eq!(g.state.objects[object as usize].zone, Zone::Graveyard);
+        }
+        assert_eq!(g.state.objects[hand as usize].zone, Zone::Hand);
+        assert_eq!(g.state.players[p.other().index()].life, 17);
+        assert_eq!(g.stats(elf).power, 2);
+        assert_eq!(g.stats(changeling).power, 3);
+        assert!(g.observe(p).resolution_creature_type.is_none());
+    }
+}
+#[test]
+fn bloodline_chosen_type_survives_simultaneous_as_entry_choices_and_empty_batches() {
+    for p in [Player::P0, Player::P1] {
+        for empty in [false, true] {
+            let mut g = setup(p);
+            let first = named(&mut g, p, "Adaptive Automaton", Zone::Graveyard);
+            let second = named(&mut g, p, "Adaptive Automaton", Zone::Graveyard);
+            let changeling = named(
+                &mut g,
+                p,
+                "Prideful Feastling",
+                if empty { Zone::Hand } else { Zone::Graveyard },
+            );
+            let id = named(&mut g, p, "Bloodline Bidding", Zone::Hand);
+            checked(&mut g, Action::AnnounceCast { card: id });
+            wait_type_choice(&mut g);
+            let kind = crate::cards::CreatureType::from_name(if empty {
+                "Time Lord"
+            } else {
+                "Construct"
+            })
+            .unwrap();
+            checked(
+                &mut g,
+                Action::ChooseCreatureType {
+                    creature_type: kind,
+                },
+            );
+            if !empty {
+                assert_eq!(g.observe(p).resolution_creature_type, Some(kind));
+                assert_eq!(g.observe(p.other()).resolution_creature_type, Some(kind));
+                for _ in 0..2 {
+                    checked(
+                        &mut g,
+                        Action::ChooseEntryValue {
+                            value: crate::cards::EntryChoiceValue::CreatureType(kind),
+                        },
+                    );
+                }
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.state.objects[first as usize].zone,
+                if empty {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            assert_eq!(
+                g.state.objects[second as usize].zone,
+                if empty {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            // An empty chosen-type batch still completes the owned resolution.
+            assert_eq!(
+                g.state.objects[changeling as usize].zone,
+                if empty { Zone::Hand } else { Zone::Battlefield }
+            );
+            if !empty {
+                assert_eq!(g.stats(changeling).power, 4);
+            }
+            assert!(g.resolution_chosen_creature_type().is_none());
+        }
+    }
+}
+#[test]
+fn bloodline_bidding_convoke_uses_actual_tap_costs_before_type_choice() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let black = named(&mut g, p, "Vampire Nighthawk", Zone::Battlefield);
+        let green = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let returned = named(&mut g, p, "Gigantosaurus", Zone::Graveyard);
+        let id = named(&mut g, p, "Bloodline Bidding", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 5];
+        checked(&mut g, Action::AnnounceCast { card: id });
+        checked(&mut g, Action::BeginConvoke);
+        for (id, contribution) in [
+            (black, ConvokeContribution::Black),
+            (green, ConvokeContribution::Generic),
+        ] {
+            let object = g.object_ref(id);
+            checked(
+                &mut g,
+                Action::ChooseConvoker {
+                    object,
+                    contribution,
+                },
+            );
+        }
+        wait_type_choice(&mut g);
+        assert!(g.state.objects[black as usize].tapped && g.state.objects[green as usize].tapped);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        let kind = crate::cards::CreatureType::from_name("Dinosaur").unwrap();
+        checked(
+            &mut g,
+            Action::ChooseCreatureType {
+                creature_type: kind,
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.state.objects[returned as usize].zone, Zone::Battlefield);
+    }
+}

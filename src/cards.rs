@@ -705,6 +705,8 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    ChooseCreatureType,
+    ReturnChosenCreatureTypeFromGraveyard,
     PartitionLibraryPiles(u16),
     KeepOneOfEachPermanentType,
     RememberOwnSacrifice,

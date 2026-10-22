@@ -18,6 +18,7 @@ fn program(g: &mut Game, player: Player, target: CardId, code: &'static [Instruc
     });
     g.state.resolving = Some(Resolution {
         continuation: None,
+        chosen_creature_type: None,
         connive: None,
         explore: None,
         evidence: None,

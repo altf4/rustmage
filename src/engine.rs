@@ -8,6 +8,8 @@ mod endgame;
 mod endgame_tests;
 #[path = "engine_linked_choices.rs"]
 mod linked_choices;
+#[path = "engine_resolution_types.rs"]
+mod resolution_types;
 #[cfg(test)]
 #[path = "engine_zone_replacement_tests.rs"]
 mod zone_replacement_tests;
@@ -453,6 +455,7 @@ define_actions! {
         sacrifice: Option<ObjectRef>,
     },
     ChooseX { value: u32 },
+    ChooseCreatureType { creature_type: crate::cards::CreatureType },
     ChooseKicker {
         pay: bool,
     },
@@ -1356,6 +1359,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    ResolutionCreatureType {
+        player: Player,
+    },
     LinkedChoice {
         player: Player,
     },
@@ -1999,6 +2005,8 @@ pub struct Observation {
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub resolution_creature_type: Option<crate::cards::CreatureType>,
     pub retarget: Option<RetargetView>,
     pub target_amount: Option<TargetAmountChoiceView>,
     pub delayed_spell_copies: Vec<SpellView>,
@@ -2290,7 +2298,8 @@ impl Game {
             | Pending::Mulligan(p)
             | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::ResolutionCasts { player }
+            Pending::ResolutionCreatureType { player }
+            | Pending::ResolutionCasts { player }
             | Pending::ZoneReplacement { player }
             | Pending::ManaLotSpend { player }
             | Pending::Replacement { player }
@@ -3550,6 +3559,16 @@ impl Game {
                     }
                 }
             }
+            Pending::ResolutionCreatureType { .. } => {
+                for name in crate::CREATURE_TYPES {
+                    let kind = crate::cards::CreatureType::from_name(name).unwrap();
+                    if emit(Action::ChooseCreatureType {
+                        creature_type: kind,
+                    }) {
+                        return true;
+                    }
+                }
+            }
             Pending::X { .. } | Pending::ResolutionX { .. } => {
                 if let Some(domain) = self.x_choice() {
                     for range in domain.intervals {
@@ -4271,6 +4290,9 @@ impl Game {
             Action::FinishSaddle => self.finish_saddle_payment(),
             Action::ChooseCrewer { object } => self.choose_crewer(object),
             Action::FinishCrew => self.finish_crew_payment(),
+            Action::ChooseCreatureType {
+                creature_type: kind,
+            } => self.choose_resolution_creature_type(kind),
             Action::ChooseX { value }
                 if matches!(self.state.pending, Pending::ResolutionX { .. }) =>
             {
@@ -5877,6 +5899,7 @@ impl Game {
                 Pending::Crew { .. } => "crew",
                 Pending::Explore { .. } => "explore",
                 Pending::ResolutionX { .. } => "resolution_x",
+                Pending::ResolutionCreatureType { .. } => "resolution_creature_type",
                 Pending::X { .. } => "x",
                 Pending::EvidenceIntent { .. } => "evidence_intent",
                 Pending::Evidence { .. } => "evidence",
@@ -5983,6 +6006,7 @@ impl Game {
             spell_characteristics: self.spell_characteristics(),
             exile_permissions: s.exile_permissions.clone(),
             resolution_free_casts: s.resolution_free_casts.as_deref().cloned(),
+            resolution_creature_type: self.resolution_chosen_creature_type(),
             graveyard_type_uses: s
                 .graveyard_type_uses
                 .as_ref()

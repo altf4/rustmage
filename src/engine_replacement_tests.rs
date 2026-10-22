@@ -408,6 +408,7 @@ fn synthetic(g: &mut Game, source: CardId, code: &'static [Instruction], targets
         .collect();
     g.state.resolving = Some(Resolution {
         continuation: None,
+        chosen_creature_type: None,
         explore: None,
         evidence: None,
         connive: None,

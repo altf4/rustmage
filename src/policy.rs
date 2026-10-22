@@ -304,6 +304,17 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     })
                     .sum()
             }
+            Action::ChooseCreatureType {
+                creature_type: kind,
+            } => observation
+                .objects
+                .iter()
+                .filter(|object| {
+                    ((object.zone == Zone::Battlefield && object.controller == actor)
+                        || (object.zone == Zone::Graveyard && object.owner == actor))
+                        && object.has_subtype(kind.name())
+                })
+                .count() as i128,
             Action::ChooseEntryValue { .. } => 0,
             Action::ChooseEntryLife { pay } => {
                 // Avoid voluntary lethal payment; the example still exercises

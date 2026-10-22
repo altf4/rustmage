@@ -5,6 +5,7 @@ use crate::cards::{CastFilter, CastTarget, StaticAbilityFragment};
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
     pub continuation: Option<Box<ProgramContinuation>>,
+    pub chosen_creature_type: Option<crate::cards::CreatureType>,
     pub connive: Option<Box<super::connive::ConniveSequence>>,
     pub explore: Option<Box<ExploreChoiceView>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
@@ -1404,6 +1405,7 @@ impl Game {
         assert!(self.state.resolving.is_none());
         self.state.resolving = Some(Resolution {
             continuation: None,
+            chosen_creature_type: None,
             explore: None,
             evidence: None,
             connive: None,
@@ -1602,6 +1604,17 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::ChooseCreatureType => {
+                    self.state.resolving.as_mut().unwrap().chosen_creature_type = None;
+                    self.state.pending = Pending::ResolutionCreatureType {
+                        player: item.controller,
+                    };
+                    return;
+                }
+                Instruction::ReturnChosenCreatureTypeFromGraveyard => {
+                    self.return_resolution_chosen_type(item.controller)
+                }
+
                 Instruction::PartitionLibraryPiles(maximum) => {
                     self.start_library_piles(item.controller, maximum);
                     return;

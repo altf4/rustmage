@@ -20,6 +20,7 @@ const TARGET_TO_PLAYER: &[Instruction] = &[Instruction::GainControl {
 fn resolve(g: &mut Game, item: SpellView, program: &'static [Instruction]) {
     g.state.resolving = Some(Resolution {
         continuation: None,
+        chosen_creature_type: None,
         explore: None,
         evidence: None,
         connive: None,
