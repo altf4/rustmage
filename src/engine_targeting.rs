@@ -63,7 +63,19 @@ impl Announcement {
             {
                 None
             }
-            StackKind::Spell => self.item.source_card.additional_cost(),
+            StackKind::Spell => self.item.source_card.additional_cost().and_then(|spec| {
+                if let EffectChoiceKind::OptionalBlightCost(amount) = spec.kind {
+                    self.item
+                        .cast
+                        .filter(|cast| cast.optional_additional == Some(true))
+                        .map(|_| AdditionalCost {
+                            kind: EffectChoiceKind::BlightCost(amount),
+                            ..spec
+                        })
+                } else {
+                    Some(spec)
+                }
+            }),
             StackKind::ActivatedAbility { ability } => {
                 self.item.source_card.activations()[ability as usize]
                     .cost
@@ -149,6 +161,19 @@ impl Announcement {
             && self.item.kind == StackKind::Spell
             && self.item.source_card.collect_evidence_cost().is_some()
             && self.item.cast.is_some_and(|c| c.evidence.is_none())
+    }
+    pub(super) fn needs_optional_additional(&self) -> bool {
+        self.pay_window
+            && self.item.kind == StackKind::Spell
+            && self
+                .item
+                .source_card
+                .additional_cost()
+                .is_some_and(|spec| matches!(spec.kind, EffectChoiceKind::OptionalBlightCost(_)))
+            && self
+                .item
+                .cast
+                .is_some_and(|cast| cast.optional_additional.is_none())
     }
     pub(super) fn needs_bargain(&self) -> bool {
         self.pay_window
@@ -538,7 +563,7 @@ impl Game {
         let player = a.item.controller;
         // CR601.2b announces the mode before a hybrid equivalent. Both
         // declarations precede targets, mana abilities and payment.
-        if needs_mode {
+        if needs_mode && !a.needs_optional_additional() {
             self.state.pending = Pending::Modes { player };
         } else if a.pay_window && a.has_x_cost() && a.item.x.is_none() {
             self.state.pending = Pending::X { player };
@@ -552,6 +577,8 @@ impl Game {
             self.state.pending = Pending::Kicker { player };
         } else if a.needs_gift() {
             self.state.pending = Pending::Gift { player };
+        } else if a.needs_optional_additional() {
+            self.state.pending = Pending::OptionalAdditionalCost { player };
         } else if a.needs_mana_cost() {
             self.state.pending = if a.item.kind == StackKind::Spell {
                 Pending::SpellCost { player }
@@ -1151,6 +1178,7 @@ impl Game {
                 kicker: None,
                 bargain: None,
                 evidence: None,
+                optional_additional: None,
             }),
             id,
             kind: StackKind::Spell,

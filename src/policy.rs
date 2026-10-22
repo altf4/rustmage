@@ -203,6 +203,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ChooseEvidence { .. } => 50,
             Action::FinishEvidence => 80,
             Action::DeclineEvidence => -10,
+            Action::ChooseOptionalAdditionalCost { object } => {
+                if object.is_some() {
+                    60
+                } else {
+                    0
+                }
+            }
             Action::ChooseBargain { sacrifice } => {
                 if sacrifice.is_some() {
                     60

@@ -83,6 +83,42 @@ impl Game {
                 .is_none_or(|subtype| subtypes.has(o.card, subtype))
     }
 
+    pub(super) fn optional_additional_choice_fundable(
+        &self,
+        a: &Announcement,
+        object: Option<ObjectRef>,
+    ) -> bool {
+        a.cost_options()
+            .any(|cost| self.optional_additional_cost_fundable(a, cost, object))
+    }
+    pub(super) fn optional_additional_cost_fundable(
+        &self,
+        a: &Announcement,
+        cost: ManaCost,
+        object: Option<ObjectRef>,
+    ) -> bool {
+        let Some(spec) = a.item.source_card.additional_cost() else {
+            return false;
+        };
+        let EffectChoiceKind::OptionalBlightCost(amount) = spec.kind else {
+            return false;
+        };
+        let cost_spec = AdditionalCost {
+            kind: EffectChoiceKind::BlightCost(amount),
+            ..spec
+        };
+        if object.is_some_and(|object| {
+            !self.additional_candidate(cost_spec, a.item.controller, a.item.object, object)
+        }) {
+            return false;
+        }
+        let mut proposal = a.clone();
+        proposal.cost = Some(cost);
+        proposal.additional = object;
+        proposal.item.cast.as_mut().unwrap().optional_additional = Some(object.is_some());
+        let goal = self.funding_goal(&proposal);
+        self.can_fund_for(goal, self.purpose_for_item(&proposal.item))
+    }
     pub(super) fn spell_can_fund(&self, actor: Player, card: CardId, cost: ManaCost) -> bool {
         let definition = self.effective_spell_card(card);
         let skips_additional = definition.mana_alternative_replaces_additional(cost);
@@ -138,6 +174,9 @@ impl Game {
         let Some(spec) = definition.additional_cost() else {
             return self.can_fund_for(base, purpose);
         };
+        if matches!(spec.kind, EffectChoiceKind::OptionalBlightCost(_)) {
+            return self.can_fund_for(base, purpose);
+        }
         if forage::is_forage_cost(spec) {
             return if route == Some(ForageRoute::Black) {
                 self.can_fund_for(base, purpose)
@@ -288,6 +327,7 @@ impl Game {
                 );
             }
             EffectChoiceKind::Blight(_)
+            | EffectChoiceKind::OptionalBlightCost(_)
             | EffectChoiceKind::RemoveCreatureCounters(_)
             | EffectChoiceKind::TapPermanents(_)
             | EffectChoiceKind::UntapLands { .. }

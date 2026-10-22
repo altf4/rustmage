@@ -570,6 +570,8 @@ pub enum EffectChoiceKind {
     Blight(u16),
     /// Blight paid as a cost, including a cost during resolution.
     BlightCost(u16),
+    /// A pre-target declaration may decline this additional casting cost.
+    OptionalBlightCost(u16),
     /// Choose distinct untapped permanents as a non-targeting activation cost.
     TapPermanents(u16),
     RemoveCreatureCounters(u16),
@@ -937,6 +939,10 @@ pub(crate) enum Instruction {
         amount: u16,
     },
     IfKicked {
+        skip: usize,
+    },
+    /// Historical payment qualification retained by the exact spell and copies.
+    IfOptionalAdditionalPaid {
         skip: usize,
     },
     IfBargained {

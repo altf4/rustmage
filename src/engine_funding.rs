@@ -1530,6 +1530,7 @@ impl Game {
             || a.needs_gift()
             || a.needs_bargain()
             || a.needs_evidence()
+            || a.needs_optional_additional()
             || a.additional_cost().is_some_and(forage::is_forage_cost) && a.forage.is_none()
             || a.needs_mana_cost()
             || (a.item.source_card.tiered_costs().is_some() && a.item.mode.is_none())
@@ -1555,6 +1556,14 @@ impl Game {
         })
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        if a.item.kind == StackKind::Spell
+            && a.item
+                .source_card
+                .additional_cost()
+                .is_some_and(|spec| matches!(spec.kind, EffectChoiceKind::OptionalBlightCost(_)))
+        {
+            return self.optional_additional_cost_fundable(a, cost, a.additional);
+        }
         if a.item
             .cast
             .is_some_and(|c| c.method == CastMethod::GraveyardCounterCost)

@@ -1922,6 +1922,14 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::IfOptionalAdditionalPaid { skip } => {
+                    if !item
+                        .cast
+                        .is_some_and(|cast| cast.optional_additional == Some(true))
+                    {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::IfBargained { skip } => {
                     if !item.cast.is_some_and(|c| c.bargain == Some(true)) {
                         self.state.resolving.as_mut().unwrap().pc += skip;

@@ -445,6 +445,9 @@ define_actions! {
         object: ObjectRef,
     },
     ChooseExplore { object: ObjectRef, graveyard: bool },
+    ChooseOptionalAdditionalCost {
+        object: Option<ObjectRef>,
+    },
     ChooseBargain {
         sacrifice: Option<ObjectRef>,
     },
@@ -847,6 +850,9 @@ pub struct CastInfo {
     /// Exact cast declaration; its reserved sacrifice is held by the announcement.
     pub bargain: Option<bool>,
     pub evidence: Option<bool>,
+    /// Optional casting cost declaration; an on-stack true value means it was paid.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub optional_additional: Option<bool>,
 }
 
 /// Frozen recipient and immutable program provenance, independent of later attachments.
@@ -1412,6 +1418,9 @@ enum Pending {
         player: Player,
     },
     Forage {
+        player: Player,
+    },
+    OptionalAdditionalCost {
         player: Player,
     },
     Bargain {
@@ -2293,6 +2302,7 @@ impl Game {
             | Pending::Saddle { player }
             | Pending::Crew { player }
             | Pending::Explore { player }
+            | Pending::OptionalAdditionalCost { player }
             | Pending::Bargain { player }
             | Pending::ResolutionX { player }
             | Pending::X { player }
@@ -3503,6 +3513,22 @@ impl Game {
                     }
                 }
             }
+            Pending::OptionalAdditionalCost { .. } => {
+                let a = s.announcing.as_ref().unwrap();
+                if self.optional_additional_choice_fundable(a, None)
+                    && emit(Action::ChooseOptionalAdditionalCost { object: None })
+                {
+                    return true;
+                }
+                for id in 0..s.objects.len() {
+                    let object = Some(self.object_ref(id as CardId));
+                    if self.optional_additional_choice_fundable(a, object)
+                        && emit(Action::ChooseOptionalAdditionalCost { object })
+                    {
+                        return true;
+                    }
+                }
+            }
             Pending::Bargain { .. } => {
                 let a = s.announcing.as_ref().unwrap();
                 if self.bargain_choice_fundable(a, None)
@@ -4207,6 +4233,13 @@ impl Game {
             Action::FinishEvidence => self.finish_evidence(),
             Action::DeclineEvidence => self.decline_evidence(),
             Action::ChooseExplore { graveyard, .. } => self.finish_explore(graveyard),
+            Action::ChooseOptionalAdditionalCost { object } => {
+                let a = self.state.announcing.as_mut().unwrap();
+                a.item.cast.as_mut().unwrap().optional_additional = Some(object.is_some());
+                a.additional = object;
+                let needs_mode = a.item.modes().is_some() && a.item.mode.is_none();
+                self.continue_announcement_choices(needs_mode);
+            }
             Action::ChooseBargain { sacrifice } => {
                 let a = self.state.announcing.as_mut().unwrap();
                 a.item.cast.as_mut().unwrap().bargain = Some(sacrifice.is_some());
@@ -5816,6 +5849,7 @@ impl Game {
                 Pending::TargetAmount { .. } => "target_amount",
                 Pending::Targets { .. } => "targets",
                 Pending::Offspring { .. } => "offspring",
+                Pending::OptionalAdditionalCost { .. } => "optional_additional_cost",
                 Pending::Bargain { .. } => "bargain",
                 Pending::Kicker { .. } => "kicker",
                 Pending::Gift { .. } => "gift",

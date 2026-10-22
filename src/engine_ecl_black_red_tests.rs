@@ -1088,3 +1088,229 @@ fn wither_preserves_deathtouch_and_lifelink_on_nonlethal_counter_damage() {
     );
     assert_eq!(g.state.players[0].life, 23);
 }
+fn optional_cast(g: &mut Game, id: CardId, witness: Option<CardId>, target: Option<Target>) {
+    checked(g, Action::AnnounceCast { card: id });
+    assert!(matches!(
+        g.state.pending,
+        Pending::OptionalAdditionalCost { .. }
+    ));
+    assert!(
+        g.observe(g.actor().unwrap().other())
+            .additional_cost
+            .is_none()
+    );
+    let object = witness.map(|id| g.object_ref(id));
+    checked(g, Action::ChooseOptionalAdditionalCost { object });
+    if let Some(target) = target {
+        checked(g, Action::ChooseTarget { target });
+    }
+    for _ in 0..100 {
+        if g.state.announcing.is_none() {
+            return;
+        }
+        advance(g);
+    }
+    panic!("optional spell did not finish casting");
+}
+#[test]
+fn cinder_strike_optional_blight_is_chosen_before_targets_and_paid_history_survives_witness_death()
+{
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            let mut g = setup(p);
+            let witness = paid.then(|| named(&mut g, p, "Llanowar Elves", Zone::Battlefield));
+            let foe = named(&mut g, p.other(), "Gutsplitter Gang", Zone::Battlefield);
+            let id = named(&mut g, p, "Cinder Strike", Zone::Hand);
+            reject(
+                &mut g,
+                Action::Cast {
+                    card: id,
+                    target: Some(Target::Card(foe)),
+                    payment: [0, 0, 0, 1, 0, 0],
+                },
+            );
+            reject(
+                &mut g,
+                Action::BeginCast {
+                    card: id,
+                    payment: [0, 0, 0, 1, 0, 0],
+                },
+            );
+            checked(&mut g, Action::AnnounceCast { card: id });
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(foe),
+                },
+            );
+            let invalid = g.object_ref(foe);
+            reject(
+                &mut g,
+                Action::ChooseOptionalAdditionalCost {
+                    object: Some(invalid),
+                },
+            );
+            let object = witness.map(|id| g.object_ref(id));
+            checked(&mut g, Action::ChooseOptionalAdditionalCost { object });
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(p.other()),
+                },
+            );
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(foe),
+                },
+            );
+            while g.state.announcing.is_some() {
+                advance(&mut g);
+            }
+            assert_eq!(
+                g.state
+                    .stack
+                    .iter()
+                    .find(|s| s.card == id)
+                    .unwrap()
+                    .cast
+                    .unwrap()
+                    .optional_additional,
+                Some(paid)
+            );
+            if let Some(witness) = witness {
+                assert_eq!(g.state.objects[witness as usize].zone, Zone::Graveyard);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.state.objects[foe as usize].damage,
+                if paid { 4 } else { 2 }
+            );
+        }
+    }
+}
+#[test]
+fn requiting_hex_limits_mana_value_and_gains_life_only_for_paid_resolving_spell() {
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            for invalidate in [false, true] {
+                let mut g = setup(p);
+                let witness = paid.then(|| named(&mut g, p, "Llanowar Elves", Zone::Battlefield));
+                let foe = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+                let large = named(&mut g, p.other(), "Gutsplitter Gang", Zone::Battlefield);
+                let id = named(&mut g, p, "Requiting Hex", Zone::Hand);
+                checked(&mut g, Action::AnnounceCast { card: id });
+                let object = witness.map(|id| g.object_ref(id));
+                checked(&mut g, Action::ChooseOptionalAdditionalCost { object });
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(large),
+                    },
+                );
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(foe),
+                    },
+                );
+                while g.state.announcing.is_some() {
+                    advance(&mut g);
+                }
+                if invalidate {
+                    g.move_object(foe, Zone::Hand);
+                }
+                settle(&mut g);
+                assert_eq!(
+                    g.state.objects[foe as usize].zone,
+                    if invalidate {
+                        Zone::Hand
+                    } else {
+                        Zone::Graveyard
+                    }
+                );
+                assert_eq!(
+                    g.state.players[p.index()].life,
+                    if paid && !invalidate { 22 } else { 20 }
+                );
+            }
+        }
+    }
+}
+#[test]
+fn burning_curiosity_paid_witness_can_produce_mana_and_permissions_last_through_next_own_turn() {
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            let mut g = setup(p);
+            let witness = paid.then(|| named(&mut g, p, "Llanowar Elves", Zone::Battlefield));
+            let id = named(&mut g, p, "Burning Curiosity", Zone::Hand);
+            if let Some(witness) = witness {
+                let a = named(&mut g, p, "Mountain", Zone::Battlefield);
+                let b = named(&mut g, p, "Mountain", Zone::Battlefield);
+                g.state.players[p.index()].mana = [0; 6];
+                checked(&mut g, Action::AnnounceCast { card: id });
+                let object = Some(g.object_ref(witness));
+                checked(&mut g, Action::ChooseOptionalAdditionalCost { object });
+                for card in [witness, a, b] {
+                    checked(&mut g, Action::TapMana { card });
+                }
+                let pay = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a, Action::PayCosts { .. }))
+                    .unwrap();
+                checked(&mut g, pay);
+                assert_eq!(g.state.objects[witness as usize].zone, Zone::Graveyard);
+            } else {
+                optional_cast(&mut g, id, None, None);
+            }
+            let turn = g.state.turn;
+            settle(&mut g);
+            assert_eq!(g.state.exile_permissions.len(), if paid { 3 } else { 2 });
+            assert!(g.state.exile_permissions.iter().all(|permission|permission.player==p&&permission.expires_turn==turn+2));
+            let land = g.state.exile_permissions[0].object.card;
+            assert!(g.legal_actions().contains(&Action::PlayLand { card: land }));
+            checked(&mut g, Action::PlayLand { card: land });
+            let remaining = g
+                .state
+                .exile_permissions
+                .iter()
+                .find(|permission| permission.object.card != land)
+                .unwrap()
+                .object
+                .card;
+            g.finish_cleanup();
+            g.finish_cleanup();
+            g.state.step = Step::Main1;
+            g.state.pending = Pending::Priority;
+            g.state.priority = p;
+            assert!(
+                g.legal_actions()
+                    .contains(&Action::PlayLand { card: remaining })
+            );
+            g.finish_cleanup();
+            assert!(!g.can_play_exiled(p, remaining));
+        }
+    }
+}
+#[test]
+fn optional_additional_paid_qualification_is_inherited_by_spell_copies_without_repayment() {
+    let mut g = setup(Player::P0);
+    let teach = named(&mut g, Player::P0, "Teach by Example", Zone::Hand);
+    cast(&mut g, teach);
+    let witness = named(&mut g, Player::P0, "Llanowar Elves", Zone::Battlefield);
+    let foe = named(&mut g, Player::P1, "Gigantosaurus", Zone::Battlefield);
+    let id = named(&mut g, Player::P0, "Cinder Strike", Zone::Hand);
+    optional_cast(&mut g, id, Some(witness), Some(Target::Card(foe)));
+    for _ in 0..100 {
+        if g.state.stack.iter().any(|s| s.is_copy) {
+            break;
+        }
+        advance(&mut g);
+    }
+    let copy = g.state.stack.iter().find(|s| s.is_copy).unwrap();
+    assert_eq!(copy.cast.unwrap().optional_additional, Some(true));
+    assert_eq!(copy.cast.unwrap().payment, [0; 6]);
+    settle(&mut g);
+    assert_eq!(g.state.objects[foe as usize].damage, 8);
+}

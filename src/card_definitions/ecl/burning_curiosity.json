@@ -3,10 +3,45 @@
   "catalogue_id": 592,
   "oracle_id": "7f420633-901d-47f9-ae0f-0f5b0ea8359c",
   "facts_sha256": "4266bd28f2640dc72831791a628a62ac307c53d6deb738dafc32e28690f7d9fc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "dc0a3239e04c3c3103f759640d07681f48836f91c2dc501dd4eb6b9d7db360d8"
   },
-  "physical_metadata_sha256": "f4f440f54bb1417273eefc3bf68a842fe35a35848857d8896b2dc65060e1aee1"
+  "physical_metadata_sha256": "f4f440f54bb1417273eefc3bf68a842fe35a35848857d8896b2dc65060e1aee1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BurningCuriosity.java",
+  "java_sha256": "a227e0ef655fa01165fd85da6ea6efbb790edbed14cc79ea0d3a19269aee7454",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/BlightAbility.java",
+      "sha256": "d56c030631442af00c041543d6fe7f208750754687e138de138d3b7a7ebb43cf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BlightCost.java",
+      "sha256": "33a0d3714068f004db969c35c375e95470b9eaf389f5b2dd73aae3c67b498cd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/BlightedCondition.java",
+      "sha256": "5bfe16a60690c22b487860af768a52598152836957b9990daa8255692447cd39"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+      "sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+    }
+  ]
 }
