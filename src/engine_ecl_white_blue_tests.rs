@@ -5306,3 +5306,276 @@ fn rhys_granted_persist_cannot_return_a_token_even_though_it_triggers_on_its_dea
         assert_eq!(g.object_view(token).zone, Zone::Outside);
     }
 }
+
+fn colossus_trigger(g: &mut Game, p: Player) -> CardId {
+    let source = spawn(
+        g,
+        p,
+        Card::from_name("Curious Colossus").unwrap(),
+        Zone::Hand,
+    );
+    checked(g, Action::AnnounceCast { card: source });
+    finish_cast_choices(g);
+    checked(g, Action::Pass);
+    checked(g, Action::Pass);
+    reject_atomic(
+        g,
+        Action::ChooseTarget {
+            target: Target::Player(p),
+        },
+    );
+    checked(
+        g,
+        Action::ChooseTarget {
+            target: Target::Player(p.other()),
+        },
+    );
+    finish_cast_choices(g);
+    source
+}
+
+#[test]
+fn curious_colossus_paid_body_freezes_resolution_creatures_and_keeps_modifiers_and_other_types() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let own = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let enemy = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Juggernaut").unwrap(),
+            Zone::Battlefield,
+        );
+        let late = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Serra Angel").unwrap(),
+            Zone::Hand,
+        );
+        let land = spawn(&mut g, p.other(), Card::Island, Zone::Battlefield);
+        let source = colossus_trigger(&mut g, p);
+        assert_eq!(
+            g.stats(source),
+            Stats {
+                power: 7,
+                toughness: 7
+            }
+        );
+        let original = g.object_ref(enemy);
+        g.set_counters(
+            enemy,
+            Counters::of(CounterKind::PlusOne, 2).with(CounterKind::Flying, 1),
+        );
+        g.state.objects[enemy as usize].growth = Stats {
+            power: 3,
+            toughness: 4,
+        };
+        g.grant_keyword_effects(
+            &[enemy],
+            original,
+            Keywords::HEXPROOF.union(Keywords::INDESTRUCTIBLE),
+        );
+        // This entrant is included even though it was absent when the ability triggered.
+        g.move_object(late, Zone::Battlefield);
+        g.move_object(source, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(enemy),
+            Stats {
+                power: 6,
+                toughness: 7
+            }
+        );
+        assert_eq!(
+            g.stats(late),
+            Stats {
+                power: 1,
+                toughness: 1
+            }
+        );
+        assert_eq!(
+            g.stats(own),
+            Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+        assert!(!g.printed_abilities_available(enemy));
+        assert!(!g.keywords(enemy).contains(Keywords::HEXPROOF));
+        assert!(!g.keywords(enemy).contains(Keywords::FLYING));
+        assert_eq!(g.counter_count(enemy, CounterKind::Flying), 1);
+        assert!(!g.keywords(late).contains(Keywords::FLYING));
+        assert!(g.current_kinds(enemy) & 16 != 0);
+        assert!(g.has_subtype(enemy, "Juggernaut"));
+        assert!(g.has_subtype(enemy, "Coward"));
+        assert_eq!(
+            g.object_view(late).colors,
+            Card::from_name("Serra Angel").unwrap().colors()
+        );
+        assert!(!g.has_subtype(land, "Coward"));
+        let later = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+        assert!(!g.has_subtype(later, "Coward"));
+        assert_eq!(g.stats(later).power, 2);
+        g.change_controller(original, p);
+        g.finish_cleanup();
+        assert!(g.has_subtype(enemy, "Coward"));
+        assert!(!g.printed_abilities_available(enemy));
+        assert_eq!(
+            g.stats(enemy),
+            Stats {
+                power: 3,
+                toughness: 3
+            }
+        );
+        g.move_object(enemy, Zone::Exile);
+        g.move_object(enemy, Zone::Battlefield);
+        settle(&mut g);
+        assert_ne!(g.object_ref(enemy), original);
+        assert!(!g.has_subtype(enemy, "Coward"));
+        assert!(g.printed_abilities_available(enemy));
+        assert_eq!(
+            g.stats(enemy),
+            Stats {
+                power: 5,
+                toughness: 3
+            }
+        );
+    }
+}
+
+#[test]
+fn curious_colossus_changeling_and_later_keyword_and_base_effects_follow_layers() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let target = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("@token/shapeshifter_1_1_colorless_changeling").unwrap(),
+            Zone::Battlefield,
+        );
+        let source = colossus_trigger(&mut g, p);
+        settle(&mut g);
+        assert!(!g.keywords(target).contains(Keywords::CHANGELING));
+        for subtype in ["Coward", "Faerie", "Goblin", "Shapeshifter"] {
+            assert!(g.has_subtype(target, subtype));
+        }
+        g.grant_keyword_effects(&[target], g.object_ref(source), Keywords::FLYING);
+        assert!(g.keywords(target).contains(Keywords::FLYING));
+        // A later layer-7b effect temporarily supersedes the permanent 1/1 setter.
+        let item = spell(&mut g, p, "Glamer Gifter", &[]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        finish_cast_choices(&mut g);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(target),
+            Stats {
+                power: 4,
+                toughness: 4
+            }
+        );
+        g.move_object(item, Zone::Graveyard);
+        g.finish_cleanup();
+        assert_eq!(
+            g.stats(target),
+            Stats {
+                power: 1,
+                toughness: 1
+            }
+        );
+        assert!(!g.keywords(target).contains(Keywords::FLYING));
+        assert!(!g.printed_abilities_available(target));
+        assert!(g.has_subtype(target, "Goblin"));
+    }
+}
+
+#[test]
+fn curious_colossus_resolution_group_uses_current_control_and_trigger_survives_control_change() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let leaving = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+        let joining = spawn(
+            &mut g,
+            p,
+            Card::from_name("Serra Angel").unwrap(),
+            Zone::Battlefield,
+        );
+        let source = colossus_trigger(&mut g, p);
+        let object = g.object_ref(source);
+        g.change_controller(object, p.other());
+        let object = g.object_ref(leaving);
+        g.change_controller(object, p);
+        let object = g.object_ref(joining);
+        g.change_controller(object, p.other());
+        settle(&mut g);
+        assert_eq!(g.stats(leaving).power, 2);
+        assert_eq!(g.stats(joining).power, 1);
+        assert!(!g.keywords(joining).contains(Keywords::FLYING));
+        // The Colossus is now itself in the chosen opponent's resolution-time group.
+        assert_eq!(
+            g.stats(source),
+            Stats {
+                power: 1,
+                toughness: 1
+            }
+        );
+        assert!(g.has_subtype(source, "Giant"));
+        assert!(g.has_subtype(source, "Warrior"));
+        assert!(g.has_subtype(source, "Coward"));
+        assert!(!g.printed_abilities_available(source));
+    }
+}
+
+#[test]
+fn rhys_exact_counter_removal_updates_keyword_counter_grants_on_partial_and_zero_removal() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = spawn(
+            &mut g,
+            p,
+            Card::from_name("Rhys, the Evermore").unwrap(),
+            Zone::Battlefield,
+        );
+        let target = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let object = g.object_ref(target);
+        g.remove_abilities_exact(&[object], crate::cards::AnimationDuration::Permanent);
+        g.set_counters(
+            target,
+            Counters::of(CounterKind::Flying, 2)
+                .with(CounterKind::FirstStrike, 1)
+                .with(CounterKind::Lifelink, 1),
+        );
+        rhys_removal(&mut g, source, target);
+        checked_counter_raw(
+            &mut g,
+            Counters::of(CounterKind::Flying, 1).with(CounterKind::FirstStrike, 1),
+        );
+        settle(&mut g);
+        assert!(
+            g.keywords(target)
+                .contains(Keywords::FLYING.union(Keywords::LIFELINK))
+        );
+        assert!(!g.keywords(target).contains(Keywords::FIRST_STRIKE));
+        g.state.objects[source as usize].tapped = false;
+        rhys_removal(&mut g, source, target);
+        checked_counter_raw(
+            &mut g,
+            Counters::of(CounterKind::Flying, 1).with(CounterKind::Lifelink, 1),
+        );
+        settle(&mut g);
+        assert!(!g.keywords(target).contains(Keywords::FLYING));
+        assert!(!g.keywords(target).contains(Keywords::LIFELINK));
+        assert_eq!(g.object_view(target).counters.total(), 0);
+        g.move_object(source, Zone::Graveyard);
+        rhys_grant(&mut g, p, target);
+        g.move_object(target, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+        assert_eq!(g.counter_count(target, CounterKind::MinusOne), 1);
+    }
+}

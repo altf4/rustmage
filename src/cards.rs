@@ -1257,6 +1257,15 @@ pub(crate) enum Instruction {
         kind: CounterKind,
         amount: u32,
     },
+    /// Permanently modifies the exact creatures controlled by the selected players
+    /// as this instruction resolves; later entrants are not affected.
+    SetPlayerCreatureCharacteristics {
+        players: PlayerSet,
+        additional_types: &'static [&'static str],
+        power: i128,
+        toughness: i128,
+        remove_abilities: bool,
+    },
     SetBaseStats {
         subject: Subject,
         power: Option<i128>,

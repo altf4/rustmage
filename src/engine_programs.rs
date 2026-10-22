@@ -3148,6 +3148,60 @@ impl Game {
                     };
                     self.apply_damage_batch(&events);
                 }
+                Instruction::SetPlayerCreatureCharacteristics {
+                    players,
+                    additional_types,
+                    power,
+                    toughness,
+                    remove_abilities,
+                } => {
+                    let players: Vec<_> = self.program_players(players, &item).collect();
+                    // Freeze the entire affected group before changing characteristics.
+                    let recipients: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(id, object)| {
+                            object.zone == Zone::Battlefield
+                                && players.contains(&object.controller)
+                                && self.is_creature(*id as CardId)
+                        })
+                        .map(|(id, _)| self.object_ref(id as CardId))
+                        .collect();
+                    if remove_abilities {
+                        self.remove_abilities_exact(
+                            &recipients,
+                            crate::cards::AnimationDuration::Permanent,
+                        );
+                    }
+                    if !recipients.is_empty() {
+                        let timestamp = self.next_role_timestamp();
+                        let state = self.state.roles.get_or_insert_with(Default::default);
+                        for recipient in recipients {
+                            state
+                                .creature_types
+                                .push(subtypes::CreatureTypesEffectView {
+                                    recipient,
+                                    source: item.object,
+                                    types: additional_types,
+                                    additional: true,
+                                    all_creature_types: false,
+                                    expires_turn: None,
+                                    timestamp,
+                                });
+                            state.base_stats.push(BaseStatsEffectView {
+                                recipient,
+                                source: item.object,
+                                power: Some(power),
+                                toughness: Some(toughness),
+                                timestamp,
+                                static_source: false,
+                                permanent: true,
+                            });
+                        }
+                    }
+                }
                 Instruction::SetBaseStats {
                     subject,
                     power,
