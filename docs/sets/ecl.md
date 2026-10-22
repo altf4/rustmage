@@ -28,77 +28,76 @@ all have complete source pins and parent interaction evidence. Final combined
 full-game acceptance, release validation and two published-head reviews remain
 open. No newly authored cards have been merged upstream.
 
-Three isolated authors own exactly black/red, white/blue, and green/colorless
-cards respectively. Their focused modules are `src/engine_ecl_black_red_tests.rs`,
-`src/engine_ecl_white_blue_tests.rs`, and `src/engine_ecl_green_colorless_tests.rs`.
-The integrator owns multicolor cards, shared coordination, source reconciliation,
-`src/engine_ecl_core_tests.rs`, `src/engine_ecl_commands_tests.rs`, and generated
-links. All five Incarnations are integrated; root now owns the seven transforming cards. Foraging Wickermaw, Harmonized
-Crescendo, Thoughtweft Imbuer and Lasting Tarfire are integrated; the203-card
-Clippy check needed the now integrated Brigid consumer. Both Brigid faces,
-Warren Torchmaster, Shimmerwilds Growth and Kinbinding are integrated; a207-card
-release validation reached2,737 passing native tests and two old single-face
-invariant failures, now corrected and rechecked (18/18). Ashling,
-Flamebraider, Flitterwing Nuisance, Lys Alana Dignitary, Retched Wretch and
-Rimefire Torque are integrated. The213-card run passed all2,768 native tests;
-the remaining transform-name catalogue invariant is fixed and all9 catalogue
-tests pass. Subsequent integrated cards include both Trystan faces, Champions of
-the Perfect, Mudbutton Cursetosser, Soulbright Seeker, Moonshadow, Temporal
-Cleansing and Swat Away. Scarblade’s Malice is integrated, bringing admission to221/273. The220-card attempts found a malformed source pin and an exhaustive example match; both are fixed. The221-card run passed2,803 native tests and found one outdated Moonshadow source-index assertion, corrected in12633035. Celestial Reunion and four white/blue Behold creatures are integrated:226/273 admitted,47 gated. Champion of the Path and Champion of the Weird are integrated:228/273 admitted,45 gated. The226-card checks caught a portable-report-path error and an exhaustive example search-filter match; both are corrected. Fresh combined release validation follows.
+Three isolated authors implemented black/red, white/blue, and green/colorless
+cards, with the integrator handling multicolor cards, transforming cards and
+shared integration. All authored behavior is typed Rust. The combined ECL rules
+suite passed **716 scenarios in 30.68 seconds** before the final funding repairs;
+subsequent focused checks cover those repairs separately.
 
-Shared mechanics include mandatory and optional blight costs versus effects,
-wither as a damage result, exact mana-funding tap witnesses, entry-time creature
-history, chosen-type entry and activation packets/restricted mana/lords,
-conditional flash, all five Commands and their six mode pairs, immediate blink
-through owned entry continuations, private filtered optional discard,
-attached-creature fight, non-target power-difference choices, and conditional
-combat assignment using an equipped creature's toughness, evoke with actual mana-spent entry qualification, all-types temporary effects, vivid search/reveal quantities, exact combat-event subjects, owned layer-five color changes, creature trigger grants, and counter/untap prohibitions. Alternative casting
-methods preserve printed additional mana-or-blight choices.
+Shared mechanics include blight, wither, behold, vivid, evoke, convoke, persist,
+proliferate, surveil, landcycling, transforming faces, linked exile and free
+casting, exact counter payments, chosen creature types, copied permanents and
+spells, entry replacements, Conspire, and trigger multiplication. Source and
+ability epochs preserve queued triggers and linked permissions across copying,
+control changes and source departure. Each physical card's obligations and
+supporting token/face evidence are recorded in the JSON ledgers.
 
 ## Validation and measurements
 
-The combined focused run at `bb92026c` passed **196 ECL scenarios** in7.24
-seconds after linking Doran, Puca’s Eye, Hexing Squelcher, and Blossombind.
-Full release validation **passed all eight phases** at `0ae35121`: formatting,
-Python/provenance checks, Clippy/all-target compilation, **2,671 native tests**
-(one ignored), catalogue checks, **all 22 Foundations game suites**, ECL games,
-release build and benchmark. Runtime531.22 seconds; enforced shared memory peak
-3.2 GiB. Report `<cache>/rustmage-validation-4cepq26r/report/result.json` records
-all required libraries at exact paths/hashes; completed disposable outputs were
-cleaned. The prior unrelated-attachment timestamp regression also passed its
-exact targeted full-game rerun (56.22 seconds).
+The most recent full release checkpoint, at **265 admitted cards**, passed all
+eight phases at `a9a47743`: **3,094 native tests** (one ignored), nine catalogue
+checks, all 22 Foundations game suites, ECL regression games, provenance, Clippy,
+release compilation and the benchmark. It took **640.02 seconds**, peaked at
+**3.5 GiB**, and cleaned 1,143,128,064 disposable bytes. The report is
+`<cache>/rustmage-validation-dydsqtfp/report/result.json`; required shared
+libraries remain at the exact paths and hashes recorded in the validation JSON.
+A new full release run on the final 273-card integration remains required.
 
-The release Freeform regression workload ran100 deterministic games and49,832
-decisions in0.248807 seconds: **200,283.61 decisions/second**,401.92games/second;
-clone208.32ns, restore181.27ns. It includes native policy/observations, excludes
-JSON/model/tensor work, and is not an ECL acceptance measurement. Compiler,
-hardware, revision and workload context are recorded in the validation JSON.
+That release's Freeform regression benchmark measured 49,832 decisions in
+0.247475027 seconds: **201,361.73 decisions/second**, 404.08 games/second,
+clone 205.46 ns and restore 154.59 ns. It includes native policy and observations;
+it excludes JSON, model and tensor work. This measures regression performance,
+not ECL acceptance.
 
-Ten natural ECL-only Standard games covered all colors, ten terminal outcomes,
-ten blight choices, six private choices, and 100 owned raw/index branch/replay/
-restore checkpoints. Debug workload: **5,719 decisions in 1.777491 seconds**,
-**3,217.455 decisions/second**, including policy, observations, assertions, and
-snapshots. This is subset regression evidence, not complete-set acceptance.
-See the JSON for seeds, revision, compiler, hardware, and artifact reports.
+The strict 273-card workload at `5180907b` completed **220 natural games** with
+143,102 accepted decisions, 2,841 owned branches, 513 private decisions and full
+journal replay in **205.91 seconds** (694.97 decisions/second). It includes all
+273 physical identities across 29 pool decks and 13 mechanic themes, both
+starting players, pool seeds 0/7 and theme seeds 0/7/19/31. All gameplay, privacy,
+rejected-action atomicity, branching and restore checks passed. **The test failed
+its final mechanic coverage requirement:** graveyard-entry copies and Dream
+Harvest free casts were not observed. This is diagnostic evidence, not accepted
+set validation. Resource report `42f48a66d0bf4d85a7783d0454c0f8a8` and
+`<cache>/ecl-acceptance-strict-273-fixed.log` preserve that outcome.
 
-The validation JSON records the measured implementation interval and current cards/hour for121 newly locally tested physical candidates. This excludes inherited certification, independent final review, and upstream merge.
+Three conservative mana-funding bounds removed repeated impossible-payment
+searches involving restricted mana, missing eligible colors and missing creature
+tap witnesses. Exact formerly slow queries now take approximately 0.3–1.1 ms;
+117 funding regressions and all-target Clippy pass. A separate exact funding
+repair handles mana costs that release linked exiled permanents and permit new
+mana, convoke or entry choices. It remains under focused verification.
+
+The measured authoring interval produced 166 newly implemented and focused-tested
+physical cards in 26,826.03 seconds: **22.28 cards/hour**. This excludes inherited
+audit credit, final acceptance, independent published-head review and upstream
+merge. Compiler, hardware, commands, seeds and retained reports are in
+[ecl-validation.json](ecl-validation.json).
 
 ## Resume and remaining work
 
 Branch `codex/ecl-complete-set`; issue [#462](https://github.com/altf4/rustmage/issues/462).
-Authenticate membership using `python3 -m scripts.set_status ECL --check`.
-Finish current shared-mechanic batches, integrate, regenerate links, run combined
-focused scenarios and full release validation, then extend the natural games to
-verify every printed obligation. Check active jobs before touching their inputs;
-poll the same process until terminal. No early or partial implementation PR.
+Authenticate frozen membership using `python3 -m scripts.set_status ECL --check`.
+Resolve the two missing actual-mechanic coverage paths, finish and integrate the
+linked-return funding repair, then rerun the strict whole-pool workload and its
+optimized throughput companion. Regenerate links and run final release
+validation, including Python binding smoke checks for the changed public schema.
+Keep consuming inputs fixed until each process terminates; poll the same job.
 
-All273 physical identities are implemented and focused-tested.
-The full-pool and mechanic-themed game workload is being developed on a separate
-isolated worktree. Resolve the observed mana/funding performance issue, run the strict whole-pool
-acceptance and performance workloads, then full release validation.
-Publish one implementation PR only after every local gate passes; obtain two
-fresh independent nonauthor reviews of its final published head. Merge remains
-subject to repository permission.
+Publish one implementation PR only after every local gate passes. Obtain two
+fresh independent nonauthor reviews of its exact final published head and resolve
+all findings. No implementation PR exists yet. Merge remains subject to
+repository permission. Historical checkpoints below record intermediate work;
+the current section and JSON ledgers govern resume decisions.
 
 ## Verified checkpoint228 and inherited audit
 
