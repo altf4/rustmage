@@ -2024,6 +2024,11 @@ pub(crate) struct CombatRestriction {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepGuard {
+    SourceCounters {
+        kind: CounterKind,
+        minimum: Option<u64>,
+        maximum: Option<u64>,
+    },
     SourcePowerAtLeast(u16),
     SourceToughnessAtMost(u16),
     Outlaw,
