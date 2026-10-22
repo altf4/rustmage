@@ -39,6 +39,7 @@ pub struct KeepTypesView {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct LinkedExileView {
+    pub ability_origin: u64,
     pub source: ObjectRef,
     pub exiled: ObjectRef,
 }
@@ -357,10 +358,18 @@ impl Game {
         true
     }
     pub(super) fn remember_linked_exile(&mut self, selected: &[CardId]) {
-        let source = self.state.resolving.as_ref().unwrap().item.object;
-        self.remember_linked_exile_for(source, selected);
+        let item = &self.state.resolving.as_ref().unwrap().item;
+        self.remember_linked_exile_for_origin(item.object, item.ability_origin(), selected);
     }
     pub(super) fn remember_linked_exile_for(&mut self, source: ObjectRef, selected: &[CardId]) {
+        self.remember_linked_exile_for_origin(source, self.copy_ability_origin(source), selected);
+    }
+    pub(super) fn remember_linked_exile_for_origin(
+        &mut self,
+        source: ObjectRef,
+        ability_origin: u64,
+        selected: &[CardId],
+    ) {
         for &id in selected {
             if self.state.objects[id as usize].zone == Zone::Exile {
                 let exiled = self.object_ref(id);
@@ -368,7 +377,11 @@ impl Game {
                     .linked_choices
                     .get_or_insert_default()
                     .links
-                    .push(LinkedExileView { source, exiled });
+                    .push(LinkedExileView {
+                        source,
+                        exiled,
+                        ability_origin,
+                    });
             }
         }
     }
@@ -390,7 +403,7 @@ impl Game {
             }
         }
     }
-    pub(super) fn return_linked_exile(&mut self, source: ObjectRef) {
+    pub(super) fn return_linked_exile(&mut self, source: ObjectRef, ability_origin: u64) {
         let Some(data) = self.state.linked_choices.as_ref() else {
             return;
         };
@@ -399,6 +412,7 @@ impl Game {
             .iter()
             .filter(|link| {
                 link.source == source
+                    && link.ability_origin == ability_origin
                     && self.object_ref(link.exiled.card) == link.exiled
                     && self.state.objects[link.exiled.card as usize].zone == Zone::Exile
             })

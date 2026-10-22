@@ -8,6 +8,17 @@ pub struct CopyRecipe {
     pub definition: Card,
     pub exceptions: CopyExceptions,
 }
+/// Frozen copiable values and the linked-ability instance which produced a packet.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct SourceCopyFacts {
+    #[serde(flatten)]
+    pub recipe: CopyRecipe,
+    #[serde(skip_serializing_if = "is_original_ability")]
+    pub ability_origin: u64,
+}
+fn is_original_ability(value: &u64) -> bool {
+    *value == 0
+}
 impl CopyRecipe {
     pub const fn new(definition: Card) -> Self {
         Self {
@@ -35,6 +46,7 @@ impl CopyRecipe {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct CopyRow {
+    pub ability_origin: u64,
     pub object: ObjectRef,
     pub recipe: CopyRecipe,
 }
@@ -55,6 +67,21 @@ impl Game {
     pub(super) fn copy_recipe(&self, object: ObjectRef) -> Option<CopyRecipe> {
         let index = self.copy_recipe_index(object)?;
         Some(self.state.copy_recipes.as_ref().unwrap()[index].recipe)
+    }
+    pub(super) fn copy_ability_origin(&self, object: ObjectRef) -> u64 {
+        self.copy_recipe_index(object).map_or(0, |index| {
+            self.state.copy_recipes.as_ref().unwrap()[index].ability_origin
+        })
+    }
+    pub(super) fn source_copy_facts(&self, object: ObjectRef) -> Option<Box<SourceCopyFacts>> {
+        let recipe = self.copy_recipe(object)?;
+        let ability_origin = self.copy_ability_origin(object);
+        (recipe.exceptions != CopyExceptions::NONE || ability_origin != 0).then(|| {
+            Box::new(SourceCopyFacts {
+                recipe,
+                ability_origin,
+            })
+        })
     }
     pub(super) fn object_token_info(&self, id: CardId) -> Option<TokenInfo> {
         let object = &self.state.objects[id as usize];
@@ -202,6 +229,7 @@ impl Game {
                     rows.insert(
                         index,
                         CopyRow {
+                            ability_origin: 0,
                             object: reference,
                             recipe: *recipe,
                         },

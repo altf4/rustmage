@@ -716,6 +716,7 @@ impl CharacteristicQuery<'_> {
             self.layered_stats_without_hand(id, None)
         };
         ObjectView {
+            copy_ability_origin: self.copy_ability_origin(self.object_ref(id)),
             abilities: self.ability_availability(id),
             kinds: self.current_kinds(id),
             colors: CharacteristicWorld::colors(self, id),
@@ -750,11 +751,7 @@ impl CharacteristicQuery<'_> {
             } else {
                 self.keywords(id)
             },
-            copy_recipe: if obj.is_copy_token() {
-                self.copy_recipe(self.object_ref(id))
-            } else {
-                None
-            },
+            copy_recipe: self.copy_recipe(self.object_ref(id)),
             token: self.object_token_info(id),
             emblem: obj.card.emblem_info(),
         }

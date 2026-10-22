@@ -451,10 +451,7 @@ impl Game {
             cast_event: None,
             copy_event: None,
             target_allocations: None,
-            source_copy_recipe: self
-                .copy_recipe(self.object_ref(card))
-                .filter(|r| r.exceptions != CopyExceptions::NONE)
-                .map(Box::new),
+            source_copy_recipe: self.source_copy_facts(self.object_ref(card)),
             mana_copy_sources: None,
             is_copy: false,
             delayed_sacrifice: None,

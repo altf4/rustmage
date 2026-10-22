@@ -25,7 +25,7 @@ impl Game {
                 } else {
                     item.source_copy_recipe
                         .as_deref()
-                        .copied()
+                        .map(|facts| facts.recipe)
                         .unwrap_or_else(|| CopyRecipe::new(item.source_card))
                 },
             ),

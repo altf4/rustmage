@@ -34,12 +34,15 @@ pub use mana_lots::{
 mod copies;
 #[path = "engine_delayed_combat_draw.rs"]
 mod delayed_combat_draw;
+#[cfg(test)]
+#[path = "engine_linked_choice_epoch_tests.rs"]
+mod linked_choice_epoch_tests;
 #[path = "engine_stack_copies.rs"]
 mod stack_copies;
 #[cfg(test)]
 #[path = "engine_stack_copies_tests.rs"]
 mod stack_copies_tests;
-pub use copies::CopyRecipe;
+pub use copies::{CopyRecipe, SourceCopyFacts};
 #[path = "engine_copy_characteristics.rs"]
 mod copy_characteristics;
 pub use crate::cards::CopyExceptions;
@@ -976,7 +979,7 @@ pub struct SpellView {
     pub cast_event: Option<Box<CastPaymentEvent>>,
     pub copy_event: Option<Box<stack_copies::CopyEvent>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source_copy_recipe: Option<Box<CopyRecipe>>,
+    pub source_copy_recipe: Option<Box<SourceCopyFacts>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
     pub target_allocations: Option<Box<Vec<TargetAllocation>>>,
@@ -1102,7 +1105,7 @@ impl SpellView {
             + self
                 .source_copy_recipe
                 .as_ref()
-                .map_or(0, |_| std::mem::size_of::<CopyRecipe>())
+                .map_or(0, |_| std::mem::size_of::<SourceCopyFacts>())
             + self.return_link.as_ref().map_or(0, |link| link.bytes())
             + self
                 .creature_combat_event
@@ -1134,6 +1137,11 @@ impl SpellView {
     }
     /// Source-relative targets refer to the tracked public incarnation, without
     /// rebinding a later departure/reentry or replacing source LKI.
+    pub(super) fn ability_origin(&self) -> u64 {
+        self.source_copy_recipe
+            .as_ref()
+            .map_or(0, |facts| facts.ability_origin)
+    }
     pub(crate) fn target_source(&self) -> ObjectRef {
         self.source_move
             .as_ref()
@@ -1795,6 +1803,8 @@ pub struct EndureChoiceView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ObjectView {
+    /// A copy effect creates new linked abilities without changing the incarnation.
+    pub copy_ability_origin: u64,
     /// Frozen effective nonkeyword abilities only while a removal effect exists.
     /// None is the allocation-free complete printed/default-grant case.
     pub abilities: Option<Box<AbilityAvailabilityView>>,

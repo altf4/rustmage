@@ -833,8 +833,13 @@ impl Game {
             target_allocations: None,
             source_copy_recipe: source
                 .copy_recipe
-                .filter(|r| r.exceptions != CopyExceptions::NONE)
-                .map(Box::new),
+                .filter(|r| r.exceptions != CopyExceptions::NONE || source.copy_ability_origin != 0)
+                .map(|recipe| {
+                    Box::new(SourceCopyFacts {
+                        recipe,
+                        ability_origin: source.copy_ability_origin,
+                    })
+                }),
             mana_copy_sources: None,
             is_copy: false,
             delayed_sacrifice: None,
@@ -1734,7 +1739,9 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::ReturnLinkedExileToHand => self.return_linked_exile(item.object),
+                Instruction::ReturnLinkedExileToHand => {
+                    self.return_linked_exile(item.object, item.ability_origin())
+                }
                 Instruction::CopyNextInstantSorcery => self.remember_next_spell_copy(&item),
                 Instruction::CopyNextInstantSorceryAbility(ability) => {
                     self.remember_next_spell_copy_ability(&item, ability)
