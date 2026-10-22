@@ -100,6 +100,14 @@ fn attack(g: &mut Game, id: CardId) {
 #[test]
 fn cost_options_are_unique_and_canonical_preserves_printed_mana_value() {
     for card in Card::catalogue().filter(|c| c.is_supported() && !c.is_land()) {
+        if card.front_face() != card {
+            assert_eq!(card.cost(), ([0; 6], 0), "back face has no printed cost");
+            assert_eq!(
+                card.fixed_mana_value(),
+                card.front_face().fixed_mana_value()
+            );
+            continue;
+        }
         let options = card.cost_options().collect::<Vec<_>>();
         assert!(!options.is_empty());
         for (i, cost) in options.iter().enumerate() {
@@ -647,7 +655,10 @@ fn all_admitted_printed_mana_costs_and_values_match_frozen_oracle_facts() {
     for row in snapshot["cards"].as_array().unwrap() {
         let card = Card::from_name(row["name"].as_str().unwrap()).unwrap();
         if card.is_supported() {
-            let normal = if card.adventure_spell().is_some() || card.omen_spell().is_some() {
+            let normal = if card.adventure_spell().is_some()
+                || card.omen_spell().is_some()
+                || card.transform_spec().is_some()
+            {
                 &row["card_faces"][0]
             } else {
                 row
