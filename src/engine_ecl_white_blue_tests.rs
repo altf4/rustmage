@@ -2371,3 +2371,222 @@ fn blossombind_keeps_applicable_counter_replacement_choices_but_commits_no_count
     settle(&mut g);
     assert_eq!(g.counter_count(bear, CounterKind::PlusOne), 0);
 }
+
+fn crescendo_type_choice(g: &mut Game) {
+    finish_cast_choices(g);
+    checked(g, Action::Pass);
+    checked(g, Action::Pass);
+    assert!(matches!(
+        g.state.pending,
+        Pending::ResolutionCreatureType { .. }
+    ));
+}
+
+#[test]
+fn harmonized_crescendo_chooses_on_resolution_and_counts_current_permanents_including_kindred_and_changeling()
+ {
+    for p in [Player::P0, Player::P1] {
+        for departed in [false, true] {
+            let mut g = setup(p);
+            spawn(
+                &mut g,
+                p,
+                Card::from_name("Llanowar Elves").unwrap(),
+                Zone::Battlefield,
+            );
+            let changeling = spawn(
+                &mut g,
+                p,
+                Card::from_name("Prideful Feastling").unwrap(),
+                Zone::Battlefield,
+            );
+            let kindred = spawn(
+                &mut g,
+                p,
+                Card::from_name("Morcant's Eyes").unwrap(),
+                Zone::Battlefield,
+            );
+            assert!(!g.is_creature(kindred));
+            spawn(
+                &mut g,
+                p.other(),
+                Card::from_name("Llanowar Elves").unwrap(),
+                Zone::Battlefield,
+            );
+            spawn(
+                &mut g,
+                p,
+                Card::from_name("Llanowar Elves").unwrap(),
+                Zone::Hand,
+            );
+            for _ in 0..6 {
+                spawn(&mut g, p, Card::Island, Zone::Library);
+            }
+            let spell = spawn(
+                &mut g,
+                p,
+                Card::from_name("Harmonized Crescendo").unwrap(),
+                Zone::Hand,
+            );
+            checked(&mut g, Action::AnnounceCast { card: spell });
+            let creature_type = crate::cards::CreatureType::from_name("Elf").unwrap();
+            reject_atomic(&mut g, Action::ChooseCreatureType { creature_type });
+            assert!(g.observe(p).resolution_creature_type.is_none());
+            finish_cast_choices(&mut g);
+            if departed {
+                g.move_object(changeling, Zone::Hand);
+            }
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            assert!(matches!(
+                g.state.pending,
+                Pending::ResolutionCreatureType { .. }
+            ));
+            assert_eq!(
+                g.legal_actions()
+                    .iter()
+                    .filter(|action| matches!(action, Action::ChooseCreatureType { .. }))
+                    .count(),
+                crate::CREATURE_TYPES.len()
+            );
+            let hand = g
+                .state
+                .objects
+                .iter()
+                .filter(|object| object.zone == Zone::Hand && object.owner == p)
+                .count();
+            checked(&mut g, Action::ChooseCreatureType { creature_type });
+            settle(&mut g);
+            assert_eq!(
+                g.state
+                    .objects
+                    .iter()
+                    .filter(|object| object.zone == Zone::Hand && object.owner == p)
+                    .count(),
+                hand + if departed { 2 } else { 3 }
+            );
+            assert_eq!(g.state.objects[spell as usize].zone, Zone::Graveyard);
+            assert!(g.resolution_chosen_creature_type().is_none());
+        }
+    }
+}
+
+#[test]
+fn harmonized_crescendo_convoke_pays_colors_and_generic_with_distinct_sick_creatures() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let blue = spawn(
+            &mut g,
+            p,
+            Card::from_name("Brineborn Cutthroat").unwrap(),
+            Zone::Battlefield,
+        );
+        let second = spawn(
+            &mut g,
+            p,
+            Card::from_name("Brineborn Cutthroat").unwrap(),
+            Zone::Battlefield,
+        );
+        let bear = spawn(
+            &mut g,
+            p,
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        for _ in 0..4 {
+            spawn(&mut g, p, Card::Island, Zone::Library);
+        }
+        let spell = spawn(
+            &mut g,
+            p,
+            Card::from_name("Harmonized Crescendo").unwrap(),
+            Zone::Hand,
+        );
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        checked(&mut g, Action::BeginConvoke);
+        let wrong = g.object_ref(bear);
+        reject_atomic(
+            &mut g,
+            Action::ChooseConvoker {
+                object: wrong,
+                contribution: ConvokeContribution::Blue,
+            },
+        );
+        for (id, contribution) in [
+            (blue, ConvokeContribution::Blue),
+            (second, ConvokeContribution::Blue),
+            (bear, ConvokeContribution::Generic),
+        ] {
+            let object = g.object_ref(id);
+            checked(
+                &mut g,
+                Action::ChooseConvoker {
+                    object,
+                    contribution,
+                },
+            );
+            if id == blue {
+                reject_atomic(
+                    &mut g,
+                    Action::ChooseConvoker {
+                        object,
+                        contribution,
+                    },
+                );
+            }
+        }
+        crescendo_type_choice(&mut g);
+        assert!(
+            g.object_view(blue).tapped
+                && g.object_view(second).tapped
+                && g.object_view(bear).tapped
+        );
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        let creature_type = crate::cards::CreatureType::from_name("Merfolk").unwrap();
+        checked(&mut g, Action::ChooseCreatureType { creature_type });
+        settle(&mut g);
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|object| object.zone == Zone::Hand && object.owner == p)
+                .count(),
+            2
+        );
+    }
+}
+
+#[test]
+fn harmonized_crescendo_zero_matching_permanents_draws_zero_without_library_loss() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let spell = spawn(
+            &mut g,
+            p,
+            Card::from_name("Harmonized Crescendo").unwrap(),
+            Zone::Hand,
+        );
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        crescendo_type_choice(&mut g);
+        let creature_type = crate::cards::CreatureType::from_name("Time Lord").unwrap();
+        let hand = g
+            .state
+            .objects
+            .iter()
+            .filter(|object| object.zone == Zone::Hand && object.owner == p)
+            .count();
+        checked(&mut g, Action::ChooseCreatureType { creature_type });
+        settle(&mut g);
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|object| object.zone == Zone::Hand && object.owner == p)
+                .count(),
+            hand
+        );
+        assert_eq!(g.state.objects[spell as usize].zone, Zone::Graveyard);
+        assert!(g.outcome().is_none());
+    }
+}

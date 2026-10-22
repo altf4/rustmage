@@ -1652,6 +1652,9 @@ impl Game {
                     };
                     return;
                 }
+                Instruction::DrawForChosenCreatureType => {
+                    self.draw_for_resolution_chosen_type(item.controller)
+                }
                 Instruction::ReturnChosenCreatureTypeFromGraveyard => {
                     self.return_resolution_chosen_type(item.controller)
                 }

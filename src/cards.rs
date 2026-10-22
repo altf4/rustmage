@@ -736,6 +736,7 @@ pub(crate) enum Instruction {
         duration: AnimationDuration,
     },
     ChooseCreatureType,
+    DrawForChosenCreatureType,
     ReturnChosenCreatureTypeFromGraveyard,
     PartitionLibraryPiles(u16),
     KeepOneOfEachPermanentType,
