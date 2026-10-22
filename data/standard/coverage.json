@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "6a867ee52e7a7ae489edc95cb1c20ab5abe9a4f6062ab6f4c92dff26d726820e",
+  "catalogue_version": "3a7a27e0b57e6a91a1542108ba48932f5e02e1f51cb8720a4339c943f05f31db",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2290,
-  "implemented_total": 2296,
+  "implemented_standard_cards": 2296,
+  "implemented_total": 2302,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 66,
-      "complete": 201
+      "gated": 60,
+      "complete": 207
     },
     "eoc": {
       "total": 8,
@@ -2151,8 +2151,8 @@
     {
       "name": "Ashling, Rekindled // Ashling, Rimebound",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/ashling_rekindled_ashling_rimebound.rs",
       "set": "ecl"
     },
@@ -12543,8 +12543,8 @@
     {
       "name": "Flamebraider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/flamebraider.rs",
       "set": "ecl"
     },
@@ -12687,8 +12687,8 @@
     {
       "name": "Flitterwing Nuisance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/flitterwing_nuisance.rs",
       "set": "ecl"
     },
@@ -20959,8 +20959,8 @@
     {
       "name": "Lys Alana Dignitary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/lys_alana_dignitary.rs",
       "set": "ecl"
     },
@@ -28199,8 +28199,8 @@
     {
       "name": "Retched Wretch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/retched_wretch.rs",
       "set": "ecl"
     },
@@ -28423,8 +28423,8 @@
     {
       "name": "Rimefire Torque",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/rimefire_torque.rs",
       "set": "ecl"
     },
