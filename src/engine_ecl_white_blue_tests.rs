@@ -441,3 +441,161 @@ fn personify_finishes_returned_entry_choice_before_creating_token() {
     );
     assert_eq!(changelings(&g, Player::P0), 1);
 }
+
+#[test]
+fn noggle_preserves_artifact_type_removes_abilities_color_and_creature_types() {
+    let mut g = setup(Player::P0);
+    let target = spawn(
+        &mut g,
+        Player::P1,
+        Card::from_name("Diamond Mare").unwrap(),
+        Zone::Battlefield,
+    );
+    g.add_counter(target, CounterKind::PlusOne, 2);
+    // Flash works during an opponent's main phase.
+    g.state.active = Player::P1;
+    spell(
+        &mut g,
+        Player::P0,
+        "Noggle the Mind",
+        &[Target::Card(target)],
+    );
+    settle(&mut g);
+    let aura = g
+        .state
+        .objects
+        .iter()
+        .position(|o| {
+            o.zone == Zone::Battlefield && o.card == Card::from_name("Noggle the Mind").unwrap()
+        })
+        .unwrap() as CardId;
+    let view = g.object_view(target);
+    assert_eq!(view.kinds & 17, 17);
+    assert_eq!(view.colors, 0);
+    assert!(view.has_subtype("Noggle"));
+    assert!(!view.has_subtype("Horse"));
+    assert_eq!(
+        g.stats(target),
+        Stats {
+            power: 3,
+            toughness: 3
+        }
+    );
+    assert!(!g.printed_abilities_available(target));
+    g.move_object(aura, Zone::Graveyard);
+    assert!(g.object_view(target).has_subtype("Horse"));
+    assert!(g.printed_abilities_available(target));
+    assert_eq!(
+        g.stats(target),
+        Stats {
+            power: 3,
+            toughness: 5
+        }
+    );
+}
+
+fn hold_target(g: &mut Game, target: CardId) -> CardId {
+    let source = spell(g, Player::P0, "Liminal Hold", &[]);
+    checked(g, Action::Pass);
+    checked(g, Action::Pass);
+    if let Some(a) = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a, Action::PutTrigger { .. }))
+    {
+        checked(g, a);
+    }
+    checked(
+        g,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    source
+}
+#[test]
+fn liminal_hold_optional_target_life_and_owner_return() {
+    let mut g = setup(Player::P0);
+    cast_named(&mut g, Player::P0, "Liminal Hold");
+    assert_eq!(g.state.players[0].life, 22);
+    let target = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    g.record_control(g.object_ref(target), Player::P1, None);
+    let source = hold_target(&mut g, target);
+    settle(&mut g);
+    assert_eq!(g.object_view(target).zone, Zone::Exile);
+    assert_eq!(g.state.players[0].life, 24);
+    g.move_object(source, Zone::Graveyard);
+    assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+    assert_eq!(g.object_view(target).controller, Player::P0);
+}
+#[test]
+fn liminal_hold_source_departure_still_gains_life_but_invalid_target_fizzles() {
+    for source_departure in [false, true] {
+        let mut g = setup(Player::P0);
+        let target = spawn(&mut g, Player::P1, Card::GrizzlyBears, Zone::Battlefield);
+        let source = hold_target(&mut g, target);
+        if source_departure {
+            g.move_object(source, Zone::Graveyard);
+        } else {
+            g.move_object(target, Zone::Hand);
+        }
+        settle(&mut g);
+        assert_eq!(
+            g.object_view(target).zone,
+            if source_departure {
+                Zone::Battlefield
+            } else {
+                Zone::Hand
+            }
+        );
+        assert_eq!(
+            g.state.players[0].life,
+            if source_departure { 22 } else { 20 }
+        );
+    }
+}
+
+#[test]
+fn noggle_removes_colored_flying_vigilance_and_reverses_on_aura_departure() {
+    let mut g = setup(Player::P0);
+    let angel = spawn(
+        &mut g,
+        Player::P1,
+        Card::from_name("Serra Angel").unwrap(),
+        Zone::Battlefield,
+    );
+    assert_ne!(g.object_view(angel).colors, 0);
+    assert!(g.keywords(angel).contains(Keywords::FLYING));
+    let aura = spell(
+        &mut g,
+        Player::P0,
+        "Noggle the Mind",
+        &[Target::Card(angel)],
+    );
+    settle(&mut g);
+    assert_eq!(g.object_view(angel).colors, 0);
+    assert_eq!(
+        g.stats(angel),
+        Stats {
+            power: 1,
+            toughness: 1
+        }
+    );
+    assert!(
+        !g.keywords(angel)
+            .contains(Keywords::FLYING.union(Keywords::VIGILANCE))
+    );
+    g.move_object(aura, Zone::Graveyard);
+    assert_ne!(g.object_view(angel).colors, 0);
+    assert_eq!(
+        g.stats(angel),
+        Stats {
+            power: 4,
+            toughness: 4
+        }
+    );
+    assert!(
+        g.keywords(angel)
+            .contains(Keywords::FLYING.union(Keywords::VIGILANCE))
+    );
+}

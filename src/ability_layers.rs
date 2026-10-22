@@ -126,6 +126,8 @@ pub(crate) enum UntapRestriction {
 /// One printed Aura effect, shared across its earlier characteristic layers.
 #[derive(Clone, Copy, Debug)]
 pub(crate) enum PermanentForm {
+    /// Replace only creature subtypes; keep every existing card type.
+    Preserve,
     Creature,
     Land,
 }

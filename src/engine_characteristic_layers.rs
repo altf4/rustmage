@@ -113,15 +113,13 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
 fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut result: u16) -> u16 {
     let mut changes: Vec<_> = aura_effects(world, id)
         .into_iter()
-        .map(|(time, spec)| {
-            (
-                time,
-                match spec.form {
-                    PermanentForm::Creature => 1,
-                    PermanentForm::Land => 2,
-                },
-                false,
-            )
+        .filter_map(|(time, spec)| {
+            let mask = match spec.form {
+                PermanentForm::Preserve => return None,
+                PermanentForm::Creature => 1,
+                PermanentForm::Land => 2,
+            };
+            Some((time, mask, false))
         })
         .collect();
     for row in animations(world, id) {
@@ -273,6 +271,7 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
             (
                 time,
                 match s.form {
+                    PermanentForm::Preserve => SubtypeChange::Named(s.creature_types, false),
                     PermanentForm::Creature => SubtypeChange::Named(s.creature_types, true),
                     PermanentForm::Land => SubtypeChange::LandOnly,
                 },
