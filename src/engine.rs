@@ -6340,9 +6340,10 @@ impl Game {
                             .optional_searches
                             .as_ref()
                             .map_or(0, |_| std::mem::size_of::<search::OptionalSearchSequence>())
-                        + resolution.continuation.as_ref().map_or(0, |_| {
-                            std::mem::size_of::<programs::ProgramContinuation>()
-                        })
+                        + resolution
+                            .continuation
+                            .as_ref()
+                            .map_or(0, |_| std::mem::size_of::<programs::ProgramContinuation>())
                         + resolution.target_library.as_ref().map_or(0, |f| f.bytes())
                         + resolution.forage.as_ref().map_or(0, |f| f.bytes())
                         + resolution.evidence.as_ref().map_or(0, |f| f.bytes())
