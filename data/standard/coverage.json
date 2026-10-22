@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "3a7a27e0b57e6a91a1542108ba48932f5e02e1f51cb8720a4339c943f05f31db",
+  "catalogue_version": "542580e9145e9faec53fc104d9d81e90ced9a88ebbd115bd896c02c48111b3d3",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2296,
-  "implemented_total": 2302,
+  "implemented_standard_cards": 2303,
+  "implemented_total": 2309,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 60,
-      "complete": 207
+      "gated": 53,
+      "complete": 214
     },
     "eoc": {
       "total": 8,
@@ -5887,8 +5887,8 @@
     {
       "name": "Champions of the Perfect",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/champions_of_the_perfect.rs",
       "set": "ecl"
     },
@@ -22975,8 +22975,8 @@
     {
       "name": "Moonshadow",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/moonshadow.rs",
       "set": "ecl"
     },
@@ -23175,8 +23175,8 @@
     {
       "name": "Mudbutton Cursetosser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/mudbutton_cursetosser.rs",
       "set": "ecl"
     },
@@ -32023,8 +32023,8 @@
     {
       "name": "Soulbright Seeker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/soulbright_seeker.rs",
       "set": "ecl"
     },
@@ -34519,8 +34519,8 @@
     {
       "name": "Swat Away",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/swat_away.rs",
       "set": "ecl"
     },
@@ -35183,8 +35183,8 @@
     {
       "name": "Temporal Cleansing",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/temporal_cleansing.rs",
       "set": "ecl"
     },
@@ -37783,8 +37783,8 @@
     {
       "name": "Trystan, Callous Cultivator // Trystan, Penitent Culler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/trystan_callous_cultivator_trystan_penitent_culler.rs",
       "set": "ecl"
     },

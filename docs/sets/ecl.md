@@ -21,8 +21,8 @@ The frozen manifest accounts for every identity. The [per-card obligation ledger
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **213/273**, comprising **107 inherited** and **106 newly
-implemented/tested physical candidates**; **60 remain gated**. Inherited evidence
+Admission flags: **220/273**, comprising **107 inherited** and **113 newly
+implemented/tested physical candidates**; **53 remain gated**. Inherited evidence
 still needs audit. No final published reviews or newly merged cards. All new
 names and per-card obligations appear in the linked JSON ledgers. Three tested
 synthetic token recipes are outside the physical denominator.
@@ -39,7 +39,11 @@ Warren Torchmaster, Shimmerwilds Growth and Kinbinding are integrated; a207-card
 release validation reached2,737 passing native tests and two old single-face
 invariant failures, now corrected and rechecked (18/18). Ashling,
 Flamebraider, Flitterwing Nuisance, Lys Alana Dignitary, Retched Wretch and
-Rimefire Torque are integrated; a213-card release validation is next.
+Rimefire Torque are integrated. The213-card run passed all2,768 native tests;
+the remaining transform-name catalogue invariant is fixed and all9 catalogue
+tests pass. Subsequent integrated cards include both Trystan faces, Champions of
+the Perfect, Mudbutton Cursetosser, Soulbright Seeker, Moonshadow, Temporal
+Cleansing and Swat Away. A220-card release validation is next.
 
 Shared mechanics include mandatory and optional blight costs versus effects,
 wither as a damage result, exact mana-funding tap witnesses, entry-time creature

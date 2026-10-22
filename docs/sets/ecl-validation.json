@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 106,
+  "newly_tested_physical_cards": 113,
   "newly_tested_names": [
     "Adept Watershaper",
     "Ashling's Command",
@@ -25,6 +25,7 @@
     "Bristlebane Outrider",
     "Burning Curiosity",
     "Catharsis",
+    "Champions of the Perfect",
     "Chaos Spewer",
     "Chronicle of Victory",
     "Cinder Strike",
@@ -67,6 +68,8 @@
     "Liminal Hold",
     "Loch Mare",
     "Lys Alana Dignitary",
+    "Moonshadow",
+    "Mudbutton Cursetosser",
     "Mutable Explorer",
     "Nameless Inversion",
     "Noggle the Mind",
@@ -89,18 +92,22 @@
     "Scuzzback Scrounger",
     "Selfless Safewright",
     "Shimmerwilds Growth",
+    "Soulbright Seeker",
     "Sourbread Auntie",
     "Springleaf Drum",
     "Spry and Mighty",
     "Stalactite Dagger",
     "Sting-Slinger",
+    "Swat Away",
     "Sygg's Command",
+    "Temporal Cleansing",
     "Tend the Sprigs",
     "Thirst for Identity",
     "Thoughtweft Charge",
     "Thoughtweft Imbuer",
     "Tributary Vaulter",
     "Trystan's Command",
+    "Trystan, Callous Cultivator // Trystan, Penitent Culler",
     "Unbury",
     "Vibrance",
     "Vinebred Brawler",
@@ -111,8 +118,8 @@
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 213,
-  "remaining_gated": 60,
+  "current_admission_flags": 220,
+  "remaining_gated": 53,
   "inherited_evidence_audit": "pending",
   "locally_reviewed": 0,
   "final_published_reviews": 0,
@@ -150,10 +157,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T17:51:09.601864+00:00",
-    "elapsed_seconds": 8902.385013,
-    "newly_verified_cards": 106,
-    "cards_per_hour": 42.864917597110896,
+    "end_utc": "2026-10-22T18:07:06.789318+00:00",
+    "elapsed_seconds": 9859.572467,
+    "newly_verified_cards": 113,
+    "cards_per_hour": 41.25939551248901,
     "scope": "Local whole-card focused verification; excludes inherited audit, final review and merge. Full release pass at195cards; later attempts/rechecks recorded separately."
   },
   "focused_scope": "196 integrated ECL scenarios passed at bb92026c with generated catalogue1fbc9bcda08f4079d26ed30456add7c4c31131f6ef2563e732a179a74fc3e0a3",
@@ -245,5 +252,26 @@
     "mana_seconds": 7.06,
     "mana_report": "<cache>/rustmage-build-reports/9e23e53af0b14da494b9ca5245279a25.json",
     "source_tests": 7
+  },
+  "release_attempt_213": {
+    "head": "70148f04",
+    "status": "2768 native passed; one remaining single-face catalogue name assertion failed, now correctedf99b4e66",
+    "native_passed": 2768,
+    "native_ignored": 1,
+    "native_seconds": 71.97,
+    "report": "<cache>/rustmage-validation-ou80_hbv/report/result.json",
+    "catalogue_recheck": {
+      "tests": 9,
+      "seconds": 0.4,
+      "report": "<cache>/rustmage-build-reports/e3823023586f4c85ba68017da8c491ae.json"
+    }
+  },
+  "trystan": {
+    "commit": "a1ce3422",
+    "module_tests": 19,
+    "new_scenarios": 5,
+    "seconds": 0.47,
+    "report": "<cache>/rustmage-build-reports/a326f004fff44d8bb3f3086d069182b3.json",
+    "source_checks": 7
   }
 }

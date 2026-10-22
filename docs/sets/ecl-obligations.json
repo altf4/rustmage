@@ -1028,7 +1028,7 @@
       "name": "Champions of the Perfect",
       "definition": "src/card_definitions/ecl/champions_of_the_perfect.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Champions of the Perfect",
@@ -1044,7 +1044,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/champions_of_the_perfect.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "fc76ec95-f001-44df-89b2-b0f1b10c8e11",
@@ -3819,7 +3823,7 @@
       "name": "Moonshadow",
       "definition": "src/card_definitions/ecl/moonshadow.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Moonshadow",
@@ -3835,7 +3839,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/moonshadow.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "c55a27cc-8e25-4714-b1da-86e5c1c6661a",
@@ -3952,7 +3960,7 @@
       "name": "Mudbutton Cursetosser",
       "definition": "src/card_definitions/ecl/mudbutton_cursetosser.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Mudbutton Cursetosser",
@@ -3968,7 +3976,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/mudbutton_cursetosser.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "34b93a66-de1e-4133-a479-e0d90ba94a3a",
@@ -5201,7 +5213,7 @@
       "name": "Soulbright Seeker",
       "definition": "src/card_definitions/ecl/soulbright_seeker.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Soulbright Seeker",
@@ -5216,7 +5228,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/soulbright_seeker.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "6b087ae1-1412-4dd9-9b96-3b45be52d386",
@@ -5613,7 +5629,7 @@
       "name": "Swat Away",
       "definition": "src/card_definitions/ecl/swat_away.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Swat Away",
@@ -5628,7 +5644,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/swat_away.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "7fe5baab-b182-4cd9-bea5-912ce9b1464a",
@@ -5786,7 +5806,7 @@
       "name": "Temporal Cleansing",
       "definition": "src/card_definitions/ecl/temporal_cleansing.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Temporal Cleansing",
@@ -5801,7 +5821,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/temporal_cleansing.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "91363d71-eef0-48e8-9a68-8f363ff2790e",
@@ -6005,7 +6029,7 @@
       "name": "Trystan, Callous Cultivator // Trystan, Penitent Culler",
       "definition": "src/card_definitions/ecl/trystan_callous_cultivator_trystan_penitent_culler.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Trystan, Callous Cultivator",
@@ -6034,7 +6058,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_transform_tests.rs",
+        "src/card_definitions/ecl/trystan_callous_cultivator_trystan_penitent_culler.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "9a294cbd-df18-4ee0-acaa-e31390a7f508",
