@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e5e114215a6319d5ae2d4a6e0ac7ef8fbcc7105d00e9720d4bfdb8b2eda69ebb",
+  "catalogue_version": "7f9fa2f4a73d54d3e114673c5effd29079d1a5c39edebc74efa8bc61527f80c5",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2273,
-  "implemented_total": 2279,
+  "implemented_standard_cards": 2275,
+  "implemented_total": 2281,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 83,
-      "complete": 184
+      "gated": 81,
+      "complete": 186
     },
     "eoc": {
       "total": 8,
@@ -6567,8 +6567,8 @@
     {
       "name": "Collective Inferno",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/collective_inferno.rs",
       "set": "ecl"
     },
@@ -30471,8 +30471,8 @@
     {
       "name": "Selfless Safewright",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/selfless_safewright.rs",
       "set": "ecl"
     },
