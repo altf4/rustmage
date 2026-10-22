@@ -955,6 +955,10 @@ pub(crate) enum Instruction {
         attacking: bool,
         players: Option<PlayerSet>,
     },
+    DamagePlayerCreatures {
+        players: PlayerSet,
+        amount: i32,
+    },
     DamageBattlefield {
         filters: &'static [BattlefieldFilter],
         players: Option<PlayerSet>,

@@ -12,16 +12,16 @@ impl Game {
         // Retain entry-time controller/type even after departure or control changes.
         let entries: Vec<_> = events
             .iter()
-            .filter_map(|event| {
-                (event.moved
+            .filter(|event| {
+                event.moved
                     && event.destination == Zone::Battlefield
                     && self.on_battlefield(event.after.card)
                     && self.object_ref(event.after.card) == event.after
-                    && self.is_creature(event.after.card))
-                .then(|| CreatureEntryHistoryView {
-                    object: event.after,
-                    controller: self.state.objects[event.after.card as usize].controller,
-                })
+                    && self.is_creature(event.after.card)
+            })
+            .map(|event| CreatureEntryHistoryView {
+                object: event.after,
+                controller: self.state.objects[event.after.card as usize].controller,
             })
             .collect();
         if !entries.is_empty() {

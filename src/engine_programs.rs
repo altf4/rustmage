@@ -2012,6 +2012,21 @@ impl Game {
                     attacking,
                     players,
                 } => self.return_battlefield_group(&item, filters, attacking, players),
+                Instruction::DamagePlayerCreatures { players, amount } => {
+                    let source = self.program_damage_source(&item);
+                    let events: Vec<_> = self
+                        .player_creature_recipients(players, &item)
+                        .into_iter()
+                        .map(|id| DamageEvent {
+                            preventable: true,
+                            source,
+                            target: Target::Card(id),
+                            amount: i128::from(amount),
+                            combat: false,
+                        })
+                        .collect();
+                    self.apply_damage_batch(&events);
+                }
                 Instruction::DamageBattlefield {
                     filters,
                     players,

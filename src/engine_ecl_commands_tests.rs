@@ -1,6 +1,49 @@
 //! Every unordered pair of Command modes resolves in printed order with independent targets.
-use super::ability_timeline_tests::{cast, checked, named, settle, setup};
+use super::ability_timeline_tests::{checked, named, settle, setup};
 use super::*;
+fn cast_command(g: &mut Game, card: CardId, mode: Option<u16>, targets: &[Target]) {
+    checked(g, Action::AnnounceCast { card });
+    let before = g.snapshot();
+    let revision = g.revision();
+    assert_eq!(
+        g.apply(g.actor().unwrap(), Action::ChooseMode { mode: u16::MAX }),
+        Err(Error::IllegalAction)
+    );
+    assert_eq!(g.snapshot(), before);
+    assert_eq!(g.revision(), revision);
+    checked(
+        g,
+        Action::ChooseMode {
+            mode: mode.unwrap(),
+        },
+    );
+    for &target in targets {
+        for _ in 0..4 {
+            if g.legal_actions().contains(&Action::ChooseTarget { target }) {
+                break;
+            }
+            checked(g, Action::FinishTargets);
+        }
+        checked(g, Action::ChooseTarget { target });
+    }
+    for _ in 0..5 {
+        if g.state.announcing.is_none() {
+            return;
+        }
+        let a = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::FinishTargets))
+            .or_else(|| {
+                g.legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a, Action::PayCosts { .. }))
+            })
+            .unwrap();
+        checked(g, a);
+    }
+    panic!("command announcement did not finish");
+}
 const PAIRS: [(usize, usize); 6] = [(0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)];
 fn copies(g: &Game, p: Player) -> usize {
     g.state
@@ -37,6 +80,7 @@ fn ecl_ashling_command_all_six_pairs_copy_draw_damage_and_opponents_treasure() {
             let spell = named(&mut g, p, "Ashling's Command", Zone::Hand);
             g.state.players[p.index()].mana = [0, 1, 0, 1, 0, 3];
             let hand = g.hand_count(p.other());
+            let life = g.observe(p).players[p.other().index()].life;
             let targets: Vec<_> = [a, b]
                 .into_iter()
                 .map(|m| {
@@ -47,7 +91,7 @@ fn ecl_ashling_command_all_six_pairs_copy_draw_damage_and_opponents_treasure() {
                     }
                 })
                 .collect();
-            cast(&mut g, spell, Some(mode as u16), &targets);
+            cast_command(&mut g, spell, Some(mode as u16), &targets);
             assert_eq!(g.state.players[p.index()].mana, [0; 6]);
             settle(&mut g);
             assert_eq!(copies(&g, p), usize::from(a == 0));
@@ -64,6 +108,7 @@ fn ecl_ashling_command_all_six_pairs_copy_draw_damage_and_opponents_treasure() {
                 if b == 3 { 2 } else { 0 }
             );
             assert_eq!(g.state.objects[source as usize].damage, 0);
+            assert_eq!(g.observe(p).players[p.other().index()].life, life);
         }
     }
 }
@@ -85,7 +130,7 @@ fn ecl_sygg_command_all_six_pairs_player_group_lifelink_draw_and_stun() {
                     _ => Target::Player(p.other()),
                 })
                 .collect();
-            cast(&mut g, spell, Some(mode as u16), &targets);
+            cast_command(&mut g, spell, Some(mode as u16), &targets);
             settle(&mut g);
             assert_eq!(copies(&g, p), usize::from(a == 0));
             assert_eq!(
@@ -126,7 +171,7 @@ fn ecl_brigid_command_all_six_pairs_copy_opponents_token_boost_then_fight() {
                     _ => unreachable!(),
                 }
             }
-            cast(&mut g, spell, Some(mode as u16), &targets);
+            cast_command(&mut g, spell, Some(mode as u16), &targets);
             settle(&mut g);
             assert_eq!(copies(&g, p), usize::from(a == 0));
             assert_eq!(
@@ -170,7 +215,7 @@ fn ecl_command_partial_target_failure_and_unavailable_mode_are_transactional() {
         let source = named(&mut g, p, "Chitinous Graspling", Zone::Battlefield);
         let spell = named(&mut g, p, "Ashling's Command", Zone::Hand);
         let hand = g.hand_count(p.other());
-        cast(
+        cast_command(
             &mut g,
             spell,
             Some(0),

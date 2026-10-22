@@ -553,7 +553,10 @@ fn ecl_green_charge_draw_uses_creature_history_at_resolution_and_fizzles() {
                 .iter()
                 .filter(|o| o.owner == p && o.zone == Zone::Hand)
                 .count();
-            assert_eq!(after, hand + usize::from([1, 3, 4].contains(&mode)) - usize::from(mode == 4));
+            assert_eq!(
+                after,
+                hand + usize::from([1, 3, 4].contains(&mode)) - usize::from(mode == 4)
+            );
             if mode != 5 {
                 assert_eq!(
                     g.stats(target),

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "dc5bd3706e03f528bb3647652719edae2433672a84ffe4a6e3872e531347b50a",
+  "catalogue_version": "f656f1642ddd49b5c2f63d2264d18d46cb40585c7802275a62cf11cedbc05247",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2226,
-  "implemented_total": 2232,
+  "implemented_standard_cards": 2230,
+  "implemented_total": 2236,
   "token_definitions": 106,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 130,
-      "complete": 137
+      "gated": 126,
+      "complete": 141
     },
     "eoc": {
       "total": 8,
@@ -15271,8 +15271,8 @@
     {
       "name": "Gristle Glutton",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/gristle_glutton.rs",
       "set": "ecl"
     },
@@ -20295,8 +20295,8 @@
     {
       "name": "Liminal Hold",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/liminal_hold.rs",
       "set": "ecl"
     },
@@ -23871,8 +23871,8 @@
     {
       "name": "Noggle the Mind",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/noggle_the_mind.rs",
       "set": "ecl"
     },
@@ -33327,8 +33327,8 @@
     {
       "name": "Sting-Slinger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/sting_slinger.rs",
       "set": "ecl"
     },

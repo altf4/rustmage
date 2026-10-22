@@ -59,17 +59,8 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     amount: 1,
                 },
                 Instruction::SelectGroup(1),
-                Instruction::DamageBattlefield {
-                    filters: &[BattlefieldFilter {
-                        kinds: 1,
-                        max_mana: u64::MAX,
-                        relation: -1,
-                        nonland: false,
-                        tapped: None,
-                        without: Keywords::NONE,
-                        subtype: None,
-                    }],
-                    players: Some(PlayerSet::Targeted),
+                Instruction::DamagePlayerCreatures {
+                    players: PlayerSet::Targeted,
                     amount: 2,
                 },
             ],
@@ -122,17 +113,8 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 Instruction::SelectGroup(0),
                 Instruction::Draw(PlayerSet::Targeted, 2),
                 Instruction::SelectGroup(1),
-                Instruction::DamageBattlefield {
-                    filters: &[BattlefieldFilter {
-                        kinds: 1,
-                        max_mana: u64::MAX,
-                        relation: -1,
-                        nonland: false,
-                        tapped: None,
-                        without: Keywords::NONE,
-                        subtype: None,
-                    }],
-                    players: Some(PlayerSet::Targeted),
+                Instruction::DamagePlayerCreatures {
+                    players: PlayerSet::Targeted,
                     amount: 2,
                 },
             ],
@@ -170,17 +152,8 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             ]),
             program: &[
                 Instruction::SelectGroup(0),
-                Instruction::DamageBattlefield {
-                    filters: &[BattlefieldFilter {
-                        kinds: 1,
-                        max_mana: u64::MAX,
-                        relation: -1,
-                        nonland: false,
-                        tapped: None,
-                        without: Keywords::NONE,
-                        subtype: None,
-                    }],
-                    players: Some(PlayerSet::Targeted),
+                Instruction::DamagePlayerCreatures {
+                    players: PlayerSet::Targeted,
                     amount: 2,
                 },
                 Instruction::SelectGroup(1),
