@@ -210,3 +210,46 @@ fn ecl_green_choice_stat_mana_counts_other_creatures_in_owned_worlds() {
         assert_eq!(collect(&world), collect(&g.characteristic_query()));
     }
 }
+
+#[test]
+fn ecl_green_growth_bonus_funding_is_owned_and_unrestricted_beside_restricted_main_mana() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let land = named(&mut g, p, "Forest", Zone::Battlefield);
+        let aura = super::super::ecl_green_colorless_tests::enter_growth(&mut g, p, land, 1);
+        g.state.players[p.index()].mana = [0; 6];
+        let goal = FundingGoal {
+            actor: p,
+            required: [0, 1, 0, 0, 1, 0],
+            generic: 0,
+            source: None,
+            reserve: None,
+        };
+        let world = FundingState::from_game(&g, &goal);
+        assert_eq!(world.mana_tap_bonus(land, false), [0, 1, 0, 0, 0, 0]);
+        assert_eq!(world.colors(land), 2);
+        let step = world
+            .moves(&goal)
+            .into_iter()
+            .find(|step| world.resources[step.resource].id == land)
+            .unwrap();
+        assert_eq!(step.production, [0, 0, 0, 0, 1, 0]);
+        assert_eq!(step.bonus, [0, 1, 0, 0, 0, 0]);
+        let mut child = world.clone();
+        child.apply(&step);
+        assert_eq!(child.mana, [0, 1, 0, 0, 1, 0]);
+        assert_eq!(world.mana, [0; 6]);
+        assert!(world.possible_color_upper()[1] >= 1);
+        let mut departed = world.clone();
+        departed
+            .resources
+            .iter_mut()
+            .find(|resource| resource.id == aura)
+            .unwrap()
+            .object
+            .zone = Zone::Graveyard;
+        assert_eq!(departed.mana_tap_bonus(land, false), [0; 6]);
+        assert_eq!(departed.colors(land), 0);
+        assert_eq!(world.mana_tap_bonus(land, false), [0, 1, 0, 0, 0, 0]);
+    }
+}

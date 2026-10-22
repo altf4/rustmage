@@ -4083,18 +4083,22 @@ impl Game {
                 .find(|grant| grant.source == grantor)
                 .unwrap()
                 .production;
+                let bonus = self.mana_tap_bonus(card);
                 self.tap_objects(&[card]);
                 self.add_mana(actor, production);
+                self.add_mana(actor, bonus);
                 self.apply_mana_source_color(source, definition, production);
                 self.state.passes = 0;
             }
             Action::TapMana { card } => {
+                let bonus = self.mana_tap_bonus(card);
                 self.tap_objects(&[card]);
                 let color = self.state.objects[card as usize].card.mana_color().unwrap();
                 let pool = &mut self.state.players[actor.index()].mana[color];
                 *pool = pool
                     .checked_add(1)
                     .capacity("mana representation exhausted");
+                self.add_mana(actor, bonus);
                 self.state.passes = 0;
             }
             Action::AnnounceFree {
@@ -4257,9 +4261,11 @@ impl Game {
                     .mana_production()
                     .unwrap();
                 let quality = self.mana_quality(definition, card);
+                let bonus = self.activation_mana_tap_bonus(card, ability);
                 self.tap_objects(&objects.iter().map(|object| object.card).collect::<Vec<_>>());
                 self.pay_activation(&mut item, payment, counter_payment);
                 self.add_quality_mana(actor, production, quality);
+                self.add_mana(actor, bonus);
                 self.apply_mana_source_color(item.object, definition, production);
                 self.reopen_evidence_after_mana_sacrifice(card);
             }
@@ -4276,8 +4282,10 @@ impl Game {
                     .mana_production()
                     .unwrap();
                 let quality = self.mana_quality(definition, card);
+                let bonus = self.activation_mana_tap_bonus(card, ability);
                 self.pay_activation(&mut item, payment, counter_payment);
                 self.add_quality_mana(actor, production, quality);
+                self.add_mana(actor, bonus);
                 self.apply_mana_source_color(item.object, definition, production);
                 self.reopen_evidence_after_mana_sacrifice(card);
             }
@@ -6605,6 +6613,10 @@ impl Game {
                 .as_ref()
                 .and_then(|a| a.forage.as_ref())
                 .map_or(0, |f| f.bytes())
+            + s.announcing
+                .as_ref()
+                .and_then(|a| a.mana_tap_bonus.as_ref())
+                .map_or(0, |_| std::mem::size_of::<Mana>())
             + s.announcing
                 .as_ref()
                 .and_then(|a| a.additional_group.as_ref())

@@ -91,6 +91,7 @@ struct FundingMove {
     counters: Counters,
     production: Mana,
     source_color: Option<u8>,
+    bonus: Mana,
     quality: Option<mana_lots::Quality>,
     allocation: Vec<[u64; 6]>,
 }
@@ -707,6 +708,9 @@ impl<'g> FundingState<'g> {
                             counters: Counters::default(),
                             production,
                             source_color: grant.production.resulting_source_color(production),
+                            bonus: ability_world::CharacteristicWorld::mana_tap_bonus(
+                                self, entry.id, false,
+                            ),
                             quality: None,
                             allocation: Vec::new(),
                         });
@@ -734,6 +738,9 @@ impl<'g> FundingState<'g> {
                     counters: Counters::default(),
                     production,
                     source_color: None,
+                    bonus: ability_world::CharacteristicWorld::mana_tap_bonus(
+                        self, entry.id, false,
+                    ),
                     quality: None,
                     allocation: Vec::new(),
                 });
@@ -820,6 +827,7 @@ impl<'g> FundingState<'g> {
                                                     production,
                                                     source_color: source_production
                                                         .resulting_source_color(production),
+                                                    bonus: if ability.cost.tap { ability_world::CharacteristicWorld::mana_tap_bonus(self, entry.id, false) } else { [0; 6] },
                                                     quality,
                                                     allocation: allocation.clone(),
                                                 });
@@ -914,6 +922,11 @@ impl<'g> FundingState<'g> {
             self.resources[resource].object.tapped = true;
         }
         self.refresh_control_projection();
+        for (pool, produced) in self.mana.iter_mut().zip(step.bonus) {
+            *pool = pool
+                .checked_add(u128::from(produced))
+                .capacity("mana representation exhausted");
+        }
         for (pool, produced) in self.mana.iter_mut().zip(step.production) {
             *pool = pool
                 .checked_add(u128::from(produced))
@@ -1024,6 +1037,12 @@ impl<'g> FundingState<'g> {
                 continue;
             }
             if !object.tapped {
+                total = total.saturating_add(
+                    ability_world::CharacteristicWorld::mana_tap_bonus(self, resource.id, true)
+                        .into_iter()
+                        .map(u128::from)
+                        .sum::<u128>(),
+                );
                 total = total.saturating_add(u128::from(object.card.mana_color().is_some()));
                 if self.convoke && self.kinds(resource) & 1 != 0 {
                     total = total.saturating_add(1);
@@ -1133,6 +1152,14 @@ impl<'g> FundingState<'g> {
                 });
             };
             if !object.tapped {
+                add(
+                    ManaProduction::Fixed(ability_world::CharacteristicWorld::mana_tap_bonus(
+                        self,
+                        resource.id,
+                        true,
+                    )),
+                    1,
+                );
                 if let Some(color) = object.card.mana_color() {
                     let mut mana = [0; 6];
                     mana[color] = 1;

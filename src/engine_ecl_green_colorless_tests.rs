@@ -2642,3 +2642,200 @@ fn ecl_green_wickermaw_color_change_enables_later_bloom_tender_in_same_guided_fu
         assert!(!g.object_view(wicker).tapped);
     }
 }
+
+pub(super) fn enter_growth(g: &mut Game, p: Player, land: CardId, color: usize) -> CardId {
+    let aura = named(g, p, "Shimmerwilds Growth", Zone::Hand);
+    cast(g, aura, None, &[Target::Card(land)]);
+    checked(g, Action::Pass);
+    checked(g, Action::Pass);
+    assert_eq!(g.actor(), Some(p));
+    checked(
+        g,
+        Action::ChooseEntryValue {
+            value: EntryChoiceValue::Color(crate::cards::ChoiceColor::ALL[color]),
+        },
+    );
+    settle(g);
+    aura
+}
+
+#[test]
+fn ecl_green_growth_paid_entry_all_colors_and_opponents_land_bonus_has_no_stack() {
+    for p in [Player::P0, Player::P1] {
+        for color in 0..5 {
+            for opponent in [false, true] {
+                let mut g = setup(p);
+                let controller = if opponent { p.other() } else { p };
+                let land = named(&mut g, controller, "Forest", Zone::Battlefield);
+                let aura = enter_growth(&mut g, p, land, color);
+                assert_eq!(g.object_view(land).colors, 1 << color);
+                assert_eq!(g.object_view(land).attached_to, None);
+                assert_eq!(g.object_view(aura).attached_to, Some(g.object_ref(land)));
+                g.state.players[p.index()].mana = [0; 6];
+                g.state.players[p.other().index()].mana = [0; 6];
+                if g.actor() != Some(controller) {
+                    checked(&mut g, Action::Pass);
+                }
+                checked(&mut g, Action::TapMana { card: land });
+                let mut expected = [0; 6];
+                expected[4] = 1;
+                expected[color] += 1;
+                assert_eq!(g.state.players[controller.index()].mana, expected);
+                assert_eq!(g.state.players[controller.other().index()].mana, [0; 6]);
+                assert!(g.state.stack.is_empty());
+                assert!(g.state.pending_triggers.is_empty());
+                g.state.objects[land as usize].tapped = false;
+                g.move_object(aura, Zone::Exile);
+                assert_eq!(g.object_view(land).colors, 0);
+                checked(&mut g, Action::TapMana { card: land });
+                expected[4] += 1;
+                assert_eq!(g.state.players[controller.index()].mana, expected);
+            }
+        }
+    }
+}
+
+#[test]
+fn ecl_green_growth_restricted_realms_main_mana_and_unrestricted_bonus_fund_unrelated_spell() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let land = enter_realms(&mut g, p);
+        settle(&mut g);
+        let _aura = enter_growth(&mut g, p, land, 3);
+        let shock = named(&mut g, p, "Shock", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        // Only the bonus can pay this spell; the Realms' main blue mana cannot.
+        checked(&mut g, Action::AnnounceCast { card: shock });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: land,
+                ability: 1,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [0, 1, 0, 0, 0, 0],
+            },
+        );
+        assert_eq!(g.state.players[p.index()].mana, [0, 1, 0, 1, 0, 0]);
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        assert_eq!(g.state.players[p.index()].mana, [0, 1, 0, 0, 0, 0]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+    }
+}
+
+#[test]
+fn ecl_green_growth_external_creature_tap_cost_never_counts_as_land_tapped_for_mana() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let land = named(&mut g, p, "@token/mutavault", Zone::Battlefield);
+        let _aura = enter_growth(&mut g, p, land, 2);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: land,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_kinds(land, &g.state.objects[land as usize]) & 3, 3);
+        let drum = named(&mut g, p, "Springleaf Drum", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0; 6];
+        checked(
+            &mut g,
+            Action::AnnounceMana {
+                card: drum,
+                ability: 0,
+                counter_payment: Counters::default(),
+                production: [0, 1, 0, 0, 0, 0],
+            },
+        );
+        let reference = g.object_ref(land);
+        checked(&mut g, Action::ChooseAdditionalCost { object: reference });
+        pay(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [0, 1, 0, 0, 0, 0]);
+        assert!(g.object_view(land).tapped);
+    }
+}
+
+#[test]
+fn ecl_green_growth_multiple_providers_timestamps_and_exact_departed_land_bonus_capture() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let land = named(&mut g, p, "Forest", Zone::Battlefield);
+        let first = enter_growth(&mut g, p, land, 1);
+        let second = enter_growth(&mut g, p, land, 3);
+        assert_eq!(g.object_view(land).colors, 8);
+        g.set_color_effects(&[land], 31, crate::cards::AnimationDuration::EndOfTurn);
+        assert_eq!(g.object_view(land).colors, 31);
+        g.expire_color_effects();
+        assert_eq!(g.object_view(land).colors, 8);
+        g.state.players[p.index()].mana = [0; 6];
+        checked(&mut g, Action::TapMana { card: land });
+        assert_eq!(g.state.players[p.index()].mana, [0, 1, 0, 1, 1, 0]);
+        g.move_object(second, Zone::Graveyard);
+        assert_eq!(g.object_view(land).colors, 2);
+        // Typed LKI capture fixture: there is no admitted T+sacrifice land-mana
+        // producer. Preserve the bonus from the exact tap event before departure.
+        let captured = g.mana_tap_bonus(land);
+        let snapshot = g.snapshot();
+        let old = g.object_ref(land);
+        g.move_object(land, Zone::Graveyard);
+        assert_eq!(g.mana_tap_bonus(land), [0; 6]);
+        g.add_mana(p, captured);
+        assert_eq!(g.state.players[p.index()].mana, [0, 2, 0, 1, 1, 0]);
+        g.move_object(land, Zone::Battlefield);
+        assert_ne!(g.object_ref(land), old);
+        assert_eq!(g.mana_tap_bonus(land), [0; 6]);
+        assert_eq!(g.object_view(first).attached_to, Some(old));
+        g.restore(&snapshot).unwrap();
+        assert_eq!(g.mana_tap_bonus(land), captured);
+    }
+}
+
+#[test]
+fn ecl_green_growth_granted_mana_bonus_is_separate_and_overflow_restores_tap_and_pool() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let land = named(&mut g, p, "Forest", Zone::Battlefield);
+        named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        enter_growth(&mut g, p, land, 0);
+        let horizons = named(&mut g, p, "New Horizons", Zone::Hand);
+        cast(&mut g, horizons, None, &[Target::Card(land)]);
+        settle(&mut g);
+        g.state.players[p.index()].mana = [0; 6];
+        let grantor = g.object_ref(horizons);
+        checked(
+            &mut g,
+            Action::TapGrantedMana {
+                card: land,
+                grantor,
+                production: [0, 2, 0, 0, 0, 0],
+            },
+        );
+        assert_eq!(g.state.players[p.index()].mana, [1, 2, 0, 0, 0, 0]);
+        g.state.objects[land as usize].tapped = false;
+        g.state.players[p.index()].mana[0] = u32::MAX;
+        let snapshot = g.snapshot();
+        let revision = g.revision();
+        assert!(matches!(
+            g.apply(p, Action::TapMana { card: land }),
+            Err(Error::CapacityExceeded(_))
+        ));
+        assert_eq!(g.snapshot(), snapshot);
+        assert_eq!(g.revision(), revision);
+    }
+}

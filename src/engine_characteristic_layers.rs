@@ -207,7 +207,46 @@ fn changed_colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 
         .flat_map(|roles| &roles.color_effects)
         .filter(|row| row.object == world.reference(id))
         .map(|row| (row.timestamp, row.colors));
+    let chosen = world
+        .game()
+        .state
+        .roles
+        .as_ref()
+        .into_iter()
+        .flat_map(|roles| &roles.characteristic_sources)
+        .filter_map(|&source| {
+            if !world.attachment_link(source, world.reference(id))
+                || !world
+                    .object(source.card)
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| {
+                        group.fragments.iter().any(|fragment| {
+                            matches!(fragment, StaticAbilityFragment::AttachedChosenColor)
+                        })
+                    })
+            {
+                return None;
+            }
+            let Some(EntryChoiceValue::Color(color)) = world.game().entry_value(source) else {
+                return None;
+            };
+            let timestamp = world
+                .game()
+                .state
+                .roles
+                .as_ref()
+                .unwrap()
+                .ability_timestamps
+                .iter()
+                .find(|row| row.source == source)
+                .expect("registered color provider")
+                .timestamp;
+            Some((timestamp, 1 << color.index()))
+        });
     attached
+        .chain(chosen)
         .chain(fixed)
         .max_by_key(|row| row.0)
         .map_or_else(|| world.object(id).card.colors(), |row| row.1)

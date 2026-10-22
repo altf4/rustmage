@@ -14,6 +14,7 @@ pub(super) struct Announcement {
     pub counter_payment: Counters,
     pub pay_window: bool,
     pub production: Option<Mana>,
+    pub mana_tap_bonus: Option<Box<Mana>>,
     pub additional: Option<ObjectRef>,
     #[allow(
         clippy::box_collection,
@@ -1301,6 +1302,7 @@ impl Game {
             additional_paid: false,
             pay_window: false,
             production: None,
+            mana_tap_bonus: None,
         });
         self.continue_announcement_choices(needs_mode);
         true
@@ -1315,6 +1317,17 @@ impl Game {
         if production.is_some() {
             self.capture_announced_mana_quality(&item);
         }
+        let mana_tap_bonus = if production.is_some() {
+            match item.kind {
+                StackKind::ActivatedAbility { ability } => {
+                    let bonus = self.activation_mana_tap_bonus(item.object.card, ability);
+                    (bonus != [0; 6]).then(|| Box::new(bonus))
+                }
+                _ => None,
+            }
+        } else {
+            None
+        };
         let plan = self.target_spec(&item);
         assert!(
             self.item_targets_available(&item, plan)
@@ -1346,6 +1359,7 @@ impl Game {
             additional_paid: false,
             pay_window: true,
             production,
+            mana_tap_bonus,
         });
         self.continue_announcement_choices(needs_mode);
     }
@@ -1500,6 +1514,9 @@ impl Game {
         };
         if let Some(production) = announcement.production {
             self.add_announced_mana(&announcement.item, production);
+            if let Some(bonus) = announcement.mana_tap_bonus {
+                self.add_mana(announcement.item.controller, *bonus);
+            }
         } else {
             self.push_stack_item(announcement.item);
         }

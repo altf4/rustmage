@@ -182,6 +182,44 @@ pub(super) trait CharacteristicWorld {
             game.state.attack_declared && self.attacking(source),
         )
     }
+    /// Capture before the tap costs remove the land or its attached providers.
+    /// The upper bound intentionally ignores ability removal and current types:
+    /// sacrificing another provider can restore either during a funding branch.
+    fn mana_tap_bonus(&self, id: CardId, upper: bool) -> Mana {
+        let mut result = [0u32; 6];
+        if self.object(id).zone != Zone::Battlefield || (!upper && self.kinds(id) & 2 == 0) {
+            return result;
+        }
+        for &source in &self.game().state.attachment_sources {
+            let reference = self.reference(source);
+            if !self.attachment_link(reference, self.reference(id))
+                || (!upper && !self.printed_abilities_available(source))
+            {
+                continue;
+            }
+            for group in self.object(source).card.static_ability_groups() {
+                for fragment in group.fragments {
+                    if let crate::cards::StaticAbilityFragment::AttachmentManaBonus(production) =
+                        *fragment
+                    {
+                        let mut bonus = [0; 6];
+                        production.in_world(self, source).visit(|mana| {
+                            for index in 0..6 {
+                                bonus[index] = bonus[index].max(mana[index]);
+                            }
+                            false
+                        });
+                        for index in 0..6 {
+                            result[index] = result[index]
+                                .checked_add(bonus[index])
+                                .capacity("mana representation exhausted");
+                        }
+                    }
+                }
+            }
+        }
+        result
+    }
     fn granted_mana(&self, id: CardId) -> Vec<ability_order::GrantedManaAbility> {
         // Animation grants only keywords. It cannot remove a provider's printed
         // ability or change a mana grant, so only removal needs layer-six order.

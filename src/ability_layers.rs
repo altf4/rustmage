@@ -7,10 +7,6 @@ pub(crate) enum AbilityLayer {
     Control = 2,
     Text = 3,
     Type = 4,
-    #[expect(
-        dead_code,
-        reason = "Layer-five source identities are retained for typed legacy definitions"
-    )]
     Color = 5,
     Ability = 6,
     Cda = 70,
@@ -45,6 +41,9 @@ pub(crate) enum StaticAbilityFragment {
     ForeignStashPlay,
     ControlAttached,
     AttachedCharacteristics(&'static AttachedCharacteristics),
+    AttachedChosenColor,
+    /// Triggers for the attached land's own tap mana ability, without using the stack.
+    AttachmentManaBonus(ManaProduction),
     ChosenCreatureType,
     OtherSubtypeEntryCounters(&'static str),
     ChosenModifier(ChosenModifier),

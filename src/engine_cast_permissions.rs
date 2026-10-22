@@ -184,6 +184,7 @@ impl Game {
             counter_payment: Counters::default(),
             pay_window: true,
             production: None,
+            mana_tap_bonus: None,
             additional: None,
             additional_group: None,
             creature_counter_cost: None,
