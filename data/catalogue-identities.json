@@ -5353,7 +5353,8 @@
     0,
     16,
     0,
-    16
+    16,
+    2
   ],
   "aliases": [
     [
@@ -6937,8 +6938,16 @@
       242
     ],
     [
+      "Ashling, Rekindled",
+      243
+    ],
+    [
       "Ashling, Rekindled // Ashling, Rimebound",
       243
+    ],
+    [
+      "Ashling, Rimebound",
+      5348
     ],
     [
       "Ashroot Animist",
@@ -35307,11 +35316,9 @@
       "name": "Ashling, Rekindled // Ashling, Rimebound",
       "oracle_id": "31fc5d8b-94bc-4688-8a84-f15800e717a8",
       "facts_sha256": "a373df775b24b9dc30b5dab3ec04ebc7d1855c8dfd11df133ae9f5405b8c19a3",
-      "mana_cost": "",
-      "type_line": "Legendary Creature — Elemental Sorcerer // Legendary Creature — Elemental Wizard",
-      "oracle_keywords": [
-        "Transform"
-      ],
+      "mana_cost": "{1}{R}",
+      "type_line": "Legendary Creature — Elemental Sorcerer",
+      "oracle_keywords": [],
       "standard_legal": true,
       "legendary": true,
       "kind": 1,
@@ -35321,11 +35328,11 @@
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 244,
@@ -180635,6 +180642,33 @@
       "facts_sha256": null,
       "mana_cost": "",
       "type_line": "Legendary Creature — Kithkin Soldier",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5348,
+      "module": "card_5348",
+      "path": "ecl/ashling_rimebound.rs",
+      "set": "ecl",
+      "category": "transform",
+      "name": "Ashling, Rimebound",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Elemental Wizard",
       "oracle_keywords": [],
       "standard_legal": false,
       "legendary": true,

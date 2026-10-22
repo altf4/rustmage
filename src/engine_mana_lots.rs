@@ -9,6 +9,7 @@ use crate::cards::{CreatureType, ManaQuality, ManaRestriction, ManaRetention, Ma
 pub enum ManaRestrictionView {
     Unrestricted,
     SpellSubtype(&'static str),
+    SpellManaValueAtLeast(u64),
     CreatureSpellOrActivation(CreatureType),
     SubtypeSpellOrActivation(CreatureType),
 }
@@ -83,6 +84,9 @@ impl Quality {
         Self {
             restriction: match quality.restriction {
                 ManaRestriction::Unrestricted => ManaRestrictionView::Unrestricted,
+                ManaRestriction::SpellManaValueAtLeast(minimum) => {
+                    ManaRestrictionView::SpellManaValueAtLeast(minimum)
+                }
                 ManaRestriction::SpellSubtype(subtype) => {
                     ManaRestrictionView::SpellSubtype(subtype)
                 }
@@ -129,6 +133,9 @@ impl Quality {
     pub(super) fn eligible(self, purpose: Purpose) -> bool {
         match self.restriction {
             ManaRestrictionView::Unrestricted => true,
+            ManaRestrictionView::SpellManaValueAtLeast(minimum) => {
+                matches!(purpose, Purpose::Spell(facts) if facts.mana_value >= minimum)
+            }
             ManaRestrictionView::SpellSubtype(subtype) => {
                 matches!(purpose, Purpose::Spell(facts) if facts.has_subtype(subtype))
             }
@@ -164,6 +171,7 @@ pub(super) struct Source {
     pub kinds: u16,
     pub subtypes: GrantedSubtypes,
     pub foreign_stash: bool,
+    pub mana_value: u64,
 }
 impl Source {
     fn has_subtype(self, subtype: &str) -> bool {
@@ -175,6 +183,7 @@ impl Source {
             kinds: card.kind_mask(),
             subtypes: GrantedSubtypes::default(),
             foreign_stash: false,
+            mana_value: card.fixed_mana_value(),
         }
     }
 }
@@ -185,6 +194,7 @@ impl From<DamageFacts> for Source {
             kinds: facts.kinds,
             subtypes: facts.granted_subtypes,
             foreign_stash: false,
+            mana_value: facts.card.fixed_mana_value(),
         }
     }
 }
@@ -607,6 +617,7 @@ impl Game {
         if item.kind == StackKind::Spell {
             let mut source = Source::printed(item.source_card);
             source.foreign_stash = item.cast.is_some_and(|c| c.stash_origin);
+            source.mana_value = item.mana_value();
             Purpose::Spell(source)
         } else {
             let facts = if self
@@ -630,6 +641,15 @@ impl Game {
         definition: Card,
     ) -> Purpose {
         let mut source = Source::printed(definition);
+        if let Some(item) = self
+            .state
+            .announcing
+            .as_ref()
+            .map(|a| &a.item)
+            .filter(|item| item.card == card && item.source_card == definition)
+        {
+            source.mana_value = item.mana_value();
+        }
         source.foreign_stash = self.foreign_stash(actor, card)
             || self.state.announcing.as_ref().is_some_and(|a| {
                 a.item.card == card && a.item.cast.is_some_and(|c| c.stash_origin)

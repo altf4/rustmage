@@ -367,6 +367,7 @@ pub(crate) enum ManaRestriction {
     SpellSubtype(&'static str),
     SubtypeSpellOrActivation(&'static str),
     ChosenCreatureSpellOrActivation,
+    SpellManaValueAtLeast(u64),
     ChosenSubtypeSpellOrActivation,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -2407,6 +2408,7 @@ pub(crate) enum TriggerCondition {
     },
     SelfEnters,
     SelfEntersOrTransforms,
+    SelfTransforms,
     SelfEvokedEnters,
     SelfEntersManaSpent {
         color: u8,

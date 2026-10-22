@@ -93,6 +93,22 @@ impl Game {
                 }
             }
         }
+        // Funding is monotone only between restriction thresholds. Restricted mana
+        // may first become usable at a positive X, independently of cost reductions.
+        if let Some(lots) = &self.state.mana_lots {
+            for lot in &lots.pools[actor.index()] {
+                if let mana_lots::ManaRestrictionView::SpellManaValueAtLeast(minimum) =
+                    lot.quality.restriction
+                {
+                    cuts.push(
+                        minimum
+                            .saturating_sub(card.fixed_mana_value())
+                            .div_ceil(symbols)
+                            .min(end),
+                    );
+                }
+            }
+        }
         cuts.sort_unstable();
         cuts.dedup();
         let (colored, generic) = card.cost();
@@ -100,7 +116,13 @@ impl Game {
         let fundable = |x| {
             self.scalar_x_total_for_definition(actor, id, base, x, card)
                 .is_some_and(|cost| {
-                    self.spell_can_fund_total_for_definition(actor, id, cost, None, card)
+                    self.spell_can_fund_total_at_mana_value(
+                        actor,
+                        id,
+                        cost,
+                        card,
+                        card.fixed_mana_value() + symbols * u64::from(x),
+                    )
                 })
         };
         let mut intervals: Vec<XInterval> = Vec::new();

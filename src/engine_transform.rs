@@ -100,7 +100,7 @@ impl Game {
         for (index, ability) in next.triggers().iter().enumerate() {
             if matches!(
                 ability.condition.event(),
-                TriggerCondition::SelfEntersOrTransforms
+                TriggerCondition::SelfTransforms | TriggerCondition::SelfEntersOrTransforms
             ) {
                 self.queue_trigger(&source, index);
             }

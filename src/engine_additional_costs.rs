@@ -224,6 +224,40 @@ impl Game {
         definition: Card,
     ) -> bool {
         let purpose = self.spell_mana_purpose_for_card(actor, card, definition);
+        self.spell_can_fund_total_with_purpose(actor, card, cost, route, definition, purpose)
+    }
+    pub(super) fn spell_can_fund_total_at_mana_value(
+        &self,
+        actor: Player,
+        card: CardId,
+        cost: ManaCost,
+        definition: Card,
+        mana_value: u64,
+    ) -> bool {
+        let mana_lots::Purpose::Spell(mut facts) =
+            self.spell_mana_purpose_for_card(actor, card, definition)
+        else {
+            unreachable!()
+        };
+        facts.mana_value = mana_value;
+        self.spell_can_fund_total_with_purpose(
+            actor,
+            card,
+            cost,
+            None,
+            definition,
+            mana_lots::Purpose::Spell(facts),
+        )
+    }
+    fn spell_can_fund_total_with_purpose(
+        &self,
+        actor: Player,
+        card: CardId,
+        cost: ManaCost,
+        route: Option<ForageRoute>,
+        definition: Card,
+        purpose: mana_lots::Purpose,
+    ) -> bool {
         let base = FundingGoal {
             actor,
             required: cost.colored,

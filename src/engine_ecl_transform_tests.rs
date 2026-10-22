@@ -315,3 +315,247 @@ fn ecl_transform_back_faces_are_never_separate_deck_cards() {
         Err(Error::InvalidDeck(_))
     ));
 }
+const ASHLING: &str = "Ashling, Rekindled";
+fn until_effect(g: &mut Game) {
+    g.prepare_triggers();
+    for _ in 0..60 {
+        if matches!(
+            g.state.pending,
+            Pending::EffectChoice { .. } | Pending::EffectMana { .. }
+        ) {
+            return;
+        }
+        let a = if g.state.pending == Pending::Priority {
+            Action::Pass
+        } else {
+            g.legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PutTrigger { .. }))
+                .unwrap()
+        };
+        checked(g, a);
+    }
+    panic!("missing effect decision");
+}
+fn ashling_back_mana(g: &mut Game, color: usize) {
+    g.begin_step(Step::Main1);
+    payment(g);
+    checked(
+        g,
+        Action::PayResolutionMana {
+            payment: [0, 1, 0, 0, 0, 0],
+        },
+    );
+    until_effect(g);
+    let mut production = [0; 6];
+    production[color] = 2;
+    assert!(!g.legal_actions().contains(&Action::ChooseMana {
+        production: [1, 1, 0, 0, 0, 0]
+    }));
+    assert!(!g.legal_actions().contains(&Action::ChooseMana {
+        production: [0, 0, 0, 0, 0, 2]
+    }));
+    checked(g, Action::ChooseMana { production });
+    settle(g);
+}
+#[test]
+fn ecl_transform_ashling_paid_entry_optional_discard_is_private_and_draws_only_after_payment() {
+    for p in [Player::P0, Player::P1] {
+        for pay in [false, true] {
+            let mut g = setup(p);
+            let id = named(&mut g, p, ASHLING, Zone::Hand);
+            let fodder = named(&mut g, p, "Island", Zone::Hand);
+            let top = named(&mut g, p, "Forest", Zone::Library);
+            g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 1];
+            cast(&mut g, id, None, &[]);
+            until_effect(&mut g);
+            assert!(g.observe(p).effect_choice.is_some());
+            assert!(g.observe(p.other()).effect_choice.is_none());
+            if pay {
+                checked(&mut g, Action::Discard { card: fodder });
+            } else {
+                checked(&mut g, Action::DeclineEffectPayment);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.state.objects[fodder as usize].zone,
+                if pay { Zone::Graveyard } else { Zone::Hand }
+            );
+            assert_eq!(
+                g.state.objects[top as usize].zone,
+                if pay { Zone::Hand } else { Zone::Library }
+            );
+            assert_eq!(
+                g.stats(id),
+                Stats {
+                    power: 1,
+                    toughness: 3
+                }
+            );
+        }
+    }
+}
+#[test]
+fn ecl_transform_ashling_back_generates_two_of_each_single_color_with_owned_restriction() {
+    for p in [Player::P0, Player::P1] {
+        for color in 0..5 {
+            let mut g = setup(p);
+            let id = named(&mut g, p, ASHLING, Zone::Battlefield);
+            g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+            ashling_back_mana(&mut g, color);
+            assert_eq!(
+                g.state.objects[id as usize].card.name(),
+                "Ashling, Rimebound"
+            );
+            assert_eq!(g.state.objects[id as usize].card.fixed_mana_value(), 2);
+            let mut expected = [0; 6];
+            expected[color] = 2;
+            assert_eq!(g.state.players[p.index()].mana, expected);
+            let lot = &g.observe(p).mana_lots[0];
+            assert_eq!(
+                lot.restriction,
+                ManaRestrictionView::SpellManaValueAtLeast(4)
+            );
+            assert_eq!(lot.amounts, expected);
+            assert_eq!(g.colors(id), 2);
+            // The resulting restriction cannot pay another resolution-time transform cost.
+            g.begin_step(Step::Main1);
+            payment(&mut g);
+            assert!(
+                !g.legal_actions()
+                    .iter()
+                    .any(|a| matches!(a, Action::PayResolutionMana { .. }))
+            );
+            checked(&mut g, Action::DeclineResolutionMana);
+            until_effect(&mut g);
+            checked(
+                &mut g,
+                Action::ChooseMana {
+                    production: expected,
+                },
+            );
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].mana[color], 4);
+            assert_eq!(
+                g.state.objects[id as usize].card.name(),
+                "Ashling, Rimebound"
+            );
+        }
+    }
+}
+#[test]
+fn ecl_transform_ashling_mana_survives_source_departure_but_only_casts_mv_four_spells() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = named(&mut g, p, ASHLING, Zone::Battlefield);
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+        ashling_back_mana(&mut g, 3);
+        let event = g.move_object_raw(id, Zone::Graveyard);
+        g.finish_zone_events(&[event], &[]);
+        assert_eq!(g.state.objects[id as usize].card.name(), ASHLING);
+        g.state.players[p.index()].mana[5] = 2;
+        let low = named(&mut g, p, "Goblin Piker", Zone::Hand);
+        let four = named(&mut g, p, "Hill Giant", Zone::Hand);
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: low })
+        );
+        let before = g.snapshot();
+        assert!(g.apply(p, Action::AnnounceCast { card: low }).is_err());
+        assert_eq!(g.snapshot(), before);
+        cast(&mut g, four, None, &[]);
+        settle(&mut g);
+        assert!(g.on_battlefield(four));
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+#[test]
+fn ecl_transform_ashling_x_spell_interval_crosses_mana_value_threshold_exactly() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        named(&mut g, p, ASHLING, Zone::Battlefield);
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+        ashling_back_mana(&mut g, 4);
+        // Ordinary green + generic pay X0..1; restricted green unlocks X3, leaving X2 illegal.
+        g.state.players[p.index()].mana[5] = 1;
+        g.state.players[p.index()].mana[4] += 1;
+        let scourge = named(&mut g, p, "Wildwood Scourge", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: scourge });
+        assert_eq!(
+            g.x_choice().unwrap().intervals,
+            vec![
+                XInterval {
+                    minimum: 0,
+                    maximum: 1
+                },
+                XInterval {
+                    minimum: 3,
+                    maximum: 3
+                }
+            ]
+        );
+        checked(&mut g, Action::ChooseX { value: 3 });
+        for _ in 0..10 {
+            if g.state.announcing.is_none() {
+                break;
+            }
+            let actions = g.legal_actions();
+            let a = if actions.contains(&Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            }) {
+                Action::ChooseTarget {
+                    target: Target::Player(p.other()),
+                }
+            } else {
+                actions
+                    .into_iter()
+                    .find(|a| matches!(a, Action::FinishTargets | Action::PayCosts { .. }))
+                    .unwrap()
+            };
+            checked(&mut g, a);
+        }
+        assert_eq!(g.state.stack.last().unwrap().mana_value(), 4);
+        settle(&mut g);
+        assert_eq!(g.counter_count(scourge, CounterKind::PlusOne), 3);
+        assert_eq!(
+            g.stats(scourge),
+            Stats {
+                power: 3,
+                toughness: 3
+            }
+        );
+    }
+}
+#[test]
+fn ecl_transform_ashling_return_to_front_loots_and_mana_trigger_works_after_face_changes() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = named(&mut g, p, ASHLING, Zone::Battlefield);
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+        ashling_back_mana(&mut g, 4);
+        let fodder = named(&mut g, p, "Island", Zone::Hand);
+        let top = named(&mut g, p, "Forest", Zone::Library);
+        g.state.players[p.index()].mana[3] = 1;
+        g.begin_step(Step::Main1);
+        payment(&mut g);
+        checked(
+            &mut g,
+            Action::PayResolutionMana {
+                payment: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        until_effect(&mut g);
+        checked(&mut g, Action::Discard { card: fodder });
+        until_effect(&mut g);
+        checked(
+            &mut g,
+            Action::ChooseMana {
+                production: [0, 0, 0, 0, 2, 0],
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.state.objects[id as usize].card.name(), ASHLING);
+        assert_eq!(g.state.objects[top as usize].zone, Zone::Hand);
+        assert_eq!(g.state.players[p.index()].mana[4], 4);
+    }
+}
