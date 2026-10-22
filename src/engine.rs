@@ -199,6 +199,9 @@ mod blocking;
 mod combat_restrictions;
 #[path = "engine_effect_choices.rs"]
 mod effect_choices;
+#[path = "engine_proliferate.rs"]
+mod proliferate;
+pub use proliferate::ProliferateChoiceView;
 #[path = "engine_exile.rs"]
 mod exile;
 pub use exile::ExilePlayPermission;
@@ -454,6 +457,9 @@ define_actions! {
     ChooseCreature { object: ObjectRef },
     TapForEffect { object: ObjectRef },
     ChooseCounterRemoval { counters: Counters },
+    ProliferatePermanent { object: ObjectRef },
+    ProliferatePlayer { player: Player },
+    FinishProliferate,
     FinishLandSelection,
     DeclineHandEntry,
     ChooseHandDefender { defender: CombatDefender },
@@ -1617,6 +1623,9 @@ enum Pending {
     EffectChoice {
         player: Player,
     },
+    Proliferate {
+        player: Player,
+    },
     HandDefender {
         player: Player,
     },
@@ -1946,6 +1955,7 @@ pub struct RecoveryChoiceView {
 pub struct EffectChoiceView {
     pub kind: EffectChoiceKind,
     pub counter_removal: Option<CounterRemovalDomain>,
+    pub proliferate: Option<ProliferateChoiceView>,
     pub amount: u16,
     pub optional: bool,
     pub required: [u16; 2],
@@ -2438,6 +2448,7 @@ impl Game {
             | Pending::EntryValue { player }
             | Pending::EntryLife { player }
             | Pending::AuraEntry { player }
+            | Pending::Proliferate { player }
             | Pending::EffectChoice { player }
             | Pending::HandDefender { player }
             | Pending::Role { player }
@@ -2904,6 +2915,27 @@ impl Game {
             }
             Pending::HandDefender { .. } => {
                 if self.visit_hand_defenders(&mut emit) {
+                    return true;
+                }
+            }
+            Pending::Proliferate { player } => {
+                let choice = s.resolving.as_ref().unwrap().choice.as_ref().unwrap();
+                for (id, _) in s.objects.iter().enumerate() {
+                    let object = self.object_ref(id as CardId);
+                    if self.effect_choice_candidate(choice, player, object)
+                        && emit(Action::ProliferatePermanent { object })
+                    {
+                        return true;
+                    }
+                }
+                for player in [Player::P0, Player::P1] {
+                    if self.proliferate_player_candidate(player)
+                        && emit(Action::ProliferatePlayer { player })
+                    {
+                        return true;
+                    }
+                }
+                if emit(Action::FinishProliferate) {
                     return true;
                 }
             }
@@ -4669,6 +4701,11 @@ impl Game {
                 self.choose_effect_object(actor, object)
             }
             Action::ChooseCounterRemoval { counters } => self.choose_counter_removal(&counters),
+            Action::ProliferatePermanent { object } => {
+                self.choose_proliferate_permanent(actor, object)
+            }
+            Action::ProliferatePlayer { player } => self.choose_proliferate_player(player),
+            Action::FinishProliferate => self.finish_proliferate(),
             Action::DeclineEffectPayment => self.decline_effect_payment(),
             Action::Discard { card } => {
                 if matches!(self.state.pending, Pending::EffectChoice { .. }) {
@@ -6217,6 +6254,7 @@ impl Game {
                 Pending::EffectDiscard { .. } => "effect_discard",
                 Pending::HandDefender { .. } => "hand_defender",
                 Pending::EffectChoice { .. } => "effect_choice",
+                Pending::Proliferate { .. } => "proliferate",
                 Pending::EntryTimestamp { .. } => "entry_timestamps",
                 Pending::LinkedChoice { .. } => "linked_choice",
                 Pending::EntryValue { .. } => "entry_value",
@@ -7762,3 +7800,6 @@ pub use attack_type_history::DeclaredAttackView;
 #[cfg(test)]
 #[path = "engine_ecl_navigator_tests.rs"]
 mod ecl_navigator_tests;
+#[cfg(test)]
+#[path = "engine_ecl_morcant_tests.rs"]
+mod ecl_morcant_tests;

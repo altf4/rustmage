@@ -3610,6 +3610,10 @@ impl Game {
                         self.set_counters(id, Counters::default());
                     }
                 }
+                Instruction::Proliferate => {
+                    self.start_proliferate(&item);
+                    return;
+                }
                 Instruction::RemoveAllCounters => {
                     for bound in &item.targets {
                         if self.same_target_object(*bound)

@@ -169,6 +169,7 @@ impl Game {
                 entry_life_bonus: None,
                 blight_copy_attacking: false,
                 counter_removal: Some(Box::new(domain)),
+                proliferate: None,
             }));
         self.state.pending = Pending::EffectChoice {
             player: item.controller,

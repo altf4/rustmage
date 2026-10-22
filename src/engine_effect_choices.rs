@@ -26,11 +26,15 @@ pub(super) struct EffectChoice {
     pub hand_creature_entry: Option<HandCreatureEntry>,
     pub blight_copy_attacking: bool,
     pub counter_removal: Option<Box<CounterRemovalDomain>>,
+    pub proliferate: Option<Box<proliferate::ProliferateSelection>>,
     pub entry_life_bonus: Option<(&'static str, u16)>,
 }
 impl EffectChoice {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
+            + self.proliferate.as_ref().map_or(0, |_| {
+                std::mem::size_of::<proliferate::ProliferateSelection>()
+            })
             + self.counter_removal.as_ref().map_or(0, |domain| {
                 std::mem::size_of::<CounterRemovalDomain>() + domain.available.owned_bytes()
             })
@@ -48,6 +52,12 @@ impl Game {
             return false;
         }
         let o = &self.state.objects[object.card as usize];
+        if choice.proliferate.is_some() {
+            return o.zone == Zone::Battlefield
+                && self.object_ref(object.card) == object
+                && self.counter_amounts(object.card).has_any()
+                && !choice.selected[player.index()].contains(&object);
+        }
         if matches!(
             choice.kind,
             EffectChoiceKind::Blight(_) | EffectChoiceKind::BlightCost(_)
@@ -381,6 +391,7 @@ impl Game {
             hand_defender: None,
             hand_creature_entry: None,
             counter_removal: None,
+            proliferate: None,
             entry_life_bonus: None,
             blight_copy_attacking: false,
             source: item.object,
@@ -761,8 +772,9 @@ impl Game {
         Some(EffectChoiceView {
             kind: choice.kind,
             counter_removal: choice.counter_removal.as_deref().cloned(),
+            proliferate: self.proliferate_choice_view(choice),
             amount: choice.amount,
-            optional: choice.skip_to.is_some(),
+            optional: choice.skip_to.is_some() || choice.proliferate.is_some(),
             required: choice.required,
             selected: std::array::from_fn(|index| {
                 choice.selected[index]

@@ -517,6 +517,7 @@ impl Game {
             | EffectChoiceKind::UntapLands { .. }
             | EffectChoiceKind::PowerDifferenceBoost
             | EffectChoiceKind::RemoveCounters
+            | EffectChoiceKind::Proliferate
             | EffectChoiceKind::HandCreature
             | EffectChoiceKind::HandLand { .. }
             | EffectChoiceKind::LandCards { .. }

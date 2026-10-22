@@ -252,6 +252,34 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::ExileGraveyardCard { .. }
             | Action::TapForEffect { .. }
             | Action::ChooseCounterRemoval { .. } => 50,
+            Action::ProliferatePlayer { player } => {
+                if *player != actor {
+                    60
+                } else {
+                    -1
+                }
+            }
+            Action::ProliferatePermanent { object } => observation
+                .objects
+                .iter()
+                .find(|o| o.id == object.card)
+                .map_or(-1, |o| {
+                    let value = CounterKind::ALL
+                        .into_iter()
+                        .filter(|&kind| o.counters.get(kind) > 0)
+                        .map(|kind| {
+                            let beneficial =
+                                !matches!(kind, CounterKind::MinusOne | CounterKind::Stun);
+                            if beneficial == (o.controller == actor) {
+                                1i128
+                            } else {
+                                -1
+                            }
+                        })
+                        .sum::<i128>();
+                    if value > 0 { 60 } else { -1 }
+                }),
+            Action::FinishProliferate => 0,
             Action::DeclineEffectPayment => -1,
             Action::AnnounceFree {
                 flash_surcharge: false,
