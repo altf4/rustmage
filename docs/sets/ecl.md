@@ -97,3 +97,9 @@ These are implementation work, not external permission blockers. Authors are
 working on remaining combat/type interactions, vivid consumers, resolution hand exile, and behold/champion. Full pool behavior, interactions,
 performance, two independent nonauthor final published-head reviews and merge
 remain open.
+
+## Verified checkpoint228 and inherited audit
+
+Revision `7f001174` passed all8 release phases in553.77seconds:2,826 native tests (one ignored),9 catalogue tests,all22 Foundations game suites and ECL games,Clippy,provenance,release build and benchmark. Shared memory peak3.3GiB;1,100,824,576 disposable bytes cleaned. Required libraries and exact SHA hashes remain at the paths recorded in `ecl-validation.json`. Freeform regression:49,832decisions/0.23017189seconds=216,499.07decisions/s;clone212.57ns,restore190.40ns. This is regression measurement,not full-set ECL acceptance.
+
+Spiral into Solitude brings admission to229/273. The inherited evidence audit now covers all5 basic lands against full pinned sources and actual land play/mana payments with both players,private observations,invalid-action atomicity,and owned raw/index replay/restore (0.07seconds).102 inherited definitions still need the evidence audit.

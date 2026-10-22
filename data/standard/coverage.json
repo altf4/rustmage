@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b3a1848ee7ec89a700fdf3b294b2c2d45fc21b511b467219847106cf49e5efdf",
+  "catalogue_version": "428fd154016a9abee93c2c9ad3890c5cdfb8d8aa162aedb93655b15b423ab56a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2311,
-  "implemented_total": 2317,
+  "implemented_standard_cards": 2312,
+  "implemented_total": 2318,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 45,
-      "complete": 222
+      "gated": 44,
+      "complete": 223
     },
     "eoc": {
       "total": 8,
@@ -32623,8 +32623,8 @@
     {
       "name": "Spiral into Solitude",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/spiral_into_solitude.rs",
       "set": "ecl"
     },

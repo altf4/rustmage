@@ -2340,7 +2340,7 @@
       "name": "Forest",
       "definition": "src/card_definitions/fra/forest.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Forest",
@@ -2354,7 +2354,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/fra/forest.json"
+      ]
     },
     {
       "oracle_id": "5bd06f9e-9a42-455d-ad26-24bc04e51c7c",
@@ -3142,7 +3145,7 @@
       "name": "Island",
       "definition": "src/card_definitions/fra/island.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Island",
@@ -3156,7 +3159,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/fra/island.json"
+      ]
     },
     {
       "oracle_id": "61cb927a-4cf8-49d6-ab4b-9e882bc08774",
@@ -3963,7 +3969,7 @@
       "name": "Mountain",
       "definition": "src/card_definitions/fra/mountain.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Mountain",
@@ -3977,7 +3983,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/fra/mountain.json"
+      ]
     },
     {
       "oracle_id": "b63e5518-61f3-4cde-a799-5f3ee6aba70b",
@@ -4315,7 +4324,7 @@
       "name": "Plains",
       "definition": "src/card_definitions/fra/plains.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Plains",
@@ -4329,7 +4338,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/fra/plains.json"
+      ]
     },
     {
       "oracle_id": "faf2f368-a7e7-4427-bc03-929f294b1e03",
@@ -5340,7 +5352,7 @@
       "name": "Spiral into Solitude",
       "definition": "src/card_definitions/ecl/spiral_into_solitude.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Spiral into Solitude",
@@ -5356,7 +5368,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/spiral_into_solitude.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "bdeb440d-a714-40e8-9038-f651e6ae45fb",
@@ -5640,7 +5656,7 @@
       "name": "Swamp",
       "definition": "src/card_definitions/fra/swamp.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Swamp",
@@ -5654,7 +5670,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/fra/swamp.json"
+      ]
     },
     {
       "oracle_id": "79090b00-d920-4134-a838-fb434cf3ee4d",
