@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "9f15a042f34b9e31c994e2706c0149876ec0672e8b43e98716daafc85e35d404",
+  "catalogue_version": "8e1be3179d297a388beb28ca3096c71dc5bb56e6cda4ae93ab18e533b22d9545",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2304,
-  "implemented_total": 2310,
+  "implemented_standard_cards": 2309,
+  "implemented_total": 2315,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 52,
-      "complete": 215
+      "gated": 47,
+      "complete": 220
     },
     "eoc": {
       "total": 8,
@@ -5775,8 +5775,8 @@
     {
       "name": "Celestial Reunion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/celestial_reunion.rs",
       "set": "ecl"
     },
@@ -5863,8 +5863,8 @@
     {
       "name": "Champion of the Clachan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/champion_of_the_clachan.rs",
       "set": "ecl"
     },
@@ -5895,8 +5895,8 @@
     {
       "name": "Champions of the Shoal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/champions_of_the_shoal.rs",
       "set": "ecl"
     },
@@ -19119,8 +19119,8 @@
     {
       "name": "Kinsbaile Aspirant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/kinsbaile_aspirant.rs",
       "set": "ecl"
     },
@@ -31183,8 +31183,8 @@
     {
       "name": "Silvergill Mentor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/silvergill_mentor.rs",
       "set": "ecl"
     },

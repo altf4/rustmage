@@ -936,7 +936,7 @@
       "name": "Celestial Reunion",
       "definition": "src/card_definitions/ecl/celestial_reunion.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Celestial Reunion",
@@ -951,14 +951,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/celestial_reunion.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "4a220e0c-e463-4264-9a96-658cf842b82e",
       "name": "Champion of the Clachan",
       "definition": "src/card_definitions/ecl/champion_of_the_clachan.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Champion of the Clachan",
@@ -975,7 +979,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/champion_of_the_clachan.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "b326ccd5-8ad2-441c-9d73-82ee6390dd36",
@@ -1055,7 +1063,7 @@
       "name": "Champions of the Shoal",
       "definition": "src/card_definitions/ecl/champions_of_the_shoal.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Champions of the Shoal",
@@ -1071,7 +1079,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/champions_of_the_shoal.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "93409d98-93c8-4742-a635-2a4408e66c32",
@@ -3214,7 +3226,7 @@
       "name": "Kinsbaile Aspirant",
       "definition": "src/card_definitions/ecl/kinsbaile_aspirant.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Kinsbaile Aspirant",
@@ -3229,7 +3241,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/kinsbaile_aspirant.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "fdf0fba8-f335-419c-b96b-e99037727c43",
@@ -5108,7 +5124,7 @@
       "name": "Silvergill Mentor",
       "definition": "src/card_definitions/ecl/silvergill_mentor.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Silvergill Mentor",
@@ -5123,7 +5139,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/silvergill_mentor.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "08688903-d9cc-4d57-ba91-14a8523551b9",
