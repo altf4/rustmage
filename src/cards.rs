@@ -387,6 +387,13 @@ pub(crate) struct ManaQuality {
     pub spell_bonus: ManaSpellBonus,
     pub retention: ManaRetention,
 }
+/// Both faces belong to one immutable physical identity. Back faces cannot be submitted as cards.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct TransformSpec {
+    pub front: Card,
+    pub back: Card,
+    pub front_name: &'static str,
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ManaProduction {
     /// Mana abilities that also replace their source permanent color until cleanup.
@@ -886,6 +893,7 @@ pub(crate) enum Instruction {
     PayXReflexive {
         ability: u16,
     },
+    TransformSource,
     MayPayMana {
         cost: ManaCost,
         skip: usize,
@@ -2356,6 +2364,7 @@ pub(crate) enum TriggerCondition {
         ordinal: Option<u64>,
     },
     SelfEnters,
+    SelfEntersOrTransforms,
     SelfEvokedEnters,
     SelfEntersManaSpent {
         color: u8,
@@ -2801,14 +2810,20 @@ impl Card {
     pub fn identity(self) -> &'static str {
         generated::adventure_identity(self).unwrap_or_else(|| {
             self.token_info()
-                .map_or(self.name(), |token| token.factory_identity)
+                .map_or(self.info().name, |token| token.factory_identity)
         })
     }
     /// Actual rules name, shared as a regular string across all games.
     /// Token recipes may share a name; use `identity()` for stable lookup.
     pub fn name(self) -> &'static str {
-        self.token_info()
-            .map_or(self.info().name, |token| token.name)
+        self.token_info().map_or_else(
+            || {
+                self.transform_spec()
+                    .filter(|spec| spec.front == self)
+                    .map_or(self.info().name, |spec| spec.front_name)
+            },
+            |token| token.name,
+        )
     }
     pub fn is_legendary(self) -> bool {
         self.info().legendary
@@ -3089,10 +3104,16 @@ impl Card {
         generated::x_entry_counters(self)
     }
     /// Intrinsic mana value of the represented face; X is zero outside the stack.
+    pub(crate) fn transform_spec(self) -> Option<TransformSpec> {
+        authored::rules(self).and_then(|rules| rules.extras.transform)
+    }
+    pub(crate) fn front_face(self) -> Card {
+        self.transform_spec().map_or(self, |spec| spec.front)
+    }
     pub fn fixed_mana_value(self) -> u64 {
         // The canonical equivalent takes every two-brid symbol's generic side;
         // a cheaper chosen payment never changes the printed mana value.
-        let (colored, generic) = self.cost();
+        let (colored, generic) = self.front_face().cost();
         u64::from(generic) + colored.into_iter().map(u64::from).sum::<u64>()
     }
     pub(crate) fn cost(self) -> (Mana, u32) {

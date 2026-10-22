@@ -5352,7 +5352,8 @@
     8,
     0,
     16,
-    0
+    0,
+    16
   ],
   "aliases": [
     [
@@ -8232,8 +8233,16 @@
       551
     ],
     [
+      "Brigid, Clachan's Heart",
+      552
+    ],
+    [
       "Brigid, Clachan's Heart // Brigid, Doun's Mind",
       552
+    ],
+    [
+      "Brigid, Doun's Mind",
+      5347
     ],
     [
       "Brilliance Unleashed",
@@ -44101,25 +44110,23 @@
       "name": "Brigid, Clachan's Heart // Brigid, Doun's Mind",
       "oracle_id": "60fc89a1-cc6f-4a32-84c3-09abf7a4a1df",
       "facts_sha256": "4a3472f348cd0abbfd1a0155920c84a66f8feed7f47233e4fe5de7bca19e312f",
-      "mana_cost": "",
-      "type_line": "Legendary Creature — Kithkin Warrior // Legendary Creature — Kithkin Soldier",
-      "oracle_keywords": [
-        "Transform"
-      ],
+      "mana_cost": "{2}{W}",
+      "type_line": "Legendary Creature — Kithkin Warrior",
+      "oracle_keywords": [],
       "standard_legal": true,
       "legendary": true,
       "kind": 1,
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        1,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 553,
@@ -180607,6 +180614,33 @@
       "kind": 2,
       "basic": false,
       "mana_color": 5,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5347,
+      "module": "card_5347",
+      "path": "ecl/brigid_doun_s_mind.rs",
+      "set": "ecl",
+      "category": "transform",
+      "name": "Brigid, Doun's Mind",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Kithkin Soldier",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
       "colored": [
         0,
         0,

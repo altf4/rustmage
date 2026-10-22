@@ -1182,6 +1182,7 @@ impl Game {
             gift: None,
             source_move: None,
             creature_action_event: None,
+            transform_stamp: None,
             source_chosen_type: None,
             target_controller_lki: None,
             reflexive_subject: None,
@@ -1239,7 +1240,8 @@ impl Game {
     }
 
     /// Returns true only when a decision suspends the enclosing ordering/cast work.
-    pub(super) fn start_announcement(&mut self, item: SpellView, trigger: bool) -> bool {
+    pub(super) fn start_announcement(&mut self, mut item: SpellView, trigger: bool) -> bool {
+        self.capture_transform_stamp(&mut item);
         let needs_mode = item.modes().is_some() && item.mode.is_none();
         if needs_mode
             && !item

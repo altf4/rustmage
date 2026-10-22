@@ -88,6 +88,7 @@ impl Game {
             self.state.pending_triggers.push(SpellView {
                 source_move: None,
                 creature_action_event: None,
+                transform_stamp: None,
                 source_chosen_type: None,
                 target_controller_lki: None,
                 gift: None,

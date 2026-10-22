@@ -132,6 +132,7 @@ const fn object(kinds: u8) -> TargetRule {
     }
 }
 pub(super) struct CardExtras {
+    pub transform: Option<TransformSpec>,
     /// Exact optional-additional-cost intent for each predeclared modal combination.
     pub mode_optional_additional_paid: &'static [bool],
     pub flash_if_control_subtype: Option<&'static str>,
@@ -202,6 +203,7 @@ pub(super) struct CardExtras {
 }
 impl CardExtras {
     pub const EMPTY: Self = Self {
+        transform: None,
         mode_optional_additional_paid: &[],
         flash_if_control_subtype: None,
         zone_replacement: None,

@@ -1,3 +1,6 @@
+#[path = "engine_transform.rs"]
+mod transform;
+pub use transform::TransformHistoryView;
 #[path = "engine_creature_actions.rs"]
 mod creature_actions;
 #[path = "engine_entry_history.rs"]
@@ -912,6 +915,8 @@ pub struct ReflexiveSubjectView {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub transform_stamp: Option<Box<u64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub creature_action_event: Option<Box<CreatureActionEventView>>,
     /// Public source choice frozen before activation costs can move the source.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1013,21 +1018,28 @@ impl SpellView {
     }
     /// Heap-owned continuation payloads; inline packet storage is counted by its container.
     pub(super) fn owned_bytes(&self) -> usize {
-        self.mana_copy_sources.as_ref().map_or(0, |sources| {
-            std::mem::size_of::<Vec<(ManaCopySource, u64)>>()
-                + sources.len() * std::mem::size_of::<(ManaCopySource, u64)>()
-        }) + self.copy_event.as_ref().map_or(0, |event| {
-            std::mem::size_of::<stack_copies::CopyEvent>() + event.spell.owned_bytes()
-        }) + self.source_counter_lki.as_ref().map_or(0, |facts| {
-            std::mem::size_of::<Vec<SourceCounterQuantityView>>()
-                + facts.len() * std::mem::size_of::<SourceCounterQuantityView>()
-        }) + self.target_controller_lki.as_ref().map_or(0, |v| {
-            std::mem::size_of::<Vec<(ObjectRef, Player)>>()
-                + v.len() * std::mem::size_of::<(ObjectRef, Player)>()
-        }) + self
-            .gift
+        self.transform_stamp
             .as_ref()
-            .map_or(0, |_| std::mem::size_of::<GiftContext>())
+            .map_or(0, |_| std::mem::size_of::<u64>())
+            + self.mana_copy_sources.as_ref().map_or(0, |sources| {
+                std::mem::size_of::<Vec<(ManaCopySource, u64)>>()
+                    + sources.len() * std::mem::size_of::<(ManaCopySource, u64)>()
+            })
+            + self.copy_event.as_ref().map_or(0, |event| {
+                std::mem::size_of::<stack_copies::CopyEvent>() + event.spell.owned_bytes()
+            })
+            + self.source_counter_lki.as_ref().map_or(0, |facts| {
+                std::mem::size_of::<Vec<SourceCounterQuantityView>>()
+                    + facts.len() * std::mem::size_of::<SourceCounterQuantityView>()
+            })
+            + self.target_controller_lki.as_ref().map_or(0, |v| {
+                std::mem::size_of::<Vec<(ObjectRef, Player)>>()
+                    + v.len() * std::mem::size_of::<(ObjectRef, Player)>()
+            })
+            + self
+                .gift
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<GiftContext>())
             + self
                 .source_move
                 .as_ref()
@@ -1977,6 +1989,7 @@ pub struct Observation {
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
     pub animations: Vec<AnimationView>,
     pub color_effects: Vec<ColorEffectView>,
+    pub transforms: Vec<TransformHistoryView>,
     pub temporary_controls: Vec<TemporaryControlView>,
     pub casting_prohibited: bool,
     pub death_exile_replacements: Vec<ExileDeathReplacementView>,
@@ -2120,9 +2133,15 @@ impl Game {
                 }
             }
             for &card in deck {
-                if card.is_token() || card.is_emblem() || card.inset_parent().is_some() {
+                if card.is_token()
+                    || card.is_emblem()
+                    || card.inset_parent().is_some()
+                    || card.front_face() != card
+                {
                     return Err(Error::InvalidDeck(
-                        if card.inset_parent().is_some() {
+                        if card.front_face() != card {
+                            "transform back faces cannot be submitted in decks"
+                        } else if card.inset_parent().is_some() {
                             "inset spell definitions cannot be submitted in decks"
                         } else if card.is_emblem() {
                             "emblems cannot be submitted in decks"
@@ -5213,7 +5232,11 @@ impl Game {
             self.state.first_strikers.retain(|&card| card != id);
             // A surviving attacker remains blocked after its last blocker leaves.
         }
+        self.forget_transform_history(before.reference);
         let obj = &mut self.state.objects[id as usize];
+        if before.zone == Zone::Battlefield && !obj.is_token() {
+            obj.card = obj.card.front_face();
+        }
         obj.zone = destination;
         // Only stack and battlefield objects have independent control.
         obj.controller = if matches!(destination, Zone::Battlefield | Zone::Stack) {
@@ -5840,6 +5863,10 @@ impl Game {
             .map(|(i, _)| query.object_view(i as CardId))
             .collect();
         Observation {
+            transforms: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |roles| roles.transforms.clone()),
             library_piles: self.library_piles_view(viewer),
             keep_types: self.keep_types_view(),
             linked_exile: s
@@ -7510,3 +7537,7 @@ mod ecl_evoke_tests;
 #[cfg(test)]
 #[path = "engine_ecl_doran_tests.rs"]
 mod ecl_doran_tests;
+
+#[cfg(test)]
+#[path = "engine_ecl_transform_tests.rs"]
+mod ecl_transform_tests;

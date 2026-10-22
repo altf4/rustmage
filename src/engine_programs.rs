@@ -522,7 +522,8 @@ impl Game {
                     TriggerCondition::SelfBargained => same && event.bargained,
                     TriggerCondition::SelfEvidence => same && event.evidence_collected,
                     TriggerCondition::EvidenceCollected | TriggerCondition::Chapter { .. } => false,
-                    TriggerCondition::SelfEnters
+                    TriggerCondition::SelfEntersOrTransforms
+                    | TriggerCondition::SelfEnters
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrAttacksWhileSaddled
                     | TriggerCondition::SelfEntersOrDies => same,
@@ -790,6 +791,7 @@ impl Game {
             gift: None,
             source_move: None,
             creature_action_event: None,
+            transform_stamp: None,
             source_chosen_type: match source.entry_choice {
                 Some(EntryChoiceValue::CreatureType(kind)) => Some(kind),
                 _ => None,
@@ -845,7 +847,8 @@ impl Game {
 
     /// A spell becomes cast only after every declaration and cost is complete.
     /// Completed insertion paths share this hook; abilities never count as casts.
-    pub(super) fn push_stack_item(&mut self, item: SpellView) {
+    pub(super) fn push_stack_item(&mut self, mut item: SpellView) {
+        self.capture_transform_stamp(&mut item);
         let cast = (item.kind == StackKind::Spell && item.cast.is_some() && !item.is_copy)
             .then_some((item.controller, item.source_card));
         self.state.stack.push(item);
@@ -2618,6 +2621,9 @@ impl Game {
                         player: item.controller,
                     };
                     return;
+                }
+                Instruction::TransformSource => {
+                    self.transform_source(&item);
                 }
                 Instruction::MayPayMana { cost, skip } => {
                     self.start_optional_resolution_payment(&item, cost, skip);
