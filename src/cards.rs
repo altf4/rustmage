@@ -2298,6 +2298,7 @@ pub(crate) enum EntryPredicate {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ReturnDeathFilter {
+    SourceWithoutCounter(CounterKind),
     SourceCounter { kind: CounterKind, minimum: u64 },
     SourceNonDemon,
     SourceRevival,
@@ -2305,6 +2306,7 @@ pub(crate) enum ReturnDeathFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ReturnKind {
+    Persist,
     WithoutAbilities,
     Demon,
     Angel,

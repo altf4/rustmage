@@ -280,21 +280,25 @@ impl Game {
             source: None,
             reserve: None,
         };
-        if definition.has_convoke() {
-            return self.can_fund_convoke_for(base, purpose);
-        }
+        let fund = |goal| {
+            if self.may_have_convoke(actor, definition) {
+                self.can_fund_convoke_for(goal, purpose)
+            } else {
+                self.can_fund_for(goal, purpose)
+            }
+        };
         let Some(spec) = definition.additional_cost() else {
-            return self.can_fund_for(base, purpose);
+            return fund(base);
         };
         if matches!(
             spec.kind,
             EffectChoiceKind::OptionalBlightCost(_) | EffectChoiceKind::OptionalBeholdType(_)
         ) {
-            return self.can_fund_for(base, purpose);
+            return fund(base);
         }
         if forage::is_forage_cost(spec) {
             return if route == Some(ForageRoute::Black) {
-                self.can_fund_for(base, purpose)
+                fund(base)
             } else {
                 self.forage_cost_fundable_for(base, spec, route, purpose)
             };
@@ -302,13 +306,10 @@ impl Game {
         self.state.objects.iter().enumerate().any(|(id, _)| {
             let object = self.object_ref(id as CardId);
             self.additional_candidate(spec, actor, self.object_ref(card), object)
-                && self.can_fund_for(
-                    FundingGoal {
-                        reserve: Some((object, spec)),
-                        ..base.clone()
-                    },
-                    purpose,
-                )
+                && fund(FundingGoal {
+                    reserve: Some((object, spec)),
+                    ..base.clone()
+                })
         })
     }
     pub(super) fn activation_can_fund(
@@ -381,7 +382,13 @@ impl Game {
         }
         let mut goal = self.funding_goal(a);
         goal.reserve = Some((object, spec));
-        self.can_fund(goal)
+        if a.item.kind == StackKind::Spell
+            && self.may_have_convoke(a.item.controller, a.item.source_card)
+        {
+            self.can_fund_convoke_for(goal, self.purpose_for_item(&a.item))
+        } else {
+            self.can_fund(goal)
+        }
     }
     pub(super) fn choose_additional_cost(&mut self, object: ObjectRef) {
         let a = self.state.announcing.as_mut().unwrap();

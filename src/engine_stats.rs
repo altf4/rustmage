@@ -160,6 +160,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
                             | crate::cards::StaticAbilityFragment::PlayerHexproof
                             | crate::cards::StaticAbilityFragment::CantLoseGameAndOpponentsCantWin
+                            | crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
                             | crate::cards::StaticAbilityFragment::ControlledSpellsUncounterable(_)
                             | crate::cards::StaticAbilityFragment::ControlledCreatureTrigger { .. }
                             | crate::cards::StaticAbilityFragment::SelfUntap(_)

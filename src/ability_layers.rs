@@ -34,6 +34,7 @@ pub(crate) struct StaticAbilityGroup {
 )]
 pub(crate) enum StaticAbilityFragment {
     FreeHandCast,
+    ConvokeCreatureSpells,
     LookAtLibraryTop,
     CastCreatureFromLibraryTop,
     SpendAnyManaForCreatures,
@@ -88,6 +89,7 @@ pub(crate) enum StaticAbilityFragment {
     ControlledCreatureTrigger {
         ability: u16,
         other: bool,
+        nontoken: bool,
     },
     AttachmentActivation(u16),
     /// Grants an independent tap mana ability to the attached permanent.

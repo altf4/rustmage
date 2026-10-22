@@ -31,6 +31,11 @@ impl Game {
     ) -> bool {
         let before = &event.before;
         match filter {
+            ReturnDeathFilter::SourceWithoutCounter(kind) => {
+                before.is_creature()
+                    && source.reference == before.reference
+                    && before.counters.get(kind) == 0
+            }
             ReturnDeathFilter::SourceCounter { kind, minimum } => {
                 before.is_creature()
                     && source.reference == before.reference
@@ -51,6 +56,66 @@ impl Game {
                     && before.controller == source.controller
                     && !before.is_token()
                     && !before.has_subtype("Angel")
+            }
+        }
+    }
+    // CR603.10: both recipients and grantors use the same pre-departure world.
+    pub(super) fn granted_return_death_triggers(
+        &mut self,
+        event: &ZoneChange,
+        sources: &[ObjectView],
+    ) {
+        use crate::cards::StaticAbilityFragment;
+        let recipient = &event.before;
+        if !recipient.is_creature() {
+            return;
+        }
+        for provider in sources {
+            if provider.controller != recipient.controller
+                || !provider.printed_abilities_available()
+            {
+                continue;
+            }
+            for fragment in provider
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|group| group.fragments)
+            {
+                let StaticAbilityFragment::ControlledCreatureTrigger {
+                    ability,
+                    other,
+                    nontoken,
+                } = *fragment
+                else {
+                    continue;
+                };
+                if (other && provider.reference == recipient.reference)
+                    || (nontoken && recipient.is_token())
+                {
+                    continue;
+                }
+                let index = usize::from(ability);
+                let trigger = provider.card.triggers()[index];
+                let TriggerCondition::ReturnDeath(filter) = trigger.condition.event() else {
+                    continue;
+                };
+                if !trigger.condition.is_granted()
+                    || !recipient.grant_available(provider.reference, provider.card, ability, None)
+                    || !self.return_death_matches(filter, recipient, event)
+                {
+                    continue;
+                }
+                let grant = Box::new(AttachmentTriggerView {
+                    grantor: provider.reference,
+                    granting_card: provider.card,
+                    recipient: recipient.reference,
+                    defender: None,
+                    granted: true,
+                });
+                if self.queue_zone_trigger_from(recipient, index, event, Some(grant)) {
+                    self.capture_return_death(event);
+                }
             }
         }
     }
@@ -146,6 +211,10 @@ impl Game {
         };
         let mut link = (**link).clone();
         match kind {
+            ReturnKind::Persist => {
+                link.counter = Some((CounterKind::MinusOne, 1));
+                self.stage_linked_return(&link, None);
+            }
             ReturnKind::WithoutAbilities => {
                 link.counter = None;
                 self.stage_linked_return(&link, Some((kind, item.object)));
@@ -222,7 +291,7 @@ impl Game {
             }
             ReturnKind::Demon => (&["Demon"], Keywords::NONE),
             ReturnKind::Angel => (&["Angel"], Keywords::FLYING),
-            ReturnKind::Revival => return,
+            ReturnKind::Revival | ReturnKind::Persist => return,
         };
         let timestamp = self.next_role_timestamp();
         let state = self.state.roles.as_mut().unwrap();

@@ -384,6 +384,7 @@ impl Game {
             }
         }
         if event.before.zone == Zone::Battlefield && event.destination == Zone::Graveyard {
+            self.granted_return_death_triggers(event, death_sources);
             // Departure triggers look back at the entire pre-event battlefield;
             // simultaneous departures still see each other exactly once.
             for source in death_sources {

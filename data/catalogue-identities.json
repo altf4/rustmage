@@ -5355,6 +5355,7 @@
     0,
     16,
     2,
+    4,
     4
   ],
   "aliases": [
@@ -11207,6 +11208,10 @@
       1272
     ],
     [
+      "Eirdu, Carrier of Dawn",
+      1273
+    ],
+    [
       "Eirdu, Carrier of Dawn // Isilu, Carrier of Twilight",
       1273
     ],
@@ -15181,6 +15186,10 @@
     [
       "Ishgard, the Holy See // Faith & Grief",
       2238
+    ],
+    [
+      "Isilu, Carrier of Twilight",
+      5350
     ],
     [
       "Island",
@@ -64687,12 +64696,11 @@
       "name": "Eirdu, Carrier of Dawn // Isilu, Carrier of Twilight",
       "oracle_id": "36af3c2c-49d7-46ea-ab02-c254b332448e",
       "facts_sha256": "b2bef366bab9bb489d702f0ffaecbb34734399b6d30d5df50725a053f89e04c2",
-      "mana_cost": "",
-      "type_line": "Legendary Creature — Elemental God // Legendary Creature — Elemental God",
+      "mana_cost": "{3}{W}{W}",
+      "type_line": "Legendary Creature — Elemental God",
       "oracle_keywords": [
         "Flying",
-        "Lifelink",
-        "Transform"
+        "Lifelink"
       ],
       "standard_legal": true,
       "legendary": true,
@@ -64700,14 +64708,14 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        2,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 3
     },
     {
       "index": 1274,
@@ -180705,6 +180713,36 @@
       "type_line": "Legendary Creature — Elf Warlock",
       "oracle_keywords": [
         "Deathtouch"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5350,
+      "module": "card_5350",
+      "path": "ecl/isilu_carrier_of_twilight.rs",
+      "set": "ecl",
+      "category": "transform",
+      "name": "Isilu, Carrier of Twilight",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Elemental God",
+      "oracle_keywords": [
+        "Flying",
+        "Lifelink"
       ],
       "standard_legal": false,
       "legendary": true,

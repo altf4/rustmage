@@ -132,12 +132,13 @@ impl Game {
                     let crate::cards::StaticAbilityFragment::ControlledCreatureTrigger {
                         ability: index,
                         other,
+                        nontoken,
                     } = *fragment
                     else {
                         continue;
                     };
-                    if (other && grantor==reference) || !self.active_rule_fragment(id,|candidate|
-                        matches!(candidate,crate::cards::StaticAbilityFragment::ControlledCreatureTrigger {ability,other:candidate_other} if *ability==index && *candidate_other==other)) {continue;}
+                    if (other && grantor==reference) || (nontoken && self.state.objects[reference.card as usize].is_token()) || !self.active_rule_fragment(id,|candidate|
+                        matches!(candidate,crate::cards::StaticAbilityFragment::ControlledCreatureTrigger {ability,other:candidate_other,nontoken:candidate_nontoken} if *ability==index && *candidate_other==other && *candidate_nontoken==nontoken)) {continue;}
                     let index = usize::from(index);
                     let ability = granting_card.triggers()[index];
                     if ability.condition.is_granted()

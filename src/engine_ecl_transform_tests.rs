@@ -752,3 +752,206 @@ fn ecl_transform_trystan_copy_enters_back_without_transform_mill_or_exile_trigge
         assert!(g.keywords(copy).contains(Keywords::DEATHTOUCH));
     }
 }
+const EIRDU: &str = "Eirdu, Carrier of Dawn";
+const ISILU: &str = "Isilu, Carrier of Twilight";
+fn murder(g: &mut Game, p: Player, victim: CardId) {
+    let spell = named(g, p, "Murder", Zone::Hand);
+    cast(g, spell, None, &[Target::Card(victim)]);
+    settle(g);
+}
+#[test]
+fn ecl_transform_eirdu_paid_faces_and_creature_convoke_from_summoning_sick_sources() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let god = named(&mut g, p, EIRDU, Zone::Hand);
+        g.state.players[p.index()].mana = [2, 0, 0, 0, 0, 3];
+        cast(&mut g, god, None, &[]);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(god),
+            Stats {
+                power: 5,
+                toughness: 5
+            }
+        );
+        assert!(
+            g.keywords(god)
+                .contains(Keywords::FLYING.union(Keywords::LIFELINK))
+        );
+        let elf = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let hill = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let spell = named(&mut g, p, "Great Forest Druid", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        checked(&mut g, Action::BeginConvoke);
+        for (id, contribution) in [
+            (god, ConvokeContribution::Generic),
+            (elf, ConvokeContribution::Green),
+        ] {
+            let object = g.object_ref(id);
+            checked(
+                &mut g,
+                Action::ChooseConvoker {
+                    object,
+                    contribution,
+                },
+            );
+        }
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        settle(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Battlefield);
+        assert!(
+            g.object_view(god).tapped && g.object_view(elf).tapped && !g.object_view(hill).tapped
+        );
+        g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 0];
+        transform_paid(&mut g, 2);
+        assert_eq!(g.state.objects[god as usize].card.name(), ISILU);
+        assert_eq!(g.colors(god), 4);
+        assert_eq!(g.state.objects[god as usize].card.fixed_mana_value(), 5);
+        g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 0];
+        transform_paid(&mut g, 0);
+        assert_eq!(g.state.objects[god as usize].card.name(), EIRDU);
+    }
+}
+#[test]
+fn ecl_transform_eirdu_grant_excludes_noncreatures_opponents_and_blanked_provider() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let god = named(&mut g, p, EIRDU, Zone::Battlefield);
+        assert!(g.spell_has_convoke(p, Card::from_name("Great Forest Druid").unwrap()));
+        assert!(!g.spell_has_convoke(p.other(), Card::from_name("Great Forest Druid").unwrap()));
+        assert!(!g.spell_has_convoke(p, Card::from_name("Divination").unwrap()));
+        let aura = named(&mut g, p, "Noggle the Mind", Zone::Hand);
+        cast(&mut g, aura, None, &[Target::Card(god)]);
+        settle(&mut g);
+        assert!(!g.spell_has_convoke(p, Card::from_name("Great Forest Druid").unwrap()));
+        let creature = named(&mut g, p, "Great Forest Druid", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: creature })
+        );
+        assert!(
+            g.spell_has_convoke(p, Card::from_name("Harmonized Crescendo").unwrap()),
+            "intrinsic convoke remains"
+        );
+    }
+}
+#[test]
+fn ecl_transform_isilu_persist_uses_owner_and_minus_counter_prevents_second_return() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        named(&mut g, p, ISILU, Zone::Battlefield);
+        let creature = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        g.state.objects[creature as usize].controller = p;
+        let old = g.object_ref(creature);
+        murder(&mut g, p, creature);
+        assert_eq!(g.object_view(creature).zone, Zone::Battlefield);
+        assert_ne!(g.object_ref(creature), old);
+        assert_eq!(g.object_view(creature).controller, p.other());
+        assert_eq!(g.object_view(creature).counters.minus_one, 1);
+        assert!(!g.object_view(creature).tapped);
+        assert_eq!(
+            g.stats(creature),
+            Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+        g.state.objects[creature as usize].controller = p;
+        murder(&mut g, p, creature);
+        assert_eq!(g.object_view(creature).zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn ecl_transform_isilu_simultaneous_deaths_preserve_grant_and_exclude_self_tokens_opponents() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let god = named(&mut g, p, ISILU, Zone::Battlefield);
+        let yours = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let theirs = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let token = super::tests::spawn(
+            &mut g,
+            p,
+            Card::from_name("@token/c48e9e904360e4cee1deeed8").unwrap(),
+            Zone::Battlefield,
+        );
+        let wrath = named(&mut g, p, "Day of Judgment", Zone::Hand);
+        cast(&mut g, wrath, None, &[]);
+        settle(&mut g);
+        assert_eq!(g.object_view(yours).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(yours).counters.minus_one, 1);
+        assert_eq!(g.object_view(god).zone, Zone::Graveyard);
+        assert_eq!(g.state.objects[god as usize].card.name(), EIRDU);
+        assert_eq!(g.object_view(theirs).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(token).zone, Zone::Outside);
+    }
+}
+#[test]
+fn ecl_transform_isilu_blanked_recipient_or_grantor_cannot_persist() {
+    for blank_grantor in [false, true] {
+        let mut g = setup(Player::P0);
+        let god = named(&mut g, Player::P0, ISILU, Zone::Battlefield);
+        let creature = named(&mut g, Player::P0, "Hill Giant", Zone::Battlefield);
+        let aura = named(&mut g, Player::P0, "Noggle the Mind", Zone::Hand);
+        cast(
+            &mut g,
+            aura,
+            None,
+            &[Target::Card(if blank_grantor { god } else { creature })],
+        );
+        settle(&mut g);
+        murder(&mut g, Player::P0, creature);
+        assert_eq!(g.object_view(creature).zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn ecl_transform_isilu_persist_departure_lki_retains_minus_before_sba_counter_cancellation() {
+    let mut g = setup(Player::P0);
+    named(&mut g, Player::P0, ISILU, Zone::Battlefield);
+    let creature = named(&mut g, Player::P0, "Hill Giant", Zone::Battlefield);
+    g.state.objects[creature as usize].counters.plus_one = 1;
+    g.state.objects[creature as usize].counters.minus_one = 1;
+    g.state.objects[creature as usize].damage = 10;
+    g.state_based_actions();
+    settle(&mut g);
+    assert_eq!(g.object_view(creature).zone, Zone::Graveyard);
+}
+#[test]
+fn ecl_transform_eirdu_behold_cost_witness_can_also_convoke_before_reveal_payment() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let god = named(&mut g, p, EIRDU, Zone::Battlefield);
+        let elf = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let spell = named(&mut g, p, "Lys Alana Dignitary", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        checked(&mut g, Action::ChooseSpellCost { cost: 0 });
+        let object = g.object_ref(elf);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
+        checked(&mut g, Action::BeginConvoke);
+        for (id, contribution) in [
+            (god, ConvokeContribution::Generic),
+            (elf, ConvokeContribution::Green),
+        ] {
+            let object = g.object_ref(id);
+            checked(
+                &mut g,
+                Action::ChooseConvoker {
+                    object,
+                    contribution,
+                },
+            );
+        }
+        checked(&mut g, Action::PayCosts { payment: [0; 6] });
+        settle(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Battlefield);
+        assert!(g.object_view(elf).tapped);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}

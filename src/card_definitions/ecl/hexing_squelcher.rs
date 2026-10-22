@@ -13,6 +13,7 @@ const GROUPS: &[StaticAbilityGroup] = &[
         fragments: &[StaticAbilityFragment::ControlledCreatureTrigger {
             ability: 1,
             other: true,
+            nontoken: false,
         }],
     },
 ];

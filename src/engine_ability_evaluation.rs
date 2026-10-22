@@ -92,8 +92,16 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: vec![GrantedManaAbility { source, production }],
             });
         }
-        StaticAbilityFragment::ControlledCreatureTrigger { ability, other } => {
-            if !own || world.kinds(id) & 1 == 0 || (other && source.card == id) {
+        StaticAbilityFragment::ControlledCreatureTrigger {
+            ability,
+            other,
+            nontoken,
+        } => {
+            if !own
+                || world.kinds(id) & 1 == 0
+                || (other && source.card == id)
+                || (nontoken && world.is_token(id))
+            {
                 return None;
             }
             return Some(LayerSixGrant {

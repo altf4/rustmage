@@ -6,6 +6,24 @@ use crate::cards::{LiveStatRecipients, LiveStaticEffect};
 
 pub(super) trait CharacteristicWorld {
     fn game(&self) -> &Game;
+    fn spell_has_convoke(&self, actor: Player, definition: Card) -> bool {
+        definition.has_convoke()
+            || definition.is_creature()
+                && self.game().state.static_sources.iter().any(|&id| {
+                    let object = self.object(id);
+                    object.zone == Zone::Battlefield
+                        && object.controller == actor
+                        && object.card.static_ability_groups().iter().any(|group| {
+                            group.fragments.iter().any(|fragment| {
+                                matches!(
+                                    fragment,
+                                    crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
+                                )
+                            })
+                        })
+                        && self.printed_abilities_available(id)
+                })
+    }
     fn object(&self, id: CardId) -> &Object;
     fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
         live_counters::amounts(

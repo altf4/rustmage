@@ -376,7 +376,7 @@ impl<'g> FundingState<'g> {
                             || object.card.attachment_bonus().is_some()
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::ChosenCreatureKeywords(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ConvokeCreatureSpells | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::ChosenCreatureKeywords(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -1450,6 +1450,20 @@ impl<'g> FundingState<'g> {
                 .map(|r| u128::from(r.object.card.fixed_mana_value()))
                 .sum::<u128>()
     }
+    fn convoke_available(&self) -> bool {
+        self.convoke
+            && match self.purpose {
+                mana_lots::Purpose::Spell(source) => {
+                    ability_world::CharacteristicWorld::spell_has_convoke(
+                        self,
+                        self.actor,
+                        source.card,
+                    )
+                }
+                mana_lots::Purpose::Other => true,
+                mana_lots::Purpose::Activation(_) => false,
+            }
+    }
     fn reachable(&self, goal: &FundingGoal, visited: &mut HashSet<FundingKey>) -> bool {
         self.reachable_with_evidence(goal, None, visited)
     }
@@ -1463,7 +1477,7 @@ impl<'g> FundingState<'g> {
             return false;
         }
         let adjusted = cast_origins::payment_goal(self, goal, self.purpose);
-        if (if self.convoke {
+        if (if self.convoke_available() {
             convoke::payable_in(
                 self,
                 goal.actor,
@@ -1600,6 +1614,12 @@ impl Game {
         self.can_fund_for(goal, purpose)
     }
     pub(super) fn can_fund_for(&self, goal: FundingGoal, purpose: mana_lots::Purpose) -> bool {
+        if let mana_lots::Purpose::Spell(source) = purpose
+            && self.may_have_convoke(goal.actor, source.card)
+        {
+            return self.can_fund_convoke_for(goal, purpose);
+        }
+
         if !goal
             .source
             .as_ref()
@@ -1708,15 +1728,27 @@ impl Game {
         goal: FundingGoal,
         purpose: mana_lots::Purpose,
     ) -> bool {
-        if convoke::payable_in(
-            self,
-            goal.actor,
-            purpose,
-            self.available_mana(goal.actor, purpose).map(u128::from),
-            goal.required,
-            goal.generic,
-            &self.convoke_masks(goal.actor, &[]),
-        ) {
+        if goal.reserve.is_none()
+            && match purpose {
+                mana_lots::Purpose::Spell(source) => {
+                    ability_world::CharacteristicWorld::spell_has_convoke(
+                        self,
+                        goal.actor,
+                        source.card,
+                    )
+                }
+                _ => false,
+            }
+            && convoke::payable_in(
+                self,
+                goal.actor,
+                purpose,
+                self.available_mana(goal.actor, purpose).map(u128::from),
+                goal.required,
+                goal.generic,
+                &self.convoke_masks(goal.actor, &[]),
+            )
+        {
             return true;
         }
         let mut state = FundingState::from_game_with_convoke(self, &goal, true);
@@ -2056,7 +2088,7 @@ impl Game {
         let announcement = self.state.announcing.as_ref().unwrap();
         let goal = self.funding_goal(announcement);
         let convoke = announcement.item.kind == StackKind::Spell
-            && announcement.item.source_card.has_convoke();
+            && self.may_have_convoke(announcement.item.controller, announcement.item.source_card);
         let state = FundingState::from_game_with_convoke(self, &goal, convoke);
         let mut done = false;
         if state.obligations(&goal)
@@ -2072,7 +2104,7 @@ impl Game {
         if done {
             return true;
         }
-        if convoke
+        if state.convoke_available()
             && convoke::payable_in(
                 &state,
                 goal.actor,
@@ -3199,7 +3231,8 @@ impl Game {
                 let a = self.state.announcing.as_ref().unwrap();
                 (
                     self.funding_goal(a),
-                    a.item.kind == StackKind::Spell && a.item.source_card.has_convoke(),
+                    a.item.kind == StackKind::Spell
+                        && self.may_have_convoke(a.item.controller, a.item.source_card),
                     a.evidence.as_ref().map(|e| e.threshold),
                 )
             }
@@ -4059,5 +4092,70 @@ mod ecl_attacking_you_tests {
         drop(world);
         g.move_object(attacker, Zone::Graveyard);
         assert_eq!(g.stat_value(value, g.object_ref(source), Player::P0), 0);
+    }
+}
+
+#[cfg(test)]
+mod ecl_convoke_grant_tests {
+    use super::super::ability_timeline_tests::{cast, named, settle, setup};
+    use super::super::ability_world::CharacteristicWorld;
+    use super::*;
+    #[test]
+    fn ecl_eirdu_funding_recomputes_grant_after_virtual_source_or_blanking_aura_departure() {
+        let p = Player::P0;
+        let mut g = setup(p);
+        let god = named(&mut g, p, "Eirdu, Carrier of Dawn", Zone::Battlefield);
+        named(&mut g, p, "Great Forest Druid", Zone::Battlefield);
+        named(&mut g, p, "Hill Giant", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0; 6];
+        let goal = FundingGoal {
+            actor: p,
+            required: [0, 0, 0, 0, 1, 0],
+            generic: 1,
+            reserve: None,
+            source: None,
+        };
+        let source = mana_lots::Source {
+            card: Card::from_name("Great Forest Druid").unwrap(),
+            kinds: 1,
+            subtypes: GrantedSubtypes::default(),
+            foreign_stash: false,
+            mana_value: 2,
+        };
+        let mut world = FundingState::from_game_with_convoke(&g, &goal, true);
+        world.purpose = mana_lots::Purpose::Spell(source);
+        assert!(world.reachable(&goal, &mut HashSet::new()));
+        world
+            .resources
+            .iter_mut()
+            .find(|r| r.id == god)
+            .unwrap()
+            .object
+            .zone = Zone::Graveyard;
+        assert!(!world.convoke_available());
+        assert!(!world.reachable(&goal, &mut HashSet::new()));
+        g.state.players[p.index()].mana = [30; 6];
+        let aura = named(&mut g, p, "Noggle the Mind", Zone::Hand);
+        cast(&mut g, aura, None, &[Target::Card(god)]);
+        settle(&mut g);
+        g.state.players[p.index()].mana = [0; 6];
+        assert!(g.may_have_convoke(p, source.card));
+        let mut world = FundingState::from_game_with_convoke(&g, &goal, true);
+        world.purpose = mana_lots::Purpose::Spell(source);
+        assert!(!world.convoke_available());
+        assert!(!world.reachable(&goal, &mut HashSet::new()));
+        world
+            .resources
+            .iter_mut()
+            .find(|r| r.id == aura)
+            .unwrap()
+            .object
+            .zone = Zone::Graveyard;
+        assert!(world.convoke_available());
+        assert!(world.reachable(&goal, &mut HashSet::new()));
+        assert!(
+            !g.spell_has_convoke(p, source.card),
+            "speculative change did not mutate actual provider"
+        );
     }
 }

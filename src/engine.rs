@@ -3345,7 +3345,7 @@ impl Game {
                                 return self.initial_bargain_fundable(actor, card, cost);
                             }
                             if self.foreign_stash(actor, card)
-                                || obj.card.has_convoke()
+                                || self.may_have_convoke(actor, obj.card)
                                 || obj.card.additional_cost().is_some()
                             {
                                 return self.spell_can_fund(actor, card, cost);
@@ -3456,7 +3456,7 @@ impl Game {
                         || obj.card.kicker_cost().is_some()
                         || obj.card.gift().is_some()
                         || obj.card.collect_evidence_cost().is_some()
-                        || obj.card.has_convoke()
+                        || self.may_have_convoke(actor, obj.card)
                         || obj.card.has_bargain()
                         || obj.card.additional_cost().is_some()
                         || obj.card.cost_alternative_guard().is_some()
