@@ -117,7 +117,10 @@ impl Game {
             let event = self.move_object(id, Zone::Exile);
             if event.moved && event.destination == Zone::Exile {
                 value = value
-                    .checked_add(u128::from(event.before.card.fixed_mana_value()))
+                    .checked_add(u128::from(event.before.copy_recipe.as_ref().map_or_else(
+                        || event.before.card.fixed_mana_value(),
+                        CopyRecipe::mana_value,
+                    )))
                     .capacity("exiled mana value exhausted");
                 self.grant_exile_free_cast_permission(player, event.after);
             }

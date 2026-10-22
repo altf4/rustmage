@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 161,
+  "newly_tested_physical_cards": 162,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -96,6 +96,7 @@
     "Maralen, Fae Ascendant",
     "Meanders Guide",
     "Meek Attack",
+    "Mirrorform",
     "Mirrormind Crown",
     "Moonshadow",
     "Morningtide's Light",
@@ -166,10 +167,10 @@
     "Winnowing",
     "Wistfulness"
   ],
-  "current_admission_flags": 268,
-  "remaining_gated": 5,
+  "current_admission_flags": 269,
+  "remaining_gated": 4,
   "inherited_evidence_audit": {
-    "audited": 43,
+    "audited": 60,
     "total": 107,
     "names": [
       "Plains",
@@ -214,7 +215,24 @@
       "Wanderbrine Preacher",
       "Wanderwine Distracter",
       "Tanufel Rimespeaker",
-      "Unexpected Assistance"
+      "Unexpected Assistance",
+      "Appeal to Eirdu",
+      "Aquitect's Defenses",
+      "Disruptor of Currents",
+      "Glamermite",
+      "Keep Out",
+      "Lofty Dreams",
+      "Protective Response",
+      "Rimekin Recluse",
+      "Riverguard's Reflexes",
+      "Run Away Together",
+      "Shinestriker",
+      "Spell Snare",
+      "Stratosoarer",
+      "Summit Sentinel",
+      "Sun-Dappled Celebrant",
+      "Timid Shieldbearer",
+      "Unwelcome Sprite"
     ],
     "scenario": "src/engine_ecl_inherited_tests.rs",
     "source_commit": "7902fbe1",
@@ -332,6 +350,32 @@
       "seconds": 0.54,
       "resource_report": "<cache>/rustmage-build-reports/4d405e51bef643bdb5a7c37db05dc627.json",
       "clippy": "<cache>/rustmage-build-reports/f6439ddb22e94fceaa19d3ebb352db52.json"
+    },
+    "white_blue_final_group": {
+      "names": [
+        "Appeal to Eirdu",
+        "Aquitect's Defenses",
+        "Disruptor of Currents",
+        "Glamermite",
+        "Keep Out",
+        "Lofty Dreams",
+        "Protective Response",
+        "Rimekin Recluse",
+        "Riverguard's Reflexes",
+        "Run Away Together",
+        "Shinestriker",
+        "Spell Snare",
+        "Stratosoarer",
+        "Summit Sentinel",
+        "Sun-Dappled Celebrant",
+        "Timid Shieldbearer",
+        "Unwelcome Sprite"
+      ],
+      "source_commit": "4a3aa274",
+      "tests": 11,
+      "seconds": 0.77,
+      "resource_report": "<cache>/rustmage-build-reports/07be596097554b88bc0dc9339e52ba9c.json",
+      "clippy": "<cache>/rustmage-build-reports/6ea3f2726fc8484bac952629f71d70a2.json"
     }
   },
   "locally_reviewed": 0,
@@ -371,10 +415,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T21:56:27.131956+00:00",
-    "elapsed_seconds": 23619.915105,
-    "newly_verified_cards": 161,
-    "cards_per_hour": 24.53861486899701,
+    "end_utc": "2026-10-22T22:06:29.145824+00:00",
+    "elapsed_seconds": 24221.928973,
+    "newly_verified_cards": 162,
+    "cards_per_hour": 24.07735571556207,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "Combined260-card ECL scenarios; Kirol separately focused-tested after this combined run.",
@@ -1313,5 +1357,14 @@
     "funding_seconds": 3.45,
     "funding_report": "<cache>/rustmage-build-reports/1c2555fd7f6a4af3819841ebabc2853e.json",
     "clippy": "<cache>/rustmage-build-reports/b20c6631d2af43b497afbee3bdb01320.json"
+  },
+  "mirrorform": {
+    "source_commit": "c66ead5d",
+    "copy_regressions": 81,
+    "native_tests": 3063,
+    "ignored": 1,
+    "native_seconds": 89.79,
+    "native_report": "<cache>/rustmage-build-reports/f824532466974bb781c8ea3fdd685a02.json",
+    "clippy": "<cache>/rustmage-build-reports/10e2a58f4cfb43e3a35b3c93b04e1357.json"
   }
 }
