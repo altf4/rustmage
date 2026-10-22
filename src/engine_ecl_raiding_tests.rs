@@ -603,3 +603,118 @@ fn ecl_raiding_aura_spell_copy_retargets_and_enters_attached_with_its_own_etb() 
         assert!(!g.state.players[p.index()].token_creation_attempted_this_turn);
     }
 }
+#[test]
+fn ecl_raiding_mana_abilities_may_recolor_fresh_donors_before_any_cost_payment() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = schemes(&mut g, p);
+        let a = named(&mut g, p, "Foraging Wickermaw", Zone::Battlefield);
+        let b = named(&mut g, p, "Foraging Wickermaw", Zone::Battlefield);
+        for id in [a, b] {
+            g.state.objects[id as usize].summoning_sick = true;
+            assert_eq!(g.object_view(id).colors & 8, 0);
+        }
+        let spell = named(&mut g, p, "Shock", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        intent(&mut g, source, true);
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        reject(
+            &mut g,
+            Action::ActivateMana {
+                card: a,
+                ability: 0,
+                payment: [0, 0, 0, 0, 0, 1],
+                counter_payment: Counters::default(),
+                production: [1, 0, 0, 0, 0, 0],
+            },
+        );
+        for id in [a, b] {
+            checked(
+                &mut g,
+                Action::ActivateMana {
+                    card: id,
+                    ability: 0,
+                    payment: [0, 0, 0, 0, 0, 1],
+                    counter_payment: Counters::default(),
+                    production: [0, 0, 0, 1, 0, 0],
+                },
+            );
+        }
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        pay_pair(&mut g, source, a, b);
+        finish_copies(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+        assert!([a, b].into_iter().all(|id| g.object_view(id).tapped));
+    }
+}
+#[test]
+fn ecl_raiding_real_drum_mana_cost_cannot_consume_a_reserved_color_donor() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = schemes(&mut g, p);
+        let a = named(&mut g, p, "Enraged Flamecaster", Zone::Battlefield);
+        let b = named(&mut g, p, "Enraged Flamecaster", Zone::Battlefield);
+        let helper = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.state.objects[helper as usize].summoning_sick = true;
+        let drum = named(&mut g, p, "Springleaf Drum", Zone::Battlefield);
+        let spell = named(&mut g, p, "Shock", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        intent(&mut g, source, true);
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        let object = g.object_ref(a);
+        reject(
+            &mut g,
+            Action::ActivateManaWithTapCost {
+                card: drum,
+                ability: 0,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 1, 0, 0],
+                objects: vec![object],
+            },
+        );
+        let object = g.object_ref(helper);
+        checked(
+            &mut g,
+            Action::ActivateManaWithTapCost {
+                card: drum,
+                ability: 0,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 1, 0, 0],
+                objects: vec![object],
+            },
+        );
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        pay_pair(&mut g, source, a, b);
+        finish_copies(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+        assert!(
+            [a, b, helper, drum]
+                .into_iter()
+                .all(|id| g.object_view(id).tapped)
+        );
+    }
+}

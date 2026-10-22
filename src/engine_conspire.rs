@@ -140,6 +140,12 @@ impl Game {
             })
     }
     pub(super) fn defer_conspire_payment(&mut self, a: &mut Announcement) -> bool {
+        if !self
+            .conspire_view()
+            .is_some_and(|c| c.stack_id == a.item.id)
+        {
+            return false;
+        }
         if !self.conspire_has_payment() {
             return false;
         }
