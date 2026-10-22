@@ -18,18 +18,21 @@ pub struct ResolutionPaymentView {
     pub exile: bool,
 }
 impl Game {
+    pub(super) fn stack_item_is_counterable(&self, victim: &SpellView) -> bool {
+        victim.kind != StackKind::Spell
+            || (!victim.source_card.cannot_be_countered()
+                && !self.controlled_spells_uncounterable(victim.controller, victim.source_card))
+    }
     /// Explicit counters share one check. Abilities are independent of their source spell.
     pub(super) fn counter_stack_item(&mut self, id: u64, exile: bool) -> bool {
         let Some(index) = self.state.stack.iter().position(|s| s.id == id) else {
             return false;
         };
         let victim = &self.state.stack[index];
+        if !self.stack_item_is_counterable(victim) {
+            return false;
+        }
         if victim.kind == StackKind::Spell {
-            if victim.source_card.cannot_be_countered()
-                || self.controlled_spells_uncounterable(victim.controller, victim.source_card)
-            {
-                return false;
-            }
             self.move_object(
                 victim.card,
                 if exile { Zone::Exile } else { Zone::Graveyard },

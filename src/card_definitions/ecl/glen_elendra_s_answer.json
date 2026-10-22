@@ -3,10 +3,35 @@
   "catalogue_id": 1775,
   "oracle_id": "11ed8209-2184-4416-a8f0-72de00599574",
   "facts_sha256": "8292e5254da3d8ee0c800a0fd60a3637c18900bdb8d5fa159868d941e5becf44",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1c0fcc7d0e86552fd8e3e728be8ec799bab06032d00b44e080e908f6d70e6eee"
   },
-  "physical_metadata_sha256": "f1555b8d5f3b8fc9103222fc8bac831d6d949ffeda74bee57c21066cabee9dcc"
+  "physical_metadata_sha256": "f1555b8d5f3b8fc9103222fc8bac831d6d949ffeda74bee57c21066cabee9dcc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GlenElendrasAnswer.java",
+  "java_sha256": "f98d833b5290c866484fca05fffc65572ec0cee388022d7164a7abe0981b7a77",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CantBeCounteredSourceAbility.java",
+      "sha256": "ab592d3d97f245e6b3ca9971e1c559a7063c8717a4a5963b64564a13abd768de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CantBeCounteredSourceEffect.java",
+      "sha256": "f682272dc5b296650d7dfffd0792fcf6508ee366cc67bf1f583d31017a94e9a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/FaerieBlueBlackToken.java",
+      "sha256": "0e23f453aedcbd99fb52a924610703ba7116a4f21978d7381d389a556c854ad5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ]
 }

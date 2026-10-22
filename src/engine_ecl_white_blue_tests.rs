@@ -6057,3 +6057,237 @@ fn wanderwine_farewell_waits_for_linked_return_entry_choice_before_checking_merf
         assert_eq!(farewell_tokens(&g, p).len(), 1);
     }
 }
+
+fn answer_tokens(g: &Game, p: Player) -> Vec<CardId> {
+    let token = Card::from_name("@token/91416e259800bff2445a15f5").unwrap();
+    g.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter_map(|(id, object)| {
+            (object.zone == Zone::Battlefield && object.controller == p && object.card == token)
+                .then_some(id as CardId)
+        })
+        .collect()
+}
+fn take_test_priority(g: &mut Game, p: Player) {
+    assert_eq!(g.state.pending, Pending::Priority);
+    if g.actor() != Some(p) {
+        checked(g, Action::Pass);
+    }
+    assert_eq!(g.actor(), Some(p));
+}
+
+#[test]
+fn glen_elendras_answer_counters_opposing_spell_trigger_and_source_independent_activation_but_keeps_own_spell()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+        let tome = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Mazemind Tome").unwrap(),
+            Zone::Battlefield,
+        );
+        let own = spell(&mut g, p, "Shock", &[Target::Player(p.other())]);
+        take_test_priority(&mut g, p.other());
+        let glamer = spell(&mut g, p.other(), "Glamer Gifter", &[]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(bear),
+            },
+        );
+        finish_cast_choices(&mut g);
+        take_test_priority(&mut g, p.other());
+        let hostile = spell(&mut g, p.other(), "Shock", &[Target::Player(p)]);
+        activate(&mut g, tome, 0, None);
+        finish_cast_choices(&mut g);
+        g.move_object(tome, Zone::Graveyard);
+        let count = g
+            .state
+            .stack
+            .iter()
+            .filter(|item| item.controller == p.other())
+            .count();
+        assert_eq!(count, 3);
+        take_test_priority(&mut g, p);
+        spell(&mut g, p, "Glen Elendra's Answer", &[]);
+        settle(&mut g);
+        assert_eq!(answer_tokens(&g, p).len(), 3);
+        assert_eq!(g.object_view(hostile).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(own).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(glamer).zone, Zone::Battlefield);
+        assert_eq!(
+            g.stats(bear),
+            Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+        assert_eq!(g.state.players[p.index()].life, 20);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        for token in answer_tokens(&g, p) {
+            assert_eq!(
+                g.stats(token),
+                Stats {
+                    power: 1,
+                    toughness: 1
+                }
+            );
+            assert_eq!(g.object_view(token).colors, 6);
+            assert!(g.has_subtype(token, "Faerie"));
+            assert!(g.keywords(token).contains(Keywords::FLYING));
+        }
+    }
+}
+
+#[test]
+fn glen_elendras_answer_counters_all_permanent_spells_in_one_graveyard_event() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p.other());
+        // Illusion Spinners has conditional flash while you control a Faerie.
+        spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("@token/91416e259800bff2445a15f5").unwrap(),
+            Zone::Battlefield,
+        );
+        let moon = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Moonshadow").unwrap(),
+            Zone::Battlefield,
+        );
+        g.set_counters(moon, Counters::of(CounterKind::MinusOne, 6));
+        let a = spell(&mut g, p.other(), "Glamer Gifter", &[]);
+        let b = spell(&mut g, p.other(), "Illusion Spinners", &[]);
+        take_test_priority(&mut g, p);
+        spell(&mut g, p, "Glen Elendra's Answer", &[]);
+        settle(&mut g);
+        assert_eq!(g.object_view(a).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(b).zone, Zone::Graveyard);
+        assert_eq!(g.counter_count(moon, CounterKind::MinusOne), 5);
+        assert_eq!(answer_tokens(&g, p).len(), 2);
+    }
+}
+
+#[test]
+fn glen_elendras_answer_cannot_be_countered_and_does_not_count_uncounterable_victims_or_already_resolved_counters()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p.other());
+        let sphinx = spell(&mut g, p.other(), "Sphinx of the Final Word", &[]);
+        let shock = spell(&mut g, p.other(), "Shock", &[Target::Player(p)]);
+        take_test_priority(&mut g, p);
+        let answer = spell(&mut g, p, "Glen Elendra's Answer", &[]);
+        take_test_priority(&mut g, p.other());
+        let negate = spell(&mut g, p.other(), "Negate", &[Target::Spell(answer)]);
+        settle(&mut g);
+        assert_eq!(g.object_view(sphinx).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(shock).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(negate).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(answer).zone, Zone::Graveyard);
+        assert_eq!(answer_tokens(&g, p).len(), 1);
+        assert_eq!(g.state.players[p.index()].life, 20);
+    }
+}
+
+#[test]
+fn glen_elendras_answer_shared_uncounterable_spell_prohibition_does_not_protect_abilities() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p.other());
+        spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Sphinx of the Final Word").unwrap(),
+            Zone::Battlefield,
+        );
+        let tome = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Mazemind Tome").unwrap(),
+            Zone::Battlefield,
+        );
+        let shock = spell(&mut g, p.other(), "Shock", &[Target::Player(p)]);
+        activate(&mut g, tome, 0, None);
+        finish_cast_choices(&mut g);
+        take_test_priority(&mut g, p);
+        spell(&mut g, p, "Glen Elendra's Answer", &[]);
+        settle(&mut g);
+        assert_eq!(g.object_view(shock).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].life, 18);
+        assert_eq!(answer_tokens(&g, p).len(), 1);
+    }
+}
+
+#[test]
+fn glen_elendras_answer_counts_countered_spell_copies_that_cease_and_redirected_counter_destinations()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p.other());
+        let teach = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Teach by Example").unwrap(),
+            Zone::Hand,
+        );
+        checked(&mut g, Action::AnnounceCast { card: teach });
+        let route = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::ChooseSpellCost { .. }))
+            .unwrap();
+        checked(&mut g, route);
+        finish_cast_choices(&mut g);
+        settle(&mut g);
+        let original = spell(&mut g, p.other(), "Shock", &[Target::Player(p)]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::FinishStackTargets);
+        let copy = g
+            .state
+            .stack
+            .iter()
+            .find(|item| item.is_copy)
+            .unwrap()
+            .clone();
+        take_test_priority(&mut g, p);
+        spell(&mut g, p, "Glen Elendra's Answer", &[]);
+        settle(&mut g);
+        assert_eq!(g.object_view(original).zone, Zone::Graveyard);
+        assert!(!g.state.stack.iter().any(|item| item.id == copy.id));
+        assert_ne!(g.object_ref(copy.card), copy.object);
+        assert_eq!(answer_tokens(&g, p).len(), 2);
+        assert_eq!(g.state.players[p.index()].life, 20);
+
+        let mut g = setup(p.other());
+        let progenitus = spell(&mut g, p.other(), "Progenitus", &[]);
+        take_test_priority(&mut g, p);
+        spell(&mut g, p, "Glen Elendra's Answer", &[]);
+        settle(&mut g);
+        assert_eq!(g.object_view(progenitus).zone, Zone::Library);
+        assert!(
+            g.state.players[p.other().index()]
+                .library
+                .contains(&progenitus)
+        );
+        assert_eq!(answer_tokens(&g, p).len(), 1);
+    }
+}
+
+#[test]
+fn glen_elendras_answer_with_no_opposing_stack_objects_has_no_token_and_exact_two_generic_two_blue_cost()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 2];
+        spell(&mut g, p, "Glen Elendra's Answer", &[]);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        settle(&mut g);
+        assert!(answer_tokens(&g, p).is_empty());
+    }
+}

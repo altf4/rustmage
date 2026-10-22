@@ -1830,6 +1830,37 @@ impl Game {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
+                Instruction::CounterOpponentsCounted => {
+                    // Freeze eligibility together. All countered spells move in one
+                    // batch, so one-or-more graveyard-entry observers see one event.
+                    let victims: Vec<_> = self
+                        .state
+                        .stack
+                        .iter()
+                        .filter(|victim| {
+                            victim.controller != item.controller
+                                && self.stack_item_is_counterable(victim)
+                        })
+                        .map(|victim| (victim.id, victim.card, victim.kind == StackKind::Spell))
+                        .collect();
+                    let spells: Vec<_> = victims
+                        .iter()
+                        .filter_map(|&(_, card, spell)| spell.then_some(card))
+                        .collect();
+                    self.state.stack.retain(|victim| {
+                        !victims
+                            .iter()
+                            .any(|&(id, _, spell)| !spell && id == victim.id)
+                    });
+                    let events = self.move_objects_raw(&spells, Zone::Graveyard);
+                    // Spell copies count as countered even though they cease; a
+                    // redirected graveyard destination is still a successful counter.
+                    self.state.resolving.as_mut().unwrap().moved_count = Some(
+                        u64::try_from(victims.len())
+                            .capacity("countered stack object count exhausted"),
+                    );
+                    self.finish_zone_events(&events, &[]);
+                }
                 Instruction::CounterAndDrawForController { amount } => {
                     for bound in &item.targets {
                         if let Some((id, controller)) =

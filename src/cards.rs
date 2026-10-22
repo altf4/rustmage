@@ -925,6 +925,7 @@ pub(crate) enum Instruction {
     },
     CounterThenDrawIfDiscounted,
     /// Attempt to counter a spell, then its captured controller draws regardless of success.
+    CounterOpponentsCounted,
     CounterAndDrawForController {
         amount: u16,
     },
