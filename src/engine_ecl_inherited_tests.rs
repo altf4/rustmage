@@ -320,3 +320,125 @@ fn ecl_inherited_trigger_and_activation_bodies_have_paid_entry_evidence_both_pla
         }
     }
 }
+#[test]
+fn ecl_inherited_changeling_and_vivid_bodies_pay_real_hybrid_options_both_seats() {
+    for p in [Player::P0, Player::P1] {
+        for (name, power, toughness, extra) in [
+            ("Chitinous Graspling", 3, 4, Keywords::REACH),
+            ("Chomping Changeling", 1, 2, Keywords::NONE),
+            ("Changeling Wayfinder", 1, 2, Keywords::NONE),
+            ("Glister Bairn", 1, 4, Keywords::NONE),
+        ] {
+            for color in [1, 4] {
+                let mut g = setup(p);
+                let id = named(&mut g, p, name, Zone::Hand);
+                let mut payment = [0; 6];
+                payment[5] = match name {
+                    "Chitinous Graspling" | "Changeling Wayfinder" => 3,
+                    _ => 2,
+                };
+                if name == "Chitinous Graspling" {
+                    payment[color] = 1;
+                } else if name == "Glister Bairn" {
+                    payment[color] = 3;
+                } else if name == "Chomping Changeling" {
+                    payment[4] = 1;
+                }
+                g.state.players[p.index()].mana = payment;
+                if name == "Chitinous Graspling" || name == "Glister Bairn" {
+                    checked(&mut g, Action::AnnounceCast { card: id });
+                    let cost = if color == 4 {
+                        0
+                    } else if name == "Glister Bairn" {
+                        3
+                    } else {
+                        1
+                    };
+                    checked(&mut g, Action::ChooseSpellCost { cost });
+                    let pay = g
+                        .legal_actions()
+                        .into_iter()
+                        .find(|a| matches!(a, Action::PayCosts { .. }))
+                        .unwrap();
+                    checked(&mut g, pay);
+                } else {
+                    super::ability_timeline_tests::cast(&mut g, id, None, &[]);
+                }
+                settle(&mut g);
+                assert_eq!(g.stats(id), Stats { power, toughness });
+                assert!(g.keywords(id).contains(extra));
+                if name != "Glister Bairn" {
+                    assert!(g.has_subtype(id, "Goblin") && g.has_subtype(id, "Elk"));
+                }
+            }
+        }
+    }
+}
+#[test]
+fn ecl_inherited_shore_lurker_paid_body_and_private_surveillance_both_destinations() {
+    for p in [Player::P0, Player::P1] {
+        for destination in [LibraryDestination::Top, LibraryDestination::Graveyard] {
+            let mut g = setup(p);
+            let top = named(&mut g, p, "Forest", Zone::Library);
+            g.state.players[p.index()].library = vec![top].into();
+            let id = named(&mut g, p, "Shore Lurker", Zone::Hand);
+            g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 3];
+            super::ability_timeline_tests::cast(&mut g, id, None, &[]);
+            for _ in 0..12 {
+                if matches!(g.state.pending, Pending::EffectLibrary { .. }) {
+                    break;
+                }
+                let a = if g.state.pending == Pending::Priority {
+                    Action::Pass
+                } else {
+                    g.legal_actions()
+                        .into_iter()
+                        .find(|a| matches!(a, Action::PutTrigger { .. }))
+                        .unwrap()
+                };
+                checked(&mut g, a);
+            }
+            assert_eq!(
+                g.stats(id),
+                Stats {
+                    power: 3,
+                    toughness: 3
+                }
+            );
+            assert!(g.keywords(id).contains(Keywords::FLYING));
+            let view = g.observe(p).library_choice.unwrap();
+            assert_eq!(view.remaining.len(), 1);
+            assert!(view.surveil);
+            assert!(g.observe(p.other()).library_choice.is_none());
+            assert!(g.observe(p.other()).actions.is_empty());
+            let before = g.snapshot();
+            assert_eq!(
+                g.apply(
+                    p,
+                    Action::ArrangeLibrary {
+                        card: top,
+                        destination: LibraryDestination::Bottom
+                    }
+                ),
+                Err(Error::IllegalAction)
+            );
+            assert_eq!(g.snapshot(), before);
+            checked(
+                &mut g,
+                Action::ArrangeLibrary {
+                    card: top,
+                    destination,
+                },
+            );
+            settle(&mut g);
+            assert_eq!(
+                g.state.objects[top as usize].zone,
+                if destination == LibraryDestination::Top {
+                    Zone::Library
+                } else {
+                    Zone::Graveyard
+                }
+            );
+        }
+    }
+}

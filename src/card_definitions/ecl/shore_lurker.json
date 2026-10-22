@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c50927b15d004a9f000ee3e89157b3242b35620a2c64fe65a39f1cbeac8822cc"
   },
-  "physical_metadata_sha256": "60198b74a5efca5bed154e10bb7b15b96dbf31fdd3f701533ad738579c7e5bca"
+  "physical_metadata_sha256": "60198b74a5efca5bed154e10bb7b15b96dbf31fdd3f701533ad738579c7e5bca",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ShoreLurker.java",
+  "java_sha256": "338f79c0926e4d05b524c06986d3a534656fcb335e2a6d9849bc8fcf886913d1",
+  "rules_tests": "src/engine_ecl_inherited_tests.rs",
+  "additional_rules_tests": [
+    "src/engine_library_tests.rs"
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    }
+  ],
+  "inherited_audit": "Complete Oracle and XMage bodies/relevant behavior helpers read. Typed behavior preserved; actual paid bodies and private Shore Lurker choices complement existing complete changeling, optional search/removal and vivid interaction suites."
 }
