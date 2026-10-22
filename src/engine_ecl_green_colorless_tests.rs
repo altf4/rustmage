@@ -1885,7 +1885,7 @@ fn ecl_green_prismatic_resolution_colors_private_basic_search_shuffle_and_extra_
             assert!(g.observe(p).search_choice.is_some());
             assert!(g.observe(p.other()).search_choice.is_none());
             reject(&mut g, Action::ChooseSearch { card: wrong });
-            let before_rng = g.state.rng.clone();
+            let before_rng = g.state.rng;
             let mut found = Vec::new();
             if mode < 2 {
                 for _ in 0..expected {
@@ -1965,7 +1965,7 @@ fn ecl_green_aurora_public_reveal_stops_after_distinct_colors_and_nested_entry_c
         reject(&mut g, Action::SelectLibrary { card: unseen });
         checked(&mut g, Action::SelectLibrary { card: realms });
         checked(&mut g, Action::SelectLibrary { card: stone });
-        let before_rng = g.state.rng.clone();
+        let before_rng = g.state.rng;
         checked(&mut g, Action::FinishLibrarySelection);
         choose_type(&mut g, "Elf");
         choose_type(&mut g, "Elf");
@@ -2003,7 +2003,7 @@ fn ecl_green_aurora_zero_colors_does_not_reveal_and_short_library_allows_declini
                 g.move_object(source, Zone::Graveyard);
             }
             let before = g.state.players[p.index()].library.clone();
-            let before_rng = g.state.rng.clone();
+            let before_rng = g.state.rng;
             checked(&mut g, Action::Pass);
             checked(&mut g, Action::Pass);
             if zero {
