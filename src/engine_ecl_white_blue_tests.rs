@@ -3255,3 +3255,150 @@ fn flitterwing_nuisance_countered_activation_registers_nothing_and_repeated_batc
         assert_eq!(g.counter_count(source, CounterKind::MinusOne), 0);
     }
 }
+
+fn rimefire(g: &mut Game, p: Player, name: &str) -> CardId {
+    let source = spawn(
+        g,
+        p,
+        Card::from_name("Rimefire Torque").unwrap(),
+        Zone::Hand,
+    );
+    checked(g, Action::AnnounceCast { card: source });
+    finish_cast_choices(g);
+    checked(g, Action::Pass);
+    checked(g, Action::Pass);
+    assert!(matches!(g.state.pending, Pending::EntryValue { .. }));
+    let kind = crate::cards::CreatureType::from_name(name).unwrap();
+    checked(
+        g,
+        Action::ChooseEntryValue {
+            value: crate::EntryChoiceValue::CreatureType(kind),
+        },
+    );
+    settle(g);
+    source
+}
+
+#[test]
+fn rimefire_torque_paid_entry_choice_counts_each_owned_matching_permanent_including_kindred_and_changeling()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = rimefire(&mut g, p, "Elf");
+        assert_eq!(g.counter_count(source, CounterKind::Charge), 0);
+        for name in ["Llanowar Elves", "Morcant's Eyes", "Prideful Feastling"] {
+            let id = spawn(&mut g, p, Card::from_name(name).unwrap(), Zone::Hand);
+            cast(&mut g, id, None);
+            settle(&mut g);
+        }
+        assert_eq!(g.counter_count(source, CounterKind::Charge), 3);
+        let other = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Llanowar Elves").unwrap(),
+            Zone::Hand,
+        );
+        g.move_object(other, Zone::Battlefield);
+        settle(&mut g);
+        let bear = spawn(&mut g, p, Card::from_name("Bear Cub").unwrap(), Zone::Hand);
+        cast(&mut g, bear, None);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::Charge), 3);
+        assert_eq!(
+            g.observe(p)
+                .objects
+                .iter()
+                .find(|object| object.reference.card == source)
+                .unwrap()
+                .counters
+                .get(CounterKind::Charge),
+            3
+        );
+    }
+}
+
+#[test]
+fn rimefire_torque_charge_cost_taps_exact_source_and_delayed_copy_survives_departure_and_retargets_once()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = rimefire(&mut g, p, "Elf");
+        g.set_counters(source, Counters::of(CounterKind::Page, 3));
+        reject_atomic(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::of(CounterKind::Page, 3),
+            },
+        );
+        g.set_counters(source, Counters::of(CounterKind::Charge, 3));
+        activate(&mut g, source, 0, None);
+        assert!(g.object_view(source).tapped);
+        assert_eq!(g.counter_count(source, CounterKind::Charge), 0);
+        assert!(g.observe(p).delayed_spell_copies.is_empty());
+        settle(&mut g);
+        assert_eq!(g.observe(p).delayed_spell_copies.len(), 1);
+        g.move_object(source, Zone::Graveyard);
+        let bear = spawn(&mut g, p, Card::from_name("Bear Cub").unwrap(), Zone::Hand);
+        cast(&mut g, bear, None);
+        settle(&mut g);
+        assert_eq!(g.observe(p).delayed_spell_copies.len(), 1);
+        let before = g.state.players[p.index()].spells_cast_this_turn;
+        spell(&mut g, p, "Shock", &[Target::Player(p.other())]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        assert!(matches!(g.state.pending, Pending::Retarget { .. }));
+        checked(
+            &mut g,
+            Action::SetStackTarget {
+                index: 0,
+                target: Target::Player(p),
+            },
+        );
+        checked(&mut g, Action::FinishStackTargets);
+        let mut branch = {
+            let parent = g.clone();
+            parent.clone()
+        };
+        settle(&mut branch);
+        assert_eq!(branch.state.players[p.index()].life, 18);
+        assert_eq!(branch.state.players[p.other().index()].life, 18);
+        assert_eq!(
+            branch.state.players[p.index()].spells_cast_this_turn,
+            before + 1
+        );
+        assert!(branch.observe(p).delayed_spell_copies.is_empty());
+        spell(&mut branch, p, "Shock", &[Target::Player(p.other())]);
+        settle(&mut branch);
+        assert_eq!(branch.state.players[p.other().index()].life, 16);
+    }
+}
+
+#[test]
+fn rimefire_torque_multiple_delayed_activations_stack_and_unused_observers_expire() {
+    let mut g = setup(Player::P0);
+    let source = rimefire(&mut g, Player::P0, "Time Lord");
+    for _ in 0..2 {
+        g.set_counters(source, Counters::of(CounterKind::Charge, 3));
+        g.state.objects[source as usize].tapped = false;
+        activate(&mut g, source, 0, None);
+        settle(&mut g);
+    }
+    assert_eq!(g.observe(Player::P0).delayed_spell_copies.len(), 2);
+    for _ in 0..8 {
+        spawn(&mut g, Player::P0, Card::Island, Zone::Library);
+    }
+    let before = hand_count(&g, Player::P0);
+    spell(&mut g, Player::P0, "Divination", &[]);
+    settle(&mut g);
+    assert_eq!(hand_count(&g, Player::P0), before + 6);
+    assert!(g.observe(Player::P0).delayed_spell_copies.is_empty());
+    g.set_counters(source, Counters::of(CounterKind::Charge, 3));
+    g.state.objects[source as usize].tapped = false;
+    activate(&mut g, source, 0, None);
+    settle(&mut g);
+    assert_eq!(g.observe(Player::P0).delayed_spell_copies.len(), 1);
+    g.finish_cleanup();
+    assert!(g.observe(Player::P0).delayed_spell_copies.is_empty());
+}

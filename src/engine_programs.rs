@@ -1692,6 +1692,9 @@ impl Game {
                 }
                 Instruction::ReturnLinkedExileToHand => self.return_linked_exile(item.object),
                 Instruction::CopyNextInstantSorcery => self.remember_next_spell_copy(&item),
+                Instruction::CopyNextInstantSorceryAbility(ability) => {
+                    self.remember_next_spell_copy_ability(&item, ability)
+                }
                 Instruction::CopyCastSpell { .. } => {
                     if self.copy_captured_spell(&item) {
                         return;

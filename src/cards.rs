@@ -799,6 +799,7 @@ pub(crate) enum Instruction {
     ReturnDeathCard(ReturnKind),
     ResolveDelayedReturn,
     CopyNextInstantSorcery,
+    CopyNextInstantSorceryAbility(u16),
     CopyCastSpell {
         prior_spells: bool,
     },
@@ -1741,10 +1742,11 @@ pub enum CounterKind {
     Fellowship,
     Wish,
     Stash,
+    Charge,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 14] = [
+    pub const ALL: [Self; 15] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -1759,6 +1761,7 @@ impl CounterKind {
         Self::Fellowship,
         Self::Wish,
         Self::Stash,
+        Self::Charge,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -1772,6 +1775,7 @@ impl CounterKind {
                 | Self::Fellowship
                 | Self::Wish
                 | Self::Stash
+                | Self::Charge
         )
     }
 }
