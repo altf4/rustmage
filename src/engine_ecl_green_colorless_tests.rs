@@ -969,3 +969,96 @@ fn ecl_green_sapling_affinity_landfall_and_exile_cost_freeze_filtered_indestruct
         assert!(!g.keywords(core).contains(Keywords::INDESTRUCTIBLE));
     }
 }
+#[test]
+fn ecl_green_speaker_optional_discard_tutor_reveal_and_source_departure() {
+    for p in [Player::P0, Player::P1] {
+        for (accept, leaves) in [(false, false), (true, false), (true, true)] {
+            let mut g = setup(p);
+            let discard = named(&mut g, p, "Forest", Zone::Hand);
+            let wanted = named(&mut g, p, "Bear Cub", Zone::Library);
+            let wrong = named(&mut g, p, "Negate", Zone::Library);
+            let speaker = named(&mut g, p, "Formidable Speaker", Zone::Hand);
+            cast(&mut g, speaker, None, &[]);
+            for _ in 0..40 {
+                g.prepare_triggers();
+                if g.legal_actions().contains(&Action::DeclineEffectPayment) {
+                    break;
+                }
+                let a = if g.state.pending == Pending::Priority {
+                    Action::Pass
+                } else {
+                    g.legal_actions()
+                        .into_iter()
+                        .find(|a| matches!(a, Action::PutTrigger { .. }))
+                        .unwrap()
+                };
+                checked(&mut g, a);
+            }
+            assert!(g.observe(p.other()).effect_choice.is_none());
+            if leaves {
+                g.move_object(speaker, Zone::Exile);
+            }
+            if accept {
+                checked(&mut g, Action::Discard { card: discard });
+                assert!(g.observe(p).search_choice.is_some());
+                assert!(g.observe(p.other()).search_choice.is_none());
+                reject(&mut g, Action::ChooseSearch { card: wrong });
+                checked(&mut g, Action::ChooseSearch { card: wanted });
+                checked(&mut g, Action::FinishSearch);
+                settle(&mut g);
+                assert_eq!(g.object_view(discard).zone, Zone::Graveyard);
+                assert_eq!(g.object_view(wanted).zone, Zone::Hand);
+                assert!(
+                    g.observe(p.other())
+                        .known_hand
+                        .iter()
+                        .any(|object| object.card == wanted)
+                );
+            } else {
+                checked(&mut g, Action::DeclineEffectPayment);
+                settle(&mut g);
+                assert_eq!(g.object_view(discard).zone, Zone::Hand);
+                assert_eq!(g.object_view(wanted).zone, Zone::Library);
+            }
+        }
+    }
+}
+#[test]
+fn ecl_green_speaker_paid_tap_untaps_other_permanent_including_enemy_and_rejects_self() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let speaker = named(&mut g, p, "Formidable Speaker", Zone::Battlefield);
+        let land = named(&mut g, p.other(), "Forest", Zone::Battlefield);
+        g.state.objects[land as usize].tapped = true;
+        let mana = g.state.players[p.index()].mana.iter().sum::<u32>();
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: speaker,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(speaker),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(land),
+            },
+        );
+        pay(&mut g);
+        assert!(g.object_view(speaker).tapped);
+        assert_eq!(
+            g.state.players[p.index()].mana.iter().sum::<u32>(),
+            mana - 1
+        );
+        g.move_object(speaker, Zone::Exile);
+        settle(&mut g);
+        assert!(!g.object_view(land).tapped);
+    }
+}
