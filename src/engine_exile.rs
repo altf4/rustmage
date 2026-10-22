@@ -119,7 +119,7 @@ impl Game {
                 value = value
                     .checked_add(u128::from(event.before.copy_recipe.as_ref().map_or_else(
                         || event.before.card.fixed_mana_value(),
-                        CopyRecipe::mana_value,
+                        |recipe| recipe.mana_value(),
                     )))
                     .capacity("exiled mana value exhausted");
                 self.grant_exile_free_cast_permission(player, event.after);

@@ -8136,3 +8136,7 @@ mod ecl_copy_entry_tests;
 #[cfg(test)]
 #[path = "engine_ecl_goliath_tests.rs"]
 mod ecl_goliath_tests;
+
+#[cfg(test)]
+#[path = "engine_ecl_inherited_br_tests.rs"]
+mod ecl_inherited_br_tests;

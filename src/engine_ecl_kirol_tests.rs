@@ -295,6 +295,7 @@ fn ecl_kirol_copies_intrinsic_and_delayed_sacrifice_trigger_packets() {
                 let recipe = CopyRecipe {
                     definition: Card::from_name("Bear Cub").unwrap(),
                     exceptions: CopyExceptions::SACRIFICE_ONLY,
+                    ..CopyRecipe::new(Card::from_name("Bear Cub").unwrap())
                 };
                 g.stage_copy_creation(p, recipe, 1);
                 settle(&mut g);

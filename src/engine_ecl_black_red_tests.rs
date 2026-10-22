@@ -5898,6 +5898,8 @@ fn dawnhand_copy_epochs_keep_queued_exile_packets_separate_from_new_linked_abili
                 object: reference,
                 recipe: CopyRecipe::new(definition),
                 ability_origin: 42,
+                native: Some(CopyRecipe::new(definition)),
+                loyalty_used_turn: None,
             }]
             .into(),
         );
