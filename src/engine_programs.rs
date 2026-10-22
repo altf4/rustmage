@@ -859,6 +859,9 @@ impl Game {
         targets: &[BoundTarget],
     ) -> bool {
         match filter {
+            CastFilter::SourceChosenCreatureType => {
+                matches!(source.entry_choice, Some(EntryChoiceValue::CreatureType(kind)) if card.has_subtype(kind.name()))
+            }
             CastFilter::SourceChosenColor => {
                 matches!(source.entry_choice, Some(EntryChoiceValue::Color(color)) if card.colors() & (1 << color.index()) != 0)
             }

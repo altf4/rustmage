@@ -46,6 +46,7 @@ impl Card {
                             | StaticAbilityFragment::CounterKeyword(..)
                             | StaticAbilityFragment::CounterKeywordOwnTurn(..)
                             | StaticAbilityFragment::DeathBaronLord
+                            | StaticAbilityFragment::ChosenCreatureKeywords(..)
                             | StaticAbilityFragment::LiveKeywords(..)
                     )
                 })

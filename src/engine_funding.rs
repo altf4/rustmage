@@ -342,7 +342,7 @@ impl<'g> FundingState<'g> {
                             || object.card.attachment_bonus().is_some()
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::ChosenCreatureKeywords(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -480,6 +480,10 @@ impl<'g> FundingState<'g> {
                 for group in source.object.card.static_ability_groups() {
                     for fragment in group.fragments {
                         match *fragment {
+                            crate::cards::StaticAbilityFragment::ChosenCreatureKeywords(grant)
+                                if ability_world::CharacteristicWorld::chosen_creature_type_applies(self, ability_world::CharacteristicWorld::reference(self, source.id), target.id) => {
+                                    keywords = keywords.union(grant)
+                                }
                             crate::cards::StaticAbilityFragment::DeathBaronLord
                                 if ability_world::CharacteristicWorld::death_baron_applies(
                                     self,

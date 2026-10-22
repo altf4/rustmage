@@ -1062,3 +1062,207 @@ fn ecl_green_speaker_paid_tap_untaps_other_permanent_including_enemy_and_rejects
         assert!(!g.object_view(land).tapped);
     }
 }
+fn choose_type(g: &mut Game, name: &str) {
+    let kind = crate::cards::CreatureType::from_name(name).unwrap();
+    checked(
+        g,
+        Action::ChooseEntryValue {
+            value: EntryChoiceValue::CreatureType(kind),
+        },
+    );
+}
+fn enter_chronicle(g: &mut Game, p: Player, kind: &str) -> CardId {
+    let source = named(g, p, "Chronicle of Victory", Zone::Hand);
+    cast(g, source, None, &[]);
+    checked(g, Action::Pass);
+    checked(g, Action::Pass);
+    choose_type(g, kind);
+    settle(g);
+    source
+}
+fn enter_realms(g: &mut Game, p: Player) -> CardId {
+    let land = named(g, p, "Eclipsed Realms", Zone::Hand);
+    checked(g, Action::PlayLand { card: land });
+    let choices: Vec<_> = g
+        .legal_actions()
+        .into_iter()
+        .filter(|a| matches!(a, Action::ChooseEntryValue { .. }))
+        .collect();
+    assert_eq!(choices.len(), 8);
+    reject(
+        g,
+        Action::ChooseEntryValue {
+            value: EntryChoiceValue::CreatureType(
+                crate::cards::CreatureType::from_name("Human").unwrap(),
+            ),
+        },
+    );
+    choose_type(g, "Elf");
+    land
+}
+fn restricted_realms_mana(g: &mut Game, land: CardId, color: usize) {
+    let mut production = [0; 6];
+    production[color] = 1;
+    checked(
+        g,
+        Action::ActivateMana {
+            card: land,
+            ability: 1,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+            production,
+        },
+    );
+}
+#[test]
+fn ecl_green_realms_constrained_choice_and_mana_restriction_survive_source_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let land = enter_realms(&mut g, p);
+        g.state.players[p.index()].mana = [0; 6];
+        restricted_realms_mana(&mut g, land, 4);
+        let wrong = named(&mut g, p, "Giant Growth", Zone::Hand);
+        named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        reject(&mut g, Action::AnnounceCast { card: wrong });
+        g.move_object(land, Zone::Exile);
+        let elf = named(&mut g, p, "Llanowar Elves", Zone::Hand);
+        cast(&mut g, elf, None, &[]);
+        settle(&mut g);
+        assert_eq!(g.object_view(elf).zone, Zone::Battlefield);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+#[test]
+fn ecl_green_realms_mana_pays_kindred_noncreature_spells_and_their_activations() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let land = enter_realms(&mut g, p);
+        g.state.players[p.index()].mana = [0; 6];
+        restricted_realms_mana(&mut g, land, 1);
+        g.state.players[p.index()].mana[5] = 2;
+        let core = named(&mut g, p, "Firdoch Core", Zone::Hand);
+        cast(&mut g, core, None, &[]);
+        settle(&mut g);
+        assert!(!g.is_creature(core));
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        g.state.objects[land as usize].tapped = false;
+        restricted_realms_mana(&mut g, land, 3);
+        g.state.players[p.index()].mana[5] = 3;
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: core,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        assert!(g.is_creature(core));
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        g.state.objects[land as usize].tapped = false;
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: land,
+                ability: 0,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 0, 0, 1],
+            },
+        );
+        assert_eq!(g.state.players[p.index()].mana[5], 1);
+    }
+}
+#[test]
+fn ecl_green_chronicle_chosen_type_lord_keywords_control_and_source_removal() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let own = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let enemy = named(&mut g, p.other(), "Llanowar Elves", Zone::Battlefield);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let source = enter_chronicle(&mut g, p, "Elf");
+        assert_eq!(
+            g.stats(own),
+            Stats {
+                power: 3,
+                toughness: 3
+            }
+        );
+        assert!(
+            g.keywords(own)
+                .contains(Keywords::FIRST_STRIKE.union(Keywords::TRAMPLE))
+        );
+        assert_eq!(g.stats(enemy).power, 1);
+        assert_eq!(g.stats(bear).power, 2);
+        assert!(!g.keywords(enemy).contains(Keywords::TRAMPLE));
+        let core = named(&mut g, p, "Firdoch Core", Zone::Battlefield);
+        assert!(!g.is_creature(core));
+        assert!(!g.keywords(core).contains(Keywords::FIRST_STRIKE));
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: core,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(core),
+            Stats {
+                power: 6,
+                toughness: 6
+            }
+        );
+        assert!(g.keywords(core).contains(Keywords::FIRST_STRIKE));
+        g.state.objects[source as usize].controller = p.other();
+        assert_eq!(g.stats(own).power, 1);
+        assert_eq!(g.stats(enemy).power, 3);
+        assert!(!g.keywords(own).contains(Keywords::TRAMPLE));
+        assert!(g.keywords(enemy).contains(Keywords::TRAMPLE));
+        g.move_object(source, Zone::Exile);
+        assert_eq!(g.stats(enemy).power, 1);
+        assert!(!g.keywords(enemy).contains(Keywords::TRAMPLE));
+    }
+}
+#[test]
+fn ecl_green_chronicle_cast_trigger_counts_kindred_spells_and_survives_source_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = enter_chronicle(&mut g, p, "Elf");
+        let before = g.state.players[p.index()].cards_drawn_this_turn;
+        let wrong = named(&mut g, p, "Bear Cub", Zone::Hand);
+        cast(&mut g, wrong, None, &[]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, before);
+        let elf = named(&mut g, p, "Llanowar Elves", Zone::Hand);
+        cast(&mut g, elf, None, &[]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, before + 1);
+        let core = named(&mut g, p, "Firdoch Core", Zone::Hand);
+        cast(&mut g, core, None, &[]);
+        g.move_object(source, Zone::Exile);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, before + 2);
+    }
+}
+#[test]
+fn ecl_green_chronicle_source_ability_removal_stops_lord_and_cast_trigger() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = enter_chronicle(&mut g, p, "Elf");
+        let elf = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let aura = named(&mut g, p, "Stop Cold", Zone::Hand);
+        cast(&mut g, aura, None, &[Target::Card(source)]);
+        settle(&mut g);
+        assert_eq!(g.stats(elf).power, 1);
+        assert!(!g.keywords(elf).contains(Keywords::TRAMPLE));
+        let before = g.state.players[p.index()].cards_drawn_this_turn;
+        let next = named(&mut g, p, "Llanowar Elves", Zone::Hand);
+        cast(&mut g, next, None, &[]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, before);
+    }
+}

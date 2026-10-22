@@ -48,6 +48,7 @@ pub(crate) enum StaticAbilityFragment {
     ChosenCreatureType,
     OtherSubtypeEntryCounters(&'static str),
     ChosenModifier(ChosenModifier),
+    ChosenCreatureKeywords(Keywords),
     PlayerHexproof,
     CantLoseGameAndOpponentsCantWin,
     QualifiedHexproof(SourceCharacteristicFilter),

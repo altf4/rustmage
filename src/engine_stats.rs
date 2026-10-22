@@ -164,6 +164,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::AdditionalLandPlays(_)
                             | crate::cards::StaticAbilityFragment::CantGainLife
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
+                            | crate::cards::StaticAbilityFragment::ChosenCreatureKeywords(..)
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..)
                     )

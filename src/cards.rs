@@ -331,17 +331,19 @@ pub enum EntryChoiceKind {
     CardNameAfterOpponentHand,
     Color,
     CreatureType,
+    CreatureTypes(&'static [&'static str]),
 }
 impl EntryChoiceKind {
     pub(crate) fn matches(self, value: EntryChoiceValue) -> bool {
-        matches!(
-            (self, value),
-            (
-                Self::CardNameAfterOpponentHand,
-                EntryChoiceValue::CardName(_)
-            ) | (Self::Color, EntryChoiceValue::Color(_))
-                | (Self::CreatureType, EntryChoiceValue::CreatureType(_))
-        )
+        match (self, value) {
+            (Self::CardNameAfterOpponentHand, EntryChoiceValue::CardName(_))
+            | (Self::Color, EntryChoiceValue::Color(_))
+            | (Self::CreatureType, EntryChoiceValue::CreatureType(_)) => true,
+            (Self::CreatureTypes(types), EntryChoiceValue::CreatureType(kind)) => {
+                types.contains(&kind.name())
+            }
+            _ => false,
+        }
     }
 }
 /// Layer-seven own-creature bonus using one source's entry choice. The optional
@@ -359,6 +361,7 @@ pub(crate) enum ManaRestriction {
     Unrestricted,
     SpellSubtype(&'static str),
     ChosenCreatureSpellOrActivation,
+    ChosenSubtypeSpellOrActivation,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ManaSpellBonus {
@@ -1927,6 +1930,7 @@ pub(crate) enum CastTarget {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum CastFilter {
     SourceChosenColor,
+    SourceChosenCreatureType,
     PermanentAdventure,
     Any,
     Creature,
@@ -1971,9 +1975,10 @@ impl CastFilter {
                     && card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
             }
             // Contextual cast observers use Game::cast_filter_matches instead.
-            Self::SourceChosenColor | Self::Targeted { .. } | Self::InstantSorceryOrdinal(_) => {
-                false
-            }
+            Self::SourceChosenColor
+            | Self::SourceChosenCreatureType
+            | Self::Targeted { .. }
+            | Self::InstantSorceryOrdinal(_) => false,
             Self::Multicolored => card.colors().count_ones() >= 2,
             Self::Colors { filter, mask } => {
                 card.colors() & mask != 0 && filter.matches_mana_value(card, mana_value)

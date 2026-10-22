@@ -347,6 +347,15 @@ impl CharacteristicQuery<'_> {
             for group in object.card.static_ability_groups() {
                 for fragment in group.fragments {
                     match *fragment {
+                        StaticAbilityFragment::ChosenCreatureKeywords(grant)
+                            if ability_world::CharacteristicWorld::chosen_creature_type_applies(
+                                self,
+                                self.object_ref(source),
+                                id,
+                            ) =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
                         StaticAbilityFragment::DeathBaronLord
                             if ability_world::CharacteristicWorld::death_baron_applies(
                                 self,

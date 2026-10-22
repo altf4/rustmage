@@ -3,10 +3,46 @@
   "catalogue_id": 1258,
   "oracle_id": "5715ed43-395c-4877-99a7-8e28e7bf9dce",
   "facts_sha256": "3b916910bb9ea4738cacf6b752f4fa7452bcd881913d86d70d155d4321a07de2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ad7003789af8a24b00a44ecd3029346a2dc3f353e067d2cd6bb9fff1da408b1e"
   },
-  "physical_metadata_sha256": "2ecd3bb1e4515f7b388971e0e2206d8ae11b1d6079ce978b5e61733604d98f53"
+  "physical_metadata_sha256": "2ecd3bb1e4515f7b388971e0e2206d8ae11b1d6079ce978b5e61733604d98f53",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EclipsedRealms.java",
+  "java_sha256": "d4423dcb8021ac6f8b3fade732824ad4a55b50f27ac7f9cd1d7a461e8ae90006",
+  "rules_tests": "src/engine_ecl_green_colorless_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AsEntersBattlefieldAbility.java",
+      "sha256": "3919eac1ae9ebc0edd9decad5d293bdf0cdb4d16c516021ea3e97711f9a72ab5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseCreatureTypeEffect.java",
+      "sha256": "7c002222709f95c0fb03244a866082efaec9f9db530fb6f62f682000a4806b9d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+      "sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ConditionalAnyColorManaAbility.java",
+      "sha256": "2042d72737462646216eea22a1ecdd05d338f1f2b3bfbb3c19fdb273f067c736"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddConditionalManaOfAnyColorEffect.java",
+      "sha256": "e9ae10c4ad12c5a3280946079ff7c3278e879af65f0a3afdb6f8841861797bed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/builder/ConditionalManaBuilder.java",
+      "sha256": "511937d592a02c2edb14e85d3408f3d7142cdace5e288881c8ac39aca03284cd"
+    }
+  ]
 }

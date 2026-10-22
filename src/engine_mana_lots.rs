@@ -10,6 +10,7 @@ pub enum ManaRestrictionView {
     Unrestricted,
     SpellSubtype(&'static str),
     CreatureSpellOrActivation(CreatureType),
+    SubtypeSpellOrActivation(CreatureType),
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum ManaSpellBonusView {
@@ -93,6 +94,14 @@ impl Quality {
                     };
                     ManaRestrictionView::CreatureSpellOrActivation(kind)
                 }
+                ManaRestriction::ChosenSubtypeSpellOrActivation => {
+                    let Some(EntryChoiceValue::CreatureType(kind)) =
+                        world.game().entry_value(world.reference(source))
+                    else {
+                        panic!("chosen mana source must have made its entry choice")
+                    };
+                    ManaRestrictionView::SubtypeSpellOrActivation(kind)
+                }
             },
             spell_bonus: match quality.spell_bonus {
                 ManaSpellBonus::None => ManaSpellBonusView::None,
@@ -118,6 +127,12 @@ impl Quality {
             ManaRestrictionView::SpellSubtype(subtype) => {
                 matches!(purpose, Purpose::Spell(facts) if facts.has_subtype(subtype))
             }
+            ManaRestrictionView::SubtypeSpellOrActivation(kind) => match purpose {
+                Purpose::Spell(facts) | Purpose::Activation(facts) => {
+                    facts.has_subtype(kind.name())
+                }
+                Purpose::Other => false,
+            },
             ManaRestrictionView::CreatureSpellOrActivation(kind) => match purpose {
                 Purpose::Spell(facts) | Purpose::Activation(facts) => {
                     facts.kinds & CREATURE_KIND != 0 && facts.has_subtype(kind.name())

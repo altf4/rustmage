@@ -67,6 +67,11 @@ impl Game {
             EntryChoiceKind::Color => ChoiceColor::ALL
                 .into_iter()
                 .any(|c| emit(EntryChoiceValue::Color(c))),
+            EntryChoiceKind::CreatureTypes(types) => types.iter().any(|name| {
+                emit(EntryChoiceValue::CreatureType(
+                    crate::cards::CreatureType::from_name(name).unwrap(),
+                ))
+            }),
             EntryChoiceKind::CreatureType => crate::CREATURE_TYPES.iter().any(|name| {
                 emit(EntryChoiceValue::CreatureType(
                     crate::cards::CreatureType::from_name(name).unwrap(),

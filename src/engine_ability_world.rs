@@ -62,6 +62,16 @@ pub(super) trait CharacteristicWorld {
         result
     }
 
+    fn chosen_creature_type_applies(&self, source: ObjectRef, id: CardId) -> bool {
+        let provider = self.object(source.card);
+        let target = self.object(id);
+        provider.zone == Zone::Battlefield
+            && self.reference(source.card) == source
+            && target.zone == Zone::Battlefield
+            && self.kinds(id) & 1 != 0
+            && provider.controller == target.controller
+            && matches!(self.game().entry_value(source), Some(EntryChoiceValue::CreatureType(kind)) if self.subtypes(id).has(target.card, kind.name()))
+    }
     fn death_baron_applies(&self, source: ObjectRef, id: CardId) -> bool {
         let target = self.object(id);
         target.zone == Zone::Battlefield
