@@ -562,6 +562,7 @@ pub(crate) enum LibraryPickDestination {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibraryLook {
     Fixed(u16),
+    Amount(AmountValue),
     ChosenX,
     UntilKinds(u16),
     UntilCount { kinds: u16, amount: AmountValue },

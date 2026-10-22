@@ -6291,3 +6291,310 @@ fn glen_elendras_answer_with_no_opposing_stack_objects_has_no_token_and_exact_tw
         assert!(answer_tokens(&g, p).is_empty());
     }
 }
+
+fn ajani(g: &mut Game, p: Player) -> CardId {
+    let id = spell(g, p, "Ajani, Outland Chaperone", &[]);
+    settle(g);
+    assert_eq!(g.counter_count(id, CounterKind::Loyalty), 3);
+    id
+}
+fn announce_loyalty(g: &mut Game, id: CardId, ability: u16) {
+    checked(
+        g,
+        Action::AnnounceActivate {
+            card: id,
+            ability,
+            counter_payment: Counters::default(),
+        },
+    );
+}
+
+#[test]
+fn ajani_outland_chaperone_paid_body_plus_one_real_kithkin_and_loyalty_timing_limits() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.state.players[p.index()].mana = [2, 0, 0, 0, 0, 1];
+        let source = ajani(&mut g, p);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        let bear = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+        g.tap_objects(&[bear]);
+        assert!(g.object_view(source).summoning_sick);
+        announce_loyalty(&mut g, source, 0);
+        finish_cast_choices(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::Loyalty), 4);
+        settle(&mut g);
+        let tokens = kithkin_tokens(&g, p);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(
+            g.stats(tokens[0]),
+            Stats {
+                power: 1,
+                toughness: 1
+            }
+        );
+        assert_eq!(g.object_view(tokens[0]).colors, 17);
+        assert!(g.has_subtype(tokens[0], "Kithkin"));
+        for ability in [0, 1] {
+            reject_atomic(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: source,
+                    ability,
+                    counter_payment: Counters::default(),
+                },
+            );
+        }
+        super::ability_timeline_tests::next_turn(&mut g);
+        take_test_priority(&mut g, p);
+        reject_atomic(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        super::ability_timeline_tests::next_turn(&mut g);
+        for _ in 0..8 {
+            if g.state.step == Step::Main1 {
+                break;
+            }
+            checked(&mut g, Action::Pass);
+        }
+        assert_eq!(g.state.step, Step::Main1);
+        announce_loyalty(&mut g, source, 0);
+        finish_cast_choices(&mut g);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::Loyalty), 5);
+        assert_eq!(kithkin_tokens(&g, p).len(), 2);
+    }
+}
+
+#[test]
+fn ajani_outland_chaperone_minus_two_restricts_tapped_creatures_and_keeps_source_damage_after_departure()
+ {
+    for p in [Player::P0, Player::P1] {
+        for invalidate in 0..3 {
+            let mut g = setup(p);
+            let source = ajani(&mut g, p);
+            let target = spawn(
+                &mut g,
+                p.other(),
+                Card::from_name("Sunderflock").unwrap(),
+                Zone::Battlefield,
+            );
+            let own = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+            let land = spawn(&mut g, p.other(), Card::Island, Zone::Battlefield);
+            g.tap_objects(&[target, land]);
+            announce_loyalty(&mut g, source, 1);
+            reject_atomic(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(own),
+                },
+            );
+            reject_atomic(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(land),
+                },
+            );
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            finish_cast_choices(&mut g);
+            assert_eq!(g.counter_count(source, CounterKind::Loyalty), 1);
+            g.move_object(source, Zone::Graveyard);
+            if invalidate == 1 {
+                g.state.objects[target as usize].tapped = false;
+            }
+            if invalidate == 2 {
+                g.move_object(target, Zone::Exile);
+                g.move_object(target, Zone::Battlefield);
+                g.tap_objects(&[target]);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(target).damage,
+                if invalidate == 0 { 4 } else { 0 }
+            );
+            assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+        }
+        let mut g = setup(p);
+        let source = ajani(&mut g, p);
+        let own = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        g.tap_objects(&[own]);
+        announce_loyalty(&mut g, source, 1);
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(own),
+            },
+        );
+        finish_cast_choices(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(own).zone, Zone::Graveyard);
+    }
+}
+
+fn ajani_ultimate_choice(g: &mut Game, p: Player, source: CardId) {
+    g.set_counters(source, Counters::of(CounterKind::Loyalty, 8));
+    announce_loyalty(g, source, 2);
+    finish_cast_choices(g);
+    assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+    checked(g, Action::Pass);
+    checked(g, Action::Pass);
+    assert!(matches!(
+        g.state.pending,
+        Pending::EffectLibrarySelection { .. }
+    ));
+    assert_eq!(g.actor(), Some(p));
+}
+
+#[test]
+fn ajani_outland_chaperone_ultimate_looks_at_current_life_privately_and_enters_any_eligible_nonland_permanents_then_shuffles()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = ajani(&mut g, p);
+        let enchanted = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let picks: Vec<_> = [
+            "Bear Cub",
+            "Mazemind Tome",
+            "Pacifism",
+            "Ajani, Caller of the Pride",
+        ]
+        .iter()
+        .map(|name| spawn(&mut g, p, Card::from_name(name).unwrap(), Zone::Library))
+        .collect();
+        let big = spawn(&mut g, p, Card::HillGiant, Zone::Library);
+        let land = spawn(&mut g, p, Card::Island, Zone::Library);
+        g.state.players[p.index()].life = 1;
+        g.set_counters(source, Counters::of(CounterKind::Loyalty, 7));
+        reject_atomic(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 2,
+                counter_payment: Counters::default(),
+            },
+        );
+        g.set_counters(source, Counters::of(CounterKind::Loyalty, 8));
+        announce_loyalty(&mut g, source, 2);
+        finish_cast_choices(&mut g);
+        g.state.players[p.index()].life = 6;
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        let view = g.observe(p).library_selection.unwrap();
+        assert_eq!(view.remaining.len(), 6);
+        assert_eq!(view.maximum, 4);
+        assert_eq!(view.minimum, 0);
+        assert!(!view.public);
+        assert!(g.observe(p.other()).library_selection.is_none());
+        reject_atomic(&mut g, Action::SelectLibrary { card: big });
+        reject_atomic(&mut g, Action::SelectLibrary { card: land });
+        for &id in &picks {
+            checked(&mut g, Action::SelectLibrary { card: id });
+            reject_atomic(&mut g, Action::SelectLibrary { card: id });
+        }
+        let rng = g.state.rng;
+        checked(&mut g, Action::FinishLibrarySelection);
+        assert!(matches!(g.state.pending, Pending::AuraEntry { .. }));
+        let object = g.object_ref(enchanted);
+        checked(&mut g, Action::ChooseAuraAttachment { object });
+        settle(&mut g);
+        assert_ne!(g.state.rng, rng);
+        for &id in &picks {
+            assert_eq!(g.object_view(id).zone, Zone::Battlefield);
+            assert_eq!(g.object_view(id).controller, p);
+            assert!(!g.object_view(id).tapped);
+        }
+        assert_eq!(g.object_view(picks[2]).attached_to, Some(object));
+        assert_eq!(g.counter_count(picks[3], CounterKind::Loyalty), 4);
+        for id in [big, land] {
+            assert_eq!(g.object_view(id).zone, Zone::Library);
+        }
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+        assert!(g.public_library_top(p).is_none());
+    }
+}
+
+#[test]
+fn ajani_outland_chaperone_ultimate_may_choose_nothing_even_without_eligible_cards_and_always_shuffles()
+ {
+    for p in [Player::P0, Player::P1] {
+        for eligible in [false, true] {
+            let mut g = setup(p);
+            let source = ajani(&mut g, p);
+            let id = spawn(
+                &mut g,
+                p,
+                if eligible {
+                    Card::GrizzlyBears
+                } else {
+                    Card::Island
+                },
+                Zone::Library,
+            );
+            g.state.players[p.index()].life = 100;
+            ajani_ultimate_choice(&mut g, p, source);
+            assert!(g.observe(p.other()).library_selection.is_none());
+            let before = g.state.players[p.index()].library.clone();
+            let rng = g.state.rng;
+            checked(&mut g, Action::FinishLibrarySelection);
+            settle(&mut g);
+            let mut actual = g.state.players[p.index()].library.clone();
+            let mut expected = before;
+            actual.sort();
+            expected.sort();
+            assert_eq!(actual, expected);
+            assert_eq!(g.object_view(id).zone, Zone::Library);
+            assert_ne!(g.state.rng, rng);
+        }
+    }
+}
+
+#[test]
+fn ajani_outland_chaperone_zero_life_look_still_shuffles_and_countered_ultimate_preserves_library()
+{
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = ajani(&mut g, p);
+        spawn(
+            &mut g,
+            p,
+            Card::from_name("Herald of Eternal Dawn").unwrap(),
+            Zone::Battlefield,
+        );
+        g.state.players[p.index()].life = 0;
+        g.set_counters(source, Counters::of(CounterKind::Loyalty, 8));
+        let before = g.state.players[p.index()].library.clone();
+        let rng = g.state.rng;
+        let top = g.object_ref(*before.last().unwrap());
+        g.remember_library_top(p, top);
+        announce_loyalty(&mut g, source, 2);
+        finish_cast_choices(&mut g);
+        settle(&mut g);
+        assert_ne!(g.state.rng, rng);
+        assert_eq!(g.state.players[p.index()].library.len(), before.len());
+        assert!(g.public_library_top(p).is_none());
+        assert!(g.observe(p).library_selection.is_none());
+
+        let mut g = setup(p);
+        let source = ajani(&mut g, p);
+        g.set_counters(source, Counters::of(CounterKind::Loyalty, 8));
+        announce_loyalty(&mut g, source, 2);
+        finish_cast_choices(&mut g);
+        let id = g.state.stack.last().unwrap().id;
+        let before = g.state.players[p.index()].library.clone();
+        let rng = g.state.rng;
+        assert!(g.counter_stack_item(id, false));
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].library, before);
+        assert_eq!(g.state.rng, rng);
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+    }
+}

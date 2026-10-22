@@ -93,6 +93,9 @@ impl Game {
         let owner = item.controller;
         let limit = match effect.look {
             LibraryLook::Fixed(n) => usize::from(n),
+            LibraryLook::Amount(amount) => {
+                usize::try_from(self.item_amount(amount, item)).unwrap_or(usize::MAX)
+            }
             LibraryLook::ChosenX => usize::try_from(item.x.unwrap_or(0)).unwrap_or(usize::MAX),
             LibraryLook::UntilCount { kinds, amount } => {
                 let requested = self.item_amount(amount, item);
@@ -405,10 +408,14 @@ impl Game {
             }));
         }
         match f.spec.remainder {
-            LibraryRemainder::Shuffle => self
-                .state
-                .rng
-                .shuffle(&mut self.state.players[owner.index()].library),
+            LibraryRemainder::Shuffle => {
+                // Entry choices may have exposed a new top card after the
+                // selection began; the final shuffle invalidates that fact too.
+                self.forget_library_top(owner);
+                self.state
+                    .rng
+                    .shuffle(&mut self.state.players[owner.index()].library);
+            }
             LibraryRemainder::OptionalGraveyard => {
                 let ids: Vec<_> = f.bottom.iter().map(|r| r.card).collect();
                 let events = self.move_objects_raw(&ids, Zone::Graveyard);
