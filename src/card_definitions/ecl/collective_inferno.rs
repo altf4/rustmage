@@ -1,7 +1,11 @@
 // Direct typed behavior from the complete pinned Oracle and XMage sources.
 const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
-    line: 2, first_layer: AbilityLayer::Rule,
-    fragments: &[StaticAbilityFragment::Replacement(0, ReplacementSpec::DoubleControlledChosenTypeDamage)],
+    line: 2,
+    first_layer: AbilityLayer::Rule,
+    fragments: &[StaticAbilityFragment::Replacement(
+        0,
+        ReplacementSpec::DoubleControlledChosenTypeDamage,
+    )],
 }];
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Permanent,
