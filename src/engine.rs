@@ -4787,6 +4787,24 @@ impl Game {
     }
 
     fn draw(&mut self, p: Player) {
+        // Ordinary draws avoid building a layered query unless a printed source
+        // actually carries this prohibition.
+        if self.state.static_sources.iter().any(|&id| {
+            self.state.objects[id as usize]
+                .card
+                .static_ability_groups()
+                .iter()
+                .any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(fragment, crate::cards::StaticAbilityFragment::CantDrawCards)
+                    })
+                })
+                && self.continuous_fragment_available(id, |fragment| {
+                    matches!(fragment, crate::cards::StaticAbilityFragment::CantDrawCards)
+                })
+        }) {
+            return;
+        }
         match self.state.players[p.index()].library.last().copied() {
             Some(id) => {
                 self.move_object(id, Zone::Hand);

@@ -55,6 +55,7 @@ pub(crate) enum StaticAbilityFragment {
     ControlledSpellsUncounterable(u16),
     LifeGainAdditional(u16),
     CantGainLife,
+    CantDrawCards,
     NoMaximumHandSize,
     AdditionalLandPlays(u16),
     IntrinsicKeywords(Keywords),

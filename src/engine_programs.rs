@@ -2537,20 +2537,38 @@ impl Game {
                 }
                 Instruction::Search(mut spec)
                 | Instruction::SearchRequired(mut spec)
-                | Instruction::SearchScaled { mut spec, .. } => {
+                | Instruction::SearchScaled { mut spec, .. }
+                | Instruction::SearchFor { mut spec, .. } => {
+                    let player = if let Instruction::SearchFor { player, .. } = instruction {
+                        let mut players = self.program_players(player, &item);
+                        let Some(player) = players.next() else {
+                            continue;
+                        };
+                        assert!(
+                            players.next().is_none(),
+                            "private search requires one player"
+                        );
+                        player
+                    } else {
+                        item.controller
+                    };
                     if let Instruction::SearchScaled { maximum, .. } = instruction {
                         spec.maximum = spec.maximum.min(
                             u16::try_from(self.item_amount(maximum, &item)).unwrap_or(u16::MAX),
                         );
                     }
-                    let minimum = if matches!(instruction, Instruction::SearchRequired(_)) {
+                    let minimum = if matches!(
+                        instruction,
+                        Instruction::SearchRequired(_)
+                            | Instruction::SearchFor { required: true, .. }
+                    ) {
                         assert_eq!(
                             spec.filter,
                             crate::SearchFilter::Any,
                             "required searches must not require finding a hidden quality"
                         );
                         usize::from(spec.maximum)
-                            .min(self.state.players[item.controller.index()].library.len())
+                            .min(self.state.players[player.index()].library.len())
                             as u16
                     } else {
                         0
@@ -2562,9 +2580,7 @@ impl Game {
                             selected: Vec::new(),
                             battlefield: None,
                         }));
-                    self.state.pending = Pending::EffectSearch {
-                        player: item.controller,
-                    };
+                    self.state.pending = Pending::EffectSearch { player };
                     return;
                 }
                 Instruction::ExileTopChoosePlay { amount, next_turn } => {

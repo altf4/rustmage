@@ -168,6 +168,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::NoMaximumHandSize
                             | crate::cards::StaticAbilityFragment::AdditionalLandPlays(_)
                             | crate::cards::StaticAbilityFragment::CantGainLife
+                            | crate::cards::StaticAbilityFragment::CantDrawCards
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
                             | crate::cards::StaticAbilityFragment::ChosenCreatureKeywords(..)
                             | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. }

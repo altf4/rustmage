@@ -4122,3 +4122,174 @@ fn champion_path_witness_can_produce_restricted_mana_before_its_exile_cost() {
         assert_eq!(g.object_view(witness).zone, Zone::Hand);
     }
 }
+
+fn mornsong_search(g: &mut Game, p: Player) {
+    g.state.active = p;
+    g.state.priority = p;
+    g.begin_step(Step::Draw);
+    g.draw(p);
+    for _ in 0..100 {
+        if matches!(g.state.pending, Pending::EffectSearch { .. }) {
+            return;
+        }
+        advance(g);
+    }
+    panic!("missing Mornsong search");
+}
+#[test]
+fn mornsong_aria_blocks_every_draw_and_life_gain_without_empty_draw_loss() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Mornsong Aria", Zone::Hand);
+        cast(&mut g, source);
+        for player in [p, p.other()] {
+            let card = named(&mut g, player, "Forest", Zone::Library);
+            let library = g.state.players[player.index()].library.clone();
+            g.draw(player);
+            g.gain_life(player, 7);
+            assert_eq!(g.state.players[player.index()].library, library);
+            assert_eq!(g.state.players[player.index()].life, 20);
+            assert_eq!(g.state.players[player.index()].life_gained_this_turn, 0);
+            g.move_object(card, Zone::Graveyard);
+            for id in g.state.players[player.index()].library.clone() {
+                g.move_object(id, Zone::Graveyard);
+            }
+            g.draw(player);
+            assert!(!g.state.players[player.index()].attempted_empty_draw);
+        }
+        g.move_object(source, Zone::Graveyard);
+        g.gain_life(p, 2);
+        assert_eq!(g.state.players[p.index()].life, 22);
+        g.draw(p);
+        assert!(g.state.players[p.index()].attempted_empty_draw);
+    }
+}
+#[test]
+fn mornsong_aria_active_player_search_is_private_required_and_does_not_draw() {
+    for controller in [Player::P0, Player::P1] {
+        for active in [Player::P0, Player::P1] {
+            let mut g = hexing_setup(controller);
+            let source = named(&mut g, controller, "Mornsong Aria", Zone::Hand);
+            cast(&mut g, source);
+            let chosen = named(&mut g, active, "Forest", Zone::Library);
+            named(&mut g, active, "Mountain", Zone::Library);
+            let foreign = named(&mut g, active.other(), "Island", Zone::Library);
+            mornsong_search(&mut g, active);
+            assert_eq!(g.actor(), Some(active));
+            assert_eq!(g.state.players[active.index()].life, 17);
+            assert_eq!(g.state.players[active.other().index()].life, 20);
+            assert!(g.observe(active.other()).search_choice.is_none());
+            assert_eq!(g.observe(active).search_choice.as_ref().unwrap().minimum, 1);
+            reject(&mut g, Action::FinishSearch);
+            reject(&mut g, Action::ChooseSearch { card: foreign });
+            checked(&mut g, Action::ChooseSearch { card: chosen });
+            assert_eq!(g.object_view(chosen).zone, Zone::Library);
+            assert_eq!(
+                g.observe(active).search_choice.as_ref().unwrap().selected,
+                vec![chosen]
+            );
+            assert!(g.observe(active.other()).search_choice.is_none());
+            checked(&mut g, Action::FinishSearch);
+            settle(&mut g);
+            assert_eq!(g.object_view(chosen).zone, Zone::Hand);
+            assert!(
+                !g.observe(active.other())
+                    .known_hand
+                    .contains(&g.object_ref(chosen))
+            );
+            assert_eq!(g.state.players[active.index()].cards_drawn_this_turn, 0);
+        }
+    }
+}
+#[test]
+fn mornsong_aria_search_resolves_after_source_departs_and_empty_library_is_safe() {
+    for p in [Player::P0, Player::P1] {
+        for empty in [false, true] {
+            let mut g = hexing_setup(p);
+            let source = named(&mut g, p.other(), "Mornsong Aria", Zone::Battlefield);
+            if empty {
+                for id in g.state.players[p.index()].library.clone() {
+                    g.move_object(id, Zone::Graveyard);
+                }
+            }
+            let card = (!empty).then(|| named(&mut g, p, "Forest", Zone::Library));
+            g.state.active = p;
+            g.state.priority = p;
+            g.begin_step(Step::Draw);
+            g.draw(p);
+            g.move_object(source, Zone::Graveyard);
+            for _ in 0..100 {
+                if matches!(g.state.pending, Pending::EffectSearch { .. }) {
+                    break;
+                }
+                advance(&mut g);
+            }
+            assert_eq!(g.actor(), Some(p));
+            if let Some(card) = card {
+                checked(&mut g, Action::ChooseSearch { card });
+            }
+            checked(&mut g, Action::FinishSearch);
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].life, 17);
+            assert!(!g.state.players[p.index()].attempted_empty_draw);
+            if let Some(card) = card {
+                assert_eq!(g.object_view(card).zone, Zone::Hand);
+            }
+        }
+    }
+}
+#[test]
+fn mornsong_aria_ability_removal_restores_draw_and_life_gain_and_blocks_future_trigger() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Mornsong Aria", Zone::Battlefield);
+        let reference = g.object_ref(source);
+        g.remove_abilities_exact(&[reference], crate::cards::AnimationDuration::EndOfTurn);
+        let card = named(&mut g, p, "Forest", Zone::Library);
+        g.gain_life(p, 2);
+        g.begin_step(Step::Draw);
+        g.draw(p);
+        settle(&mut g);
+        assert_eq!(g.object_view(card).zone, Zone::Hand);
+        assert_eq!(g.state.players[p.index()].life, 22);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
+        assert!(g.state.stack.is_empty());
+        g.finish_cleanup();
+        let card = named(&mut g, p, "Mountain", Zone::Library);
+        g.draw(p);
+        g.gain_life(p, 3);
+        assert_eq!(g.object_view(card).zone, Zone::Library);
+        assert_eq!(g.state.players[p.index()].life, 22);
+    }
+}
+#[test]
+fn unrelated_static_sources_do_not_prohibit_draw_and_two_arias_have_independent_draw_step_triggers()
+{
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        named(&mut g, p, "Giant Cindermaw", Zone::Battlefield);
+        let ordinary = named(&mut g, p, "Forest", Zone::Library);
+        g.draw(p);
+        assert_eq!(g.object_view(ordinary).zone, Zone::Hand);
+        named(&mut g, p, "Mornsong Aria", Zone::Battlefield);
+        named(&mut g, p.other(), "Mornsong Aria", Zone::Battlefield);
+        let first = named(&mut g, p, "Mountain", Zone::Library);
+        let second = named(&mut g, p, "Island", Zone::Library);
+        mornsong_search(&mut g, p);
+        checked(&mut g, Action::ChooseSearch { card: first });
+        checked(&mut g, Action::FinishSearch);
+        for _ in 0..100 {
+            if matches!(g.state.pending, Pending::EffectSearch { .. }) {
+                break;
+            }
+            advance(&mut g);
+        }
+        checked(&mut g, Action::ChooseSearch { card: second });
+        checked(&mut g, Action::FinishSearch);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 14);
+        assert_eq!(g.object_view(first).zone, Zone::Hand);
+        assert_eq!(g.object_view(second).zone, Zone::Hand);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
+    }
+}

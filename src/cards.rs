@@ -1194,6 +1194,12 @@ pub(crate) enum Instruction {
     /// Unqualified search: find the maximum, or every remaining card if fewer.
     /// Existing qualified searches retain their legal failure-to-find behavior.
     SearchRequired(SearchSpec),
+    /// Private search by one player, without changing the resolving ability's controller.
+    SearchFor {
+        player: PlayerSet,
+        spec: SearchSpec,
+        required: bool,
+    },
     SelectLibrary(LibrarySelectionSpec),
     SelectLibraryTo(LibrarySelectionEffect),
     NoMaximumHandSize,
