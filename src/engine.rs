@@ -543,6 +543,7 @@ define_actions! {
     },
     SelectMilled { object: ObjectRef },
     FinishMilledSelection,
+    ChooseEntryCopy { object: Option<ObjectRef> },
     ChooseEntryTimestamp { object: ObjectRef },
     ChooseEntryReplacement { source: ObjectRef, intrinsic: bool },
     ChooseEntryValue { value: EntryChoiceValue },
@@ -1637,6 +1638,9 @@ enum Pending {
         player: Player,
         filter: RecoveryFilter,
     },
+    EntryCopy {
+        player: Player,
+    },
     EntryTimestamp {
         player: Player,
     },
@@ -2232,6 +2236,7 @@ pub struct Observation {
     pub aura_entry: Option<entries::AuraEntryView>,
     pub entry_life: Option<entries::EntryLifeView>,
     pub entry_replacement: Option<entry_tap::EntryTapView>,
+    pub entry_copy: Option<entries::EntryCopyView>,
     pub entry_timestamps: Option<entries::EntryTimestampView>,
     pub additional_cost: Option<AdditionalCostView>,
     pub forage: Option<ForageView>,
@@ -2540,6 +2545,7 @@ impl Game {
             | Pending::CounterCostOrder { player }
             | Pending::CreatureCounterCost { player }
             | Pending::AdditionalCost { player }
+            | Pending::EntryCopy { player }
             | Pending::EntryTimestamp { player }
             | Pending::EntryReplacement { player }
             | Pending::LinkedChoice { player }
@@ -2980,6 +2986,21 @@ impl Game {
             Pending::ResolutionMana { .. } => {
                 if self.visit_resolution_payment(&mut emit) {
                     return true;
+                }
+            }
+            Pending::EntryCopy { .. } => {
+                if emit(Action::ChooseEntryCopy { object: None }) {
+                    return true;
+                }
+                for (id, _) in self.state.objects.iter().enumerate() {
+                    let object = self.object_ref(id as CardId);
+                    if self.entry_copy_candidate(object)
+                        && emit(Action::ChooseEntryCopy {
+                            object: Some(object),
+                        })
+                    {
+                        return true;
+                    }
                 }
             }
             Pending::EntryTimestamp { .. } => {
@@ -4293,6 +4314,7 @@ impl Game {
                 self.announce_attached_ability(grantor, ability)
             }
             Action::ChooseAdditionalCost { object } => self.choose_additional_cost(object),
+            Action::ChooseEntryCopy { object } => self.choose_entry_copy(object),
             Action::ChooseEntryTimestamp { object } => self.choose_entry_timestamp(object),
             Action::ChooseEntryReplacement { source, intrinsic } => {
                 self.choose_entry_tap_effect(source, intrinsic)
@@ -5305,8 +5327,10 @@ impl Game {
     }
 
     fn self_entry_requires_tapped(&self, id: CardId, controller: Player) -> bool {
-        let object = &self.state.objects[id as usize];
-        match object.card.entry_tapped() {
+        self.self_entry_requires_tapped_card(id, self.state.objects[id as usize].card, controller)
+    }
+    fn self_entry_requires_tapped_card(&self, id: CardId, card: Card, controller: Player) -> bool {
+        match card.entry_tapped() {
             EntryTapped::Never | EntryTapped::PayLife(_) => false,
             EntryTapped::UnlessPlainsOrIsland => {
                 !self.state.objects.iter().enumerate().any(|(id, o)| {
@@ -5345,7 +5369,7 @@ impl Game {
                             && self.current_kinds(*other as CardId) & 2 != 0
                     })
                     .count();
-                match object.card.entry_tapped() {
+                match card.entry_tapped() {
                     EntryTapped::UnlessAtMostTwo => lands > 2,
                     _ => lands < 2,
                 }
@@ -6550,6 +6574,7 @@ impl Game {
                 Pending::HandDefender { .. } => "hand_defender",
                 Pending::EffectChoice { .. } => "effect_choice",
                 Pending::Proliferate { .. } => "proliferate",
+                Pending::EntryCopy { .. } => "entry_copy",
                 Pending::EntryTimestamp { .. } => "entry_timestamps",
                 Pending::LinkedChoice { .. } => "linked_choice",
                 Pending::EntryValue { .. } => "entry_value",
@@ -6611,6 +6636,7 @@ impl Game {
             aura_entry: self.aura_entry_view(viewer),
             entry_life: self.entry_life_view(viewer),
             entry_replacement: self.entry_tap_view(viewer),
+            entry_copy: self.entry_copy_view(viewer),
             entry_timestamps: self.entry_timestamp_view(viewer),
             additional_cost: self.additional_cost_view(viewer),
             forage: self.forage_view(viewer),
@@ -7264,8 +7290,8 @@ mod entries;
 #[path = "engine_entry_tap.rs"]
 mod entry_tap;
 pub use entries::{
-    AuraAttachmentView, AuraEntryView, EntryLifeSelection, EntryLifeView, EntryTimestampObjectView,
-    EntryTimestampView,
+    AuraAttachmentView, AuraEntryView, EntryCopySelectionView, EntryCopyView, EntryLifeSelection,
+    EntryLifeView, EntryTimestampObjectView, EntryTimestampView,
 };
 pub use entry_tap::{EntryTapEffect, EntryTapKind, EntryTapView};
 

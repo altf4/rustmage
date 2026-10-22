@@ -874,6 +874,7 @@ fn sparse_gift_context_heap_payloads_are_owned_and_counted_once() {
     assert_eq!(child.snapshot(), g.snapshot());
     let movement = g.entry_move(source, Zone::Battlefield, false);
     let mut batch = entries::EntryBatch {
+        prepared: true,
         discard_context: None,
         moves: vec![movement],
         choices: vec![],

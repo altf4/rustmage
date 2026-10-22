@@ -3297,6 +3297,9 @@ impl Card {
     pub(crate) fn named_activation_lock(self) -> bool {
         authored::RULES[self.index()].extras.named_activation_lock
     }
+    pub(crate) fn as_enters_copy_creature(self) -> bool {
+        authored::RULES[self.index()].extras.as_enters_copy_creature
+    }
     pub(crate) fn entry_choice(self) -> Option<EntryChoiceKind> {
         authored::RULES[self.index()].extras.entry_choice
     }

@@ -68,7 +68,8 @@ impl Game {
                 batch.deaths.push(id);
             }
             if object.card.aura().is_some() {
-                if !self.printed_abilities_available(id)
+                if self.is_creature(id)
+                    || !self.printed_abilities_available(id)
                     || !object.attached_to.is_some_and(|target| {
                         self.aura_can_enchant_colored(
                             object.card,

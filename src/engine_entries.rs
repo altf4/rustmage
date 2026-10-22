@@ -4,6 +4,7 @@ use super::*;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EntryMove {
+    pub copy: Option<Box<EntryCopyFacts>>,
     pub choice: Option<EntryChoiceValue>,
     pub gift: Option<Box<GiftContext>>,
     pub before: ObjectView,
@@ -39,7 +40,15 @@ pub(super) struct EntryMove {
     pub counters: Counters,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct EntryCopyFacts {
+    pub chosen: bool,
+    pub native: CopyRecipe,
+    pub recipe: Option<CopyRecipe>,
+    pub origin: u64,
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EntryBatch {
+    pub prepared: bool,
     pub discard_context: Option<discard_events::DiscardContext>,
     pub moves: Vec<EntryMove>,
     pub choices: Vec<usize>,
@@ -65,7 +74,13 @@ impl EntryBatch {
             + self
                 .moves
                 .iter()
-                .map(|m| m.counters.owned_bytes() + m.before.counters.owned_bytes())
+                .map(|m| {
+                    m.counters.owned_bytes()
+                        + m.before.counters.owned_bytes()
+                        + m.copy
+                            .as_ref()
+                            .map_or(0, |_| std::mem::size_of::<EntryCopyFacts>())
+                })
                 .sum::<usize>()
             + self
                 .tap_events
@@ -187,10 +202,25 @@ impl Game {
             }
     }
     pub(super) fn entry_move(&self, id: CardId, destination: Zone, tapped: bool) -> EntryMove {
+        let before = self.object_view(id);
+        let copy = (destination == Zone::Battlefield
+            && before.zone != Zone::Battlefield
+            && before.card.as_enters_copy_creature())
+        .then(|| {
+            Box::new(EntryCopyFacts {
+                chosen: false,
+                native: before
+                    .copy_recipe
+                    .unwrap_or_else(|| CopyRecipe::new(before.card)),
+                recipe: None,
+                origin: 0,
+            })
+        });
         EntryMove {
+            copy,
             choice: None,
             gift: None,
-            before: self.object_view(id),
+            before,
             controller: self.state.objects[id as usize].controller,
             destination,
             tapped,
@@ -229,7 +259,7 @@ impl Game {
     }
     fn stage_entries_inner(
         &mut self,
-        mut moves: Vec<EntryMove>,
+        moves: Vec<EntryMove>,
         shuffle_after: Option<Player>,
         discard_context: Option<discard_events::DiscardContext>,
     ) {
@@ -237,6 +267,35 @@ impl Game {
             self.state.entry_batch.is_none(),
             "one entry transaction at a time"
         );
+        let batch = EntryBatch {
+            prepared: false,
+            discard_context,
+            moves,
+            choices: Vec::new(),
+            next: 0,
+            counter_next: 0,
+            entry_bonuses_ready: false,
+            counter_order: Vec::new(),
+            timestamp_order: Vec::new(),
+            timestamps_ready: false,
+            resume: None,
+            shuffle_after,
+            replacement_resume: None,
+            tap_events: Vec::new(),
+            tap_next: 0,
+        };
+        if batch
+            .moves
+            .iter()
+            .any(|m| m.copy.as_ref().is_some_and(|c| !c.chosen))
+        {
+            self.state.entry_batch = Some(Box::new(batch));
+        } else {
+            self.prepare_entry_batch(batch);
+        }
+    }
+    fn prepare_entry_batch(&mut self, mut batch: EntryBatch) {
+        let mut moves = std::mem::take(&mut batch.moves);
         let mut tap_events = Vec::new();
         for (index, movement) in moves.iter_mut().enumerate() {
             if movement.destination != Zone::Battlefield {
@@ -244,11 +303,21 @@ impl Game {
             }
             let mut effects = self.entry_tap_effects(movement);
             if effects.is_empty() {
-                movement.tapped |= self.enters_tapped_for(movement.before.id, movement.controller);
+                movement.tapped |= self
+                    .opponent_entry_requires_tapped(movement.before.card, movement.controller)
+                    || self.self_entry_requires_tapped_card(
+                        movement.before.id,
+                        movement.before.card,
+                        movement.controller,
+                    );
             } else {
                 // The incoming event retains instruction-level tapped entry;
                 // intrinsic/global tapped replacements have not yet applied.
-                if self.self_entry_requires_tapped(movement.before.id, movement.controller) {
+                if self.self_entry_requires_tapped_card(
+                    movement.before.id,
+                    movement.before.card,
+                    movement.controller,
+                ) {
                     effects.push(EntryTapEffect {
                         source: movement.before.reference,
                         intrinsic: true,
@@ -336,22 +405,11 @@ impl Game {
             .map(|(i, _)| i)
             .collect::<Vec<_>>();
         counter_order.sort_by_key(|&i| (moves[i].controller != self.state.active, i));
-        let mut batch = EntryBatch {
-            discard_context,
-            moves,
-            choices,
-            next: 0,
-            counter_next: 0,
-            entry_bonuses_ready: false,
-            counter_order,
-            timestamp_order: Vec::new(),
-            timestamps_ready: false,
-            resume: None,
-            shuffle_after,
-            replacement_resume: None,
-            tap_events,
-            tap_next: 0,
-        };
+        batch.moves = moves;
+        batch.choices = choices;
+        batch.counter_order = counter_order;
+        batch.tap_events = tap_events;
+        batch.prepared = true;
         if batch.choices.is_empty() {
             self.add_subtype_entry_counters(&mut batch.moves);
             batch.entry_bonuses_ready = true;
@@ -369,7 +427,8 @@ impl Game {
                             .any(|e| matches!(e, crate::cards::ReplacementSpec::Counters { .. }))
                     }))
         });
-        if batch.choices.is_empty()
+        if batch.resume.is_none()
+            && batch.choices.is_empty()
             && batch.tap_events.is_empty()
             && !counter_replacements
             && !self.entry_needs_timestamp_choice(&batch)
@@ -498,6 +557,17 @@ impl Game {
         let mut remove_abilities_results = Vec::new();
         let mut life_results = Vec::new();
         for (movement, counters) in moves {
+            if movement.destination == Zone::Battlefield
+                && let Some(copy) = &movement.copy
+                && let Some(recipe) = copy.recipe
+            {
+                self.install_entry_copy(
+                    movement.before.reference,
+                    recipe,
+                    copy.native,
+                    copy.origin,
+                );
+            }
             let mut event = self.transition_object_under_control(
                 movement.before,
                 movement.destination,
@@ -549,6 +619,7 @@ impl Game {
                     role_results.push((creator, token, event.after));
                 }
                 if event.destination == Zone::Battlefield
+                    && self.is_creature(event.after.card)
                     && let Some(defender) = movement.attacking
                 {
                     self.state.attackers.push(Attacker {
@@ -674,6 +745,16 @@ impl Game {
             };
             if batch.resume.is_none() {
                 batch.resume = Some(self.state.pending.clone());
+            }
+            if !batch.prepared {
+                if let Some(index) = self.entry_copy_index() {
+                    let player = self.state.entry_batch.as_ref().unwrap().moves[index].controller;
+                    self.state.pending = Pending::EntryCopy { player };
+                    return true;
+                }
+                let batch = *self.state.entry_batch.take().unwrap();
+                self.prepare_entry_batch(batch);
+                continue;
             }
             if self.advance_entry_tap_effects() {
                 return true;
@@ -1105,5 +1186,137 @@ impl Game {
                 }
             }
         }
+    }
+}
+
+#[derive(Clone, Debug, Serialize)]
+pub struct EntryCopySelectionView {
+    pub object: ObjectRef,
+    pub recipe: Option<CopyRecipe>,
+}
+#[derive(Clone, Debug, Serialize)]
+pub struct EntryCopyView {
+    pub object: ObjectRef,
+    pub card: Card,
+    pub candidates: Vec<ObjectRef>,
+    pub selected: Vec<EntryCopySelectionView>,
+}
+impl Game {
+    fn entry_copy_index(&self) -> Option<usize> {
+        self.state
+            .entry_batch
+            .as_ref()?
+            .moves
+            .iter()
+            .enumerate()
+            .filter(|(_, m)| m.copy.as_ref().is_some_and(|c| !c.chosen))
+            .min_by_key(|(i, m)| (m.controller != self.state.active, *i))
+            .map(|(i, _)| i)
+    }
+    pub(super) fn entry_copy_candidate(&self, object: ObjectRef) -> bool {
+        self.on_battlefield(object.card)
+            && self.object_ref(object.card) == object
+            && self.is_creature(object.card)
+    }
+    pub(super) fn choose_entry_copy(&mut self, object: Option<ObjectRef>) {
+        let recipe = object.map(|object| self.copiable_recipe(object));
+        let origin = if recipe.is_some() {
+            self.next_role_timestamp()
+        } else {
+            0
+        };
+        let index = self.entry_copy_index().expect("owned copy entry choice");
+        let movement = &mut self.state.entry_batch.as_mut().unwrap().moves[index];
+        let copy = movement.copy.as_mut().unwrap();
+        copy.chosen = true;
+        if let Some(mut recipe) = recipe {
+            recipe.exceptions = recipe.exceptions.union(CopyExceptions::CHANGELING);
+            let recipe = recipe.overlay(copy.native);
+            copy.chosen = !recipe.definition.as_enters_copy_creature();
+            copy.origin = origin;
+            copy.recipe = Some(recipe);
+        }
+        if let Some(recipe) = copy.recipe {
+            // A prototype drives only the prospective entry event. The live card
+            // remains in its original stack/hand zone until the entire batch commits.
+            let before = &mut movement.before;
+            before.card = recipe.definition;
+            before.name = recipe.definition.name();
+            before.kinds = recipe.definition.kind_mask();
+            before.colors = recipe.definition.colors();
+            before.entry_choice = None;
+            before.abilities = None;
+            before.copy_recipe = Some(recipe);
+            before.copy_ability_origin = copy.origin;
+            before.granted_subtypes = GrantedSubtypes::default();
+            before.keywords = recipe.definition.keywords().union(Keywords::CHANGELING);
+            if recipe.exceptions.haste {
+                before.keywords = before.keywords.union(Keywords::HASTE);
+            }
+        }
+    }
+    pub(super) fn entry_copy_view(&self, viewer: Player) -> Option<EntryCopyView> {
+        if !matches!(self.state.pending, Pending::EntryCopy { .. }) {
+            return None;
+        }
+        let batch = self.state.entry_batch.as_ref()?;
+        let movement = &batch.moves[self.entry_copy_index()?];
+        if !visible(movement, viewer, &self.state.known_hand) {
+            return None;
+        }
+        Some(EntryCopyView {
+            object: movement.before.reference,
+            card: movement.before.card,
+            candidates: self
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .map(|(i, _)| self.object_ref(i as CardId))
+                .filter(|&r| self.entry_copy_candidate(r))
+                .collect(),
+            selected: batch
+                .moves
+                .iter()
+                .filter(|m| visible(m, viewer, &self.state.known_hand))
+                .filter_map(|m| {
+                    let c = m.copy.as_ref()?;
+                    (c.chosen || c.recipe.is_some()).then_some(EntryCopySelectionView {
+                        object: m.before.reference,
+                        recipe: c.recipe,
+                    })
+                })
+                .collect(),
+        })
+    }
+    fn install_entry_copy(
+        &mut self,
+        object: ObjectRef,
+        recipe: CopyRecipe,
+        native: CopyRecipe,
+        ability_origin: u64,
+    ) {
+        let token = self.state.objects[object.card as usize].is_token()
+            || self.state.objects[object.card as usize].is_spell_copy();
+        self.clear_copy_recipe(object);
+        let rows = self.state.copy_recipes.get_or_insert_with(Default::default);
+        let at = rows.partition_point(|row| row.object.card < object.card);
+        rows.insert(
+            at,
+            copies::CopyRow {
+                object,
+                recipe,
+                native: Some(native),
+                ability_origin,
+                loyalty_used_turn: None,
+            },
+        );
+        let slot = &mut self.state.objects[object.card as usize];
+        slot.card = recipe.definition;
+        slot.copy_kind = if token {
+            CopyKind::Token
+        } else {
+            CopyKind::Physical
+        };
     }
 }

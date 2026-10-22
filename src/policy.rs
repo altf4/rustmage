@@ -159,6 +159,20 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             }
             Action::AnnounceAdventure { .. } | Action::AnnounceOmen { .. } => 30,
             Action::ChooseManaLotSpend { amount } => 120 + i128::from(*amount != 0),
+            Action::ChooseEntryCopy { object: None } => 0,
+            Action::ChooseEntryCopy {
+                object: Some(object),
+            } => observation
+                .objects
+                .iter()
+                .find(|candidate| candidate.reference == *object)
+                .map_or(-1, |candidate| {
+                    if candidate.card.as_enters_copy_creature() {
+                        -1
+                    } else {
+                        120 + candidate.power.max(0) + candidate.toughness.max(0)
+                    }
+                }),
             Action::ChooseEntryTimestamp { .. } => 120,
             Action::ChooseReplacement { .. } => 120,
             Action::ChooseCreatedToken { .. } => 120,

@@ -1454,7 +1454,8 @@ impl Game {
                 }
                 Effect::Creature(..) | Effect::Permanent => {
                     self.normalize_permanent_spell_copy(&item);
-                    if !item.source_card.evoke_costs().is_empty()
+                    if item.source_card.as_enters_copy_creature()
+                        || !item.source_card.evoke_costs().is_empty()
                         || item.cast.is_some_and(|c| {
                             c.offspring == Some(true)
                                 || c.kicker == Some(true)

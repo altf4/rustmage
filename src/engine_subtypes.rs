@@ -448,6 +448,13 @@ impl Game {
 impl Game {
     pub(super) fn entry_choice_subtypes(m: &entries::EntryMove) -> GrantedSubtypes {
         let mut result = GrantedSubtypes::default();
+        if m.before
+            .copy_recipe
+            .is_some_and(|r| r.exceptions.changeling)
+            && m.before.kinds & CREATURE_OR_KINDRED != 0
+        {
+            result.set_flag(ALL_CREATURE_TYPES, true);
+        }
         if m.before.copy_recipe.is_some_and(|r| r.exceptions.nightmare) {
             result.insert("Nightmare");
         }
