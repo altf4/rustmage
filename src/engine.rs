@@ -7625,3 +7625,7 @@ mod ecl_doran_tests;
 #[cfg(test)]
 #[path = "engine_ecl_transform_tests.rs"]
 mod ecl_transform_tests;
+
+#[cfg(test)]
+#[path = "engine_ecl_inherited_tests.rs"]
+mod ecl_inherited_tests;
