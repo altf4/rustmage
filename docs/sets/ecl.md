@@ -21,8 +21,8 @@ The frozen manifest accounts for every identity. The [per-card obligation ledger
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **195/273**, comprising **107 inherited** and **88 newly
-implemented/tested physical candidates**; **78 remain gated**. Inherited evidence
+Admission flags: **199/273**, comprising **107 inherited** and **92 newly
+implemented/tested physical candidates**; **74 remain gated**. Inherited evidence
 still needs audit. No final published reviews or newly merged cards. All new
 names and per-card obligations appear in the linked JSON ledgers. Three tested
 synthetic token recipes are outside the physical denominator.
@@ -32,7 +32,7 @@ cards respectively. Their focused modules are `src/engine_ecl_black_red_tests.rs
 `src/engine_ecl_white_blue_tests.rs`, and `src/engine_ecl_green_colorless_tests.rs`.
 The integrator owns multicolor cards, shared coordination, source reconciliation,
 `src/engine_ecl_core_tests.rs`, `src/engine_ecl_commands_tests.rs`, and generated
-links. All five Incarnations are integrated; root now owns the next multicolor combat batch.
+links. All five Incarnations are integrated; root now owns the seven transforming cards.
 
 Shared mechanics include mandatory and optional blight costs versus effects,
 wither as a damage result, exact mana-funding tap witnesses, entry-time creature
@@ -40,13 +40,13 @@ history, chosen-type entry and activation packets/restricted mana/lords,
 conditional flash, all five Commands and their six mode pairs, immediate blink
 through owned entry continuations, private filtered optional discard,
 attached-creature fight, non-target power-difference choices, and conditional
-combat assignment using an equipped creature's toughness, evoke with actual mana-spent entry qualification, all-types temporary effects, and vivid search/reveal quantities. Alternative casting
+combat assignment using an equipped creature's toughness, evoke with actual mana-spent entry qualification, all-types temporary effects, vivid search/reveal quantities, exact combat-event subjects, owned layer-five color changes, creature trigger grants, and counter/untap prohibitions. Alternative casting
 methods preserve printed additional mana-or-blight choices.
 
 ## Validation and measurements
 
-The previous combined focused run passed 118 scenarios; subsequent batches have
-passed their isolated author scenarios, with another combined run pending.
+The combined focused run at `bb92026c` passed **196 ECL scenarios** in7.24
+seconds after linking Doran, Puca’s Eye, Hexing Squelcher, and Blossombind.
 Full release validation **passed all eight phases** at `0ae35121`: formatting,
 Python/provenance checks, Clippy/all-target compilation, **2,671 native tests**
 (one ignored), catalogue checks, **all 22 Foundations game suites**, ECL games,

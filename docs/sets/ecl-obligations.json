@@ -482,7 +482,7 @@
       "name": "Blossombind",
       "definition": "src/card_definitions/ecl/blossombind.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Blossombind",
@@ -498,7 +498,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/blossombind.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "5a851367-1c4a-4cc9-a9c3-3d2775986b4c",
@@ -1568,7 +1572,7 @@
       "name": "Doran, Besieged by Time",
       "definition": "src/card_definitions/ecl/doran_besieged_by_time.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Doran, Besieged by Time",
@@ -1583,7 +1587,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_doran_tests.rs",
+        "src/card_definitions/ecl/doran_besieged_by_time.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "f852bc33-e2f8-43be-9e6e-7badd1f894ef",
@@ -2944,7 +2952,7 @@
       "name": "Hexing Squelcher",
       "definition": "src/card_definitions/ecl/hexing_squelcher.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Hexing Squelcher",
@@ -2961,7 +2969,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/hexing_squelcher.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "dd27c5fa-4355-4e5c-8219-b74cfe209da0",
@@ -4348,7 +4360,7 @@
       "name": "Puca's Eye",
       "definition": "src/card_definitions/ecl/puca_s_eye.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Puca's Eye",
@@ -4363,7 +4375,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/puca_s_eye.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "ffa23c3a-76a8-414f-aa3b-fc09aabd78c5",

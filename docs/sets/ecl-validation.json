@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 88,
+  "newly_tested_physical_cards": 92,
   "newly_tested_names": [
     "Adept Watershaper",
     "Ashling's Command",
@@ -14,6 +14,7 @@
     "Blighted Blackthorn",
     "Bloodline Bidding",
     "Bloom Tender",
+    "Blossombind",
     "Boggart Mischief",
     "Bogslither's Embrace",
     "Boulder Dash",
@@ -32,6 +33,7 @@
     "Dawnhand Eulogist",
     "Deceit",
     "Deepchannel Duelist",
+    "Doran, Besieged by Time",
     "Dose of Dawnglow",
     "Dream Seizer",
     "Eclipsed Realms",
@@ -51,6 +53,7 @@
     "Grub's Command",
     "Gutsplitter Gang",
     "Heirloom Auntie",
+    "Hexing Squelcher",
     "Illusion Spinners",
     "Kithkeeper",
     "Liminal Hold",
@@ -63,6 +66,7 @@
     "Pitiless Fists",
     "Prismabasher",
     "Prismatic Undercurrents",
+    "Puca's Eye",
     "Pummeler for Hire",
     "Pyrrhic Strike",
     "Reaping Willow",
@@ -93,8 +97,8 @@
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 195,
-  "remaining_gated": 78,
+  "current_admission_flags": 199,
+  "remaining_gated": 74,
   "inherited_evidence_audit": "pending",
   "locally_reviewed": 0,
   "final_published_reviews": 0,
@@ -103,9 +107,9 @@
   "focused_integration": {
     "command": "python3 scripts/resource_guard.py -- cargo test --lib ecl_",
     "exit": 0,
-    "tests": 118,
-    "test_seconds": 3.5,
-    "resource_report": "<cache>/rustmage-build-reports/5a725d0ce6b54ab6887170167d8941ce.json"
+    "tests": 196,
+    "test_seconds": 7.24,
+    "resource_report": "<cache>/rustmage-build-reports/ff21eb6cf50c4b7c845b968dfd5c967c.json"
   },
   "natural_games": {
     "command": "python3 scripts/resource_guard.py -- cargo test --test lorwyn_eclipsed_games -- --nocapture",
@@ -132,13 +136,13 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T17:08:42.461367+00:00",
-    "elapsed_seconds": 6355.244516,
-    "newly_verified_cards": 88,
-    "cards_per_hour": 49.84859342585836,
-    "scope": "Local whole-card focused verification; inherited coverage, final review and merge excluded. Integrated release validation passes at0ae35121."
+    "end_utc": "2026-10-22T17:21:20.887691+00:00",
+    "elapsed_seconds": 7113.67084,
+    "newly_verified_cards": 92,
+    "cards_per_hour": 46.55824080834193,
+    "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release checkpoint at195cards recorded separately."
   },
-  "focused_scope": "118 scenarios at9b29008c; later integrated batches have author tests, full combined rerun pending",
+  "focused_scope": "196 integrated ECL scenarios passed at bb92026c with generated catalogue1fbc9bcda08f4079d26ed30456add7c4c31131f6ef2563e732a179a74fc3e0a3",
   "full_release_validation": {
     "status": "passed all8phases",
     "head": "0ae3512178b7c6fbee2bf4a268fca5cfff346d5b",
@@ -155,7 +159,8 @@
       "<cache>/rustmage-validation-4cepq26r/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
       "<cache>/rustmage-validation-4cepq26r/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
       "<cache>/rustmage-validation-4cepq26r/debug/deps/librustmage.so": "4e2340d8aa5bb40727e6f4fbb65e5b66fe6e2ac7c8f8037ff6893a63fc40ca9b"
-    }
+    },
+    "scope": "195 admission flags at0ae35121; later integrated batches have focused tests, final entire-set run remains pending."
   },
   "regression_recheck": {
     "command": "guarded cargo test --test foundations_games characteristic_modal_games::foundations_six_characteristic_modal_cards_full_games_and_owned_effect_state",
@@ -184,21 +189,10 @@
       "passed": 7
     }
   },
-  "release_regression_benchmark": {
-    "clone_ns": 208.31912,
-    "decisions": 49832,
-    "decisions_per_second": 200283.6067638771,
-    "games": 100,
-    "games_per_second": 401.91765685478623,
-    "initial_state_bytes_excluding_capacity_and_allocator": 21000,
-    "max_decisions_per_game": 1129,
-    "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
-    "restore_ns": 181.26649,
-    "seconds": 0.248807183,
-    "head": "0ae3512178b7c6fbee2bf4a268fca5cfff346d5b",
-    "profile": "release",
-    "cpu": "Intel Core Ultra 5 335, x86_64, 8 cores",
-    "compiler": "rustc1.98.0 (88d9e12ae2026-08-18)",
-    "workload": "src/bin/benchmark.rs;100 deterministic Freeform smoke games; policy+observations included, no JSON/model; not set acceptance"
+  "doran": {
+    "commit": "4bc474cc",
+    "scenarios": 6,
+    "seconds": 0.16,
+    "report": "<cache>/rustmage-build-reports/30122f9d6daf4127b98494e46111c72d.json"
   }
 }

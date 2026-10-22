@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "2fa4d581b9097fb612558c7036965c7535e74f4fab1eceb25687fd6bc0bebc1e",
+  "catalogue_version": "1fbc9bcda08f4079d26ed30456add7c4c31131f6ef2563e732a179a74fc3e0a3",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2281,
-  "implemented_total": 2287,
+  "implemented_standard_cards": 2282,
+  "implemented_total": 2288,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 75,
-      "complete": 192
+      "gated": 74,
+      "complete": 193
     },
     "eoc": {
       "total": 8,
@@ -3967,8 +3967,8 @@
     {
       "name": "Blossombind",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/blossombind.rs",
       "set": "ecl"
     },
