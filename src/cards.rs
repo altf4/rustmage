@@ -567,6 +567,7 @@ pub(crate) struct LibrarySelectionEffect {
 pub enum SearchFilter {
     Any,
     ManaValue { minimum: u64, maximum: u64 },
+    CreatureManaValueAtMost(u64),
     AnyOf(&'static [SearchFilter]),
     AllOf(&'static [SearchFilter]),
     Name(&'static str),
@@ -583,6 +584,9 @@ impl SearchFilter {
     pub(crate) fn matches(self, card: Card) -> bool {
         match self {
             Self::Any => true,
+            Self::CreatureManaValueAtMost(maximum) => {
+                card.is_creature() && card.fixed_mana_value() <= maximum
+            }
             Self::ManaValue { minimum, maximum } => {
                 (minimum..=maximum).contains(&card.fixed_mana_value())
             }
@@ -607,6 +611,8 @@ impl SearchFilter {
 pub enum SearchDestination {
     /// Face-up exile linked to this exact source incarnation, without an automatic return.
     LinkedExile,
+    /// A paid type-specific additional cost may put a matching result onto the battlefield.
+    BeheldCreatureType,
     Graveyard,
     /// Shuffle, then put the selected cards on top (last selected uppermost).
     Top,
@@ -633,6 +639,9 @@ pub enum EffectChoiceKind {
     Behold,
     /// Behold one permanent or hand card and exile that exact witness as a cost.
     BeholdAndExile,
+    BeholdMany(u16),
+    /// Declare an optional creature type before choosing creature witnesses.
+    OptionalBeholdType(u16),
     ExileFromHand,
     ExileGraveyardCard,
     /// Put this many -1/-1 counters on one chosen creature you control.
@@ -1171,6 +1180,10 @@ pub(crate) enum Instruction {
     Surveil(u16),
     AnimateSource(AnimationSpec),
     Search(SearchSpec),
+    SearchCreatureManaValue {
+        maximum: AmountValue,
+        destination: SearchDestination,
+    },
     SearchScaled {
         spec: SearchSpec,
         maximum: AmountValue,

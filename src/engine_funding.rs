@@ -30,6 +30,11 @@ struct FundingState<'g> {
     life: i128,
     resources: Vec<Resource>,
     named_counters: live_counters::Rows,
+    #[allow(
+        clippy::box_collection,
+        reason = "Rare provisional witness groups keep ordinary speculative worlds compact"
+    )]
+    reserve_group: Option<Box<Vec<(ObjectRef, AdditionalCost)>>>,
     convoke: bool,
 }
 impl ability_world::CharacteristicWorld for FundingState<'_> {
@@ -411,6 +416,7 @@ impl<'g> FundingState<'g> {
             life: game.state.players[goal.actor.index()].life,
             resources,
             named_counters: game.state.named_counters.clone(),
+            reserve_group: None,
         }
     }
     fn obligations(&self, goal: &FundingGoal) -> bool {
@@ -441,15 +447,20 @@ impl<'g> FundingState<'g> {
                         )
                 });
         counter_cost_allowed
+            && self.reserve_group.as_ref().is_none_or(|group| {
+                group.iter().all(|&(reference, spec)| {
+                    self.reserved_witness_matches(goal.actor, reference, spec)
+                })
+            })
             && self.game.state.announcing.as_ref().is_none_or(|a| {
                 a.additional_group.as_ref().is_none_or(|group| {
-                    group.iter().all(|r| {
-                        let o = ability_world::CharacteristicWorld::object(self, r.card);
-                        o.zone == Zone::Battlefield
-                            && o.generation == r.generation
-                            && !o.tapped
-                            && o.controller == goal.actor
-                    })
+                    let Some(spec) = a.additional_cost() else {
+                        return true;
+                    };
+                    a.additional_paid
+                        || group
+                            .iter()
+                            .all(|&r| self.reserved_witness_matches(goal.actor, r, spec))
                 })
             })
             && reserve_obligations(
@@ -468,6 +479,26 @@ impl<'g> FundingState<'g> {
                 source.map_or(0, |r| self.kinds(r)),
                 || source.map_or(Keywords::NONE, |r| self.keywords(r)),
                 self.life,
+            )
+    }
+    fn reserved_witness_matches(
+        &self,
+        actor: Player,
+        reference: ObjectRef,
+        spec: AdditionalCost,
+    ) -> bool {
+        let object = ability_world::CharacteristicWorld::object(self, reference.card);
+        object.generation == reference.generation
+            && Game::additional_object_matches(
+                spec,
+                actor,
+                object,
+                ability_world::CharacteristicWorld::kinds(self, reference.card),
+                self.resources
+                    .iter()
+                    .find(|resource| resource.id == reference.card)
+                    .map_or_else(|| object.keywords(), |resource| self.keywords(resource)),
+                ability_world::CharacteristicWorld::subtypes(self, reference.card),
             )
     }
     fn granted_subtypes(&self, id: CardId) -> GrantedSubtypes {
@@ -967,7 +998,18 @@ impl<'g> FundingState<'g> {
                     .is_some_and(|(source, _, _, _)| source.card == r.id),
                 reserved: goal
                     .reserve
-                    .is_some_and(|(reference, _)| reference.card == r.id),
+                    .is_some_and(|(reference, _)| reference.card == r.id)
+                    || self.reserve_group.as_ref().is_some_and(|group| {
+                        group.iter().any(|(reference, _)| reference.card == r.id)
+                    })
+                    || self
+                        .game
+                        .state
+                        .announcing
+                        .as_ref()
+                        .filter(|a| !a.additional_paid)
+                        .and_then(|a| a.additional_group.as_ref())
+                        .is_some_and(|group| group.iter().any(|reference| reference.card == r.id)),
                 present: r.object.zone == Zone::Battlefield,
                 tapped: r.object.tapped,
                 sick: r.object.summoning_sick,
@@ -1519,6 +1561,40 @@ impl<'g> FundingState<'g> {
     }
 }
 impl Game {
+    pub(super) fn behold_witnesses_fundable(
+        &self,
+        a: &Announcement,
+        spec: AdditionalCost,
+        witnesses: &[ObjectRef],
+        cost: Option<ManaCost>,
+    ) -> bool {
+        let mut proposal = a.clone();
+        if let Some(cost) = cost {
+            proposal.cost = Some(cost);
+            proposal.total_cost = None;
+        }
+        let goal = self.funding_goal(&proposal);
+        let purpose = self.purpose_for_item(&proposal.item);
+        if witnesses
+            .iter()
+            .any(|&r| !self.additional_candidate(spec, goal.actor, a.item.object, r))
+        {
+            return false;
+        }
+        if payable(
+            self.available_mana(goal.actor, purpose),
+            goal.required,
+            goal.generic,
+        ) {
+            return true;
+        }
+        let mut state = FundingState::from_game(self, &goal);
+        state.purpose = purpose;
+        state.reserve_group = Some(Box::new(
+            witnesses.iter().copied().map(|r| (r, spec)).collect(),
+        ));
+        state.reachable(&goal, &mut HashSet::new())
+    }
     pub(super) fn can_fund(&self, goal: FundingGoal) -> bool {
         let purpose = self.funding_purpose(&goal);
         self.can_fund_for(goal, purpose)
@@ -1685,6 +1761,7 @@ impl Game {
             || a.needs_bargain()
             || a.needs_evidence()
             || a.needs_optional_additional()
+            || a.needs_behold_type()
             || a.additional_cost().is_some_and(forage::is_forage_cost) && a.forage.is_none()
             || a.needs_mana_cost()
             || (a.item.source_card.tiered_costs().is_some() && a.item.mode.is_none())
@@ -1710,6 +1787,20 @@ impl Game {
         })
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        if a.item
+            .source_card
+            .additional_cost()
+            .is_some_and(|spec| matches!(spec.kind, EffectChoiceKind::OptionalBeholdType(_)))
+        {
+            return self.behold_group_fundable(
+                a,
+                Some(cost),
+                a.additional_group
+                    .as_deref()
+                    .map_or(&[], |group| group.as_slice()),
+            );
+        }
+
         if a.mana_route_replaces_additional(cost) {
             let mut proposal = a.clone();
             proposal.cost = Some(cost);
@@ -2409,6 +2500,7 @@ mod own_turn_guard_tests {
                 life: 20,
                 resources: Vec::new(),
                 named_counters: None,
+                reserve_group: None,
                 convoke: false,
             };
             assert!(state.guard_available(ActivationGuard::OwnTurn, active));

@@ -3210,3 +3210,276 @@ fn ecl_green_champions_departure_uses_frozen_printed_ability_availability_for_si
         }
     }
 }
+
+fn announce_reunion(
+    g: &mut Game,
+    p: Player,
+    x: u32,
+    kind: Option<&str>,
+    witnesses: &[CardId],
+) -> CardId {
+    // Keep the scalar domain small enough that the ordinary indexed helper
+    // enumerates every X, including this interior choice.
+    g.state.players[p.index()].mana = [0, 0, 0, 0, 1, x];
+    let source = named(g, p, "Celestial Reunion", Zone::Hand);
+    checked(g, Action::AnnounceCast { card: source });
+    checked(g, Action::ChooseX { value: x });
+    let creature_type = kind.map(|kind| crate::cards::CreatureType::from_name(kind).unwrap());
+    checked(g, Action::ChooseBeholdType { creature_type });
+    for &id in witnesses {
+        let object = g.object_ref(id);
+        checked(g, Action::ChooseAdditionalCost { object });
+    }
+    pay(g);
+    source
+}
+
+#[test]
+fn ecl_green_reunion_optional_type_cost_private_witnesses_and_revealed_conditional_search() {
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..4 {
+            let mut g = setup(p);
+            let first = named(&mut g, p, "Changeling Wayfinder", Zone::Battlefield);
+            let second = named(
+                &mut g,
+                p,
+                if mode == 3 {
+                    "Flitterwing Nuisance"
+                } else {
+                    "Llanowar Elves"
+                },
+                Zone::Hand,
+            );
+            let selected = named(
+                &mut g,
+                p,
+                if mode == 3 {
+                    "Flitterwing Nuisance"
+                } else if mode == 2 {
+                    "Bear Cub"
+                } else {
+                    "Llanowar Elves"
+                },
+                Zone::Library,
+            );
+            let land = named(&mut g, p, "Forest", Zone::Library);
+            let expensive = named(&mut g, p, "Gigantosaurus", Zone::Library);
+            let kind = if mode == 0 {
+                None
+            } else if mode == 3 {
+                Some("Faerie")
+            } else {
+                Some("Elf")
+            };
+            let witnesses = if kind.is_some() {
+                vec![first, second]
+            } else {
+                Vec::new()
+            };
+            let source = announce_reunion(&mut g, p, 2, kind, &witnesses);
+            assert_eq!(
+                g.observe(p.other())
+                    .known_hand
+                    .contains(&g.object_ref(second)),
+                kind.is_some()
+            );
+            assert_eq!(g.object_view(first).zone, Zone::Battlefield);
+            assert_eq!(g.object_view(second).zone, Zone::Hand);
+            let packet = g
+                .state
+                .stack
+                .iter()
+                .find(|item| item.card == source)
+                .unwrap();
+            assert_eq!(
+                packet.cast.unwrap().optional_additional,
+                Some(kind.is_some())
+            );
+            assert_eq!(packet.source_chosen_type.map(|value| value.name()), kind);
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            assert!(g.observe(p).search_choice.is_some());
+            assert!(g.observe(p.other()).search_choice.is_none());
+            for id in [land, expensive] {
+                reject(&mut g, Action::ChooseSearch { card: id });
+            }
+            checked(&mut g, Action::ChooseSearch { card: selected });
+            assert_eq!(g.object_view(selected).zone, Zone::Library);
+            checked(&mut g, Action::FinishSearch);
+            settle(&mut g);
+            let battlefield = mode == 1 || mode == 3;
+            assert_eq!(
+                g.object_view(selected).zone,
+                if battlefield {
+                    Zone::Battlefield
+                } else {
+                    Zone::Hand
+                }
+            );
+            assert!(!g.object_view(selected).tapped);
+            if !battlefield {
+                assert!(
+                    g.observe(p.other())
+                        .known_hand
+                        .contains(&g.object_ref(selected))
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn ecl_green_reunion_optional_phase_always_exists_and_requires_two_distinct_creatures_not_kindred()
+{
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let elf = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let kindred = named(&mut g, p, "Morcant's Eyes", Zone::Hand);
+        let foreign = named(&mut g, p.other(), "Llanowar Elves", Zone::Battlefield);
+        let source = named(&mut g, p, "Celestial Reunion", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: source });
+        checked(&mut g, Action::ChooseX { value: 0 });
+        assert_eq!(g.observe(p.other()).decision, "behold_type");
+        let decline = Action::ChooseBeholdType {
+            creature_type: None,
+        };
+        assert!(g.legal_actions().contains(&decline));
+        let choose_elf = Action::ChooseBeholdType {
+            creature_type: Some(crate::cards::CreatureType::from_name("Elf").unwrap()),
+        };
+        reject(&mut g, choose_elf.clone());
+        let second = named(&mut g, p, "Changeling Wayfinder", Zone::Hand);
+        checked(&mut g, choose_elf);
+        for id in [kindred, foreign] {
+            let object = g.object_ref(id);
+            reject(&mut g, Action::ChooseAdditionalCost { object });
+        }
+        let object = g.object_ref(elf);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
+        reject(&mut g, Action::ChooseAdditionalCost { object });
+        reject(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 1, 0],
+            },
+        );
+        assert!(
+            !g.observe(p.other())
+                .known_hand
+                .contains(&g.object_ref(second))
+        );
+        let object = g.object_ref(second);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
+        pay(&mut g);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        let rng = g.state.rng;
+        checked(&mut g, Action::FinishSearch);
+        assert_ne!(g.state.rng, rng, "optional failure still shuffles");
+        settle(&mut g);
+    }
+}
+
+#[test]
+fn ecl_green_reunion_beheld_creatures_can_fund_same_cast_and_nested_entry_choice_retains_search() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let first = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let second = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        for id in [first, second] {
+            g.state.objects[id as usize].summoning_sick = false;
+        }
+        g.state.players[p.index()].mana = [0; 6];
+        let source = named(&mut g, p, "Celestial Reunion", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: source });
+        checked(&mut g, Action::ChooseX { value: 1 });
+        checked(
+            &mut g,
+            Action::ChooseBeholdType {
+                creature_type: Some(crate::cards::CreatureType::from_name("Elf").unwrap()),
+            },
+        );
+        for id in [first, second] {
+            let object = g.object_ref(id);
+            checked(&mut g, Action::ChooseAdditionalCost { object });
+        }
+        for id in [first, second] {
+            checked(&mut g, Action::TapMana { card: id });
+        }
+        pay(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert!(g.object_view(first).tapped && g.object_view(second).tapped);
+        settle(&mut g);
+
+        let mut g = setup(p);
+        let first = named(&mut g, p, "Changeling Wayfinder", Zone::Battlefield);
+        let second = named(&mut g, p, "Changeling Wayfinder", Zone::Hand);
+        let automaton = named(&mut g, p, "Adaptive Automaton", Zone::Library);
+        let _source = announce_reunion(&mut g, p, 3, Some("Construct"), &[first, second]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::ChooseSearch { card: automaton });
+        checked(&mut g, Action::FinishSearch);
+        assert!(g.observe(p).entry_value.is_some());
+        choose_type(&mut g, "Elf");
+        settle(&mut g);
+        assert_eq!(g.object_view(automaton).zone, Zone::Battlefield);
+        assert!(g.has_subtype(automaton, "Elf"));
+    }
+}
+
+#[test]
+fn ecl_green_reunion_spell_copy_keeps_paid_type_and_x_after_both_witnesses_depart() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let teach = named(&mut g, p, "Teach by Example", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: teach });
+        if g.legal_actions()
+            .contains(&Action::ChooseSpellCost { cost: 0 })
+        {
+            checked(&mut g, Action::ChooseSpellCost { cost: 0 });
+        }
+        pay(&mut g);
+        settle(&mut g);
+        let first = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let second = named(&mut g, p, "Changeling Wayfinder", Zone::Hand);
+        let found = named(&mut g, p, "Lys Alana Dignitary", Zone::Library);
+        let source = announce_reunion(&mut g, p, 2, Some("Elf"), &[first, second]);
+        g.move_object(first, Zone::Graveyard);
+        g.move_object(second, Zone::Exile);
+        for _ in 0..20 {
+            if g.state.stack.iter().any(|item| item.is_copy) {
+                break;
+            }
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|action| {
+                    matches!(
+                        action,
+                        Action::Pass
+                            | Action::PutTrigger { .. }
+                            | Action::FinishTargets
+                            | Action::FinishStackTargets
+                    )
+                })
+                .unwrap();
+            checked(&mut g, action);
+        }
+        let copy = g.state.stack.iter().find(|item| item.is_copy).unwrap();
+        assert_eq!(copy.x, Some(2));
+        assert_eq!(copy.source_chosen_type.unwrap().name(), "Elf");
+        assert_eq!(copy.cast.unwrap().optional_additional, Some(true));
+        assert_eq!(copy.cast.unwrap().payment, [0; 6]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::ChooseSearch { card: found });
+        checked(&mut g, Action::FinishSearch);
+        assert_eq!(g.object_view(found).zone, Zone::Battlefield);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::FinishSearch);
+        settle(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+    }
+}

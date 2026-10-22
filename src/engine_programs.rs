@@ -2503,6 +2503,30 @@ impl Game {
                 }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
                 Instruction::DestroyLandAndSearch => self.destroy_land_and_search(&item),
+                Instruction::SearchCreatureManaValue {
+                    maximum,
+                    destination,
+                } => {
+                    let maximum =
+                        u64::try_from(self.item_amount(maximum, &item)).unwrap_or(u64::MAX);
+                    self.state.resolving.as_mut().unwrap().search =
+                        Some(Box::new(search::SearchChoice {
+                            spec: SearchSpec {
+                                filter: crate::SearchFilter::CreatureManaValueAtMost(maximum),
+                                maximum: 1,
+                                destination,
+                                tapped: false,
+                                reveal: true,
+                            },
+                            minimum: 0,
+                            selected: Vec::new(),
+                            battlefield: None,
+                        }));
+                    self.state.pending = Pending::EffectSearch {
+                        player: item.controller,
+                    };
+                    return;
+                }
                 Instruction::Search(mut spec)
                 | Instruction::SearchRequired(mut spec)
                 | Instruction::SearchScaled { mut spec, .. } => {

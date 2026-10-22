@@ -350,3 +350,86 @@ fn ecl_green_behold_owned_funding_preserves_live_or_hand_witness_but_allows_tapp
         assert!(g.state.objects[token as usize].is_token());
     }
 }
+
+#[test]
+fn ecl_green_behold_many_provisional_reserves_are_owned_and_distinguish_interchangeable_sources() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let creatures: Vec<_> = (0..3)
+            .map(|_| {
+                let id = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+                g.state.objects[id as usize].summoning_sick = false;
+                id
+            })
+            .collect();
+        g.state.players[p.index()].mana = [0; 6];
+        let goal = FundingGoal {
+            actor: p,
+            required: [0, 0, 0, 0, 1, 0],
+            generic: 1,
+            source: None,
+            reserve: None,
+        };
+        let spec = AdditionalCost {
+            kind: EffectChoiceKind::BeholdMany(2),
+            filter: SacrificeFilter {
+                keywords: Keywords::NONE,
+                source_only: false,
+                kinds: 1,
+                nonland: false,
+                other: true,
+                tokens: None,
+                artifact_enchantment_or_token: false,
+                subtype: Some("Elf"),
+            },
+        };
+        let mut world = FundingState::from_game(&g, &goal);
+        world.reserve_group = Some(Box::new(
+            creatures[..2]
+                .iter()
+                .map(|&id| (g.object_ref(id), spec))
+                .collect(),
+        ));
+        assert!(world.obligations(&goal));
+        let moves = world.moves(&goal);
+        let first = moves
+            .iter()
+            .find(|step| world.resources[step.resource].id == creatures[0])
+            .unwrap();
+        let third = moves
+            .iter()
+            .find(|step| world.resources[step.resource].id == creatures[2])
+            .unwrap();
+        let mut reserved = world.clone();
+        reserved.apply(first);
+        let mut ordinary = world.clone();
+        ordinary.apply(third);
+        assert!(reserved.obligations(&goal));
+        assert_eq!(reserved.mana, ordinary.mana);
+        assert!(reserved.key(&goal) != ordinary.key(&goal));
+        let second = reserved
+            .moves(&goal)
+            .into_iter()
+            .find(|step| reserved.resources[step.resource].id == creatures[1])
+            .unwrap();
+        reserved.apply(&second);
+        assert!(reserved.obligations(&goal));
+        assert_eq!(reserved.mana, [0, 0, 0, 0, 2, 0]);
+        let mut departed = world.clone();
+        departed
+            .resources
+            .iter_mut()
+            .find(|resource| resource.id == creatures[0])
+            .unwrap()
+            .object
+            .zone = Zone::Graveyard;
+        assert!(!departed.obligations(&goal));
+        assert!(world.obligations(&goal));
+        departed
+            .reserve_group
+            .as_mut()
+            .unwrap()
+            .push((g.object_ref(creatures[2]), spec));
+        assert_eq!(world.reserve_group.as_ref().unwrap().len(), 2);
+    }
+}

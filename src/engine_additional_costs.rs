@@ -35,7 +35,9 @@ impl Game {
             return false;
         };
         let controls_cost_object = match spec.kind {
-            EffectChoiceKind::Behold | EffectChoiceKind::BeholdAndExile => match o.zone {
+            EffectChoiceKind::Behold
+            | EffectChoiceKind::BeholdAndExile
+            | EffectChoiceKind::BeholdMany(_) => match o.zone {
                 Zone::Battlefield => o.controller == actor,
                 Zone::Hand => o.owner == actor,
                 _ => false,
@@ -77,7 +79,9 @@ impl Game {
         subtypes: GrantedSubtypes,
     ) -> bool {
         let zone = match spec.kind {
-            EffectChoiceKind::Behold | EffectChoiceKind::BeholdAndExile
+            EffectChoiceKind::Behold
+            | EffectChoiceKind::BeholdAndExile
+            | EffectChoiceKind::BeholdMany(_)
                 if matches!(o.zone, Zone::Battlefield | Zone::Hand) =>
             {
                 o.zone
@@ -92,7 +96,9 @@ impl Game {
         let f = spec.filter;
         if matches!(
             spec.kind,
-            EffectChoiceKind::Behold | EffectChoiceKind::BeholdAndExile
+            EffectChoiceKind::Behold
+                | EffectChoiceKind::BeholdAndExile
+                | EffectChoiceKind::BeholdMany(_)
         ) && zone == Zone::Hand
             && o.is_token()
         {
@@ -280,7 +286,10 @@ impl Game {
         let Some(spec) = definition.additional_cost() else {
             return self.can_fund_for(base, purpose);
         };
-        if matches!(spec.kind, EffectChoiceKind::OptionalBlightCost(_)) {
+        if matches!(
+            spec.kind,
+            EffectChoiceKind::OptionalBlightCost(_) | EffectChoiceKind::OptionalBeholdType(_)
+        ) {
             return self.can_fund_for(base, purpose);
         }
         if forage::is_forage_cost(spec) {
@@ -348,6 +357,17 @@ impl Game {
         let Some(spec) = a.additional_cost() else {
             return false;
         };
+        if matches!(spec.kind, EffectChoiceKind::BeholdMany(_)) {
+            let mut selected = a
+                .additional_group
+                .as_deref()
+                .map_or_else(Vec::new, |group| group.clone());
+            if selected.contains(&object) {
+                return false;
+            }
+            selected.push(object);
+            return self.behold_group_fundable(a, None, &selected);
+        }
         if let EffectChoiceKind::TapPermanents(_) = spec.kind {
             return (!a.tap_group_excludes_source(spec) || object != a.item.object)
                 && !a
@@ -366,7 +386,7 @@ impl Game {
     pub(super) fn choose_additional_cost(&mut self, object: ObjectRef) {
         let a = self.state.announcing.as_mut().unwrap();
         if let Some(AdditionalCost {
-            kind: EffectChoiceKind::TapPermanents(amount),
+            kind: EffectChoiceKind::TapPermanents(amount) | EffectChoiceKind::BeholdMany(amount),
             ..
         }) = a.additional_cost()
         {
@@ -392,6 +412,25 @@ impl Game {
             assert_eq!(selected.len(), usize::from(amount));
             for &(r, kind) in selected.iter() {
                 self.pay_counters(r.card, &Counters::of(kind, 1));
+            }
+            a.additional_paid = true;
+            return;
+        }
+        if let EffectChoiceKind::BeholdMany(amount) = spec.kind {
+            let group = a.additional_group.as_ref().expect("selected behold group");
+            assert_eq!(group.len(), usize::from(amount));
+            for &reference in group.iter() {
+                assert!(self.additional_candidate(
+                    spec,
+                    a.item.controller,
+                    a.item.object,
+                    reference
+                ));
+                if self.state.objects[reference.card as usize].zone == Zone::Hand
+                    && !self.state.known_hand.contains(&reference)
+                {
+                    self.state.known_hand.push(reference);
+                }
             }
             a.additional_paid = true;
             return;
@@ -432,7 +471,9 @@ impl Game {
             self.refresh_local_source_counter_quantities(&mut a.item);
         }
         match spec.kind {
-            EffectChoiceKind::Behold | EffectChoiceKind::BeholdAndExile => {
+            EffectChoiceKind::Behold
+            | EffectChoiceKind::BeholdAndExile
+            | EffectChoiceKind::BeholdMany(_) => {
                 if self.state.objects[object.card as usize].zone == Zone::Hand
                     && !self.state.known_hand.contains(&object)
                 {
@@ -457,6 +498,7 @@ impl Game {
             | EffectChoiceKind::ExileGraveyardCard
             | EffectChoiceKind::Blight(_)
             | EffectChoiceKind::OptionalBlightCost(_)
+            | EffectChoiceKind::OptionalBeholdType(_)
             | EffectChoiceKind::RemoveCreatureCounters(_)
             | EffectChoiceKind::TapPermanents(_)
             | EffectChoiceKind::UntapLands { .. }

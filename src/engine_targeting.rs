@@ -59,6 +59,24 @@ impl Announcement {
                 None
             }
             StackKind::Spell => self.item.source_card.additional_cost().and_then(|spec| {
+                if let EffectChoiceKind::OptionalBeholdType(amount) = spec.kind {
+                    return self
+                        .item
+                        .cast
+                        .filter(|cast| cast.optional_additional == Some(true))
+                        .map(|_| AdditionalCost {
+                            kind: EffectChoiceKind::BeholdMany(amount),
+                            filter: SacrificeFilter {
+                                subtype: Some(
+                                    self.item
+                                        .source_chosen_type
+                                        .expect("declared behold type")
+                                        .name(),
+                                ),
+                                ..spec.filter
+                            },
+                        });
+                }
                 if let EffectChoiceKind::OptionalBlightCost(amount) = spec.kind {
                     self.item
                         .cast
@@ -595,7 +613,7 @@ impl Game {
         let player = a.item.controller;
         // CR601.2b announces the mode before a hybrid equivalent. Both
         // declarations precede targets, mana abilities and payment.
-        if needs_mode && !a.needs_optional_additional() {
+        if needs_mode && !a.needs_optional_additional() && !a.needs_behold_type() {
             self.state.pending = Pending::Modes { player };
         } else if a.pay_window && a.has_x_cost() && a.item.x.is_none() {
             self.state.pending = Pending::X { player };
@@ -611,6 +629,8 @@ impl Game {
             self.state.pending = Pending::Gift { player };
         } else if a.needs_optional_additional() {
             self.state.pending = Pending::OptionalAdditionalCost { player };
+        } else if a.needs_behold_type() {
+            self.state.pending = Pending::BeholdType { player };
         } else if a.needs_mana_cost() {
             self.state.pending = if a.item.kind == StackKind::Spell {
                 Pending::SpellCost { player }

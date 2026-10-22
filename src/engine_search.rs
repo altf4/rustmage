@@ -115,6 +115,22 @@ impl Game {
                     }
                     SearchDestination::LinkedExile => Zone::Exile,
                     SearchDestination::Hand => Zone::Hand,
+                    SearchDestination::BeheldCreatureType => {
+                        let item = &self.state.resolving.as_ref().unwrap().item;
+                        if item
+                            .cast
+                            .is_some_and(|cast| cast.optional_additional == Some(true))
+                            && item.source_chosen_type.is_some_and(|kind| {
+                                self.state.objects[id as usize]
+                                    .card
+                                    .has_subtype(kind.name())
+                            })
+                        {
+                            Zone::Battlefield
+                        } else {
+                            Zone::Hand
+                        }
+                    }
                     SearchDestination::Graveyard => Zone::Graveyard,
                     SearchDestination::Battlefield => Zone::Battlefield,
                     SearchDestination::BattlefieldThenHand { .. } => {

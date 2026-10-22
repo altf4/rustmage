@@ -139,6 +139,8 @@ use crate::shared_vec::SharedVec;
 mod additional_costs;
 #[path = "engine_bargain.rs"]
 mod bargain;
+#[path = "engine_behold.rs"]
+mod behold;
 #[path = "engine_evidence.rs"]
 mod evidence;
 pub use evidence::{EvidenceEventView, EvidenceView};
@@ -465,6 +467,7 @@ define_actions! {
     ChooseExplore { object: ObjectRef, graveyard: bool },
     ExileHandCard { object: ObjectRef },
     ExileGraveyardCard { object: ObjectRef },
+    ChooseBeholdType { creature_type: Option<crate::cards::CreatureType> },
     ChooseOptionalAdditionalCost {
         object: Option<ObjectRef>,
     },
@@ -927,7 +930,7 @@ pub struct SpellView {
     pub transform_stamp: Option<Box<u64>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub creature_action_event: Option<Box<CreatureActionEventView>>,
-    /// Public source choice frozen before activation costs can move the source.
+    /// Public source choice frozen before costs move it, including a cast's chosen type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_chosen_type: Option<crate::cards::CreatureType>,
     /// Allocated only after a targeted permanent departs; these are public facts.
@@ -1480,6 +1483,9 @@ enum Pending {
         player: Player,
     },
     OptionalAdditionalCost {
+        player: Player,
+    },
+    BeholdType {
         player: Player,
     },
     Bargain {
@@ -2387,6 +2393,7 @@ impl Game {
             | Pending::Crew { player }
             | Pending::Explore { player }
             | Pending::OptionalAdditionalCost { player }
+            | Pending::BeholdType { player }
             | Pending::Bargain { player }
             | Pending::ResolutionX { player }
             | Pending::X { player }
@@ -3612,6 +3619,20 @@ impl Game {
                     }
                 }
             }
+            Pending::BeholdType { .. } => {
+                let a = s.announcing.as_ref().unwrap();
+                for creature_type in std::iter::once(None).chain(
+                    crate::CREATURE_TYPES
+                        .iter()
+                        .map(|name| Some(crate::cards::CreatureType::from_name(name).unwrap())),
+                ) {
+                    if self.behold_type_choice_fundable(a, creature_type)
+                        && emit(Action::ChooseBeholdType { creature_type })
+                    {
+                        return true;
+                    }
+                }
+            }
             Pending::OptionalAdditionalCost { .. } => {
                 let a = s.announcing.as_ref().unwrap();
                 if self.optional_additional_choice_fundable(a, None)
@@ -4386,6 +4407,7 @@ impl Game {
             Action::FinishEvidence => self.finish_evidence(),
             Action::DeclineEvidence => self.decline_evidence(),
             Action::ChooseExplore { graveyard, .. } => self.finish_explore(graveyard),
+            Action::ChooseBeholdType { creature_type } => self.choose_behold_type(creature_type),
             Action::ChooseOptionalAdditionalCost { object } => {
                 let a = self.state.announcing.as_mut().unwrap();
                 a.item.cast.as_mut().unwrap().optional_additional = Some(object.is_some());
@@ -6044,6 +6066,7 @@ impl Game {
                 Pending::Targets { .. } => "targets",
                 Pending::Offspring { .. } => "offspring",
                 Pending::OptionalAdditionalCost { .. } => "optional_additional_cost",
+                Pending::BeholdType { .. } => "behold_type",
                 Pending::Bargain { .. } => "bargain",
                 Pending::Kicker { .. } => "kicker",
                 Pending::Gift { .. } => "gift",
