@@ -616,6 +616,9 @@ define_actions! {
     ChooseOptional {
         accept: bool,
     },
+    Blight {
+        object: ObjectRef,
+    },
     Sacrifice {
         object: ObjectRef,
     },
@@ -2783,6 +2786,7 @@ impl Game {
                             EffectChoiceKind::HandLand { .. } => Action::PutHandLand { object },
                             EffectChoiceKind::LandCards { .. }
                             | EffectChoiceKind::UntapLands { .. } => Action::SelectLand { object },
+                            EffectChoiceKind::Blight(_) => Action::Blight { object },
                             EffectChoiceKind::Sacrifice => Action::Sacrifice { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             _ => unreachable!("forage has its own choice"),
@@ -4342,7 +4346,9 @@ impl Game {
             }
             Action::DeclineHandEntry => self.decline_effect_payment(),
             Action::ChooseHandDefender { defender } => self.choose_hand_defender(defender),
-            Action::Sacrifice { object } => self.choose_effect_object(actor, object),
+            Action::Sacrifice { object } | Action::Blight { object } => {
+                self.choose_effect_object(actor, object)
+            }
             Action::DeclineEffectPayment => self.decline_effect_payment(),
             Action::Discard { card } => {
                 if matches!(self.state.pending, Pending::EffectChoice { .. }) {
@@ -7249,3 +7255,7 @@ mod fdn_growth_cost_tests;
 #[cfg(test)]
 #[path = "engine_linked_choices_tests.rs"]
 mod linked_choices_tests;
+
+#[cfg(test)]
+#[path = "engine_ecl_core_tests.rs"]
+mod ecl_core_tests;

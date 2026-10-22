@@ -556,6 +556,9 @@ pub(crate) struct SearchSpec {
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
+    /// Put this many -1/-1 counters on one chosen creature you control.
+    /// This is a non-targeting resolution choice, including optional payments.
+    Blight(u16),
     /// Choose distinct untapped permanents as a non-targeting activation cost.
     TapPermanents(u16),
     RemoveCreatureCounters(u16),

@@ -274,7 +274,8 @@ impl Game {
             self.refresh_local_source_counter_quantities(&mut a.item);
         }
         match spec.kind {
-            EffectChoiceKind::RemoveCreatureCounters(_)
+            EffectChoiceKind::Blight(_)
+            | EffectChoiceKind::RemoveCreatureCounters(_)
             | EffectChoiceKind::TapPermanents(_)
             | EffectChoiceKind::UntapLands { .. }
             | EffectChoiceKind::HandCreature

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "43849076e86c08fd5a38f262b4b14dbf7df094bbe78ea60cebe63b7f874f358b",
+  "catalogue_version": "526305e7824e91da9b66d7ee713799130467c2e3a9642a577c02084c05a13d8c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2190,
-  "implemented_total": 2196,
+  "implemented_standard_cards": 2191,
+  "implemented_total": 2197,
   "token_definitions": 105,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 166,
-      "complete": 101
+      "gated": 165,
+      "complete": 102
     },
     "eoc": {
       "total": 8,
@@ -5967,8 +5967,8 @@
     {
       "name": "Chaos Spewer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/chaos_spewer.rs",
       "set": "ecl"
     },

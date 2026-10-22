@@ -28,6 +28,13 @@ impl Game {
         object: ObjectRef,
     ) -> bool {
         let o = &self.state.objects[object.card as usize];
+        if matches!(choice.kind, EffectChoiceKind::Blight(_)) {
+            return o.zone == Zone::Battlefield
+                && o.controller == player
+                && self.is_creature(object.card)
+                && self.object_ref(object.card) == object
+                && !choice.selected[player.index()].contains(&object);
+        }
         if let EffectChoiceKind::UntapLands { maximum } = choice.kind {
             return o.zone == Zone::Battlefield
                 && self.current_kinds(object.card) & 2 != 0
@@ -423,7 +430,19 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        if choice.kind == EffectChoiceKind::Discard {
+        if let EffectChoiceKind::Blight(amount) = choice.kind {
+            let counters = [self.state.active, self.state.active.other()]
+                .into_iter()
+                .flat_map(|p| choice.selected[p.index()].iter().copied())
+                .map(|object| {
+                    (
+                        object,
+                        Counters::of(CounterKind::MinusOne, u64::from(amount)),
+                    )
+                })
+                .collect();
+            self.effect_counters(counters, replacements::ResumeMode::Program);
+        } else if choice.kind == EffectChoiceKind::Discard {
             let ids: Vec<_> = [self.state.active, self.state.active.other()]
                 .into_iter()
                 .flat_map(|p| choice.selected[p.index()].iter().map(|object| object.card))
