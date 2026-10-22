@@ -205,6 +205,7 @@ impl Announcement {
 
 #[derive(Clone, Copy)]
 struct TargetSourceCharacteristics<'a> {
+    chosen_type: Option<crate::cards::CreatureType>,
     reference: ObjectRef,
     snapshot: Option<&'a DamageFacts>,
     spell: Option<Card>,
@@ -212,6 +213,7 @@ struct TargetSourceCharacteristics<'a> {
 impl<'a> TargetSourceCharacteristics<'a> {
     fn from_item(item: &'a SpellView) -> Self {
         Self {
+            chosen_type: item.source_chosen_type,
             reference: item.object,
             snapshot: Some(&item.source_facts),
             spell: (item.kind == StackKind::Spell).then_some(item.source_card),
@@ -266,6 +268,7 @@ impl Game {
         definition: Card,
     ) -> bool {
         let qualification = Some(TargetSourceCharacteristics {
+            chosen_type: None,
             reference: source,
             snapshot: None,
             spell: Some(definition),
@@ -845,6 +848,10 @@ impl Game {
                     TargetPredicate::WithoutSubtype(subtype) => !self.has_subtype(id, subtype),
                     TargetPredicate::Token => object.is_token(),
                     TargetPredicate::Subtype(subtype) => self.has_subtype(id, subtype),
+                    TargetPredicate::SourceChosenCreatureType => qualification
+                        .map(|facts| facts.chosen_type)
+                        .unwrap_or_else(|| self.source_chosen_creature_type(source))
+                        .is_some_and(|kind| self.has_subtype(id, kind.name())),
                     TargetPredicate::Permanent => {
                         self.current_kinds(id) & (1 | 2 | 16 | 32 | 64 | 256) != 0
                     }
@@ -1116,6 +1123,7 @@ impl Game {
         SpellView {
             gift: None,
             source_move: None,
+            source_chosen_type: None,
             target_controller_lki: None,
             reflexive_subject: None,
             crew: None,

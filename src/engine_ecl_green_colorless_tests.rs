@@ -1266,3 +1266,136 @@ fn ecl_green_chronicle_source_ability_removal_stops_lord_and_cast_trigger() {
         assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, before);
     }
 }
+fn enter_pennant(g: &mut Game, p: Player) -> CardId {
+    let source = named(g, p, "Dawn-Blessed Pennant", Zone::Hand);
+    cast(g, source, None, &[]);
+    checked(g, Action::Pass);
+    checked(g, Action::Pass);
+    assert_eq!(
+        g.legal_actions()
+            .iter()
+            .filter(|a| matches!(a, Action::ChooseEntryValue { .. }))
+            .count(),
+        8
+    );
+    choose_type(g, "Elf");
+    settle(g);
+    source
+}
+#[test]
+fn ecl_green_pennant_entry_trigger_counts_chosen_permanents_and_survives_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = enter_pennant(&mut g, p);
+        let life = g.state.players[p.index()].life;
+        let wrong = named(&mut g, p, "Bear Cub", Zone::Hand);
+        cast(&mut g, wrong, None, &[]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, life);
+        let enemy = named(&mut g, p.other(), "Llanowar Elves", Zone::Hand);
+        g.move_object(enemy, Zone::Battlefield);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, life);
+        let elf = named(&mut g, p, "Llanowar Elves", Zone::Hand);
+        cast(&mut g, elf, None, &[]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, life + 1);
+        let core = named(&mut g, p, "Firdoch Core", Zone::Hand);
+        cast(&mut g, core, None, &[]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        g.move_object(source, Zone::Exile);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, life + 2);
+    }
+}
+#[test]
+fn ecl_green_pennant_sacrifice_return_uses_frozen_chosen_type_after_reentry() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = enter_pennant(&mut g, p);
+        let core = named(&mut g, p, "Firdoch Core", Zone::Graveyard);
+        let wrong = named(&mut g, p, "Bear Cub", Zone::Graveyard);
+        let enemy = named(&mut g, p.other(), "Llanowar Elves", Zone::Graveyard);
+        let hand = named(&mut g, p, "Llanowar Elves", Zone::Hand);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        for invalid in [wrong, enemy, hand, source] {
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(invalid),
+                },
+            );
+        }
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(core),
+            },
+        );
+        let mana = g.state.players[p.index()].mana.iter().sum::<u32>();
+        pay(&mut g);
+        assert_eq!(
+            g.state.players[p.index()].mana.iter().sum::<u32>(),
+            mana - 2
+        );
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+        assert!(g.entry_value(g.object_ref(source)).is_none());
+        assert_eq!(
+            g.state
+                .stack
+                .last()
+                .unwrap()
+                .source_chosen_type
+                .unwrap()
+                .name(),
+            "Elf"
+        );
+        let movement = g.entry_move(source, Zone::Battlefield, false);
+        g.stage_entries(vec![movement], None);
+        assert!(g.advance_entries());
+        choose_type(&mut g, "Giant");
+        settle(&mut g);
+        assert_eq!(g.object_view(core).zone, Zone::Hand);
+        assert_eq!(
+            g.object_view(source).entry_choice,
+            Some(EntryChoiceValue::CreatureType(
+                crate::cards::CreatureType::from_name("Giant").unwrap()
+            ))
+        );
+    }
+}
+#[test]
+fn ecl_green_pennant_does_not_rebind_departed_graveyard_target() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = enter_pennant(&mut g, p);
+        let elf = named(&mut g, p, "Llanowar Elves", Zone::Graveyard);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(elf),
+            },
+        );
+        pay(&mut g);
+        g.move_object(elf, Zone::Hand);
+        g.move_object(elf, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.object_view(elf).zone, Zone::Graveyard);
+    }
+}

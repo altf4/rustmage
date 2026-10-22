@@ -879,6 +879,9 @@ pub struct ReflexiveSubjectView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    /// Public source choice frozen before activation costs can move the source.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_chosen_type: Option<crate::cards::CreatureType>,
     /// Allocated only after a targeted permanent departs; these are public facts.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]

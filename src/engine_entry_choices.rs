@@ -23,6 +23,15 @@ pub(super) fn owned_bytes(rows: &Rows) -> usize {
     })
 }
 impl Game {
+    pub(super) fn source_chosen_creature_type(
+        &self,
+        source: ObjectRef,
+    ) -> Option<crate::cards::CreatureType> {
+        match self.entry_value(source) {
+            Some(EntryChoiceValue::CreatureType(kind)) => Some(kind),
+            _ => None,
+        }
+    }
     pub(super) fn entry_value(&self, object: ObjectRef) -> Option<EntryChoiceValue> {
         self.state
             .entry_values

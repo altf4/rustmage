@@ -575,6 +575,9 @@ impl Game {
                                     TriggerCondition::FilteredEntersYou(_)
                                 ))
                             && match predicate {
+                                EntryPredicate::SourceChosenCreatureType => {
+                                    matches!(source.entry_choice, Some(EntryChoiceValue::CreatureType(kind)) if entered.has_subtype(kind.name()))
+                                }
                                 EntryPredicate::CreatureWithoutSubtype(subtype) => {
                                     entered.is_creature() && !entered.has_subtype(subtype)
                                 }
@@ -767,6 +770,10 @@ impl Game {
         self.state.pending_triggers.push(SpellView {
             gift: None,
             source_move: None,
+            source_chosen_type: match source.entry_choice {
+                Some(EntryChoiceValue::CreatureType(kind)) => Some(kind),
+                _ => None,
+            },
             target_controller_lki: None,
             reflexive_subject: None,
             crew: None,

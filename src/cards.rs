@@ -205,6 +205,7 @@ pub(crate) enum TargetPredicate {
     WithoutSubtype(&'static str),
     Token,
     Subtype(&'static str),
+    SourceChosenCreatureType,
     Nonbasic,
     Legendary,
     NonOutlaw,
@@ -2137,6 +2138,7 @@ pub(crate) enum DamageSubject {
 /// Complete entry-time predicates over the post-event permanent.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum EntryPredicate {
+    SourceChosenCreatureType,
     CreatureWithoutSubtype(&'static str),
     CreaturePowerAtMost(i32),
     CreaturePowerAtLeast(i32),
