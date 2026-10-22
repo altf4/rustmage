@@ -210,11 +210,11 @@
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "focused_integration": {
     "command": "python3 scripts/resource_guard.py -- cargo test --lib ecl_",
-    "head": "04b2ae89",
+    "head": "1aa48507",
+    "tests": 428,
+    "test_seconds": 15.11,
     "exit": 0,
-    "tests": 381,
-    "test_seconds": 13.05,
-    "resource_report": "<cache>/rustmage-build-reports/8947260bbbe8468e978883be0c3b5a78.json"
+    "resource_report": "<cache>/rustmage-build-reports/22078cf692494243922f0460b5c6c6cc.json"
   },
   "natural_games": {
     "command": "python3 scripts/resource_guard.py -- cargo test --test lorwyn_eclipsed_games -- --nocapture",
@@ -247,7 +247,7 @@
     "cards_per_hour": 31.39507607083554,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
-  "focused_scope": "381 integrated ECL scenarios passed at04b2ae89; subsequent239-card release passed all native tests",
+  "focused_scope": "428 integrated ECL scenarios passed at244-card checkpoint1aa48507; latest full release239-card904c25c2",
   "full_release_validation": {
     "status": "passed all eight phases",
     "head": "904c25c23df29bfea4c681020d076a345ed1f6d5",
