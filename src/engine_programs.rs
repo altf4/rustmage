@@ -2400,6 +2400,11 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::ExileAttached => {
+                    if let Some(id) = self.attached_permanent(&item) {
+                        self.move_object(id, Zone::Exile);
+                    }
+                }
                 Instruction::TapAttached => {
                     if let Some(id) = self.attached_permanent(&item) {
                         self.tap_objects(&[id]);

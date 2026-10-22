@@ -3,10 +3,50 @@
   "catalogue_id": 4052,
   "oracle_id": "d8599f06-f030-4575-8497-307a4d7ec182",
   "facts_sha256": "0e8a627a5a804b0e86c70eb7cae3a5f02a1fce32ef3657703aa5e6cbf159d2c5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3381d2330e6e6158283735caa996b08c089729e43cc1869d000f3001229b498a"
   },
-  "physical_metadata_sha256": "91cc7d844da1b61d9fcc91626fa3d17b4ce3525ea2e83fac582d01c99d290a8d"
+  "physical_metadata_sha256": "91cc7d844da1b61d9fcc91626fa3d17b4ce3525ea2e83fac582d01c99d290a8d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpiralIntoSolitude.java",
+  "java_sha256": "ef5ec07bfa57e067ae481cc1d4e0db6517da82683a8b2421e13baa8d101506f5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantAttackBlockAttachedEffect.java",
+      "sha256": "d78155f9b01ffc823d4c3c0faec891a723d6d2e00152803ccaf34ca43cd3bddf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileAttachedEffect.java",
+      "sha256": "65e112d9164329318f146755e2e6d72c57795f6dce4384568d0ce0fca372ee64"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BlightCost.java",
+      "sha256": "33a0d3714068f004db969c35c375e95470b9eaf389f5b2dd73aae3c67b498cd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ]
 }

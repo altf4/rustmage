@@ -4153,3 +4153,167 @@ fn champions_of_the_shoal_entry_and_actual_tap_each_offer_one_target_and_stun_ev
     settle(&mut g);
     assert_eq!(g.counter_count(victim, CounterKind::Stun), 2);
 }
+
+fn solitude_activate(g: &mut Game, aura: CardId, witness: CardId) {
+    checked(
+        g,
+        Action::AnnounceActivate {
+            card: aura,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    let object = g.object_ref(witness);
+    checked(g, Action::ChooseAdditionalCost { object });
+    finish_cast_choices(g);
+}
+
+#[test]
+fn spiral_into_solitude_restricts_combat_and_paid_nontarget_exile_uses_sacrificed_aura_lki() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let witness = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let aura = spell(&mut g, p, "Spiral into Solitude", &[Target::Card(bear)]);
+        settle(&mut g);
+        assert!(g.combat_restricted(bear, true));
+        assert!(g.combat_restricted(bear, false));
+        // The restriction belongs to the Aura, so losing the creature's own
+        // abilities does not release it. Hexproof and indestructible cannot
+        // stop this nontargeted exile ability.
+        spell(&mut g, p, "Noggle the Mind", &[Target::Card(bear)]);
+        settle(&mut g);
+        assert!(g.combat_restricted(bear, true));
+        assert!(g.combat_restricted(bear, false));
+        let source = g.object_ref(aura);
+        g.grant_keyword_effects(
+            &[bear],
+            source,
+            Keywords::HEXPROOF.union(Keywords::INDESTRUCTIBLE),
+        );
+        let mana_before: u64 = g.state.players[p.index()]
+            .mana
+            .iter()
+            .map(|&n| u64::from(n))
+            .sum();
+        solitude_activate(&mut g, aura, witness);
+        assert_eq!(g.object_view(aura).zone, Zone::Graveyard);
+        assert_eq!(g.counter_count(witness, CounterKind::MinusOne), 1);
+        assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+        assert!(g.state.stack.last().unwrap().targets.is_empty());
+        let mana_after: u64 = g.state.players[p.index()]
+            .mana
+            .iter()
+            .map(|&n| u64::from(n))
+            .sum();
+        assert_eq!(mana_before - mana_after, 2);
+        settle(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Exile);
+    }
+}
+
+#[test]
+fn spiral_into_solitude_old_attachment_does_not_follow_reentry_or_a_new_aura_attachment() {
+    for p in [Player::P0, Player::P1] {
+        for reenter in [false, true] {
+            let mut g = setup(p);
+            let bear = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+            let witness = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+            let aura = spell(&mut g, p, "Spiral into Solitude", &[Target::Card(bear)]);
+            settle(&mut g);
+            solitude_activate(&mut g, aura, witness);
+            g.move_object(bear, Zone::Hand);
+            if reenter {
+                g.move_object(bear, Zone::Battlefield);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(bear).zone,
+                if reenter {
+                    Zone::Battlefield
+                } else {
+                    Zone::Hand
+                }
+            );
+        }
+        let mut g = setup(p);
+        let old = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+        let new = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+        let witness = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let aura = spell(&mut g, p, "Spiral into Solitude", &[Target::Card(old)]);
+        settle(&mut g);
+        solitude_activate(&mut g, aura, witness);
+        // A later incarnation of the Aura cannot change the old ability's
+        // captured attachment.
+        let mut movement = g.entry_move(aura, Zone::Battlefield, false);
+        movement.attachment = Some(g.object_ref(new));
+        g.stage_entries(vec![movement], None);
+        assert!(!g.advance_entries());
+        settle(&mut g);
+        assert_eq!(g.object_view(old).zone, Zone::Exile);
+        assert_eq!(g.object_view(new).zone, Zone::Battlefield);
+        assert_eq!(
+            g.state.objects[aura as usize].attached_to,
+            Some(g.object_ref(new))
+        );
+    }
+}
+
+#[test]
+fn spiral_into_solitude_exiles_tokens_and_can_blight_the_enchanted_creature_without_targeting_it() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let aura = spell(&mut g, p, "Spiral into Solitude", &[Target::Card(bear)]);
+        settle(&mut g);
+        solitude_activate(&mut g, aura, bear);
+        assert_eq!(g.counter_count(bear, CounterKind::MinusOne), 1);
+        settle(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Exile);
+        let token = spawn(
+            &mut g,
+            p.other(),
+            Card::catalogue()
+                .find(|card| card.identity() == "@token/2cff3b0b2f34a41fce4cd46b")
+                .unwrap(),
+            Zone::Battlefield,
+        );
+        let witness = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let aura = spell(&mut g, p, "Spiral into Solitude", &[Target::Card(token)]);
+        settle(&mut g);
+        solitude_activate(&mut g, aura, witness);
+        settle(&mut g);
+        assert_eq!(g.object_view(token).zone, Zone::Outside);
+    }
+}
+
+#[test]
+fn spiral_into_solitude_blight_cost_cannot_use_enemy_or_counter_prohibited_creatures() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+        let aura = spell(&mut g, p, "Spiral into Solitude", &[Target::Card(bear)]);
+        settle(&mut g);
+        let action = Action::AnnounceActivate {
+            card: aura,
+            ability: 0,
+            counter_payment: Counters::default(),
+        };
+        reject_atomic(&mut g, action.clone());
+        let witness = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let prohibition = spell(&mut g, p, "Blossombind", &[Target::Card(witness)]);
+        settle(&mut g);
+        reject_atomic(&mut g, action.clone());
+        assert_eq!(g.counter_count(witness, CounterKind::MinusOne), 0);
+        assert_eq!(g.object_view(aura).zone, Zone::Battlefield);
+        g.move_object(prohibition, Zone::Graveyard);
+        checked(&mut g, action);
+        let enemy = g.object_ref(bear);
+        reject_atomic(&mut g, Action::ChooseAdditionalCost { object: enemy });
+        let object = g.object_ref(witness);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
+        finish_cast_choices(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Exile);
+    }
+}

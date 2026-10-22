@@ -1151,6 +1151,7 @@ pub(crate) enum Instruction {
     SelectTargetPlayerMilled(MilledSelectionSpec),
     AttachSource,
     TapAttached,
+    ExileAttached,
     PutGrantorCounter(CounterKind),
     PutCombatDealerCounters,
     RemoveSourceCounterIfAny {
