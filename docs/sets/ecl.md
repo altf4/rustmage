@@ -21,8 +21,8 @@ The frozen manifest accounts for every identity. The [per-card obligation ledger
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **238/273**, comprising **107 inherited** and **131 newly
-implemented/tested physical candidates**; **35 remain gated**. Fifteen inherited
+Admission flags: **239/273**, comprising **107 inherited** and **132 newly
+implemented/tested physical candidates**; **34 remain gated**. Fifteen inherited
 cards have passed source/rules audit;92 inherited cards remain. No final published reviews or newly merged cards. All new
 names and per-card obligations appear in the linked JSON ledgers. Three tested
 synthetic token recipes are outside the physical denominator.
@@ -125,3 +125,5 @@ Five additional inherited creatures have full source and paid-body evidence: Bog
 The combined237-card branch04b2ae89 passes381 ECL scenarios in13.05seconds. Resource report8947260bbbe8468e978883be0c3b5a78; peak2.6GiB.
 
 Tam, Mindful First-Year is integrated with both hybrid casting routes and dynamic color-based hexproof for other creatures. Five focused cases pass0.19seconds and37 shared hexproof scenarios pass0.67seconds; all-target Clippy passes. Admission238/273;35 remain gated.
+
+Kindle the Inner Flame is integrated.117 black/red scenarios pass3.37seconds;27 flashback regressions pass0.44seconds and8 copy-characteristic scenarios pass0.17seconds. The printed flashback additional behold cost uses three distinct Elemental permanent/card witnesses with joint funding; ordinary and independently granted casting routes and spell copies remain tested. Combined239-card release verification follows.

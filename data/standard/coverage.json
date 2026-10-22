@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "501c4c9b74541aee62f84793ee08055c94d07c0a50ca0b5efab120c921612732",
+  "catalogue_version": "1514da41ab3011b012b69ce313dd328bcd2f348baecf6576414b33c472b958ad",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2321,
-  "implemented_total": 2327,
+  "implemented_standard_cards": 2322,
+  "implemented_total": 2328,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 35,
-      "complete": 232
+      "gated": 34,
+      "complete": 233
     },
     "eoc": {
       "total": 8,
@@ -19055,8 +19055,8 @@
     {
       "name": "Kindle the Inner Flame",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/kindle_the_inner_flame.rs",
       "set": "ecl"
     },

@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 131,
+  "newly_tested_physical_cards": 132,
   "newly_tested_names": [
     "Adept Watershaper",
     "Ashling's Command",
@@ -71,6 +71,7 @@
     "Hexing Squelcher",
     "Illusion Spinners",
     "Kinbinding",
+    "Kindle the Inner Flame",
     "Kinsbaile Aspirant",
     "Kinscaer Sentry",
     "Kithkeeper",
@@ -136,8 +137,8 @@
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 238,
-  "remaining_gated": 35,
+  "current_admission_flags": 239,
+  "remaining_gated": 34,
   "inherited_evidence_audit": {
     "audited": 15,
     "total": 107,
@@ -234,10 +235,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T19:21:48.820927+00:00",
-    "elapsed_seconds": 14341.604076,
-    "newly_verified_cards": 131,
-    "cards_per_hour": 32.88335094881056,
+    "end_utc": "2026-10-22T19:23:04.170977+00:00",
+    "elapsed_seconds": 14416.954126,
+    "newly_verified_cards": 132,
+    "cards_per_hour": 32.96119248538143,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "196 integrated ECL scenarios passed at bb92026c with generated catalogue1fbc9bcda08f4079d26ed30456add7c4c31131f6ef2563e732a179a74fc3e0a3",

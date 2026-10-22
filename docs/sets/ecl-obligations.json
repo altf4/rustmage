@@ -3239,7 +3239,7 @@
       "name": "Kindle the Inner Flame",
       "definition": "src/card_definitions/ecl/kindle_the_inner_flame.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Kindle the Inner Flame",
@@ -3254,7 +3254,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/kindle_the_inner_flame.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "845d80ee-1cd5-437a-90a5-40dcc657d3aa",
