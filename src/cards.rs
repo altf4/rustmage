@@ -842,7 +842,10 @@ pub(crate) enum Instruction {
     ExileDiscardedWithStash,
     ExileEachLibraryTopCastFree,
     ExileNonlandLifeFreeCast,
-    ExileUntilManaValueFreeCast { players: PlayerSet, minimum: u16 },
+    ExileUntilManaValueFreeCast {
+        players: PlayerSet,
+        minimum: u16,
+    },
     CounterRelatedUnlessPayLife(u32),
     /// One combined ward cost, paid atomically or the related item is countered.
     CounterRelatedUnlessPayManaLife {
