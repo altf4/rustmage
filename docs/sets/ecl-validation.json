@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 164,
+  "newly_tested_physical_cards": 165,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -156,6 +156,7 @@
     "Tributary Vaulter",
     "Trystan's Command",
     "Trystan, Callous Cultivator // Trystan, Penitent Culler",
+    "Twilight Diviner",
     "Twinflame Travelers",
     "Unbury",
     "Vibrance",
@@ -169,8 +170,8 @@
     "Winnowing",
     "Wistfulness"
   ],
-  "current_admission_flags": 271,
-  "remaining_gated": 2,
+  "current_admission_flags": 272,
+  "remaining_gated": 1,
   "inherited_evidence_audit": {
     "audited": 107,
     "total": 107,
@@ -532,10 +533,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T22:36:35.662348+00:00",
-    "elapsed_seconds": 26028.445497,
-    "newly_verified_cards": 164,
-    "cards_per_hour": 22.682875935408767,
+    "end_utc": "2026-10-22T22:43:08.648169+00:00",
+    "elapsed_seconds": 26421.431318,
+    "newly_verified_cards": 165,
+    "cards_per_hour": 22.481749487785265,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "Combined260-card ECL scenarios; Kirol separately focused-tested after this combined run.",
@@ -1576,5 +1577,41 @@
     "source_commit": "756d75ae",
     "integrated_commit": "eb36164e",
     "missing_source_packets": []
+  },
+  "twilight_diviner": {
+    "source_commit": "fc02310ed6ee2931358aa7a536d0dbb6c68d8e91",
+    "integrated_commit": "36976a9f",
+    "focused": {
+      "passed": 11,
+      "seconds": 0.31,
+      "resource_report": "<cache>/rustmage-build-reports/9523d7ecfdb44c708319ff7a1931cc40.json"
+    },
+    "native": {
+      "passed": 3182,
+      "ignored": 1,
+      "seconds": 95.59,
+      "resource_report": "<cache>/rustmage-build-reports/9dbf9abf809147919c19c734b5a87d25.json"
+    },
+    "clippy": {
+      "exit": 0,
+      "seconds": 40.25,
+      "resource_report": "<cache>/rustmage-build-reports/cb1c5da360e94cf7ad609d28297d6de4.json"
+    },
+    "provenance_seconds": 3.688,
+    "semantics": [
+      "simultaneous qualifying entry batch captured by exact incarnation",
+      "actual graveyard cast origin excludes spell copies",
+      "mandatory non-targeting choice among surviving batch objects",
+      "intrinsic once-per-turn limits include acquired copy ability epochs"
+    ],
+    "layout_bytes": {
+      "State": 3296,
+      "Object": 144,
+      "SpellView": 528,
+      "Announcement": 960,
+      "Resolution": 864,
+      "TriggerUse": 32,
+      "single_reference_entry_packet_owned": 40
+    }
   }
 }

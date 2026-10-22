@@ -21,9 +21,8 @@ The frozen manifest accounts for every identity. The [per-card obligation ledger
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **271/273**, comprising **107 inherited** and **164 newly
-implemented/tested physical candidates**; **two remain gated**: Raiding Schemes
-and Twilight Diviner. All107 inherited cards have passed source/rules audits.
+Admission flags: **272/273**, comprising **107 inherited** and **165 newly
+implemented/tested physical candidates**; **one remains gated**: Raiding Schemes. All107 inherited cards have passed source/rules audits.
 The supporting closure includes eleven tokens, seven backs and one emblem;
 all have complete source pins and parent interaction evidence. Final combined
 full-game acceptance, release validation and two published-head reviews remain
@@ -230,3 +229,5 @@ All107/107 inherited cards now have complete source/rules audits. The final blac
 Omni-Changeling is integrated after3,157 native regressions pass94.63seconds (one ignored),29 focused copy scenarios pass0.83seconds,and all-target Clippy passes. Its owned optional copy replacement precedes other entry choices and uses fresh copied counters,life,type and Aura requirements; newly acquired copy replacements may recur,with a later copy replacing earlier exceptions. Paid/convoke/free/spell-copy entry qualifications,nested token entry,native single-face DFC shape,private APNAP choices and actual Kindle exception replacement are tested. Resolution counts now distinguish acquired ability epochs while retaining old queued packets. A creature-Aura cannot remain attached under CR303.4c. Admission271/273;2 gated;observation schema164 adds pre-entry copy choices/views and resolution-history ability origins.
 
 The transitive supporting-definition audit covers all19 required definitions:11 tokens,seven backs andone emblem. All96 unique source pins authenticate against the frozen XMage revision. Two missing token provenance packets are now added after full token/helper reads; seven direct identity/source checks pass6.29seconds. Existing parent rules evidence is mapped in the supporting-source audit JSON. No supporting behavior gaps remain; this audit does not replace the two final independent published-head reviews.
+
+Twilight Diviner is integrated. Eleven focused whole-card scenarios pass0.31seconds,3,182 native regressions pass95.59seconds (one ignored),and all-target Clippy/provenance pass. Qualifying simultaneous entries freeze exact other-creature references and actual graveyard cast origins; spell copies do not become casts. Non-targeting copy choice uses surviving references even after type/control changes. Once-per-turn intrinsic history includes acquired ability epochs while retaining queued old packets. Hot State/Object/SpellView/Announcement/Resolution layouts remain unchanged. Admission272/273;only Raiding Schemes remains gated;observation schema165 adds entry-batch packets,graveyard origins and trigger-use epochs.
