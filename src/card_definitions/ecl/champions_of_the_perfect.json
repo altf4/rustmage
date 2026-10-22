@@ -3,10 +3,51 @@
   "catalogue_id": 710,
   "oracle_id": "9cb7f23f-322d-4a87-b6c6-15b9d446aef3",
   "facts_sha256": "b070aefa4cbfb029b2178cd2230de70fba597c5a19386c5b13c0b7495586202d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "869769cbff2fe2afd1b387ec075c3625cebaa335b90ae64113e5e3631891ab1c"
   },
-  "physical_metadata_sha256": "cabaf8b7e047e1d13aa8ce2f1016c9b6a0bb4e43a038092a0acd8b15c7352dec"
+  "physical_metadata_sha256": "cabaf8b7e047e1d13aa8ce2f1016c9b6a0bb4e43a038092a0acd8b15c7352dec",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ChampionsOfThePerfect.java",
+  "java_sha256": "0098ccfc906e7e97d084cce9534e6de3aaae91343245524efcc817413bc6db09",
+  "rules_tests": "src/engine_ecl_green_colorless_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BeholdAndExileCost.java",
+      "sha256": "b06597a0ae153b477ef98fa1c4739553b3daf4402db13e9f573747a52387128c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/BeholdType.java",
+      "sha256": "b9b6ef548969c8e1bbde48ec05adb6ae62139ab3fbdd72a91f8154817dc17c2c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LeavesBattlefieldTriggeredAbility.java",
+      "sha256": "c4061b0636d580e727a5f586192bff129fedfe84eaa6e1c1bc051c4981f2e274"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromExileForSourceEffect.java",
+      "sha256": "b0754ee22bda5e1936a52be104298ba4c6c54ac8252c2cf81054ec6da2959da6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ZoneChangeTriggeredAbility.java",
+      "sha256": "2387eb4e53ef69a480b3ad72111ccdd5f994528cb727378c65c941a46c44d7ed"
+    }
+  ]
 }

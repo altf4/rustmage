@@ -3010,3 +3010,203 @@ fn ecl_green_lys_mana_route_may_decline_eligible_private_hand_witness() {
         assert_eq!(g.object_view(source).zone, Zone::Battlefield);
     }
 }
+
+fn announce_champions(g: &mut Game, p: Player, witness: CardId) -> CardId {
+    let source = named(g, p, "Champions of the Perfect", Zone::Hand);
+    checked(g, Action::AnnounceCast { card: source });
+    let object = g.object_ref(witness);
+    checked(g, Action::ChooseAdditionalCost { object });
+    pay(g);
+    if g.object_view(witness).token.is_some() {
+        assert_eq!(g.object_view(witness).zone, Zone::Outside);
+    } else {
+        assert_eq!(g.object_view(witness).zone, Zone::Exile);
+        assert!(g.observe(p).linked_exile.iter().any(
+            |link| link.source == g.object_ref(source) && link.exiled == g.object_ref(witness)
+        ));
+    }
+    source
+}
+
+#[test]
+fn ecl_green_champions_behold_exile_links_actual_entry_and_all_departures_return_owner_hand() {
+    for p in [Player::P0, Player::P1] {
+        for hand in [false, true] {
+            for kindred in [false, true] {
+                for destination in [Zone::Graveyard, Zone::Exile, Zone::Hand, Zone::Library] {
+                    let mut g = setup(p);
+                    let witness = named(
+                        &mut g,
+                        p,
+                        if kindred {
+                            "Morcant's Eyes"
+                        } else {
+                            "Llanowar Elves"
+                        },
+                        if hand { Zone::Hand } else { Zone::Battlefield },
+                    );
+                    let library = g.state.players[p.index()].library.len();
+                    let source = announce_champions(&mut g, p, witness);
+                    let spell = g.object_ref(source);
+                    settle(&mut g);
+                    assert_eq!(
+                        g.stats(source),
+                        Stats {
+                            power: 6,
+                            toughness: 6
+                        }
+                    );
+                    assert_eq!(
+                        g.state.players[p.index()].library.len(),
+                        library,
+                        "no self-cast draw"
+                    );
+                    assert!(g.observe(p).linked_exile.iter().any(|link| link.source == g.object_ref(source) && link.source != spell));
+                    if kindred {
+                        let offer = named(&mut g, p, "Harmless Offering", Zone::Hand);
+                        cast(
+                            &mut g,
+                            offer,
+                            None,
+                            &[Target::Player(p.other()), Target::Card(source)],
+                        );
+                        settle(&mut g);
+                        assert_eq!(g.object_view(source).controller, p.other());
+                    }
+                    g.move_object(source, destination);
+                    settle(&mut g);
+                    assert_eq!(g.object_view(witness).zone, Zone::Hand);
+                    assert_eq!(g.object_view(witness).owner, p);
+                    assert!(
+                        g.observe(p.other())
+                            .known_hand
+                            .contains(&g.object_ref(witness))
+                    );
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn ecl_green_champions_countered_spell_cost_stays_exiled_and_cannot_bind_later_entry() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let witness = named(&mut g, p, "Llanowar Elves", Zone::Hand);
+        let source = announce_champions(&mut g, p, witness);
+        let spell = g.object_ref(source);
+        checked(&mut g, Action::Pass);
+        let cancel = named(&mut g, p.other(), "Cancel", Zone::Hand);
+        cast(&mut g, cancel, None, &[Target::Spell(source)]);
+        settle(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(witness).zone, Zone::Exile);
+        g.move_object(source, Zone::Battlefield);
+        assert_ne!(g.object_ref(source), spell);
+        g.move_object(source, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.object_view(witness).zone, Zone::Exile);
+    }
+}
+
+#[test]
+fn ecl_green_champions_blink_source_stale_exile_and_token_cost_keep_exact_links() {
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..3 {
+            let mut g = setup(p);
+            let witness = named(
+                &mut g,
+                p,
+                if mode == 2 {
+                    "@token/shapeshifter_1_1_colorless_changeling"
+                } else {
+                    "Llanowar Elves"
+                },
+                Zone::Battlefield,
+            );
+            let source = announce_champions(&mut g, p, witness);
+            settle(&mut g);
+            if mode == 0 {
+                let old = g.object_ref(source);
+                g.move_object(source, Zone::Exile);
+                g.move_object(source, Zone::Battlefield);
+                assert_ne!(g.object_ref(source), old);
+                settle(&mut g);
+                assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+                assert_eq!(g.object_view(witness).zone, Zone::Hand);
+            } else {
+                if mode == 1 {
+                    g.move_object(witness, Zone::Hand);
+                    g.move_object(witness, Zone::Exile);
+                } else {
+                    assert_eq!(g.object_view(witness).zone, Zone::Outside);
+                }
+                g.move_object(source, Zone::Exile);
+                settle(&mut g);
+                assert_eq!(
+                    g.object_view(witness).zone,
+                    if mode == 1 {
+                        Zone::Exile
+                    } else {
+                        Zone::Outside
+                    }
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn ecl_green_champions_draw_is_controller_creature_cast_trigger_and_survives_source_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let witness = named(&mut g, p, "Llanowar Elves", Zone::Hand);
+        let source = announce_champions(&mut g, p, witness);
+        settle(&mut g);
+        let count = g.state.players[p.index()].library.len();
+        let shock = named(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, None, &[Target::Player(p.other())]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].library.len(), count);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Hand);
+        cast(&mut g, bear, None, &[]);
+        g.move_object(source, Zone::Exile);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].library.len(), count - 1);
+        assert_eq!(g.object_view(witness).zone, Zone::Hand);
+        assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn ecl_green_champions_departure_uses_frozen_printed_ability_availability_for_simultaneous_moves() {
+    for p in [Player::P0, Player::P1] {
+        for simultaneous in [false, true] {
+            let mut g = setup(p);
+            let witness = named(&mut g, p, "Llanowar Elves", Zone::Hand);
+            let source = announce_champions(&mut g, p, witness);
+            settle(&mut g);
+            let blank = named(&mut g, p, "Witness Protection", Zone::Hand);
+            cast(&mut g, blank, None, &[Target::Card(source)]);
+            settle(&mut g);
+            assert!(!g.printed_abilities_available(source));
+            if simultaneous {
+                let events = g.move_objects_raw(&[blank, source], Zone::Exile);
+                g.finish_zone_events(&events, &[]);
+            } else {
+                g.move_object(blank, Zone::Exile);
+                assert!(g.printed_abilities_available(source));
+                g.move_object(source, Zone::Exile);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(witness).zone,
+                if simultaneous {
+                    Zone::Exile
+                } else {
+                    Zone::Hand
+                }
+            );
+        }
+    }
+}

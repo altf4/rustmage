@@ -5291,6 +5291,7 @@ impl Game {
         );
         if before.zone == Zone::Stack {
             self.continue_stack_keywords(before.reference, self.object_ref(id), destination);
+            self.continue_stack_linked_exile(before.reference, self.object_ref(id), destination);
         }
         self.set_counters(id, counters);
         if destination == Zone::Battlefield {

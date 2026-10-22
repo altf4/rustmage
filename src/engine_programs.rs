@@ -371,6 +371,15 @@ impl Game {
             return;
         }
         self.temporary_departure_triggers(event);
+        // Self departure uses the event's frozen LKI for every destination,
+        // including simultaneous bounce/exile and replacement-modified moves.
+        if event.before.zone == Zone::Battlefield {
+            for (index, ability) in event.before.card.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::SelfLeavesBattlefield {
+                    self.queue_zone_trigger(&event.before, index, event);
+                }
+            }
+        }
         if event.before.zone == Zone::Battlefield && event.destination == Zone::Graveyard {
             // Departure triggers look back at the entire pre-event battlefield;
             // simultaneous departures still see each other exactly once.
@@ -546,6 +555,7 @@ impl Game {
                     | TriggerCondition::StateCounterAtLeast { .. }
                     | TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::SelfDies
+                    | TriggerCondition::SelfLeavesBattlefield
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::AttachedCreatureDies

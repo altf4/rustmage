@@ -358,6 +358,9 @@ impl Game {
     }
     pub(super) fn remember_linked_exile(&mut self, selected: &[CardId]) {
         let source = self.state.resolving.as_ref().unwrap().item.object;
+        self.remember_linked_exile_for(source, selected);
+    }
+    pub(super) fn remember_linked_exile_for(&mut self, source: ObjectRef, selected: &[CardId]) {
         for &id in selected {
             if self.state.objects[id as usize].zone == Zone::Exile {
                 let exiled = self.object_ref(id);
@@ -366,6 +369,24 @@ impl Game {
                     .get_or_insert_default()
                     .links
                     .push(LinkedExileView { source, exiled });
+            }
+        }
+    }
+    /// CR400.7: a permanent spell retains the link established by its own cost.
+    /// Countered spells and later reentries never bind an earlier incarnation.
+    pub(super) fn continue_stack_linked_exile(
+        &mut self,
+        before: ObjectRef,
+        after: ObjectRef,
+        destination: Zone,
+    ) {
+        if destination == Zone::Battlefield
+            && let Some(data) = self.state.linked_choices.as_mut()
+        {
+            for link in &mut data.links {
+                if link.source == before {
+                    link.source = after;
+                }
             }
         }
     }

@@ -631,6 +631,8 @@ pub(crate) struct SearchSpec {
 pub enum EffectChoiceKind {
     /// A controlled permanent or revealed hand card witnesses a casting cost.
     Behold,
+    /// Behold one permanent or hand card and exile that exact witness as a cost.
+    BeholdAndExile,
     ExileFromHand,
     /// Put this many -1/-1 counters on one chosen creature you control.
     /// This is a non-targeting resolution choice, including optional payments.
@@ -2428,6 +2430,7 @@ pub(crate) enum TriggerCondition {
     SelfEvidence,
     EvidenceCollected,
     SelfDies,
+    SelfLeavesBattlefield,
     SelfEntersOrDies,
     SelfAttacks,
     SelfFirstAttack,

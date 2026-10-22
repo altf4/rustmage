@@ -35,7 +35,7 @@ impl Game {
             return false;
         };
         let controls_cost_object = match spec.kind {
-            EffectChoiceKind::Behold => match o.zone {
+            EffectChoiceKind::Behold | EffectChoiceKind::BeholdAndExile => match o.zone {
                 Zone::Battlefield => o.controller == actor,
                 Zone::Hand => o.owner == actor,
                 _ => false,
@@ -77,7 +77,11 @@ impl Game {
         subtypes: GrantedSubtypes,
     ) -> bool {
         let zone = match spec.kind {
-            EffectChoiceKind::Behold if matches!(o.zone, Zone::Battlefield | Zone::Hand) => o.zone,
+            EffectChoiceKind::Behold | EffectChoiceKind::BeholdAndExile
+                if matches!(o.zone, Zone::Battlefield | Zone::Hand) =>
+            {
+                o.zone
+            }
             EffectChoiceKind::Discard => Zone::Hand,
             EffectChoiceKind::BlightCost(_)
             | EffectChoiceKind::Sacrifice
@@ -86,7 +90,12 @@ impl Game {
             _ => return false,
         };
         let f = spec.filter;
-        if spec.kind == EffectChoiceKind::Behold && zone == Zone::Hand && o.is_token() {
+        if matches!(
+            spec.kind,
+            EffectChoiceKind::Behold | EffectChoiceKind::BeholdAndExile
+        ) && zone == Zone::Hand
+            && o.is_token()
+        {
             return false;
         }
         if matches!(spec.kind, EffectChoiceKind::BlightCost(_)) && kinds & 1 == 0 {
@@ -423,11 +432,17 @@ impl Game {
             self.refresh_local_source_counter_quantities(&mut a.item);
         }
         match spec.kind {
-            EffectChoiceKind::Behold => {
+            EffectChoiceKind::Behold | EffectChoiceKind::BeholdAndExile => {
                 if self.state.objects[object.card as usize].zone == Zone::Hand
                     && !self.state.known_hand.contains(&object)
                 {
                     self.state.known_hand.push(object);
+                }
+                if spec.kind == EffectChoiceKind::BeholdAndExile {
+                    let event = self.move_object(object.card, Zone::Exile);
+                    if event.moved && event.destination == Zone::Exile {
+                        self.remember_linked_exile_for(a.item.object, &[object.card]);
+                    }
                 }
             }
             EffectChoiceKind::BlightCost(amount) => {
