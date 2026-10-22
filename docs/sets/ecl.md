@@ -21,8 +21,8 @@ The frozen manifest accounts for every identity. The [per-card obligation ledger
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **272/273**, comprising **107 inherited** and **165 newly
-implemented/tested physical candidates**; **one remains gated**: Raiding Schemes. All107 inherited cards have passed source/rules audits.
+Admission flags: **273/273**, comprising **107 inherited** and **166 newly
+implemented/tested physical candidates**; **zero remain gated**. All107 inherited cards have passed source/rules audits.
 The supporting closure includes eleven tokens, seven backs and one emblem;
 all have complete source pins and parent interaction evidence. Final combined
 full-game acceptance, release validation and two published-head reviews remain
@@ -92,10 +92,10 @@ focused scenarios and full release validation, then extend the natural games to
 verify every printed obligation. Check active jobs before touching their inputs;
 poll the same process until terminal. No early or partial implementation PR.
 
-Raiding Schemes and Twilight Diviner are the final implementation candidates.
+All273 physical identities are implemented and focused-tested.
 The full-pool and mechanic-themed game workload is being developed on a separate
-isolated worktree. Finish those candidates, integrate all273, run the strict
-whole-pool acceptance and performance workloads, then full release validation.
+isolated worktree. Resolve the observed mana/funding performance issue, run the strict whole-pool
+acceptance and performance workloads, then full release validation.
 Publish one implementation PR only after every local gate passes; obtain two
 fresh independent nonauthor reviews of its final published head. Merge remains
 subject to repository permission.
@@ -231,3 +231,5 @@ Omni-Changeling is integrated after3,157 native regressions pass94.63seconds (on
 The transitive supporting-definition audit covers all19 required definitions:11 tokens,seven backs andone emblem. All96 unique source pins authenticate against the frozen XMage revision. Two missing token provenance packets are now added after full token/helper reads; seven direct identity/source checks pass6.29seconds. Existing parent rules evidence is mapped in the supporting-source audit JSON. No supporting behavior gaps remain; this audit does not replace the two final independent published-head reviews.
 
 Twilight Diviner is integrated. Eleven focused whole-card scenarios pass0.31seconds,3,182 native regressions pass95.59seconds (one ignored),and all-target Clippy/provenance pass. Qualifying simultaneous entries freeze exact other-creature references and actual graveyard cast origins; spell copies do not become casts. Non-targeting copy choice uses surviving references even after type/control changes. Once-per-turn intrinsic history includes acquired ability epochs while retaining queued old packets. Hot State/Object/SpellView/Announcement/Resolution layouts remain unchanged. Admission272/273;only Raiding Schemes remains gated;observation schema165 adds entry-batch packets,graveyard origins and trigger-use epochs.
+
+Raiding Schemes is integrated, completing273/273 physical admission with zero unresolved or gated members. Fourteen whole-card scenarios pass1.79seconds,all716 combined ECL scenarios pass30.68seconds,and all-target Clippy passes41.25seconds. Optional independent conspire declarations and simultaneous color-sharing tap pairs use exact owned joint completion through mana/convoke/printed costs and entry choices. A bounded local integration review found premature pruning of an incoming Omni donor; the settled-entry guard and paid regression now pass. Captured intrinsic source-spell triggers support countered originals,Kirol copies,and permanent/Aura spell copies. Observation schema166 adds the conspire declaration/payment views/actions and intrinsic stack kind. Measured focused implementation interval:166 new whole-card candidates over26,826.03seconds=22.28cards/hour;inherited audits and final acceptance/review remain separately reported.

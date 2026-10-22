@@ -4906,7 +4906,7 @@
       "name": "Raiding Schemes",
       "definition": "src/card_definitions/ecl/raiding_schemes.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Raiding Schemes",
@@ -4920,7 +4920,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_raiding_tests.rs",
+        "src/card_definitions/ecl/raiding_schemes.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "ce60402c-34cd-44fe-ae1d-4a5404298f5b",

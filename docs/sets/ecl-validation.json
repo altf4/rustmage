@@ -1,8 +1,8 @@
 {
-  "scope": "Initial ECL integrated implementation; entire set acceptance pending",
+  "scope": "All273 ECL physical identities implemented and focused-tested; final whole-pool acceptance, performance, release validation and published reviews pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 165,
+  "newly_tested_physical_cards": 166,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -116,6 +116,7 @@
     "Puca's Eye",
     "Pummeler for Hire",
     "Pyrrhic Strike",
+    "Raiding Schemes",
     "Reaping Willow",
     "Reluctant Dounguard",
     "Requiting Hex",
@@ -170,8 +171,8 @@
     "Winnowing",
     "Wistfulness"
   ],
-  "current_admission_flags": 272,
-  "remaining_gated": 1,
+  "current_admission_flags": 273,
+  "remaining_gated": 0,
   "inherited_evidence_audit": {
     "audited": 107,
     "total": 107,
@@ -533,10 +534,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T22:43:08.648169+00:00",
-    "elapsed_seconds": 26421.431318,
-    "newly_verified_cards": 165,
-    "cards_per_hour": 22.481749487785265,
+    "end_utc": "2026-10-22T22:49:53.251056+00:00",
+    "elapsed_seconds": 26826.034205,
+    "newly_verified_cards": 166,
+    "cards_per_hour": 22.276867144552273,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "Combined260-card ECL scenarios; Kirol separately focused-tested after this combined run.",
@@ -1612,6 +1613,38 @@
       "Resolution": 864,
       "TriggerUse": 32,
       "single_reference_entry_packet_owned": 40
+    }
+  },
+  "raiding_schemes": {
+    "source_commit": "f36848ff",
+    "integrated_commit": "1d83345a1ef8c99618a042ba4caa0e085c88c84a",
+    "focused": {
+      "passed": 14,
+      "seconds": 1.79,
+      "resource_report": "<cache>/rustmage-build-reports/bc626fa54375408499961a4d215ef3af.json"
+    },
+    "combined_ecl": {
+      "passed": 716,
+      "seconds": 30.68,
+      "resource_report": "<cache>/rustmage-build-reports/0ba6238227f246ba976a4457f221dc75.json"
+    },
+    "clippy": {
+      "exit": 0,
+      "seconds": 41.25,
+      "resource_report": "<cache>/rustmage-build-reports/2e1f594fd4914663b35b39335d47d3d8.json"
+    },
+    "semantics": [
+      "optional independent Conspire intents before mana activation and cost payments",
+      "exact simultaneous two-creature color-matching tap costs ordered with printed costs",
+      "joint target/convoke/mana/printed-cost completion preserves fresh returned or copied-entry donors",
+      "intrinsic source-spell trigger keeps captured copy LKI after original countering",
+      "Kirol may copy the trigger; Twinflame excludes an Elemental spell source",
+      "generic permanent spell copies enter as tokens, including Auras, without token-creation events"
+    ],
+    "integration_finding": {
+      "problem": "premature donor bound while linked Omni return entry choices remained pending",
+      "fix": "apply bound only to settled entry/replacement world",
+      "regression": "ecl_raiding_printed_sacrifice_waits_for_omni_entry_before_bounding_fresh_donors"
     }
   }
 }
