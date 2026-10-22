@@ -1841,5 +1841,24 @@
       "resource_report": "79a120c679bf475e8596826a82e247d1"
     },
     "coverage": "Both-seat actual paid Meek Attack using a freshly entered creature as Drum witness, plus negative zero-creature fixture and owned branch checks."
+  },
+  "rare_mechanic_game_proof": {
+    "head": "852e0828",
+    "status": "passed focused additive proof; final integrated236-game acceptance pending",
+    "games": 24,
+    "decisions": 19883,
+    "replayed_actions": 19883,
+    "owned_branches": 428,
+    "private_decisions": 109,
+    "seconds": 26.68,
+    "resource_report": "d769309a876443978ffcee6741c005ca",
+    "actual_execution": {
+      "Dream Harvest free casts committed": 23,
+      "Dream Harvest free permissions committed": 34,
+      "graveyard entry copy tokens created": 27
+    },
+    "detector_repair": "Bind the exact harvested exile ObjectRef at AnnounceFree to its announcement stack ID; credit only the later actual noncopy free cast commit.",
+    "workload_extension": "Preserve all220 original pool/theme pairings; append16 reanimation games from two cyclic decks, seeds0/7/19/31 and both starters. Identical strict privacy, rejected-action, owned branch/restore and full replay checks apply.",
+    "coverage_proof_scope": "The24-game diagnostic runs the16 added games and8 original Harvest pool games; it does not replace final whole-pool acceptance."
   }
 }
