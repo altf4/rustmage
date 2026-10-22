@@ -932,7 +932,7 @@ impl Game {
             card.fixed_mana_value(),
             source.controller,
             source,
-            targets,
+            (targets, None),
         )
     }
     fn cast_filter_matches_value(
@@ -942,9 +942,16 @@ impl Game {
         mana_value: u64,
         caster: Player,
         source: &ObjectView,
-        targets: &[BoundTarget],
+        context: (&[BoundTarget], Option<Zone>),
     ) -> bool {
+        let (targets, origin) = context;
         match filter {
+            CastFilter::FromHand(filter) => {
+                origin == Some(Zone::Hand)
+                    && self.cast_filter_matches_value(
+                        *filter, card, mana_value, caster, source, context,
+                    )
+            }
             CastFilter::SourceChosenCreatureType => {
                 matches!(source.entry_choice, Some(EntryChoiceValue::CreatureType(kind)) if card.has_subtype(kind.name()))
             }
@@ -958,26 +965,26 @@ impl Game {
             CastFilter::Colors { filter, mask } => {
                 card.colors() & mask != 0
                     && self.cast_filter_matches_value(
-                        *filter, card, mana_value, caster, source, targets,
+                        *filter, card, mana_value, caster, source, context,
                     )
             }
             CastFilter::AnyOf(filters) => filters.iter().any(|f| {
-                self.cast_filter_matches_value(*f, card, mana_value, caster, source, targets)
+                self.cast_filter_matches_value(*f, card, mana_value, caster, source, context)
             }),
             CastFilter::ManaValueMaximum { filter, maximum } => {
                 mana_value <= maximum
                     && self.cast_filter_matches_value(
-                        *filter, card, mana_value, caster, source, targets,
+                        *filter, card, mana_value, caster, source, context,
                     )
             }
             CastFilter::ManaValueMinimum { filter, minimum } => {
                 mana_value >= minimum
                     && self.cast_filter_matches_value(
-                        *filter, card, mana_value, caster, source, targets,
+                        *filter, card, mana_value, caster, source, context,
                     )
             }
             CastFilter::Targeted { filter, target } => {
-                self.cast_filter_matches_value(*filter, card, mana_value, caster, source, targets)
+                self.cast_filter_matches_value(*filter, card, mana_value, caster, source, context)
                     && targets.iter().any(|bound| {
                         if let Target::Player(player) = bound.target {
                             return target == CastTarget::OpponentOrCreature
@@ -1072,9 +1079,12 @@ impl Game {
                                 .unwrap_or_else(|| card.fixed_mana_value()),
                             caster,
                             &source,
-                            stack
-                                .map(|i| self.state.stack[i].targets.as_slice())
-                                .unwrap_or(&[]),
+                            (
+                                stack
+                                    .map(|i| self.state.stack[i].targets.as_slice())
+                                    .unwrap_or(&[]),
+                                stack.and_then(|i| self.state.stack[i].cast.map(|c| c.origin)),
+                            ),
                         )
                         && wanted.is_none_or(|wanted| wanted == ordinal)
                         && self.queue_trigger_from(&source, index, grant.map(Box::new))
@@ -1082,7 +1092,8 @@ impl Game {
                             || ability.program.iter().any(|instruction| {
                                 matches!(
                                     instruction,
-                                    Instruction::CreateTokensWithTemporaryKeywords { .. }
+                                    Instruction::MarkCastDreamExile
+                                        | Instruction::CreateTokensWithTemporaryKeywords { .. }
                                         | Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
                                         | Instruction::PutCountersScaled {
                                             amount: AmountValue::SpellColors,
@@ -1674,7 +1685,9 @@ impl Game {
                 if item.kind == StackKind::Spell
                     && self.state.objects[item.card as usize].zone == Zone::Stack
                 {
-                    if item.cast.is_some_and(|c| c.face == CastFace::Adventure) {
+                    if self.finish_dream_spell_resolution(&item) {
+                        // The exact resolution-only replacement has completed its disposition.
+                    } else if item.cast.is_some_and(|c| c.face == CastFace::Adventure) {
                         self.finish_adventure(&item);
                     } else if item.cast.is_some_and(|c| c.face == CastFace::Omen) {
                         self.finish_omen(&item);
@@ -2797,6 +2810,11 @@ impl Game {
                 }
                 Instruction::NoMaximumHandSize => {
                     self.state.players[item.controller.index()].no_maximum_hand_size = true;
+                }
+                Instruction::MarkCastDreamExile => self.mark_cast_dream_exile(&item),
+                Instruction::CastOwnedDreamCard => {
+                    self.start_dream_free_cast(item.controller);
+                    return;
                 }
                 Instruction::ExileResolvingSpell => {
                     if !item.is_copy

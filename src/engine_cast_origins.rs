@@ -259,6 +259,7 @@ pub struct ResolutionFreeCasts {
     pub remaining: Vec<ObjectRef>,
     pub maximum_mana_value: Option<u128>,
     pub uncast_to_hand: bool,
+    pub remaining_casts: Option<u64>,
 }
 impl Game {
     pub(super) fn exile_nonland_life_free_cast(&mut self, player: Player) -> bool {
@@ -281,6 +282,7 @@ impl Game {
                         self.state.players[player.index()].life_gained_this_turn,
                     ),
                     uncast_to_hand: true,
+                    remaining_casts: None,
                 }));
                 self.state.pending = Pending::ResolutionCasts { player };
                 return true;
@@ -324,6 +326,7 @@ impl Game {
             remaining,
             maximum_mana_value: None,
             uncast_to_hand: false,
+            remaining_casts: None,
         }));
         self.state.pending = Pending::ResolutionCasts { player };
     }
@@ -380,12 +383,14 @@ impl Game {
         object: ObjectRef,
         face: CastFace,
     ) {
-        self.state
-            .resolution_free_casts
-            .as_mut()
-            .unwrap()
-            .remaining
-            .retain(|&r| r != object);
+        let free = self.state.resolution_free_casts.as_mut().unwrap();
+        free.remaining.retain(|&r| r != object);
+        if let Some(count) = &mut free.remaining_casts {
+            *count = count.checked_sub(1).expect("free casting allowance");
+            if *count == 0 {
+                free.remaining.clear();
+            }
+        }
         let mut item = self.cast_item(player, object.card, [0; 6]);
         self.set_cast_face(&mut item, face);
         item.cast.as_mut().unwrap().method = CastMethod::Free;

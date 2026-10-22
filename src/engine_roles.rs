@@ -36,10 +36,12 @@ pub(super) struct RoleState {
     pub characteristic_sources: Vec<ObjectRef>,
     pub delayed_deaths: Vec<delayed_deaths::DelayedDeath>,
     pub trigger_multiplicities: Vec<TriggerMultiplicityView>,
+    pub dream_exiles: Vec<DreamExileView>,
 }
 impl RoleState {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
+            + self.dream_exiles.len() * std::mem::size_of::<DreamExileView>()
             + self.trigger_multiplicities.len() * std::mem::size_of::<TriggerMultiplicityView>()
             + self.attached.len() * std::mem::size_of::<RoleTimestampView>()
             + self.base_stats.len() * std::mem::size_of::<BaseStatsEffectView>()

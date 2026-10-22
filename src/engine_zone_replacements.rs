@@ -7,6 +7,9 @@ pub enum ZoneReplacementKind {
     RevealShuffle,
     Exile,
     Battlefield,
+    DreamExile,
+    AdventureExile,
+    OmenShuffle,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct ZoneRevealView {
@@ -60,6 +63,7 @@ pub(super) struct ZoneState {
 }
 #[derive(Clone, Copy, Debug, Default)]
 pub(super) struct FrozenRules {
+    pub dream: Option<CastFace>,
     pub shuffle_self: bool,
     pub exile_spell: bool,
     pub discard_to_battlefield: bool,
@@ -68,6 +72,7 @@ pub(super) struct FrozenRules {
 pub(super) struct Plan {
     pub destination: Zone,
     pub shuffle: bool,
+    pub effect: Option<ZoneReplacementKind>,
 }
 impl ZoneState {
     pub fn bytes(&self) -> usize {
@@ -176,6 +181,7 @@ impl Game {
             before.zone != Zone::Battlefield || self.printed_abilities_available(before.id);
         let spell = before.kinds & 12 != 0 && !before.is_token();
         FrozenRules {
+            dream: self.dream_resolution_mark(before.reference).map(|r| r.face),
             shuffle_self: own_available && own == Some(ZoneReplacementRule::RevealShuffleSelf),
             exile_spell: spell
                 && self.state.static_sources.iter().any(|&id| {
@@ -200,6 +206,7 @@ impl Game {
             return Plan {
                 destination: Zone::Outside,
                 shuffle: false,
+                effect: None,
             };
         }
         if requested != Zone::Graveyard
@@ -208,9 +215,18 @@ impl Game {
             return Plan {
                 destination: requested,
                 shuffle: false,
+                effect: None,
             };
         }
         let mut choices = Vec::new();
+        if let Some(face) = rules.dream {
+            choices.push(ZoneReplacementKind::DreamExile);
+            match face {
+                CastFace::Normal => {}
+                CastFace::Adventure => choices.push(ZoneReplacementKind::AdventureExile),
+                CastFace::Omen => choices.push(ZoneReplacementKind::OmenShuffle),
+            }
+        }
         if before.zone == Zone::Stack && self.state.objects[before.id as usize].flashback
             || rules.exile_spell
             || self.death_exile_destination(before, requested) != requested
@@ -228,6 +244,7 @@ impl Game {
                 return Plan {
                     destination: requested,
                     shuffle: false,
+                    effect: None,
                 };
             }
             [effect] => *effect,
@@ -276,10 +293,14 @@ impl Game {
         Plan {
             destination: match effect {
                 ZoneReplacementKind::RevealShuffle => Zone::Library,
-                ZoneReplacementKind::Exile => Zone::Exile,
+                ZoneReplacementKind::Exile
+                | ZoneReplacementKind::DreamExile
+                | ZoneReplacementKind::AdventureExile => Zone::Exile,
+                ZoneReplacementKind::OmenShuffle => Zone::Library,
                 ZoneReplacementKind::Battlefield => Zone::Battlefield,
             },
             shuffle: effect == ZoneReplacementKind::RevealShuffle,
+            effect: Some(effect),
         }
     }
     pub(super) fn reveal_and_shuffle_zone_card(&mut self, before: &ObjectView) {

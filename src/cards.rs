@@ -1264,6 +1264,8 @@ pub(crate) enum Instruction {
     SelectLibraryTo(LibrarySelectionEffect),
     NoMaximumHandSize,
     ExileResolvingSpell,
+    MarkCastDreamExile,
+    CastOwnedDreamCard,
     UntapLands(u16),
     IfAmountAtLeast {
         value: AmountValue,
@@ -1879,10 +1881,11 @@ pub enum CounterKind {
     Flying,
     FirstStrike,
     Lifelink,
+    Dream,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 18] = [
+    pub const ALL: [Self; 19] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -1901,6 +1904,7 @@ impl CounterKind {
         Self::Flying,
         Self::FirstStrike,
         Self::Lifelink,
+        Self::Dream,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -1918,6 +1922,7 @@ impl CounterKind {
                 | Self::Flying
                 | Self::FirstStrike
                 | Self::Lifelink
+                | Self::Dream
         )
     }
 }
@@ -2191,6 +2196,7 @@ pub(crate) enum CastTarget {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum CastFilter {
+    FromHand(&'static CastFilter),
     /// Contextual spell-cost predicate, evaluated against the casting object.
     CreatureToughnessGreaterThanPower,
     SourceChosenColor,
@@ -2234,6 +2240,7 @@ impl CastFilter {
     pub(crate) fn matches_mana_value(self, card: Card, mana_value: u64) -> bool {
         match self {
             Self::Any => true,
+            Self::FromHand(_) => false, // Requires a real casting-origin packet.
             Self::PermanentAdventure => {
                 card.adventure_spell().is_some()
                     && card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0

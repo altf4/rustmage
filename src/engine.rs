@@ -2107,6 +2107,7 @@ pub struct Observation {
     /// Number of distinct declared attacker objects this turn, including departures.
     pub creatures_attacked_this_turn: usize,
     pub declared_attack_history: Vec<DeclaredAttackView>,
+    pub dream_exiles: Vec<DreamExileView>,
     /// Actual battlefield-to-graveyard creature transitions this turn, including tokens.
     pub creatures_died_this_turn: u64,
     pub graveyard_entries_this_turn: Vec<ObjectRef>,
@@ -5379,6 +5380,7 @@ impl Game {
                 evidence_collected: false,
             };
         }
+        let dream = self.dream_resolution_mark(before.reference);
         let destination = plan.destination;
         // Outside is an internal staging zone for newly allocated tokens. A
         // ceased token is on the free list and cannot move again (CR111.8).
@@ -5458,6 +5460,7 @@ impl Game {
             self.state.saddled.retain(|r| *r != before.reference);
         }
         self.forget_adventure(before.reference);
+        self.forget_dream_exile(before.reference);
         let generation = before
             .reference
             .generation
@@ -5646,6 +5649,7 @@ impl Game {
             self.reveal_and_shuffle_zone_card(&before);
         }
         self.copy_characteristic_zone_commit(&before, self.object_ref(id), destination);
+        self.commit_dream_zone_result(self.object_ref(id), plan.effect, dream);
         ZoneChange {
             trigger_providers,
             gift: None,
@@ -6358,6 +6362,10 @@ impl Game {
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.damaged_players.clone()),
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
+            dream_exiles: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.dream_exiles.clone()),
             declared_attack_history: s
                 .roles
                 .as_ref()
@@ -8032,3 +8040,10 @@ mod ecl_maralen_tests;
 #[cfg(test)]
 #[path = "engine_ecl_shadow_urchin_tests.rs"]
 mod ecl_shadow_urchin_tests;
+
+#[path = "engine_dream_exile.rs"]
+mod dream_exile;
+pub use dream_exile::DreamExileView;
+#[cfg(test)]
+#[path = "engine_ecl_goliath_tests.rs"]
+mod ecl_goliath_tests;
