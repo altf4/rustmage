@@ -152,7 +152,7 @@
       "name": "Ashling, Rekindled // Ashling, Rimebound",
       "definition": "src/card_definitions/ecl/ashling_rekindled_ashling_rimebound.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Ashling, Rekindled",
@@ -179,7 +179,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_transform_tests.rs",
+        "src/card_definitions/ecl/ashling_rekindled_ashling_rimebound.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "ecf574a5-6410-466d-a726-732134f904b2",
@@ -2163,7 +2167,7 @@
       "name": "Flamebraider",
       "definition": "src/card_definitions/ecl/flamebraider.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Flamebraider",
@@ -2177,7 +2181,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/flamebraider.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "bc8427fb-e5ee-4b44-9a4f-6d9f01b4b896",
@@ -2231,7 +2239,7 @@
       "name": "Flitterwing Nuisance",
       "definition": "src/card_definitions/ecl/flitterwing_nuisance.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Flitterwing Nuisance",
@@ -2247,7 +2255,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/flitterwing_nuisance.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "6522070b-7002-44fd-8deb-832fe67ef9a9",
@@ -3499,7 +3511,7 @@
       "name": "Lys Alana Dignitary",
       "definition": "src/card_definitions/ecl/lys_alana_dignitary.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Lys Alana Dignitary",
@@ -3514,7 +3526,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/lys_alana_dignitary.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "b5058b5c-0359-42ec-ba9e-ae1371bb9c22",
@@ -4582,7 +4598,7 @@
       "name": "Retched Wretch",
       "definition": "src/card_definitions/ecl/retched_wretch.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Retched Wretch",
@@ -4596,7 +4612,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/retched_wretch.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "9f013b5d-fff0-4c50-8621-158b6dc34834",
@@ -4653,7 +4673,7 @@
       "name": "Rimefire Torque",
       "definition": "src/card_definitions/ecl/rimefire_torque.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Rimefire Torque",
@@ -4669,7 +4689,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/rimefire_torque.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "ad99e430-e13f-4819-a2ee-bf3332ef517d",

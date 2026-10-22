@@ -2,10 +2,11 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 100,
+  "newly_tested_physical_cards": 106,
   "newly_tested_names": [
     "Adept Watershaper",
     "Ashling's Command",
+    "Ashling, Rekindled // Ashling, Rimebound",
     "Assert Perfection",
     "Auntie's Sentence",
     "Aurora Awakener",
@@ -42,7 +43,9 @@
     "Encumbered Reejerey",
     "Evershrike's Gift",
     "Firdoch Core",
+    "Flamebraider",
     "Flaring Cinder",
+    "Flitterwing Nuisance",
     "Foraging Wickermaw",
     "Formidable Speaker",
     "Gallant Fowlknight",
@@ -63,6 +66,7 @@
     "Lasting Tarfire",
     "Liminal Hold",
     "Loch Mare",
+    "Lys Alana Dignitary",
     "Mutable Explorer",
     "Nameless Inversion",
     "Noggle the Mind",
@@ -77,7 +81,9 @@
     "Reaping Willow",
     "Reluctant Dounguard",
     "Requiting Hex",
+    "Retched Wretch",
     "Rime Chill",
+    "Rimefire Torque",
     "Safewright Cavalry",
     "Sapling Nursery",
     "Scuzzback Scrounger",
@@ -105,8 +111,8 @@
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 207,
-  "remaining_gated": 66,
+  "current_admission_flags": 213,
+  "remaining_gated": 60,
   "inherited_evidence_audit": "pending",
   "locally_reviewed": 0,
   "final_published_reviews": 0,
@@ -144,11 +150,11 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T17:34:30.078232+00:00",
-    "elapsed_seconds": 7902.861381,
-    "newly_verified_cards": 100,
-    "cards_per_hour": 45.55312090700583,
-    "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
+    "end_utc": "2026-10-22T17:51:09.601864+00:00",
+    "elapsed_seconds": 8902.385013,
+    "newly_verified_cards": 106,
+    "cards_per_hour": 42.864917597110896,
+    "scope": "Local whole-card focused verification; excludes inherited audit, final review and merge. Full release pass at195cards; later attempts/rechecks recorded separately."
   },
   "focused_scope": "196 integrated ECL scenarios passed at bb92026c with generated catalogue1fbc9bcda08f4079d26ed30456add7c4c31131f6ef2563e732a179a74fc3e0a3",
   "full_release_validation": {
@@ -203,16 +209,41 @@
     "seconds": 0.16,
     "report": "<cache>/rustmage-build-reports/30122f9d6daf4127b98494e46111c72d.json"
   },
-  "release_attempt_203": {
-    "head": "ebd077ba",
-    "status": "failed at Clippy: dynamic mana primitive had no admitted consumer; tested Brigid consumer now integrated",
-    "report": "<cache>/rustmage-validation-f3l3fe7p/report/result.json"
-  },
   "brigid": {
     "commit": "bd3e258c",
     "scenarios": 9,
     "seconds": 0.17,
     "resource_report": "<cache>/rustmage-build-reports/23d375dad6944f93b25c57a2be8913c8.json",
+    "source_tests": 7
+  },
+  "release_attempt_203": {
+    "head": "ebd077ba",
+    "status": "failed at Clippy: dynamic mana primitive had no admitted consumer; tested Brigid consumer now integrated",
+    "report": "<cache>/rustmage-validation-f3l3fe7p/report/result.json"
+  },
+  "release_attempt_207": {
+    "head": "2ca7df67",
+    "report": "<cache>/rustmage-validation-1sle6m4b/report/result.json",
+    "native_passed": 2737,
+    "native_failed": 2,
+    "native_ignored": 1,
+    "native_seconds": 70.1,
+    "failure": "Two global printed-cost assertions assumed a single face; corrected939ce13c to assert front Oracle cost and zero back printed cost with front mana value.",
+    "targeted_recheck": {
+      "tests": 18,
+      "seconds": 0.11,
+      "report": "<cache>/rustmage-build-reports/e31cb8c7713546e6bb9a231430629991.json"
+    }
+  },
+  "ashling": {
+    "commit": "2bc4008a",
+    "transform_module_scenarios": 14,
+    "new_ashling_scenarios": 5,
+    "seconds": 0.35,
+    "resource_report": "<cache>/rustmage-build-reports/3ed8d6a8e11440369f035fdf5a716b85.json",
+    "mana_regressions": 208,
+    "mana_seconds": 7.06,
+    "mana_report": "<cache>/rustmage-build-reports/9e23e53af0b14da494b9ca5245279a25.json",
     "source_tests": 7
   }
 }

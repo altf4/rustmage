@@ -21,8 +21,8 @@ The frozen manifest accounts for every identity. The [per-card obligation ledger
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **207/273**, comprising **107 inherited** and **100 newly
-implemented/tested physical candidates**; **66 remain gated**. Inherited evidence
+Admission flags: **213/273**, comprising **107 inherited** and **106 newly
+implemented/tested physical candidates**; **60 remain gated**. Inherited evidence
 still needs audit. No final published reviews or newly merged cards. All new
 names and per-card obligations appear in the linked JSON ledgers. Three tested
 synthetic token recipes are outside the physical denominator.
@@ -36,7 +36,10 @@ links. All five Incarnations are integrated; root now owns the seven transformin
 Crescendo, Thoughtweft Imbuer and Lasting Tarfire are integrated; the203-card
 Clippy check needed the now integrated Brigid consumer. Both Brigid faces,
 Warren Torchmaster, Shimmerwilds Growth and Kinbinding are integrated; a207-card
-release validation is next.
+release validation reached2,737 passing native tests and two old single-face
+invariant failures, now corrected and rechecked (18/18). Ashling,
+Flamebraider, Flitterwing Nuisance, Lys Alana Dignitary, Retched Wretch and
+Rimefire Torque are integrated; a213-card release validation is next.
 
 Shared mechanics include mandatory and optional blight costs versus effects,
 wither as a damage result, exact mana-funding tap witnesses, entry-time creature
