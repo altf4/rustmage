@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "42116c34e54dc38653c5a1e0919b207f5697ea29685079a8b62b0d51c6c070e2"
   },
-  "physical_metadata_sha256": "e326a259291041b5247e73e3cc39f02c8ca7cb1eee0b9bdb7f4c6cb3cb076b52"
+  "physical_metadata_sha256": "e326a259291041b5247e73e3cc39f02c8ca7cb1eee0b9bdb7f4c6cb3cb076b52",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WanderbrinePreacher.java",
+  "java_sha256": "099549a8bdcf9e7c4b34a6174d1760cd8a2fb182d31522387604df3ebb78cf25",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+      "sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    }
+  ]
 }

@@ -7248,3 +7248,261 @@ fn morningtides_light_stale_first_group_member_does_not_prevent_other_cards_retu
         assert!(g.object_view(second).tapped);
     }
 }
+
+#[test]
+fn inherited_wu_counter_creatures_pay_any_counter_sorcery_costs_and_keep_independent_resolution() {
+    for p in [Player::P0, Player::P1] {
+        for name in ["Burdened Stoneback", "Moonlit Lamenter"] {
+            for kind in [
+                CounterKind::MinusOne,
+                CounterKind::Flying,
+                CounterKind::Soul,
+            ] {
+                let mut g = setup(p);
+                let source = cast_named(&mut g, p, name);
+                let stone = name == "Burdened Stoneback";
+                assert_eq!(
+                    g.counter_count(source, CounterKind::MinusOne),
+                    if stone { 2 } else { 1 }
+                );
+                assert_eq!(
+                    g.stats(source),
+                    if stone {
+                        Stats::from(2)
+                    } else {
+                        Stats {
+                            power: 1,
+                            toughness: 4,
+                        }
+                    }
+                );
+                let target = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+                let action = Action::AnnounceActivate {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::of(kind, 1),
+                };
+                g.set_counters(source, Counters::default());
+                reject_atomic(&mut g, action.clone());
+                g.set_counters(source, Counters::of(kind, 1));
+                g.state.step = Step::Upkeep;
+                reject_atomic(&mut g, action.clone());
+                g.state.step = Step::Main1;
+                g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 1];
+                checked(&mut g, action);
+                if stone {
+                    checked(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(target),
+                        },
+                    );
+                }
+                finish_cast_choices(&mut g);
+                assert_eq!(g.counter_count(source, kind), 0);
+                assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+                assert!(!g.keywords(source).contains(Keywords::FLYING));
+                g.move_object(source, Zone::Hand);
+                settle(&mut g);
+                if stone {
+                    assert!(g.keywords(target).contains(Keywords::INDESTRUCTIBLE));
+                    g.state.players[p.index()].mana[3] = 1;
+                    spell(&mut g, p, "Lightning Bolt", &[Target::Card(target)]);
+                    settle(&mut g);
+                    assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+                    assert_eq!(g.object_view(target).damage, 3);
+                    super::ability_timeline_tests::next_turn(&mut g);
+                    assert!(!g.keywords(target).contains(Keywords::INDESTRUCTIBLE));
+                } else {
+                    assert_eq!(g.hand_count(p), 2); // Returned source plus its paid ability's draw.
+                    assert_eq!(g.state.players[p.index()].library.len(), 19);
+                }
+            }
+        }
+    }
+}
+#[test]
+fn inherited_wu_clachan_festival_kindred_tokens_and_repeatable_instant_speed_activation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = cast_named(&mut g, p, "Clachan Festival");
+        assert!(g.has_subtype(source, "Kithkin"));
+        assert!(!g.is_creature(source));
+        let factory = Card::from_name("@token/c48e9e904360e4cee1deeed8").unwrap();
+        let count = |g: &Game| {
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.zone == Zone::Battlefield && o.controller == p && o.card == factory)
+                .count()
+        };
+        assert_eq!(count(&g), 2);
+        g.state.active = p.other();
+        g.state.priority = p;
+        for leave in [false, true] {
+            g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 4];
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            finish_cast_choices(&mut g);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert!(!g.object_view(source).tapped);
+            if leave {
+                g.move_object(source, Zone::Graveyard);
+            }
+            settle(&mut g);
+            take_test_priority(&mut g, p);
+        }
+        assert_eq!(count(&g), 4);
+        for (id, o) in g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, o)| o.zone == Zone::Battlefield && o.card == factory)
+        {
+            assert_eq!(o.controller, p);
+            assert!(!o.tapped);
+            assert_eq!(g.object_view(id as CardId).colors, 0b10001);
+            assert!(g.has_subtype(id as CardId, "Kithkin"));
+            assert_eq!(g.stats(id as CardId), Stats::from(1));
+        }
+    }
+}
+fn inherited_wu_settle_target(g: &mut Game, target: CardId) {
+    g.prepare_triggers();
+    for _ in 0..100 {
+        if g.state.pending == Pending::Priority
+            && g.state.stack.is_empty()
+            && g.state.announcing.is_none()
+            && g.state.resolving.is_none()
+            && g.state.pending_triggers.is_empty()
+        {
+            return;
+        }
+        let actions = g.legal_actions();
+        let chosen = Action::ChooseTarget {
+            target: Target::Card(target),
+        };
+        let action = if actions.contains(&chosen) {
+            chosen
+        } else if g.state.pending == Pending::Priority {
+            Action::Pass
+        } else {
+            actions
+                .iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .or_else(|| actions.iter().find(|a| matches!(a, Action::FinishTargets)))
+                .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
+                .unwrap()
+                .clone()
+        };
+        checked(g, action);
+    }
+    panic!("inherited trigger continuation did not settle");
+}
+#[test]
+fn inherited_wu_convoke_tap_triggers_and_cast_mana_value_survive_control_loss_and_departure() {
+    for p in [Player::P0, Player::P1] {
+        for leave in [false, true] {
+            let mut g = setup(p);
+            let mut sources = Vec::new();
+            for (name, power, toughness) in [
+                ("Pestered Wellguard", 3, 2),
+                ("Silvergill Peddler", 2, 3),
+                ("Wanderbrine Preacher", 2, 2),
+                ("Wanderwine Distracter", 4, 3),
+                ("Tanufel Rimespeaker", 2, 4),
+            ] {
+                let id = cast_named(&mut g, p, name);
+                assert_eq!(g.stats(id), Stats { power, toughness });
+                g.state.objects[id as usize].summoning_sick = true;
+                sources.push(id);
+            }
+            let target = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+            let source = spawn(
+                &mut g,
+                p,
+                Card::from_name("Unexpected Assistance").unwrap(),
+                Zone::Hand,
+            );
+            g.state.players[p.index()].mana = [0; 6];
+            checked(&mut g, Action::AnnounceCast { card: source });
+            checked(&mut g, Action::BeginConvoke);
+            for (index, &id) in sources.iter().enumerate() {
+                let object = g.object_ref(id);
+                let contribution = if index < 2 {
+                    ConvokeContribution::Blue
+                } else {
+                    ConvokeContribution::Generic
+                };
+                checked(
+                    &mut g,
+                    Action::ChooseConvoker {
+                        object,
+                        contribution,
+                    },
+                );
+                reject_atomic(
+                    &mut g,
+                    Action::ChooseConvoker {
+                        object,
+                        contribution,
+                    },
+                );
+            }
+            finish_cast_choices(&mut g);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            if leave {
+                for &id in &sources {
+                    g.change_controller(g.object_ref(id), p.other());
+                    g.move_object(id, Zone::Hand);
+                }
+            }
+            inherited_wu_settle_target(&mut g, target);
+            assert_eq!(g.state.players[p.index()].life, 22);
+            assert_eq!(g.state.players[p.other().index()].life, 20);
+            assert_eq!(g.state.players[p.index()].library.len(), 15); // Three, plus Peddler, plus MV5 trigger.
+            assert_eq!(g.hand_count(p), if leave { 8 } else { 3 });
+            assert_eq!(g.state.players[p.index()].cards_discarded_this_turn, 2);
+            let tokens = answer_tokens(&g, p);
+            assert_eq!(tokens.len(), 1);
+            assert_eq!(g.object_view(tokens[0]).colors, 0b00110);
+            assert!(g.has_subtype(tokens[0], "Faerie"));
+            assert!(g.keywords(tokens[0]).contains(Keywords::FLYING));
+            assert_eq!(g.stats(tokens[0]), Stats::from(1));
+            assert_eq!(g.stats(target).power, -1);
+            assert_eq!(g.stats(target).toughness, 2);
+            super::ability_timeline_tests::next_turn(&mut g);
+            assert_eq!(g.stats(target), Stats::from(2));
+        }
+    }
+}
+#[test]
+fn inherited_wu_tanufel_rimespeaker_counts_only_own_mana_value_four_and_queued_draw_survives_source_leave()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = cast_named(&mut g, p, "Tanufel Rimespeaker");
+        assert_eq!(g.hand_count(p), 0);
+        spell(&mut g, p, "Grizzly Bears", &[]);
+        settle(&mut g);
+        assert_eq!(g.hand_count(p), 0);
+        take_test_priority(&mut g, p.other());
+        spell(&mut g, p.other(), "High Fae Trickster", &[]);
+        settle(&mut g);
+        assert_eq!(g.hand_count(p), 0);
+        take_test_priority(&mut g, p);
+        let giant = spell(&mut g, p, "Hill Giant", &[]);
+        g.move_object(source, Zone::Hand);
+        settle(&mut g);
+        assert_eq!(g.hand_count(p), 2);
+        assert_eq!(g.state.players[p.index()].library.len(), 19);
+        assert_eq!(g.object_view(giant).zone, Zone::Battlefield);
+    }
+}
