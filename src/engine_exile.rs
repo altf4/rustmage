@@ -149,6 +149,66 @@ impl Game {
         self.finish_zone_events(&events, &[]);
     }
 
+    fn is_permanent_card_graveyard_entry(&self, event: &ZoneChange) -> bool {
+        if !event.moved || event.destination != Zone::Graveyard || event.before.is_token() {
+            return false;
+        }
+        let object = &self.state.objects[event.after.card as usize];
+        object.zone == Zone::Graveyard
+            && self.object_ref(event.after.card) == event.after
+            && !object.is_token()
+            && !object.is_spell_copy()
+            // Use the card's new graveyard definition, not a departing animated
+            // or transformed permanent's last-known types (CR603.6c).
+            && object.card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
+    }
+    fn batch_graveyard_triggers(&mut self, events: &[ZoneChange]) {
+        if !events
+            .iter()
+            .any(|event| self.is_permanent_card_graveyard_entry(event))
+        {
+            return;
+        }
+        // This sparse observer list contains only live post-event sources.
+        // Anywhere-to-graveyard abilities never use leaving-battlefield lookback.
+        for cursor in 0..self.state.death_sources.len() {
+            let id = self.state.death_sources[cursor];
+            if !self.on_battlefield(id) {
+                continue;
+            }
+            if !self.state.objects[id as usize]
+                .card
+                .triggers()
+                .iter()
+                .any(|a| {
+                    matches!(
+                        a.condition.event(),
+                        TriggerCondition::PermanentCardsToGraveyard { .. }
+                    )
+                })
+            {
+                continue;
+            }
+            let source = self.object_view(id);
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                let TriggerCondition::PermanentCardsToGraveyard { relation } =
+                    ability.condition.event()
+                else {
+                    continue;
+                };
+                if events.iter().any(|event| {
+                    self.is_permanent_card_graveyard_entry(event)
+                        && match relation {
+                            CastRelation::You => event.before.owner == source.controller,
+                            CastRelation::Opponent => event.before.owner != source.controller,
+                            CastRelation::Any => true,
+                        }
+                }) {
+                    self.queue_trigger(&source, index);
+                }
+            }
+        }
+    }
     pub(super) fn finish_zone_events(
         &mut self,
         events: &[ZoneChange],
@@ -225,6 +285,7 @@ impl Game {
                 self.lore_counters_added(event.after, 0);
             }
         }
+        self.batch_graveyard_triggers(events);
         self.prune_linked_exiles();
         self.bind_first_public_source_moves(events);
         if self.state.exile_links.is_empty()

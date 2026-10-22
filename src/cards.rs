@@ -2391,6 +2391,10 @@ pub(crate) enum TriggerCondition {
         filter: CreatureFilter,
         attacking: bool,
     },
+    /// Post-event observer; one trigger for a whole zone-change batch.
+    PermanentCardsToGraveyard {
+        relation: CastRelation,
+    },
     PermanentToGraveyard {
         kinds: u16,
         relation: CastRelation,

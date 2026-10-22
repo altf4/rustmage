@@ -3376,3 +3376,204 @@ fn soulbright_seeker_resolution_history_follows_exact_source_across_control_chan
         assert_eq!(g.observe(p).ability_resolutions[1].count, 1);
     }
 }
+
+fn moonshadow(g: &mut Game, p: Player) -> CardId {
+    let source = named(g, p, "Moonshadow", Zone::Hand);
+    cast(g, source);
+    source
+}
+#[test]
+fn moonshadow_enters_with_six_minus_counters_and_one_actual_mill_batch_removes_only_one() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = moonshadow(&mut g, p);
+        assert_eq!(
+            g.stats(source),
+            crate::cards::Stats {
+                power: 1,
+                toughness: 1
+            }
+        );
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 6);
+        assert!(g.keywords(source).contains(Keywords::MENACE));
+        assert_eq!(g.minimum_blockers(source), 2);
+        for name in ["Forest", "Grizzly Bears", "Mountain"] {
+            named(&mut g, p, name, Zone::Library);
+        }
+        let eulogist = named(&mut g, p, "Dawnhand Eulogist", Zone::Hand);
+        cast(&mut g, eulogist);
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 5);
+        assert_eq!(
+            g.stats(source),
+            crate::cards::Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+    }
+}
+#[test]
+fn moonshadow_survives_a_paid_wrath_and_observes_one_owned_permanent_card_death_batch() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = moonshadow(&mut g, p);
+        let reference = g.object_ref(source);
+        g.grant_keyword_effects(&[source], reference, Keywords::INDESTRUCTIBLE);
+        let first = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let second = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        let wrath = named(&mut g, p, "Day of Judgment", Zone::Hand);
+        cast(&mut g, wrath);
+        assert_eq!(g.state.objects[first as usize].zone, Zone::Graveyard);
+        assert_eq!(g.state.objects[second as usize].zone, Zone::Graveyard);
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 5);
+    }
+}
+#[test]
+fn moonshadow_counts_owned_physical_permanent_cards_from_every_zone_independent_of_previous_control()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = moonshadow(&mut g, p);
+        for (index, zone) in [
+            Zone::Hand,
+            Zone::Library,
+            Zone::Battlefield,
+            Zone::Exile,
+            Zone::Stack,
+        ]
+        .into_iter()
+        .enumerate()
+        {
+            let card = named(&mut g, p, "Grizzly Bears", zone);
+            if zone == Zone::Battlefield {
+                let item = g.activation_item(p.other(), card, 0);
+                g.gain_control(&item, Subject::Source, PlayerSet::Controller);
+                assert_eq!(g.state.objects[card as usize].controller, p.other());
+            }
+            g.move_object(card, Zone::Graveyard);
+            settle(&mut g);
+            assert_eq!(
+                g.counter_count(source, CounterKind::MinusOne),
+                5 - index as u64
+            );
+        }
+    }
+}
+#[test]
+fn moonshadow_excludes_opponents_cards_nonpermanent_graveyard_definitions_tokens_and_spell_copies()
+{
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = moonshadow(&mut g, p);
+        let opposing = named(&mut g, p.other(), "Grizzly Bears", Zone::Hand);
+        let instant = named(&mut g, p, "Lightning Bolt", Zone::Hand);
+        let events = g.move_objects_raw(&[opposing, instant], Zone::Graveyard);
+        g.finish_zone_events(&events, &[]);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 6);
+        // An animated physical instant is a creature before dying, but the new
+        // graveyard card's printed instant definition is not a permanent card.
+        let animated = named(&mut g, p, "Lightning Bolt", Zone::Battlefield);
+        let item = g.activation_item(p, animated, 0);
+        g.animate_source(
+            &item,
+            crate::cards::AnimationSpec {
+                artifact: false,
+                creature_types: crate::cards::AnimationCreatureTypes::Unchanged,
+                base: Some((4, 4)),
+                keywords: Keywords::NONE,
+                duration: crate::cards::AnimationDuration::Permanent,
+            },
+        );
+        assert!(g.is_creature(animated));
+        g.move_object(animated, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 6);
+        g.stage_copy_creation(
+            p,
+            CopyRecipe::new(Card::from_name("Grizzly Bears").unwrap()),
+            1,
+        );
+        settle(&mut g);
+        let token = g
+            .state
+            .copy_recipes
+            .as_ref()
+            .unwrap()
+            .last()
+            .unwrap()
+            .object
+            .card;
+        g.move_object(token, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 6);
+        let copy = named(&mut g, p, "Grizzly Bears", Zone::Stack);
+        g.state.objects[copy as usize].copy_kind = CopyKind::Spell;
+        g.move_object(copy, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 6);
+    }
+}
+#[test]
+fn moonshadow_anywhere_trigger_uses_only_live_post_event_observers_and_one_trigger_per_surviving_source()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let survivor = moonshadow(&mut g, p);
+        let dying = moonshadow(&mut g, p);
+        let bear = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let death_sources = g.death_trigger_sources();
+        let events = g.move_objects_raw(&[dying, bear], Zone::Graveyard);
+        g.finish_zone_events(&events, &death_sources);
+        let moon_triggers: Vec<_> = g
+            .state
+            .pending_triggers
+            .iter()
+            .filter(|item| item.source_card == Card::from_name("Moonshadow").unwrap())
+            .collect();
+        assert_eq!(moon_triggers.len(), 1);
+        assert_eq!(moon_triggers[0].card, survivor);
+        settle(&mut g);
+        assert_eq!(g.counter_count(survivor, CounterKind::MinusOne), 5);
+        assert_eq!(g.state.objects[dying as usize].zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn moonshadow_event_guard_and_controller_capture_do_not_bind_a_later_source_incarnation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = moonshadow(&mut g, p);
+        g.state.objects[source as usize].counters.minus_one = 0;
+        let bear = named(&mut g, p, "Grizzly Bears", Zone::Hand);
+        g.move_object(bear, Zone::Graveyard);
+        assert!(g.state.pending_triggers.is_empty());
+        g.state.objects[source as usize].counters.minus_one = 6;
+        let bear = named(&mut g, p, "Grizzly Bears", Zone::Hand);
+        g.move_object(bear, Zone::Graveyard);
+        let item = g.activation_item(p.other(), source, 0);
+        g.gain_control(&item, Subject::Source, PlayerSet::Controller);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 5);
+        let own = named(&mut g, p, "Grizzly Bears", Zone::Hand);
+        g.move_object(own, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 5);
+        let opposing = named(&mut g, p.other(), "Grizzly Bears", Zone::Hand);
+        g.move_object(opposing, Zone::Graveyard);
+        assert!(!g.state.pending_triggers.is_empty());
+        let before = g.object_ref(source);
+        g.move_object(source, Zone::Exile);
+        let movement = g.entry_move(source, Zone::Battlefield, false);
+        g.stage_entries(vec![movement], None);
+        g.advance_entries();
+        settle(&mut g);
+        assert_ne!(g.object_ref(source), before);
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 6);
+        let reference = g.object_ref(source);
+        g.remove_abilities_exact(&[reference], crate::cards::AnimationDuration::Permanent);
+        let bear = named(&mut g, p, "Grizzly Bears", Zone::Hand);
+        g.move_object(bear, Zone::Graveyard);
+        assert!(g.state.pending_triggers.is_empty());
+    }
+}
