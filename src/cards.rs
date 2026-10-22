@@ -1034,6 +1034,7 @@ pub(crate) enum Instruction {
     },
     DestroyLoseManaValue,
     SelectMilled(MilledSelectionSpec),
+    SelectTargetPlayerMilled(MilledSelectionSpec),
     AttachSource,
     TapAttached,
     PutGrantorCounter(CounterKind),

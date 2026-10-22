@@ -2175,6 +2175,13 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::SelectTargetPlayerMilled(spec) => {
+                    if let Some(player) = self.program_players(PlayerSet::Targeted, &item).next()
+                        && self.start_milled_selection_for(spec, player)
+                    {
+                        return;
+                    }
+                }
                 Instruction::SelectMilled(spec) => {
                     if self.start_milled_selection(spec) {
                         return;

@@ -297,3 +297,75 @@ fn ecl_trystan_command_all_six_pairs_copy_two_returns_destroy_and_group_untap() 
         }
     }
 }
+
+#[test]
+fn ecl_grub_command_all_six_pairs_and_target_player_recovers_only_milled_goblins() {
+    for p in [Player::P0, Player::P1] {
+        for (mode, (a, b)) in PAIRS.into_iter().enumerate() {
+            let mut g = setup(p);
+            let source = named(&mut g, p, "Chitinous Graspling", Zone::Battlefield);
+            let foe = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            let other = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let old = named(&mut g, p.other(), "Bile-Vial Boggart", Zone::Graveyard);
+            let gob = named(&mut g, p.other(), "Bile-Vial Boggart", Zone::Library);
+            let changeling = named(&mut g, p.other(), "Chitinous Graspling", Zone::Library);
+            let kindred = named(&mut g, p.other(), "Boggart Mischief", Zone::Library);
+            let land = named(&mut g, p.other(), "Forest", Zone::Library);
+            let artifact = named(&mut g, p.other(), "Springleaf Drum", Zone::Library);
+            let library = g.state.players[p.other().index()].library.len();
+            let hand = g.hand_count(p.other());
+            let spell = named(&mut g, p, "Grub's Command", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 1, 1, 0, 3];
+            let targets: Vec<_> = [a, b]
+                .into_iter()
+                .map(|m| match m {
+                    0 => Target::Card(source),
+                    2 => Target::Card(foe),
+                    _ => Target::Player(p.other()),
+                })
+                .collect();
+            cast_command(&mut g, spell, Some(mode as u16), &targets);
+            settle(&mut g);
+            assert_eq!(copies(&g, p), usize::from(a == 0));
+            assert_eq!(g.stats(other).power, if a == 1 || b == 1 { 3 } else { 2 });
+            assert_eq!(
+                g.keywords(other).contains(Keywords::HASTE),
+                a == 1 || b == 1
+            );
+            assert_eq!(
+                g.object_view(foe).zone,
+                if a == 2 || b == 2 {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            assert_eq!(g.object_view(old).zone, Zone::Graveyard);
+            for id in [gob, changeling, kindred] {
+                assert_eq!(
+                    g.object_view(id).zone,
+                    if b == 3 { Zone::Hand } else { Zone::Library }
+                );
+            }
+            for id in [land, artifact] {
+                assert_eq!(
+                    g.object_view(id).zone,
+                    if b == 3 {
+                        Zone::Graveyard
+                    } else {
+                        Zone::Library
+                    }
+                );
+            }
+            assert_eq!(g.hand_count(p.other()), hand + if b == 3 { 3 } else { 0 });
+            assert_eq!(
+                g.state.players[p.other().index()].library.len(),
+                library - if b == 3 { 5 } else { 0 }
+            );
+            g.state.step = Step::Cleanup;
+            g.finish_cleanup();
+            assert_eq!(g.stats(other).power, 2);
+            assert!(!g.keywords(other).contains(Keywords::HASTE));
+        }
+    }
+}

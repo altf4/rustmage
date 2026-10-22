@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c6488a1f1895ce54ccf09da62be61570cd2075784d314d02f6dfc5d9cc3e5d28",
+  "catalogue_version": "db20e71ab3aca9c1576e5c089f2223752917561d9e16ddc90ff5daa2d8bf4c3c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2245,
-  "implemented_total": 2251,
+  "implemented_standard_cards": 2246,
+  "implemented_total": 2252,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 111,
-      "complete": 156
+      "gated": 110,
+      "complete": 157
     },
     "eoc": {
       "total": 8,
@@ -15343,8 +15343,8 @@
     {
       "name": "Grub's Command",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/grub_s_command.rs",
       "set": "ecl"
     },
