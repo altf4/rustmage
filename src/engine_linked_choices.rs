@@ -42,6 +42,7 @@ pub struct LinkedExileView {
     pub ability_origin: u64,
     pub source: ObjectRef,
     pub exiled: ObjectRef,
+    pub exiled_turn: u32,
 }
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct ChoiceState {
@@ -50,11 +51,14 @@ pub(super) struct ChoiceState {
     // Some(None) means tracking this instruction but no successful own sacrifice.
     sacrifice: Option<Option<ObjectRef>>,
     pub links: Vec<LinkedExileView>,
+    pub free_cast_uses: Vec<LinkedFreeCastUseView>,
+    pub free_cast_approval: Option<LinkedFreeCastApprovalView>,
 }
 impl ChoiceState {
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.links.len() * std::mem::size_of::<LinkedExileView>()
+            + self.free_cast_uses.len() * std::mem::size_of::<LinkedFreeCastUseView>()
             + self.piles.as_ref().map_or(0, |p| {
                 (p.remaining.len() + p.up.len() + p.down.len()) * std::mem::size_of::<ObjectRef>()
             })
@@ -69,7 +73,10 @@ impl Game {
             data.piles = None;
             data.keep_types = None;
             data.sacrifice = None;
-            if data.links.is_empty() {
+            if data.links.is_empty()
+                && data.free_cast_uses.is_empty()
+                && data.free_cast_approval.is_none()
+            {
                 self.state.linked_choices = None;
             }
         }
@@ -381,6 +388,7 @@ impl Game {
                         source,
                         exiled,
                         ability_origin,
+                        exiled_turn: self.state.turn,
                     });
             }
         }

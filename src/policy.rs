@@ -293,7 +293,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 flash_surcharge: false,
                 ..
             } => 81,
-            Action::AnnounceFree { .. }
+            Action::AnnounceLinkedFree { .. }
+            | Action::AnnounceFree { .. }
             | Action::AnnounceGrantedFlashback { .. }
             | Action::AnnounceCounterGraveyard { .. }
             | Action::AnnounceLinkedExileCounterCost { .. }

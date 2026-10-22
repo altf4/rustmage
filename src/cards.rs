@@ -1052,6 +1052,7 @@ pub(crate) enum Instruction {
         amount: u16,
         next_turn: bool,
     },
+    ExileTargetLibraryLinked(u16),
     ExileTargetLibraryPlay {
         amount: u16,
     },
@@ -2408,6 +2409,7 @@ pub(crate) enum EntryPredicate {
     CreaturePowerAtMost(i32),
     CreaturePowerAtLeast(i32),
     SubtypeAny(&'static [&'static str]),
+    SourceOrSubtypeAny(&'static [&'static str]),
     KindOrSubtype { kinds: u16, subtype: &'static str },
 }
 

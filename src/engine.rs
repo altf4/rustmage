@@ -566,6 +566,7 @@ define_actions! {
     },
     PlayGraveyardPermanent { card: CardId, permission: ObjectRef, permanent_type: PermanentType },
     AnnounceFree { card: CardId, face: CastFace, flash_surcharge: bool },
+    AnnounceLinkedFree { card: CardId, source: ObjectRef, face: CastFace, flash_surcharge: bool },
     AnnounceGrantedFlashback { card: CardId, flash_surcharge: bool },
     PayResolutionLife,
     DeclineResolutionLife,
@@ -2069,6 +2070,8 @@ pub struct Observation {
     pub library_piles: Option<LibraryPilesView>,
     pub keep_types: Option<KeepTypesView>,
     pub linked_exile: Vec<LinkedExileView>,
+    pub linked_free_cast_uses: Vec<LinkedFreeCastUseView>,
+    pub linked_free_cast_approval: Option<LinkedFreeCastApprovalView>,
     pub mana_lots: Vec<ManaLotView>,
     pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub creature_damage_history: Vec<CreatureDamageHistoryView>,
@@ -3223,6 +3226,7 @@ impl Game {
                                     )
                                     .is_some()
                                 })
+                                || self.has_linked_free_cast(actor, card)
                         }
                         _ => false,
                     };
@@ -3323,7 +3327,8 @@ impl Game {
                     }
                     if !casting_prohibited && !obj.is_token() && !obj.card.is_land() {
                         if obj.zone == Zone::Exile
-                            && self.visit_linked_counter_casts(card, actor, sorcery, &mut emit)
+                            && (self.visit_linked_counter_casts(card, actor, sorcery, &mut emit)
+                                || self.visit_linked_free_casts(actor, card, sorcery, &mut emit))
                         {
                             return true;
                         }
@@ -4352,6 +4357,30 @@ impl Game {
                     .capacity("mana representation exhausted");
                 self.add_mana(actor, bonus);
                 self.state.passes = 0;
+            }
+            Action::AnnounceLinkedFree {
+                card,
+                source,
+                face,
+                flash_surcharge,
+            } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                self.set_cast_face(&mut item, face);
+                item.cast.as_mut().unwrap().method = CastMethod::Free;
+                item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
+                if item.source_card.x_symbols() > 0 {
+                    item.x = Some(0);
+                }
+                self.state
+                    .linked_choices
+                    .get_or_insert_default()
+                    .free_cast_approval = Some(LinkedFreeCastApprovalView {
+                    stack_id: item.id,
+                    source,
+                    ability_origin: self.copy_ability_origin(source),
+                    player: actor,
+                });
+                self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceFree {
                 card,
@@ -5688,6 +5717,10 @@ impl Game {
                 self.state.player_damage_shields = None;
             }
         }
+        if let Some(data) = &mut self.state.linked_choices {
+            data.free_cast_uses.clear();
+            data.free_cast_approval = None;
+        }
         if let Some(roles) = &mut self.state.roles {
             roles.attack_type_history.clear();
             roles
@@ -6215,6 +6248,11 @@ impl Game {
                 .map_or_else(Vec::new, |roles| roles.transforms.clone()),
             library_piles: self.library_piles_view(viewer),
             keep_types: self.keep_types_view(),
+            linked_free_cast_uses: s
+                .linked_choices
+                .as_ref()
+                .map_or_else(Vec::new, |s| s.free_cast_uses.clone()),
+            linked_free_cast_approval: s.linked_choices.as_ref().and_then(|s| s.free_cast_approval),
             linked_exile: s
                 .linked_choices
                 .as_ref()
@@ -7983,3 +8021,10 @@ mod ecl_bre_tests;
 #[cfg(test)]
 #[path = "engine_ecl_kirol_tests.rs"]
 mod ecl_kirol_tests;
+
+#[path = "engine_linked_free_cast.rs"]
+mod linked_free_cast;
+pub use linked_free_cast::{LinkedFreeCastApprovalView, LinkedFreeCastUseView};
+#[cfg(test)]
+#[path = "engine_ecl_maralen_tests.rs"]
+mod ecl_maralen_tests;

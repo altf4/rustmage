@@ -157,6 +157,7 @@ impl Game {
                         crate::cards::StaticAbilityFragment::LinkedExileCreatureCounterCasting(_)
                             | crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
                             | crate::cards::StaticAbilityFragment::AdditionalSubtypeTriggers { .. }
+                            | crate::cards::StaticAbilityFragment::LinkedExileFreeCastBySubtypeUnion(_)
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::MustBeBlocked
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)

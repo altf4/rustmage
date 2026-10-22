@@ -36,6 +36,7 @@ pub(crate) enum StaticAbilityFragment {
     FreeHandCast,
     /// Own-turn casting of owned linked exiled creature cards with an extra counter cost.
     LinkedExileCreatureCounterCasting(u16),
+    LinkedExileFreeCastBySubtypeUnion(&'static [&'static str]),
     ConvokeCreatureSpells,
     LookAtLibraryTop,
     CastCreatureFromLibraryTop,

@@ -632,6 +632,11 @@ impl Game {
                                 EntryPredicate::CreaturePowerAtMost(maximum) => {
                                     entered.is_creature() && entered.power <= i128::from(maximum)
                                 }
+                                EntryPredicate::SourceOrSubtypeAny(subtypes) => {
+                                    same || subtypes
+                                        .iter()
+                                        .any(|subtype| entered.has_subtype(subtype))
+                                }
                                 EntryPredicate::SubtypeAny(subtypes) => {
                                     subtypes.iter().any(|subtype| entered.has_subtype(subtype))
                                 }
@@ -997,6 +1002,9 @@ impl Game {
     }
 
     pub(super) fn record_cast(&mut self, caster: Player, card: Card, stack: Option<usize>) {
+        if let Some(index) = stack {
+            self.commit_linked_free_cast(self.state.stack[index].id);
+        }
         let first_trigger = self.state.pending_triggers.len();
         let count = &mut self.state.players[caster.index()].spells_cast_this_turn;
         *count = count.checked_add(1).capacity("spell count exhausted");
@@ -2720,6 +2728,9 @@ impl Game {
                 }
                 Instruction::ExileTopPlay { amount, next_turn } => {
                     self.exile_top_play(item.controller, amount, next_turn);
+                }
+                Instruction::ExileTargetLibraryLinked(amount) => {
+                    self.exile_target_library_linked(&item, amount);
                 }
                 Instruction::ExileTargetLibraryPlay { amount } => {
                     for player in self.program_players(PlayerSet::Targeted, &item) {
