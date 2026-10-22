@@ -6,8 +6,11 @@ mod transform;
 pub use transform::TransformHistoryView;
 #[path = "engine_creature_actions.rs"]
 mod creature_actions;
+#[path = "engine_entry_batch_triggers.rs"]
+mod entry_batch_triggers;
 #[path = "engine_entry_history.rs"]
 mod entry_history;
+pub use entry_batch_triggers::EntryBatchEventView;
 pub use entry_history::CreatureEntryHistoryView;
 #[path = "engine_endgame.rs"]
 mod endgame;
@@ -1012,6 +1015,8 @@ pub struct DeathEventView {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub entry_batch_event: Option<Box<EntryBatchEventView>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub death_event: Option<Box<DeathEventView>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transform_stamp: Option<Box<u64>>,
@@ -1120,6 +1125,10 @@ impl SpellView {
         self.death_event
             .as_ref()
             .map_or(0, |_| std::mem::size_of::<DeathEventView>())
+            + self.entry_batch_event.as_ref().map_or(0, |event| {
+                std::mem::size_of::<EntryBatchEventView>()
+                    + event.objects.len() * std::mem::size_of::<ObjectRef>()
+            })
             + self
                 .transform_stamp
                 .as_ref()
@@ -1937,6 +1946,7 @@ pub struct ZoneChange {
     /// Historical casting qualification, frozen for this single entry incarnation.
     pub evoked: bool,
     pub cast_payment: Option<Mana>,
+    pub cast_origin: Option<Zone>,
     pub offspring_paid: bool,
     /// Paid qualification belongs only to this exact entry event.
     pub kicked: bool,
@@ -2077,6 +2087,7 @@ pub struct ExileLink {
 /// A public triggered-ability limit consumed by an exact source incarnation.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct TriggerUse {
+    pub ability_origin: u64,
     pub source: ObjectRef,
     pub ability: u16,
 }
@@ -3121,6 +3132,7 @@ impl Game {
                             EffectChoiceKind::TapPermanents(_) => Action::TapForEffect { object },
                             EffectChoiceKind::Sacrifice => Action::Sacrifice { object },
                             EffectChoiceKind::PowerDifferenceBoost
+                            | EffectChoiceKind::CopyEntryObject
                             | EffectChoiceKind::KeepSharedCreatureTypes => {
                                 Action::ChooseCreature { object }
                             }
@@ -5481,6 +5493,7 @@ impl Game {
                 moved: false,
                 sacrificed_by: None,
                 evoked: false,
+                cast_origin: None,
                 cast_payment: None,
                 offspring_paid: false,
                 kicked: false,
@@ -5510,6 +5523,7 @@ impl Game {
                 moved: false,
                 sacrificed_by: None,
                 evoked: false,
+                cast_origin: None,
                 cast_payment: None,
                 offspring_paid: false,
                 kicked: false,
@@ -5529,6 +5543,7 @@ impl Game {
                 moved: false,
                 sacrificed_by: None,
                 evoked: false,
+                cast_origin: None,
                 cast_payment: None,
                 offspring_paid: false,
                 kicked: false,
@@ -5779,6 +5794,7 @@ impl Game {
             moved: true,
             sacrificed_by: None,
             evoked: false,
+            cast_origin: None,
             cast_payment: None,
             offspring_paid: false,
             kicked: false,

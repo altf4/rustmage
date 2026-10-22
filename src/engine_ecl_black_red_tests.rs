@@ -6561,3 +6561,476 @@ fn lavaleaper_guided_wastes_activation_captures_colorless_bonus_without_stack_us
         assert!(g.state.stack.is_empty());
     }
 }
+
+fn twilight_count(g: &Game, source: CardId) -> usize {
+    g.state
+        .pending_triggers
+        .iter()
+        .chain(&g.state.ordering_triggers)
+        .chain(&g.state.stack)
+        .filter(|item| item.card == source && item.entry_batch_event.is_some())
+        .count()
+}
+fn twilight_tokens(g: &Game, player: Player) -> Vec<CardId> {
+    g.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter(|(_, o)| o.zone == Zone::Battlefield && o.controller == player && o.is_token())
+        .map(|(id, _)| id as CardId)
+        .collect()
+}
+fn twilight_wait(g: &mut Game) {
+    for _ in 0..100 {
+        if g.observe(g.actor().unwrap())
+            .effect_choice
+            .as_ref()
+            .is_some_and(|choice| choice.kind == EffectChoiceKind::CopyEntryObject)
+        {
+            return;
+        }
+        advance(g);
+    }
+    panic!("no copy choice: {:?}", g.state.pending);
+}
+#[test]
+fn twilight_paid_body_surveils_two_with_private_order_and_short_library() {
+    for p in [Player::P0, Player::P1] {
+        for count in [0, 1, 2] {
+            let mut g = hexing_setup(p);
+            for card in g.state.players[p.index()].library.clone() {
+                g.move_object(card, Zone::Exile);
+            }
+            let mut tops = Vec::new();
+            for name in ["Shock", "Forest"].iter().take(count) {
+                tops.push(named(&mut g, p, name, Zone::Library));
+            }
+            let source = hexing_open(&mut g, p, "Twilight Diviner", None);
+            assert_eq!(g.state.players[p.index()].mana.iter().sum::<u32>(), 177);
+            if count != 0 {
+                for _ in 0..30 {
+                    if g.observe(p).library_choice.is_some() {
+                        break;
+                    }
+                    advance(&mut g);
+                }
+                assert!(g.observe(p).library_choice.is_some());
+                assert!(g.observe(p.other()).library_choice.is_none());
+                for &card in tops.iter().rev() {
+                    checked(
+                        &mut g,
+                        Action::ArrangeLibrary {
+                            card,
+                            destination: LibraryDestination::Graveyard,
+                        },
+                    );
+                }
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.stats(source),
+                Stats {
+                    power: 3,
+                    toughness: 3
+                }
+            );
+            assert_eq!(g.state.players[p.index()].library.len(), 0);
+            assert!(
+                tops.iter()
+                    .all(|id| g.state.objects[*id as usize].zone == Zone::Graveyard)
+            );
+            assert_eq!(twilight_count(&g, source), 0);
+        }
+    }
+}
+#[test]
+fn twilight_paid_bidding_coalesces_one_batch_and_source_enters_with_its_other_creatures() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Twilight Diviner", Zone::Graveyard);
+        let elf = named(&mut g, p, "Llanowar Elves", Zone::Graveyard);
+        let other = named(&mut g, p, "Dawnhand Eulogist", Zone::Graveyard);
+        let foe = named(&mut g, p.other(), "Llanowar Elves", Zone::Graveyard);
+        let spell = named(&mut g, p, "Bloodline Bidding", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        wait_type_choice(&mut g);
+        checked(
+            &mut g,
+            Action::ChooseCreatureType {
+                creature_type: crate::cards::CreatureType::from_name("Elf").unwrap(),
+            },
+        );
+        assert_eq!(twilight_count(&g, source), 1);
+        let packet = g
+            .state
+            .pending_triggers
+            .iter()
+            .chain(&g.state.ordering_triggers)
+            .chain(&g.state.stack)
+            .find(|item| item.entry_batch_event.is_some())
+            .unwrap();
+        assert_eq!(
+            packet.entry_batch_event.as_ref().unwrap().objects,
+            vec![g.object_ref(elf), g.object_ref(other)]
+        );
+        assert!(packet.targets.is_empty());
+        assert_eq!(g.object_view(foe).zone, Zone::Graveyard);
+        twilight_wait(&mut g);
+        let unrelated = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let bad = g.object_ref(unrelated);
+        reject(&mut g, Action::ChooseCreature { object: bad });
+        let chosen = g.object_ref(elf);
+        checked(&mut g, Action::ChooseCreature { object: chosen });
+        settle(&mut g);
+        let tokens = twilight_tokens(&g, p);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(g.object_view(tokens[0]).card.name(), "Llanowar Elves");
+        assert_eq!(
+            g.state
+                .triggered_this_turn
+                .iter()
+                .filter(|row| row.source == g.object_ref(source))
+                .count(),
+            1
+        );
+    }
+}
+#[test]
+fn twilight_only_graveyard_entries_and_actual_graveyard_casts_qualify() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Twilight Diviner", Zone::Battlefield);
+        for (owner, origin) in [
+            (p, Zone::Hand),
+            (p, Zone::Exile),
+            (p.other(), Zone::Graveyard),
+        ] {
+            let id = named(&mut g, owner, "Grizzly Bears", origin);
+            g.move_object(id, Zone::Battlefield);
+            assert_eq!(twilight_count(&g, source), 0);
+        }
+        let land = named(&mut g, p, "Forest", Zone::Graveyard);
+        g.move_object(land, Zone::Battlefield);
+        assert_eq!(twilight_count(&g, source), 0);
+        let donor = named(&mut g, p, "Gigantosaurus", Zone::Battlefield);
+        g.add_counter(donor, CounterKind::PlusOne, 6);
+        let wurm = named(&mut g, p, "Quilled Greatwurm", Zone::Graveyard);
+        checked(&mut g, Action::AnnounceCounterGraveyard { card: wurm });
+        let object = g.object_ref(donor);
+        for _ in 0..6 {
+            checked(
+                &mut g,
+                Action::ChooseCreatureCounterCost {
+                    object,
+                    counter: CounterKind::PlusOne,
+                },
+            );
+        }
+        kindle_pay(&mut g);
+        twilight_wait(&mut g);
+        let object = g.object_ref(wurm);
+        checked(&mut g, Action::ChooseCreature { object });
+        settle(&mut g);
+        assert_eq!(g.counter_count(donor, CounterKind::PlusOne), 0);
+        assert_eq!(
+            twilight_tokens(&g, p)
+                .iter()
+                .filter(|id| g.object_view(**id).card.name() == "Quilled Greatwurm")
+                .count(),
+            1
+        );
+    }
+}
+#[test]
+fn twilight_limit_is_consumed_before_resolution_and_resets_on_opponents_turn() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Twilight Diviner", Zone::Battlefield);
+        for _ in 0..2 {
+            let id = named(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+            g.move_object(id, Zone::Battlefield);
+        }
+        assert_eq!(twilight_count(&g, source), 1);
+        settle(&mut g);
+        assert_eq!(twilight_tokens(&g, p).len(), 1);
+        g.state.active = p.other();
+        g.begin_turn();
+        let id = named(&mut g, p, "Llanowar Elves", Zone::Graveyard);
+        g.move_object(id, Zone::Battlefield);
+        assert_eq!(twilight_count(&g, source), 1);
+        settle(&mut g);
+        assert_eq!(twilight_tokens(&g, p).len(), 2);
+    }
+}
+#[test]
+fn twilight_queued_batch_keeps_controller_and_current_copy_values_without_targeting() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Twilight Diviner", Zone::Battlefield);
+        named(&mut g, p, "Doubling Season", Zone::Battlefield);
+        let creature = named(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+        g.move_object(creature, Zone::Battlefield);
+        let reference = g.object_ref(creature);
+        g.add_counter(creature, CounterKind::PlusOne, 4);
+        g.grant_keyword_effects(&[creature], reference, Keywords::HEXPROOF);
+        // Copy the permanent into a noncreature after the event. The ability's
+        // choice is frozen to the event but reads current copiable values.
+        g.copy_permanents_exact(
+            &[reference],
+            CopyRecipe::new(Card::from_name("Doubling Season").unwrap()),
+        );
+        g.state.objects[creature as usize].controller = p.other();
+        g.move_object(source, Zone::Hand);
+        twilight_wait(&mut g);
+        assert_eq!(g.actor(), Some(p));
+        checked(&mut g, Action::ChooseCreature { object: reference });
+        settle(&mut g);
+        let tokens = twilight_tokens(&g, p);
+        assert_eq!(tokens.len(), 2); // Only the captured controller's Season applies.
+        for token in tokens {
+            assert_eq!(g.object_view(token).card.name(), "Doubling Season");
+            assert_eq!(g.counter_count(token, CounterKind::PlusOne), 0);
+            assert!(!g.keywords(token).contains(Keywords::HEXPROOF));
+        }
+    }
+}
+#[test]
+fn twilight_departed_and_reentered_objects_are_not_rebound_or_copied_from_lki() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Twilight Diviner", Zone::Battlefield);
+        let id = named(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+        g.move_object(id, Zone::Battlefield);
+        let old = g.object_ref(id);
+        g.move_object(id, Zone::Hand);
+        g.move_object(id, Zone::Battlefield);
+        assert_ne!(g.object_ref(id), old);
+        assert_eq!(twilight_count(&g, source), 1);
+        settle(&mut g);
+        assert!(twilight_tokens(&g, p).is_empty());
+        // A new observer incarnation has its own use, even in this same turn.
+        g.move_object(source, Zone::Hand);
+        g.move_object(source, Zone::Battlefield);
+        let next = named(&mut g, p, "Llanowar Elves", Zone::Graveyard);
+        g.move_object(next, Zone::Battlefield);
+        settle(&mut g);
+        assert_eq!(twilight_tokens(&g, p).len(), 1);
+    }
+}
+#[test]
+fn twilight_copy_uses_entry_replacements_and_triggers_with_frozen_batch_ownership() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        named(&mut g, p, "Twilight Diviner", Zone::Battlefield);
+        named(&mut g, p, "Doubling Season", Zone::Battlefield);
+        let id = named(&mut g, p, "Adaptive Automaton", Zone::Graveyard);
+        let movement = g.entry_move(id, Zone::Battlefield, false);
+        g.stage_entries(vec![movement], None);
+        assert!(g.advance_entries());
+        let elf = crate::cards::CreatureType::from_name("Elf").unwrap();
+        checked(
+            &mut g,
+            Action::ChooseEntryValue {
+                value: crate::cards::EntryChoiceValue::CreatureType(elf),
+            },
+        );
+        twilight_wait(&mut g);
+        let reference = g.object_ref(id);
+        checked(&mut g, Action::ChooseCreature { object: reference });
+        for kind in ["Goblin", "Elemental"] {
+            checked(
+                &mut g,
+                Action::ChooseEntryValue {
+                    value: crate::cards::EntryChoiceValue::CreatureType(
+                        crate::cards::CreatureType::from_name(kind).unwrap(),
+                    ),
+                },
+            );
+        }
+        settle(&mut g);
+        let tokens = twilight_tokens(&g, p);
+        assert_eq!(tokens.len(), 2);
+        assert_eq!(
+            g.source_chosen_creature_type(g.object_ref(tokens[0]))
+                .unwrap()
+                .name(),
+            "Goblin"
+        );
+        assert_eq!(
+            g.source_chosen_creature_type(g.object_ref(tokens[1]))
+                .unwrap()
+                .name(),
+            "Elemental"
+        );
+    }
+}
+#[test]
+fn twilight_fresh_copied_ability_epoch_retains_old_queued_batch_and_history() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Twilight Diviner", Zone::Battlefield);
+        let first = named(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+        g.move_object(first, Zone::Battlefield);
+        assert_eq!(twilight_count(&g, source), 1);
+        g.state.objects[first as usize].controller = p.other();
+        let reference = g.object_ref(source);
+        let old = g.state.triggered_this_turn[0];
+        let target = named(&mut g, p.other(), "Twilight Diviner", Zone::Battlefield);
+        g.prepare_triggers();
+        let _mirror = hexing_open(&mut g, p, "Mirrorform", Some(Target::Card(target)));
+        // Resolve Mirrorform above the already queued trigger, then stop before
+        // the old entry-copy choice resolves.
+        for _ in 0..50 {
+            if g.copy_ability_origin(reference) != 0 {
+                break;
+            }
+            advance(&mut g);
+        }
+        let epoch = g.copy_ability_origin(reference);
+        assert_ne!(epoch, 0);
+        assert!(g.state.triggered_this_turn.contains(&old));
+        let second = named(&mut g, p, "Llanowar Elves", Zone::Graveyard);
+        g.move_object(second, Zone::Battlefield);
+        assert!(
+            g.state
+                .triggered_this_turn
+                .iter()
+                .any(|row| row.source == reference && row.ability_origin == epoch)
+        );
+        assert!(g.state.triggered_this_turn.contains(&old));
+        settle(&mut g);
+        let tokens = twilight_tokens(&g, p);
+        assert_eq!(tokens.len(), 2);
+        assert!(
+            tokens
+                .iter()
+                .any(|id| g.object_view(*id).card.name() == "Grizzly Bears")
+        );
+        assert!(
+            tokens
+                .iter()
+                .any(|id| g.object_view(*id).card.name() == "Llanowar Elves")
+        );
+    }
+}
+#[test]
+fn twilight_packet_layout_and_owned_event_bytes_are_explicit() {
+    let mut g = hexing_setup(Player::P0);
+    let source = named(&mut g, Player::P0, "Twilight Diviner", Zone::Battlefield);
+    let id = named(&mut g, Player::P0, "Grizzly Bears", Zone::Graveyard);
+    g.move_object(id, Zone::Battlefield);
+    let packet = g
+        .state
+        .pending_triggers
+        .iter()
+        .find(|item| item.card == source)
+        .unwrap();
+    let mut bare = packet.clone();
+    bare.entry_batch_event = None;
+    assert_eq!(
+        packet.owned_bytes() - bare.owned_bytes(),
+        std::mem::size_of::<EntryBatchEventView>() + std::mem::size_of::<ObjectRef>()
+    );
+    println!(
+        "Twilight layout: State={} Object={} SpellView={} Announcement={} Resolution={} TriggerUse={} ZoneChange={}",
+        std::mem::size_of::<State>(),
+        std::mem::size_of::<Object>(),
+        std::mem::size_of::<SpellView>(),
+        std::mem::size_of::<Announcement>(),
+        std::mem::size_of::<Resolution>(),
+        std::mem::size_of::<TriggerUse>(),
+        std::mem::size_of::<ZoneChange>()
+    );
+}
+#[test]
+fn twilight_apnap_simultaneous_entries_and_removed_observers_are_exact() {
+    for active in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(active);
+        let sources = [
+            named(&mut g, Player::P0, "Twilight Diviner", Zone::Battlefield),
+            named(&mut g, Player::P1, "Twilight Diviner", Zone::Battlefield),
+        ];
+        let creatures = [
+            named(&mut g, Player::P0, "Grizzly Bears", Zone::Graveyard),
+            named(&mut g, Player::P1, "Llanowar Elves", Zone::Graveyard),
+        ];
+        let events = g.move_objects_raw(&creatures, Zone::Battlefield);
+        g.finish_zone_events(&events, &[]);
+        for i in 0..2 {
+            assert_eq!(twilight_count(&g, sources[i]), 1);
+            let packet = g
+                .state
+                .pending_triggers
+                .iter()
+                .find(|item| item.card == sources[i])
+                .unwrap();
+            assert_eq!(
+                packet.entry_batch_event.as_ref().unwrap().objects,
+                vec![g.object_ref(creatures[i])]
+            );
+        }
+        g.prepare_triggers();
+        assert_eq!(g.state.stack.last().unwrap().controller, active.other());
+        settle(&mut g);
+        assert_eq!(twilight_tokens(&g, Player::P0).len(), 1);
+        assert_eq!(twilight_tokens(&g, Player::P1).len(), 1);
+        g.state.active = active.other();
+        g.begin_turn();
+        g.remove_abilities_exact(
+            &[g.object_ref(sources[0])],
+            crate::cards::AnimationDuration::Permanent,
+        );
+        let id = named(&mut g, Player::P0, "Grizzly Bears", Zone::Graveyard);
+        g.move_object(id, Zone::Battlefield);
+        assert_eq!(twilight_count(&g, sources[0]), 0);
+        assert!(g.state.triggered_this_turn.is_empty());
+    }
+}
+#[test]
+fn twilight_stack_copies_of_a_graveyard_cast_are_not_themselves_cast_from_there() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Twilight Diviner", Zone::Battlefield);
+        let donor = named(&mut g, p, "Gigantosaurus", Zone::Battlefield);
+        g.add_counter(donor, CounterKind::PlusOne, 6);
+        let wurm = named(&mut g, p, "Quilled Greatwurm", Zone::Graveyard);
+        checked(&mut g, Action::AnnounceCounterGraveyard { card: wurm });
+        let object = g.object_ref(donor);
+        for _ in 0..6 {
+            checked(
+                &mut g,
+                Action::ChooseCreatureCounterCost {
+                    object,
+                    counter: CounterKind::PlusOne,
+                },
+            );
+        }
+        kindle_pay(&mut g);
+        // Construct the owned permanent-spell-copy boundary from the actual
+        // paid spell. The current copy instruction admits only instant/sorcery
+        // spells; permanent spell-copy normalization is independently generic.
+        let mut copy = g.state.stack.last().unwrap().clone();
+        assert_eq!(copy.cast.unwrap().origin, Zone::Graveyard);
+        let copy_card = named(&mut g, p, "Quilled Greatwurm", Zone::Stack);
+        g.state.objects[copy_card as usize].copy_kind = CopyKind::Spell;
+        copy.id = g.next_stack_id();
+        copy.card = copy_card;
+        copy.object = g.object_ref(copy_card);
+        copy.is_copy = true;
+        g.state.stack.push(copy);
+        for _ in 0..50 {
+            if !twilight_tokens(&g, p).is_empty() {
+                break;
+            }
+            advance(&mut g);
+        }
+        assert_eq!(twilight_tokens(&g, p).len(), 1);
+        assert_eq!(twilight_count(&g, source), 0);
+        assert!(g.state.triggered_this_turn.is_empty());
+        twilight_wait(&mut g);
+        let object = g.object_ref(wurm);
+        checked(&mut g, Action::ChooseCreature { object });
+        settle(&mut g);
+        assert_eq!(twilight_tokens(&g, p).len(), 2);
+    }
+}

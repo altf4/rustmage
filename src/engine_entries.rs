@@ -593,6 +593,7 @@ impl Game {
             }
             event.evoked = movement.evoked;
             event.cast_payment = movement.cast_payment;
+            event.cast_origin = movement.cast_origin;
             event.offspring_paid = movement.offspring_paid;
             event.kicked = movement.kicked;
             if event.moved && event.destination == Zone::Battlefield {

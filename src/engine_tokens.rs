@@ -229,6 +229,7 @@ impl Game {
                     moved: true,
                     sacrificed_by: None,
                     evoked: false,
+                    cast_origin: None,
                     cast_payment: None,
                     offspring_paid: false,
                     kicked: false,

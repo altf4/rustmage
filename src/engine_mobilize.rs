@@ -272,6 +272,7 @@ impl Game {
                 x: None,
                 attachment_trigger: None,
                 cast: None,
+                entry_batch_event: None,
                 entering_object: None,
                 evidence_collected: false,
                 id,

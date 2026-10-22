@@ -444,6 +444,7 @@ impl Game {
                 self.lore_counters_added(event.after, 0);
             }
         }
+        self.batch_graveyard_entry_triggers(events, &sources, entry_suppression);
         self.batch_graveyard_triggers(events);
         self.prune_linked_exiles();
         self.bind_first_public_source_moves(events);

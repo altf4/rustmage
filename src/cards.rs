@@ -663,6 +663,8 @@ pub(crate) struct SearchSpec {
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
+    /// Choose one surviving exact member of a captured entry batch, without targeting.
+    CopyEntryObject,
     /// A controlled permanent or revealed hand card witnesses a casting cost.
     Behold,
     /// Behold one permanent or hand card and exile that exact witness as a cost.
@@ -854,6 +856,7 @@ pub(crate) enum Instruction {
     ReturnDeathCard(ReturnKind),
     ResolveDelayedReturn,
     CopyNextInstantSorcery,
+    CopyEntryBatchCreature,
     CopyNextInstantSorceryAbility(u16),
     CopyTargetedTrigger,
     CopyCastSpell {
@@ -2582,6 +2585,10 @@ pub(crate) enum TriggerCondition {
         ordinal: Option<u64>,
     },
     SelfEnters,
+    /// One event for a batch of controlled creatures entering or cast from a graveyard.
+    CreaturesFromGraveyardEnterYou {
+        other: bool,
+    },
     /// Entry qualified by the exact actual cast, including a cast without mana payment.
     SelfEntersIfCast,
     SelfEntersOrTransforms,
