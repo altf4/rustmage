@@ -5349,7 +5349,8 @@
     2,
     0,
     1,
-    8
+    8,
+    0
   ],
   "aliases": [
     [
@@ -5991,6 +5992,10 @@
     [
       "@token/scion_of_the_deep",
       5334
+    ],
+    [
+      "@token/shapeshifter_1_1_colorless_changeling",
+      5344
     ],
     [
       "@token/spirit_1_1_white_flying",
@@ -27787,6 +27792,12 @@
       "name": "Phyrexian Goblin Token",
       "subtypes": "Phyrexian Goblin",
       "colors": 8
+    },
+    {
+      "factory_identity": "@token/shapeshifter_1_1_colorless_changeling",
+      "name": "Shapeshifter Token",
+      "subtypes": "Shapeshifter",
+      "colors": 0
     }
   ],
   "emblems": [
@@ -180484,6 +180495,35 @@
       "mana_cost": "",
       "type_line": "Creature — Phyrexian Goblin",
       "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5344,
+      "module": "card_5344",
+      "path": "synthetic/token_shapeshifter_1_1_colorless_changeling.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/shapeshifter_1_1_colorless_changeling",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Shapeshifter",
+      "oracle_keywords": [
+        "Changeling"
+      ],
       "standard_legal": false,
       "legendary": false,
       "kind": 1,
