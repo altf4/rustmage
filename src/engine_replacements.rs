@@ -1624,6 +1624,7 @@ mod owned_memory_tests {
             std::mem::size_of::<TokenGroupView>() + std::mem::size_of::<(ObjectRef, u16)>();
         assert_eq!(frame.bytes(), empty + payload);
         let mut entry = entries::EntryBatch {
+            prepared: true,
             discard_context: None,
             moves: Vec::new(),
             choices: Vec::new(),

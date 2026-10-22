@@ -137,6 +137,7 @@ const fn object(kinds: u8) -> TargetRule {
     }
 }
 pub(super) struct CardExtras {
+    pub as_enters_copy_creature: bool,
     pub transform: Option<TransformSpec>,
     /// Exact optional-additional-cost intent for each predeclared modal combination.
     pub mode_optional_additional_paid: &'static [bool],
@@ -219,6 +220,7 @@ impl CardExtras {
         cast_entry_counters: &[],
         hand_cast_entry_counters: &[],
         named_activation_lock: false,
+        as_enters_copy_creature: false,
         entry_choice: None,
         chosen_entry_counters: None,
         static_modifiers: &[],

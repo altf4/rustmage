@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 163,
+  "newly_tested_physical_cards": 165,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -107,6 +107,7 @@
     "Nameless Inversion",
     "Noggle the Mind",
     "Oko, Lorwyn Liege // Oko, Shadowmoor Scion",
+    "Omni-Changeling",
     "Perfect Intimidation",
     "Personify",
     "Pitiless Fists",
@@ -155,6 +156,7 @@
     "Tributary Vaulter",
     "Trystan's Command",
     "Trystan, Callous Cultivator // Trystan, Penitent Culler",
+    "Twilight Diviner",
     "Twinflame Travelers",
     "Unbury",
     "Vibrance",
@@ -168,8 +170,8 @@
     "Winnowing",
     "Wistfulness"
   ],
-  "current_admission_flags": 270,
-  "remaining_gated": 3,
+  "current_admission_flags": 272,
+  "remaining_gated": 1,
   "inherited_evidence_audit": {
     "audited": 107,
     "total": 107,
@@ -531,10 +533,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T22:13:36.421979+00:00",
-    "elapsed_seconds": 24649.205128,
-    "newly_verified_cards": 163,
-    "cards_per_hour": 23.806041491107994,
+    "end_utc": "2026-10-22T22:43:08.648169+00:00",
+    "elapsed_seconds": 26421.431318,
+    "newly_verified_cards": 165,
+    "cards_per_hour": 22.481749487785265,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "Combined260-card ECL scenarios; Kirol separately focused-tested after this combined run.",
@@ -1546,5 +1548,70 @@
     "log": "<cache>/rustmage-ecl-pool266-all-pairs.log",
     "profile": "debug; includes policy, both-observer privacy checks and periodic JSON/raw/index/parent-disposal/replay/restore",
     "acceptance": "Preliminary supported subset only; final273/273 and themed mechanism execution still pending."
+  },
+  "omni_changeling": {
+    "source_commit": "8a0eef2f",
+    "native_tests": 3157,
+    "ignored": 1,
+    "native_seconds": 94.63,
+    "native_report": "<cache>/rustmage-build-reports/ff7e8b4865e84bd5a30b4dc7081fae6b.json",
+    "focused_copy_tests": 29,
+    "focused_seconds": 0.83,
+    "focused_report": "<cache>/rustmage-build-reports/8e23c4a1b8f5430b872d02a69baca25d.json",
+    "clippy": "<cache>/rustmage-build-reports/3cddd42bc88d42cbbf72f6169bd053b3.json"
+  },
+  "supporting_source_audit": {
+    "scope": "Supporting-source completeness audit; not an independent final published review",
+    "evidence": "docs/sets/ecl-supporting-source-audit.json",
+    "supporting_count": 19,
+    "categories": {
+      "token": 11,
+      "transform": 7,
+      "emblem": 1
+    },
+    "authenticated_unique_pins": 96,
+    "new_source_packets": 2,
+    "new_full_source_reads": 4,
+    "checks_passed": 7,
+    "checks_seconds": 6.29,
+    "source_commit": "756d75ae",
+    "integrated_commit": "eb36164e",
+    "missing_source_packets": []
+  },
+  "twilight_diviner": {
+    "source_commit": "fc02310ed6ee2931358aa7a536d0dbb6c68d8e91",
+    "integrated_commit": "36976a9f",
+    "focused": {
+      "passed": 11,
+      "seconds": 0.31,
+      "resource_report": "<cache>/rustmage-build-reports/9523d7ecfdb44c708319ff7a1931cc40.json"
+    },
+    "native": {
+      "passed": 3182,
+      "ignored": 1,
+      "seconds": 95.59,
+      "resource_report": "<cache>/rustmage-build-reports/9dbf9abf809147919c19c734b5a87d25.json"
+    },
+    "clippy": {
+      "exit": 0,
+      "seconds": 40.25,
+      "resource_report": "<cache>/rustmage-build-reports/cb1c5da360e94cf7ad609d28297d6de4.json"
+    },
+    "provenance_seconds": 3.688,
+    "semantics": [
+      "simultaneous qualifying entry batch captured by exact incarnation",
+      "actual graveyard cast origin excludes spell copies",
+      "mandatory non-targeting choice among surviving batch objects",
+      "intrinsic once-per-turn limits include acquired copy ability epochs"
+    ],
+    "layout_bytes": {
+      "State": 3296,
+      "Object": 144,
+      "SpellView": 528,
+      "Announcement": 960,
+      "Resolution": 864,
+      "TriggerUse": 32,
+      "single_reference_entry_packet_owned": 40
+    }
   }
 }

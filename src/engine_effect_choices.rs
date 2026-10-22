@@ -56,6 +56,20 @@ impl Game {
         if choice.counter_removal.is_some() {
             return false;
         }
+        if choice.kind == EffectChoiceKind::CopyEntryObject {
+            return self.on_battlefield(object.card)
+                && self.object_ref(object.card) == object
+                && self
+                    .state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .item
+                    .entry_batch_event
+                    .as_ref()
+                    .is_some_and(|event| event.objects.contains(&object))
+                && !choice.selected[player.index()].contains(&object);
+        }
         if choice.kind == EffectChoiceKind::KeepSharedCreatureTypes {
             return self.keep_shared_type_candidate(choice, object);
         }
@@ -601,7 +615,17 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        if let EffectChoiceKind::Blight(amount) | EffectChoiceKind::BlightCost(amount) = choice.kind
+        if choice.kind == EffectChoiceKind::CopyEntryObject {
+            let controller = self.state.resolving.as_ref().unwrap().item.controller;
+            if let Some(&object) = choice.selected[controller.index()].first()
+                && self.on_battlefield(object.card)
+                && self.object_ref(object.card) == object
+            {
+                let recipe = self.copiable_recipe(object);
+                self.stage_copy_creation(controller, recipe, 1);
+            }
+        } else if let EffectChoiceKind::Blight(amount) | EffectChoiceKind::BlightCost(amount) =
+            choice.kind
         {
             if choice.blight_copy_attacking {
                 let object = choice

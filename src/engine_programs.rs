@@ -586,6 +586,7 @@ impl Game {
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
+                    | TriggerCondition::CreaturesFromGraveyardEnterYou { .. }
                     | TriggerCondition::PermanentCardsToGraveyard { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
                     | TriggerCondition::ControlledCreatureWithCountersDies
@@ -825,6 +826,12 @@ impl Game {
         if condition.once_per_turn() {
             let used = TriggerUse {
                 source: source.reference,
+                // Recipient copies do not replace unrelated granted abilities.
+                ability_origin: if condition.is_granted() {
+                    0
+                } else {
+                    source.copy_ability_origin
+                },
                 ability: u16::try_from(index).expect("ability index"),
             };
             if self.state.triggered_this_turn.contains(&used) {
@@ -881,6 +888,7 @@ impl Game {
             source_tapped: source.tapped,
             source_facts: DamageFacts::from_view(source),
             related_stack: None,
+            entry_batch_event: None,
             entering_object: None,
             evidence_collected: false,
             damage_event: None,
@@ -1456,7 +1464,11 @@ impl Game {
                 }
                 Effect::Creature(..) | Effect::Permanent => {
                     self.normalize_permanent_spell_copy(&item);
-                    if !item.source_card.evoke_costs().is_empty()
+                    if item.source_card.as_enters_copy_creature()
+                        || item
+                            .cast
+                            .is_some_and(|cast| !item.is_copy && cast.origin == Zone::Graveyard)
+                        || !item.source_card.evoke_costs().is_empty()
                         || item.cast.is_some_and(|c| {
                             c.offspring == Some(true)
                                 || c.kicker == Some(true)
@@ -1810,6 +1822,18 @@ impl Game {
                         .collect();
                     self.move_target_batch(&item.targets, Zone::Exile);
                     self.remember_linked_exile_for_origin(item.object, item.ability_origin(), &ids);
+                }
+                Instruction::CopyEntryBatchCreature => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::CopyEntryObject,
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        None,
+                    ) {
+                        return;
+                    }
                 }
                 Instruction::CopyNextInstantSorcery => self.remember_next_spell_copy(&item),
                 Instruction::CopyNextInstantSorceryAbility(ability) => {

@@ -6,8 +6,11 @@ mod transform;
 pub use transform::TransformHistoryView;
 #[path = "engine_creature_actions.rs"]
 mod creature_actions;
+#[path = "engine_entry_batch_triggers.rs"]
+mod entry_batch_triggers;
 #[path = "engine_entry_history.rs"]
 mod entry_history;
+pub use entry_batch_triggers::EntryBatchEventView;
 pub use entry_history::CreatureEntryHistoryView;
 #[path = "engine_endgame.rs"]
 mod endgame;
@@ -549,6 +552,7 @@ define_actions! {
     },
     SelectMilled { object: ObjectRef },
     FinishMilledSelection,
+    ChooseEntryCopy { object: Option<ObjectRef> },
     ChooseEntryTimestamp { object: ObjectRef },
     ChooseEntryReplacement { source: ObjectRef, intrinsic: bool },
     ChooseEntryValue { value: EntryChoiceValue },
@@ -1017,6 +1021,8 @@ pub struct DeathEventView {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub entry_batch_event: Option<Box<EntryBatchEventView>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub death_event: Option<Box<DeathEventView>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transform_stamp: Option<Box<u64>>,
@@ -1125,6 +1131,10 @@ impl SpellView {
         self.death_event
             .as_ref()
             .map_or(0, |_| std::mem::size_of::<DeathEventView>())
+            + self.entry_batch_event.as_ref().map_or(0, |event| {
+                std::mem::size_of::<EntryBatchEventView>()
+                    + event.objects.len() * std::mem::size_of::<ObjectRef>()
+            })
             + self
                 .transform_stamp
                 .as_ref()
@@ -1657,6 +1667,9 @@ enum Pending {
         player: Player,
         filter: RecoveryFilter,
     },
+    EntryCopy {
+        player: Player,
+    },
     EntryTimestamp {
         player: Player,
     },
@@ -1953,6 +1966,7 @@ pub struct ZoneChange {
     /// Historical casting qualification, frozen for this single entry incarnation.
     pub evoked: bool,
     pub cast_payment: Option<Mana>,
+    pub cast_origin: Option<Zone>,
     pub offspring_paid: bool,
     /// Paid qualification belongs only to this exact entry event.
     pub kicked: bool,
@@ -2093,6 +2107,7 @@ pub struct ExileLink {
 /// A public triggered-ability limit consumed by an exact source incarnation.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct TriggerUse {
+    pub ability_origin: u64,
     pub source: ObjectRef,
     pub ability: u16,
 }
@@ -2253,6 +2268,7 @@ pub struct Observation {
     pub aura_entry: Option<entries::AuraEntryView>,
     pub entry_life: Option<entries::EntryLifeView>,
     pub entry_replacement: Option<entry_tap::EntryTapView>,
+    pub entry_copy: Option<entries::EntryCopyView>,
     pub entry_timestamps: Option<entries::EntryTimestampView>,
     pub additional_cost: Option<AdditionalCostView>,
     pub forage: Option<ForageView>,
@@ -2563,6 +2579,7 @@ impl Game {
             | Pending::ConspirePayment { player }
             | Pending::CreatureCounterCost { player }
             | Pending::AdditionalCost { player }
+            | Pending::EntryCopy { player }
             | Pending::EntryTimestamp { player }
             | Pending::EntryReplacement { player }
             | Pending::LinkedChoice { player }
@@ -3012,6 +3029,21 @@ impl Game {
                     return true;
                 }
             }
+            Pending::EntryCopy { .. } => {
+                if emit(Action::ChooseEntryCopy { object: None }) {
+                    return true;
+                }
+                for (id, _) in self.state.objects.iter().enumerate() {
+                    let object = self.object_ref(id as CardId);
+                    if self.entry_copy_candidate(object)
+                        && emit(Action::ChooseEntryCopy {
+                            object: Some(object),
+                        })
+                    {
+                        return true;
+                    }
+                }
+            }
             Pending::EntryTimestamp { .. } => {
                 for object in self.entry_timestamp_candidates() {
                     if emit(Action::ChooseEntryTimestamp { object }) {
@@ -3130,6 +3162,7 @@ impl Game {
                             EffectChoiceKind::TapPermanents(_) => Action::TapForEffect { object },
                             EffectChoiceKind::Sacrifice => Action::Sacrifice { object },
                             EffectChoiceKind::PowerDifferenceBoost
+                            | EffectChoiceKind::CopyEntryObject
                             | EffectChoiceKind::KeepSharedCreatureTypes => {
                                 Action::ChooseCreature { object }
                             }
@@ -4333,6 +4366,7 @@ impl Game {
                 self.announce_attached_ability(grantor, ability)
             }
             Action::ChooseAdditionalCost { object } => self.choose_additional_cost(object),
+            Action::ChooseEntryCopy { object } => self.choose_entry_copy(object),
             Action::ChooseEntryTimestamp { object } => self.choose_entry_timestamp(object),
             Action::ChooseEntryReplacement { source, intrinsic } => {
                 self.choose_entry_tap_effect(source, intrinsic)
@@ -5345,8 +5379,10 @@ impl Game {
     }
 
     fn self_entry_requires_tapped(&self, id: CardId, controller: Player) -> bool {
-        let object = &self.state.objects[id as usize];
-        match object.card.entry_tapped() {
+        self.self_entry_requires_tapped_card(id, self.state.objects[id as usize].card, controller)
+    }
+    fn self_entry_requires_tapped_card(&self, id: CardId, card: Card, controller: Player) -> bool {
+        match card.entry_tapped() {
             EntryTapped::Never | EntryTapped::PayLife(_) => false,
             EntryTapped::UnlessPlainsOrIsland => {
                 !self.state.objects.iter().enumerate().any(|(id, o)| {
@@ -5385,7 +5421,7 @@ impl Game {
                             && self.current_kinds(*other as CardId) & 2 != 0
                     })
                     .count();
-                match object.card.entry_tapped() {
+                match card.entry_tapped() {
                     EntryTapped::UnlessAtMostTwo => lands > 2,
                     _ => lands < 2,
                 }
@@ -5497,6 +5533,7 @@ impl Game {
                 moved: false,
                 sacrificed_by: None,
                 evoked: false,
+                cast_origin: None,
                 cast_payment: None,
                 offspring_paid: false,
                 kicked: false,
@@ -5526,6 +5563,7 @@ impl Game {
                 moved: false,
                 sacrificed_by: None,
                 evoked: false,
+                cast_origin: None,
                 cast_payment: None,
                 offspring_paid: false,
                 kicked: false,
@@ -5545,6 +5583,7 @@ impl Game {
                 moved: false,
                 sacrificed_by: None,
                 evoked: false,
+                cast_origin: None,
                 cast_payment: None,
                 offspring_paid: false,
                 kicked: false,
@@ -5795,6 +5834,7 @@ impl Game {
             moved: true,
             sacrificed_by: None,
             evoked: false,
+            cast_origin: None,
             cast_payment: None,
             offspring_paid: false,
             kicked: false,
@@ -6592,6 +6632,7 @@ impl Game {
                 Pending::HandDefender { .. } => "hand_defender",
                 Pending::EffectChoice { .. } => "effect_choice",
                 Pending::Proliferate { .. } => "proliferate",
+                Pending::EntryCopy { .. } => "entry_copy",
                 Pending::EntryTimestamp { .. } => "entry_timestamps",
                 Pending::LinkedChoice { .. } => "linked_choice",
                 Pending::EntryValue { .. } => "entry_value",
@@ -6653,6 +6694,7 @@ impl Game {
             aura_entry: self.aura_entry_view(viewer),
             entry_life: self.entry_life_view(viewer),
             entry_replacement: self.entry_tap_view(viewer),
+            entry_copy: self.entry_copy_view(viewer),
             entry_timestamps: self.entry_timestamp_view(viewer),
             additional_cost: self.additional_cost_view(viewer),
             forage: self.forage_view(viewer),
@@ -7307,8 +7349,8 @@ mod entries;
 #[path = "engine_entry_tap.rs"]
 mod entry_tap;
 pub use entries::{
-    AuraAttachmentView, AuraEntryView, EntryLifeSelection, EntryLifeView, EntryTimestampObjectView,
-    EntryTimestampView,
+    AuraAttachmentView, AuraEntryView, EntryCopySelectionView, EntryCopyView, EntryLifeSelection,
+    EntryLifeView, EntryTimestampObjectView, EntryTimestampView,
 };
 pub use entry_tap::{EntryTapEffect, EntryTapKind, EntryTapView};
 

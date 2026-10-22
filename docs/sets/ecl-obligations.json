@@ -4539,7 +4539,7 @@
       "name": "Omni-Changeling",
       "definition": "src/card_definitions/ecl/omni_changeling.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Omni-Changeling",
@@ -4555,7 +4555,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_copy_entry_tests.rs",
+        "src/card_definitions/ecl/omni_changeling.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "975ec9a3-6f20-4177-8211-82526e092538",
@@ -6656,7 +6660,7 @@
       "name": "Twilight Diviner",
       "definition": "src/card_definitions/ecl/twilight_diviner.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Twilight Diviner",
@@ -6671,7 +6675,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/twilight_diviner.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "341cf69a-246c-4eb5-910c-18c13a4c3dce",

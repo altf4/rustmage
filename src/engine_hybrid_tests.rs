@@ -452,6 +452,7 @@ fn pond_prophet_draws_and_mary_jane_uses_limited_owned_spider_entries() {
     assert_eq!(
         g.state.triggered_this_turn,
         vec![TriggerUse {
+            ability_origin: 0,
             source: g.object_ref(mary),
             ability: 0
         }]

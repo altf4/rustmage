@@ -1,6 +1,7 @@
 //! Paid Mirrorform scenarios plus exact physical-copy/DFC boundary regressions.
 use super::ability_timeline_tests::{cast, checked, named, settle, setup};
 use super::*;
+use crate::cards::CreatureType;
 fn mirror(g: &mut Game, p: Player, target: CardId) {
     let spell = named(g, p, "Mirrorform", Zone::Hand);
     g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 4];
@@ -743,6 +744,614 @@ fn ecl_copy_entry_mirrorform_realms_without_a_type_produces_frozen_unspendable_c
         assert!(
             !g.legal_actions()
                 .contains(&Action::AnnounceCast { card: elf })
+        );
+    }
+}
+
+// Candidate spawning allows the complete body to be tested before catalogue admission.
+fn omni(g: &mut Game, p: Player, zone: Zone) -> CardId {
+    super::tests::spawn(g, p, Card::from_name("Omni-Changeling").unwrap(), zone)
+}
+fn to_omni_copy(g: &mut Game) {
+    for _ in 0..30 {
+        if matches!(g.state.pending, Pending::EntryCopy { .. }) {
+            return;
+        }
+        let action = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| !matches!(a, Action::Concede))
+            .unwrap();
+        checked(g, action);
+    }
+    panic!("missing Omni copy choice: {:?}", g.state.pending);
+}
+fn paid_omni(g: &mut Game, p: Player) -> CardId {
+    let id = omni(g, p, Zone::Hand);
+    g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 3];
+    cast(g, id, None, &[]);
+    to_omni_copy(g);
+    id
+}
+fn select_omni(g: &mut Game, target: Option<CardId>) {
+    let object = target.map(|id| g.object_ref(id));
+    checked(g, Action::ChooseEntryCopy { object });
+}
+#[test]
+fn ecl_copy_entry_omni_paid_opposing_hexproof_creature_is_nontargeted_copy_and_restores_native_card()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let target = named(&mut g, p.other(), "Serra Angel", Zone::Battlefield);
+        let boots = named(&mut g, p.other(), "Swiftfoot Boots", Zone::Battlefield);
+        assert!(g.attach_equipment(g.object_ref(boots), g.object_ref(target)));
+        g.state.objects[target as usize].tapped = true;
+        g.state.objects[target as usize].damage = 1;
+        g.effect_counter(
+            target,
+            CounterKind::PlusOne,
+            2,
+            replacements::ResumeMode::Pending,
+        );
+        settle(&mut g);
+        let id = paid_omni(&mut g, p);
+        assert!(
+            g.observe(p)
+                .entry_copy
+                .as_ref()
+                .unwrap()
+                .candidates
+                .contains(&g.object_ref(target))
+        );
+        select_omni(&mut g, Some(target));
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert_eq!(g.state.objects[id as usize].card.name(), "Serra Angel");
+        assert_eq!(
+            g.stats(id),
+            Stats {
+                power: 4,
+                toughness: 4
+            }
+        );
+        assert!(!g.state.objects[id as usize].tapped);
+        assert_eq!(g.state.objects[id as usize].damage, 0);
+        assert!(!g.counter_amounts(id).has_any());
+        assert!(
+            g.keywords(id).contains(
+                Keywords::FLYING
+                    .union(Keywords::VIGILANCE)
+                    .union(Keywords::CHANGELING)
+            )
+        );
+        assert!(!g.keywords(id).contains(Keywords::HEXPROOF));
+        assert!(!g.state.objects[id as usize].card.has_convoke());
+        assert!(g.has_subtype(id, "Elf") && g.has_subtype(id, "Elemental"));
+        g.move_object(id, Zone::Graveyard);
+        assert_eq!(g.state.objects[id as usize].card.name(), "Omni-Changeling");
+        assert!(!g.state.objects[id as usize].is_token());
+    }
+}
+#[test]
+fn ecl_copy_entry_omni_decline_and_repeated_new_copy_replacements() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = paid_omni(&mut g, p);
+        select_omni(&mut g, None);
+        settle(&mut g);
+        assert_eq!(g.state.objects[id as usize].zone, Zone::Graveyard);
+        let lord = named(&mut g, p, "Imperious Perfect", Zone::Battlefield);
+        let original = paid_omni(&mut g, p);
+        select_omni(&mut g, None);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(original),
+            Stats {
+                power: 1,
+                toughness: 1
+            }
+        );
+        let copied = paid_omni(&mut g, p);
+        for _ in 0..3 {
+            select_omni(&mut g, Some(original));
+            assert!(matches!(g.state.pending, Pending::EntryCopy { .. }));
+            assert_eq!(g.state.objects[copied as usize].zone, Zone::Stack);
+        }
+        select_omni(&mut g, None);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(copied),
+            Stats {
+                power: 1,
+                toughness: 1
+            }
+        );
+        assert!(g.state.objects[copied as usize].card.has_convoke());
+        assert!(g.on_battlefield(lord));
+        assert!(
+            g.copy_recipe(g.object_ref(copied))
+                .unwrap()
+                .exceptions
+                .changeling
+        );
+    }
+}
+#[test]
+fn ecl_copy_entry_omni_copied_etb_and_fresh_chosen_type_apply_after_copy() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let target = named(&mut g, p.other(), "Inspiring Overseer", Zone::Battlefield);
+        let life = g.state.players[p.index()].life;
+        let hand = g.hand_count(p);
+        let copied = paid_omni(&mut g, p);
+        select_omni(&mut g, Some(target));
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, life + 1);
+        assert_eq!(g.hand_count(p), hand + 1);
+        assert_eq!(
+            g.stats(copied),
+            Stats {
+                power: 2,
+                toughness: 1
+            }
+        );
+        let target = named(&mut g, p.other(), "Adaptive Automaton", Zone::Battlefield);
+        let old = CreatureType::from_name("Elf").unwrap();
+        g.set_entry_value(g.object_ref(target), EntryChoiceValue::CreatureType(old));
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let copied = paid_omni(&mut g, p);
+        select_omni(&mut g, Some(target));
+        assert!(matches!(g.state.pending, Pending::EntryValue { .. }));
+        let chosen = CreatureType::from_name("Bear").unwrap();
+        checked(
+            &mut g,
+            Action::ChooseEntryValue {
+                value: EntryChoiceValue::CreatureType(chosen),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(
+            g.entry_value(g.object_ref(copied)),
+            Some(EntryChoiceValue::CreatureType(chosen))
+        );
+        assert_eq!(
+            g.stats(bear),
+            Stats {
+                power: 3,
+                toughness: 3
+            }
+        );
+    }
+}
+
+#[test]
+fn ecl_copy_entry_omni_convoke_uses_summoning_sick_creatures_and_copied_entry_counters_are_new() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let target = named(&mut g, p.other(), "Serra Angel", Zone::Battlefield);
+        let mut convokers = Vec::new();
+        for name in [
+            "Spectral Sailor",
+            "Spectral Sailor",
+            "Bear Cub",
+            "Bear Cub",
+            "Bear Cub",
+        ] {
+            let id = named(&mut g, p, name, Zone::Battlefield);
+            g.state.objects[id as usize].summoning_sick = true;
+            convokers.push(id);
+        }
+        let id = omni(&mut g, p, Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        checked(&mut g, Action::AnnounceCast { card: id });
+        checked(&mut g, Action::BeginConvoke);
+        for (index, &card) in convokers.iter().enumerate() {
+            let object = g.object_ref(card);
+            checked(
+                &mut g,
+                Action::ChooseConvoker {
+                    object,
+                    contribution: if index < 2 {
+                        ConvokeContribution::Blue
+                    } else {
+                        ConvokeContribution::Generic
+                    },
+                },
+            );
+        }
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        to_omni_copy(&mut g);
+        select_omni(&mut g, Some(target));
+        settle(&mut g);
+        assert!(
+            convokers
+                .iter()
+                .all(|&id| g.state.objects[id as usize].tapped)
+        );
+        assert_eq!(
+            g.stats(id),
+            Stats {
+                power: 4,
+                toughness: 4
+            }
+        );
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        let target = named(&mut g, p.other(), "Heroes' Bane", Zone::Battlefield);
+        g.state.objects[target as usize].counters.plus_one = 9;
+        named(&mut g, p, "Doubling Season", Zone::Battlefield);
+        let id = paid_omni(&mut g, p);
+        select_omni(&mut g, Some(target));
+        settle(&mut g);
+        assert_eq!(g.counter_amounts(id).get(CounterKind::PlusOne), 8);
+        assert_eq!(
+            g.stats(id),
+            Stats {
+                power: 8,
+                toughness: 8
+            }
+        );
+    }
+}
+#[test]
+fn ecl_copy_entry_ability_resolution_counts_keep_old_packets_separate_from_new_copied_ability() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Soulbright Seeker", Zone::Battlefield);
+        let target = named(&mut g, p.other(), "Soulbright Seeker", Zone::Battlefield);
+        let activation = |g: &mut Game| {
+            checked(
+                g,
+                Action::Activate {
+                    card: source,
+                    ability: 0,
+                    target: Some(Target::Card(source)),
+                    payment: [0, 0, 0, 1, 0, 0],
+                    counter_payment: Counters::default(),
+                },
+            );
+        };
+        for _ in 0..2 {
+            activation(&mut g);
+            settle(&mut g);
+        }
+        activation(&mut g); // Old third resolution waits below the instant copy effect.
+        let spell = named(&mut g, p, "Mirrorform", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 4];
+        cast(&mut g, spell, None, &[Target::Card(target)]);
+        while g.state.objects[spell as usize].zone == Zone::Stack {
+            checked(&mut g, Action::Pass);
+        }
+        let epoch = g.copy_ability_origin(g.object_ref(source));
+        assert_ne!(epoch, 0);
+        assert_eq!(g.state.stack.len(), 1);
+        g.state.players[p.index()].mana = [0, 0, 0, 10, 0, 0];
+        activation(&mut g);
+        settle(&mut g);
+        assert_eq!(
+            g.state.players[p.index()].mana[3],
+            13,
+            "old third pays bonus, new first does not"
+        );
+        let rows = g.observe(p).ability_resolutions;
+        assert_eq!(rows.len(), 2);
+        assert!(rows.iter().any(|r| r.ability_origin == 0 && r.count == 3));
+        assert!(
+            rows.iter()
+                .any(|r| r.ability_origin == epoch && r.count == 1)
+        );
+        activation(&mut g);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].mana[3], 12);
+        activation(&mut g);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].mana[3], 15);
+    }
+}
+#[test]
+fn ecl_copy_entry_omni_cast_qualification_distinguishes_paid_free_and_token_spell_copy() {
+    for p in [Player::P0, Player::P1] {
+        for method in 0..3 {
+            let mut g = setup(p);
+            let target = named(&mut g, p.other(), "Sunderflock", Zone::Battlefield);
+            let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let id = if method == 0 {
+                paid_omni(&mut g, p)
+            } else {
+                let id = omni(
+                    &mut g,
+                    p,
+                    if method == 1 { Zone::Exile } else { Zone::Hand },
+                );
+                if method == 1 {
+                    // Existing typed permission boundary; the actual free cast is public/legal.
+                    g.grant_exile_free_cast_permission(p, g.object_ref(id));
+                    g.state.players[p.index()].mana = [0; 6];
+                    checked(
+                        &mut g,
+                        Action::AnnounceFree {
+                            card: id,
+                            face: CastFace::Normal,
+                            flash_surcharge: false,
+                        },
+                    );
+                    while g.state.announcing.is_some() {
+                        let pay = g
+                            .legal_actions()
+                            .into_iter()
+                            .find(|a| matches!(a, Action::PayCosts { .. }))
+                            .unwrap();
+                        checked(&mut g, pay);
+                    }
+                } else {
+                    // Existing typed stack-copy allocator boundary; no cast event occurs.
+                    let mut item = g.cast_item(p, id, [0; 6]);
+                    item.is_copy = true;
+                    g.state.objects[id as usize].copy_kind = CopyKind::Spell;
+                    g.state.stack.push(item);
+                }
+                to_omni_copy(&mut g);
+                id
+            };
+            select_omni(&mut g, Some(target));
+            settle(&mut g);
+            assert!(g.on_battlefield(id));
+            assert!(g.has_subtype(id, "Elemental"));
+            assert_eq!(
+                g.on_battlefield(bear),
+                method == 2,
+                "only actual casts acquire cast-qualified ETB"
+            );
+            assert_eq!(g.state.objects[id as usize].is_token(), method == 2);
+        }
+    }
+}
+fn animate_copy_entry_boundary(g: &mut Game, id: CardId) {
+    let item = g.activation_item(g.state.objects[id as usize].controller, id, 0);
+    g.animate_source(
+        &item,
+        crate::cards::AnimationSpec {
+            artifact: false,
+            creature_types: crate::cards::AnimationCreatureTypes::Unchanged,
+            base: Some((4, 4)),
+            keywords: Keywords::NONE,
+            duration: crate::cards::AnimationDuration::Permanent,
+        },
+    );
+}
+#[test]
+fn ecl_copy_entry_omni_copies_animated_land_base_and_applies_its_fresh_life_choice() {
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            let mut g = setup(p);
+            let target = named(&mut g, p.other(), "Steam Vents", Zone::Battlefield);
+            // Typed animation boundary; the actual copy and entry choices remain public actions.
+            animate_copy_entry_boundary(&mut g, target);
+            let life = g.state.players[p.index()].life;
+            let id = paid_omni(&mut g, p);
+            select_omni(&mut g, Some(target));
+            assert!(matches!(g.state.pending, Pending::EntryLife { .. }));
+            checked(&mut g, Action::ChooseEntryLife { pay: paid });
+            settle(&mut g);
+            assert_eq!(g.state.objects[id as usize].card.name(), "Steam Vents");
+            assert_eq!(g.current_kinds(id), 2);
+            assert!(
+                !g.has_subtype(id, "Elf"),
+                "Changeling does not give noncreature lands creature types"
+            );
+            assert_eq!(g.state.objects[id as usize].tapped, !paid);
+            assert_eq!(
+                g.state.players[p.index()].life,
+                life - if paid { 2 } else { 0 }
+            );
+            assert!(g.keywords(id).contains(Keywords::CHANGELING));
+            g.move_object(id, Zone::Hand);
+            assert_eq!(g.state.objects[id as usize].card.name(), "Omni-Changeling");
+        }
+    }
+}
+#[test]
+fn ecl_copy_entry_omni_private_simultaneous_choices_are_owned_apnap_and_commit_together() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let target = named(&mut g, p, "Serra Angel", Zone::Battlefield);
+        let land = named(&mut g, p, "Forest", Zone::Battlefield);
+        let first = omni(&mut g, p, Zone::Hand);
+        let second = omni(&mut g, p.other(), Zone::Hand);
+        // Typed simultaneous hand-entry boundary; each raw public choice verifies owned branching.
+        let moves = vec![
+            g.entry_move(second, Zone::Battlefield, false),
+            g.entry_move(first, Zone::Battlefield, false),
+        ];
+        g.stage_entries(moves, Some(p));
+        assert!(g.advance_entries());
+        assert_eq!(g.actor(), Some(p));
+        assert!(g.observe(p.other()).entry_copy.is_none());
+        let before = g.snapshot();
+        let rev = g.revision();
+        assert_eq!(
+            g.apply(
+                p,
+                Action::ChooseEntryCopy {
+                    object: Some(g.object_ref(land))
+                }
+            ),
+            Err(Error::IllegalAction)
+        );
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(g.revision(), rev);
+        select_omni(&mut g, Some(target));
+        assert_eq!(g.actor(), Some(p.other()));
+        assert_eq!(g.state.objects[first as usize].zone, Zone::Hand);
+        assert_eq!(g.state.objects[second as usize].zone, Zone::Hand);
+        assert!(g.observe(p).entry_copy.is_none());
+        select_omni(&mut g, Some(target));
+        settle(&mut g);
+        assert!(g.on_battlefield(first) && g.on_battlefield(second));
+        for id in [first, second] {
+            assert_eq!(
+                g.stats(id),
+                Stats {
+                    power: 4,
+                    toughness: 4
+                }
+            );
+        }
+    }
+}
+#[test]
+fn ecl_copy_entry_omni_copied_animated_aura_rechooses_attachment_or_fails_as_native_card() {
+    for p in [Player::P0, Player::P1] {
+        for legal in [false, true] {
+            let mut g = setup(p);
+            let enemy = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let target = named(&mut g, p.other(), "Aquitect's Defenses", Zone::Battlefield);
+            g.state.objects[target as usize].attached_to = Some(g.object_ref(enemy));
+            g.retimestamp_live_static_source(g.object_ref(target));
+            let recipient = legal.then(|| named(&mut g, p, "Bear Cub", Zone::Battlefield));
+            let id = paid_omni(&mut g, p);
+            // Typed mid-resolution animation boundary; SBAs wait until this whole entry finishes.
+            animate_copy_entry_boundary(&mut g, target);
+            select_omni(&mut g, Some(target));
+            if let Some(recipient) = recipient {
+                assert!(matches!(g.state.pending, Pending::AuraEntry { .. }));
+                // A frozen prototype survives a typed source-departure boundary.
+                g.move_object(target, Zone::Graveyard);
+                let target = g.object_ref(recipient);
+                checked(&mut g, Action::ChooseAuraAttachment { object: target });
+                settle(&mut g);
+                assert!(g.on_battlefield(id));
+                assert_eq!(g.state.objects[id as usize].attached_to, Some(target));
+                assert_eq!(
+                    g.stats(recipient),
+                    Stats {
+                        power: 3,
+                        toughness: 4
+                    }
+                );
+                assert!(g.keywords(recipient).contains(Keywords::HEXPROOF));
+                assert!(!g.is_creature(id));
+                assert!(g.keywords(id).contains(Keywords::CHANGELING));
+                g.move_object(id, Zone::Graveyard);
+            } else {
+                settle(&mut g);
+                assert_eq!(
+                    g.state.objects[target as usize].zone,
+                    Zone::Graveyard,
+                    "creature Auras cannot enchant"
+                );
+            }
+            assert_eq!(g.state.objects[id as usize].zone, Zone::Graveyard);
+            assert_eq!(g.state.objects[id as usize].card.name(), "Omni-Changeling");
+        }
+    }
+}
+#[test]
+fn ecl_copy_entry_omni_token_entry_keeps_replacement_completion_and_uses_copied_etb() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let target = named(&mut g, p.other(), "Inspiring Overseer", Zone::Battlefield);
+        let life = g.state.players[p.index()].life;
+        let hand = g.hand_count(p);
+        // Typed token-copy creation consumer enters the ordinary replacement continuation.
+        g.stage_copy_creation(
+            p,
+            CopyRecipe::new(Card::from_name("Omni-Changeling").unwrap()),
+            1,
+        );
+        to_omni_copy(&mut g);
+        let reference = g.observe(p).entry_copy.unwrap().object;
+        select_omni(&mut g, Some(target));
+        settle(&mut g);
+        assert!(g.state.replacements.is_none() && g.state.entry_batch.is_none());
+        assert!(g.on_battlefield(reference.card));
+        assert!(g.state.objects[reference.card as usize].is_token());
+        assert_eq!(g.state.players[p.index()].life, life + 1);
+        assert_eq!(g.hand_count(p), hand + 1);
+        assert!(g.state.players[p.index()].token_creation_attempted_this_turn);
+        g.move_object(reference.card, Zone::Graveyard);
+        g.state_based_actions();
+        assert_eq!(g.state.objects[reference.card as usize].zone, Zone::Outside);
+    }
+}
+#[test]
+fn ecl_copy_entry_omni_native_single_face_shape_remains_single_when_copying_a_transformed_creature()
+{
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let target = named(
+            &mut g,
+            p.other(),
+            "Brigid, Clachan's Heart",
+            Zone::Battlefield,
+        );
+        // Typed native-transform boundary; the incoming Omni still uses an actual paid cast.
+        g.transform_permanent(target);
+        let back = g.state.objects[target as usize].card;
+        let id = paid_omni(&mut g, p);
+        select_omni(&mut g, Some(target));
+        settle(&mut g);
+        assert_eq!(g.state.objects[id as usize].card, back);
+        assert_eq!(g.object_mana_value(id), 0);
+        assert_eq!(
+            g.copiable_recipe(g.object_ref(id)).faces(),
+            CopyFaces::Single
+        );
+        g.transform_permanent(id);
+        assert_eq!(g.state.objects[id as usize].card, back);
+        g.stage_copy_creation(p, g.copiable_recipe(g.object_ref(id)), 1);
+        settle(&mut g);
+        let token = g
+            .state
+            .copy_recipes
+            .as_ref()
+            .unwrap()
+            .iter()
+            .find(|row| row.native.is_none() && row.recipe.definition == back)
+            .unwrap()
+            .object
+            .card;
+        assert_eq!(
+            g.copiable_recipe(g.object_ref(token)).faces(),
+            CopyFaces::Single
+        );
+        g.transform_permanent(token);
+        assert_eq!(g.state.objects[token as usize].card, back);
+        g.move_object(id, Zone::Graveyard);
+        assert_eq!(g.state.objects[id as usize].card.name(), "Omni-Changeling");
+        assert_eq!(g.state.objects[id as usize].card.fixed_mana_value(), 5);
+    }
+}
+#[test]
+fn ecl_copy_entry_omni_kindles_initial_copy_exceptions_are_overwritten_by_new_entry_copy() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        named(&mut g, p, "Imperious Perfect", Zone::Battlefield);
+        let source = paid_omni(&mut g, p);
+        select_omni(&mut g, None);
+        settle(&mut g);
+        let target = named(&mut g, p.other(), "Inspiring Overseer", Zone::Battlefield);
+        let spell = named(&mut g, p, "Kindle the Inner Flame", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 3];
+        cast(&mut g, spell, None, &[Target::Card(source)]);
+        to_omni_copy(&mut g);
+        let token = g.observe(p).entry_copy.unwrap().object.card;
+        select_omni(&mut g, Some(target));
+        settle(&mut g);
+        assert_eq!(g.state.objects[spell as usize].zone, Zone::Graveyard);
+        assert!(g.state.objects[token as usize].is_token());
+        assert!(!g.keywords(token).contains(Keywords::HASTE));
+        let exceptions = g.copiable_recipe(g.object_ref(token)).exceptions;
+        assert!(exceptions.changeling);
+        assert_eq!(exceptions.sacrifice_abilities, 0);
+        super::ability_timeline_tests::next_turn(&mut g);
+        assert!(
+            g.on_battlefield(token),
+            "overwritten sacrifice ability cannot trigger at end step"
         );
     }
 }

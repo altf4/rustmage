@@ -17,15 +17,16 @@ Oracle facts: `data/standard/cards.json`; canonical ownership:
 
 ## Card obligations and evidence
 
-The frozen manifest accounts for every identity. The [per-card obligation ledger](ecl-obligations.json) records every face and printed rules line with canonical ownership. Twenty inherited cards have passed source/rules audit;87 inherited cards remain.
+The frozen manifest accounts for every identity. The [per-card obligation ledger](ecl-obligations.json) records every face and printed rules line with canonical ownership. All107 inherited cards have passed source/rules audits, with paid interaction evidence recorded below and in the validation JSON.
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **249/273**, comprising **107 inherited** and **142 newly
-implemented/tested physical candidates**; **24 remain gated**. Twenty inherited
-cards have passed source/rules audit;87 inherited cards remain. No final published reviews or newly merged cards. All new
-names and per-card obligations appear in the linked JSON ledgers. Three tested
-synthetic token recipes are outside the physical denominator.
+Admission flags: **272/273**, comprising **107 inherited** and **165 newly
+implemented/tested physical candidates**; **one remains gated**: Raiding Schemes. All107 inherited cards have passed source/rules audits.
+The supporting closure includes eleven tokens, seven backs and one emblem;
+all have complete source pins and parent interaction evidence. Final combined
+full-game acceptance, release validation and two published-head reviews remain
+open. No newly authored cards have been merged upstream.
 
 Three isolated authors own exactly black/red, white/blue, and green/colorless
 cards respectively. Their focused modules are `src/engine_ecl_black_red_tests.rs`,
@@ -91,12 +92,13 @@ focused scenarios and full release validation, then extend the natural games to
 verify every printed obligation. Check active jobs before touching their inputs;
 poll the same process until terminal. No early or partial implementation PR.
 
-Ordinary engineering remains for gated cards, including transform,
-behold/champion, conspire, proliferate, and some copying/chosen-type effects.
-These are implementation work, not external permission blockers. Authors are
-working on remaining combat/type interactions, vivid consumers, resolution hand exile, and behold/champion. Full pool behavior, interactions,
-performance, two independent nonauthor final published-head reviews and merge
-remain open.
+Raiding Schemes and Twilight Diviner are the final implementation candidates.
+The full-pool and mechanic-themed game workload is being developed on a separate
+isolated worktree. Finish those candidates, integrate all273, run the strict
+whole-pool acceptance and performance workloads, then full release validation.
+Publish one implementation PR only after every local gate passes; obtain two
+fresh independent nonauthor reviews of its final published head. Merge remains
+subject to repository permission.
 
 ## Verified checkpoint228 and inherited audit
 
@@ -223,3 +225,9 @@ Lavaleaper is integrated after3,120 native regressions pass91.98seconds (one ign
 The generic shared-type target-completion fix resolves the Unbury full-game dead end. Two both-seat scenarios and Clippy pass. A preliminary supported266-card pool workload then completes116/116 natural games across29 deck pairs,seeds0/7 and both starters:67,131decisions,1,231owned branches,125private decisions,53.822693seconds (debug,policy/observation/privacy/periodic JSON checks included)=1,247.262decisions/s. Actual execution includes89blights,187convoke selections,oneproliferation,20counter removals,tenstack copies andeighttransforms. This remains preliminary;final273-card and themed acceptance are open.
 
 All107/107 inherited cards now have complete source/rules audits. The final black/red25 use13 paid both-seat scenario matrices passing0.40seconds plus retained counter,cast,damage,keyword,cycling,impulse,mill and vivid interaction suites; all-target Clippy passes. Fresh evidence includes optional/stale death targets,flash and lethal upkeep completion,Kindred tribal counts,actual Treasure mana,modal damage-source lifelink,target-invalid followup suppression,optional private discard and cleanup through actual priority passes. Three existing token factories gain full source pins. The final green/land22 use16 matrices passing0.86seconds with all-target Clippy,covering actual combat/damage,Aura LKI,batch entries,counter/vivid conditions,surveil/mill recovery,tap/sorcery costs,modes,shockland choices and private basic search. No inherited typed behavior is replaced. Whole-pool integrated games,performance,full release and final published reviews remain open.
+
+Omni-Changeling is integrated after3,157 native regressions pass94.63seconds (one ignored),29 focused copy scenarios pass0.83seconds,and all-target Clippy passes. Its owned optional copy replacement precedes other entry choices and uses fresh copied counters,life,type and Aura requirements; newly acquired copy replacements may recur,with a later copy replacing earlier exceptions. Paid/convoke/free/spell-copy entry qualifications,nested token entry,native single-face DFC shape,private APNAP choices and actual Kindle exception replacement are tested. Resolution counts now distinguish acquired ability epochs while retaining old queued packets. A creature-Aura cannot remain attached under CR303.4c. Admission271/273;2 gated;observation schema164 adds pre-entry copy choices/views and resolution-history ability origins.
+
+The transitive supporting-definition audit covers all19 required definitions:11 tokens,seven backs andone emblem. All96 unique source pins authenticate against the frozen XMage revision. Two missing token provenance packets are now added after full token/helper reads; seven direct identity/source checks pass6.29seconds. Existing parent rules evidence is mapped in the supporting-source audit JSON. No supporting behavior gaps remain; this audit does not replace the two final independent published-head reviews.
+
+Twilight Diviner is integrated. Eleven focused whole-card scenarios pass0.31seconds,3,182 native regressions pass95.59seconds (one ignored),and all-target Clippy/provenance pass. Qualifying simultaneous entries freeze exact other-creature references and actual graveyard cast origins; spell copies do not become casts. Non-targeting copy choice uses surviving references even after type/control changes. Once-per-turn intrinsic history includes acquired ability epochs while retaining queued old packets. Hot State/Object/SpellView/Announcement/Resolution layouts remain unchanged. Admission272/273;only Raiding Schemes remains gated;observation schema165 adds entry-batch packets,graveyard origins and trigger-use epochs.

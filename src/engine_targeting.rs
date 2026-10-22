@@ -1373,6 +1373,7 @@ impl Game {
             source_tapped: self.state.objects[card as usize].tapped,
             source_facts: self.damage_facts(card),
             related_stack: None,
+            entry_batch_event: None,
             entering_object: None,
             evidence_collected: false,
             damage_event: None,
