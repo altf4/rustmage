@@ -464,3 +464,52 @@ fn ecl_reaping_willow_hybrid_paid_counters_sorcery_and_exact_grave_target() {
         }
     }
 }
+
+#[test]
+fn ecl_layer_four_changes_ignore_unrelated_attachment_timestamp_providers() {
+    use super::ability_timeline_tests::cast;
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let body = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let pick = named(&mut g, p, "Goldvein Pick", Zone::Hand);
+        cast(&mut g, pick, None, &[]);
+        settle(&mut g);
+        assert!(!g.state.objects[pick as usize].card.has_layer6_provider());
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: pick,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(body),
+            },
+        );
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        settle(&mut g);
+        let spell = named(&mut g, p, "Nameless Inversion", Zone::Hand);
+        cast(&mut g, spell, None, &[Target::Card(body)]);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(body),
+            Stats {
+                power: 7,
+                toughness: 1
+            }
+        );
+        assert!(!g.has_subtype(body, "Giant"));
+        assert_eq!(
+            g.state.objects[pick as usize].attached_to,
+            Some(g.object_ref(body))
+        );
+    }
+}

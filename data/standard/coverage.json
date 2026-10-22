@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "95089fec20f751c15a20f53bdd4c7284245d11ff10ea7a7ff958e9b987fb4860",
+  "catalogue_version": "43b9d990862247fad6170bcd8d9a5c93985dd746486a06d413ead78723e5eb6c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2254,
-  "implemented_total": 2260,
+  "implemented_standard_cards": 2256,
+  "implemented_total": 2262,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 102,
-      "complete": 165
+      "gated": 100,
+      "complete": 167
     },
     "eoc": {
       "total": 8,
@@ -4039,8 +4039,8 @@
     {
       "name": "Bogslither's Embrace",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/bogslither_s_embrace.rs",
       "set": "ecl"
     },
@@ -25615,8 +25615,8 @@
     {
       "name": "Pitiless Fists",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/pitiless_fists.rs",
       "set": "ecl"
     },

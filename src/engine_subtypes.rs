@@ -283,25 +283,30 @@ impl Game {
             let Some(o) = lookup(source) else {
                 continue;
             };
+            // Attachment indexing also includes stat-only Equipment and Auras.
+            // Those are not layer-four providers and need no ability timestamp.
+            let all_types = o.card.static_ability_groups().iter().any(|group| {
+                group.fragments.iter().any(|fragment| {
+                    matches!(
+                        fragment,
+                        crate::cards::StaticAbilityFragment::AttachedAllCreatureTypes
+                    )
+                })
+            });
+            let subtype = o.card.attached_subtype();
             if o.zone == Zone::Battlefield
                 && kinds(source, o) & 1 == 0
                 && o.attached_to == Some(reference)
+                && (subtype.is_some() || all_types)
                 && newer(ObjectRef {
                     card: source,
                     generation: o.generation,
                 })
             {
-                if let Some(subtype) = o.card.attached_subtype() {
+                if let Some(subtype) = subtype {
                     mask.insert(subtype);
                 }
-                if o.card.static_ability_groups().iter().any(|group| {
-                    group.fragments.iter().any(|fragment| {
-                        matches!(
-                            fragment,
-                            crate::cards::StaticAbilityFragment::AttachedAllCreatureTypes
-                        )
-                    })
-                }) {
+                if all_types {
                     mask.set_flag(ALL_CREATURE_TYPES, true);
                 }
             }
