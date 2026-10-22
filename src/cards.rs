@@ -2463,6 +2463,7 @@ pub(crate) enum TriggerCondition {
     EquippedAttacks,
     GrantedAttacks,
     SelfBecomesTapped,
+    SelfEntersOrBecomesTapped,
     AttachedBecomesUntapped,
     AttackDeclared {
         minimum: u16,

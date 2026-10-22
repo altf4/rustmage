@@ -3727,3 +3727,429 @@ fn swat_away_spell_copies_cease_without_library_insertion_and_original_still_res
     assert_eq!(g.object_view(copy).zone, Zone::Outside);
     assert_eq!(g.state.players[1].life, 18);
 }
+
+fn behold_announce(g: &mut Game, source: CardId, witness: Option<CardId>, route: Option<u16>) {
+    checked(g, Action::AnnounceCast { card: source });
+    if let Some(cost) = route {
+        checked(g, Action::ChooseSpellCost { cost });
+    }
+    if let Some(witness) = witness {
+        let object = g.object_ref(witness);
+        checked(g, Action::ChooseAdditionalCost { object });
+    }
+    finish_cast_choices(g);
+}
+
+#[test]
+fn behold_white_blue_reveal_or_controlled_permanent_routes_pay_and_keep_the_witness() {
+    for p in [Player::P0, Player::P1] {
+        for name in ["Kinsbaile Aspirant", "Silvergill Mentor"] {
+            for hand in [false, true] {
+                let mut g = setup(p);
+                let witness = spawn(
+                    &mut g,
+                    p,
+                    Card::from_name(if hand {
+                        "Crib Swap"
+                    } else if name == "Kinsbaile Aspirant" {
+                        "Clachan Festival"
+                    } else {
+                        "@token/2cff3b0b2f34a41fce4cd46b"
+                    })
+                    .unwrap(),
+                    if hand { Zone::Hand } else { Zone::Battlefield },
+                );
+                let object = g.object_ref(witness);
+                if hand {
+                    assert!(
+                        !g.observe(p.other())
+                            .objects
+                            .iter()
+                            .any(|view| view.reference == object)
+                    );
+                }
+                let source = spawn(&mut g, p, Card::from_name(name).unwrap(), Zone::Hand);
+                g.state.players[p.index()].mana = if name == "Kinsbaile Aspirant" {
+                    [1, 0, 0, 0, 0, 0]
+                } else {
+                    [0, 1, 0, 0, 0, 1]
+                };
+                checked(&mut g, Action::AnnounceCast { card: source });
+                checked(&mut g, Action::ChooseSpellCost { cost: 0 });
+                checked(&mut g, Action::ChooseAdditionalCost { object });
+                if hand {
+                    assert!(
+                        !g.observe(p.other())
+                            .objects
+                            .iter()
+                            .any(|view| view.reference == object)
+                    );
+                }
+                finish_cast_choices(&mut g);
+                assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+                assert_eq!(
+                    g.object_view(witness).zone,
+                    if hand { Zone::Hand } else { Zone::Battlefield }
+                );
+                if hand {
+                    assert!(
+                        g.observe(p.other())
+                            .objects
+                            .iter()
+                            .any(|view| view.reference == object)
+                    );
+                }
+                settle(&mut g);
+                assert_eq!(
+                    g.stats(source),
+                    Stats {
+                        power: 2,
+                        toughness: 1
+                    }
+                );
+                if name == "Silvergill Mentor" {
+                    assert!(
+                        g.state
+                            .objects
+                            .iter()
+                            .enumerate()
+                            .any(|(id, object)| object.zone == Zone::Battlefield
+                                && object.controller == p
+                                && object.card.identity() == "@token/2cff3b0b2f34a41fce4cd46b"
+                                && id as CardId != witness)
+                    );
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn behold_white_blue_extra_two_route_and_free_casts_cannot_bypass_the_additional_cost() {
+    for p in [Player::P0, Player::P1] {
+        for name in ["Kinsbaile Aspirant", "Silvergill Mentor"] {
+            for free in [false, true] {
+                let mut g = setup(p);
+                if free {
+                    spawn(
+                        &mut g,
+                        p,
+                        Card::from_name("Omniscience").unwrap(),
+                        Zone::Battlefield,
+                    );
+                }
+                let source = spawn(&mut g, p, Card::from_name(name).unwrap(), Zone::Hand);
+                let action = if free {
+                    Action::AnnounceFree {
+                        card: source,
+                        face: CastFace::Normal,
+                        flash_surcharge: false,
+                    }
+                } else {
+                    Action::AnnounceCast { card: source }
+                };
+                g.state.players[p.index()].mana = if free {
+                    [0; 6]
+                } else if name == "Kinsbaile Aspirant" {
+                    [1, 0, 0, 0, 0, 0]
+                } else {
+                    [0, 1, 0, 0, 0, 1]
+                };
+                reject_atomic(&mut g, action.clone());
+                g.state.players[p.index()].mana[5] += 2;
+                checked(&mut g, action);
+                reject_atomic(&mut g, Action::ChooseSpellCost { cost: 0 });
+                checked(&mut g, Action::ChooseSpellCost { cost: 1 });
+                finish_cast_choices(&mut g);
+                assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+                settle(&mut g);
+                assert_eq!(
+                    g.stats(source),
+                    Stats {
+                        power: 2,
+                        toughness: 1
+                    }
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn kinsbaile_aspirant_each_other_owned_creature_grows_once_and_old_source_does_not_follow_reentry()
+{
+    let mut g = setup(Player::P0);
+    let witness = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Crib Swap").unwrap(),
+        Zone::Hand,
+    );
+    let source = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Kinsbaile Aspirant").unwrap(),
+        Zone::Hand,
+    );
+    behold_announce(&mut g, source, Some(witness), Some(0));
+    settle(&mut g);
+    assert_eq!(g.stats(source).power, 2);
+    let bear = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Bear Cub").unwrap(),
+        Zone::Hand,
+    );
+    cast(&mut g, bear, None);
+    settle(&mut g);
+    assert_eq!(
+        g.stats(source),
+        Stats {
+            power: 3,
+            toughness: 2
+        }
+    );
+    let enemy = spawn(
+        &mut g,
+        Player::P1,
+        Card::from_name("Bear Cub").unwrap(),
+        Zone::Hand,
+    );
+    g.move_object(enemy, Zone::Battlefield);
+    settle(&mut g);
+    assert_eq!(g.stats(source).power, 3);
+    g.finish_cleanup();
+    assert_eq!(g.stats(source).power, 2);
+    let other = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Bear Cub").unwrap(),
+        Zone::Hand,
+    );
+    g.move_object(other, Zone::Battlefield);
+    g.move_object(source, Zone::Hand);
+    g.move_object(source, Zone::Battlefield);
+    settle(&mut g);
+    assert_eq!(g.stats(source).power, 2);
+}
+
+#[test]
+fn silvergill_mentor_creates_real_white_blue_merfolk_token_without_behold_when_not_cast() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = spawn(
+            &mut g,
+            p,
+            Card::from_name("Silvergill Mentor").unwrap(),
+            Zone::Graveyard,
+        );
+        g.move_object(source, Zone::Battlefield);
+        settle(&mut g);
+        let tokens: Vec<_> = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, object)| {
+                object.zone == Zone::Battlefield
+                    && object.controller == p
+                    && object.card.identity() == "@token/2cff3b0b2f34a41fce4cd46b"
+            })
+            .map(|(id, _)| id as CardId)
+            .collect();
+        assert_eq!(tokens.len(), 1);
+        let token = tokens[0];
+        assert_eq!(
+            g.stats(token),
+            Stats {
+                power: 1,
+                toughness: 1
+            }
+        );
+        assert_eq!(g.object_view(token).card.colors(), 3);
+        assert!(g.has_subtype(token, "Merfolk"));
+    }
+}
+
+#[test]
+fn champions_white_blue_exile_hand_witness_and_return_its_owner_on_every_departure_despite_control_change()
+ {
+    for p in [Player::P0, Player::P1] {
+        for name in ["Champion of the Clachan", "Champions of the Shoal"] {
+            for destination in [Zone::Graveyard, Zone::Hand, Zone::Exile, Zone::Library] {
+                let mut g = setup(p);
+                let witness = spawn(&mut g, p, Card::from_name("Crib Swap").unwrap(), Zone::Hand);
+                let source = spawn(&mut g, p, Card::from_name(name).unwrap(), Zone::Hand);
+                behold_announce(&mut g, source, Some(witness), None);
+                assert_eq!(g.object_view(witness).zone, Zone::Exile);
+                settle(&mut g);
+                let object = g.object_ref(source);
+                g.change_controller(object, p.other());
+                g.move_object(source, destination);
+                settle(&mut g);
+                assert_eq!(g.object_view(witness).zone, Zone::Hand);
+                assert_eq!(g.object_view(witness).owner, p);
+                assert_eq!(g.object_view(source).zone, destination);
+            }
+        }
+    }
+}
+
+#[test]
+fn champions_white_blue_countered_cast_does_not_return_cost_or_link_a_later_reanimated_incarnation()
+{
+    for name in ["Champion of the Clachan", "Champions of the Shoal"] {
+        let mut g = setup(Player::P0);
+        let source = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name(name).unwrap(),
+            Zone::Hand,
+        );
+        reject_atomic(&mut g, Action::AnnounceCast { card: source });
+        let witness = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Crib Swap").unwrap(),
+            Zone::Hand,
+        );
+        behold_announce(&mut g, source, Some(witness), None);
+        let id = g.state.stack.last().unwrap().id;
+        assert!(g.counter_stack_item(id, false));
+        settle(&mut g);
+        assert_eq!(g.object_view(witness).zone, Zone::Exile);
+        g.move_object(source, Zone::Battlefield);
+        settle(&mut g);
+        g.move_object(source, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.object_view(witness).zone, Zone::Exile);
+    }
+}
+
+#[test]
+fn champion_of_the_clachan_flash_and_lord_apply_to_other_owned_kithkin_and_stop_with_source_ability_loss()
+ {
+    let p = Player::P0;
+    let mut g = setup(Player::P1);
+    let witness = spawn(&mut g, p, Card::from_name("Crib Swap").unwrap(), Zone::Hand);
+    let kithkin = spawn(
+        &mut g,
+        p,
+        Card::from_name("Reluctant Dounguard").unwrap(),
+        Zone::Battlefield,
+    );
+    let changeling = spawn(
+        &mut g,
+        p,
+        Card::from_name("Prideful Feastling").unwrap(),
+        Zone::Battlefield,
+    );
+    let enemy = spawn(
+        &mut g,
+        Player::P1,
+        Card::from_name("Reluctant Dounguard").unwrap(),
+        Zone::Battlefield,
+    );
+    let before = g.stats(kithkin);
+    let changeling_before = g.stats(changeling);
+    let enemy_before = g.stats(enemy);
+    checked(&mut g, Action::Pass);
+    let source = spawn(
+        &mut g,
+        p,
+        Card::from_name("Champion of the Clachan").unwrap(),
+        Zone::Hand,
+    );
+    behold_announce(&mut g, source, Some(witness), None);
+    settle(&mut g);
+    assert_eq!(
+        g.stats(source),
+        Stats {
+            power: 4,
+            toughness: 5
+        }
+    );
+    assert_eq!(
+        g.stats(kithkin),
+        Stats {
+            power: before.power + 1,
+            toughness: before.toughness + 1
+        }
+    );
+    assert_eq!(
+        g.stats(changeling),
+        Stats {
+            power: changeling_before.power + 1,
+            toughness: changeling_before.toughness + 1
+        }
+    );
+    assert_eq!(g.stats(enemy), enemy_before);
+    g.state.priority = p;
+    spell(&mut g, p, "Noggle the Mind", &[Target::Card(source)]);
+    settle(&mut g);
+    assert_eq!(g.stats(kithkin), before);
+    g.move_object(source, Zone::Graveyard);
+    settle(&mut g);
+    assert_eq!(g.object_view(witness).zone, Zone::Exile);
+}
+
+#[test]
+fn champions_of_the_shoal_entry_and_actual_tap_each_offer_one_target_and_stun_even_already_tapped()
+{
+    let mut g = setup(Player::P0);
+    let witness = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Crib Swap").unwrap(),
+        Zone::Hand,
+    );
+    let victim = spawn(
+        &mut g,
+        Player::P1,
+        Card::from_name("Bear Cub").unwrap(),
+        Zone::Battlefield,
+    );
+    let source = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Champions of the Shoal").unwrap(),
+        Zone::Hand,
+    );
+    behold_announce(&mut g, source, Some(witness), None);
+    checked(&mut g, Action::Pass);
+    checked(&mut g, Action::Pass);
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(victim),
+        },
+    );
+    settle(&mut g);
+    assert!(g.object_view(victim).tapped);
+    assert_eq!(g.counter_count(victim, CounterKind::Stun), 1);
+    assert_eq!(
+        g.stats(source),
+        Stats {
+            power: 4,
+            toughness: 6
+        }
+    );
+    g.tap_objects(&[source]);
+    g.prepare_triggers();
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(victim),
+        },
+    );
+    settle(&mut g);
+    assert_eq!(g.counter_count(victim, CounterKind::Stun), 2);
+    g.tap_objects(&[source]);
+    assert!(g.state.pending_triggers.is_empty());
+    g.untap_objects(&[source], untap_rules::UntapCause::Effect);
+    g.tap_objects(&[source]);
+    g.prepare_triggers();
+    checked(&mut g, Action::FinishTargets);
+    settle(&mut g);
+    assert_eq!(g.counter_count(victim, CounterKind::Stun), 2);
+}

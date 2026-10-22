@@ -538,6 +538,7 @@ impl Game {
                     | TriggerCondition::Chapter { .. } => false,
                     TriggerCondition::SelfEntersOrTransforms
                     | TriggerCondition::SelfEnters
+                    | TriggerCondition::SelfEntersOrBecomesTapped
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrAttacksWhileSaddled
                     | TriggerCondition::SelfEntersOrDies => same,
@@ -1082,6 +1083,7 @@ impl Game {
                     matches!(
                         ability.condition.event(),
                         TriggerCondition::SelfBecomesTapped
+                            | TriggerCondition::SelfEntersOrBecomesTapped
                     )
                 }) {
                     changed.push(id);
@@ -1100,7 +1102,7 @@ impl Game {
         if !card.triggers().iter().any(|ability| {
             matches!(
                 ability.condition.event(),
-                TriggerCondition::SelfBecomesTapped
+                TriggerCondition::SelfBecomesTapped | TriggerCondition::SelfEntersOrBecomesTapped
             )
         }) {
             return;
@@ -1109,7 +1111,7 @@ impl Game {
         for (index, ability) in card.triggers().iter().enumerate() {
             if matches!(
                 ability.condition.event(),
-                TriggerCondition::SelfBecomesTapped
+                TriggerCondition::SelfBecomesTapped | TriggerCondition::SelfEntersOrBecomesTapped
             ) {
                 self.queue_trigger(&source, index);
             }
