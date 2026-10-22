@@ -7259,3 +7259,6 @@ mod linked_choices_tests;
 #[cfg(test)]
 #[path = "engine_ecl_core_tests.rs"]
 mod ecl_core_tests;
+#[cfg(test)]
+#[path = "engine_ecl_white_blue_tests.rs"]
+mod ecl_white_blue_tests;
