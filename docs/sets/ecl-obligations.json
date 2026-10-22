@@ -990,7 +990,7 @@
       "name": "Champion of the Path",
       "definition": "src/card_definitions/ecl/champion_of_the_path.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Champion of the Path",
@@ -1006,14 +1006,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/champion_of_the_path.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "1726f9cd-6f18-4509-b95b-bca82ba795a4",
       "name": "Champion of the Weird",
       "definition": "src/card_definitions/ecl/champion_of_the_weird.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Champion of the Weird",
@@ -1029,7 +1033,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/champion_of_the_weird.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "9cb7f23f-322d-4a87-b6c6-15b9d446aef3",

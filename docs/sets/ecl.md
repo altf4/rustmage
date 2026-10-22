@@ -43,7 +43,7 @@ Rimefire Torque are integrated. The213-card run passed all2,768 native tests;
 the remaining transform-name catalogue invariant is fixed and all9 catalogue
 tests pass. Subsequent integrated cards include both Trystan faces, Champions of
 the Perfect, Mudbutton Cursetosser, Soulbright Seeker, Moonshadow, Temporal
-Cleansing and Swat Away. Scarblade’s Malice is integrated, bringing admission to221/273. The220-card attempts found a malformed source pin and an exhaustive example match; both are fixed. The221-card run passed2,803 native tests and found one outdated Moonshadow source-index assertion, corrected in12633035. Celestial Reunion and four white/blue Behold creatures are integrated:226/273 admitted,47 gated. Fresh combined release validation follows.
+Cleansing and Swat Away. Scarblade’s Malice is integrated, bringing admission to221/273. The220-card attempts found a malformed source pin and an exhaustive example match; both are fixed. The221-card run passed2,803 native tests and found one outdated Moonshadow source-index assertion, corrected in12633035. Celestial Reunion and four white/blue Behold creatures are integrated:226/273 admitted,47 gated. Champion of the Path and Champion of the Weird are integrated:228/273 admitted,45 gated. The226-card checks caught a portable-report-path error and an exhaustive example search-filter match; both are corrected. Fresh combined release validation follows.
 
 Shared mechanics include mandatory and optional blight costs versus effects,
 wither as a damage result, exact mana-funding tap witnesses, entry-time creature
@@ -80,7 +80,7 @@ restore checkpoints. Debug workload: **5,719 decisions in 1.777491 seconds**,
 snapshots. This is subset regression evidence, not complete-set acceptance.
 See the JSON for seeds, revision, compiler, hardware, and artifact reports.
 
-The validation JSON records the measured implementation interval and current cards/hour for119 newly locally tested physical candidates. This excludes inherited certification, independent final review, and upstream merge.
+The validation JSON records the measured implementation interval and current cards/hour for121 newly locally tested physical candidates. This excludes inherited certification, independent final review, and upstream merge.
 
 ## Resume and remaining work
 

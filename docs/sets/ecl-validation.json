@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 119,
+  "newly_tested_physical_cards": 121,
   "newly_tested_names": [
     "Adept Watershaper",
     "Ashling's Command",
@@ -27,6 +27,8 @@
     "Catharsis",
     "Celestial Reunion",
     "Champion of the Clachan",
+    "Champion of the Path",
+    "Champion of the Weird",
     "Champions of the Perfect",
     "Champions of the Shoal",
     "Chaos Spewer",
@@ -124,8 +126,8 @@
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 226,
-  "remaining_gated": 47,
+  "current_admission_flags": 228,
+  "remaining_gated": 45,
   "inherited_evidence_audit": "pending",
   "locally_reviewed": 0,
   "final_published_reviews": 0,
@@ -163,10 +165,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T18:27:42.711313+00:00",
-    "elapsed_seconds": 11095.494462,
-    "newly_verified_cards": 119,
-    "cards_per_hour": 38.61026666879877,
+    "end_utc": "2026-10-22T18:31:26.682095+00:00",
+    "elapsed_seconds": 11319.465244,
+    "newly_verified_cards": 121,
+    "cards_per_hour": 38.48238327609109,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "196 integrated ECL scenarios passed at bb92026c with generated catalogue1fbc9bcda08f4079d26ed30456add7c4c31131f6ef2563e732a179a74fc3e0a3",
