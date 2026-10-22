@@ -1569,6 +1569,20 @@ impl Game {
                 .additional_cost()
                 .is_some_and(|spec| matches!(spec.kind, EffectChoiceKind::OptionalBlightCost(_)))
         {
+            if a.item
+                .cast
+                .is_some_and(|cast| cast.optional_additional.is_none())
+            {
+                // Before declaration, each mode may use any matching payable intent.
+                return self.optional_additional_cost_fundable(a, cost, None)
+                    || (0..self.state.objects.len()).any(|id| {
+                        self.optional_additional_cost_fundable(
+                            a,
+                            cost,
+                            Some(self.object_ref(id as CardId)),
+                        )
+                    });
+            }
             return self.optional_additional_cost_fundable(a, cost, a.additional);
         }
         if a.item

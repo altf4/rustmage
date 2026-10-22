@@ -3033,6 +3033,9 @@ impl Card {
         generated::target_cost_reduction(self)
     }
     /// Timing permission is an as-though effect, not a granted Flash keyword.
+    pub(crate) fn mode_optional_additional_paid(self) -> &'static [bool] {
+        authored::rules(self).map_or(&[], |rules| rules.extras.mode_optional_additional_paid)
+    }
     pub(crate) fn flash_if_control_subtype(self) -> Option<&'static str> {
         authored::rules(self).and_then(|rules| rules.extras.flash_if_control_subtype)
     }

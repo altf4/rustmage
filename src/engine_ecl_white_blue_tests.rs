@@ -1223,3 +1223,428 @@ fn bark_of_doran_unrelated_equipment_does_not_change_combat_assignment() {
     checked(&mut g, Action::Pass);
     assert_eq!(g.state.players[1].life, 16);
 }
+
+fn finish_cast_choices(g: &mut Game) {
+    for _ in 0..20 {
+        if g.state.announcing.is_none() {
+            return;
+        }
+        let action = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .or_else(|| {
+                g.legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a, Action::FinishTargets))
+            })
+            .unwrap();
+        checked(g, action);
+    }
+    panic!("cast did not finish");
+}
+fn reject_atomic(g: &mut Game, action: Action) {
+    let before = g.snapshot();
+    let revision = g.revision();
+    assert_eq!(
+        g.apply(g.actor().unwrap(), action),
+        Err(Error::IllegalAction)
+    );
+    assert_eq!(g.snapshot(), before);
+    assert_eq!(g.revision(), revision);
+}
+#[test]
+fn pyrrhic_strike_paid_intent_requires_both_and_unpaid_requires_exactly_one() {
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            for single in [0, 1] {
+                let mut g = setup(p);
+                let witness = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+                let artifact = spawn(
+                    &mut g,
+                    p.other(),
+                    Card::from_name("Goldvein Pick").unwrap(),
+                    Zone::Battlefield,
+                );
+                let creature = spawn(&mut g, p.other(), Card::HillGiant, Zone::Battlefield);
+                let id = spawn(
+                    &mut g,
+                    p,
+                    Card::from_name("Pyrrhic Strike").unwrap(),
+                    Zone::Hand,
+                );
+                checked(&mut g, Action::AnnounceCast { card: id });
+                let object = paid.then(|| g.object_ref(witness));
+                checked(&mut g, Action::ChooseOptionalAdditionalCost { object });
+                assert_eq!(g.state.pending, Pending::Modes { player: p });
+                reject_atomic(
+                    &mut g,
+                    Action::ChooseMode {
+                        mode: if paid { single } else { 2 },
+                    },
+                );
+                checked(
+                    &mut g,
+                    Action::ChooseMode {
+                        mode: if paid { 2 } else { single },
+                    },
+                );
+                if paid || single == 0 {
+                    checked(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(artifact),
+                        },
+                    );
+                }
+                if paid || single == 1 {
+                    checked(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(creature),
+                        },
+                    );
+                }
+                finish_cast_choices(&mut g);
+                assert_eq!(
+                    g.state
+                        .stack
+                        .last()
+                        .unwrap()
+                        .cast
+                        .unwrap()
+                        .optional_additional,
+                    Some(paid)
+                );
+                assert_eq!(
+                    g.object_view(witness).zone,
+                    if paid {
+                        Zone::Graveyard
+                    } else {
+                        Zone::Battlefield
+                    }
+                );
+                settle(&mut g);
+                assert_eq!(
+                    g.object_view(artifact).zone,
+                    if paid || single == 0 {
+                        Zone::Graveyard
+                    } else {
+                        Zone::Battlefield
+                    }
+                );
+                assert_eq!(
+                    g.object_view(creature).zone,
+                    if paid || single == 1 {
+                        Zone::Graveyard
+                    } else {
+                        Zone::Battlefield
+                    }
+                );
+            }
+        }
+    }
+}
+#[test]
+fn pyrrhic_strike_paid_route_requires_a_completable_pair_before_declaration() {
+    for only_artifact in [false, true] {
+        let mut g = setup(Player::P0);
+        let witness = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+        let target = spawn(
+            &mut g,
+            Player::P1,
+            if only_artifact {
+                Card::from_name("Goldvein Pick").unwrap()
+            } else {
+                Card::HillGiant
+            },
+            Zone::Battlefield,
+        );
+        let id = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Pyrrhic Strike").unwrap(),
+            Zone::Hand,
+        );
+        checked(&mut g, Action::AnnounceCast { card: id });
+        let object = g.object_ref(witness);
+        reject_atomic(
+            &mut g,
+            Action::ChooseOptionalAdditionalCost {
+                object: Some(object),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseOptionalAdditionalCost { object: None },
+        );
+        let mode = if only_artifact { 0 } else { 1 };
+        reject_atomic(&mut g, Action::ChooseMode { mode: 1 - mode });
+        checked(&mut g, Action::ChooseMode { mode });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        finish_cast_choices(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn pyrrhic_strike_separate_target_occurrences_and_partial_illegality() {
+    for same in [false, true] {
+        let mut g = setup(Player::P0);
+        let witness = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+        let artifact = spawn(
+            &mut g,
+            Player::P1,
+            Card::from_name("Juggernaut").unwrap(),
+            Zone::Battlefield,
+        );
+        let creature = if same {
+            artifact
+        } else {
+            spawn(&mut g, Player::P1, Card::HillGiant, Zone::Battlefield)
+        };
+        let id = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Pyrrhic Strike").unwrap(),
+            Zone::Hand,
+        );
+        checked(&mut g, Action::AnnounceCast { card: id });
+        let object = g.object_ref(witness);
+        checked(
+            &mut g,
+            Action::ChooseOptionalAdditionalCost {
+                object: Some(object),
+            },
+        );
+        checked(&mut g, Action::ChooseMode { mode: 2 });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(artifact),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(creature),
+            },
+        );
+        finish_cast_choices(&mut g);
+        if !same {
+            g.move_object(artifact, Zone::Hand);
+            g.move_object(artifact, Zone::Battlefield);
+        }
+        settle(&mut g);
+        assert_eq!(
+            g.object_view(artifact).zone,
+            if same {
+                Zone::Graveyard
+            } else {
+                Zone::Battlefield
+            }
+        );
+        assert_eq!(g.object_view(creature).zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn wild_unraveling_blight_or_mana_routes_normal_and_free_casts() {
+    for p in [Player::P0, Player::P1] {
+        for free in [false, true] {
+            for mana_route in [false, true] {
+                let mut g = setup(p.other());
+                if free {
+                    spawn(
+                        &mut g,
+                        p,
+                        Card::from_name("Omniscience").unwrap(),
+                        Zone::Battlefield,
+                    );
+                }
+                let witness =
+                    (!mana_route).then(|| spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield));
+                let victim = if free {
+                    spell(&mut g, p.other(), "Grizzly Bears", &[])
+                } else {
+                    spell(&mut g, p.other(), "Lightning Bolt", &[Target::Player(p)])
+                };
+                checked(&mut g, Action::Pass);
+                let target = Target::Spell(victim);
+                let id = spawn(
+                    &mut g,
+                    p,
+                    Card::from_name("Wild Unraveling").unwrap(),
+                    Zone::Hand,
+                );
+                g.state.players[p.index()].mana =
+                    [0, if free { 0 } else { 2 }, 0, 0, 0, u32::from(mana_route)];
+                checked(
+                    &mut g,
+                    if free {
+                        Action::AnnounceFree {
+                            card: id,
+                            face: CastFace::Normal,
+                            flash_surcharge: false,
+                        }
+                    } else {
+                        Action::AnnounceCast { card: id }
+                    },
+                );
+                checked(
+                    &mut g,
+                    Action::ChooseSpellCost {
+                        cost: u16::from(mana_route),
+                    },
+                );
+                reject_atomic(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Spell(id),
+                    },
+                );
+                checked(&mut g, Action::ChooseTarget { target });
+                if let Some(witness) = witness {
+                    let object = g.object_ref(witness);
+                    checked(&mut g, Action::ChooseAdditionalCost { object });
+                }
+                finish_cast_choices(&mut g);
+                assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+                if let Some(witness) = witness {
+                    assert_eq!(g.object_view(witness).zone, Zone::Graveyard);
+                }
+                settle(&mut g);
+                assert_eq!(g.object_view(victim).zone, Zone::Graveyard);
+                assert_eq!(g.state.players[p.index()].life, 20);
+            }
+        }
+    }
+}
+#[test]
+fn evershrikes_gift_paid_aura_blight_recursion_and_exact_source_binding() {
+    for p in [Player::P0, Player::P1] {
+        for depart in [false, true] {
+            let mut g = setup(p);
+            let bear = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+            let aura = spell(&mut g, p, "Evershrike's Gift", &[Target::Card(bear)]);
+            settle(&mut g);
+            assert_eq!(
+                g.stats(bear),
+                Stats {
+                    power: 3,
+                    toughness: 2
+                }
+            );
+            assert!(g.keywords(bear).contains(Keywords::FLYING));
+            assert!(
+                !g.legal_actions()
+                    .iter()
+                    .any(|a| matches!(a, Action::AnnounceActivate {card,..} if *card == aura))
+            );
+            g.move_object(aura, Zone::Graveyard);
+            assert_eq!(g.stats(bear).power, 2);
+            assert!(!g.keywords(bear).contains(Keywords::FLYING));
+            g.state.step = Step::Upkeep;
+            assert!(
+                !g.legal_actions()
+                    .iter()
+                    .any(|a| matches!(a, Action::AnnounceActivate {card,..} if *card == aura))
+            );
+            g.state.step = Step::Main1;
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: aura,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            let object = g.object_ref(bear);
+            checked(&mut g, Action::ChooseAdditionalCost { object });
+            finish_cast_choices(&mut g);
+            assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
+            if depart {
+                g.move_object(aura, Zone::Exile);
+                g.move_object(aura, Zone::Graveyard);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(aura).zone,
+                if depart { Zone::Graveyard } else { Zone::Hand }
+            );
+        }
+    }
+}
+#[test]
+fn wild_unraveling_cannot_waive_additional_cost_and_uncounterable_spells_still_resolve() {
+    for free in [false, true] {
+        let mut g = setup(Player::P1);
+        if free {
+            spawn(
+                &mut g,
+                Player::P0,
+                Card::from_name("Omniscience").unwrap(),
+                Zone::Battlefield,
+            );
+        }
+        spell(
+            &mut g,
+            Player::P1,
+            "Lightning Bolt",
+            &[Target::Player(Player::P0)],
+        );
+        checked(&mut g, Action::Pass);
+        let id = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Wild Unraveling").unwrap(),
+            Zone::Hand,
+        );
+        g.state.players[0].mana = [0, if free { 0 } else { 2 }, 0, 0, 0, 0];
+        let action = if free {
+            Action::AnnounceFree {
+                card: id,
+                face: CastFace::Normal,
+                flash_surcharge: false,
+            }
+        } else {
+            Action::AnnounceCast { card: id }
+        };
+        reject_atomic(&mut g, action);
+    }
+    let mut g = setup(Player::P1);
+    spawn(
+        &mut g,
+        Player::P1,
+        Card::from_name("Sphinx of the Final Word").unwrap(),
+        Zone::Battlefield,
+    );
+    let bolt = spell(
+        &mut g,
+        Player::P1,
+        "Lightning Bolt",
+        &[Target::Player(Player::P0)],
+    );
+    checked(&mut g, Action::Pass);
+    let id = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Wild Unraveling").unwrap(),
+        Zone::Hand,
+    );
+    checked(&mut g, Action::AnnounceCast { card: id });
+    checked(&mut g, Action::ChooseSpellCost { cost: 1 });
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Spell(bolt),
+        },
+    );
+    finish_cast_choices(&mut g);
+    settle(&mut g);
+    assert_eq!(g.state.players[0].life, 17);
+}

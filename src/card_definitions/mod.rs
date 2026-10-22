@@ -88,6 +88,25 @@ impl CardRules {
                 _ => panic!("modal costs require modal behavior"),
             }
         }
+        if !self.extras.mode_optional_additional_paid.is_empty() {
+            assert!(
+                matches!(
+                    self.extras.additional_cost,
+                    Some(AdditionalCost {
+                        kind: EffectChoiceKind::OptionalBlightCost(_),
+                        ..
+                    })
+                ),
+                "conditional modes require an optional additional cost"
+            );
+            match self.effect {
+                Effect::Modal(modes) => assert!(
+                    modes.len() == self.extras.mode_optional_additional_paid.len(),
+                    "conditional modal intent table mismatch"
+                ),
+                _ => panic!("conditional modes require modal behavior"),
+            }
+        }
         self.effect
     }
 }
@@ -113,6 +132,8 @@ const fn object(kinds: u8) -> TargetRule {
     }
 }
 pub(super) struct CardExtras {
+    /// Exact optional-additional-cost intent for each predeclared modal combination.
+    pub mode_optional_additional_paid: &'static [bool],
     pub flash_if_control_subtype: Option<&'static str>,
     pub named_activation_lock: bool,
     pub zone_replacement: Option<ZoneReplacementRule>,
@@ -180,6 +201,7 @@ pub(super) struct CardExtras {
 }
 impl CardExtras {
     pub const EMPTY: Self = Self {
+        mode_optional_additional_paid: &[],
         flash_if_control_subtype: None,
         zone_replacement: None,
         opening_hand_battlefield: false,

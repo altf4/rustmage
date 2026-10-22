@@ -116,6 +116,42 @@ impl Game {
         proposal.cost = Some(cost);
         proposal.additional = object;
         proposal.item.cast.as_mut().unwrap().optional_additional = Some(object.is_some());
+        if let Some(mode) = proposal.item.mode {
+            if !self.modal_optional_intent_matches(&proposal.item, usize::from(mode)) {
+                return false;
+            }
+        } else if !proposal
+            .item
+            .source_card
+            .mode_optional_additional_paid()
+            .is_empty()
+        {
+            return proposal
+                .item
+                .modes()
+                .unwrap()
+                .iter()
+                .enumerate()
+                .any(|(index, mode)| {
+                    if !self.modal_choice_unused(&proposal.item, index)
+                        || !self.item_targets_available(&proposal.item, mode.targets)
+                    {
+                        return false;
+                    }
+                    let mut selected = proposal.clone();
+                    selected.item.mode = Some(index as u16);
+                    selected.plan = mode.targets;
+                    self.optional_additional_cost_fundable(&selected, cost, object)
+                        && self.announcement_target_fundable(
+                            &selected,
+                            Some(mode.targets),
+                            None,
+                            None,
+                            None,
+                            false,
+                        )
+                });
+        }
         let goal = self.funding_goal(&proposal);
         self.can_fund_for(goal, self.purpose_for_item(&proposal.item))
     }
