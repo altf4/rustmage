@@ -113,6 +113,56 @@ impl Game {
                     }
                 }
             }
+            // The ordinary fast path omits an AbilityAvailabilityView. Explicit
+            // provider qualification remains necessary there; the generic queue
+            // additionally consults evaluated grants when ability removal exists.
+            for position in 0..self.state.static_sources.len() {
+                let id = self.state.static_sources[position];
+                let giver = &self.state.objects[id as usize];
+                if giver.controller != source.controller || !source.is_creature() {
+                    continue;
+                }
+                let granting_card = giver.card;
+                let grantor = self.object_ref(id);
+                for fragment in granting_card
+                    .static_ability_groups()
+                    .iter()
+                    .flat_map(|group| group.fragments.iter())
+                {
+                    let crate::cards::StaticAbilityFragment::ControlledCreatureTrigger {
+                        ability: index,
+                        other,
+                    } = *fragment
+                    else {
+                        continue;
+                    };
+                    if (other && grantor==reference) || !self.active_rule_fragment(id,|candidate|
+                        matches!(candidate,crate::cards::StaticAbilityFragment::ControlledCreatureTrigger {ability,other:candidate_other} if *ability==index && *candidate_other==other)) {continue;}
+                    let index = usize::from(index);
+                    let ability = granting_card.triggers()[index];
+                    if ability.condition.is_granted()
+                        && ability.condition.event() == TriggerCondition::Ward
+                    {
+                        let grant = Box::new(AttachmentTriggerView {
+                            grantor,
+                            granting_card,
+                            recipient: reference,
+                            defender: None,
+                            granted: true,
+                        });
+                        if self.queue_trigger_from(&source, index, Some(grant)) {
+                            self.state
+                                .pending_triggers
+                                .last_mut()
+                                .unwrap()
+                                .related_stack = Some(StackLink {
+                                id: item.id,
+                                controller: item.controller,
+                            });
+                        }
+                    }
+                }
+            }
         }
     }
     pub(super) fn start_resolution_payment(

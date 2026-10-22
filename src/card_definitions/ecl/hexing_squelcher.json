@@ -3,10 +3,50 @@
   "catalogue_id": 2024,
   "oracle_id": "96c2d71e-0fc9-42aa-bc6b-6d0ae3f66f8b",
   "facts_sha256": "a6847700487285d45654ace59c60e45f0ac13911e2c979c836d2b997f0261466",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2dac8d41e1f23cdfae1f27e592c8a91cbf103d1487d8fd24242fe8652123123b"
   },
-  "physical_metadata_sha256": "35a83fde55418c02f5418b4358ac42c5025e74d475a8a751e4e3713759b0b8c4"
+  "physical_metadata_sha256": "35a83fde55418c02f5418b4358ac42c5025e74d475a8a751e4e3713759b0b8c4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HexingSquelcher.java",
+  "java_sha256": "016bc9744a2be31fa79e09e7fa51b1516c154f1169a3da2b66081cf12bb9882d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CantBeCounteredSourceAbility.java",
+      "sha256": "ab592d3d97f245e6b3ca9971e1c559a7063c8717a4a5963b64564a13abd768de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CantBeCounteredSourceEffect.java",
+      "sha256": "f682272dc5b296650d7dfffd0792fcf6508ee366cc67bf1f583d31017a94e9a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+      "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CantBeCounteredControlledEffect.java",
+      "sha256": "27fc63b4a9057d305e6356dfcbeb00c952df15e838118ff0b63af6e135e968c3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+    }
+  ]
 }

@@ -2063,3 +2063,249 @@ fn simultaneous_hand_exile_preserves_apnap_choice_privacy_until_every_player_has
         }
     }
 }
+
+fn hexing_setup(p: Player) -> Game {
+    let mut g = setup(p);
+    for player in &mut g.state.players {
+        player.mana = [30; 6];
+    }
+    g
+}
+fn hexing_open(g: &mut Game, p: Player, name: &str, target: Option<Target>) -> CardId {
+    while g.actor() != Some(p) {
+        advance(g);
+    }
+    let id = named(g, p, name, Zone::Hand);
+    checked(g, Action::AnnounceCast { card: id });
+    if let Some(target) = target {
+        checked(g, Action::ChooseTarget { target });
+    }
+    while g.state.announcing.is_some() {
+        advance(g);
+    }
+    id
+}
+fn hexing_finish(g: &mut Game, pay: bool) -> usize {
+    let mut payments = 0;
+    for _ in 0..120 {
+        if g.state.pending == Pending::Priority
+            && g.state.stack.is_empty()
+            && g.state.pending_triggers.is_empty()
+            && g.state.resolving.is_none()
+        {
+            return payments;
+        }
+        if matches!(g.state.pending, Pending::ResolutionLife { .. }) {
+            let request = g.observe(g.actor().unwrap()).resolution_payment.unwrap();
+            assert_eq!(request.life, Some(2));
+            reject(g, Action::PayResolutionMana { payment: [0; 6] });
+            if pay {
+                checked(g, Action::PayResolutionLife);
+            } else {
+                checked(g, Action::DeclineResolutionLife);
+            }
+            payments += 1;
+        } else {
+            advance(g);
+        }
+    }
+    panic!("unfinished wards");
+}
+#[test]
+fn hexing_squelcher_itself_and_controlled_spells_cannot_be_countered() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = hexing_open(&mut g, p, "Hexing Squelcher", None);
+        checked(&mut g, Action::Pass);
+        let counter = hexing_open(
+            &mut g,
+            p.other(),
+            "Essence Scatter",
+            Some(Target::Spell(source)),
+        );
+        assert_eq!(hexing_finish(&mut g, true), 0);
+        assert_eq!(g.state.objects[counter as usize].zone, Zone::Graveyard);
+        assert_eq!(g.state.objects[source as usize].zone, Zone::Battlefield);
+        let spell = hexing_open(&mut g, p, "Shock", Some(Target::Player(p.other())));
+        checked(&mut g, Action::Pass);
+        hexing_open(&mut g, p.other(), "Negate", Some(Target::Spell(spell)));
+        hexing_finish(&mut g, true);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        assert_eq!(g.state.objects[spell as usize].zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn hexing_squelcher_ward_life_payment_decline_and_uncounterable_enemy_spells_remain_distinct() {
+    for p in [Player::P0, Player::P1] {
+        for pay in [false, true] {
+            for enemy_protected in [false, true] {
+                let mut g = hexing_setup(p);
+                let source = named(&mut g, p, "Hexing Squelcher", Zone::Battlefield);
+                if enemy_protected {
+                    named(&mut g, p.other(), "Hexing Squelcher", Zone::Battlefield);
+                }
+                hexing_open(&mut g, p.other(), "Shock", Some(Target::Card(source)));
+                assert_eq!(hexing_finish(&mut g, pay), 1);
+                assert_eq!(
+                    g.state.players[p.other().index()].life,
+                    if pay { 18 } else { 20 }
+                );
+                assert_eq!(
+                    g.state.objects[source as usize].zone,
+                    if pay || enemy_protected {
+                        Zone::Graveyard
+                    } else {
+                        Zone::Battlefield
+                    }
+                );
+            }
+        }
+    }
+}
+#[test]
+fn hexing_squelcher_grants_independent_recipient_owned_wards_and_excludes_exact_source() {
+    for p in [Player::P0, Player::P1] {
+        for (target_name, donors, expected) in [
+            ("Grizzly Bears", 1, 1),
+            ("Zul Ashur, Lich Lord", 1, 2),
+            ("Zul Ashur, Lich Lord", 2, 3),
+            ("Hexing Squelcher", 1, 2),
+        ] {
+            let mut g = hexing_setup(p);
+            for _ in 0..donors {
+                named(&mut g, p, "Hexing Squelcher", Zone::Battlefield);
+            }
+            let recipient = named(&mut g, p, target_name, Zone::Battlefield);
+            hexing_open(
+                &mut g,
+                p.other(),
+                "Giant Growth",
+                Some(Target::Card(recipient)),
+            );
+            assert!(
+                g.state
+                    .pending_triggers
+                    .iter()
+                    .chain(&g.state.stack)
+                    .filter(|item| item.attachment_trigger.is_some())
+                    .all(|item| item.controller == p && item.object == g.object_ref(recipient))
+            );
+            assert_eq!(hexing_finish(&mut g, true), expected);
+            assert_eq!(
+                g.state.players[p.other().index()].life,
+                20 - 2 * expected as i128
+            );
+        }
+    }
+}
+#[test]
+fn hexing_squelcher_granted_ward_survives_grantor_removal_and_recipient_control_change() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let giver = named(&mut g, p, "Hexing Squelcher", Zone::Battlefield);
+        let recipient = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        hexing_open(
+            &mut g,
+            p.other(),
+            "Giant Growth",
+            Some(Target::Card(recipient)),
+        );
+        let packet = g
+            .state
+            .pending_triggers
+            .iter()
+            .chain(&g.state.stack)
+            .find(|item| item.attachment_trigger.is_some())
+            .unwrap()
+            .clone();
+        assert_eq!(packet.object, g.object_ref(recipient));
+        assert_eq!(packet.controller, p);
+        g.move_object(giver, Zone::Graveyard);
+        g.gain_control(&packet, Subject::Source, PlayerSet::Opponent);
+        assert_eq!(g.state.objects[recipient as usize].controller, p.other());
+        assert_eq!(hexing_finish(&mut g, true), 1);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+    }
+}
+#[test]
+fn hexing_squelcher_grant_and_ability_removal_follow_layer_six_timestamps() {
+    for p in [Player::P0, Player::P1] {
+        for grant_after_aura in [false, true] {
+            let mut g = hexing_setup(p);
+            let recipient = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+            if !grant_after_aura {
+                named(&mut g, p, "Hexing Squelcher", Zone::Battlefield);
+            }
+            hexing_open(
+                &mut g,
+                p,
+                "Witness Protection",
+                Some(Target::Card(recipient)),
+            );
+            hexing_finish(&mut g, true);
+            if grant_after_aura {
+                named(&mut g, p, "Hexing Squelcher", Zone::Battlefield);
+            }
+            hexing_open(
+                &mut g,
+                p.other(),
+                "Giant Growth",
+                Some(Target::Card(recipient)),
+            );
+            assert_eq!(hexing_finish(&mut g, true), usize::from(grant_after_aura));
+        }
+        let mut g = hexing_setup(p);
+        let giver = named(&mut g, p, "Hexing Squelcher", Zone::Battlefield);
+        let recipient = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        hexing_open(&mut g, p, "Witness Protection", Some(Target::Card(giver)));
+        hexing_finish(&mut g, true);
+        hexing_open(
+            &mut g,
+            p.other(),
+            "Giant Growth",
+            Some(Target::Card(recipient)),
+        );
+        assert_eq!(hexing_finish(&mut g, true), 0);
+        assert!(!g.controlled_spells_uncounterable(p, Card::from_name("Shock").unwrap()));
+    }
+}
+#[test]
+fn hexing_squelcher_control_change_reassigns_the_continuous_grant_recipients() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p.other());
+        let giver = named(&mut g, p, "Hexing Squelcher", Zone::Battlefield);
+        let old_recipient = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        hexing_open(&mut g, p.other(), "Goatnap", Some(Target::Card(giver)));
+        assert_eq!(hexing_finish(&mut g, true), 1);
+        assert_eq!(g.state.objects[giver as usize].controller, p.other());
+        hexing_open(
+            &mut g,
+            p.other(),
+            "Giant Growth",
+            Some(Target::Card(old_recipient)),
+        );
+        assert_eq!(hexing_finish(&mut g, true), 0);
+        let new_recipient = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        hexing_open(&mut g, p, "Giant Growth", Some(Target::Card(new_recipient)));
+        assert_eq!(hexing_finish(&mut g, true), 1);
+    }
+}
+#[test]
+fn hexing_squelcher_ward_counters_an_activated_ability_even_if_its_controller_has_spell_protection()
+{
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        named(&mut g, p, "Hexing Squelcher", Zone::Battlefield);
+        named(&mut g, p.other(), "Hexing Squelcher", Zone::Battlefield);
+        let recipient = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let source = named(&mut g, p.other(), "Fanatical Firebrand", Zone::Battlefield);
+        while g.actor() != Some(p.other()) {
+            advance(&mut g);
+        }
+        let action=g.legal_actions().into_iter().find(|action|matches!(action,Action::Activate{card,target:Some(Target::Card(target)),..} if *card==source && *target==recipient)).unwrap();
+        checked(&mut g, action);
+        assert_eq!(hexing_finish(&mut g, false), 1);
+        assert_eq!(g.state.objects[recipient as usize].damage, 0);
+        assert_eq!(g.state.objects[source as usize].zone, Zone::Graveyard);
+    }
+}

@@ -877,7 +877,7 @@ pub struct AttachmentTriggerView {
     pub recipient: ObjectRef,
     /// Present only for an attack-declaration event.
     pub defender: Option<Player>,
-    /// True when the actual creature owns an ability granted by the Equipment.
+    /// True when the actual creature owns an ability supplied by the recorded grantor.
     pub granted: bool,
 }
 

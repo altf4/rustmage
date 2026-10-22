@@ -92,6 +92,17 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: vec![GrantedManaAbility { source, production }],
             });
         }
+        StaticAbilityFragment::ControlledCreatureTrigger { ability, other } => {
+            if !own || world.kinds(id) & 1 == 0 || (other && source.card == id) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![key(ability)],
+                mana: Vec::new(),
+            });
+        }
         StaticAbilityFragment::AttachmentTrigger(ability)
         | StaticAbilityFragment::AttachmentActivation(ability) => {
             if !world.attached(source, id) {
@@ -261,6 +272,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::SourceCounterSubtype { .. }
                         | StaticAbilityFragment::AttachmentKeywords(..)
                         | StaticAbilityFragment::AttachedTurnKeywords(..)
+                        | StaticAbilityFragment::ControlledCreatureTrigger { .. }
                         | StaticAbilityFragment::AttachmentTrigger(..)
                         | StaticAbilityFragment::AttachmentActivation(..)
                         | StaticAbilityFragment::AttachmentMana(..)

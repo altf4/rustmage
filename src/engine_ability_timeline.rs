@@ -41,6 +41,7 @@ impl Card {
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::AttachmentKeywords(..)
                             | StaticAbilityFragment::AttachedTurnKeywords(..)
+                            | StaticAbilityFragment::ControlledCreatureTrigger { .. }
                             | StaticAbilityFragment::AttachmentTrigger(..)
                             | StaticAbilityFragment::AttachmentActivation(..)
                             | StaticAbilityFragment::AttachmentMana(..)
