@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "db20e71ab3aca9c1576e5c089f2223752917561d9e16ddc90ff5daa2d8bf4c3c",
+  "catalogue_version": "b46be2d58a56c200c43b5c6af51865db7c4df9bfa8fa5ccd46e297a52fbab151",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2246,
-  "implemented_total": 2252,
+  "implemented_standard_cards": 2249,
+  "implemented_total": 2255,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 110,
-      "complete": 157
+      "gated": 107,
+      "complete": 160
     },
     "eoc": {
       "total": 8,
@@ -6199,8 +6199,8 @@
     {
       "name": "Chronicle of Victory",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/chronicle_of_victory.rs",
       "set": "ecl"
     },
@@ -10271,8 +10271,8 @@
     {
       "name": "Eclipsed Realms",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/eclipsed_realms.rs",
       "set": "ecl"
     },
@@ -17303,8 +17303,8 @@
     {
       "name": "Illusion Spinners",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/illusion_spinners.rs",
       "set": "ecl"
     },
