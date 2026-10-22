@@ -1129,6 +1129,7 @@ impl Game {
         self.capture_copy_cast(stack, first_trigger);
         if let Some(index) = stack {
             self.capture_mana_copies(index);
+            self.capture_conspire_triggers(index);
         }
     }
 
@@ -1439,6 +1440,7 @@ impl Game {
             | StackKind::CopyEndStepSacrifice
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
+            | StackKind::Conspire
             | StackKind::DelayedWarpExile
             | StackKind::ActivatedAbility { .. } => {
                 item.program().expect("selected ability program").1

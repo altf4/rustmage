@@ -240,10 +240,13 @@ pub use modal_history::ModalHistoryView;
 mod ability_evaluation;
 #[path = "engine_characteristic_query.rs"]
 mod characteristic_query;
+#[path = "engine_conspire.rs"]
+mod conspire;
 #[path = "engine_growth_cost.rs"]
 mod growth_cost;
 #[path = "engine_supplemental_counter_cost.rs"]
 mod supplemental_counter_cost;
+pub use conspire::{ConspireCastView, ConspireInstanceView};
 #[path = "engine_untap_rules.rs"]
 mod untap_rules;
 pub use ability_evaluation::{AbilityAvailabilityView, GrantedAbilityView};
@@ -500,6 +503,9 @@ define_actions! {
     AnnounceLinkedExileCounterCost { card: CardId, source: ObjectRef, flash_surcharge: bool },
     ChooseCounterCostOrder { after_printed: bool },
     ChooseCreatureCounterCost { object: ObjectRef, counter: CounterKind },
+    ChooseConspire { source: ObjectRef, pay: bool },
+    PayConspire { source: ObjectRef, first: ObjectRef, second: ObjectRef },
+    PayConspirePrintedCosts,
     AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
     ChooseAdditionalCost {
         object: ObjectRef,
@@ -1251,7 +1257,8 @@ impl SpellView {
             StackKind::DelayedSacrifice
             | StackKind::DelayedWarpExile
             | StackKind::CopyEndStepSacrifice
-            | StackKind::DelayedReturn => None,
+            | StackKind::DelayedReturn
+            | StackKind::Conspire => None,
         }
     }
     pub(crate) fn program(&self) -> Option<(TargetPlan, &'static [Instruction])> {
@@ -1356,6 +1363,12 @@ impl SpellView {
             StackKind::CopyEndStepSacrifice => {
                 Some((TargetPlan::NONE, &[Instruction::SacrificeSource]))
             }
+            StackKind::Conspire => Some((
+                TargetPlan::NONE,
+                &[Instruction::CopyCastSpell {
+                    prior_spells: false,
+                }],
+            )),
             StackKind::DelayedReturn => {
                 Some((TargetPlan::NONE, &[Instruction::ResolveDelayedReturn]))
             }
@@ -1401,6 +1414,7 @@ pub enum StackKind {
     DelayedWarpExile,
     CopyEndStepSacrifice,
     DelayedReturn,
+    Conspire,
 }
 
 impl StackKind {
@@ -1518,6 +1532,12 @@ struct LifeGainEvent {
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
     CounterCostOrder {
+        player: Player,
+    },
+    ConspireIntent {
+        player: Player,
+    },
+    ConspirePayment {
         player: Player,
     },
     CreatureCounterCost {
@@ -2202,6 +2222,7 @@ pub struct Observation {
     pub plot_payment: Option<PlotPaymentView>,
     pub triggered_this_turn: Vec<TriggerUse>,
     pub pending_trigger_multiplicities: Vec<TriggerMultiplicityView>,
+    pub conspire: Option<ConspireCastView>,
     pub copy_origins: Vec<copies::CopyOriginView>,
     pub ability_resolutions: Vec<AbilityResolutionView>,
     pub role_choices: Vec<RoleGroupView>,
@@ -2554,6 +2575,8 @@ impl Game {
             | Pending::ResolutionLife { player }
             | Pending::ResolutionMana { player }
             | Pending::CounterCostOrder { player }
+            | Pending::ConspireIntent { player }
+            | Pending::ConspirePayment { player }
             | Pending::CreatureCounterCost { player }
             | Pending::AdditionalCost { player }
             | Pending::EntryCopy { player }
@@ -2772,6 +2795,7 @@ impl Game {
                 self.mana_payment_domain()
                     .is_some_and(|d| d.contains(*payment))
                     && self.supplemental_counter_action_viable(&action)
+                    && self.conspire_action_viable(&action)
             } else if let Action::ChooseX { value } = &action {
                 self.x_choice()
                     .is_some_and(|domain| domain.contains(*value))
@@ -2799,6 +2823,9 @@ impl Game {
                 }
                 if self.advance_mana_tap_bonus() {
                     break;
+                }
+                if self.advance_conspire_payment() {
+                    continue;
                 }
                 self.advance_supplemental_counter_choices();
                 if self.resume_supplemental_counter_payment() {
@@ -2848,8 +2875,11 @@ impl Game {
     }
 
     fn visit_actions(&self, mut emit: impl FnMut(Action) -> bool) -> bool {
-        let mut checked_emit =
-            |action| self.supplemental_counter_action_viable(&action) && emit(action);
+        let mut checked_emit = |action| {
+            self.supplemental_counter_action_viable(&action)
+                && self.conspire_action_viable(&action)
+                && emit(action)
+        };
         if self.state.mana_lots.is_none() {
             return self.visit_unfiltered_actions(checked_emit);
         }
@@ -3186,6 +3216,9 @@ impl Game {
                         return true;
                     }
                 }
+            }
+            Pending::ConspireIntent { .. } | Pending::ConspirePayment { .. } => {
+                return self.visit_conspire_actions(&mut emit);
             }
             Pending::CreatureCounterCost { .. } => {
                 return self.visit_creature_counter_cost(&mut emit);
@@ -4293,6 +4326,13 @@ impl Game {
                 self.state.pending = Pending::PayCosts { player: actor };
                 self.advance_supplemental_counter_choices();
             }
+            Action::ChooseConspire { source, pay } => self.choose_conspire(source, pay),
+            Action::PayConspire {
+                source,
+                first,
+                second,
+            } => self.pay_conspire(source, first, second),
+            Action::PayConspirePrintedCosts => self.pay_conspire_printed(),
             Action::ChooseCreatureCounterCost {
                 object,
                 counter: kind,
@@ -6561,6 +6601,8 @@ impl Game {
                 Pending::ActivationCost { .. } => "activation_cost",
                 Pending::Modes { .. } => "spell_mode",
                 Pending::CounterCostOrder { .. } => "counter_cost_order",
+                Pending::ConspireIntent { .. } => "conspire_intent",
+                Pending::ConspirePayment { .. } => "conspire_payment",
                 Pending::CreatureCounterCost { .. } => "creature_counter_cost",
                 Pending::AdditionalCost { .. } => "additional_cost",
                 Pending::PayCosts { .. } => "pay_costs",
@@ -6695,6 +6737,7 @@ impl Game {
                 .filter(|p| p.controller == viewer)
                 .copied(),
             triggered_this_turn: s.triggered_this_turn.clone(),
+            conspire: self.conspire_view().cloned(),
             copy_origins: self.copy_origins_view(),
             pending_trigger_multiplicities: s
                 .roles
@@ -8190,6 +8233,9 @@ mod ecl_copy_entry_tests;
 #[cfg(test)]
 #[path = "engine_ecl_goliath_tests.rs"]
 mod ecl_goliath_tests;
+#[cfg(test)]
+#[path = "engine_ecl_raiding_tests.rs"]
+mod ecl_raiding_tests;
 
 #[cfg(test)]
 #[path = "engine_ecl_inherited_br_tests.rs"]

@@ -284,8 +284,6 @@ impl Game {
         self.advance_copy_targets()
     }
     fn allocate_spell_copy(&mut self, template: &SpellView, controller: Player) -> SpellView {
-        // These consumers copy only instant/sorcery spells, which never enter as permanents.
-        assert!(crate::cards::CastFilter::InstantSorcery.matches(template.source_card));
         let (card, generation) = if let Some(id) = self.state.free_tokens.pop() {
             (id, self.state.objects[id as usize].generation)
         } else {

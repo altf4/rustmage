@@ -62,6 +62,7 @@ fn granting(s: &SpellView) -> Option<usize> {
     let i = family(s.source_card)?;
     let is = match s.kind {
         StackKind::CopyEndStepSacrifice
+        | StackKind::Conspire
         | StackKind::DelayedReturn
         | StackKind::DelayedSacrifice
         | StackKind::DelayedWarpExile => {
