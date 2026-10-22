@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 159,
+  "newly_tested_physical_cards": 160,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -133,6 +133,7 @@
     "Soul Immolation",
     "Soulbright Seeker",
     "Sourbread Auntie",
+    "Spinerock Tyrant",
     "Spiral into Solitude",
     "Springleaf Drum",
     "Spry and Mighty",
@@ -164,8 +165,8 @@
     "Winnowing",
     "Wistfulness"
   ],
-  "current_admission_flags": 266,
-  "remaining_gated": 7,
+  "current_admission_flags": 267,
+  "remaining_gated": 6,
   "inherited_evidence_audit": {
     "audited": 43,
     "total": 107,
@@ -369,10 +370,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T21:47:57.918424+00:00",
-    "elapsed_seconds": 23110.701573,
-    "newly_verified_cards": 159,
-    "cards_per_hour": 24.767746586660493,
+    "end_utc": "2026-10-22T21:50:41.802087+00:00",
+    "elapsed_seconds": 23274.585236,
+    "newly_verified_cards": 160,
+    "cards_per_hour": 24.74802425733762,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "Combined260-card ECL scenarios; Kirol separately focused-tested after this combined run.",
@@ -1284,5 +1285,16 @@
     "counter_seconds": 0.22,
     "counter_report": "<cache>/rustmage-build-reports/c343944d0d794d7796f4f7c55411a936.json",
     "clippy": "<cache>/rustmage-build-reports/0741c83be1bb41999488214d3f908216.json"
+  },
+  "spinerock_tyrant": {
+    "source_commit": "457efb42",
+    "focused_tests": 8,
+    "focused_seconds": 0.22,
+    "native_tests": 3086,
+    "ignored": 1,
+    "native_seconds": 91.2,
+    "native_report": "<cache>/rustmage-build-reports/8427b0d08d25400c85472d26c279cb66.json",
+    "clippy": "<cache>/rustmage-build-reports/8e322de6dfc14760a5ba8c87ea8f6438.json",
+    "provenance_seconds": 3.741
   }
 }

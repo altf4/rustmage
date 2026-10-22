@@ -986,7 +986,7 @@ impl Game {
             CastFilter::TargetCount { filter, count } => {
                 targets.len() == usize::from(count)
                     && self.cast_filter_matches_value(
-                        *filter, card, mana_value, caster, source, targets,
+                        *filter, card, mana_value, caster, source, context,
                     )
             }
             CastFilter::Targeted { filter, target } => {

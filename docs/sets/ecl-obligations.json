@@ -5564,7 +5564,7 @@
       "name": "Spinerock Tyrant",
       "definition": "src/card_definitions/ecl/spinerock_tyrant.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Spinerock Tyrant",
@@ -5580,7 +5580,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/spinerock_tyrant.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "d8599f06-f030-4575-8497-307a4d7ec182",
