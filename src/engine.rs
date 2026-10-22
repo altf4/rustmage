@@ -427,6 +427,7 @@ define_actions! {
     PutHandCreature { object: ObjectRef },
     PutHandLand { object: ObjectRef },
     SelectLand { object: ObjectRef },
+    ChooseCreature { object: ObjectRef },
     FinishLandSelection,
     DeclineHandEntry,
     ChooseHandDefender { defender: CombatDefender },
@@ -2818,6 +2819,9 @@ impl Game {
                                 Action::Blight { object }
                             }
                             EffectChoiceKind::Sacrifice => Action::Sacrifice { object },
+                            EffectChoiceKind::PowerDifferenceBoost => {
+                                Action::ChooseCreature { object }
+                            }
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             _ => unreachable!("forage has its own choice"),
                         };
@@ -4411,7 +4415,8 @@ impl Game {
             }
             Action::PutHandCreature { object }
             | Action::PutHandLand { object }
-            | Action::SelectLand { object } => self.choose_effect_object(actor, object),
+            | Action::SelectLand { object }
+            | Action::ChooseCreature { object } => self.choose_effect_object(actor, object),
             Action::FinishLandSelection => {
                 self.finish_land_selection();
                 self.run_program();

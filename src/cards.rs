@@ -572,6 +572,8 @@ pub enum EffectChoiceKind {
     BlightCost(u16),
     /// A pre-target declaration may decline this additional casting cost.
     OptionalBlightCost(u16),
+    /// Choose two creatures, then draw and grant the absolute power difference.
+    PowerDifferenceBoost,
     /// Choose distinct untapped permanents as a non-targeting activation cost.
     TapPermanents(u16),
     RemoveCreatureCounters(u16),

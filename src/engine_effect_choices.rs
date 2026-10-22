@@ -319,6 +319,9 @@ impl Game {
                     self.effect_choice_candidate(&choice, player, self.object_ref(*id as CardId))
                 })
                 .count();
+            if kind == EffectChoiceKind::PowerDifferenceBoost && available < usize::from(amount) {
+                return false;
+            }
             if let Some(skip_to) = choice.skip_to
                 && !matches!(
                     kind,
@@ -459,6 +462,26 @@ impl Game {
                 matches!(choice.kind, EffectChoiceKind::Blight(_)),
                 replacements::ResumeMode::Program,
             );
+        } else if choice.kind == EffectChoiceKind::PowerDifferenceBoost {
+            let item = self.state.resolving.as_ref().unwrap().item.clone();
+            let selected = &choice.selected[item.controller.index()];
+            assert_eq!(selected.len(), 2);
+            // Freeze X before either creature receives growth. This choice is not targeting.
+            let amount = self
+                .stats(selected[0].card)
+                .power
+                .abs_diff(self.stats(selected[1].card).power);
+            let growth =
+                i128::try_from(amount).capacity("power difference representation exhausted");
+            self.draw_many(item.controller, amount);
+            let ids: Vec<_> = selected.iter().map(|object| object.card).collect();
+            for &id in &ids {
+                self.state.objects[id as usize].growth += Stats {
+                    power: growth,
+                    toughness: growth,
+                };
+            }
+            self.grant_keyword_effects(&ids, item.object, Keywords::TRAMPLE);
         } else if choice.kind == EffectChoiceKind::Discard {
             let ids: Vec<_> = [self.state.active, self.state.active.other()]
                 .into_iter()

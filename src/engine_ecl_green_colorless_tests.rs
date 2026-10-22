@@ -1529,3 +1529,155 @@ fn ecl_green_pitiless_fists_deals_both_directions_and_own_control_is_continuous(
         assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
     }
 }
+
+#[test]
+fn ecl_green_spry_exact_two_public_nontarget_choices_freeze_absolute_power_difference() {
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..4 {
+            let mut g = setup(p);
+            let first = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let second = named(
+                &mut g,
+                p,
+                if mode == 1 {
+                    "Bear Cub"
+                } else {
+                    "Aegis Turtle"
+                },
+                Zone::Battlefield,
+            );
+            let foe = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let land = named(&mut g, p, "Forest", Zone::Battlefield);
+            if mode == 2 {
+                g.state.objects[first as usize].growth.power = -4;
+            }
+            if mode == 3 {
+                g.grant_keyword_effects(
+                    &[first, second],
+                    g.object_ref(first),
+                    Keywords::PROTECTION_EVERYTHING.union(Keywords::HEXPROOF),
+                );
+            }
+            let initial = [g.stats(first), g.stats(second)];
+            let x = initial[0].power.abs_diff(initial[1].power);
+            let spell = named(&mut g, p, "Spry and Mighty", Zone::Hand);
+            let mana = g.state.players[p.index()].mana.iter().sum::<u32>();
+            cast(&mut g, spell, None, &[]);
+            assert_eq!(
+                g.state.players[p.index()].mana.iter().sum::<u32>(),
+                mana - 5
+            );
+            let hand = g
+                .state
+                .objects
+                .iter()
+                .filter(|o| o.owner == p && o.zone == Zone::Hand)
+                .count();
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            for id in [foe, land] {
+                let object = g.object_ref(id);
+                reject(&mut g, Action::ChooseCreature { object });
+            }
+            reject(&mut g, Action::DeclineEffectPayment);
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(first),
+                },
+            );
+            for viewer in [p, p.other()] {
+                let view = g.effect_choice_view(viewer).unwrap();
+                assert!(view.candidates.contains(&g.object_ref(first)));
+                assert!(view.candidates.contains(&g.object_ref(second)));
+                assert!(!view.candidates.contains(&g.object_ref(foe)));
+            }
+            let reference = g.object_ref(first);
+            checked(&mut g, Action::ChooseCreature { object: reference });
+            reject(&mut g, Action::ChooseCreature { object: reference });
+            assert_eq!(g.stats(first), initial[0]);
+            assert_eq!(
+                g.state
+                    .objects
+                    .iter()
+                    .filter(|o| o.owner == p && o.zone == Zone::Hand)
+                    .count(),
+                hand
+            );
+            let reference = g.object_ref(second);
+            checked(&mut g, Action::ChooseCreature { object: reference });
+            settle(&mut g);
+            assert_eq!(
+                g.state
+                    .objects
+                    .iter()
+                    .filter(|o| o.owner == p && o.zone == Zone::Hand)
+                    .count(),
+                hand + usize::try_from(x).unwrap()
+            );
+            for (id, before) in [first, second].into_iter().zip(initial) {
+                let x = i128::try_from(x).unwrap();
+                assert_eq!(
+                    g.stats(id),
+                    Stats {
+                        power: before.power + x,
+                        toughness: before.toughness + x
+                    }
+                );
+                assert!(g.keywords(id).contains(Keywords::TRAMPLE));
+            }
+            assert!(!g.keywords(foe).contains(Keywords::TRAMPLE));
+            let later = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            assert_eq!(g.stats(later).power, 2);
+            assert!(!g.keywords(later).contains(Keywords::TRAMPLE));
+            super::ability_timeline_tests::next_turn(&mut g);
+            for id in [first, second] {
+                assert!(!g.keywords(id).contains(Keywords::TRAMPLE));
+            }
+        }
+    }
+}
+#[test]
+fn ecl_green_spry_insufficient_creatures_does_nothing_and_failed_draw_still_boosts() {
+    for p in [Player::P0, Player::P1] {
+        for count in 0..=2 {
+            let mut g = setup(p);
+            let mut creatures = Vec::new();
+            for i in 0..count {
+                creatures.push(named(
+                    &mut g,
+                    p,
+                    if i == 0 { "Bear Cub" } else { "Aegis Turtle" },
+                    Zone::Battlefield,
+                ));
+            }
+            if count == 2 {
+                let library = g.state.players[p.index()].library.clone();
+                for id in library {
+                    g.move_object(id, Zone::Graveyard);
+                }
+            }
+            let spell = named(&mut g, p, "Spry and Mighty", Zone::Hand);
+            cast(&mut g, spell, None, &[]);
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            if count < 2 {
+                assert_eq!(g.state.pending, Pending::Priority);
+                assert!(g.state.resolving.is_none());
+                assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 0);
+                for id in creatures {
+                    assert!(!g.keywords(id).contains(Keywords::TRAMPLE));
+                }
+            } else {
+                for id in creatures.iter().copied() {
+                    let object = g.object_ref(id);
+                    checked(&mut g, Action::ChooseCreature { object });
+                }
+                assert_eq!(g.stats(creatures[0]).power, 4);
+                assert_eq!(g.stats(creatures[1]).power, 2);
+                assert!(g.keywords(creatures[0]).contains(Keywords::TRAMPLE));
+                assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 0);
+            }
+        }
+    }
+}
