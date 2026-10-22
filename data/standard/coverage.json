@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "1279f34501cf342e86e70ca8788f5bbbdfa93145a635188a4b7cc9acc4accf98",
+  "catalogue_version": "7910fa15dea7774a89b6e97d777936215f7d6ac9efecf9384b2614d284a2c9c7",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2324,
-  "implemented_total": 2330,
+  "implemented_standard_cards": 2325,
+  "implemented_total": 2331,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 32,
-      "complete": 235
+      "complete": 236,
+      "gated": 31
     },
     "eoc": {
       "total": 8,
@@ -455,8 +455,8 @@
     {
       "name": "Abigale, Eloquent First-Year",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/abigale_eloquent_first_year.rs",
       "set": "ecl"
     },

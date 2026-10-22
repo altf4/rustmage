@@ -2,8 +2,9 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 134,
+  "newly_tested_physical_cards": 135,
   "newly_tested_names": [
+    "Abigale, Eloquent First-Year",
     "Adept Watershaper",
     "Ashling's Command",
     "Ashling, Rekindled // Ashling, Rimebound",
@@ -139,8 +140,8 @@
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 241,
-  "remaining_gated": 32,
+  "current_admission_flags": 242,
+  "remaining_gated": 31,
   "inherited_evidence_audit": {
     "audited": 15,
     "total": 107,
@@ -238,10 +239,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T19:41:13.615600+00:00",
-    "elapsed_seconds": 15506.398749,
-    "newly_verified_cards": 134,
-    "cards_per_hour": 31.10973784490804,
+    "end_utc": "2026-10-22T19:42:17.370450+00:00",
+    "elapsed_seconds": 15570.153599,
+    "newly_verified_cards": 135,
+    "cards_per_hour": 31.21356490864763,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "381 integrated ECL scenarios passed at04b2ae89; subsequent239-card release passed all native tests",
