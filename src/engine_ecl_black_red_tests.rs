@@ -2554,3 +2554,146 @@ fn lasting_tarfire_records_a_positive_loyalty_cost_on_an_animated_planeswalker()
         assert_eq!(g.state.players[p.other().index()].life, 18);
     }
 }
+
+fn torchmaster_blight(g: &mut Game) {
+    g.begin_step(Step::BeginCombat);
+    g.prepare_triggers();
+    for _ in 0..100 {
+        if g.legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::Blight { .. }))
+        {
+            return;
+        }
+        assert!(
+            !g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::ChooseTarget { .. }))
+        );
+        advance(g);
+    }
+    panic!("no combat blight choice");
+}
+#[test]
+fn warren_torchmaster_targets_only_after_payment_even_if_source_dies_and_grants_opponent_haste() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Warren Torchmaster", Zone::Hand);
+        cast(&mut g, source);
+        assert_eq!(
+            g.stats(source),
+            crate::cards::Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+        let witness = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let recipient = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        torchmaster_blight(&mut g);
+        // Paying with a one-toughness creature kills it before selecting targets.
+        let object = g.object_ref(witness);
+        checked(&mut g, Action::Blight { object });
+        for _ in 0..100 {
+            if g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::ChooseTarget { .. }))
+            {
+                break;
+            }
+            advance(&mut g);
+        }
+        assert_eq!(g.state.objects[witness as usize].zone, Zone::Graveyard);
+        g.move_object(source, Zone::Graveyard);
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(recipient),
+            },
+        );
+        settle(&mut g);
+        assert!(g.keywords(recipient).contains(Keywords::HASTE));
+        assert!(g.observe(p).players[p.index()].put_counter_on_creature_this_turn);
+        g.finish_cleanup();
+        assert!(!g.keywords(recipient).contains(Keywords::HASTE));
+    }
+}
+#[test]
+fn warren_torchmaster_optional_blight_can_choose_source_and_decline_without_a_reflexive_trigger() {
+    for p in [Player::P0, Player::P1] {
+        for pay in [false, true] {
+            let mut g = hexing_setup(p);
+            let source = named(&mut g, p, "Warren Torchmaster", Zone::Battlefield);
+            named(&mut g, p, "Doubling Season", Zone::Battlefield);
+            torchmaster_blight(&mut g);
+            if pay {
+                let object = g.object_ref(source);
+                checked(&mut g, Action::Blight { object });
+                for _ in 0..100 {
+                    if g.legal_actions()
+                        .iter()
+                        .any(|a| matches!(a, Action::ChooseTarget { .. }))
+                    {
+                        break;
+                    }
+                    advance(&mut g);
+                }
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(source),
+                    },
+                );
+            } else {
+                checked(&mut g, Action::DeclineEffectPayment);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.counter_count(source, CounterKind::MinusOne),
+                u64::from(pay)
+            );
+            assert_eq!(g.keywords(source).contains(Keywords::HASTE), pay);
+        }
+    }
+}
+#[test]
+fn warren_torchmaster_ignores_opponents_combat_and_lost_target_does_not_refund_blight() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Warren Torchmaster", Zone::Battlefield);
+        let recipient = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        g.state.active = p.other();
+        g.begin_step(Step::BeginCombat);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 0);
+        g.state.active = p;
+        torchmaster_blight(&mut g);
+        let object = g.object_ref(source);
+        checked(&mut g, Action::Blight { object });
+        for _ in 0..100 {
+            if g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::ChooseTarget { .. }))
+            {
+                break;
+            }
+            advance(&mut g);
+        }
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(recipient),
+            },
+        );
+        for _ in 0..100 {
+            if g.state.announcing.is_none() {
+                break;
+            }
+            advance(&mut g);
+        }
+        g.move_object(recipient, Zone::Exile);
+        g.move_object(recipient, Zone::Battlefield);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 1);
+        assert!(!g.keywords(recipient).contains(Keywords::HASTE));
+    }
+}

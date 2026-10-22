@@ -3,10 +3,45 @@
   "catalogue_id": 4983,
   "oracle_id": "20c3c8ab-e996-462e-a1f6-87421fc3ee55",
   "facts_sha256": "33a36117cafae0fd725b31f8bf5b1532f18d4bfccd20c5db17608559459acbf3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1983e9004bb6dd1aa304c12babe89ca95a7ae3474f5e4e4f6106d170aaae847c"
   },
-  "physical_metadata_sha256": "2da057c99939bb9f7176f1e22577981bf396694aa0e3d130822ffa28f8c029cb"
+  "physical_metadata_sha256": "2da057c99939bb9f7176f1e22577981bf396694aa0e3d130822ffa28f8c029cb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WarrenTorchmaster.java",
+  "java_sha256": "dece49d79d561e67ed1b14eacfdc8420ca8de9d48d91b4eaacc090b67f561725",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+      "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+      "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BlightCost.java",
+      "sha256": "33a0d3714068f004db969c35c375e95470b9eaf389f5b2dd73aae3c67b498cd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    }
+  ]
 }
