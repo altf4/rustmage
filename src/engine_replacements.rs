@@ -332,9 +332,29 @@ impl Game {
                 }
             }
         }
+        if event.preventable
+            && event.source.facts.colors != 0
+            && let Target::Card(id) = event.target
+            && self.on_battlefield(id)
+            && self.keywords(id).contains(Keywords::PROTECTION_COLORS)
+        {
+            let source = self.object_ref(id);
+            if !used.contains(&(source, u16::MAX)) {
+                out.push(ReplacementEffectView {
+                    source,
+                    source_card: self.state.objects[id as usize].card,
+                    ability: u16::MAX,
+                });
+            }
+        }
         out
     }
     fn modify_damage(choice: ReplacementEffectView, event: &mut DamageEvent) {
+        // Reserved dynamic protection identity; it has no immutable card-array slot.
+        if choice.ability == u16::MAX {
+            event.amount = 0;
+            return;
+        }
         match choice.source_card.replacement_effects()[usize::from(choice.ability)] {
             ReplacementSpec::DoubleCreatureDamage
             | ReplacementSpec::DoubleOpponentDamage

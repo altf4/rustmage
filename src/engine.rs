@@ -5436,6 +5436,11 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        if let Some(roles) = &mut self.state.roles {
+            roles
+                .keyword_effects
+                .retain(|row| row.expires_before_turn != Some(self.state.active));
+        }
         self.clear_crew_history();
         self.expire_spell_copies();
         self.state.delayed_combat_draws = None;
@@ -7650,3 +7655,6 @@ mod ecl_transform_tests;
 #[cfg(test)]
 #[path = "engine_ecl_inherited_tests.rs"]
 mod ecl_inherited_tests;
+
+#[path = "engine_protection.rs"]
+mod protection;

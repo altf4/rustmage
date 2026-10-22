@@ -21,6 +21,8 @@ pub struct KeywordEffectView {
     pub rules: Keywords,
     pub timestamp: u64,
     pub expires_turn: Option<u32>,
+    /// This resolution-created grant expires immediately before the named player’s next turn.
+    pub expires_before_turn: Option<Player>,
 }
 /// A resolution-created layer-six removal; its source need not remain present.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -180,6 +182,7 @@ impl Game {
             .unwrap()
             .keyword_effects
             .push(KeywordEffectView {
+                expires_before_turn: None,
                 recipient: spell,
                 origin: KeywordEffectOrigin::Resolution { source: spell },
                 keywords,
@@ -227,6 +230,7 @@ impl Game {
                 .unwrap()
                 .keyword_effects
                 .push(KeywordEffectView {
+                    expires_before_turn: None,
                     recipient,
                     origin: KeywordEffectOrigin::Resolution { source },
                     keywords: keywords.without(keywords.resolution_rules()),
@@ -264,6 +268,7 @@ impl Game {
             .unwrap()
             .keyword_effects
             .push(KeywordEffectView {
+                expires_before_turn: None,
                 recipient,
                 origin: KeywordEffectOrigin::Suspected,
                 keywords: Keywords::MENACE.union(Keywords::CANT_BLOCK),

@@ -955,3 +955,316 @@ fn ecl_transform_eirdu_behold_cost_witness_can_also_convoke_before_reveal_paymen
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
     }
 }
+
+const SYGG_FRONT: &str = "Sygg, Wanderwine Wisdom";
+const SYGG_BACK: &str = "Sygg, Wanderbrine Shield";
+fn sygg_libraries(g: &mut Game) {
+    for p in [Player::P0, Player::P1] {
+        for _ in 0..12 {
+            named(g, p, "Forest", Zone::Library);
+        }
+    }
+}
+fn sygg_target(g: &mut Game, target: CardId) {
+    for _ in 0..40 {
+        if matches!(g.state.pending, Pending::Targets { .. }) {
+            checked(
+                g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                checked(g, Action::FinishTargets);
+            }
+            settle(g);
+            return;
+        }
+        let action = if g.state.pending == Pending::Priority {
+            Action::Pass
+        } else {
+            g.legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PutTrigger { .. }))
+                .unwrap()
+        };
+        checked(g, action);
+    }
+    panic!("Sygg target trigger missing");
+}
+fn sygg_flip(g: &mut Game, color: usize, target: CardId) {
+    g.begin_step(Step::Main1);
+    payment(g);
+    let mut mana = [0; 6];
+    mana[color] = 1;
+    checked(g, Action::PayResolutionMana { payment: mana });
+    sygg_target(g, target);
+}
+#[test]
+fn ecl_transform_sygg_paid_front_grants_opponent_draw_and_survives_grantor_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        sygg_libraries(&mut g);
+        let recipient = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let sygg = named(&mut g, p, SYGG_FRONT, Zone::Hand);
+        cast(&mut g, sygg, None, &[]);
+        sygg_target(&mut g, recipient);
+        assert!(g.keywords(sygg).contains(Keywords::CANT_BE_BLOCKED));
+        assert_eq!(
+            g.stats(sygg),
+            Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+        let bounce = named(&mut g, p, "Unsummon", Zone::Hand);
+        cast(&mut g, bounce, None, &[Target::Card(sygg)]);
+        settle(&mut g);
+        let before = g.state.players[p.other().index()].library.len();
+        let own = g.state.players[p.index()].library.len();
+        g.apply_damage_batch(&[DamageEvent {
+            source: g.damage_source(recipient),
+            target: Target::Player(p),
+            amount: 1,
+            combat: true,
+            preventable: true,
+        }]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].library.len(), before - 1);
+        assert_eq!(g.state.players[p.index()].library.len(), own);
+    }
+}
+#[test]
+fn ecl_transform_sygg_granted_damage_requires_player_or_planeswalker_and_each_instance_triggers() {
+    let p = Player::P0;
+    let mut g = setup(p);
+    sygg_libraries(&mut g);
+    let creature = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let sygg = named(&mut g, p, SYGG_FRONT, Zone::Hand);
+    cast(&mut g, sygg, None, &[]);
+    sygg_target(&mut g, creature);
+    // Another front-face transformation adds a distinct removable grant.
+    sygg_flip(&mut g, 0, sygg);
+    sygg_flip(&mut g, 1, creature);
+    let walker = named(
+        &mut g,
+        p.other(),
+        "Ajani, Caller of the Pride",
+        Zone::Battlefield,
+    );
+    let other = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+    let source = g.damage_source(creature);
+    let before = g.state.players[p.index()].library.len();
+    g.apply_damage_batch(&[
+        DamageEvent {
+            source,
+            target: Target::Card(other),
+            amount: 1,
+            combat: true,
+            preventable: true,
+        },
+        DamageEvent {
+            source,
+            target: Target::Player(p.other()),
+            amount: 1,
+            combat: false,
+            preventable: true,
+        },
+    ]);
+    settle(&mut g);
+    assert_eq!(g.state.players[p.index()].library.len(), before);
+    g.apply_damage_batch(&[
+        DamageEvent {
+            source,
+            target: Target::Card(walker),
+            amount: 1,
+            combat: true,
+            preventable: true,
+        },
+        DamageEvent {
+            source,
+            target: Target::Player(p.other()),
+            amount: 1,
+            combat: true,
+            preventable: true,
+        },
+    ]);
+    settle(&mut g);
+    assert_eq!(
+        g.state.players[p.index()].library.len(),
+        before - 4,
+        "two instances, each player/walker event"
+    );
+    let blank = named(&mut g, p, "Noggle the Mind", Zone::Hand);
+    cast(&mut g, blank, None, &[Target::Card(creature)]);
+    settle(&mut g);
+    let before = g.state.players[p.index()].library.len();
+    g.apply_damage_batch(&[DamageEvent {
+        source: g.damage_source(creature),
+        target: Target::Player(p.other()),
+        amount: 1,
+        combat: true,
+        preventable: true,
+    }]);
+    settle(&mut g);
+    assert_eq!(g.state.players[p.index()].library.len(), before);
+}
+#[test]
+fn ecl_transform_sygg_back_protection_prevents_colored_damage_but_not_colorless_or_unpreventable() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        sygg_libraries(&mut g);
+        let creature = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let sygg = named(&mut g, p, SYGG_FRONT, Zone::Hand);
+        cast(&mut g, sygg, None, &[]);
+        sygg_target(&mut g, creature);
+        sygg_flip(&mut g, 0, creature);
+        assert_eq!(g.state.objects[sygg as usize].card.name(), SYGG_BACK);
+        assert_eq!(g.colors(sygg), 1);
+        assert!(g.keywords(creature).contains(Keywords::PROTECTION_COLORS));
+        let red = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let colorless = named(&mut g, p.other(), "Rooftop Percher", Zone::Battlefield);
+        let source = g.damage_source(red);
+        g.apply_damage_batch(&[DamageEvent {
+            source,
+            target: Target::Card(creature),
+            amount: 2,
+            combat: false,
+            preventable: true,
+        }]);
+        while g.advance_replacements(false) {
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::ChooseReplacement { .. }))
+                .unwrap();
+            checked(&mut g, action);
+        }
+        assert_eq!(g.object_view(creature).damage, 0);
+        g.apply_damage_batch(&[DamageEvent {
+            source,
+            target: Target::Card(creature),
+            amount: 1,
+            combat: false,
+            preventable: false,
+        }]);
+        assert!(!g.advance_replacements(false));
+        assert_eq!(g.object_view(creature).damage, 1);
+        g.apply_damage_batch(&[DamageEvent {
+            source: g.damage_source(colorless),
+            target: Target::Card(creature),
+            amount: 1,
+            combat: false,
+            preventable: true,
+        }]);
+        assert!(!g.advance_replacements(false));
+        assert_eq!(g.object_view(creature).damage, 2);
+    }
+}
+#[test]
+fn ecl_transform_sygg_protection_until_next_original_turn_rejects_colored_targeting_and_attachments()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        sygg_libraries(&mut g);
+        let creature = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let aura = named(&mut g, p, "Blossombind", Zone::Hand);
+        cast(&mut g, aura, None, &[Target::Card(creature)]);
+        settle(&mut g);
+        let sygg = named(&mut g, p, SYGG_FRONT, Zone::Hand);
+        cast(&mut g, sygg, None, &[]);
+        sygg_target(&mut g, creature);
+        sygg_flip(&mut g, 0, creature);
+        assert_eq!(
+            g.object_view(aura).zone,
+            Zone::Graveyard,
+            "colored Aura removed by protection"
+        );
+        let shock = named(&mut g, p, "Shock", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: shock });
+        assert!(!g.legal_actions().contains(&Action::ChooseTarget {
+            target: Target::Card(creature)
+        }));
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            checked(&mut g, Action::FinishTargets);
+        }
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        settle(&mut g);
+        // The original resolving controller owns the duration despite later control changes.
+        g.state.objects[sygg as usize].controller = p.other();
+        g.state.objects[creature as usize].controller = p.other();
+        super::ability_timeline_tests::next_turn(&mut g);
+        assert!(g.keywords(creature).contains(Keywords::PROTECTION_COLORS));
+        super::ability_timeline_tests::next_turn(&mut g);
+        assert!(!g.keywords(creature).contains(Keywords::PROTECTION_COLORS));
+    }
+}
+#[test]
+fn ecl_transform_sygg_back_copy_entry_does_not_grant_protection_and_unblockability_both_faces() {
+    for face in [SYGG_FRONT, SYGG_BACK] {
+        let p = Player::P0;
+        let mut g = setup(p);
+        sygg_libraries(&mut g);
+        let sygg = named(&mut g, p, face, Zone::Battlefield);
+        let blocker = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        assert!(!g.keywords(sygg).contains(Keywords::PROTECTION_COLORS));
+        assert_eq!(g.state.objects[sygg as usize].card.fixed_mana_value(), 2);
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        checked(&mut g, Action::Attack { card: sygg });
+        checked(&mut g, Action::FinishAttackers);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        assert!(!g.legal_actions().contains(&Action::Block {
+            blocker,
+            attacker: sygg
+        }));
+    }
+}
+#[test]
+fn ecl_transform_sygg_color_protection_forbids_colored_blocks_but_allows_colorless_combat_damage() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        sygg_libraries(&mut g);
+        let protected = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let sygg = named(&mut g, p, SYGG_FRONT, Zone::Hand);
+        cast(&mut g, sygg, None, &[]);
+        sygg_target(&mut g, protected);
+        sygg_flip(&mut g, 0, protected);
+        let colored = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let colorless = named(&mut g, p.other(), "Rooftop Percher", Zone::Battlefield);
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        checked(&mut g, Action::Attack { card: protected });
+        checked(&mut g, Action::FinishAttackers);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        assert!(!g.legal_actions().contains(&Action::Block {
+            blocker: colored,
+            attacker: protected
+        }));
+        checked(
+            &mut g,
+            Action::Block {
+                blocker: colorless,
+                attacker: protected,
+            },
+        );
+        checked(&mut g, Action::FinishBlockers);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        assert_eq!(g.object_view(protected).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(colorless).zone, Zone::Graveyard);
+    }
+}

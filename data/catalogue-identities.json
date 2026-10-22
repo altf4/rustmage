@@ -5356,7 +5356,8 @@
     16,
     2,
     4,
-    4
+    4,
+    1
   ],
   "aliases": [
     [
@@ -23606,6 +23607,14 @@
     [
       "Sygg's Command",
       4298
+    ],
+    [
+      "Sygg, Wanderbrine Shield",
+      5351
+    ],
+    [
+      "Sygg, Wanderwine Wisdom",
+      4299
     ],
     [
       "Sygg, Wanderwine Wisdom // Sygg, Wanderbrine Shield",
@@ -150921,11 +150930,9 @@
       "name": "Sygg, Wanderwine Wisdom // Sygg, Wanderbrine Shield",
       "oracle_id": "9cc91ac5-6f2b-4fc0-b810-cdc92eebe6de",
       "facts_sha256": "c9412031779a74cf8446e55671406817cd0088a783e5b87b0f3226a0a5290c33",
-      "mana_cost": "",
-      "type_line": "Legendary Creature — Merfolk Wizard // Legendary Creature — Merfolk Rogue",
-      "oracle_keywords": [
-        "Transform"
-      ],
+      "mana_cost": "{1}{U}",
+      "type_line": "Legendary Creature — Merfolk Wizard",
+      "oracle_keywords": [],
       "standard_legal": true,
       "legendary": true,
       "kind": 1,
@@ -150933,13 +150940,13 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 4300,
@@ -180744,6 +180751,33 @@
         "Flying",
         "Lifelink"
       ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5351,
+      "module": "card_5351",
+      "path": "ecl/sygg_wanderbrine_shield.rs",
+      "set": "ecl",
+      "category": "transform",
+      "name": "Sygg, Wanderbrine Shield",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Merfolk Rogue",
+      "oracle_keywords": [],
       "standard_legal": false,
       "legendary": true,
       "kind": 1,

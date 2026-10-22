@@ -947,6 +947,7 @@ pub(crate) enum Instruction {
         ability: u16,
     },
     TransformSource,
+    GrantProtectionUntilNextTurn,
     MayPayMana {
         cost: ManaCost,
         skip: usize,
@@ -2446,6 +2447,7 @@ pub(crate) enum TriggerCondition {
     },
     SelfEnters,
     SelfEntersOrTransforms,
+    SourceCombatDamagePlayerOrPlaneswalker,
     SelfTransforms,
     SelfEvokedEnters,
     SelfEntersManaSpent {
@@ -2717,6 +2719,7 @@ impl Keywords {
     pub const NO_HUMAN_BLOCKERS: Self = Self(67108864);
     pub const PROTECTION_EVERYTHING: Self = Self(134217728);
     pub const WITHER: Self = Self(268435456);
+    pub const PROTECTION_COLORS: Self = Self(536870912);
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
     }

@@ -70,7 +70,12 @@ impl Game {
             if object.card.aura().is_some() {
                 if !self.printed_abilities_available(id)
                     || !object.attached_to.is_some_and(|target| {
-                        self.aura_can_enchant(object.card, object.controller, target)
+                        self.aura_can_enchant_colored(
+                            object.card,
+                            object.controller,
+                            target,
+                            ability_world::CharacteristicWorld::colors(self, id),
+                        )
                     })
                 {
                     batch.deaths.push(id);
@@ -81,9 +86,10 @@ impl Game {
                     || !self.on_battlefield(target.card)
                     || self.object_ref(target.card) != target
                     || !self.is_creature(target.card)
-                    || self
-                        .keywords(target.card)
-                        .contains(Keywords::PROTECTION_EVERYTHING))
+                    || self.protected_from_colors(
+                        target.card,
+                        ability_world::CharacteristicWorld::colors(self, id),
+                    ))
             {
                 batch.detached.push(self.object_ref(id));
             }

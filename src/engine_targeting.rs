@@ -681,6 +681,45 @@ impl Game {
     }
 
     /// Only qualified recipients inspect source facts; ordinary targets keep their fast path.
+    fn targeting_source_facts(
+        &self,
+        source: ObjectRef,
+        qualification: Option<TargetSourceCharacteristics<'_>>,
+    ) -> Option<(u8, u16)> {
+        let packets = || {
+            self.state
+                .stack
+                .iter()
+                .chain(&self.state.pending_triggers)
+                .chain(&self.state.ordering_triggers)
+                .chain(self.state.announcing.iter().map(|a| &a.item))
+                .chain(self.state.resolving.iter().map(|r| &r.item))
+        };
+        let qualification = qualification.or_else(|| {
+            packets()
+                .find(|item| item.object == source)
+                .map(TargetSourceCharacteristics::from_item)
+        });
+        let source = qualification.map_or(source, |q| q.reference);
+        let current = self
+            .state
+            .objects
+            .get(source.card as usize)
+            .filter(|o| o.generation == source.generation);
+        if let Some(definition) = qualification.and_then(|q| q.spell) {
+            // A spell uses its chosen face even in preflight, before it reaches the stack.
+            Some((definition.colors(), definition.kind_mask()))
+        } else if let Some(current) = current {
+            Some((
+                ability_world::CharacteristicWorld::colors(self, source.card),
+                self.object_kinds(source.card, current),
+            ))
+        } else {
+            qualification
+                .and_then(|q| q.snapshot)
+                .map(|snapshot| (snapshot.colors(), snapshot.kinds))
+        }
+    }
     fn qualified_hexproof_blocks(
         &self,
         id: CardId,
@@ -709,39 +748,7 @@ impl Game {
         if filters().next().is_none() {
             return false;
         }
-        let packets = || {
-            self.state
-                .stack
-                .iter()
-                .chain(&self.state.pending_triggers)
-                .chain(&self.state.ordering_triggers)
-                .chain(self.state.announcing.iter().map(|a| &a.item))
-                .chain(self.state.resolving.iter().map(|r| &r.item))
-        };
-        let qualification = qualification.or_else(|| {
-            packets()
-                .find(|item| item.object == source)
-                .map(TargetSourceCharacteristics::from_item)
-        });
-        let source = qualification.map_or(source, |q| q.reference);
-        let current = self
-            .state
-            .objects
-            .get(source.card as usize)
-            .filter(|o| o.generation == source.generation);
-        let facts = if let Some(definition) = qualification.and_then(|q| q.spell) {
-            // A spell uses its chosen face even in preflight, before it reaches the stack.
-            Some((definition.colors(), definition.kind_mask()))
-        } else if let Some(current) = current {
-            Some((
-                ability_world::CharacteristicWorld::colors(self, source.card),
-                self.object_kinds(source.card, current),
-            ))
-        } else {
-            qualification
-                .and_then(|q| q.snapshot)
-                .map(|snapshot| (snapshot.colors(), snapshot.kinds))
-        };
+        let facts = self.targeting_source_facts(source, qualification);
         let Some((colors, kinds)) = facts else {
             return false;
         };
@@ -988,7 +995,11 @@ impl Game {
                     return false;
                 };
                 if obj.zone == Zone::Battlefield
-                    && self.keywords(id).contains(Keywords::PROTECTION_EVERYTHING)
+                    && (self.keywords(id).contains(Keywords::PROTECTION_EVERYTHING)
+                        || self.keywords(id).contains(Keywords::PROTECTION_COLORS)
+                            && self
+                                .targeting_source_facts(source, qualification)
+                                .is_some_and(|facts| facts.0 != 0))
                 {
                     return false;
                 }

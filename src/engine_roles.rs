@@ -275,7 +275,12 @@ impl Game {
             }
             let aura = &self.state.objects[v.aura.card as usize];
             if aura.attached_to != Some(v.recipient)
-                || !self.aura_can_enchant(aura.card, aura.controller, v.recipient)
+                || !self.aura_can_enchant_colored(
+                    aura.card,
+                    aura.controller,
+                    v.recipient,
+                    ability_world::CharacteristicWorld::colors(self, v.aura.card),
+                )
             {
                 continue;
             }

@@ -534,7 +534,8 @@ impl Game {
                     TriggerCondition::SelfGiftEnters => same && event.gift.is_some(),
                     TriggerCondition::SelfBargained => same && event.bargained,
                     TriggerCondition::SelfEvidence => same && event.evidence_collected,
-                    TriggerCondition::SelfTransforms
+                    TriggerCondition::SourceCombatDamagePlayerOrPlaneswalker
+                    | TriggerCondition::SelfTransforms
                     | TriggerCondition::EvidenceCollected
                     | TriggerCondition::Chapter { .. } => false,
                     TriggerCondition::SelfEntersOrTransforms
@@ -2697,6 +2698,21 @@ impl Game {
                         player: item.controller,
                     };
                     return;
+                }
+                Instruction::GrantProtectionUntilNextTurn => {
+                    let ids = self.keyword_subjects(&item, Subject::Targets);
+                    let first = self
+                        .state
+                        .roles
+                        .as_ref()
+                        .map_or(0, |roles| roles.keyword_effects.len());
+                    self.grant_keyword_effects(&ids, item.object, Keywords::PROTECTION_COLORS);
+                    if let Some(roles) = &mut self.state.roles {
+                        for row in &mut roles.keyword_effects[first..] {
+                            row.expires_turn = None;
+                            row.expires_before_turn = Some(item.controller);
+                        }
+                    }
                 }
                 Instruction::TransformSource => {
                     self.transform_source(&item);

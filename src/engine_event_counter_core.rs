@@ -9,6 +9,7 @@ pub struct CreatureDamageHistoryView {
 impl Game {
     pub(super) fn creature_damage_events(&mut self, events: &[DamageEvent]) {
         self.controlled_combat_damage_triggers(events);
+        self.temporary_player_or_walker_damage_triggers(events);
         for event in events {
             if event.amount <= 0 {
                 continue;
