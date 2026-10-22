@@ -119,7 +119,7 @@
       "name": "Ashling's Command",
       "definition": "src/card_definitions/ecl/ashling_s_command.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Ashling's Command",
@@ -137,7 +137,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_commands_tests.rs",
+        "src/card_definitions/ecl/ashling_s_command.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "31fc5d8b-94bc-4688-8a84-f15800e717a8",
@@ -178,7 +182,7 @@
       "name": "Assert Perfection",
       "definition": "src/card_definitions/ecl/assert_perfection.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Assert Perfection",
@@ -192,14 +196,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/assert_perfection.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "406e6db7-6e31-44b9-a793-57ee10688f71",
       "name": "Auntie's Sentence",
       "definition": "src/card_definitions/ecl/auntie_s_sentence.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Auntie's Sentence",
@@ -215,7 +223,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/auntie_s_sentence.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "cf9d13e2-bdcc-4c66-95ad-654ef795dbd3",
@@ -356,7 +368,7 @@
       "name": "Blighted Blackthorn",
       "definition": "src/card_definitions/ecl/blighted_blackthorn.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Blighted Blackthorn",
@@ -370,7 +382,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/blighted_blackthorn.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "43985bbc-a0f6-4812-984e-392bc8562633",
@@ -421,7 +437,7 @@
       "name": "Bloom Tender",
       "definition": "src/card_definitions/ecl/bloom_tender.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Bloom Tender",
@@ -435,7 +451,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/bloom_tender.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "0ecb35b3-5bd1-4467-a4a3-ce468023ced2",
@@ -508,7 +528,7 @@
       "name": "Boggart Mischief",
       "definition": "src/card_definitions/ecl/boggart_mischief.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Boggart Mischief",
@@ -523,7 +543,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/boggart_mischief.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "1bcac664-835a-4474-8ca4-263801bde08e",
@@ -616,7 +640,7 @@
       "name": "Boulder Dash",
       "definition": "src/card_definitions/ecl/boulder_dash.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Boulder Dash",
@@ -630,7 +654,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/boulder_dash.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "eb25920a-3162-4838-b092-09cbd43332fd",
@@ -681,7 +709,7 @@
       "name": "Brigid's Command",
       "definition": "src/card_definitions/ecl/brigid_s_command.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Brigid's Command",
@@ -699,7 +727,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_commands_tests.rs",
+        "src/card_definitions/ecl/brigid_s_command.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "60fc89a1-cc6f-4a32-84c3-09abf7a4a1df",
@@ -740,7 +772,7 @@
       "name": "Bristlebane Battler",
       "definition": "src/card_definitions/ecl/bristlebane_battler.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Bristlebane Battler",
@@ -756,14 +788,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/bristlebane_battler.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "48f7217e-ae11-44bd-ac42-7c8d9dd5dc36",
       "name": "Bristlebane Outrider",
       "definition": "src/card_definitions/ecl/bristlebane_outrider.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Bristlebane Outrider",
@@ -778,7 +814,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/bristlebane_outrider.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "8a5e17a0-6f3c-49ed-b328-ed90a46ed6c5",
@@ -1012,7 +1052,7 @@
       "name": "Chaos Spewer",
       "definition": "src/card_definitions/ecl/chaos_spewer.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Chaos Spewer",
@@ -1026,7 +1066,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_core_tests.rs",
+        "src/card_definitions/ecl/chaos_spewer.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "930035c6-cde7-40ac-98ef-0840812037db",
@@ -1167,7 +1211,7 @@
       "name": "Creakwood Safewright",
       "definition": "src/card_definitions/ecl/creakwood_safewright.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Creakwood Safewright",
@@ -1182,14 +1226,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/creakwood_safewright.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "2987c385-011a-4032-a516-a46d1e9dc9e8",
       "name": "Crib Swap",
       "definition": "src/card_definitions/ecl/crib_swap.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Crib Swap",
@@ -1204,7 +1252,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/crib_swap.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "ab5f8b8c-e3f7-4265-bbc6-814bbfd4693a",
@@ -1343,7 +1395,7 @@
       "name": "Dawnhand Eulogist",
       "definition": "src/card_definitions/ecl/dawnhand_eulogist.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Dawnhand Eulogist",
@@ -1358,7 +1410,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/dawnhand_eulogist.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "d7dddeac-c6ed-4111-ba40-e2830c08d480",
@@ -1388,7 +1444,7 @@
       "name": "Deepchannel Duelist",
       "definition": "src/card_definitions/ecl/deepchannel_duelist.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Deepchannel Duelist",
@@ -1403,7 +1459,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_core_tests.rs",
+        "src/card_definitions/ecl/deepchannel_duelist.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "812df594-75af-494f-be09-5f9633aca46a",
@@ -1520,7 +1580,7 @@
       "name": "Dream Seizer",
       "definition": "src/card_definitions/ecl/dream_seizer.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Dream Seizer",
@@ -1535,7 +1595,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/dream_seizer.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "28564d10-bfc5-4beb-b0e2-b9aa5c03f740",
@@ -1771,7 +1835,7 @@
       "name": "Encumbered Reejerey",
       "definition": "src/card_definitions/ecl/encumbered_reejerey.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Encumbered Reejerey",
@@ -1786,7 +1850,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/encumbered_reejerey.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "00cfbea0-e862-468b-90d5-7478eb9847c0",
@@ -1967,7 +2035,7 @@
       "name": "Firdoch Core",
       "definition": "src/card_definitions/ecl/firdoch_core.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Firdoch Core",
@@ -1983,7 +2051,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/firdoch_core.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "d6eef6a7-0cf4-4ee8-90e0-727a283c3be9",
@@ -2054,7 +2126,7 @@
       "name": "Flaring Cinder",
       "definition": "src/card_definitions/ecl/flaring_cinder.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Flaring Cinder",
@@ -2068,7 +2140,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_core_tests.rs",
+        "src/card_definitions/ecl/flaring_cinder.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "9148f2cb-5594-463c-a21b-a67706ec46d1",
@@ -2187,7 +2263,7 @@
       "name": "Gallant Fowlknight",
       "definition": "src/card_definitions/ecl/gallant_fowlknight.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Gallant Fowlknight",
@@ -2201,7 +2277,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/gallant_fowlknight.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "60206d4e-4301-4d7a-a68e-46a2ad9fc407",
@@ -2348,7 +2428,7 @@
       "name": "Glen Elendra Guardian",
       "definition": "src/card_definitions/ecl/glen_elendra_guardian.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Glen Elendra Guardian",
@@ -2365,7 +2445,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/glen_elendra_guardian.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "11ed8209-2184-4416-a8f0-72de00599574",
@@ -2415,7 +2499,7 @@
       "name": "Gloom Ripper",
       "definition": "src/card_definitions/ecl/gloom_ripper.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Gloom Ripper",
@@ -2429,7 +2513,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/gloom_ripper.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "a848ea46-347d-49c7-85c8-023cf836d0b3",
@@ -2458,7 +2546,7 @@
       "name": "Goatnap",
       "definition": "src/card_definitions/ecl/goatnap.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Goatnap",
@@ -2472,7 +2560,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/goatnap.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "79dfe2eb-82b9-4dae-95c8-58fdf9006bc7",
@@ -2587,7 +2679,7 @@
       "name": "Gristle Glutton",
       "definition": "src/card_definitions/ecl/gristle_glutton.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Gristle Glutton",
@@ -2601,7 +2693,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/gristle_glutton.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "8173e160-9a22-43f7-90d1-9ada043bc1b7",
@@ -2669,7 +2765,7 @@
       "name": "Gutsplitter Gang",
       "definition": "src/card_definitions/ecl/gutsplitter_gang.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Gutsplitter Gang",
@@ -2683,7 +2779,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/gutsplitter_gang.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "f1750962-a87c-49f6-b731-02ae971ac6ea",
@@ -2734,7 +2834,7 @@
       "name": "Heirloom Auntie",
       "definition": "src/card_definitions/ecl/heirloom_auntie.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Heirloom Auntie",
@@ -2749,7 +2849,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/heirloom_auntie.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "96c2d71e-0fc9-42aa-bc6b-6d0ae3f66f8b",
@@ -3151,7 +3255,7 @@
       "name": "Liminal Hold",
       "definition": "src/card_definitions/ecl/liminal_hold.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Liminal Hold",
@@ -3165,7 +3269,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/liminal_hold.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "81ff5764-72ce-4b9a-a14f-07413700d935",
@@ -3194,7 +3302,7 @@
       "name": "Loch Mare",
       "definition": "src/card_definitions/ecl/loch_mare.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Loch Mare",
@@ -3210,7 +3318,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/loch_mare.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "f75568a0-33ed-45a0-a885-48a19a5bb58b",
@@ -3723,7 +3835,7 @@
       "name": "Mutable Explorer",
       "definition": "src/card_definitions/ecl/mutable_explorer.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Mutable Explorer",
@@ -3738,14 +3850,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/mutable_explorer.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "d6911456-42cb-4b23-a560-dc98784530f5",
       "name": "Nameless Inversion",
       "definition": "src/card_definitions/ecl/nameless_inversion.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Nameless Inversion",
@@ -3760,7 +3876,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/nameless_inversion.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "4121b7d9-5fbe-40e2-a2a6-d7633f423b5f",
@@ -3810,7 +3930,7 @@
       "name": "Noggle the Mind",
       "definition": "src/card_definitions/ecl/noggle_the_mind.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Noggle the Mind",
@@ -3826,7 +3946,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/noggle_the_mind.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "a0c956dc-d7de-4f11-b76f-7537fbee1731",
@@ -3938,7 +4062,7 @@
       "name": "Personify",
       "definition": "src/card_definitions/ecl/personify.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Personify",
@@ -3952,7 +4076,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/personify.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "b0dbfd40-ecc5-493b-976b-bc3f62137fcf",
@@ -4134,7 +4262,7 @@
       "name": "Pummeler for Hire",
       "definition": "src/card_definitions/ecl/pummeler_for_hire.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Pummeler for Hire",
@@ -4150,7 +4278,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/pummeler_for_hire.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "5ea1d89c-8650-4373-9835-e369587020ef",
@@ -4202,7 +4334,7 @@
       "name": "Reaping Willow",
       "definition": "src/card_definitions/ecl/reaping_willow.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Reaping Willow",
@@ -4218,7 +4350,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_core_tests.rs",
+        "src/card_definitions/ecl/reaping_willow.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "ebcd198e-7fbd-46e0-a6d9-ff499e541978",
@@ -4246,7 +4382,7 @@
       "name": "Reluctant Dounguard",
       "definition": "src/card_definitions/ecl/reluctant_dounguard.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Reluctant Dounguard",
@@ -4261,7 +4397,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/reluctant_dounguard.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "eda16b31-33db-4ad2-901a-80fbe6273733",
@@ -4334,7 +4474,7 @@
       "name": "Rime Chill",
       "definition": "src/card_definitions/ecl/rime_chill.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Rime Chill",
@@ -4350,7 +4490,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/rime_chill.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "c33e99c6-189e-4dcf-8b6a-64937dbad361",
@@ -4466,7 +4610,7 @@
       "name": "Safewright Cavalry",
       "definition": "src/card_definitions/ecl/safewright_cavalry.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Safewright Cavalry",
@@ -4481,7 +4625,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/safewright_cavalry.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "2676ba6d-e7a7-48cf-9c86-6e2a11f03096",
@@ -4509,7 +4657,7 @@
       "name": "Sapling Nursery",
       "definition": "src/card_definitions/ecl/sapling_nursery.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Sapling Nursery",
@@ -4525,7 +4673,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/sapling_nursery.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "f6758e8f-5462-48a7-96d3-60d07b1563fc",
@@ -4575,7 +4727,7 @@
       "name": "Scuzzback Scrounger",
       "definition": "src/card_definitions/ecl/scuzzback_scrounger.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Scuzzback Scrounger",
@@ -4589,7 +4741,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/scuzzback_scrounger.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "23b11fdc-61b5-4f5e-ad80-f81b729fc91d",
@@ -4883,7 +5039,7 @@
       "name": "Sourbread Auntie",
       "definition": "src/card_definitions/ecl/sourbread_auntie.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Sourbread Auntie",
@@ -4897,7 +5053,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/sourbread_auntie.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "38877c68-b69b-4ee1-8e8f-5137a184a8f7",
@@ -4971,7 +5131,7 @@
       "name": "Springleaf Drum",
       "definition": "src/card_definitions/ecl/springleaf_drum.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Springleaf Drum",
@@ -4985,7 +5145,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/springleaf_drum.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "04cc9177-1ffc-4ac8-a64d-7995b4f33d23",
@@ -5035,7 +5199,7 @@
       "name": "Stalactite Dagger",
       "definition": "src/card_definitions/ecl/stalactite_dagger.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Stalactite Dagger",
@@ -5051,7 +5215,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/stalactite_dagger.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "17039058-822d-409f-938c-b727a366ba63",
@@ -5080,7 +5248,7 @@
       "name": "Sting-Slinger",
       "definition": "src/card_definitions/ecl/sting_slinger.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Sting-Slinger",
@@ -5094,7 +5262,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/sting_slinger.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "96c4b51c-8a10-428c-a948-e1ba9c652bfd",
@@ -5275,7 +5447,7 @@
       "name": "Sygg's Command",
       "definition": "src/card_definitions/ecl/sygg_s_command.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Sygg's Command",
@@ -5293,7 +5465,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_commands_tests.rs",
+        "src/card_definitions/ecl/sygg_s_command.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "9cc91ac5-6f2b-4fc0-b810-cdc92eebe6de",
@@ -5444,7 +5620,7 @@
       "name": "Tend the Sprigs",
       "definition": "src/card_definitions/ecl/tend_the_sprigs.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Tend the Sprigs",
@@ -5458,7 +5634,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/tend_the_sprigs.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "045ece1e-23aa-4122-8726-86b2af4345ba",
@@ -5486,7 +5666,7 @@
       "name": "Thoughtweft Charge",
       "definition": "src/card_definitions/ecl/thoughtweft_charge.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Thoughtweft Charge",
@@ -5500,7 +5680,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/thoughtweft_charge.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "9dee8c0b-71e0-4a94-b411-78b29b599847",
@@ -5570,7 +5754,7 @@
       "name": "Tributary Vaulter",
       "definition": "src/card_definitions/ecl/tributary_vaulter.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Tributary Vaulter",
@@ -5585,14 +5769,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/tributary_vaulter.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "ecc4e230-a546-4cb4-987c-87300060bbe2",
       "name": "Trystan's Command",
       "definition": "src/card_definitions/ecl/trystan_s_command.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Trystan's Command",
@@ -5610,7 +5798,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_commands_tests.rs",
+        "src/card_definitions/ecl/trystan_s_command.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "961d1128-a022-480c-918e-16ba0abf844b",
@@ -5718,7 +5910,7 @@
       "name": "Unbury",
       "definition": "src/card_definitions/ecl/unbury.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Unbury",
@@ -5734,7 +5926,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/unbury.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "c452e748-8a2a-4f68-8869-e294925a8b0b",
@@ -5832,7 +6028,7 @@
       "name": "Vinebred Brawler",
       "definition": "src/card_definitions/ecl/vinebred_brawler.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Vinebred Brawler",
@@ -5847,7 +6043,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/vinebred_brawler.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "3d4bec90-7bbc-4385-a2b8-303c7a8d0a0f",
@@ -5876,7 +6076,7 @@
       "name": "Voracious Tome-Skimmer",
       "definition": "src/card_definitions/ecl/voracious_tome_skimmer.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Voracious Tome-Skimmer",
@@ -5891,7 +6091,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_core_tests.rs",
+        "src/card_definitions/ecl/voracious_tome_skimmer.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "4b4dcdb1-0017-494f-8d83-6706b188e575",
@@ -6004,7 +6208,7 @@
       "name": "Wary Farmer",
       "definition": "src/card_definitions/ecl/wary_farmer.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Wary Farmer",
@@ -6018,7 +6222,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_core_tests.rs",
+        "src/card_definitions/ecl/wary_farmer.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "dd1a4219-437b-494f-ae0e-1d3181ffcd63",
