@@ -3,10 +3,35 @@
   "catalogue_id": 1992,
   "oracle_id": "cc9523da-f48e-49ab-9989-a4031dafb426",
   "facts_sha256": "b5096c8d96a8be563aaad1ca76e20dcaa9e29b6379ca07e8b6a8847a813d71bc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c0c233ccb99f45813838beb1f026ca001d3a7484910134faaceda93336d2501e"
   },
-  "physical_metadata_sha256": "60b9e14657ce45dcb6af82696f483815ab78a34baaf5eadcb81aa54b12d43f67"
+  "physical_metadata_sha256": "60b9e14657ce45dcb6af82696f483815ab78a34baaf5eadcb81aa54b12d43f67",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HeirloomAuntie.java",
+  "java_sha256": "c0fdbccb5572199315b8250ff02090899ef127bb1881c24389b51654b1cd688c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldWithCountersAbility.java",
+      "sha256": "b34c7e6346705407d2a8519d8afdebd93b393745b995bbbce928753c35eacd59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/RemoveCounterSourceEffect.java",
+      "sha256": "a2c61bdfe90b158533c99757444cecf8c13beaebd1d442be4ed27ebf7d4d807d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    }
+  ]
 }

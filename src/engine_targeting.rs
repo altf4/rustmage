@@ -421,6 +421,9 @@ impl Game {
                 && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| {
                     self.same_target_object(*b) && object.attached_to == b.object
                 }),
+            TargetGroupConstraint::SharedCreatureType => chosen.iter().filter(|b| b.group == group).all(|b| {
+                matches!(b.target, Target::Card(other) if crate::cards::CREATURE_TYPES.iter().any(|ty| self.has_subtype(id, ty) && self.has_subtype(other, ty)))
+            }),
             TargetGroupConstraint::SameGraveyard => object.zone == Zone::Graveyard && chosen.iter().filter(|b| b.group == group).all(|b| {
                 matches!(b.target, Target::Card(other) if self.state.objects.get(other as usize).is_some_and(|o| o.owner == object.owner))
             }),
@@ -765,7 +768,8 @@ impl Game {
                     TargetGroupConstraint::SameGraveyard => Some(Zone::Graveyard),
                     TargetGroupConstraint::DifferentControllers
                     | TargetGroupConstraint::AttachedToGroup(_) => Some(Zone::Battlefield),
-                    TargetGroupConstraint::OtherThanGroup(_) => None,
+                    TargetGroupConstraint::OtherThanGroup(_)
+                    | TargetGroupConstraint::SharedCreatureType => None,
                 };
                 return zone.is_none_or(|zone| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| o.zone == zone)))
                     && self.target_matches_without_hand(

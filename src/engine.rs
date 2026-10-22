@@ -5336,6 +5336,7 @@ impl Game {
             }
         }
         self.expire_base_stats();
+        self.expire_creature_types();
         let expired_animations = self.expire_animations();
         self.expire_graveyard_cast_permissions();
         self.expire_keyword_effects();
@@ -7298,6 +7299,10 @@ mod fdn_growth_cost_tests;
 #[cfg(test)]
 #[path = "engine_linked_choices_tests.rs"]
 mod linked_choices_tests;
+
+#[cfg(test)]
+#[path = "engine_ecl_black_red_tests.rs"]
+mod ecl_black_red_tests;
 
 #[cfg(test)]
 #[path = "engine_ecl_core_tests.rs"]

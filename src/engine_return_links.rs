@@ -186,6 +186,7 @@ impl Game {
                 source,
                 types,
                 additional: true,
+                expires_turn: None,
                 timestamp,
             });
         if keywords != Keywords::NONE {

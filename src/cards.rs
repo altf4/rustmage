@@ -91,6 +91,8 @@ pub(crate) struct GiftSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetGroupConstraint {
     SameGraveyard,
+    /// Every card bound in this target group shares a creature type.
+    SharedCreatureType,
     /// Attached to the exact object selected in another target group.
     AttachedToGroup(u16),
     DifferentControllers,
@@ -1100,6 +1102,11 @@ pub(crate) enum Instruction {
         stats: Option<Stats>,
         keywords: Keywords,
         ability: Option<u16>,
+    },
+    /// Replace only creature types until the current turn's cleanup.
+    SetCreatureTypesUntilEndTurn {
+        subject: Subject,
+        types: &'static [&'static str],
     },
     SetCreatureTypes {
         subject: Subject,

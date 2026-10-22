@@ -141,6 +141,8 @@ pub struct CreatureTypesEffectView {
     pub source: ObjectRef,
     pub types: &'static [&'static str],
     pub additional: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_turn: Option<u32>,
     pub timestamp: u64,
 }
 impl ObjectView {
@@ -329,6 +331,23 @@ impl Game {
         subject: Subject,
         types: &'static [&'static str],
     ) {
+        self.set_creature_types_with_expiry(item, subject, types, None);
+    }
+    pub(super) fn set_creature_types_until_end_turn(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+        types: &'static [&'static str],
+    ) {
+        self.set_creature_types_with_expiry(item, subject, types, Some(self.state.turn));
+    }
+    fn set_creature_types_with_expiry(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+        types: &'static [&'static str],
+        expires_turn: Option<u32>,
+    ) {
         assert!(
             types
                 .iter()
@@ -347,17 +366,29 @@ impl Game {
         for id in recipients {
             let recipient = self.object_ref(id);
             let state = self.state.roles.get_or_insert_with(Default::default);
-            // A replacement supersedes older replacements for this recipient.
-            state
-                .creature_types
-                .retain(|row| row.recipient != recipient);
+            // A permanent replacement supersedes older ones. A temporary
+            // replacement retains them so expiration restores the earlier layer.
+            if expires_turn.is_none() {
+                state
+                    .creature_types
+                    .retain(|row| row.recipient != recipient);
+            }
             state.creature_types.push(CreatureTypesEffectView {
                 recipient,
                 source: item.object,
                 types,
                 additional: false,
+                expires_turn,
                 timestamp,
             });
+        }
+    }
+    pub(super) fn expire_creature_types(&mut self) {
+        if let Some(state) = &mut self.state.roles {
+            let turn = self.state.turn;
+            state
+                .creature_types
+                .retain(|row| row.expires_turn.is_none_or(|expiry| expiry > turn));
         }
     }
     pub(super) fn forget_creature_types(&mut self, recipient: ObjectRef) {
