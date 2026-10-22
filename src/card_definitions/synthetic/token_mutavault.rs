@@ -31,5 +31,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         sorcery: false,
         once_per_turn: false,
     }],
+    deck_limit: None,
     ..CardRules::EMPTY
 };
