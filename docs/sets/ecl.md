@@ -127,3 +127,7 @@ The combined237-card branch04b2ae89 passes381 ECL scenarios in13.05seconds. Reso
 Tam, Mindful First-Year is integrated with both hybrid casting routes and dynamic color-based hexproof for other creatures. Five focused cases pass0.19seconds and37 shared hexproof scenarios pass0.67seconds; all-target Clippy passes. Admission238/273;35 remain gated.
 
 Kindle the Inner Flame is integrated.117 black/red scenarios pass3.37seconds;27 flashback regressions pass0.44seconds and8 copy-characteristic scenarios pass0.17seconds. The printed flashback additional behold cost uses three distinct Elemental permanent/card witnesses with joint funding; ordinary and independently granted casting routes and spell copies remain tested. Combined239-card release verification follows.
+
+## Verified checkpoint239
+
+Revision904c25c2 passed all eight release phases in580.76seconds:2,896 native tests (one ignored),9 catalogue tests,all22 Foundations game suites and ECL games,Clippy/provenance,release build and benchmark. Shared memory peak3.3GiB;1,107,525,632 completed disposable bytes cleaned. Required libraries are preserved at the exact paths/hashes recorded in the JSON. Freeform regression49,832decisions/0.23473785seconds=212,287.88decisions/s;clone205.26ns,restore178.25ns;initial logical state21,080bytes. This remains regression evidence,not full-set ECL acceptance.
