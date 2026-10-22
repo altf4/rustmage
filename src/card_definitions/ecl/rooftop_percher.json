@@ -8,5 +8,42 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1fb60cd413ab95baaefe8e9dc4de0d7027d19f88a5cf584fc5c4221df4b86162"
   },
-  "physical_metadata_sha256": "aafa0fd231c8a923440bdb783490c826860a328410b675fe2ec5ba1c0c2fedbd"
+  "physical_metadata_sha256": "aafa0fd231c8a923440bdb783490c826860a328410b675fe2ec5ba1c0c2fedbd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RooftopPercher.java",
+  "java_sha256": "34bef8bf4e0daf129e024f98fa5cd14887859160b09049e7e94c7e71bae442e0",
+  "rules_tests": "src/engine_ecl_inherited_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ChangelingAbility.java",
+      "sha256": "2a5c6f3233f1edbd054fad23cc7103334aa5bff6702da1f1e42ceb3a0cb8c177"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/IsAllCreatureTypesSourceEffect.java",
+      "sha256": "6c340da9dc171835b171f118084f41d65fcbcdc629b20c0d0c14f5c2bd727cd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    }
+  ],
+  "inherited_audit": "Full pinned Oracle and XMage body/dependencies read; existing typed behavior retained. Actual paid entry, timing, hybrid/convoke, changeling, token and zone scenarios plus existing shared rule suites establish evidence."
 }
