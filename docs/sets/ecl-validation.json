@@ -286,6 +286,6 @@
     "native_tests_passed": 2803,
     "native_tests_ignored": 1,
     "test_seconds": 72.78,
-    "report": "/home/altf4/.cache/rustmage-validation-uu4rs2xz/report/result.json"
+    "report": "<cache>/rustmage-validation-uu4rs2xz/report/result.json"
   }
 }
