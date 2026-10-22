@@ -454,6 +454,7 @@ impl Game {
                 );
             }
             EffectChoiceKind::ExileFromHand
+            | EffectChoiceKind::ExileGraveyardCard
             | EffectChoiceKind::Blight(_)
             | EffectChoiceKind::OptionalBlightCost(_)
             | EffectChoiceKind::RemoveCreatureCounters(_)

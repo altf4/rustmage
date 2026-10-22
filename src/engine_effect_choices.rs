@@ -54,6 +54,21 @@ impl Game {
                 && !choice.selected[player.index()].contains(&object)
                 && choice.selected[player.index()].len() < maximum as usize;
         }
+        if choice.kind == EffectChoiceKind::ExileGraveyardCard {
+            let filter = choice.filter;
+            return o.zone == Zone::Graveyard
+                && o.owner == player
+                && !o.is_token()
+                && !o.is_spell_copy()
+                && self.object_ref(object.card) == object
+                && !choice.selected[player.index()].contains(&object)
+                && (filter.kinds == 0 || o.card.kind_mask() & u16::from(filter.kinds) != 0)
+                && (!filter.nonland || !o.card.is_land())
+                && (!filter.other || object != choice.source)
+                && (!filter.source_only || object == choice.source)
+                && o.card.keywords().contains(filter.keywords)
+                && filter.subtype.is_none_or(|kind| o.card.has_subtype(kind));
+        }
         let hand_choice = matches!(
             choice.kind,
             EffectChoiceKind::Discard
@@ -490,12 +505,20 @@ impl Game {
                 };
             }
             self.grant_keyword_effects(&ids, item.object, Keywords::TRAMPLE);
-        } else if choice.kind == EffectChoiceKind::ExileFromHand {
+        } else if matches!(
+            choice.kind,
+            EffectChoiceKind::ExileFromHand | EffectChoiceKind::ExileGraveyardCard
+        ) {
+            let zone = if choice.kind == EffectChoiceKind::ExileFromHand {
+                Zone::Hand
+            } else {
+                Zone::Graveyard
+            };
             let mut ids = Vec::new();
             for player in [self.state.active, self.state.active.other()] {
                 for object in &choice.selected[player.index()] {
                     if self.object_ref(object.card) == *object
-                        && self.state.objects[object.card as usize].zone == Zone::Hand
+                        && self.state.objects[object.card as usize].zone == zone
                         && self.state.objects[object.card as usize].owner == player
                     {
                         ids.push(object.card);

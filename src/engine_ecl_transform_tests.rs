@@ -559,3 +559,196 @@ fn ecl_transform_ashling_return_to_front_loots_and_mana_trigger_works_after_face
         assert_eq!(g.state.players[p.index()].mana[4], 4);
     }
 }
+const TRYSTAN: &str = "Trystan, Callous Cultivator";
+fn mill_three(g: &mut Game, p: Player, elf: bool) -> [CardId; 3] {
+    [
+        named(
+            g,
+            p,
+            if elf { "Nameless Inversion" } else { "Island" },
+            Zone::Library,
+        ),
+        named(g, p, "Forest", Zone::Library),
+        named(g, p, "Bear Cub", Zone::Library),
+    ]
+}
+#[test]
+fn ecl_transform_trystan_paid_front_mills_before_testing_owned_elf_cards() {
+    for p in [Player::P0, Player::P1] {
+        for elf in [false, true] {
+            let mut g = setup(p);
+            let milled = mill_three(&mut g, p, elf);
+            named(&mut g, p.other(), "Llanowar Elves", Zone::Graveyard);
+            named(&mut g, p, "Llanowar Elves", Zone::Hand);
+            let id = named(&mut g, p, TRYSTAN, Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 2];
+            cast(&mut g, id, None, &[]);
+            settle(&mut g);
+            for card in milled {
+                assert_eq!(g.state.objects[card as usize].zone, Zone::Graveyard);
+            }
+            assert_eq!(g.state.players[p.index()].life, if elf { 22 } else { 20 });
+            assert_eq!(
+                g.stats(id),
+                Stats {
+                    power: 3,
+                    toughness: 4
+                }
+            );
+            assert!(g.keywords(id).contains(Keywords::DEATHTOUCH));
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        }
+    }
+}
+#[test]
+fn ecl_transform_trystan_back_optional_non_target_elf_card_exile_follows_mill() {
+    for p in [Player::P0, Player::P1] {
+        for pay in [false, true] {
+            let mut g = setup(p);
+            let id = named(&mut g, p, TRYSTAN, Zone::Battlefield);
+            let milled = mill_three(&mut g, p, true);
+            let prior = named(&mut g, p, "Llanowar Elves", Zone::Graveyard);
+            let foe = named(&mut g, p.other(), "Llanowar Elves", Zone::Graveyard);
+            g.begin_step(Step::Main1);
+            payment(&mut g);
+            checked(
+                &mut g,
+                Action::PayResolutionMana {
+                    payment: [0, 0, 1, 0, 0, 0],
+                },
+            );
+            until_effect(&mut g);
+            assert_eq!(
+                g.state.objects[id as usize].card.name(),
+                "Trystan, Penitent Culler"
+            );
+            assert!(
+                g.observe(p.other()).effect_choice.is_some(),
+                "graveyard cost choices are public"
+            );
+            for card in milled {
+                assert_eq!(g.state.objects[card as usize].zone, Zone::Graveyard);
+            }
+            assert!(
+                g.legal_actions().contains(&Action::ExileGraveyardCard {
+                    object: g.object_ref(prior)
+                }),
+                "not limited to the newly milled batch"
+            );
+            let before = g.snapshot();
+            assert!(
+                g.apply(
+                    p,
+                    Action::ExileGraveyardCard {
+                        object: g.object_ref(foe)
+                    }
+                )
+                .is_err()
+            );
+            assert_eq!(g.snapshot(), before);
+            assert!(!g.legal_actions().contains(&Action::ExileGraveyardCard {
+                object: g.object_ref(milled[1])
+            }));
+            if pay {
+                let object = g.object_ref(milled[0]);
+                checked(&mut g, Action::ExileGraveyardCard { object });
+            } else {
+                checked(&mut g, Action::DeclineEffectPayment);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.state.objects[milled[0] as usize].zone,
+                if pay { Zone::Exile } else { Zone::Graveyard }
+            );
+            assert_eq!(
+                g.state.players[p.other().index()].life,
+                if pay { 18 } else { 20 }
+            );
+            assert_eq!(g.state.players[p.index()].life, 20);
+            assert!(g.keywords(id).contains(Keywords::DEATHTOUCH));
+        }
+    }
+}
+#[test]
+fn ecl_transform_trystan_back_without_elf_does_not_drain_and_front_transformation_mills_again() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = named(&mut g, p, TRYSTAN, Zone::Battlefield);
+        let first = mill_three(&mut g, p, false);
+        transform_paid(&mut g, 2);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+        assert_eq!(
+            g.state.objects[id as usize].card.name(),
+            "Trystan, Penitent Culler"
+        );
+        for card in first {
+            assert_eq!(g.state.objects[card as usize].zone, Zone::Graveyard);
+        }
+        let second = mill_three(&mut g, p, true);
+        let reference = g.object_ref(id);
+        transform_paid(&mut g, 4);
+        assert_eq!(g.object_ref(id), reference);
+        assert_eq!(g.state.objects[id as usize].card.name(), TRYSTAN);
+        assert_eq!(g.state.players[p.index()].life, 22);
+        for card in second {
+            assert_eq!(g.state.objects[card as usize].zone, Zone::Graveyard);
+        }
+    }
+}
+#[test]
+fn ecl_transform_trystan_back_trigger_survives_paid_bounce_and_exile_cost_rejects_tokens() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = named(&mut g, p, TRYSTAN, Zone::Battlefield);
+        let milled = mill_three(&mut g, p, true);
+        g.begin_step(Step::Main1);
+        payment(&mut g);
+        checked(
+            &mut g,
+            Action::PayResolutionMana {
+                payment: [0, 0, 1, 0, 0, 0],
+            },
+        );
+        let bounce = named(&mut g, p, "Unsummon", Zone::Hand);
+        cast(&mut g, bounce, None, &[Target::Card(id)]);
+        until_effect(&mut g);
+        assert_eq!(g.state.objects[id as usize].zone, Zone::Hand);
+        assert_eq!(g.state.objects[id as usize].card.name(), TRYSTAN);
+        let token = Card::catalogue()
+            .find(|c| c.is_token() && c.has_subtype("Elf"))
+            .unwrap();
+        // Explicit pre-SBA fixture isolates the cost's card-only restriction.
+        let token = super::tests::spawn(&mut g, p, token, Zone::Graveyard);
+        assert!(!g.legal_actions().contains(&Action::ExileGraveyardCard {
+            object: g.object_ref(token)
+        }));
+        let object = g.object_ref(milled[0]);
+        checked(&mut g, Action::ExileGraveyardCard { object });
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        assert_eq!(g.state.objects[id as usize].zone, Zone::Hand);
+    }
+}
+#[test]
+fn ecl_transform_trystan_copy_enters_back_without_transform_mill_or_exile_trigger() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = named(&mut g, p, TRYSTAN, Zone::Battlefield);
+        transform_paid(&mut g, 2);
+        let library = mill_three(&mut g, p.other(), true);
+        let recipe = g.copiable_recipe(g.object_ref(id));
+        g.stage_copy_creation(p.other(), recipe, 1);
+        settle(&mut g);
+        for card in library {
+            assert_eq!(g.state.objects[card as usize].zone, Zone::Library);
+        }
+        assert_eq!(g.state.players[p.index()].life, 20);
+        let copy = g.state.copy_recipes.as_ref().unwrap()[0].object.card;
+        assert_eq!(
+            g.state.objects[copy as usize].card.name(),
+            "Trystan, Penitent Culler"
+        );
+        assert_eq!(g.state.objects[copy as usize].card.fixed_mana_value(), 3);
+        assert!(g.keywords(copy).contains(Keywords::DEATHTOUCH));
+    }
+}

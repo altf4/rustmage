@@ -241,7 +241,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::Sacrifice { .. }
             | Action::Blight { .. }
             | Action::ChooseCreature { .. }
-            | Action::ExileHandCard { .. } => 50,
+            | Action::ExileHandCard { .. }
+            | Action::ExileGraveyardCard { .. } => 50,
             Action::DeclineEffectPayment => -1,
             Action::AnnounceFree {
                 flash_surcharge: false,

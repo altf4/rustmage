@@ -461,6 +461,7 @@ define_actions! {
     },
     ChooseExplore { object: ObjectRef, graveyard: bool },
     ExileHandCard { object: ObjectRef },
+    ExileGraveyardCard { object: ObjectRef },
     ChooseOptionalAdditionalCost {
         object: Option<ObjectRef>,
     },
@@ -2909,6 +2910,9 @@ impl Game {
                                 Action::ChooseCreature { object }
                             }
                             EffectChoiceKind::ExileFromHand => Action::ExileHandCard { object },
+                            EffectChoiceKind::ExileGraveyardCard => {
+                                Action::ExileGraveyardCard { object }
+                            }
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             _ => unreachable!("forage has its own choice"),
                         };
@@ -4563,6 +4567,7 @@ impl Game {
                 self.advance_damage_choices();
             }
             Action::ExileHandCard { object }
+            | Action::ExileGraveyardCard { object }
             | Action::PutHandCreature { object }
             | Action::PutHandLand { object }
             | Action::SelectLand { object }

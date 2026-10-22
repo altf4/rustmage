@@ -5354,7 +5354,8 @@
     16,
     0,
     16,
-    2
+    2,
+    4
   ],
   "aliases": [
     [
@@ -25218,8 +25219,16 @@
       4696
     ],
     [
+      "Trystan, Callous Cultivator",
+      4697
+    ],
+    [
       "Trystan, Callous Cultivator // Trystan, Penitent Culler",
       4697
+    ],
+    [
+      "Trystan, Penitent Culler",
+      5349
     ],
     [
       "Tuinvale Guide",
@@ -162269,11 +162278,9 @@
       "name": "Trystan, Callous Cultivator // Trystan, Penitent Culler",
       "oracle_id": "961d1128-a022-480c-918e-16ba0abf844b",
       "facts_sha256": "62480c46385264cb8be6531d79d0f968414b4dbbd58120a3a4f6ad72edc5c293",
-      "mana_cost": "",
-      "type_line": "Legendary Creature — Elf Druid // Legendary Creature — Elf Warlock",
+      "mana_cost": "{2}{G}",
+      "type_line": "Legendary Creature — Elf Druid",
       "oracle_keywords": [
-        "Transform",
-        "Mill",
         "Deathtouch"
       ],
       "standard_legal": true,
@@ -162286,10 +162293,10 @@
         0,
         0,
         0,
-        0,
+        1,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 4698,
@@ -180670,6 +180677,35 @@
       "mana_cost": "",
       "type_line": "Legendary Creature — Elemental Wizard",
       "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5349,
+      "module": "card_5349",
+      "path": "ecl/trystan_penitent_culler.rs",
+      "set": "ecl",
+      "category": "transform",
+      "name": "Trystan, Penitent Culler",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Elf Warlock",
+      "oracle_keywords": [
+        "Deathtouch"
+      ],
       "standard_legal": false,
       "legendary": true,
       "kind": 1,

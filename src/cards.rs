@@ -634,6 +634,7 @@ pub enum EffectChoiceKind {
     /// Behold one permanent or hand card and exile that exact witness as a cost.
     BeholdAndExile,
     ExileFromHand,
+    ExileGraveyardCard,
     /// Put this many -1/-1 counters on one chosen creature you control.
     /// This is a non-targeting resolution choice, including optional payments.
     Blight(u16),
