@@ -1698,13 +1698,26 @@
       "status": "stopped via SIGTERM after isolating expensive finite funding decisions; NOT acceptance pass",
       "cpu_seconds": 182.607,
       "log": "<cache>/ecl-acceptance-development-trace.log"
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/10f0843a3ff94beb9c893ca1d7e81046.json",
+      "status": "stopped via SIGTERM for additional exact slow-position capture; NOT acceptance pass",
+      "cpu_seconds": 568.344,
+      "service_seconds": 583.794,
+      "guard_exit": 1,
+      "log": "<cache>/ecl-acceptance-strict-273-development.log",
+      "scope": "all273 support required, unchanged220-game workload; later mana-heavy theme still requires performance investigation"
     }
   ],
   "resource_completion_guard": {
     "commit": "fdc11f74",
     "problem": "systemd explicit stop could return0 without a child completion report",
-    "fix": "Missing completion report now returns nonzero and records unit status separately",
-    "tests": "two mocked completion/stop cases pass; no allocation or kill probe",
-    "log": "<cache>/rustmage-ecl-guard-completion-tests.log"
+    "fix": "Missing or partial completion reports fail closed, partial bytes are retained, and child failures cannot be hidden by a successful unit status",
+    "tests": "four mocked missing/partial/completed/failed child cases pass; no allocation or kill probe",
+    "log": "<cache>/rustmage-ecl-guard-completion-tests.log",
+    "commits": [
+      "fdc11f74",
+      "16b2229c"
+    ]
   }
 }
