@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 150,
+  "newly_tested_physical_cards": 151,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -21,6 +21,7 @@
     "Boggart Mischief",
     "Bogslither's Embrace",
     "Boulder Dash",
+    "Bre of Clan Stoutarm",
     "Brigid's Command",
     "Brigid, Clachan's Heart // Brigid, Doun's Mind",
     "Bristlebane Battler",
@@ -155,10 +156,10 @@
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 257,
-  "remaining_gated": 16,
+  "current_admission_flags": 258,
+  "remaining_gated": 15,
   "inherited_evidence_audit": {
-    "audited": 25,
+    "audited": 28,
     "total": 107,
     "names": [
       "Plains",
@@ -185,7 +186,10 @@
       "Eclipsed Elf",
       "Eclipsed Flamekin",
       "Eclipsed Kithkin",
-      "Eclipsed Merrow"
+      "Eclipsed Merrow",
+      "Feisty Spikeling",
+      "Mischievous Sneakling",
+      "Prideful Feastling"
     ],
     "scenario": "src/engine_ecl_inherited_tests.rs",
     "source_commit": "7902fbe1",
@@ -259,6 +263,18 @@
       "tests": 12,
       "seconds": 0.06,
       "resource_report": "<cache>/rustmage-build-reports/549966de911f4220b1c409004f6fb276.json"
+    },
+    "keyword_changelings": {
+      "names": [
+        "Feisty Spikeling",
+        "Mischievous Sneakling",
+        "Prideful Feastling"
+      ],
+      "source_commit": "394bc414",
+      "scenario": "src/engine_ecl_inherited_tests.rs",
+      "tests_including_previous_groups": 9,
+      "seconds": 0.35,
+      "resource_report": "<cache>/rustmage-build-reports/d2a446e7a06443fca66c96e89e63a29f.json"
     }
   },
   "locally_reviewed": 0,
@@ -298,10 +314,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T20:32:16.229302+00:00",
-    "elapsed_seconds": 18569.012451,
-    "newly_verified_cards": 150,
-    "cards_per_hour": 29.0807064417106,
+    "end_utc": "2026-10-22T20:35:50.589640+00:00",
+    "elapsed_seconds": 18783.372789,
+    "newly_verified_cards": 151,
+    "cards_per_hour": 28.940489341634393,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "494 integrated ECL scenarios passed at60017348; full release verification remains249-card checkpoint",

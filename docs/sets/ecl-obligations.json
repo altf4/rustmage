@@ -730,7 +730,7 @@
       "name": "Bre of Clan Stoutarm",
       "definition": "src/card_definitions/ecl/bre_of_clan_stoutarm.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Bre of Clan Stoutarm",
@@ -745,7 +745,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_bre_tests.rs",
+        "src/card_definitions/ecl/bre_of_clan_stoutarm.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "6487fc1b-5c83-4d09-94d3-175725bcb922",
@@ -2156,7 +2160,7 @@
       "name": "Feisty Spikeling",
       "definition": "src/card_definitions/ecl/feisty_spikeling.rs",
       "owner": "integrator",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Feisty Spikeling",
@@ -2171,7 +2175,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/engine_changeling_tests.rs",
+        "src/engine_keyword_tests.rs",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "5d4ea910-3b16-4f98-89be-c1b2cfff4bf0",
@@ -3870,7 +3879,7 @@
       "name": "Mischievous Sneakling",
       "definition": "src/card_definitions/ecl/mischievous_sneakling.rs",
       "owner": "integrator",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Mischievous Sneakling",
@@ -3885,7 +3894,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/engine_changeling_tests.rs",
+        "src/engine_keyword_tests.rs",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "9acfec0d-05a0-4b28-a883-e6863f1cb773",
@@ -4482,7 +4496,7 @@
       "name": "Prideful Feastling",
       "definition": "src/card_definitions/ecl/prideful_feastling.rs",
       "owner": "integrator",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Prideful Feastling",
@@ -4497,7 +4511,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/engine_changeling_tests.rs",
+        "src/engine_keyword_tests.rs",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "f75be4f2-d1a7-40c7-a0e4-ba8b03556ac6",
