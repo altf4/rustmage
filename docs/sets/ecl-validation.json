@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 163,
+  "newly_tested_physical_cards": 164,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -107,6 +107,7 @@
     "Nameless Inversion",
     "Noggle the Mind",
     "Oko, Lorwyn Liege // Oko, Shadowmoor Scion",
+    "Omni-Changeling",
     "Perfect Intimidation",
     "Personify",
     "Pitiless Fists",
@@ -168,8 +169,8 @@
     "Winnowing",
     "Wistfulness"
   ],
-  "current_admission_flags": 270,
-  "remaining_gated": 3,
+  "current_admission_flags": 271,
+  "remaining_gated": 2,
   "inherited_evidence_audit": {
     "audited": 107,
     "total": 107,
@@ -531,10 +532,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T22:13:36.421979+00:00",
-    "elapsed_seconds": 24649.205128,
-    "newly_verified_cards": 163,
-    "cards_per_hour": 23.806041491107994,
+    "end_utc": "2026-10-22T22:26:09.381549+00:00",
+    "elapsed_seconds": 25402.164698,
+    "newly_verified_cards": 164,
+    "cards_per_hour": 23.2421136946051,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "Combined260-card ECL scenarios; Kirol separately focused-tested after this combined run.",
@@ -1546,5 +1547,16 @@
     "log": "<cache>/rustmage-ecl-pool266-all-pairs.log",
     "profile": "debug; includes policy, both-observer privacy checks and periodic JSON/raw/index/parent-disposal/replay/restore",
     "acceptance": "Preliminary supported subset only; final273/273 and themed mechanism execution still pending."
+  },
+  "omni_changeling": {
+    "source_commit": "8a0eef2f",
+    "native_tests": 3157,
+    "ignored": 1,
+    "native_seconds": 94.63,
+    "native_report": "<cache>/rustmage-build-reports/ff7e8b4865e84bd5a30b4dc7081fae6b.json",
+    "focused_copy_tests": 29,
+    "focused_seconds": 0.83,
+    "focused_report": "<cache>/rustmage-build-reports/8e23c4a1b8f5430b872d02a69baca25d.json",
+    "clippy": "<cache>/rustmage-build-reports/3cddd42bc88d42cbbf72f6169bd053b3.json"
   }
 }

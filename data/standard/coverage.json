@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "0faecb9739cf2dcd6165a00c05b9dada8285d7a1305c705baf141ba6b0780dca",
+  "catalogue_version": "6bf4486ccdf3e43db1a2442483d85a60c732fc95507e6271e2be3ffe69de3fe1",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2353,
-  "implemented_total": 2359,
+  "implemented_standard_cards": 2354,
+  "implemented_total": 2360,
   "token_definitions": 110,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "complete": 264,
-      "gated": 3
+      "complete": 265,
+      "gated": 2
     },
     "eoc": {
       "total": 8,
@@ -24343,8 +24343,8 @@
     {
       "name": "Omni-Changeling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/omni_changeling.rs",
       "set": "ecl"
     },
