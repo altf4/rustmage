@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "27cfd9baae361bef115e67721c2b944d3230cb930ce911399854f6dced7c41a9"
   },
-  "physical_metadata_sha256": "e97ee3bfd6f961dd96a7d65bd3635713722b856e7d44e2e1560c88184c870598"
+  "physical_metadata_sha256": "e97ee3bfd6f961dd96a7d65bd3635713722b856e7d44e2e1560c88184c870598",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BitterbloomBearer.java",
+  "java_sha256": "9966cb773bb7a2d6aad603a2baf3d2ec771b3d8f0b2c3887750880c919154100",
+  "rules_tests": "src/engine_ecl_inherited_br_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/FaerieBlueBlackToken.java",
+      "sha256": "0e23f453aedcbd99fb52a924610703ba7116a4f21978d7381d389a556c854ad5"
+    }
+  ]
 }

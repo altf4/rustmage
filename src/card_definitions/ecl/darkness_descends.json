@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "511359f88cea7d63960e1e3e2bfff30db7cd9cc6055783184bba80b648662ab7"
   },
-  "physical_metadata_sha256": "893c6d3f57fe0051e4b2e5a3ce6c080b3bb9ca5f1ff0a90fc2de53b9d8b502bb"
+  "physical_metadata_sha256": "893c6d3f57fe0051e4b2e5a3ce6c080b3bb9ca5f1ff0a90fc2de53b9d8b502bb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DarknessDescends.java",
+  "java_sha256": "30073fdece3d729651fbfd1a43403057919b69f6e44821ae46b5c710e4f46b84",
+  "rules_tests": "src/engine_ecl_inherited_br_tests.rs",
+  "rules_test_files": [
+    "src/engine_counter_group_tests.rs",
+    "src/engine_ecl_inherited_br_tests.rs"
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    }
+  ],
+  "audit_notes": "Full pinned Oracle and Java card/helper reads; typed behavior preserved. Actual paid both-seat whole-card matrices supplement the listed adversarial rules suites."
 }
