@@ -451,3 +451,129 @@ fn temporary_type_replacement_expires_to_an_older_permanent_replacement() {
     assert!(g.has_subtype(victim, "Werewolf"));
     assert!(!g.has_subtype(victim, "Elf"));
 }
+fn activate_with_blight(g: &mut Game, id: CardId, witness: CardId) {
+    checked(
+        g,
+        Action::AnnounceActivate {
+            card: id,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    assert!(
+        g.observe(g.actor().unwrap().other())
+            .additional_cost
+            .is_none()
+    );
+    let object = g.object_ref(witness);
+    checked(g, Action::ChooseAdditionalCost { object });
+    let pay = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a, Action::PayCosts { .. }))
+        .unwrap();
+    checked(g, pay);
+}
+#[test]
+fn gristle_glutton_mandatory_blight_pays_before_forced_discard_and_draw() {
+    for p in [Player::P0, Player::P1] {
+        for discard in [false, true] {
+            let mut g = setup(p);
+            let id = named(&mut g, p, "Gristle Glutton", Zone::Hand);
+            cast(&mut g, id);
+            let activation = Action::AnnounceActivate {
+                card: id,
+                ability: 0,
+                counter_payment: Counters::default(),
+            };
+            assert!(
+                !g.legal_actions().contains(&activation),
+                "summoning sickness"
+            );
+            g.state.objects[id as usize].summoning_sick = false;
+            let discarded = discard.then(|| named(&mut g, p, "Forest", Zone::Hand));
+            let library = g.state.players[p.index()].library.len();
+            activate_with_blight(&mut g, id, id);
+            assert!(g.state.objects[id as usize].tapped);
+            assert_eq!(g.counter_count(id, CounterKind::MinusOne), 1);
+            settle(&mut g);
+            assert_eq!(
+                g.state.players[p.index()].library.len(),
+                library - usize::from(discard)
+            );
+            if let Some(card) = discarded {
+                assert_eq!(g.state.objects[card as usize].zone, Zone::Graveyard);
+            }
+        }
+    }
+}
+#[test]
+fn sting_slinger_can_blight_its_tapped_source_and_costs_are_not_doubled_by_effect_replacement() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = named(&mut g, p, "Sting-Slinger", Zone::Hand);
+        cast(&mut g, id);
+        g.state.objects[id as usize].summoning_sick = false;
+        named(&mut g, p, "Doubling Season", Zone::Battlefield);
+        activate_with_blight(&mut g, id, id);
+        assert!(g.state.objects[id as usize].tapped);
+        assert_eq!(g.counter_count(id, CounterKind::MinusOne), 1);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+    }
+}
+#[test]
+fn sting_slinger_blight_witness_can_fund_mana_then_die_with_ability_on_stack() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = named(&mut g, p, "Sting-Slinger", Zone::Hand);
+        cast(&mut g, id);
+        g.state.objects[id as usize].summoning_sick = false;
+        let elf = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let mountain = named(&mut g, p, "Mountain", Zone::Battlefield);
+        let enemy = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0; 6];
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: id,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        let invalid = g.object_ref(enemy);
+        reject(&mut g, Action::ChooseAdditionalCost { object: invalid });
+        let witness = g.object_ref(elf);
+        checked(&mut g, Action::ChooseAdditionalCost { object: witness });
+        checked(&mut g, Action::TapMana { card: elf });
+        checked(&mut g, Action::TapMana { card: mountain });
+        assert_eq!(
+            g.counter_count(elf, CounterKind::MinusOne),
+            0,
+            "cost is not placed during announcement"
+        );
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        assert_eq!(g.state.objects[elf as usize].zone, Zone::Graveyard);
+        assert_eq!(g.state.stack.len(), 1);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+    }
+}
+#[test]
+fn optional_resolution_blight_cost_is_not_doubled_by_doubling_season() {
+    let mut g = setup(Player::P0);
+    named(&mut g, Player::P0, "Doubling Season", Zone::Battlefield);
+    let id = named(&mut g, Player::P0, "Blighted Blackthorn", Zone::Hand);
+    checked(&mut g, Action::AnnounceCast { card: id });
+    until_blight(&mut g);
+    let object = g.object_ref(id);
+    checked(&mut g, Action::Blight { object });
+    settle(&mut g);
+    assert_eq!(g.counter_count(id, CounterKind::MinusOne), 2);
+    assert_eq!(g.state.players[0].life, 19);
+}

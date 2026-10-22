@@ -23,7 +23,8 @@ impl Game {
         };
         let controls_cost_object = match spec.kind {
             EffectChoiceKind::Discard => o.owner == actor,
-            EffectChoiceKind::Sacrifice
+            EffectChoiceKind::BlightCost(_)
+            | EffectChoiceKind::Sacrifice
             | EffectChoiceKind::ReturnToHand
             | EffectChoiceKind::TapPermanents(_) => o.controller == actor,
             _ => false,
@@ -54,12 +55,16 @@ impl Game {
     ) -> bool {
         let zone = match spec.kind {
             EffectChoiceKind::Discard => Zone::Hand,
-            EffectChoiceKind::Sacrifice
+            EffectChoiceKind::BlightCost(_)
+            | EffectChoiceKind::Sacrifice
             | EffectChoiceKind::ReturnToHand
             | EffectChoiceKind::TapPermanents(_) => Zone::Battlefield,
             _ => return false,
         };
         let f = spec.filter;
+        if matches!(spec.kind, EffectChoiceKind::BlightCost(_)) && kinds & 1 == 0 {
+            return false;
+        }
         if matches!(spec.kind, EffectChoiceKind::TapPermanents(_)) && o.tapped {
             return false;
         }
@@ -274,6 +279,14 @@ impl Game {
             self.refresh_local_source_counter_quantities(&mut a.item);
         }
         match spec.kind {
+            EffectChoiceKind::BlightCost(amount) => {
+                self.activation_cost_counters(
+                    object,
+                    CounterKind::MinusOne,
+                    u64::from(amount),
+                    a.item.controller,
+                );
+            }
             EffectChoiceKind::Blight(_)
             | EffectChoiceKind::RemoveCreatureCounters(_)
             | EffectChoiceKind::TapPermanents(_)

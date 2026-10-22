@@ -469,6 +469,39 @@ impl Game {
             used: Vec::new(),
         }));
     }
+    /// The choosing player places blight counters, even when an opponent's
+    /// resolving ability instructed them to do so. Costs are not effects.
+    pub(super) fn blight_counters(
+        &mut self,
+        choices: Vec<(Player, ObjectRef)>,
+        amount: u16,
+        effect: bool,
+        mode: ResumeMode,
+    ) {
+        let placements = choices
+            .into_iter()
+            .filter_map(|(player, object)| {
+                if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
+                    return None;
+                }
+                let o = &self.state.objects[object.card as usize];
+                Some(CounterPlacement {
+                    placed_by: player,
+                    object,
+                    card: o.card,
+                    owner: o.owner,
+                    controller: o.controller,
+                    subtypes: self.granted_subtypes(object.card),
+                    kind: self.current_kinds(object.card),
+                    amount: Counters::of(CounterKind::MinusOne, u64::from(amount)),
+                    effect,
+                    entry_index: None,
+                    private: false,
+                })
+            })
+            .collect();
+        self.stage_counter_placements(placements, mode);
+    }
     pub(super) fn activation_cost_counters(
         &mut self,
         object: ObjectRef,

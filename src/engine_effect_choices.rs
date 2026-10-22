@@ -28,7 +28,10 @@ impl Game {
         object: ObjectRef,
     ) -> bool {
         let o = &self.state.objects[object.card as usize];
-        if matches!(choice.kind, EffectChoiceKind::Blight(_)) {
+        if matches!(
+            choice.kind,
+            EffectChoiceKind::Blight(_) | EffectChoiceKind::BlightCost(_)
+        ) {
             return o.zone == Zone::Battlefield
                 && o.controller == player
                 && self.is_creature(object.card)
@@ -430,18 +433,23 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        if let EffectChoiceKind::Blight(amount) = choice.kind {
-            let counters = [self.state.active, self.state.active.other()]
+        if let EffectChoiceKind::Blight(amount) | EffectChoiceKind::BlightCost(amount) = choice.kind
+        {
+            let choices = [self.state.active, self.state.active.other()]
                 .into_iter()
-                .flat_map(|p| choice.selected[p.index()].iter().copied())
-                .map(|object| {
-                    (
-                        object,
-                        Counters::of(CounterKind::MinusOne, u64::from(amount)),
-                    )
+                .flat_map(|p| {
+                    choice.selected[p.index()]
+                        .iter()
+                        .copied()
+                        .map(move |object| (p, object))
                 })
                 .collect();
-            self.effect_counters(counters, replacements::ResumeMode::Program);
+            self.blight_counters(
+                choices,
+                amount,
+                matches!(choice.kind, EffectChoiceKind::Blight(_)),
+                replacements::ResumeMode::Program,
+            );
         } else if choice.kind == EffectChoiceKind::Discard {
             let ids: Vec<_> = [self.state.active, self.state.active.other()]
                 .into_iter()

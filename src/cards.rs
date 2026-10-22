@@ -561,6 +561,8 @@ pub enum EffectChoiceKind {
     /// Put this many -1/-1 counters on one chosen creature you control.
     /// This is a non-targeting resolution choice, including optional payments.
     Blight(u16),
+    /// Blight paid as a cost, including a cost during resolution.
+    BlightCost(u16),
     /// Choose distinct untapped permanents as a non-targeting activation cost.
     TapPermanents(u16),
     RemoveCreatureCounters(u16),
