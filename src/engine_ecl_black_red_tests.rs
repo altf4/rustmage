@@ -6266,3 +6266,298 @@ fn spinerock_granted_wither_is_not_inherited_by_an_unrelated_spell_copy() {
         assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 2);
     }
 }
+
+#[test]
+fn lavaleaper_paid_body_grants_both_players_haste_and_removal_stops_it() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Lavaleaper", Zone::Hand);
+        cast(&mut g, source);
+        assert_eq!(
+            g.stats(source),
+            Stats {
+                power: 4,
+                toughness: 4
+            }
+        );
+        assert!(g.keywords(source).contains(Keywords::HASTE));
+        let own = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let foe = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        for creature in [own, foe] {
+            assert!(g.keywords(creature).contains(Keywords::HASTE));
+            g.state.objects[creature as usize].summoning_sick = true;
+        }
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        assert!(g.legal_actions().contains(&Action::Attack { card: own }));
+        g.move_object(source, Zone::Hand);
+        assert!(!g.keywords(own).contains(Keywords::HASTE));
+        assert!(!g.keywords(foe).contains(Keywords::HASTE));
+        reject(&mut g, Action::Attack { card: own });
+    }
+}
+#[test]
+fn lavaleaper_all_six_basic_land_types_add_the_type_actually_produced_for_either_player() {
+    for p in [Player::P0, Player::P1] {
+        for (color, name) in ["Plains", "Island", "Swamp", "Mountain", "Forest", "Wastes"]
+            .into_iter()
+            .enumerate()
+        {
+            let mut g = hexing_setup(p);
+            named(&mut g, p.other(), "Lavaleaper", Zone::Battlefield);
+            let land = named(&mut g, p, name, Zone::Battlefield);
+            g.state.players[p.index()].mana = [0; 6];
+            let action = if color == 5 {
+                g.legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a, Action::ActivateMana { card, .. } if *card == land))
+                    .unwrap()
+            } else {
+                Action::TapMana { card: land }
+            };
+            checked(&mut g, action);
+            let mut expected = [0; 6];
+            expected[color] = 2;
+            assert_eq!(g.state.players[p.index()].mana, expected);
+            assert_eq!(g.state.players[p.other().index()].mana, [30; 6]);
+            assert!(g.state.stack.is_empty());
+            assert!(g.state.pending_triggers.is_empty());
+        }
+    }
+}
+#[test]
+fn lavaleaper_multiple_providers_use_their_own_trigger_multipliers_and_ability_status() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let first = named(&mut g, p.other(), "Lavaleaper", Zone::Battlefield);
+        named(&mut g, p.other(), "Twinflame Travelers", Zone::Battlefield);
+        let second = named(&mut g, p, "Lavaleaper", Zone::Battlefield);
+        let forest = named(&mut g, p, "Forest", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0; 6];
+        checked(&mut g, Action::TapMana { card: forest });
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 0, 4, 0]);
+        let first_ref = g.object_ref(first);
+        g.remove_abilities_exact(&[first_ref], crate::cards::AnimationDuration::Permanent);
+        let forest2 = named(&mut g, p, "Forest", Zone::Battlefield);
+        checked(&mut g, Action::TapMana { card: forest2 });
+        assert_eq!(g.state.players[p.index()].mana[4], 6);
+        g.move_object(second, Zone::Hand);
+        let forest3 = named(&mut g, p, "Forest", Zone::Battlefield);
+        checked(&mut g, Action::TapMana { card: forest3 });
+        assert_eq!(g.state.players[p.index()].mana[4], 7);
+    }
+}
+#[test]
+fn lavaleaper_exact_funding_uses_bonus_quantity_without_inventing_other_mana_types() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        named(&mut g, p, "Lavaleaper", Zone::Battlefield);
+        let forest = named(&mut g, p, "Forest", Zone::Battlefield);
+        let mountain = named(&mut g, p, "Mountain", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0; 6];
+        let giant = named(&mut g, p, "Hill Giant", Zone::Hand);
+        let draw = named(&mut g, p, "Divination", Zone::Hand);
+        reject(&mut g, Action::AnnounceCast { card: draw });
+        checked(&mut g, Action::AnnounceCast { card: giant });
+        checked(&mut g, Action::TapMana { card: forest });
+        checked(&mut g, Action::TapMana { card: mountain });
+        kindle_pay(&mut g);
+        settle(&mut g);
+        assert!(g.on_battlefield(giant));
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+#[test]
+fn lavaleaper_granted_land_mana_gets_one_bonus_not_one_per_mana_and_nonbasic_is_excluded() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        named(&mut g, p, "Lavaleaper", Zone::Battlefield);
+        let forest = named(&mut g, p, "Forest", Zone::Battlefield);
+        let aura = named(&mut g, p.other(), "New Horizons", Zone::Battlefield);
+        g.state.objects[aura as usize].attached_to = Some(g.object_ref(forest));
+        g.state.players[p.index()].mana = [0; 6];
+        let grantor = g.object_ref(aura);
+        checked(
+            &mut g,
+            Action::TapGrantedMana {
+                card: forest,
+                grantor,
+                production: [0, 0, 0, 2, 0, 0],
+            },
+        );
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 3, 0, 0]);
+        let nonbasic = named(&mut g, p, "Hallowed Fountain", Zone::Battlefield);
+        let tap = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::ActivateMana { card, .. } if *card == nonbasic))
+            .unwrap();
+        checked(&mut g, tap);
+        assert_eq!(g.state.players[p.index()].mana.iter().sum::<u32>(), 4);
+    }
+}
+#[test]
+fn lavaleaper_mixed_event_choices_are_owned_and_keep_frozen_types_and_multiplicity() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p.other(), "Lavaleaper", Zone::Battlefield);
+        let travelers = named(&mut g, p.other(), "Twinflame Travelers", Zone::Battlefield);
+        let forest = named(&mut g, p, "Forest", Zone::Battlefield);
+        // Narrow event boundary: no currently admitted basic-land ability makes
+        // this mixed vector, but all three types must remain valid choices.
+        let bonus = g.capture_mana_tap_bonus(forest, [1, 1, 0, 0, 0, 1]);
+        g.move_object(source, Zone::Graveyard);
+        g.move_object(travelers, Zone::Graveyard);
+        g.state.players[p.index()].mana = [0; 6];
+        g.finish_mana_tap_bonus(p, bonus);
+        assert!(g.advance_mana_tap_bonus());
+        assert_eq!(g.observe(p).mana_choices.len(), 3);
+        assert!(g.observe(p.other()).mana_choices.is_empty());
+        reject(
+            &mut g,
+            Action::ChooseMana {
+                production: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseMana {
+                production: [0, 0, 0, 0, 0, 1],
+            },
+        );
+        assert!(matches!(g.state.pending, Pending::EffectMana { .. }));
+        checked(
+            &mut g,
+            Action::ChooseMana {
+                production: [0, 1, 0, 0, 0, 0],
+            },
+        );
+        assert_eq!(g.state.pending, Pending::Priority);
+        assert_eq!(g.state.players[p.index()].mana, [0, 1, 0, 0, 0, 1]);
+        assert!(g.state.mana_lots.is_none());
+    }
+}
+#[test]
+fn lavaleaper_mixed_bonus_overflow_is_atomic_and_another_type_remains_payable() {
+    let p = Player::P0;
+    let mut g = hexing_setup(p);
+    named(&mut g, p, "Lavaleaper", Zone::Battlefield);
+    let forest = named(&mut g, p, "Forest", Zone::Battlefield);
+    let bonus = g.capture_mana_tap_bonus(forest, [0, 0, 0, 1, 0, 1]);
+    g.state.players[p.index()].mana = [0, 0, 0, u32::MAX, 0, 0];
+    g.finish_mana_tap_bonus(p, bonus);
+    assert!(g.advance_mana_tap_bonus());
+    reject(
+        &mut g,
+        Action::ChooseMana {
+            production: [0, 0, 0, 1, 0, 0],
+        },
+    );
+    checked(
+        &mut g,
+        Action::ChooseMana {
+            production: [0, 0, 0, 0, 0, 1],
+        },
+    );
+    assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, u32::MAX, 0, 1]);
+}
+#[test]
+fn lavaleaper_pending_mana_bonus_waits_for_replacements_and_defers_sbas() {
+    let p = Player::P0;
+    let mut g = hexing_setup(p);
+    named(&mut g, p, "Lavaleaper", Zone::Battlefield);
+    let forest = named(&mut g, p, "Forest", Zone::Battlefield);
+    let bonus = g.capture_mana_tap_bonus(forest, [1, 1, 0, 0, 0, 0]);
+    let victim = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+    named(&mut g, p, "Doubling Season", Zone::Battlefield);
+    named(&mut g, p, "Doubling Season", Zone::Battlefield);
+    g.effect_counter(
+        victim,
+        CounterKind::MinusOne,
+        1,
+        replacements::ResumeMode::Pending,
+    );
+    assert!(g.advance_replacements(false));
+    assert!(matches!(g.state.pending, Pending::Replacement { .. }));
+    g.finish_mana_tap_bonus(p, bonus);
+    for _ in 0..10 {
+        if matches!(g.state.pending, Pending::EffectMana { .. }) {
+            break;
+        }
+        advance(&mut g);
+    }
+    assert!(matches!(g.state.pending, Pending::EffectMana { .. }));
+    assert!(
+        g.on_battlefield(victim),
+        "no SBA inside triggered mana resolution"
+    );
+    assert_eq!(g.counter_count(victim, CounterKind::MinusOne), 4);
+    checked(
+        &mut g,
+        Action::ChooseMana {
+            production: [1, 0, 0, 0, 0, 0],
+        },
+    );
+    assert_eq!(g.object_view(victim).zone, Zone::Graveyard);
+}
+#[test]
+fn lavaleaper_mixed_mana_choice_resumes_an_existing_cast_payment_window() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        named(&mut g, p, "Lavaleaper", Zone::Battlefield);
+        named(&mut g, p, "Lavaleaper", Zone::Battlefield);
+        let forests = [
+            named(&mut g, p, "Forest", Zone::Battlefield),
+            named(&mut g, p, "Forest", Zone::Battlefield),
+        ];
+        g.state.players[p.index()].mana = [0; 6];
+        let spell = named(&mut g, p, "Gigantosaurus", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        let bonus = g.capture_mana_tap_bonus(forests[0], [1, 0, 0, 0, 0, 1]);
+        g.finish_mana_tap_bonus(p, bonus);
+        assert!(g.advance_mana_tap_bonus());
+        checked(
+            &mut g,
+            Action::ChooseMana {
+                production: [1, 0, 0, 0, 0, 0],
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseMana {
+                production: [0, 0, 0, 0, 0, 1],
+            },
+        );
+        assert!(matches!(g.state.pending, Pending::PayCosts { .. }));
+        for card in forests {
+            checked(&mut g, Action::TapMana { card });
+        }
+        kindle_pay(&mut g);
+        settle(&mut g);
+        assert!(g.on_battlefield(spell));
+    }
+}
+#[test]
+fn lavaleaper_guided_wastes_activation_captures_colorless_bonus_without_stack_use() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        named(&mut g, p.other(), "Lavaleaper", Zone::Battlefield);
+        let land = named(&mut g, p, "Wastes", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0; 6];
+        checked(
+            &mut g,
+            Action::AnnounceMana {
+                card: land,
+                ability: 0,
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 0, 0, 1],
+            },
+        );
+        while g.state.announcing.is_some() {
+            advance(&mut g);
+        }
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 0, 0, 2]);
+        assert_eq!(g.state.pending, Pending::Priority);
+        assert!(g.state.stack.is_empty());
+    }
+}

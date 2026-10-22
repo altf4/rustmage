@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "faa50d77686d59e1d1da813a2de44c826d57d51c26683ea0de830eeae50806c5"
   },
-  "physical_metadata_sha256": "7c92b6ece68ca01a7a76f6a467cc9dfada187769c3e60678053770997ab4d372"
+  "physical_metadata_sha256": "7c92b6ece68ca01a7a76f6a467cc9dfada187769c3e60678053770997ab4d372",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/Giantfall.java",
+  "java_sha256": "de45d2274a9ed7613b54f0acc3863dec9f31a41ec66f5878b5ce2aad770ebc94",
+  "rules_tests": "src/engine_ecl_inherited_br_tests.rs",
+  "rules_test_files": [
+    "src/engine_ecl_inherited_br_tests.rs"
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageWithPowerFromOneToAnotherTargetEffect.java",
+      "sha256": "cbe6b025fef2b13a46fcdddb02a0342eecd99af9db39d292c22b1f942d2729a3"
+    }
+  ],
+  "audit_notes": "Full pinned Oracle and Java card/helper reads; typed behavior preserved. Actual paid both-seat whole-card matrices supplement the listed adversarial rules suites."
 }

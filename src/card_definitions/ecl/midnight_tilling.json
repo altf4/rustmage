@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ef59c91f8b280729304b4f100cd760457ed7caa1597810d707c2d748efebebf4"
   },
-  "physical_metadata_sha256": "3d1f70a98cdc1b89f163a462877110a63896191f41015d18e983cac5221f9539"
+  "physical_metadata_sha256": "3d1f70a98cdc1b89f163a462877110a63896191f41015d18e983cac5221f9539",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MidnightTilling.java",
+  "java_sha256": "680979ad163418ff9ccfd1fdcc619dd7a71d5d9f7a598a4bd63ee0899466f6f9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillThenPutInHandEffect.java",
+      "sha256": "15051b0e2d1701dd51f83164acfa0c4dcfc0b17d5bd6646c43209d90553d821d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetCard.java",
+      "sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e"
+    }
+  ]
 }

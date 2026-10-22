@@ -8,5 +8,41 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "52d9f6f55e9fe757acf98587efa2e3f3d117e506b7a0773e9148d747c20d5d95"
   },
-  "physical_metadata_sha256": "6b652f574984579e3112383a111609401b6628bea19abeb81838ec4fd3c9fea8"
+  "physical_metadata_sha256": "6b652f574984579e3112383a111609401b6628bea19abeb81838ec4fd3c9fea8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BramblebackBrute.java",
+  "java_sha256": "ea61656ea79cd31ed8d4e86ae6e4342b70ae492934fb64f88edb0045395cd51f",
+  "rules_tests": "src/engine_ecl_inherited_br_tests.rs",
+  "rules_test_files": [
+    "src/engine_ecl_inherited_br_tests.rs",
+    "src/engine_temporary_blocking_tests.rs"
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldWithCountersAbility.java",
+      "sha256": "b34c7e6346705407d2a8519d8afdebd93b393745b995bbbce928753c35eacd59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/RemoveCountersSourceCost.java",
+      "sha256": "6d8c1b5ff39cc2cd02e982807a027f4ff81fcce1cdeef232603904b26640a09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockTargetEffect.java",
+      "sha256": "a8b1a9a047746f0ea70d42f8847828d3334cfe9c33dfb6af870717e1aec0ae5f"
+    }
+  ],
+  "audit_notes": "Full pinned Oracle and Java card/helper reads; typed behavior preserved. Actual paid both-seat whole-card matrices supplement the listed adversarial rules suites."
 }

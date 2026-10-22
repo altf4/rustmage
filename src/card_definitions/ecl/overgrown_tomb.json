@@ -8,5 +8,60 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1cc3260961007cc495a48dd06450c6b9fe1860d39fa8559bcecd104811359f0f"
   },
-  "physical_metadata_sha256": "57c8e2238a0846c6b5490c655f216bc774a946ce07afc172cbf0b293637dc5c3"
+  "physical_metadata_sha256": "57c8e2238a0846c6b5490c655f216bc774a946ce07afc172cbf0b293637dc5c3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OvergrownTomb.java",
+  "java_sha256": "ba6a7c05ab9a3ffb5edeccfaf45b765429224c2195d2fb40c88418f053f1c9ee",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AsEntersBattlefieldAbility.java",
+      "sha256": "3919eac1ae9ebc0edd9decad5d293bdf0cdb4d16c516021ea3e97711f9a72ab5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+      "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapSourceUnlessPaysEffect.java",
+      "sha256": "b7552cdecc20c75a2b82111cfa50f8af64ebd3b108dc8a71c7f7e5e3bc59bfc8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/BlackManaAbility.java",
+      "sha256": "c7c69b99a3cc42aa1be3926c5f631440e6a34cb0156dd5065ab32204e954d28f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/GreenManaAbility.java",
+      "sha256": "77cae7fc213823ee0bdb2f8447f60c1323776dae061b5062edacc26fd304808c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/EntersBattlefieldEffect.java",
+      "sha256": "992476599885ef0ca5b2187155efe9fe40b9a16e98b578b67e0dacf21b8e6e48"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+      "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ActivatedManaAbilityImpl.java",
+      "sha256": "a35a08e0344957baa37e2f541145aac008683ccd0d0d49d1ca7fb1896478e0b5"
+    }
+  ]
 }

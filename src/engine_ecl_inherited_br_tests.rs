@@ -302,7 +302,10 @@ fn ecl_inherited_br_mauler_repeated_paid_activations_grant_fixed_menace_and_clea
             }
         );
         assert!(g.keywords(source).contains(Keywords::MENACE));
-        g.begin_step(Step::Cleanup);
+        g.state.step = Step::End;
+        g.give_priority();
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
         assert_eq!(
             g.stats(source),
             Stats {

@@ -5,6 +5,8 @@ use super::*;
 use crate::ChoiceColor;
 #[path = "engine_ecl_white_blue_inherited_tests.rs"]
 mod inherited_final;
+#[path = "engine_ecl_green_inherited_audit_tests.rs"]
+mod inherited_green_final;
 
 fn mare(g: &mut Game, p: Player) -> CardId {
     let id = spawn(g, p, Card::from_name("Loch Mare").unwrap(), Zone::Hand);

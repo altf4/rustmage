@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c3008a9d14531cd91c834029e28e0d0965b0d0375ef9c1fb8bce7faae9b9bc53"
   },
-  "physical_metadata_sha256": "54c135a1a939b5f8ee3a1d73deec5674708e9eb5dcabb1e174803a91c417ee65"
+  "physical_metadata_sha256": "54c135a1a939b5f8ee3a1d73deec5674708e9eb5dcabb1e174803a91c417ee65",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VirulentEmissary.java",
+  "java_sha256": "17cc2684511f4101aeb393704234180dc116667fbc8e0d1e2461d3aad63df8b4",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    }
+  ]
 }

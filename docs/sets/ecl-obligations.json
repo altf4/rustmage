@@ -339,7 +339,7 @@
       "name": "Bile-Vial Boggart",
       "definition": "src/card_definitions/ecl/bile_vial_boggart.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Bile-Vial Boggart",
@@ -353,14 +353,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/bile_vial_boggart.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "5effb651-f9e0-4c14-8192-bd0e132b8d5d",
       "name": "Bitterbloom Bearer",
       "definition": "src/card_definitions/ecl/bitterbloom_bearer.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Bitterbloom Bearer",
@@ -376,14 +380,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/bitterbloom_bearer.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "cf5b1cf9-dcd3-44d1-b8b2-338651ebb2a1",
       "name": "Blight Rot",
       "definition": "src/card_definitions/ecl/blight_rot.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Blight Rot",
@@ -397,7 +405,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/blight_rot.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "a294968e-9a7f-4d66-bde0-e775ae5f8197",
@@ -429,7 +441,7 @@
       "name": "Blood Crypt",
       "definition": "src/card_definitions/ecl/blood_crypt.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Blood Crypt",
@@ -444,7 +456,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/blood_crypt.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "bdb9e933-f679-4930-b669-0d123db09d16",
@@ -529,7 +545,7 @@
       "name": "Blossoming Defense",
       "definition": "src/card_definitions/ecl/blossoming_defense.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Blossoming Defense",
@@ -543,7 +559,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/blossoming_defense.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "5d58aefe-a3df-4e0a-b679-b967cd5fd2c6",
@@ -652,7 +672,7 @@
       "name": "Boldwyr Aggressor",
       "definition": "src/card_definitions/ecl/boldwyr_aggressor.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Boldwyr Aggressor",
@@ -667,14 +687,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/boldwyr_aggressor.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "a08f69f9-de48-46d6-8b75-31886159cf45",
       "name": "Boneclub Berserker",
       "definition": "src/card_definitions/ecl/boneclub_berserker.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Boneclub Berserker",
@@ -688,7 +712,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/boneclub_berserker.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "30a9ad0e-1b23-41ce-bacc-3b27f78ef628",
@@ -720,7 +748,7 @@
       "name": "Brambleback Brute",
       "definition": "src/card_definitions/ecl/brambleback_brute.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Brambleback Brute",
@@ -735,7 +763,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/brambleback_brute.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "59384481-3ca0-49dd-b94f-d3680b336f1e",
@@ -1387,7 +1419,7 @@
       "name": "Crossroads Watcher",
       "definition": "src/card_definitions/ecl/crossroads_watcher.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Crossroads Watcher",
@@ -1402,7 +1434,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/crossroads_watcher.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "c8de2e1b-f2fa-4b6a-a3c5-9811c7f5f051",
@@ -1434,7 +1470,7 @@
       "name": "Darkness Descends",
       "definition": "src/card_definitions/ecl/darkness_descends.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Darkness Descends",
@@ -1448,14 +1484,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/darkness_descends.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "1f2d1de6-42e0-4f45-b43d-ce4980146469",
       "name": "Dawn's Light Archer",
       "definition": "src/card_definitions/ecl/dawn_s_light_archer.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Dawn's Light Archer",
@@ -1470,7 +1510,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/dawn_s_light_archer.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "311eef28-21e9-44fa-96df-d281f0a9ba34",
@@ -1766,7 +1810,7 @@
       "name": "Dundoolin Weaver",
       "definition": "src/card_definitions/ecl/dundoolin_weaver.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Dundoolin Weaver",
@@ -1780,7 +1824,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/dundoolin_weaver.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "9cc3b91b-ad70-4b01-b718-fda3819f84d0",
@@ -1974,7 +2022,7 @@
       "name": "Elder Auntie",
       "definition": "src/card_definitions/ecl/elder_auntie.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Elder Auntie",
@@ -1988,7 +2036,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/elder_auntie.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "dc5dd7f7-375e-4d51-85cb-1abf16ca3854",
@@ -2125,7 +2177,7 @@
       "name": "Evolving Wilds",
       "definition": "src/card_definitions/msc/evolving_wilds.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Evolving Wilds",
@@ -2139,14 +2191,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/msc/evolving_wilds.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "22d059fc-4e47-44b5-9e21-4a56f1dff6a7",
       "name": "Explosive Prodigy",
       "definition": "src/card_definitions/ecl/explosive_prodigy.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Explosive Prodigy",
@@ -2160,14 +2216,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/explosive_prodigy.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "f474d244-d9be-4580-bf62-f97660e9c1a3",
       "name": "Feed the Flames",
       "definition": "src/card_definitions/ecl/feed_the_flames.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Feed the Flames",
@@ -2181,7 +2241,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/feed_the_flames.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "fcf796fa-43ae-43d1-a124-776338bc3542",
@@ -2269,7 +2333,7 @@
       "name": "Flame-Chain Mauler",
       "definition": "src/card_definitions/ecl/flame_chain_mauler.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Flame-Chain Mauler",
@@ -2283,7 +2347,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/flame_chain_mauler.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "c552bd73-ce75-40fd-9d80-9e90b6f45274",
@@ -2315,7 +2383,7 @@
       "name": "Flamekin Gildweaver",
       "definition": "src/card_definitions/ecl/flamekin_gildweaver.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Flamekin Gildweaver",
@@ -2330,7 +2398,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/flamekin_gildweaver.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "f70d65bf-5f1c-4aee-9bd1-f5ee6974b058",
@@ -2569,7 +2641,7 @@
       "name": "Giantfall",
       "definition": "src/card_definitions/ecl/giantfall.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Giantfall",
@@ -2585,14 +2657,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/giantfall.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "5eb8bb1d-7567-4c24-913b-463b5fe463c4",
       "name": "Gilt-Leaf's Embrace",
       "definition": "src/card_definitions/ecl/gilt_leaf_s_embrace.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Gilt-Leaf's Embrace",
@@ -2609,7 +2685,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/gilt_leaf_s_embrace.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "e67a820b-6249-478e-91db-9827e44aa60a",
@@ -2901,7 +2981,7 @@
       "name": "Graveshifter",
       "definition": "src/card_definitions/ecl/graveshifter.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Graveshifter",
@@ -2916,14 +2996,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/graveshifter.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "5cb6ebf7-6a75-4464-9e39-e171fcb52de3",
       "name": "Great Forest Druid",
       "definition": "src/card_definitions/ecl/great_forest_druid.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Great Forest Druid",
@@ -2937,7 +3021,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/great_forest_druid.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "b7163800-41fc-410a-9650-50ae90842170",
@@ -3063,7 +3151,7 @@
       "name": "Hallowed Fountain",
       "definition": "src/card_definitions/ecl/hallowed_fountain.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Hallowed Fountain",
@@ -3078,7 +3166,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/hallowed_fountain.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "b93cd38a-1d0c-40e6-aaf1-621a2c88bf46",
@@ -3244,7 +3336,7 @@
       "name": "Impolite Entrance",
       "definition": "src/card_definitions/ecl/impolite_entrance.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Impolite Entrance",
@@ -3259,7 +3351,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/impolite_entrance.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "1c77b4da-b580-4ce9-b127-76de674f5694",
@@ -3520,7 +3616,7 @@
       "name": "Kulrath Zealot",
       "definition": "src/card_definitions/ecl/kulrath_zealot.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Kulrath Zealot",
@@ -3535,7 +3631,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/kulrath_zealot.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "ff5502d2-37f5-4ad5-bee2-3a03ec973268",
@@ -3567,7 +3667,7 @@
       "name": "Lavaleaper",
       "definition": "src/card_definitions/ecl/lavaleaper.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Lavaleaper",
@@ -3582,7 +3682,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/lavaleaper.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "101407b4-e7e8-4aff-84a2-a97947358b88",
@@ -3695,7 +3799,7 @@
       "name": "Luminollusk",
       "definition": "src/card_definitions/ecl/luminollusk.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Luminollusk",
@@ -3710,7 +3814,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/luminollusk.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "ce7582a2-e014-41fb-8753-00d29cffc81a",
@@ -3743,7 +3851,7 @@
       "name": "Lys Alana Informant",
       "definition": "src/card_definitions/ecl/lys_alana_informant.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Lys Alana Informant",
@@ -3757,7 +3865,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/lys_alana_informant.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "114e1d2c-cefc-4e2a-922e-3b2ceed1871d",
@@ -3867,7 +3979,7 @@
       "name": "Midnight Tilling",
       "definition": "src/card_definitions/ecl/midnight_tilling.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Midnight Tilling",
@@ -3881,7 +3993,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/midnight_tilling.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "81cb888c-c4d3-45a2-a03e-bfd91a2af2be",
@@ -3966,7 +4082,7 @@
       "name": "Mistmeadow Council",
       "definition": "src/card_definitions/ecl/mistmeadow_council.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Mistmeadow Council",
@@ -3981,14 +4097,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/mistmeadow_council.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "d0fa43f6-d8f6-4674-b538-6d546b7dcf40",
       "name": "Moon-Vigil Adherents",
       "definition": "src/card_definitions/ecl/moon_vigil_adherents.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Moon-Vigil Adherents",
@@ -4003,14 +4123,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/moon_vigil_adherents.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "980affa7-6308-4acd-af64-f804e574a89b",
       "name": "Moonglove Extractor",
       "definition": "src/card_definitions/ecl/moonglove_extractor.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Moonglove Extractor",
@@ -4024,7 +4148,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/moonglove_extractor.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "ce009bd4-5ffb-46a4-a9dd-b9c060926467",
@@ -4084,7 +4212,7 @@
       "name": "Morcant's Eyes",
       "definition": "src/card_definitions/ecl/morcant_s_eyes.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Morcant's Eyes",
@@ -4099,7 +4227,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/morcant_s_eyes.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "b2c30683-cc7f-4341-add1-b08cb9b93eeb",
@@ -4288,7 +4420,7 @@
       "name": "Nightmare Sower",
       "definition": "src/card_definitions/ecl/nightmare_sower.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Nightmare Sower",
@@ -4303,7 +4435,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/nightmare_sower.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "a2f33166-6cfc-4dc5-8edc-088bf40f06b5",
@@ -4426,7 +4562,7 @@
       "name": "Overgrown Tomb",
       "definition": "src/card_definitions/ecl/overgrown_tomb.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Overgrown Tomb",
@@ -4441,7 +4577,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/overgrown_tomb.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "da099c34-74b2-4db8-8583-09bf2c56606f",
@@ -4810,7 +4950,7 @@
       "name": "Reckless Ransacking",
       "definition": "src/card_definitions/ecl/reckless_ransacking.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Reckless Ransacking",
@@ -4824,7 +4964,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/reckless_ransacking.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "162dcfa0-36e4-41cd-8322-08e810ff04d4",
@@ -5168,7 +5312,7 @@
       "name": "Scarblade Scout",
       "definition": "src/card_definitions/ecl/scarblade_scout.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Scarblade Scout",
@@ -5183,7 +5327,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/scarblade_scout.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "66d57851-2844-4b9d-be78-e90fc620b750",
@@ -5240,7 +5388,7 @@
       "name": "Sear",
       "definition": "src/card_definitions/ecl/sear.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Sear",
@@ -5254,7 +5402,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/sear.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "ce19b337-9266-471d-bec3-49eb7f0e62ac",
@@ -5314,7 +5466,7 @@
       "name": "Shimmercreep",
       "definition": "src/card_definitions/ecl/shimmercreep.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Shimmercreep",
@@ -5329,7 +5481,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/shimmercreep.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "c63402b2-1f8c-4004-82d8-48ea26bfe3fc",
@@ -5466,7 +5622,7 @@
       "name": "Sizzling Changeling",
       "definition": "src/card_definitions/ecl/sizzling_changeling.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Sizzling Changeling",
@@ -5481,7 +5637,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/sizzling_changeling.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "6d972501-4174-4bf0-a26b-2edef31b3a0c",
@@ -5720,7 +5880,7 @@
       "name": "Squawkroaster",
       "definition": "src/card_definitions/ecl/squawkroaster.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Squawkroaster",
@@ -5735,7 +5895,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/squawkroaster.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "064c3269-c012-4fc7-84c3-5f147a82a03c",
@@ -5769,7 +5933,7 @@
       "name": "Steam Vents",
       "definition": "src/card_definitions/ecl/steam_vents.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Steam Vents",
@@ -5784,7 +5948,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/steam_vents.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "945a4a4d-fdfd-4c39-9975-5b22d17a4e70",
@@ -5946,7 +6114,7 @@
       "name": "Surly Farrier",
       "definition": "src/card_definitions/ecl/surly_farrier.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Surly Farrier",
@@ -5960,7 +6128,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/surly_farrier.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
@@ -6162,7 +6334,7 @@
       "name": "Temple Garden",
       "definition": "src/card_definitions/ecl/temple_garden.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Temple Garden",
@@ -6177,7 +6349,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/temple_garden.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "5f67698a-28db-43cd-aaf1-52371b0b47eb",
@@ -6455,7 +6631,7 @@
       "name": "Tweeze",
       "definition": "src/card_definitions/ecl/tweeze.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Tweeze",
@@ -6469,7 +6645,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/card_definitions/ecl/tweeze.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "05d7222b-cc08-4f1f-8e35-6058599572ba",
@@ -6577,7 +6757,7 @@
       "name": "Unforgiving Aim",
       "definition": "src/card_definitions/ecl/unforgiving_aim.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Unforgiving Aim",
@@ -6594,7 +6774,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/unforgiving_aim.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "d0a38e8c-c42c-4c99-8a44-d390ff2511ff",
@@ -6680,7 +6864,7 @@
       "name": "Virulent Emissary",
       "definition": "src/card_definitions/ecl/virulent_emissary.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Virulent Emissary",
@@ -6695,7 +6879,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/virulent_emissary.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "25b0876e-c995-486e-8536-6e68b76b9c86",
@@ -6905,7 +7093,7 @@
       "name": "Wildvine Pummeler",
       "definition": "src/card_definitions/ecl/wildvine_pummeler.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Wildvine Pummeler",
@@ -6920,7 +7108,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_inherited_audit_tests.rs",
+        "src/card_definitions/ecl/wildvine_pummeler.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "8b834f83-951b-4b5c-b9f1-3d860baa3c0e",

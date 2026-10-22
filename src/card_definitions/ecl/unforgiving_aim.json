@@ -8,5 +8,35 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "296947a38731c751620817201df26354b6b40a2d9a2859cfd8a9aeeceec167e6"
   },
-  "physical_metadata_sha256": "6d791c65b5a70ef4c582e1c4b87f52faae975ac3b5a4477240797ba7ecd33c3a"
+  "physical_metadata_sha256": "6d791c65b5a70ef4c582e1c4b87f52faae975ac3b5a4477240797ba7ecd33c3a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnforgivingAim.java",
+  "java_sha256": "f518594d8e59297caed8cc0fdc9ef893aa4e68bc5f24a2bf3976a4a7523bffe8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/BlackGreenElfToken.java",
+      "sha256": "5ee3aff2723c9da62fddabeafe4bf269d1918070e5b9d47bfe05505d5f83d604"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetEnchantmentPermanent.java",
+      "sha256": "25825f6881ec923b5ecf330ff5d0c79a60e8e305cd5f6d7e08920f16924dbbae"
+    }
+  ]
 }

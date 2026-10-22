@@ -3,10 +3,40 @@
   "catalogue_id": 2457,
   "oracle_id": "a107fb84-6874-4964-a729-4425dad98330",
   "facts_sha256": "444f6dde8288cd970cbbdd9ae81693a2dcf38af4c85cdbca7debbada4fa868e3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4a5b682fc8e4b104ffd5bbb83a52421ac1d9deeb3041ed39a4a2cb0a0721cfda"
   },
-  "physical_metadata_sha256": "9414489ab79685098d67a2bbc57d1ddcf3f559789ace5982961fc60211218593"
+  "physical_metadata_sha256": "9414489ab79685098d67a2bbc57d1ddcf3f559789ace5982961fc60211218593",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/Lavaleaper.java",
+  "java_sha256": "1b521c799f1d0249ca45b1b6e49d2727addca4570af22c53f9ea87da0839aae5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/TapForManaAllTriggeredManaAbility.java",
+      "sha256": "e73480b36868b55608c73ca47893ce4c0a18a55876209047f6ebb8361daa36b1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/TriggeredManaAbility.java",
+      "sha256": "f5924161ca1498f35a1e1ecf8d98980d4c81774238758d62b5e68370ab64f543"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyTypeProducedEffect.java",
+      "sha256": "7a2c29df270ef1686ad315853019864e7737d9a0b413c21d00916faa7d6c98b3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAllEffect.java",
+      "sha256": "fccf43cbeaa763aae8a75efc3f28c5e33dcd045398d9b1cf6a97270e4a9000e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    }
+  ]
 }

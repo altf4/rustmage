@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3162dcc7084446e29dcf36cae35daa247d18ad3f04b8fa15d473994f4f072ac4"
   },
-  "physical_metadata_sha256": "7aea635de714de7f5522b87b53b399da13757b7e9a2b75de8e9e4be99efeccf2"
+  "physical_metadata_sha256": "7aea635de714de7f5522b87b53b399da13757b7e9a2b75de8e9e4be99efeccf2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ScarbladeScout.java",
+  "java_sha256": "84fcfdf540a778016bac43f0ca17b8edb1e1554145316788b2fcd47978fa8f09",
+  "rules_tests": "src/engine_ecl_inherited_br_tests.rs",
+  "rules_test_files": [
+    "src/engine_ecl_inherited_br_tests.rs",
+    "src/engine_milling_tests.rs"
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    }
+  ],
+  "audit_notes": "Full pinned Oracle and Java card/helper reads; typed behavior preserved. Actual paid both-seat whole-card matrices supplement the listed adversarial rules suites."
 }

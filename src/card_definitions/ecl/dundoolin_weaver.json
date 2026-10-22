@@ -8,5 +8,40 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7fc31f6d2656937ea5b216b983d444712c38844690301373e78cebafd4adf811"
   },
-  "physical_metadata_sha256": "93600402a300346cd3da0749c0606a5737e7e5bc601c0893261bee61cf9d7356"
+  "physical_metadata_sha256": "93600402a300346cd3da0749c0606a5737e7e5bc601c0893261bee61cf9d7356",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DundoolinWeaver.java",
+  "java_sha256": "b05b82cd2a33b3b50063faaa699a70a8596c9f33d673ec2e5a0269ed18cc1d75",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+      "sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    }
+  ]
 }

@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "44f094b2eaf46b26ff6697275583bc4d13743743b8c97267929982731f79c7c4"
   },
-  "physical_metadata_sha256": "334a4cf13239784a097b2c650db7389b27518d6790de1922888344fdf105d00a"
+  "physical_metadata_sha256": "334a4cf13239784a097b2c650db7389b27518d6790de1922888344fdf105d00a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/ElderAuntie.java",
+  "java_sha256": "ed99d7b6973427e69dbe65e5720d755d7e2bba4952ba247bbe88e75623d01779",
+  "rules_tests": "src/engine_ecl_inherited_br_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/BlackAndRedGoblinToken.java",
+      "sha256": "20c31c5142042f1470131a8a525e2784d86b5c49763a50b717839df974dbea2f"
+    }
+  ]
 }

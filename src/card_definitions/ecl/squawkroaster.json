@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "43327065492fd45baadd3d06ef1334184b160207846dfdef866862469fb1b3a8"
   },
-  "physical_metadata_sha256": "d1282c7b02d1174ffc57d981c0994dfb85770a89b98bab36e38ca5bd600a72cb"
+  "physical_metadata_sha256": "d1282c7b02d1174ffc57d981c0994dfb85770a89b98bab36e38ca5bd600a72cb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/Squawkroaster.java",
+  "java_sha256": "28a73460ba17a54d8bf5b93bb959107936b6cbef1410ff2a8f300774e38a0f2e",
+  "rules_tests": "src/engine_ecl_inherited_br_tests.rs",
+  "rules_test_files": [
+    "src/engine_distinct_amount_tests.rs",
+    "src/engine_ecl_inherited_br_tests.rs"
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+      "sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ColorsAmongControlledPermanentsCount.java",
+      "sha256": "94d0639d201ef40c27aa8b05d8dc072166ac4f2c82494425ebe1449d385eb8a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerSourceEffect.java",
+      "sha256": "07d7b0ba8fdb6f3e6eeb405c2768a37677e7fded311795af1425dc2bfdb9bbd1"
+    }
+  ],
+  "audit_notes": "Full pinned Oracle and Java card/helper reads; typed behavior preserved. Actual paid both-seat whole-card matrices supplement the listed adversarial rules suites."
 }

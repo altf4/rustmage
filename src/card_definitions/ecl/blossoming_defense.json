@@ -8,5 +8,35 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "19d517142217925457fac03b160c36276fa1d4de4203ef8caf7fe79686f596fe"
   },
-  "physical_metadata_sha256": "44c5d5013d061c57edb5a5e058b0c0f67299144f7b1a76036da3c9f0ac3a8f78"
+  "physical_metadata_sha256": "44c5d5013d061c57edb5a5e058b0c0f67299144f7b1a76036da3c9f0ac3a8f78",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BlossomingDefense.java",
+  "java_sha256": "2fefcbd443aea362a7530fb97a029c99967bdef285e6dd2100f3eb674e378cdf",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+      "sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofBaseAbility.java",
+      "sha256": "eb33a62a2d3a0cfd4fffee6d99691000ed3d9cadd4937b41d0b53c4e5abacdea"
+    }
+  ]
 }

@@ -1,4 +1,4 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Typed behavior preserved after full pinned Oracle/XMage and paid rules audit.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Modal(&[
         SpellMode {

@@ -376,7 +376,7 @@ impl<'g> FundingState<'g> {
                             || object.card.attachment_bonus().is_some()
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ConvokeCreatureSpells | crate::cards::StaticAbilityFragment::AdditionalSubtypeTriggers { .. } | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::ChosenCreatureKeywords(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ConvokeCreatureSpells | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(..) | crate::cards::StaticAbilityFragment::AdditionalSubtypeTriggers { .. } | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::ChosenCreatureKeywords(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -901,7 +901,56 @@ impl<'g> FundingState<'g> {
                     .sum::<u64>(),
             )
         });
-        moves
+        if !self.game.state.static_sources.iter().any(|&source| {
+            ability_world::CharacteristicWorld::object(self, source)
+                .card
+                .static_ability_groups()
+                .iter()
+                .any(|g| {
+                    g.fragments.iter().any(|f| {
+                        matches!(
+                            f,
+                            crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(..)
+                        )
+                    })
+                })
+        }) {
+            return moves;
+        }
+        let mut expanded = Vec::new();
+        for step in moves {
+            let source = &self.resources[step.resource];
+            let taps = step
+                .ability
+                .is_none_or(|ability| source.object.card.activations()[ability as usize].cost.tap);
+            let amount = if taps {
+                ability_world::CharacteristicWorld::basic_land_tap_mana_bonus(
+                    self, source.id, false,
+                )
+            } else {
+                0
+            };
+            let mask = step
+                .production
+                .iter()
+                .enumerate()
+                .fold(0u8, |mask, (i, n)| mask | if *n == 0 { 0 } else { 1 << i });
+            if amount == 0 || mask == 0 {
+                expanded.push(step);
+                continue;
+            }
+            ManaProduction::Combination { mask, amount }.visit(|choice| {
+                let mut outcome = step.clone();
+                for (bonus, addition) in outcome.bonus.iter_mut().zip(choice) {
+                    *bonus = bonus
+                        .checked_add(addition)
+                        .capacity("mana representation exhausted");
+                }
+                expanded.push(outcome);
+                false
+            });
+        }
+        expanded
     }
     fn refresh_control_projection(&mut self) {
         for row in continuous_control::controllers(self.game, |id| {
@@ -1101,6 +1150,13 @@ impl<'g> FundingState<'g> {
                 continue;
             }
             if !object.tapped {
+                total = total.saturating_add(u128::from(
+                    ability_world::CharacteristicWorld::basic_land_tap_mana_bonus(
+                        self,
+                        resource.id,
+                        true,
+                    ),
+                ));
                 total = total.saturating_add(
                     ability_world::CharacteristicWorld::mana_tap_bonus(self, resource.id, true)
                         .into_iter()
@@ -1216,6 +1272,12 @@ impl<'g> FundingState<'g> {
                 });
             };
             if !object.tapped {
+                let amount = ability_world::CharacteristicWorld::basic_land_tap_mana_bonus(
+                    self,
+                    resource.id,
+                    true,
+                );
+                add(ManaProduction::Choice { mask: 63, amount }, 1);
                 add(
                     ManaProduction::Fixed(ability_world::CharacteristicWorld::mana_tap_bonus(
                         self,
@@ -1330,6 +1392,14 @@ impl<'g> FundingState<'g> {
                     || !object.summoning_sick
                     || self.keywords(resource).contains(Keywords::HASTE));
             if tap_ready {
+                let amount = ability_world::CharacteristicWorld::basic_land_tap_mana_bonus(
+                    self,
+                    resource.id,
+                    true,
+                );
+                for bound in &mut upper {
+                    *bound = bound.saturating_add(u128::from(amount));
+                }
                 // Tap-triggered additions are independent unrestricted mana.
                 // Omitting them here would prune an exact legal funding move.
                 for (bound, bonus) in

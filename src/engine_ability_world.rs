@@ -307,6 +307,45 @@ pub(super) trait CharacteristicWorld {
         }
         result
     }
+    /// The ability belongs to its provider, even when the tapped land belongs
+    /// to an opponent. Capture multiplicity before any activation costs depart.
+    fn basic_land_tap_mana_bonus(&self, id: CardId, upper: bool) -> u32 {
+        let object = self.object(id);
+        if object.zone != Zone::Battlefield
+            || !object.card.is_basic_land()
+            || (!upper && self.kinds(id) & 2 == 0)
+        {
+            return 0;
+        }
+        let mut result = 0u32;
+        for &source in &self.game().state.static_sources {
+            let provider = self.object(source);
+            if provider.zone != Zone::Battlefield
+                || (!upper && !self.printed_abilities_available(source))
+            {
+                continue;
+            }
+            for fragment in provider
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|g| g.fragments)
+            {
+                if let crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(amount) =
+                    *fragment
+                {
+                    let amount = u64::from(amount)
+                        .checked_mul(self.trigger_occurrences(source, upper))
+                        .and_then(|n| u32::try_from(n).ok())
+                        .capacity("mana representation exhausted");
+                    result = result
+                        .checked_add(amount)
+                        .capacity("mana representation exhausted");
+                }
+            }
+        }
+        result
+    }
     fn granted_mana(&self, id: CardId) -> Vec<ability_order::GrantedManaAbility> {
         // Animation grants only keywords. It cannot remove a provider's printed
         // ability or change a mana grant, so only removal needs layer-six order.
