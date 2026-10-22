@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "a2dbf7188f388fbfa19ace74bdf90133fd076d6bd58e5bcf71edbc7b831acf8f",
+  "catalogue_version": "5241ed261d06c80ec0b8046057b56b7b1a8f632c03a1168191234fe54cef391e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2276,
-  "implemented_total": 2282,
+  "implemented_standard_cards": 2278,
+  "implemented_total": 2284,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 80,
-      "complete": 187
+      "gated": 78,
+      "complete": 189
     },
     "eoc": {
       "total": 8,
@@ -25215,8 +25215,8 @@
     {
       "name": "Perfect Intimidation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/perfect_intimidation.rs",
       "set": "ecl"
     },
@@ -26119,8 +26119,8 @@
     {
       "name": "Prismabasher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/prismabasher.rs",
       "set": "ecl"
     },
