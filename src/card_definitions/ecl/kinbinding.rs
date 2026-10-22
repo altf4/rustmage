@@ -18,6 +18,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         line: 0,
         first_layer: AbilityLayer::Modify,
         fragments: &[StaticAbilityFragment::ControlledCreatureScaling {
+            subtype: None,
             value: StatValue::CreatureEntriesThisTurn { other: false },
             stats: Stats {
                 power: 1,

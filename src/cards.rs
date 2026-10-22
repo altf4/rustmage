@@ -1262,6 +1262,11 @@ pub(crate) enum Instruction {
     TapSource,
     UntapCreatures(CreatureFilter),
     UntapPlayerCreatures(PlayerSet),
+    UntapSubtype {
+        players: PlayerSet,
+        subtype: &'static str,
+        other: bool,
+    },
     PutPlayerCreatureCounters {
         players: PlayerSet,
         kind: CounterKind,
@@ -1616,6 +1621,7 @@ pub(crate) enum StatValue {
     SourceUntapped,
     AttackingCreatures,
     AttackingSubtype(&'static str),
+    DeclaredSubtypeAttackersThisTurn(&'static str),
     OtherNamedCreatures(&'static str),
     /// Unqualified all-player count; distinct from controller-owned attackers.
     AllAttackingCreatures,

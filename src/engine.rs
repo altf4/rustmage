@@ -2053,6 +2053,7 @@ pub struct Observation {
     pub schema: u32,
     /// Number of distinct declared attacker objects this turn, including departures.
     pub creatures_attacked_this_turn: usize,
+    pub declared_attack_history: Vec<DeclaredAttackView>,
     /// Actual battlefield-to-graveyard creature transitions this turn, including tokens.
     pub creatures_died_this_turn: u64,
     pub graveyard_entries_this_turn: Vec<ObjectRef>,
@@ -5477,6 +5478,7 @@ impl Game {
         }
         self.state.attackers.extend(declared.iter().cloned());
         self.tap_objects(&to_tap);
+        self.record_declared_attack_types(actor, &declared);
         for attack in declared {
             event(self, attack.card);
         }
@@ -5505,6 +5507,7 @@ impl Game {
 
     fn begin_turn(&mut self) {
         if let Some(roles) = &mut self.state.roles {
+            roles.attack_type_history.clear();
             roles
                 .stat_modifiers
                 .retain(|row| row.expires_before_turn != self.state.active);
@@ -6130,6 +6133,10 @@ impl Game {
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.damaged_players.clone()),
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
+            declared_attack_history: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.attack_type_history.clone()),
             creatures_died_this_turn: s.creatures_died_this_turn,
             graveyard_entries_this_turn: s
                 .graveyard_entries
@@ -7747,3 +7754,11 @@ mod ecl_oko_tests;
 #[cfg(test)]
 #[path = "engine_ecl_figure_tests.rs"]
 mod ecl_figure_tests;
+
+#[path = "engine_attack_type_history.rs"]
+mod attack_type_history;
+pub use attack_type_history::DeclaredAttackView;
+
+#[cfg(test)]
+#[path = "engine_ecl_navigator_tests.rs"]
+mod ecl_navigator_tests;

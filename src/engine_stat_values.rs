@@ -102,6 +102,10 @@ impl Game {
     {
         match value {
             StatValue::Fixed(n) => i128::from(n),
+            StatValue::DeclaredSubtypeAttackersThisTurn(subtype) => {
+                i128::try_from(self.declared_subtype_attackers(owner, subtype))
+                    .capacity("declared subtype attacker count")
+            }
             StatValue::TappedCount(filter) => objects()
                 .filter(|&(id, o)| {
                     o.tapped

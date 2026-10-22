@@ -21,6 +21,7 @@ pub(super) struct RoleState {
     pub deferred_timestamps: bool,
     pub attached: Vec<RoleTimestampView>,
     pub base_stats: Vec<BaseStatsEffectView>,
+    pub attack_type_history: Vec<DeclaredAttackView>,
     pub stat_modifiers: Vec<StatModifierEffectView>,
     pub live_static: Vec<LiveStaticSourceView>,
     pub stat_subjects: Vec<ResolvedStatSubjectView>,
@@ -40,6 +41,7 @@ impl RoleState {
         std::mem::size_of::<Self>()
             + self.attached.len() * std::mem::size_of::<RoleTimestampView>()
             + self.base_stats.len() * std::mem::size_of::<BaseStatsEffectView>()
+            + self.attack_type_history.len() * std::mem::size_of::<DeclaredAttackView>()
             + self.stat_modifiers.len() * std::mem::size_of::<StatModifierEffectView>()
             + self.live_static.len() * std::mem::size_of::<LiveStaticSourceView>()
             + self.stat_subjects.len() * std::mem::size_of::<ResolvedStatSubjectView>()

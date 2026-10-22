@@ -3057,6 +3057,27 @@ impl Game {
                         self.lose_life(player, i128::from(amount));
                     }
                 }
+                Instruction::UntapSubtype {
+                    players,
+                    subtype,
+                    other,
+                } => {
+                    let players: Vec<_> = self.program_players(players, &item).collect();
+                    let ids: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(id, object)| {
+                            object.zone == Zone::Battlefield
+                                && players.contains(&object.controller)
+                                && (!other || self.object_ref(*id as CardId) != item.object)
+                                && self.has_subtype(*id as CardId, subtype)
+                        })
+                        .map(|(id, _)| id as CardId)
+                        .collect();
+                    self.untap_objects(&ids, untap_rules::UntapCause::Effect);
+                }
                 Instruction::UntapPlayerCreatures(players) => {
                     let recipients = self.player_creature_recipients(players, &item);
                     self.untap_objects(&recipients, untap_rules::UntapCause::Effect);

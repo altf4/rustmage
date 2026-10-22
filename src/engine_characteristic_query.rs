@@ -192,16 +192,18 @@ impl CharacteristicQuery<'_> {
             for group in object.card.static_ability_groups() {
                 for fragment in group.fragments {
                     let StaticAbilityFragment::ControlledCreatureScaling {
+                        subtype,
                         value,
                         stats: scale,
                     } = *fragment
                     else {
                         continue;
                     };
-                    if object.controller != self.state.objects[id as usize].controller
+                    if subtype.is_some_and(|subtype| !self.has_subtype(id, subtype))
+                        || object.controller != self.state.objects[id as usize].controller
                         || Some(source) == departing
                         || !self.continuous_fragment_available(source, |fragment| matches!(fragment,
-                            StaticAbilityFragment::ControlledCreatureScaling { value: v, stats: s } if *v == value && *s == scale)) {
+                            StaticAbilityFragment::ControlledCreatureScaling { subtype: t, value: v, stats: s } if *t == subtype && *v == value && *s == scale)) {
                         continue;
                     }
                     let amount = self.stat_value_without_hand(

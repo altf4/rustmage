@@ -104,6 +104,7 @@ pub(crate) enum StaticAbilityFragment {
     StaticModifier(u16, StaticModifier),
     ScalingModifier(u16, ScalingModifier),
     ControlledCreatureScaling {
+        subtype: Option<&'static str>,
         value: StatValue,
         stats: Stats,
     },
