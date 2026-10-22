@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "43b9d990862247fad6170bcd8d9a5c93985dd746486a06d413ead78723e5eb6c",
+  "catalogue_version": "1e5dfa51d52cd273440f8e7bc85a80f0a64fc36dd5e06e29b77c027e24fc767e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2256,
-  "implemented_total": 2262,
+  "implemented_standard_cards": 2259,
+  "implemented_total": 2265,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 100,
-      "complete": 167
+      "gated": 97,
+      "complete": 170
     },
     "eoc": {
       "total": 8,
@@ -2839,8 +2839,8 @@
     {
       "name": "Bark of Doran",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/bark_of_doran.rs",
       "set": "ecl"
     },
@@ -9311,8 +9311,8 @@
     {
       "name": "Dose of Dawnglow",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/dose_of_dawnglow.rs",
       "set": "ecl"
     },
@@ -32807,8 +32807,8 @@
     {
       "name": "Spry and Mighty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/spry_and_mighty.rs",
       "set": "ecl"
     },

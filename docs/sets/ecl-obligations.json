@@ -29,7 +29,7 @@
       "name": "Adept Watershaper",
       "definition": "src/card_definitions/ecl/adept_watershaper.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Adept Watershaper",
@@ -43,7 +43,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/adept_watershaper.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "3ba809ce-3556-415c-9fcc-291cb10a43cd",
@@ -256,7 +260,7 @@
       "name": "Barbed Bloodletter",
       "definition": "src/card_definitions/ecl/barbed_bloodletter.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Barbed Bloodletter",
@@ -273,14 +277,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/barbed_bloodletter.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "db3ba239-2239-4e9d-ad70-cff32ed24578",
       "name": "Bark of Doran",
       "definition": "src/card_definitions/ecl/bark_of_doran.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Bark of Doran",
@@ -296,7 +304,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/bark_of_doran.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "5a651557-ce08-46ba-aecd-0e4fbfdef3c0",
@@ -575,7 +587,7 @@
       "name": "Bogslither's Embrace",
       "definition": "src/card_definitions/ecl/bogslither_s_embrace.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Bogslither's Embrace",
@@ -590,7 +602,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/bogslither_s_embrace.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "ab32c671-7686-435b-a987-14a08f6790eb",
@@ -847,7 +863,7 @@
       "name": "Burning Curiosity",
       "definition": "src/card_definitions/ecl/burning_curiosity.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Burning Curiosity",
@@ -862,7 +878,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/burning_curiosity.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "9e3303aa-2484-4832-86ac-f5ae290d02f1",
@@ -1121,7 +1141,7 @@
       "name": "Chronicle of Victory",
       "definition": "src/card_definitions/ecl/chronicle_of_victory.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Chronicle of Victory",
@@ -1137,14 +1157,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/chronicle_of_victory.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "54421e69-d79e-4c2e-8ce6-96994d168835",
       "name": "Cinder Strike",
       "definition": "src/card_definitions/ecl/cinder_strike.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Cinder Strike",
@@ -1159,7 +1183,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/cinder_strike.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "5396045d-744b-435e-8324-a1bfbb03449d",
@@ -1349,7 +1377,7 @@
       "name": "Dawn-Blessed Pennant",
       "definition": "src/card_definitions/ecl/dawn_blessed_pennant.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Dawn-Blessed Pennant",
@@ -1365,7 +1393,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/dawn_blessed_pennant.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "2cabf7a4-17af-45c7-b314-a84f5dc0d070",
@@ -1538,7 +1570,7 @@
       "name": "Dose of Dawnglow",
       "definition": "src/card_definitions/ecl/dose_of_dawnglow.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Dose of Dawnglow",
@@ -1552,7 +1584,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/dose_of_dawnglow.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "70b9497f-0dd6-4b66-9675-57c7041fe3c0",
@@ -1732,7 +1768,7 @@
       "name": "Eclipsed Realms",
       "definition": "src/card_definitions/ecl/eclipsed_realms.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Eclipsed Realms",
@@ -1748,7 +1784,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/eclipsed_realms.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "36af3c2c-49d7-46ea-ab02-c254b332448e",
@@ -2241,7 +2281,7 @@
       "name": "Formidable Speaker",
       "definition": "src/card_definitions/ecl/formidable_speaker.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Formidable Speaker",
@@ -2256,7 +2296,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/formidable_speaker.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "4e0ba9d5-4bd6-49a0-ae00-70818738d0ba",
@@ -2704,7 +2748,7 @@
       "name": "Grub's Command",
       "definition": "src/card_definitions/ecl/grub_s_command.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Grub's Command",
@@ -2722,7 +2766,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_commands_tests.rs",
+        "src/card_definitions/ecl/grub_s_command.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "180286e4-67fa-44d5-9e90-4a4e99c016a7",
@@ -2928,7 +2976,7 @@
       "name": "Illusion Spinners",
       "definition": "src/card_definitions/ecl/illusion_spinners.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Illusion Spinners",
@@ -2944,7 +2992,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/illusion_spinners.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "b77764fe-bc79-410a-995a-ac392f5b46b8",
@@ -4108,7 +4160,7 @@
       "name": "Pitiless Fists",
       "definition": "src/card_definitions/ecl/pitiless_fists.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Pitiless Fists",
@@ -4124,7 +4176,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/pitiless_fists.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
@@ -4408,7 +4464,7 @@
       "name": "Requiting Hex",
       "definition": "src/card_definitions/ecl/requiting_hex.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Requiting Hex",
@@ -4423,7 +4479,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/requiting_hex.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "0d3b6e27-2f8b-42e0-9490-7b134e84bb6b",
@@ -5156,7 +5216,7 @@
       "name": "Spry and Mighty",
       "definition": "src/card_definitions/ecl/spry_and_mighty.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Spry and Mighty",
@@ -5170,7 +5230,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/spry_and_mighty.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "6b79404b-2fae-41fb-994c-d4cd895e8f09",
@@ -5645,7 +5709,7 @@
       "name": "Thirst for Identity",
       "definition": "src/card_definitions/ecl/thirst_for_identity.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Thirst for Identity",
@@ -5659,7 +5723,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/thirst_for_identity.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "a8cdcaa0-8e25-4c17-b5ce-16f72b535123",
