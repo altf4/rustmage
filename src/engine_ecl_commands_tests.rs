@@ -242,3 +242,58 @@ fn ecl_command_partial_target_failure_and_unavailable_mode_are_transactional() {
         assert!(g.legal_actions().contains(&Action::ChooseMode { mode: 3 }));
     }
 }
+
+#[test]
+fn ecl_trystan_command_all_six_pairs_copy_two_returns_destroy_and_group_untap() {
+    for p in [Player::P0, Player::P1] {
+        for (mode, (a, b)) in PAIRS.into_iter().enumerate() {
+            let mut g = setup(p);
+            let source = named(&mut g, p, "Chitinous Graspling", Zone::Battlefield);
+            let foe = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            let other = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            g.state.objects[foe as usize].tapped = true;
+            g.state.objects[other as usize].tapped = true;
+            let grave = named(&mut g, p, "Forest", Zone::Graveyard);
+            let grave2 = named(&mut g, p, "Springleaf Drum", Zone::Graveyard);
+            let spell = named(&mut g, p, "Trystan's Command", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 1, 0, 1, 4];
+            let mut targets = Vec::new();
+            for m in [a, b] {
+                match m {
+                    0 => targets.push(Target::Card(source)),
+                    1 => targets.extend([Target::Card(grave), Target::Card(grave2)]),
+                    2 => targets.push(Target::Card(foe)),
+                    3 => targets.push(Target::Player(p.other())),
+                    _ => unreachable!(),
+                }
+            }
+            cast_command(&mut g, spell, Some(mode as u16), &targets);
+            settle(&mut g);
+            assert_eq!(copies(&g, p), usize::from(a == 0));
+            for id in [grave, grave2] {
+                assert_eq!(
+                    g.object_view(id).zone,
+                    if a == 1 || b == 1 {
+                        Zone::Hand
+                    } else {
+                        Zone::Graveyard
+                    }
+                );
+            }
+            assert_eq!(
+                g.object_view(foe).zone,
+                if a == 2 || b == 2 {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            assert_eq!(g.stats(other).power, if b == 3 { 5 } else { 2 });
+            assert_eq!(g.state.objects[other as usize].tapped, b != 3);
+            assert_eq!(g.stats(source).power, 3);
+            g.state.step = Step::Cleanup;
+            g.finish_cleanup();
+            assert_eq!(g.stats(other).power, 2);
+        }
+    }
+}

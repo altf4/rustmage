@@ -376,3 +376,91 @@ fn ecl_flaring_cinder_optional_discard_cost_and_cast_threshold() {
         }
     }
 }
+
+#[test]
+fn ecl_reaping_willow_hybrid_paid_counters_sorcery_and_exact_grave_target() {
+    for p in [Player::P0, Player::P1] {
+        for black in [false, true] {
+            for stale in [false, true] {
+                let mut g = setup(p);
+                let source = named(&mut g, p, "Reaping Willow", Zone::Hand);
+                hybrid_cast(&mut g, source);
+                settle(&mut g);
+                assert_eq!(g.stats(source).power, 1);
+                assert_eq!(g.stats(source).toughness, 4);
+                assert!(g.keywords(source).contains(Keywords::LIFELINK));
+                let life = g.state.players[p.index()].life;
+                g.apply_damage_batch(&[DamageEvent {
+                    preventable: true,
+                    source: g.damage_source(source),
+                    target: Target::Player(p.other()),
+                    amount: 1,
+                    combat: true,
+                }]);
+                assert_eq!(g.state.players[p.index()].life, life + 1);
+                let target = named(&mut g, p, "Bear Cub", Zone::Graveyard);
+                let high = named(&mut g, p, "Hill Giant", Zone::Graveyard);
+                let foreign = named(&mut g, p.other(), "Bear Cub", Zone::Graveyard);
+                // Any counter types can pay: a named counter and an ordinary stun counter.
+                g.set_counters(
+                    source,
+                    Counters::of(CounterKind::Stun, 1).with(CounterKind::Soul, 1),
+                );
+                g.state.players[p.index()].mana = [0; 6];
+                g.state.players[p.index()].mana[if black { 2 } else { 0 }] = 1;
+                g.state.players[p.index()].mana[5] = 1;
+                g.state.step = Step::BeginCombat;
+                assert!(!g.legal_actions().iter().any(|a|matches!(a,Action::AnnounceActivate{card,..}|Action::BeginActivate{card,..}|Action::Activate{card,..}if *card==source)));
+                g.state.step = Step::Main1;
+                let announce = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a,Action::AnnounceActivate{card,..}if *card==source))
+                    .unwrap();
+                checked(&mut g, announce);
+                let cost = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a, Action::ChooseActivationCost { .. }))
+                    .unwrap();
+                checked(&mut g, cost);
+                assert!(!g.legal_actions().contains(&Action::ChooseTarget {
+                    target: Target::Card(high)
+                }));
+                assert!(!g.legal_actions().contains(&Action::ChooseTarget {
+                    target: Target::Card(foreign)
+                }));
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(target),
+                    },
+                );
+                let payment = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a, Action::PayCosts { .. }))
+                    .unwrap();
+                checked(&mut g, payment);
+                assert!(!g.counter_amounts(source).has_any());
+                assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+                if stale {
+                    g.move_object(target, Zone::Exile);
+                    g.move_object(target, Zone::Graveyard);
+                }
+                g.move_object(source, Zone::Exile);
+                settle(&mut g);
+                assert_eq!(
+                    g.object_view(target).zone,
+                    if stale {
+                        Zone::Graveyard
+                    } else {
+                        Zone::Battlefield
+                    }
+                );
+                assert_eq!(g.object_view(high).zone, Zone::Graveyard);
+                assert_eq!(g.object_view(foreign).zone, Zone::Graveyard);
+            }
+        }
+    }
+}
