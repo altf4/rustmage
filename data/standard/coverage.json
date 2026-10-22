@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "69f4f929540b360b74f652bad1420709c38b4f7ac896bca502f2077af41355f7",
+  "catalogue_version": "7a61ef42505bd0f50a9e0cbaaa2b09a6759089418892012905b530efa7bd5279",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2242,
-  "implemented_total": 2248,
+  "implemented_standard_cards": 2244,
+  "implemented_total": 2250,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 114,
-      "complete": 153
+      "gated": 112,
+      "complete": 155
     },
     "eoc": {
       "total": 8,
@@ -12999,8 +12999,8 @@
     {
       "name": "Formidable Speaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/formidable_speaker.rs",
       "set": "ecl"
     },
@@ -36463,8 +36463,8 @@
     {
       "name": "Thirst for Identity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/thirst_for_identity.rs",
       "set": "ecl"
     },
