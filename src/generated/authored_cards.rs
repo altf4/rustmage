@@ -48176,8 +48176,35 @@ pub(super) mod card_5352 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/ecl/grub_notorious_auntie.rs");
 }
+pub(super) mod card_5353 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/ecl/oko_shadowmoor_scion.rs");
+}
+pub(super) mod card_5354 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/ecl/oko_elk_token.rs");
+}
+pub(super) mod card_5355 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/ecl/oko_chosen_type_emblem.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5353] = [
+pub(super) static RULES: [&CardRules; 5356] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -53531,6 +53558,9 @@ pub(super) static RULES: [&CardRules; 5353] = [
     &card_5350::RULES,
     &card_5351::RULES,
     &card_5352::RULES,
+    &card_5353::RULES,
+    &card_5354::RULES,
+    &card_5355::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

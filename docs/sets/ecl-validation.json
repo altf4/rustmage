@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 137,
+  "newly_tested_physical_cards": 138,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -90,6 +90,7 @@
     "Mutable Explorer",
     "Nameless Inversion",
     "Noggle the Mind",
+    "Oko, Lorwyn Liege // Oko, Shadowmoor Scion",
     "Perfect Intimidation",
     "Personify",
     "Pitiless Fists",
@@ -142,10 +143,10 @@
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 244,
-  "remaining_gated": 29,
+  "current_admission_flags": 245,
+  "remaining_gated": 28,
   "inherited_evidence_audit": {
-    "audited": 15,
+    "audited": 20,
     "total": 107,
     "names": [
       "Plains",
@@ -162,7 +163,12 @@
       "Enraged Flamecaster",
       "Kulrath Mystic",
       "Gnarlbark Elm",
-      "Iron-Shield Elf"
+      "Iron-Shield Elf",
+      "Chitinous Graspling",
+      "Chomping Changeling",
+      "Changeling Wayfinder",
+      "Shore Lurker",
+      "Glister Bairn"
     ],
     "scenario": "src/engine_ecl_inherited_tests.rs",
     "source_commit": "7902fbe1",
@@ -201,6 +207,26 @@
         "src/engine_activation_tests.rs",
         "src/engine_named_counter_tests.rs",
         "src/engine_activation_discard_tests.rs"
+      ]
+    },
+    "changeling_vivid_surveil_group": {
+      "names": [
+        "Chitinous Graspling",
+        "Chomping Changeling",
+        "Changeling Wayfinder",
+        "Shore Lurker",
+        "Glister Bairn"
+      ],
+      "source_commit": "a3ead615",
+      "scenario": "src/engine_ecl_inherited_tests.rs",
+      "tests_including_previous_groups": 8,
+      "seconds": 0.31,
+      "resource_report": "<cache>/rustmage-build-reports/c44a1c3350b64c628344be7628421590.json",
+      "additional_existing_evidence": [
+        "src/engine_changeling_tests.rs",
+        "src/engine_distinct_amount_tests.rs",
+        "src/engine_library_tests.rs",
+        "src/engine_card_quantities_tests.rs"
       ]
     }
   },
@@ -241,10 +267,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T19:44:36.686670+00:00",
-    "elapsed_seconds": 15709.469819,
-    "newly_verified_cards": 137,
-    "cards_per_hour": 31.39507607083554,
+    "end_utc": "2026-10-22T19:55:02.546681+00:00",
+    "elapsed_seconds": 16335.32983,
+    "newly_verified_cards": 138,
+    "cards_per_hour": 30.412609060860326,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "428 integrated ECL scenarios passed at244-card checkpoint1aa48507; latest full release239-card904c25c2",
@@ -590,5 +616,18 @@
     },
     "cleaned_allocated_bytes": 1102700544,
     "scope": "232-card fixed-input checkpoint; entire-set acceptance pending. Later Mornsong integration has focused evidence."
+  },
+  "oko": {
+    "source_commit": "df36bd86",
+    "native_tests": 2905,
+    "native_seconds": 78.55,
+    "focused_tests": 6,
+    "focused_seconds": 0.24,
+    "clippy": "all targets passed with warnings denied",
+    "resource_reports": [
+      "<cache>/rustmage-build-reports/82318eb766054137b00a913e9f1f3caf.json",
+      "<cache>/rustmage-build-reports/ca2e4d6fb52848189cf0684b7e90b3ec.json",
+      "<cache>/rustmage-build-reports/8fb9afc2348641b9921484498f7b41fe.json"
+    ]
   }
 }

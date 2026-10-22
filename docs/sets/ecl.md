@@ -17,13 +17,13 @@ Oracle facts: `data/standard/cards.json`; canonical ownership:
 
 ## Card obligations and evidence
 
-The frozen manifest accounts for every identity. The [per-card obligation ledger](ecl-obligations.json) records every face and printed rules line with canonical ownership. Fifteen inherited cards have passed source/rules audit;92 inherited cards remain.
+The frozen manifest accounts for every identity. The [per-card obligation ledger](ecl-obligations.json) records every face and printed rules line with canonical ownership. Twenty inherited cards have passed source/rules audit;87 inherited cards remain.
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **244/273**, comprising **107 inherited** and **137 newly
-implemented/tested physical candidates**; **29 remain gated**. Fifteen inherited
-cards have passed source/rules audit;92 inherited cards remain. No final published reviews or newly merged cards. All new
+Admission flags: **245/273**, comprising **107 inherited** and **138 newly
+implemented/tested physical candidates**; **28 remain gated**. Twenty inherited
+cards have passed source/rules audit;87 inherited cards remain. No final published reviews or newly merged cards. All new
 names and per-card obligations appear in the linked JSON ledgers. Three tested
 synthetic token recipes are outside the physical denominator.
 
@@ -141,3 +141,9 @@ Abigale, Eloquent First-Year is integrated with permanent ability removal and fl
 Rhys the Evermore and Slumbering Walker are integrated with exact optional counter removal domains,including named and u64-wide counter allocations,and granted persist.114 white/blue scenarios pass2.63seconds;357 ECL author-branch scenarios pass12.07seconds;29 temporary-death regressions pass8.00seconds. The raw legal domain accepts exact allocations beyond the bounded indexed representative menu. Admission244/273;29 gated. Combined interaction verification follows.
 
 The244-card integration1aa48507 passes428 ECL scenarios in15.11seconds; memory peak2.7GiB. This includes the newly combined counter-removal,keyword-counter,hand-entry and linked-copy behavior.
+
+## Oko and inherited audit20/107
+
+Both Oko faces, the Elk token and independent chosen-type emblem are integrated. All2,905 native regressions pass78.55seconds; six whole-card scenarios pass0.24seconds; all-target Clippy passes. Tests cover paid loyalty, both paid transforms, once-per-turn use across asymmetric face indices, permanent type effects,next-original-controller-turn growth, exact post-mill optional selection,source departure,zero/stale targets,token creation after loyalty death,and the chosen-type emblem affecting later creatures.
+
+Chitinous Graspling,Chomping Changeling,Changeling Wayfinder,Shore Lurker,and Glister Bairn have complete pinned source audits. Existing changeling,optional search/removal,vivid and library interaction suites are supplemented by paid hybrid bodies in both seats and both private surveil destinations. All eight inherited scenarios pass0.31seconds.20/107 audited;87 inherited cards remain. Admission245/273;28 gated.

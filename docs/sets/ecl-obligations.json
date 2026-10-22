@@ -23,7 +23,7 @@
         }
       ],
       "evidence": [
-        "src/engine_ecl_core_tests.rs",
+        "src/engine_ecl_students_tests.rs",
         "src/card_definitions/ecl/abigale_eloquent_first_year.json",
         "docs/sets/ecl-validation.json"
       ]
@@ -586,7 +586,7 @@
       "name": "Boggart Prankster",
       "definition": "src/card_definitions/ecl/boggart_prankster.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Boggart Prankster",
@@ -600,7 +600,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/boggart_prankster.json"
+      ]
     },
     {
       "oracle_id": "21695c70-f746-4d77-b6d3-e2713a5c929e",
@@ -1102,7 +1105,7 @@
       "name": "Changeling Wayfinder",
       "definition": "src/card_definitions/ecl/changeling_wayfinder.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Changeling Wayfinder",
@@ -1117,7 +1120,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/changeling_wayfinder.json"
+      ]
     },
     {
       "oracle_id": "77217a66-4ba8-443f-b915-178cfcc233e1",
@@ -1149,7 +1155,7 @@
       "name": "Chitinous Graspling",
       "definition": "src/card_definitions/ecl/chitinous_graspling.rs",
       "owner": "integrator",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Chitinous Graspling",
@@ -1164,14 +1170,17 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/chitinous_graspling.json"
+      ]
     },
     {
       "oracle_id": "d740dbd9-8e90-4121-8d53-c6ddf5178d58",
       "name": "Chomping Changeling",
       "definition": "src/card_definitions/ecl/chomping_changeling.rs",
       "owner": "ecl_green_colorless",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Chomping Changeling",
@@ -1186,7 +1195,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/chomping_changeling.json"
+      ]
     },
     {
       "oracle_id": "e949b362-4988-4482-ac51-c1049af9040c",
@@ -1998,7 +2010,7 @@
       "name": "Enraged Flamecaster",
       "definition": "src/card_definitions/ecl/enraged_flamecaster.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Enraged Flamecaster",
@@ -2013,7 +2025,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/enraged_flamecaster.json"
+      ]
     },
     {
       "oracle_id": "b5bc4adf-9105-4901-989c-63612314af5c",
@@ -2631,7 +2646,7 @@
       "name": "Glister Bairn",
       "definition": "src/card_definitions/ecl/glister_bairn.rs",
       "owner": "integrator",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Glister Bairn",
@@ -2645,7 +2660,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/glister_bairn.json"
+      ]
     },
     {
       "oracle_id": "78e1beca-840d-47b2-8759-cc31454fdf5a",
@@ -2677,7 +2695,7 @@
       "name": "Gnarlbark Elm",
       "definition": "src/card_definitions/ecl/gnarlbark_elm.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Gnarlbark Elm",
@@ -2692,7 +2710,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/gnarlbark_elm.json"
+      ]
     },
     {
       "oracle_id": "060e7187-0c7d-4022-9a1f-36a6f75314ca",
@@ -3153,7 +3174,7 @@
       "name": "Iron-Shield Elf",
       "definition": "src/card_definitions/ecl/iron_shield_elf.rs",
       "owner": "ecl_black_red",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Iron-Shield Elf",
@@ -3167,7 +3188,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/iron_shield_elf.json"
+      ]
     },
     {
       "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
@@ -3372,7 +3396,7 @@
       "name": "Kulrath Mystic",
       "definition": "src/card_definitions/ecl/kulrath_mystic.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Kulrath Mystic",
@@ -3386,7 +3410,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/kulrath_mystic.json"
+      ]
     },
     {
       "oracle_id": "d18ca75c-3572-4851-9580-27bafe10edd6",
@@ -4198,7 +4225,7 @@
       "name": "Oko, Lorwyn Liege // Oko, Shadowmoor Scion",
       "definition": "src/card_definitions/ecl/oko_lorwyn_liege_oko_shadowmoor_scion.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Oko, Lorwyn Liege",
@@ -4228,7 +4255,11 @@
           "loyalty": "3"
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_oko_tests.rs",
+        "src/card_definitions/ecl/oko_lorwyn_liege_oko_shadowmoor_scion.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "66d4370e-19b9-4680-9b1e-a192537bc002",
@@ -5185,7 +5216,7 @@
       "name": "Shore Lurker",
       "definition": "src/card_definitions/ecl/shore_lurker.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Shore Lurker",
@@ -5200,7 +5231,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/shore_lurker.json"
+      ]
     },
     {
       "oracle_id": "dcf07f38-422f-46c3-aee9-50540b9c9115",
@@ -5858,7 +5892,7 @@
         }
       ],
       "evidence": [
-        "src/engine_ecl_core_tests.rs",
+        "src/engine_ecl_students_tests.rs",
         "src/card_definitions/ecl/tam_mindful_first_year.json",
         "docs/sets/ecl-validation.json"
       ]
