@@ -52,14 +52,8 @@ impl Announcement {
             }
             StackKind::Spell
                 if self
-                    .item
-                    .cast
-                    .is_some_and(|c| c.method == CastMethod::Normal)
-                    && self.cost.is_some_and(|cost| {
-                        self.item
-                            .source_card
-                            .mana_alternative_replaces_additional(cost)
-                    }) =>
+                    .cost
+                    .is_some_and(|cost| self.mana_route_replaces_additional(cost)) =>
             {
                 None
             }
@@ -89,72 +83,91 @@ impl Announcement {
         }
     }
 
-    pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
-        let options = match self.item.kind {
-            StackKind::Spell if self.item.cast.is_some_and(|c| c.method == CastMethod::Warp) => {
-                std::iter::once(self.item.source_card.warp_cost().expect("fixed Warp cost"))
-                    .chain([].iter().copied())
-            }
-            StackKind::Spell
-                if self
-                    .item
-                    .cast
-                    .is_some_and(|cast| cast.method == CastMethod::Flashback) =>
-            {
-                std::iter::once(self.item.source_card.flashback_cost().unwrap())
-                    .chain([].iter().copied())
-            }
-            StackKind::Spell
-                if self
-                    .item
-                    .cast
-                    .is_some_and(|c| matches!(c.method, CastMethod::Plot | CastMethod::Free)) =>
-            {
-                std::iter::once(ManaCost {
-                    colored: [0; 6],
-                    generic: 0,
+    fn method_base_cost(&self) -> ManaCost {
+        let card = self.item.source_card;
+        match self.item.cast.map(|cast| cast.method) {
+            Some(CastMethod::Warp) => card.warp_cost().expect("fixed Warp cost"),
+            Some(CastMethod::Flashback) => card.flashback_cost().unwrap(),
+            Some(CastMethod::Plot | CastMethod::Free) => ManaCost {
+                colored: [0; 6],
+                generic: 0,
+            },
+            _ => ManaCost {
+                colored: card.cost().0,
+                generic: card.cost().1,
+            },
+        }
+    }
+    fn additional_mana_route(&self, alternative: ManaCost) -> Option<ManaCost> {
+        let printed = self.item.source_card.cost();
+        let mut total = self.method_base_cost();
+        for (i, component) in total.colored.iter_mut().enumerate() {
+            *component =
+                component.checked_add(alternative.colored[i].checked_sub(printed.0[i])?)?;
+        }
+        total.generic = total
+            .generic
+            .checked_add(alternative.generic.checked_sub(printed.1)?)?;
+        Some(total)
+    }
+    fn modified_cost(&self, cost: ManaCost) -> Option<ManaCost> {
+        Game::with_tiered_mana(
+            Game::with_flash_surcharge(
+                cost,
+                self.item.source_card,
+                self.item.cast.is_some_and(|cast| cast.flash_surcharge),
+            ),
+            &self.item,
+        )
+    }
+    pub(super) fn mana_route_replaces_additional(&self, cost: ManaCost) -> bool {
+        self.item.kind == StackKind::Spell
+            && self
+                .item
+                .source_card
+                .additional_mana_alternatives()
+                .iter()
+                .any(|alternative| {
+                    self.additional_mana_route(*alternative)
+                        .and_then(|route| self.modified_cost(route))
+                        == Some(cost)
                 })
-                .chain([].iter().copied())
+    }
+    pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
+        let card = self.item.source_card;
+        let fixed_method = self.item.cast.is_some_and(|cast| {
+            matches!(
+                cast.method,
+                CastMethod::Warp | CastMethod::Flashback | CastMethod::Plot | CastMethod::Free
+            )
+        });
+        let options = match self.item.kind {
+            StackKind::Spell if fixed_method => std::iter::once(self.method_base_cost())
+                .chain(card.additional_mana_alternatives().iter().copied()),
+            StackKind::Spell => card.cost_options(),
+            StackKind::ActivatedAbility { ability } => {
+                card.activations()[ability as usize].cost.mana_options()
             }
-            StackKind::Spell => self.item.source_card.cost_options(),
-            StackKind::ActivatedAbility { ability } => self.item.source_card.activations()
-                [ability as usize]
-                .cost
-                .mana_options(),
-            StackKind::TriggeredAbility { .. }
-            | StackKind::CopyEndStepSacrifice
-            | StackKind::DelayedSacrifice
-            | StackKind::DelayedReturn
-            | StackKind::DelayedWarpExile => {
-                unreachable!("triggered ability has no activation cost")
-            }
+            _ => unreachable!("triggered ability has no activation cost"),
         };
-        options
-            .filter(|cost| {
-                self.item
+        options.enumerate().filter_map(move |(index, cost)| {
+            if self.item.kind == StackKind::Spell
+                && self
+                    .item
                     .cast
-                    .is_none_or(|cast| cast.method != CastMethod::GrantedFlashback)
-                    || (self.item.source_card.cost_alternative_guard().is_none()
-                        && !self
-                            .item
-                            .source_card
-                            .mana_alternative_replaces_additional(*cost))
-                    || *cost
-                        == ManaCost {
-                            colored: self.item.source_card.cost().0,
-                            generic: self.item.source_card.cost().1,
-                        }
-            })
-            .filter_map(|cost| {
-                Game::with_tiered_mana(
-                    Game::with_flash_surcharge(
-                        cost,
-                        self.item.source_card,
-                        self.item.cast.is_some_and(|c| c.flash_surcharge),
-                    ),
-                    &self.item,
-                )
-            })
+                    .is_some_and(|cast| cast.method == CastMethod::GrantedFlashback)
+                && card.cost_alternative_guard().is_some()
+                && cost != self.method_base_cost()
+            {
+                return None;
+            }
+            let cost = if fixed_method && index > 0 {
+                self.additional_mana_route(cost)?
+            } else {
+                cost
+            };
+            self.modified_cost(cost)
+        })
     }
     pub(super) fn needs_evidence(&self) -> bool {
         self.pay_window
@@ -213,6 +226,11 @@ impl Announcement {
                                 | CastMethod::Free
                         )
                     }) && self.item.source_card.has_hybrid_cost()
+                        || !self
+                            .item
+                            .source_card
+                            .additional_mana_alternatives()
+                            .is_empty()
                 }
                 StackKind::ActivatedAbility { ability } => !self.item.source_card.activations()
                     [ability as usize]

@@ -1556,6 +1556,13 @@ impl Game {
         })
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        if a.mana_route_replaces_additional(cost) {
+            let mut proposal = a.clone();
+            proposal.cost = Some(cost);
+            proposal.additional = None;
+            let goal = self.funding_goal(&proposal);
+            return self.can_fund_for(goal, self.purpose_for_item(&proposal.item));
+        }
         if a.item.kind == StackKind::Spell
             && a.item
                 .source_card

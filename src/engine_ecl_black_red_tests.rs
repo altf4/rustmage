@@ -1314,3 +1314,132 @@ fn optional_additional_paid_qualification_is_inherited_by_spell_copies_without_r
     settle(&mut g);
     assert_eq!(g.state.objects[foe as usize].damage, 8);
 }
+
+#[test]
+fn bogslither_or_additional_routes_preserve_mana_for_free_casts() {
+    for p in [Player::P0, Player::P1] {
+        for free in [false, true] {
+            for mana_route in [false, true] {
+                let mut g = setup(p);
+                if free {
+                    named(&mut g, p, "Omniscience", Zone::Battlefield);
+                }
+                let witness =
+                    (!mana_route).then(|| named(&mut g, p, "Llanowar Elves", Zone::Battlefield));
+                let foe = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+                let id = named(&mut g, p, "Bogslither's Embrace", Zone::Hand);
+                g.state.players[p.index()].mana = [
+                    0,
+                    0,
+                    if free { 0 } else { 1 },
+                    0,
+                    0,
+                    if mana_route {
+                        if free { 3 } else { 4 }
+                    } else {
+                        if free { 0 } else { 1 }
+                    },
+                ];
+                checked(
+                    &mut g,
+                    if free {
+                        Action::AnnounceFree {
+                            card: id,
+                            face: CastFace::Normal,
+                            flash_surcharge: false,
+                        }
+                    } else {
+                        Action::AnnounceCast { card: id }
+                    },
+                );
+                let cost = ManaCost {
+                    colored: [0, 0, if free { 0 } else { 1 }, 0, 0, 0],
+                    generic: if mana_route {
+                        if free { 3 } else { 4 }
+                    } else {
+                        if free { 0 } else { 1 }
+                    },
+                };
+                assert_eq!(
+                    g.state
+                        .announcing
+                        .as_ref()
+                        .unwrap()
+                        .cost_options()
+                        .nth(usize::from(mana_route)),
+                    Some(cost)
+                );
+                checked(
+                    &mut g,
+                    Action::ChooseSpellCost {
+                        cost: u16::from(mana_route),
+                    },
+                );
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(foe),
+                    },
+                );
+                if let Some(witness) = witness {
+                    let object = g.object_ref(witness);
+                    checked(&mut g, Action::ChooseAdditionalCost { object });
+                }
+                while g.state.announcing.is_some() {
+                    advance(&mut g);
+                }
+                assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+                if let Some(witness) = witness {
+                    assert_eq!(g.state.objects[witness as usize].zone, Zone::Graveyard);
+                }
+                settle(&mut g);
+                assert_eq!(g.state.objects[foe as usize].zone, Zone::Exile);
+            }
+        }
+    }
+}
+#[test]
+fn free_or_cost_requires_additional_payment_and_colored_additional_mana_is_preserved() {
+    for p in [Player::P0, Player::P1] {
+        for name in ["Bogslither's Embrace", "Eaten Alive"] {
+            let mut g = setup(p);
+            named(&mut g, p, "Omniscience", Zone::Battlefield);
+            named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+            let id = named(&mut g, p, name, Zone::Hand);
+            let action = Action::AnnounceFree {
+                card: id,
+                face: CastFace::Normal,
+                flash_surcharge: false,
+            };
+            g.state.players[p.index()].mana = [0; 6];
+            reject(&mut g, action.clone());
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
+            if name == "Eaten Alive" {
+                reject(&mut g, action.clone());
+                g.state.players[p.index()].mana[2] = 1;
+            }
+            checked(&mut g, action);
+            let costs: Vec<_> = g
+                .legal_actions()
+                .into_iter()
+                .filter_map(|action| {
+                    if let Action::ChooseSpellCost { cost } = action {
+                        Some(cost)
+                    } else {
+                        None
+                    }
+                })
+                .collect();
+            assert_eq!(costs, vec![1]);
+            assert_eq!(
+                g.state.announcing.as_ref().unwrap().cost_options().nth(1),
+                Some(ManaCost {
+                    colored: [0, 0, if name == "Eaten Alive" { 1 } else { 0 }, 0, 0, 0],
+                    generic: 3
+                })
+            );
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        }
+    }
+}

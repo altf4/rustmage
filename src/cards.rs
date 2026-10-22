@@ -3089,6 +3089,13 @@ impl Card {
     pub(crate) fn zone_replacement(self) -> Option<ZoneReplacementRule> {
         generated::zone_replacement(self)
     }
+    pub(crate) fn additional_mana_alternatives(self) -> &'static [ManaCost] {
+        if generated::mana_alternative_replaces_additional(self) {
+            generated::cost_alternatives(self)
+        } else {
+            &[]
+        }
+    }
     pub(crate) fn cost_options(self) -> ManaCostOptions {
         let definition = &generated::DEFINITIONS[self.0 as usize];
         std::iter::once(ManaCost {
