@@ -986,7 +986,7 @@ impl SpellView {
             )
         };
         self.program().is_some_and(|(plan, _)| match plan {
-            TargetPlan::Single(spec) => needs(spec),
+            TargetPlan::Single(spec) | TargetPlan::ScaledSingle { spec, .. } => needs(spec),
             TargetPlan::Groups(groups) => groups.iter().copied().any(needs),
         })
     }

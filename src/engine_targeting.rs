@@ -270,6 +270,15 @@ impl Game {
             .program()
             .map(|(plan, _)| plan)
             .unwrap_or(TargetPlan::NONE);
+        // Freeze variable limits into the owned announcement plan before targets are chosen.
+        let plan = if let TargetPlan::ScaledSingle { mut spec, maximum } = plan {
+            spec.max = spec
+                .max
+                .min(usize::try_from(self.item_amount(maximum, item)).unwrap_or(usize::MAX));
+            TargetPlan::Single(spec)
+        } else {
+            plan
+        };
         if let TargetPlan::Single(mut spec) = plan
             && matches!(spec.rule, TargetRule::GraveCreatureSourcePower { .. })
         {
@@ -363,7 +372,7 @@ impl Game {
             )
         };
         match plan {
-            TargetPlan::Single(spec) => available(spec),
+            TargetPlan::Single(spec) | TargetPlan::ScaledSingle { spec, .. } => available(spec),
             TargetPlan::Groups(groups) => groups.iter().copied().all(available),
         }
     }
@@ -433,7 +442,7 @@ impl Game {
             )
         };
         match plan {
-            TargetPlan::Single(spec) => available(spec),
+            TargetPlan::Single(spec) | TargetPlan::ScaledSingle { spec, .. } => available(spec),
             TargetPlan::Groups(groups) => groups.iter().copied().all(available),
         }
     }
@@ -1256,7 +1265,7 @@ impl Game {
         }
         let has_choice = needs_mode
             || match plan {
-                TargetPlan::Single(spec) => {
+                TargetPlan::Single(spec) | TargetPlan::ScaledSingle { spec, .. } => {
                     spec.max > 0 && self.visit_item_targets(&item, spec.rule, |_| true)
                 }
                 TargetPlan::Groups(groups) => groups.iter().any(|spec| {

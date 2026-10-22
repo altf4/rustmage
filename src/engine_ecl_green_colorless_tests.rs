@@ -2204,3 +2204,145 @@ fn ecl_green_selfless_convoke_pays_green_and_generic_with_distinct_sick_creature
         assert_eq!(g.object_view(source).zone, Zone::Battlefield);
     }
 }
+
+#[test]
+fn ecl_green_prismabasher_freezes_target_cap_and_recomputes_resolution_boost_with_partial_legality()
+{
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..7 {
+            let mut g = setup(p);
+            let white = named(&mut g, p, "Savannah Lions", Zone::Battlefield);
+            let red = named(&mut g, p, "Swab Goblin", Zone::Battlefield);
+            let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let foe = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let land = named(&mut g, p, "Forest", Zone::Battlefield);
+            let source = named(&mut g, p, "Prismabasher", Zone::Hand);
+            cast(&mut g, source, None, &[]);
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            assert_eq!(g.state.announcing.as_ref().unwrap().spec.max, 3);
+            for id in [foe, land] {
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(id),
+                    },
+                );
+            }
+            if mode == 0 {
+                checked(&mut g, Action::FinishTargets);
+                settle(&mut g);
+                assert_eq!(g.stats(source).power, 6);
+                assert_eq!(g.stats(bear).power, 2);
+                continue;
+            }
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(bear),
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(bear),
+                },
+            );
+            if mode == 6 {
+                // The owned limit is fixed when targets start, despite a later color departure.
+                g.move_object(red, Zone::Exile);
+                assert_eq!(g.state.announcing.as_ref().unwrap().spec.max, 3);
+            }
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(white),
+                },
+            );
+            if mode == 1 || mode == 6 {
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(source),
+                    },
+                );
+                assert!(g.state.announcing.is_none());
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(red),
+                    },
+                );
+            } else {
+                checked(&mut g, Action::FinishTargets);
+            }
+            match mode {
+                2 => {
+                    g.move_object(red, Zone::Graveyard);
+                }
+                3 => {
+                    g.move_object(white, Zone::Exile);
+                    g.move_object(white, Zone::Battlefield);
+                }
+                4 => {
+                    g.move_object(bear, Zone::Exile);
+                }
+                5 => {
+                    g.move_object(bear, Zone::Exile);
+                    g.move_object(white, Zone::Exile);
+                }
+                _ => {}
+            }
+            settle(&mut g);
+            let amount = if mode == 2 || mode == 6 { 2 } else { 3 };
+            if mode != 4 && mode != 5 {
+                assert_eq!(g.stats(bear).power, 2 + amount);
+            }
+            if mode != 3 && mode != 5 {
+                assert_eq!(g.stats(white).power, 2 + amount);
+            }
+            if mode == 3 {
+                assert_eq!(g.stats(white).power, 2);
+            }
+            assert_eq!(
+                g.stats(source).power,
+                if mode == 1 || mode == 6 {
+                    6 + amount
+                } else {
+                    6
+                }
+            );
+            assert!(g.keywords(source).contains(Keywords::TRAMPLE));
+            assert_eq!(g.stats(foe).power, 2);
+            if mode == 1 {
+                super::ability_timeline_tests::next_turn(&mut g);
+                assert_eq!(g.stats(source).power, 6);
+                assert_eq!(g.stats(bear).power, 2);
+            }
+        }
+    }
+}
+#[test]
+fn ecl_green_prismabasher_source_exit_can_reduce_vivid_boost_to_zero_without_invalidating_targets()
+{
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let colorless = named(&mut g, p, "Juggernaut", Zone::Battlefield);
+        let source = named(&mut g, p, "Prismabasher", Zone::Hand);
+        cast(&mut g, source, None, &[]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        assert_eq!(g.state.announcing.as_ref().unwrap().spec.max, 1);
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(colorless),
+            },
+        );
+        g.move_object(source, Zone::Graveyard);
+        let before = g.stats(colorless);
+        settle(&mut g);
+        assert_eq!(g.stats(colorless), before);
+        assert_eq!(g.object_view(colorless).zone, Zone::Battlefield);
+    }
+}

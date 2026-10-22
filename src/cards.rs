@@ -243,6 +243,10 @@ impl TargetSpec {
 /// Independent occurrences of target. Cross-occurrence relationships are gated.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetPlan {
+    ScaledSingle {
+        spec: TargetSpec,
+        maximum: AmountValue,
+    },
     Single(TargetSpec),
     Groups(&'static [TargetSpec]),
 }
@@ -250,19 +254,19 @@ impl TargetPlan {
     pub const NONE: Self = Self::Single(TargetSpec::NONE);
     pub fn group(self, index: u16) -> Option<TargetSpec> {
         match self {
-            Self::Single(spec) => (index == 0).then_some(spec),
+            Self::Single(spec) | Self::ScaledSingle { spec, .. } => (index == 0).then_some(spec),
             Self::Groups(groups) => groups.get(usize::from(index)).copied(),
         }
     }
     pub fn single(self) -> Option<TargetSpec> {
         match self {
-            Self::Single(spec) => Some(spec),
+            Self::Single(spec) | Self::ScaledSingle { spec, .. } => Some(spec),
             _ => None,
         }
     }
     pub fn has_targets(self) -> bool {
         match self {
-            Self::Single(spec) => spec.max > 0,
+            Self::Single(spec) | Self::ScaledSingle { spec, .. } => spec.max > 0,
             Self::Groups(groups) => groups.iter().any(|spec| spec.max > 0),
         }
     }

@@ -3,10 +3,41 @@
   "catalogue_id": 3239,
   "oracle_id": "f75be4f2-d1a7-40c7-a0e4-ba8b03556ac6",
   "facts_sha256": "d80d5d629bc46d11de0127a82dba2642883ba7c6da5970a43d0f043d02fe8658",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5e1f29c54fb8c735a30139197179a5fda4113dcf00cb57be736c8b0be0e0bba3"
   },
-  "physical_metadata_sha256": "46f9028d2c58cdd7d8726ccad345474f5632631341a795aee9cb0920bd7b7eb1"
+  "physical_metadata_sha256": "46f9028d2c58cdd7d8726ccad345474f5632631341a795aee9cb0920bd7b7eb1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/Prismabasher.java",
+  "java_sha256": "4d6f122f6aec36a41e22c537fa362f68136e9fd59d96918ff03dcde6062efff9",
+  "rules_tests": "src/engine_ecl_green_colorless_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ColorsAmongControlledPermanentsCount.java",
+      "sha256": "94d0639d201ef40c27aa8b05d8dc072166ac4f2c82494425ebe1449d385eb8a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetadjustment/TargetsCountAdjuster.java",
+      "sha256": "37eb71fcc39f89d8dda76a2b91d7cc3dcfa062f6149b2e82662f2ff84e8db479"
+    }
+  ]
 }
