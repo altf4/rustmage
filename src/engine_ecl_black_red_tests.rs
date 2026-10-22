@@ -1715,3 +1715,183 @@ fn bloodline_bidding_convoke_uses_actual_tap_costs_before_type_choice() {
         assert_eq!(g.state.objects[returned as usize].zone, Zone::Battlefield);
     }
 }
+
+fn collective(g: &mut Game, p: Player, name: &str) -> CardId {
+    let id = named(g, p, "Collective Inferno", Zone::Hand);
+    checked(g, Action::AnnounceCast { card: id });
+    for _ in 0..50 {
+        if matches!(g.state.pending, Pending::EntryValue { .. }) {
+            break;
+        }
+        advance(g);
+    }
+    let kind = crate::cards::CreatureType::from_name(name).unwrap();
+    checked(
+        g,
+        Action::ChooseEntryValue {
+            value: crate::cards::EntryChoiceValue::CreatureType(kind),
+        },
+    );
+    settle(g);
+    id
+}
+fn resolved_damage(g: &mut Game, source: CardId, target: Target, amount: i128, combat: bool) {
+    let event = DamageEvent {
+        source: g.damage_source(source),
+        target,
+        amount,
+        combat,
+        preventable: true,
+    };
+    g.apply_damage_batch(&[event]);
+    g.advance_replacements(false);
+    while g.state.replacements.is_some() {
+        let action = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::ChooseReplacement { .. }))
+            .unwrap();
+        checked(g, action);
+    }
+}
+#[test]
+fn collective_inferno_doubles_all_controlled_matching_sources_once_per_copy() {
+    for p in [Player::P0, Player::P1] {
+        for (name, matches) in [
+            ("Chitinous Graspling", true),
+            ("Boggart Mischief", true),
+            ("Grizzly Bears", false),
+        ] {
+            for own in [false, true] {
+                let mut g = setup(p);
+                collective(&mut g, p, "Goblin");
+                collective(&mut g, p, "Goblin");
+                let source = named(
+                    &mut g,
+                    if own { p } else { p.other() },
+                    name,
+                    Zone::Battlefield,
+                );
+                // Ownership does not qualify a source; current control does.
+                g.state.objects[source as usize].owner = if own { p.other() } else { p };
+                resolved_damage(&mut g, source, Target::Player(p.other()), 2, true);
+                assert_eq!(
+                    g.state.players[p.other().index()].life,
+                    20 - if own && matches { 8 } else { 2 }
+                );
+            }
+        }
+    }
+}
+#[test]
+fn collective_inferno_uses_chosen_type_incarnation_and_departed_source_lki() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let enchantment = collective(&mut g, p, "Nightmare");
+        let source = named(&mut g, p, "Fear of Lost Teeth", Zone::Battlefield);
+        let id = named(&mut g, p, "Cinder Strike", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: id });
+        let object = Some(g.object_ref(source));
+        checked(&mut g, Action::ChooseOptionalAdditionalCost { object });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(source),
+            },
+        );
+        let payment = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, payment);
+        assert_eq!(g.state.objects[source as usize].zone, Zone::Graveyard);
+        for _ in 0..50 {
+            if g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            }) {
+                break;
+            }
+            advance(&mut g);
+        }
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        assert_eq!(g.state.players[p.index()].life, 21);
+        g.move_object(enchantment, Zone::Graveyard);
+        let source = named(&mut g, p, "Fear of Lost Teeth", Zone::Battlefield);
+        resolved_damage(&mut g, source, Target::Player(p.other()), 1, false);
+        assert_eq!(g.state.players[p.other().index()].life, 17);
+        assert!(g.entry_value(g.object_ref(enchantment)).is_none());
+    }
+}
+#[test]
+fn collective_inferno_damage_doubling_precedes_wither_counter_doubling_and_prevention() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        collective(&mut g, p, "Elf");
+        let source = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        bloodletter(&mut g, p, source);
+        let foe = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        named(&mut g, p.other(), "Doubling Season", Zone::Battlefield);
+        let spell = named(&mut g, p, "Bite Down", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        for target in [source, foe] {
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+        }
+        settle(&mut g);
+        assert_eq!(g.counter_count(foe, CounterKind::MinusOne), 8);
+        assert_eq!(g.state.objects[foe as usize].damage, 0);
+        let protected = named(&mut g, p.other(), "Progenitus", Zone::Battlefield);
+        resolved_damage(&mut g, source, Target::Card(protected), 2, false);
+        assert_eq!(g.counter_count(protected, CounterKind::MinusOne), 0);
+        assert_eq!(g.state.objects[protected as usize].damage, 0);
+    }
+}
+#[test]
+fn collective_inferno_convoke_pays_actual_cost_and_its_choice_covers_friendly_damage() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let id = named(&mut g, p, "Collective Inferno", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 2, 0, 2];
+        checked(&mut g, Action::AnnounceCast { card: id });
+        checked(&mut g, Action::BeginConvoke);
+        let object = g.object_ref(source);
+        checked(
+            &mut g,
+            Action::ChooseConvoker {
+                object,
+                contribution: ConvokeContribution::Generic,
+            },
+        );
+        for _ in 0..50 {
+            if matches!(g.state.pending, Pending::EntryValue { .. }) {
+                break;
+            }
+            advance(&mut g);
+        }
+        assert!(g.state.objects[source as usize].tapped);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        let kind = crate::cards::CreatureType::from_name("Elf").unwrap();
+        checked(
+            &mut g,
+            Action::ChooseEntryValue {
+                value: crate::cards::EntryChoiceValue::CreatureType(kind),
+            },
+        );
+        settle(&mut g);
+        resolved_damage(&mut g, source, Target::Player(p), 1, false);
+        assert_eq!(g.state.players[p.index()].life, 18);
+    }
+}

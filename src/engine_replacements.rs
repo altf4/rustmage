@@ -294,6 +294,15 @@ impl Game {
                 let ability = u16::try_from(index).expect("immutable replacement index");
                 if used.contains(&(source, ability)) || !self.continuous_fragment_available(id, |f| matches!(f, crate::cards::StaticAbilityFragment::Replacement(slot, _) if usize::from(*slot) == index)) { continue; }
                 let applies = match spec {
+                    ReplacementSpec::DoubleControlledChosenTypeDamage => {
+                        event.source.controller == object.controller
+                            && match self.entry_value(source) {
+                                Some(crate::cards::EntryChoiceValue::CreatureType(kind)) => {
+                                    event.source.facts.has_subtype(kind.name())
+                                }
+                                _ => false,
+                            }
+                    }
                     ReplacementSpec::DoubleCreatureDamage => {
                         event.source.facts.battlefield
                             && event.source.facts.is_creature()
@@ -327,7 +336,9 @@ impl Game {
     }
     fn modify_damage(choice: ReplacementEffectView, event: &mut DamageEvent) {
         match choice.source_card.replacement_effects()[usize::from(choice.ability)] {
-            ReplacementSpec::DoubleCreatureDamage | ReplacementSpec::DoubleOpponentDamage => {
+            ReplacementSpec::DoubleCreatureDamage
+            | ReplacementSpec::DoubleOpponentDamage
+            | ReplacementSpec::DoubleControlledChosenTypeDamage => {
                 event.amount = event
                     .amount
                     .checked_mul(2)

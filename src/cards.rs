@@ -1618,6 +1618,7 @@ pub(crate) enum ReplacementFilter {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ReplacementSpec {
     DoubleCreatureDamage,
+    DoubleControlledChosenTypeDamage,
     DoubleOpponentDamage,
     PreventOtherCreatureNoncombatDamage,
     PreventAllDamageToSelf,
