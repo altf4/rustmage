@@ -142,6 +142,15 @@ impl Game {
         cost: ManaCost,
         object: Option<ObjectRef>,
     ) -> bool {
+        self.optional_additional_intent_cost_fundable(a, cost, object, object.is_some())
+    }
+    pub(super) fn optional_additional_intent_cost_fundable(
+        &self,
+        a: &Announcement,
+        cost: ManaCost,
+        object: Option<ObjectRef>,
+        pay: bool,
+    ) -> bool {
         let Some(spec) = a.item.source_card.additional_cost() else {
             return false;
         };
@@ -160,7 +169,7 @@ impl Game {
         let mut proposal = a.clone();
         proposal.cost = Some(cost);
         proposal.additional = object;
-        proposal.item.cast.as_mut().unwrap().optional_additional = Some(object.is_some());
+        proposal.item.cast.as_mut().unwrap().optional_additional = Some(pay);
         if let Some(mode) = proposal.item.mode {
             if !self.modal_optional_intent_matches(&proposal.item, usize::from(mode)) {
                 return false;
@@ -186,7 +195,7 @@ impl Game {
                     let mut selected = proposal.clone();
                     selected.item.mode = Some(index as u16);
                     selected.plan = mode.targets;
-                    self.optional_additional_cost_fundable(&selected, cost, object)
+                    self.optional_additional_intent_cost_fundable(&selected, cost, object, pay)
                         && self.announcement_target_fundable(
                             &selected,
                             Some(mode.targets),
@@ -198,6 +207,18 @@ impl Game {
                 });
         }
         let goal = self.funding_goal(&proposal);
+        if pay && object.is_none() {
+            return self
+                .linked_deferred_funding(
+                    goal,
+                    self.purpose_for_item(&proposal.item),
+                    linked_funding::DeferredFundingCost::Additional {
+                        source: a.item.object,
+                        spec: cost_spec,
+                    },
+                )
+                .unwrap_or(false);
+        }
         self.can_fund_for(goal, self.purpose_for_item(&proposal.item))
     }
     pub(super) fn spell_can_fund(&self, actor: Player, card: CardId, cost: ManaCost) -> bool {
@@ -267,7 +288,7 @@ impl Game {
             mana_lots::Purpose::Spell(facts),
         )
     }
-    fn spell_can_fund_total_with_purpose(
+    pub(super) fn spell_can_fund_total_with_purpose(
         &self,
         actor: Player,
         card: CardId,
@@ -293,6 +314,20 @@ impl Game {
         let Some(mut spec) = definition.additional_cost() else {
             return fund(base);
         };
+        if self.linked_funding_can_probe(actor) {
+            if let Some(result) = self.linked_deferred_funding(
+                base.clone(),
+                purpose,
+                linked_funding::DeferredFundingCost::Spell {
+                    card,
+                    cost,
+                    route,
+                    definition,
+                },
+            ) {
+                return result;
+            }
+        }
         // Initial availability may choose zero. It still needs a controlled
         // creature witness, even though that witness receives no counters.
         if spec.kind == EffectChoiceKind::BlightXCost {
@@ -329,6 +364,16 @@ impl Game {
             return self.can_fund(goal);
         };
         let source = goal.source.as_ref().expect("activation source").0;
+        if self.linked_funding_can_probe(goal.actor) {
+            if let Some(result) = self.linked_deferred_funding(
+                goal.clone(),
+                self.funding_purpose(&goal),
+                linked_funding::DeferredFundingCost::Activation(spec),
+            ) {
+                return result;
+            }
+        }
+
         if let EffectChoiceKind::TapPermanents(amount) = spec.kind {
             let excludes_source = spec.filter.other
                 || goal

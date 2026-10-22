@@ -16,6 +16,7 @@ pub struct RoleGroupView {
 }
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct RoleState {
+    pub linked_funding: Option<Box<LinkedFundingWindow>>,
     clock: u64,
     /// Only true while an entry transaction assigns one simultaneous timestamp group.
     pub deferred_timestamps: bool,
@@ -47,6 +48,10 @@ impl RoleState {
     }
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
+            + self
+                .linked_funding
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<LinkedFundingWindow>())
             + self.dream_exiles.len() * std::mem::size_of::<DreamExileView>()
             + self.conspire.as_ref().map_or(0, |c| {
                 std::mem::size_of::<ConspireCastView>()

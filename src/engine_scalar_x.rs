@@ -195,6 +195,18 @@ impl Game {
         if let Some(object) = a.additional {
             return fund(object);
         }
+        if self.linked_funding_can_probe(a.item.controller) {
+            if let Some(result) = self.linked_deferred_funding(
+                goal.clone(),
+                purpose,
+                linked_funding::DeferredFundingCost::Additional {
+                    source: a.item.object,
+                    spec,
+                },
+            ) {
+                return result;
+            }
+        }
         (0..self.state.objects.len()).any(|id| fund(self.object_ref(id as CardId)))
     }
     fn blight_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {

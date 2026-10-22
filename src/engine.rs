@@ -1531,6 +1531,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    FundingProbe {
+        player: Player,
+    },
     CounterCostOrder {
         player: Player,
     },
@@ -1885,6 +1888,7 @@ pub struct Snapshot(State);
 /// snapshot and advances the external revision, so old action indices stay invalid.
 #[derive(Clone, Debug)]
 pub struct Game {
+    funding_projection: Option<Box<linked_funding::LinkedFundingProjection>>,
     state: State,
     revision: u64,
 }
@@ -2152,6 +2156,8 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    /// Exact public cost window whose remaining choices require a complete payment.
+    pub cost_completion: Option<CostCompletionView>,
     pub library_piles: Option<LibraryPilesView>,
     pub keep_types: Option<KeepTypesView>,
     pub linked_exile: Vec<LinkedExileView>,
@@ -2408,6 +2414,7 @@ impl Game {
             rng.shuffle(&mut players[p.index()].library);
         }
         let mut game = Self {
+            funding_projection: None,
             revision: 0,
             state: State {
                 ending_turn: false,
@@ -2545,7 +2552,8 @@ impl Game {
             | Pending::Mulligan(p)
             | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::ResolutionColor { player }
+            Pending::FundingProbe { player }
+            | Pending::ResolutionColor { player }
             | Pending::ResolutionCreatureType { player }
             | Pending::ResolutionCasts { player }
             | Pending::ZoneReplacement { player }
@@ -2689,7 +2697,8 @@ impl Game {
             // Suspended programs defer SBAs, but every committed observation must
             // still have representable derived values. Ordinary resolutions have
             // already checked battlefield stats in the SBA pass.
-            if (self.state.resolving.is_some()
+            if (self.linked_funding_probe().is_some()
+                || self.state.resolving.is_some()
                 || self.plot_payment().is_some()
                 || self.state.announcing.is_some()
                 || self.state.entry_batch.is_some()
@@ -2796,9 +2805,11 @@ impl Game {
                     .is_some_and(|d| d.contains(*payment))
                     && self.supplemental_counter_action_viable(&action)
                     && self.conspire_action_viable(&action)
+                    && self.linked_funding_action_viable(&action)
             } else if let Action::ChooseX { value } = &action {
                 self.x_choice()
                     .is_some_and(|domain| domain.contains(*value))
+                    && self.linked_funding_action_viable(&action)
             } else if let Action::AssignDamage { target, amount } = &action {
                 self.damage_assignment_range().is_some_and(|range| {
                     *target == range.target && *amount >= range.minimum && *amount <= range.maximum
@@ -2809,6 +2820,7 @@ impl Game {
             if !legal {
                 return Err(Error::IllegalAction);
             }
+            self.capture_linked_funding_window();
             self.clear_zone_reveals();
             self.prepare_mana_allocations(&action);
             self.apply_legal(actor, action);
@@ -2822,6 +2834,9 @@ impl Game {
                     break;
                 }
                 if self.advance_mana_tap_bonus() {
+                    break;
+                }
+                if self.resume_linked_funding_probe() {
                     break;
                 }
                 if self.advance_conspire_payment() {
@@ -2848,6 +2863,7 @@ impl Game {
                 break;
             }
         }
+        self.capture_linked_funding_window();
         self.prune_modal_history();
         self.revision = self.revision.checked_add(1).capacity("revision exhausted");
         Ok(())
@@ -2876,8 +2892,10 @@ impl Game {
 
     fn visit_actions(&self, mut emit: impl FnMut(Action) -> bool) -> bool {
         let mut checked_emit = |action| {
-            self.supplemental_counter_action_viable(&action)
-                && self.conspire_action_viable(&action)
+            (self.linked_funding_probe().is_some()
+                || (self.supplemental_counter_action_viable(&action)
+                    && self.conspire_action_viable(&action)))
+                && self.linked_funding_action_viable(&action)
                 && emit(action)
         };
         if self.state.mana_lots.is_none() {
@@ -2888,6 +2906,9 @@ impl Game {
         })
     }
     fn visit_unfiltered_actions(&self, mut emit: impl FnMut(Action) -> bool) -> bool {
+        if matches!(self.state.pending, Pending::FundingProbe { .. }) {
+            return self.visit_linked_funding_mana(&mut emit);
+        }
         let s = &self.state;
         let Some(actor) = self.actor() else {
             return false;
@@ -3013,6 +3034,9 @@ impl Game {
                 }
             }
             Pending::ForageMethod { .. } | Pending::Forage { .. } => {
+                if self.visit_linked_pre_cost_mana(&mut emit) {
+                    return true;
+                }
                 if self.visit_forage_actions(&mut emit) {
                     return true;
                 }
@@ -3224,6 +3248,9 @@ impl Game {
                 return self.visit_creature_counter_cost(&mut emit);
             }
             Pending::AdditionalCost { .. } => {
+                if self.visit_linked_pre_cost_mana(&mut emit) {
+                    return true;
+                }
                 if self
                     .state
                     .announcing
@@ -3249,6 +3276,7 @@ impl Game {
                     return true;
                 }
             }
+            Pending::FundingProbe { .. } => unreachable!("probe handled above"),
             Pending::PayCosts { .. } => {
                 if self.visit_cost_payment(&mut emit) {
                     return true;
@@ -3943,6 +3971,15 @@ impl Game {
             }
             Pending::OptionalAdditionalCost { .. } => {
                 let a = s.announcing.as_ref().unwrap();
+                if self.linked_funding_can_probe(a.item.controller)
+                    && a.cost_options().any(|cost| {
+                        self.optional_additional_intent_cost_fundable(a, cost, None, true)
+                    })
+                    && emit(Action::ChooseOptional { accept: true })
+                {
+                    return true;
+                }
+
                 if self.optional_additional_choice_fundable(a, None)
                     && emit(Action::ChooseOptionalAdditionalCost { object: None })
                 {
@@ -3959,6 +3996,12 @@ impl Game {
             }
             Pending::Bargain { .. } => {
                 let a = s.announcing.as_ref().unwrap();
+                if self.deferred_bargain_intent_fundable(a)
+                    && emit(Action::ChooseOptional { accept: true })
+                {
+                    return true;
+                }
+
                 if self.bargain_choice_fundable(a, None)
                     && emit(Action::ChooseBargain { sacrifice: None })
                 {
@@ -5074,6 +5117,23 @@ impl Game {
                 } else {
                     self.begin_turn();
                 }
+            }
+            Action::ChooseOptional { accept: true }
+                if matches!(
+                    self.state.pending,
+                    Pending::OptionalAdditionalCost { .. } | Pending::Bargain { .. }
+                ) =>
+            {
+                let bargain = matches!(self.state.pending, Pending::Bargain { .. });
+                let a = self.state.announcing.as_mut().unwrap();
+                if bargain {
+                    a.item.cast.as_mut().unwrap().bargain = Some(true);
+                } else {
+                    a.item.cast.as_mut().unwrap().optional_additional = Some(true);
+                }
+                a.additional = None;
+                let needs_mode = a.item.modes().is_some() && a.item.mode.is_none();
+                self.continue_announcement_choices(needs_mode);
             }
             Action::ChooseOptional { accept }
                 if matches!(self.state.pending, Pending::Replacement { .. }) =>
@@ -6423,6 +6483,12 @@ impl Game {
             .map(|(i, _)| query.object_view(i as CardId))
             .collect();
         Observation {
+            cost_completion: s
+                .roles
+                .as_ref()
+                .and_then(|r| r.linked_funding.as_deref())
+                .copied()
+                .map(CostCompletionView::from),
             transforms: s
                 .roles
                 .as_ref()
@@ -6603,6 +6669,7 @@ impl Game {
                 Pending::CounterCostOrder { .. } => "counter_cost_order",
                 Pending::ConspireIntent { .. } => "conspire_intent",
                 Pending::ConspirePayment { .. } => "conspire_payment",
+                Pending::FundingProbe { .. } => "funding_probe",
                 Pending::CreatureCounterCost { .. } => "creature_counter_cost",
                 Pending::AdditionalCost { .. } => "additional_cost",
                 Pending::PayCosts { .. } => "pay_costs",
@@ -8243,3 +8310,13 @@ mod ecl_inherited_br_tests;
 #[cfg(test)]
 #[path = "engine_ecl_shared_type_completion_tests.rs"]
 mod ecl_shared_type_completion_tests;
+
+#[cfg(test)]
+#[path = "engine_linked_funding_tests.rs"]
+mod linked_funding_tests;
+
+#[path = "engine_linked_funding.rs"]
+mod linked_funding;
+pub use linked_funding::CostCompletionView;
+use linked_funding::LinkedFundingGoal;
+use linked_funding::LinkedFundingWindow;

@@ -3,7 +3,7 @@
 use super::*;
 use std::collections::HashSet;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct FundingGoal {
     pub actor: Player,
     pub required: Mana,
@@ -1804,6 +1804,13 @@ impl Game {
         ) {
             return true;
         }
+        if self.linked_funding_can_probe(goal.actor) {
+            let mut request = LinkedFundingGoal::new(goal.clone(), purpose);
+            request.group = witnesses.iter().copied().map(|r| (r, spec)).collect();
+            if let Some(result) = self.linked_funding_search(request) {
+                return result;
+            }
+        }
         let mut state = FundingState::from_game(self, &goal);
         state.purpose = purpose;
         state.reserve_group = Some(Box::new(
@@ -1820,6 +1827,13 @@ impl Game {
             && self.may_have_convoke(goal.actor, source.card)
         {
             return self.can_fund_convoke_for(goal, purpose);
+        }
+        if self.linked_funding_can_probe(goal.actor) {
+            if let Some(result) =
+                self.linked_funding_search(LinkedFundingGoal::new(goal.clone(), purpose))
+            {
+                return result;
+            }
         }
 
         if !goal
@@ -1930,6 +1944,14 @@ impl Game {
         goal: FundingGoal,
         purpose: mana_lots::Purpose,
     ) -> bool {
+        if self.linked_funding_can_probe(goal.actor) {
+            let mut request = LinkedFundingGoal::new(goal.clone(), purpose);
+            request.convoke = true;
+            if let Some(result) = self.linked_funding_search(request) {
+                return result;
+            }
+        }
+
         if goal.reserve.is_none()
             && match purpose {
                 mana_lots::Purpose::Spell(source) => {
@@ -1963,6 +1985,13 @@ impl Game {
         threshold: u16,
         purpose: mana_lots::Purpose,
     ) -> bool {
+        if self.linked_funding_can_probe(goal.actor) {
+            let mut request = LinkedFundingGoal::new(goal.clone(), purpose);
+            request.evidence = Some(threshold);
+            if let Some(result) = self.linked_funding_search(request) {
+                return result;
+            }
+        }
         if self.can_collect_evidence(goal.actor, threshold) {
             return self.can_fund_for(goal.clone(), purpose);
         }
@@ -2078,7 +2107,9 @@ impl Game {
                 .is_some_and(|cast| cast.optional_additional.is_none())
             {
                 // Before declaration, each mode may use any matching payable intent.
-                return self.optional_additional_cost_fundable(a, cost, None)
+                return (self.linked_funding_can_probe(a.item.controller)
+                    && self.optional_additional_intent_cost_fundable(a, cost, None, true))
+                    || self.optional_additional_cost_fundable(a, cost, None)
                     || (0..self.state.objects.len()).any(|id| {
                         self.optional_additional_cost_fundable(
                             a,
@@ -2087,7 +2118,16 @@ impl Game {
                         )
                     });
             }
-            return self.optional_additional_cost_fundable(a, cost, a.additional);
+            return if a
+                .item
+                .cast
+                .is_some_and(|c| c.optional_additional == Some(true))
+                && a.additional.is_none()
+            {
+                self.optional_additional_intent_cost_fundable(a, cost, None, true)
+            } else {
+                self.optional_additional_cost_fundable(a, cost, a.additional)
+            };
         }
         if a.item
             .cast
@@ -2164,6 +2204,10 @@ impl Game {
             );
         }
         if a.item.kind == StackKind::Spell && a.item.source_card.has_bargain() {
+            if a.item.cast.is_some_and(|cast| cast.bargain == Some(true)) && a.additional.is_none()
+            {
+                return self.deferred_bargain_cost_fundable(a.item.controller, a.item.card, cost);
+            }
             return self.bargain_cost_fundable(a.item.controller, a.item.card, cost, a.additional);
         }
         match a.item.kind {
@@ -2359,11 +2403,13 @@ impl Game {
         for step in state.moves(&goal) {
             let mut next = state.clone();
             next.apply(&step);
-            if next.reachable_with_evidence(
-                &goal,
-                announcement.evidence.as_ref().map(|e| e.threshold),
-                &mut HashSet::new(),
-            ) && emit(state.action(&step))
+            if (self.linked_funding_active()
+                || next.reachable_with_evidence(
+                    &goal,
+                    announcement.evidence.as_ref().map(|e| e.threshold),
+                    &mut HashSet::new(),
+                ))
+                && emit(state.action(&step))
             {
                 return true;
             }
@@ -2408,7 +2454,9 @@ impl Game {
         for step in state.moves(&goal) {
             let mut next = state.clone();
             next.apply(&step);
-            if next.reachable(&goal, &mut HashSet::new()) && emit(state.action(&step)) {
+            if (self.linked_funding_active() || next.reachable(&goal, &mut HashSet::new()))
+                && emit(state.action(&step))
+            {
                 return true;
             }
         }
@@ -3439,6 +3487,9 @@ impl Game {
     /// completion of that window. Reuse its exact resource search, retaining
     /// complete plans so later scalar choices cannot mix incompatible prefixes.
     pub(super) fn prepare_mana_allocations(&mut self, action: &Action) {
+        if self.prepare_linked_mana_allocations(action) {
+            return;
+        }
         let (Action::ActivateMana { payment, .. }
         | Action::ActivateManaWithTapCost { payment, .. }) = action
         else {
@@ -3923,6 +3974,13 @@ impl Game {
         amount: u16,
         selected: &[(ObjectRef, CounterKind)],
     ) -> bool {
+        if self.linked_funding_can_probe(goal.actor) {
+            let mut request = LinkedFundingGoal::new(goal.clone(), purpose);
+            request.counters = Some((amount, selected.to_vec()));
+            if let Some(result) = self.linked_funding_search(request) {
+                return result;
+            }
+        }
         let mut world = FundingState::from_game_with_convoke(self, &goal, true);
         world.convoke = false;
         world.purpose = purpose;
@@ -4397,3 +4455,131 @@ mod ecl_twinflame_funding_tests;
 #[cfg(test)]
 #[path = "engine_ecl_funding_performance_tests.rs"]
 mod ecl_funding_performance_tests;
+
+impl Game {
+    fn linked_funding_request(&self) -> Option<LinkedFundingGoal> {
+        if let Some(request) = self.linked_funding_probe() {
+            return Some(request.clone());
+        }
+        if let Some(a) = &self.state.announcing {
+            let mut request =
+                LinkedFundingGoal::new(self.funding_goal(a), self.purpose_for_item(&a.item));
+            request.convoke = a.item.kind == StackKind::Spell;
+            request.evidence = a.evidence.as_ref().map(|e| e.threshold);
+            return Some(request);
+        }
+        if let Some(p) = self.plot_payment() {
+            return Some(LinkedFundingGoal::new(
+                FundingGoal {
+                    actor: p.controller,
+                    required: p.cost.colored,
+                    generic: p.cost.generic,
+                    reserve: None,
+                    source: None,
+                },
+                mana_lots::Purpose::Other,
+            ));
+        }
+        let r = self.state.resolving.as_ref()?.mana_payment.as_ref()?;
+        Some(LinkedFundingGoal::new(
+            FundingGoal {
+                actor: r.payer,
+                required: r.cost.colored,
+                generic: r.cost.generic,
+                reserve: None,
+                source: None,
+            },
+            mana_lots::Purpose::Other,
+        ))
+    }
+    fn linked_funding_world<'a>(&'a self, request: &LinkedFundingGoal) -> FundingState<'a> {
+        let mut world = FundingState::from_game_with_convoke(
+            self,
+            &request.goal,
+            request.convoke || request.counters.is_some(),
+        );
+        world.convoke = request.convoke;
+        world.purpose = request.purpose;
+        if !request.group.is_empty() {
+            world.reserve_group = Some(Box::new(request.group.clone()));
+        }
+        world
+    }
+    pub(super) fn linked_funding_probe_paid(&self) -> bool {
+        let request = self.linked_funding_probe().unwrap();
+        let world = self.linked_funding_world(request);
+        if !world.obligations(&request.goal)
+            || request
+                .evidence
+                .is_some_and(|n| world.evidence_value() < u128::from(n))
+            || request.counters.as_ref().is_some_and(|(amount, selected)| {
+                !world.creature_counter_payment_possible(*amount, selected)
+            })
+        {
+            return false;
+        }
+        let adjusted = cast_origins::payment_goal(&world, &request.goal, request.purpose);
+        let available = mana_lots::available(world.mana, &world.lots, request.purpose);
+        (if world.convoke_available() {
+            convoke::payable_in(
+                &world,
+                world.actor,
+                request.purpose,
+                available,
+                request.goal.required,
+                request.goal.generic,
+                &world.convoke_masks(),
+            )
+        } else {
+            payable(available, adjusted.required, adjusted.generic)
+        }) && self.linked_deferred_cost_ready()
+    }
+    pub(super) fn visit_linked_funding_mana(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
+        let request = self.linked_funding_request().unwrap();
+        let world = self.linked_funding_world(&request);
+        // A pure tap/sacrifice original activation cost opens no mana window.
+        if request
+            .goal
+            .source
+            .as_ref()
+            .is_some_and(|(_, index, _, definition)| {
+                !definition.activations()[usize::from(*index)]
+                    .cost
+                    .mana_component
+            })
+        {
+            return false;
+        }
+        let mut emitted = Vec::new();
+        for step in world.moves(&request.goal) {
+            let action = world.action(&step);
+            if !emitted.contains(&action) {
+                emitted.push(action.clone());
+                if emit(action) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+    pub(super) fn linked_funding_allocations(&self, action: &Action) -> Vec<Vec<Mana>> {
+        let Some(request) = self.linked_funding_request() else {
+            return Vec::new();
+        };
+        let world = self.linked_funding_world(&request);
+        let mut plans = Vec::new();
+        for step in world.moves(&request.goal) {
+            if world.action(&step) == *action {
+                let allocation = step
+                    .allocation
+                    .iter()
+                    .map(|row| row.map(|v| u32::try_from(v).expect("actual mana allocation")))
+                    .collect();
+                if !plans.contains(&allocation) {
+                    plans.push(allocation);
+                }
+            }
+        }
+        plans
+    }
+}

@@ -240,6 +240,9 @@ impl Game {
         &self,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
+        if self.visit_linked_pre_cost_mana(emit) {
+            return true;
+        }
         let a = self.state.announcing.as_ref().unwrap();
         let amount = a.creature_counter_cost_amount().unwrap();
         let mut selected = a

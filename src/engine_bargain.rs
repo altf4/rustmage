@@ -49,9 +49,43 @@ impl Game {
         cost: ManaCost,
     ) -> bool {
         self.bargain_cost_fundable(actor, card, cost, None)
+            || self.deferred_bargain_cost_fundable(actor, card, cost)
             || (0..self.state.objects.len()).any(|id| {
                 self.bargain_cost_fundable(actor, card, cost, Some(self.object_ref(id as CardId)))
             })
+    }
+    pub(super) fn deferred_bargain_cost_fundable(
+        &self,
+        actor: Player,
+        card: CardId,
+        mut cost: ManaCost,
+    ) -> bool {
+        if !self.linked_funding_can_probe(actor) {
+            return false;
+        }
+        cost.generic = cost
+            .generic
+            .saturating_sub(self.effective_spell_card(card).bargain_reduction());
+        let cost = self.reduced_spell_cost(actor, card, cost);
+        self.linked_deferred_funding(
+            FundingGoal {
+                actor,
+                required: cost.colored,
+                generic: cost.generic,
+                reserve: None,
+                source: None,
+            },
+            self.spell_mana_purpose_for_card(actor, card, self.effective_spell_card(card)),
+            linked_funding::DeferredFundingCost::Additional {
+                source: self.object_ref(card),
+                spec: COST,
+            },
+        )
+        .unwrap_or(false)
+    }
+    pub(super) fn deferred_bargain_intent_fundable(&self, a: &Announcement) -> bool {
+        a.cost_options()
+            .any(|cost| self.deferred_bargain_cost_fundable(a.item.controller, a.item.card, cost))
     }
     pub(super) fn bargain_choice_fundable(
         &self,

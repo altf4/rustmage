@@ -62,6 +62,24 @@ impl Game {
         {
             return false;
         }
+        if self.linked_funding_can_probe(a.item.controller) {
+            let mut proposal = a.clone();
+            if let Some(cost) = cost {
+                proposal.cost = Some(cost);
+                proposal.total_cost = None;
+            }
+            if let Some(result) = self.linked_deferred_funding(
+                self.funding_goal(&proposal),
+                self.purpose_for_item(&a.item),
+                linked_funding::DeferredFundingCost::BeholdGroup {
+                    announcement: Box::new(proposal),
+                    cost,
+                    selected: selected.to_vec(),
+                },
+            ) {
+                return result;
+            }
+        }
         if selected.len() == usize::from(amount) {
             return self.behold_witnesses_fundable(a, spec, selected, cost);
         }
