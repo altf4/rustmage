@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 151,
+  "newly_tested_physical_cards": 153,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -145,6 +145,7 @@
     "Tributary Vaulter",
     "Trystan's Command",
     "Trystan, Callous Cultivator // Trystan, Penitent Culler",
+    "Twinflame Travelers",
     "Unbury",
     "Vibrance",
     "Vinebred Brawler",
@@ -154,12 +155,13 @@
     "Warren Torchmaster",
     "Wary Farmer",
     "Wild Unraveling",
+    "Winnowing",
     "Wistfulness"
   ],
-  "current_admission_flags": 258,
-  "remaining_gated": 15,
+  "current_admission_flags": 260,
+  "remaining_gated": 13,
   "inherited_evidence_audit": {
-    "audited": 28,
+    "audited": 34,
     "total": 107,
     "names": [
       "Plains",
@@ -189,7 +191,13 @@
       "Eclipsed Merrow",
       "Feisty Spikeling",
       "Mischievous Sneakling",
-      "Prideful Feastling"
+      "Prideful Feastling",
+      "Boggart Cursecrafter",
+      "Hovel Hurler",
+      "Morcant's Loyalist",
+      "Noggle Robber",
+      "Stoic Grove-Guide",
+      "Thoughtweft Lieutenant"
     ],
     "scenario": "src/engine_ecl_inherited_tests.rs",
     "source_commit": "7902fbe1",
@@ -275,6 +283,20 @@
       "tests_including_previous_groups": 9,
       "seconds": 0.35,
       "resource_report": "<cache>/rustmage-build-reports/d2a446e7a06443fca66c96e89e63a29f.json"
+    },
+    "tribal_counter_group": {
+      "names": [
+        "Boggart Cursecrafter",
+        "Hovel Hurler",
+        "Morcant's Loyalist",
+        "Noggle Robber",
+        "Stoic Grove-Guide",
+        "Thoughtweft Lieutenant"
+      ],
+      "source_commit": "d57f1a23",
+      "tests_including_previous_groups": 11,
+      "seconds": 0.5,
+      "resource_report": "<cache>/rustmage-build-reports/5974a16685ba494ca789cb03f60e9546.json"
     }
   },
   "locally_reviewed": 0,
@@ -314,10 +336,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T20:35:50.589640+00:00",
-    "elapsed_seconds": 18783.372789,
-    "newly_verified_cards": 151,
-    "cards_per_hour": 28.940489341634393,
+    "end_utc": "2026-10-22T20:54:25.512748+00:00",
+    "elapsed_seconds": 19898.295897,
+    "newly_verified_cards": 153,
+    "cards_per_hour": 27.680762355285022,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "494 integrated ECL scenarios passed at60017348; full release verification remains249-card checkpoint",
@@ -822,19 +844,6 @@
       "<cache>/rustmage-validation-a04ohuv0/debug/deps/librustmage.so": "695b1393176817bc1333cc139a2101d50b4702740bbdc74ab12f5950122ab496"
     }
   },
-  "oko": {
-    "source_commit": "df36bd86",
-    "native_tests": 2905,
-    "native_seconds": 78.55,
-    "focused_tests": 6,
-    "focused_seconds": 0.24,
-    "clippy": "all targets passed with warnings denied",
-    "resource_reports": [
-      "<cache>/rustmage-build-reports/82318eb766054137b00a913e9f1f3caf.json",
-      "<cache>/rustmage-build-reports/ca2e4d6fb52848189cf0684b7e90b3ec.json",
-      "<cache>/rustmage-build-reports/8fb9afc2348641b9921484498f7b41fe.json"
-    ]
-  },
   "release_249_retained_evidence": {
     "full_release_validation": {
       "status": "passed all eight phases",
@@ -992,5 +1001,18 @@
       "<cache>/rustmage-validation-nzmq576a/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
       "<cache>/rustmage-validation-nzmq576a/debug/deps/librustmage.so": "afb15d188656a9ea8a6b8eea5a0bc46fe4d611603923d63978e6445ed88395e2"
     }
+  },
+  "oko": {
+    "source_commit": "df36bd86",
+    "native_tests": 2905,
+    "native_seconds": 78.55,
+    "focused_tests": 6,
+    "focused_seconds": 0.24,
+    "clippy": "all targets passed with warnings denied",
+    "resource_reports": [
+      "<cache>/rustmage-build-reports/82318eb766054137b00a913e9f1f3caf.json",
+      "<cache>/rustmage-build-reports/ca2e4d6fb52848189cf0684b7e90b3ec.json",
+      "<cache>/rustmage-build-reports/8fb9afc2348641b9921484498f7b41fe.json"
+    ]
   }
 }

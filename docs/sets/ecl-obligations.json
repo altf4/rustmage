@@ -542,7 +542,7 @@
       "name": "Boggart Cursecrafter",
       "definition": "src/card_definitions/ecl/boggart_cursecrafter.rs",
       "owner": "integrator",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Boggart Cursecrafter",
@@ -557,7 +557,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/boggart_cursecrafter.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "ac65ed8c-abe8-4044-9ce5-70b1370d0e19",
@@ -3155,7 +3159,7 @@
       "name": "Hovel Hurler",
       "definition": "src/card_definitions/ecl/hovel_hurler.rs",
       "owner": "integrator",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Hovel Hurler",
@@ -3170,7 +3174,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/hovel_hurler.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "b608288e-1755-4738-b828-9df6998bae8d",
@@ -4042,7 +4050,7 @@
       "name": "Morcant's Loyalist",
       "definition": "src/card_definitions/ecl/morcant_s_loyalist.rs",
       "owner": "integrator",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Morcant's Loyalist",
@@ -4057,7 +4065,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/morcant_s_loyalist.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "a25bcf65-4417-45e9-a4b1-94e0ea78af63",
@@ -4238,7 +4250,7 @@
       "name": "Noggle Robber",
       "definition": "src/card_definitions/ecl/noggle_robber.rs",
       "owner": "integrator",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Noggle Robber",
@@ -4252,7 +4264,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/noggle_robber.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "b49efbe8-e15b-4dc7-82de-970cbce92b79",
@@ -5700,7 +5716,7 @@
       "name": "Stoic Grove-Guide",
       "definition": "src/card_definitions/ecl/stoic_grove_guide.rs",
       "owner": "integrator",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Stoic Grove-Guide",
@@ -5714,7 +5730,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/stoic_grove_guide.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "36ab41b7-bcfb-4618-bbfb-70d608dba15a",
@@ -6170,7 +6190,7 @@
       "name": "Thoughtweft Lieutenant",
       "definition": "src/card_definitions/ecl/thoughtweft_lieutenant.rs",
       "owner": "integrator",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Thoughtweft Lieutenant",
@@ -6184,7 +6204,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/ecl/thoughtweft_lieutenant.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "8bef3511-ceeb-4d57-972a-ab363ecacd5b",
@@ -6350,7 +6374,7 @@
       "name": "Twinflame Travelers",
       "definition": "src/card_definitions/ecl/twinflame_travelers.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Twinflame Travelers",
@@ -6365,7 +6389,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_core_tests.rs",
+        "src/card_definitions/ecl/twinflame_travelers.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "e2928d3c-b64a-443e-a1c1-fd204bb098ba",
@@ -6759,7 +6787,7 @@
       "name": "Winnowing",
       "definition": "src/card_definitions/ecl/winnowing.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Winnowing",
@@ -6774,7 +6802,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/winnowing.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "e5e8fce4-c97a-4ae4-9583-003c565e3bd6",

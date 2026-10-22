@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "803b16f09db1ad0c9986a8ced45035635e7ce046c48f83a3a850c1cadfb0ee34",
+  "catalogue_version": "36364c27bf427c2577581eb4f6d4d66dc4d17f9b7410c3311ea77fde43a22486",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2341,
-  "implemented_total": 2347,
+  "implemented_standard_cards": 2343,
+  "implemented_total": 2349,
   "token_definitions": 110,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "complete": 252,
-      "gated": 15
+      "complete": 254,
+      "gated": 13
     },
     "eoc": {
       "total": 8,
@@ -37967,8 +37967,8 @@
     {
       "name": "Twinflame Travelers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/twinflame_travelers.rs",
       "set": "ecl"
     },
@@ -40855,8 +40855,8 @@
     {
       "name": "Winnowing",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/winnowing.rs",
       "set": "ecl"
     },
