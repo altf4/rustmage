@@ -9,6 +9,19 @@ pub struct ColorEffectView {
     pub expires_turn: Option<u32>,
 }
 impl Game {
+    pub(super) fn apply_mana_source_color(
+        &mut self,
+        source: ObjectRef,
+        definition: ManaProduction,
+        production: Mana,
+    ) {
+        if self.on_battlefield(source.card)
+            && self.object_ref(source.card) == source
+            && let Some(colors) = definition.resulting_source_color(production)
+        {
+            self.set_color_effects(&[source.card], colors, AnimationDuration::EndOfTurn);
+        }
+    }
     pub(super) fn resolution_chosen_color(&self) -> Option<ChoiceColor> {
         self.state
             .resolving

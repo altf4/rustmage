@@ -4048,10 +4048,22 @@ impl Game {
                 self.state.passes = 0;
             }
             Action::TapGrantedMana {
-                card, production, ..
+                card,
+                grantor,
+                production,
             } => {
+                let source = self.object_ref(card);
+                let definition = ability_world::CharacteristicWorld::granted_mana(
+                    &self.characteristic_query(),
+                    card,
+                )
+                .into_iter()
+                .find(|grant| grant.source == grantor)
+                .unwrap()
+                .production;
                 self.tap_objects(&[card]);
                 self.add_mana(actor, production);
+                self.apply_mana_source_color(source, definition, production);
                 self.state.passes = 0;
             }
             Action::TapMana { card } => {
@@ -4226,6 +4238,7 @@ impl Game {
                 self.tap_objects(&objects.iter().map(|object| object.card).collect::<Vec<_>>());
                 self.pay_activation(&mut item, payment, counter_payment);
                 self.add_quality_mana(actor, production, quality);
+                self.apply_mana_source_color(item.object, definition, production);
                 self.reopen_evidence_after_mana_sacrifice(card);
             }
             Action::ActivateMana {
@@ -4243,6 +4256,7 @@ impl Game {
                 let quality = self.mana_quality(definition, card);
                 self.pay_activation(&mut item, payment, counter_payment);
                 self.add_quality_mana(actor, production, quality);
+                self.apply_mana_source_color(item.object, definition, production);
                 self.reopen_evidence_after_mana_sacrifice(card);
             }
             Action::ChooseManaLotSpend { .. } => unreachable!("allocation handled transactionally"),

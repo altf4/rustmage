@@ -16,6 +16,7 @@ struct Resource {
     id: CardId,
     attacking: bool,
     object: Object,
+    color_override: Option<u8>,
 }
 #[derive(Clone)]
 struct FundingState<'g> {
@@ -42,6 +43,18 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
             .map_or(&self.game.state.objects[id as usize], |resource| {
                 &resource.object
             })
+    }
+    fn colors(&self, id: CardId) -> u8 {
+        if let Some(colors) = self
+            .resources
+            .iter()
+            .find(|resource| resource.id == id && resource.object.zone == Zone::Battlefield)
+            .and_then(|resource| resource.color_override)
+        {
+            colors
+        } else {
+            characteristic_layers::colors(self, id)
+        }
     }
     fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
         live_counters::amounts(
@@ -77,6 +90,7 @@ struct FundingMove {
     payment: [u64; 6],
     counters: Counters,
     production: Mana,
+    source_color: Option<u8>,
     quality: Option<mana_lots::Quality>,
     allocation: Vec<[u64; 6]>,
 }
@@ -316,6 +330,7 @@ impl<'g> FundingState<'g> {
                         matches!(
                             production.base(),
                             ManaProduction::ColorsAmongControlledPermanents
+                                | ManaProduction::ChoiceStat { .. }
                         )
                     })
                 })
@@ -367,6 +382,7 @@ impl<'g> FundingState<'g> {
                 id: id as CardId,
                 attacking: game.state.attackers.iter().any(|a| a.card == id as CardId),
                 object: object.clone(),
+                color_override: None,
             })
             .collect();
         Self {
@@ -690,6 +706,7 @@ impl<'g> FundingState<'g> {
                             payment: [0; 6],
                             counters: Counters::default(),
                             production,
+                            source_color: grant.production.resulting_source_color(production),
                             quality: None,
                             allocation: Vec::new(),
                         });
@@ -716,6 +733,7 @@ impl<'g> FundingState<'g> {
                     payment: [0; 6],
                     counters: Counters::default(),
                     production,
+                    source_color: None,
                     quality: None,
                     allocation: Vec::new(),
                 });
@@ -724,6 +742,7 @@ impl<'g> FundingState<'g> {
                 let Some(production) = ability.mana_production() else {
                     continue;
                 };
+                let source_production = production;
                 // CR605.3c forbids recursively activating the same mana ability
                 // before the enclosing activation has resolved.
                 if goal
@@ -799,6 +818,8 @@ impl<'g> FundingState<'g> {
                                                     payment,
                                                     counters: counters.clone(),
                                                     production,
+                                                    source_color: source_production
+                                                        .resulting_source_color(production),
                                                     quality,
                                                     allocation: allocation.clone(),
                                                 });
@@ -883,6 +904,11 @@ impl<'g> FundingState<'g> {
             }
         } else {
             object.tapped = true;
+        }
+        if self.resources[step.resource].object.zone == Zone::Battlefield
+            && let Some(colors) = step.source_color
+        {
+            self.resources[step.resource].color_override = Some(colors);
         }
         for &resource in &step.external_taps {
             self.resources[resource].object.tapped = true;
@@ -1041,6 +1067,18 @@ impl<'g> FundingState<'g> {
                             ManaProduction::ColorsAmongControlledPermanents => {
                                 ManaProduction::Fixed([1, 1, 1, 1, 1, 0])
                             }
+                            ManaProduction::ChoiceStat { colors, amount } => {
+                                ManaProduction::Choice {
+                                    mask: colors,
+                                    amount: match amount {
+                                        StatValue::Count(_) => {
+                                            u32::try_from(self.game.state.objects.len())
+                                                .unwrap_or(u32::MAX)
+                                        }
+                                        _ => u32::MAX,
+                                    },
+                                }
+                            }
                             production => production.in_world(self, resource.id),
                         },
                         ability_world::CharacteristicWorld::counter_amounts(self, resource.id),
@@ -1069,6 +1107,15 @@ impl<'g> FundingState<'g> {
                     ManaProduction::ColorsAmongControlledPermanents => {
                         ManaProduction::Fixed([1, 1, 1, 1, 1, 0])
                     }
+                    ManaProduction::ChoiceStat { colors, amount } => ManaProduction::Choice {
+                        mask: colors,
+                        amount: match amount {
+                            StatValue::Count(_) => {
+                                u32::try_from(self.game.state.objects.len()).unwrap_or(u32::MAX)
+                            }
+                            _ => u32::MAX,
+                        },
+                    },
                     ManaProduction::CountSubtype { color, .. } => {
                         let mut mana = [0; 6];
                         mana[usize::from(color)] =

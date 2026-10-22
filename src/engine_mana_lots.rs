@@ -423,6 +423,9 @@ impl Game {
             })
         });
         self.add_quality_mana(item.controller, mana, quality);
+        if let Some((_, [Instruction::AddMana(definition)])) = item.program() {
+            self.apply_mana_source_color(item.object, *definition, mana);
+        }
     }
     pub(super) fn add_quality_mana(&mut self, actor: Player, mana: Mana, quality: Option<Quality>) {
         self.add_mana(actor, mana);

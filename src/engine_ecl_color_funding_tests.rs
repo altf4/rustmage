@@ -100,3 +100,113 @@ fn ecl_green_fixed_colors_distinguish_otherwise_identical_funding_resource_keys(
         assert!(left.key(&goal) != right.key(&goal));
     }
 }
+
+#[test]
+fn ecl_green_wickermaw_funding_color_overrides_are_owned_keyed_and_feed_dynamic_mana() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let wicker = named(&mut g, p, "Foraging Wickermaw", Zone::Battlefield);
+        let bloom = named(&mut g, p, "Bloom Tender", Zone::Battlefield);
+        g.state.objects[bloom as usize].summoning_sick = false;
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        let goal = FundingGoal {
+            actor: p,
+            required: [0, 1, 0, 0, 0, 0],
+            generic: 0,
+            source: None,
+            reserve: None,
+        };
+        let world = FundingState::from_game(&g, &goal);
+        let moves = world.moves(&goal);
+        let blue_move = moves
+            .iter()
+            .find(|step| {
+                world.resources[step.resource].id == wicker && step.production == [0, 1, 0, 0, 0, 0]
+            })
+            .unwrap();
+        let red_move = moves
+            .iter()
+            .find(|step| {
+                world.resources[step.resource].id == wicker && step.production == [0, 0, 0, 1, 0, 0]
+            })
+            .unwrap();
+        let mut blue = world.clone();
+        blue.apply(blue_move);
+        let mut red = world.clone();
+        red.apply(red_move);
+        assert_eq!(world.colors(wicker), 0);
+        assert_eq!(blue.colors(wicker), 2);
+        assert_eq!(red.colors(wicker), 8);
+        assert_eq!(g.object_view(wicker).colors, 0);
+        assert!(
+            blue.moves(&goal)
+                .iter()
+                .any(|step| blue.resources[step.resource].id == bloom
+                    && step.production == [0, 1, 0, 0, 1, 0])
+        );
+        assert!(
+            red.moves(&goal)
+                .iter()
+                .any(|step| red.resources[step.resource].id == bloom
+                    && step.production == [0, 0, 0, 1, 1, 0])
+        );
+        blue.mana = [0; 6];
+        red.mana = [0; 6];
+        assert!(blue.key(&goal) != red.key(&goal));
+    }
+}
+
+#[test]
+fn ecl_green_choice_stat_mana_counts_other_creatures_in_owned_worlds() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Bloom Tender", Zone::Battlefield);
+        let other = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        named(&mut g, p, "Forest", Zone::Battlefield);
+        let definition = ManaProduction::ChoiceStat {
+            colors: 2 | 16,
+            amount: StatValue::Count(CountFilter {
+                zone: CountZone::Battlefield,
+                relation: 0,
+                kind: 1,
+                exclude: 0,
+                subtype: None,
+                basic: false,
+                other: true,
+                cards_only: false,
+            }),
+        };
+        let collect = |world: &dyn CharacteristicWorld| {
+            let mut result = Vec::new();
+            definition.in_world(world, source).visit(|mana| {
+                result.push(mana);
+                false
+            });
+            result
+        };
+        let goal = FundingGoal {
+            actor: p,
+            required: [0; 6],
+            generic: 0,
+            source: None,
+            reserve: None,
+        };
+        let world = FundingState::from_game(&g, &goal);
+        assert_eq!(
+            collect(&g.characteristic_query()),
+            vec![[0, 1, 0, 0, 0, 0], [0, 0, 0, 0, 1, 0]]
+        );
+        assert_eq!(collect(&world), collect(&g.characteristic_query()));
+        let mut branch = world.clone();
+        branch
+            .resources
+            .iter_mut()
+            .find(|resource| resource.id == other)
+            .unwrap()
+            .object
+            .zone = Zone::Graveyard;
+        assert_eq!(collect(&branch), vec![[0; 6], [0; 6]]);
+        assert_eq!(collect(&world), collect(&g.characteristic_query()));
+    }
+}

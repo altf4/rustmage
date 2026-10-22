@@ -2432,8 +2432,10 @@ impl Game {
                 Instruction::AddMana(production) => {
                     let quality = self.mana_quality(production, item.card);
                     match production.base().in_world(self, item.card) {
-                        ManaProduction::ChosenColor
+                        ManaProduction::AnyColorChangingSource(_)
+                        | ManaProduction::ChosenColor
                         | ManaProduction::ColorsAmongControlledPermanents
+                        | ManaProduction::ChoiceStat { .. }
                         | ManaProduction::CountSubtype { .. }
                         | ManaProduction::Tagged { .. } => unreachable!("resolved production"),
                         ManaProduction::Fixed(mana) => {

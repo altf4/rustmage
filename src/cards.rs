@@ -389,6 +389,8 @@ pub(crate) struct ManaQuality {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ManaProduction {
+    /// Mana abilities that also replace their source permanent color until cleanup.
+    AnyColorChangingSource(u32),
     Tagged {
         production: &'static ManaProduction,
         quality: &'static ManaQuality,
@@ -396,6 +398,10 @@ pub(crate) enum ManaProduction {
     ChosenColor,
     ColorsAmongControlledPermanents,
     Fixed(Mana),
+    ChoiceStat {
+        colors: u8,
+        amount: StatValue,
+    },
     CountSubtype {
         color: u8,
         subtype: &'static str,
@@ -416,6 +422,15 @@ impl ManaProduction {
             amount,
         }
     }
+    pub(crate) fn resulting_source_color(self, mana: Mana) -> Option<u8> {
+        if matches!(self.base(), Self::AnyColorChangingSource(_)) {
+            (0..5)
+                .find(|&index| mana[index] != 0)
+                .map(|index| 1 << index)
+        } else {
+            None
+        }
+    }
     pub(crate) fn base(self) -> Self {
         match self {
             Self::Tagged { production, .. } => production.base(),
@@ -425,9 +440,11 @@ impl ManaProduction {
     pub(crate) fn visit(self, mut emit: impl FnMut(Mana) -> bool) -> bool {
         match self {
             Self::Tagged { production, .. } => production.visit(emit),
+            Self::AnyColorChangingSource(amount) => Self::any_color(amount).visit(emit),
             Self::ChosenColor
             | Self::ColorsAmongControlledPermanents
-            | Self::CountSubtype { .. } => {
+            | Self::CountSubtype { .. }
+            | Self::ChoiceStat { .. } => {
                 panic!("dynamic mana requires a characteristic world")
             }
             Self::Fixed(mana) => emit(mana),

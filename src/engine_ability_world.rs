@@ -298,6 +298,7 @@ impl ManaProduction {
     ) -> Self {
         match self {
             Self::Tagged { production, .. } => production.in_world(world, source),
+            Self::AnyColorChangingSource(amount) => Self::any_color(amount),
             Self::ChosenColor => {
                 let mut mana = [0; 6];
                 if let Some(EntryChoiceValue::Color(color)) =
@@ -320,6 +321,11 @@ impl ManaProduction {
                     u32::from(index < 5 && colors & (1 << index) != 0)
                 }))
             }
+            Self::ChoiceStat { colors, amount } => Self::Choice {
+                mask: colors,
+                amount: u32::try_from(world.value(amount, source).max(0))
+                    .capacity("mana representation exhausted"),
+            },
             Self::CountSubtype { color, subtype } => {
                 let controller = world.object(source).controller;
                 let count = world

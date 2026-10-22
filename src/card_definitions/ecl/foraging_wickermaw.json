@@ -3,10 +3,46 @@
   "catalogue_id": 1590,
   "oracle_id": "11ceb2db-021e-422d-976e-7bfe3b67a8aa",
   "facts_sha256": "e5945c2f442ba75d5370def81ede901f6808d9a5b6960a7f812b7e1572ef13ae",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c4b69b2eb6f6593d012e0ccbef96b568cdb2a66b486d94f35f0b5a728afae65f"
   },
-  "physical_metadata_sha256": "369a161ebbbe83410c79331a2647d051621c829b5eae20cf57bdd29857ec1cc5"
+  "physical_metadata_sha256": "369a161ebbbe83410c79331a2647d051621c829b5eae20cf57bdd29857ec1cc5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/ForagingWickermaw.java",
+  "java_sha256": "351237c961dff4a2c267346c14cf0eb60f93af5a1c4e1badcd8bf3bf84b915ad",
+  "rules_tests": "src/engine_ecl_green_colorless_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/LimitedTimesPerTurnActivatedManaAbility.java",
+      "sha256": "277f02f44bf32ea4d389b21f74227491808e3fb0c30fbdb911a88918d550af23"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyColorEffect.java",
+      "sha256": "1ab49b0ed403a80a0daed4883b432e65e47e38a72d5e4ebca87894284c4fa085"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesColorTargetEffect.java",
+      "sha256": "71a87b25c5432fc134cffb00338015bddbe869598bf42528243789758f3bfe43"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    }
+  ]
 }

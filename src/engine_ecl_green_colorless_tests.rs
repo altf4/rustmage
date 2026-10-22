@@ -2517,3 +2517,128 @@ fn ecl_green_puca_resolved_color_survives_ability_removal_and_control_change() {
         );
     }
 }
+
+#[test]
+fn ecl_green_wickermaw_paid_surveillance_private_choice_and_once_per_turn_color_mana() {
+    for p in [Player::P0, Player::P1] {
+        for color in 0..5 {
+            let mut g = setup(p);
+            let top = named(&mut g, p, "Shock", Zone::Library);
+            let source = named(&mut g, p, "Foraging Wickermaw", Zone::Hand);
+            cast(&mut g, source, None, &[]);
+            for _ in 0..4 {
+                checked(&mut g, Action::Pass);
+            }
+            assert!(g.observe(p).library_choice.is_some());
+            assert!(g.observe(p.other()).library_choice.is_none());
+            let destination = if color % 2 == 0 {
+                LibraryDestination::Top
+            } else {
+                LibraryDestination::Graveyard
+            };
+            checked(
+                &mut g,
+                Action::ArrangeLibrary {
+                    card: top,
+                    destination,
+                },
+            );
+            assert_eq!(
+                g.object_view(top).zone,
+                if color % 2 == 0 {
+                    Zone::Library
+                } else {
+                    Zone::Graveyard
+                }
+            );
+            assert_eq!(
+                g.stats(source),
+                Stats {
+                    power: 1,
+                    toughness: 3
+                }
+            );
+            assert!(g.object_view(source).summoning_sick);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+            let mut production = [0; 6];
+            production[color] = 1;
+            checked(
+                &mut g,
+                Action::AnnounceMana {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                    production,
+                },
+            );
+            reject(&mut g, Action::PayCosts { payment: [0; 6] });
+            checked(
+                &mut g,
+                Action::PayCosts {
+                    payment: [0, 0, 0, 0, 0, 1],
+                },
+            );
+            assert!(g.state.stack.is_empty());
+            assert_eq!(g.state.players[p.index()].mana, production);
+            assert_eq!(g.object_view(source).colors, 1 << color);
+            assert!(!g.object_view(source).tapped);
+            reject(
+                &mut g,
+                Action::AnnounceMana {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                    production,
+                },
+            );
+            super::ability_timeline_tests::next_turn(&mut g);
+            assert_eq!(g.object_view(source).colors, 0);
+            if g.actor() != Some(p) {
+                checked(&mut g, Action::Pass);
+            }
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+            checked(
+                &mut g,
+                Action::AnnounceMana {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                    production,
+                },
+            );
+            checked(
+                &mut g,
+                Action::PayCosts {
+                    payment: [0, 0, 0, 0, 0, 1],
+                },
+            );
+            assert_eq!(g.object_view(source).colors, 1 << color);
+        }
+    }
+}
+#[test]
+fn ecl_green_wickermaw_color_change_enables_later_bloom_tender_in_same_guided_funding() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let wicker = named(&mut g, p, "Foraging Wickermaw", Zone::Battlefield);
+        let bloom = named(&mut g, p, "Bloom Tender", Zone::Battlefield);
+        g.state.objects[bloom as usize].summoning_sick = false;
+        let spell = named(&mut g, p, "Divination", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        reject(&mut g, Action::AnnounceCast { card: spell });
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        let convert = g.legal_actions().into_iter().find(|action| matches!(action, Action::ActivateMana { card, production, .. } if *card == wicker && *production == [0,1,0,0,0,0])).unwrap();
+        checked(&mut g, convert);
+        assert_eq!(g.object_view(wicker).colors, 2);
+        assert_eq!(g.state.announcing.as_ref().unwrap().item.card, spell);
+        let tender = g.legal_actions().into_iter().find(|action| matches!(action, Action::ActivateMana { card, production, .. } if *card == bloom && *production == [0,1,0,0,1,0])).unwrap();
+        checked(&mut g, tender);
+        pay(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 2);
+        assert!(g.object_view(bloom).tapped);
+        assert!(!g.object_view(wicker).tapped);
+    }
+}
