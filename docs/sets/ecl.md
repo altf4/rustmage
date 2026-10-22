@@ -83,7 +83,7 @@ searches involving restricted mana, missing eligible colors and missing creature
 tap witnesses. Exact formerly slow queries now take approximately 0.3–1.1 ms;
 117 funding regressions and all-target Clippy pass. A separate exact funding
 repair handles mana costs that release linked exiled permanents and permit new
-mana, convoke or entry choices. It remains under focused verification.
+mana, convoke or entry choices. Its 14 focused scenarios pass; full native and final combined validation remain pending. The integrated repair at `fc3b63a3` preserves locked total costs, supports future additional-cost witnesses, and adds a public cost-completion tag under observation schema167.
 
 The measured authoring interval produced 166 newly implemented and focused-tested
 physical cards in 26,826.03 seconds: **22.28 cards/hour**. This excludes inherited

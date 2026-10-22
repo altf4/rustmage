@@ -1867,5 +1867,52 @@
       "seconds": 22.93,
       "resource_report": "78d7cfe3bc9042caa49ae61f1d181da0"
     }
+  },
+  "linked_return_funding": {
+    "source_commit": "71973015e80eebe8fc92ac41cc3911e634c2942e",
+    "integrated_commit": "fc3b63a3",
+    "status": "focused scenarios pass; final combined validation pending",
+    "problem": "Closed initial-resource funding omitted mana, cost witnesses, bonuses and convoke providers that can legally return from linked exile during mana ability costs.",
+    "implementation": "Rare owned-Game completion search preserves actual entry/replacement/bonus choices, mana-lot provenance and a snapshot-owned cost window. Deferred typed checks reuse existing cost semantics after mana. Pure mana activations consume finite resources; prospective copy cycles use canonical entry keys and remaining-clock dominance; scalar allocation domains stream without arbitrary caps.",
+    "cost_order": "Intents, modes, X, targets and hybrid choices remain before mana. Total cost is locked before the mana window. Returned witnesses can pay later Behold, blight, counter, forage or bargain costs; optional paid intent can precede object choice. No new mana window opens after printed additional costs are paid.",
+    "wire_contract": {
+      "observation_schema": 167,
+      "field": "cost_completion",
+      "privacy": "Only announcement/resolution ID or an object-free Plot tag is public; ephemeral analysis goals and private witness references are absent."
+    },
+    "focused": {
+      "tests": 14,
+      "seconds": 27.56,
+      "resource_report": "1c13a5fc1ef54dcab8f712191b42e626",
+      "scope": "Before final additional_paid guard; full native run on committed source verifies the guard."
+    },
+    "covered_interactions": [
+      "fully paid Barrens/Henchbots/Goatnap/Mirrorform/Treasure return line, both seats",
+      "returned opponent Lavaleaper changes basic-land mana bonus",
+      "returned Eirdu dynamically grants convoke",
+      "Omni repeats earlier Omni twice then selects usable donor; dead-end decline rejected",
+      "legal fatal life payment remains offered",
+      "positive-cost converter preserves tagged allocations; zero-cost actions leave no stale prepared plan",
+      "billion-wide scalar lot domain streams early success",
+      "returned Elf supplies mandatory Behold after mana",
+      "optional blight intent uses a future returned creature",
+      "optional Behold type uses a newly returned second witness",
+      "bargain intent and Hamlet Glutton reduction use a returned artifact",
+      "Soul Immolation X0 gets a later creature witness without raising declaration-time X cap"
+    ],
+    "layout_bytes": {
+      "Game": 3312,
+      "State": 3296,
+      "cold_watch": 24
+    },
+    "rules": [
+      "601.2b",
+      "601.2f",
+      "601.2g",
+      "601.2h",
+      "610.3",
+      "701.4a"
+    ],
+    "development_review": "Green author performed independent read-only development audits and reported fixed frontdoor/ordering issues; this does not count as final published-head review."
   }
 }
