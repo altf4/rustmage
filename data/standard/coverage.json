@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "7f9fa2f4a73d54d3e114673c5effd29079d1a5c39edebc74efa8bc61527f80c5",
+  "catalogue_version": "a2dbf7188f388fbfa19ace74bdf90133fd076d6bd58e5bcf71edbc7b831acf8f",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2275,
-  "implemented_total": 2281,
+  "implemented_standard_cards": 2276,
+  "implemented_total": 2282,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 81,
-      "complete": 186
+      "gated": 80,
+      "complete": 187
     },
     "eoc": {
       "total": 8,
@@ -19215,8 +19215,8 @@
     {
       "name": "Kithkeeper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/kithkeeper.rs",
       "set": "ecl"
     },
