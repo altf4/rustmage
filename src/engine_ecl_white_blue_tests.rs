@@ -2812,3 +2812,146 @@ fn thoughtweft_imbuer_multiple_observers_stack_and_opposing_declarations_do_not_
         assert_eq!(g.stats(enemy).power, 2);
     }
 }
+
+#[test]
+fn kinbinding_counts_entries_before_it_arrives_and_keeps_departure_history_until_next_turn() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = spawn(&mut g, p, Card::from_name("Bear Cub").unwrap(), Zone::Hand);
+        cast(&mut g, bear, None);
+        settle(&mut g);
+        let kin = spawn(
+            &mut g,
+            p,
+            Card::from_name("Kinbinding").unwrap(),
+            Zone::Hand,
+        );
+        cast(&mut g, kin, None);
+        settle(&mut g);
+        assert_eq!(g.stats(bear).power, 3);
+        let second = spawn(&mut g, p, Card::from_name("Bear Cub").unwrap(), Zone::Hand);
+        cast(&mut g, second, None);
+        settle(&mut g);
+        assert_eq!(g.stats(bear).power, 4);
+        assert_eq!(g.stats(second).power, 4);
+        g.move_object(bear, Zone::Hand);
+        assert_eq!(g.stats(second).power, 4);
+        let object = g.object_ref(second);
+        g.change_controller(object, p.other());
+        assert_eq!(g.stats(second).power, 2);
+        let object = g.object_ref(kin);
+        g.change_controller(object, p.other());
+        assert_eq!(g.stats(second).power, 2);
+        let object = g.object_ref(kin);
+        g.change_controller(object, p);
+        let object = g.object_ref(second);
+        g.change_controller(object, p);
+        assert_eq!(g.stats(second).power, 4);
+        g.begin_turn();
+        assert_eq!(g.stats(second).power, 2);
+    }
+}
+
+#[test]
+fn kinbinding_begin_combat_token_is_green_white_kithkin_and_its_entry_immediately_increases_bonus()
+{
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = spawn(
+            &mut g,
+            p,
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        let kin = spawn(
+            &mut g,
+            p,
+            Card::from_name("Kinbinding").unwrap(),
+            Zone::Hand,
+        );
+        cast(&mut g, kin, None);
+        settle(&mut g);
+        assert_eq!(g.stats(bear).power, 2);
+        g.begin_step(Step::BeginCombat);
+        settle(&mut g);
+        let tokens: Vec<_> = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, object)| {
+                object.zone == Zone::Battlefield && object.controller == p && object.is_token()
+            })
+            .map(|(id, _)| id as CardId)
+            .collect();
+        assert_eq!(tokens.len(), 1);
+        let token = tokens[0];
+        assert_eq!(
+            g.object_view(token).card.identity(),
+            "@token/c48e9e904360e4cee1deeed8"
+        );
+        assert_eq!(g.object_view(token).card.colors(), 17);
+        assert!(g.has_subtype(token, "Kithkin"));
+        assert_eq!(
+            g.stats(token),
+            Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+        assert_eq!(g.stats(bear).power, 3);
+        g.move_object(token, Zone::Graveyard);
+        assert_eq!(g.stats(bear).power, 3);
+        g.state.active = p.other();
+        g.state.priority = p.other();
+        g.begin_step(Step::BeginCombat);
+        settle(&mut g);
+        assert!(
+            !g.state
+                .objects
+                .iter()
+                .any(|object| object.zone == Zone::Battlefield && object.is_token())
+        );
+    }
+}
+
+#[test]
+fn kinbinding_multiple_sources_stack_and_source_ability_loss_stops_its_bonus() {
+    let mut g = setup(Player::P0);
+    let bear = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Bear Cub").unwrap(),
+        Zone::Hand,
+    );
+    cast(&mut g, bear, None);
+    settle(&mut g);
+    let first = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Kinbinding").unwrap(),
+        Zone::Hand,
+    );
+    cast(&mut g, first, None);
+    settle(&mut g);
+    let second = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Kinbinding").unwrap(),
+        Zone::Hand,
+    );
+    cast(&mut g, second, None);
+    settle(&mut g);
+    assert_eq!(g.stats(bear).power, 4);
+    g.move_object(first, Zone::Hand);
+    assert_eq!(g.stats(bear).power, 3);
+    animate_counter_rule_fixture(&mut g, second);
+    spell(
+        &mut g,
+        Player::P0,
+        "Noggle the Mind",
+        &[Target::Card(second)],
+    );
+    settle(&mut g);
+    assert_eq!(g.stats(bear).power, 2);
+}

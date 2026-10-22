@@ -178,6 +178,39 @@ impl CharacteristicQuery<'_> {
                     toughness: 1,
                 };
             }
+            for group in object.card.static_ability_groups() {
+                for fragment in group.fragments {
+                    let StaticAbilityFragment::ControlledCreatureScaling {
+                        value,
+                        stats: scale,
+                    } = *fragment
+                    else {
+                        continue;
+                    };
+                    if object.controller != self.state.objects[id as usize].controller
+                        || Some(source) == departing
+                        || !self.continuous_fragment_available(source, |fragment| matches!(fragment,
+                            StaticAbilityFragment::ControlledCreatureScaling { value: v, stats: s } if *v == value && *s == scale)) {
+                        continue;
+                    }
+                    let amount = self.stat_value_without_hand(
+                        value,
+                        self.object_ref(source),
+                        object.controller,
+                        departing,
+                    );
+                    stats += Stats {
+                        power: scale
+                            .power
+                            .checked_mul(amount)
+                            .capacity("controlled scaling power exhausted"),
+                        toughness: scale
+                            .toughness
+                            .checked_mul(amount)
+                            .capacity("controlled scaling toughness exhausted"),
+                    };
+                }
+            }
             for (index, modifier) in object.card.scaling_modifiers().iter().enumerate() {
                 if !self.continuous_fragment_available(source, |fragment| {
                     matches!(fragment,

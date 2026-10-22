@@ -100,6 +100,10 @@ pub(crate) enum StaticAbilityFragment {
     StaticRuleGrant(u16, KeywordGrant),
     StaticModifier(u16, StaticModifier),
     ScalingModifier(u16, ScalingModifier),
+    ControlledCreatureScaling {
+        value: StatValue,
+        stats: Stats,
+    },
     EnchantedModifier(u16, EnchantedModifier),
     CounterKeyword(u16, CounterKind, Keywords),
     /// One union effect: Skeletons and other Zombies, never twice for changeling.
