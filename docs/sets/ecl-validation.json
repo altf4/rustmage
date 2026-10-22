@@ -1558,5 +1558,23 @@
     "focused_seconds": 0.83,
     "focused_report": "<cache>/rustmage-build-reports/8e23c4a1b8f5430b872d02a69baca25d.json",
     "clippy": "<cache>/rustmage-build-reports/3cddd42bc88d42cbbf72f6169bd053b3.json"
+  },
+  "supporting_source_audit": {
+    "scope": "Supporting-source completeness audit; not an independent final published review",
+    "evidence": "docs/sets/ecl-supporting-source-audit.json",
+    "supporting_count": 19,
+    "categories": {
+      "token": 11,
+      "transform": 7,
+      "emblem": 1
+    },
+    "authenticated_unique_pins": 96,
+    "new_source_packets": 2,
+    "new_full_source_reads": 4,
+    "checks_passed": 7,
+    "checks_seconds": 6.29,
+    "source_commit": "756d75ae",
+    "integrated_commit": "eb36164e",
+    "missing_source_packets": []
   }
 }
