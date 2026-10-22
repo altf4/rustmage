@@ -2287,6 +2287,7 @@ impl Game {
                     let quality = self.mana_quality(production, item.card);
                     match production.base().in_world(self, item.card) {
                         ManaProduction::ChosenColor
+                        | ManaProduction::ColorsAmongControlledPermanents
                         | ManaProduction::CountSubtype { .. }
                         | ManaProduction::Tagged { .. } => unreachable!("resolved production"),
                         ManaProduction::Fixed(mana) => {

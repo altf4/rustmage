@@ -304,6 +304,18 @@ impl<'g> FundingState<'g> {
                 }
             }
         }
+        let needs_permanent_colors = game.state.objects.iter().any(|object| {
+            object.zone == Zone::Battlefield
+                && object.controller == goal.actor
+                && object.card.activations().iter().any(|ability| {
+                    ability.mana_production().is_some_and(|production| {
+                        matches!(
+                            production.base(),
+                            ManaProduction::ColorsAmongControlledPermanents
+                        )
+                    })
+                })
+        });
         let has_external_tap_mana = game.state.objects.iter().any(|object| {
             object.zone == Zone::Battlefield
                 && object.controller == goal.actor
@@ -336,7 +348,7 @@ impl<'g> FundingState<'g> {
                                     .iter()
                                     .any(|subtype| game.has_subtype(*id as CardId, subtype))
                             || (object.controller == goal.actor
-                                && ((has_external_tap_mana
+                                && ((needs_permanent_colors || has_external_tap_mana
                                     || convoke
                                     && game.object_kinds(*id as CardId, object) & 1 != 0)
                                     || object.card.mana_color().is_some()
@@ -970,10 +982,12 @@ impl<'g> FundingState<'g> {
                 if (!object.tapped || !ability.cost.tap) && ability.mana_production().is_some() {
                     total = total.saturating_add(activation_gain_upper(
                         ability,
-                        ability
-                            .mana_production()
-                            .unwrap()
-                            .in_world(self, resource.id),
+                        match ability.mana_production().unwrap().base() {
+                            ManaProduction::ColorsAmongControlledPermanents => {
+                                ManaProduction::Fixed([1, 1, 1, 1, 1, 0])
+                            }
+                            production => production.in_world(self, resource.id),
+                        },
                         ability_world::CharacteristicWorld::counter_amounts(self, resource.id),
                         self.life,
                     ));
@@ -997,6 +1011,9 @@ impl<'g> FundingState<'g> {
                 let production = match production.base() {
                     // Types may be restored after an Aura leaves. Counting every
                     // object (even in other zones) deliberately overestimates.
+                    ManaProduction::ColorsAmongControlledPermanents => {
+                        ManaProduction::Fixed([1, 1, 1, 1, 1, 0])
+                    }
                     ManaProduction::CountSubtype { color, .. } => {
                         let mut mana = [0; 6];
                         mana[usize::from(color)] =

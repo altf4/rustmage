@@ -606,3 +606,84 @@ fn ecl_green_outrider_excludes_current_incarnation_and_tracks_departed_other_ent
         assert_eq!(g.stats(outrider).power, 5);
     }
 }
+#[test]
+fn ecl_green_bloom_tender_adds_each_present_color_once_and_ignores_other_zones_and_opponent() {
+    for p in [Player::P0, Player::P1] {
+        for all_colors in [false, true] {
+            let mut g = setup(p);
+            let tender = named(&mut g, p, "Bloom Tender", Zone::Hand);
+            cast(&mut g, tender, None, &[]);
+            settle(&mut g);
+            assert!(
+                !g.legal_actions()
+                    .iter()
+                    .any(|a| matches!(a, Action::ActivateMana { card, .. } if *card == tender))
+            );
+            g.state.objects[tender as usize].summoning_sick = false;
+            named(&mut g, p.other(), "Savannah Lions", Zone::Battlefield);
+            named(&mut g, p, "Highborn Vampire", Zone::Hand);
+            named(&mut g, p, "Forest", Zone::Battlefield);
+            if all_colors {
+                for name in [
+                    "Savannah Lions",
+                    "Aegis Turtle",
+                    "Highborn Vampire",
+                    "Swab Goblin",
+                    "Bear Cub",
+                    "Swab Goblin",
+                ] {
+                    let id = named(&mut g, p, name, Zone::Battlefield);
+                    g.state.objects[id as usize].tapped = true;
+                }
+            }
+            let before = g.state.players[p.index()].mana;
+            let production = if all_colors {
+                [1, 1, 1, 1, 1, 0]
+            } else {
+                [0, 0, 0, 0, 1, 0]
+            };
+            checked(
+                &mut g,
+                Action::ActivateMana {
+                    card: tender,
+                    ability: 0,
+                    payment: [0; 6],
+                    counter_payment: Counters::default(),
+                    production,
+                },
+            );
+            assert!(g.state.stack.is_empty());
+            assert_eq!(
+                g.state.players[p.index()].mana,
+                std::array::from_fn(|i| before[i] + production[i])
+            );
+        }
+    }
+}
+#[test]
+fn ecl_green_bloom_tender_funds_actual_guided_cast_with_nonmana_color_witnesses() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let tender = named(&mut g, p, "Bloom Tender", Zone::Battlefield);
+        named(&mut g, p, "Aegis Turtle", Zone::Battlefield);
+        let spell = named(&mut g, p, "Negate", Zone::Hand);
+        let target = named(&mut g, p, "Giant Growth", Zone::Hand);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        cast(&mut g, target, None, &[Target::Card(bear)]);
+        g.state.players[p.index()].mana = [0; 6];
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Spell(target),
+            },
+        );
+        let action = g.legal_actions().into_iter().find(|a| matches!(a, Action::ActivateMana { card, production, .. } if *card == tender && *production == [0, 1, 0, 0, 1, 0])).unwrap();
+        checked(&mut g, action);
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(bear).damage, 0);
+        assert_eq!(g.stats(bear).power, 2);
+    }
+}

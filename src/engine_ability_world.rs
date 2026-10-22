@@ -257,6 +257,19 @@ impl ManaProduction {
                 }
                 Self::Fixed(mana)
             }
+            Self::ColorsAmongControlledPermanents => {
+                let controller = world.object(source).controller;
+                let colors = (0..world.game().state.objects.len())
+                    .map(|id| id as CardId)
+                    .filter(|&id| {
+                        let object = world.object(id);
+                        object.zone == Zone::Battlefield && object.controller == controller
+                    })
+                    .fold(0u8, |colors, id| colors | world.colors(id));
+                Self::Fixed(std::array::from_fn(|index| {
+                    u32::from(index < 5 && colors & (1 << index) != 0)
+                }))
+            }
             Self::CountSubtype { color, subtype } => {
                 let controller = world.object(source).controller;
                 let count = world
