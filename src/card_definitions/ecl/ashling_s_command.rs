@@ -62,6 +62,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 Instruction::DamageBattlefield {
                     filters: &[BattlefieldFilter {
                         kinds: 1,
+                        max_mana: u64::MAX,
                         relation: -1,
                         nonland: false,
                         tapped: None,
@@ -124,6 +125,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 Instruction::DamageBattlefield {
                     filters: &[BattlefieldFilter {
                         kinds: 1,
+                        max_mana: u64::MAX,
                         relation: -1,
                         nonland: false,
                         tapped: None,
@@ -171,6 +173,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 Instruction::DamageBattlefield {
                     filters: &[BattlefieldFilter {
                         kinds: 1,
+                        max_mana: u64::MAX,
                         relation: -1,
                         nonland: false,
                         tapped: None,

@@ -2913,7 +2913,7 @@ impl Game {
                     tapped,
                 } => {
                     if let Some(player) = self.program_players(PlayerSet::Targeted, &item).next() {
-                        self.create_tokens(player, token, amount, tapped);
+                        self.create_tokens(player, token, u128::from(amount), tapped);
                     }
                 }
                 Instruction::ModifyTargetPlayerCreatures {

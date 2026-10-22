@@ -7308,8 +7308,12 @@ mod ecl_black_red_tests;
 #[path = "engine_ecl_core_tests.rs"]
 mod ecl_core_tests;
 #[cfg(test)]
-#[path = "engine_ecl_white_blue_tests.rs"]
-mod ecl_white_blue_tests;
-#[cfg(test)]
 #[path = "engine_ecl_green_colorless_tests.rs"]
 mod ecl_green_colorless_tests;
+#[cfg(test)]
+#[path = "engine_ecl_white_blue_tests.rs"]
+mod ecl_white_blue_tests;
+
+#[cfg(test)]
+#[path = "engine_ecl_commands_tests.rs"]
+mod ecl_commands_tests;

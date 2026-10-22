@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "a086178249d7ef1f72d2b5c9fd8e91ce935a89f2c5bd203544c67810a501411e",
+  "catalogue_version": "dc5bd3706e03f528bb3647652719edae2433672a84ffe4a6e3872e531347b50a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2215,
-  "implemented_total": 2221,
-  "token_definitions": 105,
+  "implemented_standard_cards": 2226,
+  "implemented_total": 2232,
+  "token_definitions": 106,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
   "omen_definitions": 13,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 141,
-      "complete": 126
+      "gated": 130,
+      "complete": 137
     },
     "eoc": {
       "total": 8,
@@ -2143,8 +2143,8 @@
     {
       "name": "Ashling's Command",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/ashling_s_command.rs",
       "set": "ecl"
     },
@@ -4615,8 +4615,8 @@
     {
       "name": "Brigid's Command",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/brigid_s_command.rs",
       "set": "ecl"
     },
@@ -4671,8 +4671,8 @@
     {
       "name": "Bristlebane Outrider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/bristlebane_outrider.rs",
       "set": "ecl"
     },
@@ -7311,8 +7311,8 @@
     {
       "name": "Crib Swap",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/crib_swap.rs",
       "set": "ecl"
     },
@@ -25279,8 +25279,8 @@
     {
       "name": "Personify",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/personify.rs",
       "set": "ecl"
     },
@@ -26439,8 +26439,8 @@
     {
       "name": "Pummeler for Hire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/pummeler_for_hire.rs",
       "set": "ecl"
     },
@@ -28415,8 +28415,8 @@
     {
       "name": "Rime Chill",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/rime_chill.rs",
       "set": "ecl"
     },
@@ -34591,8 +34591,8 @@
     {
       "name": "Sygg's Command",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/sygg_s_command.rs",
       "set": "ecl"
     },
@@ -36607,8 +36607,8 @@
     {
       "name": "Thoughtweft Charge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/thoughtweft_charge.rs",
       "set": "ecl"
     },
@@ -37631,8 +37631,8 @@
     {
       "name": "Tributary Vaulter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/tributary_vaulter.rs",
       "set": "ecl"
     },
@@ -39407,8 +39407,8 @@
     {
       "name": "Vinebred Brawler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/vinebred_brawler.rs",
       "set": "ecl"
     },
