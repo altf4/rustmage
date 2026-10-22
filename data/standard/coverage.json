@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "95e47729849a61925b9011f2fa288208b3f5f434c131d51ed37aca48258d086d",
+  "catalogue_version": "6ad0519b6c01afe8af21e146dbf9a6a9857097aabf56d8e21e2df0993437920e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2193,
-  "implemented_total": 2199,
+  "implemented_standard_cards": 2204,
+  "implemented_total": 2210,
   "token_definitions": 105,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 163,
-      "complete": 104
+      "gated": 152,
+      "complete": 115
     },
     "eoc": {
       "total": 8,
@@ -2191,8 +2191,8 @@
     {
       "name": "Assert Perfection",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/assert_perfection.rs",
       "set": "ecl"
     },
@@ -4663,8 +4663,8 @@
     {
       "name": "Bristlebane Battler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/bristlebane_battler.rs",
       "set": "ecl"
     },
@@ -10831,8 +10831,8 @@
     {
       "name": "Encumbered Reejerey",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/encumbered_reejerey.rs",
       "set": "ecl"
     },
@@ -12319,8 +12319,8 @@
     {
       "name": "Firdoch Core",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/firdoch_core.rs",
       "set": "ecl"
     },
@@ -12583,8 +12583,8 @@
     {
       "name": "Flaring Cinder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/flaring_cinder.rs",
       "set": "ecl"
     },
@@ -13543,8 +13543,8 @@
     {
       "name": "Gallant Fowlknight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/gallant_fowlknight.rs",
       "set": "ecl"
     },
@@ -20471,8 +20471,8 @@
     {
       "name": "Loch Mare",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/loch_mare.rs",
       "set": "ecl"
     },
@@ -27839,8 +27839,8 @@
     {
       "name": "Reluctant Dounguard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/reluctant_dounguard.rs",
       "set": "ecl"
     },
@@ -29367,8 +29367,8 @@
     {
       "name": "Safewright Cavalry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/safewright_cavalry.rs",
       "set": "ecl"
     },
@@ -32799,8 +32799,8 @@
     {
       "name": "Springleaf Drum",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/springleaf_drum.rs",
       "set": "ecl"
     },
@@ -40111,8 +40111,8 @@
     {
       "name": "Wary Farmer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/wary_farmer.rs",
       "set": "ecl"
     },

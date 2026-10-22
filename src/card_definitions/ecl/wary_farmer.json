@@ -3,10 +3,30 @@
   "catalogue_id": 4988,
   "oracle_id": "63eed1f5-442f-433d-989c-397b88543162",
   "facts_sha256": "032e603afd5180c5af6a21cf9c4888147a516a94d7f043b3956daa724a28e007",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bdb67b43051d7c54704e26d76f17948f02029ca27b8e3943e4d943830f492bee"
   },
-  "physical_metadata_sha256": "0e55ebb0c766ec8796bbb9c153299f08703486932c727fcb32c4d18ae6c0b835"
+  "physical_metadata_sha256": "0e55ebb0c766ec8796bbb9c153299f08703486932c727fcb32c4d18ae6c0b835",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WaryFarmer.java",
+  "java_sha256": "e4cf46748f79df1c1a7fe5229c531bac06a0f7cfea01f65b9e407f790353ab2b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/AtStepTriggeredAbility.java",
+      "sha256": "acaebe5709a15b181c6f315684db3969eb622d6dcc45f2994bf54c05b00d22af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    }
+  ]
 }
