@@ -400,7 +400,7 @@ pub(crate) enum ManaProduction {
     Fixed(Mana),
     ChoiceStat {
         colors: u8,
-        amount: StatValue,
+        amount: &'static StatValue,
     },
     CountSubtype {
         color: u8,

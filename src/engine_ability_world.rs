@@ -323,7 +323,7 @@ impl ManaProduction {
             }
             Self::ChoiceStat { colors, amount } => Self::Choice {
                 mask: colors,
-                amount: u32::try_from(world.value(amount, source).max(0))
+                amount: u32::try_from(world.value(*amount, source).max(0))
                     .capacity("mana representation exhausted"),
             },
             Self::CountSubtype { color, subtype } => {

@@ -166,7 +166,7 @@ fn ecl_green_choice_stat_mana_counts_other_creatures_in_owned_worlds() {
         named(&mut g, p, "Forest", Zone::Battlefield);
         let definition = ManaProduction::ChoiceStat {
             colors: 2 | 16,
-            amount: StatValue::Count(CountFilter {
+            amount: &StatValue::Count(CountFilter {
                 zone: CountZone::Battlefield,
                 relation: 0,
                 kind: 1,
