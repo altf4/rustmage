@@ -2274,6 +2274,12 @@ impl Game {
                 }
                 Instruction::GrantGraveyardCast(kind) => self.grant_graveyard_cast(&item, kind),
                 Instruction::ExileDiscardedWithStash => self.exile_discarded_with_stash(&item),
+                Instruction::ExileUntilManaValueFreeCast { players, minimum } => {
+                    let owners: Vec<_> = self.program_players(players, &item).collect();
+                    for owner in owners {
+                        self.exile_until_mana_value_free_cast(owner, item.controller, minimum);
+                    }
+                }
                 Instruction::ExileEachLibraryTopCastFree => {
                     self.exile_each_top_cast_free(item.controller);
                     return;

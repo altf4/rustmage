@@ -516,6 +516,7 @@ fn hand_land_actual_foreign_exile_permissions_keep_caster_private_hand_and_land_
             let source = named(&mut g, p.other(), name, Zone::Exile);
             g.state.exile_permissions.push(ExilePlayPermission {
                 cast_only: false,
+                without_mana: false,
                 object: g.object_ref(source),
                 player: p,
                 expires_turn: g.state.turn,

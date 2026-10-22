@@ -76,6 +76,7 @@ fn paid(g: &mut Game, p: Player, name: &str, promise: bool, target: Option<Targe
     let card = named(g, p.other(), name, Zone::Exile);
     g.state.exile_permissions.push(ExilePlayPermission {
         cast_only: false,
+        without_mana: false,
         object: g.object_ref(card),
         player: p,
         expires_turn: g.state.turn,
@@ -257,6 +258,7 @@ fn paid_targets(g: &mut Game, p: Player, name: &str, promise: bool, targets: &[T
     let card = named(g, p.other(), name, Zone::Exile);
     g.state.exile_permissions.push(ExilePlayPermission {
         cast_only: false,
+        without_mana: false,
         object: g.object_ref(card),
         player: p,
         expires_turn: g.state.turn,

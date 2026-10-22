@@ -3149,6 +3149,7 @@ impl Game {
                         Zone::Exile => {
                             self.can_cast_exiled(actor, card)
                                 || self.plotted_cast_available(actor, card)
+                                || self.can_cast_exiled_free(actor, card)
                         }
                         _ => false,
                     };
@@ -3248,7 +3249,9 @@ impl Game {
                         return true;
                     }
                     if !casting_prohibited && !obj.is_token() && !obj.card.is_land() {
-                        if free_hand_cast && obj.zone == Zone::Hand {
+                        if (free_hand_cast && obj.zone == Zone::Hand)
+                            || (obj.zone == Zone::Exile && self.can_cast_exiled_free(actor, card))
+                        {
                             for face in [CastFace::Normal, CastFace::Adventure, CastFace::Omen] {
                                 for flash_surcharge in [false, true] {
                                     if self.permitted_cast_available(
@@ -7803,3 +7806,7 @@ mod ecl_navigator_tests;
 #[cfg(test)]
 #[path = "engine_ecl_morcant_tests.rs"]
 mod ecl_morcant_tests;
+
+#[cfg(test)]
+#[path = "engine_ecl_dream_harvest_tests.rs"]
+mod ecl_dream_harvest_tests;

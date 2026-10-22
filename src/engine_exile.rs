@@ -9,8 +9,39 @@ pub struct ExilePlayPermission {
     pub player: Player,
     pub expires_turn: u32,
     pub cast_only: bool,
+    pub without_mana: bool,
 }
 impl Game {
+    pub(super) fn exile_until_mana_value_free_cast(
+        &mut self,
+        owner: Player,
+        player: Player,
+        minimum: u16,
+    ) {
+        let cards: Vec<_> = self.state.players[owner.index()]
+            .library
+            .iter()
+            .rev()
+            .copied()
+            .collect();
+        let mut value = 0u128;
+        for id in cards {
+            if value >= u128::from(minimum) {
+                break;
+            }
+            if self.state.objects[id as usize].zone != Zone::Library {
+                continue;
+            }
+            let event = self.move_object(id, Zone::Exile);
+            if event.moved && event.destination == Zone::Exile {
+                value = value
+                    .checked_add(u128::from(event.before.card.fixed_mana_value()))
+                    .capacity("exiled mana value exhausted");
+                self.grant_exile_free_cast_permission(player, event.after);
+            }
+        }
+    }
+
     pub(super) fn can_play_exiled(&self, player: Player, card: CardId) -> bool {
         if self.can_play_foreign_stash(player, card)
             || self.can_play_adventure(player, card)
@@ -19,7 +50,8 @@ impl Game {
             return true;
         }
         self.state.exile_permissions.iter().any(|p| {
-            !p.cast_only
+            !p.without_mana
+                && !p.cast_only
                 && p.player == player
                 && p.object == self.object_ref(card)
                 && p.expires_turn >= self.state.turn
@@ -28,14 +60,27 @@ impl Game {
     pub(super) fn can_cast_exiled(&self, player: Player, card: CardId) -> bool {
         self.can_play_exiled(player, card)
             || self.state.exile_permissions.iter().any(|p| {
-                p.cast_only
+                !p.without_mana
+                    && p.cast_only
                     && p.player == player
                     && p.object == self.object_ref(card)
                     && p.expires_turn >= self.state.turn
             })
     }
+    pub(super) fn can_cast_exiled_free(&self, player: Player, card: CardId) -> bool {
+        self.state.objects[card as usize].zone == Zone::Exile
+            && self.state.exile_permissions.iter().any(|p| {
+                p.without_mana
+                    && p.player == player
+                    && p.object == self.object_ref(card)
+                    && p.expires_turn >= self.state.turn
+            })
+    }
+    pub(super) fn grant_exile_free_cast_permission(&mut self, player: Player, object: ObjectRef) {
+        self.grant_exile_permission(player, object, false, true, true);
+    }
     pub(super) fn grant_exile_cast_permission(&mut self, player: Player, object: ObjectRef) {
-        self.grant_exile_permission(player, object, false, true);
+        self.grant_exile_permission(player, object, false, true, false);
     }
     pub(super) fn exile_top_play(&mut self, player: Player, amount: u16, next_turn: bool) {
         self.exile_top_play_from(player, player, amount, next_turn);
@@ -73,7 +118,7 @@ impl Game {
         object: ObjectRef,
         next_turn: bool,
     ) {
-        self.grant_exile_permission(player, object, next_turn, false);
+        self.grant_exile_permission(player, object, next_turn, false, false);
     }
     fn grant_exile_permission(
         &mut self,
@@ -81,6 +126,7 @@ impl Game {
         object: ObjectRef,
         next_turn: bool,
         cast_only: bool,
+        without_mana: bool,
     ) {
         if self.object_ref(object.card) != object
             || self.state.objects[object.card as usize].zone != Zone::Exile
@@ -107,6 +153,7 @@ impl Game {
                 player,
                 expires_turn,
                 cast_only,
+                without_mana,
             },
         );
     }

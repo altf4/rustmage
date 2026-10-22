@@ -3,10 +3,21 @@
   "catalogue_id": 1179,
   "oracle_id": "70b9497f-0dd6-4b66-9675-57c7041fe3c0",
   "facts_sha256": "dc3a063d7b59960fdf1892ab23458de784880909e69a7cc82e0811272a19b2d9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "badbc27e0ef3d197394b49e8910f8fb79f3d9e2f92fae2e7cfa7f6e8f7c30955"
   },
-  "physical_metadata_sha256": "32b995d99b45d9d16858ed0dfa9be4219688387e156979cf8857d61e0c3dc872"
+  "physical_metadata_sha256": "32b995d99b45d9d16858ed0dfa9be4219688387e156979cf8857d61e0c3dc872",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DreamHarvest.java",
+  "java_sha256": "69ae666dd65fb8067b946c4df535ce96e9a123dfa949ff7613db972595fdb672",
+  "rules_tests": "src/engine_ecl_dream_harvest_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+      "sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+    }
+  ]
 }
