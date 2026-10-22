@@ -317,6 +317,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             kicker: None,
                             bargain: None,
                             evidence: None,
+                            optional_additional: None,
                             origin: if info.method == CastMethod::Flashback {
                                 Zone::Graveyard
                             } else {
