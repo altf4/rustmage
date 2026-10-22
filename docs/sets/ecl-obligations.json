@@ -5729,7 +5729,7 @@
       "name": "Sunderflock",
       "definition": "src/card_definitions/ecl/sunderflock.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Sunderflock",
@@ -5745,7 +5745,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/sunderflock.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "ef67c170-68aa-4ada-8cee-261a4dbb1b5d",
@@ -6573,7 +6577,7 @@
       "name": "Wanderwine Farewell",
       "definition": "src/card_definitions/ecl/wanderwine_farewell.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Wanderwine Farewell",
@@ -6588,7 +6592,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/wanderwine_farewell.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "20c3c8ab-e996-462e-a1f6-87421fc3ee55",

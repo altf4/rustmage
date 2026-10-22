@@ -159,3 +159,5 @@ Figure of Fable is integrated with every hybrid payment route,persistent subtype
 ## Verified checkpoint249
 
 Revisionf9cceb28 passed all eight release phases in610.57seconds:2,968 native tests (one ignored),9 catalogue tests,all22 Foundations game suites and current ECL games,Clippy/provenance,release build and benchmark. Peak3.4GiB;1,116,618,752 completed disposable bytes cleaned. Required libraries remain at exact paths/hashes recorded in the JSON,including the retained239-card artifacts. Freeform regression49,832decisions/0.237338338seconds=209,961.86decisions/s;clone128.21ns,restore124.46ns;initial logical state21,080bytes. Full-pool ECL acceptance and inherited audits remain open.
+
+Wanderwine Farewell and Sunderflock are integrated.127 white/blue scenarios pass2.92seconds; an added suspended linked-return case passes0.04seconds. Farewell counts actual returned permanents and checks the Merfolk condition after linked-entry choices complete. Sunderflock uses greatest Elemental mana value,including noncreature Kindred permanents,and distinguishes actual casts (including free casts) from copies/direct entry. Admission251/273;22 gated.

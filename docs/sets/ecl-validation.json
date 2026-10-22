@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 142,
+  "newly_tested_physical_cards": 144,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -125,6 +125,7 @@
     "Spry and Mighty",
     "Stalactite Dagger",
     "Sting-Slinger",
+    "Sunderflock",
     "Swat Away",
     "Sygg's Command",
     "Sygg, Wanderwine Wisdom // Sygg, Wanderbrine Shield",
@@ -142,13 +143,14 @@
     "Vinebred Brawler",
     "Voracious Tome-Skimmer",
     "Wanderbrine Trapper",
+    "Wanderwine Farewell",
     "Warren Torchmaster",
     "Wary Farmer",
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 249,
-  "remaining_gated": 24,
+  "current_admission_flags": 251,
+  "remaining_gated": 22,
   "inherited_evidence_audit": {
     "audited": 20,
     "total": 107,
@@ -271,10 +273,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T20:01:55.178304+00:00",
-    "elapsed_seconds": 16747.961453,
-    "newly_verified_cards": 142,
-    "cards_per_hour": 30.52311777971227,
+    "end_utc": "2026-10-22T20:14:29.395163+00:00",
+    "elapsed_seconds": 17502.178312,
+    "newly_verified_cards": 144,
+    "cards_per_hour": 29.619170297480625,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "428 integrated ECL scenarios passed at244-card checkpoint1aa48507; latest full release239-card904c25c2",
@@ -621,19 +623,6 @@
     "cleaned_allocated_bytes": 1102700544,
     "scope": "232-card fixed-input checkpoint; entire-set acceptance pending. Later Mornsong integration has focused evidence."
   },
-  "oko": {
-    "source_commit": "df36bd86",
-    "native_tests": 2905,
-    "native_seconds": 78.55,
-    "focused_tests": 6,
-    "focused_seconds": 0.24,
-    "clippy": "all targets passed with warnings denied",
-    "resource_reports": [
-      "<cache>/rustmage-build-reports/82318eb766054137b00a913e9f1f3caf.json",
-      "<cache>/rustmage-build-reports/ca2e4d6fb52848189cf0684b7e90b3ec.json",
-      "<cache>/rustmage-build-reports/8fb9afc2348641b9921484498f7b41fe.json"
-    ]
-  },
   "release_239_retained_evidence": {
     "full_release_validation": {
       "status": "passed all eight phases",
@@ -791,5 +780,18 @@
       "<cache>/rustmage-validation-a04ohuv0/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
       "<cache>/rustmage-validation-a04ohuv0/debug/deps/librustmage.so": "695b1393176817bc1333cc139a2101d50b4702740bbdc74ab12f5950122ab496"
     }
+  },
+  "oko": {
+    "source_commit": "df36bd86",
+    "native_tests": 2905,
+    "native_seconds": 78.55,
+    "focused_tests": 6,
+    "focused_seconds": 0.24,
+    "clippy": "all targets passed with warnings denied",
+    "resource_reports": [
+      "<cache>/rustmage-build-reports/82318eb766054137b00a913e9f1f3caf.json",
+      "<cache>/rustmage-build-reports/ca2e4d6fb52848189cf0684b7e90b3ec.json",
+      "<cache>/rustmage-build-reports/8fb9afc2348641b9921484498f7b41fe.json"
+    ]
   }
 }
