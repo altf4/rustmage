@@ -5862,3 +5862,104 @@ fn dawnhand_insufficient_counters_reject_without_exploring_equivalent_land_subse
         },
     );
 }
+
+#[test]
+fn dawnhand_copy_epochs_keep_queued_exile_packets_separate_from_new_linked_abilities() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Dawnhand Dissident", Zone::Battlefield);
+        let reference = g.object_ref(source);
+        let donor = named(&mut g, p, "Gigantosaurus", Zone::Battlefield);
+        let donor_ref = g.object_ref(donor);
+        let old_card = named(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(old_card),
+            },
+        );
+        checked(&mut g, Action::ChooseAdditionalCost { object: donor_ref });
+        kindle_pay(&mut g);
+        assert_eq!(g.state.stack.last().unwrap().ability_origin(), 0);
+        // Typed boundary for acquiring the same printed abilities through a new
+        // in-place copy effect. The permanent is still the exact same object.
+        let definition = g.state.objects[source as usize].card;
+        g.state.copy_recipes = Some(
+            vec![copies::CopyRow {
+                object: reference,
+                recipe: CopyRecipe::new(definition),
+                ability_origin: 42,
+            }]
+            .into(),
+        );
+        settle(&mut g);
+        g.add_counter(source, CounterKind::PlusOne, 1);
+        assert_eq!(g.object_ref(source), reference);
+        assert!(
+            g.observe(p)
+                .linked_exile
+                .iter()
+                .any(|link| link.exiled == g.object_ref(old_card) && link.ability_origin == 0)
+        );
+        reject(
+            &mut g,
+            Action::AnnounceLinkedExileCounterCost {
+                card: old_card,
+                source: reference,
+                flash_surcharge: false,
+            },
+        );
+        g.state.objects[source as usize].tapped = false;
+        let new_card = named(&mut g, p, "Bear Cub", Zone::Graveyard);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(new_card),
+            },
+        );
+        checked(&mut g, Action::ChooseAdditionalCost { object: donor_ref });
+        kindle_pay(&mut g);
+        assert_eq!(g.state.stack.last().unwrap().ability_origin(), 42);
+        g.state.copy_recipes.as_mut().unwrap()[0].ability_origin = 84;
+        settle(&mut g);
+        assert!(
+            g.observe(p)
+                .linked_exile
+                .iter()
+                .any(|link| link.exiled == g.object_ref(new_card) && link.ability_origin == 42)
+        );
+        reject(
+            &mut g,
+            Action::AnnounceLinkedExileCounterCost {
+                card: new_card,
+                source: reference,
+                flash_surcharge: false,
+            },
+        );
+        g.state.copy_recipes.as_mut().unwrap()[0].ability_origin = 42;
+        dawnhand_announce(&mut g, new_card, reference);
+        dawnhand_remove(&mut g, donor_ref, &[CounterKind::MinusOne; 3]);
+        kindle_pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(new_card).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(old_card).zone, Zone::Exile);
+        g.state.copy_recipes = None;
+        assert_eq!(g.linked_counter_permission(p, old_card, reference), Some(3));
+    }
+}
