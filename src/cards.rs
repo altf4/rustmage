@@ -670,6 +670,8 @@ pub enum EffectChoiceKind {
     OptionalBlightCost(u32),
     /// Choose two creatures, then draw and grant the absolute power difference.
     PowerDifferenceBoost,
+    /// The resolving spell controller chooses one creature for each player.
+    KeepSharedCreatureTypes,
     RemoveCounters,
     Proliferate,
     /// Choose distinct untapped permanents as a non-targeting activation cost.
@@ -817,6 +819,7 @@ pub(crate) enum Instruction {
     ReturnChosenCreatureTypeFromGraveyard,
     PartitionLibraryPiles(u16),
     KeepOneOfEachPermanentType,
+    KeepSharedCreatureTypes,
     RememberOwnSacrifice,
     RecoverAnotherPermanent,
     ReturnLinkedExileToHand,

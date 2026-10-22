@@ -1718,6 +1718,11 @@ impl Game {
                     self.start_library_piles(item.controller, maximum);
                     return;
                 }
+                Instruction::KeepSharedCreatureTypes => {
+                    if self.start_keep_shared_types(&item) {
+                        return;
+                    }
+                }
                 Instruction::KeepOneOfEachPermanentType => {
                     if self.start_keep_types(item.controller.other()) {
                         return;

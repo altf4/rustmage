@@ -6598,3 +6598,303 @@ fn ajani_outland_chaperone_zero_life_look_still_shuffles_and_countered_ultimate_
         assert_eq!(g.object_view(source).zone, Zone::Graveyard);
     }
 }
+
+fn winnowing_choice(g: &mut Game, p: Player) {
+    spell(g, p, "Winnowing", &[]);
+    checked(g, Action::Pass);
+    checked(g, Action::Pass);
+    assert!(matches!(g.state.pending, Pending::EffectChoice { .. }));
+    assert_eq!(g.actor(), Some(p));
+    assert_eq!(
+        g.observe(p).effect_choice.as_ref().unwrap().kind,
+        crate::EffectChoiceKind::KeepSharedCreatureTypes
+    );
+}
+fn winnowing_keep(g: &mut Game, p: Player, id: CardId) {
+    assert_eq!(g.actor(), Some(p));
+    let object = g.object_ref(id);
+    checked(g, Action::ChooseCreature { object });
+}
+
+#[test]
+fn winnowing_controller_chooses_for_both_players_without_targeting_and_uses_current_controllers() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let anchor = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let same = spawn(
+            &mut g,
+            p,
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        let sacrifice = spawn(&mut g, p.other(), Card::HillGiant, Zone::Battlefield);
+        let object = g.object_ref(sacrifice);
+        g.change_controller(object, p);
+        g.grant_keyword_effects(&[sacrifice], object, Keywords::INDESTRUCTIBLE);
+        let enemy = spawn(
+            &mut g,
+            p,
+            Card::from_name("Tolarian Terror").unwrap(),
+            Zone::Battlefield,
+        );
+        let object = g.object_ref(enemy);
+        g.change_controller(object, p.other());
+        g.grant_keyword_effects(&[enemy], object, Keywords::HEXPROOF);
+        let other = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Llanowar Elves").unwrap(),
+            Zone::Battlefield,
+        );
+        let core = spawn(
+            &mut g,
+            p,
+            Card::from_name("Firdoch Core").unwrap(),
+            Zone::Battlefield,
+        );
+        let land = spawn(&mut g, p, Card::Plains, Zone::Battlefield);
+        g.state.players[p.index()].mana = [2, 0, 0, 0, 0, 4];
+        winnowing_choice(&mut g, p);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert!(g.observe(p.other()).effect_choice.is_some());
+        for id in [core, land, enemy] {
+            let object = g.object_ref(id);
+            reject_atomic(&mut g, Action::ChooseCreature { object });
+        }
+        reject_atomic(&mut g, Action::DeclineEffectPayment);
+        winnowing_keep(&mut g, p, anchor);
+        let object = g.object_ref(anchor);
+        reject_atomic(&mut g, Action::ChooseCreature { object });
+        assert_eq!(g.actor(), Some(p));
+        winnowing_keep(&mut g, p, enemy);
+        settle(&mut g);
+        for id in [anchor, same, enemy, core, land] {
+            assert_eq!(g.object_view(id).zone, Zone::Battlefield);
+        }
+        for id in [sacrifice, other] {
+            assert_eq!(g.object_view(id).zone, Zone::Graveyard);
+        }
+        assert_eq!(g.object_view(sacrifice).owner, p.other());
+        assert_eq!(g.object_view(enemy).controller, p.other());
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+
+#[test]
+fn winnowing_skips_empty_players_and_commits_all_sacrifices_in_one_graveyard_batch() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let moon = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Moonshadow").unwrap(),
+            Zone::Battlefield,
+        );
+        g.set_counters(moon, Counters::of(CounterKind::MinusOne, 6));
+        let a = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+        let b = spawn(&mut g, p.other(), Card::HillGiant, Zone::Battlefield);
+        winnowing_choice(&mut g, p);
+        assert_eq!(
+            g.observe(p).effect_choice.as_ref().unwrap().required[p.index()],
+            0
+        );
+        winnowing_keep(&mut g, p, moon);
+        settle(&mut g);
+        assert_eq!(g.object_view(a).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(b).zone, Zone::Graveyard);
+        assert_eq!(g.counter_count(moon, CounterKind::MinusOne), 5);
+
+        let mut g = setup(p);
+        let source = spell(&mut g, p, "Winnowing", &[]);
+        settle(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+        assert!(g.observe(p).effect_choice.is_none());
+    }
+}
+
+fn crew_winnowing_vehicle(g: &mut Game, p: Player, vehicle: CardId, contributor: CardId) {
+    let ability = g.state.objects[vehicle as usize]
+        .card
+        .activations()
+        .iter()
+        .position(|a| a.crew_minimum().is_some())
+        .unwrap() as u16;
+    checked(
+        g,
+        Action::AnnounceActivate {
+            card: vehicle,
+            ability,
+            counter_payment: Counters::default(),
+        },
+    );
+    let object = g.object_ref(contributor);
+    checked(g, Action::ChooseCrewer { object });
+    checked(g, Action::FinishCrew);
+    settle(g);
+    assert!(g.is_creature(vehicle));
+    assert!(g.has_subtype(vehicle, "Vehicle"));
+    assert!(
+        crate::cards::CREATURE_TYPES
+            .iter()
+            .all(|kind| !g.has_subtype(vehicle, kind))
+    );
+    assert_eq!(g.object_view(vehicle).controller, p);
+}
+
+#[test]
+fn winnowing_typeless_vehicle_anchor_keeps_itself_but_neither_other_vehicles_nor_changelings_share_its_type()
+ {
+    for p in [Player::P0, Player::P1] {
+        for choose_changeling in [false, true] {
+            let mut g = setup(p);
+            let a = spawn(
+                &mut g,
+                p,
+                Card::from_name("Cultivator's Caravan").unwrap(),
+                Zone::Battlefield,
+            );
+            let b = spawn(
+                &mut g,
+                p,
+                Card::from_name("Cultivator's Caravan").unwrap(),
+                Zone::Battlefield,
+            );
+            let first = spawn(&mut g, p, Card::HillGiant, Zone::Battlefield);
+            let second = spawn(&mut g, p, Card::HillGiant, Zone::Battlefield);
+            crew_winnowing_vehicle(&mut g, p, a, first);
+            crew_winnowing_vehicle(&mut g, p, b, second);
+            let changeling = spawn(
+                &mut g,
+                p,
+                Card::from_name("@token/shapeshifter_1_1_colorless_changeling").unwrap(),
+                Zone::Battlefield,
+            );
+            winnowing_choice(&mut g, p);
+            winnowing_keep(&mut g, p, if choose_changeling { changeling } else { a });
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(a).zone,
+                if choose_changeling {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            assert_eq!(g.object_view(b).zone, Zone::Graveyard);
+            for id in [first, second] {
+                assert_eq!(
+                    g.object_view(id).zone,
+                    if choose_changeling {
+                        Zone::Battlefield
+                    } else {
+                        Zone::Graveyard
+                    }
+                );
+            }
+            if choose_changeling {
+                assert_eq!(g.object_view(changeling).zone, Zone::Battlefield);
+            } else {
+                assert_ne!(g.object_view(changeling).zone, Zone::Battlefield);
+            }
+        }
+    }
+}
+
+#[test]
+fn winnowing_uses_effective_creature_types_and_exact_incarnations_in_public_choices() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let anchor = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let other = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        spell(&mut g, p, "Noggle the Mind", &[Target::Card(anchor)]);
+        settle(&mut g);
+        assert!(!g.has_subtype(anchor, "Bear"));
+        assert!(g.has_subtype(anchor, "Noggle"));
+        let stale = g.object_ref(other);
+        g.move_object(other, Zone::Exile);
+        g.move_object(other, Zone::Battlefield);
+        winnowing_choice(&mut g, p);
+        reject_atomic(&mut g, Action::ChooseCreature { object: stale });
+        winnowing_keep(&mut g, p, anchor);
+        settle(&mut g);
+        assert_eq!(g.object_view(anchor).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(other).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn winnowing_convoke_pays_white_and_generic_with_distinct_sick_creatures_and_then_chooses_tapped_anchor()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let token = Card::from_name("@token/c48e9e904360e4cee1deeed8").unwrap();
+        let a = spawn(&mut g, p, token, Zone::Battlefield);
+        let b = spawn(&mut g, p, token, Zone::Battlefield);
+        let bear = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        for id in [a, b, bear] {
+            g.state.objects[id as usize].summoning_sick = true;
+        }
+        let source = spawn(&mut g, p, Card::from_name("Winnowing").unwrap(), Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
+        checked(&mut g, Action::AnnounceCast { card: source });
+        checked(&mut g, Action::BeginConvoke);
+        for (id, contribution) in [
+            (a, ConvokeContribution::White),
+            (b, ConvokeContribution::White),
+            (bear, ConvokeContribution::Generic),
+        ] {
+            let object = g.object_ref(id);
+            checked(
+                &mut g,
+                Action::ChooseConvoker {
+                    object,
+                    contribution,
+                },
+            );
+            reject_atomic(
+                &mut g,
+                Action::ChooseConvoker {
+                    object,
+                    contribution,
+                },
+            );
+        }
+        finish_cast_choices(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        assert!([a, b, bear].iter().all(|&id| g.object_view(id).tapped));
+        winnowing_keep(&mut g, p, a);
+        settle(&mut g);
+        assert_eq!(g.object_view(a).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(b).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn winnowing_simultaneous_sacrifice_preserves_granted_persist_after_grantor_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let anchor = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let victim = spawn(&mut g, p, Card::HillGiant, Zone::Battlefield);
+        let rhys = rhys_grant(&mut g, p, victim);
+        let before = g.object_ref(victim);
+        g.change_controller(before, p.other());
+        let enemy_anchor = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+        winnowing_choice(&mut g, p);
+        winnowing_keep(&mut g, p, anchor);
+        winnowing_keep(&mut g, p, enemy_anchor);
+        settle(&mut g);
+        assert_eq!(g.object_view(rhys).zone, Zone::Graveyard);
+        let returned = g.object_view(victim);
+        assert_eq!(returned.zone, Zone::Battlefield);
+        assert_eq!(returned.controller, p);
+        assert_ne!(returned.reference, before);
+        assert_eq!(returned.counters.get(CounterKind::MinusOne), 1);
+        assert_eq!(g.stats(victim), Stats::from(2));
+        assert!(!returned.tapped);
+        assert_eq!(g.object_view(anchor).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(enemy_anchor).zone, Zone::Battlefield);
+    }
+}

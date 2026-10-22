@@ -199,6 +199,8 @@ mod blocking;
 mod combat_restrictions;
 #[path = "engine_effect_choices.rs"]
 mod effect_choices;
+#[path = "engine_keep_shared_types.rs"]
+mod keep_shared_types;
 #[path = "engine_proliferate.rs"]
 mod proliferate;
 pub use proliferate::ProliferateChoiceView;
@@ -2997,7 +2999,8 @@ impl Game {
                             }
                             EffectChoiceKind::TapPermanents(_) => Action::TapForEffect { object },
                             EffectChoiceKind::Sacrifice => Action::Sacrifice { object },
-                            EffectChoiceKind::PowerDifferenceBoost => {
+                            EffectChoiceKind::PowerDifferenceBoost
+                            | EffectChoiceKind::KeepSharedCreatureTypes => {
                                 Action::ChooseCreature { object }
                             }
                             EffectChoiceKind::ExileFromHand => Action::ExileHandCard { object },

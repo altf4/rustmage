@@ -516,6 +516,7 @@ impl Game {
             | EffectChoiceKind::TapPermanents(_)
             | EffectChoiceKind::UntapLands { .. }
             | EffectChoiceKind::PowerDifferenceBoost
+            | EffectChoiceKind::KeepSharedCreatureTypes
             | EffectChoiceKind::RemoveCounters
             | EffectChoiceKind::Proliferate
             | EffectChoiceKind::HandCreature

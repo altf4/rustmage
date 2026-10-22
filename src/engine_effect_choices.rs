@@ -51,6 +51,9 @@ impl Game {
         if choice.counter_removal.is_some() {
             return false;
         }
+        if choice.kind == EffectChoiceKind::KeepSharedCreatureTypes {
+            return self.keep_shared_type_candidate(choice, object);
+        }
         let o = &self.state.objects[object.card as usize];
         if choice.proliferate.is_some() {
             return o.zone == Zone::Battlefield
@@ -462,6 +465,19 @@ impl Game {
     }
 
     fn advance_effect_choice(&mut self) -> bool {
+        if self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .choice
+            .as_ref()
+            .unwrap()
+            .kind
+            == EffectChoiceKind::KeepSharedCreatureTypes
+        {
+            return self.advance_keep_shared_types();
+        }
         let choice = self
             .state
             .resolving
@@ -716,6 +732,20 @@ impl Game {
     }
 
     pub(super) fn choose_effect_object(&mut self, player: Player, object: ObjectRef) {
+        let choice = self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .choice
+            .as_ref()
+            .unwrap();
+        let player = if choice.kind == EffectChoiceKind::KeepSharedCreatureTypes {
+            self.keep_shared_type_player(choice)
+                .expect("unfinished creature choice")
+        } else {
+            player
+        };
         self.state
             .resolving
             .as_mut()
