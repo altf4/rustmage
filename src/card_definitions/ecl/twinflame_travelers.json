@@ -3,10 +3,88 @@
   "catalogue_id": 4720,
   "oracle_id": "341cf69a-246c-4eb5-910c-18c13a4c3dce",
   "facts_sha256": "8322f645bb6a93d5efa1835fbad3541d7bc1bad853ceec6e313e8fb1a68a1069",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4f635c0beee70e21adae8b336abdfeae9a939adef4797c37e60d383f6d1db8ef"
   },
-  "physical_metadata_sha256": "108563a1596b5c2aa5bbecebc5eded7ff2ad571e24ec95cd8a883804d9354363"
+  "physical_metadata_sha256": "108563a1596b5c2aa5bbecebc5eded7ff2ad571e24ec95cd8a883804d9354363",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TwinflameTravelers.java",
+  "java_sha256": "7428d72049c1d050fbb9a021d1088899a74fb88025e2939084583caa80ad132b",
+  "rules_tests": "src/engine_ecl_twinflame_tests.rs",
+  "rules_test_files": [
+    "src/engine_ecl_twinflame_tests.rs",
+    "src/engine_ecl_twinflame_funding_tests.rs"
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+      "sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+      "sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+      "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+    }
+  ],
+  "xmage_helpers_reviewed": [
+    {
+      "path": "Mage/src/main/java/mage/util/CardUtil.java",
+      "methods": [
+        "overflowInc",
+        "overflowResult"
+      ],
+      "note": "Relevant arithmetic helpers reviewed; the broad utility file is not claimed as a full dependency audit."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "methods": [
+        "checkTriggeredLimit",
+        "getRemainingTriggersLimitEachTurn",
+        "updateTurnCount"
+      ],
+      "note": "Trigger-limit methods reviewed; unrelated framework methods are outside this card-specific dependency review."
+    }
+  ],
+  "rules_notes": {
+    "source": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "rules": [
+      "603.2d",
+      "603.3b",
+      "603.3c",
+      "603.10",
+      "605.1b"
+    ],
+    "release_notes": "https://magic.wizards.com/en/news/feature/lorwyn-eclipsed-release-notes",
+    "interpretation": "Adds one independent trigger per applicable provider, with fresh IDs, separate modes/targets and complete event context; never exponential and never a stack copy. Trigger-time provider/source facts survive departure. Once-per-turn trigger limits remain binding. Delayed and reflexive abilities are excluded. Intrinsic token end-step sacrifice abilities participate. Triggered mana occurrences use the shared actual/speculative characteristic world and resolve without stack packets."
+  },
+  "oracle_corrections": [
+    "The complete Oracle text refers to another controlled Elemental, including Kindred noncreatures; XMage uses a narrower creature-only filter, which this definition deliberately does not adopt."
+  ],
+  "test_scope_notes": [
+    "The triggered-mana multiplier fixture uses an explicit typed Elemental overlay on Growth to isolate the shared event/funding boundary; ordinary Growth does not have an Elemental subtype. A separate ordinary Growth regression verifies two-mana funding without that overlay."
+  ]
 }

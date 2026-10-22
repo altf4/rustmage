@@ -155,6 +155,7 @@ impl Game {
                     matches!(
                         fragment,
                         crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
+                            | crate::cards::StaticAbilityFragment::AdditionalSubtypeTriggers { .. }
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::MustBeBlocked
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)

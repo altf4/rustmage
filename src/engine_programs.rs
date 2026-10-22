@@ -705,6 +705,9 @@ impl Game {
         if !self.queue_trigger_from(source, index, grant) {
             return false;
         }
+        if event.before.zone == Zone::Battlefield {
+            self.capture_trigger_multiplicity(source, index, event.trigger_providers.as_deref());
+        }
         if event.moved
             && event.destination == Zone::Battlefield
             && source.reference == event.after
@@ -868,6 +871,8 @@ impl Game {
             targets: Vec::new(),
             mode: None,
         });
+        let providers = self.freeze_trigger_providers();
+        self.capture_trigger_multiplicity(source, index, providers.as_deref());
         true
     }
 
@@ -1285,6 +1290,7 @@ impl Game {
             return;
         }
         assert!(self.state.ordering_triggers.is_empty());
+        self.expand_pending_trigger_multiplicities();
         self.state.ordering_triggers = std::mem::take(&mut self.state.pending_triggers);
         self.continue_trigger_order();
     }

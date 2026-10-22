@@ -310,6 +310,13 @@ mod entry_life_tests;
 #[path = "engine_identity_tests.rs"]
 mod identity_tests;
 pub use ability_resolutions::AbilityResolutionView;
+#[path = "engine_trigger_multiplicity.rs"]
+mod trigger_multiplicity;
+pub use trigger_multiplicity::TriggerMultiplicityView;
+#[cfg(test)]
+#[path = "engine_ecl_twinflame_tests.rs"]
+mod ecl_twinflame_tests;
+
 #[path = "engine_programs.rs"]
 mod programs;
 use programs::Resolution;
@@ -1835,6 +1842,8 @@ impl ObjectView {
 /// Engine internals consume this value; observations do not expose hidden transitions.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ZoneChange {
+    /// Pre-departure providers, shared semantically by every simultaneous member.
+    trigger_providers: Option<Box<[trigger_multiplicity::TriggerProvider]>>,
     pub gift: Option<Box<GiftContext>>,
     pub before: ObjectView,
     pub after: ObjectRef,
@@ -2093,6 +2102,7 @@ pub struct Observation {
     pub delayed_warp_exiles: Vec<DelayedWarpExileView>,
     pub plot_payment: Option<PlotPaymentView>,
     pub triggered_this_turn: Vec<TriggerUse>,
+    pub pending_trigger_multiplicities: Vec<TriggerMultiplicityView>,
     pub ability_resolutions: Vec<AbilityResolutionView>,
     pub role_choices: Vec<RoleGroupView>,
     pub role_timestamps: Vec<RoleTimestampView>,
@@ -4989,6 +4999,11 @@ impl Game {
 
     /// Capture every pre-event characteristic before any simultaneous departure.
     fn move_objects_raw(&mut self, ids: &[CardId], destination: Zone) -> Vec<ZoneChange> {
+        let trigger_providers = ids
+            .iter()
+            .any(|&id| self.on_battlefield(id))
+            .then(|| self.freeze_trigger_providers())
+            .flatten();
         if destination == Zone::Battlefield {
             let count = ids
                 .iter()
@@ -5037,7 +5052,14 @@ impl Game {
         let events = planned
             .into_iter()
             .map(|(before, plan, tapped, counters)| {
-                self.commit_planned_zone_move(before, plan, tapped, counters, None)
+                self.commit_planned_zone_move(
+                    before,
+                    plan,
+                    tapped,
+                    counters,
+                    None,
+                    trigger_providers.clone(),
+                )
             })
             .collect();
         self.refresh_controllers();
@@ -5170,7 +5192,17 @@ impl Game {
     ) -> ZoneChange {
         let rules = self.freeze_zone_rules(&before, destination, None);
         let plan = self.plan_zone_move(&before, destination, rules);
-        self.commit_planned_zone_move(before, plan, tapped, counters, entry_controller)
+        let trigger_providers = (before.zone == Zone::Battlefield)
+            .then(|| self.freeze_trigger_providers())
+            .flatten();
+        self.commit_planned_zone_move(
+            before,
+            plan,
+            tapped,
+            counters,
+            entry_controller,
+            trigger_providers,
+        )
     }
 
     fn commit_planned_zone_move(
@@ -5180,6 +5212,7 @@ impl Game {
         tapped: bool,
         counters: Counters,
         entry_controller: Option<Player>,
+        trigger_providers: Option<Box<[trigger_multiplicity::TriggerProvider]>>,
     ) -> ZoneChange {
         let id = before.id;
         self.capture_mana_copy_source_departure(&before);
@@ -5200,6 +5233,7 @@ impl Game {
                 .capacity("object generation exhausted");
             self.state.free_tokens.push(id);
             return ZoneChange {
+                trigger_providers,
                 gift: None,
                 after: self.object_ref(id),
                 destination: Zone::Outside,
@@ -5224,6 +5258,7 @@ impl Game {
             || (before.is_token() && before.zone != Zone::Battlefield && !fresh_token)
         {
             return ZoneChange {
+                trigger_providers,
                 gift: None,
                 after: before.reference,
                 destination: before.zone,
@@ -5242,6 +5277,7 @@ impl Game {
         if before.zone == Zone::Library && destination == Zone::Library && plan.shuffle {
             self.reveal_and_shuffle_zone_card(&before);
             return ZoneChange {
+                trigger_providers,
                 gift: None,
                 after: before.reference,
                 destination,
@@ -5481,6 +5517,7 @@ impl Game {
         }
         self.copy_characteristic_zone_commit(&before, self.object_ref(id), destination);
         ZoneChange {
+            trigger_providers,
             gift: None,
             before,
             after: self.object_ref(id),
@@ -6360,6 +6397,10 @@ impl Game {
                 .filter(|p| p.controller == viewer)
                 .copied(),
             triggered_this_turn: s.triggered_this_turn.clone(),
+            pending_trigger_multiplicities: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.trigger_multiplicities.clone()),
             ability_resolutions: s
                 .ability_resolutions
                 .as_ref()

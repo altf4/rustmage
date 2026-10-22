@@ -221,6 +221,7 @@ impl Game {
                 self.record_nonland_entry(controller, token);
                 self.register_battlefield_sources(id);
                 events.push(ZoneChange {
+                    trigger_providers: None,
                     gift: None,
                     before,
                     after: self.object_ref(id),

@@ -225,6 +225,45 @@ pub(super) trait CharacteristicWorld {
             &|id| self.attacking(id),
         )
     }
+    /// Total intrinsic triggered occurrences in this actual/speculative world.
+    /// Callers capture the number before costs; mana triggers resolve immediately.
+    fn trigger_occurrences(&self, source: CardId, upper: bool) -> u64 {
+        let object = self.object(source);
+        if object.zone != Zone::Battlefield {
+            return 1;
+        }
+        let subtypes = (!upper).then(|| self.subtypes(source));
+        let mut amount = 1u64;
+        for &id in &self.game().state.static_sources {
+            let provider = self.object(id);
+            if provider.zone != Zone::Battlefield
+                || (!upper
+                    && (provider.controller != object.controller
+                        || !self.printed_abilities_available(id)))
+            {
+                continue;
+            }
+            for fragment in provider
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|g| g.fragments)
+            {
+                if let crate::cards::StaticAbilityFragment::AdditionalSubtypeTriggers {
+                    subtype,
+                    other,
+                } = *fragment
+                    && (!other || self.reference(id) != self.reference(source))
+                    && subtypes.is_none_or(|types| types.has(object.card, subtype))
+                {
+                    amount = amount
+                        .checked_add(1)
+                        .capacity("trigger multiplicity exhausted");
+                }
+            }
+        }
+        amount
+    }
     /// Capture before the tap costs remove the land or its attached providers.
     /// The upper bound intentionally ignores ability removal and current types:
     /// sacrificing another provider can restore either during a funding branch.
@@ -252,9 +291,14 @@ pub(super) trait CharacteristicWorld {
                             }
                             false
                         });
+                        let occurrences = self.trigger_occurrences(source, upper);
                         for index in 0..6 {
+                            let multiplied = u64::from(bonus[index])
+                                .checked_mul(occurrences)
+                                .and_then(|n| u32::try_from(n).ok())
+                                .capacity("mana representation exhausted");
                             result[index] = result[index]
-                                .checked_add(bonus[index])
+                                .checked_add(multiplied)
                                 .capacity("mana representation exhausted");
                         }
                     }

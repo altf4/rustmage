@@ -47,6 +47,11 @@ pub(crate) enum StaticAbilityFragment {
     AttachmentManaBonus(ManaProduction),
     ChosenCreatureType,
     OtherSubtypeEntryCounters(&'static str),
+    /// Adds independent triggers for abilities owned by matching permanents.
+    AdditionalSubtypeTriggers {
+        subtype: &'static str,
+        other: bool,
+    },
     ChosenModifier(ChosenModifier),
     ChosenCreatureKeywords(Keywords),
     PlayerHexproof,

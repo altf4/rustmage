@@ -35,10 +35,12 @@ pub(super) struct RoleState {
     pub ability_removal_effects: Vec<AbilityRemovalEffectView>,
     pub characteristic_sources: Vec<ObjectRef>,
     pub delayed_deaths: Vec<delayed_deaths::DelayedDeath>,
+    pub trigger_multiplicities: Vec<TriggerMultiplicityView>,
 }
 impl RoleState {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
+            + self.trigger_multiplicities.len() * std::mem::size_of::<TriggerMultiplicityView>()
             + self.attached.len() * std::mem::size_of::<RoleTimestampView>()
             + self.base_stats.len() * std::mem::size_of::<BaseStatsEffectView>()
             + self.attack_type_history.len() * std::mem::size_of::<DeclaredAttackView>()

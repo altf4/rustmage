@@ -376,7 +376,7 @@ impl<'g> FundingState<'g> {
                             || object.card.attachment_bonus().is_some()
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ConvokeCreatureSpells | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::ChosenCreatureKeywords(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ConvokeCreatureSpells | crate::cards::StaticAbilityFragment::AdditionalSubtypeTriggers { .. } | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::ChosenCreatureKeywords(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -1321,6 +1321,19 @@ impl<'g> FundingState<'g> {
                     || !object.summoning_sick
                     || self.keywords(resource).contains(Keywords::HASTE));
             if tap_ready {
+                // Tap-triggered additions are independent unrestricted mana.
+                // Omitting them here would prune an exact legal funding move.
+                for (bound, bonus) in
+                    upper
+                        .iter_mut()
+                        .zip(ability_world::CharacteristicWorld::mana_tap_bonus(
+                            self,
+                            resource.id,
+                            true,
+                        ))
+                {
+                    *bound = bound.saturating_add(u128::from(bonus));
+                }
                 for grant in ability_world::CharacteristicWorld::granted_mana(self, resource.id) {
                     grant.production.visit(|mana| {
                         for i in 0..6 {
@@ -4164,3 +4177,7 @@ mod ecl_convoke_grant_tests {
         );
     }
 }
+
+#[cfg(test)]
+#[path = "engine_ecl_twinflame_funding_tests.rs"]
+mod ecl_twinflame_funding_tests;

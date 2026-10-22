@@ -64,6 +64,12 @@ impl Game {
                     self.activation_item(self.state.objects[source as usize].controller, source, 0);
                 item.kind = StackKind::CopyEndStepSacrifice;
                 self.state.pending_triggers.push(item);
+                let providers = self.freeze_trigger_providers();
+                self.capture_intrinsic_trigger_multiplicity(
+                    &self.object_view(source),
+                    providers.as_deref(),
+                    false,
+                );
             }
         }
     }
