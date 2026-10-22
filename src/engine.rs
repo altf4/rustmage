@@ -1,3 +1,6 @@
+#[path = "engine_entry_history.rs"]
+mod entry_history;
+pub use entry_history::CreatureEntryHistoryView;
 #[path = "engine_endgame.rs"]
 mod endgame;
 #[cfg(test)]
@@ -1572,6 +1575,7 @@ struct State {
     objects: SharedVec<Object>,
     named_counters: Option<SharedVec<live_counters::NamedCounterRow>>,
     creature_damage_history: Option<SharedVec<CreatureDamageHistoryView>>,
+    creature_entry_history: Option<SharedVec<CreatureEntryHistoryView>>,
     entry_values: entry_choices::Rows,
     copy_recipes: copies::Rows,
     graveyard_entries: Option<SharedVec<ObjectRef>>,
@@ -1905,6 +1909,7 @@ pub struct Observation {
     pub mana_lots: Vec<ManaLotView>,
     pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub creature_damage_history: Vec<CreatureDamageHistoryView>,
+    pub creature_entry_history: Vec<CreatureEntryHistoryView>,
     pub additional_combats: u64,
     pub must_be_blocked: Vec<ObjectRef>,
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
@@ -2141,6 +2146,7 @@ impl Game {
                 named_counters: None,
                 combat_rules: None,
                 creature_damage_history: None,
+                creature_entry_history: None,
                 entry_values: None,
                 copy_recipes: None,
                 graveyard_entries: None,
@@ -5146,6 +5152,7 @@ impl Game {
         self.state.triggered_this_turn.clear();
         self.state.ability_resolutions = None;
         self.state.creature_damage_history = None;
+        self.state.creature_entry_history = None;
         self.state.combat_rules = None;
         self.state.attacked_this_turn.clear();
         self.state.creatures_died_this_turn = 0;
@@ -5714,6 +5721,10 @@ impl Game {
                 .map_or_else(Vec::new, |r| r.animations.clone()),
             creature_damage_history: s
                 .creature_damage_history
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
+            creature_entry_history: s
+                .creature_entry_history
                 .as_ref()
                 .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             schema: OBSERVATION_SCHEMA,
@@ -6384,6 +6395,10 @@ impl Game {
             + s.creature_damage_history.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<CreatureDamageHistoryView>>()
                     + rows.len() * std::mem::size_of::<CreatureDamageHistoryView>()
+            })
+            + s.creature_entry_history.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<CreatureEntryHistoryView>>()
+                    + rows.len() * std::mem::size_of::<CreatureEntryHistoryView>()
             })
             + s.first_strikers.len() * std::mem::size_of::<CardId>()
             + s.damage_choices.len() * std::mem::size_of::<DamageChoice>()

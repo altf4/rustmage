@@ -119,6 +119,9 @@ impl Game {
             StatValue::ControllerHandSize => objects()
                 .filter(|(_, o)| o.owner == owner && o.zone == Zone::Hand)
                 .count() as i128,
+            StatValue::CreatureEntriesThisTurn { other } => {
+                self.creature_entries_this_turn(owner, source, other)
+            }
             StatValue::NonlandEntriesThisTurn => {
                 i128::from(self.state.players[owner.index()].nonland_permanents_entered_this_turn)
             }

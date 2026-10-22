@@ -154,6 +154,7 @@ impl Game {
         events: &[ZoneChange],
         death_sources: &[ObjectView],
     ) {
+        self.record_creature_entry_history(events);
         // No zone changes occur while observers are queued. Freeze their
         // post-event views once instead of rescanning the arena per newcomer.
         let sources: Vec<_> = if events

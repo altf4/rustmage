@@ -1345,6 +1345,9 @@ pub(crate) enum StatValue {
     CardsDrawnThisTurn,
     ControllerHandSize,
     NonlandEntriesThisTurn,
+    CreatureEntriesThisTurn {
+        other: bool,
+    },
     SourceAttacking,
     AttackingCreatures,
     AttackingSubtype(&'static str),
