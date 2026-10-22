@@ -119,7 +119,11 @@ impl Game {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
             StepGuard::Always => return true,
-            StepGuard::SourceCounters { kind, minimum, maximum } => {
+            StepGuard::SourceCounters {
+                kind,
+                minimum,
+                maximum,
+            } => {
                 if !self.on_battlefield(source.card) || self.object_ref(source.card) != source {
                     return false;
                 }
