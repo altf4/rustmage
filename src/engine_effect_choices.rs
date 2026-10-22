@@ -56,6 +56,7 @@ impl Game {
         let hand_choice = matches!(
             choice.kind,
             EffectChoiceKind::Discard
+                | EffectChoiceKind::ExileFromHand
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandLand { .. }
         );
@@ -69,6 +70,7 @@ impl Game {
         if matches!(
             choice.kind,
             EffectChoiceKind::Discard
+                | EffectChoiceKind::ExileFromHand
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandLand { .. }
         ) {
@@ -482,6 +484,20 @@ impl Game {
                 };
             }
             self.grant_keyword_effects(&ids, item.object, Keywords::TRAMPLE);
+        } else if choice.kind == EffectChoiceKind::ExileFromHand {
+            let mut ids = Vec::new();
+            for player in [self.state.active, self.state.active.other()] {
+                for object in &choice.selected[player.index()] {
+                    if self.object_ref(object.card) == *object
+                        && self.state.objects[object.card as usize].zone == Zone::Hand
+                        && self.state.objects[object.card as usize].owner == player
+                    {
+                        ids.push(object.card);
+                    }
+                }
+            }
+            let events = self.move_objects_raw(&ids, Zone::Exile);
+            self.finish_zone_events(&events, &[]);
         } else if choice.kind == EffectChoiceKind::Discard {
             let ids: Vec<_> = [self.state.active, self.state.active.other()]
                 .into_iter()
@@ -582,6 +598,7 @@ impl Game {
         if matches!(
             choice.kind,
             EffectChoiceKind::Discard
+                | EffectChoiceKind::ExileFromHand
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandLand { .. }
         ) && viewer != actor
@@ -611,8 +628,15 @@ impl Game {
                     .iter()
                     .copied()
                     .filter(|object| {
-                        !public_only
-                            || self.state.objects[object.card as usize].zone == Zone::Graveyard
+                        (!matches!(
+                            choice.kind,
+                            EffectChoiceKind::ExileFromHand
+                                | EffectChoiceKind::Discard
+                                | EffectChoiceKind::HandCreature
+                                | EffectChoiceKind::HandLand { .. }
+                        ) || index == viewer.index())
+                            && (!public_only
+                                || self.state.objects[object.card as usize].zone == Zone::Graveyard)
                     })
                     .collect()
             }),

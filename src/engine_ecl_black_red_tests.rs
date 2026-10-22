@@ -1895,3 +1895,171 @@ fn collective_inferno_convoke_pays_actual_cost_and_its_choice_covers_friendly_da
         assert_eq!(g.state.players[p.index()].life, 18);
     }
 }
+
+fn begin_perfect(g: &mut Game, p: Player, mode: u16, creature: CardId) {
+    let id = named(g, p, "Perfect Intimidation", Zone::Hand);
+    checked(g, Action::AnnounceCast { card: id });
+    checked(g, Action::ChooseMode { mode });
+    if mode != 1 {
+        reject(
+            g,
+            Action::ChooseTarget {
+                target: Target::Player(p),
+            },
+        );
+        checked(
+            g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+    }
+    if mode != 0 {
+        checked(
+            g,
+            Action::ChooseTarget {
+                target: Target::Card(creature),
+            },
+        );
+    }
+    while g.state.announcing.is_some() {
+        advance(g);
+    }
+}
+fn wait_hand_exile(g: &mut Game) {
+    for _ in 0..60 {
+        if matches!(g.state.pending, Pending::EffectChoice { .. })
+            || (g.state.stack.is_empty() && g.state.resolving.is_none())
+        {
+            return;
+        }
+        advance(g);
+    }
+    panic!("missing hand exile choice");
+}
+#[test]
+fn perfect_intimidation_all_modes_exile_up_to_two_privately_and_remove_every_counter_kind() {
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..3 {
+            for count in [0, 1, 3] {
+                let mut g = setup(p);
+                let creature = named(&mut g, p, "Gigantosaurus", Zone::Battlefield);
+                g.state.objects[creature as usize].counters.plus_one = 2;
+                g.state.objects[creature as usize].counters.stun = 3;
+                g.state.objects[creature as usize].counters.lore = 4;
+                g.state.objects[creature as usize].counters.loyalty = 5;
+                let own = named(&mut g, p, "Llanowar Elves", Zone::Hand);
+                let hand: Vec<_> = (0..count)
+                    .map(|_| named(&mut g, p.other(), "Mountain", Zone::Hand))
+                    .collect();
+                begin_perfect(&mut g, p, mode, creature);
+                if mode != 1 {
+                    wait_hand_exile(&mut g);
+                    for (index, &card) in hand.iter().take(2).enumerate() {
+                        assert_eq!(g.actor(), Some(p.other()));
+                        assert!(g.observe(p).effect_choice.is_none());
+                        let object = g.object_ref(own);
+                        reject(&mut g, Action::ExileHandCard { object });
+                        let mut invalid = g.object_ref(card);
+                        invalid.generation += 1;
+                        reject(&mut g, Action::ExileHandCard { object: invalid });
+                        let mut public = serde_json::to_value(g.observe(p)).unwrap();
+                        public.as_object_mut().unwrap().remove("revision");
+                        let object = g.object_ref(card);
+                        checked(&mut g, Action::ExileHandCard { object });
+                        if index == 0 && count > 1 {
+                            let mut after = serde_json::to_value(g.observe(p)).unwrap();
+                            after.as_object_mut().unwrap().remove("revision");
+                            assert_eq!(after, public);
+                            assert_eq!(g.state.objects[card as usize].zone, Zone::Hand);
+                            reject(&mut g, Action::ExileHandCard { object });
+                        }
+                    }
+                }
+                settle(&mut g);
+                for (index, &card) in hand.iter().enumerate() {
+                    assert_eq!(
+                        g.state.objects[card as usize].zone,
+                        if mode != 1 && index < 2 {
+                            Zone::Exile
+                        } else {
+                            Zone::Hand
+                        }
+                    );
+                }
+                assert_eq!(g.state.objects[own as usize].zone, Zone::Hand);
+                assert_eq!(g.counter_amounts(creature).has_any(), mode == 0);
+                assert_eq!(
+                    g.state.players[p.other().index()].cards_discarded_this_turn,
+                    0
+                );
+            }
+        }
+    }
+}
+#[test]
+fn perfect_intimidation_both_modes_resolve_the_legal_player_half_after_creature_target_leaves() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let creature = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        let first = named(&mut g, p.other(), "Mountain", Zone::Hand);
+        let second = named(&mut g, p.other(), "Swamp", Zone::Hand);
+        begin_perfect(&mut g, p, 2, creature);
+        g.move_object(creature, Zone::Hand);
+        wait_hand_exile(&mut g);
+        for card in [first, second] {
+            let object = g.object_ref(card);
+            checked(&mut g, Action::ExileHandCard { object });
+        }
+        settle(&mut g);
+        assert_eq!(g.state.objects[creature as usize].zone, Zone::Hand);
+        for card in [first, second] {
+            assert_eq!(g.state.objects[card as usize].zone, Zone::Exile);
+        }
+    }
+}
+#[test]
+fn simultaneous_hand_exile_preserves_apnap_choice_privacy_until_every_player_has_chosen() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let creature = named(&mut g, p, "Gigantosaurus", Zone::Battlefield);
+        let mut hands: [Vec<CardId>; 2] = std::array::from_fn(|_| Vec::new());
+        for owner in [p, p.other()] {
+            for name in ["Swamp", "Mountain"] {
+                hands[owner.index()].push(named(&mut g, owner, name, Zone::Hand));
+            }
+        }
+        begin_perfect(&mut g, p, 0, creature);
+        wait_hand_exile(&mut g);
+        let item = g.state.resolving.as_ref().unwrap().item.clone();
+        g.start_effect_choice(
+            &item,
+            EffectChoiceKind::ExileFromHand,
+            PlayerSet::Each,
+            evidence::cost(0).filter,
+            2,
+            None,
+        );
+        for owner in [p, p.other()] {
+            assert_eq!(g.actor(), Some(owner));
+            let view = g.observe(owner).effect_choice.unwrap();
+            assert!(view.selected[owner.other().index()].is_empty());
+            for &card in &hands[owner.index()] {
+                let object = g.object_ref(card);
+                checked(&mut g, Action::ExileHandCard { object });
+            }
+            if owner == p {
+                for &card in &hands[p.index()] {
+                    assert_eq!(g.state.objects[card as usize].zone, Zone::Hand);
+                }
+            }
+        }
+        settle(&mut g);
+        for card in hands.into_iter().flatten() {
+            assert_eq!(g.state.objects[card as usize].zone, Zone::Exile);
+        }
+        for owner in [p, p.other()] {
+            assert_eq!(g.state.players[owner.index()].cards_discarded_this_turn, 0);
+        }
+    }
+}

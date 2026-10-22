@@ -383,7 +383,8 @@ impl Game {
                     a.item.controller,
                 );
             }
-            EffectChoiceKind::Blight(_)
+            EffectChoiceKind::ExileFromHand
+            | EffectChoiceKind::Blight(_)
             | EffectChoiceKind::OptionalBlightCost(_)
             | EffectChoiceKind::RemoveCreatureCounters(_)
             | EffectChoiceKind::TapPermanents(_)

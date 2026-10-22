@@ -448,6 +448,7 @@ define_actions! {
         object: ObjectRef,
     },
     ChooseExplore { object: ObjectRef, graveyard: bool },
+    ExileHandCard { object: ObjectRef },
     ChooseOptionalAdditionalCost {
         object: Option<ObjectRef>,
     },
@@ -2836,6 +2837,7 @@ impl Game {
                             EffectChoiceKind::PowerDifferenceBoost => {
                                 Action::ChooseCreature { object }
                             }
+                            EffectChoiceKind::ExileFromHand => Action::ExileHandCard { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             _ => unreachable!("forage has its own choice"),
                         };
@@ -4449,7 +4451,8 @@ impl Game {
                 }
                 self.advance_damage_choices();
             }
-            Action::PutHandCreature { object }
+            Action::ExileHandCard { object }
+            | Action::PutHandCreature { object }
             | Action::PutHandLand { object }
             | Action::SelectLand { object }
             | Action::ChooseCreature { object } => self.choose_effect_object(actor, object),

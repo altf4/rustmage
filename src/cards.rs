@@ -573,6 +573,7 @@ pub(crate) struct SearchSpec {
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
+    ExileFromHand,
     /// Put this many -1/-1 counters on one chosen creature you control.
     /// This is a non-targeting resolution choice, including optional payments.
     Blight(u16),
