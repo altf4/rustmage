@@ -79,7 +79,11 @@ impl Game {
         ] {
             sources.retain(|&source| source != id);
         }
+        let used_loyalty = self.state.objects[id as usize].used_abilities & old.loyalty_mask() != 0;
         self.state.objects[id as usize].card = next;
+        if used_loyalty {
+            self.state.objects[id as usize].used_abilities |= next.loyalty_mask();
+        }
         if let Some(rows) = &mut self.state.copy_recipes {
             for row in rows.iter_mut().filter(|row| row.object == object) {
                 row.recipe.definition = next;

@@ -154,6 +154,17 @@ impl CharacteristicQuery<'_> {
         if !battlefield_creature {
             return (base, stats);
         }
+        if let Some(roles) = &self.state.roles {
+            let recipient = self.object_ref(id);
+            for row in &roles.stat_modifiers {
+                if row.recipient == recipient {
+                    stats += Stats {
+                        power: row.power,
+                        toughness: row.toughness,
+                    };
+                }
+            }
+        }
         stats += self.chosen_bonus(id);
         stats += self.live_static_bonus(id);
         stats += self.attachment_bonus(id).0;

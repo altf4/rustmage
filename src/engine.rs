@@ -240,7 +240,7 @@ pub use ability_timeline::{
 mod base_power;
 #[path = "engine_base_stats.rs"]
 mod base_stats;
-pub use base_stats::{BaseStatsEffectView, ResolvedStatSubjectView};
+pub use base_stats::{BaseStatsEffectView, ResolvedStatSubjectView, StatModifierEffectView};
 #[path = "engine_live_static_stats.rs"]
 mod live_static_stats;
 pub use live_static_stats::LiveStaticSourceView;
@@ -2086,6 +2086,7 @@ pub struct Observation {
     pub role_choices: Vec<RoleGroupView>,
     pub role_timestamps: Vec<RoleTimestampView>,
     pub base_stat_effects: Vec<BaseStatsEffectView>,
+    pub stat_modifier_effects: Vec<StatModifierEffectView>,
     pub live_static_sources: Vec<LiveStaticSourceView>,
     pub resolved_stat_subjects: Vec<ResolvedStatSubjectView>,
     pub ability_source_timestamps: Vec<AbilitySourceTimestampView>,
@@ -5294,6 +5295,11 @@ impl Game {
             self.forget_temporary_control(before.reference);
             self.forget_role(before.reference);
             self.forget_base_stats(before.reference);
+            if let Some(roles) = &mut self.state.roles {
+                roles
+                    .stat_modifiers
+                    .retain(|row| row.recipient != before.reference);
+            }
             self.forget_animations(before.reference);
             self.forget_color_effects(before.reference);
             self.forget_creature_types(before.reference);
@@ -5498,6 +5504,9 @@ impl Game {
 
     fn begin_turn(&mut self) {
         if let Some(roles) = &mut self.state.roles {
+            roles
+                .stat_modifiers
+                .retain(|row| row.expires_before_turn != self.state.active);
             roles
                 .keyword_effects
                 .retain(|row| row.expires_before_turn != Some(self.state.active));
@@ -6311,6 +6320,10 @@ impl Game {
                 .sba_batch
                 .as_ref()
                 .map_or_else(Vec::new, |b| b.roles.clone()),
+            stat_modifier_effects: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.stat_modifiers.clone()),
             base_stat_effects: s
                 .roles
                 .as_ref()
@@ -7725,3 +7738,7 @@ mod protection;
 #[cfg(test)]
 #[path = "engine_ecl_students_tests.rs"]
 mod ecl_students_tests;
+
+#[cfg(test)]
+#[path = "engine_ecl_oko_tests.rs"]
+mod ecl_oko_tests;

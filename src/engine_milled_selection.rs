@@ -53,6 +53,7 @@ impl Game {
         let kinds = self.current_kinds(object.card);
         match filter {
             MilledFilter::Any => true,
+            MilledFilter::Permanent => kinds & (1 | 2 | 16 | 32 | 64 | 256) != 0,
             MilledFilter::Kinds(mask) => kinds & u16::from(mask) != 0,
             MilledFilter::KindsOrSubtype {
                 kinds: mask,

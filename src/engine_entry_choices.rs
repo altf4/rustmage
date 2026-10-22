@@ -165,7 +165,8 @@ pub(super) fn modifier_bonus<W: CharacteristicWorld + ?Sized>(
     let provider = world.object(source);
     let object = world.object(target);
     if !world.printed_abilities_available(source)
-        || provider.zone != Zone::Battlefield
+        || (provider.zone != Zone::Battlefield
+            && !(provider.zone == Zone::Command && provider.card.is_emblem()))
         || object.zone != Zone::Battlefield
         || provider.controller != object.controller
         || world.kinds(target) & 1 == 0

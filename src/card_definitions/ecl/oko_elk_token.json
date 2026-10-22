@@ -1,0 +1,104 @@
+{
+  "name": "@token/oko_elk_3_3_green",
+  "catalogue_id": 5354,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "35150ac2ccc48b91232586d17a318747161be7190ae81504ace3c547ce726438",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OkoLorwynLiege.java",
+  "java_sha256": "6aa93e93256a34009d20029ae54c031a73feacdc61d7e6cd0e06e194b36887ff",
+  "rules_tests": "src/engine_ecl_oko_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/TransformingDoubleFacedCard.java",
+      "sha256": "88d793500dc62ce3e2f672a6977b8ce38a603878244c82c564911611aeb2d5fe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/LoyaltyAbility.java",
+      "sha256": "9e648c878fd77eaa324aa746254377711cf4929573ed960055ee57f342b9ce79"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/choices/ChoiceCreatureType.java",
+      "sha256": "c940b4b86491e3c45d7d6011a43e340e051fd3fac732b035a068af6b7074b44b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ElkToken.java",
+      "sha256": "f634d8a0a753e49eccf5ee2d9852623f908269eca2899e407124588970ea0543"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/command/emblems/OkoShadowmoorScionEmblem.java",
+      "sha256": "e0fdd47abd74ad8bbf897f9ca811fb8bcc9144ee8595c2b0bcd26b5d5a6cab8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TransformSourceEffect.java",
+      "sha256": "cb657dfa68c243833de4af4fd66287c1e8491c1d8846ca1897f3146799dd482e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfFirstMainTriggeredAbility.java",
+      "sha256": "8ae6196917d9e2e958cd19a7a009d89c0462a680be928b607658ce76526eb93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLoyaltyCost.java",
+      "sha256": "efe5edc4c58c5a3d697a1448642d7e251141eb54f3704ffee201f6ba3ed51365"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAllCreatureTypesTargetEffect.java",
+      "sha256": "171d25263fa6b89cc249c2315d288a86254e173ab4b741e0f954c8786ef11f27"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+      "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAllEffect.java",
+      "sha256": "fccf43cbeaa763aae8a75efc3f28c5e33dcd045398d9b1cf6a97270e4a9000e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillThenPutInHandEffect.java",
+      "sha256": "15051b0e2d1701dd51f83164acfa0c4dcfc0b17d5bd6646c43209d90553d821d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+      "sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    }
+  ]
+}

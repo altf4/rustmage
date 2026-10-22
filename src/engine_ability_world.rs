@@ -133,7 +133,8 @@ pub(super) trait CharacteristicWorld {
     fn chosen_creature_type_applies(&self, source: ObjectRef, id: CardId) -> bool {
         let provider = self.object(source.card);
         let target = self.object(id);
-        provider.zone == Zone::Battlefield
+        (provider.zone == Zone::Battlefield
+            || (provider.zone == Zone::Command && provider.card.is_emblem()))
             && self.reference(source.card) == source
             && target.zone == Zone::Battlefield
             && self.kinds(id) & 1 != 0

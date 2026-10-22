@@ -2976,6 +2976,19 @@ impl Game {
                     }
                 }
                 Instruction::CreateEmblem(factory) => self.create_emblem(item.controller, factory),
+                Instruction::CreateChosenTypeEmblem(factory) => {
+                    let kind = self
+                        .resolution_chosen_creature_type()
+                        .expect("chosen creature type");
+                    let id = self.create_emblem_object(item.controller, factory);
+                    self.set_entry_value(self.object_ref(id), EntryChoiceValue::CreatureType(kind));
+                }
+                Instruction::GrowUntilNextTurn { subject, stats } => {
+                    self.grow_until_next_turn(&item, subject, stats)
+                }
+                Instruction::GainAllCreatureTypesPermanently { subject } => {
+                    self.gain_all_creature_types_permanently(&item, subject)
+                }
                 Instruction::EndTurn => {
                     self.end_turn_effect();
                     return;

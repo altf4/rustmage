@@ -11,6 +11,15 @@ pub struct BaseStatsEffectView {
     pub static_source: bool,
     pub permanent: bool,
 }
+/// Exact recipients retain this additive effect through cleanup and source departure.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct StatModifierEffectView {
+    pub recipient: ObjectRef,
+    pub source: ObjectRef,
+    pub power: i128,
+    pub toughness: i128,
+    pub expires_before_turn: Player,
+}
 /// Sparse facts only for exact entering subjects read by resolved expressions.
 /// Departure updates use the frozen pre-transition view, including simultaneous moves.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -21,6 +30,30 @@ pub struct ResolvedStatSubjectView {
     pub departure_damage: Option<Box<DamageSource>>,
 }
 impl Game {
+    pub(super) fn grow_until_next_turn(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+        stats: Stats,
+    ) {
+        let recipients = self.keyword_subjects(item, subject);
+        for id in recipients {
+            if self.on_battlefield(id) {
+                let recipient = self.object_ref(id);
+                self.state
+                    .roles
+                    .get_or_insert_with(Default::default)
+                    .stat_modifiers
+                    .push(StatModifierEffectView {
+                        recipient,
+                        source: item.object,
+                        power: stats.power,
+                        toughness: stats.toughness,
+                        expires_before_turn: item.controller,
+                    });
+            }
+        }
+    }
     pub(super) fn bind_stat_subject(&mut self, object: ObjectRef, program: &[Instruction]) {
         let reads_power = program.iter().any(|instruction| {
             matches!(

@@ -709,6 +709,7 @@ pub(crate) struct AdditionalCost {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum MilledFilter {
     Any,
+    Permanent,
     Kinds(u8),
     KindsOrSubtype { kinds: u8, subtype: &'static str },
     Adventure,
@@ -1116,6 +1117,14 @@ pub(crate) enum Instruction {
     DrawMoved,
     GainLifeMoved,
     CreateEmblem(Card),
+    CreateChosenTypeEmblem(Card),
+    GrowUntilNextTurn {
+        subject: Subject,
+        stats: Stats,
+    },
+    GainAllCreatureTypesPermanently {
+        subject: Subject,
+    },
     LoseGainedLife(PlayerSet),
     Connive {
         subject: Subject,

@@ -360,6 +360,13 @@ impl Game {
     ) {
         self.set_creature_types_with_expiry(item, subject, types, Some(self.state.turn), false);
     }
+    pub(super) fn gain_all_creature_types_permanently(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+    ) {
+        self.set_creature_types_with_expiry(item, subject, &[], None, true);
+    }
     pub(super) fn gain_all_creature_types_until_end_turn(
         &mut self,
         item: &SpellView,
