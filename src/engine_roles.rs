@@ -41,6 +41,15 @@ impl RoleState {
             + self.base_stats.len() * std::mem::size_of::<BaseStatsEffectView>()
             + self.live_static.len() * std::mem::size_of::<LiveStaticSourceView>()
             + self.stat_subjects.len() * std::mem::size_of::<ResolvedStatSubjectView>()
+            + self
+                .stat_subjects
+                .iter()
+                .map(|row| {
+                    row.departure_damage
+                        .as_ref()
+                        .map_or(0, |_| std::mem::size_of::<DamageSource>())
+                })
+                .sum::<usize>()
             + self.ability_timestamps.len() * std::mem::size_of::<AbilitySourceTimestampView>()
             + self.creature_types.len() * std::mem::size_of::<subtypes::CreatureTypesEffectView>()
             + self.animations.len() * std::mem::size_of::<AnimationView>()

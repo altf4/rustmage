@@ -13,23 +13,27 @@ pub struct BaseStatsEffectView {
 }
 /// Sparse facts only for exact entering subjects read by resolved expressions.
 /// Departure updates use the frozen pre-transition view, including simultaneous moves.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ResolvedStatSubjectView {
     pub object: ObjectRef,
     pub departure_power: Option<i128>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub departure_damage: Option<Box<DamageSource>>,
 }
 impl Game {
     pub(super) fn bind_stat_subject(&mut self, object: ObjectRef, program: &[Instruction]) {
         let reads_power = program.iter().any(|instruction| {
             matches!(
                 instruction,
-                Instruction::SetResolvedBaseStats {
-                    power: Some(ResolvedStatValue::EnteringPower),
-                    ..
-                } | Instruction::SetResolvedBaseStats {
-                    toughness: Some(ResolvedStatValue::EnteringPower),
-                    ..
-                }
+                Instruction::EnteringPowerDamagePlayers(_)
+                    | Instruction::SetResolvedBaseStats {
+                        power: Some(ResolvedStatValue::EnteringPower),
+                        ..
+                    }
+                    | Instruction::SetResolvedBaseStats {
+                        toughness: Some(ResolvedStatValue::EnteringPower),
+                        ..
+                    }
             )
         });
         if !reads_power {
@@ -44,6 +48,7 @@ impl Game {
             facts.push(ResolvedStatSubjectView {
                 object,
                 departure_power: None,
+                departure_damage: None,
             });
         }
     }
@@ -52,6 +57,13 @@ impl Game {
             for fact in &mut state.stat_subjects {
                 if fact.object == before.reference && fact.departure_power.is_none() {
                     fact.departure_power = Some(before.power);
+                    fact.departure_damage = Some(Box::new(DamageSource {
+                        facts: DamageFacts::from_view(before),
+                        object: before.id,
+                        reference: before.reference,
+                        controller: before.controller,
+                        keywords: before.keywords,
+                    }));
                 }
             }
         }

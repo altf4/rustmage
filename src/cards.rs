@@ -1207,6 +1207,7 @@ pub(crate) enum Instruction {
     Damage(i32),
     DamageScaled(AmountValue),
     DamagePlayers(PlayerSet, i32),
+    EnteringPowerDamagePlayers(PlayerSet),
     UntapSource,
     TapSource,
     UntapCreatures(CreatureFilter),

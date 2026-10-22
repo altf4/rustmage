@@ -3819,3 +3819,306 @@ fn scarblades_malice_delayed_ability_is_independent_of_the_resolved_uncounterabl
         assert!(g.observe(p).delayed_deaths.is_empty());
     }
 }
+
+fn champion_cast(g: &mut Game, p: Player, name: &str, witness: CardId) -> CardId {
+    let source = named(g, p, name, Zone::Hand);
+    checked(g, Action::AnnounceCast { card: source });
+    assert!(g.observe(p.other()).additional_cost.is_none());
+    let object = g.object_ref(source);
+    reject(g, Action::ChooseAdditionalCost { object });
+    let object = g.object_ref(witness);
+    checked(g, Action::ChooseAdditionalCost { object });
+    let pay = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a, Action::PayCosts { .. }))
+        .unwrap();
+    checked(g, pay);
+    assert_eq!(g.object_view(witness).zone, Zone::Exile);
+    source
+}
+#[test]
+fn champion_pair_exile_hand_or_battlefield_witness_and_return_on_every_departure() {
+    for p in [Player::P0, Player::P1] {
+        for name in ["Champion of the Path", "Champion of the Weird"] {
+            for hand in [false, true] {
+                for destination in [Zone::Graveyard, Zone::Exile, Zone::Hand, Zone::Library] {
+                    let mut g = hexing_setup(p);
+                    let witness = named(
+                        &mut g,
+                        p,
+                        "Nameless Inversion",
+                        if hand { Zone::Hand } else { Zone::Battlefield },
+                    );
+                    let source = champion_cast(&mut g, p, name, witness);
+                    settle(&mut g);
+                    assert_eq!(
+                        g.stats(source),
+                        if name.ends_with("Path") {
+                            Stats {
+                                power: 7,
+                                toughness: 3,
+                            }
+                        } else {
+                            Stats {
+                                power: 5,
+                                toughness: 5,
+                            }
+                        }
+                    );
+                    assert_eq!(
+                        g.state.players[p.other().index()].life,
+                        20,
+                        "no self-entry damage"
+                    );
+                    g.move_object(source, destination);
+                    settle(&mut g);
+                    assert_eq!(g.object_view(witness).zone, Zone::Hand);
+                    assert!(
+                        g.observe(p.other())
+                            .known_hand
+                            .contains(&g.object_ref(witness))
+                    );
+                }
+            }
+        }
+    }
+}
+#[test]
+fn champion_pair_countered_cost_cannot_bind_a_later_incarnation() {
+    for p in [Player::P0, Player::P1] {
+        for name in ["Champion of the Path", "Champion of the Weird"] {
+            let mut g = hexing_setup(p);
+            let witness = named(&mut g, p, "Nameless Inversion", Zone::Hand);
+            let source = champion_cast(&mut g, p, name, witness);
+            let item = g.state.stack.last().unwrap().id;
+            assert!(g.counter_stack_item(item, false));
+            settle(&mut g);
+            g.move_object(source, Zone::Battlefield);
+            g.move_object(source, Zone::Graveyard);
+            settle(&mut g);
+            assert_eq!(g.object_view(witness).zone, Zone::Exile);
+        }
+    }
+}
+#[test]
+fn champion_path_uses_current_entering_power_and_ignores_nonmatching_entries() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Champion of the Path", Zone::Battlefield);
+        let ordinary = named(&mut g, p, "Grizzly Bears", Zone::Hand);
+        g.move_object(ordinary, Zone::Battlefield);
+        let enemy = named(&mut g, p.other(), "Flamebraider", Zone::Hand);
+        g.move_object(enemy, Zone::Battlefield);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+        let entrant = named(&mut g, p, "Flamebraider", Zone::Hand);
+        g.move_object(entrant, Zone::Battlefield);
+        let item = g.activation_item(p, entrant, 0);
+        g.set_base_stats(&item, Subject::Source, Some(6), Some(6));
+        g.move_object(source, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 14);
+    }
+}
+#[test]
+fn champion_path_lki_preserves_power_keywords_and_exact_entering_object() {
+    for p in [Player::P0, Player::P1] {
+        for blink in [false, true] {
+            let mut g = hexing_setup(p);
+            named(&mut g, p, "Champion of the Path", Zone::Battlefield);
+            let entrant = named(&mut g, p, "Flamebraider", Zone::Hand);
+            g.move_object(entrant, Zone::Battlefield);
+            let reference = g.object_ref(entrant);
+            g.grant_keyword_effects(&[entrant], reference, Keywords::LIFELINK);
+            let item = g.activation_item(p, entrant, 0);
+            g.set_base_stats(&item, Subject::Source, Some(4), Some(4));
+            g.move_object(entrant, Zone::Hand);
+            if blink {
+                g.move_object(entrant, Zone::Battlefield);
+                assert_ne!(g.object_ref(entrant), reference);
+            }
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].life, 24);
+            assert_eq!(
+                g.state.players[p.other().index()].life,
+                if blink { 14 } else { 16 }
+            );
+        }
+    }
+}
+#[test]
+fn champion_path_damage_uses_entering_creatures_controller_not_observers_controller() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        named(&mut g, p, "Champion of the Path", Zone::Battlefield);
+        let entrant = named(&mut g, p, "Flamebraider", Zone::Hand);
+        g.move_object(entrant, Zone::Battlefield);
+        let reference = g.object_ref(entrant);
+        g.grant_keyword_effects(&[entrant], reference, Keywords::LIFELINK);
+        // Actual controller change before the trigger resolves; the opponent
+        // remains determined by the original observer's controller.
+        g.state.objects[entrant as usize].controller = p.other();
+        g.move_object(entrant, Zone::Hand);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 20);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+    }
+}
+#[test]
+fn champion_path_noncreature_elemental_has_no_power_and_each_observer_triggers() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        named(&mut g, p, "Champion of the Path", Zone::Battlefield);
+        named(&mut g, p, "Champion of the Path", Zone::Battlefield);
+        let kindred = named(&mut g, p, "Nameless Inversion", Zone::Hand);
+        g.move_object(kindred, Zone::Battlefield);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+        let entrant = named(&mut g, p, "Flamebraider", Zone::Hand);
+        g.move_object(entrant, Zone::Battlefield);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+    }
+}
+#[test]
+fn champion_weird_pays_life_and_blight_then_opponent_chooses_effect_recipient() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Champion of the Weird", Zone::Battlefield);
+        let opponent = named(
+            &mut g,
+            p.other(),
+            "Champion of the Weird",
+            Zone::Battlefield,
+        );
+        named(&mut g, p, "Doubling Season", Zone::Battlefield);
+        named(&mut g, p.other(), "Doubling Season", Zone::Battlefield);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        let object = g.object_ref(source);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        assert_eq!(g.state.players[p.index()].life, 19);
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 2);
+        for _ in 0..100 {
+            if g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::Blight { .. }))
+            {
+                break;
+            }
+            advance(&mut g);
+        }
+        assert_eq!(g.actor(), Some(p.other()));
+        let object = g.object_ref(source);
+        reject(&mut g, Action::Blight { object });
+        let object = g.object_ref(opponent);
+        checked(&mut g, Action::Blight { object });
+        settle(&mut g);
+        assert_eq!(g.counter_count(opponent, CounterKind::MinusOne), 4);
+        g.state.active = p.other();
+        g.state.priority = p;
+        reject(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+    }
+}
+#[test]
+fn champion_weird_cost_can_kill_itself_return_witness_and_still_blight_opponent() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let witness = named(&mut g, p, "Nameless Inversion", Zone::Hand);
+        let source = champion_cast(&mut g, p, "Champion of the Weird", witness);
+        settle(&mut g);
+        let opponent = named(
+            &mut g,
+            p.other(),
+            "Champion of the Weird",
+            Zone::Battlefield,
+        );
+        g.state.objects[source as usize].counters.minus_one = 4;
+        g.state.objects[source as usize].tapped = true;
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        let object = g.object_ref(source);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.object_view(witness).zone, Zone::Hand);
+        assert_eq!(g.counter_count(opponent, CounterKind::MinusOne), 2);
+        assert_eq!(g.state.players[p.index()].life, 19);
+    }
+}
+#[test]
+fn champion_path_witness_can_produce_restricted_mana_before_its_exile_cost() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let witness = named(&mut g, p, "Flamebraider", Zone::Battlefield);
+        let source = named(&mut g, p, "Champion of the Path", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        checked(&mut g, Action::AnnounceCast { card: source });
+        let object = g.object_ref(witness);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
+        flamebraider_mana(&mut g, witness, [0, 0, 0, 2, 0, 0]);
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        assert_eq!(g.object_view(witness).zone, Zone::Exile);
+        settle(&mut g);
+        assert!(g.on_battlefield(source));
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        g.move_object(source, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.object_view(witness).zone, Zone::Hand);
+    }
+}

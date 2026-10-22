@@ -3000,6 +3000,9 @@ impl Game {
                         }
                     }
                 }
+                Instruction::EnteringPowerDamagePlayers(players) => {
+                    self.entering_power_damage_players(&item, players)
+                }
                 Instruction::Damage(_)
                 | Instruction::DamageScaled(_)
                 | Instruction::DamagePlayers(_, _)
