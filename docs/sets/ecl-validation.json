@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 125,
+  "newly_tested_physical_cards": 126,
   "newly_tested_names": [
     "Adept Watershaper",
     "Ashling's Command",
@@ -78,6 +78,7 @@
     "Lys Alana Dignitary",
     "Meanders Guide",
     "Moonshadow",
+    "Mornsong Aria",
     "Mudbutton Cursetosser",
     "Mutable Explorer",
     "Nameless Inversion",
@@ -130,8 +131,8 @@
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 232,
-  "remaining_gated": 41,
+  "current_admission_flags": 233,
+  "remaining_gated": 40,
   "inherited_evidence_audit": {
     "audited": 5,
     "total": 107,
@@ -183,33 +184,35 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T18:50:12.430753+00:00",
-    "elapsed_seconds": 12445.213902,
-    "newly_verified_cards": 125,
-    "cards_per_hour": 36.15847855597589,
+    "end_utc": "2026-10-22T19:01:48.516521+00:00",
+    "elapsed_seconds": 13141.29967,
+    "newly_verified_cards": 126,
+    "cards_per_hour": 34.51713387493278,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "196 integrated ECL scenarios passed at bb92026c with generated catalogue1fbc9bcda08f4079d26ed30456add7c4c31131f6ef2563e732a179a74fc3e0a3",
   "full_release_validation": {
     "status": "passed all8phases",
-    "head": "7f001174976c55a93d6e738041c82192af57999d",
-    "report": "<cache>/rustmage-validation-cy6eid5w/report/result.json",
-    "resource_report": "<cache>/rustmage-build-reports/a95c493b86d14cc4bc1a7efc87f71f1e.json",
-    "seconds": 553.7659332290059,
-    "native_tests_passed": 2826,
+    "head": "87971feab0e23bebd19be4d834b2fa32f27943f9",
+    "validated_formatted_source_commit": "5201786d",
+    "input_note": "Three formatting-only authored card inputs were already fixed before validation;5201786d records those exact bytes. See report file hashes.",
+    "report": "<cache>/rustmage-validation-kx2mpswu/report/result.json",
+    "resource_report": "<cache>/rustmage-build-reports/123d58db95a1446b9bfa8b09a1751729.json",
+    "seconds": 556.8124638640002,
+    "native_tests_passed": 2845,
     "native_tests_ignored": 1,
-    "native_test_seconds": 72.62,
+    "native_test_seconds": 72.96,
     "foundations_game_suites_passed": 22,
     "ecl_games_test_passed": true,
     "shared_libraries": {
-      "<cache>/rustmage-validation-cy6eid5w/release/librustmage.so": "2dababb7a57e4490c8c68e7c663055a59e344619573bc38cb211b9d791a18f1a",
-      "<cache>/rustmage-validation-cy6eid5w/release/deps/librustmage.so": "2dababb7a57e4490c8c68e7c663055a59e344619573bc38cb211b9d791a18f1a",
-      "<cache>/rustmage-validation-cy6eid5w/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
-      "<cache>/rustmage-validation-cy6eid5w/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
-      "<cache>/rustmage-validation-cy6eid5w/debug/deps/librustmage.so": "2938570278966f81eb1690b2e46396e82a90d78eb2df71c751501742646aa65c"
+      "<cache>/rustmage-validation-kx2mpswu/release/librustmage.so": "7563969218810b49baa13f4aa33757b28ba22b572c86852bf157b8385019abc8",
+      "<cache>/rustmage-validation-kx2mpswu/release/deps/librustmage.so": "7563969218810b49baa13f4aa33757b28ba22b572c86852bf157b8385019abc8",
+      "<cache>/rustmage-validation-kx2mpswu/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+      "<cache>/rustmage-validation-kx2mpswu/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-kx2mpswu/debug/deps/librustmage.so": "acf555ff2cb3c9d2ab6a75c64beb3f8c1bb205851d7ff4d51f11a0dd5dc0d9eb"
     },
-    "cleaned_allocated_bytes": 1100824576,
-    "scope": "228-card checkpoint; subsequent integrations still require combined release verification. Entire-set acceptance pending."
+    "cleaned_allocated_bytes": 1102700544,
+    "scope": "232-card fixed-input checkpoint; entire-set acceptance pending. Later Mornsong integration has focused evidence."
   },
   "regression_recheck": {
     "command": "guarded cargo test --test foundations_games characteristic_modal_games::foundations_six_characteristic_modal_cards_full_games_and_owned_effect_state",
@@ -239,20 +242,20 @@
     }
   },
   "regression_benchmark": {
-    "head": "7f001174976c55a93d6e738041c82192af57999d",
+    "head": "87971feab0e23bebd19be4d834b2fa32f27943f9",
     "workload": "Freeform smoke regression,100games seeds0..99; native policy/observations; no JSON/model/tensor work; not ECL acceptance",
     "cpu": "Intel Core Ultra5 335, x86_64,8cores",
     "compiler": "rustc1.98.0(88d9e12ae2026-08-18)",
-    "clone_ns": 212.57445,
+    "clone_ns": 125.60613,
     "decisions": 49832,
-    "decisions_per_second": 216499.06945630937,
+    "decisions_per_second": 198975.25269252164,
     "games": 100,
-    "games_per_second": 434.45791751547074,
+    "games_per_second": 399.29212693153323,
     "initial_state_bytes_excluding_capacity_and_allocator": 21048,
     "max_decisions_per_game": 1129,
     "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
-    "restore_ns": 190.39887,
-    "seconds": 0.23017189
+    "restore_ns": 126.06974,
+    "seconds": 0.250443205
   },
   "doran": {
     "commit": "4bc474cc",
@@ -356,5 +359,26 @@
     "funding_resource_report": "<cache>/rustmage-build-reports/8917b5a3e11346f1852ac94e9555e714.json",
     "native_regression": "2803 passed; only inherited Moonshadow source-index assertion failed on older author base; fixed12633035 already passed combined228 release",
     "source_pins": "all integrated authored Java provenance unittest passed1.937s"
+  },
+  "release_228_retained_evidence": {
+    "status": "passed all8phases",
+    "head": "7f001174976c55a93d6e738041c82192af57999d",
+    "report": "<cache>/rustmage-validation-cy6eid5w/report/result.json",
+    "resource_report": "<cache>/rustmage-build-reports/a95c493b86d14cc4bc1a7efc87f71f1e.json",
+    "seconds": 553.7659332290059,
+    "native_tests_passed": 2826,
+    "native_tests_ignored": 1,
+    "native_test_seconds": 72.62,
+    "foundations_game_suites_passed": 22,
+    "ecl_games_test_passed": true,
+    "shared_libraries": {
+      "<cache>/rustmage-validation-cy6eid5w/release/librustmage.so": "2dababb7a57e4490c8c68e7c663055a59e344619573bc38cb211b9d791a18f1a",
+      "<cache>/rustmage-validation-cy6eid5w/release/deps/librustmage.so": "2dababb7a57e4490c8c68e7c663055a59e344619573bc38cb211b9d791a18f1a",
+      "<cache>/rustmage-validation-cy6eid5w/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+      "<cache>/rustmage-validation-cy6eid5w/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-cy6eid5w/debug/deps/librustmage.so": "2938570278966f81eb1690b2e46396e82a90d78eb2df71c751501742646aa65c"
+    },
+    "cleaned_allocated_bytes": 1100824576,
+    "scope": "228-card checkpoint; subsequent integrations still require combined release verification. Entire-set acceptance pending."
   }
 }

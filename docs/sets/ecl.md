@@ -21,8 +21,8 @@ The frozen manifest accounts for every identity. The [per-card obligation ledger
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **232/273**, comprising **107 inherited** and **125 newly
-implemented/tested physical candidates**; **41 remain gated**. Five inherited
+Admission flags: **233/273**, comprising **107 inherited** and **126 newly
+implemented/tested physical candidates**; **40 remain gated**. Five inherited
 basic lands have passed source/rules audit;102 inherited cards remain. No final published reviews or newly merged cards. All new
 names and per-card obligations appear in the linked JSON ledgers. Three tested
 synthetic token recipes are outside the physical denominator.
@@ -107,3 +107,7 @@ Spiral into Solitude brings admission to229/273. The inherited evidence audit no
 ## Eirdu and optional tap integration
 
 Both Eirdu/Isilu faces are implemented,including live/speculative creature-spell convoke and other nontoken creatures’ persist with frozen departure LKI,owner returns,and counter entry.301 ECL scenarios passed9.42seconds;106 funding regressions passed3.13seconds. All integrated Java provenance passes. Gravelgill Scoundrel and Meanders Guide add paid optional tap choices and a post-payment reflexive return;306 ECL scenarios passed10.05seconds on the author branch. Combined232-card release verification follows.
+
+## Verified checkpoint232
+
+The232-card fixed-input release passed all8phases in556.81seconds:2,845 native tests (one ignored),all9 catalogue checks,all22 Foundations game suites,ECL games,Clippy/provenance,release build and benchmark. Peak3.3GiB;1,102,700,544 disposable bytes cleaned. The three authored source formatting inputs were fixed before validation and recorded afterward in5201786d; exact hashes and required retained libraries are in the report. Mornsong Aria is integrated afterward for233/273 admitted,40 gated; its four focused scenarios and90 shared search regressions pass. Subsequent shared-slot verification is allowed to finish before another long full run.

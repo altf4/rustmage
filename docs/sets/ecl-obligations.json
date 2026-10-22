@@ -3959,7 +3959,7 @@
       "name": "Mornsong Aria",
       "definition": "src/card_definitions/ecl/mornsong_aria.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Mornsong Aria",
@@ -3974,7 +3974,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/mornsong_aria.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
