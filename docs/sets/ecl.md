@@ -21,8 +21,8 @@ The frozen manifest accounts for every identity. The [per-card obligation ledger
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **203/273**, comprising **107 inherited** and **96 newly
-implemented/tested physical candidates**; **70 remain gated**. Inherited evidence
+Admission flags: **207/273**, comprising **107 inherited** and **100 newly
+implemented/tested physical candidates**; **66 remain gated**. Inherited evidence
 still needs audit. No final published reviews or newly merged cards. All new
 names and per-card obligations appear in the linked JSON ledgers. Three tested
 synthetic token recipes are outside the physical denominator.
@@ -33,7 +33,9 @@ cards respectively. Their focused modules are `src/engine_ecl_black_red_tests.rs
 The integrator owns multicolor cards, shared coordination, source reconciliation,
 `src/engine_ecl_core_tests.rs`, `src/engine_ecl_commands_tests.rs`, and generated
 links. All five Incarnations are integrated; root now owns the seven transforming cards. Foraging Wickermaw, Harmonized
-Crescendo, Thoughtweft Imbuer and Lasting Tarfire are integrated; a203-card
+Crescendo, Thoughtweft Imbuer and Lasting Tarfire are integrated; the203-card
+Clippy check needed the now integrated Brigid consumer. Both Brigid faces,
+Warren Torchmaster, Shimmerwilds Growth and Kinbinding are integrated; a207-card
 release validation is next.
 
 Shared mechanics include mandatory and optional blight costs versus effects,

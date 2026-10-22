@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 96,
+  "newly_tested_physical_cards": 100,
   "newly_tested_names": [
     "Adept Watershaper",
     "Ashling's Command",
@@ -19,6 +19,7 @@
     "Bogslither's Embrace",
     "Boulder Dash",
     "Brigid's Command",
+    "Brigid, Clachan's Heart // Brigid, Doun's Mind",
     "Bristlebane Battler",
     "Bristlebane Outrider",
     "Burning Curiosity",
@@ -57,6 +58,7 @@
     "Heirloom Auntie",
     "Hexing Squelcher",
     "Illusion Spinners",
+    "Kinbinding",
     "Kithkeeper",
     "Lasting Tarfire",
     "Liminal Hold",
@@ -80,6 +82,7 @@
     "Sapling Nursery",
     "Scuzzback Scrounger",
     "Selfless Safewright",
+    "Shimmerwilds Growth",
     "Sourbread Auntie",
     "Springleaf Drum",
     "Spry and Mighty",
@@ -97,12 +100,13 @@
     "Vinebred Brawler",
     "Voracious Tome-Skimmer",
     "Wanderbrine Trapper",
+    "Warren Torchmaster",
     "Wary Farmer",
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 203,
-  "remaining_gated": 70,
+  "current_admission_flags": 207,
+  "remaining_gated": 66,
   "inherited_evidence_audit": "pending",
   "locally_reviewed": 0,
   "final_published_reviews": 0,
@@ -140,10 +144,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T17:30:08.066799+00:00",
-    "elapsed_seconds": 7640.849948,
-    "newly_verified_cards": 96,
-    "cards_per_hour": 45.23057020514598,
+    "end_utc": "2026-10-22T17:34:30.078232+00:00",
+    "elapsed_seconds": 7902.861381,
+    "newly_verified_cards": 100,
+    "cards_per_hour": 45.55312090700583,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "196 integrated ECL scenarios passed at bb92026c with generated catalogue1fbc9bcda08f4079d26ed30456add7c4c31131f6ef2563e732a179a74fc3e0a3",
@@ -198,5 +202,17 @@
     "scenarios": 6,
     "seconds": 0.16,
     "report": "<cache>/rustmage-build-reports/30122f9d6daf4127b98494e46111c72d.json"
+  },
+  "release_attempt_203": {
+    "head": "ebd077ba",
+    "status": "failed at Clippy: dynamic mana primitive had no admitted consumer; tested Brigid consumer now integrated",
+    "report": "<cache>/rustmage-validation-f3l3fe7p/report/result.json"
+  },
+  "brigid": {
+    "commit": "bd3e258c",
+    "scenarios": 9,
+    "seconds": 0.17,
+    "resource_report": "<cache>/rustmage-build-reports/23d375dad6944f93b25c57a2be8913c8.json",
+    "source_tests": 7
   }
 }

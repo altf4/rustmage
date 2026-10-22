@@ -766,7 +766,7 @@
       "name": "Brigid, Clachan's Heart // Brigid, Doun's Mind",
       "definition": "src/card_definitions/ecl/brigid_clachan_s_heart_brigid_doun_s_mind.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Brigid, Clachan's Heart",
@@ -793,7 +793,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_transform_tests.rs",
+        "src/card_definitions/ecl/brigid_clachan_s_heart_brigid_doun_s_mind.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "592689f2-f17c-40d6-b880-431f4b6a6b0c",
@@ -3146,7 +3150,7 @@
       "name": "Kinbinding",
       "definition": "src/card_definitions/ecl/kinbinding.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Kinbinding",
@@ -3161,7 +3165,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/kinbinding.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "c7ca6371-73bb-4717-a148-0804b8f4c1e6",
@@ -4988,7 +4996,7 @@
       "name": "Shimmerwilds Growth",
       "definition": "src/card_definitions/ecl/shimmerwilds_growth.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Shimmerwilds Growth",
@@ -5005,7 +5013,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/shimmerwilds_growth.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "1b94ee87-a2f4-47f1-9fc7-4a167cad1b3b",
@@ -6355,7 +6367,7 @@
       "name": "Warren Torchmaster",
       "definition": "src/card_definitions/ecl/warren_torchmaster.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Warren Torchmaster",
@@ -6369,7 +6381,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/warren_torchmaster.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "63eed1f5-442f-433d-989c-397b88543162",
