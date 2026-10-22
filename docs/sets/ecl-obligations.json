@@ -3538,7 +3538,7 @@
       "name": "Lluwen, Imperfect Naturalist",
       "definition": "src/card_definitions/ecl/lluwen_imperfect_naturalist.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Lluwen, Imperfect Naturalist",
@@ -3553,7 +3553,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_lluwen_tests.rs",
+        "src/card_definitions/ecl/lluwen_imperfect_naturalist.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "631eb3e9-a3e0-4341-ad2d-e79142ce537d",

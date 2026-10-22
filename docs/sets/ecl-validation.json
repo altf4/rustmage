@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 148,
+  "newly_tested_physical_cards": 149,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -85,6 +85,7 @@
     "Kithkeeper",
     "Lasting Tarfire",
     "Liminal Hold",
+    "Lluwen, Imperfect Naturalist",
     "Loch Mare",
     "Lys Alana Dignitary",
     "Meanders Guide",
@@ -153,8 +154,8 @@
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 255,
-  "remaining_gated": 18,
+  "current_admission_flags": 256,
+  "remaining_gated": 17,
   "inherited_evidence_audit": {
     "audited": 20,
     "total": 107,
@@ -277,10 +278,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T20:26:40.454686+00:00",
-    "elapsed_seconds": 18233.237835,
-    "newly_verified_cards": 148,
-    "cards_per_hour": 29.22135963022719,
+    "end_utc": "2026-10-22T20:27:12.649242+00:00",
+    "elapsed_seconds": 18265.432391,
+    "newly_verified_cards": 149,
+    "cards_per_hour": 29.36694782349103,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "494 integrated ECL scenarios passed at60017348; full release verification remains249-card checkpoint",
