@@ -775,6 +775,9 @@ pub(crate) enum Instruction {
     },
     ChooseCreatureType,
     DrawForChosenCreatureType,
+    WatchControlledCreatureCombatDamage {
+        ability: u16,
+    },
     ReturnChosenCreatureTypeFromGraveyard,
     PartitionLibraryPiles(u16),
     KeepOneOfEachPermanentType,

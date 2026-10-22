@@ -1665,6 +1665,9 @@ impl Game {
                     };
                     return;
                 }
+                Instruction::WatchControlledCreatureCombatDamage { ability } => {
+                    self.remember_combat_draw_observer(&item, ability)
+                }
                 Instruction::DrawForChosenCreatureType => {
                     self.draw_for_resolution_chosen_type(item.controller)
                 }

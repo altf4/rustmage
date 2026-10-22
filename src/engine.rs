@@ -29,6 +29,8 @@ pub use mana_lots::{
 };
 #[path = "engine_copies.rs"]
 mod copies;
+#[path = "engine_delayed_combat_draw.rs"]
+mod delayed_combat_draw;
 #[path = "engine_stack_copies.rs"]
 mod stack_copies;
 #[cfg(test)]
@@ -1652,6 +1654,7 @@ struct State {
     graveyard_entries: Option<SharedVec<ObjectRef>>,
     nightmare_cull: Option<Box<copy_characteristics::NightmareCull>>,
     stack_copy_data: Option<Box<stack_copies::CopyState>>,
+    delayed_combat_draws: Option<Box<Vec<SpellView>>>,
     modal_history: modal_history::Rows,
     ability_resolutions: ability_resolutions::Rows,
     attacked_this_turn: SharedVec<ObjectRef>,
@@ -2059,6 +2062,7 @@ pub struct Observation {
     pub retarget: Option<RetargetView>,
     pub target_amount: Option<TargetAmountChoiceView>,
     pub delayed_spell_copies: Vec<SpellView>,
+    pub delayed_combat_draws: Vec<SpellView>,
     pub group_move_count: Option<u64>,
     pub optional_search_sequence: Option<OptionalSearchSequence>,
     pub announcing: Option<SpellView>,
@@ -2239,6 +2243,7 @@ impl Game {
                 graveyard_entries: None,
                 nightmare_cull: None,
                 stack_copy_data: None,
+                delayed_combat_draws: None,
                 modal_history: None,
                 ability_resolutions: None,
                 attacked_this_turn: Vec::new().into(),
@@ -5366,6 +5371,7 @@ impl Game {
     fn begin_turn(&mut self) {
         self.clear_crew_history();
         self.expire_spell_copies();
+        self.state.delayed_combat_draws = None;
         self.state.triggered_this_turn.clear();
         self.state.ability_resolutions = None;
         self.state.creature_damage_history = None;
@@ -5518,6 +5524,7 @@ impl Game {
         }
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.expire_spell_copies();
+        self.state.delayed_combat_draws = None;
         self.expire_temporary_controls();
         if let Some(grants) = &mut self.state.temporary_abilities {
             grants.retain(|grant| grant.permanent);
@@ -5719,6 +5726,7 @@ impl Game {
         self.record_combat_and_excess_damage(events);
         self.creature_damage_events(events);
         self.player_damage_triggers(events);
+        self.delayed_combat_draw_triggers(events);
         // Trigger events are recorded before SBAs, after the whole damage batch.
         gains
     }
@@ -6211,6 +6219,11 @@ impl Game {
             retarget: self.retarget_view(),
             target_amount: self.target_amount_choice(),
             delayed_spell_copies: self.delayed_spell_copy_view(),
+            delayed_combat_draws: self
+                .state
+                .delayed_combat_draws
+                .as_ref()
+                .map_or_else(Vec::new, |templates| templates.as_ref().clone()),
             resolving: s
                 .resolving
                 .as_ref()
@@ -6485,6 +6498,7 @@ impl Game {
                 std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
             })
             + copy_characteristics::cull_bytes(&s.nightmare_cull)
+            + delayed_combat_draw::owned_bytes(&s.delayed_combat_draws)
             + stack_copies::owned_bytes(&s.stack_copy_data)
             + modal_history::owned_bytes(&s.modal_history)
             + cast_permissions::owned_bytes(&s.graveyard_cast_permissions)

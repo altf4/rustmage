@@ -2955,3 +2955,303 @@ fn kinbinding_multiple_sources_stack_and_source_ability_loss_stops_its_bonus() {
     settle(&mut g);
     assert_eq!(g.stats(bear).power, 2);
 }
+
+fn flitterwing(g: &mut Game, p: Player) -> CardId {
+    let source = spawn(
+        g,
+        p,
+        Card::from_name("Flitterwing Nuisance").unwrap(),
+        Zone::Hand,
+    );
+    cast(g, source, None);
+    settle(g);
+    assert_eq!(
+        g.stats(source),
+        Stats {
+            power: 1,
+            toughness: 1
+        }
+    );
+    assert!(g.keywords(source).contains(Keywords::FLYING));
+    source
+}
+fn hand_count(g: &Game, p: Player) -> usize {
+    g.state
+        .objects
+        .iter()
+        .filter(|object| object.zone == Zone::Hand && object.owner == p)
+        .count()
+}
+
+#[test]
+fn flitterwing_nuisance_paid_counter_removal_registers_only_on_resolution_and_each_creature_draws()
+{
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = flitterwing(&mut g, p);
+        let bear = spawn(
+            &mut g,
+            p,
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        for _ in 0..5 {
+            spawn(&mut g, p, Card::Island, Zone::Library);
+        }
+        activate(&mut g, source, 0, None);
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 0);
+        assert!(g.observe(p).delayed_combat_draws.is_empty());
+        settle(&mut g);
+        assert_eq!(g.observe(p).delayed_combat_draws.len(), 1);
+        assert_eq!(
+            g.observe(p).delayed_combat_draws,
+            g.observe(p.other()).delayed_combat_draws
+        );
+        assert!(!g.legal_actions().iter().any(|action| matches!(action, Action::AnnounceActivate { card, .. } | Action::Activate { card, .. } | Action::BeginActivate { card, .. } if *card == source)));
+        let hand = hand_count(&g, p);
+        thoughtweft_attack(&mut g, &[source, bear]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::FinishBlockers);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        let mut branch = {
+            let parent = g.clone();
+            parent.clone()
+        };
+        settle(&mut branch);
+        assert_eq!(hand_count(&branch, p), hand + 2);
+        assert_eq!(branch.observe(p).delayed_combat_draws.len(), 1);
+        branch.finish_cleanup();
+        assert!(branch.observe(p).delayed_combat_draws.is_empty());
+    }
+}
+
+#[test]
+fn flitterwing_nuisance_delayed_observer_survives_source_departure_and_draws_for_lethal_planeswalker_damage()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = flitterwing(&mut g, p);
+        activate(&mut g, source, 0, None);
+        g.move_object(source, Zone::Graveyard);
+        settle(&mut g);
+        let mut branch = {
+            let parent = g.clone();
+            parent.clone()
+        };
+        let bear = spawn(
+            &mut branch,
+            p,
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        let walker = spawn(
+            &mut branch,
+            p.other(),
+            Card::from_name("Vivien Reid").unwrap(),
+            Zone::Battlefield,
+        );
+        branch.set_counters(walker, Counters::of(CounterKind::Loyalty, 1));
+        for _ in 0..3 {
+            spawn(&mut branch, p, Card::Island, Zone::Library);
+        }
+        let hand = hand_count(&branch, p);
+        branch.state.objects[bear as usize].summoning_sick = false;
+        branch.state.step = Step::Attackers;
+        branch.state.pending = Pending::Attackers;
+        let defender = branch.object_ref(walker);
+        checked(
+            &mut branch,
+            Action::AttackPlaneswalker {
+                card: bear,
+                defender,
+            },
+        );
+        checked(&mut branch, Action::FinishAttackers);
+        checked(&mut branch, Action::Pass);
+        checked(&mut branch, Action::Pass);
+        checked(&mut branch, Action::FinishBlockers);
+        checked(&mut branch, Action::Pass);
+        checked(&mut branch, Action::Pass);
+        assert_eq!(branch.object_view(walker).zone, Zone::Graveyard);
+        settle(&mut branch);
+        assert_eq!(hand_count(&branch, p), hand + 1);
+    }
+}
+
+#[test]
+fn flitterwing_nuisance_multiple_registrations_any_named_counter_and_current_damage_controller_are_independent()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = flitterwing(&mut g, p);
+        g.add_counter(source, CounterKind::Stun, 1);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::of(CounterKind::Stun, 1),
+            },
+        );
+        finish_cast_choices(&mut g);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 1);
+        assert_eq!(g.counter_count(source, CounterKind::Stun), 0);
+        activate(&mut g, source, 0, None);
+        settle(&mut g);
+        assert_eq!(g.observe(p).delayed_combat_draws.len(), 2);
+        let bear = spawn(
+            &mut g,
+            p,
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        let enemy = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        for _ in 0..8 {
+            spawn(&mut g, p, Card::Island, Zone::Library);
+        }
+        let hand = hand_count(&g, p);
+        let source_ref = g.object_ref(source);
+        g.change_controller(source_ref, p.other());
+        g.state.active = p.other();
+        g.state.priority = p.other();
+        let events = [
+            DamageEvent {
+                preventable: true,
+                source: g.damage_source(bear),
+                target: Target::Player(p.other()),
+                amount: 1,
+                combat: true,
+            },
+            DamageEvent {
+                preventable: true,
+                source: g.damage_source(enemy),
+                target: Target::Player(p),
+                amount: 1,
+                combat: true,
+            },
+            DamageEvent {
+                preventable: true,
+                source: g.damage_source(bear),
+                target: Target::Card(enemy),
+                amount: 1,
+                combat: true,
+            },
+            DamageEvent {
+                preventable: true,
+                source: g.damage_source(bear),
+                target: Target::Player(p.other()),
+                amount: 1,
+                combat: false,
+            },
+            DamageEvent {
+                preventable: true,
+                source: g.damage_source(bear),
+                target: Target::Player(p.other()),
+                amount: 0,
+                combat: true,
+            },
+        ];
+        g.apply_damage_batch(&events);
+        settle(&mut g);
+        assert_eq!(hand_count(&g, p), hand + 2);
+        let bear_ref = g.object_ref(bear);
+        g.change_controller(bear_ref, p.other());
+        let event = DamageEvent {
+            preventable: true,
+            source: g.damage_source(bear),
+            target: Target::Player(p),
+            amount: 1,
+            combat: true,
+        };
+        g.apply_damage_batch(&[event]);
+        settle(&mut g);
+        assert_eq!(hand_count(&g, p), hand + 2);
+        g.finish_cleanup();
+        let bear_ref = g.object_ref(bear);
+        g.change_controller(bear_ref, p);
+        let event = DamageEvent {
+            preventable: true,
+            source: g.damage_source(bear),
+            target: Target::Player(p.other()),
+            amount: 1,
+            combat: true,
+        };
+        g.apply_damage_batch(&[event]);
+        settle(&mut g);
+        assert_eq!(hand_count(&g, p), hand + 2);
+    }
+}
+
+#[test]
+fn flitterwing_nuisance_countered_activation_registers_nothing_and_repeated_batches_and_recipients_trigger_separately()
+ {
+    for countered in [false, true] {
+        let mut g = setup(Player::P0);
+        let source = flitterwing(&mut g, Player::P0);
+        let bear = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        let walker = spawn(
+            &mut g,
+            Player::P1,
+            Card::from_name("Vivien Reid").unwrap(),
+            Zone::Battlefield,
+        );
+        g.set_counters(walker, Counters::of(CounterKind::Loyalty, 5));
+        for _ in 0..8 {
+            spawn(&mut g, Player::P0, Card::Island, Zone::Library);
+        }
+        let hand = hand_count(&g, Player::P0);
+        activate(&mut g, source, 0, None);
+        let event = DamageEvent {
+            preventable: true,
+            source: g.damage_source(bear),
+            target: Target::Player(Player::P1),
+            amount: 1,
+            combat: true,
+        };
+        // Activation is still on the stack, so this earlier damage is unobserved.
+        g.apply_damage_batch(&[event]);
+        assert!(g.state.pending_triggers.is_empty());
+        if countered {
+            let ability = g.state.stack.last().unwrap().id;
+            assert!(g.counter_stack_item(ability, false));
+        }
+        settle(&mut g);
+        assert_eq!(
+            g.observe(Player::P0).delayed_combat_draws.len(),
+            usize::from(!countered)
+        );
+        let hits = [
+            event,
+            DamageEvent {
+                target: Target::Card(walker),
+                ..event
+            },
+        ];
+        g.apply_damage_batch(&hits);
+        settle(&mut g);
+        assert_eq!(
+            hand_count(&g, Player::P0),
+            hand + if countered { 0 } else { 2 }
+        );
+        g.apply_damage_batch(&[event]);
+        settle(&mut g);
+        assert_eq!(
+            hand_count(&g, Player::P0),
+            hand + if countered { 0 } else { 3 }
+        );
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 0);
+    }
+}
