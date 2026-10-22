@@ -5313,3 +5313,552 @@ fn soul_immolation_timing_and_countered_spell_keep_blight_and_mana_paid() {
         assert_eq!(g.state.players[p.other().index()].life, 20);
     }
 }
+
+fn dawnhand_link(g: &mut Game, p: Player, name: &str) -> (CardId, CardId, ObjectRef) {
+    let source = named(g, p, "Dawnhand Dissident", Zone::Battlefield);
+    let card = named(g, p, name, Zone::Exile);
+    let source_ref = g.object_ref(source);
+    g.remember_linked_exile_for(source_ref, &[card]);
+    (source, card, source_ref)
+}
+fn dawnhand_announce(g: &mut Game, card: CardId, source: ObjectRef) {
+    assert!(
+        g.state.static_sources.contains(&source.card),
+        "provider index"
+    );
+    assert_eq!(
+        g.linked_counter_permission(g.actor().unwrap(), card, source),
+        Some(3),
+        "permission"
+    );
+    checked(
+        g,
+        Action::AnnounceLinkedExileCounterCost {
+            card,
+            source,
+            flash_surcharge: false,
+        },
+    );
+}
+fn dawnhand_remove(g: &mut Game, object: ObjectRef, kinds: &[CounterKind]) {
+    for &counter in kinds {
+        checked(g, Action::ChooseCreatureCounterCost { object, counter });
+    }
+}
+#[test]
+fn dawnhand_paid_activations_tap_blight_surveillance_privacy_and_exact_graveyard_link() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Dawnhand Dissident", Zone::Hand);
+        cast(&mut g, source);
+        reject(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        g.state.objects[source as usize].summoning_sick = false;
+        let donor = named(&mut g, p, "Gigantosaurus", Zone::Battlefield);
+        let top = named(&mut g, p, "Shock", Zone::Library);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        let donor_ref = g.object_ref(donor);
+        checked(&mut g, Action::ChooseAdditionalCost { object: donor_ref });
+        kindle_pay(&mut g);
+        assert!(g.object_view(source).tapped);
+        assert_eq!(g.counter_count(donor, CounterKind::MinusOne), 1);
+        for _ in 0..6 {
+            if g.observe(p).library_choice.is_some() {
+                break;
+            }
+            advance(&mut g);
+        }
+        assert!(g.observe(p).library_choice.is_some());
+        assert!(g.observe(p.other()).library_choice.is_none());
+        checked(
+            &mut g,
+            Action::ArrangeLibrary {
+                card: top,
+                destination: LibraryDestination::Graveyard,
+            },
+        );
+        settle(&mut g);
+        g.state.objects[source as usize].tapped = false;
+        let card = named(&mut g, p.other(), "Divination", Zone::Graveyard);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(card),
+            },
+        );
+        checked(&mut g, Action::ChooseAdditionalCost { object: donor_ref });
+        kindle_pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(card).zone, Zone::Exile);
+        assert_eq!(g.counter_count(donor, CounterKind::MinusOne), 3);
+        assert!(
+            g.state
+                .linked_choices
+                .as_ref()
+                .unwrap()
+                .links
+                .iter()
+                .any(|l| l.source == g.object_ref(source) && l.exiled == g.object_ref(card))
+        );
+        assert!(!g.legal_actions().iter().any(
+            |a| matches!(a, Action::AnnounceLinkedExileCounterCost { card: c, .. } if *c == card)
+        ));
+    }
+}
+#[test]
+fn dawnhand_mixed_named_counter_payment_is_additional_to_mana_and_owned() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let (source, card, reference) = dawnhand_link(&mut g, p, "Grizzly Bears");
+        for kind in [
+            CounterKind::Flying,
+            CounterKind::FirstStrike,
+            CounterKind::Lifelink,
+        ] {
+            g.add_counter(source, kind, 1);
+        }
+        let wrong = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        g.add_counter(wrong, CounterKind::PlusOne, 20);
+        reject(&mut g, Action::AnnounceExile { card });
+        reject(
+            &mut g,
+            Action::BeginCast {
+                card,
+                payment: [0, 0, 0, 0, 1, 1],
+            },
+        );
+        reject(
+            &mut g,
+            Action::Cast {
+                card,
+                target: None,
+                payment: [0, 0, 0, 0, 1, 1],
+            },
+        );
+        let before = g.state.players[p.index()].mana;
+        dawnhand_announce(&mut g, card, reference);
+        assert!(g.observe(p).additional_cost.is_some());
+        assert!(g.observe(p.other()).additional_cost.is_none());
+        let wrong_ref = g.object_ref(wrong);
+        reject(
+            &mut g,
+            Action::ChooseCreatureCounterCost {
+                object: wrong_ref,
+                counter: CounterKind::PlusOne,
+            },
+        );
+        dawnhand_remove(
+            &mut g,
+            reference,
+            &[
+                CounterKind::Flying,
+                CounterKind::FirstStrike,
+                CounterKind::Lifelink,
+            ],
+        );
+        kindle_pay(&mut g);
+        assert!(
+            g.state.players[p.index()]
+                .mana
+                .iter()
+                .map(|&v| u64::from(v))
+                .sum::<u64>()
+                < before.iter().map(|&v| u64::from(v)).sum::<u64>()
+        );
+        assert_eq!(g.counter_amounts(source).total(), 0);
+        settle(&mut g);
+        assert_eq!(g.object_view(card).zone, Zone::Battlefield);
+    }
+}
+#[test]
+fn dawnhand_exact_provider_turn_control_and_source_departure_during_announcement() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let (source, card, reference) = dawnhand_link(&mut g, p, "Grizzly Bears");
+        g.add_counter(source, CounterKind::PlusOne, 3);
+        let linked = Action::AnnounceLinkedExileCounterCost {
+            card,
+            source: reference,
+            flash_surcharge: false,
+        };
+        g.state.objects[card as usize].owner = p.other();
+        reject(&mut g, linked.clone());
+        g.state.objects[card as usize].owner = p;
+        g.state.step = Step::Upkeep;
+        reject(&mut g, linked);
+        g.state.step = Step::Main1;
+        let noncreature = named(&mut g, p, "Divination", Zone::Exile);
+        g.remember_linked_exile_for(reference, &[noncreature]);
+        reject(
+            &mut g,
+            Action::AnnounceLinkedExileCounterCost {
+                card: noncreature,
+                source: reference,
+                flash_surcharge: false,
+            },
+        );
+        g.state.active = p.other();
+        reject(
+            &mut g,
+            Action::AnnounceLinkedExileCounterCost {
+                card,
+                source: reference,
+                flash_surcharge: false,
+            },
+        );
+        g.state.active = p;
+        g.state.objects[source as usize].controller = p.other();
+        reject(
+            &mut g,
+            Action::AnnounceLinkedExileCounterCost {
+                card,
+                source: reference,
+                flash_surcharge: false,
+            },
+        );
+        g.state.objects[source as usize].controller = p;
+        let other = named(&mut g, p, "Dawnhand Dissident", Zone::Battlefield);
+        let other_ref = g.object_ref(other);
+        reject(
+            &mut g,
+            Action::AnnounceLinkedExileCounterCost {
+                card,
+                source: other_ref,
+                flash_surcharge: false,
+            },
+        );
+        dawnhand_announce(&mut g, card, reference);
+        dawnhand_remove(&mut g, reference, &[CounterKind::PlusOne; 3]);
+        g.move_object(source, Zone::Graveyard);
+        // The chosen donor must remain, even though the provider is no longer required.
+        assert!(
+            !g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::PayCosts { .. }))
+        );
+        reject(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 1, 1],
+            },
+        );
+        let mut h = hexing_setup(p);
+        let (source, card, reference) = dawnhand_link(&mut h, p, "Grizzly Bears");
+        let donor = named(&mut h, p, "Gigantosaurus", Zone::Battlefield);
+        h.add_counter(donor, CounterKind::PlusOne, 3);
+        dawnhand_announce(&mut h, card, reference);
+        let donor_ref = h.object_ref(donor);
+        dawnhand_remove(&mut h, donor_ref, &[CounterKind::PlusOne; 3]);
+        h.move_object(source, Zone::Graveyard);
+        kindle_pay(&mut h);
+        settle(&mut h);
+        assert_eq!(h.object_view(card).zone, Zone::Battlefield);
+    }
+}
+#[test]
+fn dawnhand_printed_champion_exile_and_counter_cost_can_share_donor_before_payment() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let (source, card, reference) = dawnhand_link(&mut g, p, "Champions of the Perfect");
+        g.add_counter(source, CounterKind::PlusOne, 3);
+        dawnhand_announce(&mut g, card, reference);
+        checked(&mut g, Action::ChooseAdditionalCost { object: reference });
+        checked(
+            &mut g,
+            Action::ChooseCounterCostOrder {
+                after_printed: false,
+            },
+        );
+        dawnhand_remove(&mut g, reference, &[CounterKind::PlusOne; 3]);
+        kindle_pay(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Exile);
+        settle(&mut g);
+        assert_eq!(g.object_view(card).zone, Zone::Battlefield);
+        g.move_object(card, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Hand);
+    }
+}
+#[test]
+fn dawnhand_after_printed_exile_returns_fresh_counter_donor_before_cast_completes() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let (_, card, reference) = dawnhand_link(&mut g, p, "Champions of the Perfect");
+        let hunter = named(&mut g, p, "Henchbots", Zone::Battlefield);
+        let auntie = named(&mut g, p, "Heirloom Auntie", Zone::Exile);
+        let hunter_ref = g.object_ref(hunter);
+        // Reachable prior link: Henchbots exiled our tapped Auntie after control
+        // was donated to the opponent. Oko subsequently made Henchbots an Elf.
+        let item = g.cast_preview(p, hunter, Zone::Battlefield, hunter_ref, 0, [0; 6]);
+        g.gain_all_creature_types_permanently(&item, Subject::Source);
+        g.state.exile_links.push(ExileLink {
+            source: hunter_ref,
+            exiled: g.object_ref(auntie),
+            return_zone: Zone::Battlefield,
+        });
+        let donor = named(&mut g, p, "Gigantosaurus", Zone::Battlefield);
+        g.add_counter(donor, CounterKind::PlusOne, 1);
+        dawnhand_announce(&mut g, card, reference);
+        checked(&mut g, Action::ChooseAdditionalCost { object: hunter_ref });
+        assert!(
+            !g.legal_actions().contains(&Action::ChooseCounterCostOrder {
+                after_printed: false
+            })
+        );
+        checked(
+            &mut g,
+            Action::ChooseCounterCostOrder {
+                after_printed: true,
+            },
+        );
+        kindle_pay(&mut g);
+        for _ in 0..20 {
+            if matches!(g.state.pending, Pending::CreatureCounterCost { .. }) {
+                break;
+            }
+            advance(&mut g);
+        }
+        assert_eq!(g.object_view(auntie).zone, Zone::Battlefield);
+        assert_eq!(g.counter_count(auntie, CounterKind::MinusOne), 2);
+        assert!(g.state.stack.iter().all(|s| s.card != card));
+        let auntie_ref = g.object_ref(auntie);
+        dawnhand_remove(&mut g, auntie_ref, &[CounterKind::MinusOne; 2]);
+        let donor_ref = g.object_ref(donor);
+        dawnhand_remove(&mut g, donor_ref, &[CounterKind::PlusOne]);
+        assert!(g.state.announcing.is_none());
+        settle(&mut g);
+        assert_eq!(g.object_view(card).zone, Zone::Battlefield);
+    }
+}
+#[test]
+fn dawnhand_counter_mana_funding_cannot_double_spend_reserved_counters() {
+    for p in [Player::P0, Player::P1] {
+        for count in [7, 8] {
+            let mut g = hexing_setup(p);
+            let (_, card, reference) = dawnhand_link(&mut g, p, "Grizzly Bears");
+            let ramos = named(&mut g, p, "Ramos, Dragon Engine", Zone::Battlefield);
+            g.add_counter(ramos, CounterKind::PlusOne, count);
+            g.state.players[p.index()].mana = [0; 6];
+            let action = Action::AnnounceLinkedExileCounterCost {
+                card,
+                source: reference,
+                flash_surcharge: false,
+            };
+            if count == 7 {
+                reject(&mut g, action);
+                continue;
+            }
+            checked(&mut g, action);
+            let r = g.object_ref(ramos);
+            dawnhand_remove(&mut g, r, &[CounterKind::PlusOne; 3]);
+            let mana = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::ActivateMana { card, .. } if *card == ramos))
+                .unwrap();
+            checked(&mut g, mana);
+            assert_eq!(g.counter_count(ramos, CounterKind::PlusOne), 3);
+            kindle_pay(&mut g);
+            assert_eq!(g.counter_count(ramos, CounterKind::PlusOne), 0);
+            settle(&mut g);
+            assert_eq!(g.object_view(card).zone, Zone::Battlefield);
+        }
+    }
+}
+#[test]
+fn dawnhand_variable_creature_spell_requires_existing_counters_and_pays_declared_x() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let (source, card, reference) = dawnhand_link(&mut g, p, "Wildwood Scourge");
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 4];
+        reject(
+            &mut g,
+            Action::AnnounceLinkedExileCounterCost {
+                card,
+                source: reference,
+                flash_surcharge: false,
+            },
+        );
+        g.add_counter(source, CounterKind::Flying, 3);
+        dawnhand_announce(&mut g, card, reference);
+        assert!(g.x_choice().unwrap().contains(4));
+        assert!(!g.x_choice().unwrap().contains(5));
+        reject(&mut g, Action::ChooseX { value: 5 });
+        checked(&mut g, Action::ChooseX { value: 4 });
+        dawnhand_remove(&mut g, reference, &[CounterKind::Flying; 3]);
+        kindle_pay(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        settle(&mut g);
+        assert_eq!(g.counter_count(card, CounterKind::PlusOne), 4);
+        assert_eq!(g.counter_count(source, CounterKind::Flying), 0);
+    }
+}
+#[test]
+fn dawnhand_other_exile_permission_does_not_inherit_supplemental_cost() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let (_, card, _) = dawnhand_link(&mut g, p, "Grizzly Bears");
+        let object = g.object_ref(card);
+        g.grant_exile_cast_permission(p, object);
+        checked(&mut g, Action::AnnounceExile { card });
+        kindle_pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(card).zone, Zone::Battlefield);
+    }
+}
+#[test]
+fn dawnhand_evoke_alternative_keeps_supplemental_payment_and_evoked_history() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let (source, card, reference) = dawnhand_link(&mut g, p, "Emptiness");
+        g.add_counter(source, CounterKind::Flying, 3);
+        g.state.players[p.index()].mana = [2, 0, 0, 0, 0, 0];
+        dawnhand_announce(&mut g, card, reference);
+        let cost = g
+            .observe(p)
+            .cost_choices
+            .into_iter()
+            .find(|c| {
+                c.cost
+                    == ManaCost {
+                        colored: [2, 0, 0, 0, 0, 0],
+                        generic: 0,
+                    }
+            })
+            .unwrap();
+        checked(&mut g, Action::ChooseSpellCost { cost: cost.index });
+        dawnhand_remove(&mut g, reference, &[CounterKind::Flying; 3]);
+        kindle_pay(&mut g);
+        assert!(g.state.stack.last().unwrap().cast.unwrap().evoked);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert_eq!(g.counter_count(source, CounterKind::Flying), 0);
+        settle(&mut g);
+        assert_eq!(g.object_view(card).zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn dawnhand_provider_ability_loss_and_reentry_do_not_reuse_old_exile_link() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let (source, card, reference) = dawnhand_link(&mut g, p, "Grizzly Bears");
+        let donor = named(&mut g, p, "Gigantosaurus", Zone::Battlefield);
+        g.add_counter(donor, CounterKind::Flying, 3);
+        g.remove_abilities_exact(&[reference], crate::cards::AnimationDuration::Permanent);
+        reject(
+            &mut g,
+            Action::AnnounceLinkedExileCounterCost {
+                card,
+                source: reference,
+                flash_surcharge: false,
+            },
+        );
+        g.move_object(source, Zone::Hand);
+        cast(&mut g, source);
+        let newer = g.object_ref(source);
+        assert_ne!(newer, reference);
+        reject(
+            &mut g,
+            Action::AnnounceLinkedExileCounterCost {
+                card,
+                source: newer,
+                flash_surcharge: false,
+            },
+        );
+    }
+}
+
+#[test]
+fn dawnhand_actual_exile_activation_unlocks_cast_and_source_loss_preserves_only_old_link() {
+    for p in [Player::P0, Player::P1] {
+        for departed in [false, true] {
+            let mut g = hexing_setup(p);
+            let source = named(&mut g, p, "Dawnhand Dissident", Zone::Battlefield);
+            let reference = g.object_ref(source);
+            let donor = named(&mut g, p, "Gigantosaurus", Zone::Battlefield);
+            g.add_counter(donor, CounterKind::MinusOne, 1);
+            let card = named(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: source,
+                    ability: 1,
+                    counter_payment: Counters::default(),
+                },
+            );
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(card),
+                },
+            );
+            let donor_ref = g.object_ref(donor);
+            checked(&mut g, Action::ChooseAdditionalCost { object: donor_ref });
+            kindle_pay(&mut g);
+            if departed {
+                g.move_object(source, Zone::Hand);
+            }
+            settle(&mut g);
+            assert_eq!(g.object_view(card).zone, Zone::Exile);
+            assert_eq!(g.counter_count(donor, CounterKind::MinusOne), 3);
+            if departed {
+                cast(&mut g, source);
+                let newer = g.object_ref(source);
+                reject(
+                    &mut g,
+                    Action::AnnounceLinkedExileCounterCost {
+                        card,
+                        source: newer,
+                        flash_surcharge: false,
+                    },
+                );
+                continue;
+            }
+            dawnhand_announce(&mut g, card, reference);
+            dawnhand_remove(&mut g, donor_ref, &[CounterKind::MinusOne; 3]);
+            kindle_pay(&mut g);
+            settle(&mut g);
+            assert_eq!(g.object_view(card).zone, Zone::Battlefield);
+            assert_eq!(g.counter_count(donor, CounterKind::MinusOne), 0);
+        }
+    }
+}
+
+#[test]
+fn dawnhand_insufficient_counters_reject_without_exploring_equivalent_land_subsets() {
+    let mut g = hexing_setup(Player::P0);
+    let (source, card, reference) = dawnhand_link(&mut g, Player::P0, "Grizzly Bears");
+    g.add_counter(source, CounterKind::Flying, 2);
+    for _ in 0..12 {
+        named(&mut g, Player::P0, "Forest", Zone::Battlefield);
+    }
+    g.state.players[0].mana = [0; 6];
+    reject(
+        &mut g,
+        Action::AnnounceLinkedExileCounterCost {
+            card,
+            source: reference,
+            flash_surcharge: false,
+        },
+    );
+}

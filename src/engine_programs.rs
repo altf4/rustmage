@@ -1742,6 +1742,20 @@ impl Game {
                 Instruction::ReturnLinkedExileToHand => {
                     self.return_linked_exile(item.object, item.ability_origin())
                 }
+                Instruction::ExileTargetsLinkedToSource => {
+                    let ids: Vec<_> = item
+                        .targets
+                        .iter()
+                        .copied()
+                        .filter(|&bound| self.same_target_object(bound))
+                        .filter_map(|bound| match bound.target {
+                            Target::Card(id) => Some(id),
+                            _ => None,
+                        })
+                        .collect();
+                    self.move_target_batch(&item.targets, Zone::Exile);
+                    self.remember_linked_exile_for_origin(item.object, item.ability_origin(), &ids);
+                }
                 Instruction::CopyNextInstantSorcery => self.remember_next_spell_copy(&item),
                 Instruction::CopyNextInstantSorceryAbility(ability) => {
                     self.remember_next_spell_copy_ability(&item, ability)

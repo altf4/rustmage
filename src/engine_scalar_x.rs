@@ -37,6 +37,18 @@ impl Game {
         id: CardId,
         card: Card,
     ) -> Vec<XInterval> {
+        self.scalar_x_intervals_with(actor, id, card, None)
+    }
+    pub(super) fn scalar_x_intervals_for_announcement(&self, a: &Announcement) -> Vec<XInterval> {
+        self.scalar_x_intervals_with(a.item.controller, a.item.card, a.item.source_card, Some(a))
+    }
+    fn scalar_x_intervals_with(
+        &self,
+        actor: Player,
+        id: CardId,
+        card: Card,
+        announcement: Option<&Announcement>,
+    ) -> Vec<XInterval> {
         let symbols = u64::from(card.x_symbols());
         if symbols == 0 {
             return Vec::new();
@@ -114,6 +126,13 @@ impl Game {
         let (colored, generic) = card.cost();
         let base = ManaCost { colored, generic };
         let fundable = |x| {
+            if let Some(a) = announcement {
+                let mut proposal = a.clone();
+                proposal.item.x = Some(x);
+                return proposal
+                    .cost_options()
+                    .any(|cost| self.announcement_cost_fundable(&proposal, cost));
+            }
             self.scalar_x_total_for_definition(actor, id, base, x, card)
                 .is_some_and(|cost| {
                     self.spell_can_fund_total_at_mana_value(
@@ -298,6 +317,12 @@ impl Game {
             intervals: if a.item.kind == StackKind::Spell && a.item.source_card.has_blight_x_cost()
             {
                 self.blight_x_intervals(a)
+            } else if a.item.kind == StackKind::Spell
+                && a.item
+                    .cast
+                    .is_some_and(|c| c.method == CastMethod::LinkedExileCounterCost)
+            {
+                self.scalar_x_intervals_for_announcement(a)
             } else if a.item.kind == StackKind::Spell {
                 self.scalar_x_intervals(a.item.controller, a.item.card)
             } else {

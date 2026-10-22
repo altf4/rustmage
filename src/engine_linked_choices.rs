@@ -435,3 +435,84 @@ impl Game {
         });
     }
 }
+
+impl Game {
+    pub(super) fn linked_counter_permission(
+        &self,
+        actor: Player,
+        card: CardId,
+        source: ObjectRef,
+    ) -> Option<u16> {
+        if self.state.active != actor
+            || !self.on_battlefield(source.card)
+            || self.object_ref(source.card) != source
+        {
+            return None;
+        }
+        let provider = &self.state.objects[source.card as usize];
+        let object = &self.state.objects[card as usize];
+        if provider.controller != actor
+            || object.owner != actor
+            || object.zone != Zone::Exile
+            || object.is_token()
+            || !object.card.is_creature()
+            || !self.state.linked_choices.as_ref().is_some_and(|data| {
+                data.links.iter().any(|link| {
+                    link.source == source
+                        && link.ability_origin == self.copy_ability_origin(source)
+                        && link.exiled == self.object_ref(card)
+                })
+            })
+        {
+            return None;
+        }
+        provider
+            .card
+            .static_ability_groups()
+            .iter()
+            .flat_map(|g| g.fragments)
+            .find_map(|fragment| {
+                if let crate::cards::StaticAbilityFragment::LinkedExileCreatureCounterCasting(
+                    amount,
+                ) = fragment
+                {
+                    self.continuous_fragment_available(source.card, |candidate| {
+                        matches!(candidate, crate::cards::StaticAbilityFragment::LinkedExileCreatureCounterCasting(n) if *n == *amount)
+                    })
+                    .then_some(*amount)
+                } else {
+                    None
+                }
+            })
+    }
+    pub(super) fn visit_linked_counter_casts(
+        &self,
+        card: CardId,
+        actor: Player,
+        sorcery: bool,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        for &source in &self.state.static_sources {
+            let reference = self.object_ref(source);
+            let Some(amount) = self.linked_counter_permission(actor, card, reference) else {
+                continue;
+            };
+            for flash_surcharge in [false, true] {
+                if self.permitted_linked_counter_cast_available(
+                    actor,
+                    card,
+                    amount,
+                    sorcery,
+                    flash_surcharge,
+                ) && emit(Action::AnnounceLinkedExileCounterCost {
+                    card,
+                    source: reference,
+                    flash_surcharge,
+                }) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+}

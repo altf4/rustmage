@@ -9,6 +9,9 @@ pub struct AdditionalCostView {
     pub selected_group: Vec<ObjectRef>,
     pub creature_counter_payments: Vec<(ObjectRef, CounterKind)>,
     pub paid: bool,
+    pub supplemental_counter_amount: Option<u16>,
+    pub counters_after_printed: Option<bool>,
+    pub counter_order_options: Vec<bool>,
 }
 impl Announcement {
     fn tap_group_excludes_source(&self, spec: AdditionalCost) -> bool {
@@ -549,7 +552,20 @@ impl Game {
         if viewer != a.item.controller {
             return None;
         }
-        let spec = a.additional_cost()?;
+        let supplemental = a
+            .creature_counter_cost
+            .as_ref()
+            .filter(|c| c.amount.is_some());
+        let choosing_counters = matches!(
+            self.state.pending,
+            Pending::CreatureCounterCost { .. } | Pending::CounterCostOrder { .. }
+        );
+        let spec = if choosing_counters {
+            Self::creature_counter_spec(supplemental?.amount.unwrap())
+        } else {
+            a.additional_cost()
+                .or_else(|| supplemental.map(|c| Self::creature_counter_spec(c.amount.unwrap())))?
+        };
         if forage::is_forage_cost(spec) || evidence::threshold(spec).is_some() {
             return None;
         }
@@ -561,6 +577,20 @@ impl Game {
         } else {
             Vec::new()
         };
+        let candidates = if matches!(self.state.pending, Pending::CreatureCounterCost { .. }) {
+            let mut refs = Vec::new();
+            self.visit_creature_counter_cost(&mut |action| {
+                if let Action::ChooseCreatureCounterCost { object, .. } = action
+                    && !refs.contains(&object)
+                {
+                    refs.push(object);
+                }
+                false
+            });
+            refs
+        } else {
+            candidates
+        };
         Some(AdditionalCostView {
             kind: spec.kind,
             candidates,
@@ -568,12 +598,27 @@ impl Game {
             creature_counter_payments: a
                 .creature_counter_cost
                 .as_ref()
-                .map_or_else(Vec::new, |v| v.as_ref().clone()),
+                .map_or_else(Vec::new, |v| v.selected.clone()),
             selected_group: a
                 .additional_group
                 .as_ref()
                 .map_or_else(Vec::new, |v| v.as_ref().clone()),
-            paid: a.additional_paid,
+            paid: if choosing_counters {
+                supplemental.is_some_and(|c| c.paid)
+            } else {
+                a.additional_paid
+            },
+            supplemental_counter_amount: supplemental.and_then(|c| c.amount),
+            counters_after_printed: supplemental.and_then(|c| c.after_printed),
+            counter_order_options: if matches!(self.state.pending, Pending::CounterCostOrder { .. })
+            {
+                [false, true]
+                    .into_iter()
+                    .filter(|&after| self.supplemental_counter_order_available(after))
+                    .collect()
+            } else {
+                Vec::new()
+            },
         })
     }
 }

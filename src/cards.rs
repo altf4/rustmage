@@ -826,6 +826,7 @@ pub(crate) enum Instruction {
     RememberOwnSacrifice,
     RecoverAnotherPermanent,
     ReturnLinkedExileToHand,
+    ExileTargetsLinkedToSource,
     /// Immediate public-zone tracking, including redirected first movement (CR400.7j).
     BlinkImmediate,
     /// A single legal permanent target's current controller creates the token.

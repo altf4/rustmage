@@ -154,7 +154,8 @@ impl Game {
                 group.fragments.iter().any(|fragment| {
                     matches!(
                         fragment,
-                        crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
+                        crate::cards::StaticAbilityFragment::LinkedExileCreatureCounterCasting(_)
+                            | crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
                             | crate::cards::StaticAbilityFragment::AdditionalSubtypeTriggers { .. }
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::MustBeBlocked

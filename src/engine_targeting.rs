@@ -21,11 +21,7 @@ pub(super) struct Announcement {
         reason = "Rare growable tap selections use one pointer in ordinary announcements"
     )]
     pub additional_group: Option<Box<Vec<ObjectRef>>>,
-    #[allow(
-        clippy::box_collection,
-        reason = "Rare growable counter selections use one pointer in ordinary announcements"
-    )]
-    pub creature_counter_cost: Option<Box<Vec<(ObjectRef, CounterKind)>>>,
+    pub creature_counter_cost: Option<Box<growth_cost::CreatureCounterSelection>>,
     pub forage: Option<Box<forage::ForageSelection>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
     pub convoke: Option<Box<convoke::ConvokeSelection>>,
@@ -591,8 +587,10 @@ impl Game {
         let a = self.state.announcing.as_mut().unwrap();
         let cost = a.cost_options().nth(index as usize).unwrap();
         if let Some(cast) = a.item.cast.as_mut() {
-            cast.evoked = cast.method == CastMethod::Normal
-                && a.item.source_card.evoke_costs().contains(&cost);
+            cast.evoked = matches!(
+                cast.method,
+                CastMethod::Normal | CastMethod::LinkedExileCounterCost
+            ) && a.item.source_card.evoke_costs().contains(&cost);
         }
         a.cost = Some(cost);
         self.continue_announcement_choices(false);
@@ -1419,6 +1417,14 @@ impl Game {
     }
 
     pub(super) fn finish_announcement(&mut self) {
+        if self.state.announcing.as_ref().is_some_and(|a| {
+            a.additional_paid
+                && a.creature_counter_cost
+                    .as_ref()
+                    .is_some_and(|cost| cost.projecting)
+        }) {
+            return;
+        }
         if self.start_target_amounts() {
             return;
         }
@@ -1547,6 +1553,7 @@ impl Game {
                 announcement.item.cast.as_mut().unwrap().payment = payment;
             }
         }
+        self.pay_supplemental_counters(&mut announcement, false);
         // Costs may synchronously return exiled Auras/lands. Finish their entry
         // choices before the spell becomes cast and cast observers are collected.
         announcement.payment = None;
@@ -1556,11 +1563,17 @@ impl Game {
         }
         if announcement.item.kind == StackKind::Spell && !announcement.additional_paid {
             self.pay_additional_cost(&mut announcement);
-            if self.state.entry_batch.is_some() {
+            announcement.additional_paid = true;
+            if self.state.entry_batch.is_some() || self.state.replacements.is_some() {
                 self.state.announcing = Some(announcement);
                 return;
             }
         }
+        if self.defer_supplemental_counters_after(&mut announcement) {
+            self.state.announcing = Some(announcement);
+            return;
+        }
+        self.pay_supplemental_counters(&mut announcement, true);
         self.state.priority = if announcement.trigger {
             self.state.priority
         } else {

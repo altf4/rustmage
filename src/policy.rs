@@ -179,6 +179,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::DeclineHandEntry => -1,
             Action::ChooseSaddler { .. } | Action::ChooseCrewer { .. } => 50,
             Action::FinishSaddle | Action::FinishCrew => 100,
+            Action::ChooseCounterCostOrder { after_printed } => {
+                if *after_printed {
+                    2
+                } else {
+                    3
+                }
+            }
             Action::ChooseX { value } => 80 + i128::from((*value).min(20)),
             Action::ChooseGift { beneficiary } => {
                 if beneficiary.is_some() {
@@ -289,6 +296,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::AnnounceFree { .. }
             | Action::AnnounceGrantedFlashback { .. }
             | Action::AnnounceCounterGraveyard { .. }
+            | Action::AnnounceLinkedExileCounterCost { .. }
             | Action::AnnounceCast { .. }
             | Action::AnnounceFlashSurcharge { .. }
             | Action::AnnounceWarp { .. }

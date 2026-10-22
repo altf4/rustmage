@@ -232,6 +232,8 @@ mod ability_evaluation;
 mod characteristic_query;
 #[path = "engine_growth_cost.rs"]
 mod growth_cost;
+#[path = "engine_supplemental_counter_cost.rs"]
+mod supplemental_counter_cost;
 #[path = "engine_untap_rules.rs"]
 mod untap_rules;
 pub use ability_evaluation::{AbilityAvailabilityView, GrantedAbilityView};
@@ -484,6 +486,8 @@ define_actions! {
     ChooseForage { object: ObjectRef },
     DeclineForage,
     AnnounceCounterGraveyard { card: CardId },
+    AnnounceLinkedExileCounterCost { card: CardId, source: ObjectRef, flash_surcharge: bool },
+    ChooseCounterCostOrder { after_printed: bool },
     ChooseCreatureCounterCost { object: ObjectRef, counter: CounterKind },
     AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
     ChooseAdditionalCost {
@@ -868,6 +872,8 @@ struct PlayerState {
 pub enum CastMethod {
     Normal,
     GraveyardCounterCost,
+    /// An owned declaration freezes a live provider's extra cost at cast start.
+    LinkedExileCounterCost,
     Free,
     GrantedFlashback,
     Flashback,
@@ -1455,6 +1461,12 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    CounterCostOrder {
+        player: Player,
+    },
+    CreatureCounterCost {
+        player: Player,
+    },
     ResolutionColor {
         player: Player,
     },
@@ -2470,6 +2482,8 @@ impl Game {
             | Pending::ConniveOrder { player }
             | Pending::ResolutionLife { player }
             | Pending::ResolutionMana { player }
+            | Pending::CounterCostOrder { player }
+            | Pending::CreatureCounterCost { player }
             | Pending::AdditionalCost { player }
             | Pending::EntryTimestamp { player }
             | Pending::EntryReplacement { player }
@@ -2683,6 +2697,7 @@ impl Game {
             } else if let Action::PayCosts { payment } = &action {
                 self.mana_payment_domain()
                     .is_some_and(|d| d.contains(*payment))
+                    && self.supplemental_counter_action_viable(&action)
             } else if let Action::ChooseX { value } = &action {
                 self.x_choice()
                     .is_some_and(|domain| domain.contains(*value))
@@ -2707,6 +2722,10 @@ impl Game {
                 }
                 if self.advance_entries() {
                     break;
+                }
+                self.advance_supplemental_counter_choices();
+                if self.resume_supplemental_counter_payment() {
+                    continue;
                 }
                 if self.state.resolving.is_none()
                     && self.state.replacements.is_none()
@@ -2752,10 +2771,14 @@ impl Game {
     }
 
     fn visit_actions(&self, mut emit: impl FnMut(Action) -> bool) -> bool {
+        let mut checked_emit =
+            |action| self.supplemental_counter_action_viable(&action) && emit(action);
         if self.state.mana_lots.is_none() {
-            return self.visit_unfiltered_actions(emit);
+            return self.visit_unfiltered_actions(checked_emit);
         }
-        self.visit_unfiltered_actions(|action| self.mana_action_payable(&action) && emit(action))
+        self.visit_unfiltered_actions(|action| {
+            self.mana_action_payable(&action) && checked_emit(action)
+        })
     }
     fn visit_unfiltered_actions(&self, mut emit: impl FnMut(Action) -> bool) -> bool {
         let s = &self.state;
@@ -3055,6 +3078,18 @@ impl Game {
                     }
                 }
             }
+            Pending::CounterCostOrder { .. } => {
+                for after_printed in [false, true] {
+                    if self.supplemental_counter_order_available(after_printed)
+                        && emit(Action::ChooseCounterCostOrder { after_printed })
+                    {
+                        return true;
+                    }
+                }
+            }
+            Pending::CreatureCounterCost { .. } => {
+                return self.visit_creature_counter_cost(&mut emit);
+            }
             Pending::AdditionalCost { .. } => {
                 if self
                     .state
@@ -3180,6 +3215,14 @@ impl Game {
                             self.can_cast_exiled(actor, card)
                                 || self.plotted_cast_available(actor, card)
                                 || self.can_cast_exiled_free(actor, card)
+                                || s.static_sources.iter().any(|&source| {
+                                    self.linked_counter_permission(
+                                        actor,
+                                        card,
+                                        self.object_ref(source),
+                                    )
+                                    .is_some()
+                                })
                         }
                         _ => false,
                     };
@@ -3279,6 +3322,11 @@ impl Game {
                         return true;
                     }
                     if !casting_prohibited && !obj.is_token() && !obj.card.is_land() {
+                        if obj.zone == Zone::Exile
+                            && self.visit_linked_counter_casts(card, actor, sorcery, &mut emit)
+                        {
+                            return true;
+                        }
                         if (free_hand_cast && obj.zone == Zone::Hand)
                             || (obj.zone == Zone::Exile && self.can_cast_exiled_free(actor, card))
                         {
@@ -4124,10 +4172,42 @@ impl Game {
             Action::DeclineResolutionMana => self.finish_resolution_payment(None),
             Action::PayResolutionLife => self.finish_resolution_life(true),
             Action::DeclineResolutionLife => self.finish_resolution_life(false),
+            Action::ChooseCounterCostOrder { after_printed } => {
+                self.state
+                    .announcing
+                    .as_mut()
+                    .unwrap()
+                    .creature_counter_cost
+                    .as_mut()
+                    .unwrap()
+                    .after_printed = Some(after_printed);
+                self.state.pending = Pending::PayCosts { player: actor };
+                self.advance_supplemental_counter_choices();
+            }
             Action::ChooseCreatureCounterCost {
                 object,
                 counter: kind,
             } => self.choose_creature_counter_cost(object, kind),
+            Action::AnnounceLinkedExileCounterCost {
+                card,
+                source,
+                flash_surcharge,
+            } => {
+                let amount = self
+                    .linked_counter_permission(actor, card, source)
+                    .expect("validated linked permission");
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                item.cast.as_mut().unwrap().method = CastMethod::LinkedExileCounterCost;
+                item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
+                self.open_payment_announcement(item, Counters::default(), None);
+                self.state
+                    .announcing
+                    .as_mut()
+                    .unwrap()
+                    .creature_counter_cost = Some(Box::new(
+                    growth_cost::CreatureCounterSelection::supplemental(amount),
+                ));
+            }
             Action::AnnounceCounterGraveyard { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 item.cast.as_mut().unwrap().method = CastMethod::GraveyardCounterCost;
@@ -6296,6 +6376,8 @@ impl Game {
                 Pending::SpellCost { .. } => "spell_cost",
                 Pending::ActivationCost { .. } => "activation_cost",
                 Pending::Modes { .. } => "spell_mode",
+                Pending::CounterCostOrder { .. } => "counter_cost_order",
+                Pending::CreatureCounterCost { .. } => "creature_counter_cost",
                 Pending::AdditionalCost { .. } => "additional_cost",
                 Pending::PayCosts { .. } => "pay_costs",
                 Pending::OrderTriggers { .. } => "order_triggers",
@@ -6931,7 +7013,7 @@ impl Game {
                 .as_ref()
                 .and_then(|a| a.creature_counter_cost.as_ref())
                 .map_or(0, |v| {
-                    std::mem::size_of::<Vec<(ObjectRef, CounterKind)>>()
+                    std::mem::size_of::<growth_cost::CreatureCounterSelection>()
                         + v.len() * std::mem::size_of::<(ObjectRef, CounterKind)>()
                 })
             + s.stack

@@ -1798,6 +1798,13 @@ impl Game {
         // Project a fixed payment only after that cost has been committed.
         if viewer != a.item.controller
             || a.additional_paid
+            || a.creature_counter_cost.as_ref().is_some_and(|c| {
+                c.amount.is_some()
+                    && !c.projecting
+                    && (c.after_printed.is_none()
+                        || c.after_printed == Some(false)
+                            && c.len() < usize::from(c.amount.unwrap()))
+            })
             || !a.pay_window
             || (a.has_x_cost() && a.item.x.is_none())
             || a.needs_offspring()
@@ -1832,6 +1839,16 @@ impl Game {
         })
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        if a.item
+            .cast
+            .is_some_and(|c| c.method == CastMethod::LinkedExileCounterCost)
+            && a.creature_counter_cost
+                .as_ref()
+                .is_some_and(|c| !c.projecting)
+        {
+            let c = a.creature_counter_cost.as_ref().unwrap();
+            return self.supplemental_counter_fundable(a, cost, &c.selected, c.after_printed);
+        }
         if a.item.kind == StackKind::Spell && a.item.source_card.has_blight_x_cost() {
             return self.blight_x_cost_fundable(a, cost, a.item.x.unwrap_or(0));
         }
