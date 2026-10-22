@@ -21,8 +21,8 @@ The frozen manifest accounts for every identity. The [per-card obligation ledger
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **242/273**, comprising **107 inherited** and **135 newly
-implemented/tested physical candidates**; **31 remain gated**. Fifteen inherited
+Admission flags: **244/273**, comprising **107 inherited** and **137 newly
+implemented/tested physical candidates**; **29 remain gated**. Fifteen inherited
 cards have passed source/rules audit;92 inherited cards remain. No final published reviews or newly merged cards. All new
 names and per-card obligations appear in the linked JSON ledgers. Three tested
 synthetic token recipes are outside the physical denominator.
@@ -137,3 +137,5 @@ Revision904c25c2 passed all eight release phases in580.76seconds:2,896 native te
 Grub and Meek Attack are integrated after the verified239-card release. Grub passes39 transform scenarios in1.22seconds,8 intrinsic-copy regressions in0.19seconds,17 mobilize regressions in0.16seconds,and all-target Clippy. Its non-targeting optional blight payment preserves the exact creature for copying before state-based actions; attacking copies receive a copiable removable sacrifice ability without gaining haste. Both simultaneous lethal/legend-rule choices and attacking planeswalker choices are checked. Meek Attack passes124 black/red scenarios in3.74seconds and all5 Sentry shared-entry regressions in0.10seconds,including private qualification,untapped nonattacking entry,source departure,permanent haste and captured-controller delayed sacrifice. Admission241/273;32 gated.
 
 Abigale, Eloquent First-Year is integrated with permanent ability removal and flying, first-strike, and lifelink counters. The eleven whole-card scenarios plus five Tam cases pass0.51seconds;361 shared counter scenarios pass6.31seconds; all-target Clippy and formatting pass. Counter timestamps renew on addition of the same kind, retain on partial removal, and disappear with the final counter. Counter prohibition, competing replacement effects, private cards, borrowed counter overlays, combat and copy exclusion are tested. Admission242/273;31 gated.
+
+Rhys the Evermore and Slumbering Walker are integrated with exact optional counter removal domains,including named and u64-wide counter allocations,and granted persist.114 white/blue scenarios pass2.63seconds;357 ECL author-branch scenarios pass12.07seconds;29 temporary-death regressions pass8.00seconds. The raw legal domain accepts exact allocations beyond the bounded indexed representative menu. Admission244/273;29 gated. Combined interaction verification follows.
