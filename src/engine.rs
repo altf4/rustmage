@@ -135,6 +135,9 @@ pub use replacements::{
 };
 
 use crate::shared_vec::SharedVec;
+#[path = "engine_counter_removal.rs"]
+mod counter_removal;
+pub use counter_removal::CounterRemovalDomain;
 #[path = "engine_additional_costs.rs"]
 mod additional_costs;
 #[path = "engine_bargain.rs"]
@@ -450,6 +453,7 @@ define_actions! {
     SelectLand { object: ObjectRef },
     ChooseCreature { object: ObjectRef },
     TapForEffect { object: ObjectRef },
+    ChooseCounterRemoval { counters: Counters },
     FinishLandSelection,
     DeclineHandEntry,
     ChooseHandDefender { defender: CombatDefender },
@@ -1941,6 +1945,7 @@ pub struct RecoveryChoiceView {
 #[derive(Clone, Debug, Serialize)]
 pub struct EffectChoiceView {
     pub kind: EffectChoiceKind,
+    pub counter_removal: Option<CounterRemovalDomain>,
     pub amount: u16,
     pub optional: bool,
     pub required: [u16; 2],
@@ -2000,9 +2005,10 @@ impl XChoiceView {
     }
 }
 
-/// Complete action space: concrete choices, damage bounds and scalar intervals.
+/// Complete action space: concrete choices, scalar intervals and numeric allocation domains.
 #[derive(Clone, Debug, Serialize)]
 pub struct LegalActionSpace {
+    pub counter_removal: Option<CounterRemovalDomain>,
     pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub mana_payment: Option<ManaPaymentDomain>,
     pub choices: Vec<Action>,
@@ -2461,6 +2467,7 @@ impl Game {
     /// Complete legal space, including damage assignments and scalar-X intervals.
     pub fn legal_action_space(&self) -> LegalActionSpace {
         LegalActionSpace {
+            counter_removal: self.counter_removal_domain(),
             mana_lot_spend: self.mana_lot_spend_range(),
             mana_payment: self.mana_payment_domain(),
             choices: self.legal_actions(),
@@ -2629,7 +2636,9 @@ impl Game {
             if self.actor() != Some(actor) {
                 return Err(Error::WrongActor);
             }
-            let legal = if let Action::PayCosts { payment } = &action {
+            let legal = if let Action::ChooseCounterRemoval { counters } = &action {
+                self.counter_removal_valid(counters)
+            } else if let Action::PayCosts { payment } = &action {
                 self.mana_payment_domain()
                     .is_some_and(|d| d.contains(*payment))
             } else if let Action::ChooseX { value } = &action {
@@ -2898,6 +2907,14 @@ impl Game {
             }
             Pending::EffectChoice { player } => {
                 let choice = s.resolving.as_ref().unwrap().choice.as_ref().unwrap();
+                if let Some(domain) = &choice.counter_removal {
+                    if choice.skip_to.is_some() && emit(Action::DeclineEffectPayment) {
+                        return true;
+                    }
+                    return domain.representatives(&mut |counters| {
+                        emit(Action::ChooseCounterRemoval { counters })
+                    });
+                }
                 if matches!(
                     choice.kind,
                     EffectChoiceKind::LandCards { .. } | EffectChoiceKind::UntapLands { .. }
@@ -4648,6 +4665,7 @@ impl Game {
             Action::Sacrifice { object } | Action::Blight { object } => {
                 self.choose_effect_object(actor, object)
             }
+            Action::ChooseCounterRemoval { counters } => self.choose_counter_removal(&counters),
             Action::DeclineEffectPayment => self.decline_effect_payment(),
             Action::Discard { card } => {
                 if matches!(self.state.pending, Pending::EffectChoice { .. }) {

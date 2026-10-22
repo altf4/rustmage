@@ -3467,6 +3467,16 @@ impl Game {
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
+                Instruction::ChooseCounterRemoval {
+                    subject,
+                    minimum,
+                    maximum,
+                    optional_skip,
+                } => {
+                    if self.start_counter_removal(&item, subject, minimum, maximum, optional_skip) {
+                        return;
+                    }
+                }
                 Instruction::RemoveAllCountersFrom(subject) => {
                     let ids = if subject == Subject::Attached {
                         self.attached_permanent(&item).into_iter().collect()

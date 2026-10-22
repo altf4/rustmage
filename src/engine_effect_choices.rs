@@ -25,11 +25,15 @@ pub(super) struct EffectChoice {
     pub hand_defender: Option<CombatDefender>,
     pub hand_creature_entry: Option<HandCreatureEntry>,
     pub blight_copy_attacking: bool,
+    pub counter_removal: Option<Box<CounterRemovalDomain>>,
     pub entry_life_bonus: Option<(&'static str, u16)>,
 }
 impl EffectChoice {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
+            + self.counter_removal.as_ref().map_or(0, |domain| {
+                std::mem::size_of::<CounterRemovalDomain>() + domain.available.owned_bytes()
+            })
             + self.selected.iter().map(Vec::len).sum::<usize>() * std::mem::size_of::<ObjectRef>()
     }
 }
@@ -40,6 +44,9 @@ impl Game {
         player: Player,
         object: ObjectRef,
     ) -> bool {
+        if choice.counter_removal.is_some() {
+            return false;
+        }
         let o = &self.state.objects[object.card as usize];
         if matches!(
             choice.kind,
@@ -370,6 +377,7 @@ impl Game {
             discard_mana_value_life,
             hand_defender: None,
             hand_creature_entry: None,
+            counter_removal: None,
             entry_life_bonus: None,
             blight_copy_attacking: false,
             source: item.object,
@@ -749,6 +757,7 @@ impl Game {
             .collect();
         Some(EffectChoiceView {
             kind: choice.kind,
+            counter_removal: choice.counter_removal.as_deref().cloned(),
             amount: choice.amount,
             optional: choice.skip_to.is_some(),
             required: choice.required,

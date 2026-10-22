@@ -4802,3 +4802,507 @@ fn kinscaer_sentry_first_strike_and_lifelink_win_combat_before_regular_damage() 
         assert_eq!(g.state.players[p.index()].life, 22);
     }
 }
+
+fn rhys_grant(g: &mut Game, p: Player, target: CardId) -> CardId {
+    let source = spawn(
+        g,
+        p,
+        Card::from_name("Rhys, the Evermore").unwrap(),
+        Zone::Hand,
+    );
+    checked(g, Action::AnnounceCast { card: source });
+    finish_cast_choices(g);
+    checked(g, Action::Pass);
+    checked(g, Action::Pass);
+    checked(
+        g,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    finish_cast_choices(g);
+    settle(g);
+    source
+}
+fn rhys_removal(g: &mut Game, source: CardId, target: CardId) {
+    checked(
+        g,
+        Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    checked(
+        g,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    finish_cast_choices(g);
+    assert!(advance_to_tap_payment(g));
+    assert_eq!(
+        g.counter_removal_domain().unwrap().recipient,
+        g.object_ref(target)
+    );
+}
+fn checked_counter_raw(g: &mut Game, counters: Counters) {
+    let actor = g.actor().unwrap();
+    let action = Action::ChooseCounterRemoval { counters };
+    let before = g.snapshot();
+    assert_eq!(
+        g.apply(actor.other(), action.clone()),
+        Err(Error::WrongActor)
+    );
+    assert_eq!(g.snapshot(), before);
+    let mut child = {
+        let parent = g.clone();
+        let owned = parent.clone();
+        drop(parent);
+        owned
+    };
+    child.apply(actor, action.clone()).unwrap();
+    g.apply(actor, action.clone()).unwrap();
+    assert_eq!(g.snapshot(), child.snapshot());
+    for viewer in [Player::P0, Player::P1] {
+        assert_eq!(
+            serde_json::to_value(g.observe(viewer)).unwrap(),
+            serde_json::to_value(child.observe(viewer)).unwrap()
+        );
+    }
+    let done = g.snapshot();
+    g.restore(&before).unwrap();
+    g.apply(actor, action).unwrap();
+    assert_eq!(g.snapshot(), done);
+}
+
+#[test]
+fn rhys_flash_grants_persist_that_uses_current_death_controller_owner_and_exact_new_incarnation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        g.state.active = p.other();
+        g.state.priority = p;
+        let source = rhys_grant(&mut g, p, bear);
+        let original = g.object_ref(bear);
+        g.move_object(source, Zone::Graveyard);
+        g.change_controller(original, p.other());
+        g.move_object(bear, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+        assert_ne!(g.object_ref(bear), original);
+        assert_eq!(g.object_view(bear).controller, p);
+        assert!(!g.object_view(bear).tapped);
+        assert_eq!(g.counter_count(bear, CounterKind::MinusOne), 1);
+        g.move_object(bear, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn rhys_persist_minus_counter_ability_loss_expiry_and_old_graveyard_incarnation_prevent_return() {
+    for mode in 0..4 {
+        let mut g = setup(Player::P0);
+        let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+        rhys_grant(&mut g, Player::P0, bear);
+        match mode {
+            0 => {
+                g.add_counter(bear, CounterKind::MinusOne, 1);
+            }
+            1 => {
+                let object = g.object_ref(bear);
+                g.remove_abilities_exact(&[object], crate::cards::AnimationDuration::EndOfTurn);
+            }
+            2 => g.finish_cleanup(),
+            _ => {}
+        }
+        g.move_object(bear, Zone::Graveyard);
+        if mode == 3 {
+            g.move_object(bear, Zone::Hand);
+            g.move_object(bear, Zone::Graveyard);
+        }
+        settle(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Graveyard, "mode {mode}");
+    }
+}
+
+#[test]
+fn rhys_counter_removal_accepts_exact_nonrepresentative_mixed_named_allocations_and_rejects_overpay()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = spawn(
+            &mut g,
+            p,
+            Card::from_name("Rhys, the Evermore").unwrap(),
+            Zone::Battlefield,
+        );
+        let bear = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        g.set_counters(
+            bear,
+            Counters::of(CounterKind::PlusOne, 5)
+                .with(CounterKind::Stun, 8)
+                .with(CounterKind::Soul, 13)
+                .with(CounterKind::Charge, 21),
+        );
+        rhys_removal(&mut g, source, bear);
+        assert!(g.object_view(source).tapped);
+        reject_atomic(
+            &mut g,
+            Action::ChooseCounterRemoval {
+                counters: Counters::of(CounterKind::Soul, 14),
+            },
+        );
+        let counters = Counters::of(CounterKind::PlusOne, 2)
+            .with(CounterKind::Stun, 3)
+            .with(CounterKind::Soul, 5)
+            .with(CounterKind::Charge, 8);
+        assert!(
+            g.legal_action_space()
+                .counter_removal
+                .unwrap()
+                .contains(&counters)
+        );
+        assert!(!g.legal_actions().contains(&Action::ChooseCounterRemoval {
+            counters: counters.clone()
+        }));
+        checked_counter_raw(&mut g, counters);
+        settle(&mut g);
+        for (kind, amount) in [
+            (CounterKind::PlusOne, 3),
+            (CounterKind::Stun, 5),
+            (CounterKind::Soul, 8),
+            (CounterKind::Charge, 13),
+        ] {
+            assert_eq!(g.counter_count(bear, kind), amount);
+        }
+    }
+}
+
+#[test]
+fn rhys_counter_removal_handles_zero_and_u64_named_counts_without_enumerating_quantities() {
+    for empty in [false, true] {
+        let mut g = setup(Player::P0);
+        let source = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Rhys, the Evermore").unwrap(),
+            Zone::Battlefield,
+        );
+        let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+        if !empty {
+            g.set_counters(
+                bear,
+                Counters::of(CounterKind::Soul, u64::MAX).with(CounterKind::Charge, u64::MAX),
+            );
+        }
+        rhys_removal(&mut g, source, bear);
+        assert!(g.legal_actions().len() < 40);
+        let mut terminal = g.clone();
+        terminal.apply(Player::P0, Action::Concede).unwrap();
+        assert!(terminal.legal_action_space().counter_removal.is_none());
+        let counters = if empty {
+            Counters::default()
+        } else {
+            Counters::of(CounterKind::Soul, u64::MAX - 7).with(CounterKind::Charge, u64::MAX - 11)
+        };
+        checked_counter_raw(&mut g, counters);
+        settle(&mut g);
+        assert_eq!(
+            g.counter_count(bear, CounterKind::Soul),
+            if empty { 0 } else { 7 }
+        );
+        assert_eq!(
+            g.counter_count(bear, CounterKind::Charge),
+            if empty { 0 } else { 11 }
+        );
+    }
+}
+
+#[test]
+fn rhys_counter_activation_is_sorcery_speed_requires_tap_and_uses_exact_target_even_after_source_departure()
+ {
+    let mut g = setup(Player::P0);
+    let source = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Rhys, the Evermore").unwrap(),
+        Zone::Battlefield,
+    );
+    let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    let action = Action::AnnounceActivate {
+        card: source,
+        ability: 0,
+        counter_payment: Counters::default(),
+    };
+    g.state.objects[source as usize].summoning_sick = true;
+    reject_atomic(&mut g, action.clone());
+    g.state.objects[source as usize].summoning_sick = false;
+    g.state.active = Player::P1;
+    reject_atomic(&mut g, action.clone());
+    g.state.active = Player::P0;
+    let mana = g.state.players[0].mana;
+    g.state.players[0].mana[0] = 0;
+    reject_atomic(&mut g, action.clone());
+    g.state.players[0].mana = mana;
+    let enemy = spawn(&mut g, Player::P1, Card::GrizzlyBears, Zone::Battlefield);
+    checked(&mut g, action);
+    reject_atomic(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(enemy),
+        },
+    );
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(bear),
+        },
+    );
+    finish_cast_choices(&mut g);
+    g.move_object(source, Zone::Graveyard);
+    g.move_object(bear, Zone::Hand);
+    g.move_object(bear, Zone::Battlefield);
+    g.set_counters(bear, Counters::of(CounterKind::Stun, 2));
+    settle(&mut g);
+    assert_eq!(g.counter_count(bear, CounterKind::Stun), 2);
+}
+
+fn walker_end_choice(g: &mut Game) -> bool {
+    g.begin_step(Step::End);
+    advance_to_tap_payment(g)
+}
+#[test]
+fn slumbering_walker_entry_counters_and_optional_named_removal_precede_reflexive_small_power_target()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = cast_named(&mut g, p, "Slumbering Walker");
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 2);
+        assert_eq!(
+            g.stats(source),
+            Stats {
+                power: 2,
+                toughness: 5
+            }
+        );
+        g.add_counter(source, CounterKind::Soul, 1);
+        let target = spawn(
+            &mut g,
+            p,
+            Card::from_name("Thoughtweft Imbuer").unwrap(),
+            Zone::Graveyard,
+        );
+        let large = spawn(&mut g, p, Card::HillGiant, Zone::Graveyard);
+        let enemy = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Graveyard);
+        assert!(walker_end_choice(&mut g));
+        assert!(
+            !g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::ChooseTarget { .. }))
+        );
+        reject_atomic(
+            &mut g,
+            Action::ChooseCounterRemoval {
+                counters: Counters::default(),
+            },
+        );
+        reject_atomic(
+            &mut g,
+            Action::ChooseCounterRemoval {
+                counters: Counters::of(CounterKind::MinusOne, 2),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseCounterRemoval {
+                counters: Counters::of(CounterKind::Soul, 1),
+            },
+        );
+        g.prepare_triggers();
+        reject_atomic(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(large),
+            },
+        );
+        reject_atomic(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(enemy),
+            },
+        );
+        guide_target(&mut g, target);
+        assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+        assert!(!g.object_view(target).tapped);
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 2);
+        assert_eq!(g.counter_count(source, CounterKind::Soul), 0);
+    }
+}
+
+#[test]
+fn slumbering_walker_decline_no_counters_and_old_source_incarnation_never_create_reflexive_return()
+{
+    for mode in 0..4 {
+        let mut g = setup(Player::P0);
+        let source = cast_named(&mut g, Player::P0, "Slumbering Walker");
+        let target = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Graveyard);
+        if mode == 1 {
+            g.set_counters(source, Counters::default());
+        }
+        if mode == 3 {
+            g.state.active = Player::P1;
+        }
+        g.begin_step(Step::End);
+        if mode == 2 {
+            g.move_object(source, Zone::Hand);
+            g.move_object(source, Zone::Battlefield);
+        }
+        let choice = advance_to_tap_payment(&mut g);
+        assert_eq!(choice, mode == 0);
+        if choice {
+            checked(&mut g, Action::DeclineEffectPayment);
+        }
+        settle(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+        assert_eq!(
+            g.counter_count(source, CounterKind::MinusOne),
+            if mode == 1 { 0 } else { 2 }
+        );
+    }
+}
+
+#[test]
+fn slumbering_walker_may_pay_without_a_graveyard_target_and_blossombind_does_not_prevent_removal() {
+    let mut g = setup(Player::P0);
+    let source = cast_named(&mut g, Player::P0, "Slumbering Walker");
+    spell(&mut g, Player::P0, "Blossombind", &[Target::Card(source)]);
+    settle(&mut g);
+    assert!(!g.can_receive_counters(source));
+    assert!(walker_end_choice(&mut g));
+    checked(
+        &mut g,
+        Action::ChooseCounterRemoval {
+            counters: Counters::of(CounterKind::MinusOne, 1),
+        },
+    );
+    settle(&mut g);
+    assert_eq!(g.counter_count(source, CounterKind::MinusOne), 1);
+    assert_eq!(
+        g.stats(source),
+        Stats {
+            power: 3,
+            toughness: 6
+        }
+    );
+}
+
+#[test]
+fn rhys_counter_removal_can_target_itself_or_resolve_after_its_source_has_left() {
+    for p in [Player::P0, Player::P1] {
+        for self_target in [false, true] {
+            let mut g = setup(p);
+            let source = spawn(
+                &mut g,
+                p,
+                Card::from_name("Rhys, the Evermore").unwrap(),
+                Zone::Battlefield,
+            );
+            let target = if self_target {
+                source
+            } else {
+                spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield)
+            };
+            g.set_counters(target, Counters::of(CounterKind::Soul, 2));
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            finish_cast_choices(&mut g);
+            if !self_target {
+                g.move_object(source, Zone::Graveyard);
+            }
+            assert!(advance_to_tap_payment(&mut g));
+            checked(
+                &mut g,
+                Action::ChooseCounterRemoval {
+                    counters: Counters::of(CounterKind::Soul, 1),
+                },
+            );
+            settle(&mut g);
+            assert_eq!(g.counter_count(target, CounterKind::Soul), 1);
+            assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+        }
+    }
+}
+
+#[test]
+fn rhys_entry_persist_requires_another_owned_creature_and_cannot_follow_reentry_before_grant() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let target = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let enemy = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+        let source = spawn(
+            &mut g,
+            p,
+            Card::from_name("Rhys, the Evermore").unwrap(),
+            Zone::Hand,
+        );
+        checked(&mut g, Action::AnnounceCast { card: source });
+        finish_cast_choices(&mut g);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        for invalid in [source, enemy] {
+            reject_atomic(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(invalid),
+                },
+            );
+        }
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        finish_cast_choices(&mut g);
+        let old = g.object_ref(target);
+        g.move_object(target, Zone::Hand);
+        g.move_object(target, Zone::Battlefield);
+        assert_ne!(old, g.object_ref(target));
+        settle(&mut g);
+        g.move_object(target, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn rhys_granted_persist_cannot_return_a_token_even_though_it_triggers_on_its_death() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let token_card = Card::catalogue()
+            .find(|card| {
+                card.token_info().is_some() && matches!(card.effect(), Effect::Creature(3, 3))
+            })
+            .unwrap();
+        let token = spawn(&mut g, p, token_card, Zone::Battlefield);
+        rhys_grant(&mut g, p, token);
+        assert!(g.object_view(token).is_token());
+        g.move_object(token, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.object_view(token).zone, Zone::Outside);
+    }
+}

@@ -663,6 +663,7 @@ pub enum EffectChoiceKind {
     OptionalBlightCost(u16),
     /// Choose two creatures, then draw and grant the absolute power difference.
     PowerDifferenceBoost,
+    RemoveCounters,
     /// Choose distinct untapped permanents as a non-targeting activation cost.
     TapPermanents(u16),
     RemoveCreatureCounters(u16),
@@ -1365,6 +1366,12 @@ pub(crate) enum Instruction {
         skip: usize,
     },
     RemoveAllCounters,
+    ChooseCounterRemoval {
+        subject: Subject,
+        minimum: u16,
+        maximum: Option<u64>,
+        optional_skip: Option<usize>,
+    },
     RemoveAllCountersFrom(Subject),
     SnapshotDoubleCreatures(CreatureFilter),
     PutCounters {

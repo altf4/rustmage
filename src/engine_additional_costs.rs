@@ -510,6 +510,7 @@ impl Game {
             | EffectChoiceKind::TapPermanents(_)
             | EffectChoiceKind::UntapLands { .. }
             | EffectChoiceKind::PowerDifferenceBoost
+            | EffectChoiceKind::RemoveCounters
             | EffectChoiceKind::HandCreature
             | EffectChoiceKind::HandLand { .. }
             | EffectChoiceKind::LandCards { .. }
