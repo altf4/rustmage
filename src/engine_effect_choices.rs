@@ -1,5 +1,9 @@
 //! Simultaneous public sacrifices and private exact resolution-cost payments.
 use super::*;
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct HandCreatureEntry {
+    pub maximum_mana_value: u64,
+}
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EffectChoice {
     pub kind: EffectChoiceKind,
@@ -12,6 +16,7 @@ pub(super) struct EffectChoice {
     pub greatest_power: [Option<i128>; 2],
     pub discard_mana_value_life: Option<Player>,
     pub hand_defender: Option<CombatDefender>,
+    pub hand_creature_entry: Option<HandCreatureEntry>,
     pub entry_life_bonus: Option<(&'static str, u16)>,
 }
 impl EffectChoice {
@@ -92,7 +97,12 @@ impl Game {
         ) {
             return o.zone == Zone::Hand
                 && match choice.kind {
-                    EffectChoiceKind::HandCreature => o.card.is_creature(),
+                    EffectChoiceKind::HandCreature => {
+                        o.card.is_creature()
+                            && choice.hand_creature_entry.is_none_or(|entry| {
+                                o.card.fixed_mana_value() <= entry.maximum_mana_value
+                            })
+                    }
                     EffectChoiceKind::HandLand { .. } => o.card.is_land() && o.controller == player,
                     EffectChoiceKind::Discard => {
                         choice.filter.kinds == 0
@@ -164,6 +174,20 @@ impl Game {
             false,
             None,
         )
+    }
+    pub(super) fn start_hand_creature_attacking(&mut self, item: &SpellView, maximum: u64) -> bool {
+        let pending = self.start_hand_creature(item);
+        self.state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .choice
+            .as_mut()
+            .unwrap()
+            .hand_creature_entry = Some(HandCreatureEntry {
+            maximum_mana_value: maximum,
+        });
+        pending
     }
     pub(super) fn start_hand_land(&mut self, item: &SpellView, tapped: bool) -> bool {
         self.start_effect_choice_inner(
@@ -306,6 +330,7 @@ impl Game {
             amount,
             discard_mana_value_life,
             hand_defender: None,
+            hand_creature_entry: None,
             entry_life_bonus: None,
             source: item.object,
             required: [0; 2],
@@ -421,8 +446,10 @@ impl Game {
             };
             let enchantment = choice.kind == EffectChoiceKind::HandCreature
                 && self.state.objects[reference.card as usize].card.kind_mask() & 32 != 0;
-            let forced_tapped = matches!(choice.kind, EffectChoiceKind::HandLand { tapped: true });
-            if enchantment && choice.hand_defender.is_none() {
+            let attacking = enchantment || choice.hand_creature_entry.is_some();
+            let forced_tapped = choice.hand_creature_entry.is_some()
+                || matches!(choice.kind, EffectChoiceKind::HandLand { tapped: true });
+            if attacking && choice.hand_defender.is_none() {
                 if self.state.objects.iter().enumerate().any(|(id, o)| {
                     o.zone == Zone::Battlefield
                         && o.controller == player.other()

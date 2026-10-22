@@ -928,6 +928,9 @@ pub(crate) enum Instruction {
         tapped: bool,
     },
     PutHandCreature,
+    PutHandCreatureAttacking {
+        maximum: AmountValue,
+    },
     PutHandLand {
         tapped: bool,
     },

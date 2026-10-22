@@ -4610,3 +4610,195 @@ fn meanders_guide_reflexive_target_is_bound_before_response_and_does_not_follow_
     assert_eq!(g.object_view(target).zone, Zone::Graveyard);
     assert!(g.object_view(witness).tapped);
 }
+
+fn sentry_choice(g: &mut Game, attackers: &[CardId]) {
+    thoughtweft_attack(g, attackers);
+    assert!(advance_to_tap_payment(g));
+    assert_eq!(
+        g.state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .choice
+            .as_ref()
+            .unwrap()
+            .kind,
+        EffectChoiceKind::HandCreature
+    );
+}
+
+#[test]
+fn kinscaer_sentry_bounds_hand_entry_by_current_attackers_and_entering_attacking_does_not_trigger_attack()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = cast_named(&mut g, p, "Kinscaer Sentry");
+        let a = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let b = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let entry = spawn(
+            &mut g,
+            p,
+            Card::from_name("Meanders Guide").unwrap(),
+            Zone::Hand,
+        );
+        let too_large = spawn(&mut g, p, Card::HillGiant, Zone::Hand);
+        let land = spawn(&mut g, p, Card::Forest, Zone::Hand);
+        let enemy = spawn(&mut g, p.other(), Card::LlanowarElves, Zone::Hand);
+        sentry_choice(&mut g, &[source, a, b]);
+        for invalid in [too_large, land, enemy] {
+            let object = g.object_ref(invalid);
+            reject_atomic(&mut g, Action::PutHandCreature { object });
+        }
+        let object = g.object_ref(entry);
+        checked(&mut g, Action::PutHandCreature { object });
+        settle(&mut g);
+        assert_eq!(g.object_view(entry).zone, Zone::Battlefield);
+        assert!(g.object_view(entry).tapped);
+        assert!(g.object_view(entry).summoning_sick);
+        assert!(
+            g.state
+                .attackers
+                .iter()
+                .any(|a| a.card == entry && a.defender == Some(CombatDefender::Player(p.other())))
+        );
+        assert!(g.state.stack.is_empty());
+        assert!(g.state.pending_triggers.is_empty());
+        assert!(g.state.resolving.is_none());
+    }
+}
+
+#[test]
+fn kinscaer_sentry_attacker_departure_lowers_resolution_limit_and_source_departure_does_not_stop_it()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = cast_named(&mut g, p, "Kinscaer Sentry");
+        let bear = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let two = spawn(&mut g, p, Card::GrizzlyBears, Zone::Hand);
+        let one = spawn(&mut g, p, Card::LlanowarElves, Zone::Hand);
+        thoughtweft_attack(&mut g, &[source, bear]);
+        g.move_object(source, Zone::Graveyard);
+        assert!(advance_to_tap_payment(&mut g));
+        let object = g.object_ref(two);
+        reject_atomic(&mut g, Action::PutHandCreature { object });
+        let object = g.object_ref(one);
+        checked(&mut g, Action::PutHandCreature { object });
+        settle(&mut g);
+        assert_eq!(g.object_view(one).zone, Zone::Battlefield);
+        assert!(g.object_view(one).tapped);
+        assert!(g.state.attackers.iter().any(|a| a.card == one));
+        assert_eq!(g.object_view(two).zone, Zone::Hand);
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn kinscaer_sentry_hand_phase_hides_eligibility_and_decline_preserves_hand() {
+    for p in [Player::P0, Player::P1] {
+        let make = |eligible| {
+            let mut g = setup(p);
+            let source = cast_named(&mut g, p, "Kinscaer Sentry");
+            let card = spawn(
+                &mut g,
+                p,
+                if eligible {
+                    Card::LlanowarElves
+                } else {
+                    Card::HillGiant
+                },
+                Zone::Hand,
+            );
+            sentry_choice(&mut g, &[source]);
+            (g, card)
+        };
+        let (mut yes, y) = make(true);
+        let (mut no, n) = make(false);
+        assert_eq!(
+            serde_json::to_value(yes.observe(p.other())).unwrap(),
+            serde_json::to_value(no.observe(p.other())).unwrap()
+        );
+        assert!(
+            yes.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::PutHandCreature { .. }))
+        );
+        assert!(
+            !no.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::PutHandCreature { .. }))
+        );
+        for (g, card) in [(&mut yes, y), (&mut no, n)] {
+            checked(g, Action::DeclineHandEntry);
+            settle(g);
+            assert_eq!(g.object_view(card).zone, Zone::Hand);
+        }
+    }
+}
+
+#[test]
+fn kinscaer_sentry_attacking_entry_can_choose_a_different_defender_and_captured_controller() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = cast_named(&mut g, p, "Kinscaer Sentry");
+        let walker = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Ajani, Caller of the Pride").unwrap(),
+            Zone::Battlefield,
+        );
+        g.state.objects[walker as usize].counters.loyalty = 4;
+        let entry = spawn(&mut g, p, Card::LlanowarElves, Zone::Hand);
+        let attacker = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        thoughtweft_attack(&mut g, &[source, attacker]);
+        let source_ref = g.object_ref(source);
+        g.change_controller(source_ref, p.other());
+        // The other declared attacker still supplies X=1 for the captured controller.
+        assert!(advance_to_tap_payment(&mut g));
+        assert_eq!(g.actor(), Some(p));
+        let object = g.object_ref(entry);
+        checked(&mut g, Action::PutHandCreature { object });
+        assert!(matches!(g.state.pending, Pending::HandDefender { .. }));
+        let defender = CombatDefender::Planeswalker(g.object_ref(walker));
+        checked(&mut g, Action::ChooseHandDefender { defender });
+        settle(&mut g);
+        assert_eq!(g.object_view(entry).controller, p);
+        assert!(
+            g.state
+                .attackers
+                .iter()
+                .any(|a| a.card == entry && a.defender == Some(defender))
+        );
+        assert!(g.object_view(entry).tapped);
+    }
+}
+
+#[test]
+fn kinscaer_sentry_first_strike_and_lifelink_win_combat_before_regular_damage() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = cast_named(&mut g, p, "Kinscaer Sentry");
+        let blocker = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+        sentry_choice(&mut g, &[source]);
+        checked(&mut g, Action::DeclineHandEntry);
+        settle(&mut g);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        checked(
+            &mut g,
+            Action::Block {
+                blocker,
+                attacker: source,
+            },
+        );
+        checked(&mut g, Action::FinishBlockers);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        assert_eq!(g.object_view(blocker).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(source).damage, 0);
+        assert_eq!(g.state.players[p.index()].life, 22);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        assert_eq!(g.state.players[p.index()].life, 22);
+    }
+}

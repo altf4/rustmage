@@ -2808,6 +2808,12 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::PutHandCreatureAttacking { maximum } => {
+                    let maximum = self.item_amount(maximum, &item).min(u128::from(u64::MAX)) as u64;
+                    if self.start_hand_creature_attacking(&item, maximum) {
+                        return;
+                    }
+                }
                 Instruction::PutHandCreature => {
                     if self.start_hand_creature(&item) {
                         return;
