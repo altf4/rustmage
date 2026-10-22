@@ -12,17 +12,6 @@ impl Game {
     pub(super) fn mana_tap_bonus(&self, id: CardId) -> Mana {
         ability_world::CharacteristicWorld::mana_tap_bonus(&self.characteristic_query(), id, false)
     }
-    pub(super) fn activation_mana_tap_bonus(&self, id: CardId, ability: u16) -> Mana {
-        if self.state.objects[id as usize].card.activations()[ability as usize]
-            .cost
-            .tap
-        {
-            self.mana_tap_bonus(id)
-        } else {
-            [0; 6]
-        }
-    }
-
     pub(super) fn apply_mana_source_color(
         &mut self,
         source: ObjectRef,

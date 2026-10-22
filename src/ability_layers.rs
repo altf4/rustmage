@@ -48,6 +48,8 @@ pub(crate) enum StaticAbilityFragment {
     AttachedChosenColor,
     /// Triggers for the attached land's own tap mana ability, without using the stack.
     AttachmentManaBonus(ManaProduction),
+    /// A triggered mana ability for any player tapping a basic land.
+    BasicLandTapManaBonus(u16),
     ChosenCreatureType,
     OtherSubtypeEntryCounters(&'static str),
     /// Adds independent triggers for abilities owned by matching permanents.

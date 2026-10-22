@@ -245,6 +245,7 @@ pub(super) struct ManaState {
     pub pools: [SharedVec<Lot>; 2],
     pub prepared: Option<Vec<Vec<Mana>>>,
     pub effect_quality: Option<Quality>,
+    pub tap_bonus: Option<Box<mana_tap_bonus::TapBonusChoice>>,
     pub announcement_quality: Option<(ObjectRef, Quality)>,
     pub trace: Option<SpendRequest>,
     pub replay: Option<Vec<Mana>>,
@@ -489,6 +490,7 @@ impl Game {
             state.pools.iter().all(|pool| pool.is_empty())
                 && state.choice.is_none()
                 && state.effect_quality.is_none()
+                && state.tap_bonus.is_none()
                 && state.announcement_quality.is_none()
                 && state.replay.is_none()
                 && state.trace.is_none()
@@ -903,7 +905,7 @@ impl Game {
 mod tests;
 
 impl Game {
-    fn compact_mana_lots(&mut self) {
+    pub(super) fn compact_mana_lots(&mut self) {
         if self.state.mana_lots.as_ref().is_some_and(|state| {
             state.pools.iter().all(|pool| pool.is_empty())
                 && state.trace.is_none()
@@ -911,6 +913,7 @@ impl Game {
                 && state.replay.is_none()
                 && state.choice.is_none()
                 && state.effect_quality.is_none()
+                && state.tap_bonus.is_none()
                 && state.announcement_quality.is_none()
         }) {
             self.state.mana_lots = None
@@ -936,6 +939,10 @@ impl Game {
                 .iter()
                 .map(|pool| pool.len() * std::mem::size_of::<Lot>())
                 .sum::<usize>()
+            + state.tap_bonus.as_ref().map_or(0, |choice| {
+                std::mem::size_of::<mana_tap_bonus::TapBonusChoice>()
+                    + choice.previous.as_ref().map_or(0, Pending::owned_bytes)
+            })
             + plans_bytes(&state.prepared)
             + state
                 .replay
