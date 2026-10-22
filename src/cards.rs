@@ -656,11 +656,13 @@ pub enum EffectChoiceKind {
     ExileGraveyardCard,
     /// Put this many -1/-1 counters on one chosen creature you control.
     /// This is a non-targeting resolution choice, including optional payments.
-    Blight(u16),
+    Blight(u32),
     /// Blight paid as a cost, including a cost during resolution.
-    BlightCost(u16),
+    BlightCost(u32),
+    /// Choose X before targets; X is bounded by greatest controlled creature toughness.
+    BlightXCost,
     /// A pre-target declaration may decline this additional casting cost.
-    OptionalBlightCost(u16),
+    OptionalBlightCost(u32),
     /// Choose two creatures, then draw and grant the absolute power difference.
     PowerDifferenceBoost,
     RemoveCounters,
@@ -1246,6 +1248,10 @@ pub(crate) enum Instruction {
     RevealUntilLandToGraveyard(PlayerSet),
     Damage(i32),
     DamageScaled(AmountValue),
+    DamagePlayersAndTheirCreatures {
+        players: PlayerSet,
+        amount: AmountValue,
+    },
     DamagePlayers(PlayerSet, i32),
     EnteringPowerDamagePlayers(PlayerSet),
     UntapSource,
@@ -3256,6 +3262,10 @@ impl Card {
     }
     pub(crate) fn mana_color(self) -> Option<usize> {
         generated::DEFINITIONS[self.0 as usize].mana_color
+    }
+    pub(crate) fn has_blight_x_cost(self) -> bool {
+        self.additional_cost()
+            .is_some_and(|cost| cost.kind == EffectChoiceKind::BlightXCost)
     }
     pub fn x_symbols(self) -> u8 {
         generated::x_symbols(self)

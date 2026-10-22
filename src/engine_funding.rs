@@ -440,7 +440,7 @@ impl<'g> FundingState<'g> {
                     )
                 })
                 && goal.reserve.is_none_or(|(reference, spec)| {
-                    !matches!(spec.kind, EffectChoiceKind::BlightCost(_))
+                    !matches!(spec.kind, EffectChoiceKind::BlightCost(amount) if amount > 0)
                         || ability_world::CharacteristicWorld::can_receive_counters(
                             self,
                             reference.card,
@@ -1633,7 +1633,7 @@ impl Game {
                 )
             })
             || goal.reserve.is_some_and(|(reference, spec)| {
-                matches!(spec.kind, EffectChoiceKind::BlightCost(_))
+                matches!(spec.kind, EffectChoiceKind::BlightCost(amount) if amount > 0)
                     && !self.can_receive_counters(reference.card)
             })
         {
@@ -1819,6 +1819,9 @@ impl Game {
         })
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        if a.item.kind == StackKind::Spell && a.item.source_card.has_blight_x_cost() {
+            return self.blight_x_cost_fundable(a, cost, a.item.x.unwrap_or(0));
+        }
         if a.item
             .source_card
             .additional_cost()

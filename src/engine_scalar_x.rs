@@ -155,6 +155,69 @@ impl Game {
         }
         intervals
     }
+    pub(super) fn blight_x_cost_fundable(&self, a: &Announcement, cost: ManaCost, x: u32) -> bool {
+        let mut proposal = a.clone();
+        proposal.item.x = Some(x);
+        proposal.cost = Some(cost);
+        proposal.total_cost = None;
+        let spec = proposal.additional_cost().expect("variable blight cost");
+        let goal = self.funding_goal(&proposal);
+        let purpose = self.purpose_for_item(&proposal.item);
+        let fund = |object| {
+            self.additional_candidate(spec, a.item.controller, a.item.object, object)
+                && self.can_fund_for(
+                    FundingGoal {
+                        reserve: Some((object, spec)),
+                        ..goal.clone()
+                    },
+                    purpose,
+                )
+        };
+        if let Some(object) = a.additional {
+            return fund(object);
+        }
+        (0..self.state.objects.len()).any(|id| fund(self.object_ref(id as CardId)))
+    }
+    fn blight_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
+        // This domain is consulted only during the declaration, before mana
+        // abilities and counter placement. The selected X is never rebound to
+        // the later toughness of the blighted creature.
+        let maximum = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, o)| {
+                o.zone == Zone::Battlefield
+                    && o.controller == a.item.controller
+                    && self.is_creature(*id as CardId)
+            })
+            .map(|(id, _)| self.stats(id as CardId).toughness)
+            .max()
+            .unwrap_or(0)
+            .clamp(0, i128::from(u32::MAX)) as u32;
+        let fundable = |x| {
+            a.cost_options()
+                .any(|cost| self.blight_x_cost_fundable(a, cost, x))
+        };
+        let zero = fundable(0);
+        let positive = maximum > 0 && fundable(1);
+        match (zero, positive) {
+            (true, true) => vec![XInterval {
+                minimum: 0,
+                maximum,
+            }],
+            (true, false) => vec![XInterval {
+                minimum: 0,
+                maximum: 0,
+            }],
+            (false, true) => vec![XInterval {
+                minimum: 1,
+                maximum,
+            }],
+            (false, false) => Vec::new(),
+        }
+    }
     fn activation_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             return Vec::new();
@@ -232,7 +295,10 @@ impl Game {
         let a = self.state.announcing.as_ref()?;
         Some(XChoiceView {
             card: a.item.object,
-            intervals: if a.item.kind == StackKind::Spell {
+            intervals: if a.item.kind == StackKind::Spell && a.item.source_card.has_blight_x_cost()
+            {
+                self.blight_x_intervals(a)
+            } else if a.item.kind == StackKind::Spell {
                 self.scalar_x_intervals(a.item.controller, a.item.card)
             } else {
                 self.activation_x_intervals(a)

@@ -3202,6 +3202,34 @@ impl Game {
                         }
                     }
                 }
+                Instruction::DamagePlayersAndTheirCreatures { players, amount } => {
+                    let amount = i128::try_from(self.item_amount(amount, &item))
+                        .capacity("damage amount representation exhausted");
+                    let source = self.program_damage_source(&item);
+                    let players: Vec<_> = self.program_players(players, &item).collect();
+                    let targets = players.iter().copied().map(Target::Player).chain(
+                        self.state
+                            .objects
+                            .iter()
+                            .enumerate()
+                            .filter(|(id, o)| {
+                                o.zone == Zone::Battlefield
+                                    && players.contains(&o.controller)
+                                    && self.is_creature(*id as CardId)
+                            })
+                            .map(|(id, _)| Target::Card(id as CardId)),
+                    );
+                    let events: Vec<_> = targets
+                        .map(|target| DamageEvent {
+                            preventable: true,
+                            source,
+                            target,
+                            amount,
+                            combat: false,
+                        })
+                        .collect();
+                    self.apply_damage_batch(&events);
+                }
                 Instruction::SetBaseStats {
                     subject,
                     power,

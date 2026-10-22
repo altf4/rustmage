@@ -567,7 +567,7 @@ impl Game {
     pub(super) fn blight_counters(
         &mut self,
         choices: Vec<(Player, ObjectRef)>,
-        amount: u16,
+        amount: u32,
         effect: bool,
         mode: ResumeMode,
     ) {

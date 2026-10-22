@@ -49,7 +49,7 @@ impl Game {
             | EffectChoiceKind::TapPermanents(_) => o.controller == actor,
             _ => false,
         };
-        if matches!(spec.kind, EffectChoiceKind::BlightCost(_))
+        if matches!(spec.kind, EffectChoiceKind::BlightCost(amount) if amount > 0)
             && !self.can_receive_counters(object.card)
         {
             return false;
@@ -287,9 +287,14 @@ impl Game {
                 self.can_fund_for(goal, purpose)
             }
         };
-        let Some(spec) = definition.additional_cost() else {
+        let Some(mut spec) = definition.additional_cost() else {
             return fund(base);
         };
+        // Initial availability may choose zero. It still needs a controlled
+        // creature witness, even though that witness receives no counters.
+        if spec.kind == EffectChoiceKind::BlightXCost {
+            spec.kind = EffectChoiceKind::BlightCost(0);
+        }
         if matches!(
             spec.kind,
             EffectChoiceKind::OptionalBlightCost(_) | EffectChoiceKind::OptionalBeholdType(_)
@@ -504,6 +509,7 @@ impl Game {
             EffectChoiceKind::ExileFromHand
             | EffectChoiceKind::ExileGraveyardCard
             | EffectChoiceKind::Blight(_)
+            | EffectChoiceKind::BlightXCost
             | EffectChoiceKind::OptionalBlightCost(_)
             | EffectChoiceKind::OptionalBeholdType(_)
             | EffectChoiceKind::RemoveCreatureCounters(_)

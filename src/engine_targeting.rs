@@ -68,6 +68,12 @@ impl Announcement {
                 None
             }
             StackKind::Spell => self.item.source_card.additional_cost().and_then(|spec| {
+                if spec.kind == EffectChoiceKind::BlightXCost {
+                    return Some(AdditionalCost {
+                        kind: EffectChoiceKind::BlightCost(self.item.x.unwrap_or(0)),
+                        ..spec
+                    });
+                }
                 if let EffectChoiceKind::OptionalBeholdType(amount) = spec.kind {
                     return self
                         .item

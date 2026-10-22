@@ -55,7 +55,10 @@ impl Game {
             return o.zone == Zone::Battlefield
                 && o.controller == player
                 && self.is_creature(object.card)
-                && self.can_receive_counters(object.card)
+                && (matches!(
+                    choice.kind,
+                    EffectChoiceKind::Blight(_) | EffectChoiceKind::BlightCost(0)
+                ) || self.can_receive_counters(object.card))
                 && self.object_ref(object.card) == object
                 && !choice.selected[player.index()].contains(&object);
         }

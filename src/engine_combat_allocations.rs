@@ -273,7 +273,9 @@ impl ActivatedAbility {
 impl Announcement {
     pub(super) fn has_x_cost(&self) -> bool {
         match self.item.kind {
-            StackKind::Spell => self.item.source_card.x_symbols() > 0,
+            StackKind::Spell => {
+                self.item.source_card.x_symbols() > 0 || self.item.source_card.has_blight_x_cost()
+            }
             StackKind::ActivatedAbility { ability } => {
                 self.item.source_card.activations()[usize::from(ability)].has_x_cost()
             }

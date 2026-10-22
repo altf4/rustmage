@@ -5053,3 +5053,261 @@ fn meek_attack_delay_keeps_caster_controller_and_haste_after_control_changes() {
         assert!(g.observe(p).delayed_sacrifices.is_empty());
     }
 }
+fn soul_declare(g: &mut Game, spell: CardId, x: u32, witness: CardId) {
+    checked(g, Action::AnnounceCast { card: spell });
+    assert!(g.observe(g.actor().unwrap().other()).x_choice.is_none());
+    checked(g, Action::ChooseX { value: x });
+    let object = g.object_ref(witness);
+    checked(g, Action::ChooseAdditionalCost { object });
+}
+#[test]
+fn soul_immolation_uses_greatest_toughness_but_may_blight_a_smaller_creature_and_damages_only_opposition()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let greatest = named(&mut g, p, "Gigantosaurus", Zone::Battlefield);
+        let witness = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let enemy = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        let enemy_big = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        let spell = named(&mut g, p, "Soul Immolation", Zone::Hand);
+        let before = g.state.players[p.index()].mana.iter().sum::<u32>();
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        reject(&mut g, Action::ChooseX { value: 11 });
+        checked(&mut g, Action::ChooseX { value: 10 });
+        let foreign = g.object_ref(enemy);
+        reject(&mut g, Action::ChooseAdditionalCost { object: foreign });
+        let object = g.object_ref(witness);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
+        assert_eq!(g.counter_count(witness, CounterKind::MinusOne), 0);
+        kindle_pay(&mut g);
+        assert_eq!(g.object_view(witness).zone, Zone::Graveyard);
+        assert_eq!(g.state.stack.last().unwrap().x, Some(10));
+        assert_eq!(g.state.stack.last().unwrap().mana_value(), 5);
+        assert_eq!(
+            before - g.state.players[p.index()].mana.iter().sum::<u32>(),
+            5
+        );
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 10);
+        assert_eq!(g.state.players[p.index()].life, 20);
+        for victim in [enemy, enemy_big] {
+            assert_eq!(g.object_view(victim).zone, Zone::Graveyard);
+        }
+        assert!(g.on_battlefield(greatest));
+        assert_eq!(g.state.objects[greatest as usize].damage, 0);
+    }
+}
+#[test]
+fn soul_immolation_free_cast_still_chooses_nonmana_x_and_keeps_it_after_the_only_creature_dies() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        named(&mut g, p, "Omniscience", Zone::Battlefield);
+        let witness = named(&mut g, p, "Gigantosaurus", Zone::Battlefield);
+        named(&mut g, p, "Doubling Season", Zone::Battlefield);
+        let spell = named(&mut g, p, "Soul Immolation", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        checked(
+            &mut g,
+            Action::AnnounceFree {
+                card: spell,
+                face: CastFace::Normal,
+                flash_surcharge: false,
+            },
+        );
+        checked(&mut g, Action::ChooseX { value: 10 });
+        let object = g.object_ref(witness);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
+        checked(&mut g, Action::PayCosts { payment: [0; 6] });
+        assert_eq!(g.object_view(witness).zone, Zone::Graveyard);
+        assert_eq!(g.state.stack.last().unwrap().mana_value(), 5);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 10);
+    }
+}
+#[test]
+fn soul_immolation_same_blight_witness_can_tap_for_mana_before_placing_cost_counters() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let witness = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let lands: Vec<_> = ["Mountain", "Mountain", "Forest", "Forest"]
+            .into_iter()
+            .map(|name| named(&mut g, p, name, Zone::Battlefield))
+            .collect();
+        let spell = named(&mut g, p, "Soul Immolation", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        soul_declare(&mut g, spell, 1, witness);
+        for card in std::iter::once(witness).chain(lands) {
+            checked(&mut g, Action::TapMana { card });
+        }
+        assert_eq!(g.counter_count(witness, CounterKind::MinusOne), 0);
+        kindle_pay(&mut g);
+        assert_eq!(g.object_view(witness).zone, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 19);
+    }
+}
+#[test]
+fn soul_immolation_zero_requires_a_creature_but_does_not_place_counters_even_when_prohibited() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let spell = named(&mut g, p, "Soul Immolation", Zone::Hand);
+        reject(&mut g, Action::AnnounceCast { card: spell });
+        reject(
+            &mut g,
+            Action::Cast {
+                card: spell,
+                target: None,
+                payment: [0, 0, 0, 5, 0, 0],
+            },
+        );
+        let witness = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        hexing_open(&mut g, p, "Blossombind", Some(Target::Card(witness)));
+        hexing_finish(&mut g, true);
+        assert!(!g.can_receive_counters(witness));
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        assert_eq!(
+            g.x_choice().unwrap().intervals,
+            vec![XInterval {
+                minimum: 0,
+                maximum: 0
+            }]
+        );
+        reject(&mut g, Action::ChooseX { value: 1 });
+        checked(&mut g, Action::ChooseX { value: 0 });
+        let object = g.object_ref(witness);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
+        kindle_pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.counter_count(witness, CounterKind::MinusOne), 0);
+        assert!(!g.state.players[p.index()].put_counter_on_creature_this_turn);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+    }
+}
+#[test]
+fn soul_immolation_spell_copy_preserves_chosen_x_without_a_second_blight_payment() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let teach = named(&mut g, p, "Teach by Example", Zone::Hand);
+        cast(&mut g, teach);
+        let witness = named(&mut g, p, "Gigantosaurus", Zone::Battlefield);
+        let spell = named(&mut g, p, "Soul Immolation", Zone::Hand);
+        soul_declare(&mut g, spell, 2, witness);
+        kindle_pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.counter_count(witness, CounterKind::MinusOne), 2);
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+    }
+}
+#[test]
+fn soul_immolation_full_u32_counter_amount_is_owned_and_does_not_increase_mana_value_or_cost() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let witness = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        g.state.objects[witness as usize].growth.toughness = i128::from(u32::MAX);
+        let spell = named(&mut g, p, "Soul Immolation", Zone::Hand);
+        soul_declare(&mut g, spell, u32::MAX, witness);
+        let request = g.observe(p).payment_request.unwrap();
+        assert_eq!(request.generic, 3);
+        assert_eq!(request.required, [0, 0, 0, 2, 0, 0]);
+        kindle_pay(&mut g);
+        assert_eq!(
+            g.counter_count(witness, CounterKind::MinusOne),
+            u64::from(u32::MAX)
+        );
+        assert!(g.on_battlefield(witness));
+        assert_eq!(g.state.stack.last().unwrap().mana_value(), 5);
+        g.state.players[p.other().index()].life = i128::from(u32::MAX) + 20;
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+    }
+}
+#[test]
+fn forced_blight_effect_can_choose_a_counter_prohibited_creature_without_placing_any_counters() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let witness = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        hexing_open(&mut g, p, "Blossombind", Some(Target::Card(witness)));
+        hexing_finish(&mut g, true);
+        let source = named(&mut g, p, "Champion of the Weird", Zone::Battlefield);
+        let own = named(&mut g, p, "Gigantosaurus", Zone::Battlefield);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        let object = g.object_ref(own);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
+        kindle_pay(&mut g);
+        for _ in 0..100 {
+            if g.actor() == Some(p.other())
+                && matches!(g.state.pending, Pending::EffectChoice { .. })
+            {
+                break;
+            }
+            advance(&mut g);
+        }
+        let object = g.object_ref(witness);
+        checked(&mut g, Action::Blight { object });
+        settle(&mut g);
+        assert_eq!(g.counter_count(witness, CounterKind::MinusOne), 0);
+        assert!(!g.state.players[p.other().index()].put_counter_on_creature_this_turn);
+        assert_eq!(g.state.players[p.index()].life, 19);
+    }
+}
+#[test]
+fn soul_immolation_untargeted_simultaneous_damage_respects_protection_and_indestructible() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let witness = named(&mut g, p, "Gigantosaurus", Zone::Battlefield);
+        let protected = named(&mut g, p.other(), "Progenitus", Zone::Battlefield);
+        let indestructible = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        let object = g.object_ref(indestructible);
+        g.grant_keyword_effects(&[indestructible], object, Keywords::INDESTRUCTIBLE);
+        let hexproof = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        let object = g.object_ref(hexproof);
+        g.grant_keyword_effects(&[hexproof], object, Keywords::HEXPROOF);
+        let spell = named(&mut g, p, "Soul Immolation", Zone::Hand);
+        soul_declare(&mut g, spell, 2, witness);
+        kindle_pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        assert_eq!(g.state.objects[protected as usize].damage, 0);
+        assert!(!g.state.objects[protected as usize].damaged_this_turn);
+        assert_eq!(g.state.objects[indestructible as usize].damage, 2);
+        assert!(g.on_battlefield(indestructible));
+        assert_eq!(g.object_view(hexproof).zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn soul_immolation_timing_and_countered_spell_keep_blight_and_mana_paid() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let witness = named(&mut g, p, "Gigantosaurus", Zone::Battlefield);
+        let spell = named(&mut g, p, "Soul Immolation", Zone::Hand);
+        g.state.step = Step::End;
+        reject(&mut g, Action::AnnounceCast { card: spell });
+        g.state.step = Step::Main1;
+        soul_declare(&mut g, spell, 2, witness);
+        let mana = g.state.players[p.index()].mana.iter().sum::<u32>();
+        kindle_pay(&mut g);
+        let item = g.state.stack.last().unwrap().id;
+        assert!(g.counter_stack_item(item, false));
+        settle(&mut g);
+        assert_eq!(g.counter_count(witness, CounterKind::MinusOne), 2);
+        assert_eq!(
+            mana - g.state.players[p.index()].mana.iter().sum::<u32>(),
+            5
+        );
+        assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+    }
+}
