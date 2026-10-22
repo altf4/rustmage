@@ -5643,7 +5643,7 @@ impl Game {
             for &blocker in &blockers {
                 if self.assigns_this_step(blocker) {
                     let source = self.damage_source(blocker);
-                    let amount = self.stats(blocker).power.max(0);
+                    let amount = self.combat_damage_amount(blocker);
                     self.queue_hit(source, Target::Card(attacker.card), amount, true);
                 }
             }
@@ -5651,7 +5651,7 @@ impl Game {
                 continue;
             }
             let source = self.damage_source(attacker.card);
-            let power = self.stats(attacker.card).power.max(0);
+            let power = self.combat_damage_amount(attacker.card);
             let defender = self.combat_defender_target(attacker.defender);
             let trample = source.keywords.contains(Keywords::TRAMPLE) && defender.is_some();
             if !attacker.blocked || (trample && blockers.is_empty()) {

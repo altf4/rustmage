@@ -981,3 +981,245 @@ fn adept_watershaper_control_changes_untapping_and_ability_removal_update_grants
     settle(&mut g);
     assert!(!g.keywords(enemy).contains(Keywords::INDESTRUCTIBLE));
 }
+
+fn equip_bark(g: &mut Game, recipient: CardId) -> CardId {
+    let bark = cast_named(g, Player::P0, "Bark of Doran");
+    checked(
+        g,
+        Action::AnnounceActivate {
+            card: bark,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    checked(
+        g,
+        Action::ChooseTarget {
+            target: Target::Card(recipient),
+        },
+    );
+    settle(g);
+    bark
+}
+fn bark_combat(g: &mut Game, attacker: CardId, blockers: &[CardId]) {
+    g.state.objects[attacker as usize].summoning_sick = false;
+    g.state.step = Step::Attackers;
+    g.state.pending = Pending::Attackers;
+    checked(g, Action::Attack { card: attacker });
+    checked(g, Action::FinishAttackers);
+    checked(g, Action::Pass);
+    checked(g, Action::Pass);
+    for &blocker in blockers {
+        checked(g, Action::Block { blocker, attacker });
+    }
+    checked(g, Action::FinishBlockers);
+    checked(g, Action::Pass);
+    checked(g, Action::Pass);
+}
+#[test]
+fn bark_of_doran_paid_equip_toughness_combat_and_greater_power_branch() {
+    for pump in [false, true] {
+        let mut g = setup(Player::P0);
+        let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+        equip_bark(&mut g, bear);
+        assert_eq!(
+            g.stats(bear),
+            Stats {
+                power: 2,
+                toughness: 3
+            }
+        );
+        assert_eq!(g.combat_damage_amount(bear), 3);
+        if pump {
+            spell(&mut g, Player::P0, "Sure Strike", &[Target::Card(bear)]);
+            settle(&mut g);
+            assert_eq!(
+                g.stats(bear),
+                Stats {
+                    power: 5,
+                    toughness: 3
+                }
+            );
+            assert_eq!(g.combat_damage_amount(bear), 5);
+        }
+        bark_combat(&mut g, bear, &[]);
+        assert_eq!(g.state.players[1].life, if pump { 15 } else { 17 });
+    }
+}
+#[test]
+fn bark_of_doran_blocker_and_multiblock_trample_use_toughness_amount() {
+    let mut g = setup(Player::P0);
+    let blocker = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    equip_bark(&mut g, blocker);
+    let attacker = spawn(&mut g, Player::P1, Card::HillGiant, Zone::Battlefield);
+    g.state.active = Player::P1;
+    g.state.priority = Player::P1;
+    bark_combat(&mut g, attacker, &[blocker]);
+    assert_eq!(g.object_view(attacker).zone, Zone::Graveyard);
+    assert_eq!(g.object_view(blocker).zone, Zone::Graveyard);
+    let mut g = setup(Player::P0);
+    let attacker = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Darksteel Colossus").unwrap(),
+        Zone::Battlefield,
+    );
+    equip_bark(&mut g, attacker);
+    let a = spawn(&mut g, Player::P1, Card::GrizzlyBears, Zone::Battlefield);
+    let b = spawn(&mut g, Player::P1, Card::GrizzlyBears, Zone::Battlefield);
+    bark_combat(&mut g, attacker, &[a, b]);
+    assert_eq!(g.damage_assignment_range().unwrap().maximum, 12);
+    checked(
+        &mut g,
+        Action::AssignDamage {
+            target: Target::Card(a),
+            amount: 2,
+        },
+    );
+    checked(
+        &mut g,
+        Action::AssignDamage {
+            target: Target::Card(b),
+            amount: 2,
+        },
+    );
+    assert_eq!(g.state.players[1].life, 12);
+    assert_eq!(g.stats(attacker).power, 11);
+}
+#[test]
+fn bark_of_doran_equip_ownership_timing_and_attachment_departure_are_exact() {
+    let mut g = setup(Player::P0);
+    let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    let enemy = spawn(&mut g, Player::P1, Card::GrizzlyBears, Zone::Battlefield);
+    let bark = equip_bark(&mut g, bear);
+    let action = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| {
+            matches!(a,
+        Action::AnnounceActivate { card, .. } if *card == bark)
+        })
+        .unwrap();
+    checked(&mut g, action);
+    let before = g.snapshot();
+    assert_eq!(
+        g.apply(
+            Player::P0,
+            Action::ChooseTarget {
+                target: Target::Card(enemy)
+            }
+        ),
+        Err(Error::IllegalAction)
+    );
+    assert_eq!(g.snapshot(), before);
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(bear),
+        },
+    );
+    settle(&mut g);
+    g.state.step = Step::Upkeep;
+    assert!(
+        !g.legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::Activate {card,..} | Action::BeginActivate {card,..} | Action::AnnounceActivate {card,..} if *card==bark))
+    );
+    g.state.step = Step::Main1;
+    g.move_object(bear, Zone::Hand);
+    g.move_object(bear, Zone::Battlefield);
+    assert_eq!(g.combat_damage_amount(bear), 2);
+    g.move_object(bark, Zone::Graveyard);
+    assert_eq!(
+        g.stats(bear),
+        Stats {
+            power: 2,
+            toughness: 2
+        }
+    );
+}
+
+#[test]
+fn bark_of_doran_rule_survives_recipient_ability_removal_and_stops_with_source_abilities() {
+    let mut g = setup(Player::P0);
+    let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    let bark = equip_bark(&mut g, bear);
+    spell(&mut g, Player::P0, "Noggle the Mind", &[Target::Card(bear)]);
+    settle(&mut g);
+    assert_eq!(g.combat_damage_amount(bear), 2);
+    bark_combat(&mut g, bear, &[]);
+    assert_eq!(g.state.players[1].life, 18);
+    g.state.players[0].mana = [30; 6];
+    spell(&mut g, Player::P0, "Dive Down", &[Target::Card(bear)]);
+    settle(&mut g);
+    assert_eq!(g.combat_damage_amount(bear), 5);
+    spell(&mut g, Player::P0, "Stop Cold", &[Target::Card(bark)]);
+    settle(&mut g);
+    assert!(!g.continuous_fragment_available(bark, |fragment| matches!(
+        fragment,
+        crate::cards::StaticAbilityFragment::AttachmentCombatToughnessIfGreater
+    )));
+    assert_eq!(g.combat_damage_amount(bear), 1);
+}
+#[test]
+fn bark_of_doran_double_strike_rechecks_current_toughness_in_each_damage_step() {
+    let mut g = setup(Player::P0);
+    let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    equip_bark(&mut g, bear);
+    let equipment = cast_named(&mut g, Player::P0, "Fireshrieker");
+    checked(
+        &mut g,
+        Action::AnnounceActivate {
+            card: equipment,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(bear),
+        },
+    );
+    settle(&mut g);
+    bark_combat(&mut g, bear, &[]);
+    assert_eq!(g.state.players[1].life, 17);
+    g.state.players[0].mana = [30; 6];
+    spell(&mut g, Player::P0, "Snakeskin Veil", &[Target::Card(bear)]);
+    settle(&mut g);
+    assert_eq!(g.combat_damage_amount(bear), 4);
+    checked(&mut g, Action::Pass);
+    checked(&mut g, Action::Pass);
+    assert_eq!(g.state.players[1].life, 13);
+}
+
+#[test]
+fn bark_of_doran_unrelated_equipment_does_not_change_combat_assignment() {
+    let mut g = setup(Player::P0);
+    let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    let equipment = cast_named(&mut g, Player::P0, "Fireshrieker");
+    checked(
+        &mut g,
+        Action::AnnounceActivate {
+            card: equipment,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(bear),
+        },
+    );
+    settle(&mut g);
+    spell(&mut g, Player::P0, "Dive Down", &[Target::Card(bear)]);
+    settle(&mut g);
+    assert_eq!(g.stats(bear).toughness, 5);
+    assert_eq!(g.combat_damage_amount(bear), 2);
+    bark_combat(&mut g, bear, &[]);
+    assert_eq!(g.state.players[1].life, 18);
+    checked(&mut g, Action::Pass);
+    checked(&mut g, Action::Pass);
+    assert_eq!(g.state.players[1].life, 16);
+}

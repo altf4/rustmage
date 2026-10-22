@@ -1,5 +1,6 @@
 //! Cold combat history, resolved requirements and exact damage accounting.
 use super::*;
+use crate::cards::StaticAbilityFragment;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CombatDamagePlayerView {
@@ -28,6 +29,40 @@ impl CombatRulesState {
     }
 }
 impl Game {
+    /// A combat assignment rule changes the damage amount, never the creature's power.
+    pub(super) fn combat_damage_amount(&self, id: CardId) -> i128 {
+        let stats = self.stats(id);
+        let recipient = self.object_ref(id);
+        if stats.toughness > stats.power
+            && self.state.attachment_sources.iter().any(|&source| {
+                self.on_battlefield(source)
+                    && !self.is_creature(source)
+                    && self.state.objects[source as usize].attached_to == Some(recipient)
+                    && self.state.objects[source as usize]
+                        .card
+                        .static_ability_groups()
+                        .iter()
+                        .any(|group| {
+                            group.fragments.iter().any(|fragment| {
+                                matches!(
+                                    fragment,
+                                    StaticAbilityFragment::AttachmentCombatToughnessIfGreater
+                                )
+                            })
+                        })
+                    && self.continuous_fragment_available(source, |fragment| {
+                        matches!(
+                            fragment,
+                            StaticAbilityFragment::AttachmentCombatToughnessIfGreater
+                        )
+                    })
+            })
+        {
+            stats.toughness.max(0)
+        } else {
+            stats.power.max(0)
+        }
+    }
     pub(super) fn distribute_counters(&mut self, item: &SpellView, kind: CounterKind) {
         let changes = item
             .target_allocations
