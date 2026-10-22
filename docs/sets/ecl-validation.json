@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 153,
+  "newly_tested_physical_cards": 154,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -84,6 +84,7 @@
     "Kindle the Inner Flame",
     "Kinsbaile Aspirant",
     "Kinscaer Sentry",
+    "Kirol, Attentive First-Year",
     "Kithkeeper",
     "Lasting Tarfire",
     "Liminal Hold",
@@ -158,8 +159,8 @@
     "Winnowing",
     "Wistfulness"
   ],
-  "current_admission_flags": 260,
-  "remaining_gated": 13,
+  "current_admission_flags": 261,
+  "remaining_gated": 12,
   "inherited_evidence_audit": {
     "audited": 34,
     "total": 107,
@@ -305,11 +306,11 @@
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "focused_integration": {
     "command": "python3 scripts/resource_guard.py -- cargo test --lib ecl_",
-    "head": "60017348",
+    "head": "024ba6f8",
     "exit": 0,
-    "tests": 494,
-    "test_seconds": 18.89,
-    "resource_report": "<cache>/rustmage-build-reports/055d5b404d4f46899d58b947824d38b5.json"
+    "tests": 538,
+    "test_seconds": 20.76,
+    "resource_report": "<cache>/rustmage-build-reports/4b9ffde0a41b43ff9bd7bb22b2a26b8f.json"
   },
   "natural_games": {
     "command": "python3 scripts/resource_guard.py -- cargo test --test lorwyn_eclipsed_games -- --nocapture",
@@ -336,13 +337,13 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T20:54:25.512748+00:00",
-    "elapsed_seconds": 19898.295897,
-    "newly_verified_cards": 153,
-    "cards_per_hour": 27.680762355285022,
+    "end_utc": "2026-10-22T20:59:28.990737+00:00",
+    "elapsed_seconds": 20201.773886,
+    "newly_verified_cards": 154,
+    "cards_per_hour": 27.443134604343033,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
-  "focused_scope": "494 integrated ECL scenarios passed at60017348; full release verification remains249-card checkpoint",
+  "focused_scope": "Combined260-card ECL scenarios; Kirol separately focused-tested after this combined run.",
   "full_release_validation": {
     "status": "passed all eight phases",
     "head": "6cea982a757df52842718aa88cd10c4d54e33d6f",
@@ -1014,5 +1015,18 @@
       "<cache>/rustmage-build-reports/ca2e4d6fb52848189cf0684b7e90b3ec.json",
       "<cache>/rustmage-build-reports/8fb9afc2348641b9921484498f7b41fe.json"
     ]
+  },
+  "kirol": {
+    "source_commit": "1595d486",
+    "tests": 7,
+    "seconds": 0.62,
+    "resource_report": "<cache>/rustmage-build-reports/65bb4e41deb34968af28a2c47b8b0379.json",
+    "stack_copy_tests": 22,
+    "stack_copy_seconds": 0.89,
+    "stack_copy_report": "<cache>/rustmage-build-reports/f627bacd59fd4966b5f774bef00cf260.json",
+    "binding_tests": 7,
+    "binding_seconds": 0.05,
+    "binding_report": "<cache>/rustmage-build-reports/1718dc5a44294e3ca28f765156b420cf.json",
+    "all_target_clippy": "<cache>/rustmage-build-reports/c58eac8b65824b8b8e4b364fc27fbf57.json"
   }
 }

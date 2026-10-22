@@ -3409,7 +3409,7 @@
       "name": "Kirol, Attentive First-Year",
       "definition": "src/card_definitions/ecl/kirol_attentive_first_year.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Kirol, Attentive First-Year",
@@ -3423,7 +3423,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_kirol_tests.rs",
+        "src/card_definitions/ecl/kirol_attentive_first_year.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "5c5766f9-befd-4426-9527-d50af0699ca1",

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "36364c27bf427c2577581eb4f6d4d66dc4d17f9b7410c3311ea77fde43a22486",
+  "catalogue_version": "67fc8c617bca8485b9a61b5df15d63aaa71c032c11ca8bd6aef02442cb8a755d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2343,
-  "implemented_total": 2349,
+  "implemented_standard_cards": 2344,
+  "implemented_total": 2350,
   "token_definitions": 110,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "complete": 254,
-      "gated": 13
+      "complete": 255,
+      "gated": 12
     },
     "eoc": {
       "total": 8,
@@ -19159,8 +19159,8 @@
     {
       "name": "Kirol, Attentive First-Year",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/kirol_attentive_first_year.rs",
       "set": "ecl"
     },
