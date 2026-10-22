@@ -3,6 +3,8 @@ use super::ability_timeline_tests::{checked, settle, setup};
 use super::tests::{cast, spawn};
 use super::*;
 use crate::ChoiceColor;
+#[path = "engine_ecl_white_blue_inherited_tests.rs"]
+mod inherited_final;
 
 fn mare(g: &mut Game, p: Player) -> CardId {
     let id = spawn(g, p, Card::from_name("Loch Mare").unwrap(), Zone::Hand);

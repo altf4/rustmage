@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "80ad69f21b311530c9c7ddd619776483c9d6bae19bdbe9d8748bccd6f9c23b64"
   },
-  "physical_metadata_sha256": "38288aba6c50386aa0b86854b5d47e9080e5741798ff502828a9bb9e1c24a552"
+  "physical_metadata_sha256": "38288aba6c50386aa0b86854b5d47e9080e5741798ff502828a9bb9e1c24a552",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RimekinRecluse.java",
+  "java_sha256": "a995ad9b3aa70ce103468241cef30d069bbb233c057d49e12494358afb9ec82e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+      "sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+    }
+  ]
 }
