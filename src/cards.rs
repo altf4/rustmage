@@ -2993,6 +2993,12 @@ impl Card {
     pub fn plot_cost(self) -> Option<ManaCost> {
         generated::plot_cost(self)
     }
+    /// Nonmana cost belonging to this card's own printed flashback ability.
+    pub(crate) fn flashback_additional_cost(self) -> Option<AdditionalCost> {
+        authored::RULES[self.index()]
+            .extras
+            .flashback_additional_cost
+    }
     pub(crate) fn additional_cost(self) -> Option<AdditionalCost> {
         generated::additional_cost(self)
     }

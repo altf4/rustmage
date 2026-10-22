@@ -4485,3 +4485,319 @@ fn end_blaze_epiphany_watched_noncreature_has_no_power_when_it_dies() {
         assert!(g.observe(p).exile_permissions.is_empty());
     }
 }
+fn kindle_copies(g: &Game, p: Player) -> Vec<CardId> {
+    g.state
+        .copy_recipes
+        .as_ref()
+        .into_iter()
+        .flat_map(|rows| rows.iter())
+        .filter(|row| {
+            g.on_battlefield(row.object.card)
+                && g.object_ref(row.object.card) == row.object
+                && g.state.objects[row.object.card as usize].controller == p
+                && row.recipe.exceptions.sacrifice_abilities > 0
+        })
+        .map(|row| row.object.card)
+        .collect()
+}
+fn kindle_pay(g: &mut Game) {
+    let pay = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a, Action::PayCosts { .. }))
+        .unwrap();
+    checked(g, pay);
+}
+#[test]
+fn kindle_inner_flame_normal_cast_needs_no_behold_and_copies_copiable_stats_with_intrinsic_haste_sacrifice()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let target = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let enemy = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        g.state.objects[target as usize].counters.plus_one = 2;
+        let source = named(&mut g, p, "Kindle the Inner Flame", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: source });
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(enemy),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        assert!(g.observe(p).additional_cost.is_none());
+        let mana = g.state.players[p.index()].mana.iter().sum::<u32>();
+        kindle_pay(&mut g);
+        assert_eq!(
+            mana - g.state.players[p.index()].mana.iter().sum::<u32>(),
+            4
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+        let copies = kindle_copies(&g, p);
+        assert_eq!(copies.len(), 1);
+        let copy = copies[0];
+        assert_eq!(
+            g.stats(copy),
+            Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+        assert!(g.keywords(copy).contains(Keywords::HASTE));
+        let reference = g.object_ref(copy);
+        g.remove_abilities_exact(&[reference], crate::cards::AnimationDuration::EndOfTurn);
+        g.begin_step(Step::End);
+        settle(&mut g);
+        assert!(
+            g.on_battlefield(copy),
+            "intrinsic sacrifice ability was removed"
+        );
+        g.finish_cleanup();
+        assert!(g.keywords(copy).contains(Keywords::HASTE));
+        g.begin_step(Step::End);
+        settle(&mut g);
+        assert!(!g.on_battlefield(copy));
+    }
+}
+#[test]
+fn kindle_inner_flame_flashback_beholds_three_distinct_elementals_including_kindred_hand_cards_and_mana_witness()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let target = named(&mut g, p, "Flamebraider", Zone::Battlefield);
+        let first = named(&mut g, p, "Nameless Inversion", Zone::Hand);
+        let second = named(&mut g, p, "Nameless Inversion", Zone::Hand);
+        let enemy = named(&mut g, p.other(), "Flamebraider", Zone::Battlefield);
+        let source = named(&mut g, p, "Kindle the Inner Flame", Zone::Graveyard);
+        g.state.players[p.index()].mana = [0; 6];
+        checked(&mut g, Action::AnnounceFlashback { card: source });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        assert!(g.observe(p.other()).additional_cost.is_none());
+        let object = g.object_ref(enemy);
+        reject(&mut g, Action::ChooseAdditionalCost { object });
+        let object = g.object_ref(first);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
+        reject(&mut g, Action::ChooseAdditionalCost { object });
+        let object = g.object_ref(second);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
+        let object = g.object_ref(target);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
+        for card in [first, second] {
+            assert!(
+                !g.observe(p.other())
+                    .known_hand
+                    .contains(&g.object_ref(card))
+            );
+        }
+        flamebraider_mana(&mut g, target, [0, 0, 0, 2, 0, 0]);
+        kindle_pay(&mut g);
+        for card in [first, second] {
+            assert_eq!(g.object_view(card).zone, Zone::Hand);
+            assert!(
+                g.observe(p.other())
+                    .known_hand
+                    .contains(&g.object_ref(card))
+            );
+        }
+        assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+        assert!(g.object_view(target).tapped);
+        settle(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Exile);
+        assert_eq!(kindle_copies(&g, p).len(), 1);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+#[test]
+fn kindle_inner_flame_flashback_requires_three_witnesses_and_correct_timing_without_shortcut_bypasses()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let target = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let source = named(&mut g, p, "Kindle the Inner Flame", Zone::Graveyard);
+        for _ in 0..2 {
+            named(&mut g, p, "Nameless Inversion", Zone::Hand);
+        }
+        reject(&mut g, Action::AnnounceFlashback { card: source });
+        reject(&mut g, Action::AnnounceCast { card: source });
+        reject(
+            &mut g,
+            Action::BeginCast {
+                card: source,
+                payment: [0, 0, 0, 1, 0, 1],
+            },
+        );
+        reject(
+            &mut g,
+            Action::Cast {
+                card: source,
+                target: Some(Target::Card(target)),
+                payment: [0, 0, 0, 1, 0, 1],
+            },
+        );
+        named(&mut g, p, "Nameless Inversion", Zone::Hand);
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceFlashback { card: source })
+        );
+        g.state.active = p.other();
+        g.state.priority = p;
+        reject(&mut g, Action::AnnounceFlashback { card: source });
+    }
+}
+#[test]
+fn kindle_inner_flame_flashback_lost_target_and_countered_spell_still_exile_source_and_keep_beheld_cards()
+ {
+    for p in [Player::P0, Player::P1] {
+        for counter in [false, true] {
+            let mut g = hexing_setup(p);
+            let target = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+            let witnesses: Vec<_> = (0..3)
+                .map(|_| named(&mut g, p, "Nameless Inversion", Zone::Hand))
+                .collect();
+            let source = named(&mut g, p, "Kindle the Inner Flame", Zone::Graveyard);
+            checked(&mut g, Action::AnnounceFlashback { card: source });
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            for &card in &witnesses {
+                let object = g.object_ref(card);
+                checked(&mut g, Action::ChooseAdditionalCost { object });
+            }
+            kindle_pay(&mut g);
+            if counter {
+                let id = g.state.stack.last().unwrap().id;
+                assert!(g.counter_stack_item(id, false));
+            } else {
+                g.move_object(target, Zone::Hand);
+            }
+            settle(&mut g);
+            assert_eq!(g.object_view(source).zone, Zone::Exile);
+            assert!(kindle_copies(&g, p).is_empty());
+            for card in witnesses {
+                assert_eq!(g.object_view(card).zone, Zone::Hand);
+            }
+        }
+    }
+}
+#[test]
+fn kindle_inner_flame_free_and_granted_graveyard_casting_do_not_pay_the_printed_flashback_behold_cost()
+ {
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..3 {
+            let mut g = hexing_setup(p);
+            let target = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+            let source = named(
+                &mut g,
+                p,
+                "Kindle the Inner Flame",
+                if mode == 0 {
+                    Zone::Hand
+                } else {
+                    Zone::Graveyard
+                },
+            );
+            if mode == 0 {
+                named(&mut g, p, "Omniscience", Zone::Battlefield);
+                checked(
+                    &mut g,
+                    Action::AnnounceFree {
+                        card: source,
+                        face: CastFace::Normal,
+                        flash_surcharge: false,
+                    },
+                );
+            } else {
+                let mut item = g.activation_item(p, target, 0);
+                item.targets = vec![g.bind_target(Target::Card(source))];
+                g.grant_graveyard_cast(
+                    &item,
+                    if mode == 1 {
+                        GraveyardCastKind::Cast
+                    } else {
+                        GraveyardCastKind::Flashback
+                    },
+                );
+                checked(
+                    &mut g,
+                    if mode == 1 {
+                        Action::AnnounceCast { card: source }
+                    } else {
+                        Action::AnnounceGrantedFlashback {
+                            card: source,
+                            flash_surcharge: false,
+                        }
+                    },
+                );
+            }
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            assert!(g.observe(p).additional_cost.is_none());
+            let mana = g.state.players[p.index()].mana.iter().sum::<u32>();
+            kindle_pay(&mut g);
+            assert_eq!(
+                mana - g.state.players[p.index()].mana.iter().sum::<u32>(),
+                if mode == 0 { 0 } else { 4 }
+            );
+            settle(&mut g);
+            assert_eq!(kindle_copies(&g, p).len(), 1);
+            assert_eq!(
+                g.object_view(source).zone,
+                if mode == 2 {
+                    Zone::Exile
+                } else {
+                    Zone::Graveyard
+                }
+            );
+        }
+    }
+}
+#[test]
+fn kindle_inner_flame_spell_copy_inherits_effect_without_repaying_printed_flashback_cost() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let teach = named(&mut g, p, "Teach by Example", Zone::Hand);
+        cast(&mut g, teach);
+        let target = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let witnesses: Vec<_> = (0..3)
+            .map(|_| named(&mut g, p, "Nameless Inversion", Zone::Hand))
+            .collect();
+        let source = named(&mut g, p, "Kindle the Inner Flame", Zone::Graveyard);
+        checked(&mut g, Action::AnnounceFlashback { card: source });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        for &card in &witnesses {
+            let object = g.object_ref(card);
+            checked(&mut g, Action::ChooseAdditionalCost { object });
+        }
+        kindle_pay(&mut g);
+        settle(&mut g);
+        assert_eq!(kindle_copies(&g, p).len(), 2);
+        assert_eq!(g.object_view(source).zone, Zone::Exile);
+        for card in witnesses {
+            assert_eq!(g.object_view(card).zone, Zone::Hand);
+        }
+        assert!(g.observe(p).additional_cost.is_none());
+    }
+}

@@ -1823,6 +1823,8 @@ impl Game {
             .source_card
             .additional_cost()
             .is_some_and(|spec| matches!(spec.kind, EffectChoiceKind::OptionalBeholdType(_)))
+            || a.additional_cost()
+                .is_some_and(|spec| matches!(spec.kind, EffectChoiceKind::BeholdMany(_)))
         {
             return self.behold_group_fundable(
                 a,

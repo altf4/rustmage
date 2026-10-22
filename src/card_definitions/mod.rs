@@ -41,6 +41,11 @@ impl CardRules {
             !matches!(self.effect, Effect::Unsupported),
             "complete authored card lacks behavior"
         );
+        assert!(
+            self.extras.additional_cost.is_none()
+                || self.extras.flashback_additional_cost.is_none(),
+            "separate printed and flashback nonmana costs require an explicit combined recipe"
+        );
         // A printed mana component opens the mana-ability payment window.
         // Reject zero-mana template flags copied into newly authored paid abilities.
         let mut index = 0;
@@ -182,6 +187,7 @@ pub(super) struct CardExtras {
     pub offspring_cost: Option<ManaCost>,
     pub offspring_copy: Option<Card>,
     pub flashback_cost: Option<ManaCost>,
+    pub flashback_additional_cost: Option<AdditionalCost>,
     pub target_cost_reduction: Option<&'static TargetSpellReduction>,
     pub cast_timing_grants: &'static [CastFilter],
     pub cost_reductions: &'static [SpellReduction],
@@ -254,6 +260,7 @@ impl CardExtras {
         offspring_cost: None,
         offspring_copy: None,
         flashback_cost: None,
+        flashback_additional_cost: None,
         target_cost_reduction: None,
         cast_timing_grants: &[],
         cost_reductions: &[],

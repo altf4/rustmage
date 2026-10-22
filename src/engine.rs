@@ -3283,6 +3283,27 @@ impl Game {
                         }
                         continue;
                     }
+                    if flashback && obj.card.flashback_additional_cost().is_some() {
+                        for flash_surcharge in [false, true] {
+                            if self.permitted_cast_available(
+                                actor,
+                                card,
+                                CastMethod::Flashback,
+                                CastFace::Normal,
+                                sorcery,
+                                flash_surcharge,
+                            ) && emit(if flash_surcharge {
+                                Action::AnnounceFlashSurcharge { card }
+                            } else {
+                                Action::AnnounceFlashback { card }
+                            }) {
+                                return true;
+                            }
+                        }
+                        // This route always declares its nonmana witnesses. The
+                        // ordinary direct Cast/BeginCast shortcuts cannot bypass it.
+                        continue;
+                    }
                     if obj.card.flash_surcharge().is_some()
                         && self.flash_surcharge_cast_fundable(actor, card, flashback)
                         && emit(Action::AnnounceFlashSurcharge { card })
