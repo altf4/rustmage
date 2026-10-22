@@ -151,7 +151,7 @@ fn lorwyn_eclipsed_five_color_set_only_natural_games_and_owned_replay() {
                     private += 1;
                     assert!(game.observe(actor.other()).library_choice.is_none());
                 }
-                if decisions % 64 == 0 || hidden {
+                if decisions.is_multiple_of(64) || hidden {
                     let before = game.snapshot();
                     let revision = game.revision();
                     assert_eq!(
