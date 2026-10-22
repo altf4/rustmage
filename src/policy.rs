@@ -232,6 +232,14 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     0
                 }
             }
+            Action::ChooseConspire { pay, .. } => {
+                if *pay {
+                    70
+                } else {
+                    0
+                }
+            }
+            Action::PayConspire { .. } | Action::PayConspirePrintedCosts => 60,
             Action::ChooseAdditionalCost { .. } | Action::ChooseCreatureCounterCost { .. } => 60,
             Action::ChooseForageRoute { .. } | Action::ChooseForage { .. } => 60,
             Action::DeclineForage => -10,

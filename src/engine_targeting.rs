@@ -109,6 +109,7 @@ impl Announcement {
             | StackKind::CopyEndStepSacrifice
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
+            | StackKind::Conspire
             | StackKind::DelayedWarpExile => None,
         }
     }
@@ -271,6 +272,7 @@ impl Announcement {
                 | StackKind::CopyEndStepSacrifice
                 | StackKind::DelayedSacrifice
                 | StackKind::DelayedReturn
+                | StackKind::Conspire
                 | StackKind::DelayedWarpExile => false,
             }
     }
@@ -644,6 +646,8 @@ impl Game {
             self.state.pending = Pending::OptionalAdditionalCost { player };
         } else if a.needs_behold_type() {
             self.state.pending = Pending::BeholdType { player };
+        } else if self.conspire_needs_intent() {
+            self.state.pending = Pending::ConspireIntent { player };
         } else if a.needs_mana_cost() {
             self.state.pending = if a.item.kind == StackKind::Spell {
                 Pending::SpellCost { player }
@@ -1366,6 +1370,7 @@ impl Game {
         counters: Counters,
         production: Option<Mana>,
     ) {
+        self.capture_conspire(&item);
         if production.is_some() {
             self.capture_announced_mana_quality(&item);
         }
@@ -1558,6 +1563,10 @@ impl Game {
         // choices before the spell becomes cast and cast observers are collected.
         announcement.payment = None;
         if self.state.entry_batch.is_some() {
+            self.state.announcing = Some(announcement);
+            return;
+        }
+        if self.defer_conspire_payment(&announcement) {
             self.state.announcing = Some(announcement);
             return;
         }

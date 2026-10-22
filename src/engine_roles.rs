@@ -37,11 +37,16 @@ pub(super) struct RoleState {
     pub delayed_deaths: Vec<delayed_deaths::DelayedDeath>,
     pub trigger_multiplicities: Vec<TriggerMultiplicityView>,
     pub dream_exiles: Vec<DreamExileView>,
+    pub conspire: Option<Box<ConspireCastView>>,
 }
 impl RoleState {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.dream_exiles.len() * std::mem::size_of::<DreamExileView>()
+            + self.conspire.as_ref().map_or(0, |c| {
+                std::mem::size_of::<ConspireCastView>()
+                    + c.instances.len() * std::mem::size_of::<ConspireInstanceView>()
+            })
             + self.trigger_multiplicities.len() * std::mem::size_of::<TriggerMultiplicityView>()
             + self.attached.len() * std::mem::size_of::<RoleTimestampView>()
             + self.base_stats.len() * std::mem::size_of::<BaseStatsEffectView>()

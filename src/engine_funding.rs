@@ -1839,6 +1839,9 @@ impl Game {
         })
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        if self.conspire_has_payment() && !self.conspire_projecting() {
+            return self.conspire_fundable(a, cost);
+        }
         if a.item
             .cast
             .is_some_and(|c| c.method == CastMethod::LinkedExileCounterCost)
@@ -2007,6 +2010,7 @@ impl Game {
             | StackKind::CopyEndStepSacrifice
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
+            | StackKind::Conspire
             | StackKind::DelayedWarpExile => false,
         }
     }
@@ -2071,6 +2075,7 @@ impl Game {
             | StackKind::CopyEndStepSacrifice
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
+            | StackKind::Conspire
             | StackKind::DelayedWarpExile => unreachable!(),
         }
     }

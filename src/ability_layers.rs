@@ -38,6 +38,7 @@ pub(crate) enum StaticAbilityFragment {
     LinkedExileCreatureCounterCasting(u16),
     LinkedExileFreeCastBySubtypeUnion(&'static [&'static str]),
     ConvokeCreatureSpells,
+    NoncreatureConspire,
     LookAtLibraryTop,
     CastCreatureFromLibraryTop,
     SpendAnyManaForCreatures,
