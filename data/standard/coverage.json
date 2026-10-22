@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "718f5d56c1ffb5c3c95314093282200e8ec4cbe37f69086a3826c6928d3deb9f",
+  "catalogue_version": "58425168990f26c1f4c23e53ae0fc165e7a4d4ce870872ff0db8614c6a34229c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2316,
-  "implemented_total": 2322,
+  "implemented_standard_cards": 2320,
+  "implemented_total": 2326,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 40,
-      "complete": 227
+      "gated": 36,
+      "complete": 231
     },
     "eoc": {
       "total": 8,
@@ -10847,8 +10847,8 @@
     {
       "name": "End-Blaze Epiphany",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/end_blaze_epiphany.rs",
       "set": "ecl"
     },
@@ -19127,8 +19127,8 @@
     {
       "name": "Kinscaer Sentry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/kinscaer_sentry.rs",
       "set": "ecl"
     },
@@ -22495,8 +22495,8 @@
     {
       "name": "Mirrormind Crown",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/mirrormind_crown.rs",
       "set": "ecl"
     },
@@ -34599,8 +34599,8 @@
     {
       "name": "Sygg, Wanderwine Wisdom // Sygg, Wanderbrine Shield",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/sygg_wanderwine_wisdom_sygg_wanderbrine_shield.rs",
       "set": "ecl"
     },

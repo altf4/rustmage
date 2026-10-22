@@ -17,13 +17,13 @@ Oracle facts: `data/standard/cards.json`; canonical ownership:
 
 ## Card obligations and evidence
 
-The frozen manifest accounts for every identity. The [per-card obligation ledger](ecl-obligations.json) records every face and printed rules line with canonical ownership. Ten inherited cards have passed source/rules audit;97 inherited cards remain.
+The frozen manifest accounts for every identity. The [per-card obligation ledger](ecl-obligations.json) records every face and printed rules line with canonical ownership. Fifteen inherited cards have passed source/rules audit;92 inherited cards remain.
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **233/273**, comprising **107 inherited** and **126 newly
-implemented/tested physical candidates**; **40 remain gated**. Ten inherited
-cards have passed source/rules audit;97 inherited cards remain. No final published reviews or newly merged cards. All new
+Admission flags: **237/273**, comprising **107 inherited** and **130 newly
+implemented/tested physical candidates**; **36 remain gated**. Fifteen inherited
+cards have passed source/rules audit;92 inherited cards remain. No final published reviews or newly merged cards. All new
 names and per-card obligations appear in the linked JSON ledgers. Three tested
 synthetic token recipes are outside the physical denominator.
 
@@ -115,3 +115,9 @@ The232-card fixed-input release passed all8phases in556.81seconds:2,845 native t
 ## Inherited audit10/107
 
 Gangly Stompling,Goldmeadow Nomad,Merrow Skyswimmer,Flock Impostor,and Rooftop Percher now have complete pinned source audits and actual paid interaction evidence. Scenarios verify both seats,hybrid routes,trample with real blockers,graveyard exile as cost and sorcery timing,exact token colors/types,opponent-turn flash with owner bounce,and partial graveyard target failure. Five inherited scenarios including the basic-land matrix pass0.18seconds; existing complete convoke/hybrid rule scenarios provide additional Merrow evidence.97 inherited cards remain unaudited.
+
+## Combined checkpoint237
+
+Kinscaer Sentry, both Sygg faces, Mirrormind Crown, and End-Blaze Epiphany are integrated. Sygg passes all2,845 native regressions and32 transform scenarios, including independent combat draw grants, color protection, attachment legality, and next-controller-turn expiry. Crown passes89 focused scenarios plus replacement, mobilize, and copy regressions. End-Blaze passes111 black/red scenarios and13 scalar-X regressions. These additions await combined release validation.
+
+Five additional inherited creatures have full source and paid-body evidence: Boggart Prankster, Enraged Flamecaster, Kulrath Mystic, Gnarlbark Elm, and Iron-Shield Elf. Existing complete attack/cast trigger, named counter payment, discard cost, and indestructibility scenarios provide interaction evidence; all six inherited scenarios pass0.22seconds. Audit progress15/107, with92 remaining.

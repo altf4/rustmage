@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 126,
+  "newly_tested_physical_cards": 130,
   "newly_tested_names": [
     "Adept Watershaper",
     "Ashling's Command",
@@ -48,6 +48,7 @@
     "Eirdu, Carrier of Dawn // Isilu, Carrier of Twilight",
     "Emptiness",
     "Encumbered Reejerey",
+    "End-Blaze Epiphany",
     "Evershrike's Gift",
     "Firdoch Core",
     "Flamebraider",
@@ -71,12 +72,14 @@
     "Illusion Spinners",
     "Kinbinding",
     "Kinsbaile Aspirant",
+    "Kinscaer Sentry",
     "Kithkeeper",
     "Lasting Tarfire",
     "Liminal Hold",
     "Loch Mare",
     "Lys Alana Dignitary",
     "Meanders Guide",
+    "Mirrormind Crown",
     "Moonshadow",
     "Mornsong Aria",
     "Mudbutton Cursetosser",
@@ -113,6 +116,7 @@
     "Sting-Slinger",
     "Swat Away",
     "Sygg's Command",
+    "Sygg, Wanderwine Wisdom // Sygg, Wanderbrine Shield",
     "Temporal Cleansing",
     "Tend the Sprigs",
     "Thirst for Identity",
@@ -131,10 +135,10 @@
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 233,
-  "remaining_gated": 40,
+  "current_admission_flags": 237,
+  "remaining_gated": 36,
   "inherited_evidence_audit": {
-    "audited": 10,
+    "audited": 15,
     "total": 107,
     "names": [
       "Plains",
@@ -146,7 +150,12 @@
       "Goldmeadow Nomad",
       "Merrow Skyswimmer",
       "Flock Impostor",
-      "Rooftop Percher"
+      "Rooftop Percher",
+      "Boggart Prankster",
+      "Enraged Flamecaster",
+      "Kulrath Mystic",
+      "Gnarlbark Elm",
+      "Iron-Shield Elf"
     ],
     "scenario": "src/engine_ecl_inherited_tests.rs",
     "source_commit": "7902fbe1",
@@ -166,6 +175,26 @@
       "seconds": 0.18,
       "resource_report": "<cache>/rustmage-build-reports/ca5281f985dc40a393afab98e110f6f4.json",
       "additional_existing_evidence": "src/engine_convoke.rs: all nine native convoke spells,real costs,both controllers,full hybrid options"
+    },
+    "trigger_activation_group": {
+      "names": [
+        "Boggart Prankster",
+        "Enraged Flamecaster",
+        "Kulrath Mystic",
+        "Gnarlbark Elm",
+        "Iron-Shield Elf"
+      ],
+      "source_commit": "2511ccad",
+      "tests_including_previous_groups": 6,
+      "seconds": 0.22,
+      "resource_report": "<cache>/rustmage-build-reports/cda4938028ac4b128005c73b99177f62.json",
+      "additional_existing_evidence": [
+        "src/engine_attack_declaration_tests.rs",
+        "src/engine_qualified_cast_tests.rs",
+        "src/engine_activation_tests.rs",
+        "src/engine_named_counter_tests.rs",
+        "src/engine_activation_discard_tests.rs"
+      ]
     }
   },
   "locally_reviewed": 0,
@@ -204,10 +233,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T19:01:48.516521+00:00",
-    "elapsed_seconds": 13141.29967,
-    "newly_verified_cards": 126,
-    "cards_per_hour": 34.51713387493278,
+    "end_utc": "2026-10-22T19:17:25.485277+00:00",
+    "elapsed_seconds": 14078.268426,
+    "newly_verified_cards": 130,
+    "cards_per_hour": 33.24272459073796,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "196 integrated ECL scenarios passed at bb92026c with generated catalogue1fbc9bcda08f4079d26ed30456add7c4c31131f6ef2563e732a179a74fc3e0a3",
@@ -349,6 +378,27 @@
     "test_seconds": 72.78,
     "report": "<cache>/rustmage-validation-uu4rs2xz/report/result.json"
   },
+  "release_228_retained_evidence": {
+    "status": "passed all8phases",
+    "head": "7f001174976c55a93d6e738041c82192af57999d",
+    "report": "<cache>/rustmage-validation-cy6eid5w/report/result.json",
+    "resource_report": "<cache>/rustmage-build-reports/a95c493b86d14cc4bc1a7efc87f71f1e.json",
+    "seconds": 553.7659332290059,
+    "native_tests_passed": 2826,
+    "native_tests_ignored": 1,
+    "native_test_seconds": 72.62,
+    "foundations_game_suites_passed": 22,
+    "ecl_games_test_passed": true,
+    "shared_libraries": {
+      "<cache>/rustmage-validation-cy6eid5w/release/librustmage.so": "2dababb7a57e4490c8c68e7c663055a59e344619573bc38cb211b9d791a18f1a",
+      "<cache>/rustmage-validation-cy6eid5w/release/deps/librustmage.so": "2dababb7a57e4490c8c68e7c663055a59e344619573bc38cb211b9d791a18f1a",
+      "<cache>/rustmage-validation-cy6eid5w/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+      "<cache>/rustmage-validation-cy6eid5w/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-cy6eid5w/debug/deps/librustmage.so": "2938570278966f81eb1690b2e46396e82a90d78eb2df71c751501742646aa65c"
+    },
+    "cleaned_allocated_bytes": 1100824576,
+    "scope": "228-card checkpoint; subsequent integrations still require combined release verification. Entire-set acceptance pending."
+  },
   "release_195_retained_evidence": {
     "status": "passed all8phases",
     "head": "0ae3512178b7c6fbee2bf4a268fca5cfff346d5b",
@@ -380,25 +430,17 @@
     "native_regression": "2803 passed; only inherited Moonshadow source-index assertion failed on older author base; fixed12633035 already passed combined228 release",
     "source_pins": "all integrated authored Java provenance unittest passed1.937s"
   },
-  "release_228_retained_evidence": {
-    "status": "passed all8phases",
-    "head": "7f001174976c55a93d6e738041c82192af57999d",
-    "report": "<cache>/rustmage-validation-cy6eid5w/report/result.json",
-    "resource_report": "<cache>/rustmage-build-reports/a95c493b86d14cc4bc1a7efc87f71f1e.json",
-    "seconds": 553.7659332290059,
-    "native_tests_passed": 2826,
-    "native_tests_ignored": 1,
-    "native_test_seconds": 72.62,
-    "foundations_game_suites_passed": 22,
-    "ecl_games_test_passed": true,
-    "shared_libraries": {
-      "<cache>/rustmage-validation-cy6eid5w/release/librustmage.so": "2dababb7a57e4490c8c68e7c663055a59e344619573bc38cb211b9d791a18f1a",
-      "<cache>/rustmage-validation-cy6eid5w/release/deps/librustmage.so": "2dababb7a57e4490c8c68e7c663055a59e344619573bc38cb211b9d791a18f1a",
-      "<cache>/rustmage-validation-cy6eid5w/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
-      "<cache>/rustmage-validation-cy6eid5w/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
-      "<cache>/rustmage-validation-cy6eid5w/debug/deps/librustmage.so": "2938570278966f81eb1690b2e46396e82a90d78eb2df71c751501742646aa65c"
-    },
-    "cleaned_allocated_bytes": 1100824576,
-    "scope": "228-card checkpoint; subsequent integrations still require combined release verification. Entire-set acceptance pending."
+  "sygg": {
+    "source_commit": "468375a5",
+    "native_tests": 2845,
+    "native_seconds": 74.18,
+    "focused_transform_tests": 32,
+    "focused_seconds": 0.84,
+    "clippy": "all targets passed with warnings denied",
+    "resource_reports": [
+      "<cache>/rustmage-build-reports/5d654339c0c5466ba65e292e75c3c6c4.json",
+      "<cache>/rustmage-build-reports/7077d6f5feac4e629a5818c72c1a2e95.json",
+      "<cache>/rustmage-build-reports/4c6566ec1be14ee49891d21621946fa9.json"
+    ]
   }
 }

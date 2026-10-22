@@ -48158,8 +48158,17 @@ pub(super) mod card_5350 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/ecl/isilu_carrier_of_twilight.rs");
 }
+pub(super) mod card_5351 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/ecl/sygg_wanderbrine_shield.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5351] = [
+pub(super) static RULES: [&CardRules; 5352] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -53511,6 +53520,7 @@ pub(super) static RULES: [&CardRules; 5351] = [
     &card_5348::RULES,
     &card_5349::RULES,
     &card_5350::RULES,
+    &card_5351::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

@@ -1969,7 +1969,7 @@
       "name": "End-Blaze Epiphany",
       "definition": "src/card_definitions/ecl/end_blaze_epiphany.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "End-Blaze Epiphany",
@@ -1983,7 +1983,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/end_blaze_epiphany.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "e35d7886-8c03-471c-b598-118d7eceddb4",
@@ -3283,7 +3287,7 @@
       "name": "Kinscaer Sentry",
       "definition": "src/card_definitions/ecl/kinscaer_sentry.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Kinscaer Sentry",
@@ -3298,7 +3302,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/kinscaer_sentry.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "3a272fa9-5f28-43a4-95de-10cb511f1b43",
@@ -3746,7 +3754,7 @@
       "name": "Mirrormind Crown",
       "definition": "src/card_definitions/ecl/mirrormind_crown.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Mirrormind Crown",
@@ -3761,7 +3769,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/mirrormind_crown.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "fe7a4361-561a-4bab-921e-d01bab19dad3",
@@ -5766,7 +5778,7 @@
       "name": "Sygg, Wanderwine Wisdom // Sygg, Wanderbrine Shield",
       "definition": "src/card_definitions/ecl/sygg_wanderwine_wisdom_sygg_wanderbrine_shield.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Sygg, Wanderwine Wisdom",
@@ -5795,7 +5807,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/sygg_wanderwine_wisdom_sygg_wanderbrine_shield.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "096a878e-cff0-430a-90b5-031ecb9bfe1b",
