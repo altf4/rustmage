@@ -2,6 +2,7 @@
 use super::ability_timeline_tests::{checked, settle, setup};
 use super::tests::{cast, spawn};
 use super::*;
+use crate::ChoiceColor;
 
 fn mare(g: &mut Game, p: Player) -> CardId {
     let id = spawn(g, p, Card::from_name("Loch Mare").unwrap(), Zone::Hand);
@@ -200,4 +201,243 @@ fn gallant_fowlknight_boosts_resolution_group_and_expires_at_cleanup() {
     assert_eq!(g.stats(bear).power, 3);
     g.finish_cleanup();
     assert_eq!(g.stats(bear).power, 2);
+}
+
+fn spell(g: &mut Game, p: Player, name: &str, targets: &[Target]) -> CardId {
+    let id = spawn(g, p, Card::from_name(name).unwrap(), Zone::Hand);
+    super::ability_timeline_tests::cast(g, id, None, targets);
+    id
+}
+fn changelings(g: &Game, p: Player) -> usize {
+    g.state
+        .objects
+        .iter()
+        .filter(|o| {
+            o.zone == Zone::Battlefield
+                && o.controller == p
+                && o.card
+                    == Card::from_name("@token/shapeshifter_1_1_colorless_changeling").unwrap()
+        })
+        .count()
+}
+
+#[test]
+fn rime_chill_vivid_cost_zero_targets_and_partial_target_failure() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        spawn(&mut g, player, Card::GrizzlyBears, Zone::Battlefield);
+        spawn(
+            &mut g,
+            player,
+            Card::from_name("Gallant Fowlknight").unwrap(),
+            Zone::Battlefield,
+        );
+        // Two colors, not two permanents or colored mana symbols: {6}{U} becomes {4}{U}.
+        g.state.players[player.index()].mana = [0, 5, 0, 0, 0, 0];
+        let hand = g.hand_count(player);
+        spell(&mut g, player, "Rime Chill", &[]);
+        assert_eq!(g.state.players[player.index()].mana, [0; 6]);
+        settle(&mut g);
+        assert_eq!(g.hand_count(player), hand + 1);
+        g.state.players[player.index()].mana = [0, 5, 0, 0, 0, 0];
+        let a = spawn(
+            &mut g,
+            player.other(),
+            Card::GrizzlyBears,
+            Zone::Battlefield,
+        );
+        let b = spawn(
+            &mut g,
+            player.other(),
+            Card::GrizzlyBears,
+            Zone::Battlefield,
+        );
+        spell(
+            &mut g,
+            player,
+            "Rime Chill",
+            &[Target::Card(a), Target::Card(b)],
+        );
+        g.move_object(a, Zone::Hand);
+        settle(&mut g);
+        assert!(g.object_view(b).tapped);
+        assert_eq!(g.object_view(b).counters.stun, 1);
+        assert_eq!(g.hand_count(player), hand + 2);
+    }
+}
+
+#[test]
+fn rime_chill_all_illegal_targets_fizzles_draw() {
+    let mut g = setup(Player::P0);
+    let target = spawn(&mut g, Player::P1, Card::GrizzlyBears, Zone::Battlefield);
+    let before = g.hand_count(Player::P0);
+    spell(&mut g, Player::P0, "Rime Chill", &[Target::Card(target)]);
+    g.move_object(target, Zone::Hand);
+    settle(&mut g);
+    assert_eq!(g.hand_count(Player::P0), before);
+}
+
+#[test]
+fn tributary_vaulter_restricts_targets_and_boost_survives_source_departure() {
+    let mut g = setup(Player::P0);
+    let source = cast_named(&mut g, Player::P0, "Tributary Vaulter");
+    let recipient = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Silvergill Peddler").unwrap(),
+        Zone::Battlefield,
+    );
+    let enemy = spawn(
+        &mut g,
+        Player::P1,
+        Card::from_name("Silvergill Peddler").unwrap(),
+        Zone::Battlefield,
+    );
+    let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    assert!(g.keywords(source).contains(Keywords::FLYING));
+    g.tap_objects(&[source]);
+    g.prepare_triggers();
+    if let Some(action) = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a, Action::PutTrigger { .. }))
+    {
+        checked(&mut g, action);
+    }
+    for bad in [source, enemy, bear] {
+        assert!(!g.legal_actions().contains(&Action::ChooseTarget {
+            target: Target::Card(bad)
+        }));
+    }
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(recipient),
+        },
+    );
+    g.move_object(source, Zone::Graveyard);
+    let base = g.stats(recipient).power;
+    settle(&mut g);
+    assert_eq!(g.stats(recipient).power, base + 2);
+    g.finish_cleanup();
+    assert_eq!(g.stats(recipient).power, base);
+}
+
+#[test]
+fn personify_returns_foreign_owned_creature_and_creates_real_changeling() {
+    let mut g = setup(Player::P0);
+    let target = spawn(&mut g, Player::P1, Card::GrizzlyBears, Zone::Battlefield);
+    g.record_control(g.object_ref(target), Player::P0, None);
+    g.add_counter(target, CounterKind::PlusOne, 2);
+    let old = g.object_ref(target);
+    spell(&mut g, Player::P0, "Personify", &[Target::Card(target)]);
+    settle(&mut g);
+    let view = g.object_view(target);
+    assert_eq!(view.zone, Zone::Battlefield);
+    assert_eq!(view.controller, Player::P1);
+    assert_ne!(view.reference, old);
+    assert!(view.counters.is_empty());
+    assert_eq!(changelings(&g, Player::P0), 1);
+    let token = g
+        .state
+        .objects
+        .iter()
+        .position(|o| {
+            o.zone == Zone::Battlefield
+                && o.card
+                    == Card::from_name("@token/shapeshifter_1_1_colorless_changeling").unwrap()
+        })
+        .unwrap() as CardId;
+    for subtype in ["Merfolk", "Kithkin", "Coward", "Elf"] {
+        assert!(g.object_view(token).has_subtype(subtype));
+    }
+    assert_eq!(
+        g.stats(token),
+        Stats {
+            power: 1,
+            toughness: 1
+        }
+    );
+    assert_eq!(g.object_view(token).colors, 0);
+}
+
+#[test]
+fn personify_tokens_do_not_return_and_invalid_targets_make_no_token() {
+    let mut g = setup(Player::P0);
+    g.create_tokens(
+        Player::P0,
+        Card::from_name("@token/shapeshifter_1_1_colorless_changeling").unwrap(),
+        1,
+        false,
+    );
+    let token = g
+        .state
+        .objects
+        .iter()
+        .position(|o| {
+            o.zone == Zone::Battlefield
+                && o.card
+                    == Card::from_name("@token/shapeshifter_1_1_colorless_changeling").unwrap()
+        })
+        .unwrap() as CardId;
+    let old = g.object_ref(token);
+    spell(&mut g, Player::P0, "Personify", &[Target::Card(token)]);
+    settle(&mut g);
+    assert_eq!(changelings(&g, Player::P0), 1);
+    assert_ne!(g.object_ref(token), old);
+    let target = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    spell(&mut g, Player::P0, "Personify", &[Target::Card(target)]);
+    g.move_object(target, Zone::Graveyard);
+    settle(&mut g);
+    assert_eq!(changelings(&g, Player::P0), 1);
+}
+
+#[test]
+fn crib_swap_tracks_resolution_controller_and_invalid_incarnation() {
+    let mut g = setup(Player::P0);
+    let target = spawn(&mut g, Player::P1, Card::GrizzlyBears, Zone::Battlefield);
+    let crib = spell(&mut g, Player::P0, "Crib Swap", &[Target::Card(target)]);
+    assert!(Card::from_name("Crib Swap").unwrap().has_subtype("Merfolk"));
+    g.record_control(g.object_ref(target), Player::P0, None);
+    settle(&mut g);
+    assert_eq!(g.object_view(target).zone, Zone::Exile);
+    assert_eq!(changelings(&g, Player::P0), 1);
+    assert_eq!(changelings(&g, Player::P1), 0);
+    assert_eq!(g.object_view(crib).zone, Zone::Graveyard);
+    let target = spawn(&mut g, Player::P1, Card::GrizzlyBears, Zone::Battlefield);
+    spell(&mut g, Player::P0, "Crib Swap", &[Target::Card(target)]);
+    g.move_object(target, Zone::Hand);
+    g.move_object(target, Zone::Battlefield);
+    settle(&mut g);
+    assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+    assert_eq!(changelings(&g, Player::P0), 1);
+    assert_eq!(changelings(&g, Player::P1), 0);
+}
+
+#[test]
+fn personify_finishes_returned_entry_choice_before_creating_token() {
+    let mut g = setup(Player::P0);
+    let mare = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Diamond Mare").unwrap(),
+        Zone::Battlefield,
+    );
+    spell(&mut g, Player::P0, "Personify", &[Target::Card(mare)]);
+    checked(&mut g, Action::Pass);
+    checked(&mut g, Action::Pass);
+    assert!(matches!(g.state.pending, Pending::EntryValue { .. }));
+    assert_eq!(changelings(&g, Player::P0), 0);
+    checked(
+        &mut g,
+        Action::ChooseEntryValue {
+            value: EntryChoiceValue::Color(ChoiceColor::Blue),
+        },
+    );
+    settle(&mut g);
+    assert_eq!(
+        g.object_view(mare).entry_choice,
+        Some(EntryChoiceValue::Color(ChoiceColor::Blue))
+    );
+    assert_eq!(changelings(&g, Player::P0), 1);
 }

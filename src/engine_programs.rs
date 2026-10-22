@@ -1929,6 +1929,23 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::BlinkImmediate => self.blink_immediate(&item),
+                Instruction::ExileAndCreateForController { token, amount } => {
+                    if let Some(id) = item
+                        .targets
+                        .iter()
+                        .copied()
+                        .filter(|bound| self.same_target_object(*bound))
+                        .find_map(|bound| match bound.target {
+                            Target::Card(id) if self.on_battlefield(id) => Some(id),
+                            _ => None,
+                        })
+                    {
+                        let controller = self.state.objects[id as usize].controller;
+                        self.move_object(id, Zone::Exile);
+                        self.create_tokens(controller, token, u128::from(amount), false);
+                    }
+                }
                 Instruction::BlinkUntilEndStep { under_owner } => {
                     self.blink_until_end_step(&item, under_owner)
                 }

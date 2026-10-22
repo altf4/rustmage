@@ -77,6 +77,40 @@ impl Game {
                 item: item.clone(),
             });
     }
+    pub(super) fn blink_immediate(&mut self, item: &SpellView) {
+        let Some(id) = item
+            .targets
+            .iter()
+            .copied()
+            .filter(|bound| self.same_target_object(*bound))
+            .find_map(|bound| match bound.target {
+                Target::Card(id) if self.on_battlefield(id) => Some(id),
+                _ => None,
+            })
+        else {
+            return;
+        };
+        let owner = self.state.objects[id as usize].owner;
+        let movement = self.move_object(id, Zone::Exile);
+        // "That card" follows the first public destination, even if a replacement
+        // redirects exile. Tokens cannot return (CR111.8). Later incarnations do not bind.
+        if movement.moved
+            && matches!(
+                movement.destination,
+                Zone::Exile | Zone::Graveyard | Zone::Command
+            )
+        {
+            self.stage_linked_return(
+                &ReturnLinkView {
+                    object: movement.after,
+                    zone: movement.destination,
+                    controller: owner,
+                    counter: None,
+                },
+                None,
+            );
+        }
+    }
     pub(super) fn blink_until_end_step(&mut self, item: &SpellView, under_owner: bool) {
         for bound in &item.targets {
             if !self.same_target_object(*bound) {
