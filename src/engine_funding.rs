@@ -85,6 +85,7 @@ struct ResourceKey {
     definition: usize,
     token: bool,
     kinds: u16,
+    colors: u8,
     protected: bool,
     reserved: bool,
     present: bool,
@@ -549,6 +550,10 @@ impl<'g> FundingState<'g> {
     }
     fn guard_available(&self, guard: ActivationGuard, actor: Player) -> bool {
         match guard {
+            ActivationGuard::ControlColorsAtLeast(minimum) => {
+                ability_world::CharacteristicWorld::controlled_colors(self, actor).count_ones()
+                    >= u32::from(minimum)
+            }
             ActivationGuard::Always => true,
             ActivationGuard::LifeAboveStarting(extra) => {
                 (if actor == self.actor {
@@ -871,6 +876,7 @@ impl<'g> FundingState<'g> {
                 definition: r.object.card.index(),
                 token: r.object.is_token(),
                 kinds: self.kinds(r),
+                colors: ability_world::CharacteristicWorld::colors(self, r.id),
                 protected: goal
                     .source
                     .as_ref()
@@ -921,7 +927,7 @@ impl<'g> FundingState<'g> {
         resources.sort_by_key(|r| {
             (
                 (r.definition, r.token),
-                r.kinds,
+                (r.kinds, r.colors),
                 (r.protected, r.reserved),
                 r.present,
                 r.tapped,
@@ -3667,3 +3673,7 @@ mod ecl_tap_group_source_tests {
         assert!(!g.keywords(source).contains(Keywords::INDESTRUCTIBLE));
     }
 }
+
+#[cfg(test)]
+#[path = "engine_ecl_color_funding_tests.rs"]
+mod ecl_color_funding_tests;

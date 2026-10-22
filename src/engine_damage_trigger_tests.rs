@@ -563,6 +563,7 @@ fn departed_hero_damage_uses_frozen_battlefield_facts_for_observers() {
     g.state.resolving = Some(Resolution {
         continuation: None,
         chosen_creature_type: None,
+        chosen_color: None,
         explore: None,
         evidence: None,
         connive: None,

@@ -1,4 +1,5 @@
 //! Zone-qualified activations: legality, captured source context, and committed costs.
+use super::ability_world::CharacteristicWorld;
 use super::*;
 
 impl ActivatedAbility {
@@ -55,6 +56,12 @@ impl Game {
 
     pub(super) fn activation_guard_available(&self, guard: ActivationGuard, actor: Player) -> bool {
         match guard {
+            ActivationGuard::ControlColorsAtLeast(minimum) => {
+                self.characteristic_query()
+                    .controlled_colors(actor)
+                    .count_ones()
+                    >= u32::from(minimum)
+            }
             ActivationGuard::Always => true,
             ActivationGuard::LifeAboveStarting(extra) => {
                 self.state.players[actor.index()].life >= STARTING_LIFE + i128::from(extra)

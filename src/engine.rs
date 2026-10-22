@@ -110,6 +110,9 @@ pub use warp::{DelayedWarpExileView, WarpedCard};
 #[path = "engine_characteristic_layers.rs"]
 mod characteristic_layers;
 pub use characteristic_layers::AnimationView;
+#[path = "engine_color_effects.rs"]
+mod color_effects;
+pub use color_effects::ColorEffectView;
 
 #[path = "engine_subtypes.rs"]
 mod subtypes;
@@ -459,6 +462,7 @@ define_actions! {
     },
     ChooseX { value: u32 },
     ChooseCreatureType { creature_type: crate::cards::CreatureType },
+    ChooseColor { color: crate::cards::ChoiceColor },
     ChooseKicker {
         pay: bool,
     },
@@ -1381,6 +1385,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    ResolutionColor {
+        player: Player,
+    },
     ResolutionCreatureType {
         player: Player,
     },
@@ -1967,6 +1974,7 @@ pub struct Observation {
     pub must_be_blocked: Vec<ObjectRef>,
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
     pub animations: Vec<AnimationView>,
+    pub color_effects: Vec<ColorEffectView>,
     pub temporary_controls: Vec<TemporaryControlView>,
     pub casting_prohibited: bool,
     pub death_exile_replacements: Vec<ExileDeathReplacementView>,
@@ -2031,6 +2039,8 @@ pub struct Observation {
     pub resolving: Option<SpellView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub resolution_creature_type: Option<crate::cards::CreatureType>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub resolution_color: Option<crate::cards::ChoiceColor>,
     pub retarget: Option<RetargetView>,
     pub target_amount: Option<TargetAmountChoiceView>,
     pub delayed_spell_copies: Vec<SpellView>,
@@ -2322,7 +2332,8 @@ impl Game {
             | Pending::Mulligan(p)
             | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::ResolutionCreatureType { player }
+            Pending::ResolutionColor { player }
+            | Pending::ResolutionCreatureType { player }
             | Pending::ResolutionCasts { player }
             | Pending::ZoneReplacement { player }
             | Pending::ManaLotSpend { player }
@@ -3584,6 +3595,19 @@ impl Game {
                     }
                 }
             }
+            Pending::ResolutionColor { .. } => {
+                for color in [
+                    crate::cards::ChoiceColor::White,
+                    crate::cards::ChoiceColor::Blue,
+                    crate::cards::ChoiceColor::Black,
+                    crate::cards::ChoiceColor::Red,
+                    crate::cards::ChoiceColor::Green,
+                ] {
+                    if emit(Action::ChooseColor { color }) {
+                        return true;
+                    }
+                }
+            }
             Pending::ResolutionCreatureType { .. } => {
                 for name in crate::CREATURE_TYPES {
                     let kind = crate::cards::CreatureType::from_name(name).unwrap();
@@ -4315,6 +4339,7 @@ impl Game {
             Action::FinishSaddle => self.finish_saddle_payment(),
             Action::ChooseCrewer { object } => self.choose_crewer(object),
             Action::FinishCrew => self.finish_crew_payment(),
+            Action::ChooseColor { color } => self.choose_resolution_color(color),
             Action::ChooseCreatureType {
                 creature_type: kind,
             } => self.choose_resolution_creature_type(kind),
@@ -5094,6 +5119,7 @@ impl Game {
             self.forget_role(before.reference);
             self.forget_base_stats(before.reference);
             self.forget_animations(before.reference);
+            self.forget_color_effects(before.reference);
             self.forget_creature_types(before.reference);
             self.forget_live_static_source(before.reference);
             self.forget_ability_source(before.reference);
@@ -5453,6 +5479,7 @@ impl Game {
         self.expire_base_stats();
         self.expire_creature_types();
         let expired_animations = self.expire_animations();
+        let expired_colors = self.expire_color_effects();
         self.expire_graveyard_cast_permissions();
         self.expire_keyword_effects();
         self.state.death_exile_replacements = None;
@@ -5484,7 +5511,7 @@ impl Game {
                 )
                 .into_iter()
                 .any(|lost| lost)
-            || (expired_vehicles || expired_animations) && self.sba_required()
+            || (expired_vehicles || expired_animations || expired_colors) && self.sba_required()
             || self.state.objects.iter().enumerate().any(|(id, obj)| {
                 obj.zone == Zone::Battlefield
                     && self.is_creature(id as CardId)
@@ -5870,6 +5897,10 @@ impl Game {
                 .death_exile_replacements
                 .as_ref()
                 .map_or_else(Vec::new, |rules| rules.as_ref().clone()),
+            color_effects: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.color_effects.clone()),
             animations: s
                 .roles
                 .as_ref()
@@ -5937,6 +5968,7 @@ impl Game {
                 Pending::Crew { .. } => "crew",
                 Pending::Explore { .. } => "explore",
                 Pending::ResolutionX { .. } => "resolution_x",
+                Pending::ResolutionColor { .. } => "resolution_color",
                 Pending::ResolutionCreatureType { .. } => "resolution_creature_type",
                 Pending::X { .. } => "x",
                 Pending::EvidenceIntent { .. } => "evidence_intent",
@@ -6045,6 +6077,7 @@ impl Game {
             exile_permissions: s.exile_permissions.clone(),
             resolution_free_casts: s.resolution_free_casts.as_deref().cloned(),
             resolution_creature_type: self.resolution_chosen_creature_type(),
+            resolution_color: self.resolution_chosen_color(),
             graveyard_type_uses: s
                 .graveyard_type_uses
                 .as_ref()

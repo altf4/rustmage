@@ -654,6 +654,7 @@ fn flat_if_else_offsets_and_scry_pc_keep_common_tail_outside_both_branches() {
         g.state.resolving = Some(Resolution {
             continuation: None,
             chosen_creature_type: None,
+            chosen_color: None,
             explore: None,
             evidence: None,
             item,

@@ -65,6 +65,7 @@ fn program(g: &mut Game, code: &'static [Instruction], targets: Vec<BoundTarget>
     g.state.resolving = Some(Resolution {
         continuation: None,
         chosen_creature_type: None,
+        chosen_color: None,
         explore: None,
         evidence: None,
         connive: None,
@@ -500,6 +501,7 @@ fn self_payment_uses_exact_incarnation_and_damage_uses_departure_keywords() {
         g.state.resolving = Some(Resolution {
             continuation: None,
             chosen_creature_type: None,
+            chosen_color: None,
             explore: None,
             evidence: None,
             connive: None,

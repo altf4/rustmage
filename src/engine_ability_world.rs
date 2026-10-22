@@ -26,6 +26,15 @@ pub(super) trait CharacteristicWorld {
     fn name(&self, id: CardId) -> &'static str {
         characteristic_layers::name(self, id)
     }
+    fn controlled_colors(&self, controller: Player) -> u8 {
+        (0..self.game().state.objects.len())
+            .map(|id| id as CardId)
+            .filter(|&id| {
+                self.object(id).zone == Zone::Battlefield
+                    && self.object(id).controller == controller
+            })
+            .fold(0u8, |colors, id| colors | self.colors(id))
+    }
     fn colors(&self, id: CardId) -> u8 {
         characteristic_layers::colors(self, id)
     }

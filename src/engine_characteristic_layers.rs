@@ -175,12 +175,9 @@ fn changed_name<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> &'sta
 pub(super) fn colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 {
     let object = world.object(id);
     if object.zone != Zone::Battlefield
-        || world
-            .game()
-            .state
-            .roles
-            .as_ref()
-            .is_none_or(|r| r.characteristic_sources.is_empty())
+        || world.game().state.roles.as_ref().is_none_or(|roles| {
+            roles.characteristic_sources.is_empty() && roles.color_effects.is_empty()
+        })
     {
         return if object.zone == Zone::Stack {
             world.game().effective_spell_card(id).colors()
@@ -191,13 +188,29 @@ pub(super) fn colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> 
     changed_colors(world, id)
 }
 fn changed_colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 {
-    aura_effects(world, id)
+    let attached = aura_effects(world, id)
         .into_iter()
-        .max_by_key(|e| e.0)
-        .map_or_else(
-            || world.object(id).card.colors(),
-            |(_, s)| s.colors.iter().fold(0, |mask, c| mask | (1 << c.index())),
-        )
+        .map(|(timestamp, spec)| {
+            (
+                timestamp,
+                spec.colors
+                    .iter()
+                    .fold(0u8, |mask, color| mask | (1 << color.index())),
+            )
+        });
+    let fixed = world
+        .game()
+        .state
+        .roles
+        .as_ref()
+        .into_iter()
+        .flat_map(|roles| &roles.color_effects)
+        .filter(|row| row.object == world.reference(id))
+        .map(|row| (row.timestamp, row.colors));
+    attached
+        .chain(fixed)
+        .max_by_key(|row| row.0)
+        .map_or_else(|| world.object(id).card.colors(), |row| row.1)
 }
 #[inline]
 pub(super) fn base_changes<W: CharacteristicWorld + ?Sized>(

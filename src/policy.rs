@@ -307,6 +307,18 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     })
                     .sum()
             }
+            Action::ChooseColor { color } => {
+                let existing = observation
+                    .objects
+                    .iter()
+                    .filter(|object| object.zone == Zone::Battlefield && object.controller == actor)
+                    .fold(0u8, |mask, object| mask | object.colors);
+                if existing & (1 << color.index()) == 0 {
+                    10
+                } else {
+                    0
+                }
+            }
             Action::ChooseCreatureType {
                 creature_type: kind,
             } => observation

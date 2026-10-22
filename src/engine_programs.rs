@@ -6,6 +6,7 @@ use crate::cards::{CastFilter, CastTarget, StaticAbilityFragment};
 pub(super) struct Resolution {
     pub continuation: Option<Box<ProgramContinuation>>,
     pub chosen_creature_type: Option<crate::cards::CreatureType>,
+    pub chosen_color: Option<crate::cards::ChoiceColor>,
     pub connive: Option<Box<super::connive::ConniveSequence>>,
     pub explore: Option<Box<ExploreChoiceView>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
@@ -1421,6 +1422,7 @@ impl Game {
         self.state.resolving = Some(Resolution {
             continuation: None,
             chosen_creature_type: None,
+            chosen_color: None,
             explore: None,
             evidence: None,
             connive: None,
@@ -1619,6 +1621,30 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::ChooseColor => {
+                    self.state.resolving.as_mut().unwrap().chosen_color = None;
+                    self.state.pending = Pending::ResolutionColor {
+                        player: item.controller,
+                    };
+                    return;
+                }
+                Instruction::SetColors {
+                    subject,
+                    colors,
+                    duration,
+                } => {
+                    let mask = match colors {
+                        crate::cards::ColorValue::Fixed(mask) => mask,
+                        crate::cards::ColorValue::Chosen => {
+                            1 << self
+                                .resolution_chosen_color()
+                                .expect("preceding color choice")
+                                .index()
+                        }
+                    };
+                    let recipients = self.keyword_subjects(&item, subject);
+                    self.set_color_effects(&recipients, mask, duration);
+                }
                 Instruction::ChooseCreatureType => {
                     self.state.resolving.as_mut().unwrap().chosen_creature_type = None;
                     self.state.pending = Pending::ResolutionCreatureType {

@@ -351,6 +351,7 @@ fn gain_only_suspension_cannot_commit_unrepresentable_continuous_stats() {
                 g.state.resolving = Some(Resolution {
                     continuation: None,
                     chosen_creature_type: None,
+                    chosen_color: None,
                     explore: None,
                     evidence: None,
                     item,

@@ -2346,3 +2346,174 @@ fn ecl_green_prismabasher_source_exit_can_reduce_vivid_boost_to_zero_without_inv
         assert_eq!(g.object_view(colorless).zone, Zone::Battlefield);
     }
 }
+
+#[test]
+fn ecl_green_puca_draw_precedes_public_color_choice_and_five_color_activation_locks_guard() {
+    assert!(serde_json::from_str::<crate::cards::ChoiceColor>("\"Colorless\"").is_err());
+    for p in [Player::P0, Player::P1] {
+        for color in [
+            crate::cards::ChoiceColor::White,
+            crate::cards::ChoiceColor::Blue,
+            crate::cards::ChoiceColor::Black,
+            crate::cards::ChoiceColor::Red,
+            crate::cards::ChoiceColor::Green,
+        ] {
+            let mut g = setup(p);
+            let source = named(&mut g, p, "Puca's Eye", Zone::Hand);
+            cast(&mut g, source, None, &[]);
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 0);
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
+            assert_eq!(
+                g.legal_actions()
+                    .iter()
+                    .filter(|a| matches!(a, Action::ChooseColor { .. }))
+                    .count(),
+                5
+            );
+            for viewer in [p, p.other()] {
+                assert_eq!(g.observe(viewer).decision, "resolution_color");
+            }
+            checked(&mut g, Action::ChooseColor { color });
+            assert_eq!(g.object_view(source).colors, 1 << color.index());
+            reject(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            let mut permanents = Vec::new();
+            for name in [
+                "Savannah Lions",
+                "Aegis Turtle",
+                "Highborn Vampire",
+                "Swab Goblin",
+                "Bear Cub",
+            ] {
+                permanents.push(named(&mut g, p, name, Zone::Battlefield));
+            }
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            let before = g.state.players[p.index()].mana.iter().sum::<u32>();
+            pay(&mut g);
+            assert_eq!(
+                g.state.players[p.index()].mana.iter().sum::<u32>(),
+                before - 3
+            );
+            assert!(g.object_view(source).tapped);
+            // Losing a different color after activation does not undo its printed restriction.
+            let removed = permanents[(color.index() + 1) % 5];
+            g.move_object(removed, Zone::Graveyard);
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 2);
+            assert_eq!(g.object_view(source).colors, 1 << color.index());
+            super::ability_timeline_tests::next_turn(&mut g);
+            assert_eq!(g.object_view(source).colors, 1 << color.index());
+        }
+    }
+}
+#[test]
+fn ecl_green_puca_source_departure_and_reentry_do_not_rebind_color_choice() {
+    for p in [Player::P0, Player::P1] {
+        for reenter in [false, true] {
+            let mut g = setup(p);
+            let source = named(&mut g, p, "Puca's Eye", Zone::Hand);
+            cast(&mut g, source, None, &[]);
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            g.move_object(source, Zone::Graveyard);
+            if reenter {
+                let movement = g.entry_move(source, Zone::Battlefield, false);
+                g.stage_entries(vec![movement], None);
+                g.advance_entries();
+                g.prepare_triggers();
+                checked(&mut g, Action::Pass);
+                checked(&mut g, Action::Pass);
+                checked(
+                    &mut g,
+                    Action::ChooseColor {
+                        color: crate::cards::ChoiceColor::Red,
+                    },
+                );
+            }
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            checked(
+                &mut g,
+                Action::ChooseColor {
+                    color: crate::cards::ChoiceColor::Blue,
+                },
+            );
+            assert_eq!(
+                g.state.players[p.index()].cards_drawn_this_turn,
+                if reenter { 2 } else { 1 }
+            );
+            assert_eq!(g.object_view(source).colors, if reenter { 8 } else { 0 });
+        }
+    }
+}
+#[test]
+fn ecl_green_puca_resolved_color_survives_ability_removal_and_control_change() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Puca's Eye", Zone::Hand);
+        cast(&mut g, source, None, &[]);
+        for _ in 0..4 {
+            checked(&mut g, Action::Pass);
+        }
+        checked(
+            &mut g,
+            Action::ChooseColor {
+                color: crate::cards::ChoiceColor::Blue,
+            },
+        );
+        for name in [
+            "Savannah Lions",
+            "Highborn Vampire",
+            "Swab Goblin",
+            "Bear Cub",
+        ] {
+            named(&mut g, p, name, Zone::Battlefield);
+        }
+        let cold = named(&mut g, p, "Stop Cold", Zone::Hand);
+        cast(&mut g, cold, None, &[Target::Card(source)]);
+        settle(&mut g);
+        assert_eq!(g.object_view(source).colors, 2);
+        reject(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        let offering = named(&mut g, p, "Harmless Offering", Zone::Hand);
+        cast(
+            &mut g,
+            offering,
+            None,
+            &[Target::Player(p.other()), Target::Card(source)],
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(source).controller, p.other());
+        assert_eq!(g.object_view(source).colors, 2);
+        g.move_object(source, Zone::Exile);
+        assert!(
+            !g.observe(p)
+                .color_effects
+                .iter()
+                .any(|row| row.object.card == source)
+        );
+    }
+}

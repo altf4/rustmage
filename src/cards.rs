@@ -712,6 +712,12 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    ChooseColor,
+    SetColors {
+        subject: Subject,
+        colors: ColorValue,
+        duration: AnimationDuration,
+    },
     ChooseCreatureType,
     ReturnChosenCreatureTypeFromGraveyard,
     PartitionLibraryPiles(u16),
@@ -1368,6 +1374,16 @@ pub(crate) struct CountFilter {
     pub other: bool,
     pub cards_only: bool,
 }
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ColorValue {
+    #[allow(
+        dead_code,
+        reason = "Shared fixed-mask color primitive is rules-tested before additional consumers integrate"
+    )]
+    Fixed(u8),
+    Chosen,
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum AmountValue {
     ManaSpent,
@@ -2496,6 +2512,7 @@ pub(crate) enum ActivationOrigin {
 /// Starting restrictions, not costs that must still hold during payment.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ActivationGuard {
+    ControlColorsAtLeast(u8),
     Always,
     OwnTurn,
     ControlSubtypeAny(&'static [&'static str]),
@@ -2505,7 +2522,8 @@ pub(crate) enum ActivationGuard {
 impl ActivationGuard {
     pub(crate) fn subtypes(self) -> &'static [&'static str] {
         match self {
-            Self::Always
+            Self::ControlColorsAtLeast(_)
+            | Self::Always
             | Self::OwnTurn
             | Self::ControlLandsAtLeast(_)
             | Self::LifeAboveStarting(_) => &[],
