@@ -2274,7 +2274,7 @@
       "name": "Foraging Wickermaw",
       "definition": "src/card_definitions/ecl/foraging_wickermaw.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Foraging Wickermaw",
@@ -2289,7 +2289,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/foraging_wickermaw.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
@@ -2904,7 +2908,7 @@
       "name": "Harmonized Crescendo",
       "definition": "src/card_definitions/ecl/harmonized_crescendo.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Harmonized Crescendo",
@@ -2919,7 +2923,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/harmonized_crescendo.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "cc9523da-f48e-49ab-9989-a4031dafb426",
@@ -3316,7 +3324,7 @@
       "name": "Lasting Tarfire",
       "definition": "src/card_definitions/ecl/lasting_tarfire.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Lasting Tarfire",
@@ -3330,7 +3338,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/lasting_tarfire.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "a107fb84-6874-4964-a729-4425dad98330",
@@ -5835,7 +5847,7 @@
       "name": "Thoughtweft Imbuer",
       "definition": "src/card_definitions/ecl/thoughtweft_imbuer.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Thoughtweft Imbuer",
@@ -5849,7 +5861,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/thoughtweft_imbuer.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "50dd9e17-6dae-4ff6-8a38-50088c71283f",
