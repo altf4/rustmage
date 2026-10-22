@@ -1143,12 +1143,21 @@ impl<'g> FundingState<'g> {
     /// restrictions can only lower the amount attainable. Convoke is similarly
     /// overcounted alongside any mana the same creature might produce.
     fn total_mana_upper(&self) -> u128 {
-        let mut total = self.mana.into_iter().fold(0u128, u128::saturating_add);
+        self.mana_upper(false)
+    }
+    fn mana_upper(&self, spendable: bool) -> u128 {
+        let pool = if spendable {
+            mana_lots::available(self.mana, &self.lots, self.purpose)
+        } else {
+            self.mana
+        };
+        let mut total = pool.into_iter().fold(0u128, u128::saturating_add);
         for resource in &self.resources {
             let object = &resource.object;
             if object.zone != Zone::Battlefield || object.controller != self.actor {
                 continue;
             }
+            let mut tap_max = 0u128;
             if !object.tapped {
                 total = total.saturating_add(u128::from(
                     ability_world::CharacteristicWorld::basic_land_tap_mana_bonus(
@@ -1163,7 +1172,10 @@ impl<'g> FundingState<'g> {
                         .map(u128::from)
                         .sum::<u128>(),
                 );
-                total = total.saturating_add(u128::from(object.card.mana_color().is_some()));
+                tap_max = u128::from(object.card.mana_color().is_some());
+                if !spendable {
+                    total = total.saturating_add(tap_max);
+                }
                 if self.convoke && self.kinds(resource) & 1 != 0 {
                     total = total.saturating_add(1);
                 }
@@ -1190,7 +1202,11 @@ impl<'g> FundingState<'g> {
                                             maximum.max(mana.into_iter().map(u128::from).sum());
                                         false
                                     });
-                                    total = total.saturating_add(maximum);
+                                    if spendable {
+                                        tap_max = tap_max.max(maximum);
+                                    } else {
+                                        total = total.saturating_add(maximum);
+                                    }
                                 }
                             }
                         }
@@ -1200,7 +1216,15 @@ impl<'g> FundingState<'g> {
             for ability in object.card.activations() {
                 // Tapped objects cannot pay tap costs in this closed search.
                 if (!object.tapped || !ability.cost.tap) && ability.mana_production().is_some() {
-                    total = total.saturating_add(activation_gain_upper(
+                    if spendable
+                        && let ManaProduction::Tagged { quality, .. } =
+                            ability.mana_production().unwrap()
+                        && !mana_lots::Quality::capture(self, resource.id, *quality)
+                            .eligible(self.purpose)
+                    {
+                        continue;
+                    }
+                    let gain = activation_gain_upper(
                         ability,
                         match ability.mana_production().unwrap().base() {
                             ManaProduction::ColorsAmongControlledPermanents => {
@@ -1218,15 +1242,55 @@ impl<'g> FundingState<'g> {
                                     },
                                 }
                             }
+                            ManaProduction::CountSubtype { color, .. } if spendable => {
+                                let mut mana = [0; 6];
+                                mana[usize::from(color)] =
+                                    u32::try_from(self.game.state.objects.len())
+                                        .unwrap_or(u32::MAX);
+                                ManaProduction::Fixed(mana)
+                            }
                             production => production.in_world(self, resource.id),
                         },
                         ability_world::CharacteristicWorld::counter_amounts(self, resource.id),
                         self.life,
-                    ));
+                    );
+                    if spendable && ability.cost.tap {
+                        tap_max = tap_max.max(gain);
+                    } else {
+                        total = total.saturating_add(gain);
+                    }
                 }
+            }
+            if spendable {
+                total = total.saturating_add(tap_max);
             }
         }
         total
+    }
+    /// Restricted mana cannot become eligible without a mana-consuming action.
+    /// Only tighten the quantity bound in a closed world with no such converter.
+    /// Ignore guards/removal/readiness as in the broad bound, and maximize rather
+    /// than sum mutually exclusive tap abilities of each exact source. Bonuses
+    /// remain independent overestimates, including an eligible bonus paired with
+    /// an ineligible main production. Dynamic production uses the same broad
+    /// maxima as total_mana_upper; no actual plans or mana lots are discarded.
+    fn spendable_mana_upper(&self) -> Option<u128> {
+        if !self.game.state.exile_links.is_empty()
+            || self.game.state.controls.is_some()
+            || self.game.state.temporary_controls.is_some()
+            || self.resources.iter().any(|resource| {
+                resource.object.zone == Zone::Battlefield
+                    && resource.object.card.activations().iter().any(|ability| {
+                        ability.mana_production().is_some()
+                            && ability.cost.mana_options().any(|cost| {
+                                cost.generic != 0 || cost.colored.into_iter().any(|n| n != 0)
+                            })
+                    })
+            })
+        {
+            return None;
+        }
+        Some(self.mana_upper(true))
     }
     // A removal provider may depart during funding and expose hidden printed
     // abilities. Count all possible production, ignoring guards and sickness;
@@ -1357,7 +1421,11 @@ impl<'g> FundingState<'g> {
     fn optimistic(&self, goal: &FundingGoal) -> bool {
         let required =
             u128::from(goal.generic) + goal.required.into_iter().map(u128::from).sum::<u128>();
-        if self.total_mana_upper() < required {
+        if self.total_mana_upper() < required
+            || self
+                .spendable_mana_upper()
+                .is_some_and(|upper| upper < required)
+        {
             return false;
         }
         // Substitution may be lost or restored by virtual sacrifices. Keep the
@@ -4283,3 +4351,7 @@ mod ecl_convoke_grant_tests {
 #[cfg(test)]
 #[path = "engine_ecl_twinflame_funding_tests.rs"]
 mod ecl_twinflame_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_ecl_funding_performance_tests.rs"]
+mod ecl_funding_performance_tests;
