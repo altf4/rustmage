@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 158,
+  "newly_tested_physical_cards": 159,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -71,6 +71,7 @@
     "Glen Elendra's Answer",
     "Gloom Ripper",
     "Goatnap",
+    "Goliath Daydreamer",
     "Gravelgill Scoundrel",
     "Gristle Glutton",
     "Grub's Command",
@@ -163,8 +164,8 @@
     "Winnowing",
     "Wistfulness"
   ],
-  "current_admission_flags": 265,
-  "remaining_gated": 8,
+  "current_admission_flags": 266,
+  "remaining_gated": 7,
   "inherited_evidence_audit": {
     "audited": 43,
     "total": 107,
@@ -368,10 +369,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T21:20:49.703280+00:00",
-    "elapsed_seconds": 21482.486429,
-    "newly_verified_cards": 158,
-    "cards_per_hour": 26.47738202371937,
+    "end_utc": "2026-10-22T21:47:57.918424+00:00",
+    "elapsed_seconds": 23110.701573,
+    "newly_verified_cards": 159,
+    "cards_per_hour": 24.767746586660493,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "Combined260-card ECL scenarios; Kirol separately focused-tested after this combined run.",
@@ -1267,5 +1268,21 @@
       "<cache>/rustmage-validation-_esnngbj/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
       "<cache>/rustmage-validation-_esnngbj/debug/deps/librustmage.so": "df39400e5f1b73990277a02a778c46b5114990f8a22b5aea2139126bef59addd"
     }
+  },
+  "goliath_daydreamer": {
+    "source_commit": "a3246a16",
+    "tests": 8,
+    "seconds": 0.46,
+    "resource_report": "<cache>/rustmage-build-reports/fd99abc6b14441ce8cce2349bd33f8f7.json",
+    "zone_tests": 54,
+    "zone_seconds": 2.97,
+    "zone_report": "<cache>/rustmage-build-reports/0672bfcd30ad49bbb9f8e3d11c6605ef.json",
+    "cast_origin_tests": 17,
+    "cast_origin_seconds": 0.4,
+    "cast_origin_report": "<cache>/rustmage-build-reports/843ea4840d98420dae38189ca7aa01aa.json",
+    "named_counter_tests": 13,
+    "counter_seconds": 0.22,
+    "counter_report": "<cache>/rustmage-build-reports/c343944d0d794d7796f4f7c55411a936.json",
+    "clippy": "<cache>/rustmage-build-reports/0741c83be1bb41999488214d3f908216.json"
   }
 }
