@@ -171,6 +171,7 @@ pub(super) struct Source {
     pub kinds: u16,
     pub subtypes: GrantedSubtypes,
     pub foreign_stash: bool,
+    pub exile_any_mana: bool,
     pub mana_value: u64,
 }
 impl Source {
@@ -183,6 +184,7 @@ impl Source {
             kinds: card.kind_mask(),
             subtypes: GrantedSubtypes::default(),
             foreign_stash: false,
+            exile_any_mana: false,
             mana_value: card.fixed_mana_value(),
         }
     }
@@ -194,6 +196,7 @@ impl From<DamageFacts> for Source {
             kinds: facts.kinds,
             subtypes: facts.granted_subtypes,
             foreign_stash: false,
+            exile_any_mana: false,
             mana_value: facts.card.fixed_mana_value(),
         }
     }
@@ -616,7 +619,8 @@ impl Game {
     pub(super) fn purpose_for_item(&self, item: &SpellView) -> Purpose {
         if item.kind == StackKind::Spell {
             let mut source = Source::printed(item.source_card);
-            source.foreign_stash = item.cast.is_some_and(|c| c.stash_origin);
+            source.foreign_stash = item.cast.is_some_and(|c| c.stash_origin());
+            source.exile_any_mana = item.cast.is_some_and(|c| c.exile_any_mana());
             source.mana_value = item.mana_value();
             Purpose::Spell(source)
         } else {
@@ -650,9 +654,19 @@ impl Game {
         {
             source.mana_value = item.mana_value();
         }
+        source.exile_any_mana = self
+            .state
+            .announcing
+            .as_ref()
+            .filter(|a| a.item.card == card)
+            .and_then(|a| a.item.cast)
+            .map_or_else(
+                || self.exile_cast_spends_any_mana(actor, card),
+                |cast| cast.exile_any_mana(),
+            );
         source.foreign_stash = self.foreign_stash(actor, card)
             || self.state.announcing.as_ref().is_some_and(|a| {
-                a.item.card == card && a.item.cast.is_some_and(|c| c.stash_origin)
+                a.item.card == card && a.item.cast.is_some_and(|c| c.stash_origin())
             });
         Purpose::Spell(source)
     }

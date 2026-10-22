@@ -27,11 +27,13 @@ pub(super) struct EffectChoice {
     pub blight_copy_attacking: bool,
     pub counter_removal: Option<Box<CounterRemovalDomain>>,
     pub proliferate: Option<Box<proliferate::ProliferateSelection>>,
+    pub hand_reveal: Option<Box<hand_reveal::HandRevealChoice>>,
     pub entry_life_bonus: Option<(&'static str, u16)>,
 }
 impl EffectChoice {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
+            + self.hand_reveal.as_ref().map_or(0, |choice| choice.bytes())
             + self.proliferate.as_ref().map_or(0, |_| {
                 std::mem::size_of::<proliferate::ProliferateSelection>()
             })
@@ -48,6 +50,9 @@ impl Game {
         player: Player,
         object: ObjectRef,
     ) -> bool {
+        if choice.hand_reveal.is_some() {
+            return self.hand_reveal_candidate(choice, object);
+        }
         if choice.counter_removal.is_some() {
             return false;
         }
@@ -396,6 +401,7 @@ impl Game {
             counter_removal: None,
             proliferate: None,
             entry_life_bonus: None,
+            hand_reveal: None,
             blight_copy_attacking: false,
             source: item.object,
             required: [0; 2],
@@ -465,6 +471,19 @@ impl Game {
     }
 
     fn advance_effect_choice(&mut self) -> bool {
+        if self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .choice
+            .as_ref()
+            .unwrap()
+            .hand_reveal
+            .is_some()
+        {
+            return self.advance_hand_reveal();
+        }
         if self
             .state
             .resolving
@@ -732,6 +751,20 @@ impl Game {
     }
 
     pub(super) fn choose_effect_object(&mut self, player: Player, object: ObjectRef) {
+        if self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .choice
+            .as_ref()
+            .unwrap()
+            .hand_reveal
+            .is_some()
+        {
+            self.choose_hand_reveal_object(object);
+            return;
+        }
         let choice = self
             .state
             .resolving
@@ -776,6 +809,9 @@ impl Game {
     pub(super) fn effect_choice_view(&self, viewer: Player) -> Option<EffectChoiceView> {
         let choice = self.state.resolving.as_ref()?.choice.as_ref()?;
         let actor = self.actor()?;
+        if let Some(reveal) = &choice.hand_reveal {
+            return self.hand_reveal_view(viewer, choice, reveal);
+        }
         if matches!(
             choice.kind,
             EffectChoiceKind::Discard
@@ -801,6 +837,7 @@ impl Game {
             .collect();
         Some(EffectChoiceView {
             kind: choice.kind,
+            hand_reveal: None,
             counter_removal: choice.counter_removal.as_deref().cloned(),
             proliferate: self.proliferate_choice_view(choice),
             amount: choice.amount,

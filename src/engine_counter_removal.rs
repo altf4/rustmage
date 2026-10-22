@@ -167,6 +167,7 @@ impl Game {
                 hand_defender: None,
                 hand_creature_entry: None,
                 entry_life_bonus: None,
+                hand_reveal: None,
                 blight_copy_attacking: false,
                 counter_removal: Some(Box::new(domain)),
                 proliferate: None,

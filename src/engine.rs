@@ -113,8 +113,13 @@ mod tiered;
 #[path = "engine_warp.rs"]
 mod warp;
 pub use cast_payments::{CastPaymentEvent, ManaPaymentDomain};
+pub use hand_reveal::HandRevealView;
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
 pub use plot::{PlotPaymentView, PlottedCard};
+
+#[path = "engine_hand_reveal.rs"]
+mod hand_reveal;
+
 pub use return_links::{DelayedReturnView, PlayerDamageShieldView, ReturnCardView, ReturnLinkView};
 pub use warp::{DelayedWarpExileView, WarpedCard};
 
@@ -496,6 +501,7 @@ define_actions! {
     },
     ChooseExplore { object: ObjectRef, graveyard: bool },
     ExileHandCard { object: ObjectRef },
+    RevealHandCard { object: ObjectRef },
     ExileGraveyardCard { object: ObjectRef },
     ChooseBeholdType { creature_type: Option<crate::cards::CreatureType> },
     ChooseOptionalAdditionalCost {
@@ -888,6 +894,39 @@ pub enum CastFace {
     Adventure,
     Omen,
 }
+/// Independent origin qualifications packed into one byte of the common cast packet.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CastOriginPermissions {
+    Neither,
+    ForeignStash,
+    ExileAnyMana,
+    Both,
+}
+impl CastOriginPermissions {
+    pub const fn new(stash: bool, any_mana: bool) -> Self {
+        match (stash, any_mana) {
+            (false, false) => Self::Neither,
+            (true, false) => Self::ForeignStash,
+            (false, true) => Self::ExileAnyMana,
+            (true, true) => Self::Both,
+        }
+    }
+    pub const fn stash_origin(self) -> bool {
+        matches!(self, Self::ForeignStash | Self::Both)
+    }
+    pub const fn exile_any_mana(self) -> bool {
+        matches!(self, Self::ExileAnyMana | Self::Both)
+    }
+}
+impl Serialize for CastOriginPermissions {
+    fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut view = serializer.serialize_struct("CastOriginPermissions", 2)?;
+        view.serialize_field("stash_origin", &self.stash_origin())?;
+        view.serialize_field("exile_any_mana", &self.exile_any_mana())?;
+        view.end()
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CastInfo {
     /// A non-targeted promise, declared before targets; absent until chosen.
@@ -900,8 +939,9 @@ pub struct CastInfo {
     /// Actual mana spent on this cast, including additional mana costs.
     pub payment: Mana,
     pub origin: Zone,
-    /// Counter qualification captured before the exile-to-stack transition.
-    pub stash_origin: bool,
+    /// Qualifications captured before the exile-to-stack transition and payments.
+    #[serde(flatten)]
+    pub origin_permissions: CastOriginPermissions,
     pub method: CastMethod,
     /// Optional additional mana paid to obtain this spell's flash timing.
     pub flash_surcharge: bool,
@@ -1999,6 +2039,7 @@ pub struct RecoveryChoiceView {
 #[derive(Clone, Debug, Serialize)]
 pub struct EffectChoiceView {
     pub kind: EffectChoiceKind,
+    pub hand_reveal: Option<HandRevealView>,
     pub counter_removal: Option<CounterRemovalDomain>,
     pub proliferate: Option<ProliferateChoiceView>,
     pub amount: u16,
@@ -3055,6 +3096,13 @@ impl Game {
                                 Action::ChooseCreature { object }
                             }
                             EffectChoiceKind::ExileFromHand => Action::ExileHandCard { object },
+                            EffectChoiceKind::RevealHandThenExile => {
+                                if choice.hand_reveal.as_ref().unwrap().revealed {
+                                    Action::ExileHandCard { object }
+                                } else {
+                                    Action::RevealHandCard { object }
+                                }
+                            }
                             EffectChoiceKind::ExileGraveyardCard => {
                                 Action::ExileGraveyardCard { object }
                             }
@@ -4849,7 +4897,8 @@ impl Game {
                 }
                 self.advance_damage_choices();
             }
-            Action::ExileHandCard { object }
+            Action::RevealHandCard { object }
+            | Action::ExileHandCard { object }
             | Action::ExileGraveyardCard { object }
             | Action::PutHandCreature { object }
             | Action::PutHandLand { object }
@@ -5462,6 +5511,7 @@ impl Game {
         self.capture_source_counter_departure(&before);
         self.clear_entry_value(before.reference);
         if before.zone == Zone::Battlefield {
+            self.end_source_exile_permissions(before.reference);
             self.clear_suspected_reference(before.reference);
             self.forget_graveyard_type_source(before.reference);
         }

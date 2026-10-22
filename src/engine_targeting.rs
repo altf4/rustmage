@@ -1201,6 +1201,7 @@ impl Game {
         );
         self.state.passes = 0;
         let stash_origin = self.foreign_stash(actor, card);
+        let exile_any_mana = self.exile_cast_spends_any_mana(actor, card);
         let origin = self.state.objects[card as usize].zone;
         let before = self.object_view(card);
         let event = self.transition_object_under_control(
@@ -1218,7 +1219,8 @@ impl Game {
         let id = self.next_stack_id();
         let mut item = self.cast_preview(actor, card, origin, object, id, payment);
         item.mana_copy_sources = outcome.copies;
-        item.cast.as_mut().unwrap().stash_origin = stash_origin;
+        item.cast.as_mut().unwrap().origin_permissions =
+            CastOriginPermissions::new(stash_origin, exile_any_mana);
         item
     }
     pub(super) fn cast_preview(
@@ -1257,7 +1259,10 @@ impl Game {
                 face: CastFace::Normal,
                 payment,
                 origin,
-                stash_origin: self.foreign_stash(actor, card),
+                origin_permissions: CastOriginPermissions::new(
+                    self.foreign_stash(actor, card),
+                    self.exile_cast_spends_any_mana(actor, card),
+                ),
                 method: CastMethod::Normal,
                 flash_surcharge: false,
                 offspring: None,

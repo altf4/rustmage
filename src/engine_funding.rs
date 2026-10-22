@@ -836,6 +836,7 @@ impl<'g> FundingState<'g> {
                         let purpose = mana_lots::Purpose::Activation(mana_lots::Source {
                             card: object.card,
                             foreign_stash: false,
+                            exile_any_mana: false,
                             mana_value: object.card.fixed_mana_value(),
                             kinds: self.kinds(entry),
                             subtypes: ability_world::CharacteristicWorld::subtypes(self, entry.id),
@@ -4155,6 +4156,7 @@ mod ecl_convoke_grant_tests {
             kinds: 1,
             subtypes: GrantedSubtypes::default(),
             foreign_stash: false,
+            exile_any_mana: false,
             mana_value: 2,
         };
         let mut world = FundingState::from_game_with_convoke(&g, &goal, true);

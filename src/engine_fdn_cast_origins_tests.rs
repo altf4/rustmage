@@ -334,7 +334,7 @@ fn cast_origins_tinybones_paid_sorcery_discard_exact_stash_and_foreign_mana() {
         assert!(g.legal_actions().contains(&Action::AnnounceExile { card }));
         checked(&mut g, Action::AnnounceExile { card });
         finish(&mut g);
-        assert!(g.state.stack.last().unwrap().cast.unwrap().stash_origin);
+        assert!(g.state.stack.last().unwrap().cast.unwrap().stash_origin());
         assert_eq!(g.counter_count(card, CounterKind::Stash), 0);
         settle(&mut g);
         assert_eq!(g.state.objects[card as usize].controller, p);
@@ -436,7 +436,7 @@ fn cast_origins_tinybones_paid_stash_allows_adventure_and_omen_with_actual_mana(
             );
             finish(&mut g);
             let cast = g.state.stack.last().unwrap().cast.unwrap();
-            assert!(cast.stash_origin);
+            assert!(cast.stash_origin());
             assert_eq!(
                 cast.face,
                 if omen {

@@ -106,6 +106,8 @@ fn paid(g: &mut Game, p: Player, recipient: CardId, foreign: bool) -> CardId {
             player: p,
             expires_turn: g.state.turn,
             next_end_step: None,
+            source: None,
+            any_mana: false,
         });
     }
     let before = g.state.players[p.index()].mana;

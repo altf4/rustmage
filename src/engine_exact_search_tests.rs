@@ -602,7 +602,7 @@ fn all_three_new_flashback_bodies_use_real_graveyard_costs_and_exile_on_completi
             assert_eq!(
                 item.cast,
                 Some(CastInfo {
-                    stash_origin: false,
+                    origin_permissions: CastOriginPermissions::Neither,
                     gift: None,
                     physical_card: None,
                     face: CastFace::Normal,

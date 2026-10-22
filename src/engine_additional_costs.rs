@@ -509,7 +509,8 @@ impl Game {
                     a.item.controller,
                 );
             }
-            EffectChoiceKind::ExileFromHand
+            EffectChoiceKind::RevealHandThenExile
+            | EffectChoiceKind::ExileFromHand
             | EffectChoiceKind::ExileGraveyardCard
             | EffectChoiceKind::Blight(_)
             | EffectChoiceKind::BlightXCost

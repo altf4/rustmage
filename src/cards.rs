@@ -675,6 +675,7 @@ pub enum EffectChoiceKind {
     PowerDifferenceBoost,
     /// The resolving spell controller chooses one creature for each player.
     KeepSharedCreatureTypes,
+    RevealHandThenExile,
     RemoveCounters,
     Proliferate,
     /// Choose distinct untapped permanents as a non-targeting activation cost.
@@ -823,6 +824,7 @@ pub(crate) enum Instruction {
     PartitionLibraryPiles(u16),
     KeepOneOfEachPermanentType,
     KeepSharedCreatureTypes,
+    RevealHandForControlledCast(AmountValue),
     RememberOwnSacrifice,
     RecoverAnotherPermanent,
     ReturnLinkedExileToHand,

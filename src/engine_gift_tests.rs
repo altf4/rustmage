@@ -81,6 +81,8 @@ fn paid(g: &mut Game, p: Player, name: &str, promise: bool, target: Option<Targe
         player: p,
         expires_turn: g.state.turn,
         next_end_step: None,
+        source: None,
+        any_mana: false,
     });
     let mana = g.state.players[p.index()].mana.iter().sum::<u32>();
     act(g, Action::AnnounceExile { card });
@@ -264,6 +266,8 @@ fn paid_targets(g: &mut Game, p: Player, name: &str, promise: bool, targets: &[T
         player: p,
         expires_turn: g.state.turn,
         next_end_step: None,
+        source: None,
+        any_mana: false,
     });
     act(g, Action::AnnounceExile { card });
     assert_eq!(g.state.pending, Pending::Gift { player: p });
