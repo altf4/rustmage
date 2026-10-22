@@ -157,7 +157,7 @@
   "current_admission_flags": 256,
   "remaining_gated": 17,
   "inherited_evidence_audit": {
-    "audited": 20,
+    "audited": 25,
     "total": 107,
     "names": [
       "Plains",
@@ -179,7 +179,12 @@
       "Chomping Changeling",
       "Changeling Wayfinder",
       "Shore Lurker",
-      "Glister Bairn"
+      "Glister Bairn",
+      "Eclipsed Boggart",
+      "Eclipsed Elf",
+      "Eclipsed Flamekin",
+      "Eclipsed Kithkin",
+      "Eclipsed Merrow"
     ],
     "scenario": "src/engine_ecl_inherited_tests.rs",
     "source_commit": "7902fbe1",
@@ -239,6 +244,20 @@
         "src/engine_library_tests.rs",
         "src/engine_card_quantities_tests.rs"
       ]
+    },
+    "eclipsed_cycle": {
+      "names": [
+        "Eclipsed Boggart",
+        "Eclipsed Elf",
+        "Eclipsed Flamekin",
+        "Eclipsed Kithkin",
+        "Eclipsed Merrow"
+      ],
+      "source_commit": "f4d885b3",
+      "scenario": "src/engine_filtered_library_selection_tests.rs",
+      "tests": 12,
+      "seconds": 0.06,
+      "resource_report": "<cache>/rustmage-build-reports/549966de911f4220b1c409004f6fb276.json"
     }
   },
   "locally_reviewed": 0,

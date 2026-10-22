@@ -1751,7 +1751,7 @@
       "name": "Eclipsed Boggart",
       "definition": "src/card_definitions/ecl/eclipsed_boggart.rs",
       "owner": "integrator",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Eclipsed Boggart",
@@ -1765,14 +1765,17 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_filtered_library_selection_tests.rs",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "7c89ef4d-b375-4644-ac8b-034effdbe98c",
       "name": "Eclipsed Elf",
       "definition": "src/card_definitions/ecl/eclipsed_elf.rs",
       "owner": "integrator",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Eclipsed Elf",
@@ -1786,14 +1789,17 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_filtered_library_selection_tests.rs",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "48c641df-d511-4e35-b623-9d1fdb5240da",
       "name": "Eclipsed Flamekin",
       "definition": "src/card_definitions/ecl/eclipsed_flamekin.rs",
       "owner": "integrator",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Eclipsed Flamekin",
@@ -1807,14 +1813,17 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_filtered_library_selection_tests.rs",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "e6227840-6e3e-48c7-b4a4-42cfd8f14b68",
       "name": "Eclipsed Kithkin",
       "definition": "src/card_definitions/ecl/eclipsed_kithkin.rs",
       "owner": "integrator",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Eclipsed Kithkin",
@@ -1828,14 +1837,17 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_filtered_library_selection_tests.rs",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "a3a00b62-f07e-44ef-8d97-22a3e7a06f72",
       "name": "Eclipsed Merrow",
       "definition": "src/card_definitions/ecl/eclipsed_merrow.rs",
       "owner": "integrator",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Eclipsed Merrow",
@@ -1849,7 +1861,10 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_filtered_library_selection_tests.rs",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "5715ed43-395c-4877-99a7-8e28e7bf9dce",
