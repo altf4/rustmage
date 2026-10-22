@@ -11,6 +11,7 @@ pub struct AbilitySourceTimestampView {
 pub enum KeywordEffectOrigin {
     Resolution { source: ObjectRef },
     Suspected,
+    Counter { kind: CounterKind },
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct KeywordEffectView {

@@ -3486,6 +3486,28 @@ impl Game {
                         }
                     }
                 }
+                Instruction::RemoveAbilities { subject, duration } => {
+                    let recipients = self
+                        .keyword_subjects(&item, subject)
+                        .into_iter()
+                        .map(|id| self.object_ref(id))
+                        .collect::<Vec<_>>();
+                    self.remove_abilities_exact(&recipients, duration);
+                }
+                Instruction::PutCounterKinds { subject, counters } => {
+                    let changes = self
+                        .keyword_subjects(&item, subject)
+                        .into_iter()
+                        .map(|id| {
+                            let mut amounts = Counters::default();
+                            for &(kind, amount) in counters {
+                                amounts.add(kind, amount);
+                            }
+                            (self.object_ref(id), amounts)
+                        })
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
+                }
                 Instruction::PutCounters { .. } | Instruction::PutCountersScaled { .. } => {
                     let (subject, kind, amount) = match instruction {
                         Instruction::PutCounters {

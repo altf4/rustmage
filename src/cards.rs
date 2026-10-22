@@ -1372,6 +1372,15 @@ pub(crate) enum Instruction {
         kind: CounterKind,
         amount: u32,
     },
+    /// One simultaneous mixed-kind placement event.
+    PutCounterKinds {
+        subject: Subject,
+        counters: &'static [(CounterKind, u64)],
+    },
+    RemoveAbilities {
+        subject: Subject,
+        duration: AnimationDuration,
+    },
     CreateTokensWithTemporaryKeywords {
         token: Card,
         amount: AmountValue,
@@ -1798,10 +1807,13 @@ pub enum CounterKind {
     Wish,
     Stash,
     Charge,
+    Flying,
+    FirstStrike,
+    Lifelink,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 15] = [
+    pub const ALL: [Self; 18] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -1817,6 +1829,9 @@ impl CounterKind {
         Self::Wish,
         Self::Stash,
         Self::Charge,
+        Self::Flying,
+        Self::FirstStrike,
+        Self::Lifelink,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -1831,6 +1846,9 @@ impl CounterKind {
                 | Self::Wish
                 | Self::Stash
                 | Self::Charge
+                | Self::Flying
+                | Self::FirstStrike
+                | Self::Lifelink
         )
     }
 }

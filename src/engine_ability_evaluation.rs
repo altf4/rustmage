@@ -253,7 +253,12 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         .card
                         .keywords()
                         .union(game.copied_keywords(world.reference(i as CardId)))
-                },
+                }
+                .union(if matches!(object.zone, Zone::Battlefield | Zone::Stack) {
+                    Keywords::NONE
+                } else {
+                    keyword_counters::keywords(world.counter_amounts(i as CardId))
+                }),
                 grants: Vec::new(),
                 mana: Vec::new(),
             }
@@ -365,6 +370,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             if matches!(object.zone, Zone::Battlefield | Zone::Stack)
                 && world.reference(row.recipient.card) == row.recipient
                 && row.expires_turn.is_none_or(|turn| turn == game.state.turn)
+                && keyword_counters::effect_live(world, row)
             {
                 effects.push(LayerSixEffect {
                     provider: None,
@@ -478,6 +484,7 @@ pub(super) fn apply_rule_effects<W: CharacteristicWorld + ?Sized>(
                 Zone::Battlefield | Zone::Stack
             ) && world.reference(row.recipient.card) == row.recipient
                 && row.expires_turn.is_none_or(|turn| turn == game.state.turn)
+                && keyword_counters::effect_live(world, row)
             {
                 let object = &mut evaluation.result.objects[row.recipient.card as usize];
                 object.keywords = object.keywords.union(row.rules);

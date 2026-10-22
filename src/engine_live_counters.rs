@@ -81,12 +81,21 @@ impl Game {
         self.counter_amounts(id).get(kind)
     }
     pub(super) fn set_counters(&mut self, id: CardId, counters: Counters) {
+        let named = counters.named.is_some() || self.state.named_counters.is_some();
+        let before = if named {
+            keyword_counters::KINDS.map(|kind| self.counter_count(id, kind))
+        } else {
+            [0; 3]
+        };
         let hot = counters.hot();
         if self.state.objects[id as usize].counters != hot {
             self.state.objects[id as usize].counters = hot;
         }
         let object = self.object_ref(id);
         set(&mut self.state.named_counters, object, counters.named);
+        if named {
+            self.sync_keyword_counters(id, before);
+        }
     }
     pub(super) fn add_counter(&mut self, id: CardId, kind: CounterKind, amount: u64) {
         if amount == 0 {

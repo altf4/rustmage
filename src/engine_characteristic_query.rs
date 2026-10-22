@@ -351,7 +351,10 @@ impl CharacteristicQuery<'_> {
         if self.state.objects[id as usize].zone == Zone::Stack {
             let definition = self.effective_spell_card(id);
             if definition.inset_parent().is_some() {
-                return definition.info().keywords;
+                return definition
+                    .info()
+                    .keywords
+                    .union(keyword_counters::keywords(self.counter_amounts(id)));
             }
         }
         let target = &self.state.objects[id as usize];
@@ -361,7 +364,7 @@ impl CharacteristicQuery<'_> {
             .union(self.attachment_bonus(id).1)
             .union(CharacteristicWorld::counter_subtype_keywords(self, id));
         if target.zone != Zone::Battlefield {
-            return keywords;
+            return keywords.union(keyword_counters::keywords(self.counter_amounts(id)));
         }
         if self.is_suspected(id) {
             keywords = keywords.union(Keywords::MENACE).union(Keywords::CANT_BLOCK);

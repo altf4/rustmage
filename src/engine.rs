@@ -182,6 +182,8 @@ mod endure;
 mod funding;
 #[path = "engine_live_counters.rs"]
 mod live_counters;
+#[path = "engine_keyword_counters.rs"]
+mod keyword_counters;
 pub use convoke::{ConvokeChoiceView, ConvokeContribution, ConvokePaymentView};
 #[path = "engine_resolution_mana.rs"]
 mod resolution_mana;
