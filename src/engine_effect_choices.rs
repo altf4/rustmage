@@ -1,8 +1,15 @@
 //! Simultaneous public sacrifices and private exact resolution-cost payments.
 use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum HandCreatureBound {
+    ManaValue(u64),
+    TotalStats(u64),
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct HandCreatureEntry {
-    pub maximum_mana_value: u64,
+    pub bound: HandCreatureBound,
+    pub attacking: bool,
+    pub haste_sacrifice: bool,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EffectChoice {
@@ -99,9 +106,18 @@ impl Game {
                 && match choice.kind {
                     EffectChoiceKind::HandCreature => {
                         o.card.is_creature()
-                            && choice.hand_creature_entry.is_none_or(|entry| {
-                                o.card.fixed_mana_value() <= entry.maximum_mana_value
-                            })
+                            && choice
+                                .hand_creature_entry
+                                .is_none_or(|entry| match entry.bound {
+                                    HandCreatureBound::ManaValue(maximum) => {
+                                        o.card.fixed_mana_value() <= maximum
+                                    }
+                                    HandCreatureBound::TotalStats(maximum) => {
+                                        let stats = self.stats(object.card);
+                                        stats.power.saturating_add(stats.toughness)
+                                            <= i128::from(maximum)
+                                    }
+                                })
                     }
                     EffectChoiceKind::HandLand { .. } => o.card.is_land() && o.controller == player,
                     EffectChoiceKind::Discard => {
@@ -185,7 +201,29 @@ impl Game {
             .as_mut()
             .unwrap()
             .hand_creature_entry = Some(HandCreatureEntry {
-            maximum_mana_value: maximum,
+            bound: HandCreatureBound::ManaValue(maximum),
+            attacking: true,
+            haste_sacrifice: false,
+        });
+        pending
+    }
+    pub(super) fn start_hand_creature_haste_sacrifice(
+        &mut self,
+        item: &SpellView,
+        maximum: u64,
+    ) -> bool {
+        let pending = self.start_hand_creature(item);
+        self.state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .choice
+            .as_mut()
+            .unwrap()
+            .hand_creature_entry = Some(HandCreatureEntry {
+            bound: HandCreatureBound::TotalStats(maximum),
+            attacking: false,
+            haste_sacrifice: true,
         });
         pending
     }
@@ -446,8 +484,13 @@ impl Game {
             };
             let enchantment = choice.kind == EffectChoiceKind::HandCreature
                 && self.state.objects[reference.card as usize].card.kind_mask() & 32 != 0;
-            let attacking = enchantment || choice.hand_creature_entry.is_some();
-            let forced_tapped = choice.hand_creature_entry.is_some()
+            let legacy_enchantment = enchantment && choice.hand_creature_entry.is_none();
+            let attacking = choice
+                .hand_creature_entry
+                .map_or(enchantment, |entry| entry.attacking);
+            let forced_tapped = choice
+                .hand_creature_entry
+                .is_some_and(|entry| entry.attacking)
                 || matches!(choice.kind, EffectChoiceKind::HandLand { tapped: true });
             if attacking && choice.hand_defender.is_none() {
                 if self.state.objects.iter().enumerate().any(|(id, o)| {
@@ -478,9 +521,12 @@ impl Game {
             let mut movement = self.entry_move(
                 reference.card,
                 Zone::Battlefield,
-                forced_tapped || enchantment,
+                forced_tapped || legacy_enchantment,
             );
             movement.controller = player;
+            movement.haste_sacrifice_after = choice
+                .hand_creature_entry
+                .is_some_and(|entry| entry.haste_sacrifice);
             movement.attacking = choice.hand_defender;
             movement.life_bonus = choice
                 .entry_life_bonus

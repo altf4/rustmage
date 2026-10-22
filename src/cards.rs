@@ -928,6 +928,9 @@ pub(crate) enum Instruction {
         tapped: bool,
     },
     PutHandCreature,
+    PutHandCreatureHasteSacrifice {
+        maximum_total_stats: u64,
+    },
     PutHandCreatureAttacking {
         maximum: AmountValue,
     },

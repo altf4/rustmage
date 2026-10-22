@@ -2836,6 +2836,13 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::PutHandCreatureHasteSacrifice {
+                    maximum_total_stats,
+                } => {
+                    if self.start_hand_creature_haste_sacrifice(&item, maximum_total_stats) {
+                        return;
+                    }
+                }
                 Instruction::PutHandCreatureAttacking { maximum } => {
                     let maximum = self.item_amount(maximum, &item).min(u128::from(u64::MAX)) as u64;
                     if self.start_hand_creature_attacking(&item, maximum) {

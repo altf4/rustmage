@@ -4801,3 +4801,255 @@ fn kindle_inner_flame_spell_copy_inherits_effect_without_repaying_printed_flashb
         assert!(g.observe(p).additional_cost.is_none());
     }
 }
+fn meek_choice(g: &mut Game, source: CardId) {
+    checked(
+        g,
+        Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    kindle_pay(g);
+    for _ in 0..100 {
+        if g.legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::DeclineHandEntry))
+        {
+            return;
+        }
+        advance(g);
+    }
+    panic!("missing optional Meek hand choice");
+}
+#[test]
+fn meek_attack_places_boundary_enchantment_creature_untapped_not_attacking_with_haste_then_sacrifices()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Meek Attack", Zone::Hand);
+        cast(&mut g, source);
+        g.state.objects[source as usize].tapped = true;
+        let creature = named(&mut g, p, "Appendage Amalgam", Zone::Hand);
+        let before = g.state.players[p.index()].mana.iter().sum::<u32>();
+        meek_choice(&mut g, source);
+        assert_eq!(
+            before - g.state.players[p.index()].mana.iter().sum::<u32>(),
+            2
+        );
+        assert!(g.observe(p.other()).effect_choice.is_none());
+        let object = g.object_ref(creature);
+        checked(&mut g, Action::PutHandCreature { object });
+        settle(&mut g);
+        assert!(g.on_battlefield(creature));
+        assert!(!g.object_view(creature).tapped);
+        assert!(g.state.attackers.is_empty());
+        assert!(g.keywords(creature).contains(Keywords::HASTE));
+        assert_eq!(g.observe(p).delayed_sacrifices.len(), 1);
+        g.move_object(source, Zone::Graveyard);
+        g.begin_step(Step::End);
+        settle(&mut g);
+        assert_eq!(g.object_view(creature).zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn meek_attack_optional_private_choice_declines_even_with_no_eligible_hand_and_never_refunds_mana()
+{
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..3 {
+            let mut g = hexing_setup(p);
+            let source = named(&mut g, p, "Meek Attack", Zone::Battlefield);
+            if mode == 1 {
+                named(&mut g, p, "Moonshadow", Zone::Hand);
+            }
+            if mode == 2 {
+                named(&mut g, p, "Grizzly Bears", Zone::Hand);
+            }
+            let before = g.state.players[p.index()].mana.iter().sum::<u32>();
+            meek_choice(&mut g, source);
+            assert!(g.observe(p).effect_choice.is_some());
+            assert!(g.observe(p.other()).effect_choice.is_none());
+            checked(&mut g, Action::DeclineHandEntry);
+            settle(&mut g);
+            assert_eq!(
+                before - g.state.players[p.index()].mana.iter().sum::<u32>(),
+                2
+            );
+            assert!(g.observe(p).delayed_sacrifices.is_empty());
+        }
+    }
+}
+#[test]
+fn meek_attack_checks_current_hand_characteristics_and_excludes_foreign_noncreature_and_large_cards()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Meek Attack", Zone::Battlefield);
+        let large = named(&mut g, p, "Moonshadow", Zone::Hand);
+        let noncreature = named(&mut g, p, "Lightning Bolt", Zone::Hand);
+        let enemy = named(&mut g, p.other(), "Grizzly Bears", Zone::Hand);
+        let first = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let cda = named(&mut g, p, "Crusader of Odric", Zone::Hand);
+        assert_eq!(
+            g.stats(cda),
+            Stats {
+                power: 3,
+                toughness: 3
+            }
+        );
+        meek_choice(&mut g, source);
+        for card in [large, noncreature, enemy, cda] {
+            let object = g.object_ref(card);
+            reject(&mut g, Action::PutHandCreature { object });
+        }
+        checked(&mut g, Action::DeclineHandEntry);
+        settle(&mut g);
+        g.move_object(first, Zone::Graveyard);
+        assert_eq!(
+            g.stats(cda),
+            Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+        meek_choice(&mut g, source);
+        let object = g.object_ref(cda);
+        checked(&mut g, Action::PutHandCreature { object });
+        settle(&mut g);
+        assert_eq!(
+            g.stats(cda),
+            Stats {
+                power: 3,
+                toughness: 3
+            },
+            "hand qualification precedes battlefield CDA growth"
+        );
+        assert!(g.keywords(cda).contains(Keywords::HASTE));
+    }
+}
+#[test]
+fn meek_attack_source_departure_keeps_owned_hand_entry_and_activation_works_during_opponents_turn()
+{
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p.other());
+        g.state.priority = p;
+        let source = named(&mut g, p, "Meek Attack", Zone::Battlefield);
+        let creature = named(&mut g, p, "Grizzly Bears", Zone::Hand);
+        meek_choice(&mut g, source);
+        g.move_object(source, Zone::Graveyard);
+        let object = g.object_ref(creature);
+        checked(&mut g, Action::PutHandCreature { object });
+        settle(&mut g);
+        assert!(g.on_battlefield(creature));
+        assert!(g.keywords(creature).contains(Keywords::HASTE));
+        g.begin_step(Step::End);
+        settle(&mut g);
+        assert_eq!(g.object_view(creature).zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn meek_attack_after_end_step_waits_until_next_end_and_haste_is_permanent_if_delay_countered() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Meek Attack", Zone::Battlefield);
+        let creature = named(&mut g, p, "Grizzly Bears", Zone::Hand);
+        g.begin_step(Step::End);
+        meek_choice(&mut g, source);
+        let object = g.object_ref(creature);
+        checked(&mut g, Action::PutHandCreature { object });
+        settle(&mut g);
+        assert_eq!(g.observe(p).delayed_sacrifices.len(), 1);
+        g.finish_cleanup();
+        assert!(g.on_battlefield(creature));
+        assert!(g.keywords(creature).contains(Keywords::HASTE));
+        g.begin_step(Step::End);
+        g.prepare_triggers();
+        for _ in 0..100 {
+            if g.state
+                .stack
+                .iter()
+                .any(|s| s.kind == StackKind::DelayedSacrifice)
+            {
+                break;
+            }
+            advance(&mut g);
+        }
+        let id = g
+            .state
+            .stack
+            .iter()
+            .find(|s| s.kind == StackKind::DelayedSacrifice)
+            .unwrap()
+            .id;
+        assert!(g.counter_stack_item(id, false));
+        settle(&mut g);
+        g.finish_cleanup();
+        g.begin_step(Step::End);
+        settle(&mut g);
+        assert!(g.on_battlefield(creature));
+        assert!(g.keywords(creature).contains(Keywords::HASTE));
+        assert!(g.observe(p).delayed_sacrifices.is_empty());
+    }
+}
+#[test]
+fn meek_attack_exact_delayed_object_does_not_follow_a_recast_creature() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Meek Attack", Zone::Battlefield);
+        let creature = named(&mut g, p, "Grizzly Bears", Zone::Hand);
+        meek_choice(&mut g, source);
+        let object = g.object_ref(creature);
+        checked(&mut g, Action::PutHandCreature { object });
+        settle(&mut g);
+        let old = g.object_ref(creature);
+        g.move_object(creature, Zone::Hand);
+        cast(&mut g, creature);
+        assert_ne!(g.object_ref(creature), old);
+        assert!(!g.keywords(creature).contains(Keywords::HASTE));
+        g.begin_step(Step::End);
+        settle(&mut g);
+        assert!(g.on_battlefield(creature));
+    }
+}
+
+#[test]
+fn meek_attack_delay_keeps_caster_controller_and_haste_after_control_changes() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Meek Attack", Zone::Battlefield);
+        let creature = named(&mut g, p, "Grizzly Bears", Zone::Hand);
+        meek_choice(&mut g, source);
+        let object = g.object_ref(creature);
+        checked(&mut g, Action::PutHandCreature { object });
+        settle(&mut g);
+        let offering = named(&mut g, p, "Harmless Offering", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: offering });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(creature),
+            },
+        );
+        kindle_pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(creature).controller, p.other());
+        assert!(g.keywords(creature).contains(Keywords::HASTE));
+        g.begin_step(Step::End);
+        settle(&mut g);
+        assert!(
+            g.on_battlefield(creature),
+            "the captured caster cannot sacrifice an opponent's creature"
+        );
+        g.finish_cleanup();
+        assert!(g.keywords(creature).contains(Keywords::HASTE));
+        assert!(g.observe(p).delayed_sacrifices.is_empty());
+    }
+}

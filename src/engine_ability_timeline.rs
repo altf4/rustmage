@@ -215,6 +215,15 @@ impl Game {
         source: ObjectRef,
         keywords: Keywords,
     ) {
+        self.grant_keyword_effects_expiring(ids, source, keywords, Some(self.state.turn));
+    }
+    pub(super) fn grant_keyword_effects_expiring(
+        &mut self,
+        ids: &[CardId],
+        source: ObjectRef,
+        keywords: Keywords,
+        expires_turn: Option<u32>,
+    ) {
         if ids.is_empty() || keywords == Keywords::NONE {
             return;
         }
@@ -236,7 +245,7 @@ impl Game {
                     keywords: keywords.without(keywords.resolution_rules()),
                     rules: keywords.resolution_rules(),
                     timestamp,
-                    expires_turn: Some(self.state.turn),
+                    expires_turn,
                 });
         }
     }

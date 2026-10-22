@@ -14,6 +14,8 @@ pub(super) struct EntryMove {
     /// Owned completion tied to this move's actual successful public result.
     pub role_after: Option<(Card, Player)>,
     pub suspect_after: bool,
+    /// A successful hand-entry effect grants haste permanently and creates a one-shot delay.
+    pub haste_sacrifice_after: bool,
     /// A surrounding instruction observes only this actual successful entry.
     pub life_bonus: Option<(Player, &'static str, u16)>,
     /// Counters put on this object as part of entering by the surrounding effect.
@@ -195,6 +197,7 @@ impl Game {
             attachment: None,
             role_after: None,
             suspect_after: false,
+            haste_sacrifice_after: false,
             life_bonus: None,
             effect_counter: None,
             return_modification: None,
@@ -491,6 +494,7 @@ impl Game {
         let mut attachments = Vec::new();
         let mut role_results = Vec::new();
         let mut suspect_results = Vec::new();
+        let mut haste_sacrifice_results = Vec::new();
         let mut remove_abilities_results = Vec::new();
         let mut life_results = Vec::new();
         for (movement, counters) in moves {
@@ -532,6 +536,9 @@ impl Game {
                     && let Some((controller, subtype, amount)) = movement.life_bonus
                 {
                     life_results.push((event.after, controller, subtype, amount));
+                }
+                if event.destination == Zone::Battlefield && movement.haste_sacrifice_after {
+                    haste_sacrifice_results.push(event.after);
                 }
                 if event.destination == Zone::Battlefield && movement.suspect_after {
                     suspect_results.push(event.after);
@@ -595,6 +602,26 @@ impl Game {
             self.finish_discard_events(&events, context);
         } else {
             self.finish_zone_events(&events, &[]);
+        }
+        if !haste_sacrifice_results.is_empty() {
+            // The original resolution owns its source facts throughout entry choices.
+            let item = self
+                .state
+                .resolving
+                .as_ref()
+                .expect("owned hand entry completion")
+                .item
+                .clone();
+            let ids: Vec<_> = haste_sacrifice_results
+                .iter()
+                .filter(|object| {
+                    self.on_battlefield(object.card) && self.object_ref(object.card) == **object
+                })
+                .map(|object| object.card)
+                .collect();
+            self.grant_keyword_effects_expiring(&ids, item.object, Keywords::HASTE, None);
+            // This generic exact-object delayed batch also supports nontoken creatures.
+            self.record_mobilize_tokens(&item, haste_sacrifice_results);
         }
         // Returning is one event; the following clause removes abilities only
         // after intrinsic and granted entry triggers have already triggered.
