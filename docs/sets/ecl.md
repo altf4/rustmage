@@ -21,8 +21,8 @@ The frozen manifest accounts for every identity. The [per-card obligation ledger
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **247/273**, comprising **107 inherited** and **140 newly
-implemented/tested physical candidates**; **26 remain gated**. Twenty inherited
+Admission flags: **248/273**, comprising **107 inherited** and **141 newly
+implemented/tested physical candidates**; **25 remain gated**. Twenty inherited
 cards have passed source/rules audit;87 inherited cards remain. No final published reviews or newly merged cards. All new
 names and per-card obligations appear in the linked JSON ledgers. Three tested
 synthetic token recipes are outside the physical denominator.
@@ -151,3 +151,5 @@ Chitinous Graspling,Chomping Changeling,Changeling Wayfinder,Shore Lurker,and Gl
 Curious Colossus is integrated with a resolution-frozen opponent creature group and permanent ability/type/base-stat effects.432 ECL author-branch scenarios pass15.74seconds;44 subtype regressions pass0.25seconds; Clippy passes. Scenarios preserve existing counters,growth,artifact types and colors,keep changeling types through later ability loss,and check later layers,control changes,cleanup and blink. Actual Rhys removal of Abigale keyword counters and subsequent persist also passes. Admission246/273;27 gated.
 
 Soul Immolation is integrated with bounded nonmana X,mandatory X-sized blight payment,and simultaneous opponent/player-creature damage. All2,912 native regressions pass78.39seconds on the author branch,including133 black/red scenarios. Blight quantities preserve the full u32 scalar domain; zero payment requires a controlled creature but creates no counter placement. Forced blight now permits choosing a counter-prohibited creature,with placement correctly suppressed. Current September25 CR701.68a/b were independently rechecked. Admission247/273;26 gated.
+
+Sanar, Innovative First-Year is integrated.24 student scenarios pass0.71seconds,29 library-selection regressions pass0.12seconds,130 exile regressions pass4.04seconds,and all-target Clippy passes. Public reveal-until-nonlands captures the available colors; injective color assignments use complete matching,including nongreedy cases and Hall-deficient subsets. Selected cards get exact turn-limited cast-only permission; land play permissions remain independent. Zero-color and short-library paths still shuffle. Admission248/273;25 gated.

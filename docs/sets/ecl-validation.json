@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 140,
+  "newly_tested_physical_cards": 141,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -108,6 +108,7 @@
     "Rime Chill",
     "Rimefire Torque",
     "Safewright Cavalry",
+    "Sanar, Innovative First-Year",
     "Sapling Nursery",
     "Scarblade's Malice",
     "Scuzzback Scrounger",
@@ -145,8 +146,8 @@
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 247,
-  "remaining_gated": 26,
+  "current_admission_flags": 248,
+  "remaining_gated": 25,
   "inherited_evidence_audit": {
     "audited": 20,
     "total": 107,
@@ -269,10 +270,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T19:58:41.425575+00:00",
-    "elapsed_seconds": 16554.208724,
-    "newly_verified_cards": 140,
-    "cards_per_hour": 30.44542982409722,
+    "end_utc": "2026-10-22T20:00:30.768674+00:00",
+    "elapsed_seconds": 16663.551823,
+    "newly_verified_cards": 141,
+    "cards_per_hour": 30.461693004691895,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "428 integrated ECL scenarios passed at244-card checkpoint1aa48507; latest full release239-card904c25c2",

@@ -4958,7 +4958,7 @@
       "name": "Sanar, Innovative First-Year",
       "definition": "src/card_definitions/ecl/sanar_innovative_first_year.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Sanar, Innovative First-Year",
@@ -4972,7 +4972,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_students_tests.rs",
+        "src/card_definitions/ecl/sanar_innovative_first_year.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "8bcbae66-1854-480e-a449-33e5389610ab",
