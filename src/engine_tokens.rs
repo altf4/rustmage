@@ -218,6 +218,8 @@ impl Game {
                     destination: Zone::Battlefield,
                     moved: true,
                     sacrificed_by: None,
+                    evoked: false,
+                    cast_payment: None,
                     offspring_paid: false,
                     kicked: false,
                     bargained: false,

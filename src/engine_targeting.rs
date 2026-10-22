@@ -547,6 +547,10 @@ impl Game {
     pub(super) fn choose_mana_cost(&mut self, index: u16) {
         let a = self.state.announcing.as_mut().unwrap();
         let cost = a.cost_options().nth(index as usize).unwrap();
+        if let Some(cast) = a.item.cast.as_mut() {
+            cast.evoked = cast.method == CastMethod::Normal
+                && a.item.source_card.evoke_costs().contains(&cost);
+        }
         a.cost = Some(cost);
         self.continue_announcement_choices(false);
     }
@@ -1197,6 +1201,7 @@ impl Game {
                 bargain: None,
                 evidence: None,
                 optional_additional: None,
+                evoked: false,
             }),
             id,
             kind: StackKind::Spell,

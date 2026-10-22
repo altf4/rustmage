@@ -858,6 +858,8 @@ pub struct CastInfo {
     /// Optional casting cost declaration; an on-stack true value means it was paid.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub optional_additional: Option<bool>,
+    /// This actual cast used a printed evoke alternative.
+    pub evoked: bool,
 }
 
 /// Frozen recipient and immutable program provenance, independent of later attachments.
@@ -1754,6 +1756,8 @@ pub struct ZoneChange {
     /// Explicit cause for an actual sacrifice; never inferred from the destination.
     pub sacrificed_by: Option<Player>,
     /// Historical casting qualification, frozen for this single entry incarnation.
+    pub evoked: bool,
+    pub cast_payment: Option<Mana>,
     pub offspring_paid: bool,
     /// Paid qualification belongs only to this exact entry event.
     pub kicked: bool,
@@ -4933,6 +4937,8 @@ impl Game {
                 before,
                 moved: false,
                 sacrificed_by: None,
+                evoked: false,
+                cast_payment: None,
                 offspring_paid: false,
                 kicked: false,
                 bargained: false,
@@ -4955,6 +4961,8 @@ impl Game {
                 before,
                 moved: false,
                 sacrificed_by: None,
+                evoked: false,
+                cast_payment: None,
                 offspring_paid: false,
                 kicked: false,
                 bargained: false,
@@ -4971,6 +4979,8 @@ impl Game {
                 before,
                 moved: false,
                 sacrificed_by: None,
+                evoked: false,
+                cast_payment: None,
                 offspring_paid: false,
                 kicked: false,
                 bargained: false,
@@ -5197,6 +5207,8 @@ impl Game {
             destination,
             moved: true,
             sacrificed_by: None,
+            evoked: false,
+            cast_payment: None,
             offspring_paid: false,
             kicked: false,
             bargained: false,
@@ -7412,3 +7424,7 @@ mod ecl_white_blue_tests;
 #[cfg(test)]
 #[path = "engine_ecl_commands_tests.rs"]
 mod ecl_commands_tests;
+
+#[cfg(test)]
+#[path = "engine_ecl_evoke_tests.rs"]
+mod ecl_evoke_tests;

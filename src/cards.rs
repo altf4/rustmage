@@ -867,6 +867,7 @@ pub(crate) enum Instruction {
         amount: AmountValue,
     },
     SacrificeDelayedTokens,
+    SacrificeSourceByController,
     SacrificeSource,
     ExileAndCopyNightmare,
     ExileOtherNightmares,
@@ -2301,6 +2302,11 @@ pub(crate) enum TriggerCondition {
         ordinal: Option<u64>,
     },
     SelfEnters,
+    SelfEvokedEnters,
+    SelfEntersManaSpent {
+        color: u8,
+        minimum: u32,
+    },
     SelfOffspring,
     SelfKicked,
     CreatureExploresYou,
@@ -3113,6 +3119,9 @@ impl Card {
         } else {
             &[]
         }
+    }
+    pub(crate) fn evoke_costs(self) -> &'static [ManaCost] {
+        authored::rules(self).map_or(&[], |rules| rules.extras.evoke_costs)
     }
     pub(crate) fn cost_options(self) -> ManaCostOptions {
         let definition = &generated::DEFINITIONS[self.0 as usize];

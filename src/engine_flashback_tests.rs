@@ -136,6 +136,7 @@ fn all_nine_complete_bodies_cast_from_both_origins_and_have_independent_effects(
                     bargain: None,
                     evidence: None,
                     optional_additional: None,
+                    evoked: false,
                     origin: if flashback {
                         Zone::Graveyard
                     } else {

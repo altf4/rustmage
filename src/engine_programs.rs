@@ -500,6 +500,12 @@ impl Game {
                     | TriggerCondition::InterveningIf { .. } => {
                         unreachable!("unwrapped event")
                     }
+                    TriggerCondition::SelfEvokedEnters => same && event.evoked,
+                    TriggerCondition::SelfEntersManaSpent { color, minimum } => {
+                        same && event
+                            .cast_payment
+                            .is_some_and(|payment| payment[usize::from(color)] >= minimum)
+                    }
                     TriggerCondition::SelfOffspring => same && event.offspring_paid,
                     TriggerCondition::SelfKicked => same && event.kicked,
                     TriggerCondition::SelfGiftEnters => same && event.gift.is_some(),
@@ -1335,7 +1341,7 @@ impl Game {
                     let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
                     movement.attachment = Some(target);
                     movement.cast_payment = item.cast.map(|c| c.payment);
-                    movement.cast_origin = item.cast.map(|c| c.origin);
+                    movement.cast_origin = item.cast.filter(|_| !item.is_copy).map(|c| c.origin);
                     movement.gift = item.gift_context().map(Box::new);
                     movement.warp_controller = item
                         .cast
@@ -1346,21 +1352,23 @@ impl Game {
                     return;
                 }
                 Effect::Creature(..) | Effect::Permanent => {
-                    if item.cast.is_some_and(|c| {
-                        c.offspring == Some(true)
-                            || c.kicker == Some(true)
-                            || c.bargain == Some(true)
-                            || c.evidence == Some(true)
-                            || matches!(c.gift, Some(GiftDeclaration::Promised { .. }))
-                            || c.method == CastMethod::Warp
-                            || item.source_card.entry_counter_rules().iter().any(|r| {
-                                matches!(
-                                    r.amount,
-                                    EntryCounterAmount::ColorsSpent
-                                        | EntryCounterAmount::IfNotCastOrZero(_)
-                                )
-                            })
-                    }) || item.x.is_some()
+                    if !item.source_card.evoke_costs().is_empty()
+                        || item.cast.is_some_and(|c| {
+                            c.offspring == Some(true)
+                                || c.kicker == Some(true)
+                                || c.bargain == Some(true)
+                                || c.evidence == Some(true)
+                                || matches!(c.gift, Some(GiftDeclaration::Promised { .. }))
+                                || c.method == CastMethod::Warp
+                                || item.source_card.entry_counter_rules().iter().any(|r| {
+                                    matches!(
+                                        r.amount,
+                                        EntryCounterAmount::ColorsSpent
+                                            | EntryCounterAmount::IfNotCastOrZero(_)
+                                    )
+                                })
+                        })
+                        || item.x.is_some()
                         || !item.source_card.hand_cast_entry_counters().is_empty()
                         || !item.source_card.cast_entry_counters().is_empty()
                         || item.source_card.entry_choice().is_some()
@@ -1371,8 +1379,11 @@ impl Game {
                             .cast
                             .filter(|c| c.method == CastMethod::Warp)
                             .map(|_| item.controller);
-                        movement.cast_payment = item.cast.map(|c| c.payment);
-                        movement.cast_origin = item.cast.map(|c| c.origin);
+                        movement.evoked = !item.is_copy && item.cast.is_some_and(|c| c.evoked);
+                        movement.cast_payment =
+                            item.cast.filter(|_| !item.is_copy).map(|c| c.payment);
+                        movement.cast_origin =
+                            item.cast.filter(|_| !item.is_copy).map(|c| c.origin);
                         movement.offspring_paid =
                             item.cast.is_some_and(|c| c.offspring == Some(true));
                         movement.kicked = item.cast.is_some_and(|c| c.kicker == Some(true));
@@ -2344,6 +2355,12 @@ impl Game {
                             recipe.exceptions = recipe.exceptions.union(exceptions);
                         }
                         self.stage_copy_creation(item.controller, recipe, u128::from(amount));
+                    }
+                }
+                Instruction::SacrificeSourceByController => {
+                    if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
+                        let controller = self.state.objects[item.card as usize].controller;
+                        self.sacrifice_batch(&[(controller, item.card)]);
                     }
                 }
                 Instruction::SacrificeSource => self.sacrifice_exact_source(&item),

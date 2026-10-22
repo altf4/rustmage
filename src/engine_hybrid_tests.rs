@@ -107,11 +107,12 @@ fn cost_options_are_unique_and_canonical_preserves_printed_mana_value() {
             let total =
                 u64::from(cost.generic) + cost.colored.iter().map(|n| u64::from(*n)).sum::<u64>();
             // Explicit card alternatives (conditional Edict, Eaten Alive's
-            // mana-instead-of-sacrifice route) need not equal printed MV.
+            // mana-instead-of-sacrifice route, evoke) need not equal printed MV.
             // The first option remains canonical; all options remain unique.
             if i > 0
                 && (card.cost_alternative_guard().is_some()
-                    || card.mana_alternative_replaces_additional(*cost))
+                    || card.mana_alternative_replaces_additional(*cost)
+                    || card.evoke_costs().contains(cost))
             {
                 continue;
             }

@@ -3,10 +3,80 @@
   "catalogue_id": 4882,
   "oracle_id": "52867cdd-8bf2-4cae-bb8d-0f16a18a455b",
   "facts_sha256": "f1f006044200e4f8f834721c5c44eec14c6bbbfa68fd55644b839ff74ffac223",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d3c91cd2017d00eab751a5625a26cd784da80e318a313a5da1eb286dd5ca0710"
   },
-  "physical_metadata_sha256": "6b414c7d0fed0050468eadda41c9237ebe39919536fe353d00dd11f9e8e5d972"
+  "physical_metadata_sha256": "6b414c7d0fed0050468eadda41c9237ebe39919536fe353d00dd11f9e8e5d972",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/Vibrance.java",
+  "java_sha256": "c993955257797a04b8fd04d2e0f1bb931fa93667f199eb3e4de6e06a4cc4d0e6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EvokeAbility.java",
+      "sha256": "5f2bd6dfc0dcf9b02cad0659656e175bdb985472feb1d0e56c3387c1a2f96601"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/EvokedCondition.java",
+      "sha256": "d93e83a6045bb122571bc05291da4cca101cd8131383aad80579d1ed1bc418d4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/TwoOfManaColorSpentCondition.java",
+      "sha256": "db65399e04dc16757d2241377e11f45c2f91836767a8d4e3a1740f8e78b44026"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/AlternativeSourceCostsImpl.java",
+      "sha256": "5bbc595021e5cdd25c7b878fda2b6654b9b6b89979ff5bc76d9560cd9f9c47c8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeSourceEffect.java",
+      "sha256": "67db08baf9a6cc6c7fad953388bdd2adb74e4c9af4c5e2f5483c8cc546bbb098"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/ManaSpentToCastWatcher.java",
+      "sha256": "3bdca200d2d19ba2e46d11f37fcf4d355e78430ce4fed8c82fcf7161d2329211"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterLandCard.java",
+      "sha256": "e9e31535856250c875e2036b551236be506dd0b4229c3e7a4f3f4f639ac257df"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetAnyTarget.java",
+      "sha256": "94f28b8a4a9908ef9b7599805c0ac39faf0aae249231969cd51373db206ebf34"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ]
 }
