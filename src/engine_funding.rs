@@ -837,7 +837,7 @@ impl<'g> FundingState<'g> {
                             card: object.card,
                             foreign_stash: false,
                             exile_any_mana: false,
-                            mana_value: object.card.fixed_mana_value(),
+                            mana_value: self.game.mana_value_with_object(entry.id, object),
                             kinds: self.kinds(entry),
                             subtypes: ability_world::CharacteristicWorld::subtypes(self, entry.id),
                         });
@@ -952,6 +952,14 @@ impl<'g> FundingState<'g> {
             live_counters::set(&mut self.named_counters, reference, counters.named);
             if cost.sacrifice {
                 object.zone = Zone::Graveyard;
+                if !object.is_token() {
+                    object.card = self
+                        .game
+                        .native_copy_recipe(reference)
+                        .map_or(object.card, |r| r.definition)
+                        .front_face();
+                    object.copy_kind = CopyKind::None;
+                }
                 object.counters = InitialCounters::default();
                 live_counters::set(&mut self.named_counters, reference, None);
             }

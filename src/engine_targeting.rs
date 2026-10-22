@@ -1069,7 +1069,7 @@ impl Game {
                             && (!nonland || self.current_kinds(id) & 2 == 0)
                             && (!tapped || obj.tapped)
                             && ((min_mana == 0 && max_mana == u32::MAX) || {
-                                let value = obj.card.fixed_mana_value();
+                                let value = self.object_mana_value(id);
                                 value >= u64::from(min_mana) && value <= u64::from(max_mana)
                             })
                     }

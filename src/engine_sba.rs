@@ -81,7 +81,8 @@ impl Game {
                     batch.deaths.push(id);
                 }
             } else if let Some(target) = object.attached_to
-                && (self.is_creature(id)
+                && (object.card.equipment().is_none()
+                    || self.is_creature(id)
                     || target == self.object_ref(id)
                     || !self.on_battlefield(target.card)
                     || self.object_ref(target.card) != target

@@ -42,7 +42,7 @@ mod stack_copies;
 #[cfg(test)]
 #[path = "engine_stack_copies_tests.rs"]
 mod stack_copies_tests;
-pub use copies::{CopyRecipe, SourceCopyFacts};
+pub use copies::{CopyFaces, CopyOriginView, CopyRecipe, SourceCopyFacts};
 #[path = "engine_copy_characteristics.rs"]
 mod copy_characteristics;
 pub use crate::cards::CopyExceptions;
@@ -771,6 +771,7 @@ fn first_player() -> Player {
 #[repr(u8)]
 enum CopyKind {
     None,
+    Physical,
     Token,
     Spell,
 }
@@ -807,7 +808,7 @@ impl Object {
         self.copy_kind == CopyKind::Spell
     }
     fn is_token(&self) -> bool {
-        self.is_copy_token() || self.card.is_token()
+        self.is_copy_token() || self.copy_kind != CopyKind::Physical && self.card.is_token()
     }
     fn keywords(&self) -> Keywords {
         self.card.keywords().union(self.gained_keywords)
@@ -2184,6 +2185,7 @@ pub struct Observation {
     pub plot_payment: Option<PlotPaymentView>,
     pub triggered_this_turn: Vec<TriggerUse>,
     pub pending_trigger_multiplicities: Vec<TriggerMultiplicityView>,
+    pub copy_origins: Vec<copies::CopyOriginView>,
     pub ability_resolutions: Vec<AbilityResolutionView>,
     pub role_choices: Vec<RoleGroupView>,
     pub role_timestamps: Vec<RoleTimestampView>,
@@ -5455,7 +5457,10 @@ impl Game {
         let destination = plan.destination;
         // Outside is an internal staging zone for newly allocated tokens. A
         // ceased token is on the free list and cannot move again (CR111.8).
-        let fresh_token = before.zone == Zone::Outside && !self.state.free_tokens.contains(&id);
+        let fresh_token = before.zone == Zone::Outside && !self.state.free_tokens.contains(&id)
+            || before.zone == Zone::Stack
+                && self.state.objects[id as usize].is_copy_token()
+                && self.copy_recipe(before.reference).is_some();
         if (self.state.objects[id as usize].is_spell_copy() && before.zone != Zone::Stack)
             || before.card.is_emblem()
             || (before.is_token() && before.zone != Zone::Battlefield && !fresh_token)
@@ -5661,9 +5666,16 @@ impl Game {
             // A surviving attacker remains blocked after its last blocker leaves.
         }
         self.forget_transform_history(before.reference);
+        let native = self
+            .native_copy_recipe(before.reference)
+            .map(|recipe| recipe.definition);
+        if before.zone == Zone::Battlefield && !before.is_token() {
+            self.clear_copy_recipe(before.reference);
+        }
         let obj = &mut self.state.objects[id as usize];
         if before.zone == Zone::Battlefield && !obj.is_token() {
-            obj.card = obj.card.front_face();
+            obj.card = native.unwrap_or(obj.card).front_face();
+            obj.copy_kind = CopyKind::None;
         }
         obj.zone = destination;
         // Only stack and battlefield objects have independent control.
@@ -6629,6 +6641,7 @@ impl Game {
                 .filter(|p| p.controller == viewer)
                 .copied(),
             triggered_this_turn: s.triggered_this_turn.clone(),
+            copy_origins: self.copy_origins_view(),
             pending_trigger_multiplicities: s
                 .roles
                 .as_ref()
@@ -8117,6 +8130,9 @@ mod ecl_shadow_urchin_tests;
 #[path = "engine_dream_exile.rs"]
 mod dream_exile;
 pub use dream_exile::DreamExileView;
+#[cfg(test)]
+#[path = "engine_ecl_copy_entry_tests.rs"]
+mod ecl_copy_entry_tests;
 #[cfg(test)]
 #[path = "engine_ecl_goliath_tests.rs"]
 mod ecl_goliath_tests;

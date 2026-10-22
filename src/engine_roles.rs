@@ -173,6 +173,9 @@ impl Game {
     }
     pub(super) fn assign_static_source_timestamp(&mut self, source: ObjectRef) {
         let timestamp = self.next_role_timestamp();
+        self.set_static_source_timestamp(source, timestamp);
+    }
+    pub(super) fn set_static_source_timestamp(&mut self, source: ObjectRef, timestamp: u64) {
         if let Some(r) = &mut self.state.roles {
             for v in &mut r.ability_timestamps {
                 if v.source == source {
@@ -338,5 +341,51 @@ impl Game {
             .unwrap()
             .keep = Some(object);
         self.advance_sba_choices();
+    }
+}
+
+#[cfg(test)]
+mod physical_copy_failure_tests {
+    use super::super::ability_timeline_tests::{cast, checked, named, settle, setup};
+    use super::*;
+    #[test]
+    fn ecl_copy_entry_copy_failure_rolls_back_provider_indexes_recipes_views_and_revision() {
+        let mut g = setup(Player::P0);
+        let body = named(&mut g, Player::P0, "Imperious Perfect", Zone::Battlefield);
+        let target = named(&mut g, Player::P1, "Serra Angel", Zone::Battlefield);
+        let spell = named(&mut g, Player::P0, "Mirrorform", Zone::Hand);
+        cast(&mut g, spell, None, &[Target::Card(target)]);
+        checked(&mut g, Action::Pass);
+        g.state.roles.get_or_insert_with(Default::default).clock = u64::MAX;
+        let saved = g.snapshot();
+        let revision = g.revision();
+        let views = [
+            serde_json::to_value(g.observe(Player::P0)).unwrap(),
+            serde_json::to_value(g.observe(Player::P1)).unwrap(),
+        ];
+        assert!(matches!(
+            g.apply(g.actor().unwrap(), Action::Pass),
+            Err(Error::CapacityExceeded(_))
+        ));
+        assert_eq!(g.snapshot(), saved);
+        assert_eq!(g.revision(), revision);
+        for (index, p) in [Player::P0, Player::P1].into_iter().enumerate() {
+            assert_eq!(serde_json::to_value(g.observe(p)).unwrap(), views[index]);
+        }
+        assert_eq!(
+            g.state.objects[body as usize].card.name(),
+            "Imperious Perfect"
+        );
+        let mut branch = {
+            let parent = g.clone();
+            parent.clone()
+        };
+        branch.state.roles.as_mut().unwrap().clock = 1000;
+        checked(&mut branch, Action::Pass);
+        settle(&mut branch);
+        assert_eq!(
+            branch.state.objects[body as usize].card.name(),
+            "Serra Angel"
+        );
     }
 }

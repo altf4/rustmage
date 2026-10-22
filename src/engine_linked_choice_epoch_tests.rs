@@ -29,6 +29,8 @@ fn linked_choice_epochs_old_and_new_packets_return_only_their_own_exact_links() 
         let definition = g.state.objects[source as usize].card;
         g.state.copy_recipes = Some(
             vec![copies::CopyRow {
+                native: None,
+                loyalty_used_turn: None,
                 object,
                 recipe: CopyRecipe::new(definition),
                 ability_origin: 42,
@@ -78,6 +80,8 @@ fn linked_choice_epoch_packet_keeps_recipe_and_origin_after_source_origin_change
     let definition = g.state.objects[source as usize].card;
     g.state.copy_recipes = Some(
         vec![copies::CopyRow {
+            native: None,
+            loyalty_used_turn: None,
             object,
             recipe: CopyRecipe::new(definition),
             ability_origin: 42,

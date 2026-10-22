@@ -6,6 +6,45 @@ pub struct TransformHistoryView {
     pub timestamp: u64,
 }
 impl Game {
+    pub(super) fn unregister_intrinsic_sources(&mut self, id: CardId) {
+        let object = self.object_ref(id);
+        // Remove only intrinsic providers. Resolution-created effects and combat membership survive.
+        if let Some(roles) = &mut self.state.roles {
+            roles
+                .base_stats
+                .retain(|row| !row.static_source || row.source != object);
+            roles.live_static.retain(|row| row.source != object);
+            roles.ability_timestamps.retain(|row| row.source != object);
+            roles
+                .ability_removal_sources
+                .retain(|&source| source != object);
+            roles
+                .characteristic_sources
+                .retain(|&source| source != object);
+        }
+        for sources in [
+            &mut self.state.static_sources,
+            &mut self.state.cast_sources,
+            &mut self.state.attack_sources,
+            &mut self.state.damage_sources,
+            &mut self.state.discard_sources,
+            &mut self.state.draw_sources,
+            &mut self.state.step_sources,
+            &mut self.state.life_sources,
+            &mut self.state.counter_sources,
+            &mut self.state.death_sources,
+            &mut self.state.attachment_sources,
+        ] {
+            sources.retain(|&source| source != id);
+        }
+        if let Some(data) = &mut self.state.evidence_data {
+            data.sources.retain(|&s| s != id);
+        }
+        if let Some(data) = &mut self.state.explore_data {
+            data.sources.retain(|&s| s != id);
+        }
+    }
+
     fn transform_timestamp(&self, object: ObjectRef) -> u64 {
         self.state
             .roles
@@ -41,44 +80,30 @@ impl Game {
     }
     pub(super) fn transform_permanent(&mut self, id: CardId) {
         let old = self.state.objects[id as usize].card;
-        let Some(spec) = old.transform_spec() else {
+        let object = self.object_ref(id);
+        let current = self.copiable_recipe(object);
+        let native = self.native_copy_recipe(object).unwrap_or(current);
+        let CopyFaces::Double {
+            front,
+            back,
+            back_up,
+        } = native.faces()
+        else {
             return;
         };
-        let next = if old == spec.front {
-            spec.back
-        } else {
-            spec.front
+        let next_native = CopyRecipe {
+            definition: if back_up { front } else { back },
+            faces: CopyFaces::Double {
+                front,
+                back,
+                back_up: !back_up,
+            },
+            ..native
         };
+        let overlay = self.native_copy_recipe(object).is_some();
+        let next = if overlay { old } else { next_native.definition };
         let object = self.object_ref(id);
-        // Remove only intrinsic providers. Resolution-created effects and combat membership survive.
-        if let Some(roles) = &mut self.state.roles {
-            roles
-                .base_stats
-                .retain(|row| !row.static_source || row.source != object);
-            roles.live_static.retain(|row| row.source != object);
-            roles.ability_timestamps.retain(|row| row.source != object);
-            roles
-                .ability_removal_sources
-                .retain(|&source| source != object);
-            roles
-                .characteristic_sources
-                .retain(|&source| source != object);
-        }
-        for sources in [
-            &mut self.state.static_sources,
-            &mut self.state.cast_sources,
-            &mut self.state.attack_sources,
-            &mut self.state.damage_sources,
-            &mut self.state.discard_sources,
-            &mut self.state.draw_sources,
-            &mut self.state.step_sources,
-            &mut self.state.life_sources,
-            &mut self.state.counter_sources,
-            &mut self.state.death_sources,
-            &mut self.state.attachment_sources,
-        ] {
-            sources.retain(|&source| source != id);
-        }
+        self.unregister_intrinsic_sources(id);
         let used_loyalty = self.state.objects[id as usize].used_abilities & old.loyalty_mask() != 0;
         self.state.objects[id as usize].card = next;
         if used_loyalty {
@@ -86,7 +111,14 @@ impl Game {
         }
         if let Some(rows) = &mut self.state.copy_recipes {
             for row in rows.iter_mut().filter(|row| row.object == object) {
-                row.recipe.definition = next;
+                if overlay {
+                    row.native = Some(next_native);
+                    if let CopyFaces::Double { back_up, .. } = &mut row.recipe.faces {
+                        *back_up = !*back_up;
+                    }
+                } else {
+                    row.recipe = next_native;
+                }
             }
         }
         let timestamp = self.next_role_timestamp();

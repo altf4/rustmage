@@ -18,7 +18,7 @@ impl Game {
                 .subtype
                 .is_none_or(|subtype| self.has_subtype(id, subtype))
             && (filter.max_mana == u32::MAX
-                || object.card.fixed_mana_value() <= u64::from(filter.max_mana))
+                || self.object_mana_value(id) <= u64::from(filter.max_mana))
     }
     fn battlefield_group(&self, item: &SpellView, filters: &[BattlefieldFilter]) -> Vec<CardId> {
         (0..self.state.objects.len())
