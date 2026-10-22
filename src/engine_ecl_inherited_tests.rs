@@ -299,3 +299,24 @@ fn ecl_inherited_flock_flash_other_owned_bounce_and_rooftop_partial_grave_exile(
         assert!(g.has_subtype(rooftop, "Elf"));
     }
 }
+#[test]
+fn ecl_inherited_trigger_and_activation_bodies_have_paid_entry_evidence_both_players() {
+    for p in [Player::P0, Player::P1] {
+        for (name, power, toughness, keywords, counters) in [
+            ("Boggart Prankster", 1, 3, Keywords::NONE, 0),
+            ("Enraged Flamecaster", 3, 2, Keywords::REACH, 0),
+            ("Kulrath Mystic", 2, 4, Keywords::NONE, 0),
+            ("Gnarlbark Elm", 1, 2, Keywords::NONE, 2),
+            ("Iron-Shield Elf", 3, 1, Keywords::NONE, 0),
+        ] {
+            let mut g = setup(p);
+            let source = named(&mut g, p, name, Zone::Hand);
+            super::ability_timeline_tests::cast(&mut g, source, None, &[]);
+            settle(&mut g);
+            assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+            assert_eq!(g.stats(source), Stats { power, toughness });
+            assert_eq!(g.object_view(source).keywords, keywords);
+            assert_eq!(g.object_view(source).counters.minus_one, counters);
+        }
+    }
+}
