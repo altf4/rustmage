@@ -8,5 +8,32 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "203b9750502500817c0bdd76d670211b37cf06a677adb9e6664a597f3974c72e"
   },
-  "physical_metadata_sha256": "daa045eb7dca692c8c3dc29708c1949405adcdfc83ea76acddbcc078fe4092e9"
+  "physical_metadata_sha256": "daa045eb7dca692c8c3dc29708c1949405adcdfc83ea76acddbcc078fe4092e9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EclipsedElf.java",
+  "java_sha256": "3342ecdc48158ad6d8e8609af77ac97bd902c1faa054a097c7b1ea153ee1e8b7",
+  "rules_tests": "src/engine_filtered_library_selection_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+      "sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/PutCards.java",
+      "sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+    }
+  ],
+  "inherited_audit": "Complete Oracle and XMage bodies and full relevant behavior helpers read. Existing rules scenarios exercise both seats, every hybrid route, exact looked-card type unions including Kindred changeling, private choices, optional decline, revealed-hand knowledge, random bottoms and owned replay/restore. Typed behavior preserved."
 }
