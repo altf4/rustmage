@@ -2,6 +2,7 @@
 fn resolved_foreign_source(g: &mut Game, p: Player, name: &str) -> CardId {
     let source = named(g, p.other(), name, Zone::Exile);
     g.state.exile_permissions.push(ExilePlayPermission {
+        cast_only: false,
         object: g.object_ref(source),
         player: p,
         expires_turn: g.state.turn,

@@ -183,10 +183,10 @@ mod draw_events;
 mod endure;
 #[path = "engine_funding.rs"]
 mod funding;
-#[path = "engine_live_counters.rs"]
-mod live_counters;
 #[path = "engine_keyword_counters.rs"]
 mod keyword_counters;
+#[path = "engine_live_counters.rs"]
+mod live_counters;
 pub use convoke::{ConvokeChoiceView, ConvokeContribution, ConvokePaymentView};
 #[path = "engine_resolution_mana.rs"]
 mod resolution_mana;
@@ -3114,7 +3114,7 @@ impl Game {
                         Zone::Hand | Zone::Graveyard => obj.owner == actor,
                         Zone::Library => self.can_cast_library_top(actor, card),
                         Zone::Exile => {
-                            self.can_play_exiled(actor, card)
+                            self.can_cast_exiled(actor, card)
                                 || self.plotted_cast_available(actor, card)
                         }
                         _ => false,
@@ -3282,7 +3282,7 @@ impl Game {
                     }
                     let flashback =
                         obj.zone == Zone::Graveyard && obj.card.flashback_cost().is_some();
-                    let exile = obj.zone == Zone::Exile && self.can_play_exiled(actor, card);
+                    let exile = obj.zone == Zone::Exile && self.can_cast_exiled(actor, card);
                     let library = self.can_cast_library_top(actor, card);
                     if (obj.zone != Zone::Hand && !flashback && !exile && !library)
                         || obj.is_token()
@@ -3290,7 +3290,8 @@ impl Game {
                         continue;
                     }
                     if obj.card.is_land() {
-                        if sorcery
+                        if (obj.zone != Zone::Exile || self.can_play_exiled(actor, card))
+                            && sorcery
                             && (!s.land_played
                                 || self
                                     .continuous_land_plays(actor)
@@ -3982,7 +3983,7 @@ impl Game {
                     }
                     if f.selected.len() < f.maximum {
                         for r in &f.remaining {
-                            if f.eligible.contains(r)
+                            if self.library_selection_allows(f, *r)
                                 && emit(Action::SelectLibrary { card: r.card })
                             {
                                 return true;

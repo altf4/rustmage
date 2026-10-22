@@ -516,6 +516,7 @@ impl ManaProduction {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibraryRemainder {
     OptionalGraveyard,
+    Shuffle,
     Graveyard,
     BottomAny,
     BottomRandom,
@@ -538,6 +539,7 @@ pub(crate) enum LibrarySelectionCount {
     Lessons,
     InstantAndSorcery,
     GainedLife,
+    ControlledColors,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct LibrarySelectionSpec {
@@ -555,6 +557,7 @@ pub(crate) enum LibraryPickDestination {
     Hand,
     Battlefield,
     Top,
+    ExileCastThisTurn,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibraryLook {
@@ -562,6 +565,7 @@ pub(crate) enum LibraryLook {
     ChosenX,
     UntilKinds(u16),
     UntilCount { kinds: u16, amount: AmountValue },
+    UntilNonlandCount(AmountValue),
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct LibrarySelectionEffect {

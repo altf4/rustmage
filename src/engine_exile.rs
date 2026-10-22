@@ -8,6 +8,7 @@ pub struct ExilePlayPermission {
     pub object: ObjectRef,
     pub player: Player,
     pub expires_turn: u32,
+    pub cast_only: bool,
 }
 impl Game {
     pub(super) fn can_play_exiled(&self, player: Player, card: CardId) -> bool {
@@ -18,10 +19,23 @@ impl Game {
             return true;
         }
         self.state.exile_permissions.iter().any(|p| {
-            p.player == player
+            !p.cast_only
+                && p.player == player
                 && p.object == self.object_ref(card)
                 && p.expires_turn >= self.state.turn
         })
+    }
+    pub(super) fn can_cast_exiled(&self, player: Player, card: CardId) -> bool {
+        self.can_play_exiled(player, card)
+            || self.state.exile_permissions.iter().any(|p| {
+                p.cast_only
+                    && p.player == player
+                    && p.object == self.object_ref(card)
+                    && p.expires_turn >= self.state.turn
+            })
+    }
+    pub(super) fn grant_exile_cast_permission(&mut self, player: Player, object: ObjectRef) {
+        self.grant_exile_permission(player, object, false, true);
     }
     pub(super) fn exile_top_play(&mut self, player: Player, amount: u16, next_turn: bool) {
         self.exile_top_play_from(player, player, amount, next_turn);
@@ -59,6 +73,15 @@ impl Game {
         object: ObjectRef,
         next_turn: bool,
     ) {
+        self.grant_exile_permission(player, object, next_turn, false);
+    }
+    fn grant_exile_permission(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+        next_turn: bool,
+        cast_only: bool,
+    ) {
         if self.object_ref(object.card) != object
             || self.state.objects[object.card as usize].zone != Zone::Exile
         {
@@ -83,6 +106,7 @@ impl Game {
                 object,
                 player,
                 expires_turn,
+                cast_only,
             },
         );
     }

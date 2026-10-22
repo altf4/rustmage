@@ -784,6 +784,7 @@ fn paid_asinine_flash_cost_timing_foreign_rights_and_nontarget_hexproof_both_sea
             );
             if foreign {
                 g.state.exile_permissions.push(ExilePlayPermission {
+                    cast_only: false,
                     object: g.object_ref(spell),
                     player: p,
                     expires_turn: g.state.turn,
@@ -865,6 +866,7 @@ fn paid_mystical_tether_optional_flash_keeps_linked_return_and_foreign_owner_rou
         let foe = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
         let spell = named(&mut g, p.other(), "Mystical Tether", Zone::Exile);
         g.state.exile_permissions.push(ExilePlayPermission {
+            cast_only: false,
             object: g.object_ref(spell),
             player: p,
             expires_turn: g.state.turn,

@@ -100,6 +100,7 @@ fn paid(g: &mut Game, p: Player, recipient: CardId, foreign: bool) -> CardId {
     );
     if foreign {
         g.state.exile_permissions.push(ExilePlayPermission {
+            cast_only: false,
             object: g.object_ref(spell),
             player: p,
             expires_turn: g.state.turn,

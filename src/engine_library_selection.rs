@@ -17,6 +17,7 @@ pub(super) struct LibrarySelection {
     pub minimum: usize,
     pub maximum: usize,
     pub ordering: bool,
+    pub available_colors: Option<u8>,
 }
 impl LibrarySelection {
     pub fn bytes(&self) -> usize {
@@ -34,6 +35,7 @@ pub struct LibrarySelectionView {
     pub minimum: usize,
     pub maximum: usize,
     pub ordering: bool,
+    pub available_colors: Option<u8>,
     pub reveal: bool,
     pub public: bool,
     pub destination: &'static str,
@@ -111,6 +113,25 @@ impl Game {
                         .map_or(usize::MAX, |at| at + 1)
                 }
             }
+            LibraryLook::UntilNonlandCount(amount) => {
+                let requested = self.item_amount(amount, item);
+                if requested == 0 {
+                    0
+                } else {
+                    let mut count = 0u128;
+                    self.state.players[owner.index()]
+                        .library
+                        .iter()
+                        .rev()
+                        .position(|&id| {
+                            if !self.state.objects[id as usize].card.is_land() {
+                                count += 1;
+                            }
+                            count >= requested
+                        })
+                        .map_or(usize::MAX, |at| at + 1)
+                }
+            }
             LibraryLook::UntilKinds(kinds) => self.state.players[owner.index()]
                 .library
                 .iter()
@@ -127,6 +148,12 @@ impl Game {
             .map(|&id| self.object_ref(id))
             .collect();
         if remaining.is_empty() {
+            if spec.remainder == LibraryRemainder::Shuffle {
+                self.forget_library_top(owner);
+                self.state
+                    .rng
+                    .shuffle(&mut self.state.players[owner.index()].library);
+            }
             return false;
         }
         let eligible: Vec<_> = remaining
@@ -146,7 +173,12 @@ impl Game {
                 .iter()
                 .filter(|o| o.owner == owner && o.zone == Zone::Graveyard && !o.is_token())
         };
+        let available_colors = (spec.count == LibrarySelectionCount::ControlledColors)
+            .then(|| ability_world::CharacteristicWorld::controlled_colors(self, owner) & 31);
         let requested = match spec.count {
+            LibrarySelectionCount::ControlledColors => {
+                available_colors.unwrap().count_ones() as usize
+            }
             LibrarySelectionCount::All => remaining.len(),
             LibrarySelectionCount::Fixed(n) => usize::from(n),
             LibrarySelectionCount::Lessons => {
@@ -187,13 +219,16 @@ impl Game {
             minimum,
             maximum,
             ordering: false,
+            available_colors,
         }));
         // Even a forced random remainder must expose the looked information
         // before it disappears into the library (there may be no eligible pick).
         if maximum == 0
             && !matches!(
                 spec.remainder,
-                LibraryRemainder::BottomRandom | LibraryRemainder::OptionalGraveyard
+                LibraryRemainder::BottomRandom
+                    | LibraryRemainder::OptionalGraveyard
+                    | LibraryRemainder::Shuffle
             )
         {
             return self.finish_library_selection_internal(owner);
@@ -214,6 +249,40 @@ impl Game {
         }
         self.state.pending = Pending::EffectLibrarySelection { player: owner };
         true
+    }
+    /// A selected set must admit an injective card-to-color assignment. The
+    /// 32-state domain retains every matching, rather than making greedy choices.
+    pub(super) fn library_selection_allows(
+        &self,
+        f: &LibrarySelection,
+        candidate: ObjectRef,
+    ) -> bool {
+        if !f.eligible.contains(&candidate) {
+            return false;
+        }
+        let Some(colors) = f.available_colors else {
+            return true;
+        };
+        if f.selected.len() >= f.maximum {
+            return false;
+        }
+        let mut reachable = 1u32;
+        for reference in f.selected.iter().chain(std::iter::once(&candidate)) {
+            let colors = ability_world::CharacteristicWorld::colors(self, reference.card) & colors;
+            let mut next = 0u32;
+            for used in 0u8..32 {
+                if reachable & (1u32 << used) == 0 {
+                    continue;
+                }
+                for bit in [1u8, 2, 4, 8, 16] {
+                    if colors & bit != 0 && used & bit == 0 {
+                        next |= 1u32 << (used | bit);
+                    }
+                }
+            }
+            reachable = next;
+        }
+        reachable != 0
     }
     pub(super) fn choose_library_selection(&mut self, card: CardId) {
         let f = self
@@ -289,12 +358,19 @@ impl Game {
             );
         }
         let ids: Vec<_> = f.selected.iter().map(|r| r.card).collect();
-        let events = if f.destination == LibraryPickDestination::Hand {
-            self.move_objects_raw(&ids, Zone::Hand)
-        } else {
-            Vec::new()
+        let events = match f.destination {
+            LibraryPickDestination::Hand => self.move_objects_raw(&ids, Zone::Hand),
+            LibraryPickDestination::ExileCastThisTurn => self.move_objects_raw(&ids, Zone::Exile),
+            _ => Vec::new(),
         };
-        if f.spec.reveal {
+        if f.destination == LibraryPickDestination::ExileCastThisTurn {
+            for event in &events {
+                if event.moved && event.destination == Zone::Exile {
+                    self.grant_exile_cast_permission(owner, event.after);
+                }
+            }
+        }
+        if f.spec.reveal && f.destination == LibraryPickDestination::Hand {
             for e in &events {
                 self.state.known_hand.push(e.after);
             }
@@ -329,6 +405,10 @@ impl Game {
             }));
         }
         match f.spec.remainder {
+            LibraryRemainder::Shuffle => self
+                .state
+                .rng
+                .shuffle(&mut self.state.players[owner.index()].library),
             LibraryRemainder::OptionalGraveyard => {
                 let ids: Vec<_> = f.bottom.iter().map(|r| r.card).collect();
                 let events = self.move_objects_raw(&ids, Zone::Graveyard);
@@ -381,7 +461,7 @@ impl Game {
                 .remaining
                 .iter()
                 .copied()
-                .filter(|r| f.eligible.contains(r))
+                .filter(|r| self.library_selection_allows(f, *r))
                 .collect(),
             selected: f
                 .selected
@@ -392,15 +472,18 @@ impl Game {
             minimum: f.minimum,
             maximum: f.maximum,
             ordering: f.ordering,
+            available_colors: f.available_colors,
             reveal: f.spec.reveal,
             public: f.public,
             destination: match f.destination {
                 LibraryPickDestination::Hand => "hand",
                 LibraryPickDestination::Battlefield => "battlefield",
                 LibraryPickDestination::Top => "top",
+                LibraryPickDestination::ExileCastThisTurn => "exile_cast_this_turn",
             },
             remainder: match f.spec.remainder {
                 LibraryRemainder::OptionalGraveyard => "optional_graveyard",
+                LibraryRemainder::Shuffle => "shuffle",
                 LibraryRemainder::Graveyard => "graveyard",
                 LibraryRemainder::BottomAny => "bottom_any",
                 LibraryRemainder::BottomRandom => "bottom_random",

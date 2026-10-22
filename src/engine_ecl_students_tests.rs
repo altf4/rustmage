@@ -648,3 +648,301 @@ fn ecl_student_abigale_counters_and_resolution_removal_are_not_copiable_values()
         checked(&mut g, Action::Pass);
     }
 }
+
+fn sanar_library(g: &mut Game, p: Player, names: &[&str]) -> Vec<CardId> {
+    while let Some(&id) = g.state.players[p.index()].library.last() {
+        g.move_object(id, Zone::Exile);
+    }
+    let ids = names
+        .iter()
+        .map(|name| named(g, p, name, Zone::Library))
+        .collect::<Vec<_>>();
+    g.state.players[p.index()].library.reverse();
+    ids
+}
+fn start_sanar(g: &mut Game, source: CardId, leave: bool) {
+    let p = g.state.active;
+    g.begin_step(Step::Main1);
+    g.prepare_triggers();
+    assert_eq!(g.state.stack.len(), 1);
+    if leave {
+        g.move_object(source, Zone::Exile);
+    }
+    checked(g, Action::Pass);
+    checked(g, Action::Pass);
+    assert_eq!(g.state.active, p);
+}
+
+#[test]
+fn ecl_student_sanar_three_hybrid_routes_body_and_only_own_first_main_trigger() {
+    for p in [Player::P0, Player::P1] {
+        for cost in [0, 1, 2] {
+            let mut g = setup(p);
+            let source = named(&mut g, p, "Sanar, Innovative First-Year", Zone::Hand);
+            g.state.players[p.index()].mana = match cost {
+                0 => [0, 0, 0, 2, 0, 2],
+                1 => [0, 1, 0, 1, 0, 2],
+                _ => [0, 2, 0, 0, 0, 2],
+            };
+            checked(&mut g, Action::AnnounceCast { card: source });
+            checked(&mut g, Action::ChooseSpellCost { cost });
+            pay(&mut g);
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert_eq!(
+                g.stats(source),
+                Stats {
+                    power: 2,
+                    toughness: 4
+                }
+            );
+            g.begin_step(Step::Main2);
+            assert!(g.state.pending_triggers.is_empty());
+            g.state.active = p.other();
+            g.begin_step(Step::Main1);
+            assert!(g.state.pending_triggers.is_empty());
+        }
+    }
+}
+#[test]
+fn ecl_student_sanar_reveals_through_lands_and_freezes_colors_for_nongreedy_assignment() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Sanar, Innovative First-Year", Zone::Battlefield);
+        let ids = sanar_library(
+            &mut g,
+            p,
+            &[
+                "Forest",
+                "Sanar, Innovative First-Year",
+                "Island",
+                "Opt",
+                "Shock",
+            ],
+        );
+        start_sanar(&mut g, source, false);
+        for viewer in [p, p.other()] {
+            let view = g.observe(viewer).library_selection.unwrap();
+            assert!(view.public && view.reveal);
+            assert_eq!(view.available_colors, Some(10));
+            assert_eq!(view.maximum, 2);
+            assert_eq!(
+                view.remaining.iter().map(|v| v.id).collect::<Vec<_>>(),
+                ids[..4]
+            );
+            assert_eq!(
+                view.candidates.iter().map(|r| r.card).collect::<Vec<_>>(),
+                vec![ids[1], ids[3]]
+            );
+        }
+        reject(&mut g, Action::SelectLibrary { card: ids[0] });
+        reject(&mut g, Action::SelectLibrary { card: ids[4] });
+        checked(&mut g, Action::SelectLibrary { card: ids[1] });
+        reject(&mut g, Action::SelectLibrary { card: ids[1] });
+        // The first multicolored card must be assignable to red, leaving blue
+        // for Opt; choosing its first color greedily would reject a legal set.
+        g.move_object(source, Zone::Exile);
+        g.move_object(source, Zone::Battlefield);
+        g.set_color_effects(&[source], 0, AnimationDuration::Permanent);
+        assert_eq!(
+            g.observe(p).library_selection.unwrap().available_colors,
+            Some(10)
+        );
+        checked(&mut g, Action::SelectLibrary { card: ids[3] });
+        checked(&mut g, Action::FinishLibrarySelection);
+        settle(&mut g);
+        for &id in &[ids[1], ids[3]] {
+            assert_eq!(g.object_view(id).zone, Zone::Exile);
+            assert!(g.can_cast_exiled(p, id));
+            assert!(!g.can_cast_exiled(p.other(), id));
+            assert!(!g.can_play_exiled(p, id));
+        }
+        assert_eq!(g.state.players[p.index()].library.len(), 3);
+    }
+}
+#[test]
+fn ecl_student_sanar_color_matching_rejects_hall_deficiency_not_just_excess_count() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Sanar, Innovative First-Year", Zone::Battlefield);
+        named(&mut g, p, "Savannah Lions", Zone::Battlefield);
+        let ids = sanar_library(
+            &mut g,
+            p,
+            &[
+                "Sanar, Innovative First-Year",
+                "Sanar, Innovative First-Year",
+                "Opt",
+            ],
+        );
+        start_sanar(&mut g, source, false);
+        assert_eq!(g.observe(p).library_selection.unwrap().maximum, 3);
+        checked(&mut g, Action::SelectLibrary { card: ids[0] });
+        checked(&mut g, Action::SelectLibrary { card: ids[1] });
+        // Three cards whose available colors are only blue/red cannot consume
+        // the white slot, even though all three individually have allowed colors.
+        reject(&mut g, Action::SelectLibrary { card: ids[2] });
+        assert!(
+            g.observe(p.other())
+                .library_selection
+                .unwrap()
+                .candidates
+                .is_empty()
+        );
+        checked(&mut g, Action::FinishLibrarySelection);
+        settle(&mut g);
+        assert_eq!(g.object_view(ids[2]).zone, Zone::Library);
+    }
+}
+#[test]
+fn ecl_student_sanar_wrong_color_and_duplicate_monocolored_choices_are_atomic() {
+    for p in [Player::P0, Player::P1] {
+        for names in [
+            ["Opt", "Negate"],
+            ["Shock", "Shock"],
+            ["Bear Cub", "Springleaf Drum"],
+        ] {
+            let mut g = setup(p);
+            let source = named(&mut g, p, "Sanar, Innovative First-Year", Zone::Battlefield);
+            let ids = sanar_library(&mut g, p, &names);
+            start_sanar(&mut g, source, false);
+            if names[0] == "Bear Cub" {
+                for id in ids {
+                    reject(&mut g, Action::SelectLibrary { card: id });
+                }
+            } else {
+                checked(&mut g, Action::SelectLibrary { card: ids[0] });
+                reject(&mut g, Action::SelectLibrary { card: ids[1] });
+            }
+            checked(&mut g, Action::FinishLibrarySelection);
+            settle(&mut g);
+        }
+    }
+}
+#[test]
+fn ecl_student_sanar_resolution_color_changes_distinct_all_permanents_and_zero_still_shuffle() {
+    for p in [Player::P0, Player::P1] {
+        for zero in [false, true] {
+            let mut g = setup(p);
+            let source = named(&mut g, p, "Sanar, Innovative First-Year", Zone::Battlefield);
+            let ids = sanar_library(&mut g, p, &["Opt", "Shock", "Bear Cub", "Swamp"]);
+            g.begin_step(Step::Main1);
+            g.prepare_triggers();
+            if zero {
+                g.move_object(source, Zone::Exile);
+            } else {
+                let enchantment = named(&mut g, p, "Morcant's Eyes", Zone::Battlefield);
+                g.set_color_effects(&[enchantment], 16, AnimationDuration::Permanent);
+                named(&mut g, p, "Bear Cub", Zone::Battlefield);
+                named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            }
+            g.remember_library_top(p, g.object_ref(ids[0]));
+            let mut rng = g.state.rng;
+            let mut expected = g.state.players[p.index()].library.clone();
+            rng.shuffle(&mut expected);
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            if !zero {
+                let view = g.observe(p).library_selection.unwrap();
+                assert_eq!(view.available_colors, Some(26));
+                assert_eq!(view.maximum, 3);
+                assert_eq!(view.remaining.len(), 3);
+                checked(&mut g, Action::FinishLibrarySelection);
+                settle(&mut g);
+            }
+            assert_eq!(g.state.rng, rng);
+            assert_eq!(g.state.players[p.index()].library, expected);
+            assert!(g.observe(p).library_selection.is_none());
+            assert!(g.observe(p).exile_permissions.is_empty());
+        }
+    }
+}
+#[test]
+fn ecl_student_sanar_all_five_colors_short_library_and_optional_decline() {
+    for p in [Player::P0, Player::P1] {
+        for short in [false, true] {
+            let mut g = setup(p);
+            let source = named(&mut g, p, "Sanar, Innovative First-Year", Zone::Battlefield);
+            g.set_color_effects(&[source], 31, AnimationDuration::Permanent);
+            let names = if short {
+                vec!["Opt", "Shock"]
+            } else {
+                vec![
+                    "Forest",
+                    "Savannah Lions",
+                    "Opt",
+                    "Duress",
+                    "Shock",
+                    "Bear Cub",
+                    "Island",
+                ]
+            };
+            let ids = sanar_library(&mut g, p, &names);
+            start_sanar(&mut g, source, false);
+            let view = g.observe(p).library_selection.unwrap();
+            assert_eq!(view.available_colors, Some(31));
+            assert_eq!(view.remaining.len(), if short { 2 } else { 6 });
+            assert_eq!(view.maximum, if short { 2 } else { 5 });
+            if !short {
+                for &id in &ids[1..6] {
+                    checked(&mut g, Action::SelectLibrary { card: id });
+                }
+            }
+            checked(&mut g, Action::FinishLibrarySelection);
+            settle(&mut g);
+            assert_eq!(g.state.exile_permissions.len(), if short { 0 } else { 5 });
+            assert_eq!(g.state.players[p.index()].library.len(), 2);
+        }
+    }
+}
+#[test]
+fn ecl_student_sanar_casts_require_mana_obey_timing_and_expire_with_exact_exile_identity() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Sanar, Innovative First-Year", Zone::Battlefield);
+        let ids = sanar_library(&mut g, p, &["Opt", "Shock", "Forest"]);
+        start_sanar(&mut g, source, false);
+        checked(&mut g, Action::SelectLibrary { card: ids[0] });
+        checked(&mut g, Action::FinishLibrarySelection);
+        settle(&mut g);
+        g.state.players[p.index()].mana = [0; 6];
+        reject(&mut g, Action::AnnounceExile { card: ids[0] });
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+        checked(&mut g, Action::AnnounceExile { card: ids[0] });
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert_eq!(g.object_view(ids[0]).zone, Zone::Graveyard);
+        assert!(!g.can_cast_exiled(p, ids[0]));
+        g.move_object(ids[0], Zone::Exile);
+        assert!(!g.can_cast_exiled(p, ids[0]));
+        let creature = named(&mut g, p, "Bear Cub", Zone::Exile);
+        g.grant_exile_cast_permission(p, g.object_ref(creature));
+        g.state.priority = p.other();
+        reject(&mut g, Action::AnnounceExile { card: creature });
+        g.state.priority = p;
+        g.state.step = Step::End;
+        reject(&mut g, Action::AnnounceExile { card: creature });
+        super::ability_timeline_tests::next_turn(&mut g);
+        assert!(!g.can_cast_exiled(p, creature));
+        assert!(g.state.exile_permissions.is_empty());
+    }
+}
+#[test]
+fn ecl_student_sanar_cast_only_permissions_never_allow_land_plays_but_ordinary_permissions_still_do()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let land = named(&mut g, p, "Forest", Zone::Exile);
+        g.grant_exile_cast_permission(p, g.object_ref(land));
+        assert!(g.can_cast_exiled(p, land));
+        assert!(!g.can_play_exiled(p, land));
+        reject(&mut g, Action::PlayLand { card: land });
+        reject(&mut g, Action::AnnounceExile { card: land });
+        // The independent ordinary permission remains usable if also granted.
+        g.grant_exile_play_permission(p, g.object_ref(land), false);
+        assert!(g.can_play_exiled(p, land));
+        checked(&mut g, Action::PlayLand { card: land });
+        assert_eq!(g.object_view(land).zone, Zone::Battlefield);
+    }
+}

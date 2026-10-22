@@ -75,6 +75,7 @@ fn setup(p: Player) -> Game {
 fn paid(g: &mut Game, p: Player, name: &str, promise: bool, target: Option<Target>) -> CardId {
     let card = named(g, p.other(), name, Zone::Exile);
     g.state.exile_permissions.push(ExilePlayPermission {
+        cast_only: false,
         object: g.object_ref(card),
         player: p,
         expires_turn: g.state.turn,
@@ -255,6 +256,7 @@ fn permanent_gift_is_separate_from_printed_entry_trigger_and_never_survives_blin
 fn paid_targets(g: &mut Game, p: Player, name: &str, promise: bool, targets: &[Target]) -> CardId {
     let card = named(g, p.other(), name, Zone::Exile);
     g.state.exile_permissions.push(ExilePlayPermission {
+        cast_only: false,
         object: g.object_ref(card),
         player: p,
         expires_turn: g.state.turn,
