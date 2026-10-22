@@ -2726,6 +2726,7 @@ impl Keywords {
     pub const PROTECTION_EVERYTHING: Self = Self(134217728);
     pub const WITHER: Self = Self(268435456);
     pub const PROTECTION_COLORS: Self = Self(536870912);
+    pub const HEXPROOF_OWN_COLORS: Self = Self(1073741824);
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
     }

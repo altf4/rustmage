@@ -3,10 +3,56 @@
   "catalogue_id": 4328,
   "oracle_id": "096a878e-cff0-430a-90b5-031ecb9bfe1b",
   "facts_sha256": "e3ffbff6a8cd276c313ab2ce3c0dd2b1d79660528272afd308d676b482babd8d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f76b0a622353d5ba62bf99ca6d8941541733c88187da1a3ae48e816b1bfefcad"
   },
-  "physical_metadata_sha256": "50f67612cb82b76c0efaf3aee849fcbacd34198978844ab3f72d3515652db47c"
+  "physical_metadata_sha256": "50f67612cb82b76c0efaf3aee849fcbacd34198978844ab3f72d3515652db47c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TamMindfulFirstYear.java",
+  "rules_tests": "src/engine_ecl_students_tests.rs",
+  "java_sha256": "2b8379e8d84740e057891685ce3339788dc198e44fe00dd2b87fa20cf92fb17a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofBaseAbility.java",
+      "sha256": "eb33a62a2d3a0cfd4fffee6d99691000ed3d9cadd4937b41d0b53c4e5abacdea"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesColorTargetEffect.java",
+      "sha256": "71a87b25c5432fc134cffb00338015bddbe869598bf42528243789758f3bfe43"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofFromWhiteAbility.java",
+      "sha256": "a59200ff39ad00951a06d43a63caf6bf26ea8dd67d1c6ddc3521e6631b08f5a8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofFromBlueAbility.java",
+      "sha256": "612e6d326d149e7a40ee3f8169b6063996c9ca8030c925ed79cf2c46e7ebc83d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofFromBlackAbility.java",
+      "sha256": "7daec794f77e32483c349b4c8a742e1b44fc5954429f2dfd0ae82cc511c29a22"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofFromRedAbility.java",
+      "sha256": "2ee08371d73d29111f665ea627e3a326b809c3f97cf090c75ea08e38bbf86ca6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofFromGreenAbility.java",
+      "sha256": "605df0f3c1a01a3ae8e105f73b5d7af9a2b973a5cce7195b8eff2d8a98ccdf33"
+    }
+  ]
 }

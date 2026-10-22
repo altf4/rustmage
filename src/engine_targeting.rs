@@ -1006,6 +1006,13 @@ impl Game {
                 if obj.zone == Zone::Battlefield
                     && obj.controller != controller
                     && (self.keywords(id).contains(Keywords::HEXPROOF)
+                        || self.keywords(id).contains(Keywords::HEXPROOF_OWN_COLORS)
+                            && self
+                                .targeting_source_facts(source, qualification)
+                                .is_some_and(|facts| {
+                                    facts.0 & ability_world::CharacteristicWorld::colors(self, id)
+                                        != 0
+                                })
                         || self.qualified_hexproof_blocks(id, controller, source, qualification))
                 {
                     return false;

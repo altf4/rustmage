@@ -7680,3 +7680,7 @@ mod ecl_inherited_tests;
 
 #[path = "engine_protection.rs"]
 mod protection;
+
+#[cfg(test)]
+#[path = "engine_ecl_students_tests.rs"]
+mod ecl_students_tests;
