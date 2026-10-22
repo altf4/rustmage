@@ -880,7 +880,7 @@
       "name": "Burdened Stoneback",
       "definition": "src/card_definitions/ecl/burdened_stoneback.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Burdened Stoneback",
@@ -895,7 +895,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/burdened_stoneback.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "7f420633-901d-47f9-ae0f-0f5b0ea8359c",
@@ -1270,7 +1274,7 @@
       "name": "Clachan Festival",
       "definition": "src/card_definitions/ecl/clachan_festival.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Clachan Festival",
@@ -1285,7 +1289,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/clachan_festival.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "649e4969-71d4-434f-85b0-205ec2c6b24f",
@@ -1488,7 +1496,7 @@
       "name": "Dawnhand Dissident",
       "definition": "src/card_definitions/ecl/dawnhand_dissident.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Dawnhand Dissident",
@@ -1504,7 +1512,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/dawnhand_dissident.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "57bbd80b-290f-461e-8dc6-26ba4d673fa9",
@@ -3724,7 +3736,7 @@
       "name": "Maralen, Fae Ascendant",
       "definition": "src/card_definitions/ecl/maralen_fae_ascendant.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Maralen, Fae Ascendant",
@@ -3740,7 +3752,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_maralen_tests.rs",
+        "src/card_definitions/ecl/maralen_fae_ascendant.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "8229954b-e1ef-4503-8443-2356e2a87663",
@@ -3983,7 +3999,7 @@
       "name": "Moonlit Lamenter",
       "definition": "src/card_definitions/ecl/moonlit_lamenter.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Moonlit Lamenter",
@@ -3998,7 +4014,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/moonlit_lamenter.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "a3635b3f-839c-4fe5-83a5-7c70e8630184",
@@ -4448,7 +4468,7 @@
       "name": "Pestered Wellguard",
       "definition": "src/card_definitions/ecl/pestered_wellguard.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Pestered Wellguard",
@@ -4462,7 +4482,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/pestered_wellguard.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "0d46a97a-b1d6-4bf3-b3ba-a5cdfd4c8bf5",
@@ -5216,7 +5240,7 @@
       "name": "Shadow Urchin",
       "definition": "src/card_definitions/ecl/shadow_urchin.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Shadow Urchin",
@@ -5231,7 +5255,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_shadow_urchin_tests.rs",
+        "src/card_definitions/ecl/shadow_urchin.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "52244c23-7680-4bed-8ef8-8d10e289d3f7",
@@ -5361,7 +5389,7 @@
       "name": "Silvergill Peddler",
       "definition": "src/card_definitions/ecl/silvergill_peddler.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Silvergill Peddler",
@@ -5375,7 +5403,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/silvergill_peddler.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "60ad7aaa-8ce6-4449-8e8d-4ccf925010db",
@@ -6008,7 +6040,7 @@
       "name": "Tanufel Rimespeaker",
       "definition": "src/card_definitions/ecl/tanufel_rimespeaker.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Tanufel Rimespeaker",
@@ -6022,7 +6054,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/tanufel_rimespeaker.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "020aae46-cdba-4c37-9c54-283727c09994",
@@ -6435,7 +6471,7 @@
       "name": "Unexpected Assistance",
       "definition": "src/card_definitions/ecl/unexpected_assistance.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Unexpected Assistance",
@@ -6450,7 +6486,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/unexpected_assistance.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "be7e220e-272e-45ca-8265-8d78da2cd2a7",
@@ -6604,7 +6644,7 @@
       "name": "Wanderbrine Preacher",
       "definition": "src/card_definitions/ecl/wanderbrine_preacher.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Wanderbrine Preacher",
@@ -6618,7 +6658,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/wanderbrine_preacher.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "915d70ac-46ce-41d0-a137-f17e7aaea87d",
@@ -6650,7 +6694,7 @@
       "name": "Wanderwine Distracter",
       "definition": "src/card_definitions/ecl/wanderwine_distracter.rs",
       "owner": "ecl_white_blue",
-      "state": "inherited admission; evidence audit pending",
+      "state": "inherited source/rules audit passed; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Wanderwine Distracter",
@@ -6664,7 +6708,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/wanderwine_distracter.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "7e1da4a1-5922-4a2e-8bbc-25fbcbf20935",

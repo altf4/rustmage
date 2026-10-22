@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 155,
+  "newly_tested_physical_cards": 158,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -42,6 +42,7 @@
     "Crib Swap",
     "Curious Colossus",
     "Dawn-Blessed Pennant",
+    "Dawnhand Dissident",
     "Dawnhand Eulogist",
     "Deceit",
     "Deepchannel Duelist",
@@ -91,6 +92,7 @@
     "Lluwen, Imperfect Naturalist",
     "Loch Mare",
     "Lys Alana Dignitary",
+    "Maralen, Fae Ascendant",
     "Meanders Guide",
     "Meek Attack",
     "Mirrormind Crown",
@@ -123,6 +125,7 @@
     "Scarblade's Malice",
     "Scuzzback Scrounger",
     "Selfless Safewright",
+    "Shadow Urchin",
     "Shimmerwilds Growth",
     "Silvergill Mentor",
     "Slumbering Walker",
@@ -160,10 +163,10 @@
     "Winnowing",
     "Wistfulness"
   ],
-  "current_admission_flags": 262,
-  "remaining_gated": 11,
+  "current_admission_flags": 265,
+  "remaining_gated": 8,
   "inherited_evidence_audit": {
-    "audited": 34,
+    "audited": 43,
     "total": 107,
     "names": [
       "Plains",
@@ -199,7 +202,16 @@
       "Morcant's Loyalist",
       "Noggle Robber",
       "Stoic Grove-Guide",
-      "Thoughtweft Lieutenant"
+      "Thoughtweft Lieutenant",
+      "Burdened Stoneback",
+      "Moonlit Lamenter",
+      "Clachan Festival",
+      "Pestered Wellguard",
+      "Silvergill Peddler",
+      "Wanderbrine Preacher",
+      "Wanderwine Distracter",
+      "Tanufel Rimespeaker",
+      "Unexpected Assistance"
     ],
     "scenario": "src/engine_ecl_inherited_tests.rs",
     "source_commit": "7902fbe1",
@@ -299,6 +311,24 @@
       "tests_including_previous_groups": 11,
       "seconds": 0.5,
       "resource_report": "<cache>/rustmage-build-reports/5974a16685ba494ca789cb03f60e9546.json"
+    },
+    "white_blue_counter_tap_group": {
+      "names": [
+        "Burdened Stoneback",
+        "Moonlit Lamenter",
+        "Clachan Festival",
+        "Pestered Wellguard",
+        "Silvergill Peddler",
+        "Wanderbrine Preacher",
+        "Wanderwine Distracter",
+        "Tanufel Rimespeaker",
+        "Unexpected Assistance"
+      ],
+      "source_commit": "7ae2ac08",
+      "tests": 4,
+      "seconds": 0.54,
+      "resource_report": "<cache>/rustmage-build-reports/4d405e51bef643bdb5a7c37db05dc627.json",
+      "clippy": "<cache>/rustmage-build-reports/f6439ddb22e94fceaa19d3ebb352db52.json"
     }
   },
   "locally_reviewed": 0,
@@ -338,10 +368,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T21:07:54.511180+00:00",
-    "elapsed_seconds": 20707.294329,
-    "newly_verified_cards": 155,
-    "cards_per_hour": 26.947026064073288,
+    "end_utc": "2026-10-22T21:20:49.703280+00:00",
+    "elapsed_seconds": 21482.486429,
+    "newly_verified_cards": 158,
+    "cards_per_hour": 26.47738202371937,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "Combined260-card ECL scenarios; Kirol separately focused-tested after this combined run.",
@@ -1029,5 +1059,55 @@
     "binding_seconds": 0.05,
     "binding_report": "<cache>/rustmage-build-reports/1718dc5a44294e3ca28f765156b420cf.json",
     "all_target_clippy": "<cache>/rustmage-build-reports/c58eac8b65824b8b8e4b364fc27fbf57.json"
+  },
+  "linked_ability_epochs": {
+    "source_commit": "9af797b7",
+    "tests": 39,
+    "seconds": 4.23,
+    "resource_report": "<cache>/rustmage-build-reports/e44af21128934432a23df5f8e00f2f99.json",
+    "copy_regressions": 8,
+    "copy_seconds": 0.18,
+    "copy_report": "<cache>/rustmage-build-reports/f400000d762f4f3ba4fd656cd1cf8973.json",
+    "all_target_clippy": "<cache>/rustmage-build-reports/ea1d7352a0bb4a8dac687531446f0932.json"
+  },
+  "dawnhand_dissident": {
+    "source_commit": "b68ec080",
+    "native_tests": 2975,
+    "ignored": 1,
+    "native_seconds": 82.67,
+    "native_report": "<cache>/rustmage-build-reports/35e3e69a864642bfa440f144e817be4a.json",
+    "focused_tests": 13,
+    "focused_seconds": 0.42,
+    "focused_report": "<cache>/rustmage-build-reports/1b49ff2bf6fb410c9804031a29b0cfa9.json",
+    "clippy": "<cache>/rustmage-build-reports/bb2d8906044c45009e407d25af30abfc.json",
+    "epoch_consumer_tests": 14,
+    "epoch_seconds": 0.43,
+    "epoch_report": "<cache>/rustmage-build-reports/99467b751e1c45d6bcd2efa57b9f7082.json"
+  },
+  "maralen": {
+    "source_commit": "a2f3e363",
+    "tests": 9,
+    "seconds": 0.29,
+    "resource_report": "<cache>/rustmage-build-reports/5d277776fb3749f4ac1e62d24133b33e.json",
+    "linked_tests": 39,
+    "linked_seconds": 4.31,
+    "linked_report": "<cache>/rustmage-build-reports/23babd8996f4493c854bd059df7d31d2.json",
+    "casting_tests": 10,
+    "casting_seconds": 0.52,
+    "casting_report": "<cache>/rustmage-build-reports/5f924720975c43cd9fffa6924c4f589a.json",
+    "clippy": "<cache>/rustmage-build-reports/989d139e26de4b56aaebb632960576bd.json"
+  },
+  "shadow_urchin": {
+    "source_commit": "d167caef",
+    "tests": 7,
+    "seconds": 0.18,
+    "resource_report": "<cache>/rustmage-build-reports/938915b6380044b2901ac8e742b28bdf.json",
+    "exile_tests": 132,
+    "exile_seconds": 4.06,
+    "exile_report": "<cache>/rustmage-build-reports/dd9f3d95aa6740738718c93fe753e295.json",
+    "end_blaze_tests": 5,
+    "end_blaze_seconds": 0.21,
+    "end_blaze_report": "<cache>/rustmage-build-reports/6771859bad3e47cfb53b1970eb7dcff8.json",
+    "all_target_clippy": "<cache>/rustmage-build-reports/522a0f0b27954f0c858d4419b1c47f62.json"
   }
 }
