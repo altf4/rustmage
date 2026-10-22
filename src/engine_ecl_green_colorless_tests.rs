@@ -803,3 +803,169 @@ fn ecl_green_tend_search_is_private_and_union_threshold_counts_each_permanent_on
         }
     }
 }
+fn equip(g: &mut Game, source: CardId, target: CardId) {
+    checked(
+        g,
+        Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    checked(
+        g,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    pay(g);
+    settle(g);
+}
+#[test]
+fn ecl_green_stalactite_creates_changeling_and_paid_equipment_changes_live_types() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let dagger = named(&mut g, p, "Stalactite Dagger", Zone::Hand);
+        cast(&mut g, dagger, None, &[]);
+        settle(&mut g);
+        let tokens = definition_objects(&g, p, "@token/shapeshifter_1_1_colorless_changeling");
+        assert_eq!(tokens.len(), 1);
+        let token = tokens[0];
+        assert_eq!(
+            g.stats(token),
+            Stats {
+                power: 1,
+                toughness: 1
+            }
+        );
+        assert!(g.has_subtype(token, "Elf") && g.has_subtype(token, "Treefolk"));
+        assert!(g.keywords(token).contains(Keywords::CHANGELING));
+        assert_eq!(g.object_view(token).colors, 0);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let other = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let mana = g.state.players[p.index()].mana.iter().sum::<u32>();
+        equip(&mut g, dagger, bear);
+        assert_eq!(
+            g.state.players[p.index()].mana.iter().sum::<u32>(),
+            mana - 2
+        );
+        assert_eq!(
+            g.stats(bear),
+            Stats {
+                power: 3,
+                toughness: 3
+            }
+        );
+        assert!(g.has_subtype(bear, "Elf") && g.has_subtype(bear, "Giant"));
+        assert!(!g.keywords(bear).contains(Keywords::CHANGELING));
+        equip(&mut g, dagger, other);
+        assert_eq!(
+            g.stats(bear),
+            Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+        assert!(!g.has_subtype(bear, "Elf"));
+        assert_eq!(
+            g.stats(other),
+            Stats {
+                power: 3,
+                toughness: 3
+            }
+        );
+        assert!(g.has_subtype(other, "Treefolk"));
+        g.move_object(dagger, Zone::Graveyard);
+        assert_eq!(
+            g.stats(other),
+            Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+        assert!(!g.has_subtype(other, "Elf"));
+    }
+}
+#[test]
+fn ecl_green_stalactite_type_effect_starts_before_source_ability_removal() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let dagger = named(&mut g, p, "Stalactite Dagger", Zone::Battlefield);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        equip(&mut g, dagger, bear);
+        let aura = named(&mut g, p, "Stop Cold", Zone::Hand);
+        cast(&mut g, aura, None, &[Target::Card(dagger)]);
+        settle(&mut g);
+        assert!(g.has_subtype(bear, "Elf"));
+        assert_eq!(
+            g.stats(bear),
+            Stats {
+                power: 3,
+                toughness: 3
+            }
+        );
+        reject(
+            &mut g,
+            Action::AnnounceActivate {
+                card: dagger,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+    }
+}
+#[test]
+fn ecl_green_sapling_affinity_landfall_and_exile_cost_freeze_filtered_indestructible() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let mut forests = Vec::new();
+        for _ in 0..6 {
+            forests.push(named(&mut g, p, "Forest", Zone::Battlefield));
+        }
+        let nursery = named(&mut g, p, "Sapling Nursery", Zone::Hand);
+        let mana = g.state.players[p.index()].mana.iter().sum::<u32>();
+        cast(&mut g, nursery, None, &[]);
+        settle(&mut g);
+        assert_eq!(
+            g.state.players[p.index()].mana.iter().sum::<u32>(),
+            mana - 2
+        );
+        let enemy_forest = named(&mut g, p.other(), "Forest", Zone::Hand);
+        g.move_object(enemy_forest, Zone::Battlefield);
+        settle(&mut g);
+        assert!(definition_objects(&g, p, "@token/treefolk_3_4_green_reach").is_empty());
+        let own = named(&mut g, p, "Forest", Zone::Hand);
+        checked(&mut g, Action::PlayLand { card: own });
+        settle(&mut g);
+        let trees = definition_objects(&g, p, "@token/treefolk_3_4_green_reach");
+        assert_eq!(trees.len(), 1);
+        let core = named(&mut g, p, "Firdoch Core", Zone::Battlefield);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let mana = g.state.players[p.index()].mana.iter().sum::<u32>();
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: nursery,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut g);
+        assert_eq!(g.object_view(nursery).zone, Zone::Exile);
+        assert_eq!(
+            g.state.players[p.index()].mana.iter().sum::<u32>(),
+            mana - 2
+        );
+        settle(&mut g);
+        for id in forests.into_iter().chain([own, trees[0], core]) {
+            assert!(g.keywords(id).contains(Keywords::INDESTRUCTIBLE));
+        }
+        assert!(!g.keywords(enemy_forest).contains(Keywords::INDESTRUCTIBLE));
+        assert!(!g.keywords(bear).contains(Keywords::INDESTRUCTIBLE));
+        let late = named(&mut g, p, "Magnigoth Sentry", Zone::Battlefield);
+        assert!(!g.keywords(late).contains(Keywords::INDESTRUCTIBLE));
+        super::ability_timeline_tests::next_turn(&mut g);
+        assert!(!g.keywords(trees[0]).contains(Keywords::INDESTRUCTIBLE));
+        assert!(!g.keywords(core).contains(Keywords::INDESTRUCTIBLE));
+    }
+}

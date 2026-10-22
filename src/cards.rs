@@ -753,6 +753,10 @@ pub(crate) enum Instruction {
     ProhibitCastingThisTurn,
     PlayerHexproofThisTurn,
     GrantPermanentsThisTurn(Keywords),
+    GrantBattlefieldKeywords {
+        filters: &'static [BattlefieldFilter],
+        keywords: Keywords,
+    },
     DamageWithController {
         damage: i32,
         controller_damage: i32,

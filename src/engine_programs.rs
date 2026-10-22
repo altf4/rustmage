@@ -1630,6 +1630,9 @@ impl Game {
                 Instruction::PlayerHexproofThisTurn => {
                     self.state.players[item.controller.index()].hexproof_until_end_turn = true;
                 }
+                Instruction::GrantBattlefieldKeywords { filters, keywords } => {
+                    self.grant_battlefield_keywords(&item, filters, keywords)
+                }
                 Instruction::GrantPermanentsThisTurn(keywords) => {
                     let ids: Vec<_> = self
                         .state

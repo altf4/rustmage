@@ -75,6 +75,7 @@ pub(crate) enum StaticAbilityFragment {
         keywords: Keywords,
     },
     AttachedSubtype(&'static str),
+    AttachedAllCreatureTypes,
     AttachmentStats(Stats),
     AttachmentTurnStats(Stats),
     AttachmentKeywords(Keywords),

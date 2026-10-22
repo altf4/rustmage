@@ -31,6 +31,15 @@ impl Game {
             })
             .collect()
     }
+    pub(super) fn grant_battlefield_keywords(
+        &mut self,
+        item: &SpellView,
+        filters: &[BattlefieldFilter],
+        keywords: Keywords,
+    ) {
+        let recipients = self.battlefield_group(item, filters);
+        self.grant_keyword_effects(&recipients, item.object, keywords);
+    }
     pub(super) fn move_battlefield_group(
         &mut self,
         item: &SpellView,

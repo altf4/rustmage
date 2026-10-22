@@ -286,13 +286,24 @@ impl Game {
             if o.zone == Zone::Battlefield
                 && kinds(source, o) & 1 == 0
                 && o.attached_to == Some(reference)
-                && let Some(subtype) = o.card.attached_subtype()
                 && newer(ObjectRef {
                     card: source,
                     generation: o.generation,
                 })
             {
-                mask.insert(subtype);
+                if let Some(subtype) = o.card.attached_subtype() {
+                    mask.insert(subtype);
+                }
+                if o.card.static_ability_groups().iter().any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(
+                            fragment,
+                            crate::cards::StaticAbilityFragment::AttachedAllCreatureTypes
+                        )
+                    })
+                }) {
+                    mask.set_flag(ALL_CREATURE_TYPES, true);
+                }
             }
         }
         mask
