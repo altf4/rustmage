@@ -135,11 +135,17 @@ pub(super) trait CharacteristicWorld {
             state.ability_removal_sources.iter().any(|&source| {
                 self.object(source.card).zone == Zone::Battlefield
                     && self.reference(source.card) == source
+            }) || state.ability_removal_effects.iter().any(|row| {
+                self.object(row.recipient.card).zone == Zone::Battlefield
+                    && self.reference(row.recipient.card) == row.recipient
+                    && row
+                        .expires_turn
+                        .is_none_or(|turn| turn == self.game().state.turn)
             })
         })
     }
     fn printed_abilities_available(&self, id: CardId) -> bool {
-        // Only an exact attached removal provider can remove printed abilities.
+        // Exact attached or resolution-created removal can remove printed abilities.
         // Unrelated sources need no whole-world layer-six evaluation. Keep the
         // full evaluator for candidates: competing effects may blank a provider.
         let recipient = self.reference(id);
@@ -148,6 +154,13 @@ pub(super) trait CharacteristicWorld {
                 .ability_removal_sources
                 .iter()
                 .any(|&source| self.attachment_link(source, recipient))
+                || state.ability_removal_effects.iter().any(|row| {
+                    row.recipient == recipient
+                        && self.object(id).zone == Zone::Battlefield
+                        && row
+                            .expires_turn
+                            .is_none_or(|turn| turn == self.game().state.turn)
+                })
         }) || ability_evaluation::evaluate_abilities(self).result.objects[id as usize].printed
     }
 

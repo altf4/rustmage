@@ -2849,3 +2849,261 @@ fn flamebraider_speculative_funding_supports_split_hybrid_payment_and_kindred_no
         }
     }
 }
+
+#[test]
+fn retched_wretch_returns_under_its_owner_blank_and_does_not_repeat_after_another_blighted_death() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p.other(), "Retched Wretch", Zone::Battlefield);
+        let item = g.activation_item(p, source, 0);
+        g.gain_control(&item, Subject::Source, PlayerSet::Controller);
+        assert_eq!(g.state.objects[source as usize].controller, p);
+        let spell = named(&mut g, p, "Cinder Strike", Zone::Hand);
+        optional_cast(&mut g, spell, Some(source), Some(Target::Card(source)));
+        settle(&mut g);
+        assert!(g.on_battlefield(source));
+        assert_eq!(g.state.objects[source as usize].controller, p.other());
+        assert_eq!(
+            g.stats(source),
+            crate::cards::Stats {
+                power: 4,
+                toughness: 2
+            }
+        );
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 0);
+        assert!(!g.printed_abilities_available(source));
+        assert_eq!(g.observe(p).ability_removal_effects.len(), 1);
+        g.finish_cleanup();
+        assert!(!g.printed_abilities_available(source));
+        // The new incarnation has no printed death trigger, even after another counter.
+        g.effect_counter(
+            source,
+            CounterKind::MinusOne,
+            1,
+            replacements::ResumeMode::Pending,
+        );
+        let active = g.state.active;
+        g.begin_step(Step::Main1);
+        g.state.priority = active;
+        g.state.players[active.index()].mana = [30; 6];
+        let spell = named(&mut g, active, "Cinder Strike", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        checked(
+            &mut g,
+            Action::ChooseOptionalAdditionalCost { object: None },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(source),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.state.objects[source as usize].zone, Zone::Graveyard);
+        assert!(g.observe(p).ability_removal_effects.is_empty());
+    }
+}
+#[test]
+fn retched_wretch_uses_minus_counter_lki_and_requires_the_captured_graveyard_incarnation() {
+    for p in [Player::P0, Player::P1] {
+        for minus in [false, true] {
+            let mut g = hexing_setup(p);
+            let source = named(&mut g, p, "Retched Wretch", Zone::Hand);
+            cast(&mut g, source);
+            if minus {
+                g.effect_counter(
+                    source,
+                    CounterKind::MinusOne,
+                    1,
+                    replacements::ResumeMode::Pending,
+                );
+            }
+            g.move_object(source, Zone::Graveyard);
+            g.prepare_triggers();
+            assert_eq!(
+                g.state.stack.len() + g.state.pending_triggers.len(),
+                usize::from(minus)
+            );
+            if minus {
+                g.move_object(source, Zone::Exile);
+                g.move_object(source, Zone::Graveyard);
+            }
+            settle(&mut g);
+            assert_eq!(g.state.objects[source as usize].zone, Zone::Graveyard);
+        }
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Retched Wretch", Zone::Battlefield);
+        g.state.objects[source as usize].counters.plus_one = 1;
+        g.effect_counter(
+            source,
+            CounterKind::MinusOne,
+            1,
+            replacements::ResumeMode::Pending,
+        );
+        checked(&mut g, Action::Pass);
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 0);
+        g.move_object(source, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.state.objects[source as usize].zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn exact_ability_removal_orders_intrinsic_copiable_and_resolution_keywords_and_expires_correctly() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let recipe = CopyRecipe {
+            definition: Card::from_name("Bear Cub").unwrap(),
+            exceptions: crate::cards::CopyExceptions::HASTE_AND_SACRIFICE,
+        };
+        g.stage_copy_creation(p, recipe, 1);
+        settle(&mut g);
+        let source = g
+            .state
+            .copy_recipes
+            .as_ref()
+            .unwrap()
+            .last()
+            .unwrap()
+            .object;
+        assert!(g.keywords(source.card).contains(Keywords::HASTE));
+        g.grant_keyword_effects(&[source.card], source, Keywords::FLYING);
+        g.remove_abilities_exact(&[source], crate::cards::AnimationDuration::Permanent);
+        assert!(!g.keywords(source.card).contains(Keywords::HASTE));
+        assert!(!g.keywords(source.card).contains(Keywords::FLYING));
+        g.grant_keyword_effects(&[source.card], source, Keywords::TRAMPLE);
+        assert!(g.keywords(source.card).contains(Keywords::TRAMPLE));
+        lasting_end(&mut g);
+        assert!(
+            g.on_battlefield(source.card),
+            "copiable intrinsic sacrifice ability was removed"
+        );
+        g.finish_cleanup();
+        assert!(!g.keywords(source.card).contains(Keywords::TRAMPLE));
+        assert!(!g.printed_abilities_available(source.card));
+        let fresh = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let reference = g.object_ref(fresh);
+        g.remove_abilities_exact(&[reference], crate::cards::AnimationDuration::EndOfTurn);
+        assert!(!g.printed_abilities_available(fresh));
+        g.finish_cleanup();
+        assert!(g.printed_abilities_available(fresh));
+    }
+}
+#[test]
+fn exact_ability_removal_preserves_later_recipient_owned_grants_and_suppresses_older_ones() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        named(&mut g, p, "Hexing Squelcher", Zone::Battlefield);
+        let recipient = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let object = g.object_ref(recipient);
+        g.remove_abilities_exact(&[object], crate::cards::AnimationDuration::Permanent);
+        hexing_open(
+            &mut g,
+            p.other(),
+            "Lightning Bolt",
+            Some(Target::Card(recipient)),
+        );
+        assert_eq!(hexing_finish(&mut g, true), 0);
+        // Use a fresh exact incarnation, since the unwarded bear died.
+        let bear = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let object = g.object_ref(bear);
+        g.remove_abilities_exact(&[object], crate::cards::AnimationDuration::Permanent);
+        named(&mut g, p, "Hexing Squelcher", Zone::Battlefield);
+        hexing_open(
+            &mut g,
+            p.other(),
+            "Lightning Bolt",
+            Some(Target::Card(bear)),
+        );
+        assert_eq!(hexing_finish(&mut g, false), 1);
+        assert_eq!(g.state.objects[bear as usize].damage, 0);
+    }
+}
+#[test]
+fn exact_ability_removal_changes_speculative_mana_availability_and_blink_restores_printed_abilities()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        g.state.objects[source as usize].summoning_sick = false;
+        let spell = named(&mut g, p, "Llanowar Elves", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceCast { card: spell })
+        );
+        let object = g.object_ref(source);
+        g.remove_abilities_exact(&[object], crate::cards::AnimationDuration::Permanent);
+        reject(&mut g, Action::AnnounceCast { card: spell });
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::TapMana { card: source })
+        );
+        g.move_object(source, Zone::Exile);
+        g.move_object(source, Zone::Battlefield);
+        g.state.objects[source as usize].summoning_sick = false;
+        assert!(g.observe(p).ability_removal_effects.is_empty());
+        cast(&mut g, spell);
+        assert!(g.on_battlefield(spell));
+    }
+}
+
+#[test]
+fn returning_without_abilities_preserves_the_entry_event_before_the_following_removal_clause() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Dawnhand Eulogist", Zone::Graveyard);
+        let before = g.state.players[p.index()].library.len();
+        let reference = g.object_ref(source);
+        g.stage_linked_return(
+            &ReturnLinkView {
+                object: reference,
+                zone: Zone::Graveyard,
+                controller: p,
+                counter: None,
+            },
+            Some((crate::cards::ReturnKind::WithoutAbilities, reference)),
+        );
+        g.advance_entries();
+        assert!(!g.printed_abilities_available(source));
+        assert!(!g.keywords(source).contains(Keywords::MENACE));
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].library.len(), before - 3);
+    }
+}
+
+#[test]
+fn exact_ability_removal_noop_does_not_create_cold_state_or_advance_timestamps() {
+    let mut g = setup(Player::P0);
+    let card = named(&mut g, Player::P0, "Retched Wretch", Zone::Hand);
+    let reference = g.object_ref(card);
+    let before = g.snapshot();
+    g.remove_abilities_exact(&[], crate::cards::AnimationDuration::Permanent);
+    g.remove_abilities_exact(&[reference], crate::cards::AnimationDuration::Permanent);
+    assert_eq!(g.snapshot(), before);
+}
+#[test]
+fn retched_wretch_copy_token_cannot_return_from_the_graveyard() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        g.stage_copy_creation(
+            p,
+            CopyRecipe::new(Card::from_name("Retched Wretch").unwrap()),
+            1,
+        );
+        settle(&mut g);
+        let source = g
+            .state
+            .copy_recipes
+            .as_ref()
+            .unwrap()
+            .last()
+            .unwrap()
+            .object
+            .card;
+        let spell = named(&mut g, p, "Cinder Strike", Zone::Hand);
+        optional_cast(&mut g, spell, Some(source), Some(Target::Card(source)));
+        settle(&mut g);
+        assert_eq!(g.state.objects[source as usize].zone, Zone::Outside);
+        assert!(g.observe(p).ability_removal_effects.is_empty());
+    }
+}

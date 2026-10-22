@@ -223,7 +223,9 @@ mod ability_order;
 mod ability_timeline;
 #[path = "engine_ability_world.rs"]
 mod ability_world;
-pub use ability_timeline::{AbilitySourceTimestampView, KeywordEffectOrigin, KeywordEffectView};
+pub use ability_timeline::{
+    AbilityRemovalEffectView, AbilitySourceTimestampView, KeywordEffectOrigin, KeywordEffectView,
+};
 #[path = "engine_base_power.rs"]
 mod base_power;
 #[path = "engine_base_stats.rs"]
@@ -2052,6 +2054,7 @@ pub struct Observation {
     pub resolved_stat_subjects: Vec<ResolvedStatSubjectView>,
     pub ability_source_timestamps: Vec<AbilitySourceTimestampView>,
     pub keyword_effects: Vec<KeywordEffectView>,
+    pub ability_removal_effects: Vec<AbilityRemovalEffectView>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
@@ -6195,6 +6198,10 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.keyword_effects.clone()),
+            ability_removal_effects: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.ability_removal_effects.clone()),
             role_timestamps: s
                 .roles
                 .as_ref()

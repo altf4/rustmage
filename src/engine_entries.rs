@@ -484,6 +484,7 @@ impl Game {
         let mut attachments = Vec::new();
         let mut role_results = Vec::new();
         let mut suspect_results = Vec::new();
+        let mut remove_abilities_results = Vec::new();
         let mut life_results = Vec::new();
         for (movement, counters) in moves {
             let mut event = self.transition_object_under_control(
@@ -503,7 +504,11 @@ impl Game {
                 && event.destination == Zone::Battlefield
                 && let Some((kind, source)) = movement.return_modification
             {
-                self.apply_return_modification(event.after, kind, source);
+                if kind == ReturnKind::WithoutAbilities {
+                    remove_abilities_results.push(event.after);
+                } else {
+                    self.apply_return_modification(event.after, kind, source);
+                }
             }
             event.evoked = movement.evoked;
             event.cast_payment = movement.cast_payment;
@@ -584,6 +589,12 @@ impl Game {
         } else {
             self.finish_zone_events(&events, &[]);
         }
+        // Returning is one event; the following clause removes abilities only
+        // after intrinsic and granted entry triggers have already triggered.
+        self.remove_abilities_exact(
+            &remove_abilities_results,
+            crate::cards::AnimationDuration::Permanent,
+        );
         for (reference, controller, subtype, amount) in life_results {
             if self.object_ref(reference.card) == reference
                 && self.on_battlefield(reference.card)

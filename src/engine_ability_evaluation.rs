@@ -338,6 +338,20 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
         }
     }
     if let Some(state) = &game.state.roles {
+        for row in &state.ability_removal_effects {
+            if world.object(row.recipient.card).zone == Zone::Battlefield
+                && world.reference(row.recipient.card) == row.recipient
+                && row.expires_turn.is_none_or(|turn| turn == game.state.turn)
+            {
+                effects.push(LayerSixEffect {
+                    provider: None,
+                    started_earlier: false,
+                    timestamp: row.timestamp,
+                    recipients: vec![row.recipient.card],
+                    action: LayerSixAction::Remove,
+                });
+            }
+        }
         for row in &state.keyword_effects {
             let object = world.object(row.recipient.card);
             if matches!(object.zone, Zone::Battlefield | Zone::Stack)

@@ -22,6 +22,13 @@ pub struct KeywordEffectView {
     pub timestamp: u64,
     pub expires_turn: Option<u32>,
 }
+/// A resolution-created layer-six removal; its source need not remain present.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct AbilityRemovalEffectView {
+    pub recipient: ObjectRef,
+    pub timestamp: u64,
+    pub expires_turn: Option<u32>,
+}
 impl Card {
     pub(super) fn has_layer6_provider(self) -> bool {
         self.role().is_some()
@@ -58,6 +65,32 @@ impl Card {
     }
 }
 impl Game {
+    pub(super) fn remove_abilities_exact(
+        &mut self,
+        recipients: &[ObjectRef],
+        duration: crate::cards::AnimationDuration,
+    ) {
+        let mut shared_timestamp = None;
+        for &recipient in recipients {
+            if !self.on_battlefield(recipient.card) || self.object_ref(recipient.card) != recipient
+            {
+                continue;
+            }
+            let timestamp = *shared_timestamp.get_or_insert_with(|| self.next_role_timestamp());
+            self.state
+                .roles
+                .get_or_insert_with(Default::default)
+                .ability_removal_effects
+                .push(AbilityRemovalEffectView {
+                    recipient,
+                    timestamp,
+                    expires_turn: match duration {
+                        crate::cards::AnimationDuration::Permanent => None,
+                        crate::cards::AnimationDuration::EndOfTurn => Some(self.state.turn),
+                    },
+                });
+        }
+    }
     pub(super) fn register_ability_source(&mut self, id: CardId) {
         if !self.state.objects[id as usize].card.has_layer6_provider() {
             return;
@@ -127,6 +160,9 @@ impl Game {
                 .retain(|&source| source != reference);
             state
                 .keyword_effects
+                .retain(|row| row.recipient != reference);
+            state
+                .ability_removal_effects
                 .retain(|row| row.recipient != reference);
         }
     }
@@ -245,6 +281,9 @@ impl Game {
     }
     pub(super) fn expire_keyword_effects(&mut self) {
         if let Some(state) = &mut self.state.roles {
+            state
+                .ability_removal_effects
+                .retain(|row| row.expires_turn.is_none());
             state
                 .keyword_effects
                 .retain(|row| row.expires_turn.is_none());

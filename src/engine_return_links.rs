@@ -31,6 +31,11 @@ impl Game {
     ) -> bool {
         let before = &event.before;
         match filter {
+            ReturnDeathFilter::SourceCounter { kind, minimum } => {
+                before.is_creature()
+                    && source.reference == before.reference
+                    && before.counters.get(kind) >= minimum
+            }
             ReturnDeathFilter::SourceNonDemon => {
                 before.is_creature()
                     && source.reference == before.reference
@@ -141,6 +146,10 @@ impl Game {
         };
         let mut link = (**link).clone();
         match kind {
+            ReturnKind::WithoutAbilities => {
+                link.counter = None;
+                self.stage_linked_return(&link, Some((kind, item.object)));
+            }
             ReturnKind::Revival => {
                 let amount = link.counter.expect("captured revival counters").1;
                 assert!(amount > 0);
@@ -204,6 +213,13 @@ impl Game {
         source: ObjectRef,
     ) {
         let (types, keywords): (&'static [&'static str], _) = match kind {
+            ReturnKind::WithoutAbilities => {
+                self.remove_abilities_exact(
+                    &[recipient],
+                    crate::cards::AnimationDuration::Permanent,
+                );
+                return;
+            }
             ReturnKind::Demon => (&["Demon"], Keywords::NONE),
             ReturnKind::Angel => (&["Angel"], Keywords::FLYING),
             ReturnKind::Revival => return,

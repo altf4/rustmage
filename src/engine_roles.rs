@@ -30,6 +30,7 @@ pub(super) struct RoleState {
     pub transforms: Vec<TransformHistoryView>,
     pub keyword_effects: Vec<KeywordEffectView>,
     pub ability_removal_sources: Vec<ObjectRef>,
+    pub ability_removal_effects: Vec<AbilityRemovalEffectView>,
     pub characteristic_sources: Vec<ObjectRef>,
 }
 impl RoleState {
@@ -46,6 +47,7 @@ impl RoleState {
             + self.transforms.len() * std::mem::size_of::<TransformHistoryView>()
             + self.keyword_effects.len() * std::mem::size_of::<KeywordEffectView>()
             + self.ability_removal_sources.len() * std::mem::size_of::<ObjectRef>()
+            + self.ability_removal_effects.len() * std::mem::size_of::<AbilityRemovalEffectView>()
             + self.characteristic_sources.len() * std::mem::size_of::<ObjectRef>()
     }
 }
