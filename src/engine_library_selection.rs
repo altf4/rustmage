@@ -92,6 +92,25 @@ impl Game {
         let limit = match effect.look {
             LibraryLook::Fixed(n) => usize::from(n),
             LibraryLook::ChosenX => usize::try_from(item.x.unwrap_or(0)).unwrap_or(usize::MAX),
+            LibraryLook::UntilCount { kinds, amount } => {
+                let requested = self.item_amount(amount, item);
+                if requested == 0 {
+                    0
+                } else {
+                    let mut count = 0u128;
+                    self.state.players[owner.index()]
+                        .library
+                        .iter()
+                        .rev()
+                        .position(|&id| {
+                            if self.state.objects[id as usize].card.kind_mask() & kinds != 0 {
+                                count += 1;
+                            }
+                            count >= requested
+                        })
+                        .map_or(usize::MAX, |at| at + 1)
+                }
+            }
             LibraryLook::UntilKinds(kinds) => self.state.players[owner.index()]
                 .library
                 .iter()
@@ -128,6 +147,7 @@ impl Game {
                 .filter(|o| o.owner == owner && o.zone == Zone::Graveyard && !o.is_token())
         };
         let requested = match spec.count {
+            LibrarySelectionCount::All => remaining.len(),
             LibrarySelectionCount::Fixed(n) => usize::from(n),
             LibrarySelectionCount::Lessons => {
                 if grave().filter(|o| o.card.has_subtype("Lesson")).count() >= 3 {

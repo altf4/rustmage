@@ -1845,3 +1845,178 @@ fn ecl_green_gathering_private_eligibility_preserves_public_phase_sequence() {
         );
     }
 }
+
+#[test]
+fn ecl_green_prismatic_resolution_colors_private_basic_search_shuffle_and_extra_land() {
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..4 {
+            let mut g = setup(p);
+            let source = named(&mut g, p, "Prismatic Undercurrents", Zone::Hand);
+            if mode < 2 {
+                named(&mut g, p, "Savannah Lions", Zone::Battlefield);
+                named(&mut g, p, "Savannah Lions", Zone::Battlefield);
+                named(&mut g, p, "Highborn Vampire", Zone::Battlefield);
+            }
+            if mode == 3 {
+                named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            }
+            let wrong = named(&mut g, p, "Bear Cub", Zone::Library);
+            cast(&mut g, source, None, &[]);
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            if mode == 1 || mode == 2 {
+                g.move_object(source, Zone::Graveyard);
+            }
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            let expected = [3, 2, 0, 1][mode];
+            assert_eq!(
+                g.state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .search
+                    .as_ref()
+                    .unwrap()
+                    .spec
+                    .maximum,
+                expected
+            );
+            assert!(g.observe(p).search_choice.is_some());
+            assert!(g.observe(p.other()).search_choice.is_none());
+            reject(&mut g, Action::ChooseSearch { card: wrong });
+            let before_rng = g.state.rng.clone();
+            let mut found = Vec::new();
+            if mode < 2 {
+                for _ in 0..expected {
+                    let id = g.state.players[p.index()]
+                        .library
+                        .iter()
+                        .copied()
+                        .find(|id| !found.contains(id) && g.object_view(*id).card.is_basic_land())
+                        .unwrap();
+                    checked(&mut g, Action::ChooseSearch { card: id });
+                    found.push(id);
+                }
+                let extra = g.state.players[p.index()]
+                    .library
+                    .iter()
+                    .copied()
+                    .find(|id| !found.contains(id) && g.object_view(*id).card.is_basic_land())
+                    .unwrap();
+                reject(&mut g, Action::ChooseSearch { card: extra });
+            }
+            checked(&mut g, Action::FinishSearch);
+            assert_ne!(g.state.rng, before_rng);
+            settle(&mut g);
+            for id in found {
+                assert_eq!(g.object_view(id).zone, Zone::Hand);
+                assert!(g.state.known_hand.contains(&g.object_ref(id)));
+            }
+            if mode == 0 {
+                let lands: Vec<_> = (0..3)
+                    .map(|_| named(&mut g, p, "Forest", Zone::Hand))
+                    .collect();
+                checked(&mut g, Action::PlayLand { card: lands[0] });
+                checked(&mut g, Action::PlayLand { card: lands[1] });
+                reject(&mut g, Action::PlayLand { card: lands[2] });
+            }
+        }
+    }
+}
+#[test]
+fn ecl_green_aurora_public_reveal_stops_after_distinct_colors_and_nested_entry_choices_resume() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        named(&mut g, p, "Savannah Lions", Zone::Battlefield);
+        named(&mut g, p, "Swab Goblin", Zone::Battlefield);
+        named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let unseen = named(&mut g, p, "Opt", Zone::Library);
+        let forest = named(&mut g, p, "Forest", Zone::Library);
+        let stone = named(&mut g, p, "Gathering Stone", Zone::Library);
+        let shock = named(&mut g, p, "Shock", Zone::Library);
+        let realms = named(&mut g, p, "Eclipsed Realms", Zone::Library);
+        let growth = named(&mut g, p, "Giant Growth", Zone::Library);
+        let source = named(&mut g, p, "Aurora Awakener", Zone::Hand);
+        cast(&mut g, source, None, &[]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        assert_eq!(
+            g.stats(source),
+            Stats {
+                power: 7,
+                toughness: 7
+            }
+        );
+        assert!(g.keywords(source).contains(Keywords::TRAMPLE));
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        for viewer in [p, p.other()] {
+            let view = g.observe(viewer).library_selection.unwrap();
+            assert_eq!(
+                view.remaining.iter().map(|o| o.id).collect::<Vec<_>>(),
+                vec![growth, realms, shock, stone, forest]
+            );
+            assert_eq!(view.maximum, 3);
+            assert!(view.public);
+            assert!(!view.remaining.iter().any(|o| o.id == unseen));
+        }
+        reject(&mut g, Action::SelectLibrary { card: growth });
+        reject(&mut g, Action::SelectLibrary { card: unseen });
+        checked(&mut g, Action::SelectLibrary { card: realms });
+        checked(&mut g, Action::SelectLibrary { card: stone });
+        let before_rng = g.state.rng.clone();
+        checked(&mut g, Action::FinishLibrarySelection);
+        choose_type(&mut g, "Elf");
+        choose_type(&mut g, "Elf");
+        assert_eq!(g.object_view(realms).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(stone).zone, Zone::Battlefield);
+        assert_ne!(g.state.rng, before_rng);
+        assert_eq!(g.state.players[p.index()].library.last(), Some(&unseen));
+        let bottom = &g.state.players[p.index()].library[..3];
+        for id in [growth, shock, forest] {
+            assert!(bottom.contains(&id));
+        }
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].library.last(), Some(&unseen));
+    }
+}
+#[test]
+fn ecl_green_aurora_zero_colors_does_not_reveal_and_short_library_allows_declining_everything() {
+    for p in [Player::P0, Player::P1] {
+        for zero in [false, true] {
+            let mut g = setup(p);
+            let library = g.state.players[p.index()].library.clone();
+            for id in library {
+                g.move_object(id, Zone::Graveyard);
+            }
+            let land = named(&mut g, p, "Forest", Zone::Library);
+            let instant = named(&mut g, p, "Giant Growth", Zone::Library);
+            if !zero {
+                named(&mut g, p, "Savannah Lions", Zone::Battlefield);
+            }
+            let source = named(&mut g, p, "Aurora Awakener", Zone::Hand);
+            cast(&mut g, source, None, &[]);
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            if zero {
+                g.move_object(source, Zone::Graveyard);
+            }
+            let before = g.state.players[p.index()].library.clone();
+            let before_rng = g.state.rng.clone();
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            if zero {
+                assert!(g.observe(p).library_selection.is_none());
+                assert_eq!(g.state.players[p.index()].library, before);
+                assert_eq!(g.state.rng, before_rng);
+            } else {
+                assert_eq!(g.observe(p).library_selection.unwrap().remaining.len(), 2);
+                checked(&mut g, Action::FinishLibrarySelection);
+                assert_eq!(g.object_view(land).zone, Zone::Library);
+                assert_eq!(g.object_view(instant).zone, Zone::Library);
+                assert_ne!(g.state.rng, before_rng);
+            }
+        }
+    }
+}

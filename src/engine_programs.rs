@@ -2401,7 +2401,14 @@ impl Game {
                 }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
                 Instruction::DestroyLandAndSearch => self.destroy_land_and_search(&item),
-                Instruction::Search(spec) | Instruction::SearchRequired(spec) => {
+                Instruction::Search(mut spec)
+                | Instruction::SearchRequired(mut spec)
+                | Instruction::SearchScaled { mut spec, .. } => {
+                    if let Instruction::SearchScaled { maximum, .. } = instruction {
+                        spec.maximum = spec.maximum.min(
+                            u16::try_from(self.item_amount(maximum, &item)).unwrap_or(u16::MAX),
+                        );
+                    }
                     let minimum = if matches!(instruction, Instruction::SearchRequired(_)) {
                         assert_eq!(
                             spec.filter,

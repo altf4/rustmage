@@ -463,6 +463,7 @@ pub(crate) enum LibrarySelectionFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibrarySelectionCount {
+    All,
     Fixed(u16),
     Lessons,
     InstantAndSorcery,
@@ -490,6 +491,7 @@ pub(crate) enum LibraryLook {
     Fixed(u16),
     ChosenX,
     UntilKinds(u16),
+    UntilCount { kinds: u16, amount: AmountValue },
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct LibrarySelectionEffect {
@@ -1084,6 +1086,10 @@ pub(crate) enum Instruction {
     Surveil(u16),
     AnimateSource(AnimationSpec),
     Search(SearchSpec),
+    SearchScaled {
+        spec: SearchSpec,
+        maximum: AmountValue,
+    },
     /// Capture the destroyed land's controller, then offer both optional basic searches.
     DestroyLandAndSearch,
     /// Unqualified search: find the maximum, or every remaining card if fewer.
