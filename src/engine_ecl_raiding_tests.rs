@@ -734,6 +734,9 @@ fn ecl_raiding_printed_sacrifice_waits_for_omni_entry_before_bounding_fresh_dono
             exiled: incoming_before,
             return_zone: Zone::Battlefield,
         });
+        // Earlier in action order than the usable donor: copying this Omni can
+        // reacquire the same optional replacement without any printed limit.
+        let decoy = named(&mut g, p, "Omni-Changeling", Zone::Battlefield);
         let donor = named(&mut g, p, "Shadow Urchin", Zone::Battlefield);
         let enemy = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
         let spell = named(&mut g, p, "Eaten Alive", Zone::Hand);
@@ -763,6 +766,26 @@ fn ecl_raiding_printed_sacrifice_waits_for_omni_entry_before_bounding_fresh_dono
         assert!(g.state.exile_links.is_empty());
         assert!(matches!(g.state.pending, Pending::EntryCopy { .. }));
         assert_eq!(g.object_view(incoming).zone, Zone::Exile);
+        let object = g.object_ref(decoy);
+        checked(
+            &mut g,
+            Action::ChooseEntryCopy {
+                object: Some(object),
+            },
+        );
+        let first = g.entry_analysis_snapshot();
+        checked(
+            &mut g,
+            Action::ChooseEntryCopy {
+                object: Some(object),
+            },
+        );
+        let second = g.entry_analysis_snapshot();
+        assert_eq!(first.0, second.0);
+        assert!(
+            first.1 < second.1,
+            "actual choices still allocate fresh epochs"
+        );
         let object = g.object_ref(donor);
         checked(
             &mut g,

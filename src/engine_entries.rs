@@ -1256,6 +1256,49 @@ impl Game {
             }
         }
     }
+    /// Alpha-rename only fresh, uncommitted copy epochs in a cost-search key.
+    /// Reacquiring Omni's replacement can repeat the same prospective recipe
+    /// with a later epoch indefinitely. No ability can observe that prototype
+    /// before entry commits. Keep every committed epoch/timestamp and preserve
+    /// the relative order of distinct prospective epochs. The real Game is
+    /// untouched and still allocates fresh epochs for every actual choice.
+    ///
+    /// The returned clock is a capacity resource: a previous equivalent key
+    /// dominates this one only if its clock is no greater than this clock.
+    pub(super) fn entry_analysis_snapshot(&self) -> (Snapshot, u64) {
+        let mut snapshot = self.snapshot();
+        let Some(batch) = snapshot.0.entry_batch.as_mut().filter(|batch| {
+            !batch.prepared && batch.moves.iter().any(|movement| movement.copy.is_some())
+        }) else {
+            return (snapshot, 0);
+        };
+        let mut origins = batch
+            .moves
+            .iter()
+            .filter_map(|movement| movement.copy.as_ref().map(|copy| copy.origin))
+            .filter(|origin| *origin != 0)
+            .collect::<Vec<_>>();
+        origins.sort_unstable();
+        origins.dedup();
+        for movement in &mut batch.moves {
+            if let Some(copy) = &mut movement.copy
+                && copy.origin != 0
+            {
+                let origin =
+                    u64::try_from(origins.binary_search(&copy.origin).unwrap()).unwrap() + 1;
+                if movement.before.copy_ability_origin == copy.origin {
+                    movement.before.copy_ability_origin = origin;
+                }
+                copy.origin = origin;
+            }
+        }
+        let clock = snapshot
+            .0
+            .roles
+            .as_mut()
+            .map_or(0, |roles| roles.normalize_entry_analysis_clock());
+        (snapshot, clock)
+    }
     pub(super) fn entry_copy_view(&self, viewer: Player) -> Option<EntryCopyView> {
         if !matches!(self.state.pending, Pending::EntryCopy { .. }) {
             return None;

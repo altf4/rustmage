@@ -337,7 +337,7 @@ impl Game {
         available >= required
     }
     fn conspire_completion_exists(self) -> bool {
-        fn visit(game: Game, seen: &mut Vec<Snapshot>) -> bool {
+        fn visit(game: Game, seen: &mut Vec<(Snapshot, u64)>) -> bool {
             let Some(a) = &game.state.announcing else {
                 return true;
             };
@@ -356,8 +356,11 @@ impl Game {
             {
                 return false;
             }
-            let snapshot = game.snapshot();
-            if seen.contains(&snapshot) {
+            let snapshot = game.entry_analysis_snapshot();
+            if seen
+                .iter()
+                .any(|(key, clock)| *key == snapshot.0 && *clock <= snapshot.1)
+            {
                 return false;
             }
             seen.push(snapshot);

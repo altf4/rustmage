@@ -40,6 +40,11 @@ pub(super) struct RoleState {
     pub conspire: Option<Box<ConspireCastView>>,
 }
 impl RoleState {
+    pub(super) fn normalize_entry_analysis_clock(&mut self) -> u64 {
+        let clock = self.clock;
+        self.clock = 0;
+        clock
+    }
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.dream_exiles.len() * std::mem::size_of::<DreamExileView>()
