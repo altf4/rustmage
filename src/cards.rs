@@ -141,6 +141,9 @@ pub(crate) enum TargetRule {
     Any,
     Spell,
     SingleTargetStackObject,
+    TriggeredAbility {
+        relation: i8,
+    },
     SpellKinds {
         kinds: u8,
         excluded: u8,
@@ -837,6 +840,7 @@ pub(crate) enum Instruction {
     ResolveDelayedReturn,
     CopyNextInstantSorcery,
     CopyNextInstantSorceryAbility(u16),
+    CopyTargetedTrigger,
     CopyCastSpell {
         prior_spells: bool,
     },

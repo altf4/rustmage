@@ -39,10 +39,19 @@ pub(super) fn owned_bytes(state: &Option<Box<CopyState>>) -> usize {
     })
 }
 impl Game {
-    pub(super) fn stack_target_rule_matches(&self, rule: TargetRule, item: &SpellView) -> bool {
+    pub(super) fn stack_target_rule_matches(
+        &self,
+        rule: TargetRule,
+        controller: Player,
+        item: &SpellView,
+    ) -> bool {
         match rule {
             TargetRule::SingleTargetStackObject => item.targets.len() == 1,
             TargetRule::Spell => item.kind == StackKind::Spell,
+            TargetRule::TriggeredAbility { relation } => {
+                item.kind.is_triggered()
+                    && (relation == -1 || ((item.controller == controller) == (relation == 0)))
+            }
             TargetRule::SpellKinds { kinds, excluded } => {
                 item.kind == StackKind::Spell
                     && (kinds == 0 || item.source_card.kind_mask() & u16::from(kinds) != 0)
@@ -121,6 +130,7 @@ impl Game {
         if let Some(r) = choice
             && r.victim.is_none()
             && r.item.is_copy
+            && r.item.kind == StackKind::Spell
             && self.object_ref(r.item.card) == r.item.object
             && self.state.objects[r.item.card as usize].zone == Zone::Stack
             && !self.state.stack.iter().any(|s| s.id == r.item.id)
@@ -234,6 +244,41 @@ impl Game {
         }
         self.state.stack_copy_data.as_mut().unwrap().delayed = retained;
         self.release_stack_copy_state();
+    }
+    fn allocate_stack_copy(&mut self, template: &SpellView, controller: Player) -> SpellView {
+        if template.kind == StackKind::Spell {
+            return self.allocate_spell_copy(template, controller);
+        }
+        assert!(template.kind.is_triggered());
+        // An ability copy has the same source and frozen event parameters. It
+        // never allocates or moves the physical source object (CR707.10b).
+        let mut copy = template.clone();
+        copy.id = self.next_stack_id();
+        copy.controller = controller;
+        copy.is_copy = true;
+        copy
+    }
+    pub(super) fn copy_targeted_trigger(&mut self, item: &SpellView) -> bool {
+        let Some(template) = item
+            .targets
+            .first()
+            .and_then(|bound| self.bound_stack_item(bound))
+            .filter(|target| target.kind.is_triggered())
+            .cloned()
+        else {
+            return false;
+        };
+        let copy = self.allocate_stack_copy(&template, item.controller);
+        self.state
+            .stack_copy_data
+            .get_or_insert_with(Default::default)
+            .retarget = Some(Retarget {
+            item: copy,
+            template,
+            remaining: 0,
+            victim: None,
+        });
+        self.advance_copy_targets()
     }
     fn allocate_spell_copy(&mut self, template: &SpellView, controller: Player) -> SpellView {
         // These consumers copy only instant/sorcery spells, which never enter as permanents.
@@ -528,7 +573,7 @@ impl Game {
         if r.remaining == 0 {
             state.retarget = None;
         } else {
-            let copy = self.allocate_spell_copy(&r.template, r.item.controller);
+            let copy = self.allocate_stack_copy(&r.template, r.item.controller);
             self.state.stack_copy_data.as_mut().unwrap().retarget = Some(Retarget {
                 item: copy,
                 remaining: r.remaining - 1,

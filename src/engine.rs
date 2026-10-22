@@ -1336,6 +1336,11 @@ pub enum StackKind {
     DelayedReturn,
 }
 
+impl StackKind {
+    pub(super) fn is_triggered(self) -> bool {
+        !matches!(self, Self::Spell | Self::ActivatedAbility { .. })
+    }
+}
 /// The object being attacked; this is not a spell/ability target.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum CombatDefender {
@@ -7860,3 +7865,7 @@ mod ecl_lluwen_tests;
 #[cfg(test)]
 #[path = "engine_ecl_bre_tests.rs"]
 mod ecl_bre_tests;
+
+#[cfg(test)]
+#[path = "engine_ecl_kirol_tests.rs"]
+mod ecl_kirol_tests;

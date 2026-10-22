@@ -978,11 +978,9 @@ impl Game {
                         _ => false,
                     }
             }
-            Target::Stack(id) => self
-                .state
-                .stack
-                .iter()
-                .any(|item| item.id == id && self.stack_target_rule_matches(rule, item)),
+            Target::Stack(id) => self.state.stack.iter().any(|item| {
+                item.id == id && self.stack_target_rule_matches(rule, controller, item)
+            }),
             Target::Spell(id) => self.state.stack.iter().any(|item| {
                 item.kind == StackKind::Spell
                     && item.card == id

@@ -2291,6 +2291,11 @@ impl Game {
                         self.exile_until_mana_value_free_cast(owner, item.controller, minimum);
                     }
                 }
+                Instruction::CopyTargetedTrigger => {
+                    if self.copy_targeted_trigger(&item) {
+                        return;
+                    }
+                }
                 Instruction::ExileNonlandLifeFreeCast => {
                     if self.exile_nonland_life_free_cast(item.controller) {
                         return;
