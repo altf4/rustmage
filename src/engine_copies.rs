@@ -107,6 +107,16 @@ impl Game {
         groups: &[TokenGroupView],
         recipes: &[Option<CopyRecipe>],
     ) {
+        self.create_copy_groups_bound(player, groups, recipes, None, &[]);
+    }
+    pub(super) fn create_copy_groups_bound(
+        &mut self,
+        player: Player,
+        groups: &[TokenGroupView],
+        recipes: &[Option<CopyRecipe>],
+        defenders: Option<&[CombatDefender]>,
+        recipients: &[ObjectRef],
+    ) -> Vec<ObjectRef> {
         assert_eq!(groups.len(), recipes.len());
         let total = groups
             .iter()
@@ -126,7 +136,21 @@ impl Game {
         moves
             .try_reserve_exact(amount)
             .capacity("token batch allocation exhausted");
-        for (group, recipe) in groups.iter().zip(recipes) {
+        let mut created = Vec::new();
+        created
+            .try_reserve_exact(amount)
+            .capacity("token reference allocation exhausted");
+        let mut defender_index = 0;
+        for (index, (group, recipe)) in groups.iter().zip(recipes).enumerate() {
+            let attachment = group
+                .token
+                .role()
+                .and_then(|_| recipients.get(index).copied());
+            if group.token.role().is_some() && !recipients.is_empty() && attachment.is_none()
+                || attachment.is_some_and(|r| !self.aura_can_enchant(group.token, player, r))
+            {
+                continue;
+            }
             assert!(recipe.is_some() || group.token.is_token());
             for _ in 0..group.amount {
                 let (id, generation) = if let Some(id) = self.state.free_tokens.pop() {
@@ -183,12 +207,30 @@ impl Game {
                         },
                     );
                 }
-                moves.push(self.entry_move(id, Zone::Battlefield, group.tapped));
+                let mut movement = self.entry_move(id, Zone::Battlefield, group.tapped);
+                movement.attachment = attachment;
+                if group.token.is_creature()
+                    && let Some(defenders) = defenders
+                {
+                    movement.attacking = Some(defenders[defender_index]);
+                    defender_index += 1;
+                }
+                created.push(ObjectRef {
+                    card: id,
+                    generation: generation
+                        .checked_add(1)
+                        .capacity("object generation exhausted"),
+                });
+                moves.push(movement);
             }
         }
         if !moves.is_empty() {
             self.track_nightmare_copy_entries(&moves);
             self.stage_entries(moves, None);
         }
+        if let Some(defenders) = defenders {
+            assert_eq!(defender_index, defenders.len());
+        }
+        created
     }
 }

@@ -3483,3 +3483,669 @@ fn ecl_green_reunion_spell_copy_keeps_paid_type_and_x_after_both_witnesses_depar
         assert_eq!(g.object_view(source).zone, Zone::Graveyard);
     }
 }
+
+fn crown_equipped(g: &mut Game, p: Player, creature: CardId) -> CardId {
+    let crown = named(g, p, "Mirrormind Crown", Zone::Hand);
+    cast(g, crown, None, &[]);
+    settle(g);
+    let mana = g.state.players[p.index()].mana.iter().sum::<u32>();
+    checked(
+        g,
+        Action::AnnounceActivate {
+            card: crown,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    checked(
+        g,
+        Action::ChooseTarget {
+            target: Target::Card(creature),
+        },
+    );
+    pay(g);
+    settle(g);
+    assert_eq!(
+        mana - g.state.players[p.index()].mana.iter().sum::<u32>(),
+        2
+    );
+    assert_eq!(
+        g.object_view(crown).attached_to,
+        Some(g.object_ref(creature))
+    );
+    crown
+}
+fn crown_pause(g: &mut Game) {
+    g.prepare_triggers();
+    for _ in 0..60 {
+        if matches!(g.state.pending, Pending::Replacement { .. }) {
+            return;
+        }
+        let actions = g.legal_actions();
+        let action = if g.state.pending == Pending::Priority {
+            Action::Pass
+        } else {
+            actions
+                .into_iter()
+                .find(|a| !matches!(a, Action::Concede))
+                .unwrap()
+        };
+        checked(g, action);
+    }
+    panic!("no token replacement {:?}", g.state.pending);
+}
+fn crown_copies(g: &Game, p: Player, definition: Card) -> Vec<CardId> {
+    g.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter(|(_, o)| {
+            o.controller == p && o.zone == Zone::Battlefield && o.is_token() && o.card == definition
+        })
+        .map(|(id, _)| id as CardId)
+        .collect()
+}
+#[test]
+fn ecl_green_crown_paid_equip_first_event_replaces_tokens_but_not_noncopy_modifiers() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        crown_equipped(&mut g, p, bear);
+        g.add_counter(bear, CounterKind::PlusOne, 3);
+        let source = g.object_ref(bear);
+        g.grant_keyword_effects(&[bear], source, Keywords::FLYING);
+        let dagger = named(&mut g, p, "Stalactite Dagger", Zone::Hand);
+        cast(&mut g, dagger, None, &[]);
+        crown_pause(&mut g);
+        assert_eq!(
+            g.observe(p.other())
+                .replacement_choice
+                .as_ref()
+                .unwrap()
+                .kind,
+            "TokensOptional"
+        );
+        assert!(
+            g.legal_actions()
+                .contains(&Action::ChooseOptional { accept: false })
+        );
+        let illegal_source = g.object_ref(dagger);
+        reject(
+            &mut g,
+            Action::ChooseReplacement {
+                source: illegal_source,
+                ability: 0,
+            },
+        );
+        checked(&mut g, Action::ChooseOptional { accept: true });
+        settle(&mut g);
+        let copies = crown_copies(&g, p, Card::from_name("Bear Cub").unwrap());
+        assert_eq!(copies.len(), 1);
+        assert_eq!(
+            g.stats(copies[0]),
+            Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+        assert!(!g.keywords(copies[0]).contains(Keywords::FLYING));
+        assert_eq!(g.state.objects[copies[0] as usize].counters.plus_one, 0);
+        assert!(g.observe(p).players[p.index()].token_creation_attempted_this_turn);
+        let next = named(&mut g, p, "Stalactite Dagger", Zone::Hand);
+        cast(&mut g, next, None, &[]);
+        settle(&mut g);
+        assert_eq!(
+            crown_copies(&g, p, Card::from_name("Bear Cub").unwrap()).len(),
+            1
+        );
+        assert_eq!(
+            definition_objects(&g, p, "@token/shapeshifter_1_1_colorless_changeling").len(),
+            1
+        );
+    }
+}
+#[test]
+fn ecl_green_crown_decline_prior_unattached_event_zero_and_each_player_history() {
+    for p in [Player::P0, Player::P1] {
+        for decline in [false, true] {
+            let mut g = setup(p);
+            let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let token = Card::from_name("@token/shapeshifter_1_1_colorless_changeling").unwrap();
+            g.create_tokens(p, token, 0, false);
+            assert!(!g.state.players[p.index()].token_creation_attempted_this_turn);
+            if !decline {
+                g.create_tokens(p, token, 1, false);
+            }
+            crown_equipped(&mut g, p, bear);
+            g.create_tokens(p, token, 2, false);
+            let pending = g.advance_replacements(false);
+            if decline {
+                assert!(pending);
+                checked(&mut g, Action::ChooseOptional { accept: false });
+            } else {
+                assert!(!pending);
+            }
+            assert_eq!(
+                crown_copies(&g, p, Card::from_name("Bear Cub").unwrap()).len(),
+                0
+            );
+            g.create_tokens(p, token, 1, false);
+            assert!(!g.advance_replacements(false));
+            assert_eq!(
+                crown_copies(&g, p, Card::from_name("Bear Cub").unwrap()).len(),
+                0
+            );
+            assert!(!g.state.players[p.other().index()].token_creation_attempted_this_turn);
+            g.begin_turn();
+            assert!(!g.state.players[p.index()].token_creation_attempted_this_turn);
+            g.create_tokens(p, token, 1, false);
+            assert!(g.advance_replacements(false));
+            checked(&mut g, Action::ChooseOptional { accept: true });
+            assert_eq!(
+                crown_copies(&g, p, Card::from_name("Bear Cub").unwrap()).len(),
+                1
+            );
+        }
+    }
+}
+#[test]
+fn ecl_green_crown_ordering_multiple_groups_and_multiple_crowns_preserves_tapped() {
+    for p in [Player::P0, Player::P1] {
+        for crown_first in [false, true] {
+            let mut g = setup(p);
+            let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let crown = crown_equipped(&mut g, p, bear);
+            let giant = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+            let other = crown_equipped(&mut g, p, giant);
+            let doubling = named(&mut g, p, "Doubling Season", Zone::Battlefield);
+            let quina = named(&mut g, p, "Quina, Qu Gourmet", Zone::Battlefield);
+            let token = Card::from_name("@token/shapeshifter_1_1_colorless_changeling").unwrap();
+            g.create_tokens(p, token, 2, true);
+            assert!(g.advance_replacements(false));
+            let source = if crown_first { crown } else { quina };
+            let object = g.object_ref(source);
+            checked(
+                &mut g,
+                Action::ChooseReplacement {
+                    source: object,
+                    ability: 0,
+                },
+            );
+            if crown_first {
+                checked(&mut g, Action::ChooseOptional { accept: true });
+            }
+            let object = g.object_ref(other);
+            checked(
+                &mut g,
+                Action::ChooseReplacement {
+                    source: object,
+                    ability: 0,
+                },
+            );
+            checked(&mut g, Action::ChooseOptional { accept: false });
+            if !crown_first {
+                let object = g.object_ref(crown);
+                checked(
+                    &mut g,
+                    Action::ChooseReplacement {
+                        source: object,
+                        ability: 0,
+                    },
+                );
+                checked(&mut g, Action::ChooseOptional { accept: true });
+            }
+            // Remaining obligatory providers apply once, regardless of ordering.
+            settle(&mut g);
+            let copies = crown_copies(&g, p, Card::from_name("Bear Cub").unwrap());
+            assert_eq!(copies.len(), if crown_first { 4 } else { 6 });
+            assert!(copies.iter().all(|&id| g.object_view(id).tapped));
+            assert_eq!(
+                crown_copies(&g, p, Card::from_name("Hill Giant").unwrap()).len(),
+                0
+            );
+            assert!(g.on_battlefield(doubling));
+        }
+    }
+}
+#[test]
+fn ecl_green_crown_copy_of_copy_keeps_intrinsic_exceptions_and_independent_owned_recipe() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let mut recipe = CopyRecipe::new(Card::from_name("Bear Cub").unwrap());
+        recipe.exceptions = CopyExceptions::HASTE_AND_SACRIFICE.union(CopyExceptions::NIGHTMARE);
+        g.stage_copy_creation(p, recipe, 1);
+        g.advance_entries();
+        let original = crown_copies(&g, p, recipe.definition)[0];
+        g.state.players[p.index()].token_creation_attempted_this_turn = false;
+        crown_equipped(&mut g, p, original);
+        g.create_tokens(p, Card::from_name("@token/mutavault").unwrap(), 2, false);
+        assert!(g.advance_replacements(false));
+        checked(&mut g, Action::ChooseOptional { accept: true });
+        let copies = crown_copies(&g, p, recipe.definition);
+        assert_eq!(copies.len(), 3);
+        for id in copies {
+            assert_eq!(g.copy_recipe(g.object_ref(id)), Some(recipe));
+            assert!(g.keywords(id).contains(Keywords::HASTE));
+            assert!(g.has_subtype(id, "Nightmare"));
+        }
+    }
+}
+#[test]
+fn ecl_green_crown_copy_entries_retain_keyword_reflexive_role_and_job_completions() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let crown = crown_equipped(&mut g, p, bear);
+        let token = Card::from_name("@token/shapeshifter_1_1_colorless_changeling").unwrap();
+        let source = g.object_ref(crown);
+        g.stage_token_creation(
+            p,
+            token,
+            2,
+            false,
+            replacements::TokenCompletion::Keywords {
+                source,
+                keywords: Keywords::FLYING,
+            },
+        );
+        assert!(g.advance_replacements(false));
+        checked(&mut g, Action::ChooseOptional { accept: true });
+        let copies = crown_copies(&g, p, Card::from_name("Bear Cub").unwrap());
+        assert_eq!(copies.len(), 2);
+        assert!(
+            copies
+                .iter()
+                .all(|&id| g.keywords(id).contains(Keywords::FLYING))
+        );
+        g.state.players[p.index()].token_creation_attempted_this_turn = false;
+        named(&mut g, p, "Doubling Season", Zone::Battlefield);
+        let bow = named(&mut g, p, "Bard's Bow", Zone::Hand);
+        cast(&mut g, bow, None, &[]);
+        crown_pause(&mut g);
+        let source = g.object_ref(crown);
+        checked(&mut g, Action::ChooseReplacement { source, ability: 0 });
+        checked(&mut g, Action::ChooseOptional { accept: true });
+        assert!(matches!(g.state.pending, Pending::CreatedToken { .. }));
+        let choices = g.observe(p).created_token_choice.unwrap().candidates;
+        assert_eq!(choices.len(), 2); // Both actual copied tokens remain eligible for job select.
+        checked(&mut g, Action::ChooseCreatedToken { object: choices[0] });
+        settle(&mut g);
+        assert_eq!(g.object_view(bow).attached_to, Some(choices[0]));
+    }
+}
+#[test]
+fn ecl_green_crown_actual_mobilize_copies_enter_attacking_and_delayed_sacrifice_survives_source() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        crown_equipped(&mut g, p, bear);
+        let headliner = named(&mut g, p, "Stadium Headliner", Zone::Battlefield);
+        let pw = named(
+            &mut g,
+            p.other(),
+            "Ajani, Caller of the Pride",
+            Zone::Battlefield,
+        );
+        g.state.objects[pw as usize].counters.loyalty = 4;
+        g.state.objects[headliner as usize].summoning_sick = false;
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        checked(&mut g, Action::Attack { card: headliner });
+        checked(&mut g, Action::FinishAttackers);
+        crown_pause(&mut g);
+        checked(&mut g, Action::ChooseOptional { accept: true });
+        assert!(matches!(g.state.pending, Pending::Mobilize { .. }));
+        let object = g.object_ref(pw);
+        checked(
+            &mut g,
+            Action::ChooseMobilizeDefender {
+                defender: CombatDefender::Planeswalker(object),
+            },
+        );
+        settle(&mut g);
+        let tokens = g.observe(p).delayed_sacrifices[0].tokens.clone();
+        assert_eq!(tokens.len(), 1);
+        let r = tokens[0];
+        assert_eq!(
+            g.object_view(r.card).card,
+            Card::from_name("Bear Cub").unwrap()
+        );
+        assert!(g.object_view(r.card).tapped);
+        assert!(
+            g.state
+                .attackers
+                .iter()
+                .any(|a| a.card == r.card
+                    && a.defender == Some(CombatDefender::Planeswalker(object)))
+        );
+        g.move_object(headliner, Zone::Graveyard);
+        g.queue_delayed_sacrifices();
+        settle(&mut g);
+        assert!(!g.on_battlefield(r.card));
+    }
+}
+#[test]
+fn ecl_green_crown_animated_land_copies_never_attack_but_are_delayed_sacrifices() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let explorer = named(&mut g, p, "Mutable Explorer", Zone::Hand);
+        cast(&mut g, explorer, None, &[]);
+        settle(&mut g);
+        let land = definition_objects(&g, p, "@token/mutavault")[0];
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: land,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        crown_equipped(&mut g, p, land);
+        g.state.players[p.index()].token_creation_attempted_this_turn = false;
+        let source = named(&mut g, p, "Stadium Headliner", Zone::Battlefield);
+        named(
+            &mut g,
+            p.other(),
+            "Ajani, Caller of the Pride",
+            Zone::Battlefield,
+        );
+        g.state.objects[source as usize].summoning_sick = false;
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        checked(&mut g, Action::Attack { card: source });
+        checked(&mut g, Action::FinishAttackers);
+        crown_pause(&mut g);
+        checked(&mut g, Action::ChooseOptional { accept: true });
+        settle(&mut g);
+        assert!(g.observe(p).mobilize_choice.is_none());
+        let tokens = g.observe(p).delayed_sacrifices[0].tokens.clone();
+        assert_eq!(tokens.len(), 1);
+        assert!(!g.is_creature(tokens[0].card));
+        assert!(g.object_view(tokens[0].card).tapped);
+        assert!(!g.state.attackers.iter().any(|a| a.card == tokens[0].card));
+        g.queue_delayed_sacrifices();
+        settle(&mut g);
+        assert!(!g.on_battlefield(tokens[0].card));
+        assert!(g.on_battlefield(land));
+    }
+}
+#[test]
+fn ecl_green_crown_failed_copy_capacity_restores_optional_choice_and_public_history() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        crown_equipped(&mut g, p, bear);
+        g.create_tokens(
+            p,
+            Card::from_name("@token/mutavault").unwrap(),
+            u128::MAX,
+            false,
+        );
+        assert!(g.advance_replacements(false));
+        let before = g.snapshot();
+        let revision = g.revision();
+        let actor = g.actor().unwrap();
+        let action = Action::ChooseOptional { accept: true };
+        let index = g.legal_actions().iter().position(|a| a == &action).unwrap();
+        let mut branch = g.clone();
+        let error = g.apply(actor, action);
+        assert!(matches!(error, Err(Error::CapacityExceeded(_))));
+        assert_eq!(branch.apply_index(actor, revision, index), error);
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(branch.snapshot(), before);
+        assert_eq!(g.revision(), revision);
+        assert!(
+            g.legal_actions()
+                .contains(&Action::ChooseOptional { accept: false })
+        );
+    }
+}
+#[test]
+fn ecl_green_crown_copies_transformed_back_face_with_front_retained() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let brigid = named(&mut g, p, "Brigid, Clachan's Heart", Zone::Battlefield);
+        crown_equipped(&mut g, p, brigid);
+        g.transform_permanent(brigid);
+        assert_eq!(g.object_view(brigid).card.name(), "Brigid, Doun's Mind");
+        let offering = named(&mut g, p, "Harmless Offering", Zone::Hand);
+        cast(
+            &mut g,
+            offering,
+            None,
+            &[Target::Player(p.other()), Target::Card(brigid)],
+        );
+        settle(&mut g);
+        g.create_tokens(p, Card::from_name("@token/mutavault").unwrap(), 1, false);
+        assert!(g.advance_replacements(false));
+        checked(&mut g, Action::ChooseOptional { accept: true });
+        let copies = crown_copies(&g, p, Card::from_name("Brigid, Doun's Mind").unwrap());
+        assert_eq!(copies.len(), 1);
+        let copy = copies[0];
+        assert_eq!(g.object_view(copy).card.fixed_mana_value(), 3);
+        g.transform_permanent(copy);
+        assert_eq!(g.object_view(copy).card.name(), "Brigid, Clachan's Heart");
+        assert_eq!(
+            g.copy_recipe(g.object_ref(copy)).unwrap().definition.name(),
+            "Brigid, Clachan's Heart"
+        );
+        assert_eq!(g.object_view(brigid).card.name(), "Brigid, Doun's Mind");
+    }
+}
+#[test]
+fn ecl_green_crown_exact_attachment_and_ability_availability_rechecked_before_first_event() {
+    for p in [Player::P0, Player::P1] {
+        for unavailable in 0..3 {
+            let mut g = setup(p);
+            let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let crown = crown_equipped(&mut g, p, bear);
+            if unavailable == 0 {
+                g.move_object(bear, Zone::Exile);
+                g.move_object(bear, Zone::Battlefield);
+            } else if unavailable == 1 {
+                g.move_object(crown, Zone::Exile);
+                g.move_object(crown, Zone::Battlefield);
+            } else {
+                let stop = named(&mut g, p, "Stop Cold", Zone::Hand);
+                cast(&mut g, stop, None, &[Target::Card(crown)]);
+                settle(&mut g);
+            }
+            g.create_tokens(p, Card::from_name("@token/mutavault").unwrap(), 1, false);
+            assert!(!g.advance_replacements(false));
+            assert_eq!(
+                crown_copies(&g, p, Card::from_name("Bear Cub").unwrap()).len(),
+                0
+            );
+            assert_eq!(definition_objects(&g, p, "@token/mutavault").len(), 1);
+        }
+    }
+}
+
+#[test]
+fn ecl_green_crown_reflexive_faebloom_and_replaced_role_success_are_distinct() {
+    for p in [Player::P0, Player::P1] {
+        for role in [false, true] {
+            let mut g = setup(p);
+            let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            crown_equipped(&mut g, p, bear);
+            let foe = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            let spell = named(
+                &mut g,
+                p,
+                if role {
+                    "Curse of the Werefox"
+                } else {
+                    "Faebloom Trick"
+                },
+                Zone::Hand,
+            );
+            let targets = if role {
+                vec![Target::Card(bear)]
+            } else {
+                Vec::new()
+            };
+            cast(&mut g, spell, None, &targets);
+            crown_pause(&mut g);
+            checked(&mut g, Action::ChooseOptional { accept: true });
+            settle(&mut g);
+            let copies = crown_copies(&g, p, Card::from_name("Bear Cub").unwrap());
+            assert_eq!(copies.len(), if role { 1 } else { 2 });
+            assert!(
+                copies
+                    .iter()
+                    .all(|&id| g.object_view(id).attached_to.is_none())
+            );
+            if role {
+                assert_eq!(g.object_view(foe).damage, 0);
+                assert_eq!(g.object_view(bear).damage, 0);
+            } else {
+                assert!(g.object_view(foe).tapped);
+            }
+        }
+    }
+}
+#[test]
+fn ecl_green_crown_copied_entry_choices_freeze_recipes_and_resume_after_source_departures() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let automaton = named(&mut g, p, "Adaptive Automaton", Zone::Hand);
+        cast(&mut g, automaton, None, &[]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        choose_type(&mut g, "Elf");
+        settle(&mut g);
+        let crown = crown_equipped(&mut g, p, automaton);
+        let source = g.object_ref(crown);
+        g.stage_token_creation(
+            p,
+            Card::from_name("@token/mutavault").unwrap(),
+            2,
+            false,
+            replacements::TokenCompletion::Keywords {
+                source,
+                keywords: Keywords::FLYING,
+            },
+        );
+        assert!(g.advance_replacements(false));
+        checked(&mut g, Action::ChooseOptional { accept: true });
+        assert!(g.observe(p).entry_value.is_some());
+        g.move_object(crown, Zone::Exile);
+        g.move_object(automaton, Zone::Exile);
+        choose_type(&mut g, "Goblin");
+        choose_type(&mut g, "Goblin");
+        settle(&mut g); // Complete the simultaneous providers' timestamp order.
+        let copies = crown_copies(&g, p, Card::from_name("Adaptive Automaton").unwrap());
+        assert_eq!(copies.len(), 2);
+        for id in copies {
+            assert!(g.keywords(id).contains(Keywords::FLYING));
+            assert!(g.has_subtype(id, "Goblin"));
+            assert_eq!(
+                g.stats(id),
+                Stats {
+                    power: 3,
+                    toughness: 3
+                }
+            );
+        }
+        assert!(g.state.replacements.is_none());
+        assert!(g.state.entry_batch.is_none());
+    }
+}
+#[test]
+fn ecl_green_crown_plain_and_mass_role_creation_preserve_original_group_recipients() {
+    for p in [Player::P0, Player::P1] {
+        for mass in [false, true] {
+            let mut g = setup(p);
+            let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            crown_equipped(&mut g, p, bear);
+            let foes = [
+                named(&mut g, p.other(), "Hill Giant", Zone::Battlefield),
+                named(&mut g, p.other(), "Bear Cub", Zone::Battlefield),
+            ];
+            let spell = named(
+                &mut g,
+                p,
+                if mass {
+                    "Asinine Antics"
+                } else {
+                    "Royal Treatment"
+                },
+                Zone::Hand,
+            );
+            let targets = if mass {
+                Vec::new()
+            } else {
+                vec![Target::Card(bear)]
+            };
+            cast(&mut g, spell, None, &targets);
+            crown_pause(&mut g);
+            checked(&mut g, Action::ChooseOptional { accept: true });
+            settle(&mut g);
+            let copies = crown_copies(&g, p, Card::from_name("Bear Cub").unwrap());
+            assert_eq!(copies.len(), if mass { 2 } else { 1 });
+            assert!(
+                copies
+                    .iter()
+                    .all(|&id| g.object_view(id).attached_to.is_none()
+                        && g.stats(id)
+                            == Stats {
+                                power: 2,
+                                toughness: 2
+                            })
+            );
+            assert_eq!(
+                g.stats(foes[0]),
+                Stats {
+                    power: 3,
+                    toughness: 3
+                }
+            );
+            assert_eq!(
+                g.stats(foes[1]),
+                Stats {
+                    power: 2,
+                    toughness: 2
+                }
+            );
+            assert_eq!(
+                g.stats(bear),
+                Stats {
+                    power: 2,
+                    toughness: 2
+                }
+            );
+            assert_eq!(g.keywords(bear).contains(Keywords::HEXPROOF), !mass);
+            assert!(
+                g.state
+                    .objects
+                    .iter()
+                    .all(|o| o.zone != Zone::Battlefield || o.card.role().is_none())
+            );
+        }
+    }
+}
+#[test]
+fn ecl_green_crown_two_accepted_replacements_make_last_equipped_creature_copies() {
+    for p in [Player::P0, Player::P1] {
+        for reverse in [false, true] {
+            let mut g = setup(p);
+            let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let first = crown_equipped(&mut g, p, bear);
+            let giant = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+            let second = crown_equipped(&mut g, p, giant);
+            g.create_tokens(p, Card::from_name("@token/mutavault").unwrap(), 2, false);
+            assert!(g.advance_replacements(false));
+            let source = g.object_ref(if reverse { second } else { first });
+            checked(&mut g, Action::ChooseReplacement { source, ability: 0 });
+            checked(&mut g, Action::ChooseOptional { accept: true });
+            checked(&mut g, Action::ChooseOptional { accept: true });
+            let expected =
+                Card::from_name(if reverse { "Bear Cub" } else { "Hill Giant" }).unwrap();
+            let other = Card::from_name(if reverse { "Hill Giant" } else { "Bear Cub" }).unwrap();
+            assert_eq!(crown_copies(&g, p, expected).len(), 2);
+            assert!(crown_copies(&g, p, other).is_empty());
+        }
+    }
+}

@@ -1758,6 +1758,7 @@ pub(crate) enum ReplacementSpec {
     },
     AddToken(Card),
     ReplaceArtifactTokens(Card),
+    FirstTokensCopyAttached,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]

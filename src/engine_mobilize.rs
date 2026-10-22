@@ -24,6 +24,7 @@ pub(super) struct DelayedBatch {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct MobilizePlan {
     groups: Vec<TokenGroupView>,
+    recipes: Vec<Option<CopyRecipe>>,
     token: Card,
     amount: usize,
     defenders: Vec<CombatDefender>,
@@ -33,6 +34,9 @@ pub struct MobilizeChoiceView {
     pub source: ObjectRef,
     pub token: Card,
     pub tokens: Vec<TokenGroupView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub copy_recipes: Vec<Option<CopyRecipe>>,
+    /// Creature tokens requiring attacking-defender choices; other tokens still enter.
     pub amount: usize,
     pub defenders: Vec<CombatDefender>,
 }
@@ -43,6 +47,7 @@ impl Game {
             source: self.state.resolving.as_ref()?.item.object,
             token: f.token,
             tokens: f.groups.clone(),
+            copy_recipes: f.recipes.clone(),
             amount: f.amount,
             defenders: f.defenders.clone(),
         })
@@ -97,37 +102,52 @@ impl Game {
         );
         self.advance_replacements(false)
     }
-    pub(super) fn start_mobilize_groups(&mut self, groups: Vec<TokenGroupView>) -> bool {
+    pub(super) fn start_mobilize_groups(
+        &mut self,
+        groups: Vec<TokenGroupView>,
+        recipes: Vec<Option<CopyRecipe>>,
+    ) -> bool {
         let item = &self.state.resolving.as_ref().unwrap().item;
         let token = groups[0].token;
         let total = groups
             .iter()
             .try_fold(0u128, |n, g| n.checked_add(g.amount))
             .capacity("mobilize count exhausted");
-        let amount = usize::try_from(total).capacity("mobilize count representation exhausted");
-        let fresh = amount.saturating_sub(self.state.free_tokens.len());
+        let total_amount =
+            usize::try_from(total).capacity("mobilize count representation exhausted");
+        let amount = usize::try_from(
+            groups
+                .iter()
+                .filter(|g| g.token.is_creature())
+                .try_fold(0u128, |n, g| n.checked_add(g.amount))
+                .capacity("attacking token quantity exhausted"),
+        )
+        .capacity("mobilize count representation exhausted");
+        let fresh = total_amount.saturating_sub(self.state.free_tokens.len());
         (self.state.objects.len() as u128)
             .checked_add(fresh as u128)
             .filter(|&n| n <= u128::from(CardId::MAX) + 1)
             .capacity("mobilize object slots exhausted");
-        if amount == 0 {
+        if total_amount == 0 {
             return false;
         }
         let mut defenders = Vec::new();
         defenders
             .try_reserve_exact(amount)
             .capacity("mobilize defender allocation exhausted");
-        let choice = self.state.objects.iter().enumerate().any(|(id, o)| {
-            o.zone == Zone::Battlefield
-                && o.controller == item.controller.other()
-                && self.current_kinds(id as CardId) & 64 != 0
-        });
+        let choice = amount > 0
+            && self.state.objects.iter().enumerate().any(|(id, o)| {
+                o.zone == Zone::Battlefield
+                    && o.controller == item.controller.other()
+                    && self.current_kinds(id as CardId) & 64 != 0
+            });
         if !choice {
             defenders.resize(amount, CombatDefender::Player(item.controller.other()));
         }
         self.state.mobilize = Some(Box::new(MobilizePlan {
             token,
             groups,
+            recipes,
             amount,
             defenders,
         }));
@@ -146,7 +166,7 @@ impl Game {
         f.defenders.push(defender);
         if f.defenders.len() == f.amount {
             self.finish_mobilize();
-            self.run_program();
+            self.resume_token_entries(true);
         }
     }
     fn finish_mobilize(&mut self) {
@@ -158,7 +178,28 @@ impl Game {
                 .iter()
                 .all(|&d| self.mobilize_defender_valid(item.controller, d))
         );
-        let tokens = self.create_token_groups(item.controller, &f.groups, Some(&f.defenders), true);
+        if f.recipes.is_empty() {
+            let tokens =
+                self.create_token_groups(item.controller, &f.groups, Some(&f.defenders), true);
+            self.record_mobilize_tokens(&item, tokens);
+            return;
+        }
+        let tokens = {
+            self.create_copy_groups_bound(
+                item.controller,
+                &f.groups,
+                &f.recipes,
+                Some(&f.defenders),
+                &[],
+            )
+        };
+        self.defer_token_completion(
+            item.controller,
+            replacements::TokenCompletion::MobilizeDelayed(Box::new(item)),
+            tokens,
+        );
+    }
+    pub(super) fn record_mobilize_tokens(&mut self, item: &SpellView, tokens: Vec<ObjectRef>) {
         if tokens.is_empty() {
             return;
         }
@@ -273,6 +314,7 @@ impl Game {
             std::mem::size_of::<MobilizePlan>()
                 + f.defenders.len() * std::mem::size_of::<CombatDefender>()
                 + f.groups.len() * std::mem::size_of::<TokenGroupView>()
+                + f.recipes.len() * std::mem::size_of::<Option<CopyRecipe>>()
         }) + self.state.delayed_sacrifices.as_ref().map_or(0, |b| {
             std::mem::size_of::<Vec<DelayedBatch>>()
                 + b.iter()

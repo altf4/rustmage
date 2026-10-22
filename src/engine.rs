@@ -813,6 +813,7 @@ impl Object {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct PlayerState {
+    token_creation_attempted_this_turn: bool,
     put_counter_on_creature_this_turn: bool,
     hexproof_until_end_turn: bool,
     extra_land_plays_remaining: u64,
@@ -1827,6 +1828,7 @@ pub struct ZoneChange {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
+    pub token_creation_attempted_this_turn: bool,
     pub put_counter_on_creature_this_turn: bool,
     pub hexproof_until_end_turn: bool,
     /// Additional land plays granted until the current turn ends.
@@ -2189,6 +2191,7 @@ impl Game {
         }
         let mut objects = Vec::with_capacity(config.decks.iter().map(Vec::len).sum());
         let mut players = std::array::from_fn(|_| PlayerState {
+            token_creation_attempted_this_turn: false,
             put_counter_on_creature_this_turn: false,
             hexproof_until_end_turn: false,
             extra_land_plays_remaining: 0,
@@ -4678,6 +4681,11 @@ impl Game {
                 }
             }
             Action::ChooseOptional { accept }
+                if matches!(self.state.pending, Pending::Replacement { .. }) =>
+            {
+                self.choose_token_copy_optional(accept);
+            }
+            Action::ChooseOptional { accept }
                 if matches!(self.state.pending, Pending::OptionalSearch(_)) =>
             {
                 self.choose_optional_search(actor, accept);
@@ -5453,6 +5461,7 @@ impl Game {
         self.state.creatures_died_this_turn = 0;
         self.state.graveyard_entries = None;
         for player in &mut self.state.players {
+            player.token_creation_attempted_this_turn = false;
             player.put_counter_on_creature_this_turn = false;
             player.nonland_permanents_entered_this_turn = 0;
             player.spells_cast_this_turn = 0;
@@ -6151,6 +6160,7 @@ impl Game {
                 Pending::Terminal => "terminal",
             },
             players: std::array::from_fn(|i| PlayerView {
+                token_creation_attempted_this_turn: s.players[i].token_creation_attempted_this_turn,
                 put_counter_on_creature_this_turn: s.players[i].put_counter_on_creature_this_turn,
                 hexproof_until_end_turn: s.players[i].hexproof_until_end_turn,
                 extra_land_plays_remaining: s.players[i].extra_land_plays_remaining,
