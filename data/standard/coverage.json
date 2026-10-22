@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "839c6eb1920808a6c12fb3f0f930d8e6461e857b7f1f6bf4b05519a3506fd29e",
+  "catalogue_version": "407f8cbbdfde7b168b57563b0baf741ce3369f2b692781a78f35b4a94a8d67b5",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2350,
-  "implemented_total": 2356,
+  "implemented_standard_cards": 2351,
+  "implemented_total": 2357,
   "token_definitions": 110,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "complete": 261,
-      "gated": 6
+      "complete": 262,
+      "gated": 5
     },
     "eoc": {
       "total": 8,
@@ -34951,8 +34951,8 @@
     {
       "name": "Taster of Wares",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/taster_of_wares.rs",
       "set": "ecl"
     },

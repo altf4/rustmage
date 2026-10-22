@@ -6073,7 +6073,7 @@
       "name": "Taster of Wares",
       "definition": "src/card_definitions/ecl/taster_of_wares.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Taster of Wares",
@@ -6087,7 +6087,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/taster_of_wares.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "f413a83d-a40d-434c-b20a-4c707c0527fa",

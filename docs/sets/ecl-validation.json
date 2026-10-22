@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 160,
+  "newly_tested_physical_cards": 161,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -144,6 +144,7 @@
     "Sygg's Command",
     "Sygg, Wanderwine Wisdom // Sygg, Wanderbrine Shield",
     "Tam, Mindful First-Year",
+    "Taster of Wares",
     "Temporal Cleansing",
     "Tend the Sprigs",
     "Thirst for Identity",
@@ -165,8 +166,8 @@
     "Winnowing",
     "Wistfulness"
   ],
-  "current_admission_flags": 267,
-  "remaining_gated": 6,
+  "current_admission_flags": 268,
+  "remaining_gated": 5,
   "inherited_evidence_audit": {
     "audited": 43,
     "total": 107,
@@ -370,10 +371,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T21:50:41.802087+00:00",
-    "elapsed_seconds": 23274.585236,
-    "newly_verified_cards": 160,
-    "cards_per_hour": 24.74802425733762,
+    "end_utc": "2026-10-22T21:56:27.131956+00:00",
+    "elapsed_seconds": 23619.915105,
+    "newly_verified_cards": 161,
+    "cards_per_hour": 24.53861486899701,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "Combined260-card ECL scenarios; Kirol separately focused-tested after this combined run.",
@@ -1296,5 +1297,21 @@
     "native_report": "<cache>/rustmage-build-reports/8427b0d08d25400c85472d26c279cb66.json",
     "clippy": "<cache>/rustmage-build-reports/8e322de6dfc14760a5ba8c87ea8f6438.json",
     "provenance_seconds": 3.741
+  },
+  "taster_of_wares": {
+    "source_commit": "c56fb537",
+    "focused_tests": 8,
+    "focused_seconds": 0.5,
+    "focused_report": "<cache>/rustmage-build-reports/43b1fd542a104497b72fb8020c15aefb.json",
+    "white_blue_tests": 165,
+    "white_blue_seconds": 5.31,
+    "white_blue_report": "<cache>/rustmage-build-reports/d45485204dd24370b2c0ef53e4bb3014.json",
+    "exile_tests": 15,
+    "exile_seconds": 0.04,
+    "exile_report": "<cache>/rustmage-build-reports/794eeffe8dfe4bd4914b39ddc9153d70.json",
+    "funding_tests": 110,
+    "funding_seconds": 3.45,
+    "funding_report": "<cache>/rustmage-build-reports/1c2555fd7f6a4af3819841ebabc2853e.json",
+    "clippy": "<cache>/rustmage-build-reports/b20c6631d2af43b497afbee3bdb01320.json"
   }
 }
