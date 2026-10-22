@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "3b1346f74ada8e9ad37b759a09e051bd42d0d6e7c1e75471f97761bae41b9b9c",
+  "catalogue_version": "95089fec20f751c15a20f53bdd4c7284245d11ff10ea7a7ff958e9b987fb4860",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2250,
-  "implemented_total": 2256,
+  "implemented_standard_cards": 2254,
+  "implemented_total": 2260,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 106,
-      "complete": 161
+      "gated": 102,
+      "complete": 165
     },
     "eoc": {
       "total": 8,
@@ -4943,8 +4943,8 @@
     {
       "name": "Burning Curiosity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/burning_curiosity.rs",
       "set": "ecl"
     },
@@ -6223,8 +6223,8 @@
     {
       "name": "Cinder Strike",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/cinder_strike.rs",
       "set": "ecl"
     },
@@ -8047,8 +8047,8 @@
     {
       "name": "Dawn-Blessed Pennant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/dawn_blessed_pennant.rs",
       "set": "ecl"
     },
@@ -27983,8 +27983,8 @@
     {
       "name": "Requiting Hex",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/requiting_hex.rs",
       "set": "ecl"
     },
