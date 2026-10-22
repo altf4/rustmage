@@ -107,6 +107,8 @@ enum Event {
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Work {
     Damage(DamageBatch),
+    /// Damage results wait until their wither counter replacements are complete.
+    DamageResults(Vec<DamageEvent>),
     Counters(CounterBatch),
     Tokens(TokenBatch),
     DestroyAndCreate {
@@ -163,6 +165,9 @@ impl ReplacementState {
                     Work::Damage(b) => {
                         b.events.len() * std::mem::size_of::<DamageEvent>()
                             + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
+                    }
+                    Work::DamageResults(events) => {
+                        events.len() * std::mem::size_of::<DamageEvent>()
                     }
                     Work::Counters(b) => counter_bytes(b),
                     Work::Tokens(b) => token_bytes(b),
@@ -468,6 +473,41 @@ impl Game {
             next: 0,
             used: Vec::new(),
         }));
+    }
+    fn wither_damage_counters(&self, events: &[DamageEvent]) -> Vec<CounterPlacement> {
+        events
+            .iter()
+            .filter_map(|event| {
+                if event.amount <= 0 || !event.source.keywords.contains(Keywords::WITHER) {
+                    return None;
+                }
+                let Target::Card(id) = event.target else {
+                    return None;
+                };
+                if !self.on_battlefield(id) || !self.is_creature(id) {
+                    return None;
+                }
+                let object = &self.state.objects[id as usize];
+                Some(CounterPlacement {
+                    object: self.object_ref(id),
+                    placed_by: event.source.controller,
+                    card: object.card,
+                    owner: object.owner,
+                    controller: object.controller,
+                    subtypes: self.granted_subtypes(id),
+                    kind: self.current_kinds(id),
+                    amount: Counters::of(
+                        CounterKind::MinusOne,
+                        u64::try_from(event.amount).capacity("wither counter quantity exhausted"),
+                    ),
+                    // CR120.2 and 614.16: combat is a turn-based action;
+                    // noncombat damage comes from an effect of a spell or ability.
+                    effect: !event.combat,
+                    entry_index: None,
+                    private: false,
+                })
+            })
+            .collect()
     }
     /// The choosing player places blight counters, even when an opponent's
     /// resolving ability instructed them to do so. Costs are not effects.
@@ -854,6 +894,10 @@ impl Game {
             if state.active.is_none() {
                 match state.work.pop_front() {
                     Some(Work::Damage(batch)) => state.active = Some(Event::Damage(batch)),
+                    Some(Work::DamageResults(events)) => {
+                        self.commit_unprevented_damage_batch(&events);
+                        continue;
+                    }
                     Some(Work::Counters(batch)) => state.active = Some(Event::Counters(batch)),
                     Some(Work::Tokens(batch)) => state.active = Some(Event::Tokens(batch)),
                     Some(Work::EmptyExplore {
@@ -925,7 +969,24 @@ impl Game {
                         let Some(Event::Damage(batch)) = state.active.take() else {
                             unreachable!()
                         };
-                        self.commit_damage_batch(&batch.events);
+                        // Damage prevention is settled before damage becomes
+                        // counters; preserve those events across counter choices.
+                        let events: Vec<_> = batch
+                            .events
+                            .into_iter()
+                            .filter(|event| !self.damage_event_prevented(event))
+                            .collect();
+                        let placements = self.wither_damage_counters(&events);
+                        if placements.is_empty() {
+                            self.commit_unprevented_damage_batch(&events);
+                        } else {
+                            state.work.push_front(Work::DamageResults(events));
+                            state.work.push_front(Work::Counters(CounterBatch {
+                                placements,
+                                next: 0,
+                                used: Vec::new(),
+                            }));
+                        }
                         continue;
                     }
                     let event = batch.events[batch.next];

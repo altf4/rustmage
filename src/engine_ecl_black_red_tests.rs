@@ -804,3 +804,287 @@ fn gutsplitter_gang_can_pay_decline_or_lose_source_before_its_first_main_trigger
         }
     }
 }
+fn bloodletter(g: &mut Game, p: Player, creature: CardId) -> CardId {
+    let id = named(g, p, "Barbed Bloodletter", Zone::Hand);
+    checked(g, Action::AnnounceCast { card: id });
+    for _ in 0..100 {
+        if matches!(g.state.pending, Pending::Targets { .. }) {
+            break;
+        }
+        advance(g);
+    }
+    checked(
+        g,
+        Action::ChooseTarget {
+            target: Target::Card(creature),
+        },
+    );
+    settle(g);
+    id
+}
+#[test]
+fn barbed_bloodletter_flashes_attaches_and_grants_only_temporary_wither_then_equips() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.state.active = p.other();
+        g.state.step = Step::BeginCombat;
+        let own = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let second = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let equipment = bloodletter(&mut g, p, own);
+        assert_eq!(
+            g.state.objects[equipment as usize].attached_to,
+            Some(g.object_ref(own))
+        );
+        assert_eq!(
+            g.stats(own),
+            Stats {
+                power: 3,
+                toughness: 4
+            }
+        );
+        assert!(g.keywords(own).contains(Keywords::WITHER));
+        let activation = Action::AnnounceActivate {
+            card: equipment,
+            ability: 0,
+            counter_payment: Counters::default(),
+        };
+        assert!(
+            !g.legal_actions().contains(&activation),
+            "equip only as a sorcery"
+        );
+        g.finish_cleanup();
+        assert!(!g.keywords(own).contains(Keywords::WITHER));
+        g.state.active = p;
+        g.state.priority = p;
+        g.state.step = Step::Main1;
+        g.state.pending = Pending::Priority;
+        g.state.players[p.index()].mana = [30; 6];
+        checked(&mut g, activation);
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(second),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(
+            g.stats(own),
+            Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+        assert_eq!(
+            g.stats(second),
+            Stats {
+                power: 3,
+                toughness: 4
+            }
+        );
+        assert!(
+            !g.keywords(second).contains(Keywords::WITHER),
+            "equip does not repeat the ETB grant"
+        );
+    }
+}
+#[test]
+fn wither_noncombat_uses_counter_replacements_but_lifelink_uses_damage_amount() {
+    for p in [Player::P0, Player::P1] {
+        for doubling in [false, true] {
+            let mut g = setup(p);
+            let source = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+            g.state.objects[source as usize].owner = p.other();
+            bloodletter(&mut g, p, source);
+            let reference = g.object_ref(source);
+            g.grant_keyword_effects(&[source], reference, Keywords::LIFELINK);
+            assert!(g.keywords(source).contains(Keywords::LIFELINK));
+            let foe = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+            if doubling {
+                named(&mut g, p.other(), "Doubling Season", Zone::Battlefield);
+            }
+            let spell = named(&mut g, p, "Bite Down", Zone::Hand);
+            checked(&mut g, Action::AnnounceCast { card: spell });
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(source),
+                },
+            );
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(foe),
+                },
+            );
+            settle(&mut g);
+            assert_eq!(
+                g.counter_count(foe, CounterKind::MinusOne),
+                if doubling { 6 } else { 3 }
+            );
+            assert_eq!(g.state.objects[foe as usize].damage, 0);
+            assert!(g.state.objects[foe as usize].damaged_this_turn);
+            assert_eq!(g.state.players[p.index()].life, 23);
+            assert_eq!(g.state.players[p.other().index()].life, 20);
+        }
+    }
+}
+#[test]
+fn wither_combat_is_not_a_doubling_season_effect_and_simultaneous_retaliation_is_preserved() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        bloodletter(&mut g, p, source);
+        let reference = g.object_ref(source);
+        g.grant_keyword_effects(&[source], reference, Keywords::LIFELINK);
+        assert!(g.keywords(source).contains(Keywords::LIFELINK));
+        let foe = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        named(&mut g, p.other(), "Doubling Season", Zone::Battlefield);
+        g.state.attackers.push(Attacker {
+            defender: Some(CombatDefender::Player(p.other())),
+            card: source,
+            blocked: true,
+        });
+        g.state.blocks.push((foe, source));
+        g.state.blocking.push(foe);
+        g.state.step = Step::Blockers;
+        g.give_priority();
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        assert_eq!(g.counter_count(foe, CounterKind::MinusOne), 3);
+        assert_eq!(g.state.objects[foe as usize].damage, 0);
+        assert_eq!(g.state.objects[source as usize].zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].life, 23);
+    }
+}
+#[test]
+fn wither_ignores_indestructible_at_zero_toughness_and_prevention_stops_all_results() {
+    let mut g = setup(Player::P0);
+    let source = named(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    bloodletter(&mut g, Player::P0, source);
+    let foe = named(&mut g, Player::P1, "Heirloom Auntie", Zone::Battlefield);
+    let reference = g.object_ref(foe);
+    g.grant_keyword_effects(&[foe], reference, Keywords::INDESTRUCTIBLE);
+    assert!(g.keywords(foe).contains(Keywords::INDESTRUCTIBLE));
+    for _ in 0..2 {
+        let spell = named(&mut g, Player::P0, "Bite Down", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(source),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(foe),
+            },
+        );
+        settle(&mut g);
+    }
+    assert_eq!(g.state.objects[foe as usize].zone, Zone::Graveyard);
+    let protected = named(&mut g, Player::P1, "Progenitus", Zone::Battlefield);
+    let event = DamageEvent {
+        source: g.damage_source(source),
+        target: Target::Card(protected),
+        amount: 3,
+        combat: false,
+        preventable: true,
+    };
+    g.apply_damage_batch(&[event]);
+    g.advance_replacements(false);
+    assert_eq!(g.counter_count(protected, CounterKind::MinusOne), 0);
+    assert_eq!(g.state.objects[protected as usize].damage, 0);
+    assert!(!g.state.objects[protected as usize].damaged_this_turn);
+}
+#[test]
+fn wither_damage_results_survive_owned_counter_replacement_choices() {
+    let mut g = setup(Player::P0);
+    let source = named(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    bloodletter(&mut g, Player::P0, source);
+    let foe = named(&mut g, Player::P1, "Gigantosaurus", Zone::Battlefield);
+    g.state.objects[foe as usize].growth.toughness = 20;
+    named(&mut g, Player::P1, "Doubling Season", Zone::Battlefield);
+    named(&mut g, Player::P1, "Doubling Season", Zone::Battlefield);
+    let spell = named(&mut g, Player::P0, "Bite Down", Zone::Hand);
+    checked(&mut g, Action::AnnounceCast { card: spell });
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(source),
+        },
+    );
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(foe),
+        },
+    );
+    for _ in 0..100 {
+        if matches!(g.state.pending, Pending::Replacement { .. }) {
+            break;
+        }
+        advance(&mut g);
+    }
+    assert!(matches!(
+        g.state.pending,
+        Pending::Replacement { player: Player::P1 }
+    ));
+    assert_eq!(g.counter_count(foe, CounterKind::MinusOne), 0);
+    settle(&mut g);
+    assert_eq!(g.counter_count(foe, CounterKind::MinusOne), 12);
+    assert_eq!(g.state.objects[foe as usize].damage, 0);
+    assert!(g.state.objects[foe as usize].damaged_this_turn);
+}
+#[test]
+fn wither_death_trigger_uses_departed_sources_last_known_keyword() {
+    let mut g = setup(Player::P0);
+    let source = named(&mut g, Player::P0, "Fear of Lost Teeth", Zone::Battlefield);
+    bloodletter(&mut g, Player::P0, source);
+    let foe = named(&mut g, Player::P1, "Grizzly Bears", Zone::Battlefield);
+    g.move_object(source, Zone::Graveyard);
+    g.prepare_triggers();
+    for _ in 0..100 {
+        if matches!(g.state.pending, Pending::Targets { .. }) {
+            break;
+        }
+        advance(&mut g);
+    }
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(foe),
+        },
+    );
+    settle(&mut g);
+    assert_eq!(g.counter_count(foe, CounterKind::MinusOne), 1);
+    assert_eq!(g.state.objects[foe as usize].damage, 0);
+}
+#[test]
+fn wither_preserves_deathtouch_and_lifelink_on_nonlethal_counter_damage() {
+    let mut g = setup(Player::P0);
+    let source = named(&mut g, Player::P0, "Vampire Nighthawk", Zone::Battlefield);
+    bloodletter(&mut g, Player::P0, source);
+    let foe = named(&mut g, Player::P1, "Gigantosaurus", Zone::Battlefield);
+    let spell = named(&mut g, Player::P0, "Bite Down", Zone::Hand);
+    checked(&mut g, Action::AnnounceCast { card: spell });
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(source),
+        },
+    );
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(foe),
+        },
+    );
+    settle(&mut g);
+    assert_eq!(
+        g.state.objects[foe as usize].zone,
+        Zone::Graveyard,
+        "deathtouch kills despite positive remaining toughness"
+    );
+    assert_eq!(g.state.players[0].life, 23);
+}

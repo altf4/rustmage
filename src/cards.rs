@@ -2525,6 +2525,7 @@ impl Keywords {
     pub const PREVENT_COMBAT_BY: Self = Self(33554432);
     pub const NO_HUMAN_BLOCKERS: Self = Self(67108864);
     pub const PROTECTION_EVERYTHING: Self = Self(134217728);
+    pub const WITHER: Self = Self(268435456);
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
     }
