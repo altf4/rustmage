@@ -2697,3 +2697,155 @@ fn warren_torchmaster_ignores_opponents_combat_and_lost_target_does_not_refund_b
         assert!(!g.keywords(recipient).contains(Keywords::HASTE));
     }
 }
+
+fn flamebraider_mana(g: &mut Game, id: CardId, production: Mana) {
+    checked(
+        g,
+        Action::ActivateMana {
+            card: id,
+            ability: 0,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+            production,
+        },
+    );
+}
+#[test]
+fn flamebraider_produces_all_fifteen_two_color_distributions_as_an_immediate_mana_ability() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Flamebraider", Zone::Hand);
+        cast(&mut g, source);
+        assert!(
+            !g.legal_actions()
+                .iter()
+                .any(|a| matches!(a,Action::ActivateMana{card,..} if *card==source))
+        );
+        g.state.objects[source as usize].summoning_sick = false;
+        let options: Vec<_> = g
+            .legal_actions()
+            .into_iter()
+            .filter_map(|a| match a {
+                Action::ActivateMana {
+                    card, production, ..
+                } if card == source => Some(production),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(options.len(), 15);
+        for mana in &options {
+            assert_eq!(mana.iter().sum::<u32>(), 2);
+            assert_eq!(mana[5], 0);
+        }
+        let distinct: std::collections::BTreeSet<_> = options.iter().collect();
+        assert_eq!(distinct.len(), 15);
+        reject(
+            &mut g,
+            Action::ActivateMana {
+                card: source,
+                ability: 0,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 0, 0, 2],
+            },
+        );
+        g.state.players[p.index()].mana = [0; 6];
+        flamebraider_mana(&mut g, source, [1, 0, 0, 1, 0, 0]);
+        assert_eq!(g.state.players[p.index()].mana, [1, 0, 0, 1, 0, 0]);
+        assert!(g.state.objects[source as usize].tapped);
+        assert!(g.state.stack.is_empty());
+    }
+}
+#[test]
+fn flamebraider_restriction_survives_producer_departure_and_pays_elemental_spells_only() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Flamebraider", Zone::Battlefield);
+        g.state.objects[source as usize].summoning_sick = false;
+        g.state.players[p.index()].mana = [0; 6];
+        flamebraider_mana(&mut g, source, [1, 0, 0, 1, 0, 0]);
+        let wrong = named(&mut g, p, "Lightning Bolt", Zone::Hand);
+        reject(&mut g, Action::AnnounceCast { card: wrong });
+        g.move_object(source, Zone::Exile);
+        let right = named(&mut g, p, "Flamebraider", Zone::Hand);
+        cast(&mut g, right);
+        assert_eq!(g.state.objects[right as usize].zone, Zone::Battlefield);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+#[test]
+fn flamebraider_funds_elemental_activations_and_rejects_other_creature_abilities() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Flamebraider", Zone::Battlefield);
+        g.state.objects[source as usize].summoning_sick = false;
+        let recipient = named(&mut g, p, "Flame-Chain Mauler", Zone::Battlefield);
+        let dragon = named(&mut g, p, "Shivan Dragon", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0; 6];
+        flamebraider_mana(&mut g, source, [1, 0, 0, 1, 0, 0]);
+        reject(
+            &mut g,
+            Action::Activate {
+                card: dragon,
+                ability: 0,
+                target: None,
+                payment: [0, 0, 0, 1, 0, 0],
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut g,
+            Action::Activate {
+                card: recipient,
+                ability: 0,
+                target: None,
+                payment: [1, 0, 0, 1, 0, 0],
+                counter_payment: Counters::default(),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.stats(recipient).power, 3);
+        assert!(g.keywords(recipient).contains(Keywords::MENACE));
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+#[test]
+fn flamebraider_speculative_funding_supports_split_hybrid_payment_and_kindred_noncreature_spells() {
+    for p in [Player::P0, Player::P1] {
+        for kindred in [false, true] {
+            let mut g = hexing_setup(p);
+            let source = named(&mut g, p, "Flamebraider", Zone::Battlefield);
+            g.state.objects[source as usize].summoning_sick = false;
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, if kindred { 3 } else { 1 }];
+            let spell = named(
+                &mut g,
+                p,
+                if kindred {
+                    "Ashling's Command"
+                } else {
+                    "Flaring Cinder"
+                },
+                Zone::Hand,
+            );
+            checked(&mut g, Action::AnnounceCast { card: spell });
+            if !kindred {
+                checked(&mut g, Action::ChooseSpellCost { cost: 1 });
+            }
+            for _ in 0..100 {
+                if g.legal_actions().iter().any(|a|matches!(a,Action::ActivateMana{card,production,..} if *card==source && *production==[0,1,0,1,0,0])) {break;}
+                advance(&mut g);
+            }
+            flamebraider_mana(&mut g, source, [0, 1, 0, 1, 0, 0]);
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert_eq!(
+                g.state.objects[spell as usize].zone,
+                if kindred {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+        }
+    }
+}

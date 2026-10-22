@@ -2460,7 +2460,8 @@ impl Game {
                         ManaProduction::Fixed(mana) => {
                             self.add_quality_mana(item.controller, mana, quality)
                         }
-                        production @ ManaProduction::Choice { .. } => {
+                        production @ (ManaProduction::Choice { .. }
+                        | ManaProduction::Combination { .. }) => {
                             self.state.pending = Pending::EffectMana {
                                 player: item.controller,
                                 production,

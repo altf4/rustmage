@@ -365,6 +365,7 @@ pub(crate) struct ChosenModifier {
 pub(crate) enum ManaRestriction {
     Unrestricted,
     SpellSubtype(&'static str),
+    SubtypeSpellOrActivation(&'static str),
     ChosenCreatureSpellOrActivation,
     ChosenSubtypeSpellOrActivation,
 }
@@ -417,6 +418,11 @@ pub(crate) enum ManaProduction {
         mask: u8,
         amount: u32,
     },
+    /// Distribute the total among allowed mana types, including mixed colors.
+    Combination {
+        mask: u8,
+        amount: u32,
+    },
 }
 impl ManaProduction {
     pub(crate) const fn any_color(amount: u32) -> Self {
@@ -455,6 +461,31 @@ impl ManaProduction {
                 panic!("dynamic mana requires a characteristic world")
             }
             Self::Fixed(mana) => emit(mana),
+            Self::Combination { mask, amount } => {
+                fn distribute(
+                    index: usize,
+                    mask: u8,
+                    left: u32,
+                    mana: &mut Mana,
+                    emit: &mut impl FnMut(Mana) -> bool,
+                ) -> bool {
+                    if index == 6 {
+                        return left == 0 && emit(*mana);
+                    }
+                    if mask & (1 << index) == 0 {
+                        return distribute(index + 1, mask, left, mana, emit);
+                    }
+                    for quantity in 0..=left {
+                        mana[index] = quantity;
+                        if distribute(index + 1, mask, left - quantity, mana, emit) {
+                            return true;
+                        }
+                    }
+                    mana[index] = 0;
+                    false
+                }
+                distribute(0, mask, amount, &mut [0; 6], &mut emit)
+            }
             Self::Choice { mask, amount } => {
                 for index in 0..6 {
                     if mask & (1 << index) != 0 {

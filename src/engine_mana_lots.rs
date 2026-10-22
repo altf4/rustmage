@@ -86,6 +86,11 @@ impl Quality {
                 ManaRestriction::SpellSubtype(subtype) => {
                     ManaRestrictionView::SpellSubtype(subtype)
                 }
+                ManaRestriction::SubtypeSpellOrActivation(subtype) => {
+                    ManaRestrictionView::SubtypeSpellOrActivation(
+                        CreatureType::from_name(subtype).expect("authored mana subtype is pinned"),
+                    )
+                }
                 ManaRestriction::ChosenCreatureSpellOrActivation => {
                     let Some(EntryChoiceValue::CreatureType(kind)) =
                         world.game().entry_value(world.reference(source))
