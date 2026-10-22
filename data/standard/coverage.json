@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "d172c4af9cdda83a83476ebf9416a27e88570acb36647ee378afaf11622cb7dc",
+  "catalogue_version": "bfdc14f6c72923d24d8fb648e48375192aa67135a839047b6d647003b6f587d3",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2335,
-  "implemented_total": 2341,
+  "implemented_standard_cards": 2336,
+  "implemented_total": 2342,
   "token_definitions": 109,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "complete": 246,
-      "gated": 21
+      "complete": 247,
+      "gated": 20
     },
     "eoc": {
       "total": 8,
@@ -16511,8 +16511,8 @@
     {
       "name": "High Perfect Morcant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/high_perfect_morcant.rs",
       "set": "ecl"
     },

@@ -3093,7 +3093,7 @@
       "name": "High Perfect Morcant",
       "definition": "src/card_definitions/ecl/high_perfect_morcant.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "High Perfect Morcant",
@@ -3108,7 +3108,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_morcant_tests.rs",
+        "src/card_definitions/ecl/high_perfect_morcant.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "fb9cd9d0-8eea-4aa8-bb9c-bb0aac847421",
