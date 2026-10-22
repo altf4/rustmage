@@ -741,3 +741,105 @@ fn immediate_exile_programs_wait_for_departure_linked_entry_choices() {
         assert_eq!(changelings(&child, Player::P0), 1);
     }
 }
+
+fn thirst_choice(creature: bool) -> (Game, CardId) {
+    let mut g = setup(Player::P0);
+    let hand = spawn(
+        &mut g,
+        Player::P0,
+        if creature {
+            Card::GrizzlyBears
+        } else {
+            Card::Forest
+        },
+        Zone::Hand,
+    );
+    spell(&mut g, Player::P0, "Thirst for Identity", &[]);
+    checked(&mut g, Action::Pass);
+    checked(&mut g, Action::Pass);
+    assert!(matches!(
+        g.state.pending,
+        Pending::EffectChoice { player: Player::P0 }
+    ));
+    assert!(g.observe(Player::P1).effect_choice.is_none());
+    assert_eq!(g.hand_count(Player::P0), 4);
+    (g, hand)
+}
+#[test]
+fn thirst_for_identity_can_discard_one_creature_and_rejects_noncreature_atomically() {
+    let (mut g, creature) = thirst_choice(true);
+    let land = g
+        .state
+        .objects
+        .iter()
+        .position(|o| o.owner == Player::P0 && o.zone == Zone::Hand && o.card == Card::Forest)
+        .unwrap() as CardId;
+    let before = g.snapshot();
+    assert_eq!(
+        g.apply(Player::P0, Action::Discard { card: land }),
+        Err(Error::IllegalAction)
+    );
+    assert_eq!(g.snapshot(), before);
+    checked(&mut g, Action::Discard { card: creature });
+    settle(&mut g);
+    assert_eq!(g.object_view(creature).zone, Zone::Graveyard);
+    assert_eq!(g.hand_count(Player::P0), 3);
+}
+#[test]
+fn thirst_for_identity_private_phase_hides_creature_availability_and_decline_discards_two() {
+    let (mut with_creature, creature) = thirst_choice(true);
+    let (without_creature, _) = thirst_choice(false);
+    assert_eq!(
+        serde_json::to_value(with_creature.observe(Player::P1)).unwrap(),
+        serde_json::to_value(without_creature.observe(Player::P1)).unwrap()
+    );
+    assert!(
+        !without_creature
+            .legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::Discard { .. }))
+    );
+    assert!(
+        without_creature
+            .legal_actions()
+            .contains(&Action::DeclineEffectPayment)
+    );
+    checked(&mut with_creature, Action::DeclineEffectPayment);
+    assert!(matches!(
+        with_creature.state.pending,
+        Pending::EffectDiscard { remaining: 2, .. }
+    ));
+    checked(&mut with_creature, Action::Discard { card: creature });
+    // The two mandatory selections remain private and commit as one discard batch.
+    assert_eq!(with_creature.object_view(creature).zone, Zone::Hand);
+    let land = with_creature
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a, Action::Discard { .. }))
+        .unwrap();
+    checked(&mut with_creature, land);
+    settle(&mut with_creature);
+    assert_eq!(with_creature.hand_count(Player::P0), 2);
+}
+#[test]
+fn thirst_for_identity_no_creature_cannot_auto_pay_and_fallback_handles_short_hand() {
+    let (mut g, keep) = thirst_choice(false);
+    // An independent fixture narrows the mandatory shortage path after checking
+    // the printed spell's draw-three/private optional payment above.
+    let remove: Vec<_> = g
+        .state
+        .objects
+        .iter()
+        .enumerate()
+        .filter(|(id, o)| o.owner == Player::P0 && o.zone == Zone::Hand && *id as CardId != keep)
+        .map(|(id, _)| id as CardId)
+        .collect();
+    for id in remove {
+        g.move_object(id, Zone::Exile);
+    }
+    checked(&mut g, Action::DeclineEffectPayment);
+    checked(&mut g, Action::Discard { card: keep });
+    settle(&mut g);
+    assert_eq!(g.hand_count(Player::P0), 0);
+    assert_eq!(g.object_view(keep).zone, Zone::Graveyard);
+}

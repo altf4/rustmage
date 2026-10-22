@@ -76,6 +76,10 @@ impl Game {
                 && match choice.kind {
                     EffectChoiceKind::HandCreature => o.card.is_creature(),
                     EffectChoiceKind::HandLand { .. } => o.card.is_land() && o.controller == player,
+                    EffectChoiceKind::Discard => {
+                        choice.filter.kinds == 0
+                            || o.card.kind_mask() & u16::from(choice.filter.kinds) != 0
+                    }
                     _ => true,
                 };
         }
@@ -288,6 +292,9 @@ impl Game {
         if let Some(skip_to) = choice.skip_to {
             assert!(skip_to <= self.state.resolving.as_ref().unwrap().program.len());
         }
+        // A private filtered payment must offer the same phase even when hidden
+        // contents cannot pay; declining it is distinct from satisfying a zero cost.
+        let private_filtered_discard = kind == EffectChoiceKind::Discard && filter.kinds != 0;
         for player in self.program_players(players, item) {
             if greatest {
                 choice.greatest_power[player.index()] = self
@@ -317,6 +324,7 @@ impl Game {
                     kind,
                     EffectChoiceKind::HandCreature | EffectChoiceKind::HandLand { .. }
                 )
+                && !private_filtered_discard
                 && available < usize::from(amount)
             {
                 self.state.resolving.as_mut().unwrap().pc = skip_to;
@@ -325,10 +333,11 @@ impl Game {
             // Optional private hand placement always presents the same actor/phase,
             // even with no eligible card. The player can decline without revealing
             // whether their hidden hand contains a creature or land.
-            choice.required[player.index()] = if matches!(
-                kind,
-                EffectChoiceKind::HandCreature | EffectChoiceKind::HandLand { .. }
-            ) {
+            choice.required[player.index()] = if private_filtered_discard
+                || matches!(
+                    kind,
+                    EffectChoiceKind::HandCreature | EffectChoiceKind::HandLand { .. }
+                ) {
                 amount
             } else {
                 amount.min(u16::try_from(available).unwrap_or(u16::MAX))
