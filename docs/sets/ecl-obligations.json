@@ -1578,7 +1578,7 @@
       "name": "Deepway Navigator",
       "definition": "src/card_definitions/ecl/deepway_navigator.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Deepway Navigator",
@@ -1594,7 +1594,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_navigator_tests.rs",
+        "src/card_definitions/ecl/deepway_navigator.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "e76ae81f-729c-4def-ae83-6870a696cbe8",

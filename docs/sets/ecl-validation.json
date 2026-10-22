@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 144,
+  "newly_tested_physical_cards": 145,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -43,6 +43,7 @@
     "Dawnhand Eulogist",
     "Deceit",
     "Deepchannel Duelist",
+    "Deepway Navigator",
     "Doran, Besieged by Time",
     "Dose of Dawnglow",
     "Dream Seizer",
@@ -149,8 +150,8 @@
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 251,
-  "remaining_gated": 22,
+  "current_admission_flags": 252,
+  "remaining_gated": 21,
   "inherited_evidence_audit": {
     "audited": 20,
     "total": 107,
@@ -273,10 +274,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T20:14:29.395163+00:00",
-    "elapsed_seconds": 17502.178312,
-    "newly_verified_cards": 144,
-    "cards_per_hour": 29.619170297480625,
+    "end_utc": "2026-10-22T20:19:12.300947+00:00",
+    "elapsed_seconds": 17785.084096,
+    "newly_verified_cards": 145,
+    "cards_per_hour": 29.350437545437405,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "428 integrated ECL scenarios passed at244-card checkpoint1aa48507; latest full release239-card904c25c2",
