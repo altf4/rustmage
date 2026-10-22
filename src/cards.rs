@@ -841,6 +841,7 @@ pub(crate) enum Instruction {
     GrantGraveyardCast(GraveyardCastKind),
     ExileDiscardedWithStash,
     ExileEachLibraryTopCastFree,
+    ExileNonlandLifeFreeCast,
     ExileUntilManaValueFreeCast { players: PlayerSet, minimum: u16 },
     CounterRelatedUnlessPayLife(u32),
     /// One combined ward cost, paid atomically or the related item is countered.

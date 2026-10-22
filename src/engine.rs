@@ -4169,8 +4169,7 @@ impl Game {
                 self.cast_exiled_during_resolution(actor, object, face)
             }
             Action::FinishResolutionCasts => {
-                self.state.resolution_free_casts = None;
-                self.run_program();
+                self.finish_resolution_free_casts();
             }
             Action::PlayLand { card }
             | Action::PlayGraveyardPermanent {
@@ -7801,11 +7800,11 @@ mod attack_type_history;
 pub use attack_type_history::DeclaredAttackView;
 
 #[cfg(test)]
-#[path = "engine_ecl_navigator_tests.rs"]
-mod ecl_navigator_tests;
-#[cfg(test)]
 #[path = "engine_ecl_morcant_tests.rs"]
 mod ecl_morcant_tests;
+#[cfg(test)]
+#[path = "engine_ecl_navigator_tests.rs"]
+mod ecl_navigator_tests;
 
 #[cfg(test)]
 #[path = "engine_ecl_dream_harvest_tests.rs"]
@@ -7813,3 +7812,7 @@ mod ecl_dream_harvest_tests;
 #[cfg(test)]
 #[path = "engine_ecl_lluwen_tests.rs"]
 mod ecl_lluwen_tests;
+
+#[cfg(test)]
+#[path = "engine_ecl_bre_tests.rs"]
+mod ecl_bre_tests;

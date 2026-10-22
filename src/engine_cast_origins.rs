@@ -257,8 +257,56 @@ impl Game {
 pub struct ResolutionFreeCasts {
     pub player: Player,
     pub remaining: Vec<ObjectRef>,
+    pub maximum_mana_value: Option<u128>,
+    pub uncast_to_hand: bool,
 }
 impl Game {
+    pub(super) fn exile_nonland_life_free_cast(&mut self, player: Player) -> bool {
+        let cards: Vec<_> = self.state.players[player.index()]
+            .library
+            .iter()
+            .rev()
+            .copied()
+            .collect();
+        for id in cards {
+            if self.state.objects[id as usize].zone != Zone::Library {
+                continue;
+            }
+            let event = self.move_object(id, Zone::Exile);
+            if event.moved && event.destination == Zone::Exile && !event.before.card.is_land() {
+                self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+                    player,
+                    remaining: vec![event.after],
+                    maximum_mana_value: Some(
+                        self.state.players[player.index()].life_gained_this_turn,
+                    ),
+                    uncast_to_hand: true,
+                }));
+                self.state.pending = Pending::ResolutionCasts { player };
+                return true;
+            }
+        }
+        false
+    }
+    pub(super) fn finish_resolution_free_casts(&mut self) {
+        let free = self.state.resolution_free_casts.take().unwrap();
+        if free.uncast_to_hand {
+            for object in free.remaining {
+                if self.object_ref(object.card) == object
+                    && self.state.objects[object.card as usize].zone == Zone::Exile
+                {
+                    let event = self.move_object(object.card, Zone::Hand);
+                    if event.moved
+                        && event.destination == Zone::Hand
+                        && !self.state.known_hand.contains(&event.after)
+                    {
+                        self.state.known_hand.push(event.after);
+                    }
+                }
+            }
+        }
+        self.run_program();
+    }
     pub(super) fn exile_each_top_cast_free(&mut self, player: Player) {
         let cards: Vec<_> = [self.state.active, self.state.active.other()]
             .into_iter()
@@ -271,8 +319,12 @@ impl Game {
             .map(|event| event.after)
             .collect();
         self.finish_zone_events(&events, &[]);
-        self.state.resolution_free_casts =
-            Some(Box::new(ResolutionFreeCasts { player, remaining }));
+        self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            player,
+            remaining,
+            maximum_mana_value: None,
+            uncast_to_hand: false,
+        }));
         self.state.pending = Pending::ResolutionCasts { player };
     }
     pub(super) fn visit_resolution_casts(
@@ -302,16 +354,19 @@ impl Game {
                     CastFace::Adventure => physical.adventure_spell(),
                     CastFace::Omen => physical.omen_spell(),
                 };
-                if definition.is_some_and(|card| !card.is_land())
-                    && self.permitted_cast_available(
-                        player,
-                        object.card,
-                        CastMethod::Free,
-                        face,
-                        true,
-                        false,
-                    )
-                    && emit(Action::CastExiledDuringResolution { object, face })
+                if definition.is_some_and(|card| {
+                    !card.is_land()
+                        && free
+                            .maximum_mana_value
+                            .is_none_or(|maximum| u128::from(card.fixed_mana_value()) <= maximum)
+                }) && self.permitted_cast_available(
+                    player,
+                    object.card,
+                    CastMethod::Free,
+                    face,
+                    true,
+                    false,
+                ) && emit(Action::CastExiledDuringResolution { object, face })
                 {
                     return true;
                 }
