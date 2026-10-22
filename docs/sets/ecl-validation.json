@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 130,
+  "newly_tested_physical_cards": 131,
   "newly_tested_names": [
     "Adept Watershaper",
     "Ashling's Command",
@@ -117,6 +117,7 @@
     "Swat Away",
     "Sygg's Command",
     "Sygg, Wanderwine Wisdom // Sygg, Wanderbrine Shield",
+    "Tam, Mindful First-Year",
     "Temporal Cleansing",
     "Tend the Sprigs",
     "Thirst for Identity",
@@ -135,8 +136,8 @@
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 237,
-  "remaining_gated": 36,
+  "current_admission_flags": 238,
+  "remaining_gated": 35,
   "inherited_evidence_audit": {
     "audited": 15,
     "total": 107,
@@ -203,11 +204,10 @@
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "focused_integration": {
     "command": "python3 scripts/resource_guard.py -- cargo test --lib ecl_",
-    "head": "04b2ae89",
     "exit": 0,
-    "tests": 381,
-    "test_seconds": 13.05,
-    "resource_report": "<cache>/rustmage-build-reports/8947260bbbe8468e978883be0c3b5a78.json"
+    "tests": 196,
+    "test_seconds": 7.24,
+    "resource_report": "<cache>/rustmage-build-reports/ff21eb6cf50c4b7c845b968dfd5c967c.json"
   },
   "natural_games": {
     "command": "python3 scripts/resource_guard.py -- cargo test --test lorwyn_eclipsed_games -- --nocapture",
@@ -234,13 +234,13 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T19:17:25.485277+00:00",
-    "elapsed_seconds": 14078.268426,
-    "newly_verified_cards": 130,
-    "cards_per_hour": 33.24272459073796,
+    "end_utc": "2026-10-22T19:21:48.820927+00:00",
+    "elapsed_seconds": 14341.604076,
+    "newly_verified_cards": 131,
+    "cards_per_hour": 32.88335094881056,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
-  "focused_scope": "381 integrated ECL scenarios passed at04b2ae89; full release verification of237-card integration pending",
+  "focused_scope": "196 integrated ECL scenarios passed at bb92026c with generated catalogue1fbc9bcda08f4079d26ed30456add7c4c31131f6ef2563e732a179a74fc3e0a3",
   "full_release_validation": {
     "status": "passed all8phases",
     "head": "87971feab0e23bebd19be4d834b2fa32f27943f9",

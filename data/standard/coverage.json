@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "58425168990f26c1f4c23e53ae0fc165e7a4d4ce870872ff0db8614c6a34229c",
+  "catalogue_version": "501c4c9b74541aee62f84793ee08055c94d07c0a50ca0b5efab120c921612732",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2320,
-  "implemented_total": 2326,
+  "implemented_standard_cards": 2321,
+  "implemented_total": 2327,
   "token_definitions": 108,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 36,
-      "complete": 231
+      "gated": 35,
+      "complete": 232
     },
     "eoc": {
       "total": 8,
@@ -34831,8 +34831,8 @@
     {
       "name": "Tam, Mindful First-Year",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/tam_mindful_first_year.rs",
       "set": "ecl"
     },

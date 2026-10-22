@@ -21,8 +21,8 @@ The frozen manifest accounts for every identity. The [per-card obligation ledger
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **237/273**, comprising **107 inherited** and **130 newly
-implemented/tested physical candidates**; **36 remain gated**. Fifteen inherited
+Admission flags: **238/273**, comprising **107 inherited** and **131 newly
+implemented/tested physical candidates**; **35 remain gated**. Fifteen inherited
 cards have passed source/rules audit;92 inherited cards remain. No final published reviews or newly merged cards. All new
 names and per-card obligations appear in the linked JSON ledgers. Three tested
 synthetic token recipes are outside the physical denominator.
@@ -123,3 +123,5 @@ Kinscaer Sentry, both Sygg faces, Mirrormind Crown, and End-Blaze Epiphany are i
 Five additional inherited creatures have full source and paid-body evidence: Boggart Prankster, Enraged Flamecaster, Kulrath Mystic, Gnarlbark Elm, and Iron-Shield Elf. Existing complete attack/cast trigger, named counter payment, discard cost, and indestructibility scenarios provide interaction evidence; all six inherited scenarios pass0.22seconds. Audit progress15/107, with92 remaining.
 
 The combined237-card branch04b2ae89 passes381 ECL scenarios in13.05seconds. Resource report8947260bbbe8468e978883be0c3b5a78; peak2.6GiB.
+
+Tam, Mindful First-Year is integrated with both hybrid casting routes and dynamic color-based hexproof for other creatures. Five focused cases pass0.19seconds and37 shared hexproof scenarios pass0.67seconds; all-target Clippy passes. Admission238/273;35 remain gated.
