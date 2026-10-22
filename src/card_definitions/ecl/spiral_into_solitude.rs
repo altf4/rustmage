@@ -3,7 +3,10 @@ const AURA: AuraSpec = AuraSpec {
     kinds: 1,
     relation: -1,
     bonus: EquipmentSpec {
-        stats: Stats { power: 0, toughness: 0 },
+        stats: Stats {
+            power: 0,
+            toughness: 0,
+        },
         keywords: Keywords::NONE,
     },
 };
