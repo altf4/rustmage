@@ -1421,10 +1421,9 @@ impl<'g> FundingState<'g> {
     fn optimistic(&self, goal: &FundingGoal) -> bool {
         let required =
             u128::from(goal.generic) + goal.required.into_iter().map(u128::from).sum::<u128>();
+        let spendable_upper = self.spendable_mana_upper();
         if self.total_mana_upper() < required
-            || self
-                .spendable_mana_upper()
-                .is_some_and(|upper| upper < required)
+            || spendable_upper.is_some_and(|upper| upper < required)
         {
             return false;
         }
@@ -1449,7 +1448,14 @@ impl<'g> FundingState<'g> {
                 .zip(goal.required)
                 .all(|(available, required)| available >= u128::from(required));
         }
-        let mut upper = self.mana;
+        // The same closed-world proof also permits a purpose-aware color
+        // bound: ineligible lots cannot become usable without a converter.
+        // Keep the broad path whenever that proof is unavailable.
+        let mut upper = if spendable_upper.is_some() {
+            mana_lots::available(self.mana, &self.lots, self.purpose)
+        } else {
+            self.mana
+        };
         for resource in &self.resources {
             let object = &resource.object;
             if object.zone != Zone::Battlefield || object.controller != goal.actor {
@@ -1497,6 +1503,13 @@ impl<'g> FundingState<'g> {
                 let Some(production) = ability.mana_production() else {
                     continue;
                 };
+                if spendable_upper.is_some()
+                    && let ManaProduction::Tagged { quality, .. } = production
+                    && !mana_lots::Quality::capture(self, resource.id, *quality)
+                        .eligible(self.purpose)
+                {
+                    continue;
+                }
                 if goal
                     .source
                     .as_ref()

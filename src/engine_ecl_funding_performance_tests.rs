@@ -36,10 +36,12 @@ fn position(p: Player, converter: bool) -> (Game, CardId, CardId) {
     (g, aurora, prism)
 }
 fn world_for(g: &Game, p: Player, card: CardId) -> (FundingState<'_>, FundingGoal) {
+    let definition = g.state.objects[card as usize].card;
+    let (required, generic) = definition.cost();
     let goal = FundingGoal {
         actor: p,
-        required: [0, 0, 0, 0, 1, 0],
-        generic: 6,
+        required,
+        generic,
         reserve: None,
         source: None,
     };
@@ -48,8 +50,8 @@ fn world_for(g: &Game, p: Player, card: CardId) -> (FundingState<'_>, FundingGoa
         card: g.state.objects[card as usize].card,
         foreign_stash: false,
         exile_any_mana: false,
-        mana_value: 7,
-        kinds: 1,
+        mana_value: definition.fixed_mana_value(),
+        kinds: definition.kind_mask(),
         subtypes: GrantedSubtypes::default(),
     });
     (world, goal)
@@ -150,5 +152,146 @@ fn restricted_mana_converter_fallback_preserves_paid_aurora_and_owned_actions() 
         assert!(g.state.announcing.is_none());
         settle(&mut g);
         assert_eq!(g.state.objects[aurora as usize].zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn restricted_color_bound_rejects_kinbinding_with_abundant_ineligible_white() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        for name in [
+            "Forest",
+            "Forest",
+            "Forest",
+            "Forest",
+            "Island",
+            "Island",
+            "Swamp",
+            "Mountain",
+            "Great Forest Druid",
+            "Flamebraider",
+            "Flamebraider",
+            "Flamebraider",
+        ] {
+            let id = named(&mut g, p, name, Zone::Battlefield);
+            g.state.objects[id as usize].summoning_sick = false;
+        }
+        let spell = named(&mut g, p, "Kinbinding", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        let (world, goal) = world_for(&g, p, spell);
+        assert!(
+            world.spendable_mana_upper().unwrap() >= 5,
+            "quantity alone cannot reject this spell"
+        );
+        let mut visited = HashSet::new();
+        assert!(!world.reachable(&goal, &mut visited));
+        assert!(
+            visited.is_empty(),
+            "missing second eligible white is rejected before DFS"
+        );
+        let flame = g
+            .state
+            .objects
+            .iter()
+            .position(|o| o.card == Card::from_name("Flamebraider").unwrap())
+            .unwrap() as CardId;
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: flame,
+                ability: 0,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [2, 0, 0, 0, 0, 0],
+            },
+        );
+        // Also reject a prefunded eligible white plus plentiful restricted
+        // white, after the only white-producing Druid has been used.
+        let druid = g
+            .state
+            .objects
+            .iter()
+            .position(|o| o.card == Card::from_name("Great Forest Druid").unwrap())
+            .unwrap();
+        g.state.objects[druid].tapped = true;
+        g.state.players[p.index()].mana[0] += 1;
+        let before = g.snapshot();
+        let revision = g.revision();
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: spell })
+        );
+        let mut branch = {
+            let parent = g.clone();
+            parent.clone()
+        };
+        assert_eq!(
+            branch.apply(p, Action::AnnounceCast { card: spell }),
+            Err(Error::IllegalAction)
+        );
+        assert_eq!(branch.snapshot(), before);
+        assert_eq!(branch.revision(), revision);
+        assert_eq!(
+            g.apply(p, Action::AnnounceCast { card: spell }),
+            Err(Error::IllegalAction)
+        );
+        assert_eq!(g.snapshot(), before);
+    }
+}
+
+#[test]
+fn restricted_white_converter_fallback_keeps_actual_double_white_payment() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, _, _) = position(p, true);
+        for object in &mut g.state.objects {
+            if object.zone == Zone::Battlefield
+                && object.controller == p
+                && object.card != Card::from_name("Flamebraider").unwrap()
+            {
+                object.tapped = true;
+            }
+        }
+        let spell = named(&mut g, p, "Kinbinding", Zone::Hand);
+        g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 3];
+        let flame = g
+            .state
+            .objects
+            .iter()
+            .position(|o| o.card == Card::from_name("Flamebraider").unwrap())
+            .unwrap() as CardId;
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: flame,
+                ability: 0,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [2, 0, 0, 0, 0, 0],
+            },
+        );
+        let (world, goal) = world_for(&g, p, spell);
+        assert_eq!(world.spendable_mana_upper(), None);
+        assert!(world.reachable(&goal, &mut HashSet::new()));
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        for _ in 0..20 {
+            if g.state.announcing.is_none() {
+                break;
+            }
+            let actions = g.legal_actions();
+            let action = actions
+                .iter()
+                .find(|a| matches!(a, Action::FinishTargets | Action::PayCosts { .. }))
+                .or_else(|| {
+                    actions
+                        .iter()
+                        .find(|a| matches!(a, Action::TapMana { .. } | Action::ActivateMana { .. }))
+                })
+                .expect("converter has a legal next action")
+                .clone();
+            checked(&mut g, action);
+        }
+        assert!(g.state.announcing.is_none());
+        settle(&mut g);
+        assert_eq!(g.state.objects[spell as usize].zone, Zone::Battlefield);
     }
 }
