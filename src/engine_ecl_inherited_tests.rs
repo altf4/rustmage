@@ -507,3 +507,88 @@ fn ecl_inherited_keyword_changelings_paid_hybrids_both_seats_and_real_combat() {
         }
     }
 }
+#[test]
+fn ecl_inherited_tribal_trigger_and_grave_activation_bodies_pay_all_routes_both_seats() {
+    for p in [Player::P0, Player::P1] {
+        for (name, power, toughness) in [
+            ("Boggart Cursecrafter", 2, 3),
+            ("Hovel Hurler", 4, 5),
+            ("Morcant's Loyalist", 3, 2),
+            ("Noggle Robber", 3, 3),
+            ("Stoic Grove-Guide", 5, 4),
+            ("Thoughtweft Lieutenant", 3, 3),
+        ] {
+            let definition = Card::from_name(name).unwrap();
+            for (index, cost) in definition.cost_options().enumerate() {
+                let mut g = setup(p);
+                let id = named(&mut g, p, name, Zone::Hand);
+                let mut payment = cost.colored;
+                payment[5] = cost.generic;
+                g.state.players[p.index()].mana = payment;
+                checked(&mut g, Action::AnnounceCast { card: id });
+                let choice = Action::ChooseSpellCost { cost: index as u16 };
+                if g.legal_actions().contains(&choice) {
+                    checked(&mut g, choice);
+                }
+                checked(&mut g, Action::PayCosts { payment });
+                settle(&mut g);
+                assert_eq!(g.stats(id), Stats { power, toughness }, "{name}");
+                if name == "Hovel Hurler" {
+                    assert_eq!(g.counter_count(id, CounterKind::MinusOne), 2);
+                }
+                if name == "Boggart Cursecrafter" {
+                    assert!(g.keywords(id).contains(Keywords::DEATHTOUCH));
+                }
+                if name == "Thoughtweft Lieutenant" {
+                    assert!(g.keywords(id).contains(Keywords::TRAMPLE));
+                    g.finish_cleanup();
+                    assert_eq!(g.stats(id).power, 2);
+                }
+                if name == "Noggle Robber" {
+                    let treasures = |g: &Game| {
+                        g.state
+                            .objects
+                            .iter()
+                            .filter(|o| {
+                                o.zone == Zone::Battlefield
+                                    && o.controller == p
+                                    && o.is_token()
+                                    && o.card.has_subtype("Treasure")
+                            })
+                            .count()
+                    };
+                    assert_eq!(treasures(&g), 1);
+                    g.move_object(id, Zone::Graveyard);
+                    settle(&mut g);
+                    assert_eq!(treasures(&g), 2);
+                }
+            }
+        }
+    }
+}
+#[test]
+fn ecl_inherited_tribal_obligations_include_noncreature_kindred_cards_and_permanents() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let loyalist = named(&mut g, p, "Morcant's Loyalist", Zone::Hand);
+        super::ability_timeline_tests::cast(&mut g, loyalist, None, &[]);
+        settle(&mut g);
+        let card = named(&mut g, p, "Crib Swap", Zone::Graveyard);
+        assert!(!g.is_creature(card) && g.has_subtype(card, "Elf"));
+        g.move_object(loyalist, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.state.objects[card as usize].zone, Zone::Hand);
+        assert_eq!(g.state.objects[loyalist as usize].zone, Zone::Graveyard);
+        let mut g = setup(p);
+        let lieutenant = named(&mut g, p, "Thoughtweft Lieutenant", Zone::Hand);
+        super::ability_timeline_tests::cast(&mut g, lieutenant, None, &[]);
+        settle(&mut g);
+        g.finish_cleanup();
+        let core = named(&mut g, p, "Firdoch Core", Zone::Hand);
+        g.move_object(core, Zone::Battlefield);
+        settle(&mut g);
+        assert!(!g.is_creature(core));
+        assert_eq!(g.stats(lieutenant).power, 3);
+        assert!(g.keywords(lieutenant).contains(Keywords::TRAMPLE));
+    }
+}

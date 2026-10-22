@@ -8,5 +8,41 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b126b9440dc9816a3ba32bf2201ad34cbd35eaade3a3bdbf346017b7ec990a32"
   },
-  "physical_metadata_sha256": "46838aecbd5f19ddc29973fd1054410c39df7a4035cdbbc71bae8f0d1e53afd9"
+  "physical_metadata_sha256": "46838aecbd5f19ddc29973fd1054410c39df7a4035cdbbc71bae8f0d1e53afd9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MorcantsLoyalist.java",
+  "java_sha256": "fdf9f2388fe3b25c4c8ec12fc9a57b899d83e9a29659e210f229c9873e97c7cf",
+  "rules_tests": "src/engine_ecl_inherited_tests.rs",
+  "additional_rules_tests": [
+    "src/engine_trigger_source_binding_tests.rs",
+    "src/engine_graveyard_recovery_tests.rs"
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ],
+  "inherited_audit": "Complete Oracle/XMage and relevant full behavior helpers read. Existing interaction suites audited for complete printed obligations; actual paid body/hybrid matrix in both seats and noncreature Kindred boundary interactions supplement them. Typed behavior preserved."
 }
