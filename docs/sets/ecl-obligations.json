@@ -4556,7 +4556,7 @@
         }
       ],
       "evidence": [
-        "src/engine_ecl_white_blue_tests.rs",
+        "src/engine_ecl_copy_entry_tests.rs",
         "src/card_definitions/ecl/omni_changeling.json",
         "docs/sets/ecl-validation.json"
       ]

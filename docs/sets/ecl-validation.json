@@ -532,10 +532,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T22:26:09.381549+00:00",
-    "elapsed_seconds": 25402.164698,
+    "end_utc": "2026-10-22T22:36:35.662348+00:00",
+    "elapsed_seconds": 26028.445497,
     "newly_verified_cards": 164,
-    "cards_per_hour": 23.2421136946051,
+    "cards_per_hour": 22.682875935408767,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "Combined260-card ECL scenarios; Kirol separately focused-tested after this combined run.",

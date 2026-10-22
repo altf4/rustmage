@@ -17,15 +17,17 @@ Oracle facts: `data/standard/cards.json`; canonical ownership:
 
 ## Card obligations and evidence
 
-The frozen manifest accounts for every identity. The [per-card obligation ledger](ecl-obligations.json) records every face and printed rules line with canonical ownership. Twenty inherited cards have passed source/rules audit;87 inherited cards remain.
+The frozen manifest accounts for every identity. The [per-card obligation ledger](ecl-obligations.json) records every face and printed rules line with canonical ownership. All107 inherited cards have passed source/rules audits, with paid interaction evidence recorded below and in the validation JSON.
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **249/273**, comprising **107 inherited** and **142 newly
-implemented/tested physical candidates**; **24 remain gated**. Twenty inherited
-cards have passed source/rules audit;87 inherited cards remain. No final published reviews or newly merged cards. All new
-names and per-card obligations appear in the linked JSON ledgers. Three tested
-synthetic token recipes are outside the physical denominator.
+Admission flags: **271/273**, comprising **107 inherited** and **164 newly
+implemented/tested physical candidates**; **two remain gated**: Raiding Schemes
+and Twilight Diviner. All107 inherited cards have passed source/rules audits.
+The supporting closure includes eleven tokens, seven backs and one emblem;
+all have complete source pins and parent interaction evidence. Final combined
+full-game acceptance, release validation and two published-head reviews remain
+open. No newly authored cards have been merged upstream.
 
 Three isolated authors own exactly black/red, white/blue, and green/colorless
 cards respectively. Their focused modules are `src/engine_ecl_black_red_tests.rs`,
@@ -91,12 +93,13 @@ focused scenarios and full release validation, then extend the natural games to
 verify every printed obligation. Check active jobs before touching their inputs;
 poll the same process until terminal. No early or partial implementation PR.
 
-Ordinary engineering remains for gated cards, including transform,
-behold/champion, conspire, proliferate, and some copying/chosen-type effects.
-These are implementation work, not external permission blockers. Authors are
-working on remaining combat/type interactions, vivid consumers, resolution hand exile, and behold/champion. Full pool behavior, interactions,
-performance, two independent nonauthor final published-head reviews and merge
-remain open.
+Raiding Schemes and Twilight Diviner are the final implementation candidates.
+The full-pool and mechanic-themed game workload is being developed on a separate
+isolated worktree. Finish those candidates, integrate all273, run the strict
+whole-pool acceptance and performance workloads, then full release validation.
+Publish one implementation PR only after every local gate passes; obtain two
+fresh independent nonauthor reviews of its final published head. Merge remains
+subject to repository permission.
 
 ## Verified checkpoint228 and inherited audit
 
