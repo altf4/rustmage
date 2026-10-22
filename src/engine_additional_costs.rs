@@ -10,6 +10,19 @@ pub struct AdditionalCostView {
     pub creature_counter_payments: Vec<(ObjectRef, CounterKind)>,
     pub paid: bool,
 }
+impl Announcement {
+    fn tap_group_excludes_source(&self, spec: AdditionalCost) -> bool {
+        spec.filter.other
+            || match self.item.kind {
+                StackKind::ActivatedAbility { ability } => {
+                    self.item.source_card.activations()[usize::from(ability)]
+                        .cost
+                        .tap
+                }
+                _ => false,
+            }
+    }
+}
 impl Game {
     pub(super) fn additional_candidate(
         &self,
@@ -242,11 +255,18 @@ impl Game {
         };
         let source = goal.source.as_ref().expect("activation source").0;
         if let EffectChoiceKind::TapPermanents(amount) = spec.kind {
-            // The source has a separate tap-symbol cost and cannot be paid twice.
+            let excludes_source = spec.filter.other
+                || goal
+                    .source
+                    .as_ref()
+                    .is_some_and(|(_, index, _, definition)| {
+                        definition.activations()[usize::from(*index)].cost.tap
+                    });
             let count = (0..self.state.objects.len())
                 .filter(|&id| {
                     let r = self.object_ref(id as CardId);
-                    r != source && self.additional_candidate(spec, goal.actor, source, r)
+                    (!excludes_source || r != source)
+                        && self.additional_candidate(spec, goal.actor, source, r)
                 })
                 .count();
             return count >= usize::from(amount) && self.can_fund(goal);
@@ -272,7 +292,7 @@ impl Game {
             return false;
         };
         if let EffectChoiceKind::TapPermanents(_) = spec.kind {
-            return object != a.item.object
+            return (!a.tap_group_excludes_source(spec) || object != a.item.object)
                 && !a
                     .additional_group
                     .as_ref()
@@ -322,7 +342,8 @@ impl Game {
         if let EffectChoiceKind::TapPermanents(amount) = spec.kind {
             let group = a.additional_group.as_ref().expect("selected tap group");
             assert_eq!(group.len(), usize::from(amount));
-            assert!(group.iter().all(|&r| r != a.item.object
+            assert!(group.iter().all(|&r| (!a.tap_group_excludes_source(spec)
+                || r != a.item.object)
                 && self.additional_candidate(spec, a.item.controller, a.item.object, r)));
             self.tap_objects(&group.iter().map(|r| r.card).collect::<Vec<_>>());
             a.additional_paid = true;

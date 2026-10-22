@@ -582,6 +582,7 @@ impl<'g> FundingState<'g> {
     fn external_tap_groups(
         &self,
         source: usize,
+        source_tap: bool,
         additional: Option<AdditionalCost>,
     ) -> Vec<Vec<usize>> {
         let Some(spec) = additional else {
@@ -595,8 +596,9 @@ impl<'g> FundingState<'g> {
             .iter()
             .enumerate()
             .filter_map(|(index, resource)| {
-                (index != source
-                    && !spec.filter.source_only
+                ((!source_tap || index != source)
+                    && (!spec.filter.other || index != source)
+                    && (!spec.filter.source_only || index == source)
                     && Game::additional_object_matches(
                         spec,
                         self.actor,
@@ -749,6 +751,7 @@ impl<'g> FundingState<'g> {
                                         |production| {
                                             for external_taps in self.external_tap_groups(
                                                 resource,
+                                                ability.cost.tap,
                                                 ability.cost.additional,
                                             ) {
                                                 moves.push(FundingMove {
@@ -3586,5 +3589,81 @@ mod ecl_tapped_keyword_tests {
             world.keywords(&world.resources[bear_index]),
             actual.keywords(bear)
         );
+    }
+}
+
+#[cfg(test)]
+mod ecl_tap_group_source_tests {
+    use super::super::tests::{scenario, spawn};
+    use super::*;
+    #[test]
+    fn ecl_tap_group_source_inclusion_and_virtual_tap_grants_match_actual() {
+        let mut g = scenario();
+        let source = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Kithkeeper").unwrap(),
+            Zone::Battlefield,
+        );
+        spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Adept Watershaper").unwrap(),
+            Zone::Battlefield,
+        );
+        spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+        spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+        let definition = g.state.objects[source as usize].card;
+        let goal = FundingGoal {
+            actor: Player::P0,
+            required: [0; 6],
+            generic: 0,
+            reserve: None,
+            source: Some((g.object_ref(source), 0, Counters::default(), definition)),
+        };
+        let spec = definition.activations()[0].cost.additional;
+        let mut world = FundingState::from_game_with_convoke(&g, &goal, true);
+        let index = world.resources.iter().position(|r| r.id == source).unwrap();
+        let groups = world.external_tap_groups(index, false, spec);
+        let group = groups.iter().find(|group| group.contains(&index)).unwrap();
+        assert_eq!(group.len(), 3);
+        assert!(
+            world
+                .external_tap_groups(index, true, spec)
+                .iter()
+                .all(|group| !group.contains(&index))
+        );
+        let mut other = spec.unwrap();
+        other.filter.other = true;
+        assert!(
+            world
+                .external_tap_groups(index, false, Some(other))
+                .iter()
+                .all(|group| !group.contains(&index))
+        );
+        assert!(
+            !world
+                .keywords(&world.resources[index])
+                .contains(Keywords::INDESTRUCTIBLE)
+        );
+        let ids: Vec<_> = group
+            .iter()
+            .map(|&index| world.resources[index].id)
+            .collect();
+        for &index in group {
+            world.resources[index].object.tapped = true;
+        }
+        let mut actual = g.clone();
+        actual.tap_objects(&ids);
+        assert!(
+            world
+                .keywords(&world.resources[index])
+                .contains(Keywords::INDESTRUCTIBLE)
+        );
+        assert_eq!(
+            world.keywords(&world.resources[index]),
+            actual.keywords(source)
+        );
+        assert!(!g.keywords(source).contains(Keywords::INDESTRUCTIBLE));
     }
 }

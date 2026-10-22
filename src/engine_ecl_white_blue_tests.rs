@@ -1872,3 +1872,144 @@ fn wanderbrine_trapper_tapped_payment_is_illegal_and_invalid_target_does_not_ref
     assert!(g.object_view(source).tapped);
     assert!(g.object_view(witness).tapped);
 }
+
+fn kithkin_tokens(g: &Game, p: Player) -> Vec<CardId> {
+    let token = Card::from_name("@token/c48e9e904360e4cee1deeed8").unwrap();
+    g.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter_map(|(id, o)| {
+            (o.zone == Zone::Battlefield && o.controller == p && o.card == token)
+                .then_some(id as CardId)
+        })
+        .collect()
+}
+#[test]
+fn kithkeeper_vivid_counts_current_owned_permanent_colors_once_at_resolution() {
+    for p in [Player::P0, Player::P1] {
+        for colored in [false, true] {
+            let mut g = setup(p);
+            spawn(
+                &mut g,
+                p.other(),
+                Card::from_name("Vampire Nighthawk").unwrap(),
+                Zone::Battlefield,
+            );
+            if colored {
+                spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+                spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+                spawn(
+                    &mut g,
+                    p,
+                    Card::from_name("Omniscience").unwrap(),
+                    Zone::Battlefield,
+                );
+            }
+            cast_named(&mut g, p, "Kithkeeper");
+            assert_eq!(kithkin_tokens(&g, p).len(), if colored { 3 } else { 1 });
+            for token in kithkin_tokens(&g, p) {
+                assert_eq!(
+                    g.stats(token),
+                    Stats {
+                        power: 1,
+                        toughness: 1
+                    }
+                );
+                assert!(g.has_subtype(token, "Kithkin"));
+                assert_eq!(g.object_view(token).colors.count_ones(), 2);
+            }
+        }
+    }
+    let mut g = setup(Player::P0);
+    let id = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Kithkeeper").unwrap(),
+        Zone::Hand,
+    );
+    cast(&mut g, id, None);
+    checked(&mut g, Action::Pass);
+    checked(&mut g, Action::Pass);
+    g.move_object(id, Zone::Graveyard);
+    settle(&mut g);
+    assert!(kithkin_tokens(&g, Player::P0).is_empty());
+}
+#[test]
+fn kithkeeper_can_tap_itself_while_sick_or_three_other_creatures_and_binding_is_exact() {
+    for include_source in [false, true] {
+        for depart in [false, true] {
+            let mut g = setup(Player::P0);
+            let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+            let source = cast_named(&mut g, Player::P0, "Kithkeeper");
+            let tokens = kithkin_tokens(&g, Player::P0);
+            assert_eq!(tokens.len(), 2);
+            assert!(g.object_view(source).summoning_sick);
+            g.state.active = Player::P1;
+            g.state.priority = Player::P0;
+            g.state.step = Step::Upkeep;
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            let first = if include_source { source } else { bear };
+            let object = g.object_ref(first);
+            checked(&mut g, Action::ChooseAdditionalCost { object });
+            reject_atomic(&mut g, Action::ChooseAdditionalCost { object });
+            for &id in &tokens {
+                let object = g.object_ref(id);
+                checked(&mut g, Action::ChooseAdditionalCost { object });
+            }
+            finish_cast_choices(&mut g);
+            assert!(g.object_view(first).tapped);
+            assert!(tokens.iter().all(|&id| g.object_view(id).tapped));
+            assert_eq!(g.object_view(source).tapped, include_source);
+            if depart {
+                g.move_object(source, Zone::Hand);
+                g.move_object(source, Zone::Battlefield);
+            }
+            settle(&mut g);
+            assert_eq!(g.stats(source).power, if depart { 3 } else { 6 });
+            assert_eq!(g.keywords(source).contains(Keywords::FLYING), !depart);
+            g.finish_cleanup();
+            assert_eq!(
+                g.stats(source),
+                Stats {
+                    power: 3,
+                    toughness: 3
+                }
+            );
+            assert!(!g.keywords(source).contains(Keywords::FLYING));
+        }
+    }
+}
+#[test]
+fn kithkeeper_requires_three_distinct_untapped_creatures_and_can_repeat_after_untapping() {
+    let mut g = setup(Player::P0);
+    let source = cast_named(&mut g, Player::P0, "Kithkeeper");
+    let activation = Action::AnnounceActivate {
+        card: source,
+        ability: 0,
+        counter_payment: Counters::default(),
+    };
+    reject_atomic(&mut g, activation.clone());
+    let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    let token = kithkin_tokens(&g, Player::P0)[0];
+    for round in 1..=2 {
+        checked(&mut g, activation.clone());
+        for id in [source, bear, token] {
+            let object = g.object_ref(id);
+            checked(&mut g, Action::ChooseAdditionalCost { object });
+        }
+        finish_cast_choices(&mut g);
+        settle(&mut g);
+        assert_eq!(g.stats(source).power, 3 + round * 3);
+        assert!(g.keywords(source).contains(Keywords::FLYING));
+        reject_atomic(&mut g, activation.clone());
+        g.untap_objects(&[source, bear, token], untap_rules::UntapCause::Effect);
+    }
+}
