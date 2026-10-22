@@ -21,8 +21,8 @@ The frozen manifest accounts for every identity. The [per-card obligation ledger
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **190/273**, comprising **107 inherited** and **83 newly
-implemented/tested physical candidates**; **83 remain gated**. Inherited evidence
+Admission flags: **195/273**, comprising **107 inherited** and **88 newly
+implemented/tested physical candidates**; **78 remain gated**. Inherited evidence
 still needs audit. No final published reviews or newly merged cards. All new
 names and per-card obligations appear in the linked JSON ledgers. Three tested
 synthetic token recipes are outside the physical denominator.
@@ -47,14 +47,20 @@ methods preserve printed additional mana-or-blight choices.
 
 The previous combined focused run passed 118 scenarios; subsequent batches have
 passed their isolated author scenarios, with another combined run pending.
-Release validation at `73fd6de7` passed formatting, provenance/Python checks,
-Clippy/all-target compilation, all **2,607 native tests** (one ignored), and
-catalogue tests. Of 22 Foundations game suites, 21 passed; the remaining suite
-exposed an unrelated-attachment subtype timestamp panic. Fix `6d2ff19a` restricts
-timestamp queries to actual layer-four providers and adds a paid Equipment plus
-Nameless Inversion regression. The exact failed full-game suite subsequently passed (56.22 seconds); full release rerun remains pending. Full report:
-`<cache>/rustmage-validation-w_k8670s/report/result.json`. Required shared
-libraries remain at the exact paths and hashes recorded in each report.
+Full release validation **passed all eight phases** at `0ae35121`: formatting,
+Python/provenance checks, Clippy/all-target compilation, **2,671 native tests**
+(one ignored), catalogue checks, **all 22 Foundations game suites**, ECL games,
+release build and benchmark. Runtime531.22 seconds; enforced shared memory peak
+3.2 GiB. Report `<cache>/rustmage-validation-4cepq26r/report/result.json` records
+all required libraries at exact paths/hashes; completed disposable outputs were
+cleaned. The prior unrelated-attachment timestamp regression also passed its
+exact targeted full-game rerun (56.22 seconds).
+
+The release Freeform regression workload ran100 deterministic games and49,832
+decisions in0.248807 seconds: **200,283.61 decisions/second**,401.92games/second;
+clone208.32ns, restore181.27ns. It includes native policy/observations, excludes
+JSON/model/tensor work, and is not an ECL acceptance measurement. Compiler,
+hardware, revision and workload context are recorded in the validation JSON.
 
 Ten natural ECL-only Standard games covered all colors, ten terminal outcomes,
 ten blight choices, six private choices, and 100 owned raw/index branch/replay/
@@ -63,7 +69,7 @@ restore checkpoints. Debug workload: **5,719 decisions in 1.777491 seconds**,
 snapshots. This is subset regression evidence, not complete-set acceptance.
 See the JSON for seeds, revision, compiler, hardware, and artifact reports.
 
-The validation JSON records the measured implementation interval and current cards/hour for 83 newly locally tested physical candidates. This excludes inherited certification, independent final review, and upstream merge.
+The validation JSON records the measured implementation interval and current cards/hour for88 newly locally tested physical candidates. This excludes inherited certification, independent final review, and upstream merge.
 
 ## Resume and remaining work
 

@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 83,
+  "newly_tested_physical_cards": 88,
   "newly_tested_names": [
     "Adept Watershaper",
     "Ashling's Command",
@@ -25,6 +25,7 @@
     "Chaos Spewer",
     "Chronicle of Victory",
     "Cinder Strike",
+    "Collective Inferno",
     "Creakwood Safewright",
     "Crib Swap",
     "Dawn-Blessed Pennant",
@@ -51,13 +52,16 @@
     "Gutsplitter Gang",
     "Heirloom Auntie",
     "Illusion Spinners",
+    "Kithkeeper",
     "Liminal Hold",
     "Loch Mare",
     "Mutable Explorer",
     "Nameless Inversion",
     "Noggle the Mind",
+    "Perfect Intimidation",
     "Personify",
     "Pitiless Fists",
+    "Prismabasher",
     "Prismatic Undercurrents",
     "Pummeler for Hire",
     "Pyrrhic Strike",
@@ -68,6 +72,7 @@
     "Safewright Cavalry",
     "Sapling Nursery",
     "Scuzzback Scrounger",
+    "Selfless Safewright",
     "Sourbread Auntie",
     "Springleaf Drum",
     "Spry and Mighty",
@@ -88,8 +93,8 @@
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 190,
-  "remaining_gated": 83,
+  "current_admission_flags": 195,
+  "remaining_gated": 78,
   "inherited_evidence_audit": "pending",
   "locally_reviewed": 0,
   "final_published_reviews": 0,
@@ -127,22 +132,30 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T16:47:31.935626+00:00",
-    "elapsed_seconds": 5084.718775,
-    "newly_verified_cards": 83,
-    "cards_per_hour": 58.76431189648241,
-    "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
+    "end_utc": "2026-10-22T17:08:42.461367+00:00",
+    "elapsed_seconds": 6355.244516,
+    "newly_verified_cards": 88,
+    "cards_per_hour": 49.84859342585836,
+    "scope": "Local whole-card focused verification; inherited coverage, final review and merge excluded. Integrated release validation passes at0ae35121."
   },
   "focused_scope": "118 scenarios at9b29008c; later integrated batches have author tests, full combined rerun pending",
   "full_release_validation": {
-    "status": "failed; regression fixed, rerun pending",
-    "head": "73fd6de7",
-    "report": "<cache>/rustmage-validation-w_k8670s/report/result.json",
-    "native_tests_passed": 2607,
+    "status": "passed all8phases",
+    "head": "0ae3512178b7c6fbee2bf4a268fca5cfff346d5b",
+    "report": "<cache>/rustmage-validation-4cepq26r/report/result.json",
+    "resource_report": "<cache>/rustmage-build-reports/7dcbeb2810f04f5fb2e8d0e87dd8c6e2.json",
+    "seconds": 531.2200150709978,
+    "native_tests_passed": 2671,
     "native_tests_ignored": 1,
-    "foundations_games_passed": 21,
-    "failure": "unrelated attachment queried for missing layer-four timestamp; corrected in6d2ff19a",
-    "seconds": 394.549094267
+    "foundations_game_suites_passed": 22,
+    "ecl_games_test_passed": true,
+    "shared_libraries": {
+      "<cache>/rustmage-validation-4cepq26r/release/librustmage.so": "cfcde199c3fa5ca075ef34e44eff327c238300caa3ef07383b170ebab6af0789",
+      "<cache>/rustmage-validation-4cepq26r/release/deps/librustmage.so": "cfcde199c3fa5ca075ef34e44eff327c238300caa3ef07383b170ebab6af0789",
+      "<cache>/rustmage-validation-4cepq26r/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+      "<cache>/rustmage-validation-4cepq26r/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-4cepq26r/debug/deps/librustmage.so": "4e2340d8aa5bb40727e6f4fbb65e5b66fe6e2ac7c8f8037ff6893a63fc40ca9b"
+    }
   },
   "regression_recheck": {
     "command": "guarded cargo test --test foundations_games characteristic_modal_games::foundations_six_characteristic_modal_cards_full_games_and_owned_effect_state",
@@ -170,5 +183,22 @@
       "command": "python3 -m unittest scripts.test_direct_cards",
       "passed": 7
     }
+  },
+  "release_regression_benchmark": {
+    "clone_ns": 208.31912,
+    "decisions": 49832,
+    "decisions_per_second": 200283.6067638771,
+    "games": 100,
+    "games_per_second": 401.91765685478623,
+    "initial_state_bytes_excluding_capacity_and_allocator": 21000,
+    "max_decisions_per_game": 1129,
+    "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+    "restore_ns": 181.26649,
+    "seconds": 0.248807183,
+    "head": "0ae3512178b7c6fbee2bf4a268fca5cfff346d5b",
+    "profile": "release",
+    "cpu": "Intel Core Ultra 5 335, x86_64, 8 cores",
+    "compiler": "rustc1.98.0 (88d9e12ae2026-08-18)",
+    "workload": "src/bin/benchmark.rs;100 deterministic Freeform smoke games; policy+observations included, no JSON/model; not set acceptance"
   }
 }

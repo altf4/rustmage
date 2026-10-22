@@ -1228,7 +1228,7 @@
       "name": "Collective Inferno",
       "definition": "src/card_definitions/ecl/collective_inferno.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Collective Inferno",
@@ -1244,7 +1244,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/collective_inferno.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "f9b7bbea-ea20-400b-a5b7-4d6993d8777b",
@@ -3231,7 +3235,7 @@
       "name": "Kithkeeper",
       "definition": "src/card_definitions/ecl/kithkeeper.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Kithkeeper",
@@ -3246,7 +3250,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/kithkeeper.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "ed428638-181b-47cb-92f4-379db020e634",
@@ -4123,7 +4131,7 @@
       "name": "Perfect Intimidation",
       "definition": "src/card_definitions/ecl/perfect_intimidation.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Perfect Intimidation",
@@ -4139,7 +4147,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/perfect_intimidation.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "e1708ad9-35d4-4243-92ca-ddf9d129aa32",
@@ -4262,7 +4274,7 @@
       "name": "Prismabasher",
       "definition": "src/card_definitions/ecl/prismabasher.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Prismabasher",
@@ -4277,7 +4289,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/prismabasher.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "27a3aa64-1de7-4b0c-af23-52886e7d258a",
@@ -4873,7 +4889,7 @@
       "name": "Selfless Safewright",
       "definition": "src/card_definitions/ecl/selfless_safewright.rs",
       "owner": "ecl_green_colorless",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Selfless Safewright",
@@ -4889,7 +4905,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_green_colorless_tests.rs",
+        "src/card_definitions/ecl/selfless_safewright.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "86bd332f-ba61-49a4-ad31-de4d7e3638c6",
