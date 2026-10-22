@@ -217,6 +217,7 @@ impl Game {
                 source,
                 types,
                 additional: true,
+                all_creature_types: false,
                 expires_turn: None,
                 timestamp,
             });

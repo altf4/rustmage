@@ -3005,6 +3005,9 @@ impl Game {
                 } => {
                     self.evolve_source(&item, required, types, stats, keywords, ability);
                 }
+                Instruction::GainAllCreatureTypesUntilEndTurn { subject } => {
+                    self.gain_all_creature_types_until_end_turn(&item, subject);
+                }
                 Instruction::SetCreatureTypesUntilEndTurn { subject, types } => {
                     self.set_creature_types_until_end_turn(&item, subject, types);
                 }

@@ -141,6 +141,7 @@ pub struct CreatureTypesEffectView {
     pub source: ObjectRef,
     pub types: &'static [&'static str],
     pub additional: bool,
+    pub all_creature_types: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_turn: Option<u32>,
     pub timestamp: u64,
@@ -192,7 +193,9 @@ impl Game {
                     .map(|row| {
                         (
                             row.timestamp,
-                            if row.additional {
+                            if row.all_creature_types {
+                                characteristic_layers::SubtypeChange::All
+                            } else if row.additional {
                                 characteristic_layers::SubtypeChange::Add(row.types)
                             } else {
                                 characteristic_layers::SubtypeChange::Named(row.types, false)
@@ -347,7 +350,7 @@ impl Game {
         subject: Subject,
         types: &'static [&'static str],
     ) {
-        self.set_creature_types_with_expiry(item, subject, types, None);
+        self.set_creature_types_with_expiry(item, subject, types, None, false);
     }
     pub(super) fn set_creature_types_until_end_turn(
         &mut self,
@@ -355,7 +358,14 @@ impl Game {
         subject: Subject,
         types: &'static [&'static str],
     ) {
-        self.set_creature_types_with_expiry(item, subject, types, Some(self.state.turn));
+        self.set_creature_types_with_expiry(item, subject, types, Some(self.state.turn), false);
+    }
+    pub(super) fn gain_all_creature_types_until_end_turn(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+    ) {
+        self.set_creature_types_with_expiry(item, subject, &[], Some(self.state.turn), true);
     }
     fn set_creature_types_with_expiry(
         &mut self,
@@ -363,6 +373,7 @@ impl Game {
         subject: Subject,
         types: &'static [&'static str],
         expires_turn: Option<u32>,
+        all_creature_types: bool,
     ) {
         assert!(
             types
@@ -394,6 +405,7 @@ impl Game {
                 source: item.object,
                 types,
                 additional: false,
+                all_creature_types,
                 expires_turn,
                 timestamp,
             });

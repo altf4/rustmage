@@ -1153,6 +1153,10 @@ pub(crate) enum Instruction {
         keywords: Keywords,
         ability: Option<u16>,
     },
+    /// A resolution-created type effect, independent of the recipient's abilities.
+    GainAllCreatureTypesUntilEndTurn {
+        subject: Subject,
+    },
     /// Replace only creature types until the current turn's cleanup.
     SetCreatureTypesUntilEndTurn {
         subject: Subject,

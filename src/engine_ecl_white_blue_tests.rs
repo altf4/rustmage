@@ -1648,3 +1648,227 @@ fn wild_unraveling_cannot_waive_additional_cost_and_uncounterable_spells_still_r
     settle(&mut g);
     assert_eq!(g.state.players[0].life, 17);
 }
+
+fn glamer_trigger(g: &mut Game, p: Player) -> CardId {
+    let source = spawn(g, p, Card::from_name("Glamer Gifter").unwrap(), Zone::Hand);
+    cast(g, source, None);
+    checked(g, Action::Pass);
+    checked(g, Action::Pass);
+    g.prepare_triggers();
+    if let Some(action) = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a, Action::PutTrigger { .. }))
+    {
+        checked(g, action);
+    }
+    source
+}
+#[test]
+fn glamer_gifter_flash_flying_and_optional_other_creature_trigger() {
+    let mut g = setup(Player::P1);
+    g.state.priority = Player::P0;
+    let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    let source = glamer_trigger(&mut g, Player::P0);
+    assert_eq!(
+        g.stats(source),
+        Stats {
+            power: 1,
+            toughness: 2
+        }
+    );
+    assert!(
+        g.keywords(source)
+            .contains(Keywords::FLASH.union(Keywords::FLYING))
+    );
+    reject_atomic(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(source),
+        },
+    );
+    checked(&mut g, Action::FinishTargets);
+    settle(&mut g);
+    assert_eq!(
+        g.stats(source),
+        Stats {
+            power: 1,
+            toughness: 2
+        }
+    );
+    assert!(!g.has_subtype(source, "Goblin"));
+    assert_eq!(g.stats(bear).power, 2);
+}
+#[test]
+fn glamer_gifter_base_and_all_types_obey_layering_ability_removal_and_cleanup() {
+    let mut g = setup(Player::P0);
+    let recipient = spawn(
+        &mut g,
+        Player::P1,
+        Card::from_name("Juggernaut").unwrap(),
+        Zone::Battlefield,
+    );
+    g.set_counters(recipient, Counters::of(CounterKind::PlusOne, 1));
+    let source = glamer_trigger(&mut g, Player::P0);
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(recipient),
+        },
+    );
+    g.move_object(source, Zone::Graveyard);
+    settle(&mut g);
+    assert_eq!(
+        g.stats(recipient),
+        Stats {
+            power: 5,
+            toughness: 5
+        }
+    );
+    assert!(g.current_kinds(recipient) & 16 != 0);
+    assert!(!g.has_subtype(recipient, "Equipment"));
+    for subtype in ["Goblin", "Faerie", "Merfolk", "Coward", "Construct"] {
+        assert!(g.has_subtype(recipient, subtype));
+    }
+    let aura = spell(
+        &mut g,
+        Player::P0,
+        "Noggle the Mind",
+        &[Target::Card(recipient)],
+    );
+    settle(&mut g);
+    assert!(g.has_subtype(recipient, "Noggle"));
+    assert!(!g.has_subtype(recipient, "Faerie"));
+    assert_eq!(
+        g.stats(recipient),
+        Stats {
+            power: 2,
+            toughness: 2
+        }
+    );
+    g.move_object(aura, Zone::Graveyard);
+    assert!(g.has_subtype(recipient, "Faerie"));
+    spell(&mut g, Player::P0, "Stop Cold", &[Target::Card(recipient)]);
+    settle(&mut g);
+    assert!(!g.printed_abilities_available(recipient));
+    assert!(g.has_subtype(recipient, "Faerie"));
+    assert_eq!(
+        g.stats(recipient),
+        Stats {
+            power: 5,
+            toughness: 5
+        }
+    );
+    g.finish_cleanup();
+    assert!(!g.has_subtype(recipient, "Faerie"));
+    assert!(g.has_subtype(recipient, "Juggernaut"));
+    assert_eq!(
+        g.stats(recipient),
+        Stats {
+            power: 6,
+            toughness: 4
+        }
+    );
+}
+#[test]
+fn glamer_gifter_target_incarnation_must_remain_legal_and_effect_does_not_follow_reentry() {
+    for before_resolution in [false, true] {
+        let mut g = setup(Player::P0);
+        let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+        glamer_trigger(&mut g, Player::P0);
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(bear),
+            },
+        );
+        if !before_resolution {
+            settle(&mut g);
+            assert_eq!(g.stats(bear).power, 4);
+            assert!(g.has_subtype(bear, "Faerie"));
+        }
+        g.move_object(bear, Zone::Hand);
+        g.move_object(bear, Zone::Battlefield);
+        settle(&mut g);
+        assert_eq!(g.stats(bear).power, 2);
+        assert!(!g.has_subtype(bear, "Faerie"));
+    }
+}
+#[test]
+fn wanderbrine_trapper_tap_costs_are_distinct_nontargeted_and_source_independent() {
+    for p in [Player::P0, Player::P1] {
+        for depart in [false, true] {
+            let mut g = setup(p);
+            let source = cast_named(&mut g, p, "Wanderbrine Trapper");
+            let witness = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+            let land = spawn(&mut g, p, Card::Forest, Zone::Battlefield);
+            let target = spawn(&mut g, p.other(), Card::HillGiant, Zone::Battlefield);
+            let activation = Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            };
+            reject_atomic(&mut g, activation.clone());
+            g.state.objects[source as usize].summoning_sick = false;
+            checked(&mut g, activation);
+            reject_atomic(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(witness),
+                },
+            );
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            for invalid in [source, land, target] {
+                let object = g.object_ref(invalid);
+                reject_atomic(&mut g, Action::ChooseAdditionalCost { object });
+            }
+            let object = g.object_ref(witness);
+            checked(&mut g, Action::ChooseAdditionalCost { object });
+            finish_cast_choices(&mut g);
+            assert!(g.object_view(source).tapped);
+            assert!(g.object_view(witness).tapped);
+            if depart {
+                g.move_object(source, Zone::Graveyard);
+            }
+            settle(&mut g);
+            assert!(g.object_view(target).tapped);
+        }
+    }
+}
+#[test]
+fn wanderbrine_trapper_tapped_payment_is_illegal_and_invalid_target_does_not_refund_costs() {
+    let mut g = setup(Player::P0);
+    let source = cast_named(&mut g, Player::P0, "Wanderbrine Trapper");
+    g.state.objects[source as usize].summoning_sick = false;
+    let witness = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    let target = spawn(&mut g, Player::P1, Card::HillGiant, Zone::Battlefield);
+    g.tap_objects(&[witness]);
+    let activation = Action::AnnounceActivate {
+        card: source,
+        ability: 0,
+        counter_payment: Counters::default(),
+    };
+    reject_atomic(&mut g, activation.clone());
+    g.untap_objects(&[witness], untap_rules::UntapCause::Effect);
+    checked(&mut g, activation);
+    checked(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    let object = g.object_ref(witness);
+    checked(&mut g, Action::ChooseAdditionalCost { object });
+    finish_cast_choices(&mut g);
+    g.move_object(target, Zone::Hand);
+    g.move_object(target, Zone::Battlefield);
+    settle(&mut g);
+    assert!(!g.object_view(target).tapped);
+    assert!(g.object_view(source).tapped);
+    assert!(g.object_view(witness).tapped);
+}
