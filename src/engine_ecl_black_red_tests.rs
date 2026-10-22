@@ -3060,6 +3060,8 @@ fn returning_without_abilities_preserves_the_entry_event_before_the_following_re
                 zone: Zone::Graveyard,
                 controller: p,
                 counter: None,
+                tapped: false,
+                additional: Vec::new(),
             },
             Some((crate::cards::ReturnKind::WithoutAbilities, reference)),
         );

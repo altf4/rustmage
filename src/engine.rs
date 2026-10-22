@@ -112,7 +112,7 @@ mod warp;
 pub use cast_payments::{CastPaymentEvent, ManaPaymentDomain};
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
 pub use plot::{PlotPaymentView, PlottedCard};
-pub use return_links::{DelayedReturnView, ReturnLinkView};
+pub use return_links::{DelayedReturnView, PlayerDamageShieldView, ReturnCardView, ReturnLinkView};
 pub use warp::{DelayedWarpExileView, WarpedCard};
 
 #[path = "engine_characteristic_layers.rs"]
@@ -1103,10 +1103,7 @@ impl SpellView {
                 .source_copy_recipe
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<CopyRecipe>())
-            + self
-                .return_link
-                .as_ref()
-                .map_or(0, |_| std::mem::size_of::<ReturnLinkView>())
+            + self.return_link.as_ref().map_or(0, |link| link.bytes())
             + self
                 .creature_combat_event
                 .as_ref()
@@ -1697,6 +1694,9 @@ struct State {
     // Cold pointer keeps games without delayed returns allocation-free.
     #[allow(clippy::box_collection)]
     delayed_returns: Option<Box<Vec<return_links::DelayedReturn>>>,
+    // Rare resolution shields retain one pointer in the ordinary empty state.
+    #[allow(clippy::box_collection)]
+    player_damage_shields: Option<Box<Vec<PlayerDamageShieldView>>>,
     mobilize: Option<Box<mobilize::MobilizePlan>>,
     saddled: Vec<ObjectRef>,
     saddle_payment: Option<Box<saddle::SaddlePayment>>,
@@ -2072,6 +2072,7 @@ pub struct Observation {
     pub convoke_choice: Option<ConvokeChoiceView>,
     pub delayed_sacrifices: Vec<DelayedSacrificeView>,
     pub delayed_returns: Vec<DelayedReturnView>,
+    pub player_damage_shields: Vec<PlayerDamageShieldView>,
     pub mobilize_choice: Option<MobilizeChoiceView>,
     pub saddle_choice: Option<SaddleChoiceView>,
     /// Complete scalar domain, visible only to its choosing actor.
@@ -2349,6 +2350,7 @@ impl Game {
                 evidence_data: None,
                 delayed_sacrifices: None,
                 delayed_returns: None,
+                player_damage_shields: None,
                 mobilize: None,
                 saddled: Vec::new(),
                 saddle_payment: None,
@@ -5590,6 +5592,12 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        if let Some(shields) = &mut self.state.player_damage_shields {
+            shields.retain(|row| row.controller != self.state.active);
+            if shields.is_empty() {
+                self.state.player_damage_shields = None;
+            }
+        }
         if let Some(roles) = &mut self.state.roles {
             roles.attack_type_history.clear();
             roles
@@ -6151,6 +6159,10 @@ impl Game {
             } else {
                 None
             },
+            player_damage_shields: s
+                .player_damage_shields
+                .as_ref()
+                .map_or_else(Vec::new, |rows| (**rows).clone()),
             delayed_returns: self
                 .state
                 .delayed_returns
@@ -6735,6 +6747,10 @@ impl Game {
             + self.death_exile_bytes()
             + self.mobilize_bytes()
             + self.return_links_bytes()
+            + s.player_damage_shields.as_ref().map_or(0, |rows| {
+                std::mem::size_of_val(&**rows)
+                    + rows.len() * std::mem::size_of::<PlayerDamageShieldView>()
+            })
             + std::mem::size_of::<Vec<Object>>()
             + std::mem::size_of::<Vec<ObjectRef>>()
             + s.combat_rules.as_ref().map_or(0, |r| r.owned_bytes())
@@ -6825,10 +6841,16 @@ impl Game {
                             .optional_searches
                             .as_ref()
                             .map_or(0, |_| std::mem::size_of::<search::OptionalSearchSequence>())
-                        + resolution
-                            .continuation
-                            .as_ref()
-                            .map_or(0, |_| std::mem::size_of::<programs::ProgramContinuation>())
+                        + resolution.continuation.as_ref().map_or(0, |continuation| {
+                            std::mem::size_of::<programs::ProgramContinuation>()
+                                + match &**continuation {
+                                    programs::ProgramContinuation::Return(link) => {
+                                        link.additional.len()
+                                            * std::mem::size_of::<ReturnCardView>()
+                                    }
+                                    _ => 0,
+                                }
+                        })
                         + resolution.target_library.as_ref().map_or(0, |f| f.bytes())
                         + resolution.forage.as_ref().map_or(0, |f| f.bytes())
                         + resolution.evidence.as_ref().map_or(0, |f| f.bytes())

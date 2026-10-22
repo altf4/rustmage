@@ -836,6 +836,8 @@ pub(crate) enum Instruction {
     BlinkUntilEndStep {
         under_owner: bool,
     },
+    BlinkGroupTappedUntilEndStep,
+    PreventPlayerDamageUntilNextTurn,
     ReturnDeathCard(ReturnKind),
     ResolveDelayedReturn,
     CopyNextInstantSorcery,

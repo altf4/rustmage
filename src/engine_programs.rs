@@ -2182,6 +2182,12 @@ impl Game {
                     self.blink_until_end_step(&item, under_owner)
                 }
                 Instruction::ReturnDeathCard(kind) => self.return_death_card(&item, kind),
+                Instruction::BlinkGroupTappedUntilEndStep => {
+                    self.blink_group_tapped_until_end_step(&item)
+                }
+                Instruction::PreventPlayerDamageUntilNextTurn => {
+                    self.prevent_player_damage_until_next_turn(&item)
+                }
                 Instruction::ResolveDelayedReturn => self.resolve_delayed_return(&item),
                 Instruction::ReturnSourceFromFirstPublicZoneToHand => {
                     self.return_source_from_first_public_zone_to_hand(&item);
@@ -2742,7 +2748,8 @@ impl Game {
                     self.state.players[item.controller.index()].no_maximum_hand_size = true;
                 }
                 Instruction::ExileResolvingSpell => {
-                    if item.kind == StackKind::Spell
+                    if !item.is_copy
+                        && item.kind == StackKind::Spell
                         && self.object_ref(item.card) == item.object
                         && self.state.objects[item.card as usize].zone == Zone::Stack
                     {

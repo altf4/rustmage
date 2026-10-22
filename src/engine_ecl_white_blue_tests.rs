@@ -6898,3 +6898,353 @@ fn winnowing_simultaneous_sacrifice_preserves_granted_persist_after_grantor_depa
         assert_eq!(g.object_view(enemy_anchor).zone, Zone::Battlefield);
     }
 }
+
+fn morningtide(g: &mut Game, p: Player, ids: &[CardId]) -> CardId {
+    let targets = ids.iter().map(|&id| Target::Card(id)).collect::<Vec<_>>();
+    let source = spell(g, p, "Morningtide's Light", &targets);
+    settle(g);
+    source
+}
+#[test]
+fn morningtides_light_paid_group_returns_tapped_to_owners_and_waits_for_all_entry_choices() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let giant = spawn(&mut g, p.other(), Card::HillGiant, Zone::Battlefield);
+        let automaton = spawn(
+            &mut g,
+            p,
+            Card::from_name("Adaptive Automaton").unwrap(),
+            Zone::Battlefield,
+        );
+        let token = spawn(
+            &mut g,
+            p,
+            Card::from_name("@token/shapeshifter_1_1_colorless_changeling").unwrap(),
+            Zone::Battlefield,
+        );
+        g.change_controller(g.object_ref(bear), p.other());
+        g.change_controller(g.object_ref(giant), p);
+        let before = g.object_ref(bear);
+        g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 3];
+        let source = morningtide(&mut g, p, &[bear, giant, automaton, token]);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert_eq!(g.object_view(source).zone, Zone::Exile);
+        assert_ne!(g.object_view(token).zone, Zone::Battlefield);
+        let view = g.observe(p);
+        assert_eq!(view.delayed_returns.len(), 1);
+        assert_eq!(view.delayed_returns[0].returning.additional.len(), 2);
+        assert_eq!(view.delayed_returns, g.observe(p.other()).delayed_returns);
+        assert_eq!(
+            view.player_damage_shields,
+            g.observe(p.other()).player_damage_shields
+        );
+        for id in [bear, giant, automaton] {
+            assert_eq!(g.object_view(id).zone, Zone::Exile);
+        }
+        g.begin_step(Step::End);
+        g.prepare_triggers();
+        for _ in 0..30 {
+            if matches!(g.state.pending, Pending::EntryValue { .. }) {
+                break;
+            }
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| !matches!(a, Action::Concede))
+                .unwrap();
+            checked(&mut g, action);
+        }
+        assert!(matches!(g.state.pending, Pending::EntryValue { .. }));
+        // No member of the batch enters before as-entry choices finish.
+        for id in [bear, giant, automaton] {
+            assert_eq!(g.object_view(id).zone, Zone::Exile);
+        }
+        checked(
+            &mut g,
+            Action::ChooseEntryValue {
+                value: crate::EntryChoiceValue::CreatureType(
+                    crate::cards::CreatureType::from_name("Bear").unwrap(),
+                ),
+            },
+        );
+        settle(&mut g);
+        for (id, owner) in [(bear, p), (giant, p.other()), (automaton, p)] {
+            let returned = g.object_view(id);
+            assert_eq!(returned.zone, Zone::Battlefield);
+            assert_eq!(returned.controller, owner);
+            assert!(returned.tapped);
+        }
+        assert_ne!(g.object_ref(bear), before);
+        assert_eq!(g.object_view(source).zone, Zone::Exile);
+        assert!(g.observe(p).delayed_returns.is_empty());
+    }
+}
+#[test]
+fn morningtides_light_partial_targets_track_exact_exile_incarnations_and_all_invalid_targets_fizzle()
+ {
+    for p in [Player::P0, Player::P1] {
+        for all_invalid in [false, true] {
+            let mut g = setup(p);
+            let bear = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+            let giant = spawn(&mut g, p.other(), Card::HillGiant, Zone::Battlefield);
+            let source = spell(
+                &mut g,
+                p,
+                "Morningtide's Light",
+                &[Target::Card(bear), Target::Card(giant)],
+            );
+            g.move_object(bear, Zone::Hand);
+            if all_invalid {
+                g.move_object(giant, Zone::Hand);
+            }
+            settle(&mut g);
+            assert_eq!(g.object_view(bear).zone, Zone::Hand);
+            if all_invalid {
+                assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+                assert!(g.observe(p).player_damage_shields.is_empty());
+                assert!(g.observe(p).delayed_returns.is_empty());
+            } else {
+                assert_eq!(g.object_view(source).zone, Zone::Exile);
+                assert_eq!(g.object_view(giant).zone, Zone::Exile);
+                let old = g.object_ref(giant);
+                g.move_object(giant, Zone::Graveyard);
+                g.move_object(giant, Zone::Exile);
+                assert_ne!(g.object_ref(giant), old);
+                g.begin_step(Step::End);
+                settle(&mut g);
+                assert_eq!(g.object_view(giant).zone, Zone::Exile);
+            }
+        }
+    }
+}
+#[test]
+fn morningtides_light_zero_targets_prevents_real_noncombat_and_combat_until_casters_next_turn() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = morningtide(&mut g, p, &[]);
+        assert_eq!(g.object_view(source).zone, Zone::Exile);
+        assert!(g.observe(p).delayed_returns.is_empty());
+        take_test_priority(&mut g, p.other());
+        spell(&mut g, p.other(), "Lightning Bolt", &[Target::Player(p)]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 20);
+        take_test_priority(&mut g, p.other());
+        spell(
+            &mut g,
+            p.other(),
+            "Lightning Bolt",
+            &[Target::Player(p.other())],
+        );
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 17);
+        let victim = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        take_test_priority(&mut g, p.other());
+        spell(&mut g, p.other(), "Lightning Bolt", &[Target::Card(victim)]);
+        settle(&mut g);
+        assert_eq!(g.object_view(victim).zone, Zone::Graveyard);
+        g.lose_life(p, 1);
+        assert_eq!(g.state.players[p.index()].life, 19);
+        super::ability_timeline_tests::next_turn(&mut g);
+        assert_eq!(g.state.active, p.other());
+        assert_eq!(g.observe(p).player_damage_shields.len(), 1);
+        let attacker = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+        bark_combat(&mut g, attacker, &[]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 19);
+        super::ability_timeline_tests::next_turn(&mut g);
+        assert_eq!(g.state.active, p);
+        assert!(g.observe(p).player_damage_shields.is_empty());
+        take_test_priority(&mut g, p);
+        g.state.players[p.index()].mana[3] = 1;
+        spell(&mut g, p, "Lightning Bolt", &[Target::Player(p)]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 16);
+    }
+}
+#[test]
+fn morningtides_light_prevention_orders_with_doubling_excludes_unpreventable_and_stops_lifelink() {
+    for p in [Player::P0, Player::P1] {
+        for prevent_first in [false, true] {
+            let mut g = setup(p);
+            let source = morningtide(&mut g, p, &[]);
+            let dealer = spawn(&mut g, p.other(), Card::GrizzlyBears, Zone::Battlefield);
+            let doubler = spawn(
+                &mut g,
+                p.other(),
+                Card::from_name("Twinflame Tyrant").unwrap(),
+                Zone::Battlefield,
+            );
+            let reference = g.object_ref(dealer);
+            g.grant_keyword_effects(&[dealer], reference, Keywords::LIFELINK);
+            let damage = g.damage_source(dealer);
+            g.apply_damage_batch(&[DamageEvent {
+                preventable: true,
+                source: damage,
+                target: Target::Player(p),
+                amount: 2,
+                combat: false,
+            }]);
+            assert!(g.advance_replacements(false));
+            assert_eq!(g.actor(), Some(p));
+            assert_eq!(
+                g.observe(p)
+                    .replacement_choice
+                    .as_ref()
+                    .unwrap()
+                    .effects
+                    .len(),
+                2
+            );
+            let selected = if prevent_first { source } else { doubler };
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a,Action::ChooseReplacement{source,..} if source.card==selected))
+                .unwrap();
+            checked(&mut g, action);
+            assert!(g.state.replacements.is_none());
+            assert_eq!(g.state.players[p.index()].life, 20);
+            assert_eq!(g.state.players[p.other().index()].life, 20);
+            g.apply_damage_batch(&[DamageEvent {
+                preventable: false,
+                source: damage,
+                target: Target::Player(p),
+                amount: 2,
+                combat: true,
+            }]);
+            assert!(!g.advance_replacements(false));
+            assert_eq!(g.state.players[p.index()].life, 16);
+            assert_eq!(g.state.players[p.other().index()].life, 24);
+        }
+    }
+}
+#[test]
+fn morningtides_light_countered_single_delayed_trigger_keeps_the_entire_group_exiled() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let a = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let b = spawn(&mut g, p.other(), Card::HillGiant, Zone::Battlefield);
+        morningtide(&mut g, p, &[a, b]);
+        g.begin_step(Step::End);
+        g.prepare_triggers();
+        for _ in 0..20 {
+            if g.state
+                .stack
+                .iter()
+                .any(|item| item.kind == StackKind::DelayedReturn)
+            {
+                break;
+            }
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| !matches!(a, Action::Concede))
+                .unwrap();
+            checked(&mut g, action);
+        }
+        assert_eq!(
+            g.state
+                .stack
+                .iter()
+                .filter(|item| item.kind == StackKind::DelayedReturn)
+                .count(),
+            1
+        );
+        take_test_priority(&mut g, p.other());
+        spell(&mut g, p.other(), "Glen Elendra's Answer", &[]);
+        settle(&mut g);
+        assert_eq!(g.object_view(a).zone, Zone::Exile);
+        assert_eq!(g.object_view(b).zone, Zone::Exile);
+        assert!(g.observe(p).delayed_returns.is_empty());
+        g.begin_step(Step::End);
+        settle(&mut g);
+        assert_eq!(g.object_view(a).zone, Zone::Exile);
+        assert_eq!(g.object_view(b).zone, Zone::Exile);
+    }
+}
+#[test]
+fn morningtides_light_spell_copy_cannot_exile_the_original_spell_and_each_shield_survives_resolution()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let teach = spawn(
+            &mut g,
+            p,
+            Card::from_name("Teach by Example").unwrap(),
+            Zone::Hand,
+        );
+        checked(&mut g, Action::AnnounceCast { card: teach });
+        let route = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::ChooseSpellCost { .. }))
+            .unwrap();
+        checked(&mut g, route);
+        finish_cast_choices(&mut g);
+        settle(&mut g);
+        let original = spell(&mut g, p, "Morningtide's Light", &[]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        if matches!(g.state.pending, Pending::Retarget { .. }) {
+            checked(&mut g, Action::FinishStackTargets);
+        }
+        assert!(g.state.stack.iter().any(|item| item.is_copy));
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        assert_eq!(g.object_view(original).zone, Zone::Stack);
+        assert_eq!(g.observe(p).player_damage_shields.len(), 1);
+        settle(&mut g);
+        assert_eq!(g.object_view(original).zone, Zone::Exile);
+        assert_eq!(g.observe(p).player_damage_shields.len(), 2);
+    }
+}
+
+#[test]
+fn morningtides_light_cast_during_end_step_waits_for_the_following_end_step() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        spawn(
+            &mut g,
+            p,
+            Card::from_name("High Fae Trickster").unwrap(),
+            Zone::Battlefield,
+        );
+        let bear = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        g.begin_step(Step::End);
+        take_test_priority(&mut g, p);
+        morningtide(&mut g, p, &[bear]);
+        assert_eq!(g.object_view(bear).zone, Zone::Exile);
+        assert_eq!(g.observe(p).delayed_returns.len(), 1);
+        super::ability_timeline_tests::next_turn(&mut g);
+        assert_eq!(g.state.active, p.other());
+        assert_eq!(g.object_view(bear).zone, Zone::Exile);
+        assert_eq!(g.observe(p).player_damage_shields.len(), 1);
+        g.begin_step(Step::End);
+        settle(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+        assert!(g.object_view(bear).tapped);
+        assert!(g.observe(p).delayed_returns.is_empty());
+    }
+}
+
+#[test]
+fn morningtides_light_stale_first_group_member_does_not_prevent_other_cards_returning() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let first = spawn(&mut g, p, Card::GrizzlyBears, Zone::Battlefield);
+        let second = spawn(&mut g, p.other(), Card::HillGiant, Zone::Battlefield);
+        morningtide(&mut g, p, &[first, second]);
+        assert_eq!(g.observe(p).delayed_returns[0].returning.object.card, first);
+        g.move_object(first, Zone::Graveyard);
+        g.move_object(first, Zone::Exile);
+        let retained = g.object_ref(first);
+        g.begin_step(Step::End);
+        settle(&mut g);
+        assert_eq!(g.object_ref(first), retained);
+        assert_eq!(g.object_view(first).zone, Zone::Exile);
+        assert_eq!(g.object_view(second).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(second).controller, p.other());
+        assert!(g.object_view(second).tapped);
+    }
+}

@@ -57,6 +57,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 } => Some(*power >= 0 && *toughness >= 0),
                 Instruction::Untap
                 | Instruction::BlinkUntilEndStep { .. }
+                | Instruction::BlinkGroupTappedUntilEndStep
                 | Instruction::ReturnToBattlefield
                 | Instruction::ReturnToBattlefieldWithRole { .. }
                 | Instruction::ReturnToBattlefieldTapped

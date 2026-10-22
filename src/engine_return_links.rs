@@ -8,6 +8,27 @@ pub struct ReturnLinkView {
     pub zone: Zone,
     pub controller: Player,
     pub counter: Option<(CounterKind, u64)>,
+    pub tapped: bool,
+    pub additional: Vec<ReturnCardView>,
+}
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct ReturnCardView {
+    pub object: ObjectRef,
+    pub zone: Zone,
+    pub controller: Player,
+    pub counter: Option<(CounterKind, u64)>,
+    pub tapped: bool,
+}
+impl ReturnLinkView {
+    pub(super) fn bytes(&self) -> usize {
+        std::mem::size_of::<Self>() + self.additional.len() * std::mem::size_of::<ReturnCardView>()
+    }
+}
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct PlayerDamageShieldView {
+    pub source: ObjectRef,
+    pub source_card: Card,
+    pub controller: Player,
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct DelayedReturnView {
@@ -129,6 +150,8 @@ impl Game {
                     CounterKind::Revival,
                     event.before.counters.get(CounterKind::Revival),
                 )),
+                tapped: false,
+                additional: Vec::new(),
             }));
     }
     fn register_delayed_return(&mut self, item: &SpellView, returning: ReturnLinkView) {
@@ -175,6 +198,8 @@ impl Game {
                 zone: movement.destination,
                 controller: owner,
                 counter: None,
+                tapped: false,
+                additional: Vec::new(),
             }));
         }
     }
@@ -200,6 +225,8 @@ impl Game {
                         zone: Zone::Exile,
                         controller: if under_owner { owner } else { item.controller },
                         counter: None,
+                        tapped: false,
+                        additional: Vec::new(),
                     },
                 );
             }
@@ -240,21 +267,88 @@ impl Game {
         link: &ReturnLinkView,
         modification: Option<(ReturnKind, ObjectRef)>,
     ) {
-        if !self
-            .state
-            .objects
-            .get(link.object.card as usize)
-            .is_some_and(|o| {
-                o.generation == link.object.generation && o.zone == link.zone && !o.is_token()
+        let primary = ReturnCardView {
+            object: link.object,
+            zone: link.zone,
+            controller: link.controller,
+            counter: link.counter,
+            tapped: link.tapped,
+        };
+        let entries = std::iter::once(&primary)
+            .chain(&link.additional)
+            .filter_map(|card| {
+                self.state
+                    .objects
+                    .get(card.object.card as usize)
+                    .filter(|object| {
+                        object.generation == card.object.generation
+                            && object.zone == card.zone
+                            && !object.is_token()
+                    })?;
+                let mut movement =
+                    self.entry_move(card.object.card, Zone::Battlefield, card.tapped);
+                movement.controller = card.controller;
+                movement.effect_counter = card.counter;
+                movement.return_modification = modification;
+                Some(movement)
             })
-        {
-            return;
+            .collect::<Vec<_>>();
+        if !entries.is_empty() {
+            self.stage_entries(entries, None);
         }
-        let mut movement = self.entry_move(link.object.card, Zone::Battlefield, false);
-        movement.controller = link.controller;
-        movement.effect_counter = link.counter;
-        movement.return_modification = modification;
-        self.stage_entries(vec![movement], None);
+    }
+    pub(super) fn blink_group_tapped_until_end_step(&mut self, item: &SpellView) {
+        let ids = item
+            .targets
+            .iter()
+            .filter(|bound| self.same_target_object(**bound))
+            .filter_map(|bound| match bound.target {
+                Target::Card(id) if self.on_battlefield(id) => Some(id),
+                _ => None,
+            })
+            .collect::<Vec<_>>();
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        let mut cards = events
+            .iter()
+            .filter(|event| {
+                event.moved
+                    && matches!(
+                        event.destination,
+                        Zone::Exile | Zone::Graveyard | Zone::Command
+                    )
+                    && !event.before.is_token()
+            })
+            .map(|event| ReturnCardView {
+                object: event.after,
+                zone: event.destination,
+                controller: event.before.owner,
+                counter: None,
+                tapped: true,
+            });
+        if let Some(first) = cards.next() {
+            self.register_delayed_return(
+                item,
+                ReturnLinkView {
+                    object: first.object,
+                    zone: first.zone,
+                    controller: first.controller,
+                    counter: None,
+                    tapped: true,
+                    additional: cards.collect(),
+                },
+            );
+        }
+        self.finish_zone_events(&events, &[]);
+    }
+    pub(super) fn prevent_player_damage_until_next_turn(&mut self, item: &SpellView) {
+        self.state
+            .player_damage_shields
+            .get_or_insert_with(Default::default)
+            .push(PlayerDamageShieldView {
+                source: item.object,
+                source_card: item.source_card,
+                controller: item.controller,
+            });
     }
     pub(super) fn queue_delayed_returns(&mut self) {
         let Some(rows) = self.state.delayed_returns.take() else {
@@ -323,7 +417,12 @@ impl Game {
             std::mem::size_of_val(&**rows)
                 + rows
                     .iter()
-                    .map(|row| std::mem::size_of::<DelayedReturn>() + row.item.owned_bytes())
+                    .map(|row| {
+                        std::mem::size_of::<DelayedReturn>()
+                            + row.item.owned_bytes()
+                            + row.view.returning.additional.len()
+                                * std::mem::size_of::<ReturnCardView>()
+                    })
                     .sum::<usize>()
         })
     }

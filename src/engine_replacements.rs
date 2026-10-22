@@ -352,6 +352,20 @@ impl Game {
             }
         }
         if event.preventable
+            && let Target::Player(player) = event.target
+            && let Some(shields) = &self.state.player_damage_shields
+        {
+            for shield in shields.iter().filter(|row| row.controller == player) {
+                if !used.contains(&(shield.source, u16::MAX - 1)) {
+                    out.push(ReplacementEffectView {
+                        source: shield.source,
+                        source_card: shield.source_card,
+                        ability: u16::MAX - 1,
+                    });
+                }
+            }
+        }
+        if event.preventable
             && let Target::Card(id) = event.target
             && self.on_battlefield(id)
             && ((event.source.facts.colors != 0
@@ -372,7 +386,7 @@ impl Game {
     }
     fn modify_damage(choice: ReplacementEffectView, event: &mut DamageEvent) {
         // Reserved dynamic protection identity; it has no immutable card-array slot.
-        if choice.ability == u16::MAX {
+        if choice.ability == u16::MAX || choice.ability == u16::MAX - 1 {
             event.amount = 0;
             return;
         }
