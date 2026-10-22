@@ -3,10 +3,55 @@
   "catalogue_id": 2137,
   "oracle_id": "b608288e-1755-4738-b828-9df6998bae8d",
   "facts_sha256": "a323d4494de19f6df21209ef493fc8308100fab14a9bf5a29ffc85a3e4b28973",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "772a9857e14f70e00728609e04f89551b569c444dd8df03b5b05173eadd4144a"
   },
-  "physical_metadata_sha256": "a0947dfc306f07245f4e8e9d9500ca8320c335ada8a9560cb405852a23a9ea58"
+  "physical_metadata_sha256": "a0947dfc306f07245f4e8e9d9500ca8320c335ada8a9560cb405852a23a9ea58",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IllusionSpinners.java",
+  "java_sha256": "0ef1174ec36cd61b663767b5a77a052f2f58e92027dbb8028734bd9dfb5276e3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CastAsThoughItHadFlashIfConditionAbility.java",
+      "sha256": "b7c2ba3aaca09b0fae47d9b0fa3b75dad6419534ac5359c72d82333a773470d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/CastAsThoughItHadFlashSourceEffect.java",
+      "sha256": "0133a3b283674253c2fbbf1ea6c19cb060ed95fb38176cee61e7222a9aea635a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceTappedCondition.java",
+      "sha256": "ded94770934a04183acf2cac38002a15e57ed40a4ca85b6ba659ba8dc550a05b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+      "sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ]
 }

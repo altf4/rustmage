@@ -1392,6 +1392,7 @@ pub(crate) enum StatValue {
         other: bool,
     },
     SourceAttacking,
+    SourceUntapped,
     AttackingCreatures,
     AttackingSubtype(&'static str),
     OtherNamedCreatures(&'static str),
@@ -3008,6 +3009,9 @@ impl Card {
         generated::target_cost_reduction(self)
     }
     /// Timing permission is an as-though effect, not a granted Flash keyword.
+    pub(crate) fn flash_if_control_subtype(self) -> Option<&'static str> {
+        authored::rules(self).and_then(|rules| rules.extras.flash_if_control_subtype)
+    }
     pub(crate) fn cast_timing_grants(self) -> &'static [CastFilter] {
         generated::cast_timing_grants(self)
     }

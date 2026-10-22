@@ -113,6 +113,7 @@ const fn object(kinds: u8) -> TargetRule {
     }
 }
 pub(super) struct CardExtras {
+    pub flash_if_control_subtype: Option<&'static str>,
     pub named_activation_lock: bool,
     pub zone_replacement: Option<ZoneReplacementRule>,
     pub opening_hand_battlefield: bool,
@@ -179,6 +180,7 @@ pub(super) struct CardExtras {
 }
 impl CardExtras {
     pub const EMPTY: Self = Self {
+        flash_if_control_subtype: None,
         zone_replacement: None,
         opening_hand_battlefield: false,
         activation_put_counters: &[],

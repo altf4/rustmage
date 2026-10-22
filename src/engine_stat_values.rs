@@ -160,6 +160,12 @@ impl Game {
                         && self.state.attackers.iter().any(|a| a.card == *id)
                 })
                 .count() as i128,
+            StatValue::SourceUntapped => i128::from(objects().any(|(id, object)| {
+                id == source.card
+                    && object.generation == source.generation
+                    && object.zone == Zone::Battlefield
+                    && !object.tapped
+            })),
             StatValue::SourceAttacking => i128::from(
                 attacking
                     && objects().any(|(id, o)| {

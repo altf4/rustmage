@@ -843,3 +843,99 @@ fn thirst_for_identity_no_creature_cannot_auto_pay_and_fallback_handles_short_ha
     assert_eq!(g.hand_count(Player::P0), 0);
     assert_eq!(g.object_view(keep).zone, Zone::Graveyard);
 }
+
+#[test]
+fn illusion_spinners_as_though_flash_requires_controlled_faerie_including_changeling() {
+    let mut g = setup(Player::P0);
+    g.state.active = Player::P1;
+    let spell_id = spawn(
+        &mut g,
+        Player::P0,
+        Card::from_name("Illusion Spinners").unwrap(),
+        Zone::Hand,
+    );
+    assert!(
+        !g.legal_actions()
+            .contains(&Action::AnnounceCast { card: spell_id })
+    );
+    spawn(
+        &mut g,
+        Player::P1,
+        Card::from_name("Glamermite").unwrap(),
+        Zone::Battlefield,
+    );
+    assert!(
+        !g.legal_actions()
+            .contains(&Action::AnnounceCast { card: spell_id })
+    );
+    g.create_tokens(
+        Player::P0,
+        Card::from_name("@token/shapeshifter_1_1_colorless_changeling").unwrap(),
+        1,
+        false,
+    );
+    assert!(
+        g.legal_actions()
+            .contains(&Action::AnnounceCast { card: spell_id })
+    );
+    super::ability_timeline_tests::cast(&mut g, spell_id, None, &[]);
+    settle(&mut g);
+    assert_eq!(g.object_view(spell_id).zone, Zone::Battlefield);
+    assert!(
+        g.keywords(spell_id)
+            .contains(Keywords::FLYING.union(Keywords::HEXPROOF))
+    );
+    assert!(!g.keywords(spell_id).contains(Keywords::FLASH));
+}
+#[test]
+fn illusion_spinners_untapped_hexproof_exact_incarnation_and_ability_removal() {
+    let mut g = setup(Player::P0);
+    let source = cast_named(&mut g, Player::P0, "Illusion Spinners");
+    let original = g.object_ref(source);
+    let enemy_spell = spawn(
+        &mut g,
+        Player::P1,
+        Card::from_name("Unsummon").unwrap(),
+        Zone::Hand,
+    );
+    g.state.priority = Player::P1;
+    assert!(!g.target_matches(
+        TargetRule::Creature,
+        Player::P1,
+        g.object_ref(enemy_spell),
+        Target::Card(source)
+    ));
+    g.tap_objects(&[source]);
+    assert!(!g.keywords(source).contains(Keywords::HEXPROOF));
+    assert!(g.target_matches(
+        TargetRule::Creature,
+        Player::P1,
+        g.object_ref(enemy_spell),
+        Target::Card(source)
+    ));
+    g.untap_objects(&[source], untap_rules::UntapCause::Effect);
+    assert!(g.keywords(source).contains(Keywords::HEXPROOF));
+    g.state.priority = Player::P0;
+    spell(
+        &mut g,
+        Player::P0,
+        "Noggle the Mind",
+        &[Target::Card(source)],
+    );
+    settle(&mut g);
+    assert!(
+        !g.keywords(source)
+            .contains(Keywords::HEXPROOF.union(Keywords::FLYING))
+    );
+    g.move_object(source, Zone::Hand);
+    g.move_object(source, Zone::Battlefield);
+    assert_eq!(
+        g.stat_value(StatValue::SourceUntapped, original, Player::P0),
+        0
+    );
+    assert_eq!(
+        g.stat_value(StatValue::SourceUntapped, g.object_ref(source), Player::P0),
+        1
+    );
+    assert!(g.keywords(source).contains(Keywords::HEXPROOF));
+}

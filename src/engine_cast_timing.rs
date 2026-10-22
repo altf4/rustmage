@@ -2,7 +2,13 @@
 use super::*;
 impl Game {
     pub(super) fn cast_timing_granted(&self, actor: Player, chosen: Card) -> bool {
-        self.state.static_sources.iter().any(|&source| {
+        chosen.flash_if_control_subtype().is_some_and(|subtype| {
+            self.state.objects.iter().enumerate().any(|(id, object)| {
+                object.zone == Zone::Battlefield
+                    && object.controller == actor
+                    && self.has_subtype(id as CardId, subtype)
+            })
+        }) || self.state.static_sources.iter().any(|&source| {
             let object = &self.state.objects[source as usize];
             object.zone == Zone::Battlefield
                 && self.printed_abilities_available(source)

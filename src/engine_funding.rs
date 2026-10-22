@@ -3445,3 +3445,47 @@ mod continuous_control_tests {
         }
     }
 }
+
+#[cfg(test)]
+mod ecl_source_untapped_tests {
+    use super::super::tests::{scenario, spawn};
+    use super::*;
+    #[test]
+    fn ecl_source_untapped_actual_virtual_tap_and_departure_agree() {
+        let mut g = scenario();
+        let id = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Illusion Spinners").unwrap(),
+            Zone::Battlefield,
+        );
+        let goal = FundingGoal {
+            reserve: None,
+            actor: Player::P0,
+            required: [0; 6],
+            generic: 0,
+            source: None,
+        };
+        let mut actual = g.clone();
+        let mut world = FundingState::from_game(&g, &goal);
+        let index = world.resources.iter().position(|r| r.id == id).unwrap();
+        assert_eq!(
+            world.stat_value(StatValue::SourceUntapped, &world.resources[index]),
+            1
+        );
+        assert_eq!(world.keywords(&world.resources[index]), actual.keywords(id));
+        world.resources[index].object.tapped = true;
+        actual.tap_objects(&[id]);
+        assert_eq!(
+            world.stat_value(StatValue::SourceUntapped, &world.resources[index]),
+            0
+        );
+        assert_eq!(world.keywords(&world.resources[index]), actual.keywords(id));
+        world.resources[index].object.zone = Zone::Graveyard;
+        actual.move_object(id, Zone::Graveyard);
+        assert_eq!(
+            world.stat_value(StatValue::SourceUntapped, &world.resources[index]),
+            actual.stat_value(StatValue::SourceUntapped, actual.object_ref(id), Player::P0)
+        );
+    }
+}
