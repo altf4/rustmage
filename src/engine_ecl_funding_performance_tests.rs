@@ -295,3 +295,91 @@ fn restricted_white_converter_fallback_keeps_actual_double_white_payment() {
         assert_eq!(g.state.objects[spell as usize].zone, Zone::Battlefield);
     }
 }
+
+#[test]
+fn absent_external_tap_witness_prunes_many_meek_attacks_but_fresh_creature_funds_actual_cost() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        for _ in 0..8 {
+            named(&mut g, p, "Forest", Zone::Battlefield);
+            named(&mut g, p, "Island", Zone::Battlefield);
+        }
+        let mut meeks = Vec::new();
+        for _ in 0..12 {
+            meeks.push(named(&mut g, p, "Meek Attack", Zone::Battlefield));
+        }
+        let drum = named(&mut g, p, "Springleaf Drum", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0; 6];
+        let meek = meeks[0];
+        let goal = FundingGoal {
+            actor: p,
+            required: [0, 0, 0, 1, 0, 0],
+            generic: 1,
+            reserve: None,
+            source: Some((
+                g.object_ref(meek),
+                0,
+                Counters::default(),
+                g.state.objects[meek as usize].card,
+            )),
+        };
+        let world = FundingState::from_game(&g, &goal);
+        let mut visited = HashSet::new();
+        assert!(!world.reachable(&goal, &mut visited));
+        assert!(
+            visited.is_empty(),
+            "no creature can pay Drum's separate tap cost"
+        );
+        let actions = g.legal_actions();
+        assert!(
+            !actions.iter().any(
+                |a| matches!(a, Action::AnnounceActivate { card, .. } if meeks.contains(card))
+            )
+        );
+        let before = g.snapshot();
+        let action = Action::AnnounceActivate {
+            card: meek,
+            ability: 0,
+            counter_payment: Counters::default(),
+        };
+        let mut child = {
+            let parent = g.clone();
+            parent.clone()
+        };
+        assert_eq!(child.apply(p, action.clone()), Err(Error::IllegalAction));
+        assert_eq!(child.snapshot(), before);
+        assert_eq!(g.apply(p, action.clone()), Err(Error::IllegalAction));
+        assert_eq!(g.snapshot(), before);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.state.objects[bear as usize].summoning_sick = true;
+        checked(&mut g, action);
+        for _ in 0..20 {
+            if g.state.announcing.is_none() {
+                break;
+            }
+            let actions = g.legal_actions();
+            let action = actions
+                .iter()
+                .find(|a| matches!(a, Action::FinishTargets | Action::PayCosts { .. }))
+                .or_else(|| {
+                    actions.iter().find(|a| {
+                        matches!(
+                            a,
+                            Action::TapMana { .. }
+                                | Action::ActivateMana { .. }
+                                | Action::ActivateManaWithTapCost { .. }
+                        )
+                    })
+                })
+                .expect("fresh creature supplies Drum witness")
+                .clone();
+            checked(&mut g, action);
+        }
+        assert!(g.state.announcing.is_none());
+        assert!(g.state.objects[drum as usize].tapped);
+        assert!(g.state.objects[bear as usize].tapped);
+        assert!(g.state.objects[bear as usize].summoning_sick);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}

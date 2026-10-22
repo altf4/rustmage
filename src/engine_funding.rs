@@ -1456,6 +1456,28 @@ impl<'g> FundingState<'g> {
         } else {
             self.mana
         };
+        // Without entry/control/type-restoration effects, a mana move can only
+        // consume this generous pool of untapped creature witnesses. Include
+        // sick creatures and even the source itself; exclusions only lower the
+        // legal pool. Fixed animations cannot start or expire in a mana window.
+        let creature_tap_upper = (spendable_upper.is_some()
+            && self
+                .game
+                .state
+                .roles
+                .as_ref()
+                .is_none_or(|roles| roles.characteristic_sources.is_empty()))
+        .then(|| {
+            self.resources
+                .iter()
+                .filter(|r| {
+                    r.object.zone == Zone::Battlefield
+                        && r.object.controller == self.actor
+                        && !r.object.tapped
+                        && self.kinds(r) & 1 != 0
+                })
+                .count()
+        });
         for resource in &self.resources {
             let object = &resource.object;
             if object.zone != Zone::Battlefield || object.controller != goal.actor {
@@ -1507,6 +1529,13 @@ impl<'g> FundingState<'g> {
                     && let ManaProduction::Tagged { quality, .. } = production
                     && !mana_lots::Quality::capture(self, resource.id, *quality)
                         .eligible(self.purpose)
+                {
+                    continue;
+                }
+                if let (Some(available), Some(spec)) = (creature_tap_upper, ability.cost.additional)
+                    && let EffectChoiceKind::TapPermanents(amount) = spec.kind
+                    && spec.filter.kinds == 1
+                    && available < usize::from(amount)
                 {
                     continue;
                 }
