@@ -40,19 +40,27 @@ pub struct LibrarySelectionView {
     pub remainder: &'static str,
 }
 impl Game {
-    fn library_selection_matches(&self, filter: LibrarySelectionFilter, id: CardId) -> bool {
+    fn library_selection_matches(
+        &self,
+        filter: LibrarySelectionFilter,
+        id: CardId,
+        chosen_type: Option<crate::cards::CreatureType>,
+    ) -> bool {
         let c = self.state.objects[id as usize].card;
         match filter {
+            LibrarySelectionFilter::SourceChosenCreatureType => {
+                chosen_type.is_some_and(|kind| c.has_subtype(kind.name()))
+            }
             LibrarySelectionFilter::Any => true,
             LibrarySelectionFilter::Kinds(mask) => c.kind_mask() & mask != 0,
             LibrarySelectionFilter::ExcludingKinds(mask) => c.kind_mask() & mask == 0,
             LibrarySelectionFilter::Subtype(subtype) => c.has_subtype(subtype),
             LibrarySelectionFilter::AnyOf(filters) => filters
                 .iter()
-                .any(|filter| self.library_selection_matches(*filter, id)),
+                .any(|filter| self.library_selection_matches(*filter, id, chosen_type)),
             LibrarySelectionFilter::AllOf(filters) => filters
                 .iter()
-                .all(|filter| self.library_selection_matches(*filter, id)),
+                .all(|filter| self.library_selection_matches(*filter, id, chosen_type)),
             LibrarySelectionFilter::CreaturePowerAtMost(power) => {
                 c.is_creature() && self.stats(id).power <= i128::from(power)
             }
@@ -106,7 +114,7 @@ impl Game {
             .iter()
             .copied()
             .filter(|r| {
-                self.library_selection_matches(spec.filter, r.card)
+                self.library_selection_matches(spec.filter, r.card, item.source_chosen_type)
                     && maximum_mana_value.is_none_or(|max| {
                         u128::from(self.state.objects[r.card as usize].card.fixed_mana_value())
                             <= max
@@ -162,9 +170,16 @@ impl Game {
         }));
         // Even a forced random remainder must expose the looked information
         // before it disappears into the library (there may be no eligible pick).
-        if maximum == 0 && spec.remainder != LibraryRemainder::BottomRandom {
+        if maximum == 0
+            && !matches!(
+                spec.remainder,
+                LibraryRemainder::BottomRandom | LibraryRemainder::OptionalGraveyard
+            )
+        {
             return self.finish_library_selection_internal(owner);
         }
+        // Optional graveyard remainders retain the same private hand-choice phase
+        // even for an ineligible card; phase count must not disclose its qualities.
         let frame = self
             .state
             .resolving
@@ -222,7 +237,12 @@ impl Game {
             .selection
             .as_mut()
             .unwrap();
-        if f.spec.remainder == LibraryRemainder::BottomAny && !f.remaining.is_empty() {
+        if matches!(
+            f.spec.remainder,
+            LibraryRemainder::BottomAny | LibraryRemainder::OptionalGraveyard
+        ) && !f.remaining.is_empty()
+            && !f.ordering
+        {
             f.ordering = true;
             self.state.pending = Pending::EffectLibrarySelection { player: owner };
             true
@@ -289,6 +309,11 @@ impl Game {
             }));
         }
         match f.spec.remainder {
+            LibraryRemainder::OptionalGraveyard => {
+                let ids: Vec<_> = f.bottom.iter().map(|r| r.card).collect();
+                let events = self.move_objects_raw(&ids, Zone::Graveyard);
+                self.finish_zone_events(&events, &[]);
+            }
             LibraryRemainder::Graveyard => {
                 let ids: Vec<_> = f.remaining.iter().map(|r| r.card).collect();
                 let events = self.move_objects_raw(&ids, Zone::Graveyard);
@@ -355,6 +380,7 @@ impl Game {
                 LibraryPickDestination::Top => "top",
             },
             remainder: match f.spec.remainder {
+                LibraryRemainder::OptionalGraveyard => "optional_graveyard",
                 LibraryRemainder::Graveyard => "graveyard",
                 LibraryRemainder::BottomAny => "bottom_any",
                 LibraryRemainder::BottomRandom => "bottom_random",

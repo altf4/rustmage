@@ -445,12 +445,14 @@ impl ManaProduction {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibraryRemainder {
+    OptionalGraveyard,
     Graveyard,
     BottomAny,
     BottomRandom,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibrarySelectionFilter {
+    SourceChosenCreatureType,
     Any,
     Kinds(u16),
     ExcludingKinds(u16),

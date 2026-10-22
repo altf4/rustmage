@@ -625,6 +625,7 @@ define_actions! {
     SelectLibrary { card: CardId },
     FinishLibrarySelection,
     OrderLibraryBottom { card: CardId },
+    MillLookedCard { card: CardId },
     ArrangeLibrary {
         card: CardId,
         destination: LibraryDestination,
@@ -3765,8 +3766,17 @@ impl Game {
             Pending::EffectLibrarySelection { .. } => {
                 let f = s.resolving.as_ref().unwrap().selection.as_ref().unwrap();
                 if f.ordering {
+                    let optional_graveyard =
+                        f.spec.remainder == crate::cards::LibraryRemainder::OptionalGraveyard;
+                    if optional_graveyard && emit(Action::FinishLibrarySelection) {
+                        return true;
+                    }
                     for r in &f.remaining {
-                        if emit(Action::OrderLibraryBottom { card: r.card }) {
+                        if emit(if optional_graveyard {
+                            Action::MillLookedCard { card: r.card }
+                        } else {
+                            Action::OrderLibraryBottom { card: r.card }
+                        }) {
                             return true;
                         }
                     }
@@ -4469,7 +4479,9 @@ impl Game {
             Action::ChooseSearchBattlefield { card } => self.choose_search_battlefield(actor, card),
             Action::SelectLibrary { card } => self.choose_library_selection(card),
             Action::FinishLibrarySelection => self.finish_library_selection(actor),
-            Action::OrderLibraryBottom { card } => self.order_library_bottom(actor, card),
+            Action::OrderLibraryBottom { card } | Action::MillLookedCard { card } => {
+                self.order_library_bottom(actor, card)
+            }
             Action::ArrangeLibrary { card, destination } => {
                 self.arrange_library(actor, card, destination);
             }

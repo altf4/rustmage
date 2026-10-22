@@ -1681,3 +1681,167 @@ fn ecl_green_spry_insufficient_creatures_does_nothing_and_failed_draw_still_boos
         }
     }
 }
+
+fn enter_stone(g: &mut Game, p: Player) -> CardId {
+    let stone = named(g, p, "Gathering Stone", Zone::Hand);
+    cast(g, stone, None, &[]);
+    checked(g, Action::Pass);
+    checked(g, Action::Pass);
+    choose_type(g, "Elf");
+    stone
+}
+#[test]
+fn ecl_green_gathering_private_look_reveal_optional_graveyard_or_unchanged_top() {
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..5 {
+            let mut g = setup(p);
+            let below = named(&mut g, p, "Forest", Zone::Library);
+            let top = named(
+                &mut g,
+                p,
+                if mode < 3 { "Firdoch Core" } else { "Bear Cub" },
+                Zone::Library,
+            );
+            let original = g.state.players[p.index()].library.clone();
+            enter_stone(&mut g, p);
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            let view = g.observe(p).library_selection.unwrap();
+            assert_eq!(view.remaining.len(), 1);
+            assert_eq!(view.remaining[0].id, top);
+            assert!(g.observe(p.other()).library_selection.is_none());
+            reject(&mut g, Action::MillLookedCard { card: below });
+            if mode == 0 {
+                reject(&mut g, Action::MillLookedCard { card: top });
+                checked(&mut g, Action::SelectLibrary { card: top });
+                checked(&mut g, Action::FinishLibrarySelection);
+                assert_eq!(g.object_view(top).zone, Zone::Hand);
+                assert!(g.state.known_hand.contains(&g.object_ref(top)));
+            } else {
+                if mode < 3 {
+                    checked(&mut g, Action::FinishLibrarySelection);
+                } else {
+                    reject(&mut g, Action::SelectLibrary { card: top });
+                    checked(&mut g, Action::FinishLibrarySelection);
+                }
+                assert!(g.observe(p).library_selection.unwrap().ordering);
+                assert!(g.observe(p.other()).library_selection.is_none());
+                if mode == 1 || mode == 3 {
+                    checked(&mut g, Action::MillLookedCard { card: top });
+                    assert_eq!(g.object_view(top).zone, Zone::Graveyard);
+                } else {
+                    checked(&mut g, Action::FinishLibrarySelection);
+                    assert_eq!(g.object_view(top).zone, Zone::Library);
+                    assert_eq!(g.state.players[p.index()].library, original);
+                }
+            }
+            settle(&mut g);
+            assert_eq!(g.object_view(below).zone, Zone::Library);
+        }
+    }
+}
+#[test]
+fn ecl_green_gathering_costs_reduce_kindred_noncreatures_and_follow_live_source_abilities_control()
+{
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let stone = enter_stone(&mut g, p);
+        settle(&mut g);
+        let core = named(&mut g, p, "Firdoch Core", Zone::Hand);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Hand);
+        let cavalry = named(&mut g, p, "Safewright Cavalry", Zone::Hand);
+        let before = g.state.players[p.index()].mana.iter().sum::<u32>();
+        cast(&mut g, core, None, &[]);
+        assert_eq!(
+            g.state.players[p.index()].mana.iter().sum::<u32>(),
+            before - 2
+        );
+        settle(&mut g);
+        assert_eq!(g.spell_reduction(p, bear), 0);
+        assert_eq!(g.spell_reduction(p, cavalry), 1);
+        let blank = named(&mut g, p, "Stop Cold", Zone::Hand);
+        cast(&mut g, blank, None, &[Target::Card(stone)]);
+        settle(&mut g);
+        assert_eq!(g.spell_reduction(p, cavalry), 0);
+        g.move_object(blank, Zone::Graveyard);
+        assert_eq!(g.spell_reduction(p, cavalry), 1);
+        let offering = named(&mut g, p, "Harmless Offering", Zone::Hand);
+        cast(
+            &mut g,
+            offering,
+            None,
+            &[Target::Player(p.other()), Target::Card(stone)],
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(stone).controller, p.other());
+        let their = named(&mut g, p.other(), "Safewright Cavalry", Zone::Hand);
+        assert_eq!(g.spell_reduction(p, cavalry), 0);
+        assert_eq!(g.spell_reduction(p.other(), their), 1);
+        g.move_object(stone, Zone::Graveyard);
+        assert_eq!(g.spell_reduction(p.other(), their), 0);
+    }
+}
+#[test]
+fn ecl_green_gathering_trigger_choice_is_frozen_through_source_reentry_and_own_upkeep_only() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let top = named(&mut g, p, "Llanowar Elves", Zone::Library);
+        let stone = enter_stone(&mut g, p);
+        g.move_object(stone, Zone::Graveyard);
+        let movement = g.entry_move(stone, Zone::Battlefield, false);
+        g.stage_entries(vec![movement], None);
+        assert!(g.advance_entries());
+        choose_type(&mut g, "Giant");
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        // New Giant-choice trigger cannot select the Elf card.
+        reject(&mut g, Action::SelectLibrary { card: top });
+        checked(&mut g, Action::FinishLibrarySelection);
+        assert!(g.observe(p).library_selection.unwrap().ordering);
+        checked(&mut g, Action::FinishLibrarySelection);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::SelectLibrary { card: top });
+        checked(&mut g, Action::FinishLibrarySelection);
+        settle(&mut g);
+        assert_eq!(g.object_view(top).zone, Zone::Hand);
+        super::ability_timeline_tests::next_turn(&mut g);
+        assert_eq!(g.state.active, p.other());
+        assert!(g.state.stack.is_empty());
+        super::ability_timeline_tests::next_turn(&mut g);
+        assert_eq!(g.state.active, p);
+        assert_eq!(g.state.step, Step::Upkeep);
+        assert_eq!(g.state.stack.len(), 1);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        assert!(g.observe(p).library_selection.is_some());
+        assert!(g.observe(p.other()).library_selection.is_none());
+        settle(&mut g);
+    }
+}
+
+#[test]
+fn ecl_green_gathering_private_eligibility_preserves_public_phase_sequence() {
+    for p in [Player::P0, Player::P1] {
+        let mut games = [setup(p), setup(p)];
+        for (g, name) in games.iter_mut().zip(["Firdoch Core", "Bear Cub"]) {
+            named(g, p, name, Zone::Library);
+            enter_stone(g, p);
+            checked(g, Action::Pass);
+            checked(g, Action::Pass);
+        }
+        for _ in 0..2 {
+            assert_eq!(
+                serde_json::to_value(games[0].observe(p.other())).unwrap(),
+                serde_json::to_value(games[1].observe(p.other())).unwrap()
+            );
+            for g in &mut games {
+                checked(g, Action::FinishLibrarySelection);
+            }
+        }
+        assert_eq!(
+            serde_json::to_value(games[0].observe(p.other())).unwrap(),
+            serde_json::to_value(games[1].observe(p.other())).unwrap()
+        );
+    }
+}

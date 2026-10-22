@@ -431,7 +431,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::PutTrigger { .. } => 50,
             Action::ChooseLibraryDestination { .. } => 50,
             Action::SelectLibrary { .. } => 60,
-            Action::FinishLibrarySelection | Action::OrderLibraryBottom { .. } => 50,
+            Action::FinishLibrarySelection
+            | Action::OrderLibraryBottom { .. }
+            | Action::MillLookedCard { .. } => 50,
             Action::ArrangeLibrary { destination, .. } => {
                 if *destination == crate::LibraryDestination::Top {
                     50
