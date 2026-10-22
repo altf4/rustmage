@@ -21,8 +21,8 @@ The frozen manifest accounts for every identity. The [per-card obligation ledger
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **248/273**, comprising **107 inherited** and **141 newly
-implemented/tested physical candidates**; **25 remain gated**. Twenty inherited
+Admission flags: **249/273**, comprising **107 inherited** and **142 newly
+implemented/tested physical candidates**; **24 remain gated**. Twenty inherited
 cards have passed source/rules audit;87 inherited cards remain. No final published reviews or newly merged cards. All new
 names and per-card obligations appear in the linked JSON ledgers. Three tested
 synthetic token recipes are outside the physical denominator.
@@ -153,3 +153,5 @@ Curious Colossus is integrated with a resolution-frozen opponent creature group 
 Soul Immolation is integrated with bounded nonmana X,mandatory X-sized blight payment,and simultaneous opponent/player-creature damage. All2,912 native regressions pass78.39seconds on the author branch,including133 black/red scenarios. Blight quantities preserve the full u32 scalar domain; zero payment requires a controlled creature but creates no counter placement. Forced blight now permits choosing a counter-prohibited creature,with placement correctly suppressed. Current September25 CR701.68a/b were independently rechecked. Admission247/273;26 gated.
 
 Sanar, Innovative First-Year is integrated.24 student scenarios pass0.71seconds,29 library-selection regressions pass0.12seconds,130 exile regressions pass4.04seconds,and all-target Clippy passes. Public reveal-until-nonlands captures the available colors; injective color assignments use complete matching,including nongreedy cases and Hall-deficient subsets. Selected cards get exact turn-limited cast-only permission; land play permissions remain independent. Zero-color and short-library paths still shuffle. Admission248/273;25 gated.
+
+Figure of Fable is integrated with every hybrid payment route,persistent subtype/base-stat evolution,resolution-time prerequisites,and protection from each opponent.411 ECL author-branch scenarios pass15.07seconds,45 growth regressions pass1.41seconds,and all-target Clippy passes. Tests cover both seats,all staged cost combinations,paid no-effect branches,stack ordering,source incarnation,cleanup and downgrade,preserved counters/growth,ability removal,opponent target rejection,colorless blocking/damage,unpreventable damage,own attachments and current-controller protection after control transfer. Admission249/273;24 gated. The combined249-card release follows.

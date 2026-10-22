@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "d52108a5d89a879d8223a64cdf22777d82c504ce73dd098af1b54d17922a66c8",
+  "catalogue_version": "5b7a2981437400e06628d4a4300776f51719eeb91db258807c0416e5be269908",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2331,
-  "implemented_total": 2337,
+  "implemented_standard_cards": 2332,
+  "implemented_total": 2338,
   "token_definitions": 109,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "complete": 242,
-      "gated": 25
+      "complete": 243,
+      "gated": 24
     },
     "eoc": {
       "total": 8,
@@ -12263,8 +12263,8 @@
     {
       "name": "Figure of Fable",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/figure_of_fable.rs",
       "set": "ecl"
     },

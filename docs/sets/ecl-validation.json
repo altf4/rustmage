@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 141,
+  "newly_tested_physical_cards": 142,
   "newly_tested_names": [
     "Abigale, Eloquent First-Year",
     "Adept Watershaper",
@@ -52,6 +52,7 @@
     "Encumbered Reejerey",
     "End-Blaze Epiphany",
     "Evershrike's Gift",
+    "Figure of Fable",
     "Firdoch Core",
     "Flamebraider",
     "Flaring Cinder",
@@ -146,8 +147,8 @@
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 248,
-  "remaining_gated": 25,
+  "current_admission_flags": 249,
+  "remaining_gated": 24,
   "inherited_evidence_audit": {
     "audited": 20,
     "total": 107,
@@ -270,10 +271,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T20:00:30.768674+00:00",
-    "elapsed_seconds": 16663.551823,
-    "newly_verified_cards": 141,
-    "cards_per_hour": 30.461693004691895,
+    "end_utc": "2026-10-22T20:01:55.178304+00:00",
+    "elapsed_seconds": 16747.961453,
+    "newly_verified_cards": 142,
+    "cards_per_hour": 30.52311777971227,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "428 integrated ECL scenarios passed at244-card checkpoint1aa48507; latest full release239-card904c25c2",

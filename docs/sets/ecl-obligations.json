@@ -2151,7 +2151,7 @@
       "name": "Figure of Fable",
       "definition": "src/card_definitions/ecl/figure_of_fable.rs",
       "owner": "integrator",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Figure of Fable",
@@ -2167,7 +2167,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_figure_tests.rs",
+        "src/card_definitions/ecl/figure_of_fable.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "126c75c0-414b-4e55-8747-2b5566ce716f",
