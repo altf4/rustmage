@@ -21,8 +21,8 @@ The frozen manifest accounts for every identity. The [per-card obligation ledger
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **239/273**, comprising **107 inherited** and **132 newly
-implemented/tested physical candidates**; **34 remain gated**. Fifteen inherited
+Admission flags: **241/273**, comprising **107 inherited** and **134 newly
+implemented/tested physical candidates**; **32 remain gated**. Fifteen inherited
 cards have passed source/rules audit;92 inherited cards remain. No final published reviews or newly merged cards. All new
 names and per-card obligations appear in the linked JSON ledgers. Three tested
 synthetic token recipes are outside the physical denominator.
@@ -131,3 +131,7 @@ Kindle the Inner Flame is integrated.117 black/red scenarios pass3.37seconds;27 
 ## Verified checkpoint239
 
 Revision904c25c2 passed all eight release phases in580.76seconds:2,896 native tests (one ignored),9 catalogue tests,all22 Foundations game suites and ECL games,Clippy/provenance,release build and benchmark. Shared memory peak3.3GiB;1,107,525,632 completed disposable bytes cleaned. Required libraries are preserved at the exact paths/hashes recorded in the JSON. Freeform regression49,832decisions/0.23473785seconds=212,287.88decisions/s;clone205.26ns,restore178.25ns;initial logical state21,080bytes. This remains regression evidence,not full-set ECL acceptance.
+
+## Combined checkpoint241
+
+Grub and Meek Attack are integrated after the verified239-card release. Grub passes39 transform scenarios in1.22seconds,8 intrinsic-copy regressions in0.19seconds,17 mobilize regressions in0.16seconds,and all-target Clippy. Its non-targeting optional blight payment preserves the exact creature for copying before state-based actions; attacking copies receive a copiable removable sacrifice ability without gaining haste. Both simultaneous lethal/legend-rule choices and attacking planeswalker choices are checked. Meek Attack passes124 black/red scenarios in3.74seconds and all5 Sentry shared-entry regressions in0.10seconds,including private qualification,untapped nonattacking entry,source departure,permanent haste and captured-controller delayed sacrifice. Admission241/273;32 gated.

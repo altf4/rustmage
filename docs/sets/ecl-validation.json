@@ -2,7 +2,7 @@
   "scope": "Initial ECL integrated implementation; entire set acceptance pending",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
-  "newly_tested_physical_cards": 132,
+  "newly_tested_physical_cards": 134,
   "newly_tested_names": [
     "Adept Watershaper",
     "Ashling's Command",
@@ -65,6 +65,7 @@
     "Gravelgill Scoundrel",
     "Gristle Glutton",
     "Grub's Command",
+    "Grub, Storied Matriarch // Grub, Notorious Auntie",
     "Gutsplitter Gang",
     "Harmonized Crescendo",
     "Heirloom Auntie",
@@ -80,6 +81,7 @@
     "Loch Mare",
     "Lys Alana Dignitary",
     "Meanders Guide",
+    "Meek Attack",
     "Mirrormind Crown",
     "Moonshadow",
     "Mornsong Aria",
@@ -137,8 +139,8 @@
     "Wild Unraveling",
     "Wistfulness"
   ],
-  "current_admission_flags": 239,
-  "remaining_gated": 34,
+  "current_admission_flags": 241,
+  "remaining_gated": 32,
   "inherited_evidence_audit": {
     "audited": 15,
     "total": 107,
@@ -236,10 +238,10 @@
   },
   "implementation_interval": {
     "start_utc": "2026-10-22T15:22:47.216851+00:00",
-    "end_utc": "2026-10-22T19:23:04.170977+00:00",
-    "elapsed_seconds": 14416.954126,
-    "newly_verified_cards": 132,
-    "cards_per_hour": 32.96119248538143,
+    "end_utc": "2026-10-22T19:41:13.615600+00:00",
+    "elapsed_seconds": 15506.398749,
+    "newly_verified_cards": 134,
+    "cards_per_hour": 31.10973784490804,
     "scope": "Local whole-card focused verification; excludes inherited coverage, final review and merge. Full release validation still pending."
   },
   "focused_scope": "381 integrated ECL scenarios passed at04b2ae89; subsequent239-card release passed all native tests",
@@ -419,6 +421,13 @@
     ],
     "scope": "Freeform regression; not full-pool ECL acceptance"
   },
+  "retained_shared_libraries": {
+    "<cache>/rustmage-validation-a04ohuv0/release/librustmage.so": "85ed9b1a46355e0c494e23d0ada0b377269846f6279447ef06fe0d5deed663a4",
+    "<cache>/rustmage-validation-a04ohuv0/release/deps/librustmage.so": "85ed9b1a46355e0c494e23d0ada0b377269846f6279447ef06fe0d5deed663a4",
+    "<cache>/rustmage-validation-a04ohuv0/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+    "<cache>/rustmage-validation-a04ohuv0/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+    "<cache>/rustmage-validation-a04ohuv0/debug/deps/librustmage.so": "695b1393176817bc1333cc139a2101d50b4702740bbdc74ab12f5950122ab496"
+  },
   "doran": {
     "commit": "4bc474cc",
     "scenarios": 6,
@@ -578,12 +587,5 @@
     },
     "cleaned_allocated_bytes": 1102700544,
     "scope": "232-card fixed-input checkpoint; entire-set acceptance pending. Later Mornsong integration has focused evidence."
-  },
-  "retained_shared_libraries": {
-    "<cache>/rustmage-validation-a04ohuv0/release/librustmage.so": "85ed9b1a46355e0c494e23d0ada0b377269846f6279447ef06fe0d5deed663a4",
-    "<cache>/rustmage-validation-a04ohuv0/release/deps/librustmage.so": "85ed9b1a46355e0c494e23d0ada0b377269846f6279447ef06fe0d5deed663a4",
-    "<cache>/rustmage-validation-a04ohuv0/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
-    "<cache>/rustmage-validation-a04ohuv0/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
-    "<cache>/rustmage-validation-a04ohuv0/debug/deps/librustmage.so": "695b1393176817bc1333cc139a2101d50b4702740bbdc74ab12f5950122ab496"
   }
 }

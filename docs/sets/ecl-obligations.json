@@ -2889,7 +2889,7 @@
       "name": "Grub, Storied Matriarch // Grub, Notorious Auntie",
       "definition": "src/card_definitions/ecl/grub_storied_matriarch_grub_notorious_auntie.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Grub, Storied Matriarch",
@@ -2918,7 +2918,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_transform_tests.rs",
+        "src/card_definitions/ecl/grub_storied_matriarch_grub_notorious_auntie.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "322c1c8f-ef8a-4a9f-b9ce-927720bad1d6",
@@ -3669,7 +3673,7 @@
       "name": "Meek Attack",
       "definition": "src/card_definitions/ecl/meek_attack.rs",
       "owner": "ecl_black_red",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Meek Attack",
@@ -3683,7 +3687,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_black_red_tests.rs",
+        "src/card_definitions/ecl/meek_attack.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "d709f396-021f-49eb-adb5-374aa790eaae",
