@@ -1646,5 +1646,65 @@
       "fix": "apply bound only to settled entry/replacement world",
       "regression": "ecl_raiding_printed_sacrifice_waits_for_omni_entry_before_bounding_fresh_donors"
     }
+  },
+  "funding_performance": {
+    "source_commit": "0d08b29591efc82fd7d41c095a9ae542e5e29778",
+    "integrated_commit": "3be984ca",
+    "problem": "Purpose-ineligible Elemental mana and mutually exclusive Eclipsed Realms activations inflated the negative funding upper bound",
+    "fix": "Conservative purpose-eligible quantity bound with maximum one tap production per source; retains original exact search and falls back for mana converters, linked exile and control projections",
+    "funding": {
+      "passed": 114,
+      "seconds": 3.79,
+      "resource_report": "<cache>/rustmage-build-reports/d1afec307a5442ef9c3590eb6fee25dd.json"
+    },
+    "growth_bonus": {
+      "passed": 6,
+      "seconds": 0.31,
+      "resource_report": "<cache>/rustmage-build-reports/ed60536968124f28aef6ff0a0f4ec384.json"
+    },
+    "clippy": {
+      "exit": 0,
+      "seconds": 40.78,
+      "resource_report": "<cache>/rustmage-build-reports/b2a1b241d6fe4aa4879462c81399b44d.json"
+    },
+    "exact_prefix_debug_timings": [
+      {
+        "decision": 193,
+        "legal_actions": 70,
+        "legal_actions_seconds": 0.000506457,
+        "observation_seconds": 0.00054334
+      },
+      {
+        "decision": 194,
+        "legal_actions": 70,
+        "legal_actions_seconds": 0.000587075,
+        "observation_seconds": 0.000569394
+      }
+    ],
+    "timing_scope": "Exact Config/raw-journal reproductions of slow themed positions; not full-set simulation throughput",
+    "timing_log": "<cache>/ecl-funding-bound-focused2.log",
+    "timing_report": "<cache>/rustmage-build-reports/70cd892131bf4cceb8ce120fe866d31f.json",
+    "timing_report_limit": "Temporary negative fixture used an unavailable token name and failed; positive converter and exact-prefix timings completed. Corrected portable fixture passed in subsequent114-test run."
+  },
+  "acceptance_diagnostics": [
+    {
+      "report": "<cache>/rustmage-build-reports/815f95b0701640d39e374139645269f1.json",
+      "status": "stopped via SIGTERM; NOT acceptance pass",
+      "cpu_seconds": 620.475,
+      "log": "<cache>/ecl-acceptance-development-second.log"
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/90de0ab01b1c49fcb24c7e96f11a75b4.json",
+      "status": "stopped via SIGTERM after isolating expensive finite funding decisions; NOT acceptance pass",
+      "cpu_seconds": 182.607,
+      "log": "<cache>/ecl-acceptance-development-trace.log"
+    }
+  ],
+  "resource_completion_guard": {
+    "commit": "fdc11f74",
+    "problem": "systemd explicit stop could return0 without a child completion report",
+    "fix": "Missing completion report now returns nonzero and records unit status separately",
+    "tests": "two mocked completion/stop cases pass; no allocation or kill probe",
+    "log": "<cache>/rustmage-ecl-guard-completion-tests.log"
   }
 }
