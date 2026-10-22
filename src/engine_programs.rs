@@ -1708,6 +1708,7 @@ impl Game {
                     }
                 }
                 Instruction::FightSource => self.source_fight(&item),
+                Instruction::FightAttached => self.attached_fight(&item),
                 Instruction::IfTargetPlayerLife { life, skip } => {
                     let holds = item.targets.iter().any(|bound| {
                         matches!(bound.target, Target::Player(player)

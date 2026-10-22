@@ -1399,3 +1399,133 @@ fn ecl_green_pennant_does_not_rebind_departed_graveyard_target() {
         assert_eq!(g.object_view(elf).zone, Zone::Graveyard);
     }
 }
+
+#[test]
+fn ecl_green_pitiless_fists_optional_fight_tracks_exact_attachment_and_current_power() {
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..7 {
+            let mut g = setup(p);
+            let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let other = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let foe = named(&mut g, p.other(), "Aegis Turtle", Zone::Battlefield);
+            let aura = named(&mut g, p, "Pitiless Fists", Zone::Hand);
+            checked(&mut g, Action::AnnounceCast { card: aura });
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(foe),
+                },
+            );
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(bear),
+                },
+            );
+            pay(&mut g);
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            assert_eq!(
+                g.stats(bear),
+                Stats {
+                    power: 4,
+                    toughness: 4
+                }
+            );
+            if mode == 0 {
+                checked(&mut g, Action::FinishTargets);
+            } else {
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(other),
+                    },
+                );
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(foe),
+                    },
+                );
+            }
+            match mode {
+                2 => {
+                    g.move_object(aura, Zone::Graveyard);
+                }
+                3 => {
+                    g.move_object(bear, Zone::Exile);
+                    g.move_object(bear, Zone::Battlefield);
+                }
+                4 => {
+                    g.move_object(foe, Zone::Exile);
+                    g.move_object(foe, Zone::Battlefield);
+                }
+                5 => {
+                    g.move_object(aura, Zone::Graveyard);
+                    let mut movement = g.entry_move(aura, Zone::Battlefield, false);
+                    movement.attachment = Some(g.object_ref(other));
+                    g.stage_entries(vec![movement], None);
+                }
+                6 => {
+                    let growth = named(&mut g, p, "Giant Growth", Zone::Hand);
+                    cast(&mut g, growth, None, &[Target::Card(bear)]);
+                }
+                _ => {}
+            }
+            settle(&mut g);
+            assert_eq!(g.object_view(bear).damage, 0);
+            if mode == 6 {
+                assert_eq!(g.object_view(foe).zone, Zone::Graveyard);
+                assert_eq!(g.stats(bear).power, 7);
+            } else {
+                assert_eq!(g.object_view(foe).zone, Zone::Battlefield);
+                assert_eq!(
+                    g.object_view(foe).damage,
+                    match mode {
+                        1 => 4,
+                        2 | 5 => 2,
+                        _ => 0,
+                    }
+                );
+            }
+            if mode == 5 {
+                assert_eq!(g.stats(other).power, 4);
+                assert_eq!(g.object_view(other).damage, 0);
+            }
+        }
+    }
+}
+#[test]
+fn ecl_green_pitiless_fists_deals_both_directions_and_own_control_is_continuous() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let foe = named(&mut g, p.other(), "Swab Goblin", Zone::Battlefield);
+        let aura = named(&mut g, p, "Pitiless Fists", Zone::Hand);
+        cast(&mut g, aura, None, &[Target::Card(bear)]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(foe),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(foe).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(bear).damage, 2);
+        assert_eq!(g.stats(bear).toughness, 4);
+        // A fixed control effect makes the enchant restriction fail at the next SBA.
+        // Use a paid control spell rather than mutating the attachment's controller.
+        let steal = named(&mut g, p, "Harmless Offering", Zone::Hand);
+        cast(
+            &mut g,
+            steal,
+            None,
+            &[Target::Player(p.other()), Target::Card(bear)],
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(aura).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
+    }
+}

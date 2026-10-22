@@ -821,6 +821,8 @@ pub(crate) enum Instruction {
     },
     /// The exact source permanent fights its targeted creature without targeting itself.
     FightSource,
+    /// The exact enchanted creature fights the targeted creature.
+    FightAttached,
     DiscardScaled(PlayerSet, AmountValue),
     DiscardManaValueLifeLoss,
     PutLandCards {
