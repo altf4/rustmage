@@ -3107,3 +3107,272 @@ fn retched_wretch_copy_token_cannot_return_from_the_graveyard() {
         assert!(g.observe(p).ability_removal_effects.is_empty());
     }
 }
+
+#[test]
+fn two_behold_creatures_pay_with_permanents_or_private_hand_cards_and_offer_the_extra_mana_route() {
+    for p in [Player::P0, Player::P1] {
+        for (name, witness_name, color) in [
+            ("Mudbutton Cursetosser", "Warren Torchmaster", 2),
+            ("Soulbright Seeker", "Flamebraider", 3),
+        ] {
+            for hand in [false, true] {
+                let mut g = hexing_setup(p);
+                let witness = named(
+                    &mut g,
+                    p,
+                    if hand {
+                        "Nameless Inversion"
+                    } else {
+                        witness_name
+                    },
+                    if hand { Zone::Hand } else { Zone::Battlefield },
+                );
+                let source = named(&mut g, p, name, Zone::Hand);
+                let mut mana = [0; 6];
+                mana[color] = 1;
+                g.state.players[p.index()].mana = mana;
+                checked(&mut g, Action::AnnounceCast { card: source });
+                checked(&mut g, Action::ChooseSpellCost { cost: 0 });
+                let object = g.object_ref(source);
+                reject(&mut g, Action::ChooseAdditionalCost { object });
+                assert!(g.observe(p.other()).additional_cost.is_none());
+                let object = g.object_ref(witness);
+                checked(&mut g, Action::ChooseAdditionalCost { object });
+                assert!(!g.observe(p.other()).known_hand.contains(&object));
+                checked(&mut g, Action::PayCosts { payment: mana });
+                assert_eq!(g.observe(p.other()).known_hand.contains(&object), hand);
+                settle(&mut g);
+                assert!(g.on_battlefield(source));
+                assert_eq!(
+                    g.state.objects[witness as usize].zone,
+                    if hand { Zone::Hand } else { Zone::Battlefield }
+                );
+            }
+            let mut g = hexing_setup(p);
+            let source = named(&mut g, p, name, Zone::Hand);
+            let mut mana = [0; 6];
+            mana[color] = 1;
+            g.state.players[p.index()].mana = mana;
+            reject(&mut g, Action::AnnounceCast { card: source });
+            g.state.players[p.index()].mana[5] = 2;
+            checked(&mut g, Action::AnnounceCast { card: source });
+            checked(&mut g, Action::ChooseSpellCost { cost: 1 });
+            settle(&mut g);
+            assert!(g.on_battlefield(source));
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        }
+    }
+}
+#[test]
+fn mudbutton_cursetosser_cannot_block_and_its_death_targets_only_opposing_power_two_or_less() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Mudbutton Cursetosser", Zone::Battlefield);
+        let ally = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let enemy = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        let strong = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        g.state.active = p.other();
+        g.state.step = Step::Blockers;
+        g.state.pending = Pending::Blockers;
+        g.state.attackers.push(Attacker {
+            card: enemy,
+            defender: Some(CombatDefender::Player(p)),
+            blocked: false,
+        });
+        reject(
+            &mut g,
+            Action::Block {
+                blocker: source,
+                attacker: enemy,
+            },
+        );
+        assert!(g.legal_actions().contains(&Action::Block {
+            blocker: ally,
+            attacker: enemy
+        }));
+        g.state.pending = Pending::Priority;
+        g.state.step = Step::Main1;
+        g.state.active = p;
+        g.state.priority = p;
+        g.move_object(source, Zone::Graveyard);
+        g.prepare_triggers();
+        for _ in 0..100 {
+            if g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::ChooseTarget { .. }))
+            {
+                break;
+            }
+            advance(&mut g);
+        }
+        for target in [ally, strong] {
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+        }
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(enemy),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.state.objects[enemy as usize].zone, Zone::Graveyard);
+        assert!(g.on_battlefield(strong));
+    }
+}
+#[test]
+fn mudbutton_cursetosser_rechecks_power_and_respects_indestructible_at_resolution() {
+    for p in [Player::P0, Player::P1] {
+        for grow in [false, true] {
+            let mut g = hexing_setup(p);
+            let source = named(&mut g, p, "Mudbutton Cursetosser", Zone::Battlefield);
+            let target = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+            g.move_object(source, Zone::Graveyard);
+            g.prepare_triggers();
+            for _ in 0..100 {
+                if g.legal_actions()
+                    .iter()
+                    .any(|a| matches!(a, Action::ChooseTarget { .. }))
+                {
+                    break;
+                }
+                advance(&mut g);
+            }
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            for _ in 0..100 {
+                if g.state.announcing.is_none() {
+                    break;
+                }
+                advance(&mut g);
+            }
+            if grow {
+                g.state.objects[target as usize].growth.power = 1;
+            } else {
+                let object = g.object_ref(target);
+                g.grant_keyword_effects(&[target], object, Keywords::INDESTRUCTIBLE);
+            }
+            settle(&mut g);
+            assert!(g.on_battlefield(target));
+        }
+    }
+}
+fn seeker_activate(g: &mut Game, source: CardId, target: CardId) {
+    checked(
+        g,
+        Action::Activate {
+            card: source,
+            ability: 0,
+            target: Some(Target::Card(target)),
+            payment: [0, 0, 0, 1, 0, 0],
+            counter_payment: Counters::default(),
+        },
+    );
+}
+#[test]
+fn soulbright_seeker_uses_the_stack_and_only_the_third_successful_resolution_adds_four_red() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Soulbright Seeker", Zone::Battlefield);
+        let target = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let enemy = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0, 0, 0, 9, 0, 0];
+        reject(
+            &mut g,
+            Action::Activate {
+                card: source,
+                ability: 0,
+                target: Some(Target::Card(enemy)),
+                payment: [0, 0, 0, 1, 0, 0],
+                counter_payment: Counters::default(),
+            },
+        );
+        for (count, red) in [(1, 8), (2, 7), (3, 10), (4, 9)] {
+            seeker_activate(&mut g, source, target);
+            assert!(!g.state.stack.is_empty());
+            assert_eq!(
+                g.state.players[p.index()].mana[3],
+                if count == 1 {
+                    8
+                } else {
+                    red - if count == 3 { 4 } else { 0 }
+                }
+            );
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].mana[3], red);
+            assert!(g.keywords(target).contains(Keywords::TRAMPLE));
+            assert_eq!(g.observe(p).ability_resolutions[0].count, count);
+        }
+        g.finish_cleanup();
+        assert!(!g.keywords(target).contains(Keywords::TRAMPLE));
+        assert!(g.observe(p).ability_resolutions.is_empty());
+    }
+}
+#[test]
+fn soulbright_seeker_fizzled_target_does_not_count_and_departed_source_can_finish_the_third_resolution()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Soulbright Seeker", Zone::Battlefield);
+        let target = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0, 0, 0, 8, 0, 0];
+        for _ in 0..2 {
+            seeker_activate(&mut g, source, target);
+            settle(&mut g);
+        }
+        seeker_activate(&mut g, source, target);
+        g.move_object(target, Zone::Exile);
+        settle(&mut g);
+        assert_eq!(g.observe(p).ability_resolutions[0].count, 2);
+        assert_eq!(g.state.players[p.index()].mana[3], 5);
+        let survivor = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        seeker_activate(&mut g, source, survivor);
+        g.move_object(source, Zone::Graveyard);
+        settle(&mut g);
+        assert!(g.keywords(survivor).contains(Keywords::TRAMPLE));
+        assert_eq!(g.observe(p).ability_resolutions[0].count, 3);
+        assert_eq!(g.state.players[p.index()].mana[3], 8);
+    }
+}
+#[test]
+fn soulbright_seeker_resolution_history_follows_exact_source_across_control_changes_and_resets_on_blink()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Soulbright Seeker", Zone::Battlefield);
+        let ally = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0, 0, 0, 5, 0, 0];
+        g.state.players[p.other().index()].mana = [0, 0, 0, 5, 0, 0];
+        for _ in 0..2 {
+            seeker_activate(&mut g, source, source);
+            settle(&mut g);
+        }
+        let item = g.activation_item(p.other(), source, 0);
+        g.gain_control(&item, Subject::Source, PlayerSet::Controller);
+        while g.actor() != Some(p.other()) {
+            advance(&mut g);
+        }
+        seeker_activate(&mut g, source, ally);
+        g.move_object(source, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].mana[3], 8);
+        assert_eq!(g.observe(p).ability_resolutions[0].count, 3);
+        g.move_object(source, Zone::Battlefield);
+        while g.actor() != Some(p) {
+            advance(&mut g);
+        }
+        seeker_activate(&mut g, source, source);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].mana[3], 2);
+        assert_eq!(g.observe(p).ability_resolutions.len(), 2);
+        assert_eq!(g.observe(p).ability_resolutions[1].count, 1);
+    }
+}
