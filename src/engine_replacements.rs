@@ -82,6 +82,7 @@ pub(super) enum TokenCompletion {
     /// One mass creation event; original group indices retain exact recipients.
     RoleAttachMany(Vec<ObjectRef>),
     Mobilize,
+    AttackingCopies,
     MobilizeDelayed(Box<SpellView>),
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -821,9 +822,22 @@ impl Game {
         b.used.push((choice.source, choice.ability));
     }
     pub(super) fn stage_copy_creation(&mut self, player: Player, recipe: CopyRecipe, amount: u128) {
+        self.stage_copy_creation_completion(player, recipe, amount, TokenCompletion::None);
+    }
+    pub(super) fn stage_attacking_copy_creation(&mut self, player: Player, recipe: CopyRecipe) {
+        self.stage_copy_creation_completion(player, recipe, 1, TokenCompletion::AttackingCopies);
+    }
+    fn stage_copy_creation_completion(
+        &mut self,
+        player: Player,
+        recipe: CopyRecipe,
+        amount: u128,
+        completion: TokenCompletion,
+    ) {
         if amount == 0 {
             return;
         }
+        let attacking = matches!(completion, TokenCompletion::AttackingCopies);
         let first_this_turn = self.begin_token_event(player, amount);
         let batch = TokenBatch {
             first_this_turn,
@@ -832,13 +846,16 @@ impl Game {
             groups: vec![TokenGroupView {
                 token: recipe.definition,
                 amount,
-                tapped: false,
+                tapped: attacking,
             }],
             effect: true,
             used: Vec::new(),
-            completion: TokenCompletion::None,
+            completion,
         };
-        if self.state.replacements.is_none() && self.token_replacements(&batch).is_empty() {
+        if !attacking
+            && self.state.replacements.is_none()
+            && self.token_replacements(&batch).is_empty()
+        {
             self.create_copy_groups(player, &batch.groups, &batch.recipes);
             return;
         }
@@ -1159,9 +1176,18 @@ impl Game {
                             let Some(Event::Tokens(batch)) = state.active.take() else {
                                 unreachable!()
                             };
-                            if matches!(batch.completion, TokenCompletion::Mobilize) {
+                            if matches!(
+                                batch.completion,
+                                TokenCompletion::Mobilize | TokenCompletion::AttackingCopies
+                            ) {
+                                let delayed_sacrifice =
+                                    matches!(batch.completion, TokenCompletion::Mobilize);
                                 self.state.replacements = Some(state);
-                                self.start_mobilize_groups(batch.groups, batch.recipes);
+                                self.start_mobilize_groups(
+                                    batch.groups,
+                                    batch.recipes,
+                                    delayed_sacrifice,
+                                );
                                 return self.resume_token_entries(resume_program);
                             }
                             if !batch.recipes.is_empty() {

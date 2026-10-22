@@ -14,19 +14,28 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
 pub struct CopyExceptions {
     pub sacrifice_abilities: u16,
+    pub haste: bool,
     pub nightmare: bool,
 }
 impl CopyExceptions {
     pub const NONE: Self = Self {
         sacrifice_abilities: 0,
+        haste: false,
         nightmare: false,
     };
     pub const HASTE_AND_SACRIFICE: Self = Self {
         sacrifice_abilities: 1,
+        haste: true,
+        nightmare: false,
+    };
+    pub const SACRIFICE_ONLY: Self = Self {
+        sacrifice_abilities: 1,
+        haste: false,
         nightmare: false,
     };
     pub const NIGHTMARE: Self = Self {
         sacrifice_abilities: 0,
+        haste: false,
         nightmare: true,
     };
     pub fn union(self, other: Self) -> Self {
@@ -35,6 +44,7 @@ impl CopyExceptions {
                 .sacrifice_abilities
                 .checked_add(other.sacrifice_abilities)
                 .capacity("copy sacrifice abilities"),
+            haste: self.haste || other.haste,
             nightmare: self.nightmare || other.nightmare,
         }
     }
@@ -826,6 +836,8 @@ pub(crate) enum Instruction {
         cost: ManaCost,
         life: u32,
     },
+    /// Optional blight cost followed immediately by a tapped attacking copy.
+    MayBlightCopyAttacking,
     CreateCopyToken {
         subject: Subject,
         amount: u16,

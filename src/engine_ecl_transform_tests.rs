@@ -1268,3 +1268,280 @@ fn ecl_transform_sygg_color_protection_forbids_colored_blocks_but_allows_colorle
         assert_eq!(g.object_view(colorless).zone, Zone::Graveyard);
     }
 }
+
+const GRUB: &str = "Grub, Storied Matriarch";
+fn grub_flip(g: &mut Game, color: usize) {
+    g.state.players[g.state.active.index()].mana = [30; 6];
+    transform_paid(g, color);
+}
+fn grub_paid(g: &mut Game, p: Player) -> CardId {
+    let id = named(g, p, GRUB, Zone::Hand);
+    g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 2];
+    cast(g, id, None, &[]);
+    settle(g);
+    assert_eq!(
+        g.stats(id),
+        Stats {
+            power: 2,
+            toughness: 1
+        }
+    );
+    assert!(g.keywords(id).contains(Keywords::MENACE));
+    grub_flip(g, 3);
+    assert_eq!(
+        g.state.objects[id as usize].card.name(),
+        "Grub, Notorious Auntie"
+    );
+    id
+}
+fn grub_attack(g: &mut Game, id: CardId) {
+    g.state.objects[id as usize].summoning_sick = false;
+    g.state.step = Step::Attackers;
+    g.state.pending = Pending::Attackers;
+    checked(g, Action::Attack { card: id });
+    checked(g, Action::FinishAttackers);
+    until_effect(g);
+}
+fn grub_copies(g: &Game) -> Vec<CardId> {
+    g.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter(|(_, o)| o.zone == Zone::Battlefield && o.is_token())
+        .map(|(i, _)| i as CardId)
+        .collect()
+}
+#[test]
+fn ecl_transform_grub_paid_faces_and_optional_goblin_cards_include_kindred() {
+    for p in [Player::P0, Player::P1] {
+        for return_card in ["Goblin Piker", "Crib Swap"] {
+            let mut g = setup(p);
+            let card = named(&mut g, p, return_card, Zone::Graveyard);
+            let not_goblin = named(&mut g, p, "Bear Cub", Zone::Graveyard);
+            let enemy = named(&mut g, p.other(), "Goblin Piker", Zone::Graveyard);
+            let id = named(&mut g, p, GRUB, Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 2];
+            cast(&mut g, id, None, &[]);
+            g.prepare_triggers();
+            for _ in 0..20 {
+                if g.legal_actions().contains(&Action::ChooseTarget {
+                    target: Target::Card(card),
+                }) {
+                    break;
+                }
+                let a = if g.state.pending == Pending::Priority {
+                    Action::Pass
+                } else {
+                    g.legal_actions()
+                        .into_iter()
+                        .find(|a| matches!(a, Action::PutTrigger { .. }))
+                        .unwrap()
+                };
+                checked(&mut g, a);
+            }
+            assert!(!g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Card(not_goblin)
+            }));
+            assert!(!g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Card(enemy)
+            }));
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(card),
+                },
+            );
+            settle(&mut g);
+            assert_eq!(g.state.objects[card as usize].zone, Zone::Hand);
+            let reference = g.object_ref(id);
+            grub_flip(&mut g, 3);
+            assert_eq!(g.object_ref(id), reference);
+            assert_eq!(g.colors(id), 8);
+            grub_flip(&mut g, 2);
+            assert_eq!(g.colors(id), 4);
+            assert_eq!(g.object_ref(id), reference);
+        }
+    }
+}
+#[test]
+fn ecl_transform_grub_blight_cost_optional_and_copy_does_not_gain_haste() {
+    for p in [Player::P0, Player::P1] {
+        for pay in [false, true] {
+            let mut g = setup(p);
+            let grub = grub_paid(&mut g, p);
+            let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let enemy = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            grub_attack(&mut g, grub);
+            let before = g.snapshot();
+            assert_eq!(
+                g.apply(
+                    p,
+                    Action::Blight {
+                        object: g.object_ref(enemy)
+                    }
+                ),
+                Err(Error::IllegalAction)
+            );
+            assert_eq!(g.snapshot(), before);
+            if pay {
+                let object = g.object_ref(bear);
+                checked(&mut g, Action::Blight { object });
+            } else {
+                checked(&mut g, Action::DeclineEffectPayment);
+            }
+            settle(&mut g);
+            let tokens = grub_copies(&g);
+            assert_eq!(tokens.len(), usize::from(pay));
+            assert_eq!(g.object_view(bear).counters.minus_one, u64::from(pay));
+            if pay {
+                let token = tokens[0];
+                assert_eq!(
+                    g.stats(token),
+                    Stats {
+                        power: 2,
+                        toughness: 2
+                    }
+                );
+                assert!(g.object_view(token).tapped);
+                assert!(g.state.attackers.iter().any(|a| a.card == token));
+                assert!(!g.keywords(token).contains(Keywords::HASTE));
+                assert!(
+                    g.state.delayed_sacrifices.is_none(),
+                    "intrinsic ability, not a delayed trigger"
+                );
+                g.state.active = p.other();
+                g.begin_step(Step::End);
+                settle(&mut g);
+                assert!(
+                    !g.on_battlefield(token),
+                    "also triggers in opponent end step"
+                );
+            }
+        }
+    }
+}
+#[test]
+fn ecl_transform_grub_lethal_blight_copies_before_state_based_actions() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let grub = grub_paid(&mut g, p);
+        let victim = named(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        grub_attack(&mut g, grub);
+        let object = g.object_ref(victim);
+        checked(&mut g, Action::Blight { object });
+        settle(&mut g);
+        assert_eq!(g.state.objects[victim as usize].zone, Zone::Graveyard);
+        let tokens = grub_copies(&g);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(
+            g.stats(tokens[0]),
+            Stats {
+                power: 1,
+                toughness: 1
+            }
+        );
+        assert_eq!(g.object_view(tokens[0]).counters.minus_one, 0);
+    }
+}
+#[test]
+fn ecl_transform_grub_attacking_defender_choice_does_not_create_delayed_sacrifice() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let grub = grub_paid(&mut g, p);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let walker = named(&mut g, p.other(), "Ajani, Caller of the Pride", Zone::Hand);
+        g.move_object(walker, Zone::Battlefield);
+        grub_attack(&mut g, grub);
+        let object = g.object_ref(bear);
+        checked(&mut g, Action::Blight { object });
+        assert!(matches!(g.state.pending,Pending::Mobilize{player} if player==p));
+        assert!(
+            !g.observe(p)
+                .mobilize_choice
+                .as_ref()
+                .unwrap()
+                .delayed_sacrifice
+        );
+        let defender = CombatDefender::Planeswalker(g.object_ref(walker));
+        checked(&mut g, Action::ChooseMobilizeDefender { defender });
+        settle(&mut g);
+        let token = grub_copies(&g)[0];
+        assert!(
+            g.state
+                .attackers
+                .iter()
+                .any(|a| a.card == token && a.defender == Some(defender))
+        );
+        assert!(g.state.delayed_sacrifices.is_none());
+    }
+}
+#[test]
+fn ecl_transform_grub_copy_intrinsic_sacrifice_is_removed_by_ability_loss() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let grub = grub_paid(&mut g, p);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        grub_attack(&mut g, grub);
+        let object = g.object_ref(bear);
+        checked(&mut g, Action::Blight { object });
+        settle(&mut g);
+        let token = grub_copies(&g)[0];
+        let aura = named(&mut g, p, "Noggle the Mind", Zone::Hand);
+        g.state.players[p.index()].mana = [30; 6];
+        g.state.priority = p;
+        cast(&mut g, aura, None, &[Target::Card(token)]);
+        settle(&mut g);
+        g.begin_step(Step::End);
+        settle(&mut g);
+        assert!(g.on_battlefield(token));
+        g.move_object(aura, Zone::Graveyard);
+        settle(&mut g);
+        g.begin_step(Step::End);
+        settle(&mut g);
+        assert!(!g.on_battlefield(token));
+    }
+}
+#[test]
+fn ecl_transform_grub_attack_packet_survives_source_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let grub = grub_paid(&mut g, p);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.state.objects[grub as usize].summoning_sick = false;
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        checked(&mut g, Action::Attack { card: grub });
+        checked(&mut g, Action::FinishAttackers);
+        g.move_object(grub, Zone::Hand);
+        until_effect(&mut g);
+        let object = g.object_ref(bear);
+        checked(&mut g, Action::Blight { object });
+        settle(&mut g);
+        assert_eq!(grub_copies(&g).len(), 1);
+    }
+}
+#[test]
+fn ecl_transform_grub_self_blight_freezes_simultaneous_lethal_and_legend_choices() {
+    for p in [Player::P0, Player::P1] {
+        for keep_original in [false, true] {
+            let mut g = setup(p);
+            let grub = grub_paid(&mut g, p);
+            grub_attack(&mut g, grub);
+            let original = g.object_ref(grub);
+            checked(&mut g, Action::Blight { object: original });
+            assert!(matches!(g.state.pending,Pending::Legend{player} if player==p));
+            let token = grub_copies(&g)[0];
+            assert_eq!(g.stats(grub).toughness, 0);
+            assert_eq!(g.stats(token).toughness, 1);
+            let object = if keep_original {
+                original
+            } else {
+                g.object_ref(token)
+            };
+            checked(&mut g, Action::KeepLegend { object });
+            settle(&mut g);
+            assert_eq!(g.state.objects[grub as usize].zone, Zone::Graveyard);
+            assert_eq!(g.on_battlefield(token), !keep_original);
+        }
+    }
+}

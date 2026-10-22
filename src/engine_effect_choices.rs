@@ -24,6 +24,7 @@ pub(super) struct EffectChoice {
     pub discard_mana_value_life: Option<Player>,
     pub hand_defender: Option<CombatDefender>,
     pub hand_creature_entry: Option<HandCreatureEntry>,
+    pub blight_copy_attacking: bool,
     pub entry_life_bonus: Option<(&'static str, u16)>,
 }
 impl EffectChoice {
@@ -370,6 +371,7 @@ impl Game {
             hand_defender: None,
             hand_creature_entry: None,
             entry_life_bonus: None,
+            blight_copy_attacking: false,
             source: item.object,
             required: [0; 2],
             selected: std::array::from_fn(|_| Vec::new()),
@@ -544,6 +546,22 @@ impl Game {
             .unwrap();
         if let EffectChoiceKind::Blight(amount) | EffectChoiceKind::BlightCost(amount) = choice.kind
         {
+            if choice.blight_copy_attacking {
+                let object = choice
+                    .selected
+                    .iter()
+                    .flatten()
+                    .copied()
+                    .next()
+                    .expect("blighted creature");
+                let mut recipe = self.copiable_recipe(object);
+                recipe.exceptions = recipe.exceptions.union(CopyExceptions::SACRIFICE_ONLY);
+                let continuation = &mut self.state.resolving.as_mut().unwrap().continuation;
+                assert!(continuation.is_none());
+                *continuation = Some(Box::new(
+                    programs::ProgramContinuation::CreateAttackingCopy(recipe),
+                ));
+            }
             let choices = [self.state.active, self.state.active.other()]
                 .into_iter()
                 .flat_map(|p| {

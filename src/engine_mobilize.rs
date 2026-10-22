@@ -26,6 +26,7 @@ pub(super) struct MobilizePlan {
     groups: Vec<TokenGroupView>,
     recipes: Vec<Option<CopyRecipe>>,
     token: Card,
+    delayed_sacrifice: bool,
     amount: usize,
     defenders: Vec<CombatDefender>,
 }
@@ -38,6 +39,7 @@ pub struct MobilizeChoiceView {
     pub copy_recipes: Vec<Option<CopyRecipe>>,
     /// Creature tokens requiring attacking-defender choices; other tokens still enter.
     pub amount: usize,
+    pub delayed_sacrifice: bool,
     pub defenders: Vec<CombatDefender>,
 }
 impl Game {
@@ -49,6 +51,7 @@ impl Game {
             tokens: f.groups.clone(),
             copy_recipes: f.recipes.clone(),
             amount: f.amount,
+            delayed_sacrifice: f.delayed_sacrifice,
             defenders: f.defenders.clone(),
         })
     }
@@ -106,6 +109,7 @@ impl Game {
         &mut self,
         groups: Vec<TokenGroupView>,
         recipes: Vec<Option<CopyRecipe>>,
+        delayed_sacrifice: bool,
     ) -> bool {
         let item = &self.state.resolving.as_ref().unwrap().item;
         let token = groups[0].token;
@@ -146,6 +150,7 @@ impl Game {
         }
         self.state.mobilize = Some(Box::new(MobilizePlan {
             token,
+            delayed_sacrifice,
             groups,
             recipes,
             amount,
@@ -181,7 +186,9 @@ impl Game {
         if f.recipes.is_empty() {
             let tokens =
                 self.create_token_groups(item.controller, &f.groups, Some(&f.defenders), true);
-            self.record_mobilize_tokens(&item, tokens);
+            if f.delayed_sacrifice {
+                self.record_mobilize_tokens(&item, tokens);
+            }
             return;
         }
         let tokens = {
@@ -195,7 +202,11 @@ impl Game {
         };
         self.defer_token_completion(
             item.controller,
-            replacements::TokenCompletion::MobilizeDelayed(Box::new(item)),
+            if f.delayed_sacrifice {
+                replacements::TokenCompletion::MobilizeDelayed(Box::new(item))
+            } else {
+                replacements::TokenCompletion::None
+            },
             tokens,
         );
     }

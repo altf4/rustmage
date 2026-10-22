@@ -33,6 +33,7 @@ pub(super) struct Resolution {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum ProgramContinuation {
     Return(ReturnLinkView),
+    CreateAttackingCopy(CopyRecipe),
     CreateTokens {
         controller: Player,
         token: Card,
@@ -61,6 +62,10 @@ impl Game {
     }
     fn apply_program_continuation(&mut self, continuation: ProgramContinuation) {
         match continuation {
+            ProgramContinuation::CreateAttackingCopy(recipe) => {
+                let player = self.state.resolving.as_ref().unwrap().item.controller;
+                self.stage_attacking_copy_creation(player, recipe);
+            }
             ProgramContinuation::Return(link) => self.stage_linked_return(&link, None),
             ProgramContinuation::CreateTokens {
                 controller,
@@ -2427,6 +2432,26 @@ impl Game {
                 } => {
                     if self.start_effect_choice(&item, kind, players, filter, amount, optional_skip)
                     {
+                        return;
+                    }
+                }
+                Instruction::MayBlightCopyAttacking => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::BlightCost(1),
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        Some(0),
+                    ) {
+                        self.state
+                            .resolving
+                            .as_mut()
+                            .unwrap()
+                            .choice
+                            .as_mut()
+                            .unwrap()
+                            .blight_copy_attacking = true;
                         return;
                     }
                 }

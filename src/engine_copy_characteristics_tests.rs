@@ -406,6 +406,7 @@ fn copy_sacrifice_count_overflow_restores_the_current_paid_resolution() {
             p,
             CopyExceptions {
                 sacrifice_abilities: u16::MAX,
+                haste: true,
                 nightmare: false,
             },
         );

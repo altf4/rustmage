@@ -7,10 +7,7 @@ impl Game {
             .unwrap_or_else(|| CopyRecipe::new(self.state.objects[object.card as usize].card))
     }
     pub(super) fn copied_keywords(&self, object: ObjectRef) -> Keywords {
-        if self
-            .copy_recipe(object)
-            .is_some_and(|r| r.exceptions.sacrifice_abilities != 0)
-        {
+        if self.copy_recipe(object).is_some_and(|r| r.exceptions.haste) {
             Keywords::HASTE
         } else {
             Keywords::NONE

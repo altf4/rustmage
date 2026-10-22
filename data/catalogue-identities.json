@@ -5357,7 +5357,8 @@
     2,
     4,
     4,
-    1
+    1,
+    8
   ],
   "aliases": [
     [
@@ -13779,6 +13780,14 @@
     [
       "Grub's Command",
       1892
+    ],
+    [
+      "Grub, Notorious Auntie",
+      5352
+    ],
+    [
+      "Grub, Storied Matriarch",
+      1893
     ],
     [
       "Grub, Storied Matriarch // Grub, Notorious Auntie",
@@ -82321,8 +82330,8 @@
       "name": "Grub, Storied Matriarch // Grub, Notorious Auntie",
       "oracle_id": "180286e4-67fa-44d5-9e90-4a4e99c016a7",
       "facts_sha256": "3302569c39bceaeb20e835fe61f90e70bbb75165991f596add704ded21f79aa1",
-      "mana_cost": "",
-      "type_line": "Legendary Creature — Goblin Warlock // Legendary Creature — Goblin Warrior",
+      "mana_cost": "{2}{B}",
+      "type_line": "Legendary Creature — Goblin Warlock",
       "oracle_keywords": [
         "Blight",
         "Transform",
@@ -82336,12 +82345,12 @@
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 1894,
@@ -180777,6 +180786,33 @@
       "facts_sha256": null,
       "mana_cost": "",
       "type_line": "Legendary Creature — Merfolk Rogue",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5352,
+      "module": "card_5352",
+      "path": "ecl/grub_notorious_auntie.rs",
+      "set": "ecl",
+      "category": "transform",
+      "name": "Grub, Notorious Auntie",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Goblin Warrior",
       "oracle_keywords": [],
       "standard_legal": false,
       "legendary": true,
