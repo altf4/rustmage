@@ -718,3 +718,67 @@ fn ecl_raiding_real_drum_mana_cost_cannot_consume_a_reserved_color_donor() {
         );
     }
 }
+
+#[test]
+fn ecl_raiding_printed_sacrifice_waits_for_omni_entry_before_bounding_fresh_donors() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = schemes(&mut g, p);
+        let hunter = named(&mut g, p, "Henchbots", Zone::Battlefield);
+        let incoming = named(&mut g, p, "Omni-Changeling", Zone::Exile);
+        let incoming_before = g.object_ref(incoming);
+        let hunter_ref = g.object_ref(hunter);
+        // Same sparse linked-return setup as the immediate-entry donor regression.
+        g.state.exile_links.push(ExileLink {
+            source: hunter_ref,
+            exiled: incoming_before,
+            return_zone: Zone::Battlefield,
+        });
+        let donor = named(&mut g, p, "Shadow Urchin", Zone::Battlefield);
+        let enemy = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = named(&mut g, p, "Eaten Alive", Zone::Hand);
+        g.state.players[p.index()].mana = [30; 6];
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        intent(&mut g, source, true);
+        checked(&mut g, Action::ChooseSpellCost { cost: 0 });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(enemy),
+            },
+        );
+        checked(&mut g, Action::ChooseAdditionalCost { object: hunter_ref });
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 1, 0, 0, 0],
+            },
+        );
+        assert!(
+            !g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::PayConspire { .. }))
+        );
+        checked(&mut g, Action::PayConspirePrintedCosts);
+        assert!(g.state.exile_links.is_empty());
+        assert!(matches!(g.state.pending, Pending::EntryCopy { .. }));
+        assert_eq!(g.object_view(incoming).zone, Zone::Exile);
+        let object = g.object_ref(donor);
+        checked(
+            &mut g,
+            Action::ChooseEntryCopy {
+                object: Some(object),
+            },
+        );
+        assert_eq!(g.object_view(incoming).zone, Zone::Battlefield);
+        assert_ne!(g.object_ref(incoming), incoming_before);
+        assert!(g.has_subtype(incoming, "Elemental"));
+        assert_eq!(g.object_view(incoming).colors, 12);
+        assert!(matches!(g.state.pending, Pending::ConspirePayment { .. }));
+        pay_pair(&mut g, source, donor, incoming);
+        assert!(g.state.announcing.is_none());
+        assert!(g.object_view(donor).tapped && g.object_view(incoming).tapped);
+        finish_copies(&mut g);
+        assert_eq!(g.object_view(enemy).zone, Zone::Exile);
+    }
+}

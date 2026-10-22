@@ -348,7 +348,12 @@ impl Game {
                 return true;
             }
             let c = game.conspire_view().unwrap();
-            if !game.conspire_upper_allows(a, c) {
+            // A consumed linked-return cost can leave an incoming donor behind
+            // an owned entry/replacement choice. Bound only the settled world.
+            if game.state.entry_batch.is_none()
+                && game.state.replacements.is_none()
+                && !game.conspire_upper_allows(a, c)
+            {
                 return false;
             }
             let snapshot = game.snapshot();
