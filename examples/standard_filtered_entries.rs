@@ -165,6 +165,7 @@ fn check(o: &Observation, l: &Ledger) -> u64 {
 fn classify(s: &SpellView) -> Option<usize> {
     match s.kind {
         StackKind::CopyEndStepSacrifice
+        | StackKind::Conspire
         | StackKind::DelayedReturn
         | StackKind::DelayedSacrifice
         | StackKind::DelayedWarpExile => {

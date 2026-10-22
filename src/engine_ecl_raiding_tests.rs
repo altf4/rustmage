@@ -55,6 +55,11 @@ fn pay_pair(g: &mut Game, source: CardId, first: CardId, second: CardId) {
         },
     );
 }
+fn printed(g: &mut Game) {
+    if g.legal_actions().contains(&Action::PayConspirePrintedCosts) {
+        checked(g, Action::PayConspirePrintedCosts);
+    }
+}
 fn finish_copies(g: &mut Game) {
     for _ in 0..100 {
         if matches!(g.state.pending, Pending::Priority)
@@ -123,6 +128,9 @@ fn ecl_raiding_two_optional_instances_pay_four_fresh_creatures_and_copy_actual_s
         let donors = (0..4)
             .map(|_| named(&mut g, p, "Enraged Flamecaster", Zone::Battlefield))
             .collect::<Vec<_>>();
+        for &id in &donors {
+            g.state.objects[id as usize].summoning_sick = true;
+        }
         let spell = named(&mut g, p, "Shock", Zone::Hand);
         g.state.players[p.index()].mana = [30; 6];
         checked(&mut g, Action::AnnounceCast { card: spell });
@@ -156,7 +164,7 @@ fn ecl_raiding_two_optional_instances_pay_four_fresh_creatures_and_copy_actual_s
         );
         pay_pair(&mut g, other, donors[2], donors[3]);
         if matches!(g.state.pending, Pending::ConspirePayment { .. }) {
-            checked(&mut g, Action::PayConspirePrintedCosts);
+            printed(&mut g);
         }
         assert!(
             donors
@@ -210,7 +218,7 @@ fn ecl_raiding_single_instance_uses_matching_colors_and_rejects_duplicates_and_f
             },
         );
         pay_pair(&mut g, source, a, b);
-        checked(&mut g, Action::PayConspirePrintedCosts);
+        printed(&mut g);
         finish_copies(&mut g);
         assert_eq!(g.state.players[p.other().index()].life, 16);
     }
@@ -244,7 +252,7 @@ fn ecl_raiding_taps_may_precede_printed_sacrifice_and_cannot_double_spend_a_sacr
         );
         reject(&mut g, Action::PayConspirePrintedCosts);
         pay_pair(&mut g, source, a, b);
-        checked(&mut g, Action::PayConspirePrintedCosts);
+        printed(&mut g);
         assert_eq!(g.state.objects[a as usize].zone, Zone::Graveyard);
         assert!(g.state.objects[b as usize].tapped);
         finish_copies(&mut g);
@@ -289,7 +297,7 @@ fn ecl_raiding_printed_sacrifice_returns_a_fresh_donor_before_the_conspire_cost(
                 .iter()
                 .any(|a| matches!(a, Action::PayConspire { .. }))
         );
-        checked(&mut g, Action::PayConspirePrintedCosts);
+        printed(&mut g);
         for _ in 0..30 {
             if matches!(g.state.pending, Pending::ConspirePayment { .. }) {
                 break;
@@ -332,7 +340,7 @@ fn ecl_raiding_departed_provider_and_countered_original_leave_the_copy_trigger_a
             },
         );
         pay_pair(&mut g, source, a, b);
-        checked(&mut g, Action::PayConspirePrintedCosts);
+        printed(&mut g);
         let original = g
             .state
             .stack
@@ -344,5 +352,107 @@ fn ecl_raiding_departed_provider_and_countered_original_leave_the_copy_trigger_a
         g.move_object(source, Zone::Graveyard);
         finish_copies(&mut g);
         assert_eq!(g.state.players[p.other().index()].life, 18);
+    }
+}
+#[test]
+fn ecl_raiding_kindred_spell_conspire_is_not_multiplied_by_elemental_permanent_travelers() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = schemes(&mut g, p);
+        named(&mut g, p, "Twinflame Travelers", Zone::Battlefield);
+        let a = named(&mut g, p, "Eclipsed Elf", Zone::Battlefield);
+        let b = named(&mut g, p, "Eclipsed Boggart", Zone::Battlefield);
+        let victim = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        let spell = named(&mut g, p, "Nameless Inversion", Zone::Hand);
+        g.state.players[p.index()].mana = [30; 6];
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        intent(&mut g, source, true);
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(victim),
+            },
+        );
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 1, 0, 0, 1],
+            },
+        );
+        pay_pair(&mut g, source, a, b);
+        printed(&mut g);
+        assert_eq!(
+            g.state
+                .stack
+                .iter()
+                .filter(|s| s.kind == StackKind::Conspire)
+                .count(),
+            1
+        );
+        finish_copies(&mut g);
+        assert_eq!(
+            g.stats(victim),
+            Stats {
+                power: 16,
+                toughness: 4
+            }
+        );
+    }
+}
+#[test]
+fn ecl_raiding_kirol_copies_the_intrinsic_conspire_trigger_without_paying_conspire_again() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = schemes(&mut g, p);
+        let a = named(&mut g, p, "Enraged Flamecaster", Zone::Battlefield);
+        let b = named(&mut g, p, "Enraged Flamecaster", Zone::Battlefield);
+        let kirol = named(&mut g, p, "Kirol, Attentive First-Year", Zone::Battlefield);
+        let witness = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let spell = named(&mut g, p, "Shock", Zone::Hand);
+        g.state.players[p.index()].mana = [30; 6];
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        intent(&mut g, source, true);
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        pay_pair(&mut g, source, a, b);
+        printed(&mut g);
+        let id = g
+            .state
+            .stack
+            .iter()
+            .find(|s| s.kind == StackKind::Conspire)
+            .unwrap()
+            .id;
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: kirol,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Stack(id),
+            },
+        );
+        for card in [kirol, witness] {
+            let object = g.object_ref(card);
+            checked(&mut g, Action::ChooseAdditionalCost { object });
+        }
+        checked(&mut g, Action::PayCosts { payment: [0; 6] });
+        finish_copies(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 14);
     }
 }

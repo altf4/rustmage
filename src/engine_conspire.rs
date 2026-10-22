@@ -45,6 +45,15 @@ impl Game {
             && self.object_ref(source.card) == source
             && self.state.objects[source.card as usize].controller == player
             && self.copy_ability_origin(source) == origin
+            && self.state.objects[source.card as usize]
+                .card
+                .static_ability_groups()
+                .iter()
+                .any(|g| {
+                    g.fragments
+                        .iter()
+                        .any(|f| matches!(f, StaticAbilityFragment::NoncreatureConspire))
+                })
             && self.continuous_fragment_available(source.card, |f| {
                 matches!(f, StaticAbilityFragment::NoncreatureConspire)
             })
@@ -130,9 +139,12 @@ impl Game {
                 c.costs_started && c.instances.iter().all(|i| i.pay != Some(true) || i.paid)
             })
     }
-    pub(super) fn defer_conspire_payment(&mut self, a: &Announcement) -> bool {
+    pub(super) fn defer_conspire_payment(&mut self, a: &mut Announcement) -> bool {
         if !self.conspire_has_payment() {
             return false;
+        }
+        if a.additional_cost().is_none() {
+            a.additional_paid = true;
         }
         self.conspire_mut().costs_started = true;
         if self.conspire_projecting() || !self.conspire_done(a) {
@@ -283,6 +295,52 @@ impl Game {
         }
         child.conspire_completion_exists()
     }
+    fn conspire_upper_allows(&self, a: &Announcement, c: &ConspireCastView) -> bool {
+        // Mana abilities can recolor sources, and removing characteristic Auras
+        // can expose other colors or creature types. Linked costs can return new
+        // objects. Those rare worlds require the exact completion search.
+        if !self.state.exile_links.is_empty()
+            || self.state.objects.iter().any(|o| {
+                o.zone == Zone::Battlefield
+                    && (o.card.activations().iter().any(|ability| {
+                        ability.mana_production().is_some_and(|p| {
+                            matches!(p.base(), ManaProduction::AnyColorChangingSource(_))
+                        })
+                    }) || o.card.static_ability_groups().iter().any(|g| {
+                        g.fragments.iter().any(|f| {
+                            matches!(
+                                f,
+                                StaticAbilityFragment::AttachedCharacteristics(_)
+                                    | StaticAbilityFragment::AttachedChosenColor
+                            )
+                        })
+                    }))
+            })
+        {
+            return true;
+        }
+        let required = c
+            .instances
+            .iter()
+            .filter(|i| i.pay == Some(true) && !i.paid)
+            .count()
+            * 2;
+        let available = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, o)| {
+                o.zone == Zone::Battlefield
+                    && !o.tapped
+                    && self.is_creature(*id as CardId)
+                    && ability_world::CharacteristicWorld::colors(self, *id as CardId)
+                        & a.item.source_card.colors()
+                        != 0
+            })
+            .count();
+        available >= required
+    }
     fn conspire_completion_exists(self) -> bool {
         fn visit(game: Game, seen: &mut Vec<Snapshot>) -> bool {
             let Some(a) = &game.state.announcing else {
@@ -295,21 +353,7 @@ impl Game {
                 return true;
             }
             let c = game.conspire_view().unwrap();
-            // Without linked returns, costs cannot create new creature objects.
-            // Count all battlefield objects as a safe bound even across type/control changes.
-            if game.state.exile_links.is_empty()
-                && c.instances
-                    .iter()
-                    .filter(|i| i.pay == Some(true) && !i.paid)
-                    .count()
-                    * 2
-                    > game
-                        .state
-                        .objects
-                        .iter()
-                        .filter(|o| o.zone == Zone::Battlefield && !o.tapped)
-                        .count()
-            {
+            if !game.conspire_upper_allows(a, c) {
                 return false;
             }
             let snapshot = game.snapshot();

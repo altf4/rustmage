@@ -1566,7 +1566,7 @@ impl Game {
             self.state.announcing = Some(announcement);
             return;
         }
-        if self.defer_conspire_payment(&announcement) {
+        if self.defer_conspire_payment(&mut announcement) {
             self.state.announcing = Some(announcement);
             return;
         }
