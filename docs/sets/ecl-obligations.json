@@ -1381,7 +1381,7 @@
       "name": "Curious Colossus",
       "definition": "src/card_definitions/ecl/curious_colossus.rs",
       "owner": "ecl_white_blue",
-      "state": "gated; full obligation implementation pending",
+      "state": "tested candidate; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Curious Colossus",
@@ -1395,7 +1395,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_white_blue_tests.rs",
+        "src/card_definitions/ecl/curious_colossus.json",
+        "docs/sets/ecl-validation.json"
+      ]
     },
     {
       "oracle_id": "a3435757-d049-4aaf-a2cb-897dd4940997",

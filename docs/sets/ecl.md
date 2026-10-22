@@ -21,8 +21,8 @@ The frozen manifest accounts for every identity. The [per-card obligation ledger
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **245/273**, comprising **107 inherited** and **138 newly
-implemented/tested physical candidates**; **28 remain gated**. Twenty inherited
+Admission flags: **246/273**, comprising **107 inherited** and **139 newly
+implemented/tested physical candidates**; **27 remain gated**. Twenty inherited
 cards have passed source/rules audit;87 inherited cards remain. No final published reviews or newly merged cards. All new
 names and per-card obligations appear in the linked JSON ledgers. Three tested
 synthetic token recipes are outside the physical denominator.
@@ -147,3 +147,5 @@ The244-card integration1aa48507 passes428 ECL scenarios in15.11seconds; memory p
 Both Oko faces, the Elk token and independent chosen-type emblem are integrated. All2,905 native regressions pass78.55seconds; six whole-card scenarios pass0.24seconds; all-target Clippy passes. Tests cover paid loyalty, both paid transforms, once-per-turn use across asymmetric face indices, permanent type effects,next-original-controller-turn growth, exact post-mill optional selection,source departure,zero/stale targets,token creation after loyalty death,and the chosen-type emblem affecting later creatures.
 
 Chitinous Graspling,Chomping Changeling,Changeling Wayfinder,Shore Lurker,and Glister Bairn have complete pinned source audits. Existing changeling,optional search/removal,vivid and library interaction suites are supplemented by paid hybrid bodies in both seats and both private surveil destinations. All eight inherited scenarios pass0.31seconds.20/107 audited;87 inherited cards remain. Admission245/273;28 gated.
+
+Curious Colossus is integrated with a resolution-frozen opponent creature group and permanent ability/type/base-stat effects.432 ECL author-branch scenarios pass15.74seconds;44 subtype regressions pass0.25seconds; Clippy passes. Scenarios preserve existing counters,growth,artifact types and colors,keep changeling types through later ability loss,and check later layers,control changes,cleanup and blink. Actual Rhys removal of Abigale keyword counters and subsequent persist also passes. Admission246/273;27 gated.

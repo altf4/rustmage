@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "107f3bc440796175e258c17de43abf6cf5ee7bafbfa330ada0bac5bfbd43f79b",
+  "catalogue_version": "ced02bfb1f625febe7a2acd20d244f585130c5d827af81cb7ca9dd13cf9a18d5",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2328,
-  "implemented_total": 2334,
+  "implemented_standard_cards": 2329,
+  "implemented_total": 2335,
   "token_definitions": 109,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "complete": 239,
-      "gated": 28
+      "complete": 240,
+      "gated": 27
     },
     "eoc": {
       "total": 8,
@@ -7647,8 +7647,8 @@
     {
       "name": "Curious Colossus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/curious_colossus.rs",
       "set": "ecl"
     },
