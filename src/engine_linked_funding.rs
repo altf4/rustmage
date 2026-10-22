@@ -209,14 +209,13 @@ impl Game {
             return;
         }
         let current = self.linked_funding_window();
-        if let Some(roles) = &mut self.state.roles {
-            if roles
+        if let Some(roles) = &mut self.state.roles
+            && roles
                 .linked_funding
                 .as_deref()
                 .is_some_and(|window| Some(*window) != current)
-            {
-                roles.linked_funding = None;
-            }
+        {
+            roles.linked_funding = None;
         }
         if let Some(window) = current
             && self

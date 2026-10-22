@@ -314,8 +314,8 @@ impl Game {
         let Some(mut spec) = definition.additional_cost() else {
             return fund(base);
         };
-        if self.linked_funding_can_probe(actor) {
-            if let Some(result) = self.linked_deferred_funding(
+        if self.linked_funding_can_probe(actor)
+            && let Some(result) = self.linked_deferred_funding(
                 base.clone(),
                 purpose,
                 linked_funding::DeferredFundingCost::Spell {
@@ -324,9 +324,9 @@ impl Game {
                     route,
                     definition,
                 },
-            ) {
-                return result;
-            }
+            )
+        {
+            return result;
         }
         // Initial availability may choose zero. It still needs a controlled
         // creature witness, even though that witness receives no counters.
@@ -364,14 +364,14 @@ impl Game {
             return self.can_fund(goal);
         };
         let source = goal.source.as_ref().expect("activation source").0;
-        if self.linked_funding_can_probe(goal.actor) {
-            if let Some(result) = self.linked_deferred_funding(
+        if self.linked_funding_can_probe(goal.actor)
+            && let Some(result) = self.linked_deferred_funding(
                 goal.clone(),
                 self.funding_purpose(&goal),
                 linked_funding::DeferredFundingCost::Activation(spec),
-            ) {
-                return result;
-            }
+            )
+        {
+            return result;
         }
 
         if let EffectChoiceKind::TapPermanents(amount) = spec.kind {

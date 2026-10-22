@@ -1828,12 +1828,11 @@ impl Game {
         {
             return self.can_fund_convoke_for(goal, purpose);
         }
-        if self.linked_funding_can_probe(goal.actor) {
-            if let Some(result) =
+        if self.linked_funding_can_probe(goal.actor)
+            && let Some(result) =
                 self.linked_funding_search(LinkedFundingGoal::new(goal.clone(), purpose))
-            {
-                return result;
-            }
+        {
+            return result;
         }
 
         if !goal
