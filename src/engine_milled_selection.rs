@@ -226,6 +226,7 @@ impl Game {
             MilledDestination::PlayPermission { .. } => {
                 unreachable!("handled permission without movement")
             }
+            MilledDestination::LibraryTop => Zone::Library,
             MilledDestination::Hand => Zone::Hand,
             MilledDestination::Battlefield => Zone::Battlefield,
         };
@@ -251,6 +252,14 @@ impl Game {
             let events = self.move_objects_raw(&ids, destination);
             self.finish_zone_events(&events, &[]);
             for event in events {
+                if event.moved
+                    && event.destination == Zone::Library
+                    && self.object_ref(event.after.card) == event.after
+                    && self.state.objects[event.after.card as usize].zone == Zone::Library
+                {
+                    // Selection from a public mill group remains known to both players.
+                    self.remember_library_top(player, event.after);
+                }
                 if event.moved
                     && event.destination == Zone::Hand
                     && self.state.objects[event.after.card as usize].zone == Zone::Hand

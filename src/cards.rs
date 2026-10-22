@@ -723,6 +723,7 @@ pub enum MilledFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum MilledDestination {
+    LibraryTop,
     PlayPermission { next_turn: bool },
     Hand,
     Battlefield,

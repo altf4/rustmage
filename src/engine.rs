@@ -7810,3 +7810,6 @@ mod ecl_morcant_tests;
 #[cfg(test)]
 #[path = "engine_ecl_dream_harvest_tests.rs"]
 mod ecl_dream_harvest_tests;
+#[cfg(test)]
+#[path = "engine_ecl_lluwen_tests.rs"]
+mod ecl_lluwen_tests;

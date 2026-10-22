@@ -5361,7 +5361,8 @@
     8,
     16,
     16,
-    0
+    0,
+    20
   ],
   "aliases": [
     [
@@ -5991,6 +5992,10 @@
     [
       "@token/komas_coil",
       5335
+    ],
+    [
+      "@token/lluwen_worm_1_1_black_green",
+      5356
     ],
     [
       "@token/mutavault",
@@ -27899,6 +27904,12 @@
       "name": "Elk Token",
       "subtypes": "Elk",
       "colors": 16
+    },
+    {
+      "factory_identity": "@token/lluwen_worm_1_1_black_green",
+      "name": "Worm Token",
+      "subtypes": "Worm",
+      "colors": 20
     }
   ],
   "emblems": [
@@ -180926,6 +180937,33 @@
       "standard_legal": false,
       "legendary": false,
       "kind": 0,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5356,
+      "module": "card_5356",
+      "path": "ecl/lluwen_worm_token.rs",
+      "set": "ecl",
+      "category": "token",
+      "name": "@token/lluwen_worm_1_1_black_green",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Worm",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
       "basic": false,
       "mana_color": null,
       "colored": [
