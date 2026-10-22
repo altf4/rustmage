@@ -687,3 +687,119 @@ fn ecl_green_bloom_tender_funds_actual_guided_cast_with_nonmana_color_witnesses(
         assert_eq!(g.stats(bear).power, 2);
     }
 }
+fn definition_objects(g: &Game, p: Player, name: &str) -> Vec<CardId> {
+    let c = Card::from_name(name).unwrap();
+    g.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter(|(_, o)| o.controller == p && o.zone == Zone::Battlefield && o.card == c)
+        .map(|(id, _)| id as CardId)
+        .collect()
+}
+#[test]
+fn ecl_green_mutable_explorer_creates_tapped_land_with_paid_temporary_all_types_animation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let explorer = named(&mut g, p, "Mutable Explorer", Zone::Hand);
+        assert!(g.state.objects[explorer as usize].card.has_subtype("Giant"));
+        cast(&mut g, explorer, None, &[]);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(explorer),
+            Stats {
+                power: 1,
+                toughness: 1
+            }
+        );
+        let tokens = definition_objects(&g, p, "@token/mutavault");
+        assert_eq!(tokens.len(), 1);
+        let land = tokens[0];
+        assert_eq!(g.object_view(land).name(), "Mutavault");
+        assert!(g.object_view(land).tapped);
+        assert!(!g.is_creature(land));
+        assert_eq!(g.current_kinds(land) & 2, 2);
+        assert!(!g.has_subtype(land, "Elf"));
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: land,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(land),
+            Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+        assert!(
+            g.is_creature(land) && g.has_subtype(land, "Elf") && g.has_subtype(land, "Treefolk")
+        );
+        assert_eq!(g.current_kinds(land) & 2, 2);
+        super::ability_timeline_tests::next_turn(&mut g);
+        assert!(!g.is_creature(land));
+        assert!(!g.has_subtype(land, "Treefolk"));
+        g.state.objects[land as usize].tapped = false;
+        if g.actor() != Some(p) {
+            checked(&mut g, Action::Pass);
+        }
+        let before = g.state.players[p.index()].mana[5];
+        checked(&mut g, Action::TapMana { card: land });
+        assert_eq!(g.state.players[p.index()].mana[5], before + 1);
+    }
+}
+#[test]
+fn ecl_green_tend_search_is_private_and_union_threshold_counts_each_permanent_once() {
+    for p in [Player::P0, Player::P1] {
+        for forests in [4, 5] {
+            let mut g = setup(p);
+            for _ in 0..forests {
+                named(&mut g, p, "Forest", Zone::Battlefield);
+            }
+            let land = named(&mut g, p, "@token/mutavault", Zone::Battlefield);
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: land,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            pay(&mut g);
+            settle(&mut g);
+            let basic = named(&mut g, p, "Swamp", Zone::Library);
+            let wrong = named(&mut g, p, "Bear Cub", Zone::Library);
+            let spell = named(&mut g, p, "Tend the Sprigs", Zone::Hand);
+            cast(&mut g, spell, None, &[]);
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            assert!(g.observe(p).search_choice.is_some());
+            assert!(g.observe(p.other()).search_choice.is_none());
+            reject(&mut g, Action::ChooseSearch { card: wrong });
+            checked(&mut g, Action::ChooseSearch { card: basic });
+            checked(&mut g, Action::FinishSearch);
+            settle(&mut g);
+            assert_eq!(g.object_view(basic).zone, Zone::Battlefield);
+            assert!(g.object_view(basic).tapped);
+            let tokens = definition_objects(&g, p, "@token/treefolk_3_4_green_reach");
+            assert_eq!(tokens.len(), usize::from(forests == 5));
+            if let Some(&token) = tokens.first() {
+                assert_eq!(
+                    g.stats(token),
+                    Stats {
+                        power: 3,
+                        toughness: 4
+                    }
+                );
+                assert!(g.keywords(token).contains(Keywords::REACH));
+                assert!(!g.object_view(token).tapped);
+                assert_eq!(g.object_view(token).colors, 16);
+            }
+        }
+    }
+}
