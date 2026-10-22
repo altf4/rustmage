@@ -43,6 +43,34 @@ class ResourceGuardTests(unittest.TestCase):
                 self.assertEqual(resource_guard.main(), 0)
             self.assertNotIn('incomplete_metrics', json.loads(report.read_text()))
 
+    def test_partial_completion_report_is_preserved_and_fails_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory)/'completion.json'
+            def run(command, **kwargs):
+                if command[0] == 'systemd-run':
+                    report.write_text('{"terminal":')
+                return subprocess.CompletedProcess(command, 0)
+            with patch.object(sys, 'argv', ['resource_guard', '--report', str(report), '--', 'unused']), \
+                 patch.dict(os.environ, XDG_CACHE_HOME=directory), \
+                 patch.object(resource_guard, 'bounded_group', return_value=None), \
+                 patch.object(resource_guard.subprocess, 'run', side_effect=run):
+                self.assertNotEqual(resource_guard.main(), 0)
+            self.assertEqual(Path(str(report)+'.incomplete').read_text(), '{"terminal":')
+            self.assertTrue(json.loads(report.read_text())['incomplete_metrics'])
+
+    def test_child_failure_cannot_be_hidden_by_successful_unit_status(self):
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory)/'completion.json'
+            def run(command, **kwargs):
+                if command[0] == 'systemd-run':
+                    report.write_text(json.dumps({'terminal': True, 'exit_code': 7}))
+                return subprocess.CompletedProcess(command, 0)
+            with patch.object(sys, 'argv', ['resource_guard', '--report', str(report), '--', 'unused']), \
+                 patch.dict(os.environ, XDG_CACHE_HOME=directory), \
+                 patch.object(resource_guard, 'bounded_group', return_value=None), \
+                 patch.object(resource_guard.subprocess, 'run', side_effect=run):
+                self.assertEqual(resource_guard.main(), 7)
+
     def run_guard(self, command, **kwargs):
         return subprocess.run([sys.executable, str(GUARD), '--', *command], cwd=ROOT,
                               text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs)

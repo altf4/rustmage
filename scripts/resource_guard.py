@@ -82,9 +82,20 @@ def main():
                   '-p', 'OOMPolicy=kill', '-p', 'KillMode=control-group', *forwarded,
                   sys.executable, str(Path(__file__).resolve()), '--inside', '--report', str(report), '--', *command]
     result = subprocess.run(invocation)
-    if not report.exists():
+    completion = None
+    try:
+        completion = json.loads(report.read_text())
+    except (OSError, ValueError):
+        pass
+    if (isinstance(completion, dict) and completion.get('terminal') is True
+            and not completion.get('incomplete_metrics')
+            and type(completion.get('exit_code')) is int):
+        return result.returncode or completion['exit_code']
+    else:
         # systemd may report a successful explicit stop although the command
         # never completed. Missing child metrics cannot certify command success.
+        if report.exists():
+            report.rename(report.with_name(report.name+'.incomplete'))
         exit_code = result.returncode or 1
         report.write_text(json.dumps(dict(command=command, terminal=True, exit_code=exit_code,
             unit_exit_code=result.returncode,
