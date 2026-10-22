@@ -1,6 +1,8 @@
 //! Repeated until-end-of-turn combat damage observers own immutable trigger templates.
 use super::*;
 
+// The outer box keeps unused observer state pointer-sized.
+#[allow(clippy::box_collection)]
 pub(super) fn owned_bytes(templates: &Option<Box<Vec<SpellView>>>) -> usize {
     templates.as_ref().map_or(0, |templates| {
         std::mem::size_of::<Vec<SpellView>>()

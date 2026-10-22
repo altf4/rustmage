@@ -1656,6 +1656,8 @@ struct State {
     graveyard_entries: Option<SharedVec<ObjectRef>>,
     nightmare_cull: Option<Box<copy_characteristics::NightmareCull>>,
     stack_copy_data: Option<Box<stack_copies::CopyState>>,
+    // Rare observer storage keeps the common State footprint to one pointer.
+    #[allow(clippy::box_collection)]
     delayed_combat_draws: Option<Box<Vec<SpellView>>>,
     modal_history: modal_history::Rows,
     ability_resolutions: ability_resolutions::Rows,
