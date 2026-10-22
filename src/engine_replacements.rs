@@ -352,10 +352,12 @@ impl Game {
             }
         }
         if event.preventable
-            && event.source.facts.colors != 0
             && let Target::Card(id) = event.target
             && self.on_battlefield(id)
-            && self.keywords(id).contains(Keywords::PROTECTION_COLORS)
+            && ((event.source.facts.colors != 0
+                && self.keywords(id).contains(Keywords::PROTECTION_COLORS))
+                || (event.source.controller != self.state.objects[id as usize].controller
+                    && self.keywords(id).contains(Keywords::PROTECTION_OPPONENTS)))
         {
             let source = self.object_ref(id);
             if !used.contains(&(source, u16::MAX)) {

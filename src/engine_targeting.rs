@@ -1011,6 +1011,8 @@ impl Game {
                 };
                 if obj.zone == Zone::Battlefield
                     && (self.keywords(id).contains(Keywords::PROTECTION_EVERYTHING)
+                        || obj.controller != controller
+                            && self.keywords(id).contains(Keywords::PROTECTION_OPPONENTS)
                         || self.keywords(id).contains(Keywords::PROTECTION_COLORS)
                             && self
                                 .targeting_source_facts(source, qualification)

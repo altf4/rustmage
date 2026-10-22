@@ -7743,3 +7743,7 @@ mod ecl_students_tests;
 #[cfg(test)]
 #[path = "engine_ecl_oko_tests.rs"]
 mod ecl_oko_tests;
+
+#[cfg(test)]
+#[path = "engine_ecl_figure_tests.rs"]
+mod ecl_figure_tests;

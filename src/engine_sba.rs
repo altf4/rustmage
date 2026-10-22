@@ -86,9 +86,10 @@ impl Game {
                     || !self.on_battlefield(target.card)
                     || self.object_ref(target.card) != target
                     || !self.is_creature(target.card)
-                    || self.protected_from_colors(
+                    || self.protected_from_source(
                         target.card,
                         ability_world::CharacteristicWorld::colors(self, id),
+                        object.controller,
                     ))
             {
                 batch.detached.push(self.object_ref(id));

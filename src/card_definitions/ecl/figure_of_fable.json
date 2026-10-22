@@ -3,10 +3,46 @@
   "catalogue_id": 1507,
   "oracle_id": "5d4ea910-3b16-4f98-89be-c1b2cfff4bf0",
   "facts_sha256": "0ce8f2a8432d6cfaeb03d6d772a612744e5df4da3c92dbe656377b669698056f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "84e336020a0c46f4cb0f9a4cb96a8924edb29b7e5ea800fc50ac310d679c46f0"
   },
-  "physical_metadata_sha256": "8a87763a3434079bae5121aa8263228b24c171c537b48c76edf3661c750557dc"
+  "physical_metadata_sha256": "8a87763a3434079bae5121aa8263228b24c171c537b48c76edf3661c750557dc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FigureOfFable.java",
+  "java_sha256": "a077b0edafe875d1c2dcd8c6abd0cb55b5d0b4a2c2fea71964bc481381ef2f28",
+  "rules_tests": "src/engine_ecl_figure_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardSubTypeSourceEffect.java",
+      "sha256": "7f49c9464a917091481b5f7636bbfbaf7f90041be840b2da070c57ca0214a765"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessSourceEffect.java",
+      "sha256": "278acb623e2d4c4db2efdc4764512cfe0a983770512e2eb2c73afb887a193fe3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProtectionFromEachOpponentAbility.java",
+      "sha256": "85805258845966857c796fab1cc69d9da23b667957e56b637ebcc6fd3674930a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProtectionAbility.java",
+      "sha256": "9e9e989ed896c2061243d8db26a7d6a364116b654a8477bbeb52c613e9d943cd"
+    }
+  ]
 }

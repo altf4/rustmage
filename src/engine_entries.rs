@@ -174,7 +174,7 @@ impl Game {
         };
         self.on_battlefield(target.card)
             && self.object_ref(target.card) == target
-            && !self.protected_from_colors(target.card, colors)
+            && !self.protected_from_source(target.card, colors, controller)
             && (if spec.kinds == 0 {
                 self.current_kinds(target.card) & (1 | 2 | 16 | 32 | 64 | 256) != 0
             } else {

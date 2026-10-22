@@ -1304,7 +1304,7 @@ pub(crate) enum Instruction {
     )]
     /// A permanent, exact-incarnation evolution, conditional at resolution.
     EvolveSource {
-        required: &'static str,
+        required: Option<&'static str>,
         types: &'static [&'static str],
         stats: Option<Stats>,
         keywords: Keywords,
@@ -2793,6 +2793,7 @@ impl Keywords {
     pub const NO_HUMAN_BLOCKERS: Self = Self(67108864);
     pub const PROTECTION_EVERYTHING: Self = Self(134217728);
     pub const WITHER: Self = Self(268435456);
+    pub const PROTECTION_OPPONENTS: Self = Self(2147483648);
     pub const PROTECTION_COLORS: Self = Self(536870912);
     pub const HEXPROOF_OWN_COLORS: Self = Self(1073741824);
     pub fn contains(self, keyword: Self) -> bool {

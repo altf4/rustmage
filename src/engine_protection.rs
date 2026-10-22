@@ -1,9 +1,11 @@
 //! Color protection reuses ordered keyword grants and ordinary prevention choices.
 use super::*;
 impl Game {
-    pub(super) fn protected_from_colors(&self, id: CardId, colors: u8) -> bool {
+    pub(super) fn protected_from_source(&self, id: CardId, colors: u8, controller: Player) -> bool {
         let keywords = self.keywords(id);
         keywords.contains(Keywords::PROTECTION_EVERYTHING)
+            || keywords.contains(Keywords::PROTECTION_OPPONENTS)
+                && self.state.objects[id as usize].controller != controller
             || colors != 0 && keywords.contains(Keywords::PROTECTION_COLORS)
     }
     pub(super) fn temporary_player_or_walker_damage_triggers(&mut self, events: &[DamageEvent]) {

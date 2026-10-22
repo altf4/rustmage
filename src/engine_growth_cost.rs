@@ -18,7 +18,7 @@ impl Game {
     pub(super) fn evolve_source(
         &mut self,
         item: &SpellView,
-        required: &'static str,
+        required: Option<&'static str>,
         types: &'static [&'static str],
         stats: Option<Stats>,
         keywords: Keywords,
@@ -26,7 +26,7 @@ impl Game {
     ) {
         if !self.on_battlefield(item.card)
             || self.object_ref(item.card) != item.object
-            || !self.has_subtype(item.card, required)
+            || required.is_some_and(|required| !self.has_subtype(item.card, required))
         {
             return;
         }
