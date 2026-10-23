@@ -3,10 +3,51 @@
   "catalogue_id": 674,
   "oracle_id": "bc163b5a-0b1a-4257-8c07-5c7d5284015f",
   "facts_sha256": "c103e8da155019f04d4766470afb55ca1d6c6fdb232e8788a22a7ed26a7ca400",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bf04a5fe10d95dc335c83de43b2319b69d0f636a7e671e0a7489c6d858403bae"
   },
-  "physical_metadata_sha256": "90d2818f739a6e502a83027f5bfed8face07ab55e7857603b55df4f02e10e83b"
+  "physical_metadata_sha256": "90d2818f739a6e502a83027f5bfed8face07ab55e7857603b55df4f02e10e83b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CaseyJonesVigilante.java",
+  "java_sha256": "9e087d5fa4116375b642597990afc56670fa0cb4800aa9dd89475b7c06d7e40c",
+  "rules_tests": "src/engine_tmt_delayed_steps_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfYourNextUpkeepDelayedTriggeredAbility.java",
+      "sha256": "1c0350e59161a270ecccbbaaf37fc5359fa0278cbc2679b5fdd697ccbbf0e57d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+      "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardControllerEffect.java",
+      "sha256": "48291599ed7d9537f89672284579f8c07f14b4ac974a3f482efa6ef593837717"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "603.7",
+      "603.7d",
+      "603.7e"
+    ],
+    "note": "Source-independent one-shot delayed beginning-of-step packets retain the creating controller and exact return-link context. Casey draws three on resolving entry and randomly discards only at that controller next upkeep, including departed/reentered sources and short/empty hands. Delayed triggers do not re-trigger permanent ability multiplicity; random state and capacity failures participate in owned rollback."
+  }
 }

@@ -3,6 +3,7 @@ use super::*;
 impl Game {
     pub(super) fn begin_step(&mut self, step: Step) {
         self.state.step = step;
+        self.queue_delayed_steps(step);
         if step == Step::BeginCombat {
             let rules = self.state.combat_rules.get_or_insert_with(Default::default);
             rules.phases_started = rules

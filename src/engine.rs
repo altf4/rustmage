@@ -2261,6 +2261,7 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    pub delayed_steps: Vec<DelayedStepView>,
     /// Exact public cost window whose remaining choices require a complete payment.
     pub cost_completion: Option<CostCompletionView>,
     pub library_piles: Option<LibraryPilesView>,
@@ -7208,6 +7209,7 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.ability_removal_effects.clone()),
+            delayed_steps: self.visible_delayed_steps(),
             delayed_deaths: s.roles.as_ref().map_or_else(Vec::new, |r| {
                 r.delayed_deaths
                     .iter()
@@ -8810,6 +8812,8 @@ mod tmt_equipment;
 #[path = "engine_tmt_equipment_tests.rs"]
 mod tmt_equipment_tests;
 
+#[path = "engine_delayed_steps.rs"]
+mod delayed_steps;
 #[path = "engine_outside_game.rs"]
 mod outside_game;
 #[cfg(test)]
@@ -8818,3 +8822,7 @@ mod tmt_alliance_batch_tests;
 #[cfg(test)]
 #[path = "engine_tmt_last_origins_tests.rs"]
 mod tmt_last_origins_tests;
+pub use delayed_steps::DelayedStepView;
+#[cfg(test)]
+#[path = "engine_tmt_delayed_steps_tests.rs"]
+mod tmt_delayed_steps_tests;

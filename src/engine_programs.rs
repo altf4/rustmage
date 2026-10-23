@@ -2909,6 +2909,11 @@ impl Game {
                         self.attach_equipment(item.object, target);
                     }
                 }
+                Instruction::ScheduleStep {
+                    step,
+                    relation,
+                    ability,
+                } => self.schedule_delayed_step(&item, step, relation, ability),
                 Instruction::AttachSource => {
                     if let Some(target) = item.targets.iter().find_map(|bound| bound.object) {
                         self.attach_equipment(item.object, target);

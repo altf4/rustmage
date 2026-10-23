@@ -1297,6 +1297,11 @@ pub(crate) enum Instruction {
     },
     SelectMilled(MilledSelectionSpec),
     SelectTargetPlayerMilled(MilledSelectionSpec),
+    ScheduleStep {
+        step: TriggerStep,
+        relation: CastRelation,
+        ability: u16,
+    },
     AttachSource,
     /// A reflexive trigger exists only after a successful new attachment.
     AttachSourceReflexive {
