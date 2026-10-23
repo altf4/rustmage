@@ -25,7 +25,7 @@ jobs:
   tests:
     name: Native and Python tests
     runs-on: ubuntu-24.04
-    timeout-minutes: ${{ inputs.python_suite == 'full' && 60 || 25 }}
+    timeout-minutes: ${{ inputs.python_suite == 'full' && 60 || 45 }}
     env:
       PYTHONDONTWRITEBYTECODE: '1'
       RUSTUP_TOOLCHAIN: '1.98.0'
@@ -96,7 +96,9 @@ jobs:
         run: python3 -m unittest scripts.test_resource_guard -v 2>&1 | tee "$XDG_CACHE_HOME/resource-guard.log"
 
       - name: Full native validation and Python tests
-        timeout-minutes: ${{ inputs.python_suite == 'full' && 50 || 20 }}
+        # Native rules plus Foundations/ECL full games exceed 20 min on hosted CPUs.
+        # Leave 5 min outside validation for setup and terminal diagnostic collection.
+        timeout-minutes: ${{ inputs.python_suite == 'full' && 50 || 40 }}
         if: steps.scope.outputs.code == 'true'
         run: python3 scripts/validate.py --release --python "$PYTHON_SUITE" 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
 

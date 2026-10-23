@@ -78,6 +78,18 @@ from the numerator. The earlier focused-authoring rate was 22.28 cards/hour.
 Exact elapsed intervals, commands, build/source hashes and measurements are in
 [ecl-validation.json](ecl-validation.json). Both published-head reviews approve; upstream merge is tracked separately.
 
+## Hosted CI timeout followup
+
+GitHub run39882226685 attempt2 passed Clippy in73.34seconds, all3251 native
+rules tests in192.95seconds and all22 Foundations suites in572.61seconds.
+Its20-minute validation-step limit expired during strict ECL acceptance; no
+Clippy or test failure was recorded. The saved CI diagnostics are retained under
+`<cache>/ecl-ci-39882226685-attempt2`. Hosted runner timing exceeds the original
+budget. Default validation/job limits are now40/45minutes, preserving the full
+Python mode's50/60minutes and all existing resource/concurrency guards. This
+workflow-only repair does not change tested card/engine behavior. Exact-head
+review refreshes and the replacement CI outcome are tracked on the PR.
+
 ## Final independent reviews and handoff
 
 The complete set is published in [PR463](https://github.com/altf4/rustmage/pull/463),
