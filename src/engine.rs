@@ -1899,6 +1899,7 @@ struct State {
     creature_damage_history: Option<SharedVec<CreatureDamageHistoryView>>,
     creature_entry_history: Option<SharedVec<CreatureEntryHistoryView>>,
     permanent_entry_history: Option<SharedVec<ObjectRef>>,
+    outside_game: Option<Box<outside_game::OutsideGameState>>,
     entry_values: entry_choices::Rows,
     copy_recipes: copies::Rows,
     graveyard_entries: Option<SharedVec<ObjectRef>>,
@@ -2262,6 +2263,8 @@ pub struct Observation {
     pub creature_damage_history: Vec<CreatureDamageHistoryView>,
     pub creature_entry_history: Vec<CreatureEntryHistoryView>,
     pub permanent_entry_history: Vec<ObjectRef>,
+    /// Only the observing player's private supplied outside-game cards.
+    pub outside_game_cards: Vec<ObjectView>,
     pub additional_combats: u64,
     pub combat_phase: u64,
     pub limited_exile_plays: Vec<LimitedExilePlayView>,
@@ -2536,6 +2539,7 @@ impl Game {
                 creature_damage_history: None,
                 creature_entry_history: None,
                 permanent_entry_history: None,
+                outside_game: None,
                 entry_values: None,
                 copy_recipes: None,
                 graveyard_entries: None,
@@ -5958,6 +5962,9 @@ impl Game {
         {
             self.state.step_sources.retain(|&source| source != id);
         }
+        if before.zone == Zone::Outside {
+            self.forget_outside_game_card(before.reference);
+        }
         self.capture_entry_batch_copy_departure(&before);
         self.capture_source_counter_departure(&before);
         self.clear_entry_value(before.reference);
@@ -6904,6 +6911,10 @@ impl Game {
                 .permanent_entry_history
                 .as_ref()
                 .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
+            outside_game_cards: self
+                .outside_game_cards(viewer)
+                .map(|object| self.object_view(object.card))
+                .collect(),
             schema: OBSERVATION_SCHEMA,
             additional_combats: s.combat_rules.as_ref().map_or(0, |r| r.additional_combats),
             combat_phase: s.combat_rules.as_ref().map_or(0, |r| r.phases_started),
@@ -7463,6 +7474,7 @@ impl Game {
     pub fn state_bytes(&self) -> usize {
         let s = &self.state;
         std::mem::size_of::<State>()
+            + self.outside_game_bytes()
             + self.mana_lot_bytes()
             + s.zone_rules.as_ref().map_or(0, |r| r.bytes())
             + self.temporary_control_bytes()
@@ -8759,3 +8771,9 @@ mod tmt_equipment;
 #[cfg(test)]
 #[path = "engine_tmt_equipment_tests.rs"]
 mod tmt_equipment_tests;
+
+#[path = "engine_outside_game.rs"]
+mod outside_game;
+#[cfg(test)]
+#[path = "engine_tmt_last_origins_tests.rs"]
+mod tmt_last_origins_tests;
