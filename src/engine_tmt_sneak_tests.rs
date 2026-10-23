@@ -2077,3 +2077,399 @@ fn tmt_sneak_raphael_cannot_choose_impossible_draw_under_mornsong_aria() {
         }
     }
 }
+
+fn grave_spell(
+    card: CardId,
+    permission: ObjectRef,
+    method: CastMethod,
+    attacker: Option<ObjectRef>,
+) -> Action {
+    Action::AnnounceGraveyardSpell {
+        card,
+        permission,
+        permanent_type: None,
+        method,
+        attacker,
+        flash_surcharge: false,
+    }
+}
+fn finish_grave_spell(g: &mut Game) {
+    for _ in 0..12 {
+        if g.state.announcing.is_none() {
+            return;
+        }
+        let a = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. } | Action::FinishTargets))
+            .expect("grave spell payment");
+        checked(g, a);
+    }
+    panic!("grave spell not paid");
+}
+#[test]
+fn tmt_sneak_sewer_samurai_graveyard_filter_turn_timing_ownership_and_independent_permission() {
+    assert_eq!(std::mem::size_of::<CastInfo>(), 40);
+    assert_eq!(std::mem::size_of::<Object>(), 144);
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let leo = named(&mut g, p, "Leonardo, Sewer Samurai", Zone::Battlefield);
+        let permission = g.object_ref(leo);
+        let lion = named(&mut g, p, "Savannah Lions", Zone::Graveyard); // 2/1: toughness qualifies.
+        let oroku = named(&mut g, p, "Oroku Saki, Shredder Rising", Zone::Graveyard); // 3/1.
+        let wall = named(&mut g, p, "Aegis Turtle", Zone::Graveyard); // 0/5: power qualifies.
+        let bear = named(&mut g, p, "Bear Cub", Zone::Graveyard);
+        let foreign = named(&mut g, p.other(), "Savannah Lions", Zone::Graveyard);
+        let bolt = named(&mut g, p, "Lightning Bolt", Zone::Graveyard);
+        for id in [lion, oroku, wall] {
+            assert!(g.legal_actions().contains(&grave_spell(
+                id,
+                permission,
+                CastMethod::Normal,
+                None
+            )));
+        }
+        for id in [bear, foreign, bolt] {
+            reject(
+                &mut g,
+                grave_spell(id, permission, CastMethod::Normal, None),
+            );
+        }
+        reject(&mut g, Action::AnnounceCast { card: lion });
+        g.state.active = p.other();
+        reject(
+            &mut g,
+            grave_spell(lion, permission, CastMethod::Normal, None),
+        );
+        g.state.active = p;
+        g.state.step = Step::Blockers;
+        reject(
+            &mut g,
+            grave_spell(lion, permission, CastMethod::Normal, None),
+        );
+        g.state.step = Step::Main1;
+        let m = named(&mut g, p, "Muldrotha, the Gravetide", Zone::Battlefield);
+        let m_permission = g.object_ref(m);
+        checked(
+            &mut g,
+            Action::PlayGraveyardPermanent {
+                card: lion,
+                permission: m_permission,
+                permanent_type: PermanentType::Creature,
+            },
+        );
+        finish_grave_spell(&mut g);
+        settle(&mut g);
+        assert_eq!(g.counter_count(lion, CounterKind::Finality), 0);
+        assert_eq!(g.observe(p).graveyard_type_uses.len(), 1);
+        checked(
+            &mut g,
+            grave_spell(wall, permission, CastMethod::Normal, None),
+        );
+        finish_grave_spell(&mut g);
+        g.move_object(leo, Zone::Hand);
+        settle(&mut g);
+        assert_eq!(g.counter_count(wall, CounterKind::Finality), 1);
+        assert_eq!(g.observe(p).graveyard_type_uses.len(), 1);
+        reject(
+            &mut g,
+            grave_spell(oroku, permission, CastMethod::Normal, None),
+        );
+        g.move_object(leo, Zone::Battlefield);
+        reject(
+            &mut g,
+            grave_spell(oroku, permission, CastMethod::Normal, None),
+        ); // old incarnation.
+        assert!(g.legal_actions().contains(&grave_spell(
+            oroku,
+            g.object_ref(leo),
+            CastMethod::Normal,
+            None
+        )));
+    }
+}
+#[test]
+fn tmt_sneak_sewer_permission_survives_returning_provider_and_preserves_sneak_defender() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let leo = named(&mut g, p, "Leonardo, Sewer Samurai", Zone::Battlefield);
+        let oroku = named(&mut g, p, "Oroku Saki, Shredder Rising", Zone::Graveyard);
+        let permission = g.object_ref(leo);
+        unblocked(&mut g, leo);
+        checked(
+            &mut g,
+            grave_spell(oroku, permission, CastMethod::Sneak, Some(permission)),
+        );
+        finish_grave_spell(&mut g);
+        assert_eq!(g.state.objects[leo as usize].zone, Zone::Hand);
+        assert_eq!(
+            g.state.stack.last().unwrap().cast.unwrap().method,
+            CastMethod::Sneak
+        );
+        settle(&mut g);
+        assert_eq!(g.counter_count(oroku, CounterKind::Finality), 1);
+        assert!(g.state.objects[oroku as usize].tapped);
+        assert!(
+            g.state
+                .attackers
+                .iter()
+                .any(|a| a.card == oroku && a.defender == Some(CombatDefender::Player(p.other())))
+        );
+        let murder = named(&mut g, p, "Murder", Zone::Hand);
+        cast(&mut g, murder, None, &[Target::Card(oroku)]);
+        settle(&mut g);
+        assert_eq!(g.state.objects[oroku as usize].zone, Zone::Exile);
+        assert_eq!(g.counter_count(oroku, CounterKind::Finality), 0);
+    }
+}
+#[test]
+fn tmt_sneak_muldrotha_can_choose_sneak_without_samurai_finality() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let m = named(&mut g, p, "Muldrotha, the Gravetide", Zone::Battlefield);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let leo = named(&mut g, p, "Leonardo, Sewer Samurai", Zone::Graveyard);
+        unblocked(&mut g, bear);
+        let a = Action::AnnounceGraveyardSpell {
+            card: leo,
+            permission: g.object_ref(m),
+            permanent_type: Some(PermanentType::Creature),
+            method: CastMethod::Sneak,
+            attacker: Some(g.object_ref(bear)),
+            flash_surcharge: false,
+        };
+        checked(&mut g, a);
+        finish_grave_spell(&mut g);
+        settle(&mut g);
+        assert_eq!(g.counter_count(leo, CounterKind::Finality), 0);
+        assert_eq!(g.observe(p).graveyard_type_uses.len(), 1);
+        assert!(g.keywords(leo).contains(Keywords::DOUBLE_STRIKE));
+        let life = g.state.players[p.other().index()].life;
+        while g.state.step != Step::Main2 {
+            checked(&mut g, Action::Pass);
+        }
+        assert_eq!(g.state.players[p.other().index()].life, life - 6);
+    }
+}
+#[test]
+fn tmt_sneak_finality_intrinsic_on_abilityless_and_noncreature_permanents_and_clears_on_bounce() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let lion = named(&mut g, p, "Savannah Lions", Zone::Battlefield);
+        let artifact = named(&mut g, p, "Mouser Foundry", Zone::Battlefield);
+        g.set_counters(lion, Counters::of(CounterKind::Finality, 2));
+        g.set_counters(artifact, Counters::of(CounterKind::Finality, 1));
+        let aura = named(&mut g, p, "Witness Protection", Zone::Hand);
+        cast(&mut g, aura, None, &[Target::Card(lion)]);
+        settle(&mut g);
+        let murder = named(&mut g, p, "Murder", Zone::Hand);
+        cast(&mut g, murder, None, &[Target::Card(lion)]);
+        settle(&mut g);
+        assert_eq!(g.state.objects[lion as usize].zone, Zone::Exile);
+        let sage = named(&mut g, p, "Reclamation Sage", Zone::Hand);
+        cast(&mut g, sage, None, &[]);
+        // Resolve Sage and its targeted entry trigger through existing scenario machinery.
+        for _ in 0..20 {
+            if g.state.stack.is_empty()
+                && g.state.resolving.is_none()
+                && g.state.announcing.is_none()
+            {
+                break;
+            }
+            let a = g
+                .legal_actions()
+                .into_iter()
+                .find(
+                    |a| matches!(a,Action::ChooseTarget{target:Target::Card(id)} if *id==artifact),
+                )
+                .or_else(|| {
+                    g.legal_actions()
+                        .into_iter()
+                        .find(|a| matches!(a, Action::Pass | Action::FinishTargets))
+                })
+                .or_else(|| {
+                    g.legal_actions()
+                        .into_iter()
+                        .find(|a| matches!(a, Action::ChooseOptional { accept: true }))
+                })
+                .expect("Sage resolution");
+            checked(&mut g, a);
+        }
+        assert_eq!(g.state.objects[artifact as usize].zone, Zone::Exile);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.set_counters(bear, Counters::of(CounterKind::Finality, 1));
+        let unsummon = named(&mut g, p, "Unsummon", Zone::Hand);
+        cast(&mut g, unsummon, None, &[Target::Card(bear)]);
+        settle(&mut g);
+        assert_eq!(g.state.objects[bear as usize].zone, Zone::Hand);
+        assert_eq!(g.counter_count(bear, CounterKind::Finality), 0);
+        cast(&mut g, bear, None, &[]);
+        settle(&mut g);
+        let murder = named(&mut g, p, "Murder", Zone::Hand);
+        cast(&mut g, murder, None, &[Target::Card(bear)]);
+        settle(&mut g);
+        assert_eq!(g.state.objects[bear as usize].zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn tmt_sneak_sewer_permission_lost_ability_and_countered_spell_have_no_finality() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let leo = named(&mut g, p, "Leonardo, Sewer Samurai", Zone::Battlefield);
+        let lion = named(&mut g, p, "Savannah Lions", Zone::Graveyard);
+        let permission = g.object_ref(leo);
+        checked(
+            &mut g,
+            grave_spell(lion, permission, CastMethod::Normal, None),
+        );
+        finish_grave_spell(&mut g);
+        checked(&mut g, Action::Pass);
+        let counter = named(&mut g, p.other(), "Negate", Zone::Hand);
+        // A creature cannot be Negated; use the unconditional Counterspell.
+        reject(&mut g, Action::AnnounceCast { card: counter });
+        let counter = named(&mut g, p.other(), "Counterspell", Zone::Hand);
+        cast(&mut g, counter, None, &[Target::Spell(lion)]);
+        settle(&mut g);
+        assert_eq!(g.state.objects[lion as usize].zone, Zone::Graveyard);
+        assert_eq!(g.counter_count(lion, CounterKind::Finality), 0);
+        g.state.priority = p;
+        let aura = named(&mut g, p, "Witness Protection", Zone::Hand);
+        cast(&mut g, aura, None, &[Target::Card(leo)]);
+        settle(&mut g);
+        reject(
+            &mut g,
+            grave_spell(lion, permission, CastMethod::Normal, None),
+        );
+    }
+}
+#[test]
+fn tmt_sneak_finality_competes_with_shuffle_once_and_is_not_a_keyword_counter() {
+    for p in [Player::P0, Player::P1] {
+        for choice in [
+            ZoneReplacementKind::Exile,
+            ZoneReplacementKind::RevealShuffle,
+        ] {
+            let mut g = setup(p);
+            let colossus = named(&mut g, p, "Darksteel Colossus", Zone::Battlefield);
+            let ghoul = named(&mut g, p, "Hungry Ghoul", Zone::Battlefield);
+            g.set_counters(colossus, Counters::of(CounterKind::Finality, 3));
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: ghoul,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            let reference = g.object_ref(colossus);
+            checked(&mut g, Action::ChooseAdditionalCost { object: reference });
+            for _ in 0..8 {
+                if matches!(g.state.pending, Pending::ZoneReplacement { .. }) {
+                    break;
+                }
+                let a = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a, Action::PayCosts { .. } | Action::FinishTargets))
+                    .expect("sacrifice payment");
+                checked(&mut g, a);
+            }
+            assert_eq!(
+                g.observe(p).zone_replacement_choice.unwrap().choices,
+                [
+                    ZoneReplacementKind::Exile,
+                    ZoneReplacementKind::RevealShuffle
+                ]
+            );
+            checked(&mut g, Action::ChooseZoneReplacement { effect: choice });
+            assert_eq!(
+                g.state.objects[colossus as usize].zone,
+                if choice == ZoneReplacementKind::Exile {
+                    Zone::Exile
+                } else {
+                    Zone::Library
+                }
+            );
+            assert_eq!(g.counter_count(colossus, CounterKind::Finality), 0);
+        }
+    }
+}
+
+#[test]
+fn tmt_sneak_sewer_filter_uses_graveyard_characteristic_defining_power_and_not_battlefield_lords() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let leo = named(&mut g, p, "Leonardo, Sewer Samurai", Zone::Battlefield);
+        let permission = g.object_ref(leo);
+        let goyf = named(&mut g, p, "Tarmogoyf", Zone::Graveyard);
+        assert_eq!(
+            g.stats(goyf),
+            Stats {
+                power: 1,
+                toughness: 2
+            }
+        );
+        assert!(g.legal_actions().contains(&grave_spell(
+            goyf,
+            permission,
+            CastMethod::Normal,
+            None
+        )));
+        let opt = named(&mut g, p.other(), "Opt", Zone::Graveyard);
+        assert_eq!(
+            g.stats(goyf),
+            Stats {
+                power: 2,
+                toughness: 3
+            }
+        );
+        reject(
+            &mut g,
+            grave_spell(goyf, permission, CastMethod::Normal, None),
+        );
+        g.move_object(opt, Zone::Exile);
+        checked(
+            &mut g,
+            grave_spell(goyf, permission, CastMethod::Normal, None),
+        );
+        finish_grave_spell(&mut g);
+        settle(&mut g);
+        assert_eq!(g.counter_count(goyf, CounterKind::Finality), 1);
+    }
+}
+
+#[test]
+fn tmt_sneak_muldrotha_can_pay_warp_as_a_separate_alternative_without_finality() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let m = named(&mut g, p, "Muldrotha, the Gravetide", Zone::Battlefield);
+        let knight = named(&mut g, p, "Knight Luminary", Zone::Graveyard);
+        let action = Action::AnnounceGraveyardSpell {
+            card: knight,
+            permission: g.object_ref(m),
+            permanent_type: Some(PermanentType::Creature),
+            method: CastMethod::Warp,
+            attacker: None,
+            flash_surcharge: false,
+        };
+        g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 1];
+        checked(&mut g, action.clone());
+        finish_grave_spell(&mut g);
+        assert_eq!(
+            g.state.stack.last().unwrap().cast.unwrap().method,
+            CastMethod::Warp
+        );
+        assert_eq!(
+            g.state.stack.last().unwrap().cast.unwrap().payment,
+            [1, 0, 0, 0, 0, 1]
+        );
+        settle(&mut g);
+        assert!(g.on_battlefield(knight));
+        assert_eq!(g.counter_count(knight, CounterKind::Finality), 0);
+        assert_eq!(g.observe(p).graveyard_type_uses.len(), 1);
+        g.move_object(knight, Zone::Graveyard);
+        g.state.players[p.index()].mana = [30; 6];
+        reject(&mut g, action);
+    }
+}

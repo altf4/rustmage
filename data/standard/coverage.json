@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "5fa9980b42d7ea3748b2931fbaa24714562e6fff93617d10e6da28b6aa9e41b2",
+  "catalogue_version": "3e88d2f1c801837181e1e38b92f5060e23cc36cea1b1e069b7d9c19065e00e22",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2394,
-  "implemented_total": 2400,
+  "implemented_standard_cards": 2395,
+  "implemented_total": 2401,
   "token_definitions": 113,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -185,8 +185,8 @@
     },
     "tmt": {
       "total": 189,
-      "complete": 103,
-      "gated": 86
+      "complete": 104,
+      "gated": 85
     },
     "w17": {
       "total": 1,
@@ -20006,8 +20006,8 @@
     {
       "name": "Leonardo, Sewer Samurai",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/leonardo_sewer_samurai.rs",
       "set": "tmt"
     },

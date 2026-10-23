@@ -89,6 +89,20 @@ impl Game {
         card: CardId,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
+        if !self.sneak_origin_allowed(player, card) {
+            return false;
+        }
+        self.visit_sneak_candidates(player, card, false, &mut |attacker| {
+            emit(Action::AnnounceSneak { card, attacker })
+        })
+    }
+    pub(super) fn visit_sneak_candidates(
+        &self,
+        player: Player,
+        card: CardId,
+        flash_surcharge: bool,
+        emit: &mut impl FnMut(ObjectRef) -> bool,
+    ) -> bool {
         let object = &self.state.objects[card as usize];
         if self.state.active != player
             || self.state.step != Step::Blockers
@@ -96,7 +110,6 @@ impl Game {
             || object.is_token()
             || !object.card.is_supported()
             || object.card.sneak_costs().is_empty()
-            || !self.sneak_origin_allowed(player, card)
         {
             return false;
         }
@@ -115,12 +128,15 @@ impl Game {
         for attack in &self.state.attackers {
             let attacker = self.object_ref(attack.card);
             if self.sneak_attacker(player, attacker).is_some()
-                && object
-                    .card
-                    .sneak_costs()
-                    .iter()
-                    .any(|&cost| self.sneak_cost_fundable(player, card, attacker, cost))
-                && emit(Action::AnnounceSneak { card, attacker })
+                && object.card.sneak_costs().iter().any(|&cost| {
+                    self.sneak_cost_fundable(
+                        player,
+                        card,
+                        attacker,
+                        Self::with_flash_surcharge(cost, object.card, flash_surcharge),
+                    )
+                })
+                && emit(attacker)
             {
                 return true;
             }

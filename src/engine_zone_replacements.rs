@@ -66,6 +66,7 @@ pub(super) struct FrozenRules {
     pub dream: Option<CastFace>,
     pub shuffle_self: bool,
     pub exile_spell: bool,
+    pub finality: bool,
     pub discard_to_battlefield: bool,
 }
 #[derive(Clone, Copy, Debug)]
@@ -182,6 +183,8 @@ impl Game {
         let spell = before.kinds & 12 != 0 && !before.is_token();
         FrozenRules {
             dream: self.dream_resolution_mark(before.reference).map(|r| r.face),
+            finality: before.zone == Zone::Battlefield
+                && before.counters.get(CounterKind::Finality) > 0,
             shuffle_self: own_available && own == Some(ZoneReplacementRule::RevealShuffleSelf),
             exile_spell: spell
                 && self.state.static_sources.iter().any(|&id| {
@@ -229,6 +232,7 @@ impl Game {
         }
         if before.zone == Zone::Stack && self.state.objects[before.id as usize].flashback
             || rules.exile_spell
+            || rules.finality
             || self.death_exile_destination(before, requested) != requested
         {
             choices.push(ZoneReplacementKind::Exile);

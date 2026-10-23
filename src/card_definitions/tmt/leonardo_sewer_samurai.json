@@ -3,10 +3,53 @@
   "catalogue_id": 2475,
   "oracle_id": "74e3243b-6707-4769-8767-7cf2ef71009a",
   "facts_sha256": "8583e7431b82b8296ef6d835633002b10cdeec8e542104e32ca1ffcb81302f36",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c8f341e2dae78f9aa73f5c441067d7caf3d002c26ac1e49d3d0e1051a83cb2f2"
   },
-  "physical_metadata_sha256": "2d48f3365fa3f5bc7062ddc9cad75bf4f7bc014bb99b92eaa53d270db0e21ce0"
+  "physical_metadata_sha256": "2d48f3365fa3f5bc7062ddc9cad75bf4f7bc014bb99b92eaa53d270db0e21ce0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LeonardoSewerSamurai.java",
+  "java_sha256": "dc528a58e0a3c1062f106e844ddc1f7308678ebbd599709f69892a6b484b870c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SneakAbility.java",
+      "sha256": "b25a32bf041c6a146f7d602c757f3be034f9282db5ed9c6cc03070b374611c70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ReturnToHandChosenControlledPermanentCost.java",
+      "sha256": "ea8192aa5d4930687e7803379d509a1bd5a1910bcd418503f19a8de6417072b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+      "sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCounterEnteringCreatureEffect.java",
+      "sha256": "6fa7d9b703e62fcfc2f323e012fc227e79f40cbcd6e4dec7a633ae4b1ec3be24"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/FinalityCounterEffect.java",
+      "sha256": "6d356fb017f60a29c2d49947426ea437c5e5fe983f71222b8a38094e8b81e84c"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "118.9",
+      "601.3",
+      "601.6",
+      "702.190",
+      "122.1h"
+    ],
+    "rulings_url": "https://magic.wizards.com/en/news/feature/teenage-mutant-ninja-turtles-release-notes",
+    "note": "Finality is an intrinsic replacement on every permanent, independent of abilities; pinned Java restricts to creature dies events. Explicit permission selection preserves normal/alternative costs and finality only for this permission."
+  }
 }

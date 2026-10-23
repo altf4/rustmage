@@ -1504,6 +1504,13 @@ impl Game {
                             .filter(|c| c.method == CastMethod::Warp)
                             .map(|_| item.controller);
                         movement.evoked = item.cast.is_some_and(|c| c.evoked);
+                        if !item.is_copy
+                            && item
+                                .cast
+                                .is_some_and(|c| c.origin_permissions.finality_on_entry())
+                        {
+                            movement.effect_counter = Some((CounterKind::Finality, 1));
+                        }
                         movement.sneak_paid = item.sneak.is_some();
                         if let Some(sneak) = item.sneak.as_deref() {
                             movement.tapped = true;

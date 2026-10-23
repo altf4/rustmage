@@ -19,9 +19,9 @@ Oracle facts remain pinned in `data/standard/cards.json`. The
 [obligation ledger](tmt-obligations.json) accounts for every printed line and
 canonical definition, including reprints; it is not a second membership source.
 
-Initial admission: **71/195**, **124 gated**. Current admission: **109/195**,
-**86 gated**, zero unresolved. The 71 inherited admission flags still require
-source/rules audits. **38 newly authored physical cards have rules scenarios; 38 have integrated release validation**;
+Initial admission: **71/195**, **124 gated**. Current admission: **110/195**,
+**85 gated**, zero unresolved. The 71 inherited admission flags still require
+source/rules audits. **39 newly authored physical cards have rules scenarios; 38 have integrated release validation**;
 zero have independent final published-head reviews or upstream merges.
 
 ## Active Sneak integration
@@ -272,3 +272,24 @@ entire-pool acceptance and independent reviews remain pending.
 Current next action supersedes earlier resume notes: implement Leonardo, Sewer
 Samurai’s explicit graveyard permission and finality counters. The release
 process is terminal; inputs may now change. Keep the full-set goal open.
+
+## Active Sewer Samurai integration
+
+Leonardo, Sewer Samurai and shared finality counters pass the optimized
+**53-scenario Sneak suite** (`<cache>/rustmage-tmt-sewer-tests-fourth.log`,
+terminal success). All 26 printed Sneak consumers are authored and locally
+rules-tested; Ninja Teen’s granted Sneak remains outstanding. Explicit static
+graveyard permission actions preserve independent alternative costs and mark
+finality only for Samurai’s route. Scenarios cover both seats, ownership,
+turn/timing, power-or-toughness qualification with characteristic-defined stats,
+source loss/ability loss/incarnations, countering, actual double-strike combat,
+Muldrotha’s separate quota and Sneak/Warp routes, and compact 40-byte CastInfo.
+
+Intrinsic finality replacement works on all permanents, survives ability loss,
+competes with self-shuffling replacement once, and clears on bounce/reentry.
+Paired provenance records the pinned Java creature-only discrepancy against
+CR122.1h and official TMT rulings. Source/provenance and portability checks pass.
+Observation schema is 174. Admission is 110/195, 85 gated; the 39th newly authored
+card awaits integrated release validation. Next: the five Class cards, including
+true Class level designations, gained abilities and Ninja Teen’s granted Sneak
+with composed mandatory costs. No external blocker or final review is claimed.

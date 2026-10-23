@@ -602,6 +602,11 @@ define_actions! {
     AnnounceFlashSurcharge { card: CardId },
     AnnounceWarp { card: CardId },
     AnnounceSneak { card: CardId, attacker: ObjectRef },
+    // Choose an exact static graveyard permission independently of alternative costs.
+    AnnounceGraveyardSpell {
+        card: CardId, permission: ObjectRef, permanent_type: Option<PermanentType>,
+        method: CastMethod, attacker: Option<ObjectRef>, flash_surcharge: bool,
+    },
     AnnounceAdventure { card: CardId },
     AnnounceOmen { card: CardId },
     AnnouncePlot { card: CardId },
@@ -898,7 +903,7 @@ struct PlayerState {
 }
 
 /// How an actual spell was cast; abilities have no cast information.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum CastMethod {
     Sneak,
     Normal,
@@ -924,6 +929,7 @@ pub enum CastOriginPermissions {
     ForeignStash,
     ExileAnyMana,
     Both,
+    Finality,
 }
 impl CastOriginPermissions {
     pub const fn new(stash: bool, any_mana: bool) -> Self {
@@ -933,6 +939,9 @@ impl CastOriginPermissions {
             (false, true) => Self::ExileAnyMana,
             (true, true) => Self::Both,
         }
+    }
+    pub const fn finality_on_entry(self) -> bool {
+        matches!(self, Self::Finality)
     }
     pub const fn stash_origin(self) -> bool {
         matches!(self, Self::ForeignStash | Self::Both)
@@ -944,9 +953,15 @@ impl CastOriginPermissions {
 impl Serialize for CastOriginPermissions {
     fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut view = serializer.serialize_struct("CastOriginPermissions", 2)?;
+        let mut view = serializer.serialize_struct(
+            "CastOriginPermissions",
+            if self.finality_on_entry() { 3 } else { 2 },
+        )?;
         view.serialize_field("stash_origin", &self.stash_origin())?;
         view.serialize_field("exile_any_mana", &self.exile_any_mana())?;
+        if self.finality_on_entry() {
+            view.serialize_field("finality_on_entry", &true)?;
+        }
         view.end()
     }
 }
@@ -3417,6 +3432,11 @@ impl Game {
                 ) {
                     return true;
                 }
+                if !casting_prohibited
+                    && self.visit_graveyard_spell_permissions(actor, sorcery, &mut emit)
+                {
+                    return true;
+                }
                 for (i, obj) in s.objects.iter().enumerate() {
                     let card = i as CardId;
                     let authorized_origin = match obj.zone {
@@ -4407,6 +4427,14 @@ impl Game {
         {
             self.consume_graveyard_type(*permission, *permanent_type);
         }
+        if let Action::AnnounceGraveyardSpell {
+            permission,
+            permanent_type: Some(kind),
+            ..
+        } = &action
+        {
+            self.consume_graveyard_type(*permission, *kind);
+        }
         match action {
             Action::ChooseZoneReplacement { effect } => self.choose_zone_replacement(effect),
             Action::ChooseReplacement { source, ability } => {
@@ -4712,6 +4740,29 @@ impl Game {
             Action::AnnounceWarp { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 item.cast.as_mut().unwrap().method = CastMethod::Warp;
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceGraveyardSpell {
+                card,
+                permanent_type,
+                method,
+                attacker,
+                flash_surcharge,
+                ..
+            } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                let cast = item.cast.as_mut().unwrap();
+                cast.method = method;
+                cast.flash_surcharge = flash_surcharge;
+                if permanent_type.is_none() {
+                    cast.origin_permissions = CastOriginPermissions::Finality;
+                }
+                if let Some(attacker) = attacker {
+                    item.sneak = Some(Box::new(
+                        self.sneak_attacker(actor, attacker)
+                            .expect("legal graveyard Sneak attacker"),
+                    ));
+                }
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceSneak { card, attacker } => {

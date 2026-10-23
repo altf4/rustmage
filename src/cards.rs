@@ -1931,10 +1931,11 @@ pub enum CounterKind {
     FirstStrike,
     Lifelink,
     Dream,
+    Finality,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 19] = [
+    pub const ALL: [Self; 20] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -1954,6 +1955,7 @@ impl CounterKind {
         Self::FirstStrike,
         Self::Lifelink,
         Self::Dream,
+        Self::Finality,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -1972,6 +1974,7 @@ impl CounterKind {
                 | Self::FirstStrike
                 | Self::Lifelink
                 | Self::Dream
+                | Self::Finality
         )
     }
 }
