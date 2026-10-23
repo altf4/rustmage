@@ -326,6 +326,7 @@ fn source_indices_follow_every_admitted_definition_and_round_trip_restore() {
             matches!(
                 a.condition.event(),
                 TriggerCondition::DamagedCreatureDies
+                    | TriggerCondition::ControlledCreatureLeaves { .. }
                     | TriggerCondition::SelfDies
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::AttachedCreatureDies
