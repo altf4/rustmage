@@ -392,7 +392,7 @@
       "oracle_id": "1f076303-d160-4e02-aa1e-9ed6040c3735",
       "name": "Cool but Rude",
       "definition": "src/card_definitions/tmt/cool_but_rude.rs",
-      "state": "tested candidate; integrated release validation, full-set acceptance and independent reviews pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Cool but Rude",
@@ -413,7 +413,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/cool_but_rude.json",
-        "src/engine_tmt_class_tests.rs"
+        "src/engine_tmt_class_tests.rs",
+        "docs/sets/tmt-class-validation.json"
       ],
       "local_batch": 13
     },
@@ -572,7 +573,7 @@
       "oracle_id": "df54b79d-f31d-4582-86c0-1d34ec77be0f",
       "name": "Does Machines",
       "definition": "src/card_definitions/tmt/does_machines.rs",
-      "state": "tested candidate; integrated release validation, full-set acceptance and independent reviews pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Does Machines",
@@ -593,7 +594,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/does_machines.json",
-        "src/engine_tmt_class_tests.rs"
+        "src/engine_tmt_class_tests.rs",
+        "docs/sets/tmt-class-validation.json"
       ],
       "local_batch": 14
     },
@@ -1614,7 +1616,7 @@
       "oracle_id": "134430b7-d566-485a-bd5c-7db8a285f4ca",
       "name": "Leader's Talent",
       "definition": "src/card_definitions/tmt/leader_s_talent.rs",
-      "state": "tested candidate; integrated release validation, full-set acceptance and independent reviews pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Leader's Talent",
@@ -1635,7 +1637,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/leader_s_talent.json",
-        "src/engine_tmt_class_tests.rs"
+        "src/engine_tmt_class_tests.rs",
+        "docs/sets/tmt-class-validation.json"
       ],
       "local_batch": 12
     },

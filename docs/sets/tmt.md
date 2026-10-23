@@ -21,7 +21,7 @@ canonical definition, including reprints; it is not a second membership source.
 
 Initial admission: **71/195**, **124 gated**. Current admission: **113/195**,
 **82 gated**, zero unresolved. The 71 inherited admission flags still require
-source/rules audits. **42 newly authored physical cards have rules scenarios; 39 have integrated release validation**;
+source/rules audits. **42 newly authored physical cards have rules scenarios; 42 have integrated release validation**;
 zero have independent final published-head reviews or upstream merges.
 
 ## Active Sneak integration
@@ -335,3 +335,24 @@ cards have focused rules evidence, 39 have full release validation, and 71
 inherited flags still need audits. Next: Ninja Teen’s dynamic Sneak and composed
 mandatory costs, and Party Dude’s cross-player Food creation and attack trigger.
 No implementation PR, final review or set-only acceptance is claimed.
+
+## Validated 113-card checkpoint
+
+All nine release phases pass on `0faafd3d` in 623.89 seconds:
+3,338 library rules tests (one ignored), all 87 TMT scenarios (14 Class,
+53 Sneak, 20 initial), existing native full-game suites and seven Python
+binding smoke checks. Admission remains 113/195, 82 gated, zero unresolved.
+42 newly authored physical candidates are now locally rules/release verified;
+71 inherited admission flags still need audits. No set-only acceptance or
+independent final published-head review is claimed.
+
+See [portable evidence](tmt-class-validation.json) for report hashes, exact
+retained libraries, resource guard limits and measured elapsed throughput.
+The first Class run passed 3,337 tests but found a missing expected category
+in the exhaustive source-index regression; its failure report is preserved
+in `<cache>/rustmage-validation-ixygovu8/report/result.json`. The corrected
+index test still checks registration, departure and snapshot/restore for
+every admitted definition and passes in the complete rerun.
+
+Next: Party Dude's shared cross-player token event, then Ninja Teen's dynamic
+Sneak/cost composition. The full 195-card goal stays open.
