@@ -543,41 +543,53 @@
   "focused_scope": "Combined260-card ECL scenarios; Kirol separately focused-tested after this combined run.",
   "full_release_validation": {
     "status": "passed all nine phases",
-    "head": "4428a3c58dffa99538eb51c5b4d8c36951676ba1",
-    "report": "<cache>/rustmage-validation-w8w7hgsk/report/result.json",
-    "seconds": 924.8706492390193,
+    "head": "dc6596bba39ebf5dae58122677ca5661e69ec7e4",
+    "report": "<cache>/rustmage-validation-kwpdtr1l/report/result.json",
+    "seconds": 618.6453657879902,
     "native_tests_passed": 3251,
     "native_tests_ignored": 1,
-    "native_seconds": 128.39,
+    "native_seconds": 27.06,
     "catalogue_tests_passed": 9,
     "foundations_game_suites_passed": 22,
-    "foundations_seconds": 342.55,
+    "foundations_seconds": 47.18,
     "ecl_games_passed": true,
     "ecl_strict_games": 236,
-    "ecl_strict_debug_seconds": 225.83,
     "python_binding_smoke_tests": 7,
     "peak_memory_gib": 3.6,
-    "cleaned_allocated_bytes": 1182765056,
-    "resource_report": "<cache>/rustmage-build-reports/64e717932d524d69ac0b04c7afc2d43a.json",
+    "cleaned_allocated_bytes": 835715072,
+    "resource_report": "<cache>/rustmage-build-reports/3e734a87967e45c5a92eef6c87b72f98.json",
     "phase_seconds": [
-      2.164768043003278,
-      0.9452430289820768,
-      0.45470225301687606,
-      8.920039087999612,
-      46.703102016006596,
-      774.4842958190129,
-      90.37555647999397,
-      0.32088429600116797,
-      0.40176709901425056
+      2.2917921119951643,
+      0.9470835620013531,
+      0.44936619099462405,
+      8.810674120002659,
+      49.55510211701039,
+      466.31242518799263,
+      89.47291387899895,
+      0.306348912010435,
+      0.3958981499890797
     ],
     "shared_libraries": {
-      "<cache>/rustmage-validation-w8w7hgsk/release/librustmage.so": "002fe9a08ba67892207fc2067f14369c5197e19f9521e7e7273b3946c1b2f1dc",
-      "<cache>/rustmage-validation-w8w7hgsk/release/deps/librustmage.so": "002fe9a08ba67892207fc2067f14369c5197e19f9521e7e7273b3946c1b2f1dc",
-      "<cache>/rustmage-validation-w8w7hgsk/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
-      "<cache>/rustmage-validation-w8w7hgsk/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
-      "<cache>/rustmage-validation-w8w7hgsk/debug/deps/librustmage.so": "4eb1d406aa0fb403455d6524e47bc2bab465361b0adceca6db82fc2e998ac34f"
+      "<cache>/rustmage-validation-kwpdtr1l/release/librustmage.so": "002fe9a08ba67892207fc2067f14369c5197e19f9521e7e7273b3946c1b2f1dc",
+      "<cache>/rustmage-validation-kwpdtr1l/release/deps/librustmage.so": "002fe9a08ba67892207fc2067f14369c5197e19f9521e7e7273b3946c1b2f1dc",
+      "<cache>/rustmage-validation-kwpdtr1l/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+      "<cache>/rustmage-validation-kwpdtr1l/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-kwpdtr1l/release-test/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-kwpdtr1l/release-test/deps/librustmage.so": "7120ca22828a13c1840a65d6905573edd2b8dcdd2a4673259fa5ea67e32c510d"
     },
-    "changed_inputs": []
+    "changed_inputs": [],
+    "ecl_strict_optimized_seconds": 22.88,
+    "test_profile": "release-test: inherits release opt-level3, LTO disabled,16 codegen units,debug assertions and overflow checks enabled",
+    "test_command": [
+      "cargo",
+      "test",
+      "--profile",
+      "release-test",
+      "--lib",
+      "--bins",
+      "--tests",
+      "--benches"
+    ]
   },
   "regression_recheck": {
     "command": "guarded cargo test --test foundations_games characteristic_modal_games::foundations_six_characteristic_modal_cards_full_games_and_owned_effect_state",
@@ -607,25 +619,26 @@
     }
   },
   "regression_benchmark": {
-    "clone_ns": 283.34074,
+    "clone_ns": 154.85153,
     "decisions": 49832,
-    "decisions_per_second": 181319.10309729903,
+    "decisions_per_second": 180859.16027692906,
     "games": 100,
-    "games_per_second": 363.8607784100558,
+    "games_per_second": 362.9377915334104,
     "initial_state_bytes_excluding_capacity_and_allocator": 21096,
     "max_decisions_per_game": 1129,
     "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
-    "restore_ns": 136.59277,
-    "seconds": 0.274830391,
-    "head": "4428a3c58dffa99538eb51c5b4d8c36951676ba1",
-    "scope": "Freeform native-policy regression only; not ECL acceptance or all-Standard parity"
+    "restore_ns": 123.89253,
+    "seconds": 0.275529312,
+    "head": "dc6596bba39ebf5dae58122677ca5661e69ec7e4",
+    "scope": "unchanged production-release Freeform native-policy regression; not ECL acceptance or all-Standard parity"
   },
   "retained_shared_libraries": {
-    "<cache>/rustmage-validation-w8w7hgsk/release/librustmage.so": "002fe9a08ba67892207fc2067f14369c5197e19f9521e7e7273b3946c1b2f1dc",
-    "<cache>/rustmage-validation-w8w7hgsk/release/deps/librustmage.so": "002fe9a08ba67892207fc2067f14369c5197e19f9521e7e7273b3946c1b2f1dc",
-    "<cache>/rustmage-validation-w8w7hgsk/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
-    "<cache>/rustmage-validation-w8w7hgsk/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
-    "<cache>/rustmage-validation-w8w7hgsk/debug/deps/librustmage.so": "4eb1d406aa0fb403455d6524e47bc2bab465361b0adceca6db82fc2e998ac34f"
+    "<cache>/rustmage-validation-kwpdtr1l/release/librustmage.so": "002fe9a08ba67892207fc2067f14369c5197e19f9521e7e7273b3946c1b2f1dc",
+    "<cache>/rustmage-validation-kwpdtr1l/release/deps/librustmage.so": "002fe9a08ba67892207fc2067f14369c5197e19f9521e7e7273b3946c1b2f1dc",
+    "<cache>/rustmage-validation-kwpdtr1l/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+    "<cache>/rustmage-validation-kwpdtr1l/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+    "<cache>/rustmage-validation-kwpdtr1l/release-test/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+    "<cache>/rustmage-validation-kwpdtr1l/release-test/deps/librustmage.so": "7120ca22828a13c1840a65d6905573edd2b8dcdd2a4673259fa5ea67e32c510d"
   },
   "doran": {
     "commit": "4bc474cc",
@@ -3356,5 +3369,104 @@
     "preserved_every_shared_library": true,
     "preserved_measured_binary_hash": "3f3149334781360b330f154b084ce86ffc2a1b9ee28b89a32d2a7150d6fbfa22",
     "other_targets_untouched": true
+  },
+  "release_273_debug_retained_evidence": {
+    "full_release_validation": {
+      "status": "passed all nine phases",
+      "head": "4428a3c58dffa99538eb51c5b4d8c36951676ba1",
+      "report": "<cache>/rustmage-validation-w8w7hgsk/report/result.json",
+      "seconds": 924.8706492390193,
+      "native_tests_passed": 3251,
+      "native_tests_ignored": 1,
+      "native_seconds": 128.39,
+      "catalogue_tests_passed": 9,
+      "foundations_game_suites_passed": 22,
+      "foundations_seconds": 342.55,
+      "ecl_games_passed": true,
+      "ecl_strict_games": 236,
+      "ecl_strict_debug_seconds": 225.83,
+      "python_binding_smoke_tests": 7,
+      "peak_memory_gib": 3.6,
+      "cleaned_allocated_bytes": 1182765056,
+      "resource_report": "<cache>/rustmage-build-reports/64e717932d524d69ac0b04c7afc2d43a.json",
+      "phase_seconds": [
+        2.164768043003278,
+        0.9452430289820768,
+        0.45470225301687606,
+        8.920039087999612,
+        46.703102016006596,
+        774.4842958190129,
+        90.37555647999397,
+        0.32088429600116797,
+        0.40176709901425056
+      ],
+      "shared_libraries": {
+        "<cache>/rustmage-validation-w8w7hgsk/release/librustmage.so": "002fe9a08ba67892207fc2067f14369c5197e19f9521e7e7273b3946c1b2f1dc",
+        "<cache>/rustmage-validation-w8w7hgsk/release/deps/librustmage.so": "002fe9a08ba67892207fc2067f14369c5197e19f9521e7e7273b3946c1b2f1dc",
+        "<cache>/rustmage-validation-w8w7hgsk/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+        "<cache>/rustmage-validation-w8w7hgsk/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "<cache>/rustmage-validation-w8w7hgsk/debug/deps/librustmage.so": "4eb1d406aa0fb403455d6524e47bc2bab465361b0adceca6db82fc2e998ac34f"
+      },
+      "changed_inputs": []
+    },
+    "regression_benchmark": {
+      "clone_ns": 283.34074,
+      "decisions": 49832,
+      "decisions_per_second": 181319.10309729903,
+      "games": 100,
+      "games_per_second": 363.8607784100558,
+      "initial_state_bytes_excluding_capacity_and_allocator": 21096,
+      "max_decisions_per_game": 1129,
+      "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+      "restore_ns": 136.59277,
+      "seconds": 0.274830391,
+      "head": "4428a3c58dffa99538eb51c5b4d8c36951676ba1",
+      "scope": "Freeform native-policy regression only; not ECL acceptance or all-Standard parity"
+    },
+    "retained_shared_libraries": {
+      "<cache>/rustmage-validation-w8w7hgsk/release/librustmage.so": "002fe9a08ba67892207fc2067f14369c5197e19f9521e7e7273b3946c1b2f1dc",
+      "<cache>/rustmage-validation-w8w7hgsk/release/deps/librustmage.so": "002fe9a08ba67892207fc2067f14369c5197e19f9521e7e7273b3946c1b2f1dc",
+      "<cache>/rustmage-validation-w8w7hgsk/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+      "<cache>/rustmage-validation-w8w7hgsk/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-w8w7hgsk/debug/deps/librustmage.so": "4eb1d406aa0fb403455d6524e47bc2bab465361b0adceca6db82fc2e998ac34f"
+    }
+  },
+  "optimized_validation_followup": {
+    "status": "all nine phases pass on fixed published inputs",
+    "head": "dc6596bba39ebf5dae58122677ca5661e69ec7e4",
+    "debug_comparison_head": "4428a3c58dffa99538eb51c5b4d8c36951676ba1",
+    "debug_total_seconds": 924.8706492390193,
+    "optimized_total_seconds": 618.6453657879902,
+    "total_reduction_percent": 33.11006611605529,
+    "optimized_test_build_seconds_rounded": 368,
+    "test_timings_seconds": {
+      "native": {
+        "debug": 128.39,
+        "optimized": 27.06
+      },
+      "foundations": {
+        "debug": 342.55,
+        "optimized": 47.18
+      },
+      "ecl236": {
+        "debug": 225.83,
+        "optimized": 22.88
+      }
+    },
+    "test_coverage": "lib,bins,integration tests,benches; all existing test-bearing target kinds; no test attributes in123 Rust examples, which Clippy still checks",
+    "production_profile": "unchanged; library and benchmark use production --release",
+    "interrupted_attempts": [
+      {
+        "head": "109ecdfdeb0548a03082934519bc27d1894e16d8",
+        "reason": "unnecessary optimized empty-example test harnesses",
+        "report": "<cache>/rustmage-validation-bodp_8ie/report/interrupted-evidence.json"
+      },
+      {
+        "head": "d336c919f561c4f7266c64fdbbd72e90078b5c91",
+        "reason": "production thin-LTO/single-CGU unit-test compilation exceeded16min; stopped before optimized test profile",
+        "report": "<cache>/rustmage-validation-yvg43wto/report/interrupted-evidence.json"
+      }
+    ],
+    "final_head_review_refresh": "recorded on PR comments after this evidence-only followup"
   }
 }

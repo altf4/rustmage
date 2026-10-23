@@ -78,6 +78,25 @@ from the numerator. The earlier focused-authoring rate was 22.28 cards/hour.
 Exact elapsed intervals, commands, build/source hashes and measurements are in
 [ecl-validation.json](ecl-validation.json). Both published-head reviews approve; upstream merge is tracked separately.
 
+## Optimized validation followup
+
+At `dc6596bb`, `validate.py --release` passed all9 phases in **618.65seconds**
+(**10min19s**), versus924.87seconds (**15min25s**) for the earlier debug-test
+validation: **33.1% lower cold-run time**, including compilation. The optimized
+`release-test` profile inherits release opt-level3, disables LTO, uses16 codegen
+units and keeps debug assertions and overflow checks enabled. Production release
+libraries and benchmarks keep their existing profile. No card behavior changed.
+
+All3251 native tests passed in**27.06s** (previously128.39s); all22 Foundations
+suites in**47.18s** (342.55s); strict236-game ECL acceptance in**22.88s** (225.83s).
+The cold optimized test build took6min8s and is now the largest cost. Clippy still
+checks every target, including123 Rust examples with no tests; optimized test
+builds select every test-bearing target kind without empty example harnesses.
+Peak memory3.6GiB;835,715,072 disposable bytes cleaned. Exact reports, profile,
+commands, historical attempts and retained library hashes are in the JSON ledger.
+No test or resource limit was removed. Final exact-head review refreshes and
+GitHub CI outcome are recorded on the PR.
+
 ## Hosted CI timeout followup
 
 GitHub run39882226685 attempt2 passed Clippy in73.34seconds, all3251 native
