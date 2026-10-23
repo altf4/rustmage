@@ -3,10 +3,73 @@
   "catalogue_id": 1129,
   "oracle_id": "f6a7838d-380f-4752-a647-c55c2a0eb6e2",
   "facts_sha256": "42275a57c231656c5d22faaa3bf8732aba8a64452b2c3fa3d744292e8f95dbe7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2702efee78e40628bac516a0a6a69084114b0be52de3e5b3ea409873fbce205e"
   },
-  "physical_metadata_sha256": "b8082f6ad7f574f0f3d4682e693c7be2a8d6cdb76e6456c797361a26b9caa88d"
+  "physical_metadata_sha256": "b8082f6ad7f574f0f3d4682e693c7be2a8d6cdb76e6456c797361a26b9caa88d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DonatelloMutantMechanic.java",
+  "java_sha256": "4ca5479ec4c16d16cd787abd34ced13bac2b2ee4838a04128cd0488f45e3614b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/PutIntoGraveFromBattlefieldAllTriggeredAbility.java",
+      "sha256": "627dd80120b299b046c28267ddd1a1d5ac2cf8fba1b9546cb6508452e303bbc8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutSavedPermanentCountersTargetEffect.java",
+      "sha256": "8c04280f3b3521b1221545af5a633cb4d65a957c0a7b08ea12505486b82ea36e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardSubTypeTargetEffect.java",
+      "sha256": "4a5b785143060689d498ae3f97610eac0103c628160a52505c1d6fcad298384f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeTargetEffect.java",
+      "sha256": "95ebcf49ca842a8831f4925cfff4199bdd0740c37f0dbe77a7c542a73272cc67"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessTargetEffect.java",
+      "sha256": "cc450621ce5efa6894bfc8eab4290a28aafb69a3f197f62851095e13d2f97f8f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/CounterAnyPredicate.java",
+      "sha256": "d9b89c5d487a1c6aede3f90e5edf474311703b231441a01a3a30b10107eb9434"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "122.2",
+      "205.1b",
+      "603.6c",
+      "603.10",
+      "613.1",
+      "614.16"
+    ],
+    "note": "Departure filters and complete counter snapshots use last-known characteristics and controller before the actual move, including simultaneous source departure. Counter quantities are put through the ordinary replacement batch, with new counter timestamps. Artifact-creature animation preserves prior types, colors and abilities under CR205.1b. Noncreature-only animation checks after counter placement. Pizza Face may target another artifact or creature of either player; The Ooze may target a card in either graveyard."
+  }
 }

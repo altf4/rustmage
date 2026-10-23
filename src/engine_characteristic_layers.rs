@@ -353,12 +353,23 @@ impl Game {
     pub(super) fn animate_source(&mut self, item: &SpellView, spec: AnimationSpec) {
         self.animate_exact(item.object, spec);
     }
+    pub(super) fn animate_targets(&mut self, item: &SpellView, spec: AnimationSpec) {
+        self.animate_target_objects(item, spec, false);
+    }
     pub(super) fn animate_targets_if_noncreature(&mut self, item: &SpellView, spec: AnimationSpec) {
+        self.animate_target_objects(item, spec, true);
+    }
+    fn animate_target_objects(
+        &mut self,
+        item: &SpellView,
+        spec: AnimationSpec,
+        noncreature_only: bool,
+    ) {
         for bound in &item.targets {
             if self.same_target_object(*bound)
                 && let Target::Card(id) = bound.target
                 && self.on_battlefield(id)
-                && !self.is_creature(id)
+                && (!noncreature_only || !self.is_creature(id))
             {
                 self.animate_exact(self.object_ref(id), spec);
             }

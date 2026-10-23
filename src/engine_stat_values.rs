@@ -362,6 +362,7 @@ impl Game {
             | AmountValue::GreatestCreaturePower(_)
             | AmountValue::LifeEventAmount
             | AmountValue::DamageEventAmount
+            | AmountValue::DepartureCounterCount(_)
             | AmountValue::DeathEventCounterTotal
             | AmountValue::DeathEventPower => 0, // Off-stack expressions have no cast parameter.
             AmountValue::Stat(value) => self.stat_value(value, source, owner).max(0) as u128,

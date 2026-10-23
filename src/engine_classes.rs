@@ -84,12 +84,10 @@ impl Game {
             .filter_map(|&id| {
                 let o = &self.state.objects[id as usize];
                 (o.zone == Zone::Battlefield
-                    && o.card.triggers().iter().any(|a| {
-                        matches!(
-                            a.condition.event(),
-                            TriggerCondition::ControlledCreatureLeaves { .. }
-                        )
-                    }))
+                    && o.card
+                        .triggers()
+                        .iter()
+                        .any(|a| a.condition.departure_filter().is_some()))
                 .then(|| self.object_view(id))
             })
             .collect();

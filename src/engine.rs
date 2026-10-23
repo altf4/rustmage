@@ -111,6 +111,8 @@ pub const OBSERVATION_SCHEMA: u32 = observation_schema::VERSION;
 mod cast_payments;
 #[path = "engine_classes.rs"]
 mod classes;
+#[path = "engine_departures.rs"]
+mod departures;
 #[path = "engine_mobilize.rs"]
 mod mobilize;
 #[path = "engine_plot.rs"]
@@ -1044,9 +1046,12 @@ pub struct ReflexiveSubjectView {
     pub object: ObjectRef,
 }
 
-/// Public frozen characteristics of the exact object whose death caused this trigger.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+/// Frozen battlefield-departure LKI. The historical death_event wire field
+/// also serves non-graveyard departures without growing every spell packet.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct DeathEventView {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub counter_snapshot: Option<Box<Counters>>,
     pub object: ObjectRef,
     pub counter_total: u128,
     pub power: i128,
@@ -1164,18 +1169,20 @@ impl SpellView {
     }
     /// Heap-owned continuation payloads; inline packet storage is counted by its container.
     pub(super) fn owned_bytes(&self) -> usize {
-        self.death_event
+        self.death_event.as_ref().map_or(0, |event| {
+            std::mem::size_of::<DeathEventView>()
+                + event
+                    .counter_snapshot
+                    .as_ref()
+                    .map_or(0, |c| std::mem::size_of::<Counters>() + c.owned_bytes())
+        }) + self.entry_batch_event.as_ref().map_or(0, |event| {
+            std::mem::size_of::<EntryBatchEventView>()
+                + event.objects.len() * std::mem::size_of::<ObjectRef>()
+                + event.last_known.len() * std::mem::size_of::<EntryBatchCopyView>()
+        }) + self
+            .transform_stamp
             .as_ref()
-            .map_or(0, |_| std::mem::size_of::<DeathEventView>())
-            + self.entry_batch_event.as_ref().map_or(0, |event| {
-                std::mem::size_of::<EntryBatchEventView>()
-                    + event.objects.len() * std::mem::size_of::<ObjectRef>()
-                    + event.last_known.len() * std::mem::size_of::<EntryBatchCopyView>()
-            })
-            + self
-                .transform_stamp
-                .as_ref()
-                .map_or(0, |_| std::mem::size_of::<u64>())
+            .map_or(0, |_| std::mem::size_of::<u64>())
             + self.mana_copy_sources.as_ref().map_or(0, |sources| {
                 std::mem::size_of::<Vec<(ManaCopySource, u64)>>()
                     + sources.len() * std::mem::size_of::<(ManaCopySource, u64)>()
@@ -8583,6 +8590,9 @@ mod tmt_disappear_tests;
 #[cfg(test)]
 #[path = "engine_tmt_class_tests.rs"]
 mod tmt_class_tests;
+#[cfg(test)]
+#[path = "engine_tmt_departure_tests.rs"]
+mod tmt_departure_tests;
 #[cfg(test)]
 #[path = "engine_tmt_ninja_tests.rs"]
 mod tmt_ninja_tests;

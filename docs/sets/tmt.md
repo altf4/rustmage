@@ -459,3 +459,40 @@ shared libraries remain at their exact producing paths and hashes.
 Next: general departure-counter LKI and animation consumers (Donatello, Mutant
 Mechanic; The Ooze; Pizza Face; Mind Transfer Protocol; Super Shredder).
 The full set goal stays open; no partial implementation PR is published.
+
+## Departure-counter and animation integration candidates
+
+Donatello, Mutant Mechanic; The Ooze; Pizza Face, Gastromancer; Mind Transfer
+Protocol; and Super Shredder pass all **138 TMT scenarios**, including 21 new
+rules scenarios, log `<cache>/rustmage-tmt-departure-tests-complete.log`.
+Admission is now 120/195, 75 gated, zero unresolved. 49 new physical candidates
+have focused rules evidence; 44 have integrated release evidence and 71
+inherited flags still need audits. Full release validation of this batch is
+pending, including public paid casts after admission.
+
+A generic typed departure filter reuses the existing frozen pre-event provider
+set for any permanent type, controller, destination and counter requirement.
+Leader's Talent and Ninja Teen keep their existing typed definitions. Only
+programs consuming counters capture a full owned counter snapshot in the
+existing rare event payload; ordinary spell packets and hot objects do not
+acquire another pointer. Mixed counters use the existing placement/replacement
+batch, preserving new counter timestamps. All 19 counter kinds which can reach
+a graveyard are tested; finality's actual exile exclusion is tested with Ooze.
+Simultaneous source death, exact references, foreign ownership/pre-death control,
+zero/stale targets, normal doubling and integer-overflow rollback are covered.
+
+Mind Transfer Protocol sets 4/5 until end of turn while preserving types,
+subtypes, colors and abilities under CR205.1b; Equipment unattaches normally.
+Donatello and Pizza Face animate only if the target is still noncreature after
+its counters are placed. A Vehicle crewed in response preserves its printed
+base. Pizza Face may target another artifact or creature on either side;
+The Ooze may target either graveyard. Source loss, invalid targets, Mutagen
+cost/timing, Food entry, Pizza's actual 10/tap/sacrifice life gain and Super
+Shredder's real menace blocking are tested with owned branch/replay checks.
+
+The first focused run exposed incorrect unrestricted Object-target relation
+constants and a helper consuming a new optional triggered announcement. Those
+were corrected; the complete 138-scenario run passes. Observation schema is
+177 and additive Mutant animation joins the existing compact subtype grants.
+The full 195-card goal, inherited audits, set-only acceptance and final reviews
+remain open; no partial PR is published.

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "3263c220f19cbe2ee3cfadea9865d57f19f557c0a5be9c901e404ff1df5f6842",
+  "catalogue_version": "5a11ee4d6fed810c5b2228264be9477d092fd70023c11bd669591a23775fe94a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2400,
-  "implemented_total": 2406,
+  "implemented_standard_cards": 2405,
+  "implemented_total": 2411,
   "token_definitions": 113,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -185,8 +185,8 @@
     },
     "tmt": {
       "total": 189,
-      "complete": 109,
-      "gated": 80
+      "complete": 114,
+      "gated": 75
     },
     "w17": {
       "total": 1,
@@ -9238,8 +9238,8 @@
     {
       "name": "Donatello, Mutant Mechanic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/donatello_mutant_mechanic.rs",
       "set": "tmt"
     },
@@ -22326,8 +22326,8 @@
     {
       "name": "Mind Transfer Protocol",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/mind_transfer_protocol.rs",
       "set": "tmt"
     },
@@ -25622,8 +25622,8 @@
     {
       "name": "Pizza Face, Gastromancer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/pizza_face_gastromancer.rs",
       "set": "tmt"
     },
@@ -34230,8 +34230,8 @@
     {
       "name": "Super Shredder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/super_shredder.rs",
       "set": "tmt"
     },
@@ -36078,8 +36078,8 @@
     {
       "name": "The Ooze",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/the_ooze.rs",
       "set": "tmt"
     },

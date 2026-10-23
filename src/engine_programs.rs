@@ -383,18 +383,18 @@ impl Game {
         // Self departure uses the event's frozen LKI for every destination,
         // including simultaneous bounce/exile and replacement-modified moves.
         if event.before.zone == Zone::Battlefield {
-            if event.before.is_creature() {
-                for source in event.departure_sources.iter().flat_map(|rows| rows.iter()) {
-                    if source.controller != event.before.controller {
+            for source in event.departure_sources.iter().flat_map(|rows| rows.iter()) {
+                for (index, ability) in source.card.triggers().iter().enumerate() {
+                    let Some(filter) = ability.condition.departure_filter() else {
+                        continue;
+                    };
+                    if !self.departure_matches(filter, source, event) {
                         continue;
                     }
-                    for (index, ability) in source.card.triggers().iter().enumerate() {
-                        if let TriggerCondition::ControlledCreatureLeaves { with_counter } =
-                            ability.condition.event()
-                            && (!with_counter || event.before.counters.has_any())
-                        {
-                            self.queue_zone_trigger(source, index, event);
-                        }
+                    if self.queue_zone_trigger(source, index, event)
+                        && Self::program_uses_departure_counters(ability.program)
+                    {
+                        self.capture_departure_counters(event);
                     }
                 }
             }
@@ -522,6 +522,7 @@ impl Game {
                         {
                             self.state.pending_triggers.last_mut().unwrap().death_event =
                                 Some(Box::new(DeathEventView {
+                                    counter_snapshot: None,
                                     object: event.before.reference,
                                     counter_total: event.before.counters.total(),
                                     power: event.before.power,
@@ -599,6 +600,7 @@ impl Game {
                     | TriggerCondition::SelfDies
                     | TriggerCondition::SelfLeavesBattlefield
                     | TriggerCondition::ControlledCreatureLeaves { .. }
+                    | TriggerCondition::PermanentLeaves(_)
                     | TriggerCondition::ClassLevel { .. }
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::CreatureDies { .. }
@@ -2863,6 +2865,7 @@ impl Game {
                     }
                 }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
+                Instruction::AnimateTargets(spec) => self.animate_targets(&item, spec),
                 Instruction::AnimateTargetsIfNoncreature(spec) => {
                     self.animate_targets_if_noncreature(&item, spec)
                 }
@@ -4035,6 +4038,19 @@ impl Game {
                                 && self.creature_matches(filter, item.controller, item.object, id))
                             .then(|| (self.object_ref(id), Counters::of(kind, u64::from(amount))))
                         })
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
+                }
+                Instruction::PutDepartureCounters { subject } => {
+                    let amounts = item
+                        .death_event
+                        .as_ref()
+                        .and_then(|e| e.counter_snapshot.as_deref())
+                        .expect("captured departure counters");
+                    let changes = self
+                        .keyword_subjects(&item, subject)
+                        .into_iter()
+                        .map(|id| (self.object_ref(id), amounts.clone()))
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }

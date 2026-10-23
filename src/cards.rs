@@ -1281,6 +1281,7 @@ pub(crate) enum Instruction {
     Surveil(u16),
     AnimateSource(AnimationSpec),
     AnimateTargetsIfNoncreature(AnimationSpec),
+    AnimateTargets(AnimationSpec),
     SetClassLevel(u8),
     Search(SearchSpec),
     SearchCreatureManaValue {
@@ -1492,6 +1493,9 @@ pub(crate) enum Instruction {
         kind: CounterKind,
         amount: u32,
     },
+    PutDepartureCounters {
+        subject: Subject,
+    },
     /// One simultaneous mixed-kind placement event.
     PutCounterKinds {
         subject: Subject,
@@ -1655,6 +1659,7 @@ pub(crate) enum AmountValue {
     DamageEventAmount,
     DeathEventPower,
     DeathEventCounterTotal,
+    DepartureCounterCount(CounterKind),
     #[allow(
         dead_code,
         reason = "Core quantity is scenario-tested while its consumer cards remain gated"
@@ -2515,7 +2520,22 @@ pub(crate) enum ReturnKind {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum DepartureCounters {
+    Unrestricted,
+    Any,
+    Kind(CounterKind),
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct DepartureFilter {
+    pub kinds: u16,
+    pub relation: CastRelation,
+    pub other: bool,
+    pub graveyard_only: bool,
+    pub counters: DepartureCounters,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    PermanentLeaves(DepartureFilter),
     ClassLevel {
         level: u8,
     },
@@ -2765,6 +2785,23 @@ impl TriggerCondition {
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. } => event.requires_opponents_turn(),
             _ => false,
+        }
+    }
+    pub(crate) fn departure_filter(self) -> Option<DepartureFilter> {
+        match self.event() {
+            Self::PermanentLeaves(filter) => Some(filter),
+            Self::ControlledCreatureLeaves { with_counter } => Some(DepartureFilter {
+                kinds: 1,
+                relation: CastRelation::You,
+                other: false,
+                graveyard_only: false,
+                counters: if with_counter {
+                    DepartureCounters::Any
+                } else {
+                    DepartureCounters::Unrestricted
+                },
+            }),
+            _ => None,
         }
     }
     pub(crate) fn event(self) -> Self {

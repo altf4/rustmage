@@ -77,6 +77,7 @@ impl Game {
             }
             let mut item = row.item;
             item.death_event = Some(Box::new(DeathEventView {
+                counter_snapshot: None,
                 object: event.before.reference,
                 counter_total: event.before.counters.total(),
                 power: if event.before.is_creature() {

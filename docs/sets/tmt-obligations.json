@@ -699,7 +699,7 @@
       "oracle_id": "f6a7838d-380f-4752-a647-c55c2a0eb6e2",
       "name": "Donatello, Mutant Mechanic",
       "definition": "src/card_definitions/tmt/donatello_mutant_mechanic.rs",
-      "state": "gated",
+      "state": "focused rules candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Donatello, Mutant Mechanic",
@@ -714,7 +714,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_departure_tests.rs",
+        "src/card_definitions/tmt/donatello_mutant_mechanic.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 17
     },
     {
       "oracle_id": "f84850bc-6348-449e-bd82-bb39e2119bec",
@@ -2163,7 +2168,7 @@
       "oracle_id": "0d80d0f7-a436-431c-a54e-e7dd7dbba8de",
       "name": "Mind Transfer Protocol",
       "definition": "src/card_definitions/tmt/mind_transfer_protocol.rs",
-      "state": "gated",
+      "state": "focused rules candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Mind Transfer Protocol",
@@ -2178,7 +2183,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_departure_tests.rs",
+        "src/card_definitions/tmt/mind_transfer_protocol.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 17
     },
     {
       "oracle_id": "e6490e98-37a9-4a8b-a04c-cceeb22b0c35",
@@ -2746,7 +2756,7 @@
       "oracle_id": "e71479c9-bb38-4112-bf8a-41b39a3ade51",
       "name": "Pizza Face, Gastromancer",
       "definition": "src/card_definitions/tmt/pizza_face_gastromancer.rs",
-      "state": "gated",
+      "state": "focused rules candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Pizza Face, Gastromancer",
@@ -2762,7 +2772,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_departure_tests.rs",
+        "src/card_definitions/tmt/pizza_face_gastromancer.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 17
     },
     {
       "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
@@ -3736,7 +3751,7 @@
       "oracle_id": "b7ee76bf-d15a-489e-8f05-414788f8f649",
       "name": "Super Shredder",
       "definition": "src/card_definitions/tmt/super_shredder.rs",
-      "state": "gated",
+      "state": "focused rules candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Super Shredder",
@@ -3751,7 +3766,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_departure_tests.rs",
+        "src/card_definitions/tmt/super_shredder.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 17
     },
     {
       "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
@@ -3956,7 +3976,7 @@
       "oracle_id": "82a6fa6f-13c2-4ea3-bec2-c51b56b2783b",
       "name": "The Ooze",
       "definition": "src/card_definitions/tmt/the_ooze.rs",
-      "state": "gated",
+      "state": "focused rules candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "The Ooze",
@@ -3971,7 +3991,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_departure_tests.rs",
+        "src/card_definitions/tmt/the_ooze.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 17
     },
     {
       "oracle_id": "86ef86de-104f-4eae-a2db-893b50e95ad7",

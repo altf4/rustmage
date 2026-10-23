@@ -367,6 +367,13 @@ impl Game {
                 .copied()
                 .unwrap_or(0)
                 .max(0) as u128,
+            AmountValue::DepartureCounterCount(kind) => u128::from(
+                item.death_event
+                    .as_ref()
+                    .and_then(|e| e.counter_snapshot.as_deref())
+                    .expect("saved departure counters")
+                    .get(kind),
+            ),
             AmountValue::DeathEventCounterTotal => {
                 item.death_event
                     .as_ref()
