@@ -19,21 +19,34 @@ Oracle facts remain pinned in `data/standard/cards.json`. The
 [obligation ledger](tmt-obligations.json) accounts for every printed line and
 canonical definition, including reprints; it is not a second membership source.
 
-Initial admission: **71/195**, **124 gated**. Current admission: **84/195**,
-**111 gated**, zero unresolved. The 71 inherited admission flags still require
-source/rules audits. **13 new physical cards are locally tested candidates**;
+Initial admission: **71/195**, **124 gated**. Current admission: **97/195**,
+**98 gated**, zero unresolved. The 71 inherited admission flags still require
+source/rules audits. **26 new physical cards are locally tested candidates**;
 zero have independent final published-head reviews or upstream merges.
 
 ## Active Sneak integration
 
-Local continuation implements the shared Sneak alternative casting/return-cost
-path and thirteen consumers. Admission is now **97/195**, with **98 gated**.
-The initial optimized run passed 20/21 scenarios; Splinter's Technique was
-corrected to the existing mandatory unrestricted-search primitive. The full
-release validator is pending on the current integration revision. No additional
-whole-card verification or final-set acceptance is claimed until it passes.
-The earlier validation JSON is now portable; its exact producing-host library
-manifest is retained separately in cache, with a hash in the JSON.
+Shared Sneak casting and thirteen whole-card consumers passed all nine release
+validation phases on `f04dc2ff`: 3,295 library rules tests, 24 Sneak scenarios,
+all native integration games, and seven Python binding smoke tests. Validation
+held 11,852 inputs fixed and completed in 616.53 seconds under the 6 GiB guard
+(3.5 GiB measured peak). Exact report and library hashes are recorded in
+[tmt-sneak-validation.json](tmt-sneak-validation.json); producing-host paths stay
+in its referenced cache manifest. The compact `CastInfo` remains 40 bytes.
+
+This batch covers thirteen cards: Donatello's Technique; Foot Ninjas; Leonardo,
+Big Brother; Oroku Saki, Shredder Rising; Jennika's Technique; Splinter's
+Technique; New Generation's Technique; Leonardo's Technique; Leonardo, Cutting
+Edge; Splinter, Hamato Yoshi; Raphael, the Nightwatcher; Shredder, Unrelenting;
+and Karai's Technique. Tests exercise actual paid actions, authorized graveyard,
+exile and library origins, exact attacker reservations and defenders, hybrid
+costs, private mandatory search, partial invalidation, combat, source departure,
+and raw/indexed branching and restore.
+
+Freeform regression measured 191,326 decisions/s and 383.94 games/s on the
+previously declared smoke workload. This is not TMT-specific simulation evidence.
+The next active batch adds exact-incarnation Sneak history, Leonardo, Leader in
+Blue; Karai, Future of the Foot; Turncoat Kunoichi; and Donatello, Gadget Master.
 
 ## Card obligations and local batches
 
@@ -126,21 +139,10 @@ records. No active build/test processes remain. Completed logs are under
 in the validation JSON. Focused disposable outputs have been cleaned. A new
 host rebuilds missing libraries rather than inventing old producing-host paths.
 
-**Next action: implement the shared Sneak kernel**, then start Donatello's
-Technique, Foot Ninjas, Leonardo, Big Brother and Oroku Saki, Shredder Rising.
-There are **26 physical TMT Sneak consumers**. Read the pinned
-`Mage/src/main/java/mage/abilities/keyword/SneakAbility.java`, its referenced
-return-to-hand cost, entry handling and each consumer in full. Verify against
-the pinned comprehensive rules and the [official mechanics guide](https://magic.wizards.com/en/news/feature/teenage-mutant-ninja-turtles-mechanics):
-Sneak is an alternative spell cost paid during your post-declaration blockers
-step, can respond at instant speed, returns an unblocked attacker to its owner's
-hand as a cost, and creature spells enter tapped attacking that exact attacker's
-defender. Normal-cost casting remains available. Preserve paid qualification,
-exact object/defender identity, funding, transactional failure and hidden choices.
-The pinned XMage keyword class marks the cast; audit its entry integration and
-resolve discrepancies against Oracle/rules rather than assuming the mark alone
-implements attacking entry.
-
+**Next action: implement and test the four conditional/copy Sneak consumers
+listed above.** The shared Sneak kernel and thirteen of 26 physical consumers
+are now verified. Remaining consumers and the 71 inherited cards still need
+complete source, rules and acceptance evidence.
 Remaining Disappear consumers are Krang & Shredder (linked exile/free casting),
 Pizza Face, Gastromancer (conditional animation), Rat King, Verminister
 (three-Rat payment and same-name reanimation), and West Wind Avatar
@@ -148,7 +150,7 @@ Pizza Face, Gastromancer (conditional animation), Rat King, Verminister
 levels, special casting permissions, linked choices, equipment and copy effects.
 These are engineering work, not known external access/source blockers.
 
-Continue auditing the 71 inherited cards and implementing the remaining 111
+Continue auditing the 71 inherited cards and implementing the remaining 98
 gated cards. Keep the 195 denominator fixed. Integrate locally, regenerate with
 `python3 scripts/link_catalogue.py`, authenticate with
 `python3 -m scripts.set_status TMT --check`, and run the complete release
