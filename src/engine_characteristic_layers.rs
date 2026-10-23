@@ -81,8 +81,12 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
         object.card.kind_mask()
     };
     if let Some(recipe) = world.game().copy_recipe(world.reference(id)) {
-        if recipe.exceptions.artifact { result |= 16; }
-        if recipe.exceptions.golem { result |= 17; }
+        if recipe.exceptions.artifact {
+            result |= 16;
+        }
+        if recipe.exceptions.golem {
+            result |= 17;
+        }
     }
     if object.zone != Zone::Battlefield {
         return result;

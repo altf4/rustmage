@@ -102,7 +102,11 @@ impl Game {
         self.state.free_tokens.push(object.card);
     }
     pub(super) fn create_copy_groups_inner(
-        &mut self, player: Player, groups: &[TokenGroupView], recipes: &[Option<CopyRecipe>], temporary: Option<&SpellView>,
+        &mut self,
+        player: Player,
+        groups: &[TokenGroupView],
+        recipes: &[Option<CopyRecipe>],
+        temporary: Option<&SpellView>,
     ) {
         assert_eq!(groups.len(), recipes.len());
         let total = groups

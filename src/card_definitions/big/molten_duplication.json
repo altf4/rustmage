@@ -14,6 +14,11 @@
   "java_sha256": "4b801de3f2ef9d9c20adc26ccf89214248f8a8fab5999e0bbe30589e41a7dd21",
   "xmage_dependencies": [
     {
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5"
+    },
+    {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
       "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
@@ -22,6 +27,11 @@
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
       "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c45c32e2c47bd7f62480c732af33864bcac93ec246a9cf7e292dd32a2d10917c"
     },
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

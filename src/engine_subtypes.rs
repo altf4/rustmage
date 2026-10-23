@@ -177,7 +177,10 @@ impl Game {
         {
             mask.insert("Nightmare");
         }
-        if self.copy_recipe(reference).is_some_and(|r| r.exceptions.golem) {
+        if self
+            .copy_recipe(reference)
+            .is_some_and(|r| r.exceptions.golem)
+        {
             mask.insert("Golem");
         }
         // Copy exceptions already exist while an owned token awaits entry.

@@ -37,8 +37,15 @@ impl CopyExceptions {
         artifact: false,
         golem: false,
     };
-    pub const ARTIFACT: Self = Self { artifact: true, ..Self::NONE };
-    pub const GOLEM: Self = Self { artifact: true, golem: true, ..Self::NONE };
+    pub const ARTIFACT: Self = Self {
+        artifact: true,
+        ..Self::NONE
+    };
+    pub const GOLEM: Self = Self {
+        artifact: true,
+        golem: true,
+        ..Self::NONE
+    };
     pub fn union(self, other: Self) -> Self {
         Self {
             sacrifice_abilities: self

@@ -7,5 +7,32 @@
   "physical_metadata_sha256": "3bc39565f111f9668f9a29fe79823b4c8edfd28f1a623efb86d4d94365b18f6d",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/game/permanent/token/BloodToken.java",
-  "java_sha256": "b08dc2a242ca49528d94620a7b7a7e0a2a0641676c1f9c99210e4be572c565b9"
+  "java_sha256": "b08dc2a242ca49528d94620a7b7a7e0a2a0641676c1f9c99210e4be572c565b9",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ]
 }

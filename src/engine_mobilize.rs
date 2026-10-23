@@ -190,10 +190,22 @@ impl Game {
         self.grant_keyword_effects(&ids, item.object, Keywords::HASTE);
         let id = self.next_stack_id();
         let batch = DelayedBatch {
-            view: DelayedSacrificeView { id, source: item.object, source_card: item.source_card, controller: item.controller, tokens },
-            keywords: item.source_keywords, tapped: item.source_tapped, facts: item.source_facts, attachment: item.source_attachment,
+            view: DelayedSacrificeView {
+                id,
+                source: item.object,
+                source_card: item.source_card,
+                controller: item.controller,
+                tokens,
+            },
+            keywords: item.source_keywords,
+            tapped: item.source_tapped,
+            facts: item.source_facts,
+            attachment: item.source_attachment,
         };
-        self.state.delayed_sacrifices.get_or_insert_with(|| Box::new(Vec::new())).push(batch);
+        self.state
+            .delayed_sacrifices
+            .get_or_insert_with(|| Box::new(Vec::new()))
+            .push(batch);
     }
     pub(super) fn queue_delayed_sacrifices(&mut self) {
         let Some(batches) = self.state.delayed_sacrifices.take() else {

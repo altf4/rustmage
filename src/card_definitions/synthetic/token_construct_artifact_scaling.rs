@@ -1,3 +1,32 @@
-const MODIFIER: ScalingModifier = ScalingModifier { subject: Subject::Source, value: StatValue::Count(CountFilter { zone: CountZone::Battlefield, relation: 0, kind: 16, exclude: 0, subtype: None, basic: false, other: false, cards_only: false }), stats: Stats { power: 1, toughness: 1 } };
-const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup { line: 0, first_layer: AbilityLayer::Modify, fragments: &[StaticAbilityFragment::ScalingModifier(0, MODIFIER)] }];
-pub(in crate::cards) const RULES: CardRules = CardRules { effect: Effect::Creature(0, 0), static_groups: GROUPS, extras: &CardExtras { static_ability_groups: GROUPS, scaling_modifiers: &[MODIFIER], ..CardExtras::EMPTY }, ..CardRules::EMPTY };
+const MODIFIER: ScalingModifier = ScalingModifier {
+    subject: Subject::Source,
+    value: StatValue::Count(CountFilter {
+        zone: CountZone::Battlefield,
+        relation: 0,
+        kind: 16,
+        exclude: 0,
+        subtype: None,
+        basic: false,
+        other: false,
+        cards_only: false,
+    }),
+    stats: Stats {
+        power: 1,
+        toughness: 1,
+    },
+};
+const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+    line: 0,
+    first_layer: AbilityLayer::Modify,
+    fragments: &[StaticAbilityFragment::ScalingModifier(0, MODIFIER)],
+}];
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Creature(0, 0),
+    static_groups: GROUPS,
+    extras: &CardExtras {
+        static_ability_groups: GROUPS,
+        scaling_modifiers: &[MODIFIER],
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
