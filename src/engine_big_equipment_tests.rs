@@ -16,7 +16,8 @@ fn equip(g: &mut Game, id: CardId, target: CardId) {
     settle(g);
 }
 fn activate(g: &mut Game, id: CardId, index: u16, target: Option<Target>) {
-    let counters = if g.state.objects[id as usize].card.name() == "Lost Jitte" {
+    let jitte = g.state.objects[id as usize].card.name() == "Lost Jitte";
+    let counters = if jitte {
         Counters::of(CounterKind::Charge, 1)
     } else {
         Counters::default()
@@ -25,10 +26,13 @@ fn activate(g: &mut Game, id: CardId, index: u16, target: Option<Target>) {
         g,
         Action::AnnounceActivate {
             card: id,
-            ability: index,
+            ability: if jitte { 1 } else { index },
             counter_payment: counters,
         },
     );
+    if jitte {
+        checked(g, Action::ChooseMode { mode: index - 1 });
+    }
     if let Some(target) = target {
         checked(g, Action::ChooseTarget { target });
     }
@@ -149,7 +153,7 @@ fn big_lost_jitte_combat_batch_charge_cost_all_three_choices_and_atomicity() {
             &mut g,
             Action::AnnounceActivate {
                 card: j,
-                ability: 2,
+                ability: 1,
                 counter_payment: Counters::of(CounterKind::Charge, 1),
             },
         );

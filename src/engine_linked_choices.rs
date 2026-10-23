@@ -360,6 +360,11 @@ impl Game {
         };
         true
     }
+    pub(super) fn reveal_hideaway_object(&mut self, object: ObjectRef) {
+        if let Some(data) = self.state.linked_choices.as_mut() {
+            data.hidden.retain(|&(_, exiled, _)| exiled != object);
+        }
+    }
     pub(super) fn can_view_hideaway(&self, viewer: Player, object: ObjectRef) -> bool {
         self.state.linked_choices.as_ref().is_none_or(|data| {
             data.hidden.iter().all(|&(_, exiled, viewers)| {
@@ -497,6 +502,28 @@ impl Game {
             return;
         };
         let objects = &self.state.objects;
+        let waiting = |source| {
+            self.state
+                .stack
+                .iter()
+                .chain(&self.state.pending_triggers)
+                .chain(&self.state.ordering_triggers)
+                .any(|item| item.object == source)
+                || self
+                    .state
+                    .resolving
+                    .as_ref()
+                    .is_some_and(|r| r.item.object == source)
+                || self
+                    .state
+                    .announcing
+                    .as_ref()
+                    .is_some_and(|a| a.item.object == source)
+        };
+        data.hideaway_controllers.retain(|&(source, _)| {
+            let o = &objects[source.card as usize];
+            (o.zone == Zone::Battlefield && o.generation == source.generation) || waiting(source)
+        });
         data.hidden.retain(|&(_, exiled, _)| {
             let o = &objects[exiled.card as usize];
             o.zone == Zone::Exile && o.generation == exiled.generation

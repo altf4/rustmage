@@ -3918,6 +3918,10 @@ impl Game {
                 permanent_type: PermanentType::Land,
                 ..
             } => {
+                if let Some(free) = self.state.resolution_free_casts.as_mut() {
+                    free.remaining.retain(|reference| reference.card != card);
+                    self.reveal_hideaway_object(self.object_ref(card));
+                }
                 if matches!(
                     self.state.objects[card as usize].card.entry_tapped(),
                     EntryTapped::PayLife(_)
@@ -3941,10 +3945,6 @@ impl Game {
                     let mut movement = self.entry_move(card, Zone::Battlefield, false);
                     movement.controller = actor;
                     self.stage_entries(vec![movement], None);
-                }
-                if let Some(free) = self.state.resolution_free_casts.as_mut() {
-                    free.remaining.retain(|reference| reference.card != card);
-                    self.state.pending = Pending::ResolutionCasts { player: actor };
                 }
                 if self.state.land_played {
                     if self.state.players[actor.index()].extra_land_plays_remaining > 0 {

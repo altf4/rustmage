@@ -344,7 +344,14 @@ impl Game {
             // simultaneous departures still see each other exactly once.
             for source in death_sources {
                 for (index, ability) in source.card.triggers().iter().enumerate() {
-                    if event.destination != Zone::Graveyard && !matches!(ability.condition.event(), TriggerCondition::Sacrificed { .. }) { continue; }
+                    if event.destination != Zone::Graveyard
+                        && !matches!(
+                            ability.condition.event(),
+                            TriggerCondition::Sacrificed { .. }
+                        )
+                    {
+                        continue;
+                    }
                     let matched = match ability.condition.event() {
                         TriggerCondition::AttachedCreatureDies => {
                             event.before.is_creature()
@@ -575,7 +582,8 @@ impl Game {
                                 ))
                             && match predicate {
                                 EntryPredicate::ArtifactManaValueAtLeast(minimum) => {
-                                    entered.kinds & 16 != 0 && entered.card.fixed_mana_value() >= u64::from(minimum)
+                                    entered.kinds & 16 != 0
+                                        && entered.card.fixed_mana_value() >= u64::from(minimum)
                                 }
                                 EntryPredicate::CreatureWithoutSubtype(subtype) => {
                                     entered.is_creature() && !entered.has_subtype(subtype)
@@ -690,7 +698,6 @@ impl Game {
     }
 
     pub(super) fn queue_trigger(&mut self, source: &ObjectView, index: usize) -> bool {
-        self.remember_hideaway_controller(source.reference, source.controller);
         self.queue_trigger_from(source, index, None)
     }
 
@@ -700,6 +707,7 @@ impl Game {
         index: usize,
         event: Option<Box<AttachmentTriggerView>>,
     ) -> bool {
+        self.remember_hideaway_controller(source.reference, source.controller);
         if let Some(grant) = event.as_ref().filter(|grant| grant.granted) {
             if !source.grant_available(
                 grant.grantor,
@@ -1571,6 +1579,7 @@ impl Game {
                         self.move_adventure_spell(&item, Zone::Graveyard);
                     }
                 }
+                self.prune_linked_exiles();
                 self.give_priority();
                 return;
             };

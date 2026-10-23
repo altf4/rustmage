@@ -351,6 +351,7 @@ impl Game {
             .unwrap()
             .remaining
             .retain(|&r| r != object);
+        self.reveal_hideaway_object(object);
         let mut item = self.cast_item(player, object.card, [0; 6]);
         self.set_cast_face(&mut item, face);
         item.cast.as_mut().unwrap().method = CastMethod::Free;
