@@ -519,8 +519,16 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     .objects
                     .iter()
                     .find(|o| o.id == *card)
-                    .unwrap()
-                    .card;
+                    .map(|o| o.card)
+                    .or_else(|| {
+                        observation
+                            .known_library_top
+                            .iter()
+                            .flatten()
+                            .find(|top| top.object.card == *card)
+                            .map(|top| top.card)
+                    })
+                    .expect("legal cast source is visible to the acting player");
                 if definition.aura().is_some() {
                     return target.map(|t| aura_score(definition, t)).unwrap_or(-10);
                 }

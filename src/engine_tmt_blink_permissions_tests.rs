@@ -741,3 +741,48 @@ fn tmt_blink_mikey_sneak_from_library_can_return_its_permission_source_and_keeps
         assert!(view.tapped && view.attacking);
     }
 }
+
+#[test]
+fn tmt_blink_smoke_policy_scores_visible_library_cast_without_reading_hidden_next() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        paid(&mut g, p, "Mikey & Don, Party Planners");
+        let hidden = named(&mut g, p, "Shock", Zone::Library);
+        let top = named(&mut g, p, "High-Flying Ace", Zone::Library);
+        let view = g.observe(p);
+        assert!(view.objects.iter().all(|o| o.id != top && o.id != hidden));
+        assert_eq!(
+            view.known_library_top[p.index()].unwrap().object,
+            g.object_ref(top)
+        );
+        assert!(g.observe(p.other()).known_library_top[p.index()].is_none());
+        let cast = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a,Action::Cast{card,..}if *card==top))
+            .expect("public legal top-library cast");
+        let choices = vec![Action::Pass, cast.clone()];
+        let before = g.snapshot();
+        assert_eq!(crate::policy::smoke_index(&g, &choices), 1);
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(
+            serde_json::to_value(g.observe(p)).unwrap(),
+            serde_json::to_value(&view).unwrap()
+        );
+        let mut sibling = g.clone();
+        sibling.state.objects[hidden as usize].card = Card::from_name("Unsummon").unwrap();
+        assert_eq!(
+            serde_json::to_value(sibling.observe(p)).unwrap(),
+            serde_json::to_value(&view).unwrap()
+        );
+        assert_eq!(crate::policy::smoke_index(&sibling, &choices), 1);
+        checked(&mut g, cast);
+        assert_eq!(
+            g.state.stack.last().unwrap().cast.unwrap().origin,
+            Zone::Library
+        );
+        settle(&mut g);
+        assert!(g.on_battlefield(top));
+        assert_eq!(g.counter_count(top, CounterKind::PlusOne), 1);
+    }
+}

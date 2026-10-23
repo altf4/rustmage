@@ -806,3 +806,13 @@ verification. Both dev experiments were deliberately stopped and preserved.
 The identical 172-game proof now moves to the required release validator's
 optimized `release-test` profile with runtime assertions and overflow checks.
 This is separate from the later production simulation throughput measurement.
+
+The first 195-card release attempt passed formatting, provenance/source checks,
+Clippy and all 3,746 library tests (493 TMT scenarios). Its full-pool game run
+completed 75 games before an observation-only smoke-policy lookup panicked on
+a legal top-library legacy cast; the overall validator failed and is not a pass.
+The policy now uses the explicitly authorized `known_library_top` view, with a
+both-seat paid Mikey scenario proving sibling hidden-next-card changes cannot
+affect observations or scoring. [Fix evidence](tmt-library-policy-fix.json)
+preserves the failure and focused pass. Complete validation is rerun with test
+output enabled so successful game metrics are retained directly.
