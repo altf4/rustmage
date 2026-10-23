@@ -8,5 +8,27 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "875eee6ec9ae940ac713d962f6cda7a631c7808d5856bb65448393ad4948638c"
   },
-  "physical_metadata_sha256": "4ad30a6f7f57167635a71dc673926cdc65e40b1be1b7f890a6c8515758d0de40"
+  "physical_metadata_sha256": "4ad30a6f7f57167635a71dc673926cdc65e40b1be1b7f890a6c8515758d0de40",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PunkFrogs.java",
+  "java_sha256": "619e83ee07528b59530e4a480497e4922a2a5dc3f9279be4c6aa43c6910c5b3d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+    }
+  ],
+  "source_audit": {
+    "scope": "Full Oracle body, complete XMage card class and listed complete reusable implementations read; inherited typed behavior independently exercised with paid legal actions.",
+    "tests": [
+      "src/engine_tmt_inherited_batch_three_tests.rs"
+    ],
+    "status": "Focused rules audit; integrated release and complete-set acceptance remain integrator obligations."
+  }
 }

@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cdcc68d5edd446d2f900cd4d11b9be27a70612cb2656544dbdb21d65675fb092"
   },
-  "physical_metadata_sha256": "d4c322702ac9ec391aaac28b8193662e8effea4fa02ad4b479ea0ddf7a0f7ac0"
+  "physical_metadata_sha256": "d4c322702ac9ec391aaac28b8193662e8effea4fa02ad4b479ea0ddf7a0f7ac0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MouserMarkIII.java",
+  "java_sha256": "5b8fdab7d707c2774e935ad1d77f99bc20494efb45a2083ae43a5165799c56b8",
+  "xmage_dependencies": [],
+  "source_audit": {
+    "scope": "Full Oracle body, complete XMage card class and listed complete reusable implementations read; inherited typed behavior independently exercised with paid legal actions.",
+    "tests": [
+      "src/engine_tmt_inherited_batch_three_tests.rs"
+    ],
+    "status": "Focused rules audit; integrated release and complete-set acceptance remain integrator obligations."
+  }
 }

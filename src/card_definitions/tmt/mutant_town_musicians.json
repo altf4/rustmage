@@ -8,5 +8,32 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a121950dc4755bf59970f5e30cc63cd8ff7f7cc5ed0896edbb17650f8885782b"
   },
-  "physical_metadata_sha256": "0ebc7a71f94def00f966608c18609f86450a22588886f315c5d7a6addd5fa0d8"
+  "physical_metadata_sha256": "0ebc7a71f94def00f966608c18609f86450a22588886f315c5d7a6addd5fa0d8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MutantTownMusicians.java",
+  "java_sha256": "3b6a8c4e9f271e1ec9b39c76532101327d429b170661e36d7ee0cccbedad781a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AllianceAbility.java",
+      "sha256": "59143d4e17e5b1b32947adb117ded8a8aaf467364194a5a623992c9963eae1cb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    }
+  ],
+  "source_audit": {
+    "scope": "Full Oracle body, complete XMage card class and listed complete reusable implementations read; inherited typed behavior independently exercised with paid legal actions.",
+    "tests": [
+      "src/engine_tmt_inherited_batch_three_tests.rs"
+    ],
+    "status": "Focused rules audit; integrated release and complete-set acceptance remain integrator obligations."
+  }
 }

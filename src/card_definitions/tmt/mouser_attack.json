@@ -8,5 +8,42 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d77ae0cd020b46f3084ecfc7fdf48c6ccd6f1cc66290610167ff21ca2830413b"
   },
-  "physical_metadata_sha256": "d328168af2726c75eb27f7117025c7b13f25a7f39cb7344e3189b44e363a3832"
+  "physical_metadata_sha256": "d328168af2726c75eb27f7117025c7b13f25a7f39cb7344e3189b44e363a3832",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MouserAttack.java",
+  "java_sha256": "a9d2c56742fb1656358f687cf515f425b9028dcd4092d7654642eb8eb5dedece",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Robot11Token.java",
+      "sha256": "80629ebbc61106f058ff6bcc6f8011768f01da78a78ffba9feecdaa756825bd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+      "sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+    }
+  ],
+  "source_audit": {
+    "scope": "Full Oracle body, complete XMage card class and listed complete reusable implementations read; inherited typed behavior independently exercised with paid legal actions.",
+    "tests": [
+      "src/engine_tmt_inherited_batch_three_tests.rs"
+    ],
+    "status": "Focused rules audit; integrated release and complete-set acceptance remain integrator obligations."
+  }
 }

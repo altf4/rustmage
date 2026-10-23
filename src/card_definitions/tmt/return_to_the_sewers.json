@@ -8,5 +8,37 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6e00a79ec02c4a672c2e2dfa3318d235c0be27e0ca308fbe4adaae28676e1cb8"
   },
-  "physical_metadata_sha256": "892e5155c23feb78f4991d5e384eb7efe5be05fd972eaffa1bb4e36764493e0f"
+  "physical_metadata_sha256": "892e5155c23feb78f4991d5e384eb7efe5be05fd972eaffa1bb4e36764493e0f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/ReturnToTheSewers.java",
+  "java_sha256": "2bd4cc9d10d4f304953d6ce4c091b7d09eb255a7fe77b6ef8e4f7d9e6e3330bf",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnTopOrBottomLibraryTargetEffect.java",
+      "sha256": "95bb260b732c9424cbbd22d60f7904ae468ce3b0277707decdeef4466034be30"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+      "sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/MutagenToken.java",
+      "sha256": "bcb05068d2fd40b12c614b7be40e1fc353c9b5398e72ce493fa9c24e0354644d"
+    }
+  ],
+  "source_audit": {
+    "scope": "Full Oracle body, complete XMage card class and listed complete reusable implementations read; inherited typed behavior independently exercised with paid legal actions.",
+    "tests": [
+      "src/engine_tmt_inherited_batch_three_tests.rs"
+    ],
+    "status": "Focused rules audit; integrated release and complete-set acceptance remain integrator obligations."
+  }
 }
