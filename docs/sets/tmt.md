@@ -383,3 +383,15 @@ Admission is 114/195, 81 gated, zero unresolved. The 43rd newly authored card
 awaits full release validation; 42 have integrated release evidence and 71
 inherited flags await audits. Next is Ninja Teen’s dynamic Sneak and composed
 mandatory costs, then the remaining cards and inherited audits.
+
+## Validated Party Dude checkpoint
+
+All nine release phases pass on `a746f8fd` in 626.64 seconds.
+3,345 library rules tests (one ignored), all 94 TMT scenarios (21 Class,
+53 Sneak, 20 initial), existing native full-game suites and seven Python
+binding checks pass. Admission is 114/195, 81 gated, zero unresolved.
+43 newly authored cards now have integrated release evidence; 71 inherited
+admission flags still require audits. Set-only acceptance and final reviews
+remain pending. See [portable evidence](tmt-party-validation.json).
+
+Next: Ninja Teen's dynamic Sneak permission and composed additional costs.
