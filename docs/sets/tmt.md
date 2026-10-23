@@ -21,7 +21,7 @@ canonical definition, including reprints; it is not a second membership source.
 
 Initial admission: **71/195**, **124 gated**. Current admission: **109/195**,
 **86 gated**, zero unresolved. The 71 inherited admission flags still require
-source/rules audits. **38 newly authored physical cards have rules scenarios; 36 have integrated release validation**;
+source/rules audits. **38 newly authored physical cards have rules scenarios; 38 have integrated release validation**;
 zero have independent final published-head reviews or upstream merges.
 
 ## Active Sneak integration
@@ -257,3 +257,18 @@ Observation schema is 173. Integrated release validation for Improviser and
 Raphael’s Technique is pending. Next: Leonardo, Sewer Samurai, including exact
 graveyard permission choice, normal/Sneak casting, and intrinsic finality-counter
 replacement on every permanent under CR122.1h. Keep the full 195-card goal open.
+
+## Validated 109-card checkpoint
+
+All nine release phases pass on `c08f76c6`: 3,316 library rules tests
+(one ignored), all 45 Sneak scenarios and seven Python binding smoke checks.
+Michelangelo, Improviser and Raphael’s Technique now have integrated release
+validation. Admission is 109/195, with 38 newly authored locally verified
+candidates, 71 inherited admissions awaiting audit and 86 gated cards.
+See [portable evidence](tmt-sneak-refresh-validation.json) for report hashes,
+retained libraries, guard limits and measured throughput. Set-only games,
+entire-pool acceptance and independent reviews remain pending.
+
+Current next action supersedes earlier resume notes: implement Leonardo, Sewer
+Samurai’s explicit graveyard permission and finality counters. The release
+process is terminal; inputs may now change. Keep the full-set goal open.

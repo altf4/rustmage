@@ -2011,7 +2011,7 @@
       "oracle_id": "1939679b-ea2e-4a75-b3ce-d7af68437484",
       "name": "Michelangelo, Improviser",
       "definition": "src/card_definitions/tmt/michelangelo_improviser.rs",
-      "state": "focused rules tested; integrated full release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Michelangelo, Improviser",
@@ -2028,7 +2028,8 @@
       ],
       "evidence": [
         "src/engine_tmt_sneak_tests.rs",
-        "src/card_definitions/tmt/michelangelo_improviser.json"
+        "src/card_definitions/tmt/michelangelo_improviser.json",
+        "docs/sets/tmt-sneak-refresh-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 9
@@ -2954,7 +2955,7 @@
       "oracle_id": "f58a5f8b-254c-4206-bdbe-55a23798ed2d",
       "name": "Raphael's Technique",
       "definition": "src/card_definitions/tmt/raphael_s_technique.rs",
-      "state": "focused rules tested; integrated full release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Raphael's Technique",
@@ -2972,7 +2973,8 @@
       "evidence": [
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/raphael_s_technique.json",
-        "src/engine_wheel.rs"
+        "src/engine_wheel.rs",
+        "docs/sets/tmt-sneak-refresh-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 10
