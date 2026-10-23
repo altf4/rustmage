@@ -114,7 +114,7 @@ fn big_complete_games_replay_owned_search_all_colors() {
                     }
                     _ => {}
                 }
-                if count % 23 == 0 {
+                if count.is_multiple_of(23) {
                     let saved = g.snapshot();
                     let rev = g.revision();
                     let mut owned = {
