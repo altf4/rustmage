@@ -3,10 +3,67 @@
   "catalogue_id": 2154,
   "oracle_id": "4f02aa99-481c-4089-8f7c-cfe7eaa7dda0",
   "facts_sha256": "9d15e1ccddef58b497c7480e3fc116241ef713b22dd64b86c0505b269922d736",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "203d12b4b8feb1e8c54c2444757317f224fcb16509da7b996318a59a56bbba1d"
   },
-  "physical_metadata_sha256": "d9dfeb2632e33266e1d427654792856d8db8fe46419597d83c9cf97e0ee79a7a"
+  "physical_metadata_sha256": "d9dfeb2632e33266e1d427654792856d8db8fe46419597d83c9cf97e0ee79a7a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/ImprovisedArsenal.java",
+  "java_sha256": "344849dcfd5c4e21198558f8e9a83ff4dcf6223e8bc7cd8ded4d450a6e4f5851",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ArtifactYouControlCount.java",
+      "sha256": "92087ef848245fb2f446712fb82cfc54bd7d12bf00b8babd522e4ba655a52a6a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/CreateTokenCopySourceEffect.java",
+      "sha256": "2c081d0cb3aef02e9b1ace8fef235d3d711cae391a1005743ea3ed4d5b7fdf25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    }
+  ],
+  "rules_tests": "src/engine_tmt_equipment_tests.rs",
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "603.12",
+      "608.2h",
+      "701.3",
+      "702.6"
+    ],
+    "note": "All printed obligations pass paid rules scenarios. New attachment is required for the reflexive; its fight uses the creature currently equipped on resolution (or the source last known attachment), per Oracle and CR608.2h. XMage NovelNunchakuFightEffect captures the original entry target instead; this implementation resolves that discrepancy against equipped creature wording. Granted combat damage triggers once per simultaneous batch, for any damage recipient, and belongs to the equipped creature controller. Printed sacrifice-only equip has no mana component and is once per turn."
+  }
 }

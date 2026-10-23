@@ -2840,6 +2840,14 @@ impl Game {
                         self.tap_objects(&[id]);
                     }
                 }
+                Instruction::AttachSourceReflexive { ability } => {
+                    self.attach_source_reflexive(&item, ability);
+                }
+                Instruction::AttachSourceToEntering => {
+                    if let Some(target) = item.entering_object {
+                        self.attach_equipment(item.object, target);
+                    }
+                }
                 Instruction::AttachSource => {
                     if let Some(target) = item.targets.iter().find_map(|bound| bound.object) {
                         self.attach_equipment(item.object, target);

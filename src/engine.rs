@@ -8753,3 +8753,9 @@ mod tmt_exile_returns;
 #[cfg(test)]
 #[path = "engine_tmt_exile_returns_tests.rs"]
 mod tmt_exile_returns_tests;
+
+#[path = "engine_tmt_equipment.rs"]
+mod tmt_equipment;
+#[cfg(test)]
+#[path = "engine_tmt_equipment_tests.rs"]
+mod tmt_equipment_tests;

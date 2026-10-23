@@ -1293,6 +1293,12 @@ pub(crate) enum Instruction {
     SelectMilled(MilledSelectionSpec),
     SelectTargetPlayerMilled(MilledSelectionSpec),
     AttachSource,
+    /// A reflexive trigger exists only after a successful new attachment.
+    AttachSourceReflexive {
+        ability: u16,
+    },
+    /// Attach to the exact untargeted entry event object.
+    AttachSourceToEntering,
     TapAttached,
     ExileAttached,
     PutGrantorCounter(CounterKind),
