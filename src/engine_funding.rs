@@ -259,9 +259,10 @@ fn sacrifice_group_spec(
     goal: &FundingGoal,
 ) -> Option<(ObjectRef, AdditionalCost, u16)> {
     if let Some((source, index, _, definition)) = &goal.source
-        && let Some(spec) = definition.activations()[usize::from(*index)]
-            .cost
-            .additional
+        && let Some(spec) = definition
+            .activations()
+            .get(usize::from(*index))
+            .and_then(|ability| ability.cost.additional)
         && let EffectChoiceKind::SacrificePermanents(amount) = spec.kind
     {
         return Some((*source, spec, amount));
@@ -1231,7 +1232,9 @@ impl<'g> FundingState<'g> {
                 attacking: r.attacking,
                 // Unattached, unmodified basic lands remain interchangeable even
                 // when an unrelated Aura is present. Keep exact identities for
-                // attachment participants, nonbasics and named-counter worlds.
+                // attachment participants, nonbasics and resources with named
+                // counters. An unrelated counter row must not distinguish every
+                // otherwise equivalent basic-land subset.
                 identity: (self
                     .game
                     .entry_value(ObjectRef {
@@ -1240,7 +1243,16 @@ impl<'g> FundingState<'g> {
                     })
                     .is_some()
                     || (linked
-                        && (self.named_counters.is_some()
+                        && (live_counters::amounts(
+                            &self.named_counters,
+                            ObjectRef {
+                                card: r.id,
+                                generation: r.object.generation,
+                            },
+                            r.object.counters,
+                        )
+                        .named
+                        .is_some()
                             || !r.object.card.is_basic_land()
                             || self.kinds(r) != r.object.card.kind_mask()
                             || r.object.attached_to.is_some()
@@ -4947,3 +4959,7 @@ mod tmt_mana_power_tests {
         assert_eq!(game.state_bytes(), bytes);
     }
 }
+
+#[cfg(test)]
+#[path = "engine_funding_symmetry_tests.rs"]
+mod funding_symmetry_tests;
