@@ -684,3 +684,19 @@ were observed. No concessions or illegal-action shortcuts terminate these games.
 logs and limits. The development-build rate is 1,968 decisions/s including
 privacy observations, snapshots, sibling equality and replay. This covers core
 mechanics and 45 cast identities, not yet the entire pool or optimized throughput.
+
+## 165-card candidate integration
+
+Combat source `b52d6847`, exile/return source `a84ea2a7` and equipment source
+`c9f4886c` add 14 focused-tested physical cards. Admission is 165/195, 30 gated,
+zero unresolved. 94 newly authored candidates have focused evidence (80 release
+verified); all 71 inherited audits remain release verified. These batches passed
+17 combat, 20 exile/return and 15 equipment scenarios respectively, affected
+regressions and Clippy in isolated worktrees. Combined release remains pending.
+
+New shared behavior includes first-combat ordinals, retained received-damage
+mana, limited linked-exile plays, exact permanent-entry history, linked return
+choices, optional hand/graveyard shuffle, successful attachment reflexives and
+granted any-recipient combat-damage batches. Novel Nunchaku uses the current
+equipped creature (or source attachment LKI) under Oracle/CR608.2h, correcting
+XMage's captured-original-target discrepancy. Observation schema is 180.

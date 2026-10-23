@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "2cdeb57c246524643e47be8c493aa7c62419acb6e5e4dc047b6e819b31291a36",
+  "catalogue_version": "243b9eae93bae3479ace30f9369fc427cd8ed12962a28e5b7d266250f142cc54",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2436,
-  "implemented_total": 2442,
+  "implemented_standard_cards": 2450,
+  "implemented_total": 2456,
   "token_definitions": 113,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -185,8 +185,8 @@
     },
     "tmt": {
       "total": 189,
-      "complete": 145,
-      "gated": 44
+      "complete": 159,
+      "gated": 30
     },
     "w17": {
       "total": 1,
@@ -3142,8 +3142,8 @@
     {
       "name": "Bebop, Warthog Warrior",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/bebop_warthog_warrior.rs",
       "set": "tmt"
     },
@@ -8830,8 +8830,8 @@
     {
       "name": "Dimensional Exile",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/dimensional_exile.rs",
       "set": "tmt"
     },
@@ -11126,8 +11126,8 @@
     {
       "name": "Escape Tunnel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/escape_tunnel.rs",
       "set": "tmt"
     },
@@ -17438,8 +17438,8 @@
     {
       "name": "Improvised Arsenal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/improvised_arsenal.rs",
       "set": "tmt"
     },
@@ -23934,8 +23934,8 @@
     {
       "name": "Northampton Farm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/northampton_farm.rs",
       "set": "tmt"
     },
@@ -23974,8 +23974,8 @@
     {
       "name": "Novel Nunchaku",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/novel_nunchaku.rs",
       "set": "tmt"
     },
@@ -26766,8 +26766,8 @@
     {
       "name": "Quintessential Katana",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/quintessential_katana.rs",
       "set": "tmt"
     },
@@ -27206,8 +27206,8 @@
     {
       "name": "Raph & Leo, Sibling Rivals",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/raph_leo_sibling_rivals.rs",
       "set": "tmt"
     },
@@ -27230,16 +27230,16 @@
     {
       "name": "Raphael, Most Attitude",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/raphael_most_attitude.rs",
       "set": "tmt"
     },
     {
       "name": "Raphael, Ninja Destroyer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/raphael_ninja_destroyer.rs",
       "set": "tmt"
     },
@@ -27870,8 +27870,8 @@
     {
       "name": "Renet, Temporal Apprentice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/renet_temporal_apprentice.rs",
       "set": "tmt"
     },
@@ -28782,8 +28782,8 @@
     {
       "name": "Rocksteady, Crash Courser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/rocksteady_crash_courser.rs",
       "set": "tmt"
     },
@@ -30990,8 +30990,8 @@
     {
       "name": "Shredder's Armor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/shredder_s_armor.rs",
       "set": "tmt"
     },
@@ -37910,8 +37910,8 @@
     {
       "name": "Turtles in Time",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/turtles_in_time.rs",
       "set": "tmt"
     },

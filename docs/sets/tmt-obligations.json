@@ -239,7 +239,7 @@
       "oracle_id": "39c813e1-0e26-440a-b9bd-e781f7576b8b",
       "name": "Bebop, Warthog Warrior",
       "definition": "src/card_definitions/tmt/bebop_warthog_warrior.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Bebop, Warthog Warrior",
@@ -255,7 +255,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/bebop_warthog_warrior.json",
+        "src/engine_tmt_combat_batch_tests.rs"
+      ],
+      "local_batch": 28,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "679480aa-f9ad-4a6c-bd79-db9f9f75433d",
@@ -648,7 +653,7 @@
       "oracle_id": "8f0777bc-4fca-4601-beed-1fd060f28075",
       "name": "Dimensional Exile",
       "definition": "src/card_definitions/tmt/dimensional_exile.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Dimensional Exile",
@@ -663,7 +668,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/dimensional_exile.json",
+        "src/engine_tmt_exile_returns_tests.rs"
+      ],
+      "local_batch": 29,
+      "owner": "tmt_mana"
     },
     {
       "oracle_id": "df54b79d-f31d-4582-86c0-1d34ec77be0f",
@@ -961,7 +971,7 @@
       "oracle_id": "0056fc91-4398-471c-b561-7ff99750ac8a",
       "name": "Escape Tunnel",
       "definition": "src/card_definitions/tmt/escape_tunnel.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Escape Tunnel",
@@ -976,7 +986,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/escape_tunnel.json",
+        "src/engine_tmt_exile_returns_tests.rs"
+      ],
+      "local_batch": 29,
+      "owner": "tmt_mana"
     },
     {
       "oracle_id": "aa481983-8f1a-4519-9371-5e7edcd3274f",
@@ -1544,7 +1559,7 @@
       "oracle_id": "4f02aa99-481c-4089-8f7c-cfe7eaa7dda0",
       "name": "Improvised Arsenal",
       "definition": "src/card_definitions/tmt/improvised_arsenal.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Improvised Arsenal",
@@ -1560,7 +1575,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/improvised_arsenal.json",
+        "src/engine_tmt_equipment_tests.rs"
+      ],
+      "local_batch": 30,
+      "owner": "integrator"
     },
     {
       "oracle_id": "3d081701-514b-4611-b5a1-239b8f335fb6",
@@ -2898,7 +2918,7 @@
       "oracle_id": "e05f1a43-16ce-4e88-b0ad-2202efb25516",
       "name": "Northampton Farm",
       "definition": "src/card_definitions/tmt/northampton_farm.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Northampton Farm",
@@ -2914,13 +2934,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/northampton_farm.json",
+        "src/engine_tmt_exile_returns_tests.rs"
+      ],
+      "local_batch": 29,
+      "owner": "tmt_mana"
     },
     {
       "oracle_id": "6d819742-3d02-4d60-9b10-82caa49a9d49",
       "name": "Novel Nunchaku",
       "definition": "src/card_definitions/tmt/novel_nunchaku.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Novel Nunchaku",
@@ -2936,7 +2961,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/novel_nunchaku.json",
+        "src/engine_tmt_equipment_tests.rs"
+      ],
+      "local_batch": 30,
+      "owner": "integrator"
     },
     {
       "oracle_id": "49598fd5-2aad-4974-b499-38b60fc371b6",
@@ -3341,7 +3371,7 @@
       "oracle_id": "e9685c61-e33d-4ae0-9dd3-7fd0df5eb46f",
       "name": "Quintessential Katana",
       "definition": "src/card_definitions/tmt/quintessential_katana.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Quintessential Katana",
@@ -3357,7 +3387,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/quintessential_katana.json",
+        "src/engine_tmt_equipment_tests.rs"
+      ],
+      "local_batch": 30,
+      "owner": "integrator"
     },
     {
       "oracle_id": "71b81f3f-6092-4819-8529-e27bccfcf088",
@@ -3389,7 +3424,7 @@
       "oracle_id": "57f39ce2-ecbb-4262-8140-03aba5c4303f",
       "name": "Raph & Leo, Sibling Rivals",
       "definition": "src/card_definitions/tmt/raph_leo_sibling_rivals.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Raph & Leo, Sibling Rivals",
@@ -3403,7 +3438,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/raph_leo_sibling_rivals.json",
+        "src/engine_tmt_combat_batch_tests.rs"
+      ],
+      "local_batch": 28,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "82563a5f-cae4-4ece-876c-0df245d2dc58",
@@ -3458,7 +3498,7 @@
       "oracle_id": "eaf194a7-d95f-4738-9052-92ad00443a76",
       "name": "Raphael, Most Attitude",
       "definition": "src/card_definitions/tmt/raphael_most_attitude.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Raphael, Most Attitude",
@@ -3474,13 +3514,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/raphael_most_attitude.json",
+        "src/engine_tmt_combat_batch_tests.rs"
+      ],
+      "local_batch": 28,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "fdb8e862-c642-4b7b-b061-400de6061ffe",
       "name": "Raphael, Ninja Destroyer",
       "definition": "src/card_definitions/tmt/raphael_ninja_destroyer.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Raphael, Ninja Destroyer",
@@ -3495,7 +3540,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/raphael_ninja_destroyer.json",
+        "src/engine_tmt_combat_batch_tests.rs"
+      ],
+      "local_batch": 28,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "2c72e6d2-bbb0-42de-b465-438d584cbddc",
@@ -3630,7 +3680,7 @@
       "oracle_id": "6c754808-86a6-43d3-8aeb-96ec19f7396c",
       "name": "Renet, Temporal Apprentice",
       "definition": "src/card_definitions/tmt/renet_temporal_apprentice.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Renet, Temporal Apprentice",
@@ -3645,7 +3695,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/renet_temporal_apprentice.json",
+        "src/engine_tmt_exile_returns_tests.rs"
+      ],
+      "local_batch": 29,
+      "owner": "tmt_mana"
     },
     {
       "oracle_id": "d8b5de6d-8654-4550-bccb-79de6cbef4d5",
@@ -3725,7 +3780,7 @@
       "oracle_id": "f9330a7b-8a65-4e04-a777-bf6512332850",
       "name": "Rocksteady, Crash Courser",
       "definition": "src/card_definitions/tmt/rocksteady_crash_courser.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Rocksteady, Crash Courser",
@@ -3741,7 +3796,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/rocksteady_crash_courser.json",
+        "src/engine_tmt_combat_batch_tests.rs"
+      ],
+      "local_batch": 28,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "b529f6b0-c6b2-4eb3-bb48-178e1eda75f3",
@@ -3884,7 +3944,7 @@
       "oracle_id": "bda5d0aa-3ed0-4f8c-80ae-f9cb8ed0ac82",
       "name": "Shredder's Armor",
       "definition": "src/card_definitions/tmt/shredder_s_armor.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Shredder's Armor",
@@ -3900,7 +3960,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/shredder_s_armor.json",
+        "src/engine_tmt_equipment_tests.rs"
+      ],
+      "local_batch": 30,
+      "owner": "integrator"
     },
     {
       "oracle_id": "5dd31fcd-72db-4daf-b127-ceb27bf25a94",
@@ -4813,7 +4878,7 @@
       "oracle_id": "803971e6-67f3-4fda-aeb6-69ef8ea4b54e",
       "name": "Turtles in Time",
       "definition": "src/card_definitions/tmt/turtles_in_time.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Turtles in Time",
@@ -4828,7 +4893,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/turtles_in_time.json",
+        "src/engine_tmt_exile_returns_tests.rs"
+      ],
+      "local_batch": 29,
+      "owner": "tmt_mana"
     },
     {
       "oracle_id": "989b93fe-cad0-4890-a228-8a20ca666f10",
