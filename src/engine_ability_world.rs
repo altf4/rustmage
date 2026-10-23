@@ -25,6 +25,9 @@ pub(super) trait CharacteristicWorld {
                 })
     }
     fn object(&self, id: CardId) -> &Object;
+    fn source_power(&self, id: CardId) -> i128 {
+        self.game().stats(id).power
+    }
     fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
         live_counters::amounts(
             &self.game().state.named_counters,
@@ -189,6 +192,13 @@ pub(super) trait CharacteristicWorld {
             generation: self.object(id).generation,
         }
     }
+    fn legendary(&self, id: CardId) -> bool {
+        self.object(id).card.is_legendary()
+            && !self
+                .game()
+                .copy_recipe(self.reference(id))
+                .is_some_and(|recipe| recipe.exceptions.nonlegendary)
+    }
     fn kinds(&self, id: CardId) -> u16 {
         characteristic_layers::kinds(self, id, self.object(id))
     }
@@ -249,12 +259,11 @@ pub(super) trait CharacteristicWorld {
                 .iter()
                 .flat_map(|g| g.fragments)
             {
-                if let crate::cards::StaticAbilityFragment::AdditionalSubtypeTriggers {
-                    subtype,
-                    other,
-                } = *fragment
+                if let Some((subtype, other, creature_only)) =
+                    fragment.additional_subtype_triggers()
                     && (!other || self.reference(id) != self.reference(source))
                     && subtypes.is_none_or(|types| types.has(object.card, subtype))
+                    && (!creature_only || upper || self.kinds(source) & 1 != 0)
                 {
                     amount = amount
                         .checked_add(1)
@@ -271,6 +280,37 @@ pub(super) trait CharacteristicWorld {
         let mut result = [0u32; 6];
         if self.object(id).zone != Zone::Battlefield || (!upper && self.kinds(id) & 2 == 0) {
             return result;
+        }
+        for &source in &self.game().state.static_sources {
+            let provider = self.object(source);
+            if provider.zone != Zone::Battlefield
+                || (!upper
+                    && (provider.controller != self.object(id).controller
+                        || !self.printed_abilities_available(source)))
+            {
+                continue;
+            }
+            for fragment in provider
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|g| g.fragments)
+            {
+                if let crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(mana) =
+                    *fragment
+                {
+                    let occurrences = self.trigger_occurrences(source, upper);
+                    for index in 0..6 {
+                        let amount = u64::from(mana[index])
+                            .checked_mul(occurrences)
+                            .and_then(|n| u32::try_from(n).ok())
+                            .capacity("mana representation exhausted");
+                        result[index] = result[index]
+                            .checked_add(amount)
+                            .capacity("mana representation exhausted");
+                    }
+                }
+            }
         }
         for &source in &self.game().state.attachment_sources {
             let reference = self.reference(source);
@@ -485,6 +525,11 @@ impl ManaProduction {
                     u32::from(index < 5 && colors & (1 << index) != 0)
                 }))
             }
+            Self::SourcePowerChoice { colors } => Self::Choice {
+                mask: colors,
+                amount: u32::try_from(world.source_power(source).max(0))
+                    .capacity("mana representation exhausted"),
+            },
             Self::ChoiceStat { colors, amount } => Self::Choice {
                 mask: colors,
                 amount: u32::try_from(world.value(*amount, source).max(0))

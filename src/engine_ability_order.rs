@@ -18,6 +18,7 @@ pub(super) struct GrantedManaAbility {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct LayerSixObject {
     pub printed: bool,
+    pub hexproof_colors: u8,
     pub keywords: Keywords,
     pub grants: Vec<GrantedAbilityKey>,
     pub mana: Vec<GrantedManaAbility>,
@@ -32,6 +33,7 @@ pub(super) struct LayerSixGrant {
 #[derive(Clone, Debug)]
 pub(super) enum LayerSixAction {
     Remove,
+    GrantHexproofColors(u8),
     RemoveAndGrant(Vec<LayerSixGrant>),
     GrantEach(Vec<LayerSixGrant>),
     Grant {
@@ -125,7 +127,35 @@ fn next_effect(pending: &[bool], dependencies: &[Vec<usize>], times: &[u64]) -> 
         .expect("nonempty dependency graph has a sink component")
 }
 
+/// Grants never change whether a provider has its printed abilities. Without
+/// removal there are no dependency edges, so the existing timestamp/index order
+/// is the complete layer-six order. Keep the dependency algorithm for removals.
 pub(super) fn apply_layer_six(
+    mut objects: Vec<LayerSixObject>,
+    effects: &[LayerSixEffect],
+) -> LayerSixResult {
+    if effects.iter().any(|effect| {
+        matches!(
+            effect.action,
+            LayerSixAction::Remove | LayerSixAction::RemoveAndGrant(_)
+        )
+    }) {
+        return apply_layer_six_exhaustive(objects, effects);
+    }
+    let mut order: Vec<_> = (0..effects.len()).collect();
+    order.sort_unstable_by_key(|&index| (effects[index].timestamp, index));
+    let mut started = vec![false; effects.len()];
+    for index in order {
+        let effect = &effects[index];
+        if effect.active(&objects) {
+            started[index] = true;
+            apply_effect(&mut objects, effect);
+        }
+    }
+    LayerSixResult { objects, started }
+}
+
+pub(super) fn apply_layer_six_exhaustive(
     mut objects: Vec<LayerSixObject>,
     effects: &[LayerSixEffect],
 ) -> LayerSixResult {
@@ -168,47 +198,52 @@ pub(super) fn apply_layer_six(
         let effect = &effects[next];
         pending[next] = false;
         started[next] = true;
-        if let LayerSixAction::RemoveAndGrant(_) = &effect.action {
-            for &recipient in &effect.recipients {
-                let object = &mut objects[recipient as usize];
+        apply_effect(&mut objects, effect);
+    }
+    LayerSixResult { objects, started }
+}
+
+fn apply_effect(objects: &mut [LayerSixObject], effect: &LayerSixEffect) {
+    if let LayerSixAction::RemoveAndGrant(_) = &effect.action {
+        for &recipient in &effect.recipients {
+            let object = &mut objects[recipient as usize];
+            object.printed = false;
+            object.keywords = Keywords::NONE;
+            object.hexproof_colors = 0;
+            object.grants.clear();
+            object.mana.clear();
+        }
+    }
+    if let LayerSixAction::GrantEach(rows) | LayerSixAction::RemoveAndGrant(rows) = &effect.action {
+        for row in rows {
+            let object = &mut objects[row.recipient as usize];
+            object.keywords = object.keywords.union(row.keywords);
+            object.grants.extend_from_slice(&row.abilities);
+            object.mana.extend_from_slice(&row.mana);
+        }
+        return;
+    }
+    for &recipient in &effect.recipients {
+        let object = &mut objects[recipient as usize];
+        match &effect.action {
+            LayerSixAction::GrantEach(_) | LayerSixAction::RemoveAndGrant(_) => unreachable!(),
+            LayerSixAction::Remove => {
                 object.printed = false;
                 object.keywords = Keywords::NONE;
+                object.hexproof_colors = 0;
                 object.grants.clear();
                 object.mana.clear();
             }
-        }
-        if let LayerSixAction::GrantEach(rows) | LayerSixAction::RemoveAndGrant(rows) =
-            &effect.action
-        {
-            for row in rows {
-                let object = &mut objects[row.recipient as usize];
-                object.keywords = object.keywords.union(row.keywords);
-                object.grants.extend_from_slice(&row.abilities);
-                object.mana.extend_from_slice(&row.mana);
-            }
-            continue;
-        }
-        for &recipient in &effect.recipients {
-            let object = &mut objects[recipient as usize];
-            match &effect.action {
-                LayerSixAction::GrantEach(_) | LayerSixAction::RemoveAndGrant(_) => unreachable!(),
-                LayerSixAction::Remove => {
-                    object.printed = false;
-                    object.keywords = Keywords::NONE;
-                    object.grants.clear();
-                    object.mana.clear();
-                }
-                LayerSixAction::Grant {
-                    keywords,
-                    abilities,
-                } => {
-                    object.keywords = object.keywords.union(*keywords);
-                    object.grants.extend_from_slice(abilities);
-                }
+            LayerSixAction::GrantHexproofColors(colors) => object.hexproof_colors |= colors,
+            LayerSixAction::Grant {
+                keywords,
+                abilities,
+            } => {
+                object.keywords = object.keywords.union(*keywords);
+                object.grants.extend_from_slice(abilities);
             }
         }
     }
-    LayerSixResult { objects, started }
 }
 
 #[cfg(test)]
@@ -218,6 +253,7 @@ mod tests {
         vec![
             LayerSixObject {
                 printed: true,
+                hexproof_colors: 0,
                 keywords: Keywords::FLYING,
                 grants: Vec::new(),
                 mana: Vec::new()

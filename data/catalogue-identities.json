@@ -5362,7 +5362,11 @@
     16,
     16,
     0,
-    20
+    20,
+    4,
+    4,
+    1,
+    1
   ],
   "aliases": [
     [
@@ -5942,6 +5946,10 @@
       5321
     ],
     [
+      "@token/dinosaur_soldier_2_2_white",
+      5360
+    ],
+    [
       "@token/drake_2_2_blue_flying",
       5339
     ],
@@ -5990,6 +5998,10 @@
       5332
     ],
     [
+      "@token/insect_warrior_1_1_black_flying",
+      5358
+    ],
+    [
       "@token/komas_coil",
       5335
     ],
@@ -6002,8 +6014,16 @@
       5346
     ],
     [
+      "@token/ninja_1_1_black",
+      5357
+    ],
+    [
       "@token/ninja_2_1_blue",
       5340
+    ],
+    [
+      "@token/ninja_turtle_spirit_1_1_white",
+      5359
     ],
     [
       "@token/oko_elk_3_3_green",
@@ -27910,6 +27930,30 @@
       "name": "Worm Token",
       "subtypes": "Worm",
       "colors": 20
+    },
+    {
+      "factory_identity": "@token/ninja_1_1_black",
+      "name": "Ninja Token",
+      "subtypes": "Ninja",
+      "colors": 4
+    },
+    {
+      "factory_identity": "@token/insect_warrior_1_1_black_flying",
+      "name": "Insect Warrior Token",
+      "subtypes": "Insect Warrior",
+      "colors": 4
+    },
+    {
+      "factory_identity": "@token/ninja_turtle_spirit_1_1_white",
+      "name": "Ninja Turtle Spirit Token",
+      "subtypes": "Ninja Turtle Spirit",
+      "colors": 1
+    },
+    {
+      "factory_identity": "@token/dinosaur_soldier_2_2_white",
+      "name": "Dinosaur Soldier Token",
+      "subtypes": "Dinosaur Soldier",
+      "colors": 1
     }
   ],
   "emblems": [
@@ -110719,7 +110763,7 @@
         0,
         0,
         0,
-        0,
+        2,
         0
       ],
       "generic": 0
@@ -161876,7 +161920,7 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        2,
         0,
         0,
         0,
@@ -180960,6 +181004,116 @@
       "facts_sha256": null,
       "mana_cost": "",
       "type_line": "Creature — Worm",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5357,
+      "module": "card_5357",
+      "path": "tmt/ninja_1_1_black.rs",
+      "set": "tmt",
+      "category": "token",
+      "name": "@token/ninja_1_1_black",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Ninja",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5358,
+      "module": "card_5358",
+      "path": "tmt/insect_warrior_1_1_black_flying.rs",
+      "set": "tmt",
+      "category": "token",
+      "name": "@token/insect_warrior_1_1_black_flying",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Insect Warrior",
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5359,
+      "module": "card_5359",
+      "path": "tmt/ninja_turtle_spirit_1_1_white.rs",
+      "set": "tmt",
+      "category": "token",
+      "name": "@token/ninja_turtle_spirit_1_1_white",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Ninja Turtle Spirit",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5360,
+      "module": "card_5360",
+      "path": "tmt/dinosaur_soldier_2_2_white.rs",
+      "set": "tmt",
+      "category": "token",
+      "name": "@token/dinosaur_soldier_2_2_white",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Dinosaur Soldier",
       "oracle_keywords": [],
       "standard_legal": false,
       "legendary": false,

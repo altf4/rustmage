@@ -3,10 +3,67 @@
   "catalogue_id": 3100,
   "oracle_id": "9076a886-efe0-4c99-8661-f0fd7a7b3129",
   "facts_sha256": "a7527682ee8168279b09eee9863fd60374705c45957bb6cbf2004055a3b3d055",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "dd6f495b96075fd634d71870bc07763ba809faf798f9def653b2627606743439"
   },
-  "physical_metadata_sha256": "1088f8d09c751fd1bb5d4364277834d2525799d4cea1837cde4a925b2b8bb781"
+  "physical_metadata_sha256": "1088f8d09c751fd1bb5d4364277834d2525799d4cea1837cde4a925b2b8bb781",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/ParameciaColoniex.java",
+  "java_sha256": "cb9c1a4723afb612d02d8ac2230754599aec0457bdba7aefb559268918d11c0c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+      "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+      "sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+      "sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "111.8",
+      "118.11",
+      "201.5",
+      "400.7",
+      "601.2",
+      "603.2d",
+      "603.12",
+      "608.2b",
+      "608.2h",
+      "701.21"
+    ],
+    "note": "Full printed obligations are tested in engine_tmt_reflexive_batch_tests.rs. Reflexive target choices occur after successful optional payments and can be responded to separately. Source counter quantities and dying-creature toughness use exact last-known incarnations. Splinter qualifies actual Ninja creature characteristics and controller, including granted death abilities, and excludes delayed/reflexive triggers."
+  }
 }

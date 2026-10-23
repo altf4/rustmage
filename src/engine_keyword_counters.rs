@@ -2,16 +2,18 @@
 use super::ability_world::CharacteristicWorld;
 use super::*;
 
-pub(super) const KINDS: [CounterKind; 3] = [
+pub(super) const KINDS: [CounterKind; 4] = [
     CounterKind::Flying,
     CounterKind::FirstStrike,
     CounterKind::Lifelink,
+    CounterKind::Hexproof,
 ];
 fn keyword(kind: CounterKind) -> Keywords {
     match kind {
         CounterKind::Flying => Keywords::FLYING,
         CounterKind::FirstStrike => Keywords::FIRST_STRIKE,
         CounterKind::Lifelink => Keywords::LIFELINK,
+        CounterKind::Hexproof => Keywords::HEXPROOF,
         _ => Keywords::NONE,
     }
 }
@@ -36,7 +38,7 @@ pub(super) fn effect_live<W: CharacteristicWorld + ?Sized>(
     }
 }
 impl Game {
-    pub(super) fn sync_keyword_counters(&mut self, id: CardId, before: [u64; 3]) {
+    pub(super) fn sync_keyword_counters(&mut self, id: CardId, before: [u64; 4]) {
         // Private-zone counters grant abilities directly through the borrowed
         // query; no public timeline row can reveal a private card's identity.
         if !matches!(
@@ -68,6 +70,7 @@ impl Game {
                     .get_or_insert_with(Default::default)
                     .keyword_effects
                     .push(KeywordEffectView {
+                        hexproof_colors: 0,
                         recipient,
                         origin: KeywordEffectOrigin::Counter { kind },
                         keywords: keyword(kind),

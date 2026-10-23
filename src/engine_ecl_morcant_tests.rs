@@ -278,6 +278,7 @@ fn ecl_morcant_proliferate_renews_keyword_counter_timestamps_after_ability_remov
             Keywords::FLYING
                 .union(Keywords::FIRST_STRIKE)
                 .union(Keywords::LIFELINK)
+                .union(Keywords::HEXPROOF)
         );
         assert!(!g.printed_abilities_available(recipient));
     }

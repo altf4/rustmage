@@ -48,6 +48,8 @@ impl Game {
             EffectChoiceKind::Discard => o.owner == actor,
             EffectChoiceKind::BlightCost(_)
             | EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::SacrificePermanents(_)
+            | EffectChoiceKind::SacrificeCreatureOrToken
             | EffectChoiceKind::ReturnToHand
             | EffectChoiceKind::TapPermanents(_) => o.controller == actor,
             _ => false,
@@ -92,11 +94,19 @@ impl Game {
             EffectChoiceKind::Discard => Zone::Hand,
             EffectChoiceKind::BlightCost(_)
             | EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::SacrificePermanents(_)
+            | EffectChoiceKind::SacrificeCreatureOrToken
             | EffectChoiceKind::ReturnToHand
             | EffectChoiceKind::TapPermanents(_) => Zone::Battlefield,
             _ => return false,
         };
         let f = spec.filter;
+        if spec.kind == EffectChoiceKind::SacrificeCreatureOrToken
+            && kinds & 1 == 0
+            && !o.is_token()
+        {
+            return false;
+        }
         if matches!(
             spec.kind,
             EffectChoiceKind::Behold
@@ -364,6 +374,10 @@ impl Game {
             return self.can_fund(goal);
         };
         let source = goal.source.as_ref().expect("activation source").0;
+        if let Some((amount, kind)) = spec.kind.creature_counter_requirement() {
+            let purpose = self.funding_purpose(&goal);
+            return self.creature_counter_fundable_kind(goal, purpose, amount, &[], kind);
+        }
         if self.linked_funding_can_probe(goal.actor)
             && let Some(result) = self.linked_deferred_funding(
                 goal.clone(),
@@ -374,6 +388,9 @@ impl Game {
             return result;
         }
 
+        if matches!(spec.kind, EffectChoiceKind::SacrificePermanents(_)) {
+            return self.sacrifice_group_available(&goal) && self.can_fund(goal);
+        }
         if let EffectChoiceKind::TapPermanents(amount) = spec.kind {
             let excludes_source = spec.filter.other
                 || goal
@@ -422,6 +439,18 @@ impl Game {
             selected.push(object);
             return self.behold_group_fundable(a, None, &selected);
         }
+        if let EffectChoiceKind::SacrificePermanents(amount) = spec.kind {
+            let mut selected = a
+                .additional_group
+                .as_deref()
+                .map_or_else(Vec::new, |group| group.clone());
+            if selected.contains(&object) || selected.len() >= usize::from(amount) {
+                return false;
+            }
+            selected.push(object);
+            return self.sacrifice_group_available(&self.funding_goal(a))
+                && self.behold_witnesses_fundable(a, spec, &selected, None);
+        }
         if let EffectChoiceKind::TapPermanents(_) = spec.kind {
             return (!a.tap_group_excludes_source(spec) || object != a.item.object)
                 && !a
@@ -446,7 +475,10 @@ impl Game {
     pub(super) fn choose_additional_cost(&mut self, object: ObjectRef) {
         let a = self.state.announcing.as_mut().unwrap();
         if let Some(AdditionalCost {
-            kind: EffectChoiceKind::TapPermanents(amount) | EffectChoiceKind::BeholdMany(amount),
+            kind:
+                EffectChoiceKind::TapPermanents(amount)
+                | EffectChoiceKind::BeholdMany(amount)
+                | EffectChoiceKind::SacrificePermanents(amount),
             ..
         }) = a.additional_cost()
         {
@@ -467,10 +499,21 @@ impl Game {
         let Some(spec) = a.additional_cost() else {
             return;
         };
-        if let EffectChoiceKind::RemoveCreatureCounters(amount) = spec.kind {
+        self.pay_additional_cost_spec(a, spec);
+    }
+    pub(super) fn pay_additional_cost_spec(&mut self, a: &mut Announcement, spec: AdditionalCost) {
+        if let Some((amount, expected)) = spec.kind.creature_counter_requirement() {
             let selected = a.creature_counter_cost.as_ref().unwrap();
             assert_eq!(selected.len(), usize::from(amount));
             for &(r, kind) in selected.iter() {
+                assert!(expected.is_none_or(|k| k == kind));
+                assert!(
+                    self.on_battlefield(r.card)
+                        && self.object_ref(r.card) == r
+                        && self.is_creature(r.card)
+                        && self.state.objects[r.card as usize].controller == a.item.controller
+                        && self.counter_count(r.card, kind) > 0
+                );
                 self.pay_counters(r.card, &Counters::of(kind, 1));
             }
             a.additional_paid = true;
@@ -493,6 +536,29 @@ impl Game {
                 }
             }
             a.additional_paid = true;
+            return;
+        }
+        if let EffectChoiceKind::SacrificePermanents(amount) = spec.kind {
+            let group = a
+                .additional_group
+                .as_ref()
+                .expect("selected sacrifice group");
+            assert_eq!(group.len(), usize::from(amount));
+            assert!(group.iter().all(|&object| self.additional_candidate(
+                spec,
+                a.item.controller,
+                a.item.object,
+                object
+            )));
+            if group.contains(&a.item.object) {
+                self.refresh_local_source_counter_quantities(&mut a.item);
+            }
+            let sacrifices = group
+                .iter()
+                .map(|object| (a.item.controller, object.card))
+                .collect::<Vec<_>>();
+            a.additional_paid = true;
+            self.sacrifice_batch(&sacrifices);
             return;
         }
         if let EffectChoiceKind::TapPermanents(amount) = spec.kind {
@@ -554,7 +620,10 @@ impl Game {
                     a.item.controller,
                 );
             }
-            EffectChoiceKind::CopyEntryObject
+            EffectChoiceKind::CopyLinkedExile(_)
+            | EffectChoiceKind::CopyEntryObject
+            | EffectChoiceKind::ReturnLinkedCreature
+            | EffectChoiceKind::OutsideGameCard
             | EffectChoiceKind::RevealHandThenExile
             | EffectChoiceKind::ExileFromHand
             | EffectChoiceKind::ExileGraveyardCard
@@ -563,13 +632,18 @@ impl Game {
             | EffectChoiceKind::OptionalBlightCost(_)
             | EffectChoiceKind::OptionalBeholdType(_)
             | EffectChoiceKind::RemoveCreatureCounters(_)
+            | EffectChoiceKind::RemoveCreatureCounter(_)
+            | EffectChoiceKind::SacrificePermanents(_)
             | EffectChoiceKind::TapPermanents(_)
             | EffectChoiceKind::UntapLands { .. }
             | EffectChoiceKind::PowerDifferenceBoost
             | EffectChoiceKind::KeepSharedCreatureTypes
             | EffectChoiceKind::RemoveCounters
             | EffectChoiceKind::Proliferate
+            | EffectChoiceKind::SacrificeLandOrToken
+            | EffectChoiceKind::BottomHand
             | EffectChoiceKind::HandCreature
+            | EffectChoiceKind::HandCreatureAndLand
             | EffectChoiceKind::HandLand { .. }
             | EffectChoiceKind::LandCards { .. }
             | EffectChoiceKind::CollectEvidence(_)
@@ -579,7 +653,7 @@ impl Game {
             EffectChoiceKind::ReturnToHand => {
                 self.move_object(object.card, Zone::Hand);
             }
-            EffectChoiceKind::Sacrifice => {
+            EffectChoiceKind::Sacrifice | EffectChoiceKind::SacrificeCreatureOrToken => {
                 if a.item.program().is_some_and(|(_, program)| {
                     program.iter().any(|i| {
                         matches!(

@@ -3,10 +3,44 @@
   "catalogue_id": 2755,
   "oracle_id": "529178e8-425e-4d59-948c-ca7d0663f6ff",
   "facts_sha256": "388b9972709fa6b689b53c59a6ae0a9ca3dd337ff84b8e998d5cbd776c49e785",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b3c8897fdf486d5329176841adaffaf974550767c66e8acd6f37f97022e8bcb0"
   },
-  "physical_metadata_sha256": "b510bff8fa7a800f00a92089d3e31134b4cd08c61b0a016f336253cb694eb3ac"
+  "physical_metadata_sha256": "b510bff8fa7a800f00a92089d3e31134b4cd08c61b0a016f336253cb694eb3ac",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MikeyAndDonPartyPlanners.java",
+  "java_sha256": "3b4194110cac8a330f348fa5f7d52834c56c11cd5427e8bb5a1a2fca9980c775",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LookAtTopCardOfLibraryAnyTimeEffect.java",
+      "sha256": "8f40c1e9eeee58bb7d6fb63ad5d4c76cfb0da76c6b823bb0ffaf0274c1cf0f8f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayFromTopOfLibraryEffect.java",
+      "sha256": "85eb4f9d72b858df624abe15ea3797b67aa3b9dc05bd5e55d9037d3c42f474dd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCounterEnteringCreatureEffect.java",
+      "sha256": "6fa7d9b703e62fcfc2f323e012fc227e79f40cbcd6e4dec7a633ae4b1ec3be24"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "601.2",
+      "614.12"
+    ],
+    "note": "Top-library creature entry counter is a frozen chosen-origin promise, independent of later permission availability. It is additional to normal entry counters/replacements and is not copied by a copied spell. Other library permissions may be chosen without this promise. Normal land limits and casting costs/timing remain applicable."
+  }
 }

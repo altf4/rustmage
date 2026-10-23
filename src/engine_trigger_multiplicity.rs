@@ -1,6 +1,5 @@
 //! Additive trigger counts frozen at the event, expanded only after packet capture.
 use super::*;
-use crate::cards::StaticAbilityFragment;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct TriggerMultiplicityView {
@@ -13,6 +12,7 @@ pub(super) struct TriggerProvider {
     controller: Player,
     subtype: &'static str,
     other: bool,
+    creature_only: bool,
 }
 impl Game {
     pub(super) fn freeze_trigger_providers(&self) -> Option<Box<[TriggerProvider]>> {
@@ -24,12 +24,10 @@ impl Game {
                 .iter()
                 .flat_map(|g| g.fragments)
             {
-                if let StaticAbilityFragment::AdditionalSubtypeTriggers { subtype, other } =
-                    *fragment
+                if let Some((subtype, other, creature_only)) =
+                    fragment.additional_subtype_triggers()
                     && self.continuous_fragment_available(id, |f| {
-                        matches!(f,
-                        StaticAbilityFragment::AdditionalSubtypeTriggers { subtype: s, other: o }
-                            if *s == subtype && *o == other)
+                        f.additional_subtype_triggers() == Some((subtype, other, creature_only))
                     })
                 {
                     providers.push(TriggerProvider {
@@ -37,6 +35,7 @@ impl Game {
                         controller: self.state.objects[id as usize].controller,
                         subtype,
                         other,
+                        creature_only,
                     });
                 }
             }
@@ -76,6 +75,7 @@ impl Game {
                     if provider.controller == source.controller
                         && (!provider.other || provider.source != source.reference)
                         && source.has_subtype(provider.subtype)
+                        && (!provider.creature_only || source.is_creature())
                     {
                         n.checked_add(1).capacity("trigger multiplicity exhausted")
                     } else {

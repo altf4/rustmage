@@ -3,10 +3,25 @@
   "catalogue_id": 2040,
   "oracle_id": "84a56740-8563-4ce5-8560-d44998d7f80d",
   "facts_sha256": "bafcea3e7f17f86c1ec862b65e3cfc2d740a26a73737323c64d8ca87ce8f825b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "abec0a72a97c15349f4af2a1dee9d83f5c36901c928036cb87c9e90deecf2ece"
   },
-  "physical_metadata_sha256": "d6a3eb9ac2df9b993face333e5f68ac2cef72c3d3038b575a4b40a6261ec8955"
+  "physical_metadata_sha256": "d6a3eb9ac2df9b993face333e5f68ac2cef72c3d3038b575a4b40a6261ec8955",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HighFlyingAce.java",
+  "java_sha256": "a05c0daef20140fa6a331692c69f9b9c43e6879bed2b7321197ac165cd8f71e4",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    }
+  ]
 }

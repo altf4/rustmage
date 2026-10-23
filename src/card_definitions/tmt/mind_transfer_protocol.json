@@ -3,10 +3,43 @@
   "catalogue_id": 2765,
   "oracle_id": "0d80d0f7-a436-431c-a54e-e7dd7dbba8de",
   "facts_sha256": "3d1eb08fc494fb19ffeb8a38035a8ed7e2e27c805fa09e8a16fcbdebf35df8e7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0b8cc077a88238087655ea6b70482c1a0ea90c77649696a04fdd2aa21056c11a"
   },
-  "physical_metadata_sha256": "07457db6092e7960c518ac412814a8470dd53b688c6f895d3951f3610136bb16"
+  "physical_metadata_sha256": "07457db6092e7960c518ac412814a8470dd53b688c6f895d3951f3610136bb16",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MindTransferProtocol.java",
+  "java_sha256": "23a483bb15e50f9ade22c078e8050e3528e2da58e42ea347719e6706b2f2a544",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureTargetEffect.java",
+      "sha256": "434e8c33e1b80342d01dc8475ebc78920a314f3265bae6e16da7902d4e40c4f8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/custom/CreatureToken.java",
+      "sha256": "71de72a2543d4471901857cc0d58c1a06c383b25760e2a59e46b094862b2f31c"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "122.2",
+      "205.1b",
+      "603.6c",
+      "603.10",
+      "613.1",
+      "614.16"
+    ],
+    "note": "Departure filters and complete counter snapshots use last-known characteristics and controller before the actual move, including simultaneous source departure. Counter quantities are put through the ordinary replacement batch, with new counter timestamps. Artifact-creature animation preserves prior types, colors and abilities under CR205.1b. Noncreature-only animation checks after counter placement. Pizza Face may target another artifact or creature of either player; The Ooze may target a card in either graveyard."
+  }
 }

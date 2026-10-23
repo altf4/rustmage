@@ -10,6 +10,8 @@ pub enum ManaRestrictionView {
     Unrestricted,
     Unspendable,
     SpellSubtype(&'static str),
+    SpellSubtypeAny(&'static [&'static str]),
+    ArtifactSpellOrActivation,
     SpellManaValueAtLeast(u64),
     CreatureSpellOrActivation(CreatureType),
     SubtypeSpellOrActivation(CreatureType),
@@ -85,6 +87,12 @@ impl Quality {
         Self {
             restriction: match quality.restriction {
                 ManaRestriction::Unrestricted => ManaRestrictionView::Unrestricted,
+                ManaRestriction::SpellSubtypeAny(types) => {
+                    ManaRestrictionView::SpellSubtypeAny(types)
+                }
+                ManaRestriction::ArtifactSpellOrActivation => {
+                    ManaRestrictionView::ArtifactSpellOrActivation
+                }
                 ManaRestriction::SpellManaValueAtLeast(minimum) => {
                     ManaRestrictionView::SpellManaValueAtLeast(minimum)
                 }
@@ -134,6 +142,14 @@ impl Quality {
     pub(super) fn eligible(self, purpose: Purpose) -> bool {
         match self.restriction {
             ManaRestrictionView::Unrestricted => true,
+            ManaRestrictionView::SpellSubtypeAny(types) => {
+                matches!(purpose, Purpose::Spell(facts) if types.iter().any(|s| facts.has_subtype(s)))
+            }
+            ManaRestrictionView::ArtifactSpellOrActivation => match purpose {
+                Purpose::Spell(facts) => facts.kinds & 16 != 0,
+                Purpose::Activation(_) => true,
+                Purpose::Other => false,
+            },
             ManaRestrictionView::Unspendable => false,
             ManaRestrictionView::SpellManaValueAtLeast(minimum) => {
                 matches!(purpose, Purpose::Spell(facts) if facts.mana_value >= minimum)

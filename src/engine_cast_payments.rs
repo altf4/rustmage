@@ -263,6 +263,12 @@ impl Game {
         source: ObjectRef,
         event: Option<&CastPaymentEvent>,
     ) -> bool {
+        if condition.requires_discounted_cast()
+            && !event
+                .is_some_and(|e| e.payment.into_iter().map(u64::from).sum::<u64>() < e.mana_value)
+        {
+            return false;
+        }
         let Some((minimum, increment)) = condition.mana_spent_rule() else {
             return true;
         };

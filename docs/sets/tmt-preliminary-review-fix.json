@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "status": "preparatory; does not satisfy final published-head reviews",
+  "reviewer": "/root/tmt_final_review_b",
+  "reviewed_revision": "3959b98db0dfc2287677674cf7b9e6da91302cc2",
+  "finding": "Old Hob paused token completion omitted its boxed SpellView from initialized owned memory accounting and packet traversal.",
+  "resolution": "HastyDestroyAtEnd now participates in both operations. A paid Old Hob plus two Doubling Seasons suspends actual token creation, compares initialized state bytes with an owned sibling lacking the completion, verifies the exact visitor packet, and finishes four hasty tokens through public choices.",
+  "source": "src/engine_replacements.rs",
+  "fixed_source_sha256": "c4a9a303554de266d2bae498ca4bf0fca9f8f2b7c4395b5a0826a1c1e1edbf57",
+  "test": "tmt_old_hob_paused_token_completion_accounts_and_visits_its_owned_packet",
+  "test_success": true,
+  "both_players": true,
+  "log": "<cache>/rustmage-tmt-hasty-completion-memory.log",
+  "log_sha256": "7ea4e6ce742c37c824af298a000b2bf5f6c3d0e9561ea57ca5dcdf0b6fcbd434",
+  "guard_report": "<cache>/rustmage-build-reports/eda2349e0f7849309ade17a87c9a12ef.json",
+  "guard_report_sha256": "5bd9a01e1e3e63f804ae5970f0677ed849122900aeb197245d16e9ed73502078",
+  "final_reviews": []
+}

@@ -8,6 +8,27 @@ pub struct CreatureEntryHistoryView {
 }
 impl Game {
     pub(super) fn record_creature_entry_history(&mut self, events: &[ZoneChange]) {
+        for event in events {
+            if event.moved
+                && event.destination == Zone::Battlefield
+                && self.on_battlefield(event.after.card)
+                && self.object_ref(event.after.card) == event.after
+            {
+                self.state
+                    .permanent_entry_history
+                    .get_or_insert_with(|| Vec::new().into())
+                    .push(event.after);
+            }
+            if event.moved
+                && event.destination == Zone::Battlefield
+                && self.on_battlefield(event.after.card)
+                && self.object_ref(event.after.card) == event.after
+                && self.current_kinds(event.after.card) & 16 != 0
+            {
+                let controller = self.state.objects[event.after.card as usize].controller;
+                self.state.players[controller.index()].artifact_entered_this_turn = true;
+            }
+        }
         // All newcomers and continuous effects exist before an entry is classified.
         // Retain entry-time controller/type even after departure or control changes.
         let entries: Vec<_> = events

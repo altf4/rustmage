@@ -85,7 +85,7 @@ impl Game {
         let before = if named {
             keyword_counters::KINDS.map(|kind| self.counter_count(id, kind))
         } else {
-            [0; 3]
+            [0; 4]
         };
         let hot = counters.hot();
         if self.state.objects[id as usize].counters != hot {

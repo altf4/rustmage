@@ -13,6 +13,7 @@ pub struct AnimationView {
     pub artifact: bool,
     pub creature_types: Option<&'static [&'static str]>,
     pub all_creature_types: bool,
+    pub additive_creature_types: bool,
     pub base: Option<(i128, i128)>,
     pub keywords: Keywords,
     pub expires_turn: Option<u32>,
@@ -334,27 +335,64 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
         if row.all_creature_types {
             Some((row.timestamp, SubtypeChange::All))
         } else {
-            row.creature_types
-                .map(|t| (row.timestamp, SubtypeChange::Named(t, false)))
+            row.creature_types.map(|t| {
+                (
+                    row.timestamp,
+                    if row.additive_creature_types {
+                        SubtypeChange::Add(t)
+                    } else {
+                        SubtypeChange::Named(t, false)
+                    },
+                )
+            })
         }
     }));
     changes
 }
 impl Game {
     pub(super) fn animate_source(&mut self, item: &SpellView, spec: AnimationSpec) {
-        if !self.on_battlefield(item.card) || self.object_ref(item.card) != item.object {
+        self.animate_exact(item.object, spec);
+    }
+    pub(super) fn animate_targets(&mut self, item: &SpellView, spec: AnimationSpec) {
+        self.animate_target_objects(item, spec, false);
+    }
+    pub(super) fn animate_targets_if_noncreature(&mut self, item: &SpellView, spec: AnimationSpec) {
+        self.animate_target_objects(item, spec, true);
+    }
+    fn animate_target_objects(
+        &mut self,
+        item: &SpellView,
+        spec: AnimationSpec,
+        noncreature_only: bool,
+    ) {
+        for bound in &item.targets {
+            if self.same_target_object(*bound)
+                && let Target::Card(id) = bound.target
+                && self.on_battlefield(id)
+                && (!noncreature_only || !self.is_creature(id))
+            {
+                self.animate_exact(self.object_ref(id), spec);
+            }
+        }
+    }
+    pub(super) fn animate_exact(&mut self, object: ObjectRef, spec: AnimationSpec) {
+        if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
             return;
         }
         let timestamp = self.next_role_timestamp();
         let row = AnimationView {
-            object: item.object,
+            object,
             timestamp,
             artifact: spec.artifact,
             creature_types: match spec.creature_types {
-                AnimationCreatureTypes::Named(t) => Some(t),
+                AnimationCreatureTypes::Named(t) | AnimationCreatureTypes::AddNamed(t) => Some(t),
                 _ => None,
             },
             all_creature_types: matches!(spec.creature_types, AnimationCreatureTypes::All),
+            additive_creature_types: matches!(
+                spec.creature_types,
+                AnimationCreatureTypes::AddNamed(_)
+            ),
             base: spec.base,
             keywords: spec.keywords,
             expires_turn: match spec.duration {

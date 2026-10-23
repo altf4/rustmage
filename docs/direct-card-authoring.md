@@ -38,9 +38,10 @@ Require two independent nonauthor reviews of the final published PR.
 
 Run `python3 scripts/link_catalogue.py`, then
 `python3 scripts/validate.py --release`. The validator runs all native rules and
-full-game tests with `cargo test --profile release-test --lib --bins --tests --benches`, plus Clippy,
+full-game tests with `cargo test --profile release-test --lib --bins --tests --benches`
+and an explicit invocation of the ignored comprehensive TMT matrix, plus Clippy,
 format/link consistency, provenance tests and the existing native smoke benchmark.
-The `release-test` profile inherits release optimization, disables LTO and uses
+The `release-test` profile uses optimization level 2, disables LTO and uses
 16 codegen units to reduce compilation work. Debug assertions and overflow checks
 remain enabled. Production release libraries and benchmarks retain their existing
 profile. Clippy checks all targets, including examples; the examples contain no tests and
@@ -48,6 +49,22 @@ are excluded from optimized test-executable builds. Without `--release`, native
 tests use the debug test profile with all targets. It reports fixed inputs, coverage and cleanup and preserves every
 shared library at its exact path/hash. The Freeform smoke benchmark is a limited
 regression workload, not full-set or all-Standard acceptance.
+
+Ordinary PR CI uses `--acceptance regression`: all rules tests, the focused
+20-game TMT regression, Foundations/ECL games and binding smoke checks remain.
+The dense 172-game TMT matrix is an explicitly ignored comprehensive test;
+its decks, seeds, starters, privacy, branch/restore checks and full replay remain
+unchanged. `--acceptance comprehensive` is the validator's default, and is also
+available through the CI workflow's manual acceptance-tier input. Complete-set
+acceptance requires a comprehensive pass on the final engine revision and the
+separate production throughput measurement. A regression pass alone does not
+establish full-set acceptance.
+
+To reproduce the ordinary PR lane locally:
+
+```sh
+python3 scripts/validate.py --release --acceptance regression --python smoke
+```
 
 [Compiler-removal proof](compiler-removal-results.json) records exact equality of
 the compiled before/after definitions, all helper values and immutable globals.

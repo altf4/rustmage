@@ -1,0 +1,11 @@
+{
+  "name": "@token/dinosaur_soldier_2_2_white",
+  "catalogue_id": 5360,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "485005b2b7c267be65fce644fa0910893f27e669f2d15c2b4e8e9f2db53ac5c2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/DinosaurSoldierToken.java",
+  "java_sha256": "52749852a45bd81bf37350a28297ec4540b95b1b61b0b4ffb37496df08da8105"
+}

@@ -347,6 +347,7 @@ fn scaled_amount_ir_rejects_unrepresentable_damage_gain_and_multiplication_atomi
             group: 0,
         });
         g.state.resolving = Some(Resolution {
+            wheel: None,
             continuation: None,
             chosen_creature_type: None,
             chosen_color: None,
@@ -368,6 +369,7 @@ fn scaled_amount_ir_rejects_unrepresentable_damage_gain_and_multiplication_atomi
             selection: None,
             target_library: None,
             search: None,
+            legendary_search: None,
             optional_searches: None,
             choice: None,
         });

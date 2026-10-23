@@ -67,7 +67,9 @@ pub(super) struct RoleReflexiveCompletion {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum TokenCompletion {
+    HastyDestroyAtEnd(Box<SpellView>),
     None,
+    Simultaneous(Box<SimultaneousTokens>),
     Keywords {
         source: ObjectRef,
         keywords: Keywords,
@@ -82,8 +84,20 @@ pub(super) enum TokenCompletion {
     /// One mass creation event; original group indices retain exact recipients.
     RoleAttachMany(Vec<ObjectRef>),
     Mobilize,
-    AttackingCopies,
+    Attacking,
     MobilizeDelayed(Box<SpellView>),
+    HastyDelayedCopy(Box<SpellView>),
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct SimultaneousTokens {
+    waiting: VecDeque<TokenBatch>,
+    ready: Vec<ResolvedTokenPlan>,
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ResolvedTokenPlan {
+    player: Player,
+    groups: Vec<TokenGroupView>,
+    recipes: Vec<Option<CopyRecipe>>,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct TokenBatch {
@@ -155,20 +169,54 @@ impl ReplacementState {
 impl TokenCompletion {
     fn visit_owned_packets(&mut self, visit: &mut impl FnMut(&mut SpellView)) {
         match self {
-            Self::Reflexive { item, .. } | Self::MobilizeDelayed(item) => visit(item),
+            Self::Reflexive { item, .. }
+            | Self::MobilizeDelayed(item)
+            | Self::HastyDelayedCopy(item)
+            | Self::HastyDestroyAtEnd(item) => visit(item),
             Self::RoleReflexive(completion) => visit(&mut completion.item),
+            Self::Simultaneous(sequence) => {
+                for batch in &mut sequence.waiting {
+                    batch.completion.visit_owned_packets(visit);
+                }
+            }
             _ => {}
         }
     }
     fn owned_bytes(&self) -> usize {
         match self {
-            Self::Reflexive { item, .. } | Self::MobilizeDelayed(item) => {
+            Self::Reflexive { item, .. }
+            | Self::MobilizeDelayed(item)
+            | Self::HastyDelayedCopy(item)
+            | Self::HastyDestroyAtEnd(item) => {
                 std::mem::size_of::<SpellView>() + item.owned_bytes()
             }
             Self::RoleReflexive(c) => {
                 std::mem::size_of::<RoleReflexiveCompletion>() + c.item.owned_bytes()
             }
             Self::RoleAttachMany(r) => r.len() * std::mem::size_of::<ObjectRef>(),
+            Self::Simultaneous(sequence) => {
+                std::mem::size_of::<SimultaneousTokens>()
+                    + sequence.waiting.len() * std::mem::size_of::<TokenBatch>()
+                    + sequence
+                        .waiting
+                        .iter()
+                        .map(|b| {
+                            b.groups.len() * std::mem::size_of::<TokenGroupView>()
+                                + b.recipes.len() * std::mem::size_of::<Option<CopyRecipe>>()
+                                + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
+                                + b.completion.owned_bytes()
+                        })
+                        .sum::<usize>()
+                    + sequence.ready.len() * std::mem::size_of::<ResolvedTokenPlan>()
+                    + sequence
+                        .ready
+                        .iter()
+                        .map(|b| {
+                            b.groups.len() * std::mem::size_of::<TokenGroupView>()
+                                + b.recipes.len() * std::mem::size_of::<Option<CopyRecipe>>()
+                        })
+                        .sum::<usize>()
+            }
             _ => 0,
         }
     }
@@ -862,9 +910,9 @@ impl Game {
         self.stage_copy_creation_completion(player, recipe, amount, TokenCompletion::None);
     }
     pub(super) fn stage_attacking_copy_creation(&mut self, player: Player, recipe: CopyRecipe) {
-        self.stage_copy_creation_completion(player, recipe, 1, TokenCompletion::AttackingCopies);
+        self.stage_copy_creation_completion(player, recipe, 1, TokenCompletion::Attacking);
     }
-    fn stage_copy_creation_completion(
+    pub(super) fn stage_copy_creation_completion(
         &mut self,
         player: Player,
         recipe: CopyRecipe,
@@ -874,7 +922,7 @@ impl Game {
         if amount == 0 {
             return;
         }
-        let attacking = matches!(completion, TokenCompletion::AttackingCopies);
+        let attacking = matches!(completion, TokenCompletion::Attacking);
         let first_this_turn = self.begin_token_event(player, amount);
         let batch = TokenBatch {
             first_this_turn,
@@ -890,6 +938,7 @@ impl Game {
             completion,
         };
         if !attacking
+            && matches!(batch.completion, TokenCompletion::None)
             && self.state.replacements.is_none()
             && self.token_replacements(&batch).is_empty()
         {
@@ -947,6 +996,60 @@ impl Game {
         }));
     }
 
+    pub(super) fn stage_token_creation_for_players(
+        &mut self,
+        players: &[Player],
+        token: Card,
+        amount: u128,
+        tapped: bool,
+    ) {
+        if amount == 0 || players.is_empty() {
+            return;
+        }
+        if let [player] = players {
+            self.stage_token_creation(*player, token, amount, tapped, TokenCompletion::None);
+            return;
+        }
+        let mut batches: VecDeque<_> = players
+            .iter()
+            .enumerate()
+            .map(|(index, &player)| {
+                assert!(!players[..index].contains(&player));
+                TokenBatch {
+                    first_this_turn: self.begin_token_event(player, amount),
+                    recipes: Vec::new(),
+                    player,
+                    groups: vec![TokenGroupView {
+                        token,
+                        amount,
+                        tapped,
+                    }],
+                    effect: true,
+                    used: Vec::new(),
+                    completion: TokenCompletion::None,
+                }
+            })
+            .collect();
+        let mut first = batches.pop_front().unwrap();
+        first.completion = TokenCompletion::Simultaneous(Box::new(SimultaneousTokens {
+            waiting: batches,
+            ready: Vec::new(),
+        }));
+        self.state
+            .replacements
+            .get_or_insert_with(|| {
+                Box::new(ReplacementState {
+                    work: VecDeque::new(),
+                    active: None,
+                    attachment: None,
+                    optional_token: None,
+                    resume: None,
+                    mode: ResumeMode::Program,
+                })
+            })
+            .work
+            .push_back(Work::Tokens(first));
+    }
     pub(super) fn stage_token_creation(
         &mut self,
         player: Player,
@@ -1213,9 +1316,43 @@ impl Game {
                             let Some(Event::Tokens(batch)) = state.active.take() else {
                                 unreachable!()
                             };
+                            if let TokenCompletion::Simultaneous(mut sequence) = batch.completion {
+                                sequence.ready.push(ResolvedTokenPlan {
+                                    player: batch.player,
+                                    groups: batch.groups,
+                                    recipes: batch.recipes,
+                                });
+                                if let Some(mut next) = sequence.waiting.pop_front() {
+                                    next.completion = TokenCompletion::Simultaneous(sequence);
+                                    state.work.push_front(Work::Tokens(next));
+                                } else {
+                                    let mut players = Vec::new();
+                                    let mut groups = Vec::new();
+                                    let mut recipes = Vec::new();
+                                    for plan in sequence.ready {
+                                        assert!(
+                                            plan.recipes.is_empty()
+                                                || plan.recipes.len() == plan.groups.len()
+                                        );
+                                        for (index, group) in plan.groups.into_iter().enumerate() {
+                                            players.push(plan.player);
+                                            groups.push(group);
+                                            recipes
+                                                .push(plan.recipes.get(index).copied().flatten());
+                                        }
+                                    }
+                                    self.create_mixed_token_groups(&players, &groups, &recipes);
+                                    if let Some(entry) = self.state.entry_batch.as_mut() {
+                                        assert!(entry.replacement_resume.is_none());
+                                        entry.replacement_resume = Some(state);
+                                        return self.advance_entries();
+                                    }
+                                }
+                                continue;
+                            }
                             if matches!(
                                 batch.completion,
-                                TokenCompletion::Mobilize | TokenCompletion::AttackingCopies
+                                TokenCompletion::Mobilize | TokenCompletion::Attacking
                             ) {
                                 let delayed_sacrifice =
                                     matches!(batch.completion, TokenCompletion::Mobilize);
@@ -1257,6 +1394,8 @@ impl Game {
                                 let capture = matches!(
                                     batch.completion,
                                     TokenCompletion::JobAttach(_)
+                                        | TokenCompletion::HastyDelayedCopy(_)
+                                        | TokenCompletion::HastyDestroyAtEnd(_)
                                         | TokenCompletion::Keywords { .. }
                                         | TokenCompletion::Reflexive { .. }
                                         | TokenCompletion::RoleReflexive(_)
@@ -1374,6 +1513,11 @@ impl Game {
     ) {
         created.retain(|r| self.on_battlefield(r.card) && self.object_ref(r.card) == *r);
         match completion {
+            TokenCompletion::HastyDestroyAtEnd(item) => {
+                let ids = created.iter().map(|r| r.card).collect::<Vec<_>>();
+                self.grant_keyword_effects(&ids, item.object, Keywords::HASTE);
+                self.record_delayed_tokens(&item, created, true);
+            }
             TokenCompletion::Keywords { source, keywords } => {
                 let ids = created.iter().map(|r| r.card).collect::<Vec<_>>();
                 self.grant_keyword_effects(&ids, source, keywords);
@@ -1411,6 +1555,11 @@ impl Game {
                 }
             }
             TokenCompletion::MobilizeDelayed(item) => self.record_mobilize_tokens(&item, created),
+            TokenCompletion::HastyDelayedCopy(item) => {
+                let ids = created.iter().map(|r| r.card).collect::<Vec<_>>();
+                self.grant_keyword_effects_expiring(&ids, item.object, Keywords::HASTE, None);
+                self.record_mobilize_tokens(&item, created);
+            }
             _ => {}
         }
     }
@@ -1725,5 +1874,80 @@ mod role_success_memory_tests {
             state.bytes() - n,
             std::mem::size_of::<ReflexiveSubjectView>()
         );
+    }
+}
+
+#[cfg(test)]
+mod hasty_destroy_memory_tests {
+    use super::super::ability_timeline_tests::{cast, checked, named, settle, setup};
+    use super::*;
+    #[test]
+    fn tmt_old_hob_paused_token_completion_accounts_and_visits_its_owned_packet() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = setup(p);
+            let hob = named(&mut g, p, "Old Hob, Alleycat Blues", Zone::Hand);
+            cast(&mut g, hob, None, &[]);
+            settle(&mut g);
+            named(&mut g, p, "Doubling Season", Zone::Battlefield);
+            named(&mut g, p, "Doubling Season", Zone::Battlefield);
+            for _ in 0..80 {
+                if g.observe(p).replacement_choice.is_some() {
+                    break;
+                }
+                let action = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| {
+                        matches!(
+                            a,
+                            Action::Pass | Action::FinishAttackers | Action::FinishBlockers
+                        )
+                    })
+                    .expect("reach Old Hob beginning combat trigger");
+                checked(&mut g, action);
+            }
+            assert!(g.observe(p).replacement_choice.is_some());
+            let mut without = g.clone();
+            let state = without
+                .state
+                .replacements
+                .as_mut()
+                .expect("paused token replacement");
+            let Some(Event::Tokens(batch)) = &mut state.active else {
+                panic!("token replacement event")
+            };
+            let TokenCompletion::HastyDestroyAtEnd(item) =
+                std::mem::replace(&mut batch.completion, TokenCompletion::None)
+            else {
+                panic!("Old Hob owned completion")
+            };
+            assert_eq!(
+                g.state_bytes() - without.state_bytes(),
+                std::mem::size_of::<SpellView>() + item.owned_bytes()
+            );
+            let mut visited = Vec::new();
+            g.state
+                .replacements
+                .as_mut()
+                .unwrap()
+                .visit_owned_packets(&mut |packet| visited.push((packet.id, packet.object)));
+            assert_eq!(visited, vec![(item.id, item.object)]);
+            // The real public replacement choices still complete four hasty tokens.
+            settle(&mut g);
+            let tokens = g
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter(|(_, o)| o.zone == Zone::Battlefield && o.is_token())
+                .map(|(id, _)| id as CardId)
+                .collect::<Vec<_>>();
+            assert_eq!(tokens.len(), 4);
+            assert!(
+                tokens
+                    .iter()
+                    .all(|&id| g.keywords(id).contains(Keywords::HASTE))
+            );
+        }
     }
 }

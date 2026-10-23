@@ -3,10 +3,35 @@
   "catalogue_id": 2965,
   "oracle_id": "b408c345-b308-4920-8494-4f204d856aa3",
   "facts_sha256": "e5e1eddda81c28b0916e0f77dce6325c8c8f346f2dfd6e6bbc1fa3eb29ee9b30",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a138c24eed3482b76ed89545a646ce7afe10c3caaf63b65c5cb436ca141dafd2"
   },
-  "physical_metadata_sha256": "5b16488f15b8830bf85cd9e5a5b84a77ee9d12279d4b0e94c5f28cc6a5a4ec28"
+  "physical_metadata_sha256": "5b16488f15b8830bf85cd9e5a5b84a77ee9d12279d4b0e94c5f28cc6a5a4ec28",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NorthWindAvatar.java",
+  "java_sha256": "fed9a43d240fc0ec81bd5aaecc11c21c38be57db5941104badf10dd0b4bddf4c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CastFromEverywhereSourceCondition.java",
+      "sha256": "2d091ae95c227de0b227151a9b315cf5370e50f5e0f5177f5e50d8ab3825c4ba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/WishEffect.java",
+      "sha256": "3bb158cdd2db62a102f8ef91482deb63c3989d1376bd6ca8f04ae1866345f847"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ]
 }

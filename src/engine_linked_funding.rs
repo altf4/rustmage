@@ -12,6 +12,7 @@
 //! Numeric mana-allocation domains are finite and streamed without materializing
 //! their potentially u32-wide action spaces; no arbitrary search cap is used.
 use super::*;
+type CounterFundingRequirement = (u16, Vec<(ObjectRef, CounterKind)>, Option<CounterKind>);
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct LinkedFundingGoal {
     pub goal: FundingGoal,
@@ -19,7 +20,7 @@ pub(super) struct LinkedFundingGoal {
     pub convoke: bool,
     pub evidence: Option<u16>,
     pub group: Vec<(ObjectRef, AdditionalCost)>,
-    pub counters: Option<(u16, Vec<(ObjectRef, CounterKind)>)>,
+    pub counters: Option<CounterFundingRequirement>,
     pub deferred: Option<Box<DeferredFundingCost>>,
 }
 impl LinkedFundingGoal {
@@ -200,7 +201,9 @@ impl Game {
                             && a.cost.additional.is_some_and(|cost| {
                                 matches!(
                                     cost.kind,
-                                    EffectChoiceKind::Sacrifice | EffectChoiceKind::BeholdAndExile
+                                    EffectChoiceKind::Sacrifice
+                                        | EffectChoiceKind::SacrificeCreatureOrToken
+                                        | EffectChoiceKind::BeholdAndExile
                                 ) && self.additional_candidate(
                                     cost,
                                     actor,
@@ -335,7 +338,10 @@ impl Game {
     }
 
     pub(super) fn linked_funding_action_viable(&self, action: &Action) -> bool {
-        if *action == Action::Concede || self.linked_funding_projecting() {
+        if *action == Action::Concede
+            || self.linked_funding_projecting()
+            || self.sneak_cost_projecting()
+        {
             return true;
         }
         let watched = self
@@ -406,7 +412,7 @@ impl Game {
         let plans = self.linked_funding_allocations(action);
         let mut viable = Vec::new();
         for plan in plans {
-            if self.linked_funding_projecting() {
+            if self.linked_funding_projecting() || self.sneak_cost_projecting() {
                 viable.push(plan);
                 continue;
             }

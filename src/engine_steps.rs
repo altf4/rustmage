@@ -3,6 +3,14 @@ use super::*;
 impl Game {
     pub(super) fn begin_step(&mut self, step: Step) {
         self.state.step = step;
+        self.queue_delayed_steps(step);
+        if step == Step::BeginCombat {
+            let rules = self.state.combat_rules.get_or_insert_with(Default::default);
+            rules.phases_started = rules
+                .phases_started
+                .checked_add(1)
+                .capacity("combat phase ordinal exhausted");
+        }
         if step == Step::Main1 {
             self.precombat_lore_counters();
         }
@@ -67,6 +75,7 @@ impl Game {
                     && self.trigger_time_guards_hold(*event, player, source, tapped)
             }
             TriggerCondition::InZone { event, .. }
+            | TriggerCondition::ManaSpentBelowValue(event)
             | TriggerCondition::Granted(event)
             | TriggerCondition::OncePerTurn(event)
             | TriggerCondition::DuringOpponentsTurn(event)
@@ -87,6 +96,7 @@ impl Game {
         match condition {
             TriggerCondition::InZone { event, .. }
             | TriggerCondition::When { event, .. }
+            | TriggerCondition::ManaSpentBelowValue(event)
             | TriggerCondition::Granted(event)
             | TriggerCondition::OncePerTurn(event)
             | TriggerCondition::DuringOpponentsTurn(event)
@@ -124,6 +134,32 @@ impl Game {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
             StepGuard::Always => return true,
+            StepGuard::FirstCombatPhase => {
+                return matches!(
+                    self.state.step,
+                    Step::BeginCombat
+                        | Step::Attackers
+                        | Step::Blockers
+                        | Step::FirstStrikeDamage
+                        | Step::CombatDamage
+                        | Step::EndCombat
+                ) && self
+                    .state
+                    .combat_rules
+                    .as_ref()
+                    .is_some_and(|rules| rules.phases_started == 1);
+            }
+            StepGuard::ClassLevelAtLeast(minimum) => return self.class_level(source) >= minimum,
+            StepGuard::SourceSneakedThisTurn => {
+                return self
+                    .state
+                    .sneak_entries
+                    .as_ref()
+                    .is_some_and(|rows| rows.contains(&source));
+            }
+            StepGuard::PermanentLeftBattlefieldThisTurn => {
+                return p.permanent_left_battlefield_this_turn;
+            }
             StepGuard::PutCounterOnCreatureThisTurn => return p.put_counter_on_creature_this_turn,
             StepGuard::YourMainPhase { expected } => {
                 return (self.state.active == player

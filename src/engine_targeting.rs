@@ -35,6 +35,14 @@ impl Announcement {
                 if self
                     .item
                     .cast
+                    .is_some_and(|c| c.method == CastMethod::Sneak) =>
+            {
+                Some(sneak::RETURN_COST)
+            }
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
                     .is_some_and(|c| c.method == CastMethod::GraveyardCounterCost) =>
             {
                 Some(Game::creature_counter_spec(
@@ -49,6 +57,12 @@ impl Announcement {
                     && self.item.source_card.flashback_additional_cost().is_some() =>
             {
                 self.item.source_card.flashback_additional_cost()
+            }
+            StackKind::Spell
+                if self.item.cast.is_some_and(|c| c.kicker == Some(true))
+                    && self.item.source_card.kicker_additional_cost().is_some() =>
+            {
+                self.item.source_card.kicker_additional_cost()
             }
             StackKind::Spell if self.item.cast.is_some_and(|c| c.evidence == Some(true)) => Some(
                 evidence::cost(self.item.source_card.collect_evidence_cost().unwrap()),
@@ -117,6 +131,7 @@ impl Announcement {
     fn method_base_cost(&self) -> ManaCost {
         let card = self.item.source_card;
         match self.item.cast.map(|cast| cast.method) {
+            Some(CastMethod::Sneak) => self.sneak_base_costs().next().expect("captured Sneak cost"),
             Some(CastMethod::Warp) => card.warp_cost().expect("fixed Warp cost"),
             Some(CastMethod::Flashback) => card.flashback_cost().unwrap(),
             Some(CastMethod::Plot | CastMethod::Free) => ManaCost {
@@ -129,9 +144,25 @@ impl Announcement {
             },
         }
     }
+    pub(super) fn sneak_base_costs(&self) -> impl Iterator<Item = ManaCost> + '_ {
+        let printed = self.item.source_card.sneak_costs();
+        printed.iter().copied().chain(
+            self.item
+                .sneak
+                .as_ref()
+                .and_then(|s| s.granted_cost)
+                .filter(|c| !printed.contains(c)),
+        )
+    }
     fn additional_mana_route(&self, alternative: ManaCost) -> Option<ManaCost> {
+        self.additional_mana_route_for_base(alternative, self.method_base_cost())
+    }
+    fn additional_mana_route_for_base(
+        &self,
+        alternative: ManaCost,
+        mut total: ManaCost,
+    ) -> Option<ManaCost> {
         let printed = self.item.source_card.cost();
-        let mut total = self.method_base_cost();
         for (i, component) in total.colored.iter_mut().enumerate() {
             *component =
                 component.checked_add(alternative.colored[i].checked_sub(printed.0[i])?)?;
@@ -159,9 +190,21 @@ impl Announcement {
                 .additional_mana_alternatives()
                 .iter()
                 .any(|alternative| {
-                    self.additional_mana_route(*alternative)
-                        .and_then(|route| self.modified_cost(route))
-                        == Some(cost)
+                    if self
+                        .item
+                        .cast
+                        .is_some_and(|c| c.method == CastMethod::Sneak)
+                    {
+                        self.sneak_base_costs().any(|base| {
+                            self.additional_mana_route_for_base(*alternative, base)
+                                .and_then(|route| self.modified_cost(route))
+                                == Some(cost)
+                        })
+                    } else {
+                        self.additional_mana_route(*alternative)
+                            .and_then(|route| self.modified_cost(route))
+                            == Some(cost)
+                    }
                 })
     }
     pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
@@ -173,6 +216,15 @@ impl Announcement {
             )
         });
         let options = match self.item.kind {
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
+                    .is_some_and(|c| c.method == CastMethod::Sneak) =>
+            {
+                std::iter::once(self.method_base_cost())
+                    .chain(card.sneak_costs().get(1..).unwrap_or(&[]).iter().copied())
+            }
             StackKind::Spell if fixed_method => std::iter::once(self.method_base_cost())
                 .chain(card.additional_mana_alternatives().iter().copied()),
             StackKind::Spell => card.cost_options(),
@@ -181,24 +233,49 @@ impl Announcement {
             }
             _ => unreachable!("triggered ability has no activation cost"),
         };
-        options.enumerate().filter_map(move |(index, cost)| {
-            if self.item.kind == StackKind::Spell
-                && self
-                    .item
-                    .cast
-                    .is_some_and(|cast| cast.method == CastMethod::GrantedFlashback)
-                && card.cost_alternative_guard().is_some()
-                && cost != self.method_base_cost()
-            {
-                return None;
-            }
-            let cost = if fixed_method && index > 0 {
-                self.additional_mana_route(cost)?
-            } else {
-                cost
-            };
-            self.modified_cost(cost)
-        })
+        let sneak = self
+            .item
+            .cast
+            .is_some_and(|c| c.method == CastMethod::Sneak);
+        let granted = self
+            .item
+            .sneak
+            .as_ref()
+            .and_then(|s| s.granted_cost)
+            .filter(|c| !card.sneak_costs().is_empty() && !card.sneak_costs().contains(c));
+        options
+            .chain(granted)
+            .enumerate()
+            .flat_map(move |(index, cost)| {
+                let extras = if sneak {
+                    card.additional_mana_alternatives()
+                } else {
+                    &[]
+                };
+                std::iter::once(Some(cost))
+                    .chain(extras.iter().map(move |&alternative| {
+                        self.additional_mana_route_for_base(alternative, cost)
+                    }))
+                    .filter_map(move |cost| cost.map(|cost| (index, cost)))
+            })
+            .filter_map(move |(index, cost)| {
+                if self.item.kind == StackKind::Spell
+                    && self
+                        .item
+                        .cast
+                        .is_some_and(|cast| cast.method == CastMethod::GrantedFlashback)
+                    && card.cost_alternative_guard().is_some()
+                    && cost != self.method_base_cost()
+                {
+                    return None;
+                }
+                let cost = if fixed_method && index > 0 {
+                    self.additional_mana_route(cost)?
+                } else {
+                    cost
+                };
+                self.modified_cost(cost)
+            })
     }
     pub(super) fn needs_evidence(&self) -> bool {
         self.pay_window
@@ -248,6 +325,13 @@ impl Announcement {
             && self.cost.is_none()
             && match self.item.kind {
                 StackKind::Spell => {
+                    if self
+                        .item
+                        .cast
+                        .is_some_and(|c| c.method == CastMethod::Sneak)
+                    {
+                        return self.cost_options().take(2).count() > 1;
+                    }
                     self.item.cast.is_none_or(|cast| {
                         !matches!(
                             cast.method,
@@ -689,6 +773,13 @@ impl Game {
     }
 
     pub(super) fn choose_mode(&mut self, mode: u16) {
+        if let Pending::EffectKeywordChoice { choices, .. } = self.state.pending {
+            let item = self.state.resolving.as_ref().unwrap().item.clone();
+            let ids = self.keyword_subjects(&item, Subject::Source);
+            self.grant_keyword_effects(&ids, item.object, choices[usize::from(mode)].1);
+            self.run_program();
+            return;
+        }
         let plan = self
             .state
             .announcing
@@ -852,7 +943,13 @@ impl Game {
                     }
                 })
         };
-        if filters().next().is_none() {
+        let temporary = self.state.roles.as_ref().is_some_and(|state| {
+            state
+                .keyword_effects
+                .iter()
+                .any(|row| row.recipient == self.object_ref(id) && row.hexproof_colors != 0)
+        });
+        if filters().next().is_none() && !temporary {
             return false;
         }
         let facts = self.targeting_source_facts(source, qualification);
@@ -860,6 +957,9 @@ impl Game {
             return false;
         };
         let query = self.characteristic_query();
+        if temporary && query.hexproof_colors(id) & colors != 0 {
+            return true;
+        }
         filters().any(|filter| {
             let matches = match filter {
                 crate::cards::SourceCharacteristicFilter::Color(color) => {
@@ -1037,6 +1137,7 @@ impl Game {
                     TargetPredicate::WithoutKeyword(keyword) => {
                         !self.keywords(id).contains(keyword)
                     }
+                    TargetPredicate::Kinds(kinds) => self.current_kinds(id) & kinds != 0,
                     TargetPredicate::WithoutKinds(kinds) => self.current_kinds(id) & kinds == 0,
                     TargetPredicate::WithoutSubtype(subtype) => !self.has_subtype(id, subtype),
                     TargetPredicate::Token => object.is_token(),
@@ -1048,7 +1149,18 @@ impl Game {
                     TargetPredicate::Permanent => {
                         self.current_kinds(id) & (1 | 2 | 16 | 32 | 64 | 256) != 0
                     }
-                    TargetPredicate::Legendary => object.card.info().legendary,
+                    TargetPredicate::Legendary => {
+                        ability_world::CharacteristicWorld::legendary(self, id)
+                    }
+                    TargetPredicate::CrewedSourceThisTurn => {
+                        self.state.crew.as_ref().is_some_and(|data| {
+                            data.history.iter().any(|row| {
+                                row.vehicle == source
+                                    && row.contributors.contains(&self.object_ref(id))
+                            })
+                        })
+                    }
+                    TargetPredicate::Basic => object.card.is_basic_land(),
                     TargetPredicate::Nonbasic => !object.card.is_basic_land(),
                     TargetPredicate::NonOutlaw => {
                         !["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
@@ -1080,6 +1192,9 @@ impl Game {
                     && match rule {
                         TargetRule::SingleTargetStackObject => item.targets.len() == 1,
                         TargetRule::Spell => true,
+                        TargetRule::SpellTargetsControlledArtifactOrCreature => {
+                            self.spell_targets_controlled_artifact_or_creature(item, controller)
+                        }
                         TargetRule::SpellKinds { kinds, excluded } => {
                             (kinds == 0 || item.source_card.kind_mask() & u16::from(kinds) != 0)
                                 && item.source_card.kind_mask() & u16::from(excluded) == 0
@@ -1294,9 +1409,11 @@ impl Game {
             self.spell_mana_purpose_for_card(actor, card, self.effective_spell_card(card)),
         );
         self.state.passes = 0;
+        let library_counter = self.library_top_creature_counter(actor, card);
         let stash_origin = self.foreign_stash(actor, card);
         let exile_any_mana = self.exile_cast_spends_any_mana(actor, card);
         let origin = self.state.objects[card as usize].zone;
+        let linked_play = self.prepare_linked_exile_play(actor, card);
         let before = self.object_view(card);
         let event = self.transition_object_under_control(
             before,
@@ -1311,10 +1428,14 @@ impl Game {
             self.grant_stack_keywords(object, Keywords::HASTE);
         }
         let id = self.next_stack_id();
+        self.remember_linked_play_approval(id, linked_play);
         let mut item = self.cast_preview(actor, card, origin, object, id, payment);
         item.mana_copy_sources = outcome.copies;
-        item.cast.as_mut().unwrap().origin_permissions =
-            CastOriginPermissions::new(stash_origin, exile_any_mana);
+        item.cast.as_mut().unwrap().origin_permissions = if library_counter {
+            CastOriginPermissions::LibraryCreatureCounter
+        } else {
+            CastOriginPermissions::new(stash_origin, exile_any_mana)
+        };
         item
     }
     pub(super) fn cast_preview(
@@ -1327,6 +1448,7 @@ impl Game {
         payment: Mana,
     ) -> SpellView {
         SpellView {
+            sneak: None,
             gift: None,
             source_move: None,
             death_event: None,
@@ -1353,10 +1475,14 @@ impl Game {
                 face: CastFace::Normal,
                 payment,
                 origin,
-                origin_permissions: CastOriginPermissions::new(
-                    self.foreign_stash(actor, card),
-                    self.exile_cast_spends_any_mana(actor, card),
-                ),
+                origin_permissions: if self.library_top_creature_counter(actor, card) {
+                    CastOriginPermissions::LibraryCreatureCounter
+                } else {
+                    CastOriginPermissions::new(
+                        self.foreign_stash(actor, card),
+                        self.exile_cast_spends_any_mana(actor, card),
+                    )
+                },
                 method: CastMethod::Normal,
                 flash_surcharge: false,
                 offspring: None,
@@ -1497,6 +1623,7 @@ impl Game {
                     .is_some_and(|plan| { self.item_targets_available(&item, plan) })
         );
         let needs_mode = item.modes().is_some() && item.mode.is_none();
+        let additional = item.sneak.as_ref().map(|s| s.attacker);
         self.state.announcing = Some(Announcement {
             item,
             spec: TargetSpec::NONE,
@@ -1507,7 +1634,7 @@ impl Game {
             cost: None,
             total_cost: None,
             counter_payment: counters,
-            additional: None,
+            additional,
             additional_group: None,
             creature_counter_cost: None,
             forage: None,
@@ -1563,6 +1690,16 @@ impl Game {
                 };
                 self.state.announcing.as_mut().unwrap().total_cost = Some(total);
             }
+            let announcement = self.state.announcing.as_ref().unwrap();
+            if announcement.total_cost.is_none()
+                && matches!(announcement.item.kind, StackKind::ActivatedAbility { .. })
+            {
+                let base = announcement
+                    .cost
+                    .unwrap_or_else(|| announcement.cost_options().next().unwrap());
+                let total = self.activation_total_cost(announcement, base);
+                self.state.announcing.as_mut().unwrap().total_cost = Some(total);
+            }
             if self
                 .state
                 .announcing
@@ -1577,6 +1714,14 @@ impl Game {
             }
             let announcement = self.state.announcing.as_ref().unwrap();
             self.state.pending = if announcement
+                .additional_cost()
+                .is_some_and(|s| s.kind.creature_counter_requirement().is_some())
+                && announcement.additional.is_none()
+            {
+                Pending::CreatureCounterCost {
+                    player: announcement.item.controller,
+                }
+            } else if announcement
                 .additional_cost()
                 .is_some_and(forage::is_forage_cost)
                 && announcement.forage.as_ref().is_some_and(|f| !f.complete())
@@ -1624,7 +1769,11 @@ impl Game {
                     spec.kind,
                     EffectChoiceKind::BlightCost(_)
                         | EffectChoiceKind::Sacrifice
+                        | EffectChoiceKind::SacrificePermanents(_)
+                        | EffectChoiceKind::SacrificeCreatureOrToken
                         | EffectChoiceKind::ReturnToHand
+                        | EffectChoiceKind::RemoveCreatureCounters(_)
+                        | EffectChoiceKind::RemoveCreatureCounter(_)
                 ) || forage::is_forage_cost(spec)
                     || evidence::threshold(spec).is_some()
             }) && let Some(payment) = announcement.payment.take()
@@ -1658,6 +1807,12 @@ impl Game {
                 announcement.item.cast.as_mut().unwrap().payment = payment;
             }
         }
+        announcement.payment = None;
+        self.pay_sneak_extra(&mut announcement, false);
+        if self.defer_sneak_extra_before_return(&mut announcement) {
+            self.state.announcing = Some(announcement);
+            return;
+        }
         self.pay_supplemental_counters(&mut announcement, false);
         // Costs may synchronously return exiled Auras/lands. Finish their entry
         // choices before the spell becomes cast and cast observers are collected.
@@ -1677,6 +1832,18 @@ impl Game {
                 self.state.announcing = Some(announcement);
                 return;
             }
+        }
+        if self.defer_sneak_extra_after_return(&mut announcement) {
+            self.state.announcing = Some(announcement);
+            return;
+        }
+        self.pay_sneak_extra(&mut announcement, true);
+        if self.state.entry_batch.is_some() || self.state.replacements.is_some() {
+            self.state.announcing = Some(announcement);
+            return;
+        }
+        if let Some(s) = announcement.item.sneak.as_mut() {
+            s.extra = None;
         }
         if self.defer_supplemental_counters_after(&mut announcement) {
             self.state.announcing = Some(announcement);

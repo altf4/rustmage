@@ -3,10 +3,35 @@
   "catalogue_id": 2403,
   "oracle_id": "2385c8fb-9c38-4ff3-8f61-4e25a8c7d46b",
   "facts_sha256": "ff930417f16d9c4f1a550a817b021d83456553b4e43ac05a2bd17a01cf09ffe1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7ef8822e757e327ca7b26bdceba9e3bc0bfc928d69ddd0594c4941fe329a7792"
   },
-  "physical_metadata_sha256": "73fb6f350d72b4b486eabe57ce8adaab6c8bff7e506566b6202c48ba61c14708"
+  "physical_metadata_sha256": "73fb6f350d72b4b486eabe57ce8adaab6c8bff7e506566b6202c48ba61c14708",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KrangAndShredder.java",
+  "java_sha256": "9b57db87710341b78f96d547d1f8509d1d9788a7862b6e760cc77b5cb078f08e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrAttacksSourceTriggeredAbility.java",
+      "sha256": "b5c87d096aa0a689c9915ee2c8c8f8b6eb0fcd2acd4ad8c0c8696c6204f27224"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/RevoltCondition.java",
+      "sha256": "eead800f3b89bb7d03776b7366556d161ab63dca93fc82ff0db185990e01002c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/RevoltWatcher.java",
+      "sha256": "596de803f88a78c9c8210442aca24cd62c678ff57c421063ff5398efe6154438"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/CardUtil.java",
+      "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    }
+  ]
 }

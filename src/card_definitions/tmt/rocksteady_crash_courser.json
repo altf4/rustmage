@@ -3,10 +3,57 @@
   "catalogue_id": 3572,
   "oracle_id": "f9330a7b-8a65-4e04-a777-bf6512332850",
   "facts_sha256": "742b9e4eb64558b15290a23f6bf81d57a456936e6e43cea307dac221194ac0ae",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "55d6d74686012df42d363943279b429327812fb6fc2aa0d34ce0b13440a32dae"
   },
-  "physical_metadata_sha256": "a1e73eee29f9f9bc5530f1c852783716a770bc338375c35407b066cae948e69c"
+  "physical_metadata_sha256": "a1e73eee29f9f9bc5530f1c852783716a770bc338375c35407b066cae948e69c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RocksteadyCrashCourser.java",
+  "java_sha256": "09d428bce2c8fb2a4a6c40b0a3e623eea45d8cbe9995a83f1798be8ddbda751f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByMoreThanOneAllEffect.java",
+      "sha256": "b014190c2cd2cc4e1a92d0514a629bd6e6454adbb3af2351185402258329ad09"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByMoreThanOneSourceEffect.java",
+      "sha256": "e63f7e004321ab1b5c11466c457149be4825c47f5ba41a37f6a501b1ac031c4d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ForestcyclingAbility.java",
+      "sha256": "6371d112d7d6a07c461680adff46572224790d10ac3bd284989ee3a1052f8dc2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+      "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/CyclingDiscardCost.java",
+      "sha256": "1025f6bf0bc3fd16124d317b75d7de4bf3ea880e506a936ff44aa04f9c53c575"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    }
+  ],
+  "source_audit": {
+    "scope": "Complete Oracle body, complete pinned XMage card class and listed complete reusable implementations read; directly authored typed behavior with actual paid-action rules scenarios.",
+    "tests": [
+      "src/engine_tmt_combat_batch_tests.rs"
+    ],
+    "status": "Complete focused paid-action scenarios passed, including public announcements, legality/privacy, transactional failures and owned raw/index branch/restore; integrated release and full-set acceptance remain integrator obligations."
+  }
 }

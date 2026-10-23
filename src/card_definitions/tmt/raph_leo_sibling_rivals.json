@@ -3,10 +3,42 @@
   "catalogue_id": 3375,
   "oracle_id": "57f39ce2-ecbb-4262-8140-03aba5c4303f",
   "facts_sha256": "90a6e4cca39f04415b70ee854ba5e503047c0e57fac9d6ec503120ef980ab386",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "23ecaf64695ed41a63b1c9d166d2159f2184c1d8a102cc991c683d43a3722a6e"
   },
-  "physical_metadata_sha256": "71d9e98e4444e422fed2cbaba5df6d876feb6513ddf36c5cd9a1178c27ee6680"
+  "physical_metadata_sha256": "71d9e98e4444e422fed2cbaba5df6d876feb6513ddf36c5cd9a1178c27ee6680",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RaphAndLeoSiblingRivals.java",
+  "java_sha256": "035d61b7a14e8b782e23b9ad2971fc3542b5c6ca38230e629d1f16508ca39c50",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/FirstCombatPhaseCondition.java",
+      "sha256": "b302ca91e4563cd37417600ee7b5fac3d78fc28e7e2d93d55530aa2f42a97a77"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapTargetEffect.java",
+      "sha256": "69bec57593db2620ef750768e381badf6843aefaf7584c796037dcdf87f1b973"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AdditionalCombatPhaseEffect.java",
+      "sha256": "52f33fcfab80ac5e2027406daace88dec6cd258ea19421a98551e2d34394efd3"
+    }
+  ],
+  "source_audit": {
+    "scope": "Complete Oracle body, complete pinned XMage card class and listed complete reusable implementations read; directly authored typed behavior with actual paid-action rules scenarios.",
+    "tests": [
+      "src/engine_tmt_combat_batch_tests.rs"
+    ],
+    "status": "Complete focused paid-action scenarios passed, including public announcements, legality/privacy, transactional failures and owned raw/index branch/restore; integrated release and full-set acceptance remain integrator obligations."
+  }
 }

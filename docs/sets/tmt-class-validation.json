@@ -1,0 +1,172 @@
+{
+  "schema": 1,
+  "set": "TMT",
+  "status": "incomplete checkpoint",
+  "source_revision": "0faafd3d37be0f5de8755db06b9a128a3cb9aaae",
+  "scope": {
+    "total": 195,
+    "admitted": 113,
+    "gated": 82,
+    "unresolved": 0,
+    "inherited_admission": 71,
+    "inherited_audits_completed": 0,
+    "newly_tested_candidates": 42,
+    "independently_reviewed": 0,
+    "upstream_merged_new_cards": 0
+  },
+  "newly_tested_cards": [
+    "Cool but Rude",
+    "Does Machines",
+    "Leader's Talent"
+  ],
+  "validation": {
+    "command": "python3 scripts/validate.py --release --python smoke",
+    "terminal": true,
+    "success": true,
+    "seconds": 623.8887028160098,
+    "files_verified": 11861,
+    "changed_inputs": [],
+    "report": "<cache>/rustmage-validation-frybmpf9/report/result.json",
+    "report_sha256": "30b7b39decb8763110b1379ce5912b181caab73dbd594aba8c2faa40d7a21e64",
+    "phases": [
+      {
+        "index": 1,
+        "exit": 0,
+        "seconds": 2.177960757020628,
+        "log": "<cache>/rustmage-validation-frybmpf9/report/0.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 2,
+        "exit": 0,
+        "seconds": 0.9105323530093301,
+        "log": "<cache>/rustmage-validation-frybmpf9/report/1.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 3,
+        "exit": 0,
+        "seconds": 0.45360455199261196,
+        "log": "<cache>/rustmage-validation-frybmpf9/report/2.log",
+        "log_sha256": "08154d08dca2df407f367a916ba6f4d2b7121820850ce9f20e3ba8fdcc1ab881"
+      },
+      {
+        "index": 4,
+        "exit": 0,
+        "seconds": 8.128912302025128,
+        "log": "<cache>/rustmage-validation-frybmpf9/report/3.log",
+        "log_sha256": "502e2209a079e5b92ad3843842fe0448b9aeabe4cab8ea39b791d7652928b870"
+      },
+      {
+        "index": 5,
+        "exit": 0,
+        "seconds": 47.54378731100587,
+        "log": "<cache>/rustmage-validation-frybmpf9/report/4.log",
+        "log_sha256": "27ad4e8ba9caa4816aeb544026dd5d8cdcd8fbd41e599e7c680d823c5b273d0e"
+      },
+      {
+        "index": 6,
+        "exit": 0,
+        "seconds": 472.2676799200126,
+        "log": "<cache>/rustmage-validation-frybmpf9/report/5.log",
+        "log_sha256": "2963a1448a8ae7a240573141acec07a5c4c044a37a7ed5a2797d0823bf7822ed"
+      },
+      {
+        "index": 7,
+        "exit": 0,
+        "seconds": 91.61172302698833,
+        "log": "<cache>/rustmage-validation-frybmpf9/report/6.log",
+        "log_sha256": "77dc22149ce2eed1b2165ffbffe0d9ef0eda47ea5ab153baef4965b6bc252baa"
+      },
+      {
+        "index": 8,
+        "exit": 0,
+        "seconds": 0.32641709499876015,
+        "log": "<cache>/rustmage-validation-frybmpf9/report/7.log",
+        "log_sha256": "65719718bb77f08c903062b8448b7a4e3e102cbb6037452265b922e5cc683afa"
+      },
+      {
+        "index": 9,
+        "exit": 0,
+        "seconds": 0.3687602930003777,
+        "log": "<cache>/rustmage-validation-frybmpf9/report/8.log",
+        "log_sha256": "141a87f090f715c46666d73e75560e8c0ab86bdf6ede1d638fed991ecce38611"
+      }
+    ],
+    "shared_libraries": {
+      "<cache>/rustmage-validation-frybmpf9/release/librustmage.so": "d379fddd07ec9b9528876f2b65e241233a2e27a247339e3772cabde7c9e00b4f",
+      "<cache>/rustmage-validation-frybmpf9/release/deps/librustmage.so": "d379fddd07ec9b9528876f2b65e241233a2e27a247339e3772cabde7c9e00b4f",
+      "<cache>/rustmage-validation-frybmpf9/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+      "<cache>/rustmage-validation-frybmpf9/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-frybmpf9/release-test/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-frybmpf9/release-test/deps/librustmage.so": "5dadf019ca665cb2a5c7c279371973c9e214810e949883f5ceab840aea52eaa6"
+    },
+    "cleaned_allocated_bytes": 846004224
+  },
+  "producing_host_library_manifest": {
+    "path": "<cache>/rustmage-tmt-class-library-paths.json",
+    "sha256": "e3c5ed204d8bec50892f2b60405704c6ae31ad4fdfb802033936280bd140a031"
+  },
+  "resource_guard": {
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 624.1675907580066,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 3842293760,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "report": "<cache>/rustmage-build-reports/ff0c9b0af70a43568ace772f500e2f41.json",
+    "report_sha256": "05a4be8ad23aab233ac72aad0dc2794b57066bd9cdf8a1940b7b97a121f7d55d"
+  },
+  "rules_tests": {
+    "library_passed": 3338,
+    "ignored": 1,
+    "sneak_scenarios": 53,
+    "python_smoke": 7,
+    "tmt_scenarios": 87,
+    "class_scenarios": 14
+  },
+  "freeform_smoke_regression": {
+    "clone_ns": 272.38804,
+    "decisions": 49832,
+    "decisions_per_second": 177180.66997575056,
+    "games": 100,
+    "games_per_second": 355.5560081388477,
+    "initial_state_bytes_excluding_capacity_and_allocator": 21160,
+    "max_decisions_per_game": 1129,
+    "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+    "restore_ns": 136.18358,
+    "seconds": 0.281249642,
+    "workload": "Existing Freeform regression smoke, not TMT acceptance",
+    "seed_range": [
+      0,
+      99
+    ],
+    "policy": "rustmage::policy::smoke_index",
+    "decks": {
+      "Mountain": 24,
+      "Lightning Bolt": 20,
+      "Goblin Piker": 12,
+      "Hill Giant": 4
+    },
+    "hardware": "Intel Core Ultra 5 335",
+    "compiler": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+    "profile": "release, opt-level 3, thin LTO",
+    "clone_restore_iterations": 100000,
+    "source": "0faafd3d37be0f5de8755db06b9a128a3cb9aaae"
+  },
+  "implementation_throughput": {
+    "start": "2026-10-23T09:46:09.524900+00:00",
+    "end": "2026-10-23T10:36:32.706885+00:00",
+    "seconds": 3023.181985,
+    "newly_verified_physical_cards": 3,
+    "cards_per_hour": 3.5723949314285157,
+    "scope": "Elapsed continuation interval includes source intake, implementation, repairs, future-card preparation and validation; excludes inherited coverage"
+  },
+  "tmt_simulation_throughput": null,
+  "tmt_full_game_acceptance": "pending",
+  "reviews": [],
+  "known_external_blockers": [],
+  "next_action": "Implement Party Dude with simultaneous cross-player token creation, then Ninja Teen dynamic Sneak/cost composition; continue other cards, inherited audits and set-only acceptance."
+}

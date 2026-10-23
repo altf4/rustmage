@@ -9,8 +9,12 @@ impl Card {
                     f,
                     StaticAbilityFragment::LookAtLibraryTop
                         | StaticAbilityFragment::CastCreatureFromLibraryTop
+                        | StaticAbilityFragment::PlayLibraryTopSubtypeLandsWithCounter(..)
                         | StaticAbilityFragment::SpendAnyManaForCreatures
                         | StaticAbilityFragment::GraveyardPermanentTypes
+                        | StaticAbilityFragment::GraveyardSmallCreaturesWithFinality
+                        | StaticAbilityFragment::GrantGraveyardCreatureSneak { .. }
+                        | StaticAbilityFragment::CastGraveyardCreaturesUsingSneak { .. }
                         | StaticAbilityFragment::ForeignStashPlay
                 )
             })
@@ -87,10 +91,13 @@ impl Game {
         let object = &self.state.objects[card as usize];
         object.owner == player
             && object.zone == Zone::Library
-            && object.card.is_creature()
             && self.state.players[player.index()].library.last() == Some(&card)
-            && has_fragment(self, player, |f| {
-                matches!(f, StaticAbilityFragment::CastCreatureFromLibraryTop)
+            && has_fragment(self, player, |f| match *f {
+                StaticAbilityFragment::CastCreatureFromLibraryTop => object.card.is_creature(),
+                StaticAbilityFragment::PlayLibraryTopSubtypeLandsWithCounter(types) => {
+                    object.card.is_land() || types.iter().any(|s| object.card.has_subtype(s))
+                }
+                _ => false,
             })
     }
     pub(super) fn visible_library_top(&self, viewer: Player, owner: Player) -> Option<ObjectRef> {
@@ -417,5 +424,137 @@ impl Game {
         if rows.is_empty() {
             self.state.graveyard_type_uses = None;
         }
+    }
+}
+
+impl Game {
+    /// Static permission and alternative cost are separate choices (CR118.9).
+    pub(super) fn visit_graveyard_spell_permissions(
+        &self,
+        actor: Player,
+        sorcery: bool,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        if actor != self.state.active {
+            return false;
+        }
+        for &source in &self.state.static_sources {
+            let provider = &self.state.objects[source as usize];
+            if provider.zone != Zone::Battlefield
+                || provider.controller != actor
+                || !self.printed_abilities_available(source)
+            {
+                continue;
+            }
+            let fragments = || {
+                provider
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .flat_map(|g| g.fragments)
+            };
+            let small = fragments().any(|f| {
+                matches!(
+                    f,
+                    StaticAbilityFragment::GraveyardSmallCreaturesWithFinality
+                )
+            });
+            let typed =
+                fragments().any(|f| matches!(f, StaticAbilityFragment::GraveyardPermanentTypes));
+            let ninja=fragments().any(|f|matches!(f,StaticAbilityFragment::CastGraveyardCreaturesUsingSneak {minimum_class_level} if self.class_level(self.object_ref(source))>=*minimum_class_level));
+            if !small && !typed && !ninja {
+                continue;
+            }
+            let permission = self.object_ref(source);
+            for (i, object) in self.state.objects.iter().enumerate() {
+                if object.zone != Zone::Graveyard
+                    || object.owner != actor
+                    || object.is_token()
+                    || !object.card.is_supported()
+                    || object.card.is_land()
+                {
+                    continue;
+                }
+                let card = i as CardId;
+                let stats = self.stats(card);
+                let small_eligible = small
+                    && object.card.is_creature()
+                    && (stats.power <= 1 || stats.toughness <= 1);
+                for permanent_type in
+                    std::iter::once(None).chain(PermanentType::ALL.into_iter().map(Some))
+                {
+                    match permanent_type {
+                        None if !small_eligible && !(ninja && object.card.is_creature()) => {
+                            continue;
+                        }
+                        Some(kind)
+                            if !typed
+                                || kind == PermanentType::Land
+                                || object.card.kind_mask() & kind.mask() == 0
+                                || self.state.graveyard_type_uses.as_ref().is_some_and(
+                                    |rows| {
+                                        rows.iter().any(|row| {
+                                            row.source == permission
+                                                && row.turn == self.state.turn
+                                                && row.permanent_type == kind
+                                        })
+                                    },
+                                ) =>
+                        {
+                            continue;
+                        }
+                        _ => {}
+                    }
+                    for flash_surcharge in [false, true] {
+                        if flash_surcharge && object.card.flash_surcharge().is_none() {
+                            continue;
+                        }
+                        for method in [CastMethod::Normal, CastMethod::Warp] {
+                            if (permanent_type.is_none() && !small_eligible)
+                                || method == CastMethod::Normal && permanent_type.is_some()
+                                || method == CastMethod::Warp && object.card.warp_cost().is_none()
+                            {
+                                continue;
+                            }
+                            if self.permitted_cast_available(
+                                actor,
+                                card,
+                                method,
+                                CastFace::Normal,
+                                sorcery,
+                                flash_surcharge,
+                            ) && emit(Action::AnnounceGraveyardSpell {
+                                card,
+                                permission,
+                                permanent_type,
+                                method,
+                                attacker: None,
+                                flash_surcharge,
+                            }) {
+                                return true;
+                            }
+                        }
+                        if self.visit_sneak_candidates(
+                            actor,
+                            card,
+                            flash_surcharge,
+                            &mut |attacker| {
+                                emit(Action::AnnounceGraveyardSpell {
+                                    card,
+                                    permission,
+                                    permanent_type,
+                                    method: CastMethod::Sneak,
+                                    attacker: Some(attacker),
+                                    flash_surcharge,
+                                })
+                            },
+                        ) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        false
     }
 }

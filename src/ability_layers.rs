@@ -41,8 +41,17 @@ pub(crate) enum StaticAbilityFragment {
     NoncreatureConspire,
     LookAtLibraryTop,
     CastCreatureFromLibraryTop,
+    PlayLibraryTopSubtypeLandsWithCounter(&'static [&'static str]),
     SpendAnyManaForCreatures,
     GraveyardPermanentTypes,
+    GraveyardSmallCreaturesWithFinality,
+    GrantGraveyardCreatureSneak {
+        minimum_class_level: u8,
+        cost: ManaCost,
+    },
+    CastGraveyardCreaturesUsingSneak {
+        minimum_class_level: u8,
+    },
     ForeignStashPlay,
     ControlAttached,
     AttachedCharacteristics(&'static AttachedCharacteristics),
@@ -51,10 +60,16 @@ pub(crate) enum StaticAbilityFragment {
     AttachmentManaBonus(ManaProduction),
     /// A triggered mana ability for any player tapping a basic land.
     BasicLandTapManaBonus(u16),
+    /// Immediate fixed mana from tapping a land controlled by this provider's controller.
+    ControlledLandTapManaBonus(Mana),
     ChosenCreatureType,
     OtherSubtypeEntryCounters(&'static str),
     /// Adds independent triggers for abilities owned by matching permanents.
     AdditionalSubtypeTriggers {
+        subtype: &'static str,
+        other: bool,
+    },
+    AdditionalSubtypeCreatureTriggers {
         subtype: &'static str,
         other: bool,
     },
@@ -108,6 +123,12 @@ pub(crate) enum StaticAbilityFragment {
     AttachmentMana(ManaProduction),
     ControlledTappedKeywords {
         other: bool,
+        keywords: Keywords,
+    },
+    /// A rule effect based on current counters, including named counters (CR613.11).
+    ArtifactTokenActivationReduction(u32),
+    ControlledCreatureCounterRule {
+        kind: Option<CounterKind>,
         keywords: Keywords,
     },
     KeywordGrant(u16, KeywordGrant),
@@ -178,6 +199,7 @@ pub(crate) enum AnimationDuration {
 pub(crate) enum AnimationCreatureTypes {
     Unchanged,
     Named(&'static [&'static str]),
+    AddNamed(&'static [&'static str]),
     All,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -187,4 +209,16 @@ pub(crate) struct AnimationSpec {
     pub base: Option<(i128, i128)>,
     pub keywords: Keywords,
     pub duration: AnimationDuration,
+}
+
+impl StaticAbilityFragment {
+    pub(crate) fn additional_subtype_triggers(self) -> Option<(&'static str, bool, bool)> {
+        match self {
+            Self::AdditionalSubtypeTriggers { subtype, other } => Some((subtype, other, false)),
+            Self::AdditionalSubtypeCreatureTriggers { subtype, other } => {
+                Some((subtype, other, true))
+            }
+            _ => None,
+        }
+    }
 }

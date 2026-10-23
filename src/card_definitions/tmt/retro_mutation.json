@@ -3,10 +3,52 @@
   "catalogue_id": 3501,
   "oracle_id": "d8b5de6d-8654-4550-bccb-79de6cbef4d5",
   "facts_sha256": "288d1f0bbf16203eab0925d83fc849677ad8cfbd6869dc337c7fb4ccbbfcde17",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "abae165687af38796993f1c2d041aa1341d639bd433129ef5d0ac1bfd68e2493"
   },
-  "physical_metadata_sha256": "e6ff3634e803f49da461da3da797fdea97638a5a230cc46dfb81b6fc3aaf2b57"
+  "physical_metadata_sha256": "e6ff3634e803f49da461da3da797fdea97638a5a230cc46dfb81b6fc3aaf2b57",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RetroMutation.java",
+  "java_sha256": "500088f5f2b327e15cabd8d454c47f781d2bddb6334a093000bcff4f80839257",
+  "rules_tests": "src/engine_tmt_final_spells_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantAttackAttachedEffect.java",
+      "sha256": "6d98d4e5e97cc55afb5ef5da8ea38820db20e9e3a6309914ea6e04ed40810f03"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureAttachedEffect.java",
+      "sha256": "3fe1bc492de2b19b90314d93d7a07c705a70927e168d63458084f5a6360a2a0f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesAttachedEffect.java",
+      "sha256": "945c33113331a9a46b08c1f58aed0a2f0cd8a8e4836c267b912199f9ced014c5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    }
+  ],
+  "oracle_rules_notes": "Oracle replaces creature types only, preserving other card types, artifact subtypes, name and color (CR205.1a). Ability removal uses layer6; base0/1 uses layer7b; the external attack restriction remains applicable under CR613.11."
 }

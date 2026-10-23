@@ -12,6 +12,17 @@ pub(super) struct SearchChoice {
 
 impl Game {
     pub(super) fn choose_search(&mut self, card: CardId) {
+        if self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .legendary_search
+            .is_some()
+        {
+            self.choose_legendary_split_card(card);
+            return;
+        }
         let choice = self
             .state
             .resolving
@@ -45,6 +56,17 @@ impl Game {
     }
 
     pub(super) fn finish_search(&mut self, player: Player) {
+        if self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .legendary_search
+            .is_some()
+        {
+            self.finish_legendary_split_search();
+            return;
+        }
         let choice = self
             .state
             .resolving
@@ -154,7 +176,24 @@ impl Game {
                 movement
             })
             .collect();
+        let hand_results = (choice.spec.destination == SearchDestination::Hand).then(|| {
+            choice
+                .selected
+                .iter()
+                .map(|&id| ObjectRef {
+                    card: id,
+                    generation: self
+                        .object_ref(id)
+                        .generation
+                        .checked_add(1)
+                        .capacity("object generation exhausted"),
+                })
+                .collect()
+        });
         self.stage_entries(moves, Some(player));
+        if let Some(objects) = hand_results {
+            self.after_departure(programs::ProgramContinuation::SearchHandCount(objects));
+        }
         if choice.spec.destination == SearchDestination::LinkedExile {
             self.remember_linked_exile(&choice.selected);
         }

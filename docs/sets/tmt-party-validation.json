@@ -1,0 +1,170 @@
+{
+  "schema": 1,
+  "set": "TMT",
+  "status": "incomplete checkpoint",
+  "source_revision": "a746f8fdc8d156efef5fb7fc499cdb85333e7148",
+  "scope": {
+    "total": 195,
+    "admitted": 114,
+    "gated": 81,
+    "unresolved": 0,
+    "inherited_admission": 71,
+    "inherited_audits_completed": 0,
+    "newly_tested_candidates": 43,
+    "independently_reviewed": 0,
+    "upstream_merged_new_cards": 0
+  },
+  "newly_tested_cards": [
+    "Party Dude"
+  ],
+  "validation": {
+    "command": "python3 scripts/validate.py --release --python smoke",
+    "terminal": true,
+    "success": true,
+    "seconds": 626.6394870739896,
+    "files_verified": 11862,
+    "changed_inputs": [],
+    "report": "<cache>/rustmage-validation-vtji2cp8/report/result.json",
+    "report_sha256": "f1b14aa13a007d46f32fef4294b3feab170185ae36e377ef3a29eeb98d7714d6",
+    "phases": [
+      {
+        "index": 1,
+        "exit": 0,
+        "seconds": 2.1931662679999135,
+        "log": "<cache>/rustmage-validation-vtji2cp8/report/0.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 2,
+        "exit": 0,
+        "seconds": 0.9407873540185392,
+        "log": "<cache>/rustmage-validation-vtji2cp8/report/1.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 3,
+        "exit": 0,
+        "seconds": 0.4436150519759394,
+        "log": "<cache>/rustmage-validation-vtji2cp8/report/2.log",
+        "log_sha256": "107ee6d2cc2675015e1cad5da4b84e31dad5ce411635bee20bd40625dfcba526"
+      },
+      {
+        "index": 4,
+        "exit": 0,
+        "seconds": 8.15241874800995,
+        "log": "<cache>/rustmage-validation-vtji2cp8/report/3.log",
+        "log_sha256": "08352279b2f762fc1372888713a33e6524ac371d6b1c54ca4ead2e742bc84173"
+      },
+      {
+        "index": 5,
+        "exit": 0,
+        "seconds": 47.66241142200306,
+        "log": "<cache>/rustmage-validation-vtji2cp8/report/4.log",
+        "log_sha256": "cd7c18b806e9f7659c46083ec502a069edd01b0db10ab35f3a0e1a03f9b77754"
+      },
+      {
+        "index": 6,
+        "exit": 0,
+        "seconds": 475.1254522620002,
+        "log": "<cache>/rustmage-validation-vtji2cp8/report/5.log",
+        "log_sha256": "710b9c744f7ae2e2cf40af521290f5712af9adce26a762d355add2fddf31baaa"
+      },
+      {
+        "index": 7,
+        "exit": 0,
+        "seconds": 91.29560721700545,
+        "log": "<cache>/rustmage-validation-vtji2cp8/report/6.log",
+        "log_sha256": "f6e0a93fea84d3326888cb0cc2a79abe07be7b0cd26eec6abbfc071cf0dd370c"
+      },
+      {
+        "index": 8,
+        "exit": 0,
+        "seconds": 0.32418517299811356,
+        "log": "<cache>/rustmage-validation-vtji2cp8/report/7.log",
+        "log_sha256": "6d3c85081bd15481093647ca2c84e6c797270ac8bfa4cf831758b2a654fcfaf4"
+      },
+      {
+        "index": 9,
+        "exit": 0,
+        "seconds": 0.39829750498756766,
+        "log": "<cache>/rustmage-validation-vtji2cp8/report/8.log",
+        "log_sha256": "3af8b84f4e638781cbdec67dc668ebe1b2a2a53897e1e66c6fb2e5765543d0a6"
+      }
+    ],
+    "shared_libraries": {
+      "<cache>/rustmage-validation-vtji2cp8/release/librustmage.so": "6c227e312f2d136a63af79688b06d1350555ad7866974c91831ba67cf07efaaa",
+      "<cache>/rustmage-validation-vtji2cp8/release/deps/librustmage.so": "6c227e312f2d136a63af79688b06d1350555ad7866974c91831ba67cf07efaaa",
+      "<cache>/rustmage-validation-vtji2cp8/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+      "<cache>/rustmage-validation-vtji2cp8/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-vtji2cp8/release-test/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-vtji2cp8/release-test/deps/librustmage.so": "83476c198b22ef0eaf03c7907a3c7d8babcead19c62fee993b8e118314b38a6d"
+    },
+    "cleaned_allocated_bytes": 847429632
+  },
+  "producing_host_library_manifest": {
+    "path": "<cache>/rustmage-tmt-party-library-paths.json",
+    "sha256": "aeab1a60d4ff8aada06e0963ff2c517862d7de798ee945288e5259f2b0674e9b"
+  },
+  "resource_guard": {
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 626.9244363190082,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 3836243968,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "report": "<cache>/rustmage-build-reports/b07eccdec0524e1a81c15336990b9827.json",
+    "report_sha256": "6867007284f6622c5808e5898f8a365f90b212449d2ef603eb66392644998502"
+  },
+  "rules_tests": {
+    "library_passed": 3345,
+    "ignored": 1,
+    "sneak_scenarios": 53,
+    "python_smoke": 7,
+    "tmt_scenarios": 94,
+    "class_scenarios": 21
+  },
+  "freeform_smoke_regression": {
+    "clone_ns": 267.50479,
+    "decisions": 49832,
+    "decisions_per_second": 177739.00942531793,
+    "games": 100,
+    "games_per_second": 356.6764517284434,
+    "initial_state_bytes_excluding_capacity_and_allocator": 21160,
+    "max_decisions_per_game": 1129,
+    "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+    "restore_ns": 128.76211,
+    "seconds": 0.28036614,
+    "workload": "Existing Freeform regression smoke, not TMT acceptance",
+    "seed_range": [
+      0,
+      99
+    ],
+    "policy": "rustmage::policy::smoke_index",
+    "decks": {
+      "Mountain": 24,
+      "Lightning Bolt": 20,
+      "Goblin Piker": 12,
+      "Hill Giant": 4
+    },
+    "hardware": "Intel Core Ultra 5 335",
+    "compiler": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+    "profile": "release, opt-level 3, thin LTO",
+    "clone_restore_iterations": 100000,
+    "source": "a746f8fdc8d156efef5fb7fc499cdb85333e7148"
+  },
+  "implementation_throughput": {
+    "start": "2026-10-23T10:36:32.706885+00:00",
+    "end": "2026-10-23T11:03:47.504804+00:00",
+    "seconds": 1634.797919,
+    "newly_verified_physical_cards": 1,
+    "cards_per_hour": 2.2021070360807085,
+    "scope": "Elapsed continuation interval includes source intake, implementation, repairs, future-card preparation and validation; excludes inherited coverage"
+  },
+  "tmt_simulation_throughput": null,
+  "tmt_full_game_acceptance": "pending",
+  "reviews": [],
+  "known_external_blockers": [],
+  "next_action": "Implement the five Class cards with true level designations and gained abilities, including Ninja Teen dynamic Sneak and composed additional costs; continue remaining cards, inherited audits and set-only acceptance."
+}

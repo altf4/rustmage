@@ -41,8 +41,16 @@ impl Announcement {
                 .creature_counter_cost
                 .as_ref()
                 .and_then(|cost| cost.amount),
-            _ => None,
+            _ => self
+                .additional_cost()
+                .and_then(|s| s.kind.creature_counter_requirement())
+                .map(|r| r.0),
         }
+    }
+    pub(super) fn creature_counter_cost_kind(&self) -> Option<CounterKind> {
+        self.additional_cost()
+            .and_then(|s| s.kind.creature_counter_requirement())
+            .and_then(|r| r.1)
     }
 }
 
@@ -171,10 +179,18 @@ impl Game {
             {
                 continue;
             }
+            let cost = self.reduced_activation_cost(
+                actor,
+                recipient.card,
+                ManaCost {
+                    colored: ability.cost.colored,
+                    generic: ability.cost.generic,
+                },
+            );
             if self.can_fund(FundingGoal {
                 actor,
-                required: ability.cost.colored,
-                generic: ability.cost.generic,
+                required: cost.colored,
+                generic: cost.generic,
                 reserve: Some((grantor, Self::attached_tap_spec())),
                 source: Some((recipient, index as u16, Counters::default(), giver.card)),
             }) && emit(Action::AnnounceAttachedAbility {
@@ -244,6 +260,19 @@ impl Game {
             return true;
         }
         let a = self.state.announcing.as_ref().unwrap();
+        if !self.linked_funding_active()
+            && matches!(a.item.kind, StackKind::ActivatedAbility { .. })
+            && a.item.source_card.activations()[match a.item.kind {
+                StackKind::ActivatedAbility { ability } => usize::from(ability),
+                _ => unreachable!(),
+            }]
+            .cost
+            .mana_component
+            && self.visit_linked_funding_mana(emit)
+        {
+            return true;
+        }
+
         let amount = a.creature_counter_cost_amount().unwrap();
         let mut selected = a
             .creature_counter_cost
@@ -259,7 +288,9 @@ impl Game {
             }
             let r = self.object_ref(id);
             for kind in CounterKind::ALL {
-                if self.counter_count(r.card, kind) == 0 {
+                if a.creature_counter_cost_kind().is_some_and(|k| k != kind)
+                    || self.counter_count(r.card, kind) == 0
+                {
                     continue;
                 }
                 selected.push((r, kind));
@@ -270,11 +301,12 @@ impl Game {
                 {
                     self.supplemental_counter_choice_fundable(a, &selected)
                 } else {
-                    self.creature_counter_fundable(
+                    self.creature_counter_fundable_kind(
                         self.funding_goal(a),
                         self.purpose_for_item(&a.item),
                         amount,
                         &selected,
+                        a.creature_counter_cost_kind(),
                     )
                 };
                 selected.pop();
@@ -301,6 +333,8 @@ impl Game {
             if a.item
                 .cast
                 .is_some_and(|c| c.method == CastMethod::GraveyardCounterCost)
+                || a.additional_cost()
+                    .is_some_and(|s| s.kind.creature_counter_requirement().is_some())
             {
                 a.additional = Some(object);
             }

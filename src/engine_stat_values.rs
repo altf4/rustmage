@@ -102,6 +102,9 @@ impl Game {
     {
         match value {
             StatValue::Fixed(n) => i128::from(n),
+            StatValue::ArtifactEnteredThisTurn => {
+                i128::from(self.state.players[owner.index()].artifact_entered_this_turn)
+            }
             StatValue::DeclaredSubtypeAttackersThisTurn(subtype) => {
                 i128::try_from(self.declared_subtype_attackers(owner, subtype))
                     .capacity("declared subtype attacker count")
@@ -184,6 +187,9 @@ impl Game {
                         && self.state.attackers.iter().any(|a| a.card == *id)
                 })
                 .count() as i128,
+            StatValue::SourceClassLevelAtLeast(minimum) => {
+                i128::from(self.class_level(source) >= minimum)
+            }
             StatValue::SourceUntapped => i128::from(objects().any(|(id, object)| {
                 id == source.card
                     && object.generation == source.generation
@@ -347,9 +353,18 @@ impl Game {
             AmountValue::SourceCounterQuantity(kind) => {
                 u128::from(self.source_counter_quantity_live(source, kind).unwrap_or(0))
             }
-            AmountValue::MilledCreatures
+            AmountValue::SourceCounterTotal => self
+                .state
+                .objects
+                .get(source.card as usize)
+                .filter(|object| object.generation == source.generation)
+                .map_or(0, |_| self.counter_amounts(source.card).total()),
+            AmountValue::DeathEventToughness
+            | AmountValue::MovedCount
+            | AmountValue::MilledCreatures
             | AmountValue::ChosenX
             | AmountValue::ManaSpent
+            | AmountValue::CastCardTypeCount
             | AmountValue::CastSpellManaValue
             | AmountValue::SpellColors
             | AmountValue::ColorsSpent
@@ -358,6 +373,7 @@ impl Game {
             | AmountValue::GreatestCreaturePower(_)
             | AmountValue::LifeEventAmount
             | AmountValue::DamageEventAmount
+            | AmountValue::DepartureCounterCount(_)
             | AmountValue::DeathEventCounterTotal
             | AmountValue::DeathEventPower => 0, // Off-stack expressions have no cast parameter.
             AmountValue::Stat(value) => self.stat_value(value, source, owner).max(0) as u128,

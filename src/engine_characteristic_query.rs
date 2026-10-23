@@ -28,7 +28,15 @@ impl Game {
         }
     }
 }
-impl CharacteristicQuery<'_> {
+impl<'a> CharacteristicQuery<'a> {
+    #[cfg(test)]
+    pub(super) fn with_evaluation(game: &'a Game, evaluation: AbilityEvaluation) -> Self {
+        Self {
+            game,
+            evaluation: Some(evaluation),
+        }
+    }
+
     pub(super) fn creature_matches(
         &self,
         filter: CreatureFilter,
@@ -405,6 +413,18 @@ impl CharacteristicQuery<'_> {
                         {
                             keywords = keywords.union(grant);
                         }
+                        StaticAbilityFragment::ControlledCreatureCounterRule {
+                            kind,
+                            keywords: grant,
+                        } if object.controller == target.controller
+                            && self.is_creature(id)
+                            && kind.map_or_else(
+                                || self.counter_amounts(id).has_any(),
+                                |k| self.counter_count(id, k) > 0,
+                            ) =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
                         StaticAbilityFragment::ControlledTappedKeywords {
                             other,
                             keywords: grant,
@@ -681,6 +701,11 @@ impl CharacteristicQuery<'_> {
         );
         available
     }
+    pub(super) fn hexproof_colors(&self, id: CardId) -> u8 {
+        self.evaluation.as_ref().map_or(0, |evaluation| {
+            evaluation.result.objects[id as usize].hexproof_colors
+        })
+    }
     pub(super) fn ability_availability(&self, id: CardId) -> Option<Box<AbilityAvailabilityView>> {
         if !self.on_battlefield(id) {
             return None;
@@ -689,6 +714,7 @@ impl CharacteristicQuery<'_> {
         let object = &evaluation.result.objects[id as usize];
         Some(Box::new(AbilityAvailabilityView {
             printed: object.printed,
+            hexproof_colors: object.hexproof_colors,
             grants: object
                 .grants
                 .iter()
@@ -716,6 +742,7 @@ impl CharacteristicQuery<'_> {
             self.layered_stats_without_hand(id, None)
         };
         ObjectView {
+            legendary: CharacteristicWorld::legendary(self, id),
             copy_ability_origin: self.copy_ability_origin(self.object_ref(id)),
             abilities: self.ability_availability(id),
             kinds: self.current_kinds(id),

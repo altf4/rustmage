@@ -167,6 +167,18 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             value
         }
+        StaticAbilityFragment::ControlledCreatureCounterRule { kind, keywords } => {
+            if !own
+                || world.kinds(id) & 1 == 0
+                || !kind.map_or_else(
+                    || world.counter_amounts(id).has_any(),
+                    |k| world.counter_count(id, k) > 0,
+                )
+            {
+                return None;
+            }
+            keywords
+        }
         StaticAbilityFragment::ControlledTappedKeywords { other, keywords } => {
             if !own
                 || world.kinds(id) & 1 == 0
@@ -214,26 +226,185 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
     })
 }
 
+/// Bound grants inspect only their possible recipient. Unclassified fragments
+/// retain the exhaustive battlefield fallback; grant_fragment remains the rule
+/// authority for incarnation, control, subtype and earlier-layer restrictions.
+fn visit_grant_recipients<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    source: ObjectRef,
+    fragment: &StaticAbilityFragment,
+    mut emit: impl FnMut(CardId),
+) {
+    match fragment {
+        StaticAbilityFragment::SourceCounterKeywords { .. }
+        | StaticAbilityFragment::SourceCounterSubtype { .. } => emit(source.card),
+        StaticAbilityFragment::AttachmentKeywords(_)
+        | StaticAbilityFragment::AttachmentRule(_)
+        | StaticAbilityFragment::AttachedTurnKeywords(_)
+        | StaticAbilityFragment::AttachmentMana(_)
+        | StaticAbilityFragment::AttachmentTrigger(_)
+        | StaticAbilityFragment::AttachmentActivation(_) => {
+            if let Some(recipient) = world.object(source.card).attached_to {
+                emit(recipient.card);
+            }
+        }
+        _ => {
+            for (index, _) in world.game().state.objects.iter().enumerate() {
+                let id = index as CardId;
+                if world.object(id).zone == Zone::Battlefield {
+                    emit(id);
+                }
+            }
+        }
+    }
+}
+fn group_grants<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    source: ObjectRef,
+    fragments: &[StaticAbilityFragment],
+    time: u64,
+) -> Vec<LayerSixGrant> {
+    let mut rows = Vec::new();
+    for (fragment_index, fragment) in fragments.iter().enumerate() {
+        visit_grant_recipients(world, source, fragment, |id| {
+            if let Some(row) = grant_fragment(world, source, fragment, id, time) {
+                rows.push((fragment_index, row));
+            }
+        });
+    }
+    // The exhaustive evaluator visits object ID, then fragment position. Grant
+    // order is observable for granted ability enumeration and must stay exact.
+    rows.sort_by_key(|(fragment, row)| (row.recipient, *fragment));
+    rows.into_iter().map(|(_, row)| row).collect()
+}
+
+fn group_provides_grants(fragments: &[StaticAbilityFragment]) -> bool {
+    fragments.iter().any(|f| {
+        matches!(
+            f,
+            StaticAbilityFragment::SourceCounterKeywords { .. }
+                | StaticAbilityFragment::SourceCounterSubtype { .. }
+                | StaticAbilityFragment::AttachmentKeywords(..)
+                | StaticAbilityFragment::AttachedTurnKeywords(..)
+                | StaticAbilityFragment::ControlledCreatureTrigger { .. }
+                | StaticAbilityFragment::AttachmentTrigger(..)
+                | StaticAbilityFragment::AttachmentActivation(..)
+                | StaticAbilityFragment::AttachmentMana(..)
+                | StaticAbilityFragment::CounterKeyword(..)
+                | StaticAbilityFragment::CounterKeywordOwnTurn(..)
+                | StaticAbilityFragment::DeathBaronLord
+                | StaticAbilityFragment::ChosenCreatureKeywords(..)
+                | StaticAbilityFragment::ControlledTappedKeywords { .. }
+                | StaticAbilityFragment::KeywordGrant(..)
+                | StaticAbilityFragment::LiveKeywords(..)
+        )
+    })
+}
+
+fn keyword_timeline_present<W: CharacteristicWorld + ?Sized>(world: &W) -> bool {
+    world.game().state.roles.as_ref().is_some_and(|r| {
+        r.keyword_effects.iter().any(|row| {
+            matches!(
+                world.object(row.recipient.card).zone,
+                Zone::Battlefield | Zone::Stack
+            ) && world.reference(row.recipient.card) == row.recipient
+        }) || r.animations.iter().any(|row| {
+            row.keywords != Keywords::NONE
+                && world.object(row.object.card).zone == Zone::Battlefield
+                && world.reference(row.object.card) == row.object
+        })
+    })
+}
 pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
     world: &W,
 ) -> Option<AbilityEvaluation> {
-    (world.has_ability_removal()
-        || world.game().state.roles.as_ref().is_some_and(|r| {
-            r.keyword_effects.iter().any(|row| {
-                matches!(
-                    world.object(row.recipient.card).zone,
-                    Zone::Battlefield | Zone::Stack
-                ) && world.reference(row.recipient.card) == row.recipient
-            }) || r.animations.iter().any(|row| {
-                row.keywords != Keywords::NONE
-                    && world.object(row.object.card).zone == Zone::Battlefield
-                    && world.reference(row.object.card) == row.object
-            })
-        }))
-    .then(|| evaluate_abilities(world))
+    (world.has_ability_removal() || keyword_timeline_present(world))
+        .then(|| evaluate_abilities(world))
+}
+/// Without removal every provider stays available and keyword unions commute.
+/// Restrict this projection to worlds that already require the full evaluator;
+/// the legacy no-timeline fallback deliberately remains a separate path.
+pub(super) fn scalar_keywords_without_removal<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> Option<Keywords> {
+    let target = world.object(id);
+    if !matches!(target.zone, Zone::Battlefield | Zone::Stack)
+        || world.has_ability_removal()
+        || !keyword_timeline_present(world)
+    {
+        return None;
+    }
+    let game = world.game();
+    let recipient = world.reference(id);
+    let mut keywords = if target.zone == Zone::Stack {
+        game.effective_spell_card(id).keywords()
+    } else {
+        target
+            .card
+            .keywords()
+            .union(game.copied_keywords(recipient))
+    };
+    for (index, _) in game.state.objects.iter().enumerate() {
+        let source_id = index as CardId;
+        let provider = world.object(source_id);
+        if provider.zone != Zone::Battlefield
+            && !(provider.zone == Zone::Command && provider.card.is_emblem())
+        {
+            continue;
+        }
+        let source = world.reference(source_id);
+        for group in provider.card.static_ability_groups() {
+            // Conservative even for a removal whose current attached recipient
+            // is absent. The full dependency evaluator remains the authority.
+            if group
+                .fragments
+                .iter()
+                .any(|f| matches!(f, StaticAbilityFragment::RemoveAttachedAbilities))
+            {
+                return None;
+            }
+            let provides = group_provides_grants(group.fragments);
+            for fragment in group.fragments {
+                let rule = provider.zone == Zone::Battlefield
+                    && matches!(
+                        fragment,
+                        StaticAbilityFragment::AttachmentRule(..)
+                            | StaticAbilityFragment::StaticRuleGrant(..)
+                            | StaticAbilityFragment::ControlledCreatureCounterRule { .. }
+                    );
+                if (provides || rule)
+                    && let Some(row) = grant_fragment(world, source, fragment, id, 0)
+                {
+                    keywords = keywords.union(row.keywords);
+                }
+            }
+        }
+    }
+    if let Some(state) = &game.state.roles {
+        for row in &state.keyword_effects {
+            if row.recipient == recipient
+                && row.expires_turn.is_none_or(|turn| turn == game.state.turn)
+                && keyword_counters::effect_live(world, row)
+            {
+                keywords = keywords.union(row.keywords).union(row.rules);
+            }
+        }
+        for row in &state.animations {
+            if target.zone == Zone::Battlefield && row.object == recipient {
+                keywords = keywords.union(row.keywords);
+            }
+        }
+    }
+    Some(keywords)
 }
 
 pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> AbilityEvaluation {
+    evaluate_abilities_with::<W, false>(world)
+}
+fn evaluate_abilities_with<W: CharacteristicWorld + ?Sized, const EXHAUSTIVE: bool>(
+    world: &W,
+) -> AbilityEvaluation {
     let game = world.game();
     let mut effects = Vec::new();
     let mut groups = Vec::new();
@@ -246,6 +417,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             let object = world.object(i as CardId);
             LayerSixObject {
                 printed: true,
+                hexproof_colors: 0,
                 keywords: if object.zone == Zone::Stack {
                     game.effective_spell_card(i as CardId).keywords()
                 } else {
@@ -278,26 +450,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 .fragments
                 .iter()
                 .any(|f| matches!(f, StaticAbilityFragment::RemoveAttachedAbilities));
-            let provides = origin.fragments.iter().any(|f| {
-                matches!(
-                    f,
-                    StaticAbilityFragment::SourceCounterKeywords { .. }
-                        | StaticAbilityFragment::SourceCounterSubtype { .. }
-                        | StaticAbilityFragment::AttachmentKeywords(..)
-                        | StaticAbilityFragment::AttachedTurnKeywords(..)
-                        | StaticAbilityFragment::ControlledCreatureTrigger { .. }
-                        | StaticAbilityFragment::AttachmentTrigger(..)
-                        | StaticAbilityFragment::AttachmentActivation(..)
-                        | StaticAbilityFragment::AttachmentMana(..)
-                        | StaticAbilityFragment::CounterKeyword(..)
-                        | StaticAbilityFragment::CounterKeywordOwnTurn(..)
-                        | StaticAbilityFragment::DeathBaronLord
-                        | StaticAbilityFragment::ChosenCreatureKeywords(..)
-                        | StaticAbilityFragment::ControlledTappedKeywords { .. }
-                        | StaticAbilityFragment::KeywordGrant(..)
-                        | StaticAbilityFragment::LiveKeywords(..)
-                )
-            });
+            let provides = group_provides_grants(origin.fragments);
             let effect = if removes || provides {
                 let time = timestamp(game, source);
                 let recipients: Vec<_> = if removes {
@@ -311,14 +464,18 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 };
                 let mut rows = Vec::new();
                 if provides {
-                    for (target, _) in game.state.objects.iter().enumerate() {
-                        for fragment in origin.fragments {
-                            if let Some(row) =
-                                grant_fragment(world, source, fragment, target as CardId, time)
-                            {
-                                rows.push(row);
+                    if EXHAUSTIVE {
+                        for (target, _) in game.state.objects.iter().enumerate() {
+                            for fragment in origin.fragments {
+                                if let Some(row) =
+                                    grant_fragment(world, source, fragment, target as CardId, time)
+                                {
+                                    rows.push(row);
+                                }
                             }
                         }
+                    } else {
+                        rows = group_grants(world, source, origin.fragments, time);
                     }
                 }
                 let action = if removes {
@@ -372,6 +529,15 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 && row.expires_turn.is_none_or(|turn| turn == game.state.turn)
                 && keyword_counters::effect_live(world, row)
             {
+                if row.hexproof_colors != 0 {
+                    effects.push(LayerSixEffect {
+                        provider: None,
+                        started_earlier: false,
+                        timestamp: row.timestamp,
+                        recipients: vec![row.recipient.card],
+                        action: LayerSixAction::GrantHexproofColors(row.hexproof_colors),
+                    });
+                }
                 effects.push(LayerSixEffect {
                     provider: None,
                     started_earlier: false,
@@ -431,16 +597,30 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
         }
     }
     let mut evaluation = AbilityEvaluation {
-        result: apply_layer_six(objects, &effects),
+        result: if EXHAUSTIVE {
+            super::ability_order::apply_layer_six_exhaustive(objects, &effects)
+        } else {
+            apply_layer_six(objects, &effects)
+        },
         groups,
     };
-    apply_rule_effects(world, &mut evaluation);
+    if EXHAUSTIVE {
+        apply_rule_effects_with::<W, true>(world, &mut evaluation);
+    } else {
+        apply_rule_effects(world, &mut evaluation);
+    }
     evaluation
 }
 
 /// CR613.11: external blocking restrictions affect rules, not abilities. They
 /// apply after characteristic layers and cannot be erased from the recipient.
 pub(super) fn apply_rule_effects<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    evaluation: &mut AbilityEvaluation,
+) {
+    apply_rule_effects_with::<W, false>(world, evaluation);
+}
+fn apply_rule_effects_with<W: CharacteristicWorld + ?Sized, const EXHAUSTIVE: bool>(
     world: &W,
     evaluation: &mut AbilityEvaluation,
 ) {
@@ -461,18 +641,22 @@ pub(super) fn apply_rule_effects<W: CharacteristicWorld + ?Sized>(
                     fragment,
                     StaticAbilityFragment::AttachmentRule(..)
                         | StaticAbilityFragment::StaticRuleGrant(..)
+                        | StaticAbilityFragment::ControlledCreatureCounterRule { .. }
                 ) {
                     continue;
                 }
-                for (recipient, _) in game.state.objects.iter().enumerate() {
-                    if let Some(row) =
-                        grant_fragment(world, reference, fragment, recipient as CardId, 0)
-                    {
-                        evaluation.result.objects[recipient].keywords = evaluation.result.objects
-                            [recipient]
-                            .keywords
-                            .union(row.keywords);
+                let mut apply = |recipient: CardId| {
+                    if let Some(row) = grant_fragment(world, reference, fragment, recipient, 0) {
+                        let target = &mut evaluation.result.objects[recipient as usize];
+                        target.keywords = target.keywords.union(row.keywords);
                     }
+                };
+                if EXHAUSTIVE {
+                    for (recipient, _) in game.state.objects.iter().enumerate() {
+                        apply(recipient as CardId);
+                    }
+                } else {
+                    visit_grant_recipients(world, reference, fragment, apply);
                 }
             }
         }
@@ -504,6 +688,7 @@ pub struct GrantedAbilityView {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct AbilityAvailabilityView {
     pub printed: bool,
+    pub hexproof_colors: u8,
     pub grants: Vec<GrantedAbilityView>,
 }
 impl Game {
@@ -546,3 +731,11 @@ impl ObjectView {
         })
     }
 }
+
+#[cfg(test)]
+#[path = "engine_characteristic_recipient_tests.rs"]
+mod recipient_tests;
+
+#[cfg(test)]
+#[path = "engine_scalar_keyword_tests.rs"]
+mod scalar_keyword_tests;

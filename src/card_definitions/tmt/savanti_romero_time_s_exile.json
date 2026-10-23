@@ -3,10 +3,62 @@
   "catalogue_id": 3696,
   "oracle_id": "6074632b-4520-4ae8-bcdc-26b1eff71af9",
   "facts_sha256": "9ab55df579ef1b24632d5290a62d0df527e16a9de5b70e7293497bc3256b484b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0c147ae6e88e32714882c2bc478a273af2d549cce5e4e33c6fa3966560ea3806"
   },
-  "physical_metadata_sha256": "cc77fa8ea115ec063a0c266c35eef6ee1f65bf0c063e82c762a187c98b26423e"
+  "physical_metadata_sha256": "cc77fa8ea115ec063a0c266c35eef6ee1f65bf0c063e82c762a187c98b26423e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SavantiRomeroTimesExile.java",
+  "java_sha256": "e29ddab77e83781f306abc8ac0272dd9813037cf741ff4204fa7aaa927777947",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CountersSourceCount.java",
+      "sha256": "00add2937bf1f70a9877114d432b9f87f6e65d18e106d7366319e2fcc80233d4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+      "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "111.8",
+      "118.11",
+      "201.5",
+      "400.7",
+      "601.2",
+      "603.2d",
+      "603.12",
+      "608.2b",
+      "608.2h",
+      "701.21"
+    ],
+    "note": "Full printed obligations are tested in engine_tmt_reflexive_batch_tests.rs. Reflexive target choices occur after successful optional payments and can be responded to separately. Source counter quantities and dying-creature toughness use exact last-known incarnations. Splinter qualifies actual Ninja creature characteristics and controller, including granted death abilities, and excludes delayed/reflexive triggers."
+  }
 }

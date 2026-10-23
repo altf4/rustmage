@@ -104,6 +104,7 @@ impl Game {
         sorcery: bool,
     ) -> bool {
         self.printed_abilities_available(card)
+            && self.class_activation_available(card, index)
             && ability_world::CharacteristicWorld::activation_counter_cost_allowed(
                 self,
                 card,
@@ -272,6 +273,7 @@ impl Game {
                 |counter_payment| {
                     let fundable = || {
                         ability.cost.mana_options().any(|cost| {
+                            let cost = self.reduced_activation_cost(actor, card, cost);
                             self.activation_can_fund(
                                 FundingGoal {
                                     reserve: None,
@@ -334,6 +336,7 @@ impl Game {
                     let mut done = false;
                     let mut seen = std::collections::HashSet::new();
                     for cost in ability.cost.mana_options() {
+                        let cost = self.reduced_activation_cost(actor, card, cost);
                         payments(
                             self.state.players[actor.index()].mana,
                             cost.colored,
@@ -439,6 +442,7 @@ impl Game {
     ) -> SpellView {
         self.state.passes = 0;
         SpellView {
+            sneak: None,
             source_move: None,
             death_event: None,
             creature_action_event: None,

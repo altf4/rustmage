@@ -36,6 +36,7 @@ pub(super) struct RoleState {
     pub ability_removal_effects: Vec<AbilityRemovalEffectView>,
     pub characteristic_sources: Vec<ObjectRef>,
     pub delayed_deaths: Vec<delayed_deaths::DelayedDeath>,
+    pub delayed_steps: Vec<delayed_steps::DelayedStep>,
     pub trigger_multiplicities: Vec<TriggerMultiplicityView>,
     pub dream_exiles: Vec<DreamExileView>,
     pub conspire: Option<Box<ConspireCastView>>,
@@ -82,6 +83,11 @@ impl RoleState {
             + self.ability_removal_sources.len() * std::mem::size_of::<ObjectRef>()
             + self.ability_removal_effects.len() * std::mem::size_of::<AbilityRemovalEffectView>()
             + self.characteristic_sources.len() * std::mem::size_of::<ObjectRef>()
+            + self
+                .delayed_steps
+                .iter()
+                .map(|r| std::mem::size_of::<delayed_steps::DelayedStep>() + r.item.owned_bytes())
+                .sum::<usize>()
             + self
                 .delayed_deaths
                 .iter()

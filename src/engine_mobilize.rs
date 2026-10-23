@@ -2,6 +2,7 @@
 use super::*;
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct DelayedSacrificeView {
+    pub destroy: bool,
     pub id: u64,
     pub source: ObjectRef,
     pub source_card: Card,
@@ -211,12 +212,21 @@ impl Game {
         );
     }
     pub(super) fn record_mobilize_tokens(&mut self, item: &SpellView, tokens: Vec<ObjectRef>) {
+        self.record_delayed_tokens(item, tokens, false);
+    }
+    pub(super) fn record_delayed_tokens(
+        &mut self,
+        item: &SpellView,
+        tokens: Vec<ObjectRef>,
+        destroy: bool,
+    ) {
         if tokens.is_empty() {
             return;
         }
         let id = self.next_stack_id();
         let batch = DelayedBatch {
             view: DelayedSacrificeView {
+                destroy,
                 id,
                 source: item.object,
                 source_card: item.source_card,
@@ -251,6 +261,7 @@ impl Game {
             let card = b.view.source_card;
             let controller = b.view.controller;
             self.state.pending_triggers.push(SpellView {
+                sneak: None,
                 source_move: None,
                 death_event: None,
                 creature_action_event: None,
@@ -303,6 +314,22 @@ impl Game {
             .delayed_sacrifice
             .as_ref()
             .expect("delayed sacrifice context");
+        if d.destroy {
+            let ids: Vec<_> = d
+                .tokens
+                .iter()
+                .filter(|r| {
+                    self.on_battlefield(r.card)
+                        && self.object_ref(r.card) == **r
+                        && !self.keywords(r.card).contains(Keywords::INDESTRUCTIBLE)
+                })
+                .map(|r| r.card)
+                .collect();
+            let sources = self.death_trigger_sources();
+            let events = self.move_objects_raw(&ids, Zone::Graveyard);
+            self.finish_zone_events(&events, &sources);
+            return;
+        }
         let sacrifices: Vec<_> = d
             .tokens
             .iter()

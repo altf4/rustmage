@@ -3,10 +3,58 @@
   "catalogue_id": 3006,
   "oracle_id": "e88b1520-aa9a-41ee-9036-4d4bebd1a0c0",
   "facts_sha256": "ba49ce725684f0dc430cb24d1195d8538145a61fb86f04498492c6b0ddfb20e3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2a12a4d7ba1e817d99a66ae7bb4c0c244ed85ba194f5a6483738130b8b40fb22"
   },
-  "physical_metadata_sha256": "b9f2783d1e1ca8a04b2f3f2feb7d6d8271382b4b823fb65f027999be5d4be94e"
+  "physical_metadata_sha256": "b9f2783d1e1ca8a04b2f3f2feb7d6d8271382b4b823fb65f027999be5d4be94e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OldHobAlleycatBlues.java",
+  "java_sha256": "05448618e1970476931cd9d7316ad18066a63d1b2e651cc33810e13d7689957c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+      "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+      "sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/RedMutantToken.java",
+      "sha256": "ab1a9b03b1f024ff3e9aea35a1767e2d37bc51cf979dc07726c0631944ab0d41"
+    }
+  ],
+  "source_audit": {
+    "scope": "Complete Oracle body, complete pinned XMage card class and listed complete reusable implementations read; directly authored typed behavior with actual paid-action rules scenarios.",
+    "tests": [
+      "src/engine_tmt_damage_legends_tests.rs"
+    ],
+    "status": "Complete public paid-action rules scenarios and affected regressions passed with Clippy; integrated release, full-game throughput and complete-set acceptance remain integrator obligations.",
+    "oracle_priority": "Oracle next end step is used for the source-independent destruction delay; XMage restricts its internal delayed helper to the controller next end step."
+  }
 }

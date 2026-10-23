@@ -3,10 +3,25 @@
   "catalogue_id": 3337,
   "oracle_id": "71b81f3f-6092-4819-8529-e27bccfcf088",
   "facts_sha256": "df47cf90c22fa3b54e251044bff4a5642d0991ada6e4424a1d2b6e982300295e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "38216a4f37d05715abe6479136daad6c5189f70e8882fd9d6d482fa98a98783b"
   },
-  "physical_metadata_sha256": "7e876bda8092caede601ee7369ebb1e172722b4ec212e1c0efbdedf5fc9cd27e"
+  "physical_metadata_sha256": "7e876bda8092caede601ee7369ebb1e172722b4ec212e1c0efbdedf5fc9cd27e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RagamuffinRaptor.java",
+  "java_sha256": "a8ea2ac382c39c5fe05c16dccd414827224cb81dbace5dadc4470bd776c0d090",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    }
+  ]
 }

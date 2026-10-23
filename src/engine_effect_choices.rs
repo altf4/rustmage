@@ -70,11 +70,24 @@ impl Game {
         player: Player,
         object: ObjectRef,
     ) -> bool {
+        if choice.kind == EffectChoiceKind::OutsideGameCard {
+            return self.outside_game_card_matches(player, object)
+                && !choice.selected[player.index()].contains(&object);
+        }
+        if choice.kind == EffectChoiceKind::ReturnLinkedCreature {
+            return !choice.selected[player.index()].contains(&object)
+                && self.linked_creature_return_candidate(object);
+        }
         if choice.hand_reveal.is_some() {
             return self.hand_reveal_candidate(choice, object);
         }
         if choice.counter_removal.is_some() {
             return false;
+        }
+        if matches!(choice.kind, EffectChoiceKind::CopyLinkedExile(_)) {
+            let item = &self.state.resolving.as_ref().unwrap().item;
+            return self.linked_copy_candidate(item, object)
+                && !choice.selected[player.index()].contains(&object);
         }
         if choice.kind == EffectChoiceKind::CopyEntryObject {
             return self.entry_batch_copy_recipe(object).is_some()
@@ -136,9 +149,12 @@ impl Game {
         }
         let hand_choice = matches!(
             choice.kind,
-            EffectChoiceKind::Discard
+            EffectChoiceKind::BottomHand
+                | EffectChoiceKind::OutsideGameCard
+                | EffectChoiceKind::Discard
                 | EffectChoiceKind::ExileFromHand
                 | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandCreatureAndLand
                 | EffectChoiceKind::HandLand { .. }
         );
         let entitled_player = if hand_choice { o.owner } else { o.controller };
@@ -150,13 +166,29 @@ impl Game {
         }
         if matches!(
             choice.kind,
-            EffectChoiceKind::Discard
+            EffectChoiceKind::BottomHand
+                | EffectChoiceKind::OutsideGameCard
+                | EffectChoiceKind::Discard
                 | EffectChoiceKind::ExileFromHand
                 | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandCreatureAndLand
                 | EffectChoiceKind::HandLand { .. }
         ) {
             return o.zone == Zone::Hand
                 && match choice.kind {
+                    EffectChoiceKind::HandCreatureAndLand => {
+                        let mask = o.card.kind_mask() & 3;
+                        match choice.selected[player.index()].as_slice() {
+                            [] => mask != 0,
+                            [first] => {
+                                let first =
+                                    self.state.objects[first.card as usize].card.kind_mask();
+                                (first & 1 != 0 && mask & 2 != 0)
+                                    || (first & 2 != 0 && mask & 1 != 0)
+                            }
+                            _ => false,
+                        }
+                    }
                     EffectChoiceKind::HandCreature => {
                         o.card.is_creature()
                             && choice
@@ -187,6 +219,12 @@ impl Game {
         }
         let f = choice.filter;
         o.zone == Zone::Battlefield
+            && (choice.kind != EffectChoiceKind::SacrificeCreatureOrToken
+                || self.is_creature(object.card)
+                || o.is_token())
+            && (choice.kind != EffectChoiceKind::SacrificeLandOrToken
+                || self.current_kinds(object.card) & 2 != 0
+                || o.is_token())
             && (!matches!(choice.kind, EffectChoiceKind::TapPermanents(_)) || !o.tapped)
             && self.keywords(object.card).contains(f.keywords)
             && (f.kinds == 0 || self.current_kinds(object.card) & u16::from(f.kinds) != 0)
@@ -372,6 +410,13 @@ impl Game {
     }
     pub(super) fn visit_hand_defenders(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let player = self.state.resolving.as_ref().unwrap().item.controller;
+        self.visit_attacking_defenders(player, emit)
+    }
+    pub(super) fn visit_attacking_defenders(
+        &self,
+        player: Player,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
         if emit(Action::ChooseHandDefender {
             defender: CombatDefender::Player(player.other()),
         }) {
@@ -381,6 +426,11 @@ impl Game {
             if o.zone == Zone::Battlefield
                 && o.controller == player.other()
                 && self.current_kinds(id as CardId) & 64 != 0
+                && self
+                    .state
+                    .entry_batch
+                    .as_ref()
+                    .is_none_or(|batch| !batch.moves.iter().any(|m| m.before.id == id as CardId))
                 && emit(Action::ChooseHandDefender {
                     defender: CombatDefender::Planeswalker(self.object_ref(id as CardId)),
                 })
@@ -438,7 +488,8 @@ impl Game {
         }
         // A private filtered payment must offer the same phase even when hidden
         // contents cannot pay; declining it is distinct from satisfying a zero cost.
-        let private_filtered_discard = kind == EffectChoiceKind::Discard && filter.kinds != 0;
+        let private_filtered_discard = kind == EffectChoiceKind::Discard && filter.kinds != 0
+            || kind == EffectChoiceKind::OutsideGameCard;
         for player in self.program_players(players, item) {
             if greatest {
                 choice.greatest_power[player.index()] = self
@@ -464,7 +515,10 @@ impl Game {
             if let Some(skip_to) = choice.skip_to
                 && !matches!(
                     kind,
-                    EffectChoiceKind::HandCreature | EffectChoiceKind::HandLand { .. }
+                    EffectChoiceKind::BottomHand
+                        | EffectChoiceKind::HandCreature
+                        | EffectChoiceKind::HandCreatureAndLand
+                        | EffectChoiceKind::HandLand { .. }
                 )
                 && !private_filtered_discard
                 && available < usize::from(amount)
@@ -478,7 +532,10 @@ impl Game {
             choice.required[player.index()] = if private_filtered_discard
                 || matches!(
                     kind,
-                    EffectChoiceKind::HandCreature | EffectChoiceKind::HandLand { .. }
+                    EffectChoiceKind::BottomHand
+                        | EffectChoiceKind::HandCreature
+                        | EffectChoiceKind::HandCreatureAndLand
+                        | EffectChoiceKind::HandLand { .. }
                 ) {
                 amount
             } else {
@@ -489,7 +546,39 @@ impl Game {
         self.advance_effect_choice()
     }
 
+    pub(super) fn finish_hand_selection(&mut self) {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let player = resolution.item.controller;
+        let choice = resolution.choice.take().unwrap();
+        assert_eq!(choice.kind, EffectChoiceKind::HandCreatureAndLand);
+        let moves = choice.selected[player.index()]
+            .iter()
+            .map(|reference| {
+                assert_eq!(self.object_ref(reference.card), *reference);
+                let object = &self.state.objects[reference.card as usize];
+                assert!(object.zone == Zone::Hand && object.owner == player);
+                let mut movement = self.entry_move(reference.card, Zone::Battlefield, false);
+                movement.controller = player;
+                movement
+            })
+            .collect::<Vec<_>>();
+        if !moves.is_empty() {
+            self.stage_entries(moves, None);
+        }
+    }
     fn advance_effect_choice(&mut self) -> bool {
+        let resolution = self.state.resolving.as_ref().unwrap();
+        let player = resolution.item.controller;
+        let choice = resolution.choice.as_ref().unwrap();
+        if choice.kind == EffectChoiceKind::HandCreatureAndLand {
+            if choice.selected[player.index()].len() >= 2 {
+                self.finish_hand_selection();
+                return false;
+            }
+            self.state.pending = Pending::EffectChoice { player };
+            return true;
+        }
+
         if self
             .state
             .resolving
@@ -553,7 +642,9 @@ impl Game {
         }
         if matches!(
             choice.kind,
-            EffectChoiceKind::HandCreature | EffectChoiceKind::HandLand { .. }
+            EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandCreatureAndLand
+                | EffectChoiceKind::HandLand { .. }
         ) {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             let Some(reference) = choice.selected[player.index()].first().copied() else {
@@ -620,7 +711,28 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        if choice.kind == EffectChoiceKind::CopyEntryObject {
+        if choice.kind == EffectChoiceKind::OutsideGameCard {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            let ids: Vec<_> = choice.selected[player.index()]
+                .iter()
+                .copied()
+                .filter(|&object| self.outside_game_card_matches(player, object))
+                .map(|object| object.card)
+                .collect();
+            let events = self.move_objects_raw(&ids, Zone::Hand);
+            self.finish_zone_events(&events, &[]);
+        } else if let EffectChoiceKind::CopyLinkedExile(exceptions) = choice.kind {
+            let item = self.state.resolving.as_ref().unwrap().item.clone();
+            if let Some(&object) = choice.selected[item.controller.index()].first()
+                && self.linked_copy_candidate(&item, object)
+            {
+                let mut recipe = CopyRecipe::new(self.state.objects[object.card as usize].card);
+                recipe.exceptions = recipe.exceptions.union(exceptions);
+                self.stage_copy_creation(item.controller, recipe, 1);
+            }
+        } else if choice.kind == EffectChoiceKind::ReturnLinkedCreature {
+            self.complete_linked_creature_return(&choice);
+        } else if choice.kind == EffectChoiceKind::CopyEntryObject {
             let controller = self.state.resolving.as_ref().unwrap().item.controller;
             if let Some(&object) = choice.selected[controller.index()].first()
                 && let Some(recipe) = self.entry_batch_copy_recipe(object)
@@ -711,6 +823,15 @@ impl Game {
             }
             let events = self.move_objects_raw(&ids, Zone::Exile);
             self.finish_zone_events(&events, &[]);
+        } else if choice.kind == EffectChoiceKind::BottomHand {
+            let item = self.state.resolving.as_ref().unwrap().item.clone();
+            for object in &choice.selected[item.controller.index()] {
+                if self.object_ref(object.card) == *object
+                    && self.state.objects[object.card as usize].zone == Zone::Hand
+                {
+                    self.move_private_hand_to_bottom(item.object, *object);
+                }
+            }
         } else if choice.kind == EffectChoiceKind::Discard {
             let ids: Vec<_> = [self.state.active, self.state.active.other()]
                 .into_iter()
@@ -841,9 +962,12 @@ impl Game {
         }
         if matches!(
             choice.kind,
-            EffectChoiceKind::Discard
+            EffectChoiceKind::BottomHand
+                | EffectChoiceKind::OutsideGameCard
+                | EffectChoiceKind::Discard
                 | EffectChoiceKind::ExileFromHand
                 | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandCreatureAndLand
                 | EffectChoiceKind::HandLand { .. }
         ) && viewer != actor
         {
@@ -873,9 +997,12 @@ impl Game {
                     .filter(|object| {
                         (!matches!(
                             choice.kind,
-                            EffectChoiceKind::ExileFromHand
+                            EffectChoiceKind::OutsideGameCard
+                                | EffectChoiceKind::ExileFromHand
+                                | EffectChoiceKind::BottomHand
                                 | EffectChoiceKind::Discard
                                 | EffectChoiceKind::HandCreature
+                                | EffectChoiceKind::HandCreatureAndLand
                                 | EffectChoiceKind::HandLand { .. }
                         ) || index == viewer.index())
                             && (!public_only

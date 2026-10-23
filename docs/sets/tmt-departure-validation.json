@@ -1,0 +1,177 @@
+{
+  "schema": 1,
+  "set": "TMT",
+  "status": "incomplete checkpoint",
+  "source_revision": "1974e5931be590e60edce829587d174cd3d3b0ea",
+  "scope": {
+    "total": 195,
+    "admitted": 120,
+    "gated": 75,
+    "unresolved": 0,
+    "inherited_admission": 71,
+    "inherited_audits_completed": 0,
+    "newly_tested_candidates": 49,
+    "independently_reviewed": 0,
+    "upstream_merged_new_cards": 0
+  },
+  "newly_tested_cards": [
+    "Donatello, Mutant Mechanic",
+    "Mind Transfer Protocol",
+    "Pizza Face, Gastromancer",
+    "Super Shredder",
+    "The Ooze"
+  ],
+  "validation": {
+    "command": "python3 scripts/validate.py --release --python smoke",
+    "terminal": true,
+    "success": true,
+    "seconds": 640.8978314270207,
+    "files_verified": 11868,
+    "changed_inputs": [],
+    "report": "<cache>/rustmage-validation-jn7bn19u/report/result.json",
+    "report_sha256": "a9353cb5d53c86efe35a0cfdb69139458431aa316b9d16108f28642b5acf013f",
+    "phases": [
+      {
+        "index": 1,
+        "exit": 0,
+        "seconds": 2.2418427969969343,
+        "log": "<cache>/rustmage-validation-jn7bn19u/report/0.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 2,
+        "exit": 0,
+        "seconds": 0.917216432018904,
+        "log": "<cache>/rustmage-validation-jn7bn19u/report/1.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 3,
+        "exit": 0,
+        "seconds": 0.4506136950221844,
+        "log": "<cache>/rustmage-validation-jn7bn19u/report/2.log",
+        "log_sha256": "7a0bd5fb69b822ab24a13e3b2681158a08aade030943db93f4702cef4730b049"
+      },
+      {
+        "index": 4,
+        "exit": 0,
+        "seconds": 8.386608706001425,
+        "log": "<cache>/rustmage-validation-jn7bn19u/report/3.log",
+        "log_sha256": "a5c2862a0e8ef3d3a90f68d0814f1e490046383c2cd9ea4c2d63efab5d6c864c"
+      },
+      {
+        "index": 5,
+        "exit": 0,
+        "seconds": 47.977661095006624,
+        "log": "<cache>/rustmage-validation-jn7bn19u/report/4.log",
+        "log_sha256": "3ada65f6109379f0e76a18bcec38df265cf12766f160dbcb0722accc9a7d590f"
+      },
+      {
+        "index": 6,
+        "exit": 0,
+        "seconds": 483.4035571150016,
+        "log": "<cache>/rustmage-validation-jn7bn19u/report/5.log",
+        "log_sha256": "88ebdef7713e57cac1e001fc5f919cbfd6ee9f5f166eafb7ccd8cc361baf6dc4"
+      },
+      {
+        "index": 7,
+        "exit": 0,
+        "seconds": 96.69673301800503,
+        "log": "<cache>/rustmage-validation-jn7bn19u/report/6.log",
+        "log_sha256": "d57e7427ca39c2c82826a79def52e811901b38b331f4b2e08bb365aa8783cd73"
+      },
+      {
+        "index": 8,
+        "exit": 0,
+        "seconds": 0.3301746090000961,
+        "log": "<cache>/rustmage-validation-jn7bn19u/report/7.log",
+        "log_sha256": "13997c2aa751630e399694449d40220f05520457fd83a90564d0d7efa5b7316f"
+      },
+      {
+        "index": 9,
+        "exit": 0,
+        "seconds": 0.3961811510089319,
+        "log": "<cache>/rustmage-validation-jn7bn19u/report/8.log",
+        "log_sha256": "4909a7ddbe4e6321d8c2210480ef50cded2a3e1a0d88dd43c0a917b63a71fc29"
+      }
+    ],
+    "shared_libraries": {
+      "<cache>/rustmage-validation-jn7bn19u/release/librustmage.so": "40f29bcbacd42b44f8c58297c82083f85d42a1ea8ddf3f2acc3d918e3462a404",
+      "<cache>/rustmage-validation-jn7bn19u/release/deps/librustmage.so": "40f29bcbacd42b44f8c58297c82083f85d42a1ea8ddf3f2acc3d918e3462a404",
+      "<cache>/rustmage-validation-jn7bn19u/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+      "<cache>/rustmage-validation-jn7bn19u/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-jn7bn19u/release-test/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-jn7bn19u/release-test/deps/librustmage.so": "857d9bd2f55a9f055afaae5e4645bae2c6482f5672e8df3d0afedf6d96a7c380"
+    },
+    "cleaned_allocated_bytes": 858972160
+  },
+  "producing_host_library_manifest": {
+    "path": "<cache>/rustmage-tmt-departure-library-paths.json",
+    "sha256": "91ba0adf321136f84ebe1d117ce30a9b81ca3f6741c26395adbac9c3a9cf81b0"
+  },
+  "resource_guard": {
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 641.1839072460134,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 3870732288,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "report": "<cache>/rustmage-build-reports/3621f1bcd6bf44a5b1046e5394eb57c8.json",
+    "report_sha256": "663a6f4ece75dbd32bad916003cda47ae7409a4b0bcc5c29fa8be3f6d15fac3e"
+  },
+  "rules_tests": {
+    "library_passed": 3389,
+    "ignored": 1,
+    "sneak_scenarios": 53,
+    "python_smoke": 7,
+    "tmt_scenarios": 138,
+    "class_scenarios": 21,
+    "ninja_scenarios": 23,
+    "class_family_scenarios": 44,
+    "departure_scenarios": 21
+  },
+  "freeform_smoke_regression": {
+    "clone_ns": 294.96528,
+    "decisions": 49832,
+    "decisions_per_second": 175913.17096456813,
+    "games": 100,
+    "games_per_second": 353.0124638075295,
+    "initial_state_bytes_excluding_capacity_and_allocator": 21160,
+    "max_decisions_per_game": 1129,
+    "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+    "restore_ns": 133.01835,
+    "seconds": 0.283276117,
+    "workload": "Existing Freeform regression smoke, not TMT acceptance",
+    "seed_range": [
+      0,
+      99
+    ],
+    "policy": "rustmage::policy::smoke_index",
+    "decks": {
+      "Mountain": 24,
+      "Lightning Bolt": 20,
+      "Goblin Piker": 12,
+      "Hill Giant": 4
+    },
+    "hardware": "Intel Core Ultra 5 335",
+    "compiler": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+    "profile": "release, opt-level 3, thin LTO",
+    "clone_restore_iterations": 100000,
+    "source": "1974e5931be590e60edce829587d174cd3d3b0ea"
+  },
+  "implementation_throughput": {
+    "start": "2026-10-23T12:17:05.531544+00:00",
+    "end": "2026-10-23T13:07:39.088904+00:00",
+    "seconds": 3033.55736,
+    "newly_verified_physical_cards": 5,
+    "cards_per_hour": 5.933627706317708,
+    "scope": "Elapsed continuation interval includes source intake, implementation, repairs, future-card preparation and validation; excludes inherited coverage"
+  },
+  "tmt_simulation_throughput": null,
+  "tmt_full_game_acceptance": "pending",
+  "reviews": [],
+  "known_external_blockers": [],
+  "next_action": "Implement Mutagen Man Living Ooze, Mikey and Leo Chaos and Order, Ray Fillet Man Ray, Michelangelo Mutant BFF and Mutant Chain Reaction; continue remaining cards, inherited audits and set-only acceptance."
+}

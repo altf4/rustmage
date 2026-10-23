@@ -3,10 +3,40 @@
   "catalogue_id": 2474,
   "oracle_id": "348c7e22-2179-41b8-a5d2-8dd488e7e66d",
   "facts_sha256": "eb8135dd2e4de031ea2b2b38d6e1b765136bf5dc7cdf2c12c18e73da6e50a144",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b728dc6871b522157cb1aed8416fe29394386324ab1b5aed904079c783b32cd6"
   },
-  "physical_metadata_sha256": "38f8ebdcf486ce84fda33bc63c452e2e8452872dd3fb7ffd02b412a854147c4e"
+  "physical_metadata_sha256": "38f8ebdcf486ce84fda33bc63c452e2e8452872dd3fb7ffd02b412a854147c4e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LeonardoLeaderInBlue.java",
+  "java_sha256": "e3b120e34ae933ec4df38077143d7cc4c12c68f39cdf133f4774347e05984bef",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SneakAbility.java",
+      "sha256": "b25a32bf041c6a146f7d602c757f3be034f9282db5ed9c6cc03070b374611c70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ReturnToHandChosenControlledPermanentCost.java",
+      "sha256": "ea8192aa5d4930687e7803379d509a1bd5a1910bcd418503f19a8de6417072b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SneakCondition.java",
+      "sha256": "6e3471ef3a5eac8d44996baa39e18c8b323ea8941bd460f0c0f21be874f2b3ba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    }
+  ]
 }

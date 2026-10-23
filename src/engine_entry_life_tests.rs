@@ -56,6 +56,7 @@ fn program(g: &mut Game, code: &'static [Instruction]) {
     let id = named(g, Player::P0, "Shock", Zone::Hand);
     let item = g.cast_item(Player::P0, id, [0; 6]);
     g.state.resolving = Some(Resolution {
+        wheel: None,
         continuation: None,
         chosen_creature_type: None,
         chosen_color: None,
@@ -77,6 +78,7 @@ fn program(g: &mut Game, code: &'static [Instruction]) {
         selection: None,
         target_library: None,
         search: None,
+        legendary_search: None,
         optional_searches: None,
         choice: None,
     });

@@ -1,12 +1,23 @@
 //! Smoke policies for tests and benchmarks; not a training implementation.
 use crate::cards::{CounterKind, Effect, Instruction, PlayerSet};
-use crate::{Action, Game, StackKind, Target, Zone};
+use crate::{Action, Game, Observation, StackKind, Target, Zone};
 
 /// Deterministic simple policy: keep, play lands, cast, attack, block, tap, pass.
 /// Uses only the acting player's observation and the offered action list.
 pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
     let actor = game.actor().expect("nonterminal game");
     let observation = game.observe(actor);
+    smoke_index_from_observation(&observation, actions)
+}
+
+/// Reuse an existing acting-player observation without rebuilding its action space.
+/// The caller supplies the offered actions from the same game revision.
+pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action]) -> usize {
+    let actor = observation.actor.expect("nonterminal observation");
+    assert_eq!(
+        observation.viewer, actor,
+        "acting-player observation required"
+    );
     // Fundable declarations are offered before any speculative mana activation.
     // Preserve spare sources for later steps once those declarations are exhausted.
     let tap_for_payment = observation.announcing.is_some()
@@ -189,10 +200,12 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::PutHandCreature { .. }
             | Action::PutHandLand { .. }
             | Action::SelectLand { .. } => 50,
-            Action::FinishLandSelection => -1,
+            Action::FinishLandSelection | Action::FinishHandSelection => -1,
             Action::DeclineHandEntry => -1,
             Action::ChooseSaddler { .. } | Action::ChooseCrewer { .. } => 50,
             Action::FinishSaddle | Action::FinishCrew => 100,
+            Action::ChooseSneakCostOrder { .. } => 50,
+            Action::ChooseSneakAdditionalCost { .. } => 60,
             Action::ChooseCounterCostOrder { after_printed } => {
                 if *after_printed {
                     2
@@ -278,6 +291,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::Sacrifice { .. }
             | Action::Blight { .. }
             | Action::ChooseCreature { .. }
+            | Action::BottomHandCard { .. }
+            | Action::ChooseOutsideGameCard { .. }
             | Action::ExileHandCard { .. }
             | Action::RevealHandCard { .. }
             | Action::ExileGraveyardCard { .. }
@@ -324,6 +339,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceCast { .. }
             | Action::AnnounceFlashSurcharge { .. }
             | Action::AnnounceWarp { .. }
+            | Action::AnnounceSneak { .. }
+            | Action::AnnounceGraveyardSpell { .. }
+            | Action::AnnounceLibrarySpell { .. }
             | Action::AnnouncePlotted { .. }
             | Action::AnnounceExile { .. }
             | Action::AnnounceFlashback { .. } => 79,
@@ -460,13 +478,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 target_score(program, *target)
             }
             Action::FinishTargets => 0,
-            Action::ChooseMana { production } => mana_score(&observation, *production),
+            Action::ChooseMana { production } => mana_score(observation, *production),
             Action::TapGrantedMana { production, .. } => {
                 if observation.resolution_payment.is_some() {
                     return resolution_mana_score([0; 6], *production);
                 }
                 if tap_for_payment {
-                    20 + mana_score(&observation, *production)
+                    20 + mana_score(observation, *production)
                 } else {
                     -5
                 }
@@ -485,7 +503,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     return resolution_mana_score(*payment, *production);
                 }
                 if tap_for_payment {
-                    20 + mana_score(&observation, *production)
+                    20 + mana_score(observation, *production)
                 } else {
                     -5
                 }
@@ -512,8 +530,16 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     .objects
                     .iter()
                     .find(|o| o.id == *card)
-                    .unwrap()
-                    .card;
+                    .map(|o| o.card)
+                    .or_else(|| {
+                        observation
+                            .known_library_top
+                            .iter()
+                            .flatten()
+                            .find(|top| top.object.card == *card)
+                            .map(|top| top.card)
+                    })
+                    .expect("legal cast source is visible to the acting player");
                 if definition.aura().is_some() {
                     return target.map(|t| aura_score(definition, t)).unwrap_or(-10);
                 }

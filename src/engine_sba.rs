@@ -53,6 +53,8 @@ impl Game {
         };
         let mut legends: [std::collections::BTreeMap<&'static str, Vec<ObjectRef>>; 2] =
             std::array::from_fn(|_| std::collections::BTreeMap::new());
+        // Collect one simultaneous batch from one borrowed characteristic world.
+        let query = self.characteristic_query();
         for (index, object) in self.state.objects.iter().enumerate() {
             let id = index as CardId;
             if object.is_token() && !matches!(object.zone, Zone::Battlefield | Zone::Outside) {
@@ -96,17 +98,17 @@ impl Game {
             {
                 batch.detached.push(self.object_ref(id));
             }
-            if object.card.is_legendary() {
+            if ability_world::CharacteristicWorld::legendary(self, id) {
                 legends[object.controller.index()]
                     .entry(crate::card_names::comparison_key(self.object_name(id)))
                     .or_default()
                     .push(self.object_ref(id));
             }
             if self.is_creature(id) {
-                let toughness = self.stats(id).toughness;
+                let toughness = query.stats(id).toughness;
                 if toughness <= 0
-                    || (!self.keywords(id).contains(Keywords::INDESTRUCTIBLE)
-                        && (object.damage >= toughness || object.deathtouch_since_sba))
+                    || ((object.damage >= toughness || object.deathtouch_since_sba)
+                        && !query.keywords(id).contains(Keywords::INDESTRUCTIBLE))
                 {
                     batch.deaths.push(id);
                 }

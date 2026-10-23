@@ -29,6 +29,7 @@ codegen-units = 1
 # Optimize validation without production LTO; retain runtime correctness checks.
 [profile.release-test]
 inherits = "release"
+opt-level = 2
 lto = false
 codegen-units = 16
 debug-assertions = true

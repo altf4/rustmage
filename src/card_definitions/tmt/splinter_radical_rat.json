@@ -3,10 +3,47 @@
   "catalogue_id": 4066,
   "oracle_id": "fb2cd508-f5cd-4d5b-b8e7-3cae1f39fd58",
   "facts_sha256": "c2b1ebcf4a52f5391c2b9b4b5f44f036bef71a468931f331e7a8ff2a8976d5ed",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "03a8f0fb5e5a4be81a18f3d91f3277dd7d19763c5e3028507a7daafac825737c"
   },
-  "physical_metadata_sha256": "8dd549ee5c0e1c052fc7fad162ad4c2e87f7a82e6d5c19cd8bfeb68254d8402d"
+  "physical_metadata_sha256": "8dd549ee5c0e1c052fc7fad162ad4c2e87f7a82e6d5c19cd8bfeb68254d8402d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SplinterRadicalRat.java",
+  "java_sha256": "c5d26839d28750e753ca6924e5af8b743c04a1330474a35e133e155361218401",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedTargetEffect.java",
+      "sha256": "da9a306340321c49e565ce8f33756a1a381653588f886780089b31ee236adcee"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "111.8",
+      "118.11",
+      "201.5",
+      "400.7",
+      "601.2",
+      "603.2d",
+      "603.12",
+      "608.2b",
+      "608.2h",
+      "701.21"
+    ],
+    "note": "Full printed obligations are tested in engine_tmt_reflexive_batch_tests.rs. Reflexive target choices occur after successful optional payments and can be responded to separately. Source counter quantities and dying-creature toughness use exact last-known incarnations. Splinter qualifies actual Ninja creature characteristics and controller, including granted death abilities, and excludes delayed/reflexive triggers."
+  }
 }

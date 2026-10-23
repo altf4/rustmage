@@ -225,6 +225,11 @@ fn ecl_student_tam_departed_ability_source_uses_frozen_colors_without_rebinding_
     }
 }
 
+const ABIGALE_KINDS: [CounterKind; 3] = [
+    CounterKind::Flying,
+    CounterKind::FirstStrike,
+    CounterKind::Lifelink,
+];
 const ABIGALE_COUNTERS: Keywords = Keywords::FLYING
     .union(Keywords::FIRST_STRIKE)
     .union(Keywords::LIFELINK);
@@ -303,7 +308,7 @@ fn ecl_student_abigale_removes_intrinsic_and_activated_abilities_but_counters_su
             let source = named(&mut g, controller, "Fanatical Firebrand", Zone::Battlefield);
             let abigale = abigale_on(&mut g, source);
             assert_eq!(g.keywords(source), ABIGALE_COUNTERS);
-            for kind in keyword_counters::KINDS {
+            for kind in ABIGALE_KINDS {
                 assert_eq!(g.counter_count(source, kind), 1);
             }
             g.state.priority = controller;
@@ -338,7 +343,7 @@ fn ecl_student_abigale_partial_counter_removal_preserves_timestamp_addition_rene
         named(&mut g, p, "Doubling Season", Zone::Battlefield);
         let spider = named(&mut g, p, "Skybeast Tracker", Zone::Battlefield);
         abigale_on(&mut g, spider);
-        for kind in keyword_counters::KINDS {
+        for kind in ABIGALE_KINDS {
             assert_eq!(g.counter_count(spider, kind), 2);
         }
         let witness = named(&mut g, p, "Witness Protection", Zone::Hand);
@@ -619,12 +624,12 @@ fn ecl_student_abigale_places_three_kinds_in_one_replaceable_event() {
         checked(&mut g, Action::Pass);
         let view = g.observe(p).replacement_choice.unwrap();
         let amounts = view.counters.unwrap();
-        for kind in keyword_counters::KINDS {
+        for kind in ABIGALE_KINDS {
             assert_eq!(amounts.get(kind), 1);
         }
         assert_eq!(view.effects.len(), 2);
         settle(&mut g);
-        for kind in keyword_counters::KINDS {
+        for kind in ABIGALE_KINDS {
             assert_eq!(g.counter_count(creature, kind), 4);
         }
         assert_eq!(g.keywords(creature), ABIGALE_COUNTERS);

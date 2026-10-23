@@ -222,6 +222,7 @@ impl Game {
                 self.register_battlefield_sources(id);
                 events.push(ZoneChange {
                     trigger_providers: None,
+                    departure_sources: None,
                     gift: None,
                     before,
                     after: self.object_ref(id),

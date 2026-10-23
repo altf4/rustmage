@@ -182,6 +182,9 @@ impl Game {
             LibrarySelectionCount::ControlledColors => {
                 available_colors.unwrap().count_ones() as usize
             }
+            LibrarySelectionCount::ManaValueBudget { maximum_cards, .. } => {
+                usize::from(maximum_cards)
+            }
             LibrarySelectionCount::All => remaining.len(),
             LibrarySelectionCount::Fixed(n) => usize::from(n),
             LibrarySelectionCount::Lessons => {
@@ -262,6 +265,17 @@ impl Game {
     ) -> bool {
         if !f.eligible.contains(&candidate) {
             return false;
+        }
+        if let LibrarySelectionCount::ManaValueBudget { maximum_total, .. } = f.spec.count {
+            let total: u128 = f
+                .selected
+                .iter()
+                .chain(std::iter::once(&candidate))
+                .map(|r| u128::from(self.state.objects[r.card as usize].card.fixed_mana_value()))
+                .sum();
+            if total > u128::from(maximum_total) {
+                return false;
+            }
         }
         let Some(colors) = f.available_colors else {
             return true;
@@ -384,7 +398,13 @@ impl Game {
             library.retain(|id| !ids.contains(id));
             library.extend(ids.iter().rev());
         }
-        if f.destination == LibraryPickDestination::Battlefield && !ids.is_empty() {
+        if matches!(
+            f.destination,
+            LibraryPickDestination::Battlefield
+                | LibraryPickDestination::BattlefieldTappedAttacking
+        ) && !ids.is_empty()
+        {
+            let attacking = f.destination == LibraryPickDestination::BattlefieldTappedAttacking;
             f.entering = true;
             self.state.resolving.as_mut().unwrap().selection = Some(f);
             let moves = ids
@@ -392,6 +412,10 @@ impl Game {
                 .map(|id| {
                     let mut movement = self.entry_move(id, Zone::Battlefield, false);
                     movement.controller = owner;
+                    if attacking {
+                        movement.tapped = true;
+                        movement.choose_attacking_defender = true;
+                    }
                     movement
                 })
                 .collect();
@@ -401,7 +425,11 @@ impl Game {
         self.commit_library_remainder(owner, *f);
     }
     fn commit_library_remainder(&mut self, owner: Player, mut f: LibrarySelection) {
-        if f.destination == LibraryPickDestination::Battlefield {
+        if matches!(
+            f.destination,
+            LibraryPickDestination::Battlefield
+                | LibraryPickDestination::BattlefieldTappedAttacking
+        ) {
             f.remaining.extend(f.selected.iter().copied().filter(|r| {
                 self.object_ref(r.card) == *r
                     && self.state.objects[r.card as usize].zone == Zone::Library
@@ -485,6 +513,9 @@ impl Game {
             destination: match f.destination {
                 LibraryPickDestination::Hand => "hand",
                 LibraryPickDestination::Battlefield => "battlefield",
+                LibraryPickDestination::BattlefieldTappedAttacking => {
+                    "battlefield_tapped_attacking"
+                }
                 LibraryPickDestination::Top => "top",
                 LibraryPickDestination::ExileCastThisTurn => "exile_cast_this_turn",
             },

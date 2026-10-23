@@ -128,6 +128,14 @@ impl Game {
     }
 
     pub(super) fn can_play_exiled(&self, player: Player, card: CardId) -> bool {
+        self.can_play_exiled_independent(player, card)
+            || self.linked_exile_play_available(player, card)
+    }
+    pub(super) fn can_cast_exiled(&self, player: Player, card: CardId) -> bool {
+        self.can_cast_exiled_independent(player, card)
+            || self.linked_exile_play_available(player, card)
+    }
+    pub(super) fn can_play_exiled_independent(&self, player: Player, card: CardId) -> bool {
         if self.can_play_foreign_stash(player, card)
             || self.can_play_adventure(player, card)
             || self.can_cast_warped(player, card)
@@ -142,8 +150,8 @@ impl Game {
                 && p.expires_turn >= self.state.turn
         })
     }
-    pub(super) fn can_cast_exiled(&self, player: Player, card: CardId) -> bool {
-        self.can_play_exiled(player, card)
+    pub(super) fn can_cast_exiled_independent(&self, player: Player, card: CardId) -> bool {
+        self.can_play_exiled_independent(player, card)
             || self.state.exile_permissions.iter().any(|p| {
                 !p.without_mana
                     && p.cast_only
@@ -380,6 +388,9 @@ impl Game {
             .iter()
             .any(|e| e.moved && e.destination == Zone::Battlefield)
         {
+            // Keep one immutable projection for this post-event freeze, and do
+            // not evaluate characteristics when no source passes the filter.
+            let query = std::cell::OnceCell::new();
             self.state
                 .objects
                 .iter()
@@ -392,7 +403,11 @@ impl Game {
                                 .iter()
                                 .any(|a| a.condition.origin() == Some(TargetZone::Graveyard)))
                 })
-                .map(|(i, _)| self.object_view(i as CardId))
+                .map(|(i, _)| {
+                    query
+                        .get_or_init(|| self.characteristic_query())
+                        .object_view(i as CardId)
+                })
                 .collect()
         } else {
             Vec::new()

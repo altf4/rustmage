@@ -260,12 +260,20 @@ impl Game {
         });
         let fundable = |value: u32| {
             base.generic.checked_add(value).is_some_and(|generic| {
+                let cost = self.reduced_activation_cost(
+                    a.item.controller,
+                    a.item.object.card,
+                    ManaCost {
+                        colored: base.colored,
+                        generic,
+                    },
+                );
                 self.activation_can_fund(
                     FundingGoal {
                         reserve: None,
                         actor: a.item.controller,
-                        required: base.colored,
-                        generic,
+                        required: cost.colored,
+                        generic: cost.generic,
                         source: Some((
                             a.item.object,
                             ability,
@@ -350,6 +358,9 @@ impl Game {
                     .map(u64::from)
                     .sum::<u64>(),
             ),
+            AmountValue::CastCardTypeCount => self.state.players[item.controller.index()]
+                .cast_card_types_this_turn
+                .count_ones() as u128,
             AmountValue::CastSpellManaValue => item
                 .cast_event
                 .as_ref()
@@ -367,11 +378,38 @@ impl Game {
                 .copied()
                 .unwrap_or(0)
                 .max(0) as u128,
+            AmountValue::DepartureCounterCount(kind) => u128::from(
+                item.death_event
+                    .as_ref()
+                    .and_then(|e| e.counter_snapshot.as_deref())
+                    .expect("saved departure counters")
+                    .get(kind),
+            ),
             AmountValue::DeathEventCounterTotal => {
                 item.death_event
                     .as_ref()
                     .expect("saved death event")
                     .counter_total
+            }
+            AmountValue::DeathEventToughness => item
+                .death_event
+                .as_ref()
+                .expect("saved dying creature")
+                .toughness
+                .max(0) as u128,
+            AmountValue::SourceCounterTotal => {
+                if self
+                    .state
+                    .objects
+                    .get(item.object.card as usize)
+                    .is_some_and(|object| object.generation == item.object.generation)
+                {
+                    self.counter_amounts(item.object.card).total()
+                } else {
+                    item.source_counter_lki.as_ref().map_or(0, |facts| {
+                        facts.iter().map(|fact| u128::from(fact.count)).sum()
+                    })
+                }
             }
             AmountValue::DeathEventPower => item
                 .death_event
@@ -410,6 +448,13 @@ impl Game {
                 item.life_event.expect("saved life event").amount.max(0) as u128
             }
             AmountValue::ChosenX => u128::from(item.x.unwrap_or(0)),
+            AmountValue::MovedCount => u128::from(
+                self.state
+                    .resolving
+                    .as_ref()
+                    .and_then(|r| r.moved_count)
+                    .unwrap_or(0),
+            ),
             AmountValue::MilledCreatures => self
                 .state
                 .resolving

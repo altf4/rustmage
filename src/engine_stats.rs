@@ -35,6 +35,7 @@ impl Game {
             matches!(
                 a.condition.event(),
                 TriggerCondition::OtherCreatureCountersAdded { .. }
+                    | TriggerCondition::CreatureCountersPutByYou
                     | TriggerCondition::StateCounterAtLeast { .. }
             )
         }) {
@@ -58,9 +59,11 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),
-                TriggerCondition::CreatureAttacksOrBlocksYou
+                TriggerCondition::SelfAttacksOrBlocks
+                    | TriggerCondition::CreatureAttacksOrBlocksYou
                     | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::CreatureAttacksYou { .. }
+                    | TriggerCondition::OpponentAttacked
                     | TriggerCondition::AttackDeclared { .. }
             )
         }) {
@@ -104,6 +107,8 @@ impl Game {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::DamagedCreatureDies
+                    | TriggerCondition::ControlledCreatureLeaves { .. }
+                    | TriggerCondition::PermanentLeaves(_)
                     | TriggerCondition::SelfDies
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::SelfEntersOrDies
@@ -158,6 +163,8 @@ impl Game {
                         crate::cards::StaticAbilityFragment::LinkedExileCreatureCounterCasting(_)
                             | crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
                             | crate::cards::StaticAbilityFragment::AdditionalSubtypeTriggers { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(..)
+                            | crate::cards::StaticAbilityFragment::AdditionalSubtypeCreatureTriggers { .. }
                             | crate::cards::StaticAbilityFragment::LinkedExileFreeCastBySubtypeUnion(_)
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::MustBeBlocked
@@ -166,6 +173,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CantLoseGameAndOpponentsCantWin
                             | crate::cards::StaticAbilityFragment::NoncreatureConspire
                             | crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
+                            | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_)
                             | crate::cards::StaticAbilityFragment::ControlledSpellsUncounterable(_)
                             | crate::cards::StaticAbilityFragment::ControlledCreatureTrigger { .. }
                             | crate::cards::StaticAbilityFragment::SelfUntap(_)
@@ -176,7 +184,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CantDrawCards
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
                             | crate::cards::StaticAbilityFragment::ChosenCreatureKeywords(..)
-                            | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureCounterRule { .. }
                             | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. }
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..)

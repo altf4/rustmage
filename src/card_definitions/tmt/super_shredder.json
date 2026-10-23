@@ -3,10 +3,48 @@
   "catalogue_id": 4253,
   "oracle_id": "b7ee76bf-d15a-489e-8f05-414788f8f649",
   "facts_sha256": "8ee1f22f66087083cf7ac190cb98bb0348446530e8ab025bb13d87507b3ffc15",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c0337a8de45a0fe9da742c7397af511805cdfd621c89f5cbbe39f4657448e0dd"
   },
-  "physical_metadata_sha256": "21195f27c51550a38ddeb82f27a52ef5cbf2cf6a42548cbebd15763308247898"
+  "physical_metadata_sha256": "21195f27c51550a38ddeb82f27a52ef5cbf2cf6a42548cbebd15763308247898",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SuperShredder.java",
+  "java_sha256": "df9d5bfaa927efd236c89718596ef24bee52a49a9208d29246229032dc8ed757",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LeavesBattlefieldAllTriggeredAbility.java",
+      "sha256": "5fc6f3172c938ccf522144ccae89825dd5f693b50cdb974e9a73046848369c58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByOneEffect.java",
+      "sha256": "e0bd814caa3d5758863c4230d3ac88a4361337d3459b13d4f0b309559520434e"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "122.2",
+      "205.1b",
+      "603.6c",
+      "603.10",
+      "613.1",
+      "614.16"
+    ],
+    "note": "Departure filters and complete counter snapshots use last-known characteristics and controller before the actual move, including simultaneous source departure. Counter quantities are put through the ordinary replacement batch, with new counter timestamps. Artifact-creature animation preserves prior types, colors and abilities under CR205.1b. Noncreature-only animation checks after counter placement. Pizza Face may target another artifact or creature of either player; The Ooze may target a card in either graveyard."
+  }
 }

@@ -1,0 +1,11 @@
+{
+  "name": "@token/insect_warrior_1_1_black_flying",
+  "catalogue_id": 5358,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "8a959300936bf1b3f160abc94f05a3535a4ea403286e15ac1e50789c50e142a8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/InsectWarriorToken.java",
+  "java_sha256": "31280e2eb699c1ba8aba942192080bcc16906f0b019d00efd8985b9d1d7e4a9f"
+}

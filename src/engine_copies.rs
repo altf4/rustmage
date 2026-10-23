@@ -269,7 +269,40 @@ impl Game {
         defenders: Option<&[CombatDefender]>,
         recipients: &[ObjectRef],
     ) -> Vec<ObjectRef> {
+        self.create_copy_groups_bound_for_players(
+            player, groups, recipes, defenders, recipients, None,
+        )
+    }
+    pub(super) fn create_mixed_token_groups(
+        &mut self,
+        players: &[Player],
+        groups: &[TokenGroupView],
+        recipes: &[Option<CopyRecipe>],
+    ) {
+        let Some(&player) = players.first() else {
+            assert!(groups.is_empty());
+            return;
+        };
+        self.create_copy_groups_bound_for_players(
+            player,
+            groups,
+            recipes,
+            None,
+            &[],
+            Some(players),
+        );
+    }
+    fn create_copy_groups_bound_for_players(
+        &mut self,
+        player: Player,
+        groups: &[TokenGroupView],
+        recipes: &[Option<CopyRecipe>],
+        defenders: Option<&[CombatDefender]>,
+        recipients: &[ObjectRef],
+        players: Option<&[Player]>,
+    ) -> Vec<ObjectRef> {
         assert_eq!(groups.len(), recipes.len());
+        assert!(players.is_none_or(|rows| rows.len() == groups.len()));
         let total = groups
             .iter()
             .try_fold(0u128, |total, g| total.checked_add(g.amount))
@@ -294,6 +327,7 @@ impl Game {
             .capacity("token reference allocation exhausted");
         let mut defender_index = 0;
         for (index, (group, recipe)) in groups.iter().zip(recipes).enumerate() {
+            let player = players.map_or(player, |rows| rows[index]);
             let attachment = group
                 .token
                 .role()

@@ -238,6 +238,10 @@ impl Game {
         };
         let mut link = (**link).clone();
         match kind {
+            ReturnKind::FlyingRobot => {
+                link.counter = None;
+                self.stage_linked_return(&link, Some((kind, item.object)));
+            }
             ReturnKind::Persist => {
                 link.counter = Some((CounterKind::MinusOne, 1));
                 self.stage_linked_return(&link, None);
@@ -383,6 +387,19 @@ impl Game {
                 );
                 return;
             }
+            ReturnKind::FlyingRobot => {
+                self.animate_exact(
+                    recipient,
+                    crate::cards::AnimationSpec {
+                        artifact: true,
+                        creature_types: crate::cards::AnimationCreatureTypes::Named(&["Robot"]),
+                        base: Some((3, 3)),
+                        keywords: Keywords::FLYING,
+                        duration: crate::cards::AnimationDuration::Permanent,
+                    },
+                );
+                return;
+            }
             ReturnKind::Demon => (&["Demon"], Keywords::NONE),
             ReturnKind::Angel => (&["Angel"], Keywords::FLYING),
             ReturnKind::Revival | ReturnKind::Persist => return,
@@ -402,6 +419,7 @@ impl Game {
             });
         if keywords != Keywords::NONE {
             state.keyword_effects.push(KeywordEffectView {
+                hexproof_colors: 0,
                 expires_before_turn: None,
                 recipient,
                 origin: KeywordEffectOrigin::Resolution { source },

@@ -7,12 +7,14 @@ pub struct ModalHistoryView {
     pub definition: Card,
     pub ability: u16,
     pub modes: Vec<u16>,
+    pub per_turn: bool,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct Key {
     object: ObjectRef,
     definition: Card,
     ability: u16,
+    per_turn: bool,
 }
 pub(super) type Rows = Option<SharedVec<ModalHistoryView>>;
 
@@ -25,12 +27,16 @@ pub(super) fn key(item: &SpellView) -> Option<Key> {
     let definition = item.trigger_definition();
     matches!(
         definition.triggers()[usize::from(ability)].program.first(),
-        Some(Instruction::ModalOnce(_))
+        Some(Instruction::ModalOnce(_) | Instruction::ModalOncePerTurn(_))
     )
     .then_some(Key {
         object: item.object,
         definition,
         ability,
+        per_turn: matches!(
+            definition.triggers()[usize::from(ability)].program.first(),
+            Some(Instruction::ModalOncePerTurn(_))
+        ),
     })
 }
 impl ModalHistoryView {
@@ -39,6 +45,7 @@ impl ModalHistoryView {
             object: self.object,
             definition: self.definition,
             ability: self.ability,
+            per_turn: self.per_turn,
         }
     }
 }
@@ -53,6 +60,14 @@ pub(super) fn owned_bytes(rows: &Rows) -> usize {
     })
 }
 impl Game {
+    pub(super) fn reset_turn_modal_history(&mut self) {
+        if let Some(rows) = &mut self.state.modal_history {
+            rows.retain(|row| !row.per_turn);
+            if rows.is_empty() {
+                self.state.modal_history = None;
+            }
+        }
+    }
     pub(super) fn modal_optional_intent_matches(&self, item: &SpellView, index: usize) -> bool {
         item.source_card
             .mode_optional_additional_paid()
@@ -96,6 +111,7 @@ impl Game {
                 definition: key.definition,
                 ability: key.ability,
                 modes: vec![mode],
+                per_turn: key.per_turn,
             });
         }
     }

@@ -35,7 +35,8 @@ impl Game {
     }
 
     pub(super) fn keywords(&self, id: CardId) -> Keywords {
-        self.characteristic_query().keywords(id)
+        ability_evaluation::scalar_keywords_without_removal(self, id)
+            .unwrap_or_else(|| self.characteristic_query().keywords(id))
     }
 
     pub(super) fn attach_equipment(&mut self, source: ObjectRef, target: ObjectRef) -> bool {

@@ -78,6 +78,7 @@ fn program_for(
     let mut item = g.cast_item(player, id, [0; 6]);
     item.targets = targets;
     g.state.resolving = Some(Resolution {
+        wheel: None,
         continuation: None,
         chosen_creature_type: None,
         chosen_color: None,
@@ -99,6 +100,7 @@ fn program_for(
         selection: None,
         target_library: None,
         search: None,
+        legendary_search: None,
         optional_searches: None,
         choice: None,
     });

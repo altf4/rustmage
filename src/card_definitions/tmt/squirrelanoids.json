@@ -8,5 +8,22 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "41a30585a5fde60baf28893ab7ea4a0a9ee6f6776ddcb357a804c843cda427e3"
   },
-  "physical_metadata_sha256": "798ce3ad572588d5798b9a5a90ede10f1ae36b34d4965bf7e26de5ed9ac6a62f"
+  "physical_metadata_sha256": "798ce3ad572588d5798b9a5a90ede10f1ae36b34d4965bf7e26de5ed9ac6a62f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/Squirrelanoids.java",
+  "java_sha256": "1cf4411f062b0873f57cbfc10511b63cba11d092e89d836c1e6687b0cd22cba9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    }
+  ],
+  "source_audit": {
+    "scope": "Full Oracle body, complete XMage card class and listed complete reusable implementations read; inherited typed behavior independently exercised with paid legal actions.",
+    "tests": [
+      "src/engine_tmt_inherited_batch_four_tests.rs"
+    ],
+    "status": "Focused rules audit; integrated release and complete-set acceptance remain integrator obligations."
+  }
 }

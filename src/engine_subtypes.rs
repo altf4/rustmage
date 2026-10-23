@@ -23,7 +23,7 @@ const LAND_TYPES: [&str; 17] = [
     "Planet",
     "Urza's",
 ];
-const JOB_TYPES: [&str; 15] = [
+const JOB_TYPES: [&str; 17] = [
     "Artificer",
     "Bard",
     "Cleric",
@@ -39,8 +39,10 @@ const JOB_TYPES: [&str; 15] = [
     "Demon",
     "Nightmare",
     "Coward",
+    "Robot",
+    "Mutant",
 ];
-// Fifteen named grants and three projection flags use the view's existing padding.
+// Seventeen named grants and three projection flags use the view's existing padding.
 const CREATURE_OR_KINDRED: u16 = 1 | 128;
 const JOB_MASK: u32 = (1 << JOB_TYPES.len()) - 1;
 const SUPPRESS_PRINTED: u32 = 1 << JOB_TYPES.len();
@@ -174,6 +176,13 @@ impl Game {
             card: id,
             generation: target.generation,
         };
+        if (target.zone == Zone::Battlefield || target.is_token())
+            && self
+                .copy_recipe(reference)
+                .is_some_and(|r| r.exceptions.mutant)
+        {
+            mask.insert("Mutant");
+        }
         if (target.zone == Zone::Battlefield || target.is_token())
             && self
                 .copy_recipe(reference)
@@ -454,6 +463,9 @@ impl Game {
             && m.before.kinds & CREATURE_OR_KINDRED != 0
         {
             result.set_flag(ALL_CREATURE_TYPES, true);
+        }
+        if m.before.copy_recipe.is_some_and(|r| r.exceptions.mutant) {
+            result.insert("Mutant");
         }
         if m.before.copy_recipe.is_some_and(|r| r.exceptions.nightmare) {
             result.insert("Nightmare");
