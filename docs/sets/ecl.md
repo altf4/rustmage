@@ -17,17 +17,16 @@ Oracle facts: `data/standard/cards.json`; canonical ownership:
 
 ## Card obligations and evidence
 
-The frozen manifest accounts for every identity. The [per-card obligation ledger](ecl-obligations.json) records every face and printed rules line with canonical ownership. All107 inherited cards have passed source/rules audits, with paid interaction evidence recorded below and in the validation JSON.
+The frozen manifest accounts for every identity. The [per-card obligation ledger](ecl-obligations.json) records every face and printed rules line with canonical ownership. All 107 inherited cards have passed source/rules audits, with paid interaction evidence recorded below and in the validation JSON.
 
-## Current implementation checkpoint (2026-10-22)
+## Current implementation checkpoint (2026-10-23 UTC)
 
 Admission flags: **273/273**, comprising **107 inherited** and **166 newly
-implemented/focused-tested physical candidates**; **zero remain gated**.
-Twilight Diviner’s review-discovered LKI gap is repaired and its admission restored. All107 inherited cards have passed source/rules audits.
+implemented and verified physical cards**; **zero remain gated**.
+Twilight Diviner’s review-discovered LKI gap is repaired and its admission restored. All 107 inherited cards have passed source/rules audits.
 The supporting closure includes eleven tokens, seven backs and one emblem;
-all have complete source pins and parent interaction evidence. Final combined
-full-game acceptance, release validation and two published-head reviews remain
-open. No newly authored cards have been merged upstream.
+all have complete source pins and parent interaction evidence. Combined full-game acceptance and release validation pass. Two independent
+published-head reviews remain open. No newly authored cards have been merged upstream.
 
 Three isolated authors implemented black/red, white/blue, and green/colorless
 cards, with the integrator handling multicolor cards, transforming cards and
@@ -43,16 +42,52 @@ ability epochs preserve queued triggers and linked permissions across copying,
 control changes and source departure. Each physical card's obligations and
 supporting token/face evidence are recorded in the JSON ledgers.
 
-## Validation and measurements
+## Final local validation and measurements
 
-The most recent full release checkpoint, at **265 admitted cards**, passed all
+Fixed revision `4428a3c5` passed **all nine release-validation stages** in
+**924.87 seconds**: **3,251 native tests** (one ignored), nine catalogue checks,
+all 22 Foundations game suites, the strict 236-game ECL workload, provenance,
+Clippy, release compilation, regression benchmark and seven Python binding checks.
+No inputs changed. Peak memory was **3.6 GiB**; 1,182,765,056 disposable bytes were
+cleaned. Exact retained library paths/hashes and the report
+`<cache>/rustmage-validation-w8w7hgsk/report/result.json` are in the JSON ledger.
+
+The same release binary completed **236 natural games**, **155,971 accepted
+policy actions**, **3,143 owned branches**, **609 private decisions** and complete
+journal replay in **19.310 seconds** (8,077.21 decisions/second). All 20 required
+mechanics executed, including 37 Dream Harvest free casts, 34 graveyard-entry
+copy tokens, four paid Conspire copies and two persist returns. Both starters and
+fixed seeds cover 29 entire-pool decks, 13 mechanic themes and two reanimation
+decks. Every frozen physical identity is included; per-card paid scenarios cover
+printed obligations beyond stochastic game execution.
+
+Optimized policy simulation on the **same binary, decks and seeds** took
+**7.038863 seconds**: **22,158.55 decisions/second**, **33.53 games/second**.
+It matched the strict run's 155,971 decisions, 121/115 wins and zero draws.
+The timed scope includes initialization, legal actions, native policy, apply and
+terminal checks; it excludes compilation, workload construction, rules-evidence
+collection, privacy/branch/restore verification and replay. Hardware: Intel Core
+Ultra 5 335, eight cores; rustc1.98.0, release opt-level3/thin LTO, one test thread,
+shared 6 GiB guard. These measurements certify this declared workload, not all
+possible interactions or full Standard parity.
+
+The implementation-through-local-acceptance interval produced **166 newly
+verified whole cards at 17.14 cards/hour**, excluding the 107 inherited audits
+from the numerator. The earlier focused-authoring rate was 22.28 cards/hour.
+Exact elapsed intervals, commands, build/source hashes and measurements are in
+[ecl-validation.json](ecl-validation.json). Published-head reviews and merge are
+tracked separately.
+
+## Earlier validation checkpoints and diagnostics
+
+The preceding full release checkpoint, at **265 admitted cards**, passed all
 eight phases at `a9a47743`: **3,094 native tests** (one ignored), nine catalogue
 checks, all 22 Foundations game suites, ECL regression games, provenance, Clippy,
 release compilation and the benchmark. It took **640.02 seconds**, peaked at
 **3.5 GiB**, and cleaned 1,143,128,064 disposable bytes. The report is
 `<cache>/rustmage-validation-dydsqtfp/report/result.json`; required shared
 libraries remain at the exact paths and hashes recorded in the validation JSON.
-A new full release run on the final 273-card integration remains required.
+That requirement is satisfied by the final local validation recorded above.
 
 That release's Freeform regression benchmark measured 49,832 decisions in
 0.247475027 seconds: **201,361.73 decisions/second**, 404.08 games/second,
@@ -77,7 +112,7 @@ reanimation games, for **236 final games**. A focused 24-game proof passed in
 decisions, **23 actual Dream Harvest free casts** and **27 actual graveyard-copy
 tokens**. The Harvest detector now binds the exiled object at announcement to
 the later committed spell ID. All 20 mechanic requirements remain enforced.
-The full 236-game combined run remains pending.
+The final 236-game combined run now passes, as recorded above.
 
 Three conservative mana-funding bounds removed repeated impossible-payment
 searches involving restricted mana, missing eligible colors and missing creature
@@ -118,17 +153,16 @@ declaration. The repair at `9877dfd1` uses conservative dynamic maxima outside
 the proven closed world and preserves all three earlier performance bounds.
 The paid counterspell regression passes for both seats; all132 funding tests
 and Clippy pass. The independent reviewer cleared the patch statically. No
-known code findings remain; final combined validation and published-head reviews
+known code findings remain. Combined validation passes; published-head reviews
 are pending.
 
 ## Resume and remaining work
 
 Branch `codex/ecl-complete-set`; issue [#462](https://github.com/altf4/rustmage/issues/462).
 Authenticate frozen membership using `python3 -m scripts.set_status ECL --check`.
-The dynamic-production repair is integrated and catalogue links regenerated.
-Run final release validation, including the strict236-game whole-pool workload
-and Python binding smoke checks for the changed public schema, then its optimized
-throughput companion.
+The dynamic-production repair, catalogue regeneration, final release validation,
+strict236-game acceptance, Python binding smoke and optimized throughput
+measurement are complete. Publish the full set PR and obtain both final reviews.
 Keep consuming inputs fixed until each process terminates; poll the same job.
 
 Publish one implementation PR only after every local gate passes. Obtain two
@@ -261,7 +295,7 @@ Lavaleaper is integrated after3,120 native regressions pass91.98seconds (one ign
 
 The generic shared-type target-completion fix resolves the Unbury full-game dead end. Two both-seat scenarios and Clippy pass. A preliminary supported266-card pool workload then completes116/116 natural games across29 deck pairs,seeds0/7 and both starters:67,131decisions,1,231owned branches,125private decisions,53.822693seconds (debug,policy/observation/privacy/periodic JSON checks included)=1,247.262decisions/s. Actual execution includes89blights,187convoke selections,oneproliferation,20counter removals,tenstack copies andeighttransforms. This remains preliminary;final273-card and themed acceptance are open.
 
-All107/107 inherited cards now have complete source/rules audits. The final black/red25 use13 paid both-seat scenario matrices passing0.40seconds plus retained counter,cast,damage,keyword,cycling,impulse,mill and vivid interaction suites; all-target Clippy passes. Fresh evidence includes optional/stale death targets,flash and lethal upkeep completion,Kindred tribal counts,actual Treasure mana,modal damage-source lifelink,target-invalid followup suppression,optional private discard and cleanup through actual priority passes. Three existing token factories gain full source pins. The final green/land22 use16 matrices passing0.86seconds with all-target Clippy,covering actual combat/damage,Aura LKI,batch entries,counter/vivid conditions,surveil/mill recovery,tap/sorcery costs,modes,shockland choices and private basic search. No inherited typed behavior is replaced. Whole-pool integrated games,performance,full release and final published reviews remain open.
+All 107/107 inherited cards now have complete source/rules audits. The final black/red25 use13 paid both-seat scenario matrices passing0.40seconds plus retained counter,cast,damage,keyword,cycling,impulse,mill and vivid interaction suites; all-target Clippy passes. Fresh evidence includes optional/stale death targets,flash and lethal upkeep completion,Kindred tribal counts,actual Treasure mana,modal damage-source lifelink,target-invalid followup suppression,optional private discard and cleanup through actual priority passes. Three existing token factories gain full source pins. The final green/land22 use16 matrices passing0.86seconds with all-target Clippy,covering actual combat/damage,Aura LKI,batch entries,counter/vivid conditions,surveil/mill recovery,tap/sorcery costs,modes,shockland choices and private basic search. No inherited typed behavior is replaced. Whole-pool integrated games,performance,full release and final published reviews remain open.
 
 Omni-Changeling is integrated after3,157 native regressions pass94.63seconds (one ignored),29 focused copy scenarios pass0.83seconds,and all-target Clippy passes. Its owned optional copy replacement precedes other entry choices and uses fresh copied counters,life,type and Aura requirements; newly acquired copy replacements may recur,with a later copy replacing earlier exceptions. Paid/convoke/free/spell-copy entry qualifications,nested token entry,native single-face DFC shape,private APNAP choices and actual Kindle exception replacement are tested. Resolution counts now distinguish acquired ability epochs while retaining old queued packets. A creature-Aura cannot remain attached under CR303.4c. Admission271/273;2 gated;observation schema164 adds pre-entry copy choices/views and resolution-history ability origins.
 
