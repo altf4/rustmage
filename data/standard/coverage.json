@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "4897dd23acd1868f3c40e30a2aa67949f39b1e40e78fa7d775205c07fa6c9282",
+  "catalogue_version": "f8d1f0d0414a614b055222eca3add61757befe3be62077c3d50880e37b139118",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2395,
-  "implemented_total": 2401,
+  "implemented_standard_cards": 2398,
+  "implemented_total": 2404,
   "token_definitions": 113,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -185,8 +185,8 @@
     },
     "tmt": {
       "total": 189,
-      "complete": 104,
-      "gated": 85
+      "complete": 107,
+      "gated": 82
     },
     "w17": {
       "total": 1,
@@ -6942,8 +6942,8 @@
     {
       "name": "Cool but Rude",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/cool_but_rude.rs",
       "set": "tmt"
     },
@@ -9174,8 +9174,8 @@
     {
       "name": "Does Machines",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/does_machines.rs",
       "set": "tmt"
     },
@@ -19902,8 +19902,8 @@
     {
       "name": "Leader's Talent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/leader_s_talent.rs",
       "set": "tmt"
     },

@@ -104,6 +104,7 @@ impl Game {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::DamagedCreatureDies
+                    | TriggerCondition::ControlledCreatureLeaves { .. }
                     | TriggerCondition::SelfDies
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::SelfEntersOrDies

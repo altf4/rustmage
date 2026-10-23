@@ -383,6 +383,21 @@ impl Game {
         // Self departure uses the event's frozen LKI for every destination,
         // including simultaneous bounce/exile and replacement-modified moves.
         if event.before.zone == Zone::Battlefield {
+            if event.before.is_creature() {
+                for source in event.departure_sources.iter().flat_map(|rows| rows.iter()) {
+                    if source.controller != event.before.controller {
+                        continue;
+                    }
+                    for (index, ability) in source.card.triggers().iter().enumerate() {
+                        if let TriggerCondition::ControlledCreatureLeaves { with_counter } =
+                            ability.condition.event()
+                            && (!with_counter || event.before.counters.has_any())
+                        {
+                            self.queue_zone_trigger(source, index, event);
+                        }
+                    }
+                }
+            }
             for (index, ability) in event.before.card.triggers().iter().enumerate() {
                 if ability.condition.event() == TriggerCondition::SelfLeavesBattlefield {
                     self.queue_zone_trigger(&event.before, index, event);
@@ -583,6 +598,8 @@ impl Game {
                     | TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::SelfDies
                     | TriggerCondition::SelfLeavesBattlefield
+                    | TriggerCondition::ControlledCreatureLeaves { .. }
+                    | TriggerCondition::ClassLevel { .. }
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::AttachedCreatureDies
@@ -2496,6 +2513,31 @@ impl Game {
                             .amount,
                     );
                 }
+                Instruction::DiscardRandom(set, amount) => {
+                    let players: Vec<_> = self.program_players(set, &item).collect();
+                    let mut cards = Vec::new();
+                    for player in players {
+                        let mut hand: Vec<_> = self
+                            .state
+                            .objects
+                            .iter()
+                            .enumerate()
+                            .filter_map(|(id, o)| {
+                                (o.zone == Zone::Hand && o.owner == player && !o.is_token())
+                                    .then_some(id as CardId)
+                            })
+                            .collect();
+                        for _ in 0..usize::from(amount).min(hand.len()) {
+                            let index = self
+                                .state
+                                .rng
+                                .below(u64::try_from(hand.len()).expect("hand length"))
+                                as usize;
+                            cards.push(hand.swap_remove(index));
+                        }
+                    }
+                    self.discard_batch_caused(&cards, None, Some(item.controller));
+                }
                 Instruction::DiscardWholeHands(players) => {
                     let players: Vec<_> = self.program_players(players, &item).collect();
                     let ids: Vec<_> = self
@@ -2813,6 +2855,9 @@ impl Game {
                     }
                 }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
+                Instruction::AnimateTargetsIfNoncreature(spec) => {
+                    self.animate_targets_if_noncreature(&item, spec)
+                }
                 Instruction::DestroyLandAndSearch => self.destroy_land_and_search(&item),
                 Instruction::SearchCreatureManaValue {
                     maximum,
@@ -3167,6 +3212,7 @@ impl Game {
                     self.start_wheel(draw);
                     return;
                 }
+                Instruction::SetClassLevel(level) => self.set_class_level(&item, level),
                 Instruction::PutHandCreatureAndLand => {
                     if self.start_effect_choice(
                         &item,
@@ -3946,6 +3992,26 @@ impl Game {
                         .map(|id| self.object_ref(id))
                         .collect::<Vec<_>>();
                     self.remove_abilities_exact(&recipients, duration);
+                }
+                Instruction::PutCountersMatching {
+                    filter,
+                    kind,
+                    amount,
+                } => {
+                    let changes = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter_map(|(i, o)| {
+                            let id = i as CardId;
+                            (o.zone == Zone::Battlefield
+                                && self.is_creature(id)
+                                && self.creature_matches(filter, item.controller, item.object, id))
+                            .then(|| (self.object_ref(id), Counters::of(kind, u64::from(amount))))
+                        })
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
                 Instruction::PutCounterKinds { subject, counters } => {
                     let changes = self

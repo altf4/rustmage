@@ -124,6 +124,7 @@ impl Game {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
             StepGuard::Always => return true,
+            StepGuard::ClassLevelAtLeast(minimum) => return self.class_level(source) >= minimum,
             StepGuard::SourceSneakedThisTurn => {
                 return self
                     .state

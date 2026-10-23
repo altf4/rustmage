@@ -19,9 +19,9 @@ Oracle facts remain pinned in `data/standard/cards.json`. The
 [obligation ledger](tmt-obligations.json) accounts for every printed line and
 canonical definition, including reprints; it is not a second membership source.
 
-Initial admission: **71/195**, **124 gated**. Current admission: **110/195**,
-**85 gated**, zero unresolved. The 71 inherited admission flags still require
-source/rules audits. **39 newly authored physical cards have rules scenarios; 39 have integrated release validation**;
+Initial admission: **71/195**, **124 gated**. Current admission: **113/195**,
+**82 gated**, zero unresolved. The 71 inherited admission flags still require
+source/rules audits. **42 newly authored physical cards have rules scenarios; 39 have integrated release validation**;
 zero have independent final published-head reviews or upstream merges.
 
 ## Active Sneak integration
@@ -309,3 +309,29 @@ hashes, guard measurements and actual elapsed implementation throughput.
 The full validator is terminal and preserved all required shared libraries.
 Next work is Class levels and the five Class cards, with source research and
 scratch preparation complete for the shared kernel and Leader’s Talent.
+
+## Active Class integration
+
+Leader’s Talent, Cool but Rude and Does Machines pass all-target Clippy and the
+optimized **87-scenario TMT suite**, including 14 Class scenarios, all 53 Sneak
+scenarios and the initial 20 TMT scenarios. Terminal focused log:
+`<cache>/rustmage-tmt-class-machines-tests.log`. Separate owned Class levels
+retain exact-incarnation designations independently of counters, copies and
+ability loss. Common frozen departure observers preserve simultaneous bounce
+and exile/LKI; the new conditional trigger primitive applies to every zone.
+
+Paid scenarios cover Class progression/timing/reset, attack targets, source
+ability loss, any-counter departure qualification, spell-cast mass counters,
+private optional discard/draw, required search/shuffle, random discard and
+capacity rollback including RNG. Does Machines covers mill/draw/discard order,
+zero/one/two artifact recovery with partial invalidation, persistent additive
+Robot animation, equipment unattachment, actual Vehicle crewing without base
+reset, and counter replacement. All steps exercise owned raw/index branching,
+parent disposal, both observations and restore. Observation schema is 175.
+
+Admission is 113/195 with 82 gated and zero unresolved. The three newest
+physical candidates await integrated release validation: 42 newly authored
+cards have focused rules evidence, 39 have full release validation, and 71
+inherited flags still need audits. Next: Ninja Teen’s dynamic Sneak and composed
+mandatory costs, and Party Dude’s cross-player Food creation and attack trigger.
+No implementation PR, final review or set-only acceptance is claimed.

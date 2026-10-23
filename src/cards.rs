@@ -991,6 +991,7 @@ pub(crate) enum Instruction {
     FightSource,
     /// The exact enchanted creature fights the targeted creature.
     FightAttached,
+    DiscardRandom(PlayerSet, u16),
     DiscardScaled(PlayerSet, AmountValue),
     DiscardManaValueLifeLoss,
     PutLandCards {
@@ -1279,6 +1280,8 @@ pub(crate) enum Instruction {
     Scry(u16),
     Surveil(u16),
     AnimateSource(AnimationSpec),
+    AnimateTargetsIfNoncreature(AnimationSpec),
+    SetClassLevel(u8),
     Search(SearchSpec),
     SearchCreatureManaValue {
         maximum: AmountValue,
@@ -1479,6 +1482,11 @@ pub(crate) enum Instruction {
     },
     RemoveAllCountersFrom(Subject),
     SnapshotDoubleCreatures(CreatureFilter),
+    PutCountersMatching {
+        filter: CreatureFilter,
+        kind: CounterKind,
+        amount: u16,
+    },
     PutCounters {
         subject: Subject,
         kind: CounterKind,
@@ -2405,6 +2413,7 @@ pub(crate) struct CombatRestriction {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepGuard {
+    ClassLevelAtLeast(u8),
     SourceSneakedThisTurn,
     PermanentLeftBattlefieldThisTurn,
     PutCounterOnCreatureThisTurn,
@@ -2500,6 +2509,9 @@ pub(crate) enum ReturnKind {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    ClassLevel {
+        level: u8,
+    },
     ReturnDeath(ReturnDeathFilter),
     /// Delayed ability carried by a produced mana unit, independent of its source.
     ManaSpentForSpell,
@@ -2647,6 +2659,9 @@ pub(crate) enum TriggerCondition {
     EvidenceCollected,
     SelfDies,
     SelfLeavesBattlefield,
+    ControlledCreatureLeaves {
+        with_counter: bool,
+    },
     SelfEntersOrDies,
     SelfAttacks,
     SelfFirstAttack,
@@ -3166,6 +3181,9 @@ impl Card {
     }
     pub fn warp_cost(self) -> Option<ManaCost> {
         generated::warp_cost(self)
+    }
+    pub(crate) fn class_level_activations(self) -> &'static [(u16, u8)] {
+        authored::rules(self).map_or(&[], |rules| rules.extras.class_level_activations)
     }
     pub(crate) fn sneak_costs(self) -> &'static [ManaCost] {
         authored::rules(self).map_or(&[], |rules| rules.extras.sneak_costs)

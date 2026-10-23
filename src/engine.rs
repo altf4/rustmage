@@ -109,10 +109,13 @@ mod observation_schema;
 pub const OBSERVATION_SCHEMA: u32 = observation_schema::VERSION;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
+#[path = "engine_classes.rs"]
+mod classes;
 #[path = "engine_mobilize.rs"]
 mod mobilize;
 #[path = "engine_plot.rs"]
 mod plot;
+pub use classes::ClassLevelView;
 #[path = "engine_sneak.rs"]
 mod sneak;
 #[path = "engine_wheel.rs"]
@@ -1820,6 +1823,7 @@ impl Pending {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    class_levels: Option<SharedVec<ClassLevelView>>,
     linked_choices: Option<Box<linked_choices::ChoiceState>>,
     combat_rules: Option<Box<combat_allocations::CombatRulesState>>,
     ending_turn: bool,
@@ -2006,6 +2010,7 @@ impl ObjectView {
 pub struct ZoneChange {
     /// Pre-departure providers, shared semantically by every simultaneous member.
     trigger_providers: Option<Box<[trigger_multiplicity::TriggerProvider]>>,
+    departure_sources: Option<SharedVec<ObjectView>>,
     pub gift: Option<Box<GiftContext>>,
     pub before: ObjectView,
     pub after: ObjectRef,
@@ -2264,6 +2269,7 @@ pub struct Observation {
     pub exile_links: Vec<ExileLink>,
     pub exile_permissions: Vec<ExilePlayPermission>,
     pub sneak_entries: Vec<ObjectRef>,
+    pub class_levels: Vec<ClassLevelView>,
     pub graveyard_cast_permissions: Vec<GraveyardCastPermissionView>,
     pub graveyard_type_uses: Vec<GraveyardTypeUse>,
     pub resolution_free_casts: Option<ResolutionFreeCasts>,
@@ -2470,6 +2476,7 @@ impl Game {
             state: State {
                 ending_turn: false,
                 mana_lots: None,
+                class_levels: None,
                 linked_choices: None,
                 zone_rules: None,
                 controls: None,
@@ -5492,6 +5499,11 @@ impl Game {
 
     /// Capture every pre-event characteristic before any simultaneous departure.
     fn move_objects_raw(&mut self, ids: &[CardId], destination: Zone) -> Vec<ZoneChange> {
+        let departure_sources = ids
+            .iter()
+            .any(|&id| self.on_battlefield(id))
+            .then(|| self.freeze_departure_sources())
+            .flatten();
         let trigger_providers = ids
             .iter()
             .any(|&id| self.on_battlefield(id))
@@ -5552,6 +5564,7 @@ impl Game {
                     counters,
                     None,
                     trigger_providers.clone(),
+                    departure_sources.clone(),
                 )
             })
             .collect();
@@ -5685,6 +5698,9 @@ impl Game {
         counters: Counters,
         entry_controller: Option<Player>,
     ) -> ZoneChange {
+        let departure_sources = (before.zone == Zone::Battlefield)
+            .then(|| self.freeze_departure_sources())
+            .flatten();
         let rules = self.freeze_zone_rules(&before, destination, None);
         let plan = self.plan_zone_move(&before, destination, rules);
         let trigger_providers = (before.zone == Zone::Battlefield)
@@ -5697,9 +5713,11 @@ impl Game {
             counters,
             entry_controller,
             trigger_providers,
+            departure_sources,
         )
     }
 
+    #[allow(clippy::too_many_arguments)] // Frozen whole-event observers accompany the explicit move plan.
     fn commit_planned_zone_move(
         &mut self,
         before: ObjectView,
@@ -5708,6 +5726,7 @@ impl Game {
         counters: Counters,
         entry_controller: Option<Player>,
         trigger_providers: Option<Box<[trigger_multiplicity::TriggerProvider]>>,
+        departure_sources: Option<SharedVec<ObjectView>>,
     ) -> ZoneChange {
         let id = before.id;
         self.capture_mana_copy_source_departure(&before);
@@ -5729,6 +5748,7 @@ impl Game {
             self.state.free_tokens.push(id);
             return ZoneChange {
                 trigger_providers,
+                departure_sources,
                 gift: None,
                 after: self.object_ref(id),
                 destination: Zone::Outside,
@@ -5759,6 +5779,7 @@ impl Game {
         {
             return ZoneChange {
                 trigger_providers,
+                departure_sources,
                 gift: None,
                 after: before.reference,
                 destination: before.zone,
@@ -5779,6 +5800,7 @@ impl Game {
             self.reveal_and_shuffle_zone_card(&before);
             return ZoneChange {
                 trigger_providers,
+                departure_sources,
                 gift: None,
                 after: before.reference,
                 destination,
@@ -6033,6 +6055,7 @@ impl Game {
         self.commit_dream_zone_result(self.object_ref(id), plan.effect, dream);
         ZoneChange {
             trigger_providers,
+            departure_sources,
             gift: None,
             before,
             after: self.object_ref(id),
@@ -6098,6 +6121,7 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        self.prune_class_levels();
         self.state.sneak_entries = None;
         if let Some(shields) = &mut self.state.player_damage_shields {
             shields.retain(|row| row.controller != self.state.active);
@@ -6932,6 +6956,7 @@ impl Game {
                 .graveyard_type_uses
                 .as_ref()
                 .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
+            class_levels: self.visible_class_levels(),
             sneak_entries: s
                 .sneak_entries
                 .as_ref()
@@ -7318,6 +7343,9 @@ impl Game {
             + delayed_combat_draw::owned_bytes(&s.delayed_combat_draws)
             + stack_copies::owned_bytes(&s.stack_copy_data)
             + modal_history::owned_bytes(&s.modal_history)
+            + s.class_levels
+                .as_ref()
+                .map_or(0, |rows| rows.len() * std::mem::size_of::<ClassLevelView>())
             + s.sneak_entries.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<ObjectRef>>()
                     + rows.len() * std::mem::size_of::<ObjectRef>()
@@ -8492,6 +8520,9 @@ use linked_funding::LinkedFundingWindow;
 #[path = "engine_tmt_disappear_tests.rs"]
 mod tmt_disappear_tests;
 
+#[cfg(test)]
+#[path = "engine_tmt_class_tests.rs"]
+mod tmt_class_tests;
 #[cfg(test)]
 #[path = "engine_tmt_sneak_tests.rs"]
 mod tmt_sneak_tests;

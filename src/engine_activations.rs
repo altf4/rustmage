@@ -104,6 +104,7 @@ impl Game {
         sorcery: bool,
     ) -> bool {
         self.printed_abilities_available(card)
+            && self.class_activation_available(card, index)
             && ability_world::CharacteristicWorld::activation_counter_cost_allowed(
                 self,
                 card,

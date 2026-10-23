@@ -179,6 +179,7 @@ pub(crate) enum AnimationDuration {
 pub(crate) enum AnimationCreatureTypes {
     Unchanged,
     Named(&'static [&'static str]),
+    AddNamed(&'static [&'static str]),
     All,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
