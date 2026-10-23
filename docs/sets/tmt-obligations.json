@@ -2358,7 +2358,7 @@
       "oracle_id": "fcdc7dfc-04b5-411a-ab49-282b9c2608e2",
       "name": "Mighty Mutanimals",
       "definition": "src/card_definitions/tmt/mighty_mutanimals.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Mighty Mutanimals",
@@ -2373,7 +2373,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/mighty_mutanimals.json",
+        "src/engine_tmt_inherited_batch_three_tests.rs"
+      ],
+      "local_batch": 23,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "529178e8-425e-4d59-948c-ca7d0663f6ff",
@@ -2528,7 +2533,7 @@
       "oracle_id": "bae5dc68-1fd1-428d-bee7-c238e07b21ea",
       "name": "Mouser Attack!",
       "definition": "src/card_definitions/tmt/mouser_attack.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Mouser Attack!",
@@ -2544,7 +2549,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/mouser_attack.json",
+        "src/engine_tmt_inherited_batch_three_tests.rs"
+      ],
+      "local_batch": 23,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "404e958b-ead9-4ec7-b786-7b3d65e29967",
@@ -2577,7 +2587,7 @@
       "oracle_id": "ad0c6d46-a1ca-4a9f-93f0-4a4dc31868e6",
       "name": "Mouser Mark III",
       "definition": "src/card_definitions/tmt/mouser_mark_iii.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Mouser Mark III",
@@ -2591,7 +2601,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/mouser_mark_iii.json",
+        "src/engine_tmt_inherited_batch_three_tests.rs"
+      ],
+      "local_batch": 23,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "472d9a18-19a0-46c0-a4bf-328ebec7ce41",
@@ -2673,7 +2688,7 @@
       "oracle_id": "9f318ddc-3dc5-4e43-92b3-3a776e41c56e",
       "name": "Mutant Town Musicians",
       "definition": "src/card_definitions/tmt/mutant_town_musicians.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Mutant Town Musicians",
@@ -2688,13 +2703,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/mutant_town_musicians.json",
+        "src/engine_tmt_inherited_batch_three_tests.rs"
+      ],
+      "local_batch": 23,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "3407fe41-fdd3-4119-8f70-4bc4590a379f",
       "name": "Negate",
       "definition": "src/card_definitions/tmt/negate.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Negate",
@@ -2708,7 +2728,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/negate.json",
+        "src/engine_tmt_inherited_batch_three_tests.rs"
+      ],
+      "local_batch": 23,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "e7ae3ee7-824f-4dcb-8f28-7de99e4d8c3e",
@@ -2864,7 +2889,7 @@
       "oracle_id": "49598fd5-2aad-4974-b499-38b60fc371b6",
       "name": "Null Group Biological Assets",
       "definition": "src/card_definitions/tmt/null_group_biological_assets.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Null Group Biological Assets",
@@ -2879,7 +2904,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/null_group_biological_assets.json",
+        "src/engine_tmt_inherited_batch_three_tests.rs"
+      ],
+      "local_batch": 23,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "e88b1520-aa9a-41ee-9036-4d4bebd1a0c0",
@@ -2906,7 +2936,7 @@
       "oracle_id": "73144877-1d37-4c7a-8493-3cef191b9211",
       "name": "Omni-Cheese Pizza",
       "definition": "src/card_definitions/tmt/omni_cheese_pizza.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Omni-Cheese Pizza",
@@ -2922,13 +2952,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/omni_cheese_pizza.json",
+        "src/engine_tmt_inherited_batch_three_tests.rs"
+      ],
+      "local_batch": 23,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "c1c5f9da-1396-4406-b803-b64f66b8e49d",
       "name": "Ooze Spill",
       "definition": "src/card_definitions/tmt/ooze_spill.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Ooze Spill",
@@ -2942,7 +2977,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/ooze_spill.json",
+        "src/engine_tmt_inherited_batch_three_tests.rs"
+      ],
+      "local_batch": 23,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "d14f620c-0fbd-485c-9fe4-34949e742147",
@@ -3100,7 +3140,7 @@
       "oracle_id": "2519ccc0-c206-41fb-aa15-2ef88025ff96",
       "name": "Prehistoric Pet",
       "definition": "src/card_definitions/tmt/prehistoric_pet.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Prehistoric Pet",
@@ -3115,13 +3155,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/prehistoric_pet.json",
+        "src/engine_tmt_inherited_batch_three_tests.rs"
+      ],
+      "local_batch": 23,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "5ebdc1a5-e678-444b-abb8-8753558a39de",
       "name": "Primordial Pachyderm",
       "definition": "src/card_definitions/tmt/primordial_pachyderm.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Primordial Pachyderm",
@@ -3136,13 +3181,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/primordial_pachyderm.json",
+        "src/engine_tmt_inherited_batch_three_tests.rs"
+      ],
+      "local_batch": 23,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "dfb13eca-55fd-4ac6-aee3-2bdbfe9e1c4e",
       "name": "Punk Frogs",
       "definition": "src/card_definitions/tmt/punk_frogs.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Punk Frogs",
@@ -3156,7 +3206,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/punk_frogs.json",
+        "src/engine_tmt_inherited_batch_three_tests.rs"
+      ],
+      "local_batch": 23,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "d1edb950-a118-4b4d-a0ef-9a6683d74c9f",
@@ -3375,7 +3430,7 @@
       "oracle_id": "2c72e6d2-bbb0-42de-b465-438d584cbddc",
       "name": "Raphael, Tough Turtle",
       "definition": "src/card_definitions/tmt/raphael_tough_turtle.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Raphael, Tough Turtle",
@@ -3389,7 +3444,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/raphael_tough_turtle.json",
+        "src/engine_tmt_inherited_batch_three_tests.rs"
+      ],
+      "local_batch": 23,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "8c1e5b25-ee5a-4ea9-a715-08dd1a4f51c4",
@@ -3443,7 +3503,7 @@
       "oracle_id": "45873747-f2a4-4d83-9492-bfc97df7b605",
       "name": "Ravenous Robots",
       "definition": "src/card_definitions/tmt/ravenous_robots.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Ravenous Robots",
@@ -3458,7 +3518,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/ravenous_robots.json",
+        "src/engine_tmt_inherited_batch_three_tests.rs"
+      ],
+      "local_batch": 23,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "698098b8-b8e4-4e88-b13a-6b039579d192",
@@ -3529,7 +3594,7 @@
       "oracle_id": "a3ee8565-f34c-4073-bc94-3fe9ec6bbe8a",
       "name": "Return to the Sewers",
       "definition": "src/card_definitions/tmt/return_to_the_sewers.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Return to the Sewers",
@@ -3543,13 +3608,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/return_to_the_sewers.json",
+        "src/engine_tmt_inherited_batch_three_tests.rs"
+      ],
+      "local_batch": 23,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "0217da8e-e74f-4f5c-ab75-f17600f94405",
       "name": "Rock Soldiers",
       "definition": "src/card_definitions/tmt/rock_soldiers.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Rock Soldiers",
@@ -3563,7 +3633,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/rock_soldiers.json",
+        "src/engine_tmt_inherited_batch_three_tests.rs"
+      ],
+      "local_batch": 23,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "f9330a7b-8a65-4e04-a777-bf6512332850",
@@ -3591,7 +3666,7 @@
       "oracle_id": "b529f6b0-c6b2-4eb3-bb48-178e1eda75f3",
       "name": "Sally Pride, Lioness Leader",
       "definition": "src/card_definitions/tmt/sally_pride_lioness_leader.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Sally Pride, Lioness Leader",
@@ -3606,7 +3681,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/sally_pride_lioness_leader.json",
+        "src/engine_tmt_inherited_batch_four_tests.rs"
+      ],
+      "local_batch": 24,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "6074632b-4520-4ae8-bcdc-26b1eff71af9",
@@ -3633,7 +3713,7 @@
       "oracle_id": "7ef5c812-ad7d-4d6c-8ee5-68561e7e4bd7",
       "name": "Saved by the Shell",
       "definition": "src/card_definitions/tmt/saved_by_the_shell.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Saved by the Shell",
@@ -3648,7 +3728,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/saved_by_the_shell.json",
+        "src/engine_tmt_inherited_batch_four_tests.rs"
+      ],
+      "local_batch": 24,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "25c83d45-581f-48ba-b6bb-feb66e8a65c7",
@@ -3732,7 +3817,7 @@
       "oracle_id": "5dd31fcd-72db-4daf-b127-ceb27bf25a94",
       "name": "Shredder's Revenge",
       "definition": "src/card_definitions/tmt/shredder_s_revenge.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Shredder's Revenge",
@@ -3748,7 +3833,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/shredder_s_revenge.json",
+        "src/engine_tmt_inherited_batch_four_tests.rs"
+      ],
+      "local_batch": 24,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "d92714c0-4e22-47f9-a4d4-405894e734d0",
@@ -3809,7 +3899,7 @@
       "oracle_id": "decfde5e-ea53-4b15-8f69-51da7ef39d15",
       "name": "Skateboard",
       "definition": "src/card_definitions/tmt/skateboard.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Skateboard",
@@ -3825,13 +3915,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/skateboard.json",
+        "src/engine_tmt_inherited_batch_four_tests.rs"
+      ],
+      "local_batch": 24,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "8abff7b5-fe27-46bd-b951-b5d9f93f3a14",
       "name": "Slash, Reptile Rampager",
       "definition": "src/card_definitions/tmt/slash_reptile_rampager.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Slash, Reptile Rampager",
@@ -3846,13 +3941,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/slash_reptile_rampager.json",
+        "src/engine_tmt_inherited_batch_four_tests.rs"
+      ],
+      "local_batch": 24,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "f570bac8-9987-4963-af02-476d18abc847",
       "name": "Slithering Cryptid",
       "definition": "src/card_definitions/tmt/slithering_cryptid.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Slithering Cryptid",
@@ -3866,7 +3966,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/slithering_cryptid.json",
+        "src/engine_tmt_inherited_batch_four_tests.rs"
+      ],
+      "local_batch": 24,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "003e5dc6-8b26-4a0a-a50b-5f0806a7bacd",
@@ -3997,7 +4102,7 @@
       "oracle_id": "315ddc7a-c39c-43d9-b134-23acbd865e3e",
       "name": "Squirrelanoids",
       "definition": "src/card_definitions/tmt/squirrelanoids.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Squirrelanoids",
@@ -4011,13 +4116,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/squirrelanoids.json",
+        "src/engine_tmt_inherited_batch_four_tests.rs"
+      ],
+      "local_batch": 24,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "baa4cb1b-6fb5-46df-9cdd-54421ee0fc88",
       "name": "Stockman, Mad Fly-entist",
       "definition": "src/card_definitions/tmt/stockman_mad_fly_entist.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Stockman, Mad Fly-entist",
@@ -4033,7 +4143,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/stockman_mad_fly_entist.json",
+        "src/engine_tmt_inherited_batch_four_tests.rs"
+      ],
+      "local_batch": 24,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "10185447-a13f-40d8-a8b6-39ce801f2fc0",
@@ -4167,7 +4282,7 @@
       "oracle_id": "51c0b46c-c379-420a-a4a4-d18724c759aa",
       "name": "Technodrome",
       "definition": "src/card_definitions/tmt/technodrome.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Technodrome",
@@ -4183,13 +4298,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/technodrome.json",
+        "src/engine_tmt_inherited_batch_four_tests.rs"
+      ],
+      "local_batch": 24,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "a03fa584-ceb5-410c-9b80-f75d00215537",
       "name": "Tenderize",
       "definition": "src/card_definitions/tmt/tenderize.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Tenderize",
@@ -4203,7 +4323,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/tenderize.json",
+        "src/engine_tmt_inherited_batch_four_tests.rs"
+      ],
+      "local_batch": 24,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "bd768e8f-8f04-487e-85e9-2828d6fd8745",
@@ -4353,7 +4478,7 @@
       "oracle_id": "eaa6b294-ac66-4fe2-b694-97b0a04f7be1",
       "name": "Transdimensional Bovine",
       "definition": "src/card_definitions/tmt/transdimensional_bovine.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Transdimensional Bovine",
@@ -4368,7 +4493,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/transdimensional_bovine.json",
+        "src/engine_tmt_inherited_batch_four_tests.rs"
+      ],
+      "local_batch": 24,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "45d40cdb-21cc-4569-a894-83dd3026c947",
@@ -4396,7 +4526,7 @@
       "oracle_id": "0a8e5c48-885d-4ea8-9c68-a3e9213d4289",
       "name": "Tunnel Rats",
       "definition": "src/card_definitions/tmt/tunnel_rats.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Tunnel Rats",
@@ -4410,7 +4540,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/tunnel_rats.json",
+        "src/engine_tmt_inherited_batch_four_tests.rs"
+      ],
+      "local_batch": 24,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "0f35cf85-6783-4d69-b5e6-a81f7c1f21e7",
@@ -4443,7 +4578,7 @@
       "oracle_id": "bb8c6dd2-1abe-4eb2-be1f-b0c078e5f257",
       "name": "Turtle Blimp",
       "definition": "src/card_definitions/tmt/turtle_blimp.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Turtle Blimp",
@@ -4459,7 +4594,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/turtle_blimp.json",
+        "src/engine_tmt_inherited_batch_four_tests.rs"
+      ],
+      "local_batch": 24,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "eb002bbc-08df-4bf0-bea3-46494ad261b6",
@@ -4493,7 +4633,7 @@
       "oracle_id": "15934a19-a29e-4728-816f-20b610eec377",
       "name": "Turtle Power!",
       "definition": "src/card_definitions/tmt/turtle_power.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Turtle Power!",
@@ -4508,7 +4648,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/turtle_power.json",
+        "src/engine_tmt_inherited_batch_four_tests.rs"
+      ],
+      "local_batch": 24,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "aeb9a2e6-ad11-4e2c-81d0-caf279d31ece",
@@ -4598,7 +4743,7 @@
       "oracle_id": "89793c8c-98a3-4621-ad3d-cfc5949c65da",
       "name": "Utrom Scientists",
       "definition": "src/card_definitions/tmt/utrom_scientists.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Utrom Scientists",
@@ -4612,7 +4757,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/utrom_scientists.json",
+        "src/engine_tmt_inherited_batch_four_tests.rs"
+      ],
+      "local_batch": 24,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "7b3d364d-6581-43de-a80a-d5b07f5d21ed",
@@ -4711,7 +4861,7 @@
       "oracle_id": "d944d33d-0a95-4d0d-96ce-49d02500227d",
       "name": "Zog, Triceraton Castaway",
       "definition": "src/card_definitions/tmt/zog_triceraton_castaway.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Zog, Triceraton Castaway",
@@ -4727,7 +4877,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/zog_triceraton_castaway.json",
+        "src/engine_tmt_inherited_batch_four_tests.rs"
+      ],
+      "local_batch": 24,
+      "owner": "tmt_audit"
     },
     {
       "oracle_id": "107e9ada-4e2e-4032-addd-274bca956621",

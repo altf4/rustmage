@@ -619,3 +619,12 @@ acceptance, remaining cards and final independent reviews remain pending.
 
 The next isolated batches cover activation costs, top-library permissions and
 blinking, reflexive/death interactions, and the final inherited audits.
+
+## Final inherited audit integration
+
+Source commits `3156da2b` and `fb7a7b65` add the remaining 31 inherited
+nonland audits, with 19 and 18 focused scenarios respectively. All four
+inherited nonland audit modules pass 72 combined scenarios. Full pinned Oracle
+and XMage sources were read; no behavior corrections were required. All 71
+inherited cards now have audit evidence, with 40 integrated release verified
+and the final 31 awaiting the next combined release. Admission remains 136/195.
