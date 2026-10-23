@@ -1591,7 +1591,145 @@ impl<'g> FundingState<'g> {
         }
         upper
     }
+    fn finite_joint_production(ability: &ActivatedAbility) -> Option<ManaProduction> {
+        (ability.cost.tap || ability.cost.sacrifice || ability.once_per_turn || ability.exhaust)
+            .then(|| ability.mana_production())
+            .flatten()
+    }
+
+    /// A flexible source cannot independently fill every requested color. In
+    /// this finite printed-mana domain, bound each subset of required colors by
+    /// the total mana that could enter that subset. Ignore costs, guards,
+    /// restrictions, competing abilities and shared tap costs: each omission
+    /// only increases this upper bound, including for one-shot converters.
+    /// More general worlds retain the existing exact search unchanged.
+    fn joint_colors_possible(&self, goal: &FundingGoal) -> bool {
+        let required_mask = goal
+            .required
+            .iter()
+            .enumerate()
+            .fold(0u8, |mask, (i, n)| mask | if *n == 0 { 0 } else { 1 << i });
+        if required_mask.count_ones() < 2 {
+            return true;
+        }
+        if self.convoke
+            || matches!(self.purpose, mana_lots::Purpose::Spell(source) if source.exile_any_mana)
+            || self.game.state.controls.is_some()
+            || self.game.state.temporary_controls.is_some()
+            || !self.game.state.exile_links.is_empty()
+            || self
+                .game
+                .state
+                .static_sources
+                .iter()
+                .chain(&self.game.state.attachment_sources)
+                .any(|&id| {
+                    let card = ability_world::CharacteristicWorld::object(self, id).card;
+                    (matches!(self.purpose, mana_lots::Purpose::Spell(_))
+                        && card.has_cast_origin_abilities())
+                        || card
+                            .static_ability_groups()
+                            .iter()
+                            .flat_map(|g| g.fragments)
+                            .any(|f| {
+                                matches!(
+                                    f,
+                                    crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(
+                                        ..
+                                    ) | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(
+                                        ..
+                                    ) | crate::cards::StaticAbilityFragment::AttachmentMana(..)
+                                        | crate::cards::StaticAbilityFragment::AttachmentManaBonus(
+                                            ..
+                                        )
+                                )
+                            })
+                })
+        {
+            return true;
+        }
+        let mut upper = [0u128; 64];
+        let mut required = [0u128; 64];
+        let mut subset = required_mask;
+        while subset != 0 {
+            for i in 0..6 {
+                if subset & (1 << i) != 0 {
+                    upper[usize::from(subset)] =
+                        upper[usize::from(subset)].saturating_add(self.mana[i]);
+                    required[usize::from(subset)] += u128::from(goal.required[i]);
+                }
+            }
+            subset = (subset - 1) & required_mask;
+        }
+        let mut add = |production: ManaProduction| {
+            let mut subset = required_mask;
+            while subset != 0 {
+                let amount = match production.base() {
+                    ManaProduction::Fixed(mana) => mana
+                        .iter()
+                        .enumerate()
+                        .filter(|(i, _)| subset & (1 << i) != 0)
+                        .map(|(_, n)| u128::from(*n))
+                        .sum(),
+                    ManaProduction::Choice { mask, amount }
+                    | ManaProduction::Combination { mask, amount } => {
+                        if mask & subset != 0 {
+                            u128::from(amount)
+                        } else {
+                            0
+                        }
+                    }
+                    ManaProduction::AnyColorChangingSource(amount) => {
+                        if subset & 31 != 0 {
+                            u128::from(amount)
+                        } else {
+                            0
+                        }
+                    }
+                    _ => return false,
+                };
+                upper[usize::from(subset)] = upper[usize::from(subset)].saturating_add(amount);
+                subset = (subset - 1) & required_mask;
+            }
+            true
+        };
+        for resource in &self.resources {
+            let object = &resource.object;
+            if object.zone != Zone::Battlefield || object.controller != self.actor {
+                continue;
+            }
+            if !object.tapped
+                && let Some(color) = object.card.mana_color()
+            {
+                let mut mana = [0; 6];
+                mana[color] = 1;
+                add(ManaProduction::Fixed(mana));
+            }
+            for ability in object.card.activations() {
+                if ability.mana_production().is_none() || object.tapped && ability.cost.tap {
+                    continue;
+                }
+                let Some(production) = Self::finite_joint_production(ability) else {
+                    return true;
+                };
+                if !add(production) {
+                    return true;
+                }
+            }
+        }
+        let mut subset = required_mask;
+        while subset != 0 {
+            if upper[usize::from(subset)] < required[usize::from(subset)] {
+                return false;
+            }
+            subset = (subset - 1) & required_mask;
+        }
+        true
+    }
     fn optimistic(&self, goal: &FundingGoal) -> bool {
+        if !self.joint_colors_possible(goal) {
+            return false;
+        }
         let required =
             u128::from(goal.generic) + goal.required.into_iter().map(u128::from).sum::<u128>();
         let spendable_upper = self.spendable_mana_upper();
@@ -1602,12 +1740,13 @@ impl<'g> FundingState<'g> {
         }
         // Substitution may be lost or restored by virtual sacrifices. Keep the
         // color bound conservative; the exact leaf uses the overlay.
-        if matches!(self.purpose, mana_lots::Purpose::Spell(_))
-            && self.game.state.static_sources.iter().any(|&id| {
-                self.game.state.objects[id as usize]
-                    .card
-                    .has_cast_origin_abilities()
-            })
+        if matches!(self.purpose, mana_lots::Purpose::Spell(source) if source.exile_any_mana)
+            || (matches!(self.purpose, mana_lots::Purpose::Spell(_))
+                && self.game.state.static_sources.iter().any(|&id| {
+                    self.game.state.objects[id as usize]
+                        .card
+                        .has_cast_origin_abilities()
+                }))
         {
             return true;
         }
@@ -1884,6 +2023,12 @@ impl<'g> FundingState<'g> {
         {
             return true;
         }
+        // Equivalent sources often lead back to the same failed state. Avoid
+        // repeating layer-dependent upper bounds for every equivalent edge.
+        let key = (!visited.is_empty()).then(|| self.key(goal));
+        if key.as_ref().is_some_and(|key| visited.contains(key)) {
+            return false;
+        }
         if evidence.is_some_and(|n| {
             let upper = self.evidence_value()
                 + self
@@ -1906,7 +2051,7 @@ impl<'g> FundingState<'g> {
         {
             return false;
         }
-        if !visited.insert(self.key(goal)) {
+        if !visited.insert(key.unwrap_or_else(|| self.key(goal))) {
             return false;
         }
         for step in self.moves(goal) {
@@ -4963,3 +5108,7 @@ mod tmt_mana_power_tests {
 #[cfg(test)]
 #[path = "engine_funding_symmetry_tests.rs"]
 mod funding_symmetry_tests;
+
+#[cfg(test)]
+#[path = "engine_funding_joint_color_tests.rs"]
+mod joint_color_tests;

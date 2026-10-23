@@ -32,9 +32,10 @@ fn funding_symmetry_weather_charge_and_many_forests_have_linear_failed_search() 
         let before = game.snapshot();
         let view = game.observe(player);
         let world = FundingState::from_game(&game, &goal);
-        // Independent color maxima deliberately overestimate the same flexible
-        // source. This exercises failed DFS, rather than an immediate bound.
-        assert!(world.optimistic(&goal));
+        // The joint bound rejects the impossible shared flexible-color demand
+        // before visiting the previously linear tap-equivalence domain.
+        assert!(!world.joint_colors_possible(&goal));
+        assert!(!world.optimistic(&goal));
         // The land played through the real action is newly entered; the other
         // fixture lands are mature. Sickness remains in ResourceKey, so there
         // are two tap-equivalence classes of sizes 1 and N-1. Swapping taps
@@ -66,6 +67,7 @@ fn funding_symmetry_weather_charge_and_many_forests_have_linear_failed_search() 
         let start = std::time::Instant::now();
         assert!(!world.reachable(&goal, &mut visited));
         let elapsed = start.elapsed();
+        assert!(visited.is_empty());
         assert!(
             visited.len() <= class_combinations,
             "visited {} states",
