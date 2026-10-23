@@ -36,7 +36,10 @@ def main():
         ['python3','scripts/link_catalogue.py','--check'],
         ['python3','-m','unittest','discover','-s','scripts','-p','test_*.py'],
         ['cargo','clippy','--all-targets','--','-D','warnings'],
-        ['cargo','test',*(['--release'] if args.release else []),'--all-targets'],
+        # Examples contain no tests; Clippy checks them without optimizing 146
+        # empty test executables. Keep every native test-bearing target kind.
+        ['cargo','test',*(['--release','--lib','--bins','--tests','--benches']
+                         if args.release else ['--all-targets'])],
     ]
     if args.release or args.python != 'none':commands.extend([['cargo','build','--release','--lib','--bin','benchmark'],[str(target/'release/benchmark'),str(args.games)]])
     if args.python != 'none':
