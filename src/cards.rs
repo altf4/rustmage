@@ -15,20 +15,30 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 pub struct CopyExceptions {
     pub sacrifice_abilities: u16,
     pub nightmare: bool,
+    pub artifact: bool,
+    pub golem: bool,
 }
 impl CopyExceptions {
     pub const NONE: Self = Self {
         sacrifice_abilities: 0,
         nightmare: false,
+        artifact: false,
+        golem: false,
     };
     pub const HASTE_AND_SACRIFICE: Self = Self {
         sacrifice_abilities: 1,
         nightmare: false,
+        artifact: false,
+        golem: false,
     };
     pub const NIGHTMARE: Self = Self {
         sacrifice_abilities: 0,
         nightmare: true,
+        artifact: false,
+        golem: false,
     };
+    pub const ARTIFACT: Self = Self { artifact: true, ..Self::NONE };
+    pub const GOLEM: Self = Self { artifact: true, golem: true, ..Self::NONE };
     pub fn union(self, other: Self) -> Self {
         Self {
             sacrifice_abilities: self
@@ -36,6 +46,8 @@ impl CopyExceptions {
                 .checked_add(other.sacrifice_abilities)
                 .capacity("copy sacrifice abilities"),
             nightmare: self.nightmare || other.nightmare,
+            artifact: self.artifact || other.artifact,
+            golem: self.golem || other.golem,
         }
     }
 }
@@ -726,6 +738,7 @@ pub(crate) enum Instruction {
         cost: ManaCost,
         life: u32,
     },
+    CreateTemporaryArtifactCopy,
     CreateCopyToken {
         subject: Subject,
         amount: u16,
@@ -1578,6 +1591,7 @@ pub(crate) enum ReplacementSpec {
     },
     AddToken(Card),
     ReplaceArtifactTokens(Card),
+    AddArtifactToken(Card),
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
@@ -2105,6 +2119,7 @@ pub(crate) enum DamageSubject {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum EntryPredicate {
     CreatureWithoutSubtype(&'static str),
+    ArtifactManaValueAtLeast(u32),
     CreaturePowerAtMost(i32),
     CreaturePowerAtLeast(i32),
     SubtypeAny(&'static [&'static str]),
@@ -2254,6 +2269,8 @@ pub(crate) enum TriggerCondition {
     SelfEvidence,
     EvidenceCollected,
     SelfDies,
+    SelfNontokenDies,
+    SelfLeaves,
     SelfEntersOrDies,
     SelfAttacks,
     SelfFirstAttack,

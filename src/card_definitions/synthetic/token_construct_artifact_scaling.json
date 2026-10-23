@@ -1,0 +1,11 @@
+{
+  "name": "@token/construct_artifact_scaling",
+  "catalogue_id": 5345,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "a1b2f10cc682d1ae3b3a7aee0845bd1b9b3f4a474b1156c66dad2575b42f4576",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/KarnConstructToken.java",
+  "java_sha256": "007e07ef25d8afce37b2929ea07cbbf20ee8817951cef63f220115f62edebf4d"
+}

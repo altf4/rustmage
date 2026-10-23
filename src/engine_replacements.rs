@@ -68,6 +68,7 @@ pub(super) struct RoleReflexiveCompletion {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum TokenCompletion {
     None,
+    TemporaryCopy(Box<SpellView>),
     Keywords {
         source: ObjectRef,
         keywords: Keywords,
@@ -142,7 +143,7 @@ impl ReplacementState {
                 + b.recipes.len() * std::mem::size_of::<Option<CopyRecipe>>()
                 + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
                 + match &b.completion {
-                    TokenCompletion::Reflexive { item, .. } => {
+                    TokenCompletion::TemporaryCopy(item) | TokenCompletion::Reflexive { item, .. } => {
                         std::mem::size_of::<SpellView>() + item.owned_bytes()
                     }
                     TokenCompletion::RoleReflexive(c) => {
@@ -592,6 +593,9 @@ impl Game {
                 let applicable = match spec {
                     ReplacementSpec::DoubleTokens { effects_only } => !effects_only || b.effect,
                     ReplacementSpec::AddToken(_) => true,
+                    ReplacementSpec::AddArtifactToken(_) => b.groups.iter().enumerate().any(|(i, g)| {
+                        g.amount > 0 && (g.token.is_artifact() || b.recipes.get(i).and_then(|r| *r).is_some_and(|r| r.exceptions.artifact || r.exceptions.golem))
+                    }),
                     ReplacementSpec::ReplaceArtifactTokens(_) => b
                         .groups
                         .iter()
@@ -619,7 +623,7 @@ impl Game {
                         .capacity("replacement token quantity exhausted");
                 }
             }
-            ReplacementSpec::AddToken(token) => {
+            ReplacementSpec::AddToken(token) | ReplacementSpec::AddArtifactToken(token) => {
                 // The added token inherits the event's tapped/attacking instructions.
                 let tapped = b.groups[0].tapped;
                 if let Some(index) = b.groups.iter().enumerate().position(|(index, g)| {
@@ -659,9 +663,13 @@ impl Game {
         b.used.push((choice.source, choice.ability));
     }
     pub(super) fn stage_copy_creation(&mut self, player: Player, recipe: CopyRecipe, amount: u128) {
-        if amount == 0 {
-            return;
-        }
+        self.stage_copy_creation_inner(player, recipe, amount, TokenCompletion::None);
+    }
+    pub(super) fn stage_temporary_copy_creation(&mut self, item: &SpellView, recipe: CopyRecipe) {
+        self.stage_copy_creation_inner(item.controller, recipe, 1, TokenCompletion::TemporaryCopy(Box::new(item.clone())));
+    }
+    fn stage_copy_creation_inner(&mut self, player: Player, recipe: CopyRecipe, amount: u128, completion: TokenCompletion) {
+        if amount == 0 { return; }
         let batch = TokenBatch {
             recipes: vec![Some(recipe)],
             player,
@@ -672,10 +680,11 @@ impl Game {
             }],
             effect: true,
             used: Vec::new(),
-            completion: TokenCompletion::None,
+            completion,
         };
         if self.state.replacements.is_none() && self.token_replacements(&batch).is_empty() {
-            self.create_copy_groups(player, &batch.groups, &batch.recipes);
+            let temporary = match &batch.completion { TokenCompletion::TemporaryCopy(item) => Some(item.as_ref()), _ => None };
+            self.create_copy_groups_inner(player, &batch.groups, &batch.recipes, temporary);
             return;
         }
         let state = self.state.replacements.get_or_insert_with(|| {
@@ -745,7 +754,7 @@ impl Game {
                     && o.card.replacement_effects().iter().any(|s| {
                         matches!(
                             s,
-                            ReplacementSpec::DoubleTokens { .. } | ReplacementSpec::AddToken(_)
+                            ReplacementSpec::DoubleTokens { .. } | ReplacementSpec::AddToken(_) | ReplacementSpec::AddArtifactToken(_)
                         ) || matches!(s, ReplacementSpec::ReplaceArtifactTokens(_))
                             && token.is_artifact()
                     })
@@ -954,11 +963,8 @@ impl Game {
                                 unreachable!()
                             };
                             if !batch.recipes.is_empty() {
-                                self.create_copy_groups(
-                                    batch.player,
-                                    &batch.groups,
-                                    &batch.recipes,
-                                );
+                                let temporary = match &batch.completion { TokenCompletion::TemporaryCopy(item) => Some(item.as_ref()), _ => None };
+                                self.create_copy_groups_inner(batch.player, &batch.groups, &batch.recipes, temporary);
                                 if let Some(entry) = self.state.entry_batch.as_mut() {
                                     assert!(entry.replacement_resume.is_none());
                                     entry.replacement_resume = Some(state);
@@ -1263,6 +1269,7 @@ mod owned_memory_tests {
             std::mem::size_of::<TokenGroupView>() + std::mem::size_of::<(ObjectRef, u16)>();
         assert_eq!(frame.bytes(), empty + payload);
         let mut entry = entries::EntryBatch {
+            temporary_copy: None,
             discard_context: None,
             moves: Vec::new(),
             choices: Vec::new(),

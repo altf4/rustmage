@@ -7328,3 +7328,6 @@ mod big_equipment_tests;
 #[cfg(test)]
 #[path = "engine_big_library_tests.rs"]
 mod big_library_tests;
+#[cfg(test)]
+#[path = "engine_big_token_tests.rs"]
+mod big_token_tests;

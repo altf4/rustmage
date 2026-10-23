@@ -1,0 +1,11 @@
+{
+  "name": "@token/blood",
+  "catalogue_id": 5346,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "3bc39565f111f9668f9a29fe79823b4c8edfd28f1a623efb86d4d94365b18f6d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/BloodToken.java",
+  "java_sha256": "b08dc2a242ca49528d94620a7b7a7e0a2a0641676c1f9c99210e4be572c565b9"
+}

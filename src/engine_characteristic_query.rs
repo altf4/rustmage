@@ -69,8 +69,12 @@ impl CharacteristicQuery<'_> {
                 _ => Stats::default(),
             }
         };
+        if self.copy_recipe(self.object_ref(id)).is_some_and(|r| r.exceptions.golem) {
+            stats = Stats { power: 3, toughness: 3 };
+        }
         // Layer 7a applies in every zone, before setters and additive modifiers.
         if let Some(base) = object.card.dynamic_stats()
+            && !self.copy_recipe(self.object_ref(id)).is_some_and(|r| r.exceptions.golem)
             && self.continuous_fragment_available(id, |fragment| {
                 matches!(fragment, StaticAbilityFragment::DynamicStats(..))
             })

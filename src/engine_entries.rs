@@ -37,6 +37,7 @@ pub(super) struct EntryMove {
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EntryBatch {
+    pub temporary_copy: Option<Box<SpellView>>,
     pub discard_context: Option<discard_events::DiscardContext>,
     pub moves: Vec<EntryMove>,
     pub choices: Vec<usize>,
@@ -57,6 +58,7 @@ pub(super) struct EntryBatch {
 impl EntryBatch {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
+            + self.temporary_copy.as_ref().map_or(0, |item| std::mem::size_of::<SpellView>() + item.owned_bytes())
             + self.discard_context.as_ref().map_or(0, |c| c.bytes())
             + self.moves.len() * std::mem::size_of::<EntryMove>()
             + self
@@ -206,20 +208,24 @@ impl Game {
         }
     }
     pub(super) fn stage_entries(&mut self, moves: Vec<EntryMove>, shuffle_after: Option<Player>) {
-        self.stage_entries_inner(moves, shuffle_after, None);
+        self.stage_entries_inner(moves, shuffle_after, None, None);
     }
     pub(super) fn stage_discard_entries(
         &mut self,
         moves: Vec<EntryMove>,
         context: discard_events::DiscardContext,
     ) {
-        self.stage_entries_inner(moves, None, Some(context));
+        self.stage_entries_inner(moves, None, Some(context), None);
+    }
+    pub(super) fn stage_temporary_copy_entries(&mut self, moves: Vec<EntryMove>, item: &SpellView) {
+        self.stage_entries_inner(moves, None, None, Some(Box::new(item.clone())));
     }
     fn stage_entries_inner(
         &mut self,
         mut moves: Vec<EntryMove>,
         shuffle_after: Option<Player>,
         discard_context: Option<discard_events::DiscardContext>,
+        temporary_copy: Option<Box<SpellView>>,
     ) {
         assert!(
             self.state.entry_batch.is_none(),
@@ -325,6 +331,7 @@ impl Game {
             .collect::<Vec<_>>();
         counter_order.sort_by_key(|&i| (moves[i].controller != self.state.active, i));
         let mut batch = EntryBatch {
+            temporary_copy,
             discard_context,
             moves,
             choices,
@@ -575,6 +582,12 @@ impl Game {
             }
         }
         self.refresh_controllers();
+        if let Some(item) = &batch.temporary_copy {
+            let tokens = events.iter().filter(|e| e.moved && e.destination == Zone::Battlefield).map(|e| e.after).collect::<Vec<_>>();
+            if !tokens.is_empty() {
+                self.finish_temporary_copy(item, tokens);
+            }
+        }
         if let Some(context) = batch.discard_context {
             self.finish_discard_events(&events, context);
         } else {

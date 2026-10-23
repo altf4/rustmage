@@ -104,6 +104,8 @@ impl Game {
                 ability.condition.event(),
                 TriggerCondition::DamagedCreatureDies
                     | TriggerCondition::SelfDies
+                    | TriggerCondition::SelfNontokenDies
+                    | TriggerCondition::SelfLeaves
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::SelfEntersOrDies
                     | TriggerCondition::CreatureDies { .. }

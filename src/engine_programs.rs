@@ -329,11 +329,22 @@ impl Game {
             return;
         }
         self.temporary_departure_triggers(event);
-        if event.before.zone == Zone::Battlefield && event.destination == Zone::Graveyard {
+        if event.before.zone == Zone::Battlefield {
+            // A self-departure trigger needs only its frozen pre-event source.
+            // This also covers exile/bounce paths which do not collect death observers.
+            let source = &event.before;
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::SelfLeaves {
+                    self.queue_zone_trigger(source, index, event);
+                }
+            }
+        }
+        if event.before.zone == Zone::Battlefield {
             // Departure triggers look back at the entire pre-event battlefield;
             // simultaneous departures still see each other exactly once.
             for source in death_sources {
                 for (index, ability) in source.card.triggers().iter().enumerate() {
+                    if event.destination != Zone::Graveyard && !matches!(ability.condition.event(), TriggerCondition::Sacrificed { .. }) { continue; }
                     let matched = match ability.condition.event() {
                         TriggerCondition::AttachedCreatureDies => {
                             event.before.is_creature()
@@ -354,6 +365,9 @@ impl Game {
                         }
                         TriggerCondition::ReturnDeath(filter) => {
                             self.return_death_matches(filter, source, event)
+                        }
+                        TriggerCondition::SelfNontokenDies => {
+                            source.reference == event.before.reference && !event.before.is_token()
                         }
                         TriggerCondition::SelfDies | TriggerCondition::SelfEntersOrDies => {
                             source.reference == event.before.reference
@@ -509,6 +523,8 @@ impl Game {
                     | TriggerCondition::StateCounterAtLeast { .. }
                     | TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::SelfDies
+                    | TriggerCondition::SelfNontokenDies
+                    | TriggerCondition::SelfLeaves
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::AttachedCreatureDies
@@ -558,6 +574,9 @@ impl Game {
                                     TriggerCondition::FilteredEntersYou(_)
                                 ))
                             && match predicate {
+                                EntryPredicate::ArtifactManaValueAtLeast(minimum) => {
+                                    entered.kinds & 16 != 0 && entered.card.fixed_mana_value() >= u64::from(minimum)
+                                }
                                 EntryPredicate::CreatureWithoutSubtype(subtype) => {
                                     entered.is_creature() && !entered.has_subtype(subtype)
                                 }
@@ -593,12 +612,12 @@ impl Game {
                     TriggerCondition::SubtypeEntersYou(subtype) => {
                         yours && entered.has_subtype(subtype)
                     }
-                    TriggerCondition::ArtifactEntersYou => yours && entered.card.is_artifact(),
+                    TriggerCondition::ArtifactEntersYou => yours && entered.kinds & 16 != 0,
                     TriggerCondition::EnchantmentEntersYou => yours && entered.kinds & 32 != 0,
                     TriggerCondition::CreatureEntersYou => yours && entered.is_creature(),
                     TriggerCondition::LandEntersYou => yours && entered.kinds & 2 != 0,
                     TriggerCondition::OtherArtifactEntersYou => {
-                        yours && !same && entered.card.is_artifact()
+                        yours && !same && entered.kinds & 16 != 0
                     }
                 };
                 if matched && self.queue_zone_trigger(source, index, event) {
@@ -2256,6 +2275,12 @@ impl Game {
                     if self.start_effect_choice(&item, kind, players, filter, amount, optional_skip)
                     {
                         return;
+                    }
+                }
+                Instruction::CreateTemporaryArtifactCopy => {
+                    if let Some(mut recipe) = self.recipe_for_subject(&item, Subject::Targets) {
+                        recipe.exceptions = recipe.exceptions.union(CopyExceptions::ARTIFACT);
+                        self.stage_temporary_copy_creation(&item, recipe);
                     }
                 }
                 Instruction::CreateCopyToken { subject, amount }

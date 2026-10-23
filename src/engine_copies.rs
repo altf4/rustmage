@@ -101,11 +101,8 @@ impl Game {
             .capacity("object generation exhausted");
         self.state.free_tokens.push(object.card);
     }
-    pub(super) fn create_copy_groups(
-        &mut self,
-        player: Player,
-        groups: &[TokenGroupView],
-        recipes: &[Option<CopyRecipe>],
+    pub(super) fn create_copy_groups_inner(
+        &mut self, player: Player, groups: &[TokenGroupView], recipes: &[Option<CopyRecipe>], temporary: Option<&SpellView>,
     ) {
         assert_eq!(groups.len(), recipes.len());
         let total = groups
@@ -188,7 +185,11 @@ impl Game {
         }
         if !moves.is_empty() {
             self.track_nightmare_copy_entries(&moves);
-            self.stage_entries(moves, None);
+            if let Some(item) = temporary {
+                self.stage_temporary_copy_entries(moves, item);
+            } else {
+                self.stage_entries(moves, None);
+            }
         }
     }
 }

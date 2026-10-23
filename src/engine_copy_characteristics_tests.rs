@@ -407,6 +407,7 @@ fn copy_sacrifice_count_overflow_restores_the_current_paid_resolution() {
             CopyExceptions {
                 sacrifice_abilities: u16::MAX,
                 nightmare: false,
+                ..CopyExceptions::NONE
             },
         );
         let spell = named(&mut g, p, "Electroduplicate", Zone::Hand);
