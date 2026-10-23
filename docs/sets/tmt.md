@@ -19,9 +19,9 @@ Oracle facts remain pinned in `data/standard/cards.json`. The
 [obligation ledger](tmt-obligations.json) accounts for every printed line and
 canonical definition, including reprints; it is not a second membership source.
 
-Initial admission: **71/195**, **124 gated**. Current admission: **107/195**,
-**88 gated**, zero unresolved. The 71 inherited admission flags still require
-source/rules audits. **36 new physical cards are locally verified candidates**;
+Initial admission: **71/195**, **124 gated**. Current admission: **108/195**,
+**87 gated**, zero unresolved. The 71 inherited admission flags still require
+source/rules audits. **37 newly authored physical cards have rules scenarios; 36 have integrated release validation**;
 zero have independent final published-head reviews or upstream merges.
 
 ## Active Sneak integration
@@ -226,3 +226,16 @@ then Raphael’s Technique and Leonardo, Sewer Samurai. Those three printed Snea
 consumers and the remaining set mechanics/audits are engineering work, with no
 known external blocker. Keep the full set goal open and do not publish a partial
 implementation PR.
+
+## Active Improviser integration
+
+Michelangelo, Improviser passes all-target Clippy and the expanded optimized
+**40-scenario Sneak suite** (`<cache>/rustmage-tmt-sneak-hand-tests.log`, terminal
+success). Its optional private hand choice selects at most one creature and one
+land before a single simultaneous entry batch, with zero/one/two-card branches.
+Land-first Rampaging Baloths proves the shared entry event; tests also cover
+source departure, exhausted land-play allowance, empty/foreign hands, duplicate
+roles, and untapped nonattacking enchantment-creature entry. Both seats, private
+observations and owned raw/index branch/restore are exercised by paid actions.
+Observation schema is 172. Full release validation for this card is pending.
+Next printed Sneak consumers: Raphael’s Technique and Leonardo, Sewer Samurai.

@@ -3131,6 +3131,18 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::PutHandCreatureAndLand => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::HandCreatureAndLand,
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        2,
+                        Some(0),
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::PutHandCreature => {
                     if self.start_hand_creature(&item) {
                         return;

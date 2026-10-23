@@ -1660,3 +1660,186 @@ fn tmt_sneak_shredder_technique_invalidated_enchantment_target_never_charges_lif
         assert_eq!(g.state.objects[target as usize].zone, Zone::Battlefield);
     }
 }
+fn to_hand_pair(g: &mut Game) {
+    g.prepare_triggers();
+    for _ in 0..30 {
+        if matches!(g.state.pending, Pending::EffectChoice { .. })
+            && g.state
+                .resolving
+                .as_ref()
+                .unwrap()
+                .choice
+                .as_ref()
+                .unwrap()
+                .kind
+                == EffectChoiceKind::HandCreatureAndLand
+        {
+            return;
+        }
+        let a = if g.state.pending == Pending::Priority {
+            Action::Pass
+        } else {
+            g.legal_actions()
+                .into_iter()
+                .find(|a| !matches!(a, Action::Concede))
+                .unwrap()
+        };
+        checked(g, a);
+    }
+    panic!("missing private hand placement");
+}
+#[test]
+fn tmt_sneak_improviser_private_optional_hand_pair_is_simultaneous_and_bypasses_land_play_limit() {
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            for choice in 0..4 {
+                for leave in [false, true] {
+                    let mut g = setup(p);
+                    g.state.land_played = true;
+                    let returned = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+                    let source = named(&mut g, p, "Michelangelo, Improviser", Zone::Hand);
+                    let creature = named(&mut g, p, "Rampaging Baloths", Zone::Hand);
+                    let land = named(&mut g, p, "Forest", Zone::Hand);
+                    let extra_creature = named(&mut g, p, "Bear Cub", Zone::Hand);
+                    let extra_land = named(&mut g, p, "Island", Zone::Hand);
+                    let wrong = named(&mut g, p, "Opt", Zone::Hand);
+                    let foreign = named(&mut g, p.other(), "Forest", Zone::Hand);
+                    if paid {
+                        unblocked(&mut g, returned);
+                        sneak(&mut g, source, returned, None);
+                        settle(&mut g);
+                    } else {
+                        cast(&mut g, source, None, &[]);
+                        settle(&mut g);
+                        g.state.objects[source as usize].summoning_sick = false;
+                        unblocked(&mut g, source);
+                    }
+                    checked(&mut g, Action::Pass);
+                    checked(&mut g, Action::Pass);
+                    assert_eq!(g.state.players[p.other().index()].life, 16);
+                    if leave {
+                        g.move_object(source, Zone::Exile);
+                    }
+                    to_hand_pair(&mut g);
+                    assert!(g.observe(p.other()).effect_choice.is_none());
+                    assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+                    let bad = g.object_ref(foreign);
+                    reject(&mut g, Action::PutHandLand { object: bad });
+                    let bad = g.object_ref(wrong);
+                    reject(&mut g, Action::PutHandCreature { object: bad });
+                    if choice & 2 != 0 {
+                        let object = g.object_ref(land);
+                        checked(&mut g, Action::PutHandLand { object });
+                        assert_eq!(g.state.objects[land as usize].zone, Zone::Hand);
+                        let object = g.object_ref(extra_land);
+                        reject(&mut g, Action::PutHandLand { object });
+                    }
+                    if choice & 1 != 0 {
+                        let object = g.object_ref(creature);
+                        checked(&mut g, Action::PutHandCreature { object });
+                        if choice == 1 {
+                            assert_eq!(g.state.objects[creature as usize].zone, Zone::Hand);
+                            let object = g.object_ref(extra_creature);
+                            reject(&mut g, Action::PutHandCreature { object });
+                        }
+                    }
+                    if g.legal_actions().contains(&Action::FinishHandSelection) {
+                        checked(&mut g, Action::FinishHandSelection);
+                    }
+                    settle(&mut g);
+                    for (id, selected) in [(creature, choice & 1 != 0), (land, choice & 2 != 0)] {
+                        assert_eq!(
+                            g.state.objects[id as usize].zone,
+                            if selected {
+                                Zone::Battlefield
+                            } else {
+                                Zone::Hand
+                            }
+                        );
+                        if selected {
+                            let v = g.object_view(id);
+                            assert!(!v.tapped && !v.attacking);
+                            assert_eq!(v.controller, p);
+                        }
+                    }
+                    assert!(g.state.land_played);
+                    let beasts = g
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(id, o)| {
+                            o.zone == Zone::Battlefield
+                                && o.controller == p
+                                && g.has_subtype(*id as CardId, "Beast")
+                        })
+                        .count();
+                    assert_eq!(
+                        beasts,
+                        usize::from(choice & 1 != 0) + usize::from(choice == 3)
+                    ); // land-first choice still triggers the simultaneously entering Baloths
+                }
+            }
+        }
+    }
+}
+#[test]
+fn tmt_sneak_improviser_empty_hand_still_offers_private_decline_and_foreign_return_is_not_eligible()
+{
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            let mut g = setup(p);
+            let returned = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let r = g.object_ref(returned);
+            g.record_control(r, p, None);
+            g.state.objects[returned as usize].summoning_sick = false;
+            let source = named(&mut g, p, "Michelangelo, Improviser", Zone::Hand);
+            if paid {
+                unblocked(&mut g, returned);
+                sneak(&mut g, source, returned, None);
+                settle(&mut g);
+            } else {
+                cast(&mut g, source, None, &[]);
+                settle(&mut g);
+                g.state.objects[source as usize].summoning_sick = false;
+                unblocked(&mut g, source);
+            }
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            to_hand_pair(&mut g);
+            assert!(g.observe(p.other()).effect_choice.is_none());
+            assert!(g.observe(p).effect_choice.unwrap().candidates.is_empty());
+            assert_eq!(
+                g.legal_actions()
+                    .into_iter()
+                    .filter(|a| !matches!(a, Action::Concede))
+                    .collect::<Vec<_>>(),
+                vec![Action::FinishHandSelection]
+            );
+            checked(&mut g, Action::FinishHandSelection);
+            settle(&mut g);
+        }
+    }
+}
+#[test]
+fn tmt_sneak_improviser_placed_enchantment_creature_enters_untapped_without_attacking() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let returned = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let source = named(&mut g, p, "Michelangelo, Improviser", Zone::Hand);
+        let card = named(&mut g, p, "Grasping Longneck", Zone::Hand);
+        unblocked(&mut g, returned);
+        sneak(&mut g, source, returned, None);
+        settle(&mut g);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        to_hand_pair(&mut g);
+        let object = g.object_ref(card);
+        checked(&mut g, Action::PutHandCreature { object });
+        checked(&mut g, Action::FinishHandSelection);
+        settle(&mut g);
+        let view = g.object_view(card);
+        assert_eq!(view.zone, Zone::Battlefield);
+        assert!(!view.tapped && !view.attacking);
+    }
+}

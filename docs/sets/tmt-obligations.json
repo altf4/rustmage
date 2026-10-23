@@ -2011,7 +2011,7 @@
       "oracle_id": "1939679b-ea2e-4a75-b3ce-d7af68437484",
       "name": "Michelangelo, Improviser",
       "definition": "src/card_definitions/tmt/michelangelo_improviser.rs",
-      "state": "gated",
+      "state": "focused rules tested; integrated full release validation pending",
       "printed_obligations": [
         {
           "face": "Michelangelo, Improviser",
@@ -2026,7 +2026,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/michelangelo_improviser.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 9
     },
     {
       "oracle_id": "fe1eb8b3-c605-4711-a057-ed3565bfe75c",

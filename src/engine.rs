@@ -492,6 +492,7 @@ define_actions! {
     ProliferatePlayer { player: Player },
     FinishProliferate,
     FinishLandSelection,
+    FinishHandSelection,
     DeclineHandEntry,
     ChooseHandDefender { defender: CombatDefender },
     ChooseSaddler { object: ObjectRef },
@@ -3168,6 +3169,11 @@ impl Game {
             }
             Pending::EffectChoice { player } => {
                 let choice = s.resolving.as_ref().unwrap().choice.as_ref().unwrap();
+                if choice.kind == EffectChoiceKind::HandCreatureAndLand
+                    && emit(Action::FinishHandSelection)
+                {
+                    return true;
+                }
                 if let Some(domain) = &choice.counter_removal {
                     if choice.skip_to.is_some() && emit(Action::DeclineEffectPayment) {
                         return true;
@@ -3186,7 +3192,9 @@ impl Game {
                 if choice.skip_to.is_some()
                     && !matches!(
                         choice.kind,
-                        EffectChoiceKind::LandCards { .. } | EffectChoiceKind::UntapLands { .. }
+                        EffectChoiceKind::LandCards { .. }
+                            | EffectChoiceKind::UntapLands { .. }
+                            | EffectChoiceKind::HandCreatureAndLand
                     )
                     && emit(
                         if matches!(
@@ -3204,6 +3212,13 @@ impl Game {
                 for object in self.effect_choice_objects(choice) {
                     if self.effect_choice_candidate(choice, player, object) {
                         let action = match choice.kind {
+                            EffectChoiceKind::HandCreatureAndLand => {
+                                if self.state.objects[object.card as usize].card.is_creature() {
+                                    Action::PutHandCreature { object }
+                                } else {
+                                    Action::PutHandLand { object }
+                                }
+                            }
                             EffectChoiceKind::HandCreature => Action::PutHandCreature { object },
                             EffectChoiceKind::HandLand { .. } => Action::PutHandLand { object },
                             EffectChoiceKind::LandCards { .. }
@@ -5077,6 +5092,10 @@ impl Game {
             | Action::SelectLand { object }
             | Action::ChooseCreature { object }
             | Action::TapForEffect { object } => self.choose_effect_object(actor, object),
+            Action::FinishHandSelection => {
+                self.finish_hand_selection();
+                self.run_program();
+            }
             Action::FinishLandSelection => {
                 self.finish_land_selection();
                 self.run_program();

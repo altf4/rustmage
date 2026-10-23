@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f5c25f43ab4f48cd757db9de3919b8bdbd052f0293a506d7bebc0d5e92ff6d51",
+  "catalogue_version": "396b8a010122295d42cd82b6c1d240bc605c8293ba05eaf985dcea455e0a4fe1",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2392,
-  "implemented_total": 2398,
+  "implemented_standard_cards": 2393,
+  "implemented_total": 2399,
   "token_definitions": 113,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -185,8 +185,8 @@
     },
     "tmt": {
       "total": 189,
-      "complete": 101,
-      "gated": 88
+      "complete": 102,
+      "gated": 87
     },
     "w17": {
       "total": 1,
@@ -22126,8 +22126,8 @@
     {
       "name": "Michelangelo, Improviser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/michelangelo_improviser.rs",
       "set": "tmt"
     },

@@ -570,6 +570,7 @@ impl Game {
             | EffectChoiceKind::RemoveCounters
             | EffectChoiceKind::Proliferate
             | EffectChoiceKind::HandCreature
+            | EffectChoiceKind::HandCreatureAndLand
             | EffectChoiceKind::HandLand { .. }
             | EffectChoiceKind::LandCards { .. }
             | EffectChoiceKind::CollectEvidence(_)

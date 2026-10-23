@@ -705,6 +705,7 @@ pub enum EffectChoiceKind {
         maximum: u16,
     },
     HandCreature,
+    HandCreatureAndLand,
     HandLand {
         tapped: bool,
     },
@@ -993,6 +994,7 @@ pub(crate) enum Instruction {
         tapped: bool,
     },
     PutHandCreature,
+    PutHandCreatureAndLand,
     PutHandCreatureHasteSacrifice {
         maximum_total_stats: u64,
     },
