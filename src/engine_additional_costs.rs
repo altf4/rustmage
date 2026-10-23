@@ -48,6 +48,7 @@ impl Game {
             EffectChoiceKind::Discard => o.owner == actor,
             EffectChoiceKind::BlightCost(_)
             | EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::SacrificeCreatureOrToken
             | EffectChoiceKind::ReturnToHand
             | EffectChoiceKind::TapPermanents(_) => o.controller == actor,
             _ => false,
@@ -92,11 +93,18 @@ impl Game {
             EffectChoiceKind::Discard => Zone::Hand,
             EffectChoiceKind::BlightCost(_)
             | EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::SacrificeCreatureOrToken
             | EffectChoiceKind::ReturnToHand
             | EffectChoiceKind::TapPermanents(_) => Zone::Battlefield,
             _ => return false,
         };
         let f = spec.filter;
+        if spec.kind == EffectChoiceKind::SacrificeCreatureOrToken
+            && kinds & 1 == 0
+            && !o.is_token()
+        {
+            return false;
+        }
         if matches!(
             spec.kind,
             EffectChoiceKind::Behold
@@ -572,6 +580,7 @@ impl Game {
             | EffectChoiceKind::KeepSharedCreatureTypes
             | EffectChoiceKind::RemoveCounters
             | EffectChoiceKind::Proliferate
+            | EffectChoiceKind::BottomHand
             | EffectChoiceKind::HandCreature
             | EffectChoiceKind::HandCreatureAndLand
             | EffectChoiceKind::HandLand { .. }
@@ -583,7 +592,7 @@ impl Game {
             EffectChoiceKind::ReturnToHand => {
                 self.move_object(object.card, Zone::Hand);
             }
-            EffectChoiceKind::Sacrifice => {
+            EffectChoiceKind::Sacrifice | EffectChoiceKind::SacrificeCreatureOrToken => {
                 if a.item.program().is_some_and(|(_, program)| {
                     program.iter().any(|i| {
                         matches!(

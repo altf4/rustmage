@@ -229,6 +229,7 @@ pub(crate) enum TargetPredicate {
     Keyword(Keywords),
     WithoutKeyword(Keywords),
     WithoutKinds(u16),
+    Kinds(u16),
     WithoutSubtype(&'static str),
     Token,
     Subtype(&'static str),
@@ -724,6 +725,10 @@ pub enum EffectChoiceKind {
     Forage,
     ForageOrBlack,
     Sacrifice,
+    /// Sacrifice another eligible creature or token; the source exclusion is in its filter.
+    SacrificeCreatureOrToken,
+    /// Private non-targeting hand-to-library-bottom selection.
+    BottomHand,
     ReturnToHand,
     Discard,
 }
@@ -935,6 +940,16 @@ pub(crate) enum Instruction {
     GrantBattlefieldKeywords {
         filters: &'static [BattlefieldFilter],
         keywords: Keywords,
+    },
+    /// One simultaneous damage event, including damage to the ability controller.
+    DamageTargetAndController {
+        damage: i32,
+        controller_damage: i32,
+    },
+    /// Test current mana value before a following movement; no reincarnation lookup.
+    IfTargetManaValueAtMost {
+        maximum: u64,
+        skip: usize,
     },
     DamageWithController {
         damage: i32,

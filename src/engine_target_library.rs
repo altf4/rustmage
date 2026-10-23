@@ -60,6 +60,21 @@ impl Game {
         object: ObjectRef,
         destination: LibraryDestination,
     ) {
+        self.move_object_to_library(source, object, destination, true);
+    }
+    /// A private hand selection must never publish its card in the historical
+    /// targeted-movement record. Keep the old public record and top knowledge.
+    pub(super) fn move_private_hand_to_bottom(&mut self, source: ObjectRef, object: ObjectRef) {
+        assert_eq!(self.state.objects[object.card as usize].zone, Zone::Hand);
+        self.move_object_to_library(source, object, LibraryDestination::Bottom, false);
+    }
+    fn move_object_to_library(
+        &mut self,
+        source: ObjectRef,
+        object: ObjectRef,
+        destination: LibraryDestination,
+        public: bool,
+    ) {
         assert!(matches!(
             destination,
             LibraryDestination::Top
@@ -96,14 +111,16 @@ impl Game {
             }
             // Publish only this targeted public movement. This is a historical
             // record; later private looks, rearrangements and draws leave it alone.
-            self.state.last_target_library_move = Some(Box::new(TargetLibraryMovement {
-                source,
-                card,
-                target_before: object,
-                target_after: event.after,
-                owner,
-                destination,
-            }));
+            if public {
+                self.state.last_target_library_move = Some(Box::new(TargetLibraryMovement {
+                    source,
+                    card,
+                    target_before: object,
+                    target_after: event.after,
+                    owner,
+                    destination,
+                }));
+            }
         }
     }
     pub(super) fn start_target_library(&mut self, item: &SpellView) -> bool {

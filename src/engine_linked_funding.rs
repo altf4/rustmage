@@ -200,7 +200,9 @@ impl Game {
                             && a.cost.additional.is_some_and(|cost| {
                                 matches!(
                                     cost.kind,
-                                    EffectChoiceKind::Sacrifice | EffectChoiceKind::BeholdAndExile
+                                    EffectChoiceKind::Sacrifice
+                                        | EffectChoiceKind::SacrificeCreatureOrToken
+                                        | EffectChoiceKind::BeholdAndExile
                                 ) && self.additional_candidate(
                                     cost,
                                     actor,

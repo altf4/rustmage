@@ -1115,6 +1115,7 @@ impl Game {
                     TargetPredicate::WithoutKeyword(keyword) => {
                         !self.keywords(id).contains(keyword)
                     }
+                    TargetPredicate::Kinds(kinds) => self.current_kinds(id) & kinds != 0,
                     TargetPredicate::WithoutKinds(kinds) => self.current_kinds(id) & kinds == 0,
                     TargetPredicate::WithoutSubtype(subtype) => !self.has_subtype(id, subtype),
                     TargetPredicate::Token => object.is_token(),
@@ -1704,6 +1705,7 @@ impl Game {
                     spec.kind,
                     EffectChoiceKind::BlightCost(_)
                         | EffectChoiceKind::Sacrifice
+                        | EffectChoiceKind::SacrificeCreatureOrToken
                         | EffectChoiceKind::ReturnToHand
                 ) || forage::is_forage_cost(spec)
                     || evidence::threshold(spec).is_some()

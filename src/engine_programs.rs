@@ -1957,6 +1957,46 @@ impl Game {
                         .collect();
                     self.grant_keyword_effects(&ids, item.object, keywords);
                 }
+                Instruction::IfTargetManaValueAtMost { maximum, skip } => {
+                    let passes = item.targets.iter().any(|bound| {
+                        self.same_target_object(*bound)
+                            && match bound.target {
+                                Target::Card(id) if self.on_battlefield(id) => {
+                                    self.object_mana_value(id) <= maximum
+                                }
+                                _ => false,
+                            }
+                    });
+                    if !passes {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::DamageTargetAndController {
+                    damage,
+                    controller_damage,
+                } => {
+                    let source = self.program_damage_source(&item);
+                    let mut events: Vec<_> = item
+                        .targets
+                        .iter()
+                        .filter(|bound| self.same_target_object(**bound))
+                        .map(|bound| DamageEvent {
+                            preventable: true,
+                            source,
+                            target: bound.target,
+                            amount: i128::from(damage),
+                            combat: false,
+                        })
+                        .collect();
+                    events.push(DamageEvent {
+                        preventable: true,
+                        source,
+                        target: Target::Player(item.controller),
+                        amount: i128::from(controller_damage),
+                        combat: false,
+                    });
+                    self.apply_damage_batch(&events);
+                }
                 Instruction::DamageWithController {
                     damage,
                     controller_damage,

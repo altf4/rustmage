@@ -320,6 +320,7 @@ impl Game {
                 matches!(
                     spec.kind,
                     EffectChoiceKind::Sacrifice
+                        | EffectChoiceKind::SacrificeCreatureOrToken
                         | EffectChoiceKind::ReturnToHand
                         | EffectChoiceKind::BeholdAndExile
                 )

@@ -280,6 +280,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::Sacrifice { .. }
             | Action::Blight { .. }
             | Action::ChooseCreature { .. }
+            | Action::BottomHandCard { .. }
             | Action::ExileHandCard { .. }
             | Action::RevealHandCard { .. }
             | Action::ExileGraveyardCard { .. }

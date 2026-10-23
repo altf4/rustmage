@@ -3,10 +3,71 @@
   "catalogue_id": 353,
   "oracle_id": "e610bfd4-d064-410b-929c-1d9dd82828b1",
   "facts_sha256": "331979a19e52fab7f0d101a274ad1139ba81e64a4a480e9878f9114df85a0f01",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8e197e195569573c4a403feeb995288acd1b2fdeb26a1a5c5231e5c96aaa2187"
   },
-  "physical_metadata_sha256": "c796c9f10a43495d15424110ed1092fc3264548939f80de1cd0f779a642a53b1"
+  "physical_metadata_sha256": "c796c9f10a43495d15424110ed1092fc3264548939f80de1cd0f779a642a53b1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BaxterStockman.java",
+  "java_sha256": "bf48076fe1735b3f4163bf6275125a8409ac08a40a11e1b7253b24a6b54e9aa5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Robot11Token.java",
+      "sha256": "80629ebbc61106f058ff6bcc6f8011768f01da78a78ffba9feecdaa756825bd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+      "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+      "sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "111.8",
+      "201.5",
+      "400.7",
+      "601.2",
+      "608.2b",
+      "608.2h",
+      "701.8",
+      "701.21",
+      "701.22"
+    ],
+    "note": "Printed obligations are implemented directly and exercised by engine_tmt_spell_batch_tests.rs. Ice Cream Kitty requires another permanent even when the source is a token: the Java predicate admits the source when copied as a token, but printed another excludes it. Tainted Treats freezes mana value immediately before attempting destruction and creates Food even for indestructible targets. Manhole Missile uses a private non-targeting optional hand selection."
+  }
 }

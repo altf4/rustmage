@@ -529,6 +529,7 @@ define_actions! {
     },
     ChooseExplore { object: ObjectRef, graveyard: bool },
     ExileHandCard { object: ObjectRef },
+    BottomHandCard { object: ObjectRef },
     RevealHandCard { object: ObjectRef },
     ExileGraveyardCard { object: ObjectRef },
     ChooseBeholdType { creature_type: Option<crate::cards::CreatureType> },
@@ -3286,7 +3287,10 @@ impl Game {
                                 Action::Blight { object }
                             }
                             EffectChoiceKind::TapPermanents(_) => Action::TapForEffect { object },
-                            EffectChoiceKind::Sacrifice => Action::Sacrifice { object },
+                            EffectChoiceKind::Sacrifice
+                            | EffectChoiceKind::SacrificeCreatureOrToken => {
+                                Action::Sacrifice { object }
+                            }
                             EffectChoiceKind::PowerDifferenceBoost
                             | EffectChoiceKind::CopyEntryObject
                             | EffectChoiceKind::KeepSharedCreatureTypes => {
@@ -3303,6 +3307,7 @@ impl Game {
                             EffectChoiceKind::ExileGraveyardCard => {
                                 Action::ExileGraveyardCard { object }
                             }
+                            EffectChoiceKind::BottomHand => Action::BottomHandCard { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             _ => unreachable!("forage has its own choice"),
                         };
@@ -5232,6 +5237,7 @@ impl Game {
                 self.advance_damage_choices();
             }
             Action::RevealHandCard { object }
+            | Action::BottomHandCard { object }
             | Action::ExileHandCard { object }
             | Action::ExileGraveyardCard { object }
             | Action::PutHandCreature { object }
@@ -8619,3 +8625,7 @@ mod tmt_mana_batch_tests;
 #[cfg(test)]
 #[path = "engine_tmt_inherited_batch_two_tests.rs"]
 mod tmt_inherited_batch_two_tests;
+
+#[cfg(test)]
+#[path = "engine_tmt_spell_batch_tests.rs"]
+mod tmt_spell_batch_tests;
