@@ -27,7 +27,7 @@ Runtime limits are explicit:
 | --- | ---: |
 | One native scenario | 10 seconds |
 | All native scenario execution | 30 seconds |
-| Python API assurance | 30 seconds |
+| Python API execution / worker wall timeout | 5 / 15 seconds |
 | One test or release compilation phase | 6 minutes |
 | Validator, including all builds | 9 minutes in CI |
 | Validation step | 10 minutes |

@@ -60,7 +60,7 @@ def run_worker(args, library):
         ).run(suite)
     elapsed = time.monotonic() - started
     over_budget = elapsed > args.runtime_budget
-    success = result.wasSuccessful() and result.testsRun > 0 and not over_budget
+    success = result.wasSuccessful() and result.testsRun > 0 and not result.skipped and not over_budget
     write_report(args.report, dict(
         suite="contract", requested_suite=args.suite, library=str(library), terminal=True,
         tests=result.testsRun, success=success, seconds=elapsed,

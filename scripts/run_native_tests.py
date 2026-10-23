@@ -2,6 +2,8 @@
 """Build the library test binary once, then time each bounded rules scenario."""
 import argparse
 import json
+import math
+import re
 import os
 from pathlib import Path
 import signal
@@ -44,45 +46,75 @@ def process_running(pid):
         return False
 
 
-def stop_process(process):
-    """Reap the command and stop its descendants before outputs may be cleaned."""
-    children = descendants(process.pid)
-    for sig in (signal.SIGTERM, signal.SIGKILL):
-        children.update(descendants(process.pid))
-        for pid in [*children, process.pid]:
-            try:
-                os.kill(pid, sig)
-            except ProcessLookupError:
-                pass
+def group_members():
+    group = bounded_group()
+    if group is None:
+        return set()
+    return {int(pid) for pid in (group/'cgroup.procs').read_text().split()
+            if process_running(int(pid))}
+
+
+def active_peers():
+    # A normally exiting parent can orphan children outside our /proc subtree.
+    # The guarded service cgroup still owns those processes.
+    ancestors = {os.getpid()}
+    pid = os.getpid()
+    while pid > 1:
         try:
-            process.wait(timeout=2 if sig == signal.SIGTERM else None)
-        except subprocess.TimeoutExpired:
-            pass
-        # A parent can exit on TERM before its children; always send the KILL
-        # pass to the captured descendants before returning.
-    deadline = time.monotonic() + 2
-    while any(process_running(pid) for pid in children) and time.monotonic() < deadline:
-        time.sleep(0.01)
-    if any(process_running(pid) for pid in children):
-        raise RuntimeError('command descendants are still active; preserve their outputs')
+            pid = int(Path(f'/proc/{pid}/stat').read_text().rsplit(')', 1)[1].split()[1])
+        except FileNotFoundError:
+            break
+        ancestors.add(pid)
+    return group_members() - ancestors
+
+
+def stop_process(process, members_before=None):
+    children = descendants(process.pid)
+    deadline = time.monotonic() + 3
+    for sig in (signal.SIGTERM, signal.SIGKILL):
+        while True:
+            children.update(descendants(process.pid))
+            if members_before is not None:
+                children.update(group_members() - members_before)
+            for pid in children | {process.pid}:
+                try:
+                    os.kill(pid, sig)
+                except ProcessLookupError:
+                    pass
+            try:
+                process.wait(timeout=0.1)
+            except subprocess.TimeoutExpired:
+                pass
+            if sig == signal.SIGTERM or not any(process_running(pid) for pid in children):
+                break
+            if time.monotonic() >= deadline:
+                raise RuntimeError('command descendants remain active; preserve outputs')
+            time.sleep(0.01)
+    process.wait()
 
 
 def run_command(command, *, env, log, timeout):
     started = time.monotonic()
+    members_before = group_members()
+    orphaned = False
     with Path(log).open('w') as output:
         process = subprocess.Popen(command, cwd=ROOT, env=env, stdout=output,
                                    stderr=subprocess.STDOUT, start_new_session=True)
         try:
             code = process.wait(timeout=max(0.01, timeout))
             timed_out = False
+            if group_members() - members_before:
+                orphaned = True
+                stop_process(process, members_before)
+                code = code or 1
         except subprocess.TimeoutExpired:
-            stop_process(process)
+            stop_process(process, members_before)
             code, timed_out = 124, True
         except BaseException:
-            stop_process(process)
+            stop_process(process, members_before)
             raise
     return dict(command=[str(arg) for arg in command], exit=code, timed_out=timed_out,
-                seconds=time.monotonic()-started, log=str(log))
+                orphaned_processes=orphaned, seconds=time.monotonic()-started, log=str(log))
 
 
 def interrupted(signum, frame):
@@ -97,7 +129,7 @@ def main():
     parser.add_argument('--test-timeout', type=float, default=10)
     parser.add_argument('--suite-timeout', type=float, default=30)
     args = parser.parse_args()
-    if min(args.compile_timeout, args.test_timeout, args.suite_timeout) <= 0:
+    if any(not math.isfinite(v) or v <= 0 for v in (args.compile_timeout, args.test_timeout, args.suite_timeout)):
         parser.error('timeouts must be positive')
     if bounded_group() is None:
         os.execv(sys.executable, [sys.executable, str(ROOT/'scripts/resource_guard.py'), '--',
@@ -145,9 +177,12 @@ def main():
                     break
                 events.write(json.dumps(dict(event='start', test=name))+'\n')
                 events.flush()
-                test = run_command([binary, '--exact', name, '--nocapture', '--test-threads=1'],
+                test = run_command([binary, '--exact', name, '--include-ignored', '--nocapture', '--test-threads=1'],
                                    env=env, log=args.report.with_name(f'native-{index:03}.log'),
                                    timeout=min(args.test_timeout, remaining))
+                if test['exit'] == 0 and not re.search(r'test result: ok\. 1 passed; 0 failed; 0 ignored;', Path(test['log']).read_text()):
+                    test['exit'] = 1
+                    test['error'] = 'expected exactly one executed passing test'
                 test['test'] = name
                 result['tests'].append(test)
                 events.write(json.dumps(dict(event='finish', **test))+'\n')
@@ -164,10 +199,14 @@ def main():
         result['interrupted'] = True
         return 130
     finally:
-        result['terminal'] = True
+        result['active_processes'] = sorted(active_peers())
+        result['terminal'] = not result['active_processes']
+        result['success'] = result['success'] and result['terminal']
         result['seconds'] = time.monotonic()-started
         args.report.write_text(json.dumps(result, indent=2)+'\n')
         print(f'Native test report: {args.report}', flush=True)
+        if not result['terminal']:
+            raise RuntimeError('native runner left active processes; outputs preserved')
 
 
 if __name__ == '__main__':

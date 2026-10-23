@@ -71,3 +71,58 @@ check. `--metadata-only` is an explicit local convenience when the external
 XMage repository is unavailable; it does not replace full source verification
 in acceptance or CI. A focused source check is faster and clearer than separate
 unit tests repeatedly reconstructing the entire catalogue.
+
+## Current coverage and limits
+
+The replacement contains 33 native test functions: 54 independent Oracle card
+cases exercised from both seats, 25 focused interaction scenarios, four shared
+engine contracts, basic-land and whole-catalogue admission checks, and one broad
+cast/entry regression table. The broad table executes all 2,196 supported physical
+cards, including 2,190 Standard cards, using fixed small main-phase, stack or
+combat fixtures. Every candidate must be offered and finish its declaration and
+resolution. The current longest trace uses 15 accepted actions; the limit is 64
+and the fixture object ceiling is 192. A missing cast, unresolved decision or
+exceeded budget fails; there are no silently skipped cards.
+
+`src/assurance/oracle_cases.json` records independently pinned Oracle text, stats,
+keyword expectations, damage/draw/pump values and total printed cost for the
+simple families. Central interaction cases exercise keyword rules, colored
+costs, stack responses, target invalidation, ward, aura suppression, trample and
+deathtouch, counters/tokens/replacement effects, simultaneous deaths, layers,
+private searches and adventure/omen origins. One fixed complete game has a
+256-action ceiling. Expensive owned/raw/index/restore checks run at five
+representative decision roots rather than on every card action.
+
+`src/assurance/card_traces.json` captures the unchanged production engine's
+single-card cast/entry behavior, including action-journal and both-player final
+observation digests, named fixture, action count, status and final zone. These
+are regression baselines, not independent proof that every printed obligation
+works. In particular they do not exhaust each card's activated/attack/upkeep/death
+abilities, all modes or combinations. Those remain reasons to add focused
+independent scenarios when changing the relevant behavior. Admission and trace
+counts must never be presented as complete all-pool rules certification. The
+remaining 2,974 Standard cards are still gated; this test rewrite changes no
+card definition or complete flag.
+
+The eight Python contracts finish well below their five-second execution budget
+and 15-second worker timeout. The five infrastructure contracts check actual
+cgroup limits, fail-closed compilation, command status, timeout termination and
+normal-exit detached-child cleanup without OOM allocation probes. Ignored native
+cases execute, and zero/skipped Python or script suites fail acceptance.
+
+For an intentional cast/entry baseline change, first add an independent assertion
+for the changed rule. Then record a candidate under the persistent cache:
+
+```sh
+RUSTMAGE_RECORD_CARD_TRACES="$HOME/.cache/rustmage-card-traces-candidate.json" \
+  python3 scripts/resource_guard.py -- cargo test --lib \
+  supported_cards_retain_bounded_cast_and_entry_traces -- --exact \
+  engine::assurance::regressions::supported_cards_retain_bounded_cast_and_entry_traces
+```
+
+The recording run still compares with the committed baseline and fails on drift.
+After the process terminates, inspect the changed rows and copy the reviewed
+candidate to `src/assurance/card_traces.json`. Ordinary validation never updates
+baselines. Set `CARGO_TARGET_DIR` under `~/.cache` when doing local development
+builds, and keep logs/reports there. Refreshing fingerprints alone is insufficient
+review evidence for a changed card rule.

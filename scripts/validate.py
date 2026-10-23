@@ -8,6 +8,7 @@ this command has terminated, including after an observation timeout.
 import argparse
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import signal
@@ -17,7 +18,7 @@ import tempfile
 import time
 
 from resource_limits import bounded_group
-from run_native_tests import descendants, interrupted, process_running, run_command
+from run_native_tests import active_peers, interrupted, run_command
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -44,7 +45,7 @@ def main():
     parser.add_argument('--timeout', type=float, default=600,
                         help='total wall-clock budget after acquiring the build slot (seconds)')
     args = parser.parse_args()
-    if args.games < 1 or args.timeout <= 0:
+    if args.games < 1 or (not math.isfinite(args.timeout) or args.timeout <= 0):
         parser.error('--games and --timeout must be positive')
     os.chdir(ROOT)
     if bounded_group() is None:
@@ -64,8 +65,7 @@ def main():
         ('format', ['cargo', 'fmt', '--all', '--check'], 45),
         ('card format', ['rustfmt', '--edition', '2024', '--check',
                          *[str(p) for p in sorted((ROOT/'src/card_definitions').rglob('*.rs'))]], 45),
-        ('script contracts', [sys.executable, '-m', 'unittest', 'discover', '-s', 'scripts',
-                               '-p', 'test_*.py'], 30),
+        ('script contracts', [sys.executable, 'scripts/test_assurance_runner.py'], 30),
         ('clippy', ['cargo', 'clippy', '--all-targets', '--', '-D', 'warnings'], 180),
         ('native assurance', [sys.executable, 'scripts/run_native_tests.py',
                               '--target-dir', str(target), '--report', str(report_dir/'native.json'),
@@ -109,7 +109,7 @@ def main():
         report['changed'] = sorted(path for path in files.keys() | current.keys()
                                    if files.get(path) != current.get(path))
         report['files_verified'] = len(files)
-        active = [pid for pid in descendants(os.getpid()) if process_running(pid)]
+        active = sorted(active_peers())
         report['active_processes'] = active
         report['success'] = ok and not report['changed'] and not active
         report['terminal'] = not active
