@@ -50,36 +50,43 @@ Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 partial admission or catalogue entries do not establish set completion. Upstream
 review and merge status are tracked separately in the linked records.
 
-<!-- Maintain this tracker when a set reaches full-set acceptance. Keep the
-     summary and rows in sync; count physical identities from data/sets/<code>.json,
-     including reprints, rather than files in src/card_definitions/<set>/. -->
+<!-- Refresh supported counts from scripts/set_status.py freeze/status using the
+     pinned XMage tables, Oracle facts and data/standard/coverage.json. Reconcile
+     accepted sets with data/sets/<code>.json. Keep summary and rows in sync when
+     a set passes acceptance; definition-directory counts omit shared reprints. -->
 
-| Set | Code | Implementation status | Acceptance / tracking |
-| --- | --- | --- | --- |
-| Foundations | FDN | ✅ Complete — 517/517 cards | [Acceptance](docs/foundations-acceptance.md) |
-| Lorwyn Eclipsed | ECL | ✅ Complete — 273/273 cards | [Set record](docs/sets/ecl.md) |
-| Teenage Mutant Ninja Turtles | TMT | ✅ Complete — 195/195 cards | [Set record](docs/sets/tmt.md) |
-| Aetherdrift | DFT | ⏳ Partial — full-set acceptance pending | — |
-| Avatar: The Last Airbender | TLA | ⏳ Partial — full-set acceptance pending | — |
-| Bloomburrow | BLB | ⏳ Partial — full-set acceptance pending | — |
-| Duskmourn: House of Horror | DSK | ⏳ Partial — full-set acceptance pending | — |
-| Edge of Eternities | EOE | ⏳ Partial — full-set acceptance pending | — |
-| Final Fantasy | FIN | ⏳ Partial — full-set acceptance pending | — |
-| Marvel Super Heroes | MSH | ⏳ Partial — full-set acceptance pending | — |
-| Marvel's Spider-Man | SPM | ⏳ Partial — full-set acceptance pending | — |
-| Murders at Karlov Manor | MKM | ⏳ Partial — full-set acceptance pending | — |
-| Outlaws of Thunder Junction | OTJ | ⏳ Partial — full-set acceptance pending | — |
-| Reality Fracture | FRA | ⏳ Partial — full-set acceptance pending | — |
-| Secrets of Strixhaven | SOS | ⏳ Partial — full-set acceptance pending | — |
-| Tarkir: Dragonstorm | TDM | ⏳ Partial — full-set acceptance pending | — |
-| The Big Score | BIG | ⏳ Partial — full-set acceptance pending | — |
-| The Hobbit | HOB | ⏳ Partial — full-set acceptance pending | — |
-| The Lost Caverns of Ixalan | LCI | ⏳ Partial — full-set acceptance pending | — |
-| Wilds of Eldraine | WOE | ⏳ Partial — full-set acceptance pending | — |
+| Set | Code | Supported cards | Implementation status | Acceptance / tracking |
+| --- | --- | ---: | --- | --- |
+| Foundations | FDN | 517/517 (100%) | ✅ Complete | [Acceptance](docs/foundations-acceptance.md) |
+| Lorwyn Eclipsed | ECL | 273/273 (100%) | ✅ Complete | [Set record](docs/sets/ecl.md) |
+| Teenage Mutant Ninja Turtles | TMT | 195/195 (100%) | ✅ Complete | [Set record](docs/sets/tmt.md) |
+| Aetherdrift | DFT | 110/276 (40%) | ⏳ Partial | — |
+| Avatar: The Last Airbender | TLA | 97/286 (34%) | ⏳ Partial | — |
+| Bloomburrow | BLB | 127/279 (46%) | ⏳ Partial | — |
+| Duskmourn: House of Horror | DSK | 85/276 (31%) | ⏳ Partial | — |
+| Edge of Eternities | EOE | 110/266 (41%) | ⏳ Partial | — |
+| Final Fantasy | FIN | 133/312 (43%) | ⏳ Partial | — |
+| Marvel Super Heroes | MSH | 84/281 (30%) | ⏳ Partial | — |
+| Marvel's Spider-Man | SPM | 76/193 (39%) | ⏳ Partial | — |
+| Murders at Karlov Manor | MKM | 81/279 (29%) | ⏳ Partial | — |
+| Outlaws of Thunder Junction | OTJ | 101/276 (37%) | ⏳ Partial | — |
+| Reality Fracture | FRA | 89/285 (31%) | ⏳ Partial | — |
+| Secrets of Strixhaven | SOS | 105/271 (39%) | ⏳ Partial | — |
+| Tarkir: Dragonstorm | TDM | 127/276 (46%) | ⏳ Partial | — |
+| The Big Score | BIG | 5/30 (17%) | ⏳ Partial | — |
+| The Hobbit | HOB | 69/193 (36%) | ⏳ Partial | — |
+| The Lost Caverns of Ixalan | LCI | 105/291 (36%) | ⏳ Partial | — |
+| Wilds of Eldraine | WOE | 150/281 (53%) | ⏳ Partial | — |
 
-Update the status, card count, evidence link and summary when a set passes full
-acceptance. When refreshing the Standard snapshot, reconcile this list against
-`set_tables` in the pinned inventory. Reprints may belong to multiple sets, so
+Supported counts use the current [coverage report](data/standard/coverage.json)
+and full physical set membership from pinned XMage tables and Oracle facts,
+including reprints and starter products. Banned members remain in the totals and
+count as unsupported when gated; cosmetic printings count once. Partial-set
+counts are admission flags, not full-set acceptance.
+
+Refresh the counts when card support changes; update the status, evidence link
+and summary when a set passes full acceptance. When refreshing the Standard
+snapshot, reconcile this list against `set_tables` in the pinned inventory. Reprints may belong to multiple sets, so
 set card counts must not be added to estimate unique Standard coverage.
 
 ## Implement a set with Codex
