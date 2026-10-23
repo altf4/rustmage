@@ -3,10 +3,40 @@
   "catalogue_id": 191,
   "oracle_id": "d379a919-02cd-46fd-a6ce-b66a77745ae7",
   "facts_sha256": "c5618b1060b1b154787961802f694eb3d3a6d7ffa9028123c078b4504ce7b2ac",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4aa38d1dd0c676364840442c15765dc7618de33c7463358694125c892079664e"
   },
-  "physical_metadata_sha256": "f61b1acfae073640dbde4040463b54bf59e35866af390bfe8fb42c406a3bfeed"
+  "physical_metadata_sha256": "f61b1acfae073640dbde4040463b54bf59e35866af390bfe8fb42c406a3bfeed",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AprilONeilHacktivist.java",
+  "java_sha256": "68800380f0b68272d2c45068021b435bd4a80bdadd59a879fcd5018c68371a68",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "107.1b",
+      "118.3",
+      "118.5",
+      "400.7",
+      "601.2",
+      "603.3c",
+      "608.2h",
+      "701.23"
+    ],
+    "note": "Paid legal scenarios in engine_tmt_alliance_batch_tests.rs cover optional qualified searches, actual hand movement, grouped activation targets, resolution-time ability choice, per-turn modes, exact entering power/life payments, actual cast mana, card-type history, and owned branching/restore."
+  }
 }

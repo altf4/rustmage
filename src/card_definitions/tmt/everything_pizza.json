@@ -3,10 +3,105 @@
   "catalogue_id": 1387,
   "oracle_id": "aa481983-8f1a-4519-9371-5e7edcd3274f",
   "facts_sha256": "b1b04d3c4fe9f363b538b2781a2f972e2bdf78e690219342e19a31206ac2585f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1088fe093ce063f8c8ffb5c03f8838eaac53dd77e3c380f353ffdac75248898b"
   },
-  "physical_metadata_sha256": "eb9a6a0323fd71d1de7b879281340b8cd293a8426e2c98d781e89023fa86b0e5"
+  "physical_metadata_sha256": "eb9a6a0323fd71d1de7b879281340b8cd293a8426e2c98d781e89023fa86b0e5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EverythingPizza.java",
+  "java_sha256": "0a0fe20594ffd8ddbc5ce540c0ad531925a89f867af0a992fc8a265fd30647be",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardTargetEffect.java",
+      "sha256": "1d131bf3ff4ac75e46660190098938610581d961ad6d8f39e553c9c200f7a467"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeTargetEffect.java",
+      "sha256": "9f89eae0cab67d969113091a50272e8b91503ec438466324e3790bbe8ac54b65"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardEachPlayerEffect.java",
+      "sha256": "f8ba858157ec21e41dbda51ea2176cba7c3e46cd51af4ff57e12af803f8fa24c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/SecondTargetPointer.java",
+      "sha256": "135cc53e0202fad251c5902855c6001ba5de1d05fb4dd4341c7f8a17ecec4ef2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/ThirdTargetPointer.java",
+      "sha256": "f22b0f0979f6266c72db9ffc011925cc0e672f12373712b3269887f9160dfa76"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/NthTargetPointer.java",
+      "sha256": "d3f06450efa592e446dbcab29c913f7946e36b31d5d0a7f6b1d3e5ac824ebc73"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "107.1b",
+      "118.3",
+      "118.5",
+      "400.7",
+      "601.2",
+      "603.3c",
+      "608.2h",
+      "701.23"
+    ],
+    "note": "Paid legal scenarios in engine_tmt_alliance_batch_tests.rs cover optional qualified searches, actual hand movement, grouped activation targets, resolution-time ability choice, per-turn modes, exact entering power/life payments, actual cast mana, card-type history, and owned branching/restore."
+  }
 }

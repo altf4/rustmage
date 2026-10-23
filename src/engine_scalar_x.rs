@@ -358,6 +358,9 @@ impl Game {
                     .map(u64::from)
                     .sum::<u64>(),
             ),
+            AmountValue::CastCardTypeCount => self.state.players[item.controller.index()]
+                .cast_card_types_this_turn
+                .count_ones() as u128,
             AmountValue::CastSpellManaValue => item
                 .cast_event
                 .as_ref()

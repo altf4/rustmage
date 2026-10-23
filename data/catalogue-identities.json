@@ -5365,6 +5365,7 @@
     20,
     4,
     4,
+    1,
     1
   ],
   "aliases": [
@@ -5943,6 +5944,10 @@
     [
       "@token/df2e2ec30d1a4752cb0232b9",
       5321
+    ],
+    [
+      "@token/dinosaur_soldier_2_2_white",
+      5360
     ],
     [
       "@token/drake_2_2_blue_flying",
@@ -27942,6 +27947,12 @@
       "factory_identity": "@token/ninja_turtle_spirit_1_1_white",
       "name": "Ninja Turtle Spirit Token",
       "subtypes": "Ninja Turtle Spirit",
+      "colors": 1
+    },
+    {
+      "factory_identity": "@token/dinosaur_soldier_2_2_white",
+      "name": "Dinosaur Soldier Token",
+      "subtypes": "Dinosaur Soldier",
       "colors": 1
     }
   ],
@@ -161909,7 +161920,7 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        2,
         0,
         0,
         0,
@@ -181076,6 +181087,33 @@
       "facts_sha256": null,
       "mana_cost": "",
       "type_line": "Creature — Ninja Turtle Spirit",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5360,
+      "module": "card_5360",
+      "path": "tmt/dinosaur_soldier_2_2_white.rs",
+      "set": "tmt",
+      "category": "token",
+      "name": "@token/dinosaur_soldier_2_2_white",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Dinosaur Soldier",
       "oracle_keywords": [],
       "standard_legal": false,
       "legendary": false,

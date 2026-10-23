@@ -154,7 +154,24 @@ impl Game {
                 movement
             })
             .collect();
+        let hand_results = (choice.spec.destination == SearchDestination::Hand).then(|| {
+            choice
+                .selected
+                .iter()
+                .map(|&id| ObjectRef {
+                    card: id,
+                    generation: self
+                        .object_ref(id)
+                        .generation
+                        .checked_add(1)
+                        .capacity("object generation exhausted"),
+                })
+                .collect()
+        });
         self.stage_entries(moves, Some(player));
+        if let Some(objects) = hand_results {
+            self.after_departure(programs::ProgramContinuation::SearchHandCount(objects));
+        }
         if choice.spec.destination == SearchDestination::LinkedExile {
             self.remember_linked_exile(&choice.selected);
         }

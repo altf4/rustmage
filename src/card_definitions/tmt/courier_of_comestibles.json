@@ -3,10 +3,50 @@
   "catalogue_id": 872,
   "oracle_id": "049d8b06-db90-4b9c-8195-d987b3ef1005",
   "facts_sha256": "cab31da08edfaa5236c62f810a4d5cc0e4a78b77ba697a7c4145ea8356c6fb34",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "663b4fe6cd61af7cebb428e3e25650c3510ff16684381161f471769cfbdfb0eb"
   },
-  "physical_metadata_sha256": "ec9eb9204aa5fe4b34c9ad2ccec6a1a27ff5bc6019abf6fa2b03ecd6d3e12f66"
+  "physical_metadata_sha256": "ec9eb9204aa5fe4b34c9ad2ccec6a1a27ff5bc6019abf6fa2b03ecd6d3e12f66",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CourierOfComestibles.java",
+  "java_sha256": "330373fa54ece1eda001fb634dd30c3bb13a56e803fab7515b13a8fa01aa08b9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/FoodToken.java",
+      "sha256": "67fca2eef5afc92dc08eefebb5d25489a0ab37ac22ab3b1b06556b17e5f0b53a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/token/FoodAbility.java",
+      "sha256": "79d6d33dd5aa5cf0a53784c96639953598780ecb010fcb3adc5f3db677ee22b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "107.1b",
+      "118.3",
+      "118.5",
+      "400.7",
+      "601.2",
+      "603.3c",
+      "608.2h",
+      "701.23"
+    ],
+    "note": "Paid legal scenarios in engine_tmt_alliance_batch_tests.rs cover optional qualified searches, actual hand movement, grouped activation targets, resolution-time ability choice, per-turn modes, exact entering power/life payments, actual cast mana, card-type history, and owned branching/restore."
+  }
 }

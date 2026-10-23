@@ -767,6 +767,13 @@ impl Game {
     }
 
     pub(super) fn choose_mode(&mut self, mode: u16) {
+        if let Pending::EffectKeywordChoice { choices, .. } = self.state.pending {
+            let item = self.state.resolving.as_ref().unwrap().item.clone();
+            let ids = self.keyword_subjects(&item, Subject::Source);
+            self.grant_keyword_effects(&ids, item.object, choices[usize::from(mode)].1);
+            self.run_program();
+            return;
+        }
         let plan = self
             .state
             .announcing

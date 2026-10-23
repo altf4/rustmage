@@ -33,6 +33,7 @@ pub(super) struct Resolution {
 /// Owned work that must follow all immediate entries caused by a departure.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum ProgramContinuation {
+    SearchHandCount(Vec<ObjectRef>),
     Return(ReturnLinkView),
     CreateAttackingCopy(CopyRecipe),
     CreateTokens {
@@ -63,6 +64,16 @@ impl Game {
     }
     fn apply_program_continuation(&mut self, continuation: ProgramContinuation) {
         match continuation {
+            ProgramContinuation::SearchHandCount(objects) => {
+                let count = objects
+                    .iter()
+                    .filter(|object| {
+                        self.object_ref(object.card) == **object
+                            && self.state.objects[object.card as usize].zone == Zone::Hand
+                    })
+                    .count();
+                self.state.resolving.as_mut().unwrap().moved_count = Some(count as u64);
+            }
             ProgramContinuation::CreateAttackingCopy(recipe) => {
                 let player = self.state.resolving.as_ref().unwrap().item.controller;
                 self.stage_attacking_copy_creation(player, recipe);
@@ -570,6 +581,7 @@ impl Game {
                 let matched = match ability.condition.event() {
                     TriggerCondition::InZone { .. }
                     | TriggerCondition::ManaSpent { .. }
+                    | TriggerCondition::ManaSpentBelowValue(_)
                     | TriggerCondition::Granted(_)
                     | TriggerCondition::OncePerTurn(_)
                     | TriggerCondition::DuringOpponentsTurn(_)
@@ -1095,6 +1107,8 @@ impl Game {
                     .is_some_and(|c| c.method == CastMethod::Free),
             );
         }
+        let kinds = stack.map_or(card.kind_mask(), |i| self.state.stack[i].source_facts.kinds);
+        self.state.players[caster.index()].cast_card_types_this_turn |= kinds;
         let first_trigger = self.state.pending_triggers.len();
         let count = &mut self.state.players[caster.index()].spells_cast_this_turn;
         *count = count.checked_add(1).capacity("spell count exhausted");
@@ -2308,7 +2322,9 @@ impl Game {
                 Instruction::Reflexive { ability } => {
                     self.queue_reflexive(&item, ability, None);
                 }
-                Instruction::Modal(_) | Instruction::ModalOnce(_) => {
+                Instruction::Modal(_)
+                | Instruction::ModalOnce(_)
+                | Instruction::ModalOncePerTurn(_) => {
                     unreachable!("unselected modal ability executed")
                 }
                 Instruction::Explore(subject) => {
@@ -2409,6 +2425,51 @@ impl Game {
                         skip_to,
                     };
                     return;
+                }
+                Instruction::ChooseSourceKeyword(choices) => {
+                    if !self.keyword_subjects(&item, Subject::Source).is_empty() {
+                        self.state.pending = Pending::EffectKeywordChoice {
+                            player: item.controller,
+                            choices,
+                        };
+                        return;
+                    }
+                }
+                Instruction::MayPayEnteringPower { skip } => {
+                    let skip_to = resolution.pc.checked_add(skip).expect("program offset");
+                    let amount = self
+                        .resolved_stat_value(&item, crate::cards::ResolvedStatValue::EnteringPower)
+                        .unwrap_or(0)
+                        .max(0);
+                    if amount == 0 || self.state.players[item.controller.index()].life >= amount {
+                        self.state.pending = Pending::EffectOptional {
+                            player: item.controller,
+                            skip_to,
+                        };
+                        return;
+                    }
+                    self.state.resolving.as_mut().unwrap().pc = skip_to;
+                }
+                Instruction::PayEnteringPowerLifeAndCounters => {
+                    // No priority or other action intervenes between the offered payment and acceptance.
+                    let amount = self
+                        .resolved_stat_value(&item, crate::cards::ResolvedStatValue::EnteringPower)
+                        .unwrap_or(0)
+                        .max(0);
+                    if amount == 0 || self.state.players[item.controller.index()].life >= amount {
+                        self.lose_life(item.controller, amount);
+                        if let Some(id) = self.entering_subject(&item) {
+                            let mut counters = Counters::default();
+                            counters.add(
+                                CounterKind::PlusOne,
+                                u64::try_from(amount).capacity("counter amount exhausted"),
+                            );
+                            self.effect_counters(
+                                vec![(self.object_ref(id), counters)],
+                                replacements::ResumeMode::Program,
+                            );
+                        }
+                    }
                 }
                 Instruction::MayPayOpponentLife { amount, skip }
                 | Instruction::MayPayControllerLife { amount, skip } => {

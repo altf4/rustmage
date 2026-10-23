@@ -74,6 +74,7 @@ impl Game {
                     && self.trigger_time_guards_hold(*event, player, source, tapped)
             }
             TriggerCondition::InZone { event, .. }
+            | TriggerCondition::ManaSpentBelowValue(event)
             | TriggerCondition::Granted(event)
             | TriggerCondition::OncePerTurn(event)
             | TriggerCondition::DuringOpponentsTurn(event)
@@ -94,6 +95,7 @@ impl Game {
         match condition {
             TriggerCondition::InZone { event, .. }
             | TriggerCondition::When { event, .. }
+            | TriggerCondition::ManaSpentBelowValue(event)
             | TriggerCondition::Granted(event)
             | TriggerCondition::OncePerTurn(event)
             | TriggerCondition::DuringOpponentsTurn(event)

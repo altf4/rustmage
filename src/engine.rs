@@ -900,6 +900,7 @@ struct PlayerState {
     extra_land_plays_granted: u64,
     nonland_permanents_entered_this_turn: u64,
     spells_cast_this_turn: u64,
+    cast_card_types_this_turn: u16,
     instant_sorcery_cast_this_turn: u64,
     cards_drawn_this_turn: u64,
     cards_discarded_this_turn: u64,
@@ -1311,7 +1312,11 @@ impl SpellView {
                 .program
                 .first()
             {
-                Some(Instruction::Modal(modes) | Instruction::ModalOnce(modes)) => Some(modes),
+                Some(
+                    Instruction::Modal(modes)
+                    | Instruction::ModalOnce(modes)
+                    | Instruction::ModalOncePerTurn(modes),
+                ) => Some(modes),
                 _ => None,
             },
             StackKind::ActivatedAbility { ability } => match self.source_card.activations()
@@ -1818,6 +1823,10 @@ enum Pending {
     OrderTriggers {
         player: Player,
     },
+    EffectKeywordChoice {
+        player: Player,
+        choices: &'static [(&'static str, Keywords)],
+    },
     EffectOptional {
         player: Player,
         skip_to: usize,
@@ -2085,6 +2094,7 @@ pub struct PlayerView {
     pub nonland_permanents_entered_this_turn: u64,
     pub artifact_entered_this_turn: bool,
     pub spells_cast_this_turn: u64,
+    pub cast_card_types_this_turn: u16,
     pub cards_drawn_this_turn: u64,
     pub cards_discarded_this_turn: u64,
     pub life_gain_events_this_turn: u64,
@@ -2121,7 +2131,7 @@ pub struct SpellCostChoiceView {
     pub cost: ManaCost,
 }
 
-/// Legal modes of the currently announced modal spell.
+/// Legal announced modes or named resolution-time keyword choices.
 #[derive(Clone, Debug, Serialize)]
 pub struct ModeChoiceView {
     pub mode: u16,
@@ -2475,6 +2485,7 @@ impl Game {
             extra_land_plays_granted: 0,
             nonland_permanents_entered_this_turn: 0,
             spells_cast_this_turn: 0,
+            cast_card_types_this_turn: 0,
             instant_sorcery_cast_this_turn: 0,
             cards_drawn_this_turn: 0,
             cards_discarded_this_turn: 0,
@@ -2720,6 +2731,7 @@ impl Game {
             | Pending::EffectLibrary { player }
             | Pending::EffectMana { player, .. }
             | Pending::PayCosts { player }
+            | Pending::EffectKeywordChoice { player, .. }
             | Pending::Modes { player }
             | Pending::Retarget { player }
             | Pending::SpellCopy { player, .. }
@@ -4515,6 +4527,13 @@ impl Game {
                     return true;
                 }
             }
+            Pending::EffectKeywordChoice { choices, .. } => {
+                for index in 0..choices.len() {
+                    if emit(Action::ChooseMode { mode: index as u16 }) {
+                        return true;
+                    }
+                }
+            }
             Pending::EffectOptional { .. } => {
                 if emit(Action::ChooseOptional { accept: true })
                     || emit(Action::ChooseOptional { accept: false })
@@ -6258,6 +6277,7 @@ impl Game {
 
     fn begin_turn(&mut self) {
         self.state.limited_exile_plays = None;
+        self.reset_turn_modal_history();
         self.prune_class_levels();
         self.state.sneak_entries = None;
         if let Some(shields) = &mut self.state.player_damage_shields {
@@ -6298,6 +6318,7 @@ impl Game {
             player.nonland_permanents_entered_this_turn = 0;
             player.artifact_entered_this_turn = false;
             player.spells_cast_this_turn = 0;
+            player.cast_card_types_this_turn = 0;
             player.instant_sorcery_cast_this_turn = 0;
             player.cards_drawn_this_turn = 0;
             player.cards_discarded_this_turn = 0;
@@ -6993,6 +7014,7 @@ impl Game {
                 Pending::SpellCost { .. } => "spell_cost",
                 Pending::ActivationCost { .. } => "activation_cost",
                 Pending::Modes { .. } => "spell_mode",
+                Pending::EffectKeywordChoice { .. } => "resolution_keyword",
                 Pending::SneakCostOrder { .. } => "sneak_cost_order",
                 Pending::SneakAdditionalCost { .. } => "sneak_additional_cost",
                 Pending::CounterCostOrder { .. } => "counter_cost_order",
@@ -7057,6 +7079,7 @@ impl Game {
                 nonland_permanents_entered_this_turn: s.players[i]
                     .nonland_permanents_entered_this_turn,
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
+                cast_card_types_this_turn: s.players[i].cast_card_types_this_turn,
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
                 cards_discarded_this_turn: s.players[i].cards_discarded_this_turn,
                 life_gain_events_this_turn: s.players[i].life_gain_events_this_turn,
@@ -7288,7 +7311,19 @@ impl Game {
             } else {
                 Vec::new()
             },
-            mode_choices: if owns_choice && matches!(s.pending, Pending::Modes { .. }) {
+            mode_choices: if owns_choice
+                && let Pending::EffectKeywordChoice { choices, .. } = s.pending
+            {
+                choices
+                    .iter()
+                    .enumerate()
+                    .map(|(index, (text, _))| ModeChoiceView {
+                        mode: index as u16,
+                        text,
+                        additional_mana: None,
+                    })
+                    .collect()
+            } else if owns_choice && matches!(s.pending, Pending::Modes { .. }) {
                 let item = &s.announcing.as_ref().unwrap().item;
                 let modes = item.modes().expect("modal announcement");
                 modes
@@ -7589,6 +7624,9 @@ impl Game {
                         + resolution.continuation.as_ref().map_or(0, |continuation| {
                             std::mem::size_of::<programs::ProgramContinuation>()
                                 + match &**continuation {
+                                    programs::ProgramContinuation::SearchHandCount(objects) => {
+                                        objects.len() * std::mem::size_of::<ObjectRef>()
+                                    }
                                     programs::ProgramContinuation::Return(link) => {
                                         link.additional.len()
                                             * std::mem::size_of::<ReturnCardView>()
@@ -8777,3 +8815,6 @@ mod outside_game;
 #[cfg(test)]
 #[path = "engine_tmt_last_origins_tests.rs"]
 mod tmt_last_origins_tests;
+#[cfg(test)]
+#[path = "engine_tmt_alliance_batch_tests.rs"]
+mod tmt_alliance_batch_tests;

@@ -364,6 +364,7 @@ impl Game {
             | AmountValue::MilledCreatures
             | AmountValue::ChosenX
             | AmountValue::ManaSpent
+            | AmountValue::CastCardTypeCount
             | AmountValue::CastSpellManaValue
             | AmountValue::SpellColors
             | AmountValue::ColorsSpent

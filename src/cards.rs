@@ -1150,6 +1150,7 @@ pub(crate) enum Instruction {
     },
     /// Definition-only triggered header whose modes may each be chosen once per source incarnation.
     ModalOnce(&'static [SpellMode]),
+    ModalOncePerTurn(&'static [SpellMode]),
     /// Immediately lose the game, independently of life total or state-based actions.
     LoseGame(PlayerSet),
     WinIfDistinctSubtypeNames {
@@ -1269,6 +1270,10 @@ pub(crate) enum Instruction {
         amount: u16,
         skip: usize,
     },
+    MayPayEnteringPower {
+        skip: usize,
+    },
+    PayEnteringPowerLifeAndCounters,
     MayPayOpponentLife {
         amount: u16,
         skip: usize,
@@ -1461,6 +1466,7 @@ pub(crate) enum Instruction {
         counter: Option<(CounterKind, u64)>,
         role: Option<Card>,
     },
+    ChooseSourceKeyword(&'static [(&'static str, Keywords)]),
     GrantKeywords {
         subject: Subject,
         keywords: Keywords,
@@ -1707,6 +1713,7 @@ pub(crate) enum AmountValue {
     ColorsSpent,
     SpellColors,
     CastSpellManaValue,
+    CastCardTypeCount,
     SourcePower,
     GreatestCreaturePower(CreatureFilter),
     #[allow(
@@ -2613,6 +2620,7 @@ pub(crate) enum TriggerCondition {
     Chapter {
         number: u16,
     },
+    ManaSpentBelowValue(&'static TriggerCondition),
     ManaSpent {
         minimum: u64,
         increment: bool,
@@ -2812,12 +2820,26 @@ impl TriggerCondition {
             _ => None,
         }
     }
+    pub(crate) fn requires_discounted_cast(self) -> bool {
+        match self {
+            Self::ManaSpentBelowValue(_) => true,
+            Self::InZone { event, .. }
+            | Self::Granted(event)
+            | Self::OncePerTurn(event)
+            | Self::DuringOpponentsTurn(event)
+            | Self::When { event, .. }
+            | Self::InterveningIf { event, .. }
+            | Self::ManaSpent { event, .. } => event.requires_discounted_cast(),
+            _ => false,
+        }
+    }
     pub(crate) fn mana_spent_rule(self) -> Option<(u64, bool)> {
         match self {
             Self::ManaSpent {
                 minimum, increment, ..
             } => Some((minimum, increment)),
             Self::InZone { event: e, .. }
+            | Self::ManaSpentBelowValue(e)
             | Self::Granted(e)
             | Self::OncePerTurn(e)
             | Self::DuringOpponentsTurn(e)
@@ -2831,6 +2853,7 @@ impl TriggerCondition {
         match self {
             Self::Granted(_) | Self::GrantedAttacks => true,
             Self::InZone { event: e, .. }
+            | Self::ManaSpentBelowValue(e)
             | Self::OncePerTurn(e)
             | Self::DuringOpponentsTurn(e)
             | Self::When { event: e, .. }
@@ -2843,6 +2866,7 @@ impl TriggerCondition {
         match self {
             Self::DuringOpponentsTurn(_) => true,
             Self::InZone { event, .. }
+            | Self::ManaSpentBelowValue(event)
             | Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::ManaSpent { event, .. }
@@ -2871,6 +2895,7 @@ impl TriggerCondition {
     pub(crate) fn event(self) -> Self {
         match self {
             Self::InZone { event, .. }
+            | Self::ManaSpentBelowValue(event)
             | Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
@@ -2884,6 +2909,7 @@ impl TriggerCondition {
         match self {
             Self::OncePerTurn(_) => true,
             Self::InZone { event, .. }
+            | Self::ManaSpentBelowValue(event)
             | Self::Granted(event)
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. }
