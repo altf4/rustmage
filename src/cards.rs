@@ -709,6 +709,8 @@ pub enum EffectChoiceKind {
     /// Choose distinct untapped permanents as a non-targeting activation cost.
     TapPermanents(u16),
     RemoveCreatureCounters(u16),
+    /// Remove one counter of this kind from a creature you control (not a target).
+    RemoveCreatureCounter(CounterKind),
     UntapLands {
         maximum: u16,
     },

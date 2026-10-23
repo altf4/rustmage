@@ -1644,6 +1644,16 @@ impl Game {
                 };
                 self.state.announcing.as_mut().unwrap().total_cost = Some(total);
             }
+            let announcement = self.state.announcing.as_ref().unwrap();
+            if announcement.total_cost.is_none()
+                && matches!(announcement.item.kind, StackKind::ActivatedAbility { .. })
+            {
+                let base = announcement
+                    .cost
+                    .unwrap_or_else(|| announcement.cost_options().next().unwrap());
+                let total = self.activation_total_cost(announcement, base);
+                self.state.announcing.as_mut().unwrap().total_cost = Some(total);
+            }
             if self
                 .state
                 .announcing
@@ -1658,6 +1668,14 @@ impl Game {
             }
             let announcement = self.state.announcing.as_ref().unwrap();
             self.state.pending = if announcement
+                .additional_cost()
+                .is_some_and(|s| s.kind.creature_counter_requirement().is_some())
+                && announcement.additional.is_none()
+            {
+                Pending::CreatureCounterCost {
+                    player: announcement.item.controller,
+                }
+            } else if announcement
                 .additional_cost()
                 .is_some_and(forage::is_forage_cost)
                 && announcement.forage.as_ref().is_some_and(|f| !f.complete())
@@ -1707,6 +1725,8 @@ impl Game {
                         | EffectChoiceKind::Sacrifice
                         | EffectChoiceKind::SacrificeCreatureOrToken
                         | EffectChoiceKind::ReturnToHand
+                        | EffectChoiceKind::RemoveCreatureCounters(_)
+                        | EffectChoiceKind::RemoveCreatureCounter(_)
                 ) || forage::is_forage_cost(spec)
                     || evidence::threshold(spec).is_some()
             }) && let Some(payment) = announcement.payment.take()

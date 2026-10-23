@@ -12,6 +12,7 @@
 //! Numeric mana-allocation domains are finite and streamed without materializing
 //! their potentially u32-wide action spaces; no arbitrary search cap is used.
 use super::*;
+type CounterFundingRequirement = (u16, Vec<(ObjectRef, CounterKind)>, Option<CounterKind>);
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct LinkedFundingGoal {
     pub goal: FundingGoal,
@@ -19,7 +20,7 @@ pub(super) struct LinkedFundingGoal {
     pub convoke: bool,
     pub evidence: Option<u16>,
     pub group: Vec<(ObjectRef, AdditionalCost)>,
-    pub counters: Option<(u16, Vec<(ObjectRef, CounterKind)>)>,
+    pub counters: Option<CounterFundingRequirement>,
     pub deferred: Option<Box<DeferredFundingCost>>,
 }
 impl LinkedFundingGoal {

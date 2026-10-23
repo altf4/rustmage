@@ -273,6 +273,7 @@ impl Game {
                 |counter_payment| {
                     let fundable = || {
                         ability.cost.mana_options().any(|cost| {
+                            let cost = self.reduced_activation_cost(actor, card, cost);
                             self.activation_can_fund(
                                 FundingGoal {
                                     reserve: None,
@@ -335,6 +336,7 @@ impl Game {
                     let mut done = false;
                     let mut seen = std::collections::HashSet::new();
                     for cost in ability.cost.mana_options() {
+                        let cost = self.reduced_activation_cost(actor, card, cost);
                         payments(
                             self.state.players[actor.index()].mana,
                             cost.colored,

@@ -372,6 +372,10 @@ impl Game {
             return self.can_fund(goal);
         };
         let source = goal.source.as_ref().expect("activation source").0;
+        if let Some((amount, kind)) = spec.kind.creature_counter_requirement() {
+            let purpose = self.funding_purpose(&goal);
+            return self.creature_counter_fundable_kind(goal, purpose, amount, &[], kind);
+        }
         if self.linked_funding_can_probe(goal.actor)
             && let Some(result) = self.linked_deferred_funding(
                 goal.clone(),
@@ -478,10 +482,18 @@ impl Game {
         self.pay_additional_cost_spec(a, spec);
     }
     pub(super) fn pay_additional_cost_spec(&mut self, a: &mut Announcement, spec: AdditionalCost) {
-        if let EffectChoiceKind::RemoveCreatureCounters(amount) = spec.kind {
+        if let Some((amount, expected)) = spec.kind.creature_counter_requirement() {
             let selected = a.creature_counter_cost.as_ref().unwrap();
             assert_eq!(selected.len(), usize::from(amount));
             for &(r, kind) in selected.iter() {
+                assert!(expected.is_none_or(|k| k == kind));
+                assert!(
+                    self.on_battlefield(r.card)
+                        && self.object_ref(r.card) == r
+                        && self.is_creature(r.card)
+                        && self.state.objects[r.card as usize].controller == a.item.controller
+                        && self.counter_count(r.card, kind) > 0
+                );
                 self.pay_counters(r.card, &Counters::of(kind, 1));
             }
             a.additional_paid = true;
@@ -574,6 +586,7 @@ impl Game {
             | EffectChoiceKind::OptionalBlightCost(_)
             | EffectChoiceKind::OptionalBeholdType(_)
             | EffectChoiceKind::RemoveCreatureCounters(_)
+            | EffectChoiceKind::RemoveCreatureCounter(_)
             | EffectChoiceKind::TapPermanents(_)
             | EffectChoiceKind::UntapLands { .. }
             | EffectChoiceKind::PowerDifferenceBoost

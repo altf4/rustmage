@@ -171,6 +171,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CantLoseGameAndOpponentsCantWin
                             | crate::cards::StaticAbilityFragment::NoncreatureConspire
                             | crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
+                            | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_)
                             | crate::cards::StaticAbilityFragment::ControlledSpellsUncounterable(_)
                             | crate::cards::StaticAbilityFragment::ControlledCreatureTrigger { .. }
                             | crate::cards::StaticAbilityFragment::SelfUntap(_)

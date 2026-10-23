@@ -53,6 +53,7 @@ fn finish(g: &mut Game) {
                         | Action::FinishTargets
                         | Action::ChooseSpellCost { .. }
                         | Action::ChooseActivationCost { .. }
+                        | Action::ChooseX { value: 0 }
                 )
             })
             .unwrap_or_else(|| panic!("payment at {:?}", g.state.pending));

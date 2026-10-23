@@ -117,7 +117,7 @@ impl Game {
             return f.selected.first().copied().map(|r| (r, food_cost()));
         }
         if a.additional_cost()
-            .is_some_and(|s| matches!(s.kind, EffectChoiceKind::RemoveCreatureCounters(_)))
+            .is_some_and(|s| s.kind.creature_counter_requirement().is_some())
         {
             return None;
         }

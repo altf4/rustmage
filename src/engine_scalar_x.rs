@@ -260,12 +260,20 @@ impl Game {
         });
         let fundable = |value: u32| {
             base.generic.checked_add(value).is_some_and(|generic| {
+                let cost = self.reduced_activation_cost(
+                    a.item.controller,
+                    a.item.object.card,
+                    ManaCost {
+                        colored: base.colored,
+                        generic,
+                    },
+                );
                 self.activation_can_fund(
                     FundingGoal {
                         reserve: None,
                         actor: a.item.controller,
-                        required: base.colored,
-                        generic,
+                        required: cost.colored,
+                        generic: cost.generic,
                         source: Some((
                             a.item.object,
                             ability,

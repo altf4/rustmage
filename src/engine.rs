@@ -194,6 +194,9 @@ mod spell_costs;
 #[path = "engine_target_costs.rs"]
 mod target_costs;
 pub use additional_costs::AdditionalCostView;
+#[path = "engine_activation_costs.rs"]
+mod activation_costs;
+
 #[path = "engine_activations.rs"]
 mod activations;
 #[path = "engine_connive.rs"]
@@ -7188,7 +7191,15 @@ impl Game {
                     .filter(|(_, cost)| self.announcement_cost_fundable(a, *cost))
                     .map(|(index, cost)| SpellCostChoiceView {
                         index: index as u16,
-                        cost,
+                        cost: if matches!(a.item.kind, StackKind::ActivatedAbility { .. }) {
+                            self.reduced_activation_cost(
+                                a.item.controller,
+                                a.item.object.card,
+                                cost,
+                            )
+                        } else {
+                            cost
+                        },
                     })
                     .collect()
             } else {
@@ -8599,6 +8610,10 @@ mod tmt_class_tests;
 #[cfg(test)]
 #[path = "engine_tmt_land_audit_tests.rs"]
 mod tmt_land_audit_tests;
+
+#[cfg(test)]
+#[path = "engine_tmt_activation_cost_tests.rs"]
+mod tmt_activation_cost_tests;
 
 #[cfg(test)]
 #[path = "engine_tmt_mutagen_tests.rs"]

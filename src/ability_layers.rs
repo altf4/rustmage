@@ -121,6 +121,7 @@ pub(crate) enum StaticAbilityFragment {
         keywords: Keywords,
     },
     /// A rule effect based on current counters, including named counters (CR613.11).
+    ArtifactTokenActivationReduction(u32),
     ControlledCreatureCounterRule {
         kind: Option<CounterKind>,
         keywords: Keywords,
