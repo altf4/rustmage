@@ -1913,6 +1913,50 @@
       "610.3",
       "701.4a"
     ],
-    "development_review": "Green author performed independent read-only development audits and reported fixed frontdoor/ordering issues; this does not count as final published-head review."
+    "development_review": "Green author performed independent read-only development audits and reported fixed frontdoor/ordering issues; this does not count as final published-head review.",
+    "native": {
+      "source_commit": "71973015",
+      "tests": 3240,
+      "ignored": 1,
+      "seconds": 129.34,
+      "resource_report": "088e741e911b41fb8f2ea712cbc020c9",
+      "peak_memory_gib": 2.8
+    },
+    "clippy": {
+      "source_commit": "5328febd7675059176ef97bd7e8784ddc4576a12",
+      "seconds": 41.61,
+      "resource_report": "e17a1e351dd3469297f7d75fb7e02af6",
+      "peak_memory_gib": 2.4
+    },
+    "provenance_seconds": 4.034
+  },
+  "linked_forage_followup": {
+    "focused": {
+      "tests": 2,
+      "seconds": 0.31,
+      "resource_report": "f2545f395d1642a0a7b8ef9c09a89083"
+    },
+    "rules": [
+      "601.2b",
+      "601.2f",
+      "601.2g",
+      "601.2h",
+      "610.3",
+      "701.61a"
+    ],
+    "semantics": "Declare exact Forage route before targets; perform mana abilities only after total-cost lock; use a newly returned Food or third actual graveyard card at payment. The Black alternative remains a distinct mana total.",
+    "tests": "Both seats, raw/index owned parent disposal and restore, wrong-actor atomicity, no pretarget mana, exact route rejection, locked total, private Forage view, actual mana payment and final destroy. Food line uses a supported physical Candy Trail returned from a copied Banishing Light controlled through a real paid Confiscate.",
+    "development_attempt": {
+      "resource_report": "727aa00609c9459ea72aa3a626352488",
+      "status": "one test passed; Food fixture rejected unsupported Gingerbrute before exercising runtime. Replaced with supported Candy Trail and paid Confiscate; final two tests pass."
+    },
+    "read_source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "read_source_pins": {
+      "Mage.Sets/src/mage/cards/f/FeedTheCycle.java": "7f510dfae89794cc94eda97e1cb4c09fe153470f5aa72e76bf814a0f1790cdd1",
+      "Mage/src/main/java/mage/abilities/costs/common/ForageCost.java": "167c6de322fe5d8f3059e6141da2c9173a6ce06cfec5bef1fcd8690f3af82762",
+      "Mage/src/main/java/mage/abilities/costs/OrCost.java": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10",
+      "Mage.Sets/src/mage/cards/c/CandyTrail.java": "eed1559b35539babf2375a6dd7c4106bfde17a038cac43de8fb8b3d9ba1408e2",
+      "Mage.Sets/src/mage/cards/c/Confiscate.java": "7a30aa75cb6e8eddf008993c6ae3d76df09899f1740347e490228ec5ce3b203b"
+    }
   }
 }
