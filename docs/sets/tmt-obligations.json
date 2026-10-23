@@ -3839,7 +3839,7 @@
       "oracle_id": "6a51bb21-0c01-4ad8-99d7-17685db90b69",
       "name": "The Last Ronin's Technique",
       "definition": "src/card_definitions/tmt/the_last_ronin_s_technique.rs",
-      "state": "gated",
+      "state": "implemented; integrated rules and release validation pending",
       "printed_obligations": [
         {
           "face": "The Last Ronin's Technique",
@@ -3854,7 +3854,13 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/the_last_ronin_s_technique.json",
+        "src/card_definitions/tmt/ninja_turtle_spirit_1_1_white.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 7
     },
     {
       "oracle_id": "b1462c82-7702-451b-b612-990353a79ac4",

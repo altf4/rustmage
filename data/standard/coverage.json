@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "dee56a96c51cff15c79a40c157d3a12045a9f6c0e81228b95013d110f4fba88f",
+  "catalogue_version": "d5ffca2a24cb295780dd754f2132303dee85541f6bc0d611f39cf0bb88d24ebb",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2388,
-  "implemented_total": 2394,
-  "token_definitions": 112,
+  "implemented_standard_cards": 2389,
+  "implemented_total": 2395,
+  "token_definitions": 113,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
   "omen_definitions": 13,
@@ -185,8 +185,8 @@
     },
     "tmt": {
       "total": 189,
-      "complete": 97,
-      "gated": 92
+      "complete": 98,
+      "gated": 91
     },
     "w17": {
       "total": 1,
@@ -35902,8 +35902,8 @@
     {
       "name": "The Last Ronin's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/the_last_ronin_s_technique.rs",
       "set": "tmt"
     },

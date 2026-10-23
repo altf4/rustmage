@@ -19,8 +19,8 @@ Oracle facts remain pinned in `data/standard/cards.json`. The
 [obligation ledger](tmt-obligations.json) accounts for every printed line and
 canonical definition, including reprints; it is not a second membership source.
 
-Initial admission: **71/195**, **124 gated**. Current admission: **103/195**,
-**92 gated**, zero unresolved. The 71 inherited admission flags still require
+Initial admission: **71/195**, **124 gated**. Current admission: **104/195**,
+**91 gated**, zero unresolved. The 71 inherited admission flags still require
 source/rules audits. **32 new physical cards have rules scenarios; 26 have integrated release validation**;
 zero have independent final published-head reviews or upstream merges.
 
@@ -172,3 +172,11 @@ post-token Ninja thresholds, and rounded-up milling/life loss. Focused log:
 Integrated full release validation for these six remains pending. Next: The Last
 Ronin’s Technique using the existing defender-selection and attacking-entry
 planner, plus its missing white 1/1 Ninja Turtle Spirit token.
+
+The Last Ronin’s Technique and its white Ninja Turtle Spirit token are now
+implemented, with all-target Clippy and ten direct-authoring/portability checks
+passing. Its new scenario covers normal/Sneak token entry, individually chosen
+player/planeswalker defenders, actual combat, and persistence through the end
+step. This seventh card is awaiting integrated rules/release validation together
+with the preceding six. Admission flags are 104/195; the additional flag is not
+yet a tested-card claim.

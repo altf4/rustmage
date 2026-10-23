@@ -1295,3 +1295,77 @@ fn tmt_sneak_dark_leo_token_counts_before_half_loss_and_only_attacking_own_ninja
         }
     }
 }
+#[test]
+fn tmt_sneak_last_ronin_creates_white_spirits_with_individual_defenders_and_no_sacrifice() {
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            let mut g = setup(p);
+            let returned = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let source = named(&mut g, p, "The Last Ronin's Technique", Zone::Hand);
+            let walker = named(&mut g, p.other(), "Kaito, Cunning Infiltrator", Zone::Hand);
+            g.move_object(walker, Zone::Battlefield);
+            let reference = g.object_ref(walker);
+            let loyalty = g.counter_count(walker, CounterKind::Loyalty);
+            if paid {
+                attackers(&mut g, returned, Some(reference));
+                checked(&mut g, Action::FinishBlockers);
+                sneak(&mut g, source, returned, None);
+                checked(&mut g, Action::Pass);
+                checked(&mut g, Action::Pass);
+                assert!(matches!(g.state.pending, Pending::Mobilize { .. }));
+                assert!(g.observe(p.other()).mobilize_choice.is_none());
+                reject(
+                    &mut g,
+                    Action::ChooseMobilizeDefender {
+                        defender: CombatDefender::Player(p),
+                    },
+                );
+                for defender in [
+                    CombatDefender::Player(p.other()),
+                    CombatDefender::Planeswalker(reference),
+                    CombatDefender::Player(p.other()),
+                ] {
+                    checked(&mut g, Action::ChooseMobilizeDefender { defender });
+                }
+            } else {
+                cast(&mut g, source, None, &[]);
+            }
+            settle(&mut g);
+            let tokens: Vec<_> = g
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter(|(_, o)| {
+                    o.zone == Zone::Battlefield
+                        && o.controller == p
+                        && o.card
+                            == Card::from_name("@token/ninja_turtle_spirit_1_1_white").unwrap()
+                })
+                .map(|(i, _)| i as CardId)
+                .collect();
+            assert_eq!(tokens.len(), 3);
+            for &id in &tokens {
+                let view = g.object_view(id);
+                assert!(view.is_token());
+                assert_eq!((view.power, view.toughness), (1, 1));
+                assert_eq!(view.colors, 1);
+                for subtype in ["Ninja", "Turtle", "Spirit"] {
+                    assert!(g.has_subtype(id, subtype));
+                }
+                assert_eq!(view.tapped, paid);
+                assert_eq!(view.attacking, paid);
+            }
+            assert!(g.observe(p).delayed_sacrifices.is_empty());
+            if paid {
+                checked(&mut g, Action::Pass);
+                checked(&mut g, Action::Pass);
+                settle(&mut g);
+                assert_eq!(g.state.players[p.other().index()].life, 18);
+                assert_eq!(g.counter_count(walker, CounterKind::Loyalty), loyalty - 1);
+            }
+            super::ability_timeline_tests::next_turn(&mut g);
+            assert!(tokens.iter().all(|&id| g.on_battlefield(id)));
+        }
+    }
+}

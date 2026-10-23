@@ -82,7 +82,7 @@ pub(super) enum TokenCompletion {
     /// One mass creation event; original group indices retain exact recipients.
     RoleAttachMany(Vec<ObjectRef>),
     Mobilize,
-    AttackingCopies,
+    Attacking,
     MobilizeDelayed(Box<SpellView>),
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -862,7 +862,7 @@ impl Game {
         self.stage_copy_creation_completion(player, recipe, amount, TokenCompletion::None);
     }
     pub(super) fn stage_attacking_copy_creation(&mut self, player: Player, recipe: CopyRecipe) {
-        self.stage_copy_creation_completion(player, recipe, 1, TokenCompletion::AttackingCopies);
+        self.stage_copy_creation_completion(player, recipe, 1, TokenCompletion::Attacking);
     }
     fn stage_copy_creation_completion(
         &mut self,
@@ -874,7 +874,7 @@ impl Game {
         if amount == 0 {
             return;
         }
-        let attacking = matches!(completion, TokenCompletion::AttackingCopies);
+        let attacking = matches!(completion, TokenCompletion::Attacking);
         let first_this_turn = self.begin_token_event(player, amount);
         let batch = TokenBatch {
             first_this_turn,
@@ -1215,7 +1215,7 @@ impl Game {
                             };
                             if matches!(
                                 batch.completion,
-                                TokenCompletion::Mobilize | TokenCompletion::AttackingCopies
+                                TokenCompletion::Mobilize | TokenCompletion::Attacking
                             ) {
                                 let delayed_sacrifice =
                                     matches!(batch.completion, TokenCompletion::Mobilize);

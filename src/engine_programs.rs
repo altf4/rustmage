@@ -2216,6 +2216,11 @@ impl Game {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
+                Instruction::IfSneakPaid { skip } => {
+                    if item.sneak.is_none() {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::IfKicked { skip } => {
                     if !item.cast.is_some_and(|c| c.kicker == Some(true)) {
                         self.state.resolving.as_mut().unwrap().pc += skip;
@@ -3129,6 +3134,18 @@ impl Game {
                         false,
                         replacements::TokenCompletion::JobAttach(item.object),
                     );
+                }
+                Instruction::CreateTokensAttacking { token, amount } => {
+                    self.stage_token_creation(
+                        item.controller,
+                        token,
+                        u128::from(amount),
+                        true,
+                        replacements::TokenCompletion::Attacking,
+                    );
+                    if self.advance_replacements(false) {
+                        return;
+                    }
                 }
                 Instruction::CreateTokens {
                     token,

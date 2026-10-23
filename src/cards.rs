@@ -1112,6 +1112,9 @@ pub(crate) enum Instruction {
         token: Card,
         amount: u16,
     },
+    IfSneakPaid {
+        skip: usize,
+    },
     IfKicked {
         skip: usize,
     },
@@ -1490,6 +1493,10 @@ pub(crate) enum Instruction {
         power: i32,
         toughness: i32,
         keywords: Keywords,
+    },
+    CreateTokensAttacking {
+        token: Card,
+        amount: u16,
     },
     CreateTokens {
         token: Card,
