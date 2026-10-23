@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "5a11ee4d6fed810c5b2228264be9477d092fd70023c11bd669591a23775fe94a",
+  "catalogue_version": "f75568ed04ef544bacd3de5bec038d5df56e7e4cb2bf463d6c8face39e953375",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2405,
-  "implemented_total": 2411,
+  "implemented_standard_cards": 2408,
+  "implemented_total": 2414,
   "token_definitions": 113,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -185,8 +185,8 @@
     },
     "tmt": {
       "total": 189,
-      "complete": 114,
-      "gated": 75
+      "complete": 117,
+      "gated": 72
     },
     "w17": {
       "total": 1,
@@ -22134,8 +22134,8 @@
     {
       "name": "Michelangelo, Mutant BFF",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/michelangelo_mutant_bff.rs",
       "set": "tmt"
     },
@@ -22254,8 +22254,8 @@
     {
       "name": "Mikey & Leo, Chaos & Order",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/mikey_leo_chaos_order.rs",
       "set": "tmt"
     },
@@ -23310,8 +23310,8 @@
     {
       "name": "Mutant Chain Reaction",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/mutant_chain_reaction.rs",
       "set": "tmt"
     },

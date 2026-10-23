@@ -405,6 +405,18 @@ impl CharacteristicQuery<'_> {
                         {
                             keywords = keywords.union(grant);
                         }
+                        StaticAbilityFragment::ControlledCreatureCounterRule {
+                            kind,
+                            keywords: grant,
+                        } if object.controller == target.controller
+                            && self.is_creature(id)
+                            && kind.map_or_else(
+                                || self.counter_amounts(id).has_any(),
+                                |k| self.counter_count(id, k) > 0,
+                            ) =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
                         StaticAbilityFragment::ControlledTappedKeywords {
                             other,
                             keywords: grant,

@@ -35,6 +35,7 @@ impl Game {
             matches!(
                 a.condition.event(),
                 TriggerCondition::OtherCreatureCountersAdded { .. }
+                    | TriggerCondition::CreatureCountersPutByYou
                     | TriggerCondition::StateCounterAtLeast { .. }
             )
         }) {
@@ -179,7 +180,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CantDrawCards
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
                             | crate::cards::StaticAbilityFragment::ChosenCreatureKeywords(..)
-                            | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureCounterRule { .. }
                             | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. }
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..)

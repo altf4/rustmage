@@ -2613,6 +2613,7 @@ pub(crate) enum TriggerCondition {
         kind: CounterKind,
         excluded_subtype: &'static str,
     },
+    CreatureCountersPutByYou,
     SelfCountersAdded {
         kind: CounterKind,
         controller_only: bool,

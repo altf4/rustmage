@@ -118,6 +118,11 @@ pub(crate) enum StaticAbilityFragment {
         other: bool,
         keywords: Keywords,
     },
+    /// A rule effect based on current counters, including named counters (CR613.11).
+    ControlledCreatureCounterRule {
+        kind: Option<CounterKind>,
+        keywords: Keywords,
+    },
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
     StaticModifier(u16, StaticModifier),

@@ -515,3 +515,32 @@ No TMT-specific simulation acceptance or final independent reviews are claimed.
 Next: Mutagen Man; Mikey & Leo; Ray Fillet; Michelangelo, Mutant BFF; and
 Mutant Chain Reaction, with shared activation-cost and counter-trigger support.
 The full set goal remains open, with one implementation PR only after acceptance.
+
+## Counter-consumer candidates and inherited land audit
+
+Mikey & Leo, Chaos & Order; Michelangelo, Mutant BFF; and Mutant Chain Reaction
+pass the complete 159-scenario TMT focused suite. The shared counter observer
+records the placing player, includes the source itself, and retains existing
+other-creature exclusions. The once-per-turn limit is consumed at triggering.
+A current any-counter blocking rule applies after characteristic layers under
+CR613.11, so removing recipient abilities cannot erase it. Optional zero targets,
+all-targets-illegal fizzle, failed destruction, control changes, prevented and
+entry counters, all counter kinds and replacement batches are exercised.
+
+Admission is 123/195, 72 gated, zero unresolved. 52 newly authored physical
+candidates have focused evidence; 49 have integrated release evidence. Ten
+inherited land audits are candidates: the five TMT gainlands use new paid-land
+scenarios; five basic reprints reuse their canonical source pins and the existing
+shared land-play/payment/privacy/branching scenarios. Their typed behavior is
+retained. Integrated release validation is pending, including paid public casts
+of the three newly admitted cards; 61 other inherited flags remain unaudited.
+
+The first focused run found three fixture setup failures, corrected before the
+159-scenario pass. An accidental production-LTO focused build was explicitly
+stopped with its log and guard report retained; no successful test result is
+claimed for that run. Subsequent focused builds use dev or release-test profiles.
+
+Parallel isolated authors now own five mana consumers, eight spell/entry consumers
+and fifteen inherited nonland audits. The integrator owns Mutagen Man/Ray Fillet
+activation-cost mechanics and all combined catalogue regeneration and validation.
+The full goal and one complete-set PR boundary remain open.

@@ -1,7 +1,7 @@
 //! Frozen departure counters, permanent animation, and their complete consumers.
 use super::ability_timeline_tests::{checked, named, settle, setup};
 use super::*;
-fn candidate(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
+pub(super) fn candidate(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
     let definition = Card::from_name(name).expect("pinned candidate");
     if zone == Zone::Battlefield && definition.is_supported() {
         let id = super::tests::spawn(g, p, definition, Zone::Hand);
@@ -28,7 +28,7 @@ fn candidate(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
         super::tests::spawn(g, p, definition, zone)
     }
 }
-fn reject(g: &mut Game, action: Action) {
+pub(super) fn reject(g: &mut Game, action: Action) {
     let before = g.snapshot();
     let revision = g.revision();
     assert!(g.apply(g.actor().unwrap(), action).is_err());
@@ -46,13 +46,21 @@ fn finish(g: &mut Game) {
         let action = g
             .legal_actions()
             .into_iter()
-            .find(|a| matches!(a, Action::PayCosts { .. } | Action::FinishTargets))
+            .find(|a| {
+                matches!(
+                    a,
+                    Action::PayCosts { .. }
+                        | Action::FinishTargets
+                        | Action::ChooseSpellCost { .. }
+                        | Action::ChooseActivationCost { .. }
+                )
+            })
             .unwrap_or_else(|| panic!("payment at {:?}", g.state.pending));
         checked(g, action);
     }
     panic!("unfinished payment");
 }
-fn cast_candidate(g: &mut Game, id: CardId, targets: &[Target]) {
+pub(super) fn cast_candidate(g: &mut Game, id: CardId, targets: &[Target]) {
     if g.state.objects[id as usize].card.is_supported() {
         checked(g, Action::AnnounceCast { card: id });
     } else {
@@ -66,7 +74,7 @@ fn cast_candidate(g: &mut Game, id: CardId, targets: &[Target]) {
     }
     finish(g);
 }
-fn activate(g: &mut Game, id: CardId, targets: &[Target]) {
+pub(super) fn activate(g: &mut Game, id: CardId, targets: &[Target]) {
     checked(
         g,
         Action::AnnounceActivate {
@@ -80,10 +88,10 @@ fn activate(g: &mut Game, id: CardId, targets: &[Target]) {
     }
     finish(g);
 }
-fn food(g: &mut Game, p: Player) -> CardId {
+pub(super) fn food(g: &mut Game, p: Player) -> CardId {
     named(g, p, "@token/283fd83a9aec83a51b736926", Zone::Battlefield)
 }
-fn mutagens(g: &Game, p: Player) -> usize {
+pub(super) fn mutagens(g: &Game, p: Player) -> usize {
     g.state
         .objects
         .iter()

@@ -8591,6 +8591,14 @@ mod tmt_disappear_tests;
 #[path = "engine_tmt_class_tests.rs"]
 mod tmt_class_tests;
 #[cfg(test)]
+#[path = "engine_tmt_land_audit_tests.rs"]
+mod tmt_land_audit_tests;
+
+#[cfg(test)]
+#[path = "engine_tmt_mutagen_tests.rs"]
+mod tmt_mutagen_tests;
+
+#[cfg(test)]
 #[path = "engine_tmt_departure_tests.rs"]
 mod tmt_departure_tests;
 #[cfg(test)]

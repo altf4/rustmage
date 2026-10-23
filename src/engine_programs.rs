@@ -248,19 +248,27 @@ impl Game {
                 .counter_sources
                 .iter()
                 .copied()
-                .filter(|&id| id != object.card)
                 .map(|id| self.object_view(id))
                 .collect();
             for source in observers {
                 for (index, ability) in source.card.triggers().iter().enumerate() {
-                    if let TriggerCondition::OtherCreatureCountersAdded {
-                        kind: expected,
-                        excluded_subtype,
-                    } = ability.condition.event()
-                        && expected == kind
+                    let matches = match ability.condition.event() {
+                        TriggerCondition::OtherCreatureCountersAdded {
+                            kind: expected,
+                            excluded_subtype,
+                        } => {
+                            source.reference != object
+                                && expected == kind
+                                && !recipient.has_subtype(excluded_subtype)
+                        }
+                        TriggerCondition::CreatureCountersPutByYou => {
+                            source.controller == placed_by
+                        }
+                        _ => false,
+                    };
+                    if matches
                         && recipient.controller == source.controller
                         && recipient.is_creature()
-                        && !recipient.has_subtype(excluded_subtype)
                     {
                         self.queue_trigger(&source, index);
                     }
@@ -619,6 +627,7 @@ impl Game {
                     | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::OtherCreatureCountersAdded { .. }
+                    | TriggerCondition::CreatureCountersPutByYou
                     | TriggerCondition::OpponentAttacked
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::SelfAttacks

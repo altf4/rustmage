@@ -530,7 +530,7 @@
       "oracle_id": "8683341a-e836-41e5-9034-4da09eb0ab42",
       "name": "Dimension X",
       "definition": "src/card_definitions/tmt/dimension_x.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Dimension X",
@@ -546,7 +546,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_land_audit_tests.rs",
+        "src/card_definitions/tmt/dimension_x.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 18
     },
     {
       "oracle_id": "8f0777bc-4fca-4601-beed-1fd060f28075",
@@ -918,7 +923,7 @@
       "oracle_id": "063dd25b-d4b4-4e09-acae-8c52dcb40803",
       "name": "Foot Headquarters",
       "definition": "src/card_definitions/tmt/foot_headquarters.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Foot Headquarters",
@@ -934,7 +939,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_land_audit_tests.rs",
+        "src/card_definitions/tmt/foot_headquarters.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 18
     },
     {
       "oracle_id": "2043fbde-48c4-4a77-8911-8991d77de1eb",
@@ -994,7 +1004,7 @@
       "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
       "name": "Forest",
       "definition": "src/card_definitions/fra/forest.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Forest",
@@ -1008,7 +1018,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/fra/forest.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 18
     },
     {
       "oracle_id": "5b865275-4114-44d0-9832-ae5d3b4efba4",
@@ -1294,7 +1309,7 @@
       "oracle_id": "01ee70d4-6527-45ae-9600-bd3d16b3037d",
       "name": "Illegitimate Business",
       "definition": "src/card_definitions/tmt/illegitimate_business.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Illegitimate Business",
@@ -1310,7 +1325,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_land_audit_tests.rs",
+        "src/card_definitions/tmt/illegitimate_business.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 18
     },
     {
       "oracle_id": "4f02aa99-481c-4089-8f7c-cfe7eaa7dda0",
@@ -1365,7 +1385,7 @@
       "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
       "name": "Island",
       "definition": "src/card_definitions/fra/island.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Island",
@@ -1379,7 +1399,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/fra/island.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 18
     },
     {
       "oracle_id": "90b1226f-4c90-47fd-98f3-ad4edd3b3518",
@@ -2064,7 +2089,7 @@
       "oracle_id": "fe1eb8b3-c605-4711-a057-ed3565bfe75c",
       "name": "Michelangelo, Mutant BFF",
       "definition": "src/card_definitions/tmt/michelangelo_mutant_bff.rs",
-      "state": "gated",
+      "state": "focused tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Michelangelo, Mutant BFF",
@@ -2079,7 +2104,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_mutagen_tests.rs",
+        "src/card_definitions/tmt/michelangelo_mutant_bff.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 18
     },
     {
       "oracle_id": "170ab932-9d50-4ce7-9a42-08e1edce7e7c",
@@ -2149,7 +2179,7 @@
       "oracle_id": "a86117c1-b83d-4350-9a10-a23b7e67e1bd",
       "name": "Mikey & Leo, Chaos & Order",
       "definition": "src/card_definitions/tmt/mikey_leo_chaos_order.rs",
-      "state": "gated",
+      "state": "focused tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Mikey & Leo, Chaos & Order",
@@ -2163,7 +2193,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_mutagen_tests.rs",
+        "src/card_definitions/tmt/mikey_leo_chaos_order.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 18
     },
     {
       "oracle_id": "0d80d0f7-a436-431c-a54e-e7dd7dbba8de",
@@ -2238,7 +2273,7 @@
       "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
       "name": "Mountain",
       "definition": "src/card_definitions/fra/mountain.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Mountain",
@@ -2252,7 +2287,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/fra/mountain.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 18
     },
     {
       "oracle_id": "bae5dc68-1fd1-428d-bee7-c238e07b21ea",
@@ -2349,7 +2389,7 @@
       "oracle_id": "ea9fc868-374b-4acc-be0d-4283907b4524",
       "name": "Mutant Chain Reaction",
       "definition": "src/card_definitions/tmt/mutant_chain_reaction.rs",
-      "state": "gated",
+      "state": "focused tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Mutant Chain Reaction",
@@ -2363,13 +2403,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_mutagen_tests.rs",
+        "src/card_definitions/tmt/mutant_chain_reaction.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 18
     },
     {
       "oracle_id": "f6059731-2e10-4f72-a214-b257f1677e9e",
       "name": "Mutant Town",
       "definition": "src/card_definitions/tmt/mutant_town.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Mutant Town",
@@ -2385,7 +2430,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_land_audit_tests.rs",
+        "src/card_definitions/tmt/mutant_town.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 18
     },
     {
       "oracle_id": "9f318ddc-3dc5-4e43-92b3-3a776e41c56e",
@@ -2786,7 +2836,7 @@
       "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
       "name": "Plains",
       "definition": "src/card_definitions/fra/plains.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Plains",
@@ -2800,7 +2850,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/fra/plains.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 18
     },
     {
       "oracle_id": "2519ccc0-c206-41fb-aa15-2ef88025ff96",
@@ -3781,7 +3836,7 @@
       "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
       "name": "Swamp",
       "definition": "src/card_definitions/fra/swamp.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Swamp",
@@ -3795,13 +3850,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/card_definitions/fra/swamp.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 18
     },
     {
       "oracle_id": "4139f40a-873b-4842-96a2-b7875de1c20a",
       "name": "TCRI Building",
       "definition": "src/card_definitions/tmt/tcri_building.rs",
-      "state": "inherited admission; rules audit pending",
+      "state": "inherited rules audit candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "TCRI Building",
@@ -3817,7 +3877,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_land_audit_tests.rs",
+        "src/card_definitions/tmt/tcri_building.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 18
     },
     {
       "oracle_id": "60826714-b9fd-4c89-b9f2-1a3c3229686b",
