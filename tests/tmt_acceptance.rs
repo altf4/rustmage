@@ -185,37 +185,53 @@ impl Evidence {
                 self.triggers.insert(packet.source_card.name());
             }
         }
-        for row in &after.ability_resolutions {
-            let previous = before
-                .ability_resolutions
-                .iter()
-                .find(|old| {
-                    old.source == row.source
-                        && old.definition == row.definition
-                        && old.kind == row.kind
-                        && old.ability_origin == row.ability_origin
-                })
-                .map_or(0, |old| old.count);
-            let count = row.count.saturating_sub(previous);
-            if matches!(row.kind, StackKind::TriggeredAbility { .. }) {
-                self.add("triggered abilities resolved", count);
-                match row.definition.name() {
-                    "Michelangelo, Game Master" => {
-                        self.add("disappear counter abilities resolved", count)
-                    }
-                    "Raphael, Tough Turtle" => {
-                        self.add("alliance damage abilities resolved", count)
-                    }
+        // ability_resolutions is a rules history used only by abilities that
+        // explicitly count their own resolutions, not a general event log.
+        // Observe a packet leaving the stack/resolution across this accepted
+        // action instead. A consumed packet can fizzle; the mechanic evidence
+        // below additionally requires its actual visible counter/damage effect.
+        let finishing = before.resolving.as_ref().or_else(|| {
+            matches!(action, Action::Pass)
+                .then(|| before.stack.last())
+                .flatten()
+        });
+        if let Some(packet) = finishing
+            && !after.stack.iter().any(|p| p.id == packet.id)
+            && after.resolving.as_ref().is_none_or(|p| p.id != packet.id)
+        {
+            if matches!(packet.kind, StackKind::TriggeredAbility { .. }) {
+                self.add("triggered ability packets consumed", 1);
+                if packet.source_card.name() == "Michelangelo, Game Master"
+                    && matches!(packet.kind, StackKind::TriggeredAbility { ability: 0 })
+                    && after.objects.iter().any(|o| {
+                        o.reference == packet.object
+                            && o.zone == Zone::Battlefield
+                            && before.objects.iter().any(|old| {
+                                old.reference == o.reference
+                                    && old.zone == Zone::Battlefield
+                                    && o.counters.plus_one > old.counters.plus_one
+                            })
+                    })
+                {
+                    self.add("disappear counter abilities resolved", 1);
+                }
+                if packet.source_card.name() == "Raphael, Tough Turtle"
+                    && matches!(packet.kind, StackKind::TriggeredAbility { ability: 0 })
+                    && after.players[packet.controller.other().index()].life
+                        < before.players[packet.controller.other().index()].life
+                {
+                    self.add("alliance damage abilities resolved", 1);
+                }
+                if matches!(
+                    packet.source_card.name(),
                     "Casey Jones, Vigilante" | "Koya, Death from Above"
-                        if matches!(row.kind, StackKind::TriggeredAbility { ability: 1 }) =>
-                    {
-                        self.add("delayed step programs resolved", count)
-                    }
-                    _ => {}
+                ) && matches!(packet.kind, StackKind::TriggeredAbility { ability: 1 })
+                {
+                    self.add("delayed step packets consumed", 1);
                 }
             }
-            if matches!(row.kind, StackKind::ActivatedAbility { .. }) {
-                self.add("activated abilities resolved", count);
+            if matches!(packet.kind, StackKind::ActivatedAbility { .. }) {
+                self.add("activated ability packets consumed", 1);
             }
         }
         for row in &after.class_levels {
@@ -592,8 +608,8 @@ fn tmt_entire_pool_and_theme_acceptance() {
         "alliance damage abilities resolved",
         "tokens entered",
         "plus counters placed",
-        "triggered abilities resolved",
-        "activated abilities resolved",
+        "triggered ability packets consumed",
+        "activated ability packets consumed",
     ] {
         assert!(
             e.executed.get(mechanic).is_some_and(|&n| n > 0),

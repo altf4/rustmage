@@ -824,3 +824,13 @@ requesting a continuous group identity. Both-seat paid Krang/subsequent-spell
 regressions and all four short natural matchup replays pass.
 [Diagnostic and repair evidence](tmt-krang-query-fix.json) preserves both failed
 combined attempts; full acceptance and final reviews remain pending.
+
+The third release attempt passed all 3,748 library tests and completed every
+one of the 172 TMT games (140,163 replayed actions, 2,739 owned branches and
+475 private decisions), then failed its final mechanic-evidence assertion.
+The collector incorrectly used a selective ability-ordinal history as a general
+resolution log. The corrected observation-only collector retains actual effect
+witnesses: 24 focused natural games produce nine disappear counter resolutions
+and 54 alliance damage resolutions, with 16,258 actions fully replayed.
+[Collector diagnostic evidence](tmt-evidence-collector-fix.json) keeps this
+failed combined run distinct from acceptance. Full validation is rerun.
