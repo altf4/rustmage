@@ -421,6 +421,7 @@ define_actions! {
     BeginConvoke,
     ChooseConvoker { object: ObjectRef, contribution: ConvokeContribution },
     ChooseMobilizeDefender { defender: CombatDefender },
+    ChooseToken { token: Card },
     PutHandCreature { object: ObjectRef },
     PutHandLand { object: ObjectRef },
     SelectLand { object: ObjectRef },
@@ -1511,6 +1512,10 @@ enum Pending {
         player: Player,
         skip_to: usize,
     },
+    TokenChoice {
+        player: Player,
+        tokens: &'static [Card],
+    },
     EffectChoice {
         player: Player,
     },
@@ -2303,6 +2308,7 @@ impl Game {
             | Pending::EntryValue { player }
             | Pending::EntryLife { player }
             | Pending::AuraEntry { player }
+            | Pending::TokenChoice { player, .. }
             | Pending::EffectChoice { player }
             | Pending::HandDefender { player }
             | Pending::Role { player }
@@ -2761,6 +2767,13 @@ impl Game {
                     return true;
                 }
             }
+            Pending::TokenChoice { tokens, .. } => {
+                for &token in tokens {
+                    if emit(Action::ChooseToken { token }) {
+                        return true;
+                    }
+                }
+            }
             Pending::EffectChoice { player } => {
                 let choice = s.resolving.as_ref().unwrap().choice.as_ref().unwrap();
                 if matches!(
@@ -2778,7 +2791,9 @@ impl Game {
                     && emit(
                         if matches!(
                             choice.kind,
-                            EffectChoiceKind::HandCreature | EffectChoiceKind::HandLand { .. }
+                            EffectChoiceKind::HandExileCopy
+                                | EffectChoiceKind::HandCreature
+                                | EffectChoiceKind::HandLand { .. }
                         ) {
                             Action::DeclineHandEntry
                         } else {
@@ -2792,7 +2807,9 @@ impl Game {
                     let object = self.object_ref(index as CardId);
                     if self.effect_choice_candidate(choice, player, object) {
                         let action = match choice.kind {
-                            EffectChoiceKind::HandCreature => Action::PutHandCreature { object },
+                            EffectChoiceKind::HandExileCopy | EffectChoiceKind::HandCreature => {
+                                Action::PutHandCreature { object }
+                            }
                             EffectChoiceKind::HandLand { .. } => Action::PutHandLand { object },
                             EffectChoiceKind::LandCards { .. }
                             | EffectChoiceKind::UntapLands { .. } => Action::SelectLand { object },
@@ -3713,6 +3730,13 @@ impl Game {
                         for &card in &s.players[player.index()].library {
                             if choice.spec.filter.matches(s.objects[card as usize].card)
                                 && !choice.selected.contains(&card)
+                                && (!choice.different_names
+                                    || !choice.selected.iter().any(|&id| {
+                                        crate::card_names::same_name(
+                                            s.objects[id as usize].card.name(),
+                                            s.objects[card as usize].card.name(),
+                                        )
+                                    }))
                                 && emit(Action::ChooseSearch { card })
                             {
                                 return true;
@@ -3917,6 +3941,10 @@ impl Game {
                     let mut movement = self.entry_move(card, Zone::Battlefield, false);
                     movement.controller = actor;
                     self.stage_entries(vec![movement], None);
+                }
+                if let Some(free) = self.state.resolution_free_casts.as_mut() {
+                    free.remaining.retain(|reference| reference.card != card);
+                    self.state.pending = Pending::ResolutionCasts { player: actor };
                 }
                 if self.state.land_played {
                     if self.state.players[actor.index()].extra_land_plays_remaining > 0 {
@@ -4353,6 +4381,10 @@ impl Game {
                     }
                 }
                 self.advance_damage_choices();
+            }
+            Action::ChooseToken { token } => {
+                self.create_tokens(actor, token, 1, false);
+                self.run_program();
             }
             Action::PutHandCreature { object }
             | Action::PutHandLand { object }
@@ -5640,7 +5672,8 @@ impl Game {
             .iter()
             .enumerate()
             .filter(|(i, o)| {
-                o.zone != Zone::Outside
+                self.can_view_hideaway(viewer, self.object_ref(*i as CardId))
+                    && o.zone != Zone::Outside
                     && o.zone != Zone::Library
                     && (o.zone != Zone::Hand
                         || o.owner == viewer
@@ -5651,10 +5684,13 @@ impl Game {
         Observation {
             library_piles: self.library_piles_view(viewer),
             keep_types: self.keep_types_view(),
-            linked_exile: s
-                .linked_choices
-                .as_ref()
-                .map_or_else(Vec::new, |c| c.links.clone()),
+            linked_exile: s.linked_choices.as_ref().map_or_else(Vec::new, |c| {
+                c.links
+                    .iter()
+                    .copied()
+                    .filter(|link| self.can_view_hideaway(viewer, link.exiled))
+                    .collect()
+            }),
             casting_prohibited: s.casting_prohibited || self.static_casting_prohibited(viewer),
             replacement_choice: self.replacement_choice(viewer),
             zone_replacement_choice: self.zone_choice_view(viewer),
@@ -5824,6 +5860,7 @@ impl Game {
                 }
                 Pending::EffectDiscard { .. } => "effect_discard",
                 Pending::HandDefender { .. } => "hand_defender",
+                Pending::TokenChoice { .. } => "token_choice",
                 Pending::EffectChoice { .. } => "effect_choice",
                 Pending::EntryTimestamp { .. } => "entry_timestamps",
                 Pending::LinkedChoice { .. } => "linked_choice",
@@ -7288,3 +7325,6 @@ mod linked_choices_tests;
 #[cfg(test)]
 #[path = "engine_big_equipment_tests.rs"]
 mod big_equipment_tests;
+#[cfg(test)]
+#[path = "engine_big_library_tests.rs"]
+mod big_library_tests;

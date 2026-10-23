@@ -671,6 +671,7 @@ impl Game {
     }
 
     pub(super) fn queue_trigger(&mut self, source: &ObjectView, index: usize) -> bool {
+        self.remember_hideaway_controller(source.reference, source.controller);
         self.queue_trigger_from(source, index, None)
     }
 
@@ -2226,6 +2227,25 @@ impl Game {
                         self.attach_equipment(item.object, target);
                     }
                 }
+                Instruction::CreateTokenChoice(tokens) => {
+                    self.state.pending = Pending::TokenChoice {
+                        player: item.controller,
+                        tokens,
+                    };
+                    return;
+                }
+                Instruction::ExileHandCardCopy => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::HandExileCopy,
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        Some(0),
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::ChooseObjects {
                     kind,
                     players,
@@ -2305,7 +2325,9 @@ impl Game {
                 }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
                 Instruction::DestroyLandAndSearch => self.destroy_land_and_search(&item),
-                Instruction::Search(spec) | Instruction::SearchRequired(spec) => {
+                Instruction::Search(spec)
+                | Instruction::SearchRequired(spec)
+                | Instruction::SearchDifferentNames(spec) => {
                     let minimum = if matches!(instruction, Instruction::SearchRequired(_)) {
                         assert_eq!(
                             spec.filter,
@@ -2322,6 +2344,10 @@ impl Game {
                         Some(Box::new(search::SearchChoice {
                             spec,
                             minimum,
+                            different_names: matches!(
+                                instruction,
+                                Instruction::SearchDifferentNames(_)
+                            ),
                             selected: Vec::new(),
                             battlefield: None,
                         }));
@@ -2334,6 +2360,13 @@ impl Game {
                     if self.exile_top_choose_play(item.controller, amount, next_turn) {
                         return;
                     }
+                }
+                Instruction::RandomLinkedExileToBattlefield => {
+                    self.random_linked_exile_to_battlefield(item.object, item.controller)
+                }
+                Instruction::ExileTopPlayScaled { amount, next_turn } => {
+                    let count = self.item_amount(amount, &item).min(u128::from(u16::MAX)) as u16;
+                    self.exile_top_play(item.controller, count, next_turn);
                 }
                 Instruction::ExileTopPlay { amount, next_turn } => {
                     self.exile_top_play(item.controller, amount, next_turn);
@@ -2391,6 +2424,12 @@ impl Game {
                         && self.state.objects[item.card as usize].zone == Zone::Stack
                     {
                         self.move_object(item.card, Zone::Exile);
+                    }
+                }
+                Instruction::PlayHideawayIfCoven => {
+                    self.play_hideaway_if_coven(&item);
+                    if self.state.resolution_free_casts.is_some() {
+                        return;
                     }
                 }
                 Instruction::SelectLibraryTo(effect) => {

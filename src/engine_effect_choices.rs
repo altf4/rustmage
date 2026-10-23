@@ -46,6 +46,7 @@ impl Game {
         let hand_choice = matches!(
             choice.kind,
             EffectChoiceKind::Discard
+                | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandLand { .. }
         );
@@ -59,12 +60,14 @@ impl Game {
         if matches!(
             choice.kind,
             EffectChoiceKind::Discard
+                | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandLand { .. }
         ) {
             return o.zone == Zone::Hand
                 && match choice.kind {
                     EffectChoiceKind::HandCreature => o.card.is_creature(),
+                    EffectChoiceKind::HandExileCopy => o.card.is_creature() || o.card.is_artifact(),
                     EffectChoiceKind::HandLand { .. } => o.card.is_land() && o.controller == player,
                     _ => true,
                 };
@@ -305,7 +308,9 @@ impl Game {
             if let Some(skip_to) = choice.skip_to
                 && !matches!(
                     kind,
-                    EffectChoiceKind::HandCreature | EffectChoiceKind::HandLand { .. }
+                    EffectChoiceKind::HandExileCopy
+                        | EffectChoiceKind::HandCreature
+                        | EffectChoiceKind::HandLand { .. }
                 )
                 && available < usize::from(amount)
             {
@@ -317,7 +322,9 @@ impl Game {
             // whether their hidden hand contains a creature or land.
             choice.required[player.index()] = if matches!(
                 kind,
-                EffectChoiceKind::HandCreature | EffectChoiceKind::HandLand { .. }
+                EffectChoiceKind::HandExileCopy
+                    | EffectChoiceKind::HandCreature
+                    | EffectChoiceKind::HandLand { .. }
             ) {
                 amount
             } else {
@@ -366,13 +373,30 @@ impl Game {
         }
         if matches!(
             choice.kind,
-            EffectChoiceKind::HandCreature | EffectChoiceKind::HandLand { .. }
+            EffectChoiceKind::HandExileCopy
+                | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandLand { .. }
         ) {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             let Some(reference) = choice.selected[player.index()].first().copied() else {
                 self.state.resolving.as_mut().unwrap().choice = None;
                 return false;
             };
+            if choice.kind == EffectChoiceKind::HandExileCopy {
+                let definition = self.state.objects[reference.card as usize].card;
+                self.state.resolving.as_mut().unwrap().choice = None;
+                let events = self.move_objects_raw(&[reference.card], Zone::Exile);
+                let copied = events
+                    .iter()
+                    .any(|e| e.moved && e.destination == Zone::Exile);
+                self.finish_zone_events(&events, &[]);
+                if copied {
+                    let mut recipe = CopyRecipe::new(definition);
+                    recipe.exceptions = CopyExceptions::GOLEM;
+                    self.stage_copy_creation(player, recipe, 1);
+                }
+                return false;
+            }
             let enchantment = choice.kind == EffectChoiceKind::HandCreature
                 && self.state.objects[reference.card as usize].card.kind_mask() & 32 != 0;
             let forced_tapped = matches!(choice.kind, EffectChoiceKind::HandLand { tapped: true });
@@ -523,6 +547,7 @@ impl Game {
         if matches!(
             choice.kind,
             EffectChoiceKind::Discard
+                | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandLand { .. }
         ) && viewer != actor

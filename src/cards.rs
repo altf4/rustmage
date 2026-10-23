@@ -470,12 +470,14 @@ pub(crate) struct LibrarySelectionSpec {
 /// Explicit destinations for cards looked at without changing zones first.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibraryPickDestination {
+    Hideaway,
     Hand,
     Battlefield,
     Top,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibraryLook {
+    Amount(AmountValue),
     Fixed(u16),
     ChosenX,
     UntilKinds(u16),
@@ -556,6 +558,7 @@ pub(crate) struct SearchSpec {
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
+    SacrificeDifferentNames(u16),
     /// Choose distinct untapped permanents as a non-targeting activation cost.
     TapPermanents(u16),
     RemoveCreatureCounters(u16),
@@ -563,6 +566,7 @@ pub enum EffectChoiceKind {
         maximum: u16,
     },
     HandCreature,
+    HandExileCopy,
     HandLand {
         tapped: bool,
     },
@@ -685,6 +689,15 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    CreateTokenChoice(&'static [Card]),
+    PlayHideawayIfCoven,
+    ExileHandCardCopy,
+    ExileTopPlayScaled {
+        amount: AmountValue,
+        next_turn: bool,
+    },
+    SearchDifferentNames(SearchSpec),
+    RandomLinkedExileToBattlefield,
     PartitionLibraryPiles(u16),
     KeepOneOfEachPermanentType,
     RememberOwnSacrifice,

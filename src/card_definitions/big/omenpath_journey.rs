@@ -1,16 +1,27 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Directly authored from the paired complete Oracle and pinned XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfEnters,
+            targets: TargetPlan::Single(TargetSpec::NONE),
+            program: &[Instruction::SearchDifferentNames(SearchSpec {
+                filter: SearchFilter::Land,
+                maximum: 5,
+                destination: SearchDestination::LinkedExile,
+                tapped: false,
+                reveal: false,
+            })],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::AtStep {
+                step: TriggerStep::End,
+                relation: CastRelation::You,
+                guard: StepGuard::Always,
+            },
+            targets: TargetPlan::Single(TargetSpec::NONE),
+            program: &[Instruction::RandomLinkedExileToBattlefield],
+        },
+    ],
     ..CardRules::EMPTY
 };

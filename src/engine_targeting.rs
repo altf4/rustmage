@@ -1405,7 +1405,9 @@ impl Game {
             if announcement.additional_cost().is_some_and(|spec| {
                 matches!(
                     spec.kind,
-                    EffectChoiceKind::Sacrifice | EffectChoiceKind::ReturnToHand
+                    EffectChoiceKind::Sacrifice
+                        | EffectChoiceKind::SacrificeDifferentNames(_)
+                        | EffectChoiceKind::ReturnToHand
                 ) || forage::is_forage_cost(spec)
                     || evidence::threshold(spec).is_some()
             }) && let Some(payment) = announcement.payment.take()

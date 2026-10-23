@@ -6,6 +6,7 @@ use crate::SearchDestination;
 pub(super) struct SearchChoice {
     pub spec: SearchSpec,
     pub minimum: u16,
+    pub different_names: bool,
     pub selected: Vec<CardId>,
     pub battlefield: Option<Vec<CardId>>,
 }
@@ -204,6 +205,7 @@ impl Game {
                     reveal: false,
                 },
                 minimum: 0,
+                different_names: false,
                 selected: Vec::new(),
                 battlefield: None,
             }));

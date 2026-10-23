@@ -3,10 +3,30 @@
   "catalogue_id": 3014,
   "oracle_id": "8b067e44-2001-4b49-aa4a-2c86f8929751",
   "facts_sha256": "8d70d6b16fc2eaa6ca37a52c690b05a6104da6b74efb8780b48dab67e2a3ace5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2fc629f1f99037eb2ade49ccf6533cd44310736a8bdb52659d9fa6b2f0961ea8"
   },
-  "physical_metadata_sha256": "e2ba900c5a741ab3aa1bf8c04c01c24f509c8e5e147129e690671f3eab1cbcdf"
+  "physical_metadata_sha256": "e2ba900c5a741ab3aa1bf8c04c01c24f509c8e5e147129e690671f3eab1cbcdf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OmenpathJourney.java",
+  "java_sha256": "2193bcdd026a47ea0601fb7c1d50b7319b348c80ef23644f540c26ac887b49f8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardWithDifferentNameInLibrary.java",
+      "sha256": "9b476ca557a122039f3b6e71a99683785f4ca8242e526d0f0434f827644ae9b0"
+    }
+  ]
 }

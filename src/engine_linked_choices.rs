@@ -49,10 +49,14 @@ pub(super) struct ChoiceState {
     // Some(None) means tracking this instruction but no successful own sacrifice.
     sacrifice: Option<Option<ObjectRef>>,
     pub links: Vec<LinkedExileView>,
+    pub hidden: Vec<(ObjectRef, ObjectRef, u8)>,
+    pub hideaway_controllers: Vec<(ObjectRef, u8)>,
 }
 impl ChoiceState {
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
+            + self.hideaway_controllers.len() * std::mem::size_of::<(ObjectRef, u8)>()
+            + self.hidden.len() * std::mem::size_of::<(ObjectRef, ObjectRef, u8)>()
             + self.links.len() * std::mem::size_of::<LinkedExileView>()
             + self.piles.as_ref().map_or(0, |p| {
                 (p.remaining.len() + p.up.len() + p.down.len()) * std::mem::size_of::<ObjectRef>()
@@ -68,7 +72,7 @@ impl Game {
             data.piles = None;
             data.keep_types = None;
             data.sacrifice = None;
-            if data.links.is_empty() {
+            if data.links.is_empty() && data.hideaway_controllers.is_empty() {
                 self.state.linked_choices = None;
             }
         }
@@ -356,6 +360,80 @@ impl Game {
         };
         true
     }
+    pub(super) fn can_view_hideaway(&self, viewer: Player, object: ObjectRef) -> bool {
+        self.state.linked_choices.as_ref().is_none_or(|data| {
+            data.hidden.iter().all(|&(_, exiled, viewers)| {
+                exiled != object || viewers & (1 << viewer.index()) != 0
+            })
+        })
+    }
+    pub(super) fn remember_hideaway_controller(&mut self, source: ObjectRef, player: Player) {
+        let has_hideaway = self.state.objects[source.card as usize].card.triggers().iter().any(|ability| ability.program.iter().any(|instruction| matches!(instruction, Instruction::SelectLibraryTo(effect) if effect.destination == crate::cards::LibraryPickDestination::Hideaway)));
+        if !has_hideaway {
+            return;
+        }
+        let data = self.state.linked_choices.get_or_insert_default();
+        if let Some((_, viewers)) = data
+            .hideaway_controllers
+            .iter_mut()
+            .find(|(r, _)| *r == source)
+        {
+            *viewers |= 1 << player.index();
+        } else {
+            data.hideaway_controllers
+                .push((source, 1 << player.index()));
+        }
+        for (linked, _, viewers) in &mut data.hidden {
+            if *linked == source {
+                *viewers |= 1 << player.index();
+            }
+        }
+    }
+    pub(super) fn play_hideaway_if_coven(&mut self, item: &SpellView) {
+        let mut powers: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, o)| {
+                o.zone == Zone::Battlefield
+                    && o.controller == item.controller
+                    && self.is_creature(*id as CardId)
+            })
+            .map(|(id, _)| self.stats(id as CardId).power)
+            .collect();
+        powers.sort_unstable();
+        powers.dedup();
+        if powers.len() < 3 {
+            return;
+        }
+        let remaining: Vec<_> = self
+            .state
+            .linked_choices
+            .as_ref()
+            .map_or_else(Vec::new, |data| {
+                data.links
+                    .iter()
+                    .filter(|link| {
+                        link.source == item.object
+                            && self.object_ref(link.exiled.card) == link.exiled
+                            && self.state.objects[link.exiled.card as usize].zone == Zone::Exile
+                    })
+                    .map(|link| link.exiled)
+                    .collect()
+            });
+        if remaining.is_empty() {
+            return;
+        }
+        self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            player: item.controller,
+            remaining,
+            allow_lands: true,
+        }));
+        self.state.pending = Pending::ResolutionCasts {
+            player: item.controller,
+        };
+    }
     pub(super) fn remember_linked_exile(&mut self, selected: &[CardId]) {
         let source = self.state.resolving.as_ref().unwrap().item.object;
         for &id in selected {
@@ -368,6 +446,31 @@ impl Game {
                     .push(LinkedExileView { source, exiled });
             }
         }
+    }
+    pub(super) fn random_linked_exile_to_battlefield(&mut self, source: ObjectRef, player: Player) {
+        let candidates: Vec<_> = self
+            .state
+            .linked_choices
+            .as_ref()
+            .map_or_else(Vec::new, |data| {
+                data.links
+                    .iter()
+                    .filter(|link| {
+                        link.source == source
+                            && self.object_ref(link.exiled.card) == link.exiled
+                            && self.state.objects[link.exiled.card as usize].zone == Zone::Exile
+                    })
+                    .map(|link| link.exiled.card)
+                    .collect()
+            });
+        if candidates.is_empty() {
+            return;
+        }
+        let mut shuffled = candidates;
+        self.state.rng.shuffle(&mut shuffled);
+        let mut movement = self.entry_move(shuffled[0], Zone::Battlefield, true);
+        movement.controller = player;
+        self.stage_entries(vec![movement], None);
     }
     pub(super) fn return_linked_exile(&mut self, source: ObjectRef) {
         let Some(data) = self.state.linked_choices.as_ref() else {
@@ -394,6 +497,10 @@ impl Game {
             return;
         };
         let objects = &self.state.objects;
+        data.hidden.retain(|&(_, exiled, _)| {
+            let o = &objects[exiled.card as usize];
+            o.zone == Zone::Exile && o.generation == exiled.generation
+        });
         data.links.retain(|link| {
             let o = &objects[link.exiled.card as usize];
             o.zone == Zone::Exile && o.generation == link.exiled.generation

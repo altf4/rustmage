@@ -30,6 +30,7 @@ struct FundingState<'g> {
     resources: Vec<Resource>,
     named_counters: live_counters::Rows,
     convoke: bool,
+    sacrifice_group: Vec<ObjectRef>,
 }
 impl ability_world::CharacteristicWorld for FundingState<'_> {
     fn game(&self) -> &Game {
@@ -343,6 +344,18 @@ impl<'g> FundingState<'g> {
             })
             .collect();
         Self {
+            sacrifice_group: game
+                .state
+                .announcing
+                .as_ref()
+                .filter(|a| {
+                    !a.additional_paid
+                        && a.additional_cost().is_some_and(|s| {
+                            matches!(s.kind, EffectChoiceKind::SacrificeDifferentNames(_))
+                        })
+                })
+                .and_then(|a| a.additional_group.as_ref())
+                .map_or_else(Vec::new, |g| g.to_vec()),
             game,
             convoke,
             actor: goal.actor,
@@ -368,13 +381,22 @@ impl<'g> FundingState<'g> {
         let reserve = goal
             .reserve
             .and_then(|(r, _)| self.resources.iter().find(|s| s.id == r.card));
-        self.game.state.announcing.as_ref().is_none_or(|a| {
+        self.sacrifice_group.iter().all(|r| {
+            let o = ability_world::CharacteristicWorld::object(self, r.card);
+            o.zone == Zone::Battlefield
+                && o.generation == r.generation
+                && o.controller == goal.actor
+                && o.is_token()
+                && ability_world::CharacteristicWorld::kinds(self, r.card) & 16 != 0
+        }) && self.game.state.announcing.as_ref().is_none_or(|a| {
             a.additional_group.as_ref().is_none_or(|group| {
                 group.iter().all(|r| {
                     let o = ability_world::CharacteristicWorld::object(self, r.card);
                     o.zone == Zone::Battlefield
                         && o.generation == r.generation
-                        && !o.tapped
+                        && (a.additional_cost().is_some_and(|s| {
+                            matches!(s.kind, EffectChoiceKind::SacrificeDifferentNames(_))
+                        }) || !o.tapped)
                         && o.controller == goal.actor
                 })
             })
@@ -786,7 +808,11 @@ impl<'g> FundingState<'g> {
                     .is_some_and(|(source, _, _, _)| source.card == r.id),
                 reserved: goal
                     .reserve
-                    .is_some_and(|(reference, _)| reference.card == r.id),
+                    .is_some_and(|(reference, _)| reference.card == r.id)
+                    || self
+                        .sacrifice_group
+                        .iter()
+                        .any(|reference| reference.card == r.id),
                 present: r.object.zone == Zone::Battlefield,
                 tapped: r.object.tapped,
                 sick: r.object.summoning_sick,
@@ -1271,6 +1297,16 @@ impl<'g> FundingState<'g> {
     }
 }
 impl Game {
+    pub(super) fn can_fund_sacrifice_group(
+        &self,
+        goal: FundingGoal,
+        _spec: AdditionalCost,
+        group: &[ObjectRef],
+    ) -> bool {
+        let mut state = FundingState::from_game(self, &goal);
+        state.sacrifice_group = group.to_vec();
+        state.reachable(&goal, &mut HashSet::new())
+    }
     pub(super) fn can_fund(&self, goal: FundingGoal) -> bool {
         let purpose = self.funding_purpose(&goal);
         self.can_fund_for(goal, purpose)
@@ -2113,6 +2149,7 @@ mod own_turn_guard_tests {
                 resources: Vec::new(),
                 named_counters: None,
                 convoke: false,
+                sacrifice_group: Vec::new(),
             };
             assert!(state.guard_available(ActivationGuard::OwnTurn, active));
             assert!(!state.guard_available(ActivationGuard::OwnTurn, active.other()));
