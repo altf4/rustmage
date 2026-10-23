@@ -477,7 +477,7 @@
       "oracle_id": "c3ea6af5-48b9-45d2-9576-46cacb2db5b0",
       "name": "Dark Leo & Shredder",
       "definition": "src/card_definitions/tmt/dark_leo_shredder.rs",
-      "state": "focused rules tested; integrated full release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Dark Leo & Shredder",
@@ -495,7 +495,8 @@
       ],
       "evidence": [
         "src/engine_tmt_sneak_tests.rs",
-        "src/card_definitions/tmt/dark_leo_shredder.json"
+        "src/card_definitions/tmt/dark_leo_shredder.json",
+        "docs/sets/tmt-sneak-consumers-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 6
@@ -661,7 +662,7 @@
       "oracle_id": "bb6aef0d-052b-44e6-b4cd-2d2eafd84969",
       "name": "Donatello, Gadget Master",
       "definition": "src/card_definitions/tmt/donatello_gadget_master.rs",
-      "state": "focused rules tested; integrated full release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Donatello, Gadget Master",
@@ -678,7 +679,8 @@
       ],
       "evidence": [
         "src/engine_tmt_sneak_tests.rs",
-        "src/card_definitions/tmt/donatello_gadget_master.json"
+        "src/card_definitions/tmt/donatello_gadget_master.json",
+        "docs/sets/tmt-sneak-consumers-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 5
@@ -1444,7 +1446,7 @@
       "oracle_id": "7246638e-0361-40e3-8019-3c10210a593e",
       "name": "Karai, Future of the Foot",
       "definition": "src/card_definitions/tmt/karai_future_of_the_foot.rs",
-      "state": "focused rules tested; integrated full release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Karai, Future of the Foot",
@@ -1461,7 +1463,8 @@
       ],
       "evidence": [
         "src/engine_tmt_sneak_tests.rs",
-        "src/card_definitions/tmt/karai_future_of_the_foot.json"
+        "src/card_definitions/tmt/karai_future_of_the_foot.json",
+        "docs/sets/tmt-sneak-consumers-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 5
@@ -1470,7 +1473,7 @@
       "oracle_id": "3e0f8ab3-75a6-49a2-a228-fa720cbde3d8",
       "name": "Kitsune's Technique",
       "definition": "src/card_definitions/tmt/kitsune_s_technique.rs",
-      "state": "focused rules tested; integrated full release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Kitsune's Technique",
@@ -1487,7 +1490,8 @@
       ],
       "evidence": [
         "src/engine_tmt_sneak_tests.rs",
-        "src/card_definitions/tmt/kitsune_s_technique.json"
+        "src/card_definitions/tmt/kitsune_s_technique.json",
+        "docs/sets/tmt-sneak-consumers-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 6
@@ -1731,7 +1735,7 @@
       "oracle_id": "348c7e22-2179-41b8-a5d2-8dd488e7e66d",
       "name": "Leonardo, Leader in Blue",
       "definition": "src/card_definitions/tmt/leonardo_leader_in_blue.rs",
-      "state": "focused rules tested; integrated full release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Leonardo, Leader in Blue",
@@ -1749,7 +1753,8 @@
       ],
       "evidence": [
         "src/engine_tmt_sneak_tests.rs",
-        "src/card_definitions/tmt/leonardo_leader_in_blue.json"
+        "src/card_definitions/tmt/leonardo_leader_in_blue.json",
+        "docs/sets/tmt-sneak-consumers-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 5
@@ -1953,7 +1958,7 @@
       "oracle_id": "42f12942-9ac1-497e-a8b7-9f66a5afd0ae",
       "name": "Michelangelo's Technique",
       "definition": "src/card_definitions/tmt/michelangelo_s_technique.rs",
-      "state": "focused rules tested; integrated full release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Michelangelo's Technique",
@@ -1970,7 +1975,8 @@
       ],
       "evidence": [
         "src/engine_tmt_sneak_tests.rs",
-        "src/card_definitions/tmt/michelangelo_s_technique.json"
+        "src/card_definitions/tmt/michelangelo_s_technique.json",
+        "docs/sets/tmt-sneak-consumers-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 8
@@ -3314,7 +3320,7 @@
       "oracle_id": "dabd0867-ee3f-40cb-8314-b4a3966f8b24",
       "name": "Shark Shredder, Killer Clone",
       "definition": "src/card_definitions/tmt/shark_shredder_killer_clone.rs",
-      "state": "focused rules tested; integrated full release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Shark Shredder, Killer Clone",
@@ -3332,7 +3338,8 @@
       ],
       "evidence": [
         "src/engine_tmt_sneak_tests.rs",
-        "src/card_definitions/tmt/shark_shredder_killer_clone.json"
+        "src/card_definitions/tmt/shark_shredder_killer_clone.json",
+        "docs/sets/tmt-sneak-consumers-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 8
@@ -3385,7 +3392,7 @@
       "oracle_id": "d92714c0-4e22-47f9-a4d4-405894e734d0",
       "name": "Shredder's Technique",
       "definition": "src/card_definitions/tmt/shredder_s_technique.rs",
-      "state": "focused rules tested; integrated full release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Shredder's Technique",
@@ -3402,7 +3409,8 @@
       ],
       "evidence": [
         "src/engine_tmt_sneak_tests.rs",
-        "src/card_definitions/tmt/shredder_s_technique.json"
+        "src/card_definitions/tmt/shredder_s_technique.json",
+        "docs/sets/tmt-sneak-consumers-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 8
@@ -3854,7 +3862,7 @@
       "oracle_id": "6a51bb21-0c01-4ad8-99d7-17685db90b69",
       "name": "The Last Ronin's Technique",
       "definition": "src/card_definitions/tmt/the_last_ronin_s_technique.rs",
-      "state": "focused rules tested; integrated full release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "The Last Ronin's Technique",
@@ -3872,7 +3880,8 @@
       "evidence": [
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/the_last_ronin_s_technique.json",
-        "src/card_definitions/tmt/ninja_turtle_spirit_1_1_white.json"
+        "src/card_definitions/tmt/ninja_turtle_spirit_1_1_white.json",
+        "docs/sets/tmt-sneak-consumers-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 7
@@ -4009,7 +4018,7 @@
       "oracle_id": "0f35cf85-6783-4d69-b5e6-a81f7c1f21e7",
       "name": "Turncoat Kunoichi",
       "definition": "src/card_definitions/tmt/turncoat_kunoichi.rs",
-      "state": "focused rules tested; integrated full release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Turncoat Kunoichi",
@@ -4026,7 +4035,8 @@
       ],
       "evidence": [
         "src/engine_tmt_sneak_tests.rs",
-        "src/card_definitions/tmt/turncoat_kunoichi.json"
+        "src/card_definitions/tmt/turncoat_kunoichi.json",
+        "docs/sets/tmt-sneak-consumers-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 5

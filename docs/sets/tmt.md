@@ -21,7 +21,7 @@ canonical definition, including reprints; it is not a second membership source.
 
 Initial admission: **71/195**, **124 gated**. Current admission: **107/195**,
 **88 gated**, zero unresolved. The 71 inherited admission flags still require
-source/rules audits. **36 new physical cards have rules scenarios; 26 have integrated release validation**;
+source/rules audits. **36 new physical cards are locally verified candidates**;
 zero have independent final published-head reviews or upstream merges.
 
 ## Active Sneak integration
@@ -201,3 +201,28 @@ the catalogue regression must pass in the next integrated run. No failed run
 is treated as accepted validation. The latest ten physical candidates await
 that full run. Next Sneak consumers: Michelangelo, Improviser; Raphael’s
 Technique; Leonardo, Sewer Samurai.
+
+## Validated 107-card checkpoint
+
+All nine release-validation phases pass on `881adc0d`, including the ten latest
+physical consumers. There are **107/195 admission flags**, **88 gated**, zero
+unresolved; **36 newly authored physical cards have integrated rules/release
+validation**, and **71 inherited entries await source/rules audits**. No final
+published-head review or set-only full-game acceptance is claimed.
+
+The run passed 3,308 library rules tests (one ignored), all 37 Sneak scenarios,
+the complete existing native integration suites, and seven Python smoke checks.
+It held 11,855 inputs fixed for 617.06 seconds. The token catalogue regression
+now passes. The guard retained the 6 GiB cap, one build job and one test thread;
+peak memory was 3,828,125,696 bytes, with zero OOM/max events. Completed
+disposable validation outputs were cleaned automatically (840,941,568 bytes);
+required libraries remain at their exact paths/hashes in the cache manifest.
+See [validation evidence](tmt-sneak-consumers-validation.json).
+
+Freeform smoke measured 185,521 decisions/s and 372.29 games/s on the previously
+declared workload. TMT simulation throughput is still unmeasured. The next
+authored work is Michelangelo, Improviser’s private simultaneous hand placement,
+then Raphael’s Technique and Leonardo, Sewer Samurai. Those three printed Sneak
+consumers and the remaining set mechanics/audits are engineering work, with no
+known external blocker. Keep the full set goal open and do not publish a partial
+implementation PR.
