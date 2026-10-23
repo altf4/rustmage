@@ -1287,17 +1287,25 @@ impl SpellView {
                 let a = &self.trigger_definition().triggers()[ability as usize];
                 let targets = match a.targets {
                     TargetPlan::Single(mut spec)
-                        if matches!(spec.rule, TargetRule::DamagedPlayerPermanent { .. }) =>
+                        if matches!(
+                            spec.rule,
+                            TargetRule::DamagedPlayerPermanent { .. }
+                                | TargetRule::DamagedPlayerObject { .. }
+                        ) =>
                     {
-                        let TargetRule::DamagedPlayerPermanent { kinds } = spec.rule else {
-                            unreachable!()
+                        let (zone, kinds) = match spec.rule {
+                            TargetRule::DamagedPlayerPermanent { kinds } => {
+                                (TargetZone::Battlefield, kinds)
+                            }
+                            TargetRule::DamagedPlayerObject { zone, kinds } => (zone, kinds),
+                            _ => unreachable!(),
                         };
                         let player = self
                             .damage_event
                             .expect("damage-bound target requires event")
                             .player;
                         spec.rule = TargetRule::Object {
-                            zone: TargetZone::Battlefield,
+                            zone,
                             kinds,
                             relation: if player == self.controller { 0 } else { 1 },
                             other: false,

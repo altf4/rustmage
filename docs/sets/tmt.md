@@ -19,9 +19,9 @@ Oracle facts remain pinned in `data/standard/cards.json`. The
 [obligation ledger](tmt-obligations.json) accounts for every printed line and
 canonical definition, including reprints; it is not a second membership source.
 
-Initial admission: **71/195**, **124 gated**. Current admission: **104/195**,
-**91 gated**, zero unresolved. The 71 inherited admission flags still require
-source/rules audits. **32 new physical cards have rules scenarios; 26 have integrated release validation**;
+Initial admission: **71/195**, **124 gated**. Current admission: **107/195**,
+**88 gated**, zero unresolved. The 71 inherited admission flags still require
+source/rules audits. **36 new physical cards have rules scenarios; 26 have integrated release validation**;
 zero have independent final published-head reviews or upstream merges.
 
 ## Active Sneak integration
@@ -45,8 +45,8 @@ and raw/indexed branching and restore.
 
 Freeform regression measured 191,326 decisions/s and 383.94 games/s on the
 previously declared smoke workload. This is not TMT-specific simulation evidence.
-The next active batch adds exact-incarnation Sneak history, Leonardo, Leader in
-Blue; Karai, Future of the Foot; Turncoat Kunoichi; and Donatello, Gadget Master.
+Subsequent local batches add exact-incarnation Sneak history and the consumers
+recorded below.
 
 ## Card obligations and local batches
 
@@ -132,17 +132,17 @@ simulation throughput has not yet been measured.**
 
 ## Resume here
 
-Current source revision `f12b667a` on `codex/tmt-complete-set`; subsequent
+Initial checkpoint source revision `f12b667a` on `codex/tmt-complete-set`; subsequent
 checkpoint changes affect only this ledger, obligation states and validation
 records. No active build/test processes remain. Completed logs are under
 `<cache>/rustmage-tmt-*.log`; reports and exact retained library paths/hashes are
 in the validation JSON. Focused disposable outputs have been cleaned. A new
 host rebuilds missing libraries rather than inventing old producing-host paths.
 
-**Next action: implement and test the four conditional/copy Sneak consumers
-listed above.** The shared Sneak kernel and thirteen of 26 physical consumers
-are now verified. Remaining consumers and the 71 inherited cards still need
-complete source, rules and acceptance evidence.
+**Next action: complete integrated release validation for the latest ten cards,
+then implement Michelangelo, Improviser; Raphael’s Technique; and Leonardo,
+Sewer Samurai.** The shared Sneak kernel has 23 of 26 physical consumers authored
+and rules-tested. The 71 inherited cards still need complete source/rules audits.
 Remaining Disappear consumers are Krang & Shredder (linked exile/free casting),
 Pizza Face, Gastromancer (conditional animation), Rat King, Verminister
 (three-Rat payment and same-name reanimation), and West Wind Avatar
@@ -150,7 +150,7 @@ Pizza Face, Gastromancer (conditional animation), Rat King, Verminister
 levels, special casting permissions, linked choices, equipment and copy effects.
 These are engineering work, not known external access/source blockers.
 
-Continue auditing the 71 inherited cards and implementing the remaining 98
+Continue auditing the 71 inherited cards and implementing the remaining 88
 gated cards. Keep the 195 denominator fixed. Integrate locally, regenerate with
 `python3 scripts/link_catalogue.py`, authenticate with
 `python3 -m scripts.set_status TMT --check`, and run the complete release
@@ -180,3 +180,24 @@ player/planeswalker defenders, actual combat, and persistence through the end
 step. This seventh card is awaiting integrated rules/release validation together
 with the preceding six. Admission flags are 104/195; the additional flag is not
 yet a tested-card claim.
+
+## Active selection and destruction integration
+
+The complete optimized Sneak suite now passes **37 scenarios**, including the
+preceding seven consumers plus Michelangelo’s Technique; Shark Shredder, Killer
+Clone; and Shredder’s Technique. It covers private zero/one/two top-eight picks
+with an aggregate six-mana budget, shuffled-bottom remainder, actual first-strike
+and regular combat damage with graveyard ownership/control and captured defender,
+and successful enchantment destruction/LKI with indestructibility, invalidated
+targets and death-trigger ordering. Focused report log:
+`<cache>/rustmage-tmt-sneak-destruction-tests.log` (terminal success).
+
+The integrated release run at `9079cf00` passed all 3,303 library rules tests,
+including Ronin’s attacking tokens, but stopped at the catalogue token-deck
+rejection test. Its failure evidence remains in
+`<cache>/rustmage-validation-6vq35vln/report/result.json`. The new Spirit factory’s
+default deck limit was corrected to the existing token convention (`None`);
+the catalogue regression must pass in the next integrated run. No failed run
+is treated as accepted validation. The latest ten physical candidates await
+that full run. Next Sneak consumers: Michelangelo, Improviser; Raphael’s
+Technique; Leonardo, Sewer Samurai.

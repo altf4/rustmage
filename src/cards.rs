@@ -142,6 +142,10 @@ pub(crate) enum TargetRule {
     Creature,
     /// Bound to the captured attachment attack defender before target selection.
     DefendingCreature,
+    DamagedPlayerObject {
+        zone: TargetZone,
+        kinds: u8,
+    },
     DamagedPlayerPermanent {
         kinds: u8,
     },
@@ -547,6 +551,10 @@ pub(crate) enum LibrarySelectionFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibrarySelectionCount {
+    ManaValueBudget {
+        maximum_cards: u16,
+        maximum_total: u16,
+    },
     All,
     Fixed(u16),
     Lessons,
@@ -1228,6 +1236,9 @@ pub(crate) enum Instruction {
         excluded_kinds: u16,
     },
     DestroyLoseManaValue,
+    DestroyCounted {
+        kinds: u16,
+    },
     SelectMilled(MilledSelectionSpec),
     SelectTargetPlayerMilled(MilledSelectionSpec),
     AttachSource,
@@ -1429,6 +1440,7 @@ pub(crate) enum Instruction {
         factor: u8,
     },
     ReturnToBattlefield,
+    ReturnToBattlefieldAttacking(PlayerSet),
     ReturnToBattlefieldTapped,
     Destroy,
     Tap,
@@ -1631,6 +1643,7 @@ pub(crate) enum AmountValue {
     Fixed(u16),
     /// Explicit immutable parameter of the resolving spell or its exact ETB packet.
     ChosenX,
+    MovedCount,
     MilledCreatures,
     Stat(StatValue),
     LifeGainedThisTurn,

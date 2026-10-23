@@ -1369,3 +1369,294 @@ fn tmt_sneak_last_ronin_creates_white_spirits_with_individual_defenders_and_no_s
         }
     }
 }
+#[test]
+fn tmt_sneak_michelangelo_private_top_eight_total_mana_budget_and_random_bottom_commit() {
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            for count in 0..=2 {
+                let mut g = setup(p);
+                let returned = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+                let source = named(&mut g, p, "Michelangelo's Technique", Zone::Hand);
+                let original = g.state.players[p.index()].library.to_vec();
+                let mut top = Vec::new();
+                for name in [
+                    "Plains",
+                    "Forest",
+                    "Opt",
+                    "Mountain",
+                    "Grasping Longneck",
+                    "Bear Cub",
+                    "Hill Giant",
+                    "Island",
+                ] {
+                    top.push(named(&mut g, p, name, Zone::Library));
+                }
+                if paid {
+                    unblocked(&mut g, returned);
+                    sneak(&mut g, source, returned, None);
+                } else {
+                    cast(&mut g, source, None, &[]);
+                }
+                checked(&mut g, Action::Pass);
+                checked(&mut g, Action::Pass);
+                let own = g.observe(p).library_selection.unwrap();
+                assert_eq!(
+                    (
+                        own.remaining.len(),
+                        own.minimum,
+                        own.maximum,
+                        own.public,
+                        own.reveal
+                    ),
+                    (8, 0, 2, false, false)
+                );
+                assert!(g.observe(p.other()).library_selection.is_none());
+                assert!(g.observe(p.other()).actions.is_empty());
+                for &id in &top {
+                    assert!(
+                        !g.observe(p.other())
+                            .objects
+                            .iter()
+                            .any(|o| o.reference.card == id)
+                    );
+                }
+                reject(&mut g, Action::SelectLibrary { card: top[0] }); // land
+                let mut chosen = Vec::new();
+                if count > 0 {
+                    checked(&mut g, Action::SelectLibrary { card: top[6] }); // four
+                    chosen.push(top[6]);
+                    reject(&mut g, Action::SelectLibrary { card: top[6] });
+                    reject(&mut g, Action::SelectLibrary { card: top[4] }); // four + three exceeds six
+                    assert_eq!(g.state.objects[top[6] as usize].zone, Zone::Library);
+                }
+                if count == 2 {
+                    checked(&mut g, Action::SelectLibrary { card: top[5] }); // four + two is legal
+                    chosen.push(top[5]);
+                    reject(&mut g, Action::SelectLibrary { card: top[4] });
+                }
+                checked(&mut g, Action::FinishLibrarySelection);
+                settle(&mut g);
+                for &id in &chosen {
+                    let view = g.object_view(id);
+                    assert_eq!(view.zone, Zone::Battlefield);
+                    assert!(!view.tapped && !view.attacking);
+                }
+                let mut unchosen: Vec<_> = top
+                    .iter()
+                    .copied()
+                    .filter(|id| !chosen.contains(id))
+                    .collect();
+                unchosen.sort_unstable();
+                let library = &g.state.players[p.index()].library;
+                let mut bottom = library[..unchosen.len()].to_vec();
+                bottom.sort_unstable();
+                assert_eq!(bottom, unchosen);
+                assert_eq!(&library[unchosen.len()..], original.as_slice());
+                assert_eq!(g.state.objects[source as usize].zone, Zone::Graveyard);
+            }
+        }
+    }
+}
+#[test]
+fn tmt_sneak_shark_first_strike_reanimates_damaged_players_creature_attacking_same_player() {
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            for change in 0..3 {
+                let mut g = setup(p);
+                let returned = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+                let source = named(&mut g, p, "Shark Shredder, Killer Clone", Zone::Hand);
+                let dead = named(&mut g, p.other(), "Bear Cub", Zone::Graveyard);
+                let own = named(&mut g, p, "Bear Cub", Zone::Graveyard);
+                let land = named(&mut g, p.other(), "Forest", Zone::Graveyard);
+                if paid {
+                    unblocked(&mut g, returned);
+                    sneak(&mut g, source, returned, None);
+                    settle(&mut g);
+                } else {
+                    cast(&mut g, source, None, &[]);
+                    settle(&mut g);
+                    g.state.objects[source as usize].summoning_sick = false;
+                    unblocked(&mut g, source);
+                }
+                assert!(g.keywords(source).contains(Keywords::FIRST_STRIKE));
+                checked(&mut g, Action::Pass);
+                checked(&mut g, Action::Pass);
+                g.prepare_triggers();
+                assert_eq!(g.state.players[p.other().index()].life, 16);
+                for id in [own, land] {
+                    reject(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(id),
+                        },
+                    );
+                }
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(dead),
+                    },
+                );
+                if g.legal_actions().contains(&Action::FinishTargets) {
+                    checked(&mut g, Action::FinishTargets);
+                }
+                if change == 1 {
+                    g.move_object(source, Zone::Exile);
+                }
+                if change == 2 {
+                    let r = g.object_ref(source);
+                    g.record_control(r, p.other(), None);
+                }
+                settle(&mut g);
+                let view = g.object_view(dead);
+                assert_eq!(view.zone, Zone::Battlefield);
+                assert_eq!(view.controller, p);
+                assert_eq!(view.owner, p.other());
+                assert!(view.tapped && view.attacking);
+                assert_eq!(
+                    g.state
+                        .attackers
+                        .iter()
+                        .find(|a| a.card == dead)
+                        .unwrap()
+                        .defender,
+                    Some(CombatDefender::Player(p.other()))
+                );
+                checked(&mut g, Action::Pass);
+                checked(&mut g, Action::Pass);
+                settle(&mut g);
+                assert_eq!(g.state.players[p.other().index()].life, 14);
+            }
+        }
+    }
+}
+#[test]
+fn tmt_sneak_shark_optional_zero_or_invalidated_grave_target_makes_no_new_attacker() {
+    for p in [Player::P0, Player::P1] {
+        for choose in [false, true] {
+            let mut g = setup(p);
+            let returned = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let source = named(&mut g, p, "Shark Shredder, Killer Clone", Zone::Hand);
+            let dead = named(&mut g, p.other(), "Bear Cub", Zone::Graveyard);
+            unblocked(&mut g, returned);
+            sneak(&mut g, source, returned, None);
+            settle(&mut g);
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            g.prepare_triggers();
+            if choose {
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(dead),
+                    },
+                );
+            }
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                checked(&mut g, Action::FinishTargets);
+            }
+            if choose {
+                g.move_object(dead, Zone::Exile);
+                g.move_object(dead, Zone::Graveyard);
+            }
+            settle(&mut g);
+            assert_eq!(g.state.objects[dead as usize].zone, Zone::Graveyard);
+            assert!(!g.state.attackers.iter().any(|a| a.card == dead));
+        }
+    }
+}
+#[test]
+fn tmt_sneak_shredder_technique_counts_actual_destroyed_enchantment_lki_before_death_triggers() {
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            for owner in [p, p.other()] {
+                for name in ["Bear Cub", "Doubling Season", "Grasping Longneck"] {
+                    for indestructible in [false, true] {
+                        let mut g = setup(p);
+                        let returned = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+                        let target = named(&mut g, owner, name, Zone::Battlefield);
+                        let bad_land = named(&mut g, p.other(), "Forest", Zone::Battlefield);
+                        let bad_artifact =
+                            named(&mut g, p.other(), "Mouser Foundry", Zone::Battlefield);
+                        let source = named(&mut g, p, "Shredder's Technique", Zone::Hand);
+                        if indestructible {
+                            let r = g.object_ref(target);
+                            g.grant_keyword_effects(&[target], r, Keywords::INDESTRUCTIBLE);
+                        }
+                        if paid {
+                            unblocked(&mut g, returned);
+                            let attacker = g.object_ref(returned);
+                            checked(
+                                &mut g,
+                                Action::AnnounceSneak {
+                                    card: source,
+                                    attacker,
+                                },
+                            );
+                        } else {
+                            checked(&mut g, Action::AnnounceCast { card: source });
+                        }
+                        for id in [bad_land, bad_artifact] {
+                            reject(
+                                &mut g,
+                                Action::ChooseTarget {
+                                    target: Target::Card(id),
+                                },
+                            );
+                        }
+                        checked(
+                            &mut g,
+                            Action::ChooseTarget {
+                                target: Target::Card(target),
+                            },
+                        );
+                        while g.state.announcing.is_some() {
+                            let a = g
+                                .legal_actions()
+                                .into_iter()
+                                .find(|a| {
+                                    matches!(a, Action::PayCosts { .. } | Action::FinishTargets)
+                                })
+                                .unwrap();
+                            checked(&mut g, a);
+                        }
+                        settle(&mut g);
+                        assert_eq!(
+                            g.state.objects[target as usize].zone,
+                            if indestructible {
+                                Zone::Battlefield
+                            } else {
+                                Zone::Graveyard
+                            }
+                        );
+                        let loss = if !indestructible && name != "Bear Cub" {
+                            2
+                        } else {
+                            0
+                        };
+                        let gain = if !indestructible && owner == p && name == "Grasping Longneck" {
+                            2
+                        } else {
+                            0
+                        };
+                        assert_eq!(g.state.players[p.index()].life, 20 - loss + gain);
+                    }
+                }
+            }
+        }
+    }
+}
+#[test]
+fn tmt_sneak_shredder_technique_invalidated_enchantment_target_never_charges_life() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Shredder's Technique", Zone::Hand);
+        let target = named(&mut g, p.other(), "Doubling Season", Zone::Battlefield);
+        cast(&mut g, source, None, &[Target::Card(target)]);
+        g.move_object(target, Zone::Exile);
+        g.move_object(target, Zone::Battlefield);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 20);
+        assert_eq!(g.state.objects[target as usize].zone, Zone::Battlefield);
+    }
+}

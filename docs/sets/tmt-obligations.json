@@ -1953,7 +1953,7 @@
       "oracle_id": "42f12942-9ac1-497e-a8b7-9f66a5afd0ae",
       "name": "Michelangelo's Technique",
       "definition": "src/card_definitions/tmt/michelangelo_s_technique.rs",
-      "state": "gated",
+      "state": "focused rules tested; integrated full release validation pending",
       "printed_obligations": [
         {
           "face": "Michelangelo's Technique",
@@ -1968,7 +1968,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/michelangelo_s_technique.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 8
     },
     {
       "oracle_id": "594c6b1f-ff0e-4122-8b29-852632a22a79",
@@ -3309,7 +3314,7 @@
       "oracle_id": "dabd0867-ee3f-40cb-8314-b4a3966f8b24",
       "name": "Shark Shredder, Killer Clone",
       "definition": "src/card_definitions/tmt/shark_shredder_killer_clone.rs",
-      "state": "gated",
+      "state": "focused rules tested; integrated full release validation pending",
       "printed_obligations": [
         {
           "face": "Shark Shredder, Killer Clone",
@@ -3325,7 +3330,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/shark_shredder_killer_clone.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 8
     },
     {
       "oracle_id": "bda5d0aa-3ed0-4f8c-80ae-f9cb8ed0ac82",
@@ -3375,7 +3385,7 @@
       "oracle_id": "d92714c0-4e22-47f9-a4d4-405894e734d0",
       "name": "Shredder's Technique",
       "definition": "src/card_definitions/tmt/shredder_s_technique.rs",
-      "state": "gated",
+      "state": "focused rules tested; integrated full release validation pending",
       "printed_obligations": [
         {
           "face": "Shredder's Technique",
@@ -3390,7 +3400,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/shredder_s_technique.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 8
     },
     {
       "oracle_id": "59d96fc0-6580-43c2-8c6a-dcf983644561",
@@ -3839,7 +3854,7 @@
       "oracle_id": "6a51bb21-0c01-4ad8-99d7-17685db90b69",
       "name": "The Last Ronin's Technique",
       "definition": "src/card_definitions/tmt/the_last_ronin_s_technique.rs",
-      "state": "implemented; integrated rules and release validation pending",
+      "state": "focused rules tested; integrated full release validation pending",
       "printed_obligations": [
         {
           "face": "The Last Ronin's Technique",

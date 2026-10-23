@@ -182,6 +182,9 @@ impl Game {
             LibrarySelectionCount::ControlledColors => {
                 available_colors.unwrap().count_ones() as usize
             }
+            LibrarySelectionCount::ManaValueBudget { maximum_cards, .. } => {
+                usize::from(maximum_cards)
+            }
             LibrarySelectionCount::All => remaining.len(),
             LibrarySelectionCount::Fixed(n) => usize::from(n),
             LibrarySelectionCount::Lessons => {
@@ -262,6 +265,17 @@ impl Game {
     ) -> bool {
         if !f.eligible.contains(&candidate) {
             return false;
+        }
+        if let LibrarySelectionCount::ManaValueBudget { maximum_total, .. } = f.spec.count {
+            let total: u128 = f
+                .selected
+                .iter()
+                .chain(std::iter::once(&candidate))
+                .map(|r| u128::from(self.state.objects[r.card as usize].card.fixed_mana_value()))
+                .sum();
+            if total > u128::from(maximum_total) {
+                return false;
+            }
         }
         let Some(colors) = f.available_colors else {
             return true;

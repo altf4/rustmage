@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "d5ffca2a24cb295780dd754f2132303dee85541f6bc0d611f39cf0bb88d24ebb",
+  "catalogue_version": "f5c25f43ab4f48cd757db9de3919b8bdbd052f0293a506d7bebc0d5e92ff6d51",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2389,
-  "implemented_total": 2395,
+  "implemented_standard_cards": 2392,
+  "implemented_total": 2398,
   "token_definitions": 113,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -185,8 +185,8 @@
     },
     "tmt": {
       "total": 189,
-      "complete": 98,
-      "gated": 91
+      "complete": 101,
+      "gated": 88
     },
     "w17": {
       "total": 1,
@@ -22110,8 +22110,8 @@
     {
       "name": "Michelangelo's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/michelangelo_s_technique.rs",
       "set": "tmt"
     },
@@ -30726,8 +30726,8 @@
     {
       "name": "Shark Shredder, Killer Clone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/shark_shredder_killer_clone.rs",
       "set": "tmt"
     },
@@ -31006,8 +31006,8 @@
     {
       "name": "Shredder's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/shredder_s_technique.rs",
       "set": "tmt"
     },

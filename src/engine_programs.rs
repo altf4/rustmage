@@ -2559,6 +2559,36 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::DestroyCounted { kinds } => {
+                    let mut ids: Vec<_> = item
+                        .targets
+                        .iter()
+                        .filter(|&&bound| self.same_target_object(bound))
+                        .filter_map(|bound| match bound.target {
+                            Target::Card(id)
+                                if self.on_battlefield(id)
+                                    && !self.keywords(id).contains(Keywords::INDESTRUCTIBLE) =>
+                            {
+                                Some(id)
+                            }
+                            _ => None,
+                        })
+                        .collect();
+                    ids.sort_unstable();
+                    ids.dedup();
+                    let sources = self.death_trigger_sources();
+                    let events = self.move_objects_raw(&ids, Zone::Graveyard);
+                    self.state.resolving.as_mut().unwrap().moved_count = Some(
+                        u64::try_from(
+                            events
+                                .iter()
+                                .filter(|e| e.moved && e.before.kinds & kinds != 0)
+                                .count(),
+                        )
+                        .capacity("destroyed count exhausted"),
+                    );
+                    self.finish_zone_events(&events, &sources);
+                }
                 Instruction::DestroyLoseManaValue => {
                     let loss: u64 = item
                         .targets
@@ -4036,6 +4066,30 @@ impl Game {
                         })
                         .collect();
                     self.stage_entries(moves, None);
+                }
+                Instruction::ReturnToBattlefieldAttacking(players) => {
+                    let defender = self
+                        .program_players(players, &item)
+                        .next()
+                        .filter(|&p| p != item.controller)
+                        .map(CombatDefender::Player);
+                    let moves = item
+                        .targets
+                        .iter()
+                        .filter(|&&b| self.same_target_object(b))
+                        .filter_map(|b| match b.target {
+                            Target::Card(id) => {
+                                let mut movement = self.entry_move(id, Zone::Battlefield, true);
+                                movement.controller = item.controller;
+                                movement.attacking = defender;
+                                Some(movement)
+                            }
+                            _ => None,
+                        })
+                        .collect::<Vec<_>>();
+                    if !moves.is_empty() {
+                        self.stage_entries(moves, None);
+                    }
                 }
                 Instruction::ReturnToBattlefieldTapped => {
                     let moves = item

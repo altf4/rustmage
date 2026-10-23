@@ -410,6 +410,13 @@ impl Game {
                 item.life_event.expect("saved life event").amount.max(0) as u128
             }
             AmountValue::ChosenX => u128::from(item.x.unwrap_or(0)),
+            AmountValue::MovedCount => u128::from(
+                self.state
+                    .resolving
+                    .as_ref()
+                    .and_then(|r| r.moved_count)
+                    .unwrap_or(0),
+            ),
             AmountValue::MilledCreatures => self
                 .state
                 .resolving
