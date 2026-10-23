@@ -75,6 +75,9 @@ fn program(g: &mut Game, code: &'static [Instruction]) {
     let id = spawn(g, Player::P0, Card::Shock, Zone::Hand);
     let item = g.cast_item(Player::P0, id, [0; 6]);
     g.state.resolving = Some(Resolution {
+        continuation: None,
+        chosen_creature_type: None,
+        chosen_color: None,
         explore: None,
         evidence: None,
         connive: None,

@@ -7,6 +7,11 @@ impl Game {
             self.precombat_lore_counters();
         }
         if step == Step::End {
+            // Expire before beginning-of-end-step triggers: a permission created
+            // during that step waits for the following actual matching step.
+            self.state
+                .exile_permissions
+                .retain(|p| p.next_end_step != Some(self.state.active));
             self.queue_copy_end_step_abilities();
             self.queue_delayed_sacrifices();
             self.queue_delayed_returns();
@@ -119,6 +124,24 @@ impl Game {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
             StepGuard::Always => return true,
+            StepGuard::PutCounterOnCreatureThisTurn => return p.put_counter_on_creature_this_turn,
+            StepGuard::YourMainPhase { expected } => {
+                return (self.state.active == player
+                    && matches!(self.state.step, Step::Main1 | Step::Main2))
+                    == expected;
+            }
+            StepGuard::SourceCounters {
+                kind,
+                minimum,
+                maximum,
+            } => {
+                if !self.on_battlefield(source.card) || self.object_ref(source.card) != source {
+                    return false;
+                }
+                let amount = self.counter_count(source.card, kind);
+                return minimum.is_none_or(|min| amount >= min)
+                    && maximum.is_none_or(|max| amount <= max);
+            }
             StepGuard::SourcePowerAtLeast(minimum) => {
                 return self.on_battlefield(source.card)
                     && self.object_ref(source.card) == source

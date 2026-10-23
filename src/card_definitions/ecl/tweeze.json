@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fddd39a0d7d0d5e31f1b4c7943f3b974050ca27f8b225dd09716e10b372ab1e7"
   },
-  "physical_metadata_sha256": "5ab07e2e6307f636410f860bb5c693788d75990e34ca70a52650c10495d4c9fa"
+  "physical_metadata_sha256": "5ab07e2e6307f636410f860bb5c693788d75990e34ca70a52650c10495d4c9fa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/Tweeze.java",
+  "java_sha256": "cc3bd87d2a5fee68acb43d1aae0ef60ad98938276432aeae5318528573061ea8",
+  "rules_tests": "src/engine_ecl_inherited_br_tests.rs",
+  "rules_test_files": [
+    "src/engine_ecl_inherited_br_tests.rs"
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    }
+  ],
+  "audit_notes": "Full pinned Oracle and Java card/helper reads; typed behavior preserved. Actual paid both-seat whole-card matrices supplement the listed adversarial rules suites."
 }

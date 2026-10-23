@@ -232,19 +232,26 @@ impl Game {
         let departing = (recipient.zone == Zone::Hand).then_some(id);
         let applies = |rule: &crate::cards::SpellReduction, source: CardId| {
             let object = &self.state.objects[source as usize];
-            rule.filter.matches_mana_value(definition, mana_value)
-                && match rule.turn {
-                    CostTurn::Any => true,
-                    CostTurn::Own => self.state.active == actor,
-                    CostTurn::Other => self.state.active != actor,
+            (match rule.filter {
+                crate::cards::CastFilter::CreatureToughnessGreaterThanPower => {
+                    let stats = self.stats_without_hand(id, departing);
+                    definition.is_creature() && stats.toughness > stats.power
                 }
-                && self.step_guard_without_hand(
-                    rule.guard,
-                    actor,
-                    self.object_ref(source),
-                    object.tapped,
-                    departing,
-                )
+                crate::cards::CastFilter::SourceChosenCreatureType => self
+                    .source_chosen_creature_type(self.object_ref(source))
+                    .is_some_and(|kind| definition.has_subtype(kind.name())),
+                _ => rule.filter.matches_mana_value(definition, mana_value),
+            }) && match rule.turn {
+                CostTurn::Any => true,
+                CostTurn::Own => self.state.active == actor,
+                CostTurn::Other => self.state.active != actor,
+            } && self.step_guard_without_hand(
+                rule.guard,
+                actor,
+                self.object_ref(source),
+                object.tapped,
+                departing,
+            )
         };
         let amount = |rule: &crate::cards::SpellReduction, source: CardId| match rule.amount {
             crate::cards::SpellReductionAmount::CreaturePowerCount { minimum } => {

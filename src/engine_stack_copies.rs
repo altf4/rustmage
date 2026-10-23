@@ -12,6 +12,7 @@ struct Retarget {
     template: SpellView,
     remaining: u64,
     victim: Option<u64>,
+    keywords: Keywords,
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct RetargetView {
@@ -24,6 +25,15 @@ pub struct RetargetView {
 pub(super) struct CopyState {
     delayed: Vec<SpellView>,
     retarget: Option<Retarget>,
+}
+impl CopyState {
+    pub(super) fn visit_owned_packets(&mut self, visit: &mut impl FnMut(&mut SpellView)) {
+        self.delayed.iter_mut().for_each(&mut *visit);
+        if let Some(retarget) = &mut self.retarget {
+            visit(&mut retarget.item);
+            visit(&mut retarget.template);
+        }
+    }
 }
 pub(super) fn owned_bytes(state: &Option<Box<CopyState>>) -> usize {
     state.as_ref().map_or(0, |state| {
@@ -39,10 +49,19 @@ pub(super) fn owned_bytes(state: &Option<Box<CopyState>>) -> usize {
     })
 }
 impl Game {
-    pub(super) fn stack_target_rule_matches(&self, rule: TargetRule, item: &SpellView) -> bool {
+    pub(super) fn stack_target_rule_matches(
+        &self,
+        rule: TargetRule,
+        controller: Player,
+        item: &SpellView,
+    ) -> bool {
         match rule {
             TargetRule::SingleTargetStackObject => item.targets.len() == 1,
             TargetRule::Spell => item.kind == StackKind::Spell,
+            TargetRule::TriggeredAbility { relation } => {
+                item.kind.is_triggered()
+                    && (relation == -1 || ((item.controller == controller) == (relation == 0)))
+            }
             TargetRule::SpellKinds { kinds, excluded } => {
                 item.kind == StackKind::Spell
                     && (kinds == 0 || item.source_card.kind_mask() & u16::from(kinds) != 0)
@@ -96,8 +115,11 @@ impl Game {
         })
     }
     pub(super) fn remember_next_spell_copy(&mut self, item: &SpellView) {
+        self.remember_next_spell_copy_ability(item, 0);
+    }
+    pub(super) fn remember_next_spell_copy_ability(&mut self, item: &SpellView, ability: u16) {
         let mut delayed = item.clone();
-        delayed.kind = StackKind::TriggeredAbility { ability: 0 };
+        delayed.kind = StackKind::TriggeredAbility { ability };
         delayed.cast = None;
         delayed.is_copy = false;
         delayed.targets.clear();
@@ -118,6 +140,7 @@ impl Game {
         if let Some(r) = choice
             && r.victim.is_none()
             && r.item.is_copy
+            && r.item.kind == StackKind::Spell
             && self.object_ref(r.item.card) == r.item.object
             && self.state.objects[r.item.card as usize].zone == Zone::Stack
             && !self.state.stack.iter().any(|s| s.id == r.item.id)
@@ -203,6 +226,7 @@ impl Game {
             if let Some((_, program)) = trigger.program()
                 && let Some(prior_spells) = program.iter().find_map(|i| match i {
                     Instruction::CopyCastSpell { prior_spells } => Some(*prior_spells),
+                    Instruction::MayCopyCastSpellWithKeywords(_) => Some(false),
                     _ => None,
                 })
             {
@@ -232,9 +256,43 @@ impl Game {
         self.state.stack_copy_data.as_mut().unwrap().delayed = retained;
         self.release_stack_copy_state();
     }
+    fn allocate_stack_copy(&mut self, template: &SpellView, controller: Player) -> SpellView {
+        if template.kind == StackKind::Spell {
+            return self.allocate_spell_copy(template, controller);
+        }
+        assert!(template.kind.is_triggered());
+        // An ability copy has the same source and frozen event parameters. It
+        // never allocates or moves the physical source object (CR707.10b).
+        let mut copy = template.clone();
+        copy.id = self.next_stack_id();
+        copy.controller = controller;
+        copy.is_copy = true;
+        copy
+    }
+    pub(super) fn copy_targeted_trigger(&mut self, item: &SpellView) -> bool {
+        let Some(template) = item
+            .targets
+            .first()
+            .and_then(|bound| self.bound_stack_item(bound))
+            .filter(|target| target.kind.is_triggered())
+            .cloned()
+        else {
+            return false;
+        };
+        let copy = self.allocate_stack_copy(&template, item.controller);
+        self.state
+            .stack_copy_data
+            .get_or_insert_with(Default::default)
+            .retarget = Some(Retarget {
+            item: copy,
+            template,
+            remaining: 0,
+            victim: None,
+            keywords: Keywords::NONE,
+        });
+        self.advance_copy_targets()
+    }
     fn allocate_spell_copy(&mut self, template: &SpellView, controller: Player) -> SpellView {
-        // These consumers copy only instant/sorcery spells, which never enter as permanents.
-        assert!(crate::cards::CastFilter::InstantSorcery.matches(template.source_card));
         let (card, generation) = if let Some(id) = self.state.free_tokens.pop() {
             (id, self.state.objects[id as usize].generation)
         } else {
@@ -285,6 +343,13 @@ impl Game {
         copy
     }
     pub(super) fn copy_captured_spell(&mut self, item: &SpellView) -> bool {
+        self.copy_captured_spell_with_keywords(item, Keywords::NONE)
+    }
+    pub(super) fn copy_captured_spell_with_keywords(
+        &mut self,
+        item: &SpellView,
+        keywords: Keywords,
+    ) -> bool {
         let Some(event) = &item.copy_event else {
             return false;
         };
@@ -299,6 +364,19 @@ impl Game {
             .cloned()
             .unwrap_or_else(|| event.spell.clone());
         let copy = self.allocate_spell_copy(&template, item.controller);
+        // Ability grants are continuous effects, not copiable characteristics.
+        // A different effect copying the original must not inherit this grant.
+        if keywords != Keywords::NONE {
+            if self
+                .state
+                .stack
+                .iter()
+                .any(|spell| spell.id == template.id && spell.object == template.object)
+            {
+                self.grant_stack_keywords_expiring(template.object, item.object, keywords, None);
+            }
+            self.grant_stack_keywords_expiring(copy.object, item.object, keywords, None);
+        }
         self.state
             .stack_copy_data
             .get_or_insert_with(Default::default)
@@ -307,6 +385,7 @@ impl Game {
             template,
             remaining: event.amount - 1,
             victim: None,
+            keywords,
         });
         self.advance_copy_targets()
     }
@@ -329,6 +408,7 @@ impl Game {
             template: victim,
             remaining: 0,
             victim: Some(id),
+            keywords: Keywords::NONE,
         });
         self.advance_copy_targets()
     }
@@ -367,6 +447,7 @@ impl Game {
             spec.rule,
             TargetRule::Grouped {
                 constraint: TargetGroupConstraint::SameGraveyard
+                    | TargetGroupConstraint::SharedCreatureType
                     | TargetGroupConstraint::OtherThanGroup(_),
                 ..
             }
@@ -524,7 +605,15 @@ impl Game {
         if r.remaining == 0 {
             state.retarget = None;
         } else {
-            let copy = self.allocate_spell_copy(&r.template, r.item.controller);
+            let copy = self.allocate_stack_copy(&r.template, r.item.controller);
+            if r.keywords != Keywords::NONE {
+                self.grant_stack_keywords_expiring(
+                    copy.object,
+                    r.template.object,
+                    r.keywords,
+                    None,
+                );
+            }
             self.state.stack_copy_data.as_mut().unwrap().retarget = Some(Retarget {
                 item: copy,
                 remaining: r.remaining - 1,
@@ -616,6 +705,7 @@ mod allocation_occurrence_tests {
                 victim: Some(item.id),
                 item,
                 remaining: 0,
+                keywords: Keywords::NONE,
             });
             g.state.pending = Pending::Retarget { player: p };
             let expect = |g: &Game, targets: [CardId; 2]| {

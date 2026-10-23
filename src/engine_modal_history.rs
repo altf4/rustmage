@@ -53,7 +53,20 @@ pub(super) fn owned_bytes(rows: &Rows) -> usize {
     })
 }
 impl Game {
+    pub(super) fn modal_optional_intent_matches(&self, item: &SpellView, index: usize) -> bool {
+        item.source_card
+            .mode_optional_additional_paid()
+            .get(index)
+            .is_none_or(|required| {
+                item.cast
+                    .and_then(|cast| cast.optional_additional)
+                    .is_none_or(|paid| paid == *required)
+            })
+    }
     pub(super) fn modal_choice_unused(&self, item: &SpellView, index: usize) -> bool {
+        if !self.modal_optional_intent_matches(item, index) {
+            return false;
+        }
         let Some(key) = key(item) else { return true };
         !self.state.modal_history.as_ref().is_some_and(|rows| {
             rows.iter()

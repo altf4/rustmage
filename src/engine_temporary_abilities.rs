@@ -73,9 +73,15 @@ impl Game {
                 .collect();
             for grant in matching {
                 let ability = grant.granting_card.triggers()[usize::from(grant.ability)];
-                if ability.condition.event() != TriggerCondition::SelfDies {
-                    continue;
-                }
+                let return_death = match ability.condition.event() {
+                    TriggerCondition::SelfDies => false,
+                    TriggerCondition::ReturnDeath(filter)
+                        if self.return_death_matches(filter, &event.before, event) =>
+                    {
+                        true
+                    }
+                    _ => continue,
+                };
                 // 'You' belongs to the dying creature's actual controller, not
                 // the caster that originally bestowed the ability.
                 let context = AttachmentTriggerView {
@@ -85,12 +91,15 @@ impl Game {
                     defender: None,
                     granted: true,
                 };
-                self.queue_zone_trigger_from(
+                if self.queue_zone_trigger_from(
                     &event.before,
                     usize::from(grant.ability),
                     event,
                     Some(Box::new(context)),
-                );
+                ) && return_death
+                {
+                    self.capture_return_death(event);
+                }
             }
         }
         // Dispatch before erasing the exact old incarnation, including each

@@ -3,10 +3,45 @@
   "catalogue_id": 3670,
   "oracle_id": "2676ba6d-e7a7-48cf-9c86-6e2a11f03096",
   "facts_sha256": "a03338c2f68560c904373c240fa977b322ebbc834c130e28af5cda1dd7ddcf8a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ed50919318b533493bbcc27d4a4e5c2451ff43d0152ea9bb840c986a029240b7"
   },
-  "physical_metadata_sha256": "af13e6ee38c4b2b3f4db0e12dd18ce80965b3d1c9b92a93f74ff74751dcda345"
+  "physical_metadata_sha256": "af13e6ee38c4b2b3f4db0e12dd18ce80965b3d1c9b92a93f74ff74751dcda345",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SanarInnovativeFirstYear.java",
+  "java_sha256": "5fd7c94a0f95be5e424e137a463447e2c6adcbe456648f0d8d9b4bd55b6d0a89",
+  "rules_tests": "src/engine_ecl_students_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/assignment/common/ColorAssignment.java",
+      "sha256": "c84a1836b8958913167e8db1d75fc2961370dd235dddad88e83c679a5275af69"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/assignment/RoleAssignment.java",
+      "sha256": "7b8e9145af672e13d0970346d5602bc16c7b434f7db9040b9a7a2d4a0d05478f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfFirstMainTriggeredAbility.java",
+      "sha256": "8ae6196917d9e2e958cd19a7a009d89c0462a680be928b607658ce76526eb93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ColorsAmongControlledPermanentsCount.java",
+      "sha256": "94d0639d201ef40c27aa8b05d8dc072166ac4f2c82494425ebe1449d385eb8a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/CanPlayCardControllerEffect.java",
+      "sha256": "f038661e1695132acc06c2886f17d98832360a6d92fbd59d3956fe87d4e78387"
+    }
+  ],
+  "source_notes": {
+    "oracle_corrections": "The initial selected card must match an actually available color; zero available colors still performs the final shuffle. The pinned Java first-pick and early-zero-return shortcuts are not adopted.",
+    "helper_read": "Mage/src/main/java/mage/util/CardUtil.java makeCardPlayable overloads, lines1435-1470: cast-only, end-of-turn permission with ordinary mana requirements."
+  }
 }

@@ -3,10 +3,35 @@
   "catalogue_id": 2365,
   "oracle_id": "fdf0fba8-f335-419c-b96b-e99037727c43",
   "facts_sha256": "7707f71ac0dc2d366e9aa91f04dc22ca9e4820e71e5276e5aec1acefe83c5ffb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "602917123d25b3bdd106ba1a9fe0e5ab7c4b2a4d3103a2d1a2347430f493bcbb"
   },
-  "physical_metadata_sha256": "d1a94a9ae65ec292bfe771e0c6157ae6c7a3bad82f15efa5abbb16d7f802f934"
+  "physical_metadata_sha256": "d1a94a9ae65ec292bfe771e0c6157ae6c7a3bad82f15efa5abbb16d7f802f934",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KinscaerSentry.java",
+  "java_sha256": "2ebd5021c6a0a9a0dc3316b8b921a8b516719556a29f61c4acc8412e3d28fb0b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutCardFromHandOntoBattlefieldEffect.java",
+      "sha256": "60ead6e7cba07c849019361189b61b541490b8f4ec1bdda1e91b3315a673788a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+      "sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    }
+  ]
 }

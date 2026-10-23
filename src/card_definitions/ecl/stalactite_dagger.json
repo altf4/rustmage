@@ -3,10 +3,46 @@
   "catalogue_id": 4088,
   "oracle_id": "064c3269-c012-4fc7-84c3-5f147a82a03c",
   "facts_sha256": "01f523176ed003eb06c1cde13345426583381b6da9cd2d16ffa53b1282dd79a2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "715ee139c5fa579ded8d93ed9d09e108923d15962e3b420ebdaa5b59a08e0c80"
   },
-  "physical_metadata_sha256": "f30f86edde43625920172b4587e4639b9f12e94fa588d3736f5a7a2a0ab4643a"
+  "physical_metadata_sha256": "f30f86edde43625920172b4587e4639b9f12e94fa588d3736f5a7a2a0ab4643a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StalactiteDagger.java",
+  "java_sha256": "70f3adbda0cc18b2cecb09ce6161edca6f09837b648d90e6ca1175b6f9cb1f61",
+  "rules_tests": "src/engine_ecl_green_colorless_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAllCreatureTypesAttachedEffect.java",
+      "sha256": "151945cb521c90e274f67d829496c854e3a4489eea567059c9aa1d858d0055d0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ShapeshifterColorlessToken.java",
+      "sha256": "bdd155424490ef1e497433d8e6495173ba2fdf1b5989fc333ac5ba8000c33559"
+    }
+  ]
 }

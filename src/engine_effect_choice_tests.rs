@@ -63,6 +63,9 @@ fn program(g: &mut Game, code: &'static [Instruction], targets: Vec<BoundTarget>
     let mut item = g.cast_item(Player::P0, id, [0; 6]);
     item.targets = targets;
     g.state.resolving = Some(Resolution {
+        continuation: None,
+        chosen_creature_type: None,
+        chosen_color: None,
         explore: None,
         evidence: None,
         connive: None,
@@ -496,6 +499,9 @@ fn self_payment_uses_exact_incarnation_and_damage_uses_departure_keywords() {
         g.queue_trigger(&g.object_view(source), 0);
         let item = g.state.pending_triggers.pop().unwrap();
         g.state.resolving = Some(Resolution {
+            continuation: None,
+            chosen_creature_type: None,
+            chosen_color: None,
             explore: None,
             evidence: None,
             connive: None,

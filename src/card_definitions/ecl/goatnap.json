@@ -3,10 +3,35 @@
   "catalogue_id": 1800,
   "oracle_id": "060e7187-0c7d-4022-9a1f-36a6f75314ca",
   "facts_sha256": "dd8bc23d8d3a913d20aee67024bd508f337acc49cd087c59e3c018bd41df90fa",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "70e0582c647fca51f28a02b16619707389f3c435950391508ac6901fe7631e60"
   },
-  "physical_metadata_sha256": "9069b41fcae1a9a4c3113cced1c94d6f9f8f252dd53f503f3a49a295480be5c1"
+  "physical_metadata_sha256": "9069b41fcae1a9a4c3113cced1c94d6f9f8f252dd53f503f3a49a295480be5c1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/Goatnap.java",
+  "java_sha256": "0421c9734130b3b39663fdfd78a42802f951ebee6e829447a3389d7ce60721bb",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainControlTargetEffect.java",
+      "sha256": "93e055d129c924686ebca800aee72c6797220dfc56b829c70b715dd06a8c09ed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapTargetEffect.java",
+      "sha256": "69bec57593db2620ef750768e381badf6843aefaf7584c796037dcdf87f1b973"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    }
+  ]
 }

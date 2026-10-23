@@ -3,10 +3,30 @@
   "catalogue_id": 59,
   "oracle_id": "602cce3e-7033-47d6-aec1-d755f234f270",
   "facts_sha256": "951a23d499e7579a0cf5679c56ebd9d26b65acfa70b21b0690800686c96eb469",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bfbb6cb52831d8c6a906068cd4703c06fd18c314975483183fca754a531c8da0"
   },
-  "physical_metadata_sha256": "bb3bdd819cc193f2a6be5befd9464532d77f6bf82517923c5991adb996539c90"
+  "physical_metadata_sha256": "bb3bdd819cc193f2a6be5befd9464532d77f6bf82517923c5991adb996539c90",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AdeptWatershaper.java",
+  "java_sha256": "30214f42b3de6d2e89bbc85fa6650cfe562e7a95576fedc4fba4b62edcc5588f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/TappedPredicate.java",
+      "sha256": "71eabf46dc3838343404e9d40c88835361370549c67e42e8c694082ecd050436"
+    }
+  ]
 }

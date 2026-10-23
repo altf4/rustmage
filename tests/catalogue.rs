@@ -28,7 +28,10 @@ fn every_pinned_standard_identity_has_a_native_catalogue_entry() {
         let name = record["name"].as_str().unwrap();
         let card = Card::from_name(name).expect(name);
         assert_eq!(card.identity(), name);
-        if card.adventure_spell().is_some() || card.omen_spell().is_some() {
+        if card.adventure_spell().is_some()
+            || card.omen_spell().is_some()
+            || (record["layout"] == "transform" && card.is_supported())
+        {
             assert_eq!(
                 card.name(),
                 record["card_faces"][0]["name"].as_str().unwrap()

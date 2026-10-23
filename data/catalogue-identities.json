@@ -5349,7 +5349,20 @@
     2,
     0,
     1,
-    8
+    8,
+    0,
+    16,
+    0,
+    16,
+    2,
+    4,
+    4,
+    1,
+    8,
+    16,
+    16,
+    0,
+    20
   ],
   "aliases": [
     [
@@ -5519,6 +5532,10 @@
     [
       "@emblem/kaito_cunning_infiltrator",
       5341
+    ],
+    [
+      "@emblem/oko_shadowmoor_scion_chosen_type",
+      5355
     ],
     [
       "@emblem/vivien_reid",
@@ -5977,8 +5994,20 @@
       5335
     ],
     [
+      "@token/lluwen_worm_1_1_black_green",
+      5356
+    ],
+    [
+      "@token/mutavault",
+      5346
+    ],
+    [
       "@token/ninja_2_1_blue",
       5340
+    ],
+    [
+      "@token/oko_elk_3_3_green",
+      5354
     ],
     [
       "@token/phyrexian_goblin_1_1_red",
@@ -5993,8 +6022,16 @@
       5334
     ],
     [
+      "@token/shapeshifter_1_1_colorless_changeling",
+      5344
+    ],
+    [
       "@token/spirit_1_1_white_flying",
       5342
+    ],
+    [
+      "@token/treefolk_3_4_green_reach",
+      5345
     ],
     [
       "A Killer Among Us",
@@ -6921,8 +6958,16 @@
       242
     ],
     [
+      "Ashling, Rekindled",
+      243
+    ],
+    [
       "Ashling, Rekindled // Ashling, Rimebound",
       243
+    ],
+    [
+      "Ashling, Rimebound",
+      5348
     ],
     [
       "Ashroot Animist",
@@ -8217,8 +8262,16 @@
       551
     ],
     [
+      "Brigid, Clachan's Heart",
+      552
+    ],
+    [
       "Brigid, Clachan's Heart // Brigid, Doun's Mind",
       552
+    ],
+    [
+      "Brigid, Doun's Mind",
+      5347
     ],
     [
       "Brilliance Unleashed",
@@ -11173,6 +11226,10 @@
       1272
     ],
     [
+      "Eirdu, Carrier of Dawn",
+      1273
+    ],
+    [
       "Eirdu, Carrier of Dawn // Isilu, Carrier of Twilight",
       1273
     ],
@@ -13741,6 +13798,14 @@
       1892
     ],
     [
+      "Grub, Notorious Auntie",
+      5352
+    ],
+    [
+      "Grub, Storied Matriarch",
+      1893
+    ],
+    [
       "Grub, Storied Matriarch // Grub, Notorious Auntie",
       1893
     ],
@@ -15147,6 +15212,10 @@
     [
       "Ishgard, the Holy See // Faith & Grief",
       2238
+    ],
+    [
+      "Isilu, Carrier of Twilight",
+      5350
     ],
     [
       "Island",
@@ -18237,8 +18306,16 @@
       2999
     ],
     [
+      "Oko, Lorwyn Liege",
+      3000
+    ],
+    [
       "Oko, Lorwyn Liege // Oko, Shadowmoor Scion",
       3000
+    ],
+    [
+      "Oko, Shadowmoor Scion",
+      5353
     ],
     [
       "Oko, the Ringleader",
@@ -23565,6 +23642,14 @@
       4298
     ],
     [
+      "Sygg, Wanderbrine Shield",
+      5351
+    ],
+    [
+      "Sygg, Wanderwine Wisdom",
+      4299
+    ],
+    [
       "Sygg, Wanderwine Wisdom // Sygg, Wanderbrine Shield",
       4299
     ],
@@ -25185,8 +25270,16 @@
       4696
     ],
     [
+      "Trystan, Callous Cultivator",
+      4697
+    ],
+    [
       "Trystan, Callous Cultivator // Trystan, Penitent Culler",
       4697
+    ],
+    [
+      "Trystan, Penitent Culler",
+      5349
     ],
     [
       "Tuinvale Guide",
@@ -27787,6 +27880,36 @@
       "name": "Phyrexian Goblin Token",
       "subtypes": "Phyrexian Goblin",
       "colors": 8
+    },
+    {
+      "factory_identity": "@token/shapeshifter_1_1_colorless_changeling",
+      "name": "Shapeshifter Token",
+      "subtypes": "Shapeshifter",
+      "colors": 0
+    },
+    {
+      "factory_identity": "@token/treefolk_3_4_green_reach",
+      "name": "Treefolk Token",
+      "subtypes": "Treefolk",
+      "colors": 16
+    },
+    {
+      "factory_identity": "@token/mutavault",
+      "name": "Mutavault",
+      "subtypes": "",
+      "colors": 0
+    },
+    {
+      "factory_identity": "@token/oko_elk_3_3_green",
+      "name": "Elk Token",
+      "subtypes": "Elk",
+      "colors": 16
+    },
+    {
+      "factory_identity": "@token/lluwen_worm_1_1_black_green",
+      "name": "Worm Token",
+      "subtypes": "Worm",
+      "colors": 20
     }
   ],
   "emblems": [
@@ -27798,6 +27921,9 @@
     },
     {
       "oracle_text": "Whenever a player casts a spell, you create a 2/1 blue Ninja creature token."
+    },
+    {
+      "oracle_text": "Creatures you control of the chosen type get +3/+3 and have vigilance and hexproof."
     }
   ],
   "creature_types": [
@@ -35265,11 +35391,9 @@
       "name": "Ashling, Rekindled // Ashling, Rimebound",
       "oracle_id": "31fc5d8b-94bc-4688-8a84-f15800e717a8",
       "facts_sha256": "a373df775b24b9dc30b5dab3ec04ebc7d1855c8dfd11df133ae9f5405b8c19a3",
-      "mana_cost": "",
-      "type_line": "Legendary Creature — Elemental Sorcerer // Legendary Creature — Elemental Wizard",
-      "oracle_keywords": [
-        "Transform"
-      ],
+      "mana_cost": "{1}{R}",
+      "type_line": "Legendary Creature — Elemental Sorcerer",
+      "oracle_keywords": [],
       "standard_legal": true,
       "legendary": true,
       "kind": 1,
@@ -35279,11 +35403,11 @@
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 244,
@@ -44068,25 +44192,23 @@
       "name": "Brigid, Clachan's Heart // Brigid, Doun's Mind",
       "oracle_id": "60fc89a1-cc6f-4a32-84c3-09abf7a4a1df",
       "facts_sha256": "4a3472f348cd0abbfd1a0155920c84a66f8feed7f47233e4fe5de7bca19e312f",
-      "mana_cost": "",
-      "type_line": "Legendary Creature — Kithkin Warrior // Legendary Creature — Kithkin Soldier",
-      "oracle_keywords": [
-        "Transform"
-      ],
+      "mana_cost": "{2}{W}",
+      "type_line": "Legendary Creature — Kithkin Warrior",
+      "oracle_keywords": [],
       "standard_legal": true,
       "legendary": true,
       "kind": 1,
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        1,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 553,
@@ -48222,7 +48344,7 @@
         0,
         0,
         0,
-        0,
+        1,
         0
       ],
       "generic": 0
@@ -64631,12 +64753,11 @@
       "name": "Eirdu, Carrier of Dawn // Isilu, Carrier of Twilight",
       "oracle_id": "36af3c2c-49d7-46ea-ab02-c254b332448e",
       "facts_sha256": "b2bef366bab9bb489d702f0ffaecbb34734399b6d30d5df50725a053f89e04c2",
-      "mana_cost": "",
-      "type_line": "Legendary Creature — Elemental God // Legendary Creature — Elemental God",
+      "mana_cost": "{3}{W}{W}",
+      "type_line": "Legendary Creature — Elemental God",
       "oracle_keywords": [
         "Flying",
-        "Lifelink",
-        "Transform"
+        "Lifelink"
       ],
       "standard_legal": true,
       "legendary": true,
@@ -64644,14 +64765,14 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        2,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 3
     },
     {
       "index": 1274,
@@ -66269,7 +66390,7 @@
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
@@ -82248,8 +82369,8 @@
       "name": "Grub, Storied Matriarch // Grub, Notorious Auntie",
       "oracle_id": "180286e4-67fa-44d5-9e90-4a4e99c016a7",
       "facts_sha256": "3302569c39bceaeb20e835fe61f90e70bbb75165991f596add704ded21f79aa1",
-      "mana_cost": "",
-      "type_line": "Legendary Creature — Goblin Warlock // Legendary Creature — Goblin Warrior",
+      "mana_cost": "{2}{B}",
+      "type_line": "Legendary Creature — Goblin Warlock",
       "oracle_keywords": [
         "Blight",
         "Transform",
@@ -82263,12 +82384,12 @@
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 1894,
@@ -113823,8 +113944,8 @@
       "name": "Oko, Lorwyn Liege // Oko, Shadowmoor Scion",
       "oracle_id": "a0c956dc-d7de-4f11-b76f-7537fbee1731",
       "facts_sha256": "0b298ab235d38a24c93c0d172827f51e3e6d778126ab1af57c29815b553791a7",
-      "mana_cost": "",
-      "type_line": "Legendary Planeswalker — Oko // Legendary Planeswalker — Oko",
+      "mana_cost": "{2}{U}",
+      "type_line": "Legendary Planeswalker — Oko",
       "oracle_keywords": [
         "Transform",
         "Mill"
@@ -113836,13 +113957,13 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 3001,
@@ -150857,11 +150978,9 @@
       "name": "Sygg, Wanderwine Wisdom // Sygg, Wanderbrine Shield",
       "oracle_id": "9cc91ac5-6f2b-4fc0-b810-cdc92eebe6de",
       "facts_sha256": "c9412031779a74cf8446e55671406817cd0088a783e5b87b0f3226a0a5290c33",
-      "mana_cost": "",
-      "type_line": "Legendary Creature — Merfolk Wizard // Legendary Creature — Merfolk Rogue",
-      "oracle_keywords": [
-        "Transform"
-      ],
+      "mana_cost": "{1}{U}",
+      "type_line": "Legendary Creature — Merfolk Wizard",
+      "oracle_keywords": [],
       "standard_legal": true,
       "legendary": true,
       "kind": 1,
@@ -150869,13 +150988,13 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 4300,
@@ -162222,11 +162341,9 @@
       "name": "Trystan, Callous Cultivator // Trystan, Penitent Culler",
       "oracle_id": "961d1128-a022-480c-918e-16ba0abf844b",
       "facts_sha256": "62480c46385264cb8be6531d79d0f968414b4dbbd58120a3a4f6ad72edc5c293",
-      "mana_cost": "",
-      "type_line": "Legendary Creature — Elf Druid // Legendary Creature — Elf Warlock",
+      "mana_cost": "{2}{G}",
+      "type_line": "Legendary Creature — Elf Druid",
       "oracle_keywords": [
-        "Transform",
-        "Mill",
         "Deathtouch"
       ],
       "standard_legal": true,
@@ -162239,10 +162356,10 @@
         0,
         0,
         0,
-        0,
+        1,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 4698,
@@ -180483,6 +180600,366 @@
       "facts_sha256": null,
       "mana_cost": "",
       "type_line": "Creature — Phyrexian Goblin",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5344,
+      "module": "card_5344",
+      "path": "synthetic/token_shapeshifter_1_1_colorless_changeling.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/shapeshifter_1_1_colorless_changeling",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Shapeshifter",
+      "oracle_keywords": [
+        "Changeling"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5345,
+      "module": "card_5345",
+      "path": "synthetic/token_treefolk_3_4_green_reach.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/treefolk_3_4_green_reach",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Treefolk",
+      "oracle_keywords": [
+        "Reach"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5346,
+      "module": "card_5346",
+      "path": "synthetic/token_mutavault.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/mutavault",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Land",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 2,
+      "basic": false,
+      "mana_color": 5,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5347,
+      "module": "card_5347",
+      "path": "ecl/brigid_doun_s_mind.rs",
+      "set": "ecl",
+      "category": "transform",
+      "name": "Brigid, Doun's Mind",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Kithkin Soldier",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5348,
+      "module": "card_5348",
+      "path": "ecl/ashling_rimebound.rs",
+      "set": "ecl",
+      "category": "transform",
+      "name": "Ashling, Rimebound",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Elemental Wizard",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5349,
+      "module": "card_5349",
+      "path": "ecl/trystan_penitent_culler.rs",
+      "set": "ecl",
+      "category": "transform",
+      "name": "Trystan, Penitent Culler",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Elf Warlock",
+      "oracle_keywords": [
+        "Deathtouch"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5350,
+      "module": "card_5350",
+      "path": "ecl/isilu_carrier_of_twilight.rs",
+      "set": "ecl",
+      "category": "transform",
+      "name": "Isilu, Carrier of Twilight",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Elemental God",
+      "oracle_keywords": [
+        "Flying",
+        "Lifelink"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5351,
+      "module": "card_5351",
+      "path": "ecl/sygg_wanderbrine_shield.rs",
+      "set": "ecl",
+      "category": "transform",
+      "name": "Sygg, Wanderbrine Shield",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Merfolk Rogue",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5352,
+      "module": "card_5352",
+      "path": "ecl/grub_notorious_auntie.rs",
+      "set": "ecl",
+      "category": "transform",
+      "name": "Grub, Notorious Auntie",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Goblin Warrior",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5353,
+      "module": "card_5353",
+      "path": "ecl/oko_shadowmoor_scion.rs",
+      "set": "ecl",
+      "category": "transform",
+      "name": "Oko, Shadowmoor Scion",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Planeswalker — Oko",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 64,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5354,
+      "module": "card_5354",
+      "path": "ecl/oko_elk_token.rs",
+      "set": "ecl",
+      "category": "token",
+      "name": "@token/oko_elk_3_3_green",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Elk",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5355,
+      "module": "card_5355",
+      "path": "ecl/oko_chosen_type_emblem.rs",
+      "set": "ecl",
+      "category": "emblem",
+      "name": "@emblem/oko_shadowmoor_scion_chosen_type",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 0,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5356,
+      "module": "card_5356",
+      "path": "ecl/lluwen_worm_token.rs",
+      "set": "ecl",
+      "category": "token",
+      "name": "@token/lluwen_worm_1_1_black_green",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Worm",
       "oracle_keywords": [],
       "standard_legal": false,
       "legendary": false,

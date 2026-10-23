@@ -3,10 +3,47 @@
   "catalogue_id": 696,
   "oracle_id": "ba0a815c-1dfe-47c1-890f-496c670124f3",
   "facts_sha256": "2f77d5accb78dc51e4931d162d1f0ce390939dd3621d8cbbcde7817ee0991d03",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5b92a7cd377a65f17348c3c886a2b69b663a981fcdeb8d2294c469fac8c4778a"
   },
-  "physical_metadata_sha256": "614ea62a742d5b7c7a85c70cd2ce375fe5225be623618bba930f75067c6052b1"
+  "physical_metadata_sha256": "b4ee7cd54fa3e775224128ef969a3fe6451769e76059efc01cef8545fe00bb87",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CelestialReunion.java",
+  "java_sha256": "66ca10391696f7bd5884b2d9c35f17119ebdacabb797603f69ace3e5dc167520",
+  "rules_tests": "src/engine_ecl_green_colorless_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/BeholdType.java",
+      "sha256": "b9b6ef548969c8e1bbde48ec05adb6ae62139ab3fbdd72a91f8154817dc17c2c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BeholdCost.java",
+      "sha256": "bc668079587e3c3383c7d071558d165ef37aaadbf5618e3e0d9d3654bf1b34de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/OptionalAdditionalCostImpl.java",
+      "sha256": "bd50759d4d5da374410b6fffea8a63b239021fa382fb0e392e114e0a81c6a031"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/choices/ChoiceCreatureType.java",
+      "sha256": "c940b4b86491e3c45d7d6011a43e340e051fd3fac732b035a068af6b7074b44b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ],
+  "metadata_correction": "The lifted unsupported row omitted the fixed green mana component. Pinned Oracle mana_cost {X}{G} and pinned CelestialReunion.java both require one green; preserve identity/facts and set colored[4]=1, generic=0."
 }

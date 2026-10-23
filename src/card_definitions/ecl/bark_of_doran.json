@@ -3,10 +3,50 @@
   "catalogue_id": 329,
   "oracle_id": "db3ba239-2239-4e9d-ad70-cff32ed24578",
   "facts_sha256": "43c386c25ff888e132208ef8e00e8fad7c402b06370a5e36b7b25e9fe331a977",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fb1f2ab9bf11d338770d747e45c7a09479c4161c5e1c68b13c83bc3db74edc88"
   },
-  "physical_metadata_sha256": "7a47333d8749ad087684a22883d290746bb905d7018bab30f1b871a93e138b94"
+  "physical_metadata_sha256": "7a47333d8749ad087684a22883d290746bb905d7018bab30f1b871a93e138b94",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BarkOfDoran.java",
+  "java_sha256": "55171363be47dd1149ecaf786f3e5a2c3306778f2c65942949ff7ed03173d2fd",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/CombatDamageByToughnessAttachedEffect.java",
+      "sha256": "29e1c02110c6d11e783f6423b191633c4143fb167ffe9d2b3265f5a7e97ab546"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/AttachedToMatchesFilterCondition.java",
+      "sha256": "69e99b360f6f254edc94b5486344df3216a973bb69c05cb9a5817ef9c520895d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ToughnessGreaterThanPowerPredicate.java",
+      "sha256": "880f39a9070e9495900154106d4c1194abd08d288cbb10b2ac93621452c1308c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    }
+  ]
 }

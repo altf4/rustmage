@@ -1,4 +1,5 @@
 //! Zone-qualified activations: legality, captured source context, and committed costs.
+use super::ability_world::CharacteristicWorld;
 use super::*;
 
 impl ActivatedAbility {
@@ -55,6 +56,15 @@ impl Game {
 
     pub(super) fn activation_guard_available(&self, guard: ActivationGuard, actor: Player) -> bool {
         match guard {
+            ActivationGuard::GraveyardSubtype(subtype) => self
+                .characteristic_query()
+                .graveyard_has_subtype(actor, subtype),
+            ActivationGuard::ControlColorsAtLeast(minimum) => {
+                self.characteristic_query()
+                    .controlled_colors(actor)
+                    .count_ones()
+                    >= u32::from(minimum)
+            }
             ActivationGuard::Always => true,
             ActivationGuard::LifeAboveStarting(extra) => {
                 self.state.players[actor.index()].life >= STARTING_LIFE + i128::from(extra)
@@ -94,6 +104,13 @@ impl Game {
         sorcery: bool,
     ) -> bool {
         self.printed_abilities_available(card)
+            && ability_world::CharacteristicWorld::activation_counter_cost_allowed(
+                self,
+                card,
+                self.state.objects[card as usize].card,
+                index as u16,
+                ability,
+            )
             && (ability.mana_production().is_some() || !self.named_activation_prohibited(card))
             && self.activation_guard_available(ability.guard, actor)
             && Self::object_activation_available_with_kinds(
@@ -423,6 +440,10 @@ impl Game {
         self.state.passes = 0;
         SpellView {
             source_move: None,
+            death_event: None,
+            creature_action_event: None,
+            transform_stamp: None,
+            source_chosen_type: self.source_chosen_creature_type(self.object_ref(card)),
             target_controller_lki: None,
             gift: None,
             reflexive_subject: None,
@@ -430,10 +451,7 @@ impl Game {
             cast_event: None,
             copy_event: None,
             target_allocations: None,
-            source_copy_recipe: self
-                .copy_recipe(self.object_ref(card))
-                .filter(|r| r.exceptions != CopyExceptions::NONE)
-                .map(Box::new),
+            source_copy_recipe: self.source_copy_facts(self.object_ref(card)),
             mana_copy_sources: None,
             is_copy: false,
             delayed_sacrifice: None,
@@ -449,6 +467,7 @@ impl Game {
             source_tapped: self.state.objects[card as usize].tapped,
             source_facts: self.damage_facts(card),
             related_stack: None,
+            entry_batch_event: None,
             entering_object: None,
             evidence_collected: false,
             damage_event: None,
@@ -523,6 +542,12 @@ impl Game {
                 object.counters.loyalty -= u64::from(change.unsigned_abs());
             } else {
                 self.add_counter(item.card, CounterKind::Loyalty, change as u64);
+                self.self_counters_added(
+                    item.object,
+                    CounterKind::Loyalty,
+                    change as u64,
+                    item.controller,
+                );
             }
         }
         // Capture the tap event before a subsequent sacrifice/discard/exile

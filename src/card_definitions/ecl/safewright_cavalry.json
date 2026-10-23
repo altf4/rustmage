@@ -3,10 +3,31 @@
   "catalogue_id": 3645,
   "oracle_id": "6e04a375-303e-43ba-bca1-4e959711a7f6",
   "facts_sha256": "71e26a35a1c935a0c997dd83ac7119959001a342376805567e322f29d086e5d9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f4892306e0d8e0abed1e07c28b78ce2d879211860f349587a016a9e61a78a841"
   },
-  "physical_metadata_sha256": "dde708593de93883418d3d122a947b2e23c5ee5b73c259c44d8e7c05fa4fbe8c"
+  "physical_metadata_sha256": "dde708593de93883418d3d122a947b2e23c5ee5b73c259c44d8e7c05fa4fbe8c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SafewrightCavalry.java",
+  "java_sha256": "8aaaade1e9e503aeec376eecf81cf5e8230d850d9536ea736c288bce081363f1",
+  "rules_tests": "src/engine_ecl_green_colorless_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByMoreThanOneSourceEffect.java",
+      "sha256": "e63f7e004321ab1b5c11466c457149be4825c47f5ba41a37f6a501b1ac031c4d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    }
+  ]
 }

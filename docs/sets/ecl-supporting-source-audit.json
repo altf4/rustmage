@@ -1,0 +1,299 @@
+{
+  "scope": "Supporting-source completeness audit; not an independent final PR review",
+  "base_revision": "75ca5c8b3ef7b6c08489cedc5a4830c870684e4c",
+  "membership": "data/sets/ecl.json",
+  "physical_members": 273,
+  "closure_method": "Transitive typed Card(integer) references from every frozen physical Oracle identity, including canonical reprints; Card:: constant scan finds no additional ECL references.",
+  "supporting_count": 19,
+  "categories": {
+    "token": 11,
+    "transform": 7,
+    "emblem": 1
+  },
+  "missing_source_packets": [],
+  "authenticated_unique_pins": 96,
+  "source_read_this_batch": [
+    "Mage/src/main/java/mage/game/permanent/token/MerfolkWhiteBlueToken.java",
+    "Mage/src/main/java/mage/game/permanent/token/KithkinGreenWhiteToken.java",
+    "Mage/src/main/java/mage/game/permanent/token/TokenImpl.java",
+    "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java"
+  ],
+  "supporting": [
+    {
+      "index": 5247,
+      "name": "@token/2cff3b0b2f34a41fce4cd46b",
+      "category": "token",
+      "definition": "src/card_definitions/synthetic/token_2cff3b0b2f34a41fce4cd46b.rs",
+      "parents": [
+        "Merrow Skyswimmer",
+        "Silvergill Mentor",
+        "Wanderwine Farewell"
+      ],
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/MerfolkWhiteBlueToken.java",
+      "existing_rules_evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/engine_ecl_white_blue_tests.rs"
+      ]
+    },
+    {
+      "index": 5291,
+      "name": "@token/91416e259800bff2445a15f5",
+      "category": "token",
+      "definition": "src/card_definitions/synthetic/token_91416e259800bff2445a15f5.rs",
+      "parents": [
+        "Bitterbloom Bearer",
+        "Glen Elendra's Answer",
+        "Pestered Wellguard"
+      ],
+      "java_source": "Mage.Sets/src/mage/cards/b/BitterbloomBearer.java",
+      "existing_rules_evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/engine_step_tests.rs"
+      ]
+    },
+    {
+      "index": 5299,
+      "name": "@token/b11360d6221a90a2c055da9f",
+      "category": "token",
+      "definition": "src/card_definitions/synthetic/token_b11360d6221a90a2c055da9f.rs",
+      "parents": [
+        "Boggart Mischief",
+        "Elder Auntie",
+        "Sourbread Auntie"
+      ],
+      "java_source": "Mage.Sets/src/mage/cards/e/ElderAuntie.java",
+      "existing_rules_evidence": [
+        "src/engine_ecl_inherited_br_tests.rs"
+      ]
+    },
+    {
+      "index": 5302,
+      "name": "@token/b60f6cd3b44b22bd289fe4e2",
+      "category": "token",
+      "definition": "src/card_definitions/synthetic/token_b60f6cd3b44b22bd289fe4e2.rs",
+      "parents": [
+        "Ashling's Command",
+        "Flamekin Gildweaver",
+        "Noggle Robber",
+        "Reckless Ransacking",
+        "Scuzzback Scrounger"
+      ],
+      "java_source": "Mage.Sets/src/mage/cards/f/FlamekinGildweaver.java",
+      "existing_rules_evidence": [
+        "src/engine_ecl_inherited_br_tests.rs",
+        "src/engine_ecl_inherited_tests.rs"
+      ]
+    },
+    {
+      "index": 5306,
+      "name": "@token/c48e9e904360e4cee1deeed8",
+      "category": "token",
+      "definition": "src/card_definitions/synthetic/token_c48e9e904360e4cee1deeed8.rs",
+      "parents": [
+        "Ajani, Outland Chaperone",
+        "Brigid's Command",
+        "Brigid, Clachan's Heart // Brigid, Doun's Mind",
+        "Catharsis",
+        "Clachan Festival",
+        "Goldmeadow Nomad",
+        "Kinbinding",
+        "Kithkeeper"
+      ],
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/KithkinGreenWhiteToken.java",
+      "existing_rules_evidence": [
+        "src/engine_ecl_inherited_tests.rs",
+        "src/engine_ecl_transform_tests.rs",
+        "src/engine_ecl_white_blue_tests.rs"
+      ]
+    },
+    {
+      "index": 5325,
+      "name": "@token/ea4dc4a4f4dec81ce9fea75f",
+      "category": "token",
+      "definition": "src/card_definitions/synthetic/token_ea4dc4a4f4dec81ce9fea75f.rs",
+      "parents": [
+        "Morcant's Eyes",
+        "Scarblade's Malice",
+        "Stoic Grove-Guide",
+        "Unforgiving Aim"
+      ],
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/BlackGreenElfToken.java",
+      "existing_rules_evidence": [
+        "src/engine_ecl_inherited_tests.rs"
+      ]
+    },
+    {
+      "index": 5344,
+      "name": "@token/shapeshifter_1_1_colorless_changeling",
+      "category": "token",
+      "definition": "src/card_definitions/synthetic/token_shapeshifter_1_1_colorless_changeling.rs",
+      "parents": [
+        "Crib Swap",
+        "Personify",
+        "Stalactite Dagger"
+      ],
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/ShapeshifterColorlessToken.java",
+      "existing_rules_evidence": [
+        "src/engine_ecl_green_colorless_tests.rs"
+      ]
+    },
+    {
+      "index": 5345,
+      "name": "@token/treefolk_3_4_green_reach",
+      "category": "token",
+      "definition": "src/card_definitions/synthetic/token_treefolk_3_4_green_reach.rs",
+      "parents": [
+        "Sapling Nursery",
+        "Tend the Sprigs"
+      ],
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/TreefolkReachToken.java",
+      "existing_rules_evidence": [
+        "src/engine_ecl_green_colorless_tests.rs"
+      ]
+    },
+    {
+      "index": 5346,
+      "name": "@token/mutavault",
+      "category": "token",
+      "definition": "src/card_definitions/synthetic/token_mutavault.rs",
+      "parents": [
+        "Mutable Explorer"
+      ],
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/MutavaultToken.java",
+      "existing_rules_evidence": [
+        "src/engine_ecl_green_colorless_tests.rs"
+      ]
+    },
+    {
+      "index": 5347,
+      "name": "Brigid, Doun's Mind",
+      "category": "transform",
+      "definition": "src/card_definitions/ecl/brigid_doun_s_mind.rs",
+      "parents": [
+        "Brigid, Clachan's Heart // Brigid, Doun's Mind"
+      ],
+      "java_source": "Mage.Sets/src/mage/cards/b/BrigidClachansHeart.java",
+      "existing_rules_evidence": [
+        "src/engine_ecl_transform_tests.rs"
+      ]
+    },
+    {
+      "index": 5348,
+      "name": "Ashling, Rimebound",
+      "category": "transform",
+      "definition": "src/card_definitions/ecl/ashling_rimebound.rs",
+      "parents": [
+        "Ashling, Rekindled // Ashling, Rimebound"
+      ],
+      "java_source": "Mage.Sets/src/mage/cards/a/AshlingRekindled.java",
+      "existing_rules_evidence": [
+        "src/engine_ecl_transform_tests.rs"
+      ]
+    },
+    {
+      "index": 5349,
+      "name": "Trystan, Penitent Culler",
+      "category": "transform",
+      "definition": "src/card_definitions/ecl/trystan_penitent_culler.rs",
+      "parents": [
+        "Trystan, Callous Cultivator // Trystan, Penitent Culler"
+      ],
+      "java_source": "Mage.Sets/src/mage/cards/t/TrystanCallousCultivator.java",
+      "existing_rules_evidence": [
+        "src/engine_ecl_transform_tests.rs"
+      ]
+    },
+    {
+      "index": 5350,
+      "name": "Isilu, Carrier of Twilight",
+      "category": "transform",
+      "definition": "src/card_definitions/ecl/isilu_carrier_of_twilight.rs",
+      "parents": [
+        "Eirdu, Carrier of Dawn // Isilu, Carrier of Twilight"
+      ],
+      "java_source": "Mage.Sets/src/mage/cards/e/EirduCarrierOfDawn.java",
+      "existing_rules_evidence": [
+        "src/engine_ecl_transform_tests.rs"
+      ]
+    },
+    {
+      "index": 5351,
+      "name": "Sygg, Wanderbrine Shield",
+      "category": "transform",
+      "definition": "src/card_definitions/ecl/sygg_wanderbrine_shield.rs",
+      "parents": [
+        "Sygg, Wanderwine Wisdom // Sygg, Wanderbrine Shield"
+      ],
+      "java_source": "Mage.Sets/src/mage/cards/s/SyggWanderwineWisdom.java",
+      "existing_rules_evidence": [
+        "src/engine_ecl_transform_tests.rs"
+      ]
+    },
+    {
+      "index": 5352,
+      "name": "Grub, Notorious Auntie",
+      "category": "transform",
+      "definition": "src/card_definitions/ecl/grub_notorious_auntie.rs",
+      "parents": [
+        "Grub, Storied Matriarch // Grub, Notorious Auntie"
+      ],
+      "java_source": "Mage.Sets/src/mage/cards/g/GrubStoriedMatriarch.java",
+      "existing_rules_evidence": [
+        "src/engine_ecl_transform_tests.rs"
+      ]
+    },
+    {
+      "index": 5353,
+      "name": "Oko, Shadowmoor Scion",
+      "category": "transform",
+      "definition": "src/card_definitions/ecl/oko_shadowmoor_scion.rs",
+      "parents": [
+        "Oko, Lorwyn Liege // Oko, Shadowmoor Scion"
+      ],
+      "java_source": "Mage.Sets/src/mage/cards/o/OkoLorwynLiege.java",
+      "existing_rules_evidence": [
+        "src/engine_ecl_oko_tests.rs"
+      ]
+    },
+    {
+      "index": 5354,
+      "name": "@token/oko_elk_3_3_green",
+      "category": "token",
+      "definition": "src/card_definitions/ecl/oko_elk_token.rs",
+      "parents": [
+        "Oko, Shadowmoor Scion"
+      ],
+      "java_source": "Mage.Sets/src/mage/cards/o/OkoLorwynLiege.java",
+      "existing_rules_evidence": [
+        "src/engine_ecl_oko_tests.rs"
+      ]
+    },
+    {
+      "index": 5355,
+      "name": "@emblem/oko_shadowmoor_scion_chosen_type",
+      "category": "emblem",
+      "definition": "src/card_definitions/ecl/oko_chosen_type_emblem.rs",
+      "parents": [
+        "Oko, Shadowmoor Scion"
+      ],
+      "java_source": "Mage.Sets/src/mage/cards/o/OkoLorwynLiege.java",
+      "existing_rules_evidence": [
+        "src/engine_ecl_oko_tests.rs"
+      ]
+    },
+    {
+      "index": 5356,
+      "name": "@token/lluwen_worm_1_1_black_green",
+      "category": "token",
+      "definition": "src/card_definitions/ecl/lluwen_worm_token.rs",
+      "parents": [
+        "Lluwen, Imperfect Naturalist"
+      ],
+      "java_source": "Mage.Sets/src/mage/cards/l/LluwenImperfectNaturalist.java",
+      "existing_rules_evidence": [
+        "src/engine_ecl_lluwen_tests.rs"
+      ]
+    }
+  ],
+  "note": "Other existing source packets are authenticated here, relying on the parent card audits for full source-reading provenance. Existing token behavior and immutable identities retained; no runtime edits or duplicate tests required."
+}

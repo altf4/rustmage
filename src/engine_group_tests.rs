@@ -316,6 +316,9 @@ fn target_focus_survives_private_library_continuation_and_replays() {
     ];
     let item = game.state.stack.pop().unwrap();
     game.state.resolving = Some(Resolution {
+        continuation: None,
+        chosen_creature_type: None,
+        chosen_color: None,
         explore: None,
         evidence: None,
         connive: None,
@@ -418,6 +421,9 @@ fn fighting_itself_is_one_noncombat_event_for_twice_current_power() {
     }];
     let item = game.state.stack.pop().unwrap();
     game.state.resolving = Some(Resolution {
+        continuation: None,
+        chosen_creature_type: None,
+        chosen_color: None,
         explore: None,
         evidence: None,
         connive: None,

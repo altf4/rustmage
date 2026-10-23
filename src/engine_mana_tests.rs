@@ -210,6 +210,9 @@ fn resolution_mana_choice_is_private_owned_and_replayable_before_later_instructi
     let item = game.cast_item(Player::P0, source, [0; 6]);
     // Direct kernel fixture for a choice followed by more resolution work.
     game.state.resolving = Some(Resolution {
+        continuation: None,
+        chosen_creature_type: None,
+        chosen_color: None,
         explore: None,
         evidence: None,
         connive: None,

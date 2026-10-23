@@ -3,10 +3,26 @@
   "catalogue_id": 248,
   "oracle_id": "ecf574a5-6410-466d-a726-732134f904b2",
   "facts_sha256": "e95a8d12b30b588c31896c21f8c27e4025359b95f5285fc9606f88ade5f44634",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d1fbcec86aa3ec0c7b73cfee47cc84df2d99e020e6b862c5bc934417e6019085"
   },
-  "physical_metadata_sha256": "5fc940c35cbd0bc1e843b326f91d152feb66583bf71e85f671477f5ffbf0b089"
+  "physical_metadata_sha256": "5fc940c35cbd0bc1e843b326f91d152feb66583bf71e85f671477f5ffbf0b089",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AssertPerfection.java",
+  "java_sha256": "4552eb4ce76c3e5be7ca90c03a006c98eb0335444593b760717e584c9e4ee545",
+  "rules_tests": "src/engine_ecl_green_colorless_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageWithPowerFromOneToAnotherTargetEffect.java",
+      "sha256": "cbe6b025fef2b13a46fcdddb02a0342eecd99af9db39d292c22b1f942d2729a3"
+    }
+  ]
 }

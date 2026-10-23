@@ -3,10 +3,40 @@
   "catalogue_id": 4046,
   "oracle_id": "e35d4c62-5211-4785-b683-a83719195d87",
   "facts_sha256": "edd65e9b5d7097373068055a78041eb50c82fb178265c10e29cac4b530dbed5c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "65261f3dc9aaab212435ba96107425ef8e7aa0f55b0148bb66f3699fcd0ede7b"
   },
-  "physical_metadata_sha256": "f348ab6d17b8f6936394b5d64ae28ba68a02039286f80d3d67d023dc8f46cc7d"
+  "physical_metadata_sha256": "f348ab6d17b8f6936394b5d64ae28ba68a02039286f80d3d67d023dc8f46cc7d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpinerockTyrant.java",
+  "java_sha256": "03e759dec523d477ba6c3e1484f0847339609f83306f3943e51641a772ab3fd3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WitherAbility.java",
+      "sha256": "11ab0a230f7faae0791dc6a67a5db54dc79804ccbb44ef19ff0f80fc805205e7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/other/NumberOfTargetsPredicate.java",
+      "sha256": "2337a03e586eeadad6aa5b0deaecb46ad1e6175b86d758054835a51b872226e0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/StackObjectCopyApplier.java",
+      "sha256": "f5b7abd2fcfe432aeef355402a5df2957258a823a7affade4666d38815451626"
+    }
+  ]
 }

@@ -58,7 +58,9 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),
-                TriggerCondition::CreatureAttacksYou { .. }
+                TriggerCondition::CreatureAttacksOrBlocksYou
+                    | TriggerCondition::ControlledCreatureAttacksAlone
+                    | TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::AttackDeclared { .. }
             )
         }) {
@@ -108,7 +110,9 @@ impl Game {
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
+                    | TriggerCondition::PermanentCardsToGraveyard { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
+                    | TriggerCondition::ControlledCreatureWithCountersDies
                     | TriggerCondition::CreatureDiesAttackState { .. }
                     | TriggerCondition::FoodsSacrificed
                     | TriggerCondition::Sacrificed { .. }
@@ -151,18 +155,29 @@ impl Game {
                 group.fragments.iter().any(|fragment| {
                     matches!(
                         fragment,
-                        crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
+                        crate::cards::StaticAbilityFragment::LinkedExileCreatureCounterCasting(_)
+                            | crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
+                            | crate::cards::StaticAbilityFragment::AdditionalSubtypeTriggers { .. }
+                            | crate::cards::StaticAbilityFragment::LinkedExileFreeCastBySubtypeUnion(_)
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
+                            | crate::cards::StaticAbilityFragment::MustBeBlocked
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
                             | crate::cards::StaticAbilityFragment::PlayerHexproof
                             | crate::cards::StaticAbilityFragment::CantLoseGameAndOpponentsCantWin
+                            | crate::cards::StaticAbilityFragment::NoncreatureConspire
+                            | crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
                             | crate::cards::StaticAbilityFragment::ControlledSpellsUncounterable(_)
+                            | crate::cards::StaticAbilityFragment::ControlledCreatureTrigger { .. }
                             | crate::cards::StaticAbilityFragment::SelfUntap(_)
                             | crate::cards::StaticAbilityFragment::LifeGainAdditional(_)
                             | crate::cards::StaticAbilityFragment::NoMaximumHandSize
                             | crate::cards::StaticAbilityFragment::AdditionalLandPlays(_)
                             | crate::cards::StaticAbilityFragment::CantGainLife
+                            | crate::cards::StaticAbilityFragment::CantDrawCards
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
+                            | crate::cards::StaticAbilityFragment::ChosenCreatureKeywords(..)
+                            | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. }
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..)
                     )

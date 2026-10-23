@@ -68,22 +68,31 @@ impl Game {
                 batch.deaths.push(id);
             }
             if object.card.aura().is_some() {
-                if !self.printed_abilities_available(id)
+                if self.is_creature(id)
+                    || !self.printed_abilities_available(id)
                     || !object.attached_to.is_some_and(|target| {
-                        self.aura_can_enchant(object.card, object.controller, target)
+                        self.aura_can_enchant_colored(
+                            object.card,
+                            object.controller,
+                            target,
+                            ability_world::CharacteristicWorld::colors(self, id),
+                        )
                     })
                 {
                     batch.deaths.push(id);
                 }
             } else if let Some(target) = object.attached_to
-                && (self.is_creature(id)
+                && (object.card.equipment().is_none()
+                    || self.is_creature(id)
                     || target == self.object_ref(id)
                     || !self.on_battlefield(target.card)
                     || self.object_ref(target.card) != target
                     || !self.is_creature(target.card)
-                    || self
-                        .keywords(target.card)
-                        .contains(Keywords::PROTECTION_EVERYTHING))
+                    || self.protected_from_source(
+                        target.card,
+                        ability_world::CharacteristicWorld::colors(self, id),
+                        object.controller,
+                    ))
             {
                 batch.detached.push(self.object_ref(id));
             }

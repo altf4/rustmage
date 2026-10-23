@@ -561,6 +561,9 @@ fn departed_hero_damage_uses_frozen_battlefield_facts_for_observers() {
     // Exercise the engine path for a source removed before its ability resolves.
     let item = g.activation_item(Player::P0, hero, 0);
     g.state.resolving = Some(Resolution {
+        continuation: None,
+        chosen_creature_type: None,
+        chosen_color: None,
         explore: None,
         evidence: None,
         connive: None,

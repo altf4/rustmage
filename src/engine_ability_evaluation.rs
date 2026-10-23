@@ -92,6 +92,25 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: vec![GrantedManaAbility { source, production }],
             });
         }
+        StaticAbilityFragment::ControlledCreatureTrigger {
+            ability,
+            other,
+            nontoken,
+        } => {
+            if !own
+                || world.kinds(id) & 1 == 0
+                || (other && source.card == id)
+                || (nontoken && world.is_token(id))
+            {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![key(ability)],
+                mana: Vec::new(),
+            });
+        }
         StaticAbilityFragment::AttachmentTrigger(ability)
         | StaticAbilityFragment::AttachmentActivation(ability) => {
             if !world.attached(source, id) {
@@ -103,6 +122,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 abilities: vec![key(ability)],
                 mana: Vec::new(),
             });
+        }
+        StaticAbilityFragment::ChosenCreatureKeywords(keywords) => {
+            if !world.chosen_creature_type_applies(source, id) {
+                return None;
+            }
+            keywords
         }
         StaticAbilityFragment::DeathBaronLord => {
             if !world.death_baron_applies(source, id) {
@@ -141,6 +166,16 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 return None;
             }
             value
+        }
+        StaticAbilityFragment::ControlledTappedKeywords { other, keywords } => {
+            if !own
+                || world.kinds(id) & 1 == 0
+                || !target.tapped
+                || (other && world.reference(id) == source)
+            {
+                return None;
+            }
+            keywords
         }
         StaticAbilityFragment::KeywordGrant(_, grant)
         | StaticAbilityFragment::StaticRuleGrant(_, grant) => {
@@ -218,7 +253,12 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         .card
                         .keywords()
                         .union(game.copied_keywords(world.reference(i as CardId)))
-                },
+                }
+                .union(if matches!(object.zone, Zone::Battlefield | Zone::Stack) {
+                    Keywords::NONE
+                } else {
+                    keyword_counters::keywords(world.counter_amounts(i as CardId))
+                }),
                 grants: Vec::new(),
                 mana: Vec::new(),
             }
@@ -245,12 +285,15 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::SourceCounterSubtype { .. }
                         | StaticAbilityFragment::AttachmentKeywords(..)
                         | StaticAbilityFragment::AttachedTurnKeywords(..)
+                        | StaticAbilityFragment::ControlledCreatureTrigger { .. }
                         | StaticAbilityFragment::AttachmentTrigger(..)
                         | StaticAbilityFragment::AttachmentActivation(..)
                         | StaticAbilityFragment::AttachmentMana(..)
                         | StaticAbilityFragment::CounterKeyword(..)
                         | StaticAbilityFragment::CounterKeywordOwnTurn(..)
                         | StaticAbilityFragment::DeathBaronLord
+                        | StaticAbilityFragment::ChosenCreatureKeywords(..)
+                        | StaticAbilityFragment::ControlledTappedKeywords { .. }
                         | StaticAbilityFragment::KeywordGrant(..)
                         | StaticAbilityFragment::LiveKeywords(..)
                 )
@@ -308,11 +351,26 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
         }
     }
     if let Some(state) = &game.state.roles {
+        for row in &state.ability_removal_effects {
+            if world.object(row.recipient.card).zone == Zone::Battlefield
+                && world.reference(row.recipient.card) == row.recipient
+                && row.expires_turn.is_none_or(|turn| turn == game.state.turn)
+            {
+                effects.push(LayerSixEffect {
+                    provider: None,
+                    started_earlier: false,
+                    timestamp: row.timestamp,
+                    recipients: vec![row.recipient.card],
+                    action: LayerSixAction::Remove,
+                });
+            }
+        }
         for row in &state.keyword_effects {
             let object = world.object(row.recipient.card);
             if matches!(object.zone, Zone::Battlefield | Zone::Stack)
                 && world.reference(row.recipient.card) == row.recipient
                 && row.expires_turn.is_none_or(|turn| turn == game.state.turn)
+                && keyword_counters::effect_live(world, row)
             {
                 effects.push(LayerSixEffect {
                     provider: None,
@@ -426,6 +484,7 @@ pub(super) fn apply_rule_effects<W: CharacteristicWorld + ?Sized>(
                 Zone::Battlefield | Zone::Stack
             ) && world.reference(row.recipient.card) == row.recipient
                 && row.expires_turn.is_none_or(|turn| turn == game.state.turn)
+                && keyword_counters::effect_live(world, row)
             {
                 let object = &mut evaluation.result.objects[row.recipient.card as usize];
                 object.keywords = object.keywords.union(row.rules);
@@ -450,6 +509,9 @@ pub struct AbilityAvailabilityView {
 impl Game {
     pub(super) fn evaluated_abilities(&self) -> Option<AbilityEvaluation> {
         evaluate_if_needed(self)
+    }
+    pub(super) fn can_receive_counters(&self, id: CardId) -> bool {
+        CharacteristicWorld::can_receive_counters(self, id)
     }
     pub(super) fn printed_abilities_available(&self, id: CardId) -> bool {
         CharacteristicWorld::printed_abilities_available(self, id)

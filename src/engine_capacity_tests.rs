@@ -265,6 +265,9 @@ fn unrepresentable_derived_stats_cannot_escape_at_an_optional_resolution_boundar
     });
     // Synthetic IR validates a suspended transaction, not a printed admission.
     g.state.resolving = Some(Resolution {
+        continuation: None,
+        chosen_creature_type: None,
+        chosen_color: None,
         explore: None,
         evidence: None,
         item,

@@ -1,0 +1,19 @@
+{
+  "name": "@token/treefolk_3_4_green_reach",
+  "catalogue_id": 5345,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "df8bd91f8bc195627882b238c51370ce3e88c8348d98f740ab35179e3876ef35",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/TreefolkReachToken.java",
+  "java_sha256": "da80eba7dfa2d3cd4c2c766ef7f35b8d73f3233bf581c2bbe5599790bd4680f3",
+  "rules_tests": "src/engine_ecl_green_colorless_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    }
+  ]
+}

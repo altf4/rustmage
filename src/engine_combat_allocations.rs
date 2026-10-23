@@ -1,5 +1,6 @@
 //! Cold combat history, resolved requirements and exact damage accounting.
 use super::*;
+use crate::cards::StaticAbilityFragment;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CombatDamagePlayerView {
@@ -28,6 +29,40 @@ impl CombatRulesState {
     }
 }
 impl Game {
+    /// A combat assignment rule changes the damage amount, never the creature's power.
+    pub(super) fn combat_damage_amount(&self, id: CardId) -> i128 {
+        let stats = self.stats(id);
+        let recipient = self.object_ref(id);
+        if stats.toughness > stats.power
+            && self.state.attachment_sources.iter().any(|&source| {
+                self.on_battlefield(source)
+                    && !self.is_creature(source)
+                    && self.state.objects[source as usize].attached_to == Some(recipient)
+                    && self.state.objects[source as usize]
+                        .card
+                        .static_ability_groups()
+                        .iter()
+                        .any(|group| {
+                            group.fragments.iter().any(|fragment| {
+                                matches!(
+                                    fragment,
+                                    StaticAbilityFragment::AttachmentCombatToughnessIfGreater
+                                )
+                            })
+                        })
+                    && self.continuous_fragment_available(source, |fragment| {
+                        matches!(
+                            fragment,
+                            StaticAbilityFragment::AttachmentCombatToughnessIfGreater
+                        )
+                    })
+            })
+        {
+            stats.toughness.max(0)
+        } else {
+            stats.power.max(0)
+        }
+    }
     pub(super) fn distribute_counters(&mut self, item: &SpellView, kind: CounterKind) {
         let changes = item
             .target_allocations
@@ -178,13 +213,27 @@ impl Game {
         rules.must_be_blocked.extend(recipients);
     }
     pub(super) fn block_requirement_weight(&self, id: CardId) -> usize {
-        self.state.combat_rules.as_ref().map_or(0, |rules| {
-            rules
-                .must_be_blocked
+        let printed_requirement = self.on_battlefield(id)
+            && self.state.objects[id as usize]
+                .card
+                .static_ability_groups()
                 .iter()
-                .filter(|&&r| r == self.object_ref(id))
-                .count()
-        })
+                .any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(fragment, crate::cards::StaticAbilityFragment::MustBeBlocked)
+                    })
+                })
+            && self.continuous_fragment_available(id, |fragment| {
+                matches!(fragment, crate::cards::StaticAbilityFragment::MustBeBlocked)
+            });
+        usize::from(printed_requirement)
+            + self.state.combat_rules.as_ref().map_or(0, |rules| {
+                rules
+                    .must_be_blocked
+                    .iter()
+                    .filter(|&&r| r == self.object_ref(id))
+                    .count()
+            })
     }
     pub(super) fn destroy_combat_damaged_players_permanents(&mut self, item: &SpellView) {
         let mut damaged = [false; 2];
@@ -206,7 +255,7 @@ impl Game {
                 (object.zone == Zone::Battlefield
                     && damaged[object.controller.index()]
                     && self.current_kinds(id) & 2 == 0
-                    && object.card.fixed_mana_value() == x
+                    && self.object_mana_value(id) == x
                     && !self.keywords(id).contains(Keywords::INDESTRUCTIBLE))
                 .then_some(id)
             })
@@ -224,7 +273,9 @@ impl ActivatedAbility {
 impl Announcement {
     pub(super) fn has_x_cost(&self) -> bool {
         match self.item.kind {
-            StackKind::Spell => self.item.source_card.x_symbols() > 0,
+            StackKind::Spell => {
+                self.item.source_card.x_symbols() > 0 || self.item.source_card.has_blight_x_cost()
+            }
             StackKind::ActivatedAbility { ability } => {
                 self.item.source_card.activations()[usize::from(ability)].has_x_cost()
             }

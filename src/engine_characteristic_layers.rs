@@ -113,15 +113,13 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
 fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut result: u16) -> u16 {
     let mut changes: Vec<_> = aura_effects(world, id)
         .into_iter()
-        .map(|(time, spec)| {
-            (
-                time,
-                match spec.form {
-                    PermanentForm::Creature => 1,
-                    PermanentForm::Land => 2,
-                },
-                false,
-            )
+        .filter_map(|(time, spec)| {
+            let mask = match spec.form {
+                PermanentForm::Preserve => return None,
+                PermanentForm::Creature => 1,
+                PermanentForm::Land => 2,
+            };
+            Some((time, mask, false))
         })
         .collect();
     for row in animations(world, id) {
@@ -177,12 +175,9 @@ fn changed_name<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> &'sta
 pub(super) fn colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 {
     let object = world.object(id);
     if object.zone != Zone::Battlefield
-        || world
-            .game()
-            .state
-            .roles
-            .as_ref()
-            .is_none_or(|r| r.characteristic_sources.is_empty())
+        || world.game().state.roles.as_ref().is_none_or(|roles| {
+            roles.characteristic_sources.is_empty() && roles.color_effects.is_empty()
+        })
     {
         return if object.zone == Zone::Stack {
             world.game().effective_spell_card(id).colors()
@@ -193,13 +188,68 @@ pub(super) fn colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> 
     changed_colors(world, id)
 }
 fn changed_colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 {
-    aura_effects(world, id)
+    let attached = aura_effects(world, id)
         .into_iter()
-        .max_by_key(|e| e.0)
-        .map_or_else(
-            || world.object(id).card.colors(),
-            |(_, s)| s.colors.iter().fold(0, |mask, c| mask | (1 << c.index())),
-        )
+        .map(|(timestamp, spec)| {
+            (
+                timestamp,
+                spec.colors
+                    .iter()
+                    .fold(0u8, |mask, color| mask | (1 << color.index())),
+            )
+        });
+    let fixed = world
+        .game()
+        .state
+        .roles
+        .as_ref()
+        .into_iter()
+        .flat_map(|roles| &roles.color_effects)
+        .filter(|row| row.object == world.reference(id))
+        .map(|row| (row.timestamp, row.colors));
+    let chosen = world
+        .game()
+        .state
+        .roles
+        .as_ref()
+        .into_iter()
+        .flat_map(|roles| &roles.characteristic_sources)
+        .filter_map(|&source| {
+            if !world.attachment_link(source, world.reference(id))
+                || !world
+                    .object(source.card)
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| {
+                        group.fragments.iter().any(|fragment| {
+                            matches!(fragment, StaticAbilityFragment::AttachedChosenColor)
+                        })
+                    })
+            {
+                return None;
+            }
+            let Some(EntryChoiceValue::Color(color)) = world.game().entry_value(source) else {
+                return None;
+            };
+            let timestamp = world
+                .game()
+                .state
+                .roles
+                .as_ref()
+                .unwrap()
+                .ability_timestamps
+                .iter()
+                .find(|row| row.source == source)
+                .expect("registered color provider")
+                .timestamp;
+            Some((timestamp, 1 << color.index()))
+        });
+    attached
+        .chain(chosen)
+        .chain(fixed)
+        .max_by_key(|row| row.0)
+        .map_or_else(|| world.object(id).card.colors(), |row| row.1)
 }
 #[inline]
 pub(super) fn base_changes<W: CharacteristicWorld + ?Sized>(
@@ -273,6 +323,7 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
             (
                 time,
                 match s.form {
+                    PermanentForm::Preserve => SubtypeChange::Named(s.creature_types, false),
                     PermanentForm::Creature => SubtypeChange::Named(s.creature_types, true),
                     PermanentForm::Land => SubtypeChange::LandOnly,
                 },

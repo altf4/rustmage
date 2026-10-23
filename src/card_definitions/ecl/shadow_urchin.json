@@ -3,10 +3,51 @@
   "catalogue_id": 3805,
   "oracle_id": "86bd332f-ba61-49a4-ad31-de4d7e3638c6",
   "facts_sha256": "153180216293ddfbbf62a413a2c5ec3743a0a31027acce73356f2752ac2d1322",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "62f09f1c7f318029b9bb611897799c116733f1ca4ddbc91a786c04741d306146"
   },
-  "physical_metadata_sha256": "c3493ae2adb685bd807d1673f6cffaca9bf9a5aed8cdd3a1b07ed24d64f6acd5"
+  "physical_metadata_sha256": "c3493ae2adb685bd807d1673f6cffaca9bf9a5aed8cdd3a1b07ed24d64f6acd5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ShadowUrchin.java",
+  "java_sha256": "72fca0ee6e86c275f9250b2beac4aa8ddcb8bf6e33a6d299f0667ac3b9b0be4c",
+  "rules_tests": "src/engine_ecl_shadow_urchin_tests.rs",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/BlightControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "634de46026db0ce914a12db898368227b3981ee5a18bd380600b40fd04d9b986"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BlightCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "33a0d3714068f004db969c35c375e95470b9eaf389f5b2dd73aae3c67b498cd1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/CounterAnyPredicate.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d9b89c5d487a1c6aede3f90e5edf474311703b231441a01a3a30b10107eb9434"
+    }
+  ]
 }

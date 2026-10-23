@@ -43,6 +43,9 @@ fn program(g: &mut Game, code: &'static [Instruction]) {
     g.prepare_triggers();
     let item = g.state.stack.pop().unwrap();
     g.state.resolving = Some(Resolution {
+        continuation: None,
+        chosen_creature_type: None,
+        chosen_color: None,
         explore: None,
         evidence: None,
         connive: None,

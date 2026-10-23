@@ -75,9 +75,14 @@ fn setup(p: Player) -> Game {
 fn paid(g: &mut Game, p: Player, name: &str, promise: bool, target: Option<Target>) -> CardId {
     let card = named(g, p.other(), name, Zone::Exile);
     g.state.exile_permissions.push(ExilePlayPermission {
+        cast_only: false,
+        without_mana: false,
         object: g.object_ref(card),
         player: p,
         expires_turn: g.state.turn,
+        next_end_step: None,
+        source: None,
+        any_mana: false,
     });
     let mana = g.state.players[p.index()].mana.iter().sum::<u32>();
     act(g, Action::AnnounceExile { card });
@@ -255,9 +260,14 @@ fn permanent_gift_is_separate_from_printed_entry_trigger_and_never_survives_blin
 fn paid_targets(g: &mut Game, p: Player, name: &str, promise: bool, targets: &[Target]) -> CardId {
     let card = named(g, p.other(), name, Zone::Exile);
     g.state.exile_permissions.push(ExilePlayPermission {
+        cast_only: false,
+        without_mana: false,
         object: g.object_ref(card),
         player: p,
         expires_turn: g.state.turn,
+        next_end_step: None,
+        source: None,
+        any_mana: false,
     });
     act(g, Action::AnnounceExile { card });
     assert_eq!(g.state.pending, Pending::Gift { player: p });
@@ -864,6 +874,7 @@ fn sparse_gift_context_heap_payloads_are_owned_and_counted_once() {
     assert_eq!(child.snapshot(), g.snapshot());
     let movement = g.entry_move(source, Zone::Battlefield, false);
     let mut batch = entries::EntryBatch {
+        prepared: true,
         discard_context: None,
         moves: vec![movement],
         choices: vec![],

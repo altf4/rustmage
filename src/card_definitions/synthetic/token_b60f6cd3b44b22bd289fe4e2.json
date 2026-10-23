@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "63b8fd6856803f6b22e1a229096d0cf641aa6185e6f3cc203d1555b515e6e1b5"
   },
-  "physical_metadata_sha256": "91543a364fdd1195c53aeb0c03beaadddca3a65107dfa5df769fe5b679678aca"
+  "physical_metadata_sha256": "91543a364fdd1195c53aeb0c03beaadddca3a65107dfa5df769fe5b679678aca",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FlamekinGildweaver.java",
+  "java_sha256": "309c6ac33347f13bbc1949750233f81b24d7c85c8257c1006dd9600401c50e02",
+  "rules_tests": "src/engine_ecl_inherited_br_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+      "sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+    }
+  ]
 }

@@ -3,10 +3,41 @@
   "catalogue_id": 3176,
   "oracle_id": "0d46a97a-b1d6-4bf3-b3ba-a5cdfd4c8bf5",
   "facts_sha256": "ec17047d6fdcc03dbbf329cf36d57316f35bcc7e5dc9b7be129a4e3a4e8bb310",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "05166ae72706e1e9a7c4bc7370f2228c03b5761ae622af3d6becbd1d1569f092"
   },
-  "physical_metadata_sha256": "568d9447f6456de5f8ffb3c8c4110fb04b4cfeb12ecbc24bf5d19972a10615aa"
+  "physical_metadata_sha256": "568d9447f6456de5f8ffb3c8c4110fb04b4cfeb12ecbc24bf5d19972a10615aa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PitilessFists.java",
+  "java_sha256": "84ae663cced823a156ee15fa458a44ea201d456a3dce933b0555a37df567b2df",
+  "rules_tests": "src/engine_ecl_green_colorless_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/FightEnchantedTargetEffect.java",
+      "sha256": "ca2d5bcf82f4e441657f4fb71353584dc88f9f9fb6d48621e4eef92c5f0ed780"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEnchantedEffect.java",
+      "sha256": "c390aae1354b298fc7d8b379f73583e2bbee3bdd13d88a082553dce6c75e1303"
+    }
+  ]
 }

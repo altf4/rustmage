@@ -3,10 +3,91 @@
   "catalogue_id": 2785,
   "oracle_id": "81cb888c-c4d3-45a2-a03e-bfd91a2af2be",
   "facts_sha256": "fda383e4a8076fadefe7ae733995448310cc6a78bba4c479718104a566d1866f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "897c83875dfd3bd3c3b2f7e0f4c75f702cf1daa27ddfe0f92dc9ae8a477d48f8"
   },
-  "physical_metadata_sha256": "8e5df8d1cb3d1e787385d361a376b5b8df5657ecedb63edc227504f8300774e1"
+  "physical_metadata_sha256": "8e5df8d1cb3d1e787385d361a376b5b8df5657ecedb63edc227504f8300774e1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/Mirrorform.java",
+  "java_sha256": "182eea20d4be9d63abf5cbdbebdd6a45ab566bbc9fde939162c289e752efe462",
+  "rules_tests": "src/engine_ecl_copy_entry_tests.rs",
+  "rules_test_files": [
+    "src/engine_ecl_copy_entry_tests.rs",
+    "src/engine_roles.rs",
+    "src/engine_linked_choice_epoch_tests.rs"
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+      "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/EmptyCopyApplier.java",
+      "sha256": "b7a59355b96283deb3cb3cf79a0b2c00576637990d87efc64cd8aa82ede040ca"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/CopyApplier.java",
+      "sha256": "82b30d931a3e310abd321918f97eb3ec6d8bf1e93bd665e7ddc66ed032a2fcdf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyEffect.java",
+      "sha256": "4e27230c09fc613d065b165fb57332f3ac4f8bf1fb2f7b33212f155535d8df0b"
+    }
+  ],
+  "xmage_helpers_reviewed": [
+    {
+      "path": "Mage/src/main/java/mage/game/GameImpl.java",
+      "methods": [
+        "copyPermanent(Permanent, UUID, Ability, CopyApplier)",
+        "copyPermanent(Duration, Permanent, UUID, Ability, CopyApplier)"
+      ],
+      "note": "Both complete copyPermanent overloads reviewed; no claim of a full broad GameImpl audit."
+    }
+  ],
+  "rules_notes": {
+    "source": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "rules": [
+      "301.5c",
+      "603.6a",
+      "606.3",
+      "607.5",
+      "607.5a",
+      "613.1",
+      "613.7a",
+      "613.7b",
+      "707.2",
+      "707.8a",
+      "712.8e",
+      "712.9",
+      "111.13",
+      "608.3f",
+      "707.10",
+      "707.10f",
+      "707.10g"
+    ],
+    "release_notes": "https://magic.wizards.com/en/news/feature/lorwyn-eclipsed-release-notes",
+    "interpretation": "Freezes the target recipe and current controlled nonland recipient set, then installs simultaneous permanent copy overlays without entry events. Preserves physical/token identity, native face shape, counters, tap/damage/control/ownership and external effects; rebuilds intrinsic providers with one copy-effect timestamp. Native identity returns only after departure LKI/replacement capture. Newly acquired linked ability pairs have distinct epochs and undefined prior entry choices. Planeswalker loyalty-use allowance persists across intermediate type loss. Copies of transformed faces use explicit physical shape and correct mana value. A copied chosen-type mana restriction with no corresponding choice produces frozen unspendable lots rather than inventing a type or failing; those lots remain unspendable after source departure."
+  },
+  "test_scope_notes": [
+    "Paid Mirrorform and public raw/index/restore actions exercise ordinary targeting, complete copying, layer interaction, token identity and departure. Native transformation, sparse linked-cost setup and forced clock exhaustion are explicitly typed boundary fixtures; they are not claimed as new casting/transform cost implementations.",
+    "The copied Changeling exception is tested through the shared copy core for the subsequent Omni-Changeling consumer.",
+    "Generic permanent-spell normalization is tested at an explicitly typed stack-copy allocator boundary for creatures, Auras, planeswalkers, DFCs and evoke; the integrator authors the real conspire consumer separately."
+  ]
 }

@@ -11,25 +11,62 @@ pub struct BaseStatsEffectView {
     pub static_source: bool,
     pub permanent: bool,
 }
+/// Exact recipients retain this additive effect through cleanup and source departure.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct StatModifierEffectView {
+    pub recipient: ObjectRef,
+    pub source: ObjectRef,
+    pub power: i128,
+    pub toughness: i128,
+    pub expires_before_turn: Player,
+}
 /// Sparse facts only for exact entering subjects read by resolved expressions.
 /// Departure updates use the frozen pre-transition view, including simultaneous moves.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ResolvedStatSubjectView {
     pub object: ObjectRef,
     pub departure_power: Option<i128>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub departure_damage: Option<Box<DamageSource>>,
 }
 impl Game {
+    pub(super) fn grow_until_next_turn(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+        stats: Stats,
+    ) {
+        let recipients = self.keyword_subjects(item, subject);
+        for id in recipients {
+            if self.on_battlefield(id) {
+                let recipient = self.object_ref(id);
+                self.state
+                    .roles
+                    .get_or_insert_with(Default::default)
+                    .stat_modifiers
+                    .push(StatModifierEffectView {
+                        recipient,
+                        source: item.object,
+                        power: stats.power,
+                        toughness: stats.toughness,
+                        expires_before_turn: item.controller,
+                    });
+            }
+        }
+    }
     pub(super) fn bind_stat_subject(&mut self, object: ObjectRef, program: &[Instruction]) {
         let reads_power = program.iter().any(|instruction| {
             matches!(
                 instruction,
-                Instruction::SetResolvedBaseStats {
-                    power: Some(ResolvedStatValue::EnteringPower),
-                    ..
-                } | Instruction::SetResolvedBaseStats {
-                    toughness: Some(ResolvedStatValue::EnteringPower),
-                    ..
-                }
+                Instruction::EnteringPowerDamagePlayers(_)
+                    | Instruction::SetResolvedBaseStats {
+                        power: Some(ResolvedStatValue::EnteringPower),
+                        ..
+                    }
+                    | Instruction::SetResolvedBaseStats {
+                        toughness: Some(ResolvedStatValue::EnteringPower),
+                        ..
+                    }
             )
         });
         if !reads_power {
@@ -44,6 +81,7 @@ impl Game {
             facts.push(ResolvedStatSubjectView {
                 object,
                 departure_power: None,
+                departure_damage: None,
             });
         }
     }
@@ -52,6 +90,13 @@ impl Game {
             for fact in &mut state.stat_subjects {
                 if fact.object == before.reference && fact.departure_power.is_none() {
                     fact.departure_power = Some(before.power);
+                    fact.departure_damage = Some(Box::new(DamageSource {
+                        facts: DamageFacts::from_view(before),
+                        object: before.id,
+                        reference: before.reference,
+                        controller: before.controller,
+                        keywords: before.keywords,
+                    }));
                 }
             }
         }

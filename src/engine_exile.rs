@@ -8,8 +8,125 @@ pub struct ExilePlayPermission {
     pub object: ObjectRef,
     pub player: Player,
     pub expires_turn: u32,
+    /// Expires immediately before this player's next actual end step begins.
+    pub next_end_step: Option<Player>,
+    pub cast_only: bool,
+    pub without_mana: bool,
+    pub source: Option<ObjectRef>,
+    pub any_mana: bool,
 }
 impl Game {
+    pub(super) fn exile_top_until_next_end(&mut self, player: Player, amount: u128) {
+        // Bound by the actual owned library, never narrow a potentially huge counter total.
+        let ids: Vec<_> = self.state.players[player.index()]
+            .library
+            .iter()
+            .rev()
+            .copied()
+            .take(usize::try_from(amount).unwrap_or(usize::MAX))
+            .collect();
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        for event in &events {
+            if event.moved && event.destination == Zone::Exile {
+                let row = ExilePlayPermission {
+                    object: event.after,
+                    player,
+                    expires_turn: u32::MAX,
+                    next_end_step: Some(player),
+                    cast_only: false,
+                    without_mana: false,
+
+                    source: None,
+
+                    any_mana: false,
+                };
+                let at = self
+                    .state
+                    .exile_permissions
+                    .partition_point(|p| p.object.card < row.object.card);
+                self.state.exile_permissions.insert(at, row);
+            }
+        }
+        self.finish_zone_events(&events, &[]);
+    }
+    pub(super) fn end_source_exile_permissions(&mut self, source: ObjectRef) {
+        self.state
+            .exile_permissions
+            .retain(|permission| permission.source != Some(source));
+    }
+    pub(super) fn exile_cast_spends_any_mana(&self, player: Player, card: CardId) -> bool {
+        self.state.objects[card as usize].zone == Zone::Exile
+            && self.state.exile_permissions.iter().any(|permission| {
+                permission.player == player
+                    && permission.object == self.object_ref(card)
+                    && permission.any_mana
+                    && permission.expires_turn >= self.state.turn
+            })
+    }
+    pub(super) fn grant_source_bound_exile_cast(&mut self, item: &SpellView, object: ObjectRef) {
+        if !self.on_battlefield(item.object.card)
+            || self.object_ref(item.object.card) != item.object
+            || self.state.objects[item.object.card as usize].controller != item.controller
+            || self.object_ref(object.card) != object
+            || self.state.objects[object.card as usize].zone != Zone::Exile
+            || !crate::cards::CastFilter::InstantSorcery
+                .matches(self.state.objects[object.card as usize].card)
+        {
+            return;
+        }
+        let at = self
+            .state
+            .exile_permissions
+            .partition_point(|permission| permission.object.card < object.card);
+        self.state.exile_permissions.insert(
+            at,
+            ExilePlayPermission {
+                object,
+                player: item.controller,
+                expires_turn: u32::MAX,
+                cast_only: true,
+                without_mana: false,
+                source: Some(item.object),
+                any_mana: true,
+
+                next_end_step: None,
+            },
+        );
+    }
+
+    pub(super) fn exile_until_mana_value_free_cast(
+        &mut self,
+        owner: Player,
+        player: Player,
+        minimum: u16,
+    ) {
+        let cards: Vec<_> = self.state.players[owner.index()]
+            .library
+            .iter()
+            .rev()
+            .copied()
+            .collect();
+        let mut value = 0u128;
+        for id in cards {
+            if value >= u128::from(minimum) {
+                break;
+            }
+            if self.state.objects[id as usize].zone != Zone::Library {
+                continue;
+            }
+            let event = self.move_object(id, Zone::Exile);
+            if event.moved && event.destination == Zone::Exile {
+                value = value
+                    .checked_add(u128::from(event.before.copy_recipe.as_ref().map_or_else(
+                        || event.before.card.fixed_mana_value(),
+                        |recipe| recipe.mana_value(),
+                    )))
+                    .capacity("exiled mana value exhausted");
+                self.grant_exile_free_cast_permission(player, event.after);
+            }
+        }
+    }
+
     pub(super) fn can_play_exiled(&self, player: Player, card: CardId) -> bool {
         if self.can_play_foreign_stash(player, card)
             || self.can_play_adventure(player, card)
@@ -18,10 +135,37 @@ impl Game {
             return true;
         }
         self.state.exile_permissions.iter().any(|p| {
-            p.player == player
+            !p.without_mana
+                && !p.cast_only
+                && p.player == player
                 && p.object == self.object_ref(card)
                 && p.expires_turn >= self.state.turn
         })
+    }
+    pub(super) fn can_cast_exiled(&self, player: Player, card: CardId) -> bool {
+        self.can_play_exiled(player, card)
+            || self.state.exile_permissions.iter().any(|p| {
+                !p.without_mana
+                    && p.cast_only
+                    && p.player == player
+                    && p.object == self.object_ref(card)
+                    && p.expires_turn >= self.state.turn
+            })
+    }
+    pub(super) fn can_cast_exiled_free(&self, player: Player, card: CardId) -> bool {
+        self.state.objects[card as usize].zone == Zone::Exile
+            && self.state.exile_permissions.iter().any(|p| {
+                p.without_mana
+                    && p.player == player
+                    && p.object == self.object_ref(card)
+                    && p.expires_turn >= self.state.turn
+            })
+    }
+    pub(super) fn grant_exile_free_cast_permission(&mut self, player: Player, object: ObjectRef) {
+        self.grant_exile_permission(player, object, false, true, true);
+    }
+    pub(super) fn grant_exile_cast_permission(&mut self, player: Player, object: ObjectRef) {
+        self.grant_exile_permission(player, object, false, true, false);
     }
     pub(super) fn exile_top_play(&mut self, player: Player, amount: u16, next_turn: bool) {
         self.exile_top_play_from(player, player, amount, next_turn);
@@ -59,6 +203,16 @@ impl Game {
         object: ObjectRef,
         next_turn: bool,
     ) {
+        self.grant_exile_permission(player, object, next_turn, false, false);
+    }
+    fn grant_exile_permission(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+        next_turn: bool,
+        cast_only: bool,
+        without_mana: bool,
+    ) {
         if self.object_ref(object.card) != object
             || self.state.objects[object.card as usize].zone != Zone::Exile
         {
@@ -83,6 +237,11 @@ impl Game {
                 object,
                 player,
                 expires_turn,
+                next_end_step: None,
+                cast_only,
+                without_mana,
+                source: None,
+                any_mana: false,
             },
         );
     }
@@ -149,11 +308,72 @@ impl Game {
         self.finish_zone_events(&events, &[]);
     }
 
+    fn is_permanent_card_graveyard_entry(&self, event: &ZoneChange) -> bool {
+        if !event.moved || event.destination != Zone::Graveyard || event.before.is_token() {
+            return false;
+        }
+        let object = &self.state.objects[event.after.card as usize];
+        object.zone == Zone::Graveyard
+            && self.object_ref(event.after.card) == event.after
+            && !object.is_token()
+            && !object.is_spell_copy()
+            // Use the card's new graveyard definition, not a departing animated
+            // or transformed permanent's last-known types (CR603.6c).
+            && object.card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
+    }
+    fn batch_graveyard_triggers(&mut self, events: &[ZoneChange]) {
+        if !events
+            .iter()
+            .any(|event| self.is_permanent_card_graveyard_entry(event))
+        {
+            return;
+        }
+        // This sparse observer list contains only live post-event sources.
+        // Anywhere-to-graveyard abilities never use leaving-battlefield lookback.
+        for cursor in 0..self.state.death_sources.len() {
+            let id = self.state.death_sources[cursor];
+            if !self.on_battlefield(id) {
+                continue;
+            }
+            if !self.state.objects[id as usize]
+                .card
+                .triggers()
+                .iter()
+                .any(|a| {
+                    matches!(
+                        a.condition.event(),
+                        TriggerCondition::PermanentCardsToGraveyard { .. }
+                    )
+                })
+            {
+                continue;
+            }
+            let source = self.object_view(id);
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                let TriggerCondition::PermanentCardsToGraveyard { relation } =
+                    ability.condition.event()
+                else {
+                    continue;
+                };
+                if events.iter().any(|event| {
+                    self.is_permanent_card_graveyard_entry(event)
+                        && match relation {
+                            CastRelation::You => event.before.owner == source.controller,
+                            CastRelation::Opponent => event.before.owner != source.controller,
+                            CastRelation::Any => true,
+                        }
+                }) {
+                    self.queue_trigger(&source, index);
+                }
+            }
+        }
+    }
     pub(super) fn finish_zone_events(
         &mut self,
         events: &[ZoneChange],
         death_sources: &[ObjectView],
     ) {
+        self.record_creature_entry_history(events);
         // No zone changes occur while observers are queued. Freeze their
         // post-event views once instead of rescanning the arena per newcomer.
         let sources: Vec<_> = if events
@@ -214,11 +434,9 @@ impl Game {
             if event.moved && event.destination == Zone::Battlefield {
                 // Entering with counters is a placement event on every entry path,
                 // including raw returns and tokens, exactly once after the whole batch.
-                let placed_by = self
-                    .state
-                    .resolving
-                    .as_ref()
-                    .map_or(event.before.controller, |r| r.item.controller);
+                // CR122.6a: entering with counters is attributed to the
+                // entering permanent's controller, including controlled returns.
+                let placed_by = self.state.objects[event.after.card as usize].controller;
                 let counters = self.counter_amounts(event.after.card).to_owned();
                 for kind in CounterKind::ALL {
                     self.self_counters_added(event.after, kind, counters.get(kind), placed_by);
@@ -226,6 +444,8 @@ impl Game {
                 self.lore_counters_added(event.after, 0);
             }
         }
+        self.batch_graveyard_entry_triggers(events, &sources, entry_suppression);
+        self.batch_graveyard_triggers(events);
         self.prune_linked_exiles();
         self.bind_first_public_source_moves(events);
         if self.state.exile_links.is_empty()

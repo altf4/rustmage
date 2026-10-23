@@ -78,6 +78,9 @@ fn program_for(
     let mut item = g.cast_item(player, id, [0; 6]);
     item.targets = targets;
     g.state.resolving = Some(Resolution {
+        continuation: None,
+        chosen_creature_type: None,
+        chosen_color: None,
         explore: None,
         evidence: None,
         connive: None,

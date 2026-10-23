@@ -9,7 +9,12 @@ impl Game {
             && self.on_battlefield(recipient.card)
             && self.object_ref(recipient.card) == recipient
             && if giver.card.aura().is_some() {
-                self.aura_can_enchant(giver.card, giver.controller, recipient)
+                self.aura_can_enchant_colored(
+                    giver.card,
+                    giver.controller,
+                    recipient,
+                    ability_world::CharacteristicWorld::colors(self, grantor),
+                )
             } else {
                 self.is_creature(recipient.card)
             })

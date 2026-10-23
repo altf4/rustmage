@@ -19,6 +19,9 @@ const TARGET_TO_PLAYER: &[Instruction] = &[Instruction::GainControl {
 // no temporary printed definition or unsupported-card admission is involved.
 fn resolve(g: &mut Game, item: SpellView, program: &'static [Instruction]) {
     g.state.resolving = Some(Resolution {
+        continuation: None,
+        chosen_creature_type: None,
+        chosen_color: None,
         explore: None,
         evidence: None,
         connive: None,

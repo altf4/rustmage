@@ -1,5 +1,16 @@
 //! Simultaneous public sacrifices and private exact resolution-cost payments.
 use super::*;
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum HandCreatureBound {
+    ManaValue(u64),
+    TotalStats(u64),
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct HandCreatureEntry {
+    pub bound: HandCreatureBound,
+    pub attacking: bool,
+    pub haste_sacrifice: bool,
+}
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EffectChoice {
     pub kind: EffectChoiceKind,
@@ -12,22 +23,87 @@ pub(super) struct EffectChoice {
     pub greatest_power: [Option<i128>; 2],
     pub discard_mana_value_life: Option<Player>,
     pub hand_defender: Option<CombatDefender>,
+    pub hand_creature_entry: Option<HandCreatureEntry>,
+    pub blight_copy_attacking: bool,
+    pub counter_removal: Option<Box<CounterRemovalDomain>>,
+    pub proliferate: Option<Box<proliferate::ProliferateSelection>>,
+    pub hand_reveal: Option<Box<hand_reveal::HandRevealChoice>>,
     pub entry_life_bonus: Option<(&'static str, u16)>,
 }
 impl EffectChoice {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
+            + self.hand_reveal.as_ref().map_or(0, |choice| choice.bytes())
+            + self.proliferate.as_ref().map_or(0, |_| {
+                std::mem::size_of::<proliferate::ProliferateSelection>()
+            })
+            + self.counter_removal.as_ref().map_or(0, |domain| {
+                std::mem::size_of::<CounterRemovalDomain>() + domain.available.owned_bytes()
+            })
             + self.selected.iter().map(Vec::len).sum::<usize>() * std::mem::size_of::<ObjectRef>()
     }
 }
 impl Game {
+    pub(super) fn effect_choice_objects(
+        &self,
+        choice: &EffectChoice,
+    ) -> impl Iterator<Item = ObjectRef> + '_ {
+        let fixed = choice.kind == EffectChoiceKind::CopyEntryObject;
+        let event = if fixed {
+            self.state
+                .resolving
+                .as_ref()
+                .and_then(|r| r.item.entry_batch_event.as_ref())
+                .map(|e| e.objects.as_slice())
+        } else {
+            None
+        };
+        event.into_iter().flatten().copied().chain(
+            (0..if fixed { 0 } else { self.state.objects.len() })
+                .map(|id| self.object_ref(id as CardId)),
+        )
+    }
+
     pub(super) fn effect_choice_candidate(
         &self,
         choice: &EffectChoice,
         player: Player,
         object: ObjectRef,
     ) -> bool {
+        if choice.hand_reveal.is_some() {
+            return self.hand_reveal_candidate(choice, object);
+        }
+        if choice.counter_removal.is_some() {
+            return false;
+        }
+        if choice.kind == EffectChoiceKind::CopyEntryObject {
+            return self.entry_batch_copy_recipe(object).is_some()
+                && !choice.selected[player.index()].contains(&object);
+        }
+        if choice.kind == EffectChoiceKind::KeepSharedCreatureTypes {
+            return self.keep_shared_type_candidate(choice, object);
+        }
         let o = &self.state.objects[object.card as usize];
+        if choice.proliferate.is_some() {
+            return o.zone == Zone::Battlefield
+                && self.object_ref(object.card) == object
+                && self.counter_amounts(object.card).has_any()
+                && !choice.selected[player.index()].contains(&object);
+        }
+        if matches!(
+            choice.kind,
+            EffectChoiceKind::Blight(_) | EffectChoiceKind::BlightCost(_)
+        ) {
+            return o.zone == Zone::Battlefield
+                && o.controller == player
+                && self.is_creature(object.card)
+                && (matches!(
+                    choice.kind,
+                    EffectChoiceKind::Blight(_) | EffectChoiceKind::BlightCost(0)
+                ) || self.can_receive_counters(object.card))
+                && self.object_ref(object.card) == object
+                && !choice.selected[player.index()].contains(&object);
+        }
         if let EffectChoiceKind::UntapLands { maximum } = choice.kind {
             return o.zone == Zone::Battlefield
                 && self.current_kinds(object.card) & 2 != 0
@@ -43,9 +119,25 @@ impl Game {
                 && !choice.selected[player.index()].contains(&object)
                 && choice.selected[player.index()].len() < maximum as usize;
         }
+        if choice.kind == EffectChoiceKind::ExileGraveyardCard {
+            let filter = choice.filter;
+            return o.zone == Zone::Graveyard
+                && o.owner == player
+                && !o.is_token()
+                && !o.is_spell_copy()
+                && self.object_ref(object.card) == object
+                && !choice.selected[player.index()].contains(&object)
+                && (filter.kinds == 0 || o.card.kind_mask() & u16::from(filter.kinds) != 0)
+                && (!filter.nonland || !o.card.is_land())
+                && (!filter.other || object != choice.source)
+                && (!filter.source_only || object == choice.source)
+                && o.card.keywords().contains(filter.keywords)
+                && filter.subtype.is_none_or(|kind| o.card.has_subtype(kind));
+        }
         let hand_choice = matches!(
             choice.kind,
             EffectChoiceKind::Discard
+                | EffectChoiceKind::ExileFromHand
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandLand { .. }
         );
@@ -59,13 +151,32 @@ impl Game {
         if matches!(
             choice.kind,
             EffectChoiceKind::Discard
+                | EffectChoiceKind::ExileFromHand
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandLand { .. }
         ) {
             return o.zone == Zone::Hand
                 && match choice.kind {
-                    EffectChoiceKind::HandCreature => o.card.is_creature(),
+                    EffectChoiceKind::HandCreature => {
+                        o.card.is_creature()
+                            && choice
+                                .hand_creature_entry
+                                .is_none_or(|entry| match entry.bound {
+                                    HandCreatureBound::ManaValue(maximum) => {
+                                        o.card.fixed_mana_value() <= maximum
+                                    }
+                                    HandCreatureBound::TotalStats(maximum) => {
+                                        let stats = self.stats(object.card);
+                                        stats.power.saturating_add(stats.toughness)
+                                            <= i128::from(maximum)
+                                    }
+                                })
+                    }
                     EffectChoiceKind::HandLand { .. } => o.card.is_land() && o.controller == player,
+                    EffectChoiceKind::Discard => {
+                        choice.filter.kinds == 0
+                            || o.card.kind_mask() & u16::from(choice.filter.kinds) != 0
+                    }
                     _ => true,
                 };
         }
@@ -76,6 +187,7 @@ impl Game {
         }
         let f = choice.filter;
         o.zone == Zone::Battlefield
+            && (!matches!(choice.kind, EffectChoiceKind::TapPermanents(_)) || !o.tapped)
             && self.keywords(object.card).contains(f.keywords)
             && (f.kinds == 0 || self.current_kinds(object.card) & u16::from(f.kinds) != 0)
             && (!f.source_only || object == choice.source)
@@ -132,6 +244,42 @@ impl Game {
             None,
         )
     }
+    pub(super) fn start_hand_creature_attacking(&mut self, item: &SpellView, maximum: u64) -> bool {
+        let pending = self.start_hand_creature(item);
+        self.state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .choice
+            .as_mut()
+            .unwrap()
+            .hand_creature_entry = Some(HandCreatureEntry {
+            bound: HandCreatureBound::ManaValue(maximum),
+            attacking: true,
+            haste_sacrifice: false,
+        });
+        pending
+    }
+    pub(super) fn start_hand_creature_haste_sacrifice(
+        &mut self,
+        item: &SpellView,
+        maximum: u64,
+    ) -> bool {
+        let pending = self.start_hand_creature(item);
+        self.state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .choice
+            .as_mut()
+            .unwrap()
+            .hand_creature_entry = Some(HandCreatureEntry {
+            bound: HandCreatureBound::TotalStats(maximum),
+            attacking: false,
+            haste_sacrifice: true,
+        });
+        pending
+    }
     pub(super) fn start_hand_land(&mut self, item: &SpellView, tapped: bool) -> bool {
         self.start_effect_choice_inner(
             item,
@@ -175,9 +323,14 @@ impl Game {
             .take()
             .unwrap();
         if matches!(choice.kind, EffectChoiceKind::UntapLands { .. }) {
-            for object in choice.selected.iter().flatten() {
-                self.state.objects[object.card as usize].tapped = false;
-            }
+            let ids: Vec<_> = choice
+                .selected
+                .iter()
+                .flatten()
+                .filter(|object| self.object_ref(object.card) == **object)
+                .map(|object| object.card)
+                .collect();
+            self.untap_objects(&ids, untap_rules::UntapCause::Effect);
             return;
         }
         let EffectChoiceKind::LandCards { tapped, .. } = choice.kind else {
@@ -268,7 +421,12 @@ impl Game {
             amount,
             discard_mana_value_life,
             hand_defender: None,
+            hand_creature_entry: None,
+            counter_removal: None,
+            proliferate: None,
             entry_life_bonus: None,
+            hand_reveal: None,
+            blight_copy_attacking: false,
             source: item.object,
             required: [0; 2],
             selected: std::array::from_fn(|_| Vec::new()),
@@ -278,6 +436,9 @@ impl Game {
         if let Some(skip_to) = choice.skip_to {
             assert!(skip_to <= self.state.resolving.as_ref().unwrap().program.len());
         }
+        // A private filtered payment must offer the same phase even when hidden
+        // contents cannot pay; declining it is distinct from satisfying a zero cost.
+        let private_filtered_discard = kind == EffectChoiceKind::Discard && filter.kinds != 0;
         for player in self.program_players(players, item) {
             if greatest {
                 choice.greatest_power[player.index()] = self
@@ -294,19 +455,18 @@ impl Game {
                     .max();
             }
             let available = self
-                .state
-                .objects
-                .iter()
-                .enumerate()
-                .filter(|(id, _)| {
-                    self.effect_choice_candidate(&choice, player, self.object_ref(*id as CardId))
-                })
+                .effect_choice_objects(&choice)
+                .filter(|&object| self.effect_choice_candidate(&choice, player, object))
                 .count();
+            if kind == EffectChoiceKind::PowerDifferenceBoost && available < usize::from(amount) {
+                return false;
+            }
             if let Some(skip_to) = choice.skip_to
                 && !matches!(
                     kind,
                     EffectChoiceKind::HandCreature | EffectChoiceKind::HandLand { .. }
                 )
+                && !private_filtered_discard
                 && available < usize::from(amount)
             {
                 self.state.resolving.as_mut().unwrap().pc = skip_to;
@@ -315,10 +475,11 @@ impl Game {
             // Optional private hand placement always presents the same actor/phase,
             // even with no eligible card. The player can decline without revealing
             // whether their hidden hand contains a creature or land.
-            choice.required[player.index()] = if matches!(
-                kind,
-                EffectChoiceKind::HandCreature | EffectChoiceKind::HandLand { .. }
-            ) {
+            choice.required[player.index()] = if private_filtered_discard
+                || matches!(
+                    kind,
+                    EffectChoiceKind::HandCreature | EffectChoiceKind::HandLand { .. }
+                ) {
                 amount
             } else {
                 amount.min(u16::try_from(available).unwrap_or(u16::MAX))
@@ -329,6 +490,32 @@ impl Game {
     }
 
     fn advance_effect_choice(&mut self) -> bool {
+        if self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .choice
+            .as_ref()
+            .unwrap()
+            .hand_reveal
+            .is_some()
+        {
+            return self.advance_hand_reveal();
+        }
+        if self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .choice
+            .as_ref()
+            .unwrap()
+            .kind
+            == EffectChoiceKind::KeepSharedCreatureTypes
+        {
+            return self.advance_keep_shared_types();
+        }
         let choice = self
             .state
             .resolving
@@ -375,8 +562,15 @@ impl Game {
             };
             let enchantment = choice.kind == EffectChoiceKind::HandCreature
                 && self.state.objects[reference.card as usize].card.kind_mask() & 32 != 0;
-            let forced_tapped = matches!(choice.kind, EffectChoiceKind::HandLand { tapped: true });
-            if enchantment && choice.hand_defender.is_none() {
+            let legacy_enchantment = enchantment && choice.hand_creature_entry.is_none();
+            let attacking = choice
+                .hand_creature_entry
+                .map_or(enchantment, |entry| entry.attacking);
+            let forced_tapped = choice
+                .hand_creature_entry
+                .is_some_and(|entry| entry.attacking)
+                || matches!(choice.kind, EffectChoiceKind::HandLand { tapped: true });
+            if attacking && choice.hand_defender.is_none() {
                 if self.state.objects.iter().enumerate().any(|(id, o)| {
                     o.zone == Zone::Battlefield
                         && o.controller == player.other()
@@ -405,9 +599,12 @@ impl Game {
             let mut movement = self.entry_move(
                 reference.card,
                 Zone::Battlefield,
-                forced_tapped || enchantment,
+                forced_tapped || legacy_enchantment,
             );
             movement.controller = player;
+            movement.haste_sacrifice_after = choice
+                .hand_creature_entry
+                .is_some_and(|entry| entry.haste_sacrifice);
             movement.attacking = choice.hand_defender;
             movement.life_bonus = choice
                 .entry_life_bonus
@@ -423,7 +620,98 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        if choice.kind == EffectChoiceKind::Discard {
+        if choice.kind == EffectChoiceKind::CopyEntryObject {
+            let controller = self.state.resolving.as_ref().unwrap().item.controller;
+            if let Some(&object) = choice.selected[controller.index()].first()
+                && let Some(recipe) = self.entry_batch_copy_recipe(object)
+            {
+                self.stage_copy_creation(controller, recipe, 1);
+            }
+        } else if let EffectChoiceKind::Blight(amount) | EffectChoiceKind::BlightCost(amount) =
+            choice.kind
+        {
+            if choice.blight_copy_attacking {
+                let object = choice
+                    .selected
+                    .iter()
+                    .flatten()
+                    .copied()
+                    .next()
+                    .expect("blighted creature");
+                let mut recipe = self.copiable_recipe(object);
+                recipe.exceptions = recipe.exceptions.union(CopyExceptions::SACRIFICE_ONLY);
+                let continuation = &mut self.state.resolving.as_mut().unwrap().continuation;
+                assert!(continuation.is_none());
+                *continuation = Some(Box::new(
+                    programs::ProgramContinuation::CreateAttackingCopy(recipe),
+                ));
+            }
+            let choices = [self.state.active, self.state.active.other()]
+                .into_iter()
+                .flat_map(|p| {
+                    choice.selected[p.index()]
+                        .iter()
+                        .copied()
+                        .map(move |object| (p, object))
+                })
+                .collect();
+            self.blight_counters(
+                choices,
+                amount,
+                matches!(choice.kind, EffectChoiceKind::Blight(_)),
+                replacements::ResumeMode::Program,
+            );
+        } else if matches!(choice.kind, EffectChoiceKind::TapPermanents(_)) {
+            let ids = choice
+                .selected
+                .iter()
+                .flatten()
+                .map(|object| object.card)
+                .collect::<Vec<_>>();
+            self.tap_objects(&ids);
+        } else if choice.kind == EffectChoiceKind::PowerDifferenceBoost {
+            let item = self.state.resolving.as_ref().unwrap().item.clone();
+            let selected = &choice.selected[item.controller.index()];
+            assert_eq!(selected.len(), 2);
+            // Freeze X before either creature receives growth. This choice is not targeting.
+            let amount = self
+                .stats(selected[0].card)
+                .power
+                .abs_diff(self.stats(selected[1].card).power);
+            let growth =
+                i128::try_from(amount).capacity("power difference representation exhausted");
+            self.draw_many(item.controller, amount);
+            let ids: Vec<_> = selected.iter().map(|object| object.card).collect();
+            for &id in &ids {
+                self.state.objects[id as usize].growth += Stats {
+                    power: growth,
+                    toughness: growth,
+                };
+            }
+            self.grant_keyword_effects(&ids, item.object, Keywords::TRAMPLE);
+        } else if matches!(
+            choice.kind,
+            EffectChoiceKind::ExileFromHand | EffectChoiceKind::ExileGraveyardCard
+        ) {
+            let zone = if choice.kind == EffectChoiceKind::ExileFromHand {
+                Zone::Hand
+            } else {
+                Zone::Graveyard
+            };
+            let mut ids = Vec::new();
+            for player in [self.state.active, self.state.active.other()] {
+                for object in &choice.selected[player.index()] {
+                    if self.object_ref(object.card) == *object
+                        && self.state.objects[object.card as usize].zone == zone
+                        && self.state.objects[object.card as usize].owner == player
+                    {
+                        ids.push(object.card);
+                    }
+                }
+            }
+            let events = self.move_objects_raw(&ids, Zone::Exile);
+            self.finish_zone_events(&events, &[]);
+        } else if choice.kind == EffectChoiceKind::Discard {
             let ids: Vec<_> = [self.state.active, self.state.active.other()]
                 .into_iter()
                 .flat_map(|p| choice.selected[p.index()].iter().map(|object| object.card))
@@ -490,6 +778,34 @@ impl Game {
     }
 
     pub(super) fn choose_effect_object(&mut self, player: Player, object: ObjectRef) {
+        if self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .choice
+            .as_ref()
+            .unwrap()
+            .hand_reveal
+            .is_some()
+        {
+            self.choose_hand_reveal_object(object);
+            return;
+        }
+        let choice = self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .choice
+            .as_ref()
+            .unwrap();
+        let player = if choice.kind == EffectChoiceKind::KeepSharedCreatureTypes {
+            self.keep_shared_type_player(choice)
+                .expect("unfinished creature choice")
+        } else {
+            player
+        };
         self.state
             .resolving
             .as_mut()
@@ -520,9 +836,13 @@ impl Game {
     pub(super) fn effect_choice_view(&self, viewer: Player) -> Option<EffectChoiceView> {
         let choice = self.state.resolving.as_ref()?.choice.as_ref()?;
         let actor = self.actor()?;
+        if let Some(reveal) = &choice.hand_reveal {
+            return self.hand_reveal_view(viewer, choice, reveal);
+        }
         if matches!(
             choice.kind,
             EffectChoiceKind::Discard
+                | EffectChoiceKind::ExileFromHand
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandLand { .. }
         ) && viewer != actor
@@ -532,11 +852,7 @@ impl Game {
         let public_only =
             viewer != actor && matches!(choice.kind, EffectChoiceKind::LandCards { .. });
         let candidates = self
-            .state
-            .objects
-            .iter()
-            .enumerate()
-            .map(|(id, _)| self.object_ref(id as CardId))
+            .effect_choice_objects(choice)
             .filter(|&object| self.effect_choice_candidate(choice, actor, object))
             .filter(|object| {
                 !public_only || self.state.objects[object.card as usize].zone == Zone::Graveyard
@@ -544,16 +860,26 @@ impl Game {
             .collect();
         Some(EffectChoiceView {
             kind: choice.kind,
+            hand_reveal: None,
+            counter_removal: choice.counter_removal.as_deref().cloned(),
+            proliferate: self.proliferate_choice_view(choice),
             amount: choice.amount,
-            optional: choice.skip_to.is_some(),
+            optional: choice.skip_to.is_some() || choice.proliferate.is_some(),
             required: choice.required,
             selected: std::array::from_fn(|index| {
                 choice.selected[index]
                     .iter()
                     .copied()
                     .filter(|object| {
-                        !public_only
-                            || self.state.objects[object.card as usize].zone == Zone::Graveyard
+                        (!matches!(
+                            choice.kind,
+                            EffectChoiceKind::ExileFromHand
+                                | EffectChoiceKind::Discard
+                                | EffectChoiceKind::HandCreature
+                                | EffectChoiceKind::HandLand { .. }
+                        ) || index == viewer.index())
+                            && (!public_only
+                                || self.state.objects[object.card as usize].zone == Zone::Graveyard)
                     })
                     .collect()
             }),

@@ -1,16 +1,42 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Both immutable faces use one physical Oracle identity and retain their object when transformed.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(3, 2),
+    extras: &CardExtras {
+        transform: Some(TransformSpec {
+            front: Card(552),
+            back: Card(5347),
+            front_name: "Brigid, Clachan's Heart",
+        }),
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfEntersOrTransforms,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CreateTokens {
+                token: Card(5306),
+                amount: 1,
+                tapped: false,
+            }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::AtStep {
+                step: TriggerStep::Main1,
+                relation: CastRelation::You,
+                guard: StepGuard::Always,
+            },
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::MayPayMana {
+                    cost: ManaCost {
+                        colored: [0, 0, 0, 0, 1, 0],
+                        generic: 0,
+                    },
+                    skip: 1,
+                },
+                Instruction::TransformSource,
+            ],
+        },
+    ],
     ..CardRules::EMPTY
 };

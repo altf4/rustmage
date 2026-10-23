@@ -39,8 +39,10 @@ pub struct KeepTypesView {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct LinkedExileView {
+    pub ability_origin: u64,
     pub source: ObjectRef,
     pub exiled: ObjectRef,
+    pub exiled_turn: u32,
 }
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct ChoiceState {
@@ -49,11 +51,14 @@ pub(super) struct ChoiceState {
     // Some(None) means tracking this instruction but no successful own sacrifice.
     sacrifice: Option<Option<ObjectRef>>,
     pub links: Vec<LinkedExileView>,
+    pub free_cast_uses: Vec<LinkedFreeCastUseView>,
+    pub free_cast_approval: Option<LinkedFreeCastApprovalView>,
 }
 impl ChoiceState {
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.links.len() * std::mem::size_of::<LinkedExileView>()
+            + self.free_cast_uses.len() * std::mem::size_of::<LinkedFreeCastUseView>()
             + self.piles.as_ref().map_or(0, |p| {
                 (p.remaining.len() + p.up.len() + p.down.len()) * std::mem::size_of::<ObjectRef>()
             })
@@ -68,7 +73,10 @@ impl Game {
             data.piles = None;
             data.keep_types = None;
             data.sacrifice = None;
-            if data.links.is_empty() {
+            if data.links.is_empty()
+                && data.free_cast_uses.is_empty()
+                && data.free_cast_approval.is_none()
+            {
                 self.state.linked_choices = None;
             }
         }
@@ -357,7 +365,18 @@ impl Game {
         true
     }
     pub(super) fn remember_linked_exile(&mut self, selected: &[CardId]) {
-        let source = self.state.resolving.as_ref().unwrap().item.object;
+        let item = &self.state.resolving.as_ref().unwrap().item;
+        self.remember_linked_exile_for_origin(item.object, item.ability_origin(), selected);
+    }
+    pub(super) fn remember_linked_exile_for(&mut self, source: ObjectRef, selected: &[CardId]) {
+        self.remember_linked_exile_for_origin(source, self.copy_ability_origin(source), selected);
+    }
+    pub(super) fn remember_linked_exile_for_origin(
+        &mut self,
+        source: ObjectRef,
+        ability_origin: u64,
+        selected: &[CardId],
+    ) {
         for &id in selected {
             if self.state.objects[id as usize].zone == Zone::Exile {
                 let exiled = self.object_ref(id);
@@ -365,11 +384,34 @@ impl Game {
                     .linked_choices
                     .get_or_insert_default()
                     .links
-                    .push(LinkedExileView { source, exiled });
+                    .push(LinkedExileView {
+                        source,
+                        exiled,
+                        ability_origin,
+                        exiled_turn: self.state.turn,
+                    });
             }
         }
     }
-    pub(super) fn return_linked_exile(&mut self, source: ObjectRef) {
+    /// CR400.7: a permanent spell retains the link established by its own cost.
+    /// Countered spells and later reentries never bind an earlier incarnation.
+    pub(super) fn continue_stack_linked_exile(
+        &mut self,
+        before: ObjectRef,
+        after: ObjectRef,
+        destination: Zone,
+    ) {
+        if destination == Zone::Battlefield
+            && let Some(data) = self.state.linked_choices.as_mut()
+        {
+            for link in &mut data.links {
+                if link.source == before {
+                    link.source = after;
+                }
+            }
+        }
+    }
+    pub(super) fn return_linked_exile(&mut self, source: ObjectRef, ability_origin: u64) {
         let Some(data) = self.state.linked_choices.as_ref() else {
             return;
         };
@@ -378,6 +420,7 @@ impl Game {
             .iter()
             .filter(|link| {
                 link.source == source
+                    && link.ability_origin == ability_origin
                     && self.object_ref(link.exiled.card) == link.exiled
                     && self.state.objects[link.exiled.card as usize].zone == Zone::Exile
             })
@@ -398,5 +441,86 @@ impl Game {
             let o = &objects[link.exiled.card as usize];
             o.zone == Zone::Exile && o.generation == link.exiled.generation
         });
+    }
+}
+
+impl Game {
+    pub(super) fn linked_counter_permission(
+        &self,
+        actor: Player,
+        card: CardId,
+        source: ObjectRef,
+    ) -> Option<u16> {
+        if self.state.active != actor
+            || !self.on_battlefield(source.card)
+            || self.object_ref(source.card) != source
+        {
+            return None;
+        }
+        let provider = &self.state.objects[source.card as usize];
+        let object = &self.state.objects[card as usize];
+        if provider.controller != actor
+            || object.owner != actor
+            || object.zone != Zone::Exile
+            || object.is_token()
+            || !object.card.is_creature()
+            || !self.state.linked_choices.as_ref().is_some_and(|data| {
+                data.links.iter().any(|link| {
+                    link.source == source
+                        && link.ability_origin == self.copy_ability_origin(source)
+                        && link.exiled == self.object_ref(card)
+                })
+            })
+        {
+            return None;
+        }
+        provider
+            .card
+            .static_ability_groups()
+            .iter()
+            .flat_map(|g| g.fragments)
+            .find_map(|fragment| {
+                if let crate::cards::StaticAbilityFragment::LinkedExileCreatureCounterCasting(
+                    amount,
+                ) = fragment
+                {
+                    self.continuous_fragment_available(source.card, |candidate| {
+                        matches!(candidate, crate::cards::StaticAbilityFragment::LinkedExileCreatureCounterCasting(n) if *n == *amount)
+                    })
+                    .then_some(*amount)
+                } else {
+                    None
+                }
+            })
+    }
+    pub(super) fn visit_linked_counter_casts(
+        &self,
+        card: CardId,
+        actor: Player,
+        sorcery: bool,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        for &source in &self.state.static_sources {
+            let reference = self.object_ref(source);
+            let Some(amount) = self.linked_counter_permission(actor, card, reference) else {
+                continue;
+            };
+            for flash_surcharge in [false, true] {
+                if self.permitted_linked_counter_cast_available(
+                    actor,
+                    card,
+                    amount,
+                    sorcery,
+                    flash_surcharge,
+                ) && emit(Action::AnnounceLinkedExileCounterCost {
+                    card,
+                    source: reference,
+                    flash_surcharge,
+                }) {
+                    return true;
+                }
+            }
+        }
+        false
     }
 }

@@ -3,10 +3,30 @@
   "catalogue_id": 2855,
   "oracle_id": "8ca2f668-2a4d-4a1e-abcc-093ccbc29295",
   "facts_sha256": "63e59ffb1d2b464ab85f19ed7910bd544e02d3b25e0f15c4fa79b6fe782e0468",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e2f53702da201e09f2d3ffed16e363424156892f516eef1db5c8ad3c7f82a266"
   },
-  "physical_metadata_sha256": "78ef104fa62e094c9a86cc58a019509a232bbdd138acdc79e8801493cc5eea65"
+  "physical_metadata_sha256": "78ef104fa62e094c9a86cc58a019509a232bbdd138acdc79e8801493cc5eea65",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MornsongAria.java",
+  "java_sha256": "50655a743bad1b16d0c4f95f63b69c5393992b08cdf840e4d1afeaf787f8d725",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfDrawTriggeredAbility.java",
+      "sha256": "523dd4efb5e2b9b87196c19d00a10fad8d6ea5f1d996023974ccf545f59148fc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/AtStepTriggeredAbility.java",
+      "sha256": "acaebe5709a15b181c6f315684db3969eb622d6dcc45f2994bf54c05b00d22af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ]
 }

@@ -3,10 +3,65 @@
   "catalogue_id": 5094,
   "oracle_id": "e5e8fce4-c97a-4ae4-9583-003c565e3bd6",
   "facts_sha256": "37cc5f398099a670c4e263751bba12a319a69ba23a9ac80657be5b3a7f97e73a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c593cb4e64aa269b6d65c726812fa7fda9472e4a6b8a1d2ace4a1694931da278"
   },
-  "physical_metadata_sha256": "565d8bc9b6b7c80e0b80625577c911bf37a3169a1963dfa3059f241f1a0f8800"
+  "physical_metadata_sha256": "565d8bc9b6b7c80e0b80625577c911bf37a3169a1963dfa3059f241f1a0f8800",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/Wistfulness.java",
+  "java_sha256": "799234704fcd1b1a438b98eb6fc7fb78fa3e7e19cae99d5aef4c5bdfb1bcdc93",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EvokeAbility.java",
+      "sha256": "5f2bd6dfc0dcf9b02cad0659656e175bdb985472feb1d0e56c3387c1a2f96601"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/EvokedCondition.java",
+      "sha256": "d93e83a6045bb122571bc05291da4cca101cd8131383aad80579d1ed1bc418d4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/TwoOfManaColorSpentCondition.java",
+      "sha256": "db65399e04dc16757d2241377e11f45c2f91836767a8d4e3a1740f8e78b44026"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/AlternativeSourceCostsImpl.java",
+      "sha256": "5bbc595021e5cdd25c7b878fda2b6654b9b6b89979ff5bc76d9560cd9f9c47c8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeSourceEffect.java",
+      "sha256": "67db08baf9a6cc6c7fad953388bdd2adb74e4c9af4c5e2f5483c8cc546bbb098"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/ManaSpentToCastWatcher.java",
+      "sha256": "3bdca200d2d19ba2e46d11f37fcf4d355e78430ce4fed8c82fcf7161d2329211"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterArtifactOrEnchantmentPermanent.java",
+      "sha256": "6a2926a1a496baaf1e453cafc25fb2c88e26d4e551e1c5caa0a9d928ab0c830f"
+    }
+  ]
 }

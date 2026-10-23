@@ -57,6 +57,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 } => Some(*power >= 0 && *toughness >= 0),
                 Instruction::Untap
                 | Instruction::BlinkUntilEndStep { .. }
+                | Instruction::BlinkGroupTappedUntilEndStep
                 | Instruction::ReturnToBattlefield
                 | Instruction::ReturnToBattlefieldWithRole { .. }
                 | Instruction::ReturnToBattlefieldTapped
@@ -158,6 +159,20 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             }
             Action::AnnounceAdventure { .. } | Action::AnnounceOmen { .. } => 30,
             Action::ChooseManaLotSpend { amount } => 120 + i128::from(*amount != 0),
+            Action::ChooseEntryCopy { object: None } => 0,
+            Action::ChooseEntryCopy {
+                object: Some(object),
+            } => observation
+                .objects
+                .iter()
+                .find(|candidate| candidate.reference == *object)
+                .map_or(-1, |candidate| {
+                    if candidate.card.as_enters_copy_creature() {
+                        -1
+                    } else {
+                        120 + candidate.power.max(0) + candidate.toughness.max(0)
+                    }
+                }),
             Action::ChooseEntryTimestamp { .. } => 120,
             Action::ChooseReplacement { .. } => 120,
             Action::ChooseCreatedToken { .. } => 120,
@@ -178,6 +193,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::DeclineHandEntry => -1,
             Action::ChooseSaddler { .. } | Action::ChooseCrewer { .. } => 50,
             Action::FinishSaddle | Action::FinishCrew => 100,
+            Action::ChooseCounterCostOrder { after_printed } => {
+                if *after_printed {
+                    2
+                } else {
+                    3
+                }
+            }
             Action::ChooseX { value } => 80 + i128::from((*value).min(20)),
             Action::ChooseGift { beneficiary } => {
                 if beneficiary.is_some() {
@@ -203,6 +225,20 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ChooseEvidence { .. } => 50,
             Action::FinishEvidence => 80,
             Action::DeclineEvidence => -10,
+            Action::ChooseBeholdType { creature_type } => {
+                if creature_type.is_some() {
+                    60
+                } else {
+                    0
+                }
+            }
+            Action::ChooseOptionalAdditionalCost { object } => {
+                if object.is_some() {
+                    60
+                } else {
+                    0
+                }
+            }
             Action::ChooseBargain { sacrifice } => {
                 if sacrifice.is_some() {
                     60
@@ -210,6 +246,14 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     0
                 }
             }
+            Action::ChooseConspire { pay, .. } => {
+                if *pay {
+                    70
+                } else {
+                    0
+                }
+            }
+            Action::PayConspire { .. } | Action::PayConspirePrintedCosts => 60,
             Action::ChooseAdditionalCost { .. } | Action::ChooseCreatureCounterCost { .. } => 60,
             Action::ChooseForageRoute { .. } | Action::ChooseForage { .. } => 60,
             Action::DeclineForage => -10,
@@ -231,15 +275,52 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             }
             Action::Concede => -1000,
             Action::ChooseZoneReplacement { .. } => 50,
-            Action::Sacrifice { .. } => 50,
+            Action::Sacrifice { .. }
+            | Action::Blight { .. }
+            | Action::ChooseCreature { .. }
+            | Action::ExileHandCard { .. }
+            | Action::RevealHandCard { .. }
+            | Action::ExileGraveyardCard { .. }
+            | Action::TapForEffect { .. }
+            | Action::ChooseCounterRemoval { .. } => 50,
+            Action::ProliferatePlayer { player } => {
+                if *player != actor {
+                    60
+                } else {
+                    -1
+                }
+            }
+            Action::ProliferatePermanent { object } => observation
+                .objects
+                .iter()
+                .find(|o| o.id == object.card)
+                .map_or(-1, |o| {
+                    let value = CounterKind::ALL
+                        .into_iter()
+                        .filter(|&kind| o.counters.get(kind) > 0)
+                        .map(|kind| {
+                            let beneficial =
+                                !matches!(kind, CounterKind::MinusOne | CounterKind::Stun);
+                            if beneficial == (o.controller == actor) {
+                                1i128
+                            } else {
+                                -1
+                            }
+                        })
+                        .sum::<i128>();
+                    if value > 0 { 60 } else { -1 }
+                }),
+            Action::FinishProliferate => 0,
             Action::DeclineEffectPayment => -1,
             Action::AnnounceFree {
                 flash_surcharge: false,
                 ..
             } => 81,
-            Action::AnnounceFree { .. }
+            Action::AnnounceLinkedFree { .. }
+            | Action::AnnounceFree { .. }
             | Action::AnnounceGrantedFlashback { .. }
             | Action::AnnounceCounterGraveyard { .. }
+            | Action::AnnounceLinkedExileCounterCost { .. }
             | Action::AnnounceCast { .. }
             | Action::AnnounceFlashSurcharge { .. }
             | Action::AnnounceWarp { .. }
@@ -297,6 +378,29 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     })
                     .sum()
             }
+            Action::ChooseColor { color } => {
+                let existing = observation
+                    .objects
+                    .iter()
+                    .filter(|object| object.zone == Zone::Battlefield && object.controller == actor)
+                    .fold(0u8, |mask, object| mask | object.colors);
+                if existing & (1 << color.index()) == 0 {
+                    10
+                } else {
+                    0
+                }
+            }
+            Action::ChooseCreatureType {
+                creature_type: kind,
+            } => observation
+                .objects
+                .iter()
+                .filter(|object| {
+                    ((object.zone == Zone::Battlefield && object.controller == actor)
+                        || (object.zone == Zone::Graveyard && object.owner == actor))
+                        && object.has_subtype(kind.name())
+                })
+                .count() as i128,
             Action::ChooseEntryValue { .. } => 0,
             Action::ChooseEntryLife { pay } => {
                 // Avoid voluntary lethal payment; the example still exercises
@@ -327,6 +431,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::BeginCast { .. } => 80,
             // Once a complete target set is legal, commit it instead of
             // revisiting optional edits (which may otherwise oscillate).
+            Action::ChooseSpellCopy { copy } => {
+                if *copy {
+                    100
+                } else {
+                    10
+                }
+            }
             Action::FinishStackTargets => 100,
             Action::AllocateTargetAmount { amount } => 100 + i128::from(*amount),
             Action::RestoreStackTarget { .. } => -1,
@@ -360,7 +471,12 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     -5
                 }
             }
-            Action::ActivateMana {
+            Action::ActivateManaWithTapCost {
+                production,
+                payment,
+                ..
+            }
+            | Action::ActivateMana {
                 production,
                 payment,
                 ..
@@ -419,7 +535,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::PutTrigger { .. } => 50,
             Action::ChooseLibraryDestination { .. } => 50,
             Action::SelectLibrary { .. } => 60,
-            Action::FinishLibrarySelection | Action::OrderLibraryBottom { .. } => 50,
+            Action::FinishLibrarySelection
+            | Action::OrderLibraryBottom { .. }
+            | Action::MillLookedCard { .. } => 50,
             Action::ArrangeLibrary { destination, .. } => {
                 if *destination == crate::LibraryDestination::Top {
                     50

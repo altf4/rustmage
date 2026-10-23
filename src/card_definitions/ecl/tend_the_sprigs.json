@@ -3,10 +3,41 @@
   "catalogue_id": 4379,
   "oracle_id": "91363d71-eef0-48e8-9a68-8f363ff2790e",
   "facts_sha256": "cab61c475e5d99e799830b84322debfbbd2965f5ada2fb573ae57efe8f55b045",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d0632da69b51f811775538cfd64e4c842009bd71cb1e2e124f2437a2518fcd2d"
   },
-  "physical_metadata_sha256": "2af3c73aca51337daa295c0bd56778bc7468380985bfed3e8423b6b3df5e09a0"
+  "physical_metadata_sha256": "2af3c73aca51337daa295c0bd56778bc7468380985bfed3e8423b6b3df5e09a0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TendTheSprigs.java",
+  "java_sha256": "26453374f318478b8eb2df5b77688c9bc53de0dab64f263ad8fd8528b18cb061",
+  "rules_tests": "src/engine_ecl_green_colorless_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/TreefolkReachToken.java",
+      "sha256": "da80eba7dfa2d3cd4c2c766ef7f35b8d73f3233bf581c2bbe5599790bd4680f3"
+    }
+  ]
 }

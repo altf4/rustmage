@@ -37,6 +37,7 @@ impl Game {
         {
             return;
         }
+        self.end_source_exile_permissions(object);
         self.remove_from_combat(object.card, object);
         let target = &mut self.state.objects[object.card as usize];
         target.controller = controller;

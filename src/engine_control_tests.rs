@@ -98,9 +98,14 @@ fn grant(g: &mut Game, actor: Player, name: &str) -> CardId {
         Zone::Exile,
     );
     g.state.exile_permissions.push(ExilePlayPermission {
+        cast_only: false,
+        without_mana: false,
         object: g.object_ref(id),
         player: actor,
         expires_turn: g.state.turn,
+        next_end_step: None,
+        source: None,
+        any_mana: false,
     });
     g.state.exile_permissions.sort_by_key(|p| p.object.card);
     id
@@ -478,17 +483,27 @@ fn stale_or_other_player_grant_cannot_mask_independent_valid_permission() {
         g.state.exile_permissions.insert(
             0,
             ExilePlayPermission {
+                cast_only: false,
+                without_mana: false,
                 object: stale,
                 player: actor,
                 expires_turn: g.state.turn,
+                next_end_step: None,
+                source: None,
+                any_mana: false,
             },
         );
         g.state.exile_permissions.insert(
             1,
             ExilePlayPermission {
+                cast_only: false,
+                without_mana: false,
                 object: reference,
                 player: actor.other(),
                 expires_turn: g.state.turn,
+                next_end_step: None,
+                source: None,
+                any_mana: false,
             },
         );
         assert!(g.can_play_exiled(actor, id));

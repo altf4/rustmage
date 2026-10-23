@@ -343,6 +343,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                     StackKind::ActivatedAbility { .. } => assert!(s.source_card.is_token()),
                     StackKind::CopyEndStepSacrifice
+                    | StackKind::Conspire
                     | StackKind::DelayedReturn
                     | StackKind::DelayedSacrifice
                     | StackKind::DelayedWarpExile => {

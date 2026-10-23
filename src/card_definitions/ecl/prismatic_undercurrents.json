@@ -3,10 +3,31 @@
   "catalogue_id": 3242,
   "oracle_id": "27a3aa64-1de7-4b0c-af23-52886e7d258a",
   "facts_sha256": "36e941d651f856db60d9d24b91df76cba8a9eb71081667093162ff2d1e07cc16",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7d17403038d5763aff92fd20b364ef7038e38f787d7b8760d06d41799d224fd4"
   },
-  "physical_metadata_sha256": "8b350378d5a20f3a7d3c3b910a58092721ebbc448b7429401e9c3cfa7f644ead"
+  "physical_metadata_sha256": "8b350378d5a20f3a7d3c3b910a58092721ebbc448b7429401e9c3cfa7f644ead",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PrismaticUndercurrents.java",
+  "java_sha256": "b13be28c28b6612eb782f6dd3fd470389efbdb61e1beb11badb2cc12b6b6dcdc",
+  "rules_tests": "src/engine_ecl_green_colorless_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ColorsAmongControlledPermanentsCount.java",
+      "sha256": "94d0639d201ef40c27aa8b05d8dc072166ac4f2c82494425ebe1449d385eb8a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayAdditionalLandsControllerEffect.java",
+      "sha256": "a7b2413a24959fbde172621336f4f48cb1ef76bc4254b922b272bfe2bef30664"
+    }
+  ]
 }

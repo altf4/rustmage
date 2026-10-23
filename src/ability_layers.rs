@@ -7,10 +7,6 @@ pub(crate) enum AbilityLayer {
     Control = 2,
     Text = 3,
     Type = 4,
-    #[expect(
-        dead_code,
-        reason = "Layer-five source identities are retained for typed legacy definitions"
-    )]
     Color = 5,
     Ability = 6,
     Cda = 70,
@@ -38,6 +34,11 @@ pub(crate) struct StaticAbilityGroup {
 )]
 pub(crate) enum StaticAbilityFragment {
     FreeHandCast,
+    /// Own-turn casting of owned linked exiled creature cards with an extra counter cost.
+    LinkedExileCreatureCounterCasting(u16),
+    LinkedExileFreeCastBySubtypeUnion(&'static [&'static str]),
+    ConvokeCreatureSpells,
+    NoncreatureConspire,
     LookAtLibraryTop,
     CastCreatureFromLibraryTop,
     SpendAnyManaForCreatures,
@@ -45,15 +46,27 @@ pub(crate) enum StaticAbilityFragment {
     ForeignStashPlay,
     ControlAttached,
     AttachedCharacteristics(&'static AttachedCharacteristics),
+    AttachedChosenColor,
+    /// Triggers for the attached land's own tap mana ability, without using the stack.
+    AttachmentManaBonus(ManaProduction),
+    /// A triggered mana ability for any player tapping a basic land.
+    BasicLandTapManaBonus(u16),
     ChosenCreatureType,
     OtherSubtypeEntryCounters(&'static str),
+    /// Adds independent triggers for abilities owned by matching permanents.
+    AdditionalSubtypeTriggers {
+        subtype: &'static str,
+        other: bool,
+    },
     ChosenModifier(ChosenModifier),
+    ChosenCreatureKeywords(Keywords),
     PlayerHexproof,
     CantLoseGameAndOpponentsCantWin,
     QualifiedHexproof(SourceCharacteristicFilter),
     ControlledSpellsUncounterable(u16),
     LifeGainAdditional(u16),
     CantGainLife,
+    CantDrawCards,
     NoMaximumHandSize,
     AdditionalLandPlays(u16),
     IntrinsicKeywords(Keywords),
@@ -75,20 +88,37 @@ pub(crate) enum StaticAbilityFragment {
         keywords: Keywords,
     },
     AttachedSubtype(&'static str),
+    AttachedAllCreatureTypes,
     AttachmentStats(Stats),
     AttachmentTurnStats(Stats),
     AttachmentKeywords(Keywords),
     AttachmentRule(Keywords),
+    AttachmentCombatToughnessIfGreater,
+    AttachedCounterProhibition,
     AttachedTurnKeywords(Keywords),
     /// Stable index into the granting definition's immutable trigger array.
     AttachmentTrigger(u16),
+    ControlledCreatureTrigger {
+        ability: u16,
+        other: bool,
+        nontoken: bool,
+    },
     AttachmentActivation(u16),
     /// Grants an independent tap mana ability to the attached permanent.
     AttachmentMana(ManaProduction),
+    ControlledTappedKeywords {
+        other: bool,
+        keywords: Keywords,
+    },
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
     StaticModifier(u16, StaticModifier),
     ScalingModifier(u16, ScalingModifier),
+    ControlledCreatureScaling {
+        subtype: Option<&'static str>,
+        value: StatValue,
+        stats: Stats,
+    },
     EnchantedModifier(u16, EnchantedModifier),
     CounterKeyword(u16, CounterKind, Keywords),
     /// One union effect: Skeletons and other Zombies, never twice for changeling.
@@ -107,6 +137,8 @@ pub(crate) enum StaticAbilityFragment {
     CombatRestriction(u16, CombatRestriction),
     /// Source attacks every combat when independently able to attack.
     AttacksEachCombat,
+    /// Source must be blocked if a legal declaration can satisfy the requirement.
+    MustBeBlocked,
     /// The source's evasion ability excludes blockers with an effective subtype.
     CannotBeBlockedBySubtype(&'static str),
     EntryTriggerSuppression(u16, u16),
@@ -124,6 +156,8 @@ pub(crate) enum UntapRestriction {
 /// One printed Aura effect, shared across its earlier characteristic layers.
 #[derive(Clone, Copy, Debug)]
 pub(crate) enum PermanentForm {
+    /// Replace only creature subtypes; keep every existing card type.
+    Preserve,
     Creature,
     Land,
 }

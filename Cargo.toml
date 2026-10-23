@@ -25,3 +25,11 @@ incremental = false
 lto = "thin"
 codegen-units = 1
 
+
+# Optimize validation without production LTO; retain runtime correctness checks.
+[profile.release-test]
+inherits = "release"
+lto = false
+codegen-units = 16
+debug-assertions = true
+overflow-checks = true

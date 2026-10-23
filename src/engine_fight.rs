@@ -1,6 +1,47 @@
 //! Noncombat damage using current creature characteristics and distinct operands.
 use super::*;
 impl Game {
+    pub(super) fn entering_power_damage_players(&mut self, item: &SpellView, players: PlayerSet) {
+        let Some(object) = item.entering_object else {
+            return;
+        };
+        let source = if self.on_battlefield(object.card) && self.object_ref(object.card) == object {
+            self.damage_source(object.card)
+        } else {
+            let Some(source) = self
+                .state
+                .roles
+                .as_ref()
+                .and_then(|state| {
+                    state
+                        .stat_subjects
+                        .iter()
+                        .find(|fact| fact.object == object)
+                })
+                .and_then(|fact| fact.departure_damage.as_deref())
+            else {
+                return;
+            };
+            *source
+        };
+        // A noncreature permanent has no power characteristic (CR208.3).
+        let amount = if source.facts.kinds & 1 != 0 {
+            source.facts.power.max(0)
+        } else {
+            0
+        };
+        let events: Vec<_> = self
+            .program_players(players, item)
+            .map(|player| DamageEvent {
+                preventable: true,
+                source,
+                target: Target::Player(player),
+                amount,
+                combat: false,
+            })
+            .collect();
+        self.apply_damage_batch(&events);
+    }
     pub(super) fn reflexive_fight(&mut self, item: &SpellView) {
         let Some(context) = &item.reflexive_subject else {
             return;
@@ -46,6 +87,25 @@ impl Game {
             return;
         };
         self.creatures_deal_power_damage(source, recipient, fight);
+    }
+    pub(super) fn attached_fight(&mut self, item: &SpellView) {
+        let Some(source) = self.attached_subject(item) else {
+            return;
+        };
+        let target = item.targets.iter().find_map(|bound| {
+            if self.same_target_object(*bound)
+                && let Target::Card(id) = bound.target
+                && self.on_battlefield(id)
+                && self.is_creature(id)
+            {
+                Some(id)
+            } else {
+                None
+            }
+        });
+        if let Some(target) = target {
+            self.creatures_deal_power_damage(source, target, true);
+        }
     }
     pub(super) fn source_fight(&mut self, item: &SpellView) {
         if !self.on_battlefield(item.card)

@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1171f6783a6c5f66281658bc18751ca896f5886d01bb6348c605bca1a19c9a57"
   },
-  "physical_metadata_sha256": "81af191394816ac12decb165b9f22e6af4302e116b499b5c5ef6404e5eb342eb"
+  "physical_metadata_sha256": "81af191394816ac12decb165b9f22e6af4302e116b499b5c5ef6404e5eb342eb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KeepOut.java",
+  "java_sha256": "bb23290e0740b93c2080eeef4a557267f3776dc3d3324017bcd292c11236737d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetEnchantmentPermanent.java",
+      "sha256": "25825f6881ec923b5ecf330ff5d0c79a60e8e305cd5f6d7e08920f16924dbbae"
+    }
+  ]
 }

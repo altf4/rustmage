@@ -3,10 +3,30 @@
   "catalogue_id": 795,
   "oracle_id": "649e4969-71d4-434f-85b0-205ec2c6b24f",
   "facts_sha256": "5c0953f29381ba079e8fddc37d07074a60d69e2f0fd4d4f8571304e94283dabe",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "36eedba3b2a4aa6c516b144c8bbca7a22edf66c0bf275bca33861d911e38dc41"
   },
-  "physical_metadata_sha256": "40f4de72fb5f68d266829efa719af608b59163914432c8408738b46d12ffbd83"
+  "physical_metadata_sha256": "40f4de72fb5f68d266829efa719af608b59163914432c8408738b46d12ffbd83",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CollectiveInferno.java",
+  "java_sha256": "7db1017a9fcad93e52467b756c9657758dcabe9d7be9f15ae039b8f51a6f1c68",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseCreatureTypeEffect.java",
+      "sha256": "7c002222709f95c0fb03244a866082efaec9f9db530fb6f62f682000a4806b9d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/choices/ChoiceCreatureType.java",
+      "sha256": "c940b4b86491e3c45d7d6011a43e340e051fd3fac732b035a068af6b7074b44b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ConvokeAbility.java",
+      "sha256": "207ace9818509f0db681504b423fb592693ab197c0e52decbefac3550c73abdf"
+    }
+  ]
 }

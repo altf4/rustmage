@@ -3,10 +3,41 @@
   "catalogue_id": 557,
   "oracle_id": "592689f2-f17c-40d6-b880-431f4b6a6b0c",
   "facts_sha256": "bbeb55215e9f522f3ab142a451931c194d7e9e2225517c3f9bf458fdf52410e5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "040b30d163c630e1adcf973ef9c109f9b364510d0884791f211b7fb5c32945a3"
   },
-  "physical_metadata_sha256": "6e8da632d66935d71d2d4d6206fc0f502ef9726e2216385e900737b190a38ed3"
+  "physical_metadata_sha256": "6e8da632d66935d71d2d4d6206fc0f502ef9726e2216385e900737b190a38ed3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BristlebaneBattler.java",
+  "java_sha256": "c256f791c39b7c0a646f7c9697be6bbbdb563d572b269d3185920fd54ac367ee",
+  "rules_tests": "src/engine_ecl_green_colorless_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldWithCountersAbility.java",
+      "sha256": "b34c7e6346705407d2a8519d8afdebd93b393745b995bbbce928753c35eacd59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceHasCounterCondition.java",
+      "sha256": "1d9315e6b952df62a1bbe5cf57ce6d75c095866a5a3d8d661cf45a7b44e3b549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/RemoveCounterSourceEffect.java",
+      "sha256": "a2c61bdfe90b158533c99757444cecf8c13beaebd1d442be4ed27ebf7d4d807d"
+    }
+  ]
 }

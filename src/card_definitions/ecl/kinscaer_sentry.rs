@@ -1,16 +1,13 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from the complete pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::LIFELINK.union(Keywords::FIRST_STRIKE),
+    effect: Effect::Creature(2, 2),
+    keywords: Keywords::FIRST_STRIKE.union(Keywords::LIFELINK),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfAttacks,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::PutHandCreatureAttacking {
+            maximum: AmountValue::Stat(StatValue::AttackingCreatures),
+        }],
+    }],
     ..CardRules::EMPTY
 };

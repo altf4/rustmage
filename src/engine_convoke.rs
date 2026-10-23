@@ -185,13 +185,32 @@ impl Game {
             can_pay,
         })
     }
+    pub(super) fn may_have_convoke(&self, actor: Player, definition: Card) -> bool {
+        definition.has_convoke()
+            || definition.is_creature()
+                && self.state.static_sources.iter().any(|&id| {
+                    let object = &self.state.objects[id as usize];
+                    object.zone == Zone::Battlefield
+                        && object.controller == actor
+                        && object.card.static_ability_groups().iter().any(|group| {
+                            group.fragments.iter().any(|fragment| {
+                                matches!(
+                                    fragment,
+                                    crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
+                                )
+                            })
+                        })
+                })
+    }
     pub(super) fn begin_convoke(&mut self) {
+        let item = &self.state.announcing.as_ref().unwrap().item;
+        assert!(ability_world::CharacteristicWorld::spell_has_convoke(
+            self,
+            item.controller,
+            item.source_card
+        ));
         let a = self.state.announcing.as_mut().unwrap();
-        assert!(
-            a.item.kind == StackKind::Spell
-                && a.item.source_card.has_convoke()
-                && a.convoke.is_none()
-        );
+        assert!(a.item.kind == StackKind::Spell && a.convoke.is_none());
         a.convoke = Some(Box::new(ConvokeSelection {
             remaining: a.total_cost.expect("locked total"),
             selected: Vec::new(),

@@ -154,6 +154,17 @@ impl CharacteristicQuery<'_> {
         if !battlefield_creature {
             return (base, stats);
         }
+        if let Some(roles) = &self.state.roles {
+            let recipient = self.object_ref(id);
+            for row in &roles.stat_modifiers {
+                if row.recipient == recipient {
+                    stats += Stats {
+                        power: row.power,
+                        toughness: row.toughness,
+                    };
+                }
+            }
+        }
         stats += self.chosen_bonus(id);
         stats += self.live_static_bonus(id);
         stats += self.attachment_bonus(id).0;
@@ -177,6 +188,41 @@ impl CharacteristicQuery<'_> {
                     power: 1,
                     toughness: 1,
                 };
+            }
+            for group in object.card.static_ability_groups() {
+                for fragment in group.fragments {
+                    let StaticAbilityFragment::ControlledCreatureScaling {
+                        subtype,
+                        value,
+                        stats: scale,
+                    } = *fragment
+                    else {
+                        continue;
+                    };
+                    if subtype.is_some_and(|subtype| !self.has_subtype(id, subtype))
+                        || object.controller != self.state.objects[id as usize].controller
+                        || Some(source) == departing
+                        || !self.continuous_fragment_available(source, |fragment| matches!(fragment,
+                            StaticAbilityFragment::ControlledCreatureScaling { subtype: t, value: v, stats: s } if *t == subtype && *v == value && *s == scale)) {
+                        continue;
+                    }
+                    let amount = self.stat_value_without_hand(
+                        value,
+                        self.object_ref(source),
+                        object.controller,
+                        departing,
+                    );
+                    stats += Stats {
+                        power: scale
+                            .power
+                            .checked_mul(amount)
+                            .capacity("controlled scaling power exhausted"),
+                        toughness: scale
+                            .toughness
+                            .checked_mul(amount)
+                            .capacity("controlled scaling toughness exhausted"),
+                    };
+                }
             }
             for (index, modifier) in object.card.scaling_modifiers().iter().enumerate() {
                 if !self.continuous_fragment_available(source, |fragment| {
@@ -318,7 +364,10 @@ impl CharacteristicQuery<'_> {
         if self.state.objects[id as usize].zone == Zone::Stack {
             let definition = self.effective_spell_card(id);
             if definition.inset_parent().is_some() {
-                return definition.info().keywords;
+                return definition
+                    .info()
+                    .keywords
+                    .union(keyword_counters::keywords(self.counter_amounts(id)));
             }
         }
         let target = &self.state.objects[id as usize];
@@ -328,7 +377,7 @@ impl CharacteristicQuery<'_> {
             .union(self.attachment_bonus(id).1)
             .union(CharacteristicWorld::counter_subtype_keywords(self, id));
         if target.zone != Zone::Battlefield {
-            return keywords;
+            return keywords.union(keyword_counters::keywords(self.counter_amounts(id)));
         }
         if self.is_suspected(id) {
             keywords = keywords.union(Keywords::MENACE).union(Keywords::CANT_BLOCK);
@@ -347,6 +396,25 @@ impl CharacteristicQuery<'_> {
             for group in object.card.static_ability_groups() {
                 for fragment in group.fragments {
                     match *fragment {
+                        StaticAbilityFragment::ChosenCreatureKeywords(grant)
+                            if ability_world::CharacteristicWorld::chosen_creature_type_applies(
+                                self,
+                                self.object_ref(source),
+                                id,
+                            ) =>
+                        {
+                            keywords = keywords.union(grant);
+                        }
+                        StaticAbilityFragment::ControlledTappedKeywords {
+                            other,
+                            keywords: grant,
+                        } if object.controller == target.controller
+                            && target.tapped
+                            && self.is_creature(id)
+                            && (!other || source != id) =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
                         StaticAbilityFragment::DeathBaronLord
                             if ability_world::CharacteristicWorld::death_baron_applies(
                                 self,
@@ -648,6 +716,7 @@ impl CharacteristicQuery<'_> {
             self.layered_stats_without_hand(id, None)
         };
         ObjectView {
+            copy_ability_origin: self.copy_ability_origin(self.object_ref(id)),
             abilities: self.ability_availability(id),
             kinds: self.current_kinds(id),
             colors: CharacteristicWorld::colors(self, id),
@@ -682,11 +751,7 @@ impl CharacteristicQuery<'_> {
             } else {
                 self.keywords(id)
             },
-            copy_recipe: if obj.is_copy_token() {
-                self.copy_recipe(self.object_ref(id))
-            } else {
-                None
-            },
+            copy_recipe: self.copy_recipe(self.object_ref(id)),
             token: self.object_token_info(id),
             emblem: obj.card.emblem_info(),
         }

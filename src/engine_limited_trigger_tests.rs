@@ -373,6 +373,7 @@ fn public_limit_ledger_is_owned_accounted_and_restore_invalidates_actions() {
         assert_eq!(
             o.triggered_this_turn,
             vec![TriggerUse {
+                ability_origin: 0,
                 source: g.object_ref(a),
                 ability: 0
             }]
