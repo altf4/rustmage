@@ -38,9 +38,12 @@ Require two independent nonauthor reviews of the final published PR.
 
 Run `python3 scripts/link_catalogue.py`, then
 `python3 scripts/validate.py --release`. The validator runs all native rules and
-full-game tests with `cargo test --release --lib --bins --tests --benches`, plus Clippy,
+full-game tests with `cargo test --profile release-test --lib --bins --tests --benches`, plus Clippy,
 format/link consistency, provenance tests and the existing native smoke benchmark.
-Clippy checks all targets, including examples; the examples contain no tests and
+The `release-test` profile inherits release optimization, disables LTO and uses
+16 codegen units to reduce compilation work. Debug assertions and overflow checks
+remain enabled. Production release libraries and benchmarks retain their existing
+profile. Clippy checks all targets, including examples; the examples contain no tests and
 are excluded from optimized test-executable builds. Without `--release`, native
 tests use the debug test profile with all targets. It reports fixed inputs, coverage and cleanup and preserves every
 shared library at its exact path/hash. The Freeform smoke benchmark is a limited
