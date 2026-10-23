@@ -213,7 +213,7 @@
       "oracle_id": "a08b0a07-6da2-4ff6-88e5-88355dd84589",
       "name": "Bebop & Rocksteady",
       "definition": "src/card_definitions/tmt/bebop_rocksteady.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Bebop & Rocksteady",
@@ -227,7 +227,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/bebop_rocksteady.json",
+        "src/engine_tmt_reflexive_batch_tests.rs"
+      ],
+      "local_batch": 27,
+      "owner": "tmt_spells"
     },
     {
       "oracle_id": "39c813e1-0e26-440a-b9bd-e781f7576b8b",
@@ -331,7 +336,7 @@
       "oracle_id": "e0d221da-16cd-4399-830f-eecc9a0912eb",
       "name": "Broadcast Takeover",
       "definition": "src/card_definitions/tmt/broadcast_takeover.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Broadcast Takeover",
@@ -345,7 +350,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/broadcast_takeover.json",
+        "src/engine_tmt_blink_permissions_tests.rs"
+      ],
+      "local_batch": 26,
+      "owner": "tmt_mana"
     },
     {
       "oracle_id": "434e720f-2bfa-49b6-a5ac-fe0c0b24764d",
@@ -425,7 +435,7 @@
       "oracle_id": "3dc71e16-b935-4ad7-b3f7-945ac2c179a7",
       "name": "Chrome Dome",
       "definition": "src/card_definitions/tmt/chrome_dome.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Chrome Dome",
@@ -440,7 +450,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/chrome_dome.json",
+        "src/engine_tmt_blink_permissions_tests.rs"
+      ],
+      "local_batch": 26,
+      "owner": "tmt_mana"
     },
     {
       "oracle_id": "1f076303-d160-4e02-aa1e-9ed6040c3735",
@@ -681,7 +696,7 @@
       "oracle_id": "a4ae71c8-ea1b-4fa4-9e47-cf00ab60c5ee",
       "name": "Don & Leo, Problem Solvers",
       "definition": "src/card_definitions/tmt/don_leo_problem_solvers.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Don & Leo, Problem Solvers",
@@ -696,7 +711,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/don_leo_problem_solvers.json",
+        "src/engine_tmt_blink_permissions_tests.rs"
+      ],
+      "local_batch": 26,
+      "owner": "tmt_mana"
     },
     {
       "oracle_id": "01758a4a-ac29-47ad-8e88-158374f1ae4c",
@@ -1168,7 +1188,7 @@
       "oracle_id": "c04d4fd4-e5aa-431d-824b-8bc94245f103",
       "name": "Fugitive Droid",
       "definition": "src/card_definitions/tmt/fugitive_droid.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Fugitive Droid",
@@ -1183,13 +1203,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/fugitive_droid.json",
+        "src/engine_tmt_blink_permissions_tests.rs"
+      ],
+      "local_batch": 26,
+      "owner": "tmt_mana"
     },
     {
       "oracle_id": "ade54bb7-3df8-4578-add8-1f85afee57ab",
       "name": "General Traag, Heart of Stone",
       "definition": "src/card_definitions/tmt/general_traag_heart_of_stone.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "General Traag, Heart of Stone",
@@ -1204,7 +1229,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/general_traag_heart_of_stone.json",
+        "src/engine_tmt_reflexive_batch_tests.rs"
+      ],
+      "local_batch": 27,
+      "owner": "tmt_spells"
     },
     {
       "oracle_id": "1d6d0348-46ad-46ed-ae7b-d7510f0ebe70",
@@ -2384,7 +2414,7 @@
       "oracle_id": "529178e8-425e-4d59-948c-ca7d0663f6ff",
       "name": "Mikey & Don, Party Planners",
       "definition": "src/card_definitions/tmt/mikey_don_party_planners.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Mikey & Don, Party Planners",
@@ -2400,7 +2430,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/mikey_don_party_planners.json",
+        "src/engine_tmt_blink_permissions_tests.rs"
+      ],
+      "local_batch": 26,
+      "owner": "tmt_mana"
     },
     {
       "oracle_id": "a86117c1-b83d-4350-9a10-a23b7e67e1bd",
@@ -2612,7 +2647,7 @@
       "oracle_id": "472d9a18-19a0-46c0-a4bf-328ebec7ce41",
       "name": "Mutagen Man, Living Ooze",
       "definition": "src/card_definitions/tmt/mutagen_man_living_ooze.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Mutagen Man, Living Ooze",
@@ -2628,7 +2663,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/mutagen_man_living_ooze.json",
+        "src/engine_tmt_activation_cost_tests.rs"
+      ],
+      "local_batch": 25,
+      "owner": "integrator"
     },
     {
       "oracle_id": "ea9fc868-374b-4acc-be0d-4283907b4524",
@@ -3015,7 +3055,7 @@
       "oracle_id": "e9975888-c75f-471e-a70d-17449e92226d",
       "name": "Pain 101",
       "definition": "src/card_definitions/tmt/pain_101.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Pain 101",
@@ -3029,13 +3069,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/pain_101.json",
+        "src/engine_tmt_reflexive_batch_tests.rs"
+      ],
+      "local_batch": 27,
+      "owner": "tmt_spells"
     },
     {
       "oracle_id": "9076a886-efe0-4c99-8661-f0fd7a7b3129",
       "name": "Paramecia Coloniex",
       "definition": "src/card_definitions/tmt/paramecia_coloniex.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Paramecia Coloniex",
@@ -3050,7 +3095,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/paramecia_coloniex.json",
+        "src/engine_tmt_reflexive_batch_tests.rs"
+      ],
+      "local_batch": 27,
+      "owner": "tmt_spells"
     },
     {
       "oracle_id": "8df7a58c-053f-4ead-a778-2747718e5f10",
@@ -3529,7 +3579,7 @@
       "oracle_id": "698098b8-b8e4-4e88-b13a-6b039579d192",
       "name": "Ray Fillet, Man Ray",
       "definition": "src/card_definitions/tmt/ray_fillet_man_ray.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Ray Fillet, Man Ray",
@@ -3545,7 +3595,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/ray_fillet_man_ray.json",
+        "src/engine_tmt_activation_cost_tests.rs"
+      ],
+      "local_batch": 25,
+      "owner": "integrator"
     },
     {
       "oracle_id": "6c754808-86a6-43d3-8aeb-96ec19f7396c",
@@ -3692,7 +3747,7 @@
       "oracle_id": "6074632b-4520-4ae8-bcdc-26b1eff71af9",
       "name": "Savanti Romero, Time's Exile",
       "definition": "src/card_definitions/tmt/savanti_romero_time_s_exile.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Savanti Romero, Time's Exile",
@@ -3707,7 +3762,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/savanti_romero_time_s_exile.json",
+        "src/engine_tmt_reflexive_batch_tests.rs"
+      ],
+      "local_batch": 27,
+      "owner": "tmt_spells"
     },
     {
       "oracle_id": "7ef5c812-ad7d-4d6c-8ee5-68561e7e4bd7",
@@ -3977,7 +4037,7 @@
       "oracle_id": "003e5dc6-8b26-4a0a-a50b-5f0806a7bacd",
       "name": "South Wind Avatar",
       "definition": "src/card_definitions/tmt/south_wind_avatar.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "South Wind Avatar",
@@ -3993,7 +4053,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/south_wind_avatar.json",
+        "src/engine_tmt_reflexive_batch_tests.rs"
+      ],
+      "local_batch": 27,
+      "owner": "tmt_spells"
     },
     {
       "oracle_id": "9665f940-c0a4-4d3e-b889-8049cf549a4f",
@@ -4081,7 +4146,7 @@
       "oracle_id": "fb2cd508-f5cd-4d5b-b8e7-3cae1f39fd58",
       "name": "Splinter, Radical Rat",
       "definition": "src/card_definitions/tmt/splinter_radical_rat.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Splinter, Radical Rat",
@@ -4096,7 +4161,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/splinter_radical_rat.json",
+        "src/engine_tmt_reflexive_batch_tests.rs"
+      ],
+      "local_batch": 27,
+      "owner": "tmt_spells"
     },
     {
       "oracle_id": "315ddc7a-c39c-43d9-b134-23acbd865e3e",
@@ -4818,7 +4888,7 @@
       "oracle_id": "92e45a8f-c582-45e1-9b7f-def219023ebf",
       "name": "West Wind Avatar",
       "definition": "src/card_definitions/tmt/west_wind_avatar.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "West Wind Avatar",
@@ -4834,7 +4904,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/west_wind_avatar.json",
+        "src/engine_tmt_reflexive_batch_tests.rs"
+      ],
+      "local_batch": 27,
+      "owner": "tmt_spells"
     },
     {
       "oracle_id": "392a71c7-8f6d-46b8-bcc3-613e086d86ed",

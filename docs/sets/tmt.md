@@ -628,3 +628,27 @@ inherited nonland audit modules pass 72 combined scenarios. Full pinned Oracle
 and XMage sources were read; no behavior corrections were required. All 71
 inherited cards now have audit evidence, with 40 integrated release verified
 and the final 31 awaiting the next combined release. Admission remains 136/195.
+
+## Activation, blink and reflexive candidates at 151 cards
+
+Source commits `22d2f563`, `c24ef593` and `b12036a5` implement 15 new
+physical cards, integrated alongside all 71 inherited audits. Admission is
+151/195, 44 gated, zero unresolved; 80 newly authored candidates have focused
+evidence (65 release verified), and all 71 inherited audits have focused
+evidence (40 release verified). The full goal remains open.
+
+Token artifact activation reductions apply only to generic costs, including
+announced X, with total costs locked before mana. Ray Fillet's non-targeting
++1/+1 counter cost reserves exact creature incarnations and pays mana before
+removal. The integrated Ray/Mona current-power cross scenario and all 278 TMT
+scenarios passed before the final blink/reflexive integration. Mutagen Man's
+inherited fixed green cost was corrected against pinned XGG Oracle metadata.
+
+Five blink/library consumers passed 25 focused and 44 affected regressions;
+eight reflexive/death consumers passed 24 focused and 95 affected regressions.
+Both passed Clippy. New mechanics include explicit top-library permission
+providers, frozen entry counters, simultaneous blink/control, noncopiable
+temporary copy haste, actual spell-target artifact entry triggers, optional
+sacrifice/reflexive windows, signed death toughness and Ninja creature trigger
+multiplicity. Schema is 179. Combined release validation is next; no set-only
+full-game acceptance, TMT simulation throughput or final reviews are claimed.

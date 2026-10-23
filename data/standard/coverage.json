@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c7828f903f075865b8290310fd4da5dd92a618ec1d21175a69bf885e3d067a93",
+  "catalogue_version": "2cdeb57c246524643e47be8c493aa7c62419acb6e5e4dc047b6e819b31291a36",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2421,
-  "implemented_total": 2427,
+  "implemented_standard_cards": 2436,
+  "implemented_total": 2442,
   "token_definitions": 113,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -185,8 +185,8 @@
     },
     "tmt": {
       "total": 189,
-      "complete": 130,
-      "gated": 59
+      "complete": 145,
+      "gated": 44
     },
     "w17": {
       "total": 1,
@@ -3134,8 +3134,8 @@
     {
       "name": "Bebop & Rocksteady",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/bebop_rocksteady.rs",
       "set": "tmt"
     },
@@ -4718,8 +4718,8 @@
     {
       "name": "Broadcast Takeover",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/broadcast_takeover.rs",
       "set": "tmt"
     },
@@ -6190,8 +6190,8 @@
     {
       "name": "Chrome Dome",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/chrome_dome.rs",
       "set": "tmt"
     },
@@ -9198,8 +9198,8 @@
     {
       "name": "Don & Leo, Problem Solvers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/don_leo_problem_solvers.rs",
       "set": "tmt"
     },
@@ -13350,8 +13350,8 @@
     {
       "name": "Fugitive Droid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/fugitive_droid.rs",
       "set": "tmt"
     },
@@ -13854,8 +13854,8 @@
     {
       "name": "General Traag, Heart of Stone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/general_traag_heart_of_stone.rs",
       "set": "tmt"
     },
@@ -22246,8 +22246,8 @@
     {
       "name": "Mikey & Don, Party Planners",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/mikey_don_party_planners.rs",
       "set": "tmt"
     },
@@ -23302,8 +23302,8 @@
     {
       "name": "Mutagen Man, Living Ooze",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/mutagen_man_living_ooze.rs",
       "set": "tmt"
     },
@@ -24918,8 +24918,8 @@
     {
       "name": "Pain 101",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/pain_101.rs",
       "set": "tmt"
     },
@@ -25006,8 +25006,8 @@
     {
       "name": "Paramecia Coloniex",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/paramecia_coloniex.rs",
       "set": "tmt"
     },
@@ -27422,8 +27422,8 @@
     {
       "name": "Ray Fillet, Man Ray",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/ray_fillet_man_ray.rs",
       "set": "tmt"
     },
@@ -29774,8 +29774,8 @@
     {
       "name": "Savanti Romero, Time's Exile",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/savanti_romero_time_s_exile.rs",
       "set": "tmt"
     },
@@ -32086,8 +32086,8 @@
     {
       "name": "South Wind Avatar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/south_wind_avatar.rs",
       "set": "tmt"
     },
@@ -32734,8 +32734,8 @@
     {
       "name": "Splinter, Radical Rat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/splinter_radical_rat.rs",
       "set": "tmt"
     },
@@ -40494,8 +40494,8 @@
     {
       "name": "West Wind Avatar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/west_wind_avatar.rs",
       "set": "tmt"
     },
