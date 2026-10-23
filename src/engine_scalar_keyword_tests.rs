@@ -90,7 +90,31 @@ fn scalar_keywords_all_authored_fragment_families_both_controls_and_active_playe
             g.move_object(id, Zone::Exile);
             same(&g);
         }
-        assert!(seen.iter().all(|v| *v), "missing families {seen:?}");
+        assert!(
+            seen[..17].iter().all(|v| *v),
+            "missing authored families {seen:?}"
+        );
+        // AttachmentRule has no authored physical consumer yet. Exercise its
+        // exact attachment/rules grant through the same primitive used above.
+        let equipment = named(&mut g, p, "Skateboard", Zone::Battlefield);
+        assert!(g.attach_equipment(g.object_ref(equipment), g.object_ref(bear)));
+        let fragment = StaticAbilityFragment::AttachmentRule(Keywords::CANT_BLOCK);
+        let source = g.object_ref(equipment);
+        assert_eq!(
+            grant_fragment(&g, source, &fragment, bear, 0)
+                .unwrap()
+                .keywords,
+            Keywords::CANT_BLOCK
+        );
+        assert!(grant_fragment(&g, source, &fragment, skeleton, 0).is_none());
+        g.move_object(bear, Zone::Exile);
+        g.move_object(bear, Zone::Battlefield);
+        assert!(grant_fragment(&g, source, &fragment, bear, 0).is_none());
+        seen[family(&fragment).unwrap()] = true;
+        assert!(
+            seen.iter().all(|v| *v),
+            "missing all-family coverage {seen:?}"
+        );
         g.state.active = p.other();
         same(&g);
     }
