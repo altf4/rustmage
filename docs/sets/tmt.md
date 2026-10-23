@@ -395,3 +395,40 @@ admission flags still require audits. Set-only acceptance and final reviews
 remain pending. See [portable evidence](tmt-party-validation.json).
 
 Next: Ninja Teen's dynamic Sneak permission and composed additional costs.
+
+## Ninja Teen integration candidate
+
+Ninja Teen completes the five-card Class family locally. All 23 focused Ninja
+scenarios pass in `<cache>/rustmage-tmt-ninja-tests-locking.log`; the preceding
+combined run passed all 116 then-existing TMT scenarios. The final integrated
+release run is pending, including the now-admitted definition's paid normal cast.
+Admission is 115/195, 80 gated, zero unresolved; 44 new physical candidates have
+focused rules evidence, 43 have integrated release evidence, and 71 inherited
+admission flags still need audits.
+
+Level two supplies live +1/+0 and menace. Level three freezes granted Sneak costs
+before the spell leaves the graveyard, preserves native equivalents, and separates
+Ninja, Samurai finality and Muldrotha quota permissions. Sneak now composes its
+return with printed sacrifice/behold/exile costs in either order, using real
+post-return hand incarnations. Kicker, offspring, convoke, fixed-cost X=0 and
+mana-instead-of-behold routes compose with the alternative cost. Mana abilities
+can supply a witness before payment; no mana window opens after partial payment.
+Cost determination remains fixed when a reducer enters during mana production.
+
+The rare owned completion driver preserves private witnesses, replacement/entry
+choices, exact references, mana provenance domains and transactional rollback.
+Ordinary Sneak retains its borrowed funding path; Object and compact CastInfo do
+not grow. Observation schema is 176. Rules scenarios cover both seats and owned
+raw/index branching, parent disposal, observations, replay and restore.
+
+A nested generic mana-completion proof originally tried to finish the deliberately
+suspended Sneak projection. Its run was stopped with inputs frozen, with the log
+preserved at `<cache>/rustmage-tmt-ninja-tests-expanded.log`. Dedicated projection
+ownership now avoids that duplicate completion search. Missing-witness bounds
+skip irrelevant tap-mana permutations while retaining object-changing/linked
+return paths. All 23 scenarios, including the linked-return and rollback cases,
+pass after that correction. No implementation PR or final review is claimed.
+
+Next: full release validation, then the shared counter-LKI/animation consumers
+(Donatello, Mutant Mechanic; Pizza Face; The Ooze; Mind Transfer Protocol), followed
+by remaining gated cards, inherited audits and set-only acceptance.

@@ -31,7 +31,7 @@ impl Game {
     pub(super) fn announcement_base_cost(a: &Announcement) -> ManaCost {
         let mut base = a.cost.unwrap_or_else(|| {
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Sneak) {
-                return a.item.source_card.sneak_costs()[0];
+                return a.sneak_base_costs().next().expect("captured Sneak cost");
             }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Warp) {
                 return a.item.source_card.warp_cost().expect("fixed Warp cost");
@@ -197,6 +197,13 @@ impl Game {
         base
     }
     pub(super) fn offspring_choice_fundable(&self, a: &Announcement, pay: bool) -> bool {
+        if a.item.cast.is_some_and(|c| c.method == CastMethod::Sneak) {
+            let mut proposal = a.clone();
+            proposal.item.cast.as_mut().unwrap().offspring = Some(pay);
+            return proposal
+                .cost_options()
+                .any(|cost| self.announcement_cost_fundable(&proposal, cost));
+        }
         if a.item.source_card.target_cost_reduction().is_some() {
             return self.announcement_target_fundable(a, None, None, Some(pay), None, false);
         }

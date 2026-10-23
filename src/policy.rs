@@ -193,6 +193,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::DeclineHandEntry => -1,
             Action::ChooseSaddler { .. } | Action::ChooseCrewer { .. } => 50,
             Action::FinishSaddle | Action::FinishCrew => 100,
+            Action::ChooseSneakCostOrder { .. } => 50,
+            Action::ChooseSneakAdditionalCost { .. } => 60,
             Action::ChooseCounterCostOrder { after_printed } => {
                 if *after_printed {
                     2

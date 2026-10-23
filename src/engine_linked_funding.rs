@@ -335,7 +335,10 @@ impl Game {
     }
 
     pub(super) fn linked_funding_action_viable(&self, action: &Action) -> bool {
-        if *action == Action::Concede || self.linked_funding_projecting() {
+        if *action == Action::Concede
+            || self.linked_funding_projecting()
+            || self.sneak_cost_projecting()
+        {
             return true;
         }
         let watched = self
@@ -406,7 +409,7 @@ impl Game {
         let plans = self.linked_funding_allocations(action);
         let mut viable = Vec::new();
         for plan in plans {
-            if self.linked_funding_projecting() {
+            if self.linked_funding_projecting() || self.sneak_cost_projecting() {
                 viable.push(plan);
                 continue;
             }

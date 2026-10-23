@@ -44,6 +44,13 @@ pub(crate) enum StaticAbilityFragment {
     SpendAnyManaForCreatures,
     GraveyardPermanentTypes,
     GraveyardSmallCreaturesWithFinality,
+    GrantGraveyardCreatureSneak {
+        minimum_class_level: u8,
+        cost: ManaCost,
+    },
+    CastGraveyardCreaturesUsingSneak {
+        minimum_class_level: u8,
+    },
     ForeignStashPlay,
     ControlAttached,
     AttachedCharacteristics(&'static AttachedCharacteristics),

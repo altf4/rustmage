@@ -9,7 +9,7 @@ fn reject(g: &mut Game, action: Action) {
     assert_eq!(g.snapshot(), old);
     assert_eq!(g.revision(), rev);
 }
-fn level(g: &mut Game, card: CardId, index: u16) {
+pub(super) fn level(g: &mut Game, card: CardId, index: u16) {
     checked(
         g,
         Action::AnnounceActivate {

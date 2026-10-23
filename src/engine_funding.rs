@@ -360,13 +360,18 @@ impl<'g> FundingState<'g> {
                         })
                 })
         });
+        let sneak_extra = game
+            .state
+            .announcing
+            .as_ref()
+            .and_then(|a| a.sneak_extra_reservation());
         let resources = game
             .state
             .objects
             .iter()
             .enumerate()
             .filter(|(id, object)| {
-                (object.zone == Zone::Command && object.card.is_emblem()) || goal.reserve
+                sneak_extra.is_some_and(|(r,_)|r.card==*id as CardId) || (object.zone == Zone::Command && object.card.is_emblem()) || goal.reserve
                     .is_some_and(|(reference, _)| reference.card == *id as CardId)
                     || goal
                         .source.as_ref()
@@ -416,7 +421,7 @@ impl<'g> FundingState<'g> {
             life: game.state.players[goal.actor.index()].life,
             resources,
             named_counters: game.state.named_counters.clone(),
-            reserve_group: None,
+            reserve_group: sneak_extra.map(|r| Box::new(vec![r])),
         }
     }
     fn obligations(&self, goal: &FundingGoal) -> bool {
@@ -2030,6 +2035,12 @@ impl Game {
         // Project a fixed payment only after that cost has been committed.
         if viewer != a.item.controller
             || a.additional_paid
+            || a.sneak_extra().is_some_and(|c| {
+                a.sneak_extra_spec().is_some()
+                    && !c.projecting
+                    && (c.after_return.is_none()
+                        || c.after_return == Some(false) && c.selected.is_none())
+            })
             || a.creature_counter_cost.as_ref().is_some_and(|c| {
                 c.amount.is_some()
                     && !c.projecting
@@ -2075,13 +2086,24 @@ impl Game {
             return self.conspire_fundable(a, cost);
         }
         if a.item.cast.is_some_and(|c| c.method == CastMethod::Sneak) {
-            return self.sneak_reservation_valid(a)
-                && self.sneak_cost_fundable(
-                    a.item.controller,
-                    a.item.card,
-                    a.additional.unwrap(),
-                    cost,
-                );
+            if let Some(c) = a.sneak_extra()
+                && a.item.source_card.additional_cost().is_some()
+                && !c.projecting
+            {
+                return self.sneak_extra_fundable(a, cost, c.after_return, c.selected);
+            }
+            if !self.sneak_reservation_valid(a) {
+                return false;
+            }
+            let mut proposal = a.clone();
+            proposal.cost = Some(cost);
+            // A sole implicit cost also has a locked total. Only changing a
+            // previously selected alternative can invalidate that total.
+            if a.cost.is_some_and(|prior| prior != cost) {
+                proposal.total_cost = None;
+            }
+            let goal = self.funding_goal(&proposal);
+            return self.can_fund_for(goal, self.purpose_for_item(&proposal.item));
         }
         if a.item
             .cast

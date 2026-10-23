@@ -125,7 +125,7 @@ impl Announcement {
     fn method_base_cost(&self) -> ManaCost {
         let card = self.item.source_card;
         match self.item.cast.map(|cast| cast.method) {
-            Some(CastMethod::Sneak) => card.sneak_costs()[0],
+            Some(CastMethod::Sneak) => self.sneak_base_costs().next().expect("captured Sneak cost"),
             Some(CastMethod::Warp) => card.warp_cost().expect("fixed Warp cost"),
             Some(CastMethod::Flashback) => card.flashback_cost().unwrap(),
             Some(CastMethod::Plot | CastMethod::Free) => ManaCost {
@@ -138,9 +138,25 @@ impl Announcement {
             },
         }
     }
+    pub(super) fn sneak_base_costs(&self) -> impl Iterator<Item = ManaCost> + '_ {
+        let printed = self.item.source_card.sneak_costs();
+        printed.iter().copied().chain(
+            self.item
+                .sneak
+                .as_ref()
+                .and_then(|s| s.granted_cost)
+                .filter(|c| !printed.contains(c)),
+        )
+    }
     fn additional_mana_route(&self, alternative: ManaCost) -> Option<ManaCost> {
+        self.additional_mana_route_for_base(alternative, self.method_base_cost())
+    }
+    fn additional_mana_route_for_base(
+        &self,
+        alternative: ManaCost,
+        mut total: ManaCost,
+    ) -> Option<ManaCost> {
         let printed = self.item.source_card.cost();
-        let mut total = self.method_base_cost();
         for (i, component) in total.colored.iter_mut().enumerate() {
             *component =
                 component.checked_add(alternative.colored[i].checked_sub(printed.0[i])?)?;
@@ -168,9 +184,21 @@ impl Announcement {
                 .additional_mana_alternatives()
                 .iter()
                 .any(|alternative| {
-                    self.additional_mana_route(*alternative)
-                        .and_then(|route| self.modified_cost(route))
-                        == Some(cost)
+                    if self
+                        .item
+                        .cast
+                        .is_some_and(|c| c.method == CastMethod::Sneak)
+                    {
+                        self.sneak_base_costs().any(|base| {
+                            self.additional_mana_route_for_base(*alternative, base)
+                                .and_then(|route| self.modified_cost(route))
+                                == Some(cost)
+                        })
+                    } else {
+                        self.additional_mana_route(*alternative)
+                            .and_then(|route| self.modified_cost(route))
+                            == Some(cost)
+                    }
                 })
     }
     pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
@@ -188,8 +216,8 @@ impl Announcement {
                     .cast
                     .is_some_and(|c| c.method == CastMethod::Sneak) =>
             {
-                std::iter::once(card.sneak_costs()[0])
-                    .chain(card.sneak_costs()[1..].iter().copied())
+                std::iter::once(self.method_base_cost())
+                    .chain(card.sneak_costs().get(1..).unwrap_or(&[]).iter().copied())
             }
             StackKind::Spell if fixed_method => std::iter::once(self.method_base_cost())
                 .chain(card.additional_mana_alternatives().iter().copied()),
@@ -199,24 +227,49 @@ impl Announcement {
             }
             _ => unreachable!("triggered ability has no activation cost"),
         };
-        options.enumerate().filter_map(move |(index, cost)| {
-            if self.item.kind == StackKind::Spell
-                && self
-                    .item
-                    .cast
-                    .is_some_and(|cast| cast.method == CastMethod::GrantedFlashback)
-                && card.cost_alternative_guard().is_some()
-                && cost != self.method_base_cost()
-            {
-                return None;
-            }
-            let cost = if fixed_method && index > 0 {
-                self.additional_mana_route(cost)?
-            } else {
-                cost
-            };
-            self.modified_cost(cost)
-        })
+        let sneak = self
+            .item
+            .cast
+            .is_some_and(|c| c.method == CastMethod::Sneak);
+        let granted = self
+            .item
+            .sneak
+            .as_ref()
+            .and_then(|s| s.granted_cost)
+            .filter(|c| !card.sneak_costs().is_empty() && !card.sneak_costs().contains(c));
+        options
+            .chain(granted)
+            .enumerate()
+            .flat_map(move |(index, cost)| {
+                let extras = if sneak {
+                    card.additional_mana_alternatives()
+                } else {
+                    &[]
+                };
+                std::iter::once(Some(cost))
+                    .chain(extras.iter().map(move |&alternative| {
+                        self.additional_mana_route_for_base(alternative, cost)
+                    }))
+                    .filter_map(move |cost| cost.map(|cost| (index, cost)))
+            })
+            .filter_map(move |(index, cost)| {
+                if self.item.kind == StackKind::Spell
+                    && self
+                        .item
+                        .cast
+                        .is_some_and(|cast| cast.method == CastMethod::GrantedFlashback)
+                    && card.cost_alternative_guard().is_some()
+                    && cost != self.method_base_cost()
+                {
+                    return None;
+                }
+                let cost = if fixed_method && index > 0 {
+                    self.additional_mana_route(cost)?
+                } else {
+                    cost
+                };
+                self.modified_cost(cost)
+            })
     }
     pub(super) fn needs_evidence(&self) -> bool {
         self.pay_window
@@ -271,7 +324,7 @@ impl Announcement {
                         .cast
                         .is_some_and(|c| c.method == CastMethod::Sneak)
                     {
-                        return self.item.source_card.sneak_costs().len() > 1;
+                        return self.cost_options().take(2).count() > 1;
                     }
                     self.item.cast.is_none_or(|cast| {
                         !matches!(
@@ -1685,6 +1738,12 @@ impl Game {
                 announcement.item.cast.as_mut().unwrap().payment = payment;
             }
         }
+        announcement.payment = None;
+        self.pay_sneak_extra(&mut announcement, false);
+        if self.defer_sneak_extra_before_return(&mut announcement) {
+            self.state.announcing = Some(announcement);
+            return;
+        }
         self.pay_supplemental_counters(&mut announcement, false);
         // Costs may synchronously return exiled Auras/lands. Finish their entry
         // choices before the spell becomes cast and cast observers are collected.
@@ -1704,6 +1763,18 @@ impl Game {
                 self.state.announcing = Some(announcement);
                 return;
             }
+        }
+        if self.defer_sneak_extra_after_return(&mut announcement) {
+            self.state.announcing = Some(announcement);
+            return;
+        }
+        self.pay_sneak_extra(&mut announcement, true);
+        if self.state.entry_batch.is_some() || self.state.replacements.is_some() {
+            self.state.announcing = Some(announcement);
+            return;
+        }
+        if let Some(s) = announcement.item.sneak.as_mut() {
+            s.extra = None;
         }
         if self.defer_supplemental_counters_after(&mut announcement) {
             self.state.announcing = Some(announcement);

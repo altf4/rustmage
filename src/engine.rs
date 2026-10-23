@@ -130,6 +130,9 @@ pub use hand_reveal::HandRevealView;
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
 pub use plot::{PlotPaymentView, PlottedCard};
 pub use sneak::SneakCastView;
+#[path = "engine_sneak_costs.rs"]
+mod sneak_costs;
+pub use sneak_costs::SneakAdditionalCostView;
 
 #[path = "engine_hand_reveal.rs"]
 mod hand_reveal;
@@ -511,6 +514,8 @@ define_actions! {
     DeclineForage,
     AnnounceCounterGraveyard { card: CardId },
     AnnounceLinkedExileCounterCost { card: CardId, source: ObjectRef, flash_surcharge: bool },
+    ChooseSneakCostOrder { after_return: bool },
+    ChooseSneakAdditionalCost { object: ObjectRef },
     ChooseCounterCostOrder { after_printed: bool },
     ChooseCreatureCounterCost { object: ObjectRef, counter: CounterKind },
     ChooseConspire { source: ObjectRef, pay: bool },
@@ -1206,10 +1211,12 @@ impl SpellView {
                 .source_copy_recipe
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<SourceCopyFacts>())
-            + self
-                .sneak
-                .as_ref()
-                .map_or(0, |_| std::mem::size_of::<SneakCastView>())
+            + self.sneak.as_ref().map_or(0, |s| {
+                std::mem::size_of::<SneakCastView>()
+                    + s.extra
+                        .as_ref()
+                        .map_or(0, |_| std::mem::size_of::<sneak_costs::SneakExtraCost>())
+            })
             + self.return_link.as_ref().map_or(0, |link| link.bytes())
             + self
                 .creature_combat_event
@@ -1579,6 +1586,12 @@ enum Pending {
         player: Player,
     },
     FundingProbe {
+        player: Player,
+    },
+    SneakCostOrder {
+        player: Player,
+    },
+    SneakAdditionalCost {
         player: Player,
     },
     CounterCostOrder {
@@ -2333,6 +2346,7 @@ pub struct Observation {
     pub entry_copy: Option<entries::EntryCopyView>,
     pub entry_timestamps: Option<entries::EntryTimestampView>,
     pub additional_cost: Option<AdditionalCostView>,
+    pub sneak_additional_cost: Option<SneakAdditionalCostView>,
     pub forage: Option<ForageView>,
     pub evidence: Option<EvidenceView>,
     pub last_evidence: Option<EvidenceEventView>,
@@ -2641,6 +2655,8 @@ impl Game {
             | Pending::ConniveOrder { player }
             | Pending::ResolutionLife { player }
             | Pending::ResolutionMana { player }
+            | Pending::SneakCostOrder { player }
+            | Pending::SneakAdditionalCost { player }
             | Pending::CounterCostOrder { player }
             | Pending::ConspireIntent { player }
             | Pending::ConspirePayment { player }
@@ -2863,6 +2879,7 @@ impl Game {
             } else if let Action::PayCosts { payment } = &action {
                 self.mana_payment_domain()
                     .is_some_and(|d| d.contains(*payment))
+                    && self.sneak_extra_action_viable(&action)
                     && self.supplemental_counter_action_viable(&action)
                     && self.conspire_action_viable(&action)
                     && self.linked_funding_action_viable(&action)
@@ -2900,6 +2917,10 @@ impl Game {
                     break;
                 }
                 if self.advance_conspire_payment() {
+                    continue;
+                }
+                self.advance_sneak_extra_choices();
+                if self.resume_sneak_extra_payment() {
                     continue;
                 }
                 self.advance_supplemental_counter_choices();
@@ -2953,7 +2974,8 @@ impl Game {
     fn visit_actions(&self, mut emit: impl FnMut(Action) -> bool) -> bool {
         let mut checked_emit = |action| {
             (self.linked_funding_probe().is_some()
-                || (self.supplemental_counter_action_viable(&action)
+                || (self.sneak_extra_action_viable(&action)
+                    && self.supplemental_counter_action_viable(&action)
                     && self.conspire_action_viable(&action)))
                 && self.linked_funding_action_viable(&action)
                 && emit(action)
@@ -3302,6 +3324,37 @@ impl Game {
                                 return true;
                             }
                         }
+                    }
+                }
+            }
+            Pending::SneakCostOrder { .. } => {
+                for after_return in [false, true] {
+                    if self.sneak_extra_order_available(after_return)
+                        && emit(Action::ChooseSneakCostOrder { after_return })
+                    {
+                        return true;
+                    }
+                }
+            }
+            Pending::SneakAdditionalCost { .. } => {
+                let a = s.announcing.as_ref().unwrap();
+                // Witnesses can be made available by mana abilities before
+                // paying costs. This window closes as soon as either cost is paid.
+                if !a.additional_paid
+                    && !a.sneak_extra().unwrap().paid
+                    && self.visit_cost_payment(&mut |action| {
+                        !matches!(action, Action::PayCosts { .. } | Action::BeginConvoke)
+                            && emit(action)
+                    })
+                {
+                    return true;
+                }
+                for id in 0..s.objects.len() {
+                    let object = self.object_ref(id as CardId);
+                    if self.sneak_extra_choice_available(object)
+                        && emit(Action::ChooseSneakAdditionalCost { object })
+                    {
+                        return true;
                     }
                 }
             }
@@ -4463,6 +4516,18 @@ impl Game {
             Action::DeclineResolutionMana => self.finish_resolution_payment(None),
             Action::PayResolutionLife => self.finish_resolution_life(true),
             Action::DeclineResolutionLife => self.finish_resolution_life(false),
+            Action::ChooseSneakCostOrder { after_return } => {
+                self.state
+                    .announcing
+                    .as_mut()
+                    .unwrap()
+                    .sneak_extra_mut()
+                    .unwrap()
+                    .after_return = Some(after_return);
+                self.state.pending = Pending::PayCosts { player: actor };
+                self.advance_sneak_extra_choices();
+            }
+            Action::ChooseSneakAdditionalCost { object } => self.choose_sneak_extra(object),
             Action::ChooseCounterCostOrder { after_printed } => {
                 self.state
                     .announcing
@@ -4755,31 +4820,23 @@ impl Game {
                 method,
                 attacker,
                 flash_surcharge,
-                ..
+                permission,
             } => {
-                let mut item = self.cast_item(actor, card, [0; 6]);
+                let mut item = if method == CastMethod::Sneak {
+                    self.sneak_cast_item(actor, card, attacker.expect("Sneak attacker"))
+                } else {
+                    self.cast_item(actor, card, [0; 6])
+                };
                 let cast = item.cast.as_mut().unwrap();
                 cast.method = method;
                 cast.flash_surcharge = flash_surcharge;
-                if permanent_type.is_none() {
-                    cast.origin_permissions = CastOriginPermissions::Finality;
-                }
-                if let Some(attacker) = attacker {
-                    item.sneak = Some(Box::new(
-                        self.sneak_attacker(actor, attacker)
-                            .expect("legal graveyard Sneak attacker"),
-                    ));
+                if permanent_type.is_none() && self.state.objects[permission.card as usize].card.static_ability_groups().iter().flat_map(|g|g.fragments).any(|f|matches!(f,crate::cards::StaticAbilityFragment::GraveyardSmallCreaturesWithFinality)) {
+                    cast.origin_permissions=CastOriginPermissions::Finality;
                 }
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceSneak { card, attacker } => {
-                let sneak = self
-                    .sneak_attacker(actor, attacker)
-                    .expect("legal Sneak attacker");
-                let mut item = self.cast_item(actor, card, [0; 6]);
-                let cast = item.cast.as_mut().unwrap();
-                cast.method = CastMethod::Sneak;
-                item.sneak = Some(Box::new(sneak));
+                let item = self.sneak_cast_item(actor, card, attacker);
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnouncePlot { card } => self.begin_plot(actor, card),
@@ -6838,6 +6895,8 @@ impl Game {
                 Pending::SpellCost { .. } => "spell_cost",
                 Pending::ActivationCost { .. } => "activation_cost",
                 Pending::Modes { .. } => "spell_mode",
+                Pending::SneakCostOrder { .. } => "sneak_cost_order",
+                Pending::SneakAdditionalCost { .. } => "sneak_additional_cost",
                 Pending::CounterCostOrder { .. } => "counter_cost_order",
                 Pending::ConspireIntent { .. } => "conspire_intent",
                 Pending::ConspirePayment { .. } => "conspire_payment",
@@ -6938,6 +6997,7 @@ impl Game {
             entry_copy: self.entry_copy_view(viewer),
             entry_timestamps: self.entry_timestamp_view(viewer),
             additional_cost: self.additional_cost_view(viewer),
+            sneak_additional_cost: self.sneak_additional_view(viewer),
             forage: self.forage_view(viewer),
             evidence: self.evidence_view(viewer),
             last_evidence: s.evidence_data.as_ref().and_then(|d| d.last.clone()),
@@ -8523,6 +8583,9 @@ mod tmt_disappear_tests;
 #[cfg(test)]
 #[path = "engine_tmt_class_tests.rs"]
 mod tmt_class_tests;
+#[cfg(test)]
+#[path = "engine_tmt_ninja_tests.rs"]
+mod tmt_ninja_tests;
 #[cfg(test)]
 #[path = "engine_tmt_sneak_tests.rs"]
 mod tmt_sneak_tests;

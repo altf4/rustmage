@@ -12,6 +12,8 @@ impl Card {
                         | StaticAbilityFragment::SpendAnyManaForCreatures
                         | StaticAbilityFragment::GraveyardPermanentTypes
                         | StaticAbilityFragment::GraveyardSmallCreaturesWithFinality
+                        | StaticAbilityFragment::GrantGraveyardCreatureSneak { .. }
+                        | StaticAbilityFragment::CastGraveyardCreaturesUsingSneak { .. }
                         | StaticAbilityFragment::ForeignStashPlay
                 )
             })
@@ -455,7 +457,8 @@ impl Game {
             });
             let typed =
                 fragments().any(|f| matches!(f, StaticAbilityFragment::GraveyardPermanentTypes));
-            if !small && !typed {
+            let ninja=fragments().any(|f|matches!(f,StaticAbilityFragment::CastGraveyardCreaturesUsingSneak {minimum_class_level} if self.class_level(self.object_ref(source))>=*minimum_class_level));
+            if !small && !typed && !ninja {
                 continue;
             }
             let permission = self.object_ref(source);
@@ -477,7 +480,9 @@ impl Game {
                     std::iter::once(None).chain(PermanentType::ALL.into_iter().map(Some))
                 {
                     match permanent_type {
-                        None if !small_eligible => continue,
+                        None if !small_eligible && !(ninja && object.card.is_creature()) => {
+                            continue;
+                        }
                         Some(kind)
                             if !typed
                                 || kind == PermanentType::Land
@@ -501,7 +506,8 @@ impl Game {
                             continue;
                         }
                         for method in [CastMethod::Normal, CastMethod::Warp] {
-                            if method == CastMethod::Normal && permanent_type.is_some()
+                            if (permanent_type.is_none() && !small_eligible)
+                                || method == CastMethod::Normal && permanent_type.is_some()
                                 || method == CastMethod::Warp && object.card.warp_cost().is_none()
                             {
                                 continue;

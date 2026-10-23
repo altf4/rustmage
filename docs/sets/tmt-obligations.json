@@ -2447,7 +2447,7 @@
       "oracle_id": "2c5044ff-a303-4276-8e23-7caac30a275b",
       "name": "Ninja Teen",
       "definition": "src/card_definitions/tmt/ninja_teen.rs",
-      "state": "gated",
+      "state": "focused rules candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Ninja Teen",
@@ -2467,7 +2467,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_ninja_tests.rs",
+        "src/card_definitions/tmt/ninja_teen.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 16
     },
     {
       "oracle_id": "eddab60f-2eac-4f20-934c-3d9307f885c3",

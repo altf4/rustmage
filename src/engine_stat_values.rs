@@ -184,6 +184,9 @@ impl Game {
                         && self.state.attackers.iter().any(|a| a.card == *id)
                 })
                 .count() as i128,
+            StatValue::SourceClassLevelAtLeast(minimum) => {
+                i128::from(self.class_level(source) >= minimum)
+            }
             StatValue::SourceUntapped => i128::from(objects().any(|(id, object)| {
                 id == source.card
                     && object.generation == source.generation

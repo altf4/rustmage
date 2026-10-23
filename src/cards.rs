@@ -1696,6 +1696,7 @@ pub(crate) enum SourceCharacteristicFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StatValue {
+    SourceClassLevelAtLeast(u8),
     Fixed(u16),
     TappedCount(CountFilter),
     Not(&'static StatValue),

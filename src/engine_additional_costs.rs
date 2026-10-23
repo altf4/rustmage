@@ -467,6 +467,9 @@ impl Game {
         let Some(spec) = a.additional_cost() else {
             return;
         };
+        self.pay_additional_cost_spec(a, spec);
+    }
+    pub(super) fn pay_additional_cost_spec(&mut self, a: &mut Announcement, spec: AdditionalCost) {
         if let EffectChoiceKind::RemoveCreatureCounters(amount) = spec.kind {
             let selected = a.creature_counter_cost.as_ref().unwrap();
             assert_eq!(selected.len(), usize::from(amount));

@@ -29,7 +29,7 @@ fn attackers(g: &mut Game, source: CardId, defender: Option<ObjectRef>) {
         player.mana = [30; 6];
     }
 }
-fn unblocked(g: &mut Game, source: CardId) {
+pub(super) fn unblocked(g: &mut Game, source: CardId) {
     attackers(g, source, None);
     checked(g, Action::FinishBlockers);
     assert_eq!(g.state.step, Step::Blockers);
