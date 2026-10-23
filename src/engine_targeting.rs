@@ -1380,6 +1380,7 @@ impl Game {
         let stash_origin = self.foreign_stash(actor, card);
         let exile_any_mana = self.exile_cast_spends_any_mana(actor, card);
         let origin = self.state.objects[card as usize].zone;
+        let linked_play = self.prepare_linked_exile_play(actor, card);
         let before = self.object_view(card);
         let event = self.transition_object_under_control(
             before,
@@ -1394,6 +1395,7 @@ impl Game {
             self.grant_stack_keywords(object, Keywords::HASTE);
         }
         let id = self.next_stack_id();
+        self.remember_linked_play_approval(id, linked_play);
         let mut item = self.cast_preview(actor, card, origin, object, id, payment);
         item.mana_copy_sources = outcome.copies;
         item.cast.as_mut().unwrap().origin_permissions = if library_counter {

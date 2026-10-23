@@ -1086,6 +1086,13 @@ pub(crate) enum Instruction {
     DamageForExcess(AmountValue),
     CreateExcessTokens(Card),
     AdditionalCombat,
+    ExileControllerLibraryTopLinked(u16),
+    GrantLinkedExilePlay,
+    AddRetainedManaScaled {
+        color: u8,
+        amount: AmountValue,
+        retention: ManaRetention,
+    },
     RequireBlocks(CreatureFilter),
     /// Definition header: announce X as a generic activation mana cost.
     ActivationX,
@@ -2465,6 +2472,7 @@ pub(crate) struct CombatRestriction {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepGuard {
+    FirstCombatPhase,
     ClassLevelAtLeast(u8),
     SourceSneakedThisTurn,
     PermanentLeftBattlefieldThisTurn,
@@ -2575,6 +2583,7 @@ pub(crate) struct DepartureFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    SelfDamaged,
     PermanentLeaves(DepartureFilter),
     ClassLevel {
         level: u8,

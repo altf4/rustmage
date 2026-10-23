@@ -10,6 +10,7 @@ pub struct CombatDamagePlayerView {
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct CombatRulesState {
     pub additional_combats: u64,
+    pub phases_started: u64,
     pub must_be_blocked: Vec<ObjectRef>,
     pub damaged_players: Vec<CombatDamagePlayerView>,
     excess: Option<ExcessDamage>,

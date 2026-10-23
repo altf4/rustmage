@@ -614,6 +614,7 @@ impl Game {
                     | TriggerCondition::SourceDealtCombatDamage
                     | TriggerCondition::DamagedCreatureDies
                     | TriggerCondition::StateCounterAtLeast { .. }
+                    | TriggerCondition::SelfDamaged
                     | TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::SelfDies
                     | TriggerCondition::SelfLeavesBattlefield
@@ -1086,6 +1087,13 @@ impl Game {
     pub(super) fn record_cast(&mut self, caster: Player, card: Card, stack: Option<usize>) {
         if let Some(index) = stack {
             self.commit_linked_free_cast(self.state.stack[index].id);
+            self.commit_linked_exile_cast(
+                self.state.stack[index].id,
+                self.state.stack[index]
+                    .cast
+                    .as_ref()
+                    .is_some_and(|c| c.method == CastMethod::Free),
+            );
         }
         let first_trigger = self.state.pending_triggers.len();
         let count = &mut self.state.players[caster.index()].spells_cast_this_turn;
@@ -2905,6 +2913,15 @@ impl Game {
                 Instruction::DamageForExcess(amount) => self.damage_for_excess(&item, amount),
                 Instruction::CreateExcessTokens(token) => self.create_excess_tokens(&item, token),
                 Instruction::AdditionalCombat => self.add_combat(),
+                Instruction::ExileControllerLibraryTopLinked(amount) => {
+                    self.exile_controller_top_linked(&item, amount)
+                }
+                Instruction::GrantLinkedExilePlay => self.grant_linked_exile_play(&item),
+                Instruction::AddRetainedManaScaled {
+                    color,
+                    amount,
+                    retention,
+                } => self.add_retained_scaled_mana(&item, color, amount, retention),
                 Instruction::RequireBlocks(filter) => self.require_blocks(&item, filter),
                 Instruction::ActivationX => (),
                 Instruction::DestroyCombatDamagedPlayersPermanents => {

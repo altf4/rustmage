@@ -1864,6 +1864,7 @@ struct State {
     class_levels: Option<SharedVec<ClassLevelView>>,
     linked_choices: Option<Box<linked_choices::ChoiceState>>,
     combat_rules: Option<Box<combat_allocations::CombatRulesState>>,
+    limited_exile_plays: Option<Box<tmt_combat_rules::LimitedExileState>>,
     ending_turn: bool,
     zone_rules: Option<Box<zone_replacements::ZoneState>>,
     mana_lots: Option<Box<mana_lots::ManaState>>,
@@ -2260,6 +2261,8 @@ pub struct Observation {
     pub creature_damage_history: Vec<CreatureDamageHistoryView>,
     pub creature_entry_history: Vec<CreatureEntryHistoryView>,
     pub additional_combats: u64,
+    pub combat_phase: u64,
+    pub limited_exile_plays: Vec<LimitedExilePlayView>,
     pub must_be_blocked: Vec<ObjectRef>,
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
     pub animations: Vec<AnimationView>,
@@ -2527,6 +2530,7 @@ impl Game {
                 objects: objects.into(),
                 named_counters: None,
                 combat_rules: None,
+                limited_exile_plays: None,
                 creature_damage_history: None,
                 creature_entry_history: None,
                 entry_values: None,
@@ -4688,6 +4692,7 @@ impl Game {
                 permanent_type: PermanentType::Land,
                 ..
             } => {
+                self.commit_linked_exile_land(actor, card);
                 if matches!(
                     self.state.objects[card as usize].card.entry_tapped(),
                     EntryTapped::PayLife(_)
@@ -6241,6 +6246,7 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        self.state.limited_exile_plays = None;
         self.prune_class_levels();
         self.state.sneak_entries = None;
         if let Some(shields) = &mut self.state.player_damage_shields {
@@ -6410,6 +6416,7 @@ impl Game {
     }
 
     fn finish_cleanup(&mut self) {
+        self.state.limited_exile_plays = None;
         if let Some(rules) = &mut self.state.combat_rules {
             rules.must_be_blocked.clear();
             rules.additional_combats = 0;
@@ -6547,6 +6554,7 @@ impl Game {
                 || matches!(event.target, Target::Card(id) if self.keywords(id).contains(Keywords::PREVENT_COMBAT_TO)))
     }
     fn commit_unprevented_damage_batch(&mut self, events: &[DamageEvent]) -> Vec<LifeGainEvent> {
+        let received = self.capture_received_damage(events);
         let mut losses = [0i128; 2];
         let mut gains: Vec<LifeGainEvent> = Vec::new();
         let mut gain_indices: std::collections::BTreeMap<DamageSource, usize> =
@@ -6620,6 +6628,7 @@ impl Game {
         for gain in &gains {
             self.gain_life(gain.source.controller, gain.amount);
         }
+        self.queue_received_damage(received);
         self.record_combat_and_excess_damage(events);
         self.creature_damage_events(events);
         self.player_damage_triggers(events);
@@ -6888,6 +6897,11 @@ impl Game {
                 .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             schema: OBSERVATION_SCHEMA,
             additional_combats: s.combat_rules.as_ref().map_or(0, |r| r.additional_combats),
+            combat_phase: s.combat_rules.as_ref().map_or(0, |r| r.phases_started),
+            limited_exile_plays: s
+                .limited_exile_plays
+                .as_ref()
+                .map_or_else(Vec::new, |s| s.grants.clone()),
             must_be_blocked: s
                 .combat_rules
                 .as_ref()
@@ -7456,6 +7470,7 @@ impl Game {
             + std::mem::size_of::<Vec<Object>>()
             + std::mem::size_of::<Vec<ObjectRef>>()
             + s.combat_rules.as_ref().map_or(0, |r| r.owned_bytes())
+            + s.limited_exile_plays.as_ref().map_or(0, |r| r.bytes())
             + (s.attacked_this_turn.len() + s.saddled.len()) * std::mem::size_of::<ObjectRef>()
             + s.saddle_payment.as_ref().map_or(0, |f| {
                 std::mem::size_of::<saddle::SaddlePayment>()
@@ -8711,3 +8726,11 @@ mod tmt_blink_permissions_tests;
 #[cfg(test)]
 #[path = "engine_tmt_reflexive_batch_tests.rs"]
 mod tmt_reflexive_batch_tests;
+
+#[path = "engine_tmt_combat_rules.rs"]
+mod tmt_combat_rules;
+pub use tmt_combat_rules::LimitedExilePlayView;
+
+#[cfg(test)]
+#[path = "engine_tmt_combat_batch_tests.rs"]
+mod tmt_combat_batch_tests;
