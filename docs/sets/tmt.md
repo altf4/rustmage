@@ -19,9 +19,9 @@ Oracle facts remain pinned in `data/standard/cards.json`. The
 [obligation ledger](tmt-obligations.json) accounts for every printed line and
 canonical definition, including reprints; it is not a second membership source.
 
-Initial admission: **71/195**, **124 gated**. Current admission: **114/195**,
-**81 gated**, zero unresolved. The 71 inherited admission flags still require
-source/rules audits. **43 newly authored physical cards have rules scenarios; 42 have integrated release validation**;
+Initial admission: **71/195**, **124 gated**. Current admission: **188/195**,
+**7 gated**, zero unresolved. All 71 inherited admissions have source/rules
+audits and combined release evidence. **117 newly authored physical cards have rules scenarios; 102 have integrated release validation**;
 zero have independent final published-head reviews or upstream merges.
 
 ## Active Sneak integration
@@ -754,3 +754,14 @@ kicker funding. No final independent reviews are claimed.
 The full-pool game workload is prepared with all 195 members, eleven mechanic
 themes, actual private tournament sideboards, both starters, fixed seeds and
 complete journal replay. It remains gated until the last seven cards integrate.
+
+Combined source `431627ae` passes all 464 TMT scenarios, the 20-game workload
+(with all 45 selected nonlands actually cast) and all-target Clippy. Source
+`5cd4fe36` additionally passes the complete library: 3,715 passed, one ignored,
+zero failed. The expanded acceptance integration target compiles; its execution
+remains gated on seven pending cards.
+
+The eventual single TMT PR targets `codex/portable-set-skill`: ECL PR463 was
+already merged there at `32457107`; its tree matches the TMT baseline `1a795dcf`.
+This preserves the existing stack above open prerequisite PR461 and keeps the
+TMT diff separate from previously accepted ECL work.

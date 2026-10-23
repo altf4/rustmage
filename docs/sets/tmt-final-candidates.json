@@ -211,7 +211,29 @@
             "sha256": "1047fb4dc072e3639e83a42d8196c0028ee668461cafc143ba6b6ade13d7eae9"
           }
         ]
+      },
+      {
+        "log": "<cache>/rustmage-tmt-188-all-library.log",
+        "sha256": "e99430da0637966165cdbc850341fe56f5c71aca7001f26db00f1dad10e1f364",
+        "guard_reports": [
+          {
+            "path": "<cache>/rustmage-build-reports/a9936af121b44a06b3c5e3142386583b.json",
+            "sha256": "a5db6e5f18e2f68b251d3b209f0f4717b0878b1a713e0735f8d9406998f41269"
+          }
+        ]
+      },
+      {
+        "log": "<cache>/rustmage-tmt-acceptance-compile.log",
+        "sha256": "daef67861e00df494aebbc66af436a25c7616cd22a5a87b90a4102c0d0e36848",
+        "guard_reports": [
+          {
+            "path": "<cache>/rustmage-build-reports/2091d20ad4e84ffaa5f37ebba48d0439.json",
+            "sha256": "d5c4c1420199fac10436c9571ad6a507bb29440ccc3c56b6e42d239db3cf39c3"
+          }
+        ]
       }
-    ]
+    ],
+    "full_library_passed": 3715,
+    "full_library_ignored": 1
   }
 }
