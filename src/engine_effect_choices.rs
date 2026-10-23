@@ -207,6 +207,9 @@ impl Game {
             && (choice.kind != EffectChoiceKind::SacrificeCreatureOrToken
                 || self.is_creature(object.card)
                 || o.is_token())
+            && (choice.kind != EffectChoiceKind::SacrificeLandOrToken
+                || self.current_kinds(object.card) & 2 != 0
+                || o.is_token())
             && (!matches!(choice.kind, EffectChoiceKind::TapPermanents(_)) || !o.tapped)
             && self.keywords(object.card).contains(f.keywords)
             && (f.kinds == 0 || self.current_kinds(object.card) & u16::from(f.kinds) != 0)

@@ -38,6 +38,7 @@ impl Game {
     pub(super) fn capture_departure_counters(&mut self, event: &ZoneChange) {
         self.state.pending_triggers.last_mut().unwrap().death_event =
             Some(Box::new(DeathEventView {
+                toughness: event.before.toughness,
                 object: event.before.reference,
                 counter_total: event.before.counters.total(),
                 power: event.before.power,

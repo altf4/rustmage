@@ -730,6 +730,8 @@ pub enum EffectChoiceKind {
     Sacrifice,
     /// Sacrifice another eligible creature or token; the source exclusion is in its filter.
     SacrificeCreatureOrToken,
+    /// Non-targeting optional payment of a token or a land.
+    SacrificeLandOrToken,
     /// Private non-targeting hand-to-library-bottom selection.
     BottomHand,
     ReturnToHand,
@@ -1423,6 +1425,12 @@ pub(crate) enum Instruction {
     },
     SacrificeAbilitySource,
     ExileSourceGainLifeIfMoved(u16),
+    MayExileDepartedSource {
+        skip: usize,
+    },
+    ExileDepartedSourceReflexive {
+        ability: u16,
+    },
     DelayedDeathThisTurn {
         ability: u16,
     },
@@ -1569,6 +1577,8 @@ pub(crate) enum Instruction {
     },
     Draw(PlayerSet, u16),
     DrawScaled(PlayerSet, AmountValue),
+    /// Freeze one X for both sequential draw and life loss.
+    DrawAndLoseLife(AmountValue),
     Discard(PlayerSet, u16),
     GainLife(PlayerSet, u16),
     GainLifeScaled(PlayerSet, AmountValue),
@@ -1692,6 +1702,8 @@ pub(crate) enum AmountValue {
         reason = "Core quantity is scenario-tested while its consumer cards remain gated"
     )]
     SourceCounterQuantity(CounterKind),
+    SourceCounterTotal,
+    DeathEventToughness,
     SacrificedToughness,
     Fixed(u16),
     /// Explicit immutable parameter of the resolving spell or its exact ETB packet.
@@ -2720,6 +2732,7 @@ pub(crate) enum TriggerCondition {
     },
     SelfEntersOrDies,
     SelfAttacks,
+    SelfAttacksOrBlocks,
     SelfFirstAttack,
     OpponentAttacked,
     CreatureAttacksOrBlocksYou,

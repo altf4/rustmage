@@ -15,6 +15,13 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
                     kinds.push(kind);
                 }
             }
+            AmountValue::SourceCounterTotal => {
+                for kind in CounterKind::ALL {
+                    if !kinds.contains(&kind) {
+                        kinds.push(kind);
+                    }
+                }
+            }
             AmountValue::Multiple { value, .. } => amount(*value, kinds),
             _ => (),
         }
@@ -35,6 +42,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::PutLandCards { maximum: value, .. }
             | Instruction::DiscardScaled(_, value)
             | Instruction::DrawScaled(_, value)
+            | Instruction::DrawAndLoseLife(value)
             | Instruction::GainLifeScaled(_, value)
             | Instruction::LoseLifeScaled(_, value)
             | Instruction::DrainLifeScaled(value)

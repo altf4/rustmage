@@ -1072,6 +1072,7 @@ pub struct DeathEventView {
     pub object: ObjectRef,
     pub counter_total: u128,
     pub power: i128,
+    pub toughness: i128,
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
@@ -3306,7 +3307,8 @@ impl Game {
                             }
                             EffectChoiceKind::TapPermanents(_) => Action::TapForEffect { object },
                             EffectChoiceKind::Sacrifice
-                            | EffectChoiceKind::SacrificeCreatureOrToken => {
+                            | EffectChoiceKind::SacrificeCreatureOrToken
+                            | EffectChoiceKind::SacrificeLandOrToken => {
                                 Action::Sacrifice { object }
                             }
                             EffectChoiceKind::PowerDifferenceBoost
@@ -8705,3 +8707,7 @@ mod tmt_blink_permissions;
 #[cfg(test)]
 #[path = "engine_tmt_blink_permissions_tests.rs"]
 mod tmt_blink_permissions_tests;
+
+#[cfg(test)]
+#[path = "engine_tmt_reflexive_batch_tests.rs"]
+mod tmt_reflexive_batch_tests;

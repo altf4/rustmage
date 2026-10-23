@@ -252,12 +252,11 @@ pub(super) trait CharacteristicWorld {
                 .iter()
                 .flat_map(|g| g.fragments)
             {
-                if let crate::cards::StaticAbilityFragment::AdditionalSubtypeTriggers {
-                    subtype,
-                    other,
-                } = *fragment
+                if let Some((subtype, other, creature_only)) =
+                    fragment.additional_subtype_triggers()
                     && (!other || self.reference(id) != self.reference(source))
                     && subtypes.is_none_or(|types| types.has(object.card, subtype))
+                    && (!creature_only || upper || self.kinds(source) & 1 != 0)
                 {
                     amount = amount
                         .checked_add(1)

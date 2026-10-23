@@ -527,9 +527,19 @@ impl Game {
                         }
                         if ability.condition.event()
                             == TriggerCondition::ControlledCreatureWithCountersDies
+                            || ability.program.iter().any(|instruction| {
+                                matches!(
+                                    instruction,
+                                    Instruction::GainLifeScaled(
+                                        _,
+                                        AmountValue::DeathEventToughness
+                                    )
+                                )
+                            })
                         {
                             self.state.pending_triggers.last_mut().unwrap().death_event =
                                 Some(Box::new(DeathEventView {
+                                    toughness: event.before.toughness,
                                     counter_snapshot: None,
                                     object: event.before.reference,
                                     counter_total: event.before.counters.total(),
@@ -623,6 +633,7 @@ impl Game {
                     | TriggerCondition::LifeGained { .. }
                     | TriggerCondition::LifeLost { .. }
                     | TriggerCondition::SelfCountersAdded { .. }
+                    | TriggerCondition::SelfAttacksOrBlocks
                     | TriggerCondition::CreatureAttacksOrBlocksYou
                     | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::CreatureAttacksYou { .. }
@@ -3379,6 +3390,43 @@ impl Game {
                     tapped,
                 } => {
                     self.create_tokens(item.controller, token, u128::from(amount), tapped);
+                }
+                Instruction::DrawAndLoseLife(value) => {
+                    let amount = self.item_amount(value, &item);
+                    self.draw_many(item.controller, amount);
+                    self.lose_life(
+                        item.controller,
+                        i128::try_from(amount).capacity("life amount exhausted"),
+                    );
+                }
+                Instruction::MayExileDepartedSource { skip } => {
+                    let skip_to = resolution.pc.checked_add(skip).expect("program offset");
+                    let can_pay = item.source_move.as_ref().is_some_and(|event| {
+                        event.destination == Zone::Graveyard
+                            && self.object_ref(event.after.card) == event.after
+                            && self.state.objects[event.after.card as usize].zone == Zone::Graveyard
+                            && !self.state.objects[event.after.card as usize].is_token()
+                    });
+                    if can_pay {
+                        self.state.pending = Pending::EffectOptional {
+                            player: item.controller,
+                            skip_to,
+                        };
+                        return;
+                    }
+                    self.state.resolving.as_mut().unwrap().pc += skip;
+                }
+                Instruction::ExileDepartedSourceReflexive { ability } => {
+                    if let Some(event) = item.source_move.as_ref()
+                        && event.destination == Zone::Graveyard
+                        && self.object_ref(event.after.card) == event.after
+                        && self.state.objects[event.after.card as usize].zone == Zone::Graveyard
+                        && !self.state.objects[event.after.card as usize].is_token()
+                    {
+                        self.move_object(event.after.card, Zone::Exile);
+                        // A replacement can modify a paid action (CR118.11).
+                        self.queue_reflexive(&item, ability, None);
+                    }
                 }
                 Instruction::May { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");

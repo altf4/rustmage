@@ -3,10 +3,62 @@
   "catalogue_id": 1706,
   "oracle_id": "ade54bb7-3df8-4578-add8-1f85afee57ab",
   "facts_sha256": "6d388dc9b1f9174e20cc46802e193a8ec7d76c68d008f62b04acf829becbe939",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "edd4bd02b7c20d102d647182524714aacc546cdb6427d3f842a7f9e2e1aa9a72"
   },
-  "physical_metadata_sha256": "b0d13e8b32b815aadb8de45636733f935db5c504cbecc347309af3ca6160b413"
+  "physical_metadata_sha256": "b0d13e8b32b815aadb8de45636733f935db5c504cbecc347309af3ca6160b413",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GeneralTraagHeartOfStone.java",
+  "java_sha256": "b9a507e47381ca60c9a632758a027221726532968509ff60b030abbf61f914cd",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+      "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "111.8",
+      "118.11",
+      "201.5",
+      "400.7",
+      "601.2",
+      "603.2d",
+      "603.12",
+      "608.2b",
+      "608.2h",
+      "701.21"
+    ],
+    "note": "Full printed obligations are tested in engine_tmt_reflexive_batch_tests.rs. Reflexive target choices occur after successful optional payments and can be responded to separately. Source counter quantities and dying-creature toughness use exact last-known incarnations. Splinter qualifies actual Ninja creature characteristics and controller, including granted death abilities, and excludes delayed/reflexive triggers."
+  }
 }

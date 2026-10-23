@@ -69,6 +69,10 @@ pub(crate) enum StaticAbilityFragment {
         subtype: &'static str,
         other: bool,
     },
+    AdditionalSubtypeCreatureTriggers {
+        subtype: &'static str,
+        other: bool,
+    },
     ChosenModifier(ChosenModifier),
     ChosenCreatureKeywords(Keywords),
     PlayerHexproof,
@@ -205,4 +209,16 @@ pub(crate) struct AnimationSpec {
     pub base: Option<(i128, i128)>,
     pub keywords: Keywords,
     pub duration: AnimationDuration,
+}
+
+impl StaticAbilityFragment {
+    pub(crate) fn additional_subtype_triggers(self) -> Option<(&'static str, bool, bool)> {
+        match self {
+            Self::AdditionalSubtypeTriggers { subtype, other } => Some((subtype, other, false)),
+            Self::AdditionalSubtypeCreatureTriggers { subtype, other } => {
+                Some((subtype, other, true))
+            }
+            _ => None,
+        }
+    }
 }

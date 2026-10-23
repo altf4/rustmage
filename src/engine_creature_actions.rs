@@ -25,7 +25,8 @@ impl Game {
             let definition = source.card;
             for (index, ability) in definition.triggers().iter().enumerate() {
                 let qualifies = match ability.condition.event() {
-                    TriggerCondition::CreatureAttacksOrBlocksYou => true,
+                    TriggerCondition::CreatureAttacksOrBlocksYou
+                    | TriggerCondition::SelfAttacksOrBlocks => true,
                     TriggerCondition::ControlledCreatureAttacksAlone => {
                         kind == CreatureActionKind::Attack && creatures.len() == 1
                     }
@@ -35,6 +36,11 @@ impl Game {
                     continue;
                 }
                 for &id in creatures {
+                    if ability.condition.event() == TriggerCondition::SelfAttacksOrBlocks
+                        && self.object_ref(id) != source.reference
+                    {
+                        continue;
+                    }
                     if self.queue_trigger(&source, index) {
                         let object = self.object_ref(id);
                         self.state

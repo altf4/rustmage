@@ -593,6 +593,7 @@ impl Game {
             | EffectChoiceKind::KeepSharedCreatureTypes
             | EffectChoiceKind::RemoveCounters
             | EffectChoiceKind::Proliferate
+            | EffectChoiceKind::SacrificeLandOrToken
             | EffectChoiceKind::BottomHand
             | EffectChoiceKind::HandCreature
             | EffectChoiceKind::HandCreatureAndLand

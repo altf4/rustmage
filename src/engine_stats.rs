@@ -59,7 +59,8 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),
-                TriggerCondition::CreatureAttacksOrBlocksYou
+                TriggerCondition::SelfAttacksOrBlocks
+                    | TriggerCondition::CreatureAttacksOrBlocksYou
                     | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::OpponentAttacked
@@ -163,6 +164,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
                             | crate::cards::StaticAbilityFragment::AdditionalSubtypeTriggers { .. }
                             | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(..)
+                            | crate::cards::StaticAbilityFragment::AdditionalSubtypeCreatureTriggers { .. }
                             | crate::cards::StaticAbilityFragment::LinkedExileFreeCastBySubtypeUnion(_)
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::MustBeBlocked

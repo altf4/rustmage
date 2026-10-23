@@ -388,6 +388,26 @@ impl Game {
                     .expect("saved death event")
                     .counter_total
             }
+            AmountValue::DeathEventToughness => item
+                .death_event
+                .as_ref()
+                .expect("saved dying creature")
+                .toughness
+                .max(0) as u128,
+            AmountValue::SourceCounterTotal => {
+                if self
+                    .state
+                    .objects
+                    .get(item.object.card as usize)
+                    .is_some_and(|object| object.generation == item.object.generation)
+                {
+                    self.counter_amounts(item.object.card).total()
+                } else {
+                    item.source_counter_lki.as_ref().map_or(0, |facts| {
+                        facts.iter().map(|fact| u128::from(fact.count)).sum()
+                    })
+                }
+            }
             AmountValue::DeathEventPower => item
                 .death_event
                 .as_ref()
