@@ -21,7 +21,7 @@ canonical definition, including reprints; it is not a second membership source.
 
 Initial admission: **71/195**, **124 gated**. Current admission: **110/195**,
 **85 gated**, zero unresolved. The 71 inherited admission flags still require
-source/rules audits. **39 newly authored physical cards have rules scenarios; 38 have integrated release validation**;
+source/rules audits. **39 newly authored physical cards have rules scenarios; 39 have integrated release validation**;
 zero have independent final published-head reviews or upstream merges.
 
 ## Active Sneak integration
@@ -293,3 +293,19 @@ Observation schema is 174. Admission is 110/195, 85 gated; the 39th newly author
 card awaits integrated release validation. Next: the five Class cards, including
 true Class level designations, gained abilities and Ninja Teen’s granted Sneak
 with composed mandatory costs. No external blocker or final review is claimed.
+
+## Validated 110-card checkpoint
+
+All nine release phases pass on `780c67e7` in 623.29 seconds,
+with 3,324 library rules tests (one ignored), 53 Sneak scenarios, existing native
+full-game integrations and seven Python binding smoke checks. All 26 printed
+Sneak consumers are now locally rules/release verified. Ninja Teen’s granted
+Sneak remains outstanding. Admission is 110/195, 85 gated, zero unresolved;
+39 newly authored physical candidates are locally verified and 71 inherited
+admissions still await audits. No set-only acceptance or final review is claimed.
+
+See [portable evidence](tmt-sneak-finality-validation.json) for report/library
+hashes, guard measurements and actual elapsed implementation throughput.
+The full validator is terminal and preserved all required shared libraries.
+Next work is Class levels and the five Class cards, with source research and
+scratch preparation complete for the shared kernel and Leader’s Talent.

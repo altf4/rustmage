@@ -1763,7 +1763,7 @@
       "oracle_id": "74e3243b-6707-4769-8767-7cf2ef71009a",
       "name": "Leonardo, Sewer Samurai",
       "definition": "src/card_definitions/tmt/leonardo_sewer_samurai.rs",
-      "state": "tested candidate; integrated release validation, full-set acceptance and independent reviews pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Leonardo, Sewer Samurai",
@@ -1781,7 +1781,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/leonardo_sewer_samurai.json",
-        "src/engine_tmt_sneak_tests.rs"
+        "src/engine_tmt_sneak_tests.rs",
+        "docs/sets/tmt-sneak-finality-validation.json"
       ],
       "local_batch": 11
     },
