@@ -602,3 +602,20 @@ additions include creature-or-token sacrifice, positive kind intersection,
 pre-destruction target mana-value conditions and simultaneous damage. Public
 observation schema is 178. The authors continue on disjoint batches, while the
 integrator implements Mutagen Man/Ray Fillet cost mechanics separately.
+
+## Validated 136-card checkpoint
+
+All nine release phases pass on `8154b4bb` in 652.55 seconds: 3,477 library
+rules tests (one ignored), all 226 TMT scenarios, existing native games and
+seven Python binding checks. Admission is 136/195, 59 gated, zero unresolved.
+65 newly authored physical candidates and 40 inherited audits now have combined
+release evidence; 31 inherited audits await integration.
+
+[Portable evidence](tmt-parallel-validation.json) retains exact reports, library
+hashes, resource limits and measured implementation throughput. Completed
+disposable outputs were cleaned, preserving required libraries. The measured
+Freeform regression is 178,454 decisions/s and 358 games/s; TMT-specific full-game
+acceptance, remaining cards and final independent reviews remain pending.
+
+The next isolated batches cover activation costs, top-library permissions and
+blinking, reflexive/death interactions, and the final inherited audits.

@@ -33,7 +33,7 @@
       "oracle_id": "f33217cc-175f-45e8-bc69-801f41cb4495",
       "name": "Agent Bishop, Man in Black",
       "definition": "src/card_definitions/tmt/agent_bishop_man_in_black.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Agent Bishop, Man in Black",
@@ -49,7 +49,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_tests.rs",
-        "src/card_definitions/tmt/agent_bishop_man_in_black.json"
+        "src/card_definitions/tmt/agent_bishop_man_in_black.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19
@@ -58,7 +59,7 @@
       "oracle_id": "5f4834c7-cd63-420b-8492-ef127ffd4f45",
       "name": "Anchovy & Banana Pizza",
       "definition": "src/card_definitions/tmt/anchovy_banana_pizza.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Anchovy & Banana Pizza",
@@ -75,7 +76,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_tests.rs",
-        "src/card_definitions/tmt/anchovy_banana_pizza.json"
+        "src/card_definitions/tmt/anchovy_banana_pizza.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19
@@ -104,7 +106,7 @@
       "oracle_id": "3f166376-2739-411c-8f42-96f2ef28ef86",
       "name": "April O'Neil, Kunoichi Trainee",
       "definition": "src/card_definitions/tmt/april_o_neil_kunoichi_trainee.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "April O'Neil, Kunoichi Trainee",
@@ -121,7 +123,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_tests.rs",
-        "src/card_definitions/tmt/april_o_neil_kunoichi_trainee.json"
+        "src/card_definitions/tmt/april_o_neil_kunoichi_trainee.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19
@@ -130,7 +133,7 @@
       "oracle_id": "1c371003-e4f0-4d7c-b021-273176772f97",
       "name": "April, Reporter of the Weird",
       "definition": "src/card_definitions/tmt/april_reporter_of_the_weird.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "April, Reporter of the Weird",
@@ -146,7 +149,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_tests.rs",
-        "src/card_definitions/tmt/april_reporter_of_the_weird.json"
+        "src/card_definitions/tmt/april_reporter_of_the_weird.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19
@@ -182,7 +186,7 @@
       "oracle_id": "e610bfd4-d064-410b-929c-1d9dd82828b1",
       "name": "Baxter Stockman",
       "definition": "src/card_definitions/tmt/baxter_stockman.rs",
-      "state": "focused tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Baxter Stockman",
@@ -199,7 +203,8 @@
       ],
       "evidence": [
         "src/engine_tmt_spell_batch_tests.rs",
-        "src/card_definitions/tmt/baxter_stockman.json"
+        "src/card_definitions/tmt/baxter_stockman.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 22
@@ -250,7 +255,7 @@
       "oracle_id": "679480aa-f9ad-4a6c-bd79-db9f9f75433d",
       "name": "Bespoke Bō",
       "definition": "src/card_definitions/tmt/bespoke_bo.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Bespoke Bō",
@@ -268,7 +273,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_tests.rs",
-        "src/card_definitions/tmt/bespoke_bo.json"
+        "src/card_definitions/tmt/bespoke_bo.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19
@@ -277,7 +283,7 @@
       "oracle_id": "14079f05-fbc1-401c-9008-da678656b4c6",
       "name": "Bot Bashing Time",
       "definition": "src/card_definitions/tmt/bot_bashing_time.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Bot Bashing Time",
@@ -293,7 +299,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_tests.rs",
-        "src/card_definitions/tmt/bot_bashing_time.json"
+        "src/card_definitions/tmt/bot_bashing_time.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19
@@ -344,7 +351,7 @@
       "oracle_id": "434e720f-2bfa-49b6-a5ac-fe0c0b24764d",
       "name": "Buzz Bots",
       "definition": "src/card_definitions/tmt/buzz_bots.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Buzz Bots",
@@ -361,7 +368,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_tests.rs",
-        "src/card_definitions/tmt/buzz_bots.json"
+        "src/card_definitions/tmt/buzz_bots.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19
@@ -370,7 +378,7 @@
       "oracle_id": "b4c4fdb9-e034-49c0-9f7f-07e8cae19eb2",
       "name": "Casey Jones, Jury-Rig Justiciar",
       "definition": "src/card_definitions/tmt/casey_jones_jury_rig_justiciar.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Casey Jones, Jury-Rig Justiciar",
@@ -387,7 +395,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_tests.rs",
-        "src/card_definitions/tmt/casey_jones_jury_rig_justiciar.json"
+        "src/card_definitions/tmt/casey_jones_jury_rig_justiciar.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19
@@ -487,7 +496,7 @@
       "oracle_id": "a1ddf985-1646-468c-b1a4-ab6bb8e9dd7c",
       "name": "Cowabunga!",
       "definition": "src/card_definitions/tmt/cowabunga.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Cowabunga!",
@@ -503,7 +512,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_tests.rs",
-        "src/card_definitions/tmt/cowabunga.json"
+        "src/card_definitions/tmt/cowabunga.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19
@@ -512,7 +522,7 @@
       "oracle_id": "b24a87af-407f-4c58-80b4-caab9c65a233",
       "name": "Crustacean Commando",
       "definition": "src/card_definitions/tmt/crustacean_commando.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Crustacean Commando",
@@ -528,7 +538,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_tests.rs",
-        "src/card_definitions/tmt/crustacean_commando.json"
+        "src/card_definitions/tmt/crustacean_commando.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19
@@ -565,7 +576,7 @@
       "oracle_id": "f599471a-31a6-4fb0-bf27-c5b707e1db6a",
       "name": "Death in the Family",
       "definition": "src/card_definitions/tmt/death_in_the_family.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Death in the Family",
@@ -581,7 +592,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_tests.rs",
-        "src/card_definitions/tmt/death_in_the_family.json"
+        "src/card_definitions/tmt/death_in_the_family.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19
@@ -792,7 +804,7 @@
       "oracle_id": "f84850bc-6348-449e-bd82-bb39e2119bec",
       "name": "Donatello, Turtle Techie",
       "definition": "src/card_definitions/tmt/donatello_turtle_techie.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Donatello, Turtle Techie",
@@ -808,7 +820,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_tests.rs",
-        "src/card_definitions/tmt/donatello_turtle_techie.json"
+        "src/card_definitions/tmt/donatello_turtle_techie.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19
@@ -817,7 +830,7 @@
       "oracle_id": "194af2be-50c7-484b-bdd3-402bad70335b",
       "name": "Donatello, Way with Machines",
       "definition": "src/card_definitions/tmt/donatello_way_with_machines.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Donatello, Way with Machines",
@@ -834,7 +847,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_tests.rs",
-        "src/card_definitions/tmt/donatello_way_with_machines.json"
+        "src/card_definitions/tmt/donatello_way_with_machines.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19
@@ -843,7 +857,7 @@
       "oracle_id": "a1cec8e8-cf3c-42a4-b625-ca0cd148664e",
       "name": "Dream Beavers",
       "definition": "src/card_definitions/tmt/dream_beavers.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Dream Beavers",
@@ -860,7 +874,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_tests.rs",
-        "src/card_definitions/tmt/dream_beavers.json"
+        "src/card_definitions/tmt/dream_beavers.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19
@@ -869,7 +884,7 @@
       "oracle_id": "2dea1935-c227-46d5-9d98-e7d2cd612f98",
       "name": "EPF Point Squad",
       "definition": "src/card_definitions/tmt/epf_point_squad.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "EPF Point Squad",
@@ -885,7 +900,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_tests.rs",
-        "src/card_definitions/tmt/epf_point_squad.json"
+        "src/card_definitions/tmt/epf_point_squad.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19
@@ -894,7 +910,7 @@
       "oracle_id": "e2ef355a-2472-47e0-9b2e-987994291921",
       "name": "East Wind Avatar",
       "definition": "src/card_definitions/tmt/east_wind_avatar.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "East Wind Avatar",
@@ -911,7 +927,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_two_tests.rs",
-        "src/card_definitions/tmt/east_wind_avatar.json"
+        "src/card_definitions/tmt/east_wind_avatar.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21
@@ -989,7 +1006,7 @@
       "oracle_id": "b6244b6c-664d-417a-bd58-ace5c7a995a2",
       "name": "Foot Elite",
       "definition": "src/card_definitions/tmt/foot_elite.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Foot Elite",
@@ -1005,7 +1022,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_two_tests.rs",
-        "src/card_definitions/tmt/foot_elite.json"
+        "src/card_definitions/tmt/foot_elite.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21
@@ -1122,7 +1140,7 @@
       "oracle_id": "5b865275-4114-44d0-9832-ae5d3b4efba4",
       "name": "Frog Butler",
       "definition": "src/card_definitions/tmt/frog_butler.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Frog Butler",
@@ -1140,7 +1158,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_two_tests.rs",
-        "src/card_definitions/tmt/frog_butler.json"
+        "src/card_definitions/tmt/frog_butler.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21
@@ -1191,7 +1210,7 @@
       "oracle_id": "1d6d0348-46ad-46ed-ae7b-d7510f0ebe70",
       "name": "Genghis Frog",
       "definition": "src/card_definitions/tmt/genghis_frog.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Genghis Frog",
@@ -1208,7 +1227,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_two_tests.rs",
-        "src/card_definitions/tmt/genghis_frog.json"
+        "src/card_definitions/tmt/genghis_frog.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21
@@ -1217,7 +1237,7 @@
       "oracle_id": "46f77c8c-6817-4aea-a80a-d91f508ccbd0",
       "name": "Go Ninja Go",
       "definition": "src/card_definitions/tmt/go_ninja_go.rs",
-      "state": "focused tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Go Ninja Go",
@@ -1235,7 +1255,8 @@
       ],
       "evidence": [
         "src/engine_tmt_spell_batch_tests.rs",
-        "src/card_definitions/tmt/go_ninja_go.json"
+        "src/card_definitions/tmt/go_ninja_go.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 22
@@ -1244,7 +1265,7 @@
       "oracle_id": "da344e46-6bdf-4032-8590-bac850d5713d",
       "name": "Groundchuck & Dirtbag",
       "definition": "src/card_definitions/tmt/groundchuck_dirtbag.rs",
-      "state": "focused tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Groundchuck & Dirtbag",
@@ -1261,7 +1282,8 @@
       ],
       "evidence": [
         "src/engine_tmt_mana_batch_tests.rs",
-        "src/card_definitions/tmt/groundchuck_dirtbag.json"
+        "src/card_definitions/tmt/groundchuck_dirtbag.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_mana",
       "local_batch": 20
@@ -1270,7 +1292,7 @@
       "oracle_id": "9a334434-072a-4486-810a-63efb29dea6d",
       "name": "Grounded for Life",
       "definition": "src/card_definitions/tmt/grounded_for_life.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Grounded for Life",
@@ -1287,7 +1309,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_two_tests.rs",
-        "src/card_definitions/tmt/grounded_for_life.json"
+        "src/card_definitions/tmt/grounded_for_life.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21
@@ -1296,7 +1319,7 @@
       "oracle_id": "d6d83a51-9d57-44a7-aae3-a96d43ec5ac8",
       "name": "Guac & Marshmallow Pizza",
       "definition": "src/card_definitions/tmt/guac_marshmallow_pizza.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Guac & Marshmallow Pizza",
@@ -1314,7 +1337,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_two_tests.rs",
-        "src/card_definitions/tmt/guac_marshmallow_pizza.json"
+        "src/card_definitions/tmt/guac_marshmallow_pizza.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21
@@ -1323,7 +1347,7 @@
       "oracle_id": "e08b19ca-f9d7-4c33-b37a-a77b37aabf1b",
       "name": "Hamato Guardian Stance",
       "definition": "src/card_definitions/tmt/hamato_guardian_stance.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Hamato Guardian Stance",
@@ -1339,7 +1363,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_two_tests.rs",
-        "src/card_definitions/tmt/hamato_guardian_stance.json"
+        "src/card_definitions/tmt/hamato_guardian_stance.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21
@@ -1348,7 +1373,7 @@
       "oracle_id": "ab433d41-e801-405c-81f7-06fa6640797d",
       "name": "Hard-Won Jitte",
       "definition": "src/card_definitions/tmt/hard_won_jitte.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Hard-Won Jitte",
@@ -1365,7 +1390,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_two_tests.rs",
-        "src/card_definitions/tmt/hard_won_jitte.json"
+        "src/card_definitions/tmt/hard_won_jitte.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21
@@ -1374,7 +1400,7 @@
       "oracle_id": "1f097c91-6c2e-410f-8c8f-c021f39491af",
       "name": "Henchbots",
       "definition": "src/card_definitions/tmt/henchbots.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Henchbots",
@@ -1390,7 +1416,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_two_tests.rs",
-        "src/card_definitions/tmt/henchbots.json"
+        "src/card_definitions/tmt/henchbots.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21
@@ -1426,7 +1453,7 @@
       "oracle_id": "f8131dca-ba6e-4ca4-943e-a3d26c75b8b8",
       "name": "Ice Cream Kitty",
       "definition": "src/card_definitions/tmt/ice_cream_kitty.rs",
-      "state": "focused tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Ice Cream Kitty",
@@ -1443,7 +1470,8 @@
       ],
       "evidence": [
         "src/engine_tmt_spell_batch_tests.rs",
-        "src/card_definitions/tmt/ice_cream_kitty.json"
+        "src/card_definitions/tmt/ice_cream_kitty.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 22
@@ -1582,7 +1610,7 @@
       "oracle_id": "b55da4d3-2cad-4c89-ad3f-7d8397b64d52",
       "name": "Jennika, Bad Apple Big Sister",
       "definition": "src/card_definitions/tmt/jennika_bad_apple_big_sister.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Jennika, Bad Apple Big Sister",
@@ -1599,7 +1627,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_two_tests.rs",
-        "src/card_definitions/tmt/jennika_bad_apple_big_sister.json"
+        "src/card_definitions/tmt/jennika_bad_apple_big_sister.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21
@@ -1776,7 +1805,7 @@
       "oracle_id": "2d56a491-b3eb-4f3e-82ab-981d3036c45d",
       "name": "Krang, Utrom Warlord",
       "definition": "src/card_definitions/tmt/krang_utrom_warlord.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Krang, Utrom Warlord",
@@ -1793,7 +1822,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_two_tests.rs",
-        "src/card_definitions/tmt/krang_utrom_warlord.json"
+        "src/card_definitions/tmt/krang_utrom_warlord.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21
@@ -1991,7 +2021,7 @@
       "oracle_id": "51df0203-578d-47e1-a9f7-a13445f597d7",
       "name": "Lessons from Life",
       "definition": "src/card_definitions/tmt/lessons_from_life.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Lessons from Life",
@@ -2007,7 +2037,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_two_tests.rs",
-        "src/card_definitions/tmt/lessons_from_life.json"
+        "src/card_definitions/tmt/lessons_from_life.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21
@@ -2088,7 +2119,7 @@
       "oracle_id": "8226f31d-6f51-49c3-87f7-0c68f7f4f9ce",
       "name": "Make Your Move",
       "definition": "src/card_definitions/msc/make_your_move.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Make Your Move",
@@ -2104,7 +2135,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_two_tests.rs",
-        "src/card_definitions/msc/make_your_move.json"
+        "src/card_definitions/msc/make_your_move.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21
@@ -2113,7 +2145,7 @@
       "oracle_id": "c596b847-4e05-4279-8675-b4e39cb3dc91",
       "name": "Manhole Missile",
       "definition": "src/card_definitions/tmt/manhole_missile.rs",
-      "state": "focused tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Manhole Missile",
@@ -2129,7 +2161,8 @@
       ],
       "evidence": [
         "src/engine_tmt_spell_batch_tests.rs",
-        "src/card_definitions/tmt/manhole_missile.json"
+        "src/card_definitions/tmt/manhole_missile.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 22
@@ -2138,7 +2171,7 @@
       "oracle_id": "2db8dda3-8136-4cf2-ba2d-ecc344a36725",
       "name": "Mechanized Ninja Cavalry",
       "definition": "src/card_definitions/tmt/mechanized_ninja_cavalry.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Mechanized Ninja Cavalry",
@@ -2154,7 +2187,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_two_tests.rs",
-        "src/card_definitions/tmt/mechanized_ninja_cavalry.json"
+        "src/card_definitions/tmt/mechanized_ninja_cavalry.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21
@@ -2163,7 +2197,7 @@
       "oracle_id": "7df45a2a-75bc-4343-8dad-3a642efd13ee",
       "name": "Metalhead",
       "definition": "src/card_definitions/tmt/metalhead.rs",
-      "state": "focused tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Metalhead",
@@ -2180,7 +2214,8 @@
       ],
       "evidence": [
         "src/engine_tmt_spell_batch_tests.rs",
-        "src/card_definitions/tmt/metalhead.json"
+        "src/card_definitions/tmt/metalhead.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 22
@@ -2296,7 +2331,7 @@
       "oracle_id": "170ab932-9d50-4ce7-9a42-08e1edce7e7c",
       "name": "Michelangelo, Weirdness to 11",
       "definition": "src/card_definitions/tmt/michelangelo_weirdness_to_11.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Michelangelo, Weirdness to 11",
@@ -2313,7 +2348,8 @@
       ],
       "evidence": [
         "src/engine_tmt_inherited_batch_two_tests.rs",
-        "src/card_definitions/tmt/michelangelo_weirdness_to_11.json"
+        "src/card_definitions/tmt/michelangelo_weirdness_to_11.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21
@@ -2418,7 +2454,7 @@
       "oracle_id": "e6490e98-37a9-4a8b-a04c-cceeb22b0c35",
       "name": "Mona Lisa, Science Geek",
       "definition": "src/card_definitions/tmt/mona_lisa_science_geek.rs",
-      "state": "focused tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Mona Lisa, Science Geek",
@@ -2435,7 +2471,8 @@
       ],
       "evidence": [
         "src/engine_tmt_mana_batch_tests.rs",
-        "src/card_definitions/tmt/mona_lisa_science_geek.json"
+        "src/card_definitions/tmt/mona_lisa_science_geek.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_mana",
       "local_batch": 20
@@ -2736,7 +2773,7 @@
       "oracle_id": "eddab60f-2eac-4f20-934c-3d9307f885c3",
       "name": "Nobody",
       "definition": "src/card_definitions/tmt/nobody.rs",
-      "state": "focused tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Nobody",
@@ -2752,7 +2789,8 @@
       ],
       "evidence": [
         "src/engine_tmt_spell_batch_tests.rs",
-        "src/card_definitions/tmt/nobody.json"
+        "src/card_definitions/tmt/nobody.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 22
@@ -3124,7 +3162,7 @@
       "oracle_id": "d1edb950-a118-4b4d-a0ef-9a6683d74c9f",
       "name": "Purple Dragon Punks",
       "definition": "src/card_definitions/tmt/purple_dragon_punks.rs",
-      "state": "focused tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Purple Dragon Punks",
@@ -3140,7 +3178,8 @@
       ],
       "evidence": [
         "src/engine_tmt_mana_batch_tests.rs",
-        "src/card_definitions/tmt/purple_dragon_punks.json"
+        "src/card_definitions/tmt/purple_dragon_punks.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_mana",
       "local_batch": 20
@@ -3855,7 +3894,7 @@
       "oracle_id": "9665f940-c0a4-4d3e-b889-8049cf549a4f",
       "name": "Spicy Oatmeal Pizza",
       "definition": "src/card_definitions/tmt/spicy_oatmeal_pizza.rs",
-      "state": "focused tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Spicy Oatmeal Pizza",
@@ -3872,7 +3911,8 @@
       ],
       "evidence": [
         "src/engine_tmt_spell_batch_tests.rs",
-        "src/card_definitions/tmt/spicy_oatmeal_pizza.json"
+        "src/card_definitions/tmt/spicy_oatmeal_pizza.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 22
@@ -4101,7 +4141,7 @@
       "oracle_id": "60826714-b9fd-4c89-b9f2-1a3c3229686b",
       "name": "Tainted Treats",
       "definition": "src/card_definitions/tmt/tainted_treats.rs",
-      "state": "focused tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Tainted Treats",
@@ -4117,7 +4157,8 @@
       ],
       "evidence": [
         "src/engine_tmt_spell_batch_tests.rs",
-        "src/card_definitions/tmt/tainted_treats.json"
+        "src/card_definitions/tmt/tainted_treats.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 22
@@ -4424,7 +4465,7 @@
       "oracle_id": "eb002bbc-08df-4bf0-bea3-46494ad261b6",
       "name": "Turtle Lair",
       "definition": "src/card_definitions/tmt/turtle_lair.rs",
-      "state": "focused tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Turtle Lair",
@@ -4442,7 +4483,8 @@
       ],
       "evidence": [
         "src/engine_tmt_mana_batch_tests.rs",
-        "src/card_definitions/tmt/turtle_lair.json"
+        "src/card_definitions/tmt/turtle_lair.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_mana",
       "local_batch": 20
@@ -4597,7 +4639,7 @@
       "oracle_id": "4097fea2-ae34-4b99-ab7e-a276d608b489",
       "name": "Weather Maker",
       "definition": "src/card_definitions/tmt/weather_maker.rs",
-      "state": "focused tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Weather Maker",
@@ -4616,7 +4658,8 @@
       ],
       "evidence": [
         "src/engine_tmt_mana_batch_tests.rs",
-        "src/card_definitions/tmt/weather_maker.json"
+        "src/card_definitions/tmt/weather_maker.json",
+        "docs/sets/tmt-parallel-validation.json"
       ],
       "owner": "tmt_mana",
       "local_batch": 20
