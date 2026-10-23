@@ -3,10 +3,55 @@
   "catalogue_id": 2402,
   "oracle_id": "e7cd87d4-028c-49d9-9416-69f57e7dfec5",
   "facts_sha256": "72054f906336efbfccdcdca90f37321d70c262054159be00584eee2181e90e01",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a04f73f3bc510e29ab6f9050beb5c971420fb3a8ee5bae9010d5200108d06315"
   },
-  "physical_metadata_sha256": "568ba9df2a8ed223bbf6bbc536a905651df7821afbbf185ef430e86517ed4bb2"
+  "physical_metadata_sha256": "568ba9df2a8ed223bbf6bbc536a905651df7821afbbf185ef430e86517ed4bb2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KoyaDeathFromAbove.java",
+  "java_sha256": "78efd1de7f7667948ef9cd53a795577b1164171b4ef9db02eca545cf757cdb9a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+      "sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToBattlefieldUnderOwnerControlTargetEffect.java",
+      "sha256": "0fc807f72c6feeb241f8a5b7db20fd2ea9fd67206d5a13b91341b400742affeb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/CardUtil.java",
+      "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "400.7j",
+      "603.7",
+      "608.2b"
+    ],
+    "note": "That card is tracked to its exact first public destination, including a redirected initial exile. The independent next-end-step packet retains the original controller and return incarnation after source departure. With zero chosen targets, the legal ability still creates the delayed optional payment; XMage skips it via an early return."
+  }
 }

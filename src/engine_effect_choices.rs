@@ -70,6 +70,10 @@ impl Game {
         player: Player,
         object: ObjectRef,
     ) -> bool {
+        if choice.kind == EffectChoiceKind::OutsideGameCard {
+            return self.outside_game_card_matches(player, object)
+                && !choice.selected[player.index()].contains(&object);
+        }
         if choice.kind == EffectChoiceKind::ReturnLinkedCreature {
             return !choice.selected[player.index()].contains(&object)
                 && self.linked_creature_return_candidate(object);
@@ -141,6 +145,7 @@ impl Game {
         let hand_choice = matches!(
             choice.kind,
             EffectChoiceKind::BottomHand
+                | EffectChoiceKind::OutsideGameCard
                 | EffectChoiceKind::Discard
                 | EffectChoiceKind::ExileFromHand
                 | EffectChoiceKind::HandCreature
@@ -157,6 +162,7 @@ impl Game {
         if matches!(
             choice.kind,
             EffectChoiceKind::BottomHand
+                | EffectChoiceKind::OutsideGameCard
                 | EffectChoiceKind::Discard
                 | EffectChoiceKind::ExileFromHand
                 | EffectChoiceKind::HandCreature
@@ -477,7 +483,8 @@ impl Game {
         }
         // A private filtered payment must offer the same phase even when hidden
         // contents cannot pay; declining it is distinct from satisfying a zero cost.
-        let private_filtered_discard = kind == EffectChoiceKind::Discard && filter.kinds != 0;
+        let private_filtered_discard = kind == EffectChoiceKind::Discard && filter.kinds != 0
+            || kind == EffectChoiceKind::OutsideGameCard;
         for player in self.program_players(players, item) {
             if greatest {
                 choice.greatest_power[player.index()] = self
@@ -699,7 +706,17 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        if choice.kind == EffectChoiceKind::ReturnLinkedCreature {
+        if choice.kind == EffectChoiceKind::OutsideGameCard {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            let ids: Vec<_> = choice.selected[player.index()]
+                .iter()
+                .copied()
+                .filter(|&object| self.outside_game_card_matches(player, object))
+                .map(|object| object.card)
+                .collect();
+            let events = self.move_objects_raw(&ids, Zone::Hand);
+            self.finish_zone_events(&events, &[]);
+        } else if choice.kind == EffectChoiceKind::ReturnLinkedCreature {
             self.complete_linked_creature_return(&choice);
         } else if choice.kind == EffectChoiceKind::CopyEntryObject {
             let controller = self.state.resolving.as_ref().unwrap().item.controller;
@@ -932,6 +949,7 @@ impl Game {
         if matches!(
             choice.kind,
             EffectChoiceKind::BottomHand
+                | EffectChoiceKind::OutsideGameCard
                 | EffectChoiceKind::Discard
                 | EffectChoiceKind::ExileFromHand
                 | EffectChoiceKind::HandCreature
@@ -965,7 +983,8 @@ impl Game {
                     .filter(|object| {
                         (!matches!(
                             choice.kind,
-                            EffectChoiceKind::ExileFromHand
+                            EffectChoiceKind::OutsideGameCard
+                                | EffectChoiceKind::ExileFromHand
                                 | EffectChoiceKind::BottomHand
                                 | EffectChoiceKind::Discard
                                 | EffectChoiceKind::HandCreature

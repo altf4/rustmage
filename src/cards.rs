@@ -685,6 +685,7 @@ pub enum EffectChoiceKind {
     CopyEntryObject,
     /// Non-targeted creature card choice among this exact source ability family links.
     ReturnLinkedCreature,
+    OutsideGameCard,
     /// A controlled permanent or revealed hand card witnesses a casting cost.
     Behold,
     /// Behold one permanent or hand card and exile that exact witness as a cost.
@@ -854,6 +855,12 @@ pub(crate) enum Instruction {
     ChooseWheel {
         draw: u16,
     },
+    ChooseOutsideGameCard,
+    ExchangeCreatureControl,
+    ExileOpponentUntilNonlandLinked,
+    CastOneLinkedDuringResolution,
+    BlinkAttacking,
+    CaptureDelayedReturnTarget,
     ChooseColor,
     SetColors {
         subject: Subject,

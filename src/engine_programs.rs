@@ -35,6 +35,7 @@ pub(super) struct Resolution {
 pub(super) enum ProgramContinuation {
     SearchHandCount(Vec<ObjectRef>),
     Return(ReturnLinkView),
+    ReturnAttacking(ReturnLinkView),
     CreateAttackingCopy(CopyRecipe),
     CreateTokens {
         controller: Player,
@@ -79,6 +80,7 @@ impl Game {
                 self.stage_attacking_copy_creation(player, recipe);
             }
             ProgramContinuation::Return(link) => self.stage_linked_return(&link, None),
+            ProgramContinuation::ReturnAttacking(link) => self.stage_attacking_linked_return(&link),
             ProgramContinuation::CreateTokens {
                 controller,
                 token,
@@ -1847,6 +1849,31 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::ChooseOutsideGameCard => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::OutsideGameCard,
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        Some(0),
+                    ) {
+                        return;
+                    }
+                }
+                Instruction::ExchangeCreatureControl => self.exchange_creature_control(&item),
+                Instruction::ExileOpponentUntilNonlandLinked => {
+                    self.exile_opponent_until_nonland_linked(&item)
+                }
+                Instruction::CastOneLinkedDuringResolution => {
+                    if self.start_one_linked_cast(&item) {
+                        return;
+                    }
+                }
+                Instruction::BlinkAttacking => self.blink_attacking(&item),
+                Instruction::CaptureDelayedReturnTarget => {
+                    self.capture_delayed_return_target(&item)
+                }
                 Instruction::ChooseColor => {
                     self.state.resolving.as_mut().unwrap().chosen_color = None;
                     self.state.pending = Pending::ResolutionColor {

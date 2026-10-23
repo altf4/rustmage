@@ -509,6 +509,7 @@ define_actions! {
     FinishHandSelection,
     DeclineHandEntry,
     ChooseHandDefender { defender: CombatDefender },
+    ChooseOutsideGameCard {object:ObjectRef},
     ChooseSaddler { object: ObjectRef },
     ChooseCrewer { object: ObjectRef },
     FinishCrew,
@@ -3331,6 +3332,9 @@ impl Game {
                                     Action::PutHandLand { object }
                                 }
                             }
+                            EffectChoiceKind::OutsideGameCard => {
+                                Action::ChooseOutsideGameCard { object }
+                            }
                             EffectChoiceKind::HandCreature => Action::PutHandCreature { object },
                             EffectChoiceKind::HandLand { .. } => Action::PutHandLand { object },
                             EffectChoiceKind::LandCards { .. }
@@ -5336,6 +5340,7 @@ impl Game {
             | Action::PutHandLand { object }
             | Action::SelectLand { object }
             | Action::ChooseCreature { object }
+            | Action::ChooseOutsideGameCard { object }
             | Action::TapForEffect { object } => self.choose_effect_object(actor, object),
             Action::FinishHandSelection => {
                 self.finish_hand_selection();
@@ -7644,7 +7649,8 @@ impl Game {
                                     programs::ProgramContinuation::SearchHandCount(objects) => {
                                         objects.len() * std::mem::size_of::<ObjectRef>()
                                     }
-                                    programs::ProgramContinuation::Return(link) => {
+                                    programs::ProgramContinuation::Return(link)
+                                    | programs::ProgramContinuation::ReturnAttacking(link) => {
                                         link.additional.len()
                                             * std::mem::size_of::<ReturnCardView>()
                                     }
@@ -8841,3 +8847,5 @@ pub use delayed_steps::DelayedStepView;
 #[cfg(test)]
 #[path = "engine_tmt_delayed_steps_tests.rs"]
 mod tmt_delayed_steps_tests;
+#[path = "engine_tmt_last_origins.rs"]
+mod tmt_last_origins;
