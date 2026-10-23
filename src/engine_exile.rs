@@ -388,6 +388,9 @@ impl Game {
             .iter()
             .any(|e| e.moved && e.destination == Zone::Battlefield)
         {
+            // Keep one immutable projection for this post-event freeze, and do
+            // not evaluate characteristics when no source passes the filter.
+            let query = std::cell::OnceCell::new();
             self.state
                 .objects
                 .iter()
@@ -400,7 +403,11 @@ impl Game {
                                 .iter()
                                 .any(|a| a.condition.origin() == Some(TargetZone::Graveyard)))
                 })
-                .map(|(i, _)| self.object_view(i as CardId))
+                .map(|(i, _)| {
+                    query
+                        .get_or_init(|| self.characteristic_query())
+                        .object_view(i as CardId)
+                })
                 .collect()
         } else {
             Vec::new()
