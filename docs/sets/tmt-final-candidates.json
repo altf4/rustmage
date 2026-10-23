@@ -174,5 +174,44 @@
         }
       ]
     }
-  ]
+  ],
+  "combined_188": {
+    "source": "431627ae",
+    "tmt_scenarios_passed": 464,
+    "natural_games": 20,
+    "selected_identities_actually_cast": 45,
+    "all_target_clippy": true,
+    "checks": [
+      {
+        "log": "<cache>/rustmage-tmt-188-public.log",
+        "sha256": "260ad8c0311cd78c0ccc52c23fe399ae829bad202b38fb9f7c645a56678f824e",
+        "guard_reports": [
+          {
+            "path": "<cache>/rustmage-build-reports/01ecb83dadc04b90aa7241e1936fc083.json",
+            "sha256": "e7faa505d80390eb84301b2e5cef825dfebc2fa252be6efcdacd36639d1d52c9"
+          }
+        ]
+      },
+      {
+        "log": "<cache>/rustmage-tmt-188-games.log",
+        "sha256": "57a98e0cfa7b554d37cc033301a7afb4c35b6dbd371311d5c2efef9609001509",
+        "guard_reports": [
+          {
+            "path": "<cache>/rustmage-build-reports/d0cdede12e114ee7bb6dfc569dca6357.json",
+            "sha256": "c5866e4b3d5bcc78749c7b4d93692c9766f7b6cdbbb0e92a0915a9b6a095b18a"
+          }
+        ]
+      },
+      {
+        "log": "<cache>/rustmage-tmt-188-clippy.log",
+        "sha256": "0ca430d44b287eba8def5fd29acd8300dacdb2939788d63bce341eca0727081a",
+        "guard_reports": [
+          {
+            "path": "<cache>/rustmage-build-reports/d8e27b2dec90453badad3db8a99180a2.json",
+            "sha256": "1047fb4dc072e3639e83a42d8196c0028ee668461cafc143ba6b6ade13d7eae9"
+          }
+        ]
+      }
+    ]
+  }
 }

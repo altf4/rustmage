@@ -168,6 +168,15 @@ impl Evidence {
                     if cast.method == CastMethod::Free {
                         self.add("free casts committed", 1);
                     }
+                    if cast.kicker == Some(true) {
+                        self.add("kicked casts committed", 1);
+                    }
+                    if cast.method == CastMethod::Normal
+                        && packet.source_card.name() == "Krang, Master Mind"
+                        && cast.mana_spent() < packet.source_card.fixed_mana_value()
+                    {
+                        self.add("artifact affinity discounted casts", 1);
+                    }
                     if cast.origin == Zone::Exile {
                         self.add("exile casts committed", 1);
                     }
@@ -190,6 +199,20 @@ impl Evidence {
             let count = row.count.saturating_sub(previous);
             if matches!(row.kind, StackKind::TriggeredAbility { .. }) {
                 self.add("triggered abilities resolved", count);
+                match row.definition.name() {
+                    "Michelangelo, Game Master" => {
+                        self.add("disappear counter abilities resolved", count)
+                    }
+                    "Raphael, Tough Turtle" => {
+                        self.add("alliance damage abilities resolved", count)
+                    }
+                    "Casey Jones, Vigilante" | "Koya, Death from Above"
+                        if matches!(row.kind, StackKind::TriggeredAbility { ability: 1 }) =>
+                    {
+                        self.add("delayed step programs resolved", count)
+                    }
+                    _ => {}
+                }
             }
             if matches!(row.kind, StackKind::ActivatedAbility { .. }) {
                 self.add("activated abilities resolved", count);
@@ -208,6 +231,19 @@ impl Evidence {
         for row in &after.delayed_steps {
             if !before.delayed_steps.iter().any(|o| o.id == row.id) {
                 self.add("delayed step programs scheduled", 1);
+            }
+        }
+        for outside in &before.outside_game_cards {
+            if !after
+                .outside_game_cards
+                .iter()
+                .any(|o| o.reference == outside.reference)
+                && after
+                    .objects
+                    .iter()
+                    .any(|o| o.id == outside.id && o.zone == Zone::Hand)
+            {
+                self.add("outside cards moved to hand", 1);
             }
         }
         for object in &after.objects {
@@ -233,6 +269,19 @@ impl Evidence {
                 {
                     self.add("outside cards entered", 1);
                 }
+            }
+            if object.zone == Zone::Battlefield
+                && object.copy_recipe.is_some()
+                && old.is_none_or(|o| {
+                    o.copy_recipe != object.copy_recipe || o.zone != Zone::Battlefield
+                })
+            {
+                self.add("copy effects applied", 1);
+            }
+            if object.counters.get(rustmage::CounterKind::Hexproof)
+                > old.map_or(0, |o| o.counters.get(rustmage::CounterKind::Hexproof))
+            {
+                self.add("hexproof counters placed", 1);
             }
             if object.counters.plus_one > old.map_or(0, |o| o.counters.plus_one) {
                 self.add("plus counters placed", 1);
@@ -520,9 +569,15 @@ fn tmt_entire_pool_and_theme_acceptance() {
         e.games > 100 && e.decisions > 10000 && e.branches > 100 && e.private > 0 && e.combat > 0
     );
     assert_eq!(e.replayed, e.decisions);
+    assert_eq!(
+        e.games, 172,
+        "declared pool/theme decks, seeds and both starters must all run"
+    );
     for mechanic in [
         "sneak casts committed",
         "class levels gained",
+        "disappear counter abilities resolved",
+        "alliance damage abilities resolved",
         "tokens entered",
         "plus counters placed",
         "triggered abilities resolved",
