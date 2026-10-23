@@ -728,7 +728,9 @@ pub(crate) enum Instruction {
     },
     ReturnDeathCard(ReturnKind),
     ResolveDelayedReturn,
-    CopyNextInstantSorcery,
+    CopyNextInstantSorcery {
+        ability: u16,
+    },
     ScheduleSacrificedArtifactCopy {
         ability: u16,
     },

@@ -28,23 +28,32 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         }),
         ..CardExtras::EMPTY
     },
-    triggers: &[TriggeredAbility {
-        condition: TriggerCondition::PlayerDamaged {
-            subject: DamageSubject::Attached,
-            combat_only: true,
-            opponent_only: false,
-            one_or_more: false,
-        },
-        targets: TargetPlan::NONE,
-        program: &[
-            Instruction::CreateTokens {
-                token: Card(5302),
-                amount: 1,
-                tapped: false,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::PlayerDamaged {
+                subject: DamageSubject::Attached,
+                combat_only: true,
+                opponent_only: false,
+                one_or_more: false,
             },
-            Instruction::CopyNextInstantSorcery,
-        ],
-    }],
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::CreateTokens {
+                    token: Card(5302),
+                    amount: 1,
+                    tapped: false,
+                },
+                Instruction::CopyNextInstantSorcery { ability: 1 },
+            ],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Reflexive,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CopyCastSpell {
+                prior_spells: false,
+            }],
+        },
+    ],
     activated: &[ActivatedAbility {
         exhaust: false,
         guard: ActivationGuard::Always,

@@ -56,6 +56,14 @@ fn start_step(g: &mut Game, p: Player, step: Step) {
     g.begin_step(step);
     g.prepare_triggers();
 }
+fn token(subtype: &str) -> Card {
+    Card::catalogue()
+        .find(|card| {
+            card.token_info()
+                .is_some_and(|info| info.subtypes == subtype)
+        })
+        .unwrap()
+}
 fn tokens(g: &Game, p: Player, subtype: &str) -> Vec<CardId> {
     g.state
         .objects
@@ -95,7 +103,7 @@ fn big_farmer_entry_attack_food_cost_exact_milled_recovery_and_decline_both_seat
                 matches!(g.state.pending, Pending::EffectChoice { .. })
             });
             let opponent_food =
-                super::tests::spawn(&mut g, p.other(), Card(5246), Zone::Battlefield);
+                super::tests::spawn(&mut g, p.other(), token("Food"), Zone::Battlefield);
             let bad = g.object_ref(opponent_food);
             reject(&mut g, Action::Sacrifice { object: bad });
             if pay {
@@ -136,8 +144,8 @@ fn big_fomori_external_discard_dynamic_artifacts_private_pick_and_random_bottom(
         let mut g = setup(p);
         let vault = named(&mut g, p, "Fomori Vault", Zone::Battlefield);
         let discard = named(&mut g, p, "Forest", Zone::Hand);
-        super::tests::spawn(&mut g, p, Card(5246), Zone::Battlefield);
-        let second = super::tests::spawn(&mut g, p, Card(5246), Zone::Battlefield);
+        super::tests::spawn(&mut g, p, token("Food"), Zone::Battlefield);
+        let second = super::tests::spawn(&mut g, p, token("Food"), Zone::Battlefield);
         let chosen = named(&mut g, p, "Grizzly Bears", Zone::Library);
         let rest = named(&mut g, p, "Giant Growth", Zone::Library);
         checked(
@@ -156,12 +164,13 @@ fn big_fomori_external_discard_dynamic_artifacts_private_pick_and_random_bottom(
         assert_eq!(g.object_view(vault).zone, Zone::Battlefield);
         assert!(g.object_view(vault).tapped);
         // X is evaluated at resolution, after a third artifact appears.
-        super::tests::spawn(&mut g, p, Card(5246), Zone::Battlefield);
+        super::tests::spawn(&mut g, p, token("Food"), Zone::Battlefield);
         until(&mut g, |g| {
             matches!(g.state.pending, Pending::EffectLibrarySelection { .. })
         });
         assert_eq!(g.observe(p).library_selection.unwrap().remaining.len(), 3);
         assert!(g.observe(p.other()).library_selection.is_none());
+        reject(&mut g, Action::SelectLibrary { card: discard });
         select_library(&mut g, chosen);
         assert_eq!(g.object_view(chosen).zone, Zone::Hand);
         assert_eq!(g.object_view(rest).zone, Zone::Library);
@@ -175,7 +184,7 @@ fn big_loot_counts_other_nonland_types_and_permission_survives_source() {
         let loot = named(&mut g, p, "Loot, the Key to Everything", Zone::Battlefield);
         named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
         named(&mut g, p, "Omenpath Journey", Zone::Battlefield);
-        super::tests::spawn(&mut g, p, Card(5246), Zone::Battlefield);
+        super::tests::spawn(&mut g, p, token("Food"), Zone::Battlefield);
         named(&mut g, p, "Forest", Zone::Battlefield);
         let count = g.state.players[p.index()].library.len();
         start_step(&mut g, p, Step::Upkeep);
@@ -254,6 +263,10 @@ fn big_nexus_private_optional_hand_exile_and_copiable_golem_exceptions() {
             reject(&mut g, Action::PutHandCreature { object });
             g.move_object(nexus, Zone::Graveyard);
             if accept {
+                let stale = g.object_ref(card);
+                g.move_object(card, Zone::Exile);
+                g.move_object(card, Zone::Hand);
+                reject(&mut g, Action::PutHandCreature { object: stale });
                 let object = g.object_ref(card);
                 checked(&mut g, Action::PutHandCreature { object });
                 settle(&mut g);
@@ -378,9 +391,9 @@ fn big_font_chooses_token_on_resolution_and_pays_three_distinct_token_names_atom
         let font = named(&mut g, p, "Transmutation Font", Zone::Battlefield);
         let found = named(&mut g, p, "Solemn Simulacrum", Zone::Library);
         for (card, subtype) in [
-            (Card(5346), "Blood"),
-            (Card(5296), "Clue"),
-            (Card(5246), "Food"),
+            (token("Blood"), "Blood"),
+            (token("Clue"), "Clue"),
+            (token("Food"), "Food"),
         ] {
             g.state.objects[font as usize].tapped = false;
             activate(&mut g, font, 0, None);
@@ -393,7 +406,7 @@ fn big_font_chooses_token_on_resolution_and_pays_three_distinct_token_names_atom
             settle(&mut g);
             assert_eq!(tokens(&g, p, subtype).len(), 1);
         }
-        let duplicate = super::tests::spawn(&mut g, p, Card(5246), Zone::Battlefield);
+        let duplicate = super::tests::spawn(&mut g, p, token("Food"), Zone::Battlefield);
         g.state.objects[font as usize].tapped = false;
         let chosen = [
             tokens(&g, p, "Blood")[0],
@@ -444,8 +457,8 @@ fn big_font_chooses_token_on_resolution_and_pays_three_distinct_token_names_atom
 fn big_font_sorcery_timing_and_funding_cannot_spend_a_reserved_sacrifice_token() {
     let mut g = setup(Player::P0);
     let font = named(&mut g, Player::P0, "Transmutation Font", Zone::Battlefield);
-    super::tests::spawn(&mut g, Player::P0, Card(5346), Zone::Battlefield);
-    super::tests::spawn(&mut g, Player::P0, Card(5246), Zone::Battlefield);
+    super::tests::spawn(&mut g, Player::P0, token("Blood"), Zone::Battlefield);
+    super::tests::spawn(&mut g, Player::P0, token("Food"), Zone::Battlefield);
     let treasure = Card::catalogue()
         .find(|c| c.token_info().is_some_and(|t| t.subtypes == "Treasure"))
         .unwrap();
@@ -470,4 +483,106 @@ fn big_font_sorcery_timing_and_funding_cannot_spend_a_reserved_sacrifice_token()
             .iter()
             .any(|a| matches!(a,Action::AnnounceActivate{card,ability:1,..}if *card==font))
     );
+}
+
+#[test]
+fn big_cage_free_land_keeps_tarnation_color_choice_and_obeys_land_allowance() {
+    for p in [Player::P0, Player::P1] {
+        for already_played in [false, true] {
+            let mut g = setup(p);
+            let land = named(&mut g, p, "Tarnation Vista", Zone::Library);
+            let cage = named(&mut g, p, "Collector's Cage", Zone::Hand);
+            cast(&mut g, cage, None, &[]);
+            until(&mut g, |g| {
+                matches!(g.state.pending, Pending::EffectLibrarySelection { .. })
+            });
+            select_library(&mut g, land);
+            named(&mut g, p, "Helpful Hunter", Zone::Battlefield);
+            named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+            let target = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+            g.state.land_played = already_played;
+            activate(&mut g, cage, 0, Some(Target::Card(target)));
+            until(&mut g, |g| {
+                matches!(g.state.pending, Pending::ResolutionCasts { .. })
+            });
+            if already_played {
+                reject(&mut g, Action::PlayLand { card: land });
+                assert_eq!(g.object_view(land).zone, Zone::Exile);
+            } else {
+                checked(&mut g, Action::PlayLand { card: land });
+                assert!(matches!(g.state.pending, Pending::EntryValue { .. }));
+                assert!(
+                    g.observe(p.other())
+                        .objects
+                        .iter()
+                        .any(|o| o.reference.card == land)
+                );
+                checked(
+                    &mut g,
+                    Action::ChooseEntryValue {
+                        value: EntryChoiceValue::Color(crate::ChoiceColor::Green),
+                    },
+                );
+                assert!(matches!(g.state.pending, Pending::ResolutionCasts { .. }));
+                assert_eq!(g.object_view(land).zone, Zone::Battlefield);
+                assert!(g.object_view(land).tapped);
+                assert_eq!(
+                    g.entry_value(g.object_ref(land)),
+                    Some(EntryChoiceValue::Color(crate::ChoiceColor::Green))
+                );
+                assert!(g.state.land_played);
+            }
+            checked(&mut g, Action::FinishResolutionCasts);
+            settle(&mut g);
+        }
+    }
+}
+
+#[test]
+fn big_font_helm_adds_map_to_chosen_token_event_and_map_can_pay_distinct_cost() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let font = named(&mut g, p, "Transmutation Font", Zone::Battlefield);
+        named(&mut g, p, "Worldwalker Helm", Zone::Battlefield);
+        activate(&mut g, font, 0, None);
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::TokenChoice { .. })
+        });
+        checked(
+            &mut g,
+            Action::ChooseToken {
+                token: token("Blood"),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(tokens(&g, p, "Blood").len(), 1);
+        assert_eq!(tokens(&g, p, "Map").len(), 1);
+        let food = super::tests::spawn(&mut g, p, token("Food"), Zone::Battlefield);
+        let blood = tokens(&g, p, "Blood")[0];
+        let map = tokens(&g, p, "Map")[0];
+        g.state.objects[font as usize].tapped = false;
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: font,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        for id in [food, blood, map] {
+            let object = g.object_ref(id);
+            checked(&mut g, Action::ChooseAdditionalCost { object });
+        }
+        until(&mut g, |g| g.state.announcing.is_none());
+        assert!(
+            [food, blood, map]
+                .into_iter()
+                .all(|id| g.object_view(id).zone == Zone::Outside)
+        );
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::EffectSearch { .. })
+        });
+        checked(&mut g, Action::FinishSearch);
+        settle(&mut g);
+    }
 }

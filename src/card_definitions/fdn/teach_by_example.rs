@@ -1,5 +1,8 @@
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Spell(TargetPlan::NONE, &[Instruction::CopyNextInstantSorcery]),
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[Instruction::CopyNextInstantSorcery { ability: 0 }],
+    ),
     // The delayed trigger retains this definition after the instant leaves the stack.
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::SpellCast {

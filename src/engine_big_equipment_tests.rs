@@ -61,6 +61,7 @@ fn settle_paid(g: &mut Game) {
                             | Action::PutTrigger { .. }
                             | Action::PayCosts { .. }
                             | Action::FinishTargets
+                            | Action::FinishStackTargets
                     )
                 })
             })
@@ -200,7 +201,7 @@ fn big_sword_protection_prevents_targeting_and_damage_and_delays_one_spell_copy(
                         .unwrap_or(Card::from_name("@token/b60f6cd3b44b22bd289fe4e2").unwrap())
         }));
         cast(&mut g, shock, None, &[Target::Player(p.other())]);
-        settle(&mut g);
+        settle_paid(&mut g);
         assert_eq!(g.state.players[p.other().index()].life, 15);
     }
 }
@@ -264,5 +265,67 @@ fn big_esoteric_sacrifice_uses_saved_recipe_and_source_independent_next_end_copy
             .collect();
         assert_eq!(copies.len(), 1);
         assert!(g.state.delayed_artifact_copies.is_none());
+    }
+}
+
+#[test]
+fn big_lotus_vista_funding_recomputes_monocolor_after_virtual_sacrifice() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let ring = paid(&mut g, p, "Lotus Ring");
+        let bear = paid(&mut g, p, "Bear Cub");
+        equip(&mut g, ring, bear);
+        let vista = named(&mut g, p, "Tarnation Vista", Zone::Hand);
+        checked(&mut g, Action::PlayLand { card: vista });
+        checked(
+            &mut g,
+            Action::ChooseEntryValue {
+                value: EntryChoiceValue::Color(crate::cards::ChoiceColor::Blue),
+            },
+        );
+        settle(&mut g);
+        g.state.objects[vista as usize].tapped = false;
+        g.state.objects[bear as usize].summoning_sick = false;
+        g.state.players[p.index()].mana = [0; 6];
+        let saved = g.snapshot();
+        assert!(!g.can_fund(FundingGoal {
+            actor: p,
+            required: [0, 0, 0, 2, 1, 0],
+            generic: 0,
+            reserve: None,
+            source: None
+        }));
+        assert_eq!(g.snapshot(), saved);
+        let grantor = g.object_ref(ring);
+        checked(
+            &mut g,
+            Action::TapGrantedMana {
+                card: bear,
+                grantor,
+                production: [0, 0, 0, 3, 0, 0],
+            },
+        );
+        assert!(!g.legal_actions().iter().any(|a|matches!(a,Action::ActivateMana {card,ability:1,production,..} if *card==vista&&production[4]>0)));
+    }
+}
+#[test]
+fn big_esoteric_tracks_simultaneous_artifact_sacrifices_replaced_by_exile() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let dup = paid(&mut g, p, "Esoteric Duplicator");
+        let ring = paid(&mut g, p, "Lotus Ring");
+        paid(&mut g, p, "Rest in Peace");
+        g.sacrifice_batch(&[(p, dup), (p, ring)]);
+        assert_eq!(g.state.objects[dup as usize].zone, Zone::Exile);
+        assert_eq!(g.state.objects[ring as usize].zone, Zone::Exile);
+        settle_paid(&mut g);
+        assert_eq!(g.state.delayed_artifact_copies.as_ref().unwrap().len(), 2);
+        g.begin_step(Step::End);
+        settle_paid(&mut g);
+        for name in ["Esoteric Duplicator", "Lotus Ring"] {
+            assert!(g.state.objects.iter().any(|o| o.zone == Zone::Battlefield
+                && o.is_copy_token()
+                && o.card.name() == name));
+        }
     }
 }

@@ -464,6 +464,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     10
                 }
             }
+            Action::ChooseToken { .. } => 10,
             Action::Pass | Action::FinishAttackers | Action::FinishBlockers => 0,
         }
     };

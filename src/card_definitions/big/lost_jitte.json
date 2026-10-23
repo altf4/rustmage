@@ -11,5 +11,27 @@
   "physical_metadata_sha256": "b4c6324c8473a2f0e4b5b2c99795ecda50e0a9a58ae4972ad5f9da9043f11de8",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/l/LostJitte.java",
-  "java_sha256": "5af202ea333a220d5819a205c206d8d9244ef153ea6f5fb5463c2cc64250916f"
+  "java_sha256": "5af202ea333a220d5819a205c206d8d9244ef153ea6f5fb5463c2cc64250916f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageEquippedTriggeredAbility.java",
+      "sha256": "2539d94a6e829ab2ec07824e34b32cb65664a1358a45b2f8eafed6abe1cbb9c8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/RemoveCountersSourceCost.java",
+      "sha256": "6d8c1b5ff39cc2cd02e982807a027f4ff81fcce1cdeef232603904b26640a09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAttachedEffect.java",
+      "sha256": "55e3fec3d9814fe3b997b35570bd5963d93b7ed65f65fa89dffef71f7d008be2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    }
+  ]
 }

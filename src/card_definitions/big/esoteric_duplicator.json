@@ -11,5 +11,27 @@
   "physical_metadata_sha256": "2cfd7f4286662e7654510623e6b934b66a34a5bb90a4e1063c774de2467c53e0",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/e/EsotericDuplicator.java",
-  "java_sha256": "a9098c1988a86c832a61751135913e9654ebb87806b4e363e1e4a33fe1399de1"
+  "java_sha256": "a9098c1988a86c832a61751135913e9654ebb87806b4e363e1e4a33fe1399de1",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SacrificePermanentTriggeredAbility.java",
+      "sha256": "fa6f6ae71009e45d59ba6080503c75b1c96b730ea7e0b5a075d5dc26a230efe8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/token/ClueAbility.java",
+      "sha256": "ade27801ef45e9379e70fa7a5a8528f847e9df65d86410f562818e94b1e908b6"
+    }
+  ]
 }

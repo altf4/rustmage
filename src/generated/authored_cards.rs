@@ -48095,8 +48095,35 @@ pub(super) mod card_5343 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/synthetic/token_phyrexian_goblin_1_1_red.rs");
 }
+pub(super) mod card_5344 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_bat_2_1_black_flying.rs");
+}
+pub(super) mod card_5345 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_construct_artifact_scaling.rs");
+}
+pub(super) mod card_5346 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_blood.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5344] = [
+pub(super) static RULES: [&CardRules; 5347] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -53441,6 +53468,9 @@ pub(super) static RULES: [&CardRules; 5344] = [
     &card_5341::RULES,
     &card_5342::RULES,
     &card_5343::RULES,
+    &card_5344::RULES,
+    &card_5345::RULES,
+    &card_5346::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

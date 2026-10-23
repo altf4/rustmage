@@ -309,7 +309,7 @@ fn abandoning_copy_choices_ceases_only_the_exact_uncommitted_copy_and_keeps_futu
         checked(&mut g, Action::Pass);
         let draft = g.observe(p).retarget.unwrap().item;
         assert!(draft.is_copy);
-        g.remember_next_spell_copy(&saved);
+        g.remember_next_spell_copy(&saved, 0);
         assert_eq!(g.delayed_spell_copy_view().len(), 1);
         g.abandon_copy_continuations();
         assert!(g.retarget_view().is_none());

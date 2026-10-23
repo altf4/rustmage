@@ -11,5 +11,42 @@
   "physical_metadata_sha256": "713c8d2b1fdca789fbbfd02b66fa194046b51e8d4f648a995d258b5dc7263755",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/s/SwordOfWealthAndPower.java",
-  "java_sha256": "8bbf2cde6c6472232680303cb9e7f68958404e21e63045840a7ebe2b9b4aaea2"
+  "java_sha256": "8bbf2cde6c6472232680303cb9e7f68958404e21e63045840a7ebe2b9b4aaea2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+      "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProtectionAbility.java",
+      "sha256": "9e9e989ed896c2061243d8db26a7d6a364116b654a8477bbeb52c613e9d943cd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsDamageToAPlayerAttachedTriggeredAbility.java",
+      "sha256": "62965ddbc906f2b304710561deb0f8541e038fb29f89ca4da7340fd7f26091a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/CopyNextSpellDelayedTriggeredAbility.java",
+      "sha256": "40d1a8d8178748adf58bc8bd5bfeea6ab90afbcfe49d639a730d7ae1ed9c5a01"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/CastNextSpellDelayedTriggeredAbility.java",
+      "sha256": "a6b2f8fcd1d6e64faa8dfa3e5c3d07e0127ffdb31f8b046b619bd04768bce4cc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    }
+  ]
 }

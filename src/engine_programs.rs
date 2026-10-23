@@ -1640,7 +1640,9 @@ impl Game {
                         self.stage_copy_creation(item.controller, *recipe, 1);
                     }
                 }
-                Instruction::CopyNextInstantSorcery => self.remember_next_spell_copy(&item),
+                Instruction::CopyNextInstantSorcery { ability } => {
+                    self.remember_next_spell_copy(&item, ability)
+                }
                 Instruction::CopyCastSpell { .. } => {
                     if self.copy_captured_spell(&item) {
                         return;
