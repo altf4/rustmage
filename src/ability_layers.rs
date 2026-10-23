@@ -41,6 +41,7 @@ pub(crate) enum StaticAbilityFragment {
     NoncreatureConspire,
     LookAtLibraryTop,
     CastCreatureFromLibraryTop,
+    PlayLibraryTopSubtypeLandsWithCounter(&'static [&'static str]),
     SpendAnyManaForCreatures,
     GraveyardPermanentTypes,
     GraveyardSmallCreaturesWithFinality,

@@ -58,6 +58,10 @@ impl Game {
         match rule {
             TargetRule::SingleTargetStackObject => item.targets.len() == 1,
             TargetRule::Spell => item.kind == StackKind::Spell,
+            TargetRule::SpellTargetsControlledArtifactOrCreature => {
+                item.kind == StackKind::Spell
+                    && self.spell_targets_controlled_artifact_or_creature(item, controller)
+            }
             TargetRule::TriggeredAbility { relation } => {
                 item.kind.is_triggered()
                     && (relation == -1 || ((item.controller == controller) == (relation == 0)))
@@ -762,5 +766,40 @@ mod allocation_occurrence_tests {
             assert_eq!(g.object_view(a).zone, Zone::Graveyard);
             assert_eq!(g.object_view(b).damage, 3);
         }
+    }
+}
+
+#[cfg(test)]
+mod tmt_blink_copy_tests {
+    use super::super::ability_timeline_tests::{checked, named, settle, setup};
+    use super::super::tmt_blink_permissions_tests::cast;
+    use super::*;
+    #[test]
+    fn tmt_blink_library_promise_is_not_inherited_as_counter_by_spell_copy() {
+        let p = Player::P0;
+        let mut g = setup(p);
+        let mikey = named(&mut g, p, "Mikey & Don, Party Planners", Zone::Hand);
+        cast(&mut g, mikey, None, &[]);
+        settle(&mut g);
+        let top = named(&mut g, p, "Aegis Turtle", Zone::Library);
+        cast(&mut g, top, None, &[]);
+        let template = g.state.stack.last().unwrap().clone();
+        assert!(
+            template
+                .cast
+                .unwrap()
+                .origin_permissions
+                .library_creature_counter()
+        );
+        let copy = g.allocate_spell_copy(&template, p);
+        let copy_id = copy.card;
+        g.push_stack_item(copy);
+        settle(&mut g);
+        assert_eq!(g.counter_count(top, CounterKind::PlusOne), 1);
+        assert_eq!(g.counter_count(copy_id, CounterKind::PlusOne), 0);
+        assert!(g.state.objects[copy_id as usize].is_token());
+        let before = g.snapshot();
+        checked(&mut g, Action::Pass);
+        g.restore(&before).unwrap();
     }
 }

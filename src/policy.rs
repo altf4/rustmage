@@ -329,6 +329,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceWarp { .. }
             | Action::AnnounceSneak { .. }
             | Action::AnnounceGraveyardSpell { .. }
+            | Action::AnnounceLibrarySpell { .. }
             | Action::AnnouncePlotted { .. }
             | Action::AnnounceExile { .. }
             | Action::AnnounceFlashback { .. } => 79,

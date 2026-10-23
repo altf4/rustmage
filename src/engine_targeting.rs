@@ -1159,6 +1159,9 @@ impl Game {
                     && match rule {
                         TargetRule::SingleTargetStackObject => item.targets.len() == 1,
                         TargetRule::Spell => true,
+                        TargetRule::SpellTargetsControlledArtifactOrCreature => {
+                            self.spell_targets_controlled_artifact_or_creature(item, controller)
+                        }
                         TargetRule::SpellKinds { kinds, excluded } => {
                             (kinds == 0 || item.source_card.kind_mask() & u16::from(kinds) != 0)
                                 && item.source_card.kind_mask() & u16::from(excluded) == 0
@@ -1373,6 +1376,7 @@ impl Game {
             self.spell_mana_purpose_for_card(actor, card, self.effective_spell_card(card)),
         );
         self.state.passes = 0;
+        let library_counter = self.library_top_creature_counter(actor, card);
         let stash_origin = self.foreign_stash(actor, card);
         let exile_any_mana = self.exile_cast_spends_any_mana(actor, card);
         let origin = self.state.objects[card as usize].zone;
@@ -1392,8 +1396,11 @@ impl Game {
         let id = self.next_stack_id();
         let mut item = self.cast_preview(actor, card, origin, object, id, payment);
         item.mana_copy_sources = outcome.copies;
-        item.cast.as_mut().unwrap().origin_permissions =
-            CastOriginPermissions::new(stash_origin, exile_any_mana);
+        item.cast.as_mut().unwrap().origin_permissions = if library_counter {
+            CastOriginPermissions::LibraryCreatureCounter
+        } else {
+            CastOriginPermissions::new(stash_origin, exile_any_mana)
+        };
         item
     }
     pub(super) fn cast_preview(
@@ -1433,10 +1440,14 @@ impl Game {
                 face: CastFace::Normal,
                 payment,
                 origin,
-                origin_permissions: CastOriginPermissions::new(
-                    self.foreign_stash(actor, card),
-                    self.exile_cast_spends_any_mana(actor, card),
-                ),
+                origin_permissions: if self.library_top_creature_counter(actor, card) {
+                    CastOriginPermissions::LibraryCreatureCounter
+                } else {
+                    CastOriginPermissions::new(
+                        self.foreign_stash(actor, card),
+                        self.exile_cast_spends_any_mana(actor, card),
+                    )
+                },
                 method: CastMethod::Normal,
                 flash_surcharge: false,
                 offspring: None,

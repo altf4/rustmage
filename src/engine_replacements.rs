@@ -85,6 +85,7 @@ pub(super) enum TokenCompletion {
     Mobilize,
     Attacking,
     MobilizeDelayed(Box<SpellView>),
+    HastyDelayedCopy(Box<SpellView>),
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct SimultaneousTokens {
@@ -167,7 +168,9 @@ impl ReplacementState {
 impl TokenCompletion {
     fn visit_owned_packets(&mut self, visit: &mut impl FnMut(&mut SpellView)) {
         match self {
-            Self::Reflexive { item, .. } | Self::MobilizeDelayed(item) => visit(item),
+            Self::Reflexive { item, .. }
+            | Self::MobilizeDelayed(item)
+            | Self::HastyDelayedCopy(item) => visit(item),
             Self::RoleReflexive(completion) => visit(&mut completion.item),
             Self::Simultaneous(sequence) => {
                 for batch in &mut sequence.waiting {
@@ -179,9 +182,9 @@ impl TokenCompletion {
     }
     fn owned_bytes(&self) -> usize {
         match self {
-            Self::Reflexive { item, .. } | Self::MobilizeDelayed(item) => {
-                std::mem::size_of::<SpellView>() + item.owned_bytes()
-            }
+            Self::Reflexive { item, .. }
+            | Self::MobilizeDelayed(item)
+            | Self::HastyDelayedCopy(item) => std::mem::size_of::<SpellView>() + item.owned_bytes(),
             Self::RoleReflexive(c) => {
                 std::mem::size_of::<RoleReflexiveCompletion>() + c.item.owned_bytes()
             }
@@ -904,7 +907,7 @@ impl Game {
     pub(super) fn stage_attacking_copy_creation(&mut self, player: Player, recipe: CopyRecipe) {
         self.stage_copy_creation_completion(player, recipe, 1, TokenCompletion::Attacking);
     }
-    fn stage_copy_creation_completion(
+    pub(super) fn stage_copy_creation_completion(
         &mut self,
         player: Player,
         recipe: CopyRecipe,
@@ -930,6 +933,7 @@ impl Game {
             completion,
         };
         if !attacking
+            && matches!(batch.completion, TokenCompletion::None)
             && self.state.replacements.is_none()
             && self.token_replacements(&batch).is_empty()
         {
@@ -1385,6 +1389,7 @@ impl Game {
                                 let capture = matches!(
                                     batch.completion,
                                     TokenCompletion::JobAttach(_)
+                                        | TokenCompletion::HastyDelayedCopy(_)
                                         | TokenCompletion::Keywords { .. }
                                         | TokenCompletion::Reflexive { .. }
                                         | TokenCompletion::RoleReflexive(_)
@@ -1539,6 +1544,11 @@ impl Game {
                 }
             }
             TokenCompletion::MobilizeDelayed(item) => self.record_mobilize_tokens(&item, created),
+            TokenCompletion::HastyDelayedCopy(item) => {
+                let ids = created.iter().map(|r| r.card).collect::<Vec<_>>();
+                self.grant_keyword_effects_expiring(&ids, item.object, Keywords::HASTE, None);
+                self.record_mobilize_tokens(&item, created);
+            }
             _ => {}
         }
     }

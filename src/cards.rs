@@ -158,6 +158,7 @@ pub(crate) enum TargetRule {
     TriggeredAbility {
         relation: i8,
     },
+    SpellTargetsControlledArtifactOrCreature,
     SpellKinds {
         kinds: u8,
         excluded: u8,
@@ -870,6 +871,9 @@ pub(crate) enum Instruction {
     ExileTargetsLinkedToSource,
     /// Immediate public-zone tracking, including redirected first movement (CR400.7j).
     BlinkImmediate,
+    BlinkAllTargetsImmediate,
+    TakeOpposingArtifactsUntilEndTurn,
+    CreateHastyCopyWithDelayedSacrifice,
     /// A single legal permanent target's current controller creates the token.
     ExileAndCreateForController {
         token: Card,
@@ -1729,6 +1733,7 @@ pub(crate) enum StatValue {
     TappedCount(CountFilter),
     Not(&'static StatValue),
     CardsDrawnThisTurn,
+    ArtifactEnteredThisTurn,
     ControllerHandSize,
     NonlandEntriesThisTurn,
     CreatureEntriesThisTurn {

@@ -9,6 +9,7 @@ impl Card {
                     f,
                     StaticAbilityFragment::LookAtLibraryTop
                         | StaticAbilityFragment::CastCreatureFromLibraryTop
+                        | StaticAbilityFragment::PlayLibraryTopSubtypeLandsWithCounter(..)
                         | StaticAbilityFragment::SpendAnyManaForCreatures
                         | StaticAbilityFragment::GraveyardPermanentTypes
                         | StaticAbilityFragment::GraveyardSmallCreaturesWithFinality
@@ -90,10 +91,13 @@ impl Game {
         let object = &self.state.objects[card as usize];
         object.owner == player
             && object.zone == Zone::Library
-            && object.card.is_creature()
             && self.state.players[player.index()].library.last() == Some(&card)
-            && has_fragment(self, player, |f| {
-                matches!(f, StaticAbilityFragment::CastCreatureFromLibraryTop)
+            && has_fragment(self, player, |f| match *f {
+                StaticAbilityFragment::CastCreatureFromLibraryTop => object.card.is_creature(),
+                StaticAbilityFragment::PlayLibraryTopSubtypeLandsWithCounter(types) => {
+                    object.card.is_land() || types.iter().any(|s| object.card.has_subtype(s))
+                }
+                _ => false,
             })
     }
     pub(super) fn visible_library_top(&self, viewer: Player, owner: Player) -> Option<ObjectRef> {

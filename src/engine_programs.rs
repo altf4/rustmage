@@ -1513,6 +1513,7 @@ impl Game {
                                 || c.bargain == Some(true)
                                 || c.evidence == Some(true)
                                 || matches!(c.gift, Some(GiftDeclaration::Promised { .. }))
+                                || c.origin_permissions.library_creature_counter()
                                 || matches!(c.method, CastMethod::Warp | CastMethod::Sneak)
                                 || item.source_card.entry_counter_rules().iter().any(|r| {
                                     matches!(
@@ -1546,6 +1547,14 @@ impl Game {
                                 .is_some_and(|c| c.origin_permissions.finality_on_entry())
                         {
                             movement.effect_counter = Some((CounterKind::Finality, 1));
+                        }
+                        if !item.is_copy
+                            && item
+                                .cast
+                                .is_some_and(|c| c.origin_permissions.library_creature_counter())
+                            && self.is_creature(item.card)
+                        {
+                            movement.effect_counter = Some((CounterKind::PlusOne, 1));
                         }
                         movement.sneak_paid = item.sneak.is_some();
                         if let Some(sneak) = item.sneak.as_deref() {
@@ -1793,6 +1802,7 @@ impl Game {
             if !matches!(
                 instruction,
                 Instruction::Fight { .. }
+                    | Instruction::BlinkAllTargetsImmediate
                     | Instruction::DamageByGroup { .. }
                     | Instruction::PowerDamage { .. }
                     | Instruction::GainControl {
@@ -2380,6 +2390,20 @@ impl Game {
                     }
                 }
                 Instruction::BlinkImmediate => self.blink_immediate(&item),
+                Instruction::BlinkAllTargetsImmediate => self.blink_all_targets_immediate(&item),
+                Instruction::TakeOpposingArtifactsUntilEndTurn => {
+                    self.take_opposing_artifacts(&item)
+                }
+                Instruction::CreateHastyCopyWithDelayedSacrifice => {
+                    if let Some(recipe) = self.recipe_for_subject(&item, Subject::Targets) {
+                        self.stage_copy_creation_completion(
+                            item.controller,
+                            recipe,
+                            1,
+                            replacements::TokenCompletion::HastyDelayedCopy(Box::new(item.clone())),
+                        );
+                    }
+                }
                 Instruction::ExileAndCreateForController { token, amount } => {
                     if let Some(id) = item
                         .targets

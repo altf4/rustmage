@@ -102,6 +102,9 @@ impl Game {
     {
         match value {
             StatValue::Fixed(n) => i128::from(n),
+            StatValue::ArtifactEnteredThisTurn => {
+                i128::from(self.state.players[owner.index()].artifact_entered_this_turn)
+            }
             StatValue::DeclaredSubtypeAttackersThisTurn(subtype) => {
                 i128::try_from(self.declared_subtype_attackers(owner, subtype))
                     .capacity("declared subtype attacker count")

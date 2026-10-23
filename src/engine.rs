@@ -616,6 +616,7 @@ define_actions! {
     AnnounceFlashSurcharge { card: CardId },
     AnnounceWarp { card: CardId },
     AnnounceSneak { card: CardId, attacker: ObjectRef },
+    AnnounceLibrarySpell { card:CardId, permission:ObjectRef,method:CastMethod,attacker:Option<ObjectRef>,flash_surcharge:bool },
     // Choose an exact static graveyard permission independently of alternative costs.
     AnnounceGraveyardSpell {
         card: CardId, permission: ObjectRef, permanent_type: Option<PermanentType>,
@@ -891,6 +892,7 @@ impl Object {
 struct PlayerState {
     permanent_left_battlefield_this_turn: bool,
     token_creation_attempted_this_turn: bool,
+    artifact_entered_this_turn: bool,
     put_counter_on_creature_this_turn: bool,
     hexproof_until_end_turn: bool,
     extra_land_plays_remaining: u64,
@@ -944,6 +946,7 @@ pub enum CastOriginPermissions {
     ExileAnyMana,
     Both,
     Finality,
+    LibraryCreatureCounter,
 }
 impl CastOriginPermissions {
     pub const fn new(stash: bool, any_mana: bool) -> Self {
@@ -953,6 +956,9 @@ impl CastOriginPermissions {
             (false, true) => Self::ExileAnyMana,
             (true, true) => Self::Both,
         }
+    }
+    pub const fn library_creature_counter(self) -> bool {
+        matches!(self, Self::LibraryCreatureCounter)
     }
     pub const fn finality_on_entry(self) -> bool {
         matches!(self, Self::Finality)
@@ -969,8 +975,15 @@ impl Serialize for CastOriginPermissions {
         use serde::ser::SerializeStruct;
         let mut view = serializer.serialize_struct(
             "CastOriginPermissions",
-            if self.finality_on_entry() { 3 } else { 2 },
+            if self.finality_on_entry() || self.library_creature_counter() {
+                3
+            } else {
+                2
+            },
         )?;
+        if self.library_creature_counter() {
+            view.serialize_field("library_creature_counter", &true)?;
+        }
         view.serialize_field("stash_origin", &self.stash_origin())?;
         view.serialize_field("exile_any_mana", &self.exile_any_mana())?;
         if self.finality_on_entry() {
@@ -2066,6 +2079,7 @@ pub struct PlayerView {
     pub no_maximum_hand_size: bool,
     /// Historical actual entries this turn; departures do not remove them.
     pub nonland_permanents_entered_this_turn: u64,
+    pub artifact_entered_this_turn: bool,
     pub spells_cast_this_turn: u64,
     pub cards_drawn_this_turn: u64,
     pub cards_discarded_this_turn: u64,
@@ -2444,6 +2458,7 @@ impl Game {
         let mut players = std::array::from_fn(|_| PlayerState {
             permanent_left_battlefield_this_turn: false,
             token_creation_attempted_this_turn: false,
+            artifact_entered_this_turn: false,
             put_counter_on_creature_this_turn: false,
             hexproof_until_end_turn: false,
             extra_land_plays_remaining: 0,
@@ -3509,6 +3524,11 @@ impl Game {
                 }
                 if !casting_prohibited
                     && self.visit_graveyard_spell_permissions(actor, sorcery, &mut emit)
+                {
+                    return true;
+                }
+                if !casting_prohibited
+                    && self.visit_library_spell_permissions(actor, sorcery, &mut emit)
                 {
                     return true;
                 }
@@ -4848,6 +4868,31 @@ impl Game {
                 if permanent_type.is_none() && self.state.objects[permission.card as usize].card.static_ability_groups().iter().flat_map(|g|g.fragments).any(|f|matches!(f,crate::cards::StaticAbilityFragment::GraveyardSmallCreaturesWithFinality)) {
                     cast.origin_permissions=CastOriginPermissions::Finality;
                 }
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceLibrarySpell {
+                card,
+                permission,
+                method,
+                attacker,
+                flash_surcharge,
+            } => {
+                let bonus = self
+                    .library_permission_counter(actor, card, permission)
+                    .expect("live authorized library permission");
+                let mut item = if method == CastMethod::Sneak {
+                    self.sneak_cast_item(actor, card, attacker.expect("Sneak attacker"))
+                } else {
+                    self.cast_item(actor, card, [0; 6])
+                };
+                let cast = item.cast.as_mut().unwrap();
+                cast.method = method;
+                cast.flash_surcharge = flash_surcharge;
+                cast.origin_permissions = if bonus {
+                    CastOriginPermissions::LibraryCreatureCounter
+                } else {
+                    CastOriginPermissions::Neither
+                };
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceSneak { card, attacker } => {
@@ -6231,6 +6276,7 @@ impl Game {
             player.token_creation_attempted_this_turn = false;
             player.put_counter_on_creature_this_turn = false;
             player.nonland_permanents_entered_this_turn = 0;
+            player.artifact_entered_this_turn = false;
             player.spells_cast_this_turn = 0;
             player.instant_sorcery_cast_this_turn = 0;
             player.cards_drawn_this_turn = 0;
@@ -6971,6 +7017,7 @@ impl Game {
                 }),
                 permanent_left_battlefield_this_turn: s.players[i]
                     .permanent_left_battlefield_this_turn,
+                artifact_entered_this_turn: s.players[i].artifact_entered_this_turn,
                 nonland_permanents_entered_this_turn: s.players[i]
                     .nonland_permanents_entered_this_turn,
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
@@ -8651,3 +8698,10 @@ mod tmt_inherited_batch_three_tests;
 #[cfg(test)]
 #[path = "engine_tmt_inherited_batch_four_tests.rs"]
 mod tmt_inherited_batch_four_tests;
+
+#[path = "engine_tmt_blink_permissions.rs"]
+mod tmt_blink_permissions;
+
+#[cfg(test)]
+#[path = "engine_tmt_blink_permissions_tests.rs"]
+mod tmt_blink_permissions_tests;
