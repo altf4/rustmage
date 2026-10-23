@@ -432,3 +432,10 @@ pass after that correction. No implementation PR or final review is claimed.
 Next: full release validation, then the shared counter-LKI/animation consumers
 (Donatello, Mutant Mechanic; Pizza Face; The Ooze; Mind Transfer Protocol), followed
 by remaining gated cards, inherited audits and set-only acceptance.
+
+The first admitted Ninja release run (`4f10e0cf`) passed 3,366 library tests but
+found two animation fixtures attacking the freshly cast Class despite summoning
+sickness. Its complete failure evidence remains in
+`<cache>/rustmage-validation-zx31120f/report/result.json`. Both fixtures now let
+the controller's next real turn begin before animating/attacking; gameplay
+sickness enforcement is unchanged. The integrated release rerun is pending.

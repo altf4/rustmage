@@ -387,6 +387,11 @@ fn tmt_ninja_returning_its_animated_source_preserves_the_captured_grant() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         let n = ninja(&mut g, p);
+        // A newly cast Class also becomes subject to summoning sickness when
+        // animated. Let its controller's next real turn begin before attacking.
+        super::ability_timeline_tests::next_turn(&mut g);
+        super::ability_timeline_tests::next_turn(&mut g);
+
         let card = named(&mut g, p, "Savannah Lions", Zone::Graveyard);
         let item = g.activation_item(p, n, 0);
         g.animate_source(
@@ -732,6 +737,11 @@ fn tmt_ninja_cost_order_changes_which_creature_departures_its_source_observes() 
         for after_return in [false, true] {
             let mut g = setup(p);
             let n = ninja(&mut g, p);
+            // A newly cast Class also becomes subject to summoning sickness when
+            // animated. Let its controller's next real turn begin before attacking.
+            super::ability_timeline_tests::next_turn(&mut g);
+            super::ability_timeline_tests::next_turn(&mut g);
+
             let card = named(&mut g, p, "Arbiter of Woe", Zone::Graveyard);
             let spare = named(&mut g, p, "Savannah Lions", Zone::Battlefield);
             let item = g.activation_item(p, n, 0);
