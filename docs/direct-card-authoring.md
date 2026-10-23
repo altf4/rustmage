@@ -37,9 +37,10 @@ queued/source departure interactions and owned raw/index branching and restore.
 Require two independent nonauthor reviews of the final published PR.
 
 Run `python3 scripts/link_catalogue.py`, then
-`python3 scripts/validate.py --release`. The validator runs native rules tests,
-Clippy, format/link consistency and provenance tests, plus the existing native
-smoke benchmark. It reports fixed inputs, coverage and cleanup and preserves every
+`python3 scripts/validate.py --release`. The validator runs all native rules and
+full-game tests with `cargo test --release --all-targets`, plus Clippy,
+format/link consistency, provenance tests and the existing native smoke benchmark.
+Without `--release`, native tests use the debug test profile. It reports fixed inputs, coverage and cleanup and preserves every
 shared library at its exact path/hash. The Freeform smoke benchmark is a limited
 regression workload, not full-set or all-Standard acceptance.
 

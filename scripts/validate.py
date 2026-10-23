@@ -12,7 +12,8 @@ ROOT=Path(__file__).resolve().parents[1]
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--release',action='store_true')
+    parser.add_argument('--release',action='store_true',
+                        help='Run native tests in release mode and build/run the release benchmark')
     parser.add_argument('--python', choices=['none', 'smoke', 'full'], default='none',
                         help='Run binding tests against the generated release library')
     parser.add_argument('--games',type=int,default=100)
@@ -35,7 +36,7 @@ def main():
         ['python3','scripts/link_catalogue.py','--check'],
         ['python3','-m','unittest','discover','-s','scripts','-p','test_*.py'],
         ['cargo','clippy','--all-targets','--','-D','warnings'],
-        ['cargo','test','--all-targets'],
+        ['cargo','test',*(['--release'] if args.release else []),'--all-targets'],
     ]
     if args.release or args.python != 'none':commands.extend([['cargo','build','--release','--lib','--bin','benchmark'],[str(target/'release/benchmark'),str(args.games)]])
     if args.python != 'none':
