@@ -57,6 +57,14 @@ Two independent nonauthor reviews of its exact published head are still required
 the canonical issue/PR review record determines final acceptance. Merge requires
 separate user authorization.
 
+The first hosted CI run hit its 40-minute validation budget during the TMT
+workload after all 3,748 library tests and existing game suites passed. No test
+failure was recorded. [CI diagnostics and budget](tmt-ci-budget.json) preserve
+that terminal timeout separately from the successful local release. The runner
+now allows 60 minutes for routine validation and emits test/game progress;
+its one-job/thread and 6 GiB limits remain fixed. The same full workload reruns,
+and published-head reviews must be refreshed after this CI-only change.
+
 ## Historical checkpoints
 
 The following entries preserve chronological implementation, failed attempts and

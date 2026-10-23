@@ -25,7 +25,7 @@ jobs:
   tests:
     name: Native and Python tests
     runs-on: ubuntu-24.04
-    timeout-minutes: ${{ inputs.python_suite == 'full' && 60 || 45 }}
+    timeout-minutes: ${{ inputs.python_suite == 'full' && 75 || 65 }}
     env:
       PYTHONDONTWRITEBYTECODE: '1'
       RUSTUP_TOOLCHAIN: '1.98.0'
@@ -96,11 +96,13 @@ jobs:
         run: python3 -m unittest scripts.test_resource_guard -v 2>&1 | tee "$XDG_CACHE_HOME/resource-guard.log"
 
       - name: Full native validation and Python tests
-        # Native rules plus Foundations/ECL full games exceed 20 min on hosted CPUs.
+        # Native rules plus Foundations/ECL/TMT full games exceed 40 min on hosted CPUs.
         # Leave 5 min outside validation for setup and terminal diagnostic collection.
-        timeout-minutes: ${{ inputs.python_suite == 'full' && 50 || 40 }}
+        timeout-minutes: ${{ inputs.python_suite == 'full' && 70 || 60 }}
         if: steps.scope.outputs.code == 'true'
-        run: python3 scripts/validate.py --release --python "$PYTHON_SUITE" 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
+        # Set test-output capture inside the guard: its outer environment is restricted.
+        # This exposes per-game progress without changing game inputs or assertions.
+        run: python3 scripts/resource_guard.py -- env RUST_TEST_NOCAPTURE=1 python3 scripts/validate.py --release --python "$PYTHON_SUITE" 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
 
       # systemd owns the process tree. Stop it even if the waiting CLI was
       # cancelled, before collecting partial logs on this disposable VM.
