@@ -23,6 +23,8 @@ pub(super) struct EntryMove {
     pub effect_counter: Option<(CounterKind, u64)>,
     pub return_modification: Option<(ReturnKind, ObjectRef)>,
     pub attacking: Option<CombatDefender>,
+    /// Choose a defender independently as this creature enters attacking.
+    pub choose_attacking_defender: bool,
     pub skipped: bool,
     pub reveal_hand: bool,
     pub life_paid: Option<bool>,
@@ -237,6 +239,7 @@ impl Game {
             effect_counter: None,
             return_modification: None,
             attacking: None,
+            choose_attacking_defender: false,
             skipped: false,
             reveal_hand: false,
             life_paid: None,
@@ -393,7 +396,8 @@ impl Game {
             .enumerate()
             .filter(|(i, m)| {
                 m.destination == Zone::Battlefield
-                    && (m.before.card.entry_choice().is_some()
+                    && (m.choose_attacking_defender
+                        || m.before.card.entry_choice().is_some()
                         || m.before.card.aura().is_some() && m.attachment.is_none()
                         || matches!(m.before.card.entry_tapped(), EntryTapped::PayLife(_))
                             && m.life_paid.is_none()
@@ -779,6 +783,33 @@ impl Game {
                     .map(|&index| (index, batch.moves[index].controller))
             }) {
                 let movement = &self.state.entry_batch.as_ref().unwrap().moves[index];
+                if movement.choose_attacking_defender && movement.attacking.is_none() {
+                    if movement.before.card.is_creature() {
+                        let has_choice =
+                            self.state.objects.iter().enumerate().any(|(id, object)| {
+                                object.zone == Zone::Battlefield
+                                    && object.controller == owner.other()
+                                    && self.current_kinds(id as CardId) & 64 != 0
+                                    && !self
+                                        .state
+                                        .entry_batch
+                                        .as_ref()
+                                        .unwrap()
+                                        .moves
+                                        .iter()
+                                        .any(|m| m.before.id == id as CardId)
+                            });
+                        if has_choice {
+                            self.state.pending = Pending::EntryAttackingDefender { player: owner };
+                            return true;
+                        }
+                        self.state.entry_batch.as_mut().unwrap().moves[index].attacking =
+                            Some(CombatDefender::Player(owner.other()));
+                    }
+                    self.state.entry_batch.as_mut().unwrap().moves[index]
+                        .choose_attacking_defender = false;
+                    continue;
+                }
                 if movement.before.card.entry_choice().is_some() && movement.choice.is_none() {
                     self.state.pending = Pending::EntryValue { player: owner };
                     return true;
@@ -877,6 +908,12 @@ impl Game {
                 self.finish_announcement();
             }
         }
+    }
+    pub(super) fn choose_entry_attacking_defender(&mut self, defender: CombatDefender) {
+        let batch = self.state.entry_batch.as_mut().unwrap();
+        let movement = &mut batch.moves[batch.choices[batch.next]];
+        movement.attacking = Some(defender);
+        movement.choose_attacking_defender = false;
     }
     pub(super) fn entry_candidate(&self, target: ObjectRef) -> bool {
         let batch = self.state.entry_batch.as_ref().unwrap();

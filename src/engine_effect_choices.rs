@@ -399,6 +399,13 @@ impl Game {
     }
     pub(super) fn visit_hand_defenders(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let player = self.state.resolving.as_ref().unwrap().item.controller;
+        self.visit_attacking_defenders(player, emit)
+    }
+    pub(super) fn visit_attacking_defenders(
+        &self,
+        player: Player,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
         if emit(Action::ChooseHandDefender {
             defender: CombatDefender::Player(player.other()),
         }) {
@@ -408,6 +415,11 @@ impl Game {
             if o.zone == Zone::Battlefield
                 && o.controller == player.other()
                 && self.current_kinds(id as CardId) & 64 != 0
+                && self
+                    .state
+                    .entry_batch
+                    .as_ref()
+                    .is_none_or(|batch| !batch.moves.iter().any(|m| m.before.id == id as CardId))
                 && emit(Action::ChooseHandDefender {
                     defender: CombatDefender::Planeswalker(self.object_ref(id as CardId)),
                 })

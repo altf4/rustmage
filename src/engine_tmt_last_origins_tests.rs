@@ -94,3 +94,69 @@ fn tmt_last_outside_ceased_token_or_unregistered_outside_card_is_never_selectabl
     assert!(!g.outside_game_card_matches(p, object));
     assert_eq!(g.outside_game_cards(p).count(), 1);
 }
+#[test]
+fn tmt_last_entry_attacking_defender_chooses_independent_walker_and_restores() {
+    use super::ability_timeline_tests::{checked, named, setup};
+    for p in [Player::P0, Player::P1] {
+        for choose_walker in [false, true] {
+            let mut g = setup(p);
+            let entering = named(&mut g, p, "Bear Cub", Zone::Exile);
+            let walker = named(
+                &mut g,
+                p.other(),
+                "Kaito, Cunning Infiltrator",
+                Zone::Battlefield,
+            );
+            g.state.objects[walker as usize].counters.loyalty = 3;
+            let mut movement = g.entry_move(entering, Zone::Battlefield, true);
+            movement.controller = p;
+            movement.choose_attacking_defender = true;
+            g.stage_entries(vec![movement], None);
+            assert!(g.advance_entries());
+            assert_eq!(g.actor(), Some(p));
+            assert_eq!(g.state.objects[entering as usize].zone, Zone::Exile);
+            let defender = if choose_walker {
+                CombatDefender::Planeswalker(g.object_ref(walker))
+            } else {
+                CombatDefender::Player(p.other())
+            };
+            let action = Action::ChooseHandDefender { defender };
+            checked(&mut g, action);
+            assert_eq!(g.state.objects[entering as usize].zone, Zone::Battlefield);
+            assert!(g.state.objects[entering as usize].tapped);
+            assert!(
+                g.state.attackers.iter().any(
+                    |attacker| attacker.card == entering && attacker.defender == Some(defender)
+                )
+            );
+            assert_eq!(std::mem::size_of::<Object>(), 144);
+            assert_eq!(std::mem::size_of::<Pending>(), 40);
+        }
+    }
+}
+#[test]
+fn tmt_last_entry_attacking_only_player_auto_selects_and_noncreature_never_attacks() {
+    use super::ability_timeline_tests::{named, setup};
+    let p = Player::P0;
+    let mut g = setup(p);
+    let entering = named(&mut g, p, "Bear Cub", Zone::Exile);
+    let mut movement = g.entry_move(entering, Zone::Battlefield, true);
+    movement.choose_attacking_defender = true;
+    g.stage_entries(vec![movement], None);
+    assert!(!g.advance_entries());
+    assert_eq!(
+        g.state.attackers[0].defender,
+        Some(CombatDefender::Player(p.other()))
+    );
+    let artifact = named(&mut g, p, "Mazemind Tome", Zone::Exile);
+    let mut movement = g.entry_move(artifact, Zone::Battlefield, true);
+    movement.choose_attacking_defender = true;
+    g.stage_entries(vec![movement], None);
+    assert!(!g.advance_entries());
+    assert!(
+        !g.state
+            .attackers
+            .iter()
+            .any(|attacker| attacker.card == artifact)
+    );
+}

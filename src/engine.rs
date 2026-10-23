@@ -1840,6 +1840,9 @@ enum Pending {
     HandDefender {
         player: Player,
     },
+    EntryAttackingDefender {
+        player: Player,
+    },
     EffectDiscard {
         player: Player,
         remaining: usize,
@@ -2722,6 +2725,7 @@ impl Game {
             | Pending::Proliferate { player }
             | Pending::EffectChoice { player }
             | Pending::HandDefender { player }
+            | Pending::EntryAttackingDefender { player }
             | Pending::Role { player }
             | Pending::Legend { player }
             | Pending::MilledSelection { player }
@@ -3242,6 +3246,11 @@ impl Game {
                     {
                         return true;
                     }
+                }
+            }
+            Pending::EntryAttackingDefender { player } => {
+                if self.visit_attacking_defenders(player, &mut emit) {
+                    return true;
                 }
             }
             Pending::HandDefender { .. } => {
@@ -5337,6 +5346,11 @@ impl Game {
                 self.run_program();
             }
             Action::DeclineHandEntry => self.decline_effect_payment(),
+            Action::ChooseHandDefender { defender }
+                if matches!(self.state.pending, Pending::EntryAttackingDefender { .. }) =>
+            {
+                self.choose_entry_attacking_defender(defender)
+            }
             Action::ChooseHandDefender { defender } => self.choose_hand_defender(defender),
             Action::Sacrifice { object } | Action::Blight { object } => {
                 self.choose_effect_object(actor, object)
@@ -7049,6 +7063,7 @@ impl Game {
                 }
                 Pending::EffectDiscard { .. } => "effect_discard",
                 Pending::HandDefender { .. } => "hand_defender",
+                Pending::EntryAttackingDefender { .. } => "entry_attacking_defender",
                 Pending::EffectChoice { .. } => "effect_choice",
                 Pending::Proliferate { .. } => "proliferate",
                 Pending::EntryCopy { .. } => "entry_copy",
