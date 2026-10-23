@@ -5,7 +5,8 @@
 Selected set: Lorwyn Eclipsed. Preserve the repository's explicit tabletop/MTGO
 Standard snapshot of 2026-10-15; this run does not rotate the format.
 Started 2026-10-22. Integration branch: `codex/ecl-complete-set`, base `61c61b69`.
-Tracking issue: https://github.com/altf4/rustmage/issues/462. No implementation PR until all set gates pass.
+Tracking issue: https://github.com/altf4/rustmage/issues/462.
+Complete implementation PR: https://github.com/altf4/rustmage/pull/463.
 
 Pinned XMage revision: `492369c7844b8d76479f0393ff9eb6b0b0cf30d7`.
 Membership: [frozen manifest](../../data/sets/ecl.json), 273 physical identities
@@ -25,8 +26,8 @@ Admission flags: **273/273**, comprising **107 inherited** and **166 newly
 implemented and verified physical cards**; **zero remain gated**.
 Twilight Diviner’s review-discovered LKI gap is repaired and its admission restored. All 107 inherited cards have passed source/rules audits.
 The supporting closure includes eleven tokens, seven backs and one emblem;
-all have complete source pins and parent interaction evidence. Combined full-game acceptance and release validation pass. Two independent
-published-head reviews remain open. No newly authored cards have been merged upstream.
+all have complete source pins and parent interaction evidence. Combined full-game acceptance and release validation pass. Both independent
+nonauthor published-head reviews approve; local set acceptance is complete. No newly authored cards have been merged upstream.
 
 Three isolated authors implemented black/red, white/blue, and green/colorless
 cards, with the integrator handling multicolor cards, transforming cards and
@@ -75,8 +76,25 @@ The implementation-through-local-acceptance interval produced **166 newly
 verified whole cards at 17.14 cards/hour**, excluding the 107 inherited audits
 from the numerator. The earlier focused-authoring rate was 22.28 cards/hour.
 Exact elapsed intervals, commands, build/source hashes and measurements are in
-[ecl-validation.json](ecl-validation.json). Published-head reviews and merge are
-tracked separately.
+[ecl-validation.json](ecl-validation.json). Both published-head reviews approve; upstream merge is tracked separately.
+
+## Final independent reviews and handoff
+
+The complete set is published in [PR463](https://github.com/altf4/rustmage/pull/463),
+stacked on the existing portable-skill PR461. Independent nonauthor reviewers
+`/root/ecl_final_review_a` and `/root/ecl_final_review_b` both approved exact
+published head `3ce6614758516d5b3542f79a199cd956e1248fc1` against base
+`61c61b69591e8b1dbed0154c84420ba10d1e9e08`, with no actionable findings. Neither
+reviewer authored code or ancestors in the batch. They authenticated the remote
+head, complete card/supporting closure, source pins, final validation, retained
+hashes and matching strict/optimized measurements. Both review findings below
+are resolved. The JSON ledger links their recorded approvals.
+
+This evidence-only update records that roster. The reviewers' exact followup-head
+refreshes are recorded on the PR and issue, avoiding a self-referential SHA edit.
+There are no known implementation blockers. GitHub CI is tracked on the PR;
+local release validation passed. The completed reviewed PR remains unmerged,
+and this set does not complete the entire Standard pool.
 
 ## Earlier validation checkpoints and diagnostics
 
@@ -136,7 +154,7 @@ The pinned XMage class shares the live-only restriction, so this is an explicit
 Oracle/rules adjudication. The repair at `3f9e1b4c` preserves departure-time copy recipes, exact old references,
 native/Single DFC shape and all stored packet owners. All 16 focused scenarios,
 Clippy and provenance pass; both independent reviewers cleared the repair
-statically. Observation schema is168. Final published-head sign-off remains pending.
+statically. Observation schema is168. Both final published-head reviewers approve.
 
 The first final release attempt was deliberately terminated after this finding.
 Five preliminary phases, 3,245 native tests (one ignored), nine catalogue tests
@@ -153,23 +171,17 @@ declaration. The repair at `9877dfd1` uses conservative dynamic maxima outside
 the proven closed world and preserves all three earlier performance bounds.
 The paid counterspell regression passes for both seats; all132 funding tests
 and Clippy pass. The independent reviewer cleared the patch statically. No
-known code findings remain. Combined validation passes; published-head reviews
-are pending.
+known code findings remain. Combined validation passes; both published-head reviewers approve.
 
-## Resume and remaining work
+## Handoff
 
-Branch `codex/ecl-complete-set`; issue [#462](https://github.com/altf4/rustmage/issues/462).
-Authenticate frozen membership using `python3 -m scripts.set_status ECL --check`.
-The dynamic-production repair, catalogue regeneration, final release validation,
-strict236-game acceptance, Python binding smoke and optimized throughput
-measurement are complete. Publish the full set PR and obtain both final reviews.
-Keep consuming inputs fixed until each process terminates; poll the same job.
-
-Publish one implementation PR only after every local gate passes. Obtain two
-fresh independent nonauthor reviews of its exact final published head and resolve
-all findings. No implementation PR exists yet. Merge remains subject to
-repository permission. Historical checkpoints below record intermediate work;
-the current section and JSON ledgers govern resume decisions.
+Branch `codex/ecl-complete-set`; issue [#462](https://github.com/altf4/rustmage/issues/462);
+complete reviewed [PR463](https://github.com/altf4/rustmage/pull/463).
+All273 frozen members and supporting obligations are implemented and verified.
+No code findings remain. Required shared libraries and the measured release
+binary remain at the exact paths and hashes recorded in the validation JSON.
+GitHub CI and upstream merge remain visible on the PR. Historical checkpoints
+below document intermediate work; the current acceptance sections govern status.
 
 ## Verified checkpoint228 and inherited audit
 

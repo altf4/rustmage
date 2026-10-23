@@ -497,8 +497,8 @@
       "clippy": "<cache>/rustmage-build-reports/f260241445cf4e288486696bd3ebe879.json"
     }
   },
-  "locally_reviewed": 0,
-  "final_published_reviews": 0,
+  "locally_reviewed": 273,
+  "final_published_reviews": 2,
   "upstream_merged_new_cards": 0,
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "focused_integration": {
@@ -1887,7 +1887,7 @@
   "twilight_lki_review_finding": {
     "reviewer": "/root/ecl_final_review_b",
     "reviewed_head": "b9996a22dd9043b3f26415e5d9f5d5bdbfd59a53",
-    "status": "fixed; both independent static reviews and final release/full-game validation pass; published-head signoff pending",
+    "status": "resolved; final validation passes and both independent nonauthor published-head reviewers approve",
     "severity": "P2",
     "problem": "Non-target copy choice incorrectly excludes original entering incarnations after departure. Reentry must not rebind the old reference; original last-known copiable values remain usable.",
     "rules": [
@@ -1925,7 +1925,7 @@
   },
   "dynamic_production_review_finding": {
     "reviewer": "/root/ecl_final_review_b",
-    "status": "fixed; independent static review and final release/full-game validation pass; published-head signoff pending",
+    "status": "resolved; final validation passes and both independent nonauthor published-head reviewers approve",
     "severity": "P2",
     "file": "src/engine_funding.rs",
     "problem": "Optimistic per-color bound uses current Bloom Tender output and misses Foraging Wickermaw changing its color during a mana ability.",
@@ -3302,5 +3302,59 @@
     "inherited_audits_not_counted_as_new_cards": 107,
     "cards_per_hour": 17.14072502646075,
     "scope": "Implementation through combined release validation and strict/optimized full-set games; published-head reviews and upstream merge remain pending."
+  },
+  "implementation_pr": "https://github.com/altf4/rustmage/pull/463",
+  "local_set_acceptance": "complete: all273 physical cards, source/supporting obligations, rules/full-game/release checks, performance measurements and two independent published-head approvals; upstream merge remains separate",
+  "final_review_roster": [
+    {
+      "reviewer": "/root/ecl_final_review_a",
+      "independent_nonauthor": true,
+      "authored_ancestors": false,
+      "reviewed_published_sha": "3ce6614758516d5b3542f79a199cd956e1248fc1",
+      "result": "approved; no actionable findings",
+      "record": "https://github.com/altf4/rustmage/pull/463#issuecomment-6354907607"
+    },
+    {
+      "reviewer": "/root/ecl_final_review_b",
+      "independent_nonauthor": true,
+      "authored_ancestors": false,
+      "reviewed_published_sha": "3ce6614758516d5b3542f79a199cd956e1248fc1",
+      "result": "approved; no actionable findings; both original findings resolved",
+      "record": "https://github.com/altf4/rustmage/pull/463#issuecomment-6354910681"
+    }
+  ],
+  "final_review_recording": "This evidence-only followup records both published-head approvals. Exact followup-head review refreshes are recorded on the PR and tracking issue to avoid self-referential SHA edits.",
+  "final_benchmark_cleanup": {
+    "root": "<cache>/rustmage-ecl-final-benchmark-target",
+    "removed_files": 192,
+    "removed_directories": 51,
+    "removed_file_allocated_bytes": 197287936,
+    "removed_directory_allocated_bytes": 208896,
+    "before_unique_file_allocated_bytes": 229711872,
+    "after_unique_file_allocated_bytes": 32423936,
+    "external_hardlinked_removed_paths": [],
+    "retained": [
+      {
+        "path": "<cache>/rustmage-ecl-final-benchmark-target/release/deps/librustmage.so",
+        "sha256": "002fe9a08ba67892207fc2067f14369c5197e19f9521e7e7273b3946c1b2f1dc",
+        "bytes": 12821272,
+        "allocated_bytes": 12824576
+      },
+      {
+        "path": "<cache>/rustmage-ecl-final-benchmark-target/release/deps/libserde_derive-deeeff55f06a54fe.so",
+        "sha256": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+        "bytes": 4000776,
+        "allocated_bytes": 3981312
+      },
+      {
+        "path": "<cache>/rustmage-ecl-final-benchmark-target/release/deps/lorwyn_eclipsed_acceptance-22ae087d0f091ab9",
+        "sha256": "3f3149334781360b330f154b084ce86ffc2a1b9ee28b89a32d2a7150d6fbfa22",
+        "bytes": 15617776,
+        "allocated_bytes": 15618048
+      }
+    ],
+    "preserved_every_shared_library": true,
+    "preserved_measured_binary_hash": "3f3149334781360b330f154b084ce86ffc2a1b9ee28b89a32d2a7150d6fbfa22",
+    "other_targets_untouched": true
   }
 }
