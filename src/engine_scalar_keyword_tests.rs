@@ -299,9 +299,9 @@ fn scalar_keywords_dense_single_recipient_benchmark_and_observation_snapshot_par
         for _ in 0..100 {
             ids.push(named(&mut g, p, "Grizzly Bears", Zone::Battlefield));
         }
-        for i in 0..24 {
+        for &id in ids.iter().take(24) {
             let e = named(&mut g, p, "Quintessential Katana", Zone::Battlefield);
-            assert!(g.attach_equipment(g.object_ref(e), g.object_ref(ids[i])));
+            assert!(g.attach_equipment(g.object_ref(e), g.object_ref(id)));
         }
         for &id in ids.iter().take(36) {
             g.grant_keyword_effects(&[id], g.object_ref(id), Keywords::INDESTRUCTIBLE);
