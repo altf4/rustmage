@@ -70,73 +70,73 @@
     ]
   ],
   [
-    "UB",
-    [
-      "Don & Raph, Hard Science",
-      "Krang, Master Mind",
-      "Rat King, Verminister",
-      "The Cloning of Shredder",
-      "The Last Ronin",
-      "Krang, Utrom Warlord",
-      "Henchbots",
-      "Foot Ninjas",
-      "Mouser Mark III"
-    ]
-  ],
-  [
     "UR",
     [
       "Brilliance Unleashed",
-      "Retro-Mutation",
-      "Stomped by the Foot",
-      "Uneasy Alliance",
-      "Mouser Foundry",
-      "Mouser Mark III",
-      "Novel Nunchaku",
-      "Krang & Shredder",
-      "Casey Jones, Vigilante"
-    ]
-  ],
-  [
-    "WB",
-    [
-      "Kitsune, Dragon's Daughter",
-      "Koya, Death from Above",
+      "Don & Raph, Hard Science",
+      "Krang, Master Mind",
       "North Wind Avatar",
-      "The Neutrinos",
-      "Raph & Mikey, Troublemakers",
-      "Foot Elite",
-      "Foot Ninjas",
-      "Ninja Teen",
-      "Death in the Family"
+      "Mondo Gecko",
+      "Henchbots",
+      "Ravenous Robots",
+      "Mouser Mark III",
+      "Retro-Mutation"
     ]
   ],
   [
-    "RG",
+    "B",
     [
-      "Turtles Forever",
-      "Turtle Van",
-      "Leatherhead, Swamp Stalker",
-      "Venus, Torn Between Worlds",
-      "Mondo Gecko",
-      "Old Hob, Alleycat Blues",
-      "Frog Butler",
-      "Party Dude",
-      "Raphael, Tough Turtle"
+      "Rat King, Verminister",
+      "The Cloning of Shredder",
+      "Stomped by the Foot",
+      "Foot Ninjas",
+      "Tunnel Rats",
+      "Splinter, Hamato Yoshi",
+      "Death in the Family",
+      "Super Shredder",
+      "Pain 101"
     ]
   ],
   [
     "WU",
     [
-      "Leonardo, Cutting Edge",
+      "Kitsune, Dragon's Daughter",
+      "Koya, Death from Above",
+      "Turtles Forever",
+      "Uneasy Alliance",
       "Leonardo, Leader in Blue",
+      "Action News Crew",
+      "Featherbrained Filcher",
+      "Prehistoric Pet",
+      "Krang & Shredder"
+    ]
+  ],
+  [
+    "RW",
+    [
       "The Neutrinos",
-      "North Wind Avatar",
+      "Old Hob, Alleycat Blues",
+      "Casey Jones, Vigilante",
+      "Turtle Van",
+      "Improvised Arsenal",
       "Novel Nunchaku",
       "Quintessential Katana",
       "Shredder's Armor",
-      "Improvised Arsenal",
-      "Ray Fillet, Man Ray"
+      "Casey Jones, Jury-Rig Justiciar"
+    ]
+  ],
+  [
+    "G",
+    [
+      "Leatherhead, Swamp Stalker",
+      "Venus, Torn Between Worlds",
+      "Raph & Mikey, Troublemakers",
+      "Party Dude",
+      "Frog Butler",
+      "Mona Lisa, Science Geek",
+      "Mutagen Man, Living Ooze",
+      "Michelangelo, Improviser",
+      "Zoo Escapees"
     ]
   ],
   [
@@ -150,7 +150,7 @@
       "The Last Ronin",
       "Mutagen Man, Living Ooze",
       "Mona Lisa, Science Geek",
-      "Lita, Little Orphan Amphibian"
+      "Death in the Family"
     ]
   ]
 ]

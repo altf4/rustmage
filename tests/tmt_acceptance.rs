@@ -86,13 +86,6 @@ fn theme_decks(members: &BTreeSet<Card>) -> Vec<Vec<Card>> {
                     .iter()
                     .all(|card| members.contains(card) && card.is_supported())
             );
-            let required = cards.iter().fold(0u8, |m, c| m | c.colors());
-            let colors = "WUBRG"
-                .chars()
-                .enumerate()
-                .filter(|(i, c)| required & (1 << i) != 0 || colors.contains(*c))
-                .map(|(_, c)| c)
-                .collect::<String>();
             let lands = colors
                 .chars()
                 .map(|color| Card::from_name(BASICS["WUBRG".find(color).unwrap()]).unwrap())
