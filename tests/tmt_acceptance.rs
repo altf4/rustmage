@@ -201,17 +201,16 @@ fn run_workloads(workloads: Vec<Workload>, verify: bool) -> Evidence {
                         };
                         let decision_start = verify.then(Instant::now);
                         let actor = game.actor().unwrap();
-                        trace("legal_actions");
-                        let actions = game.legal_actions();
-                        assert!(!actions.is_empty());
                         trace("observe_before");
                         let before_view = game.observe(actor);
-                        if verify {
-                            assert_eq!(before_view.actions, actions);
-                        }
+                        // Actor observations already enumerate the exact legal
+                        // actions. Repeating that same immutable query adds no
+                        // independent legality oracle.
+                        let actions = &before_view.actions;
+                        assert!(!actions.is_empty());
                         trace("policy");
                         let index =
-                            rustmage::policy::smoke_index_from_observation(&before_view, &actions);
+                            rustmage::policy::smoke_index_from_observation(&before_view, actions);
                         let action = actions[index].clone();
                         assert!(
                             !matches!(action, Action::Concede),

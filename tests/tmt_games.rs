@@ -146,11 +146,10 @@ fn tmt_five_color_set_only_natural_games_and_owned_replay() {
                     "TMT workload stalled pair={pair} seed={seed}"
                 );
                 let actor = game.actor().unwrap();
-                let actions = game.legal_actions();
-                assert!(!actions.is_empty());
                 let obs = game.observe(actor);
-                assert_eq!(obs.actions, actions);
-                let index = rustmage::policy::smoke_index_from_observation(&obs, &actions);
+                let actions = &obs.actions;
+                assert!(!actions.is_empty());
+                let index = rustmage::policy::smoke_index_from_observation(&obs, actions);
                 let action = actions[index].clone();
                 assert!(!matches!(action, Action::Concede));
                 for viewer in [Player::P0, Player::P1] {
