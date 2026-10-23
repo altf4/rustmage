@@ -794,3 +794,15 @@ testing a narrower exact-identity rule. The declared decks, seeds and policy
 remain fixed. [Investigation record](tmt-performance-investigation.json)
 preserves the stopped log and distinguishes verified-decision timing from
 optimized simulation throughput.
+
+Funding fix `9985ba23` integrates at `7b02e584`: 87 affected scenarios and
+all-target Clippy pass. Counter-bearing resources remain exact, while unrelated
+plain basics regain symmetry. Actual Weather Maker fixtures for both seats
+visit 12/24/36 states with 6/12/18 Forests; the 18-Forest failed DFS takes about
+13.5 ms in dev and leaves snapshots/observations unchanged. The same dense-game
+2,304-decision prefix improves from 185.897 to 38.431 seconds including strict
+verification. Both dev experiments were deliberately stopped and preserved.
+
+The identical 172-game proof now moves to the required release validator's
+optimized `release-test` profile with runtime assertions and overflow checks.
+This is separate from the later production simulation throughput measurement.

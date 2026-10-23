@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "set": "TMT",
-  "status": "investigation in progress; initial run deliberately stopped, no full-game acceptance claimed",
+  "status": "Narrow funding symmetry fix integrated; complete optimized acceptance pending",
   "source": "e3cfffd6731e77a86c474f0c65ba2cf117f79cd4",
   "command": "python3 scripts/resource_guard.py -- cargo test --test tmt_acceptance tmt_entire_pool_and_theme_acceptance -- --nocapture",
   "terminal": true,
@@ -15,5 +15,75 @@
   "guard_report": "<cache>/rustmage-build-reports/e6f8850826a44ddab57a71f0a30932f0.json",
   "guard_report_sha256": "7d546fd03a1bd9200e37488d5e5744ab4709b51e0801c1d93e01fa73aa152ca0",
   "code_level_lead": "Any named counter disabled equivalent-basic-land memoization globally; Weather Maker Charge counters activate this path. Independent flexible-color upper bounds also cannot rule out joint colored infeasibility.",
-  "next_action": "Test a narrow exact-identity rule for actual named-counter/attachment participants, then rerun the identical decks/seeds/policy; preserve each required shared library."
+  "next_action": "Run python3 scripts/validate.py --release --python smoke, which retains assertions/overflow checks in optimized release-test and executes all172 declared games, then separate optimized production measurement.",
+  "fix_source": "9985ba23fdb498248dffcca6c7cf7fd850078b8f",
+  "fix_integrated": "7b02e584",
+  "focused_checks": {
+    "passed": 87,
+    "seconds": 4.1,
+    "all_target_clippy": true,
+    "logs": [
+      {
+        "path": "<cache>/rustmage-tmt-symmetry-agent-third.log",
+        "sha256": "2bc6c2e63e149013630d6f985846552eb963500ef2f2b9edf787ad9f6b2a0b4a",
+        "resource_reports": [
+          {
+            "path": "<cache>/rustmage-build-reports/e4e9b9d0adb14c1a8781e64408f9509f.json",
+            "sha256": "eeaef42dce337d456706d3a22c372d17670b0f2ad1141f5464d8bd8d0ae05f75"
+          }
+        ]
+      },
+      {
+        "path": "<cache>/rustmage-tmt-symmetry-agent-clippy.log",
+        "sha256": "dac3051a59d0a737a0e15b53d31c97c3dcfe2992fd5256375881ea7a15bf8ea0",
+        "resource_reports": [
+          {
+            "path": "<cache>/rustmage-build-reports/3c4ec878d9ed4aa69aa0a029f7a155d0.json",
+            "sha256": "9f7108cde2e01a64db417aca2c879e314fb08aa46707dcdc3d3b77b4f95d839d"
+          }
+        ]
+      }
+    ]
+  },
+  "bounded_search": {
+    "dev_failed_DFS_forests": [
+      6,
+      12,
+      18
+    ],
+    "visited_states_both_controllers": [
+      12,
+      24,
+      36
+    ],
+    "microseconds_P0": [
+      1003.892,
+      4672.567,
+      13442.715
+    ],
+    "microseconds_P1": [
+      996.413,
+      4726.136,
+      13529.311
+    ],
+    "bound": "Two real sickness-equivalence classes of sizes1 andN-1 give (1+1)*((N-1)+1)=2N states. Intra-class swaps preserve keys; inter-class swaps remain distinct.",
+    "full_game_comparison": "The same verified-decision2304 prefix improved185.897s to38.431s in dev; neither stopped run supplies completed-game acceptance or optimized simulation throughput."
+  },
+  "second_experiment": {
+    "source": "7b02e584",
+    "log": "<cache>/rustmage-tmt-195-acceptance-second.log",
+    "log_sha256": "14aaca8c049d79734aa75244b3f0c392444086f4d37357740fafdced12a37022",
+    "terminal": true,
+    "outer_exit_code": 1,
+    "termination": "Owner deliberately stopped dev experiment after confirming prefix improvement, to run identical strict tests with optimized release-test profile and runtime/overflow checks.",
+    "resource_reports": [
+      {
+        "path": "<cache>/rustmage-build-reports/cfc8c452af0f4983950183dff9403d71.json",
+        "sha256": "7d546fd03a1bd9200e37488d5e5744ab4709b51e0801c1d93e01fa73aa152ca0"
+      }
+    ],
+    "prefix_decisions": 2304,
+    "before_seconds": 185.897,
+    "after_seconds": 38.431
+  }
 }
