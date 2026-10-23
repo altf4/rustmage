@@ -8315,6 +8315,10 @@ mod ecl_shared_type_completion_tests;
 #[path = "engine_linked_funding_tests.rs"]
 mod linked_funding_tests;
 
+#[cfg(test)]
+#[path = "engine_linked_forage_tests.rs"]
+mod linked_forage_tests;
+
 #[path = "engine_linked_funding.rs"]
 mod linked_funding;
 pub use linked_funding::CostCompletionView;

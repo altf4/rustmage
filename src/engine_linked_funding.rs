@@ -46,6 +46,10 @@ pub(super) enum DeferredFundingCost {
         definition: Card,
     },
     Activation(AdditionalCost),
+    Forage {
+        spec: AdditionalCost,
+        route: ForageRoute,
+    },
     Additional {
         source: ObjectRef,
         spec: AdditionalCost,
@@ -129,6 +133,12 @@ impl Game {
             Some(DeferredFundingCost::Activation(spec)) => {
                 self.activation_can_fund(request.goal.clone(), Some(*spec))
             }
+            Some(DeferredFundingCost::Forage { spec, route }) => self.forage_cost_fundable_for(
+                request.goal.clone(),
+                *spec,
+                Some(*route),
+                request.purpose,
+            ),
             Some(DeferredFundingCost::BeholdGroup {
                 announcement,
                 cost,
