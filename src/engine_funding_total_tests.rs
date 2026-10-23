@@ -132,7 +132,7 @@ fn positive_tap_production_and_enclosing_source_reservation_remain_exact() {
     assert!(g.can_fund(goal(2)));
     assert!(!g.can_fund(goal(3)));
     let reserved = FundingGoal {
-        source: Some((g.object_ref(id), 1, Counters::default(), card)),
+        source: Some((g.object_ref(id), 1, Counters::default(), card, None)),
         ..goal(2)
     };
     assert!(!g.can_fund(reserved.clone())); // Archive must remain untapped for its own tap/sac cost.

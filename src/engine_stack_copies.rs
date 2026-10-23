@@ -169,7 +169,7 @@ impl Game {
                 trigger.kind = StackKind::TriggeredAbility { ability: 0 };
                 trigger.card = source.object.card;
                 trigger.object = source.object;
-                trigger.source_card = source.card;
+                trigger.source_card = source.definition;
                 trigger.source_facts = source.facts;
                 trigger.source_keywords = source.keywords;
                 trigger.source_tapped = source.tapped;

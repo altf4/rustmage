@@ -30,6 +30,19 @@ pub(super) trait CharacteristicWorld {
         characteristic_layers::colors(self, id)
     }
 
+    fn borrowed_activation_used(&self, source: ObjectRef, slot: u64) -> bool {
+        self.game()
+            .state
+            .borrowed_uses
+            .as_ref()
+            .is_some_and(|rows| {
+                rows.iter().any(|row| {
+                    row.source == source
+                        && row.slot == slot
+                        && (row.exhaust || row.turn == self.game().state.turn)
+                })
+            })
+    }
     fn activation_prohibited(&self, actor: Player, id: CardId) -> bool {
         let target = self.object(id);
         target.zone == Zone::Battlefield

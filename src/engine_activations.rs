@@ -268,6 +268,7 @@ impl Game {
                                         index as u16,
                                         counter_payment.clone(),
                                         object.card,
+                                        None,
                                     )),
                                 },
                                 ability.cost.additional,
@@ -425,6 +426,7 @@ impl Game {
         self.state.passes = 0;
         SpellView {
             source_move: None,
+            borrowed_slot: None,
             target_controller_lki: None,
             gift: None,
             reflexive_subject: None,
@@ -488,7 +490,7 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = item.kind else {
             unreachable!()
         };
-        let definition = &item.source_card.activations()[ability as usize];
+        let definition = &item.source_card.activation(ability);
         self.pay_activation_definition(item, payment, counter_payment, ability, definition);
     }
 
@@ -518,7 +520,11 @@ impl Game {
             );
             return;
         }
-        object.used_abilities |= 1u64 << ability;
+        if let Some(slot) = item.borrowed_slot {
+            self.record_borrowed_use(item.object, slot, definition.exhaust);
+        } else {
+            object.used_abilities |= 1u64 << ability;
+        }
         self.pay_counters(item.card, &counter_payment);
         let object = &mut self.state.objects[item.card as usize];
         if let Some(change) = cost.loyalty {
@@ -538,7 +544,13 @@ impl Game {
                 self.tap_objects(&[grant.grantor.card]);
             }
         }
-        if let Some((kind, amount)) = item.source_card.activation_put_counter(ability) {
+        let StackKind::ActivatedAbility {
+            ability: definition_index,
+        } = item.kind
+        else {
+            unreachable!()
+        };
+        if let Some((kind, amount)) = item.source_card.activation_put_counter(definition_index) {
             self.activation_cost_counters(item.object, kind, amount, item.controller);
         }
         self.refresh_local_source_counter_quantities(item);

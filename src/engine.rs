@@ -269,6 +269,12 @@ mod ability_resolutions;
 mod activation_guard_tests;
 #[path = "engine_big_core.rs"]
 mod big_core;
+#[path = "engine_borrowed_activations.rs"]
+mod borrowed_activations;
+#[cfg(test)]
+#[path = "engine_territory_forge_tests.rs"]
+mod territory_forge_tests;
+pub use borrowed_activations::BorrowedAbilityView;
 #[cfg(test)]
 #[path = "engine_big_core_tests.rs"]
 mod big_core_tests;
@@ -528,6 +534,9 @@ define_actions! {
     AnnounceFlashback {
         card: CardId,
     },
+    AnnounceBorrowedAbility { card: CardId, exiled: ObjectRef, ability: u16, counter_payment: Counters },
+    AnnounceBorrowedMana { card: CardId, exiled: ObjectRef, ability: u16, counter_payment: Counters, production: Mana },
+    ActivateBorrowedMana { card: CardId, exiled: ObjectRef, ability: u16, counter_payment: Counters, payment: Mana, production: Mana },
     AnnounceActivate {
         card: CardId,
         ability: u16,
@@ -878,6 +887,7 @@ pub struct SpellView {
     pub gift: Option<Box<GiftContext>>,
     pub reflexive_subject: Option<Box<ReflexiveSubjectView>>,
     pub source_move: Option<Box<TriggerSourceMoveView>>,
+    pub borrowed_slot: Option<u64>,
     pub crew: Option<Box<CrewContext>>,
     pub cast_event: Option<Box<CastPaymentEvent>>,
     pub copy_event: Option<Box<stack_copies::CopyEvent>>,
@@ -1073,14 +1083,12 @@ impl SpellView {
                 Some(Instruction::Modal(modes) | Instruction::ModalOnce(modes)) => Some(modes),
                 _ => None,
             },
-            StackKind::ActivatedAbility { ability } => match self.source_card.activations()
-                [ability as usize]
-                .program
-                .first()
-            {
-                Some(Instruction::Modal(modes)) => Some(modes),
-                _ => None,
-            },
+            StackKind::ActivatedAbility { ability } => {
+                match self.source_card.activation(ability).program.first() {
+                    Some(Instruction::Modal(modes)) => Some(modes),
+                    _ => None,
+                }
+            }
             StackKind::DelayedSacrifice
             | StackKind::DelayedWarpExile
             | StackKind::CopyEndStepSacrifice
@@ -1162,7 +1170,7 @@ impl SpellView {
                 Some((targets, a.program))
             }
             StackKind::ActivatedAbility { ability } => {
-                let a = &self.source_card.activations()[ability as usize];
+                let a = &self.source_card.activation(ability);
                 Some((a.targets, a.program))
             }
             StackKind::Spell => self
@@ -1616,6 +1624,8 @@ struct State {
     exile_links: Vec<ExileLink>,
     exile_permissions: Vec<ExilePlayPermission>,
     hand_play_bans: Option<Box<Vec<u32>>>,
+    borrowed_links: Option<Box<Vec<borrowed_activations::Link>>>,
+    borrowed_uses: Option<Box<Vec<borrowed_activations::Use>>>,
     graveyard_cast_permissions: cast_permissions::Rows,
     graveyard_type_uses: Option<SharedVec<GraveyardTypeUse>>,
     resolution_free_casts: Option<Box<ResolutionFreeCasts>>,
@@ -1733,6 +1743,7 @@ impl ObjectView {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ZoneChange {
     pub gift: Option<Box<GiftContext>>,
+    pub was_cast: bool,
     pub before: ObjectView,
     pub after: ObjectRef,
     pub destination: Zone,
@@ -1968,6 +1979,7 @@ pub struct Observation {
     pub modal_history: Vec<ModalHistoryView>,
     pub exile_links: Vec<ExileLink>,
     pub exile_permissions: Vec<ExilePlayPermission>,
+    pub borrowed_abilities: Vec<BorrowedAbilityView>,
     pub graveyard_cast_permissions: Vec<GraveyardCastPermissionView>,
     pub graveyard_type_uses: Vec<GraveyardTypeUse>,
     pub resolution_free_casts: Option<ResolutionFreeCasts>,
@@ -2188,6 +2200,8 @@ impl Game {
                 exile_links: Vec::new(),
                 exile_permissions: Vec::new(),
                 hand_play_bans: None,
+                borrowed_links: None,
+                borrowed_uses: None,
                 graveyard_cast_permissions: None,
                 graveyard_type_uses: None,
                 resolution_free_casts: None,
@@ -2998,6 +3012,11 @@ impl Game {
                     }
                     if obj.zone == Zone::Battlefield
                         && self.visit_granted_mana(card, actor, &mut emit)
+                    {
+                        return true;
+                    }
+                    if obj.zone == Zone::Battlefield
+                        && self.visit_borrowed_activations(card, actor, sorcery, &mut emit)
                     {
                         return true;
                     }
@@ -4080,6 +4099,47 @@ impl Game {
                 self.state.objects[card as usize].flashback = true;
                 self.open_payment_announcement(item, Counters::default(), None);
             }
+            Action::AnnounceBorrowedAbility {
+                card,
+                exiled,
+                ability,
+                counter_payment,
+            } => {
+                let item = self.borrowed_activation_item(actor, card, exiled, ability);
+                self.open_payment_announcement(item, counter_payment, None);
+            }
+            Action::AnnounceBorrowedMana {
+                card,
+                exiled,
+                ability,
+                counter_payment,
+                production,
+            } => {
+                let item = self.borrowed_activation_item(actor, card, exiled, ability);
+                self.open_payment_announcement(item, counter_payment, Some(production));
+            }
+            Action::ActivateBorrowedMana {
+                card,
+                exiled,
+                ability,
+                counter_payment,
+                payment,
+                production,
+            } => {
+                let mut item = self.borrowed_activation_item(actor, card, exiled, ability);
+                let quality = self
+                    .mana_quality(
+                        item.source_card
+                            .activation(ability)
+                            .mana_production()
+                            .unwrap(),
+                        card,
+                    )
+                    .map(|quality| quality.with_definition(item.source_card));
+                self.pay_activation(&mut item, payment, counter_payment);
+                self.add_quality_mana(actor, production, quality);
+                self.reopen_evidence_after_mana_sacrifice(card);
+            }
             Action::AnnounceActivate {
                 card,
                 ability,
@@ -4147,8 +4207,9 @@ impl Game {
                 production,
             } => {
                 let mut item = self.activation_item(actor, card, ability);
-                let definition = self.state.objects[card as usize].card.activations()
-                    [ability as usize]
+                let definition = self.state.objects[card as usize]
+                    .card
+                    .activation(ability)
                     .mana_production()
                     .unwrap();
                 let quality = self.mana_quality(definition, card);
@@ -4876,6 +4937,7 @@ impl Game {
                 .capacity("object generation exhausted");
             self.state.free_tokens.push(id);
             return ZoneChange {
+                was_cast: false,
                 gift: None,
                 after: self.object_ref(id),
                 destination: Zone::Outside,
@@ -4898,6 +4960,7 @@ impl Game {
             || (before.is_token() && before.zone != Zone::Battlefield && !fresh_token)
         {
             return ZoneChange {
+                was_cast: false,
                 gift: None,
                 after: before.reference,
                 destination: before.zone,
@@ -4914,6 +4977,7 @@ impl Game {
         if before.zone == Zone::Library && destination == Zone::Library && plan.shuffle {
             self.reveal_and_shuffle_zone_card(&before);
             return ZoneChange {
+                was_cast: false,
                 gift: None,
                 after: before.reference,
                 destination,
@@ -4941,6 +5005,7 @@ impl Game {
         {
             self.state.step_sources.retain(|&source| source != id);
         }
+        self.forget_borrowed_source(before.reference);
         self.capture_source_counter_departure(&before);
         self.clear_entry_value(before.reference);
         if before.zone == Zone::Battlefield {
@@ -5142,6 +5207,7 @@ impl Game {
         }
         self.copy_characteristic_zone_commit(&before, self.object_ref(id), destination);
         ZoneChange {
+            was_cast: false,
             gift: None,
             before,
             after: self.object_ref(id),
@@ -5236,6 +5302,12 @@ impl Game {
         self.state.blocking.clear();
         self.state.blocks.clear();
         self.state.first_strikers.clear();
+        if let Some(rows) = &mut self.state.borrowed_uses {
+            rows.retain(|row| row.exhaust || row.turn == self.state.turn);
+            if rows.is_empty() {
+                self.state.borrowed_uses = None;
+            }
+        }
         for obj in &mut self.state.objects {
             if obj.used_abilities != 0 {
                 obj.used_abilities &= obj.card.exhaust_mask();
@@ -5955,6 +6027,7 @@ impl Game {
             exile_links: s.exile_links.clone(),
             spell_characteristics: self.spell_characteristics(),
             exile_permissions: s.exile_permissions.clone(),
+            borrowed_abilities: self.borrowed_ability_views(),
             resolution_free_casts: s.resolution_free_casts.as_deref().cloned(),
             graveyard_type_uses: s
                 .graveyard_type_uses
@@ -6332,6 +6405,14 @@ impl Game {
                 .map_or(0, |a| a.counter_payment.owned_bytes())
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
             + s.exile_permissions.len() * std::mem::size_of::<ExilePlayPermission>()
+            + s.borrowed_uses.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<borrowed_activations::Use>>()
+                    + rows.len() * std::mem::size_of::<borrowed_activations::Use>()
+            })
+            + s.borrowed_links.as_ref().map_or(0, |links| {
+                std::mem::size_of::<Vec<borrowed_activations::Link>>()
+                    + links.len() * std::mem::size_of::<borrowed_activations::Link>()
+            })
             + s.hand_play_bans.as_ref().map_or(0, |bans| {
                 std::mem::size_of::<Vec<u32>>() + bans.len() * std::mem::size_of::<u32>()
             })

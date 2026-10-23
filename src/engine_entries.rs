@@ -512,6 +512,7 @@ impl Game {
             {
                 self.apply_return_modification(event.after, kind, source);
             }
+            event.was_cast = movement.cast_origin.is_some();
             event.offspring_paid = movement.offspring_paid;
             event.kicked = movement.kicked;
             if event.moved && event.destination == Zone::Battlefield {

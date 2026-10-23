@@ -502,6 +502,7 @@ impl Game {
                     | TriggerCondition::InterveningIf { .. } => {
                         unreachable!("unwrapped event")
                     }
+                    TriggerCondition::SelfEntersIfCast => same && event.was_cast,
                     TriggerCondition::SelfOffspring => same && event.offspring_paid,
                     TriggerCondition::SelfKicked => same && event.kicked,
                     TriggerCondition::SelfGiftEnters => same && event.gift.is_some(),
@@ -787,6 +788,7 @@ impl Game {
         self.state.pending_triggers.push(SpellView {
             gift: None,
             source_move: None,
+            borrowed_slot: None,
             target_controller_lki: None,
             reflexive_subject: None,
             crew: None,
@@ -1394,7 +1396,9 @@ impl Game {
                             item.cast.is_some_and(|c| c.evidence == Some(true));
                         self.stage_entries(vec![movement], None);
                     } else {
-                        self.move_object(item.card, Zone::Battlefield);
+                        let mut event = self.move_object_raw(item.card, Zone::Battlefield);
+                        event.was_cast = item.cast.is_some();
+                        self.finish_zone_events(std::slice::from_ref(&event), &[]);
                     }
                     self.give_priority();
                     return;
@@ -2348,7 +2352,9 @@ impl Game {
                     );
                 }
                 Instruction::AddMana(production) => {
-                    let quality = self.mana_quality(production, item.card);
+                    let quality = self
+                        .mana_quality(production, item.card)
+                        .map(|quality| quality.with_definition(item.source_card));
                     match production.base().in_world(self, item.card) {
                         ManaProduction::ChosenColor
                         | ManaProduction::MonocoloredPermanentColors
@@ -2688,6 +2694,9 @@ impl Game {
                     tapped,
                 } => {
                     self.create_tokens(item.controller, token, u128::from(amount), tapped);
+                }
+                Instruction::ExileAndBorrowActivatedAbilities => {
+                    self.exile_and_borrow_activated_abilities(&item)
                 }
                 Instruction::MemoryVessel => self.resolve_memory_vessel(&item),
                 Instruction::RecordOncePerTurn => self.record_optional_ability_use(&item),

@@ -65,9 +65,7 @@ impl Announcement {
             }
             StackKind::Spell => self.item.source_card.additional_cost(),
             StackKind::ActivatedAbility { ability } => {
-                self.item.source_card.activations()[ability as usize]
-                    .cost
-                    .additional
+                self.item.source_card.activation(ability).cost.additional
             }
             StackKind::TriggeredAbility { .. }
             | StackKind::CopyEndStepSacrifice
@@ -105,8 +103,10 @@ impl Announcement {
                 .chain([].iter().copied())
             }
             StackKind::Spell => self.item.source_card.cost_options(),
-            StackKind::ActivatedAbility { ability } => self.item.source_card.activations()
-                [ability as usize]
+            StackKind::ActivatedAbility { ability } => self
+                .item
+                .source_card
+                .activation(ability)
                 .cost
                 .mana_options(),
             StackKind::TriggeredAbility { .. }
@@ -189,8 +189,10 @@ impl Announcement {
                         )
                     }) && self.item.source_card.has_hybrid_cost()
                 }
-                StackKind::ActivatedAbility { ability } => !self.item.source_card.activations()
-                    [ability as usize]
+                StackKind::ActivatedAbility { ability } => !self
+                    .item
+                    .source_card
+                    .activation(ability)
                     .cost
                     .alternatives
                     .is_empty(),
@@ -1148,6 +1150,7 @@ impl Game {
         SpellView {
             gift: None,
             source_move: None,
+            borrowed_slot: None,
             target_controller_lki: None,
             reflexive_subject: None,
             crew: None,

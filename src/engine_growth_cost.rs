@@ -134,7 +134,13 @@ impl Game {
                 required: ability.cost.colored,
                 generic: ability.cost.generic,
                 reserve: Some((grantor, Self::attached_tap_spec())),
-                source: Some((recipient, index as u16, Counters::default(), giver.card)),
+                source: Some((
+                    recipient,
+                    index as u16,
+                    Counters::default(),
+                    giver.card,
+                    None,
+                )),
             }) && emit(Action::AnnounceAttachedAbility {
                 grantor,
                 ability: index as u16,

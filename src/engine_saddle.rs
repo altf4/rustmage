@@ -185,8 +185,7 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             return false;
         };
-        let Some(minimum) = a.item.source_card.activations()[ability as usize].saddle_minimum()
-        else {
+        let Some(minimum) = a.item.source_card.activation(ability).saddle_minimum() else {
             return false;
         };
         assert!(a.pay_window && a.item.targets.is_empty());

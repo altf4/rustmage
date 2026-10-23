@@ -8,6 +8,7 @@ use crate::cards::{CreatureType, ManaQuality, ManaRestriction, ManaRetention, Ma
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum ManaRestrictionView {
     Unrestricted,
+    Unavailable,
     SpellSubtype(&'static str),
     CreatureSpellOrActivation(CreatureType),
 }
@@ -21,6 +22,7 @@ pub enum ManaSpellBonusView {
 pub struct ManaCopySource {
     pub object: ObjectRef,
     pub card: Card,
+    pub definition: Card,
     pub controller: Player,
     pub facts: DamageFacts,
     pub keywords: Keywords,
@@ -28,7 +30,15 @@ pub struct ManaCopySource {
 }
 impl std::hash::Hash for ManaCopySource {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        std::hash::Hash::hash(&(self.object, self.card, self.controller.index()), state);
+        std::hash::Hash::hash(
+            &(
+                self.object,
+                self.card,
+                self.definition,
+                self.controller.index(),
+            ),
+            state,
+        );
     }
 }
 impl ManaCopySource {
@@ -47,6 +57,7 @@ impl ManaCopySource {
         Self {
             object: world.reference(source),
             card: object.card,
+            definition: object.card,
             controller: object.controller,
             facts,
             keywords: world.game().keywords(source),
@@ -86,12 +97,12 @@ impl Quality {
                     ManaRestrictionView::SpellSubtype(subtype)
                 }
                 ManaRestriction::ChosenCreatureSpellOrActivation => {
-                    let Some(EntryChoiceValue::CreatureType(kind)) =
-                        world.game().entry_value(world.reference(source))
-                    else {
-                        panic!("chosen mana source must have made its entry choice")
-                    };
-                    ManaRestrictionView::CreatureSpellOrActivation(kind)
+                    match world.game().entry_value(world.reference(source)) {
+                        Some(EntryChoiceValue::CreatureType(kind)) => {
+                            ManaRestrictionView::CreatureSpellOrActivation(kind)
+                        }
+                        _ => ManaRestrictionView::Unavailable,
+                    }
                 }
             },
             spell_bonus: match quality.spell_bonus {
@@ -104,9 +115,16 @@ impl Quality {
                 .then(|| ManaCopySource::capture(world, source)),
         }
     }
+    pub(super) fn with_definition(mut self, definition: Card) -> Self {
+        if let Some(source) = &mut self.copy_source {
+            source.definition = definition;
+        }
+        self
+    }
     fn same_rules(self, other: Self) -> bool {
-        let identity =
-            |source: Option<ManaCopySource>| source.map(|s| (s.object, s.card, s.controller));
+        let identity = |source: Option<ManaCopySource>| {
+            source.map(|s| (s.object, s.card, s.definition, s.controller))
+        };
         self.restriction == other.restriction
             && self.spell_bonus == other.spell_bonus
             && self.retention == other.retention
@@ -115,6 +133,7 @@ impl Quality {
     pub(super) fn eligible(self, purpose: Purpose) -> bool {
         match self.restriction {
             ManaRestrictionView::Unrestricted => true,
+            ManaRestrictionView::Unavailable => false,
             ManaRestrictionView::SpellSubtype(subtype) => {
                 matches!(purpose, Purpose::Spell(facts) if facts.has_subtype(subtype))
             }
@@ -390,9 +409,12 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = item.kind else {
             return;
         };
-        let quality = item.source_card.activations()[usize::from(ability)]
+        let quality = item
+            .source_card
+            .activation(ability)
             .mana_production()
-            .and_then(|production| self.mana_quality(production, item.object.card));
+            .and_then(|production| self.mana_quality(production, item.object.card))
+            .map(|quality| quality.with_definition(item.source_card));
         if let Some(quality) = quality {
             self.state
                 .mana_lots
@@ -728,7 +750,8 @@ impl Game {
             ),
             Action::Activate { card, payment, .. }
             | Action::BeginActivate { card, payment, .. }
-            | Action::ActivateMana { card, payment, .. } => (
+            | Action::ActivateMana { card, payment, .. }
+            | Action::ActivateBorrowedMana { card, payment, .. } => (
                 *payment,
                 Purpose::Activation(self.damage_facts(*card).into()),
             ),
@@ -812,7 +835,7 @@ pub(super) fn visit_allocations(
 
 impl Game {
     pub(super) fn funding_purpose(&self, goal: &FundingGoal) -> Purpose {
-        if let Some((source, _, _, _)) = &goal.source {
+        if let Some((source, _, _, _, _)) = &goal.source {
             return Purpose::Activation(self.damage_facts(source.card).into());
         }
         self.state
@@ -876,6 +899,15 @@ impl Game {
                             counter_payment, ..
                         }
                         | Action::ActivateMana {
+                            counter_payment, ..
+                        }
+                        | Action::ActivateBorrowedMana {
+                            counter_payment, ..
+                        }
+                        | Action::AnnounceBorrowedMana {
+                            counter_payment, ..
+                        }
+                        | Action::AnnounceBorrowedAbility {
                             counter_payment, ..
                         }
                         | Action::BeginActivate {

@@ -81,6 +81,15 @@ impl ZoneState {
                     | Action::ActivateMana {
                         counter_payment, ..
                     }
+                    | Action::ActivateBorrowedMana {
+                        counter_payment, ..
+                    }
+                    | Action::AnnounceBorrowedMana {
+                        counter_payment, ..
+                    }
+                    | Action::AnnounceBorrowedAbility {
+                        counter_payment, ..
+                    }
                     | Action::BeginActivate {
                         counter_payment, ..
                     }
