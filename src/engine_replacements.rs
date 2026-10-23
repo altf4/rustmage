@@ -67,6 +67,7 @@ pub(super) struct RoleReflexiveCompletion {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum TokenCompletion {
+    HastyDestroyAtEnd(Box<SpellView>),
     None,
     Simultaneous(Box<SimultaneousTokens>),
     Keywords {
@@ -1390,6 +1391,7 @@ impl Game {
                                     batch.completion,
                                     TokenCompletion::JobAttach(_)
                                         | TokenCompletion::HastyDelayedCopy(_)
+                                        | TokenCompletion::HastyDestroyAtEnd(_)
                                         | TokenCompletion::Keywords { .. }
                                         | TokenCompletion::Reflexive { .. }
                                         | TokenCompletion::RoleReflexive(_)
@@ -1507,6 +1509,11 @@ impl Game {
     ) {
         created.retain(|r| self.on_battlefield(r.card) && self.object_ref(r.card) == *r);
         match completion {
+            TokenCompletion::HastyDestroyAtEnd(item) => {
+                let ids = created.iter().map(|r| r.card).collect::<Vec<_>>();
+                self.grant_keyword_effects(&ids, item.object, Keywords::HASTE);
+                self.record_delayed_tokens(&item, created, true);
+            }
             TokenCompletion::Keywords { source, keywords } => {
                 let ids = created.iter().map(|r| r.card).collect::<Vec<_>>();
                 self.grant_keyword_effects(&ids, source, keywords);

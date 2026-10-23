@@ -587,6 +587,7 @@ pub(crate) struct LibrarySelectionSpec {
 pub(crate) enum LibraryPickDestination {
     Hand,
     Battlefield,
+    BattlefieldTappedAttacking,
     Top,
     ExileCastThisTurn,
 }
@@ -862,6 +863,7 @@ pub(crate) enum Instruction {
     BlinkAttacking,
     CaptureDelayedReturnTarget,
     ChooseColor,
+    GrantChosenColorHexproof,
     SetColors {
         subject: Subject,
         colors: ColorValue,
@@ -1578,6 +1580,10 @@ pub(crate) enum Instruction {
         subject: Subject,
         duration: AnimationDuration,
     },
+    CreateHastyTokensDestroyedAtEnd {
+        token: Card,
+        amount: AmountValue,
+    },
     CreateTokensWithTemporaryKeywords {
         token: Card,
         amount: AmountValue,
@@ -2031,10 +2037,11 @@ pub enum CounterKind {
     Lifelink,
     Dream,
     Finality,
+    Hexproof,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 20] = [
+    pub const ALL: [Self; 21] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -2055,6 +2062,7 @@ impl CounterKind {
         Self::Lifelink,
         Self::Dream,
         Self::Finality,
+        Self::Hexproof,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -2074,6 +2082,7 @@ impl CounterKind {
                 | Self::Lifelink
                 | Self::Dream
                 | Self::Finality
+                | Self::Hexproof
         )
     }
 }

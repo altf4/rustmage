@@ -506,6 +506,7 @@ fn granted_mana_layer_six_obeys_recipient_removal_timestamps() {
         };
         let objects = vec![
             LayerSixObject {
+                hexproof_colors: 0,
                 printed: true,
                 keywords: Keywords::NONE,
                 grants: Vec::new(),

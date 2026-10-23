@@ -258,6 +258,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             let object = world.object(i as CardId);
             LayerSixObject {
                 printed: true,
+                hexproof_colors: 0,
                 keywords: if object.zone == Zone::Stack {
                     game.effective_spell_card(i as CardId).keywords()
                 } else {
@@ -384,6 +385,15 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 && row.expires_turn.is_none_or(|turn| turn == game.state.turn)
                 && keyword_counters::effect_live(world, row)
             {
+                if row.hexproof_colors != 0 {
+                    effects.push(LayerSixEffect {
+                        provider: None,
+                        started_earlier: false,
+                        timestamp: row.timestamp,
+                        recipients: vec![row.recipient.card],
+                        action: LayerSixAction::GrantHexproofColors(row.hexproof_colors),
+                    });
+                }
                 effects.push(LayerSixEffect {
                     provider: None,
                     started_earlier: false,
@@ -517,6 +527,7 @@ pub struct GrantedAbilityView {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct AbilityAvailabilityView {
     pub printed: bool,
+    pub hexproof_colors: u8,
     pub grants: Vec<GrantedAbilityView>,
 }
 impl Game {

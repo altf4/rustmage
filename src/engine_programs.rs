@@ -1178,6 +1178,7 @@ impl Game {
                                     instruction,
                                     Instruction::MarkCastDreamExile
                                         | Instruction::CreateTokensWithTemporaryKeywords { .. }
+                                        | Instruction::CreateHastyTokensDestroyedAtEnd { .. }
                                         | Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
                                         | Instruction::PutCountersScaled {
                                             amount: AmountValue::SpellColors,
@@ -1874,6 +1875,7 @@ impl Game {
                 Instruction::CaptureDelayedReturnTarget => {
                     self.capture_delayed_return_target(&item)
                 }
+                Instruction::GrantChosenColorHexproof => self.grant_chosen_color_hexproof(&item),
                 Instruction::ChooseColor => {
                     self.state.resolving.as_mut().unwrap().chosen_color = None;
                     self.state.pending = Pending::ResolutionColor {
@@ -3340,6 +3342,16 @@ impl Game {
                         }
                         self.create_tokens(item.controller, token, 1, false);
                     }
+                }
+                Instruction::CreateHastyTokensDestroyedAtEnd { token, amount } => {
+                    let n = self.item_amount(amount, &item);
+                    self.stage_token_creation(
+                        item.controller,
+                        token,
+                        n,
+                        false,
+                        replacements::TokenCompletion::HastyDestroyAtEnd(Box::new(item.clone())),
+                    );
                 }
                 Instruction::CreateTokensWithTemporaryKeywords {
                     token,

@@ -937,7 +937,13 @@ impl Game {
                     }
                 })
         };
-        if filters().next().is_none() {
+        let temporary = self.state.roles.as_ref().is_some_and(|state| {
+            state
+                .keyword_effects
+                .iter()
+                .any(|row| row.recipient == self.object_ref(id) && row.hexproof_colors != 0)
+        });
+        if filters().next().is_none() && !temporary {
             return false;
         }
         let facts = self.targeting_source_facts(source, qualification);
@@ -945,6 +951,9 @@ impl Game {
             return false;
         };
         let query = self.characteristic_query();
+        if temporary && query.hexproof_colors(id) & colors != 0 {
+            return true;
+        }
         filters().any(|filter| {
             let matches = match filter {
                 crate::cards::SourceCharacteristicFilter::Color(color) => {

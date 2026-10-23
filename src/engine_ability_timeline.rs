@@ -18,6 +18,7 @@ pub struct KeywordEffectView {
     pub recipient: ObjectRef,
     pub origin: KeywordEffectOrigin,
     pub keywords: Keywords,
+    pub hexproof_colors: u8,
     /// Resolution-created blocking restrictions are not granted abilities.
     pub rules: Keywords,
     pub timestamp: u64,
@@ -191,6 +192,7 @@ impl Game {
             .get_or_insert_with(Default::default)
             .keyword_effects
             .push(KeywordEffectView {
+                hexproof_colors: 0,
                 expires_before_turn: None,
                 recipient: spell,
                 origin: KeywordEffectOrigin::Resolution { source },
@@ -248,6 +250,7 @@ impl Game {
                 .unwrap()
                 .keyword_effects
                 .push(KeywordEffectView {
+                    hexproof_colors: 0,
                     expires_before_turn: None,
                     recipient,
                     origin: KeywordEffectOrigin::Resolution { source },
@@ -286,6 +289,7 @@ impl Game {
             .unwrap()
             .keyword_effects
             .push(KeywordEffectView {
+                hexproof_colors: 0,
                 expires_before_turn: None,
                 recipient,
                 origin: KeywordEffectOrigin::Suspected,

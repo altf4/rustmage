@@ -2,14 +2,8 @@
 use super::ability_timeline_tests::{checked, named, next_turn, settle, settle_on, setup};
 use super::*;
 fn paid(g: &mut Game, p: Player, name: &str, targets: &[Target]) -> CardId {
-    let card = Card::from_name(name).unwrap();
-    let id = super::tests::spawn(g, p, card, Zone::Hand);
-    if card.is_supported() {
-        checked(g, Action::AnnounceCast { card: id });
-    } else {
-        let item = g.cast_item(p, id, [0; 6]);
-        g.open_payment_announcement(item, Counters::default(), None);
-    }
+    let id = named(g, p, name, Zone::Hand);
+    checked(g, Action::AnnounceCast { card: id });
     if matches!(g.state.pending, Pending::SpellCost { .. }) {
         let a = g
             .legal_actions()

@@ -693,6 +693,11 @@ impl CharacteristicQuery<'_> {
         );
         available
     }
+    pub(super) fn hexproof_colors(&self, id: CardId) -> u8 {
+        self.evaluation.as_ref().map_or(0, |evaluation| {
+            evaluation.result.objects[id as usize].hexproof_colors
+        })
+    }
     pub(super) fn ability_availability(&self, id: CardId) -> Option<Box<AbilityAvailabilityView>> {
         if !self.on_battlefield(id) {
             return None;
@@ -701,6 +706,7 @@ impl CharacteristicQuery<'_> {
         let object = &evaluation.result.objects[id as usize];
         Some(Box::new(AbilityAvailabilityView {
             printed: object.printed,
+            hexproof_colors: object.hexproof_colors,
             grants: object
                 .grants
                 .iter()

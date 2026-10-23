@@ -18,6 +18,7 @@ pub(super) struct GrantedManaAbility {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct LayerSixObject {
     pub printed: bool,
+    pub hexproof_colors: u8,
     pub keywords: Keywords,
     pub grants: Vec<GrantedAbilityKey>,
     pub mana: Vec<GrantedManaAbility>,
@@ -32,6 +33,7 @@ pub(super) struct LayerSixGrant {
 #[derive(Clone, Debug)]
 pub(super) enum LayerSixAction {
     Remove,
+    GrantHexproofColors(u8),
     RemoveAndGrant(Vec<LayerSixGrant>),
     GrantEach(Vec<LayerSixGrant>),
     Grant {
@@ -173,6 +175,7 @@ pub(super) fn apply_layer_six(
                 let object = &mut objects[recipient as usize];
                 object.printed = false;
                 object.keywords = Keywords::NONE;
+                object.hexproof_colors = 0;
                 object.grants.clear();
                 object.mana.clear();
             }
@@ -195,9 +198,11 @@ pub(super) fn apply_layer_six(
                 LayerSixAction::Remove => {
                     object.printed = false;
                     object.keywords = Keywords::NONE;
+                    object.hexproof_colors = 0;
                     object.grants.clear();
                     object.mana.clear();
                 }
+                LayerSixAction::GrantHexproofColors(colors) => object.hexproof_colors |= colors,
                 LayerSixAction::Grant {
                     keywords,
                     abilities,
@@ -218,6 +223,7 @@ mod tests {
         vec![
             LayerSixObject {
                 printed: true,
+                hexproof_colors: 0,
                 keywords: Keywords::FLYING,
                 grants: Vec::new(),
                 mana: Vec::new()

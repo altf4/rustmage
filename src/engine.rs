@@ -8844,8 +8844,14 @@ mod tmt_alliance_batch_tests;
 #[path = "engine_tmt_last_origins_tests.rs"]
 mod tmt_last_origins_tests;
 pub use delayed_steps::DelayedStepView;
+#[path = "engine_tmt_damage_legends.rs"]
+mod tmt_damage_legends;
 #[cfg(test)]
 #[path = "engine_tmt_delayed_steps_tests.rs"]
 mod tmt_delayed_steps_tests;
 #[path = "engine_tmt_last_origins.rs"]
 mod tmt_last_origins;
+
+#[cfg(test)]
+#[path = "engine_tmt_damage_legends_tests.rs"]
+mod tmt_damage_legends_tests;

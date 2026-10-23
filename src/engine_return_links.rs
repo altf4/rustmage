@@ -402,6 +402,7 @@ impl Game {
             });
         if keywords != Keywords::NONE {
             state.keyword_effects.push(KeywordEffectView {
+                hexproof_colors: 0,
                 expires_before_turn: None,
                 recipient,
                 origin: KeywordEffectOrigin::Resolution { source },
