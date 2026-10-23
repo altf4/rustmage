@@ -240,11 +240,6 @@ impl Game {
         self.characteristic_query().stats(id)
     }
     // CR208.4b: characteristic definitions and setters, before modifiers/counters.
-    #[cfg(test)]
-    pub(super) fn base_stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
-        self.characteristic_query()
-            .base_stats_without_hand(id, departing)
-    }
 
     pub(super) fn stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
         self.characteristic_query()

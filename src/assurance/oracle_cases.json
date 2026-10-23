@@ -1,0 +1,603 @@
+[
+  {
+    "name": "Aegis Turtle",
+    "oracle_id": "f84c30e7-2ea8-43ff-9356-1f907558cfd9",
+    "oracle_text": "",
+    "mana_value": 1,
+    "kind": "body",
+    "power": 0,
+    "toughness": 5,
+    "keywords": []
+  },
+  {
+    "name": "Ankle Biter",
+    "oracle_id": "ee8f16ba-cbf0-4286-b26c-d78dd35bee17",
+    "oracle_text": "Deathtouch",
+    "mana_value": 1,
+    "kind": "body",
+    "power": 1,
+    "toughness": 1,
+    "keywords": [
+      "deathtouch"
+    ]
+  },
+  {
+    "name": "Bear Cub",
+    "oracle_id": "ed206651-3d9b-4546-8d45-0682817192fd",
+    "oracle_text": "",
+    "mana_value": 2,
+    "kind": "body",
+    "power": 2,
+    "toughness": 2,
+    "keywords": []
+  },
+  {
+    "name": "Bilbo's Deadly Slice",
+    "oracle_id": "4c054431-3667-4e28-9d68-03b43447c35b",
+    "oracle_text": "Destroy target creature.",
+    "mana_value": 3,
+    "kind": "destroy"
+  },
+  {
+    "name": "Bishop's Soldier",
+    "oracle_id": "84487586-4f71-457a-b983-4f1f7a71deef",
+    "oracle_text": "Lifelink (Damage dealt by this creature also causes you to gain that much life.)",
+    "mana_value": 2,
+    "kind": "body",
+    "power": 2,
+    "toughness": 2,
+    "keywords": [
+      "lifelink"
+    ]
+  },
+  {
+    "name": "Brazen Scourge",
+    "oracle_id": "422ef4ec-863a-450e-9577-a0707bc16532",
+    "oracle_text": "Haste (This creature can attack and {T} as soon as it comes under your control.)",
+    "mana_value": 3,
+    "kind": "body",
+    "power": 3,
+    "toughness": 3,
+    "keywords": [
+      "haste"
+    ]
+  },
+  {
+    "name": "Brightblade Stoat",
+    "oracle_id": "f1d2f437-d474-4617-aea6-102daa5e5a15",
+    "oracle_text": "First strike, lifelink",
+    "mana_value": 2,
+    "kind": "body",
+    "power": 2,
+    "toughness": 2,
+    "keywords": [
+      "first strike",
+      "lifelink"
+    ]
+  },
+  {
+    "name": "Caelorna, Coral Tyrant",
+    "oracle_id": "4bbc5df9-60d7-46c1-8856-91c9c74abf18",
+    "oracle_text": "",
+    "mana_value": 2,
+    "kind": "body",
+    "power": 0,
+    "toughness": 8,
+    "keywords": []
+  },
+  {
+    "name": "Colossadactyl",
+    "oracle_id": "34ff281a-f294-4351-9665-863a5b2e882b",
+    "oracle_text": "Reach, trample",
+    "mana_value": 4,
+    "kind": "body",
+    "power": 4,
+    "toughness": 5,
+    "keywords": [
+      "reach",
+      "trample"
+    ]
+  },
+  {
+    "name": "Dawn's Light Archer",
+    "oracle_id": "1f2d1de6-42e0-4f45-b43d-ce4980146469",
+    "oracle_text": "Flash\nReach",
+    "mana_value": 3,
+    "kind": "body",
+    "power": 4,
+    "toughness": 2,
+    "keywords": [
+      "flash",
+      "reach"
+    ]
+  },
+  {
+    "name": "Dragon Sniper",
+    "oracle_id": "913dbce2-6805-453f-a9c3-64f1cc658627",
+    "oracle_text": "Reach, vigilance, deathtouch",
+    "mana_value": 1,
+    "kind": "body",
+    "power": 1,
+    "toughness": 1,
+    "keywords": [
+      "deathtouch",
+      "reach",
+      "vigilance"
+    ]
+  },
+  {
+    "name": "Fell",
+    "oracle_id": "8f968470-ce00-43a3-95f5-2e3fe987be19",
+    "oracle_text": "Destroy target creature.",
+    "mana_value": 2,
+    "kind": "destroy"
+  },
+  {
+    "name": "Fire Elemental",
+    "oracle_id": "3912d21e-1ebc-4a81-9dc9-f404248d564a",
+    "oracle_text": "",
+    "mana_value": 5,
+    "kind": "body",
+    "power": 5,
+    "toughness": 4,
+    "keywords": []
+  },
+  {
+    "name": "Flame Lash",
+    "oracle_id": "c65e804b-9222-4fa8-88d1-df06a3279f22",
+    "oracle_text": "Flame Lash deals 4 damage to any target.",
+    "mana_value": 4,
+    "kind": "damage",
+    "amount": 4
+  },
+  {
+    "name": "Galewind Moose",
+    "oracle_id": "b0747a4f-d041-4750-aef5-a5d101696f65",
+    "oracle_text": "Flash\nReach, vigilance, trample",
+    "mana_value": 6,
+    "kind": "body",
+    "power": 6,
+    "toughness": 6,
+    "keywords": [
+      "flash",
+      "reach",
+      "trample",
+      "vigilance"
+    ]
+  },
+  {
+    "name": "Giant Growth",
+    "oracle_id": "5748ebf1-24e3-499d-ab7c-c2cebd462a24",
+    "oracle_text": "Target creature gets +3/+3 until end of turn.",
+    "mana_value": 1,
+    "kind": "pump",
+    "power": 3,
+    "toughness": 3
+  },
+  {
+    "name": "Gigantosaurus",
+    "oracle_id": "e666bae7-dd51-4921-8b89-7e8d423caba0",
+    "oracle_text": "",
+    "mana_value": 5,
+    "kind": "body",
+    "power": 10,
+    "toughness": 10,
+    "keywords": []
+  },
+  {
+    "name": "Healer's Hawk",
+    "oracle_id": "28a52ba1-95da-44e1-8ac5-0dc23c902394",
+    "oracle_text": "Flying\nLifelink (Damage dealt by this creature also causes you to gain that much life.)",
+    "mana_value": 1,
+    "kind": "body",
+    "power": 1,
+    "toughness": 1,
+    "keywords": [
+      "flying",
+      "lifelink"
+    ]
+  },
+  {
+    "name": "Highborn Vampire",
+    "oracle_id": "1adcf587-9035-4299-a2bd-62f805fdd897",
+    "oracle_text": "",
+    "mana_value": 4,
+    "kind": "body",
+    "power": 4,
+    "toughness": 3,
+    "keywords": []
+  },
+  {
+    "name": "Hullcarver",
+    "oracle_id": "931c2153-e5e5-4642-bff0-f9dadcc24c9a",
+    "oracle_text": "Deathtouch",
+    "mana_value": 1,
+    "kind": "body",
+    "power": 1,
+    "toughness": 1,
+    "keywords": [
+      "deathtouch"
+    ]
+  },
+  {
+    "name": "Iron Giant",
+    "oracle_id": "325b4288-fe1b-4e29-ae13-72924b4db3dd",
+    "oracle_text": "Reach, vigilance, trample",
+    "mana_value": 7,
+    "kind": "body",
+    "power": 6,
+    "toughness": 6,
+    "keywords": [
+      "reach",
+      "trample",
+      "vigilance"
+    ]
+  },
+  {
+    "name": "Jibbirik Omnivore",
+    "oracle_id": "9cda6cb8-c254-413a-babd-0e24e7b89cc4",
+    "oracle_text": "",
+    "mana_value": 2,
+    "kind": "body",
+    "power": 3,
+    "toughness": 2,
+    "keywords": []
+  },
+  {
+    "name": "Kalakscion, Hunger Tyrant",
+    "oracle_id": "d85f5edb-60a8-4abd-82b0-f9a58f3d4185",
+    "oracle_text": "",
+    "mana_value": 3,
+    "kind": "body",
+    "power": 7,
+    "toughness": 2,
+    "keywords": []
+  },
+  {
+    "name": "Large Bear",
+    "oracle_id": "73346137-3117-4dc3-b5a4-1aca1da54548",
+    "oracle_text": "Reach, trample, haste",
+    "mana_value": 5,
+    "kind": "body",
+    "power": 5,
+    "toughness": 5,
+    "keywords": [
+      "haste",
+      "reach",
+      "trample"
+    ]
+  },
+  {
+    "name": "Leonin Skyhunter",
+    "oracle_id": "517c7295-8ba2-47a6-a1c6-aee722f8ca88",
+    "oracle_text": "Flying",
+    "mana_value": 2,
+    "kind": "body",
+    "power": 2,
+    "toughness": 2,
+    "keywords": [
+      "flying"
+    ]
+  },
+  {
+    "name": "Lightning Strike",
+    "oracle_id": "f34b9bc4-7bfe-47fd-ba23-4eeeb46026eb",
+    "oracle_text": "Lightning Strike deals 3 damage to any target.",
+    "mana_value": 2,
+    "kind": "damage",
+    "amount": 3
+  },
+  {
+    "name": "Magnigoth Sentry",
+    "oracle_id": "b52824f9-7897-46b7-a4e5-a0261861cb5b",
+    "oracle_text": "Reach (This creature can block creatures with flying.)",
+    "mana_value": 4,
+    "kind": "body",
+    "power": 4,
+    "toughness": 4,
+    "keywords": [
+      "reach"
+    ]
+  },
+  {
+    "name": "Monoist Sentry",
+    "oracle_id": "0b4cb111-ecf7-4ff7-a9e3-c944054f3370",
+    "oracle_text": "Defender",
+    "mana_value": 1,
+    "kind": "body",
+    "power": 4,
+    "toughness": 1,
+    "keywords": [
+      "defender"
+    ]
+  },
+  {
+    "name": "Murder",
+    "oracle_id": "938b4e2c-88d9-4637-bc00-e228920c9a78",
+    "oracle_text": "Destroy target creature.",
+    "mana_value": 3,
+    "kind": "destroy"
+  },
+  {
+    "name": "Ordinary Bear",
+    "oracle_id": "89a2fab8-b074-42aa-a871-d9c5de2d0895",
+    "oracle_text": "",
+    "mana_value": 4,
+    "kind": "body",
+    "power": 4,
+    "toughness": 5,
+    "keywords": []
+  },
+  {
+    "name": "Quakestrider Ceratops",
+    "oracle_id": "e56629ba-82d4-470f-9a6b-40c29d835af2",
+    "oracle_text": "",
+    "mana_value": 6,
+    "kind": "body",
+    "power": 12,
+    "toughness": 8,
+    "keywords": []
+  },
+  {
+    "name": "Quaketusk Boar",
+    "oracle_id": "6fbaa853-48d4-4a3b-b22d-27415cc266d7",
+    "oracle_text": "Reach, trample, haste",
+    "mana_value": 5,
+    "kind": "body",
+    "power": 5,
+    "toughness": 5,
+    "keywords": [
+      "haste",
+      "reach",
+      "trample"
+    ]
+  },
+  {
+    "name": "Quick Study",
+    "oracle_id": "7bff8d4a-1c7d-48b8-b3e3-737dd6f01823",
+    "oracle_text": "Draw two cards.",
+    "mana_value": 3,
+    "kind": "draw",
+    "amount": 2
+  },
+  {
+    "name": "Raging Redcap",
+    "oracle_id": "679841ad-f3ac-48e2-ba11-2cf6d78642b4",
+    "oracle_text": "Double strike (This creature deals both first-strike and regular combat damage.)",
+    "mana_value": 3,
+    "kind": "body",
+    "power": 1,
+    "toughness": 2,
+    "keywords": [
+      "double strike"
+    ]
+  },
+  {
+    "name": "Rearing Embermare",
+    "oracle_id": "95f20067-4471-4bfa-952d-dbbfbb2c2178",
+    "oracle_text": "Reach, haste",
+    "mana_value": 5,
+    "kind": "body",
+    "power": 4,
+    "toughness": 5,
+    "keywords": [
+      "haste",
+      "reach"
+    ]
+  },
+  {
+    "name": "Savannah Lions",
+    "oracle_id": "60ba93eb-39e6-4af2-9c66-cd38f72daff2",
+    "oracle_text": "",
+    "mana_value": 1,
+    "kind": "body",
+    "power": 2,
+    "toughness": 1,
+    "keywords": []
+  },
+  {
+    "name": "Serra Angel",
+    "oracle_id": "4b7ac066-e5c7-43e6-9e7e-2739b24a905d",
+    "oracle_text": "Flying\nVigilance (Attacking doesn't cause this creature to tap.)",
+    "mana_value": 5,
+    "kind": "body",
+    "power": 4,
+    "toughness": 4,
+    "keywords": [
+      "flying",
+      "vigilance"
+    ]
+  },
+  {
+    "name": "Shock",
+    "oracle_id": "a9d288b8-cdc1-4e55-a0c9-d6edfc95e65d",
+    "oracle_text": "Shock deals 2 damage to any target.",
+    "mana_value": 1,
+    "kind": "damage",
+    "amount": 2
+  },
+  {
+    "name": "Shrike Force",
+    "oracle_id": "d014b02f-a8b8-4b97-96e0-f588792069f0",
+    "oracle_text": "Flying, double strike, vigilance",
+    "mana_value": 3,
+    "kind": "body",
+    "power": 1,
+    "toughness": 3,
+    "keywords": [
+      "double strike",
+      "flying",
+      "vigilance"
+    ]
+  },
+  {
+    "name": "Skyraker Giant",
+    "oracle_id": "d481630c-83c4-47d2-a770-db331154d2b9",
+    "oracle_text": "Reach (This creature can block creatures with flying.)",
+    "mana_value": 4,
+    "kind": "body",
+    "power": 4,
+    "toughness": 3,
+    "keywords": [
+      "reach"
+    ]
+  },
+  {
+    "name": "Squirrelanoids",
+    "oracle_id": "315ddc7a-c39c-43d9-b134-23acbd865e3e",
+    "oracle_text": "Deathtouch",
+    "mana_value": 1,
+    "kind": "body",
+    "power": 1,
+    "toughness": 1,
+    "keywords": [
+      "deathtouch"
+    ]
+  },
+  {
+    "name": "Sundial, Dawn Tyrant",
+    "oracle_id": "9ca808c5-9338-4199-a45b-df1a1a20625e",
+    "oracle_text": "",
+    "mana_value": 2,
+    "kind": "body",
+    "power": 3,
+    "toughness": 3,
+    "keywords": []
+  },
+  {
+    "name": "Swab Goblin",
+    "oracle_id": "343ecf2f-0bbc-4840-8fb3-f5f61b26e76f",
+    "oracle_text": "",
+    "mana_value": 2,
+    "kind": "body",
+    "power": 2,
+    "toughness": 2,
+    "keywords": []
+  },
+  {
+    "name": "Swiftblade Vindicator",
+    "oracle_id": "44240b1e-c104-4eb4-8ab9-0d56607ba241",
+    "oracle_text": "Double strike (This creature deals both first-strike and regular combat damage.)\nVigilance (Attacking doesn't cause this creature to tap.)\nTrample (This creature can deal excess combat damage to the player or planeswalker it's attacking.)",
+    "mana_value": 2,
+    "kind": "body",
+    "power": 1,
+    "toughness": 1,
+    "keywords": [
+      "double strike",
+      "trample",
+      "vigilance"
+    ]
+  },
+  {
+    "name": "Tajuru Pathwarden",
+    "oracle_id": "d8c7cd66-d8bf-4a99-add5-1d5651d4e025",
+    "oracle_text": "Vigilance (Attacking doesn't cause this creature to tap.)\nTrample (This creature can deal excess combat damage to the player or planeswalker it's attacking.)",
+    "mana_value": 5,
+    "kind": "body",
+    "power": 5,
+    "toughness": 4,
+    "keywords": [
+      "trample",
+      "vigilance"
+    ]
+  },
+  {
+    "name": "Terrian, World Tyrant",
+    "oracle_id": "856245a6-c697-4f03-90be-77d8eb2d274e",
+    "oracle_text": "",
+    "mana_value": 5,
+    "kind": "body",
+    "power": 9,
+    "toughness": 7,
+    "keywords": []
+  },
+  {
+    "name": "Thornweald Archer",
+    "oracle_id": "b5ba87f5-3589-4a8b-ad65-2ae2523e98e8",
+    "oracle_text": "Reach (This creature can block creatures with flying.)\nDeathtouch (Any amount of damage this deals to a creature is enough to destroy it.)",
+    "mana_value": 2,
+    "kind": "body",
+    "power": 2,
+    "toughness": 1,
+    "keywords": [
+      "deathtouch",
+      "reach"
+    ]
+  },
+  {
+    "name": "Titanic Growth",
+    "oracle_id": "61e09dd9-7870-48c2-9177-d6abc3162692",
+    "oracle_text": "Target creature gets +4/+4 until end of turn.",
+    "mana_value": 2,
+    "kind": "pump",
+    "power": 4,
+    "toughness": 4
+  },
+  {
+    "name": "Tyrox, Saurid Tyrant",
+    "oracle_id": "b24d95fa-3cf7-495e-9082-11f8db151906",
+    "oracle_text": "",
+    "mana_value": 2,
+    "kind": "body",
+    "power": 4,
+    "toughness": 1,
+    "keywords": []
+  },
+  {
+    "name": "Unsummon",
+    "oracle_id": "837182db-1bf3-4a2c-bd01-1af9d9873561",
+    "oracle_text": "Return target creature to its owner's hand.",
+    "mana_value": 1,
+    "kind": "bounce"
+  },
+  {
+    "name": "Vampire Nighthawk",
+    "oracle_id": "feb244f8-bcb1-44cf-9940-2719221a7309",
+    "oracle_text": "Flying\nDeathtouch (Any amount of damage this deals to a creature is enough to destroy it.)\nLifelink (Damage dealt by this creature also causes you to gain that much life.)",
+    "mana_value": 3,
+    "kind": "body",
+    "power": 2,
+    "toughness": 3,
+    "keywords": [
+      "deathtouch",
+      "flying",
+      "lifelink"
+    ]
+  },
+  {
+    "name": "Yargle, Glutton of Urborg",
+    "oracle_id": "ed66cd31-958f-4b28-82a3-e04acc819afc",
+    "oracle_text": "",
+    "mana_value": 5,
+    "kind": "body",
+    "power": 9,
+    "toughness": 3,
+    "keywords": []
+  },
+  {
+    "name": "Yargle, Goliath of Otaria",
+    "oracle_id": "014d0bcd-b80f-4c43-8f00-f4c31e8f3370",
+    "oracle_text": "",
+    "mana_value": 5,
+    "kind": "body",
+    "power": 3,
+    "toughness": 9,
+    "keywords": []
+  },
+  {
+    "name": "Zetalpa, Primal Dawn",
+    "oracle_id": "7da0e5de-3e4c-420a-8685-991206100b9d",
+    "oracle_text": "Flying, double strike, vigilance, trample, indestructible",
+    "mana_value": 8,
+    "kind": "body",
+    "power": 4,
+    "toughness": 8,
+    "keywords": [
+      "double strike",
+      "flying",
+      "indestructible",
+      "trample",
+      "vigilance"
+    ]
+  }
+]

@@ -692,16 +692,6 @@ impl Game {
         )
     }
 
-    #[cfg(test)]
-    pub(super) fn target_matches(
-        &self,
-        rule: TargetRule,
-        controller: Player,
-        source: ObjectRef,
-        target: Target,
-    ) -> bool {
-        self.target_matches_without_hand(rule, controller, source, target, None, None)
-    }
     pub(super) fn cast_target_matches(
         &self,
         rule: TargetRule,

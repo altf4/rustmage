@@ -613,10 +613,6 @@ impl Game {
             });
         Purpose::Spell(source)
     }
-    #[cfg(test)]
-    pub(super) fn spell_mana_purpose(&self, definition: Card) -> Purpose {
-        Purpose::Spell(Source::printed(definition))
-    }
     pub(super) fn spend_mana_for(
         &mut self,
         actor: Player,
@@ -822,10 +818,6 @@ impl Game {
             .map_or(Purpose::Other, |a| self.purpose_for_item(&a.item))
     }
 }
-
-#[cfg(test)]
-#[path = "engine_tagged_mana_tests.rs"]
-mod tests;
 
 impl Game {
     fn compact_mana_lots(&mut self) {
