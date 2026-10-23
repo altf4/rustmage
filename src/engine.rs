@@ -8632,3 +8632,7 @@ mod tmt_spell_batch_tests;
 #[cfg(test)]
 #[path = "engine_tmt_inherited_batch_three_tests.rs"]
 mod tmt_inherited_batch_three_tests;
+
+#[cfg(test)]
+#[path = "engine_tmt_inherited_batch_four_tests.rs"]
+mod tmt_inherited_batch_four_tests;

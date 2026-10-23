@@ -8,5 +8,22 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cc5eae8bc0bc68128f958c6f3d0183168f93276ec6c8b874b5032227b014b6db"
   },
-  "physical_metadata_sha256": "9ea084f63c3eb21cfa6eb971c86ebc0f33624bc3056bfe9ba08559e24811e871"
+  "physical_metadata_sha256": "9ea084f63c3eb21cfa6eb971c86ebc0f33624bc3056bfe9ba08559e24811e871",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/Tenderize.java",
+  "java_sha256": "73d1b7e0cac69974d3b64e0251fa2607942f332d4bf4ef7e27d47cd309b7ef1c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageWithPowerFromOneToAnotherTargetEffect.java",
+      "sha256": "cbe6b025fef2b13a46fcdddb02a0342eecd99af9db39d292c22b1f942d2729a3"
+    }
+  ],
+  "source_audit": {
+    "scope": "Full Oracle body, complete XMage card class and listed complete reusable implementations read; inherited typed behavior independently exercised with paid legal actions.",
+    "tests": [
+      "src/engine_tmt_inherited_batch_four_tests.rs"
+    ],
+    "status": "Focused rules audit; integrated release and complete-set acceptance remain integrator obligations."
+  }
 }

@@ -676,7 +676,7 @@ fn tmt_inherited_three_ravenous_cast_artifact_trigger_and_haste_frozen_recipient
                     && o.is_token()
                     && o.card.has_subtype("Robot")
             })
-            .last()
+            .next_back()
             .unwrap()
             .0 as CardId;
         assert!(!g.keywords(late).contains(Keywords::HASTE));
