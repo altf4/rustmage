@@ -717,6 +717,38 @@ impl Game {
             .map(|_| source.card);
         self.target_matches_without_hand(rule, controller, source, target, departing, None)
     }
+    fn instant_sorcery_source(
+        &self,
+        source: ObjectRef,
+        qualification: Option<TargetSourceCharacteristics<'_>>,
+    ) -> bool {
+        let qualification = qualification.or_else(|| {
+            self.state
+                .stack
+                .iter()
+                .chain(self.state.pending_triggers.iter())
+                .chain(self.state.ordering_triggers.iter())
+                .chain(self.state.announcing.iter().map(|a| &a.item))
+                .chain(self.state.resolving.iter().map(|r| &r.item))
+                .find(|item| item.object == source)
+                .map(TargetSourceCharacteristics::from_item)
+        });
+        let kinds = if let Some(card) = qualification.and_then(|q| q.spell) {
+            card.kind_mask()
+        } else if let Some(object) = self
+            .state
+            .objects
+            .get(source.card as usize)
+            .filter(|o| o.generation == source.generation)
+        {
+            self.object_kinds(source.card, object)
+        } else {
+            qualification
+                .and_then(|q| q.snapshot)
+                .map_or(0, |f| f.kinds)
+        };
+        kinds & (4 | 8) != 0
+    }
     fn target_matches_without_hand(
         &self,
         rule: TargetRule,
@@ -898,7 +930,11 @@ impl Game {
                     return false;
                 };
                 if obj.zone == Zone::Battlefield
-                    && self.keywords(id).contains(Keywords::PROTECTION_EVERYTHING)
+                    && (self.keywords(id).contains(Keywords::PROTECTION_EVERYTHING)
+                        || (self
+                            .keywords(id)
+                            .contains(Keywords::PROTECTION_INSTANT_SORCERY)
+                            && self.instant_sorcery_source(source, qualification)))
                 {
                     return false;
                 }
@@ -1117,6 +1153,7 @@ impl Game {
             crew: None,
             cast_event: None,
             copy_event: None,
+            captured_artifact_copy: None,
             source_copy_recipe: None,
             target_allocations: None,
             mana_copy_sources: None,

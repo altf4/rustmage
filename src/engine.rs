@@ -878,6 +878,8 @@ pub struct SpellView {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_copy_recipe: Option<Box<CopyRecipe>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub captured_artifact_copy: Option<Box<CopyRecipe>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
     pub target_allocations: Option<Box<Vec<TargetAllocation>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -961,21 +963,28 @@ impl SpellView {
     }
     /// Heap-owned continuation payloads; inline packet storage is counted by its container.
     pub(super) fn owned_bytes(&self) -> usize {
-        self.mana_copy_sources.as_ref().map_or(0, |sources| {
-            std::mem::size_of::<Vec<(ManaCopySource, u64)>>()
-                + sources.len() * std::mem::size_of::<(ManaCopySource, u64)>()
-        }) + self.copy_event.as_ref().map_or(0, |event| {
-            std::mem::size_of::<stack_copies::CopyEvent>() + event.spell.owned_bytes()
-        }) + self.source_counter_lki.as_ref().map_or(0, |facts| {
-            std::mem::size_of::<Vec<SourceCounterQuantityView>>()
-                + facts.len() * std::mem::size_of::<SourceCounterQuantityView>()
-        }) + self.target_controller_lki.as_ref().map_or(0, |v| {
-            std::mem::size_of::<Vec<(ObjectRef, Player)>>()
-                + v.len() * std::mem::size_of::<(ObjectRef, Player)>()
-        }) + self
-            .gift
+        self.captured_artifact_copy
             .as_ref()
-            .map_or(0, |_| std::mem::size_of::<GiftContext>())
+            .map_or(0, |_| std::mem::size_of::<CopyRecipe>())
+            + self.mana_copy_sources.as_ref().map_or(0, |sources| {
+                std::mem::size_of::<Vec<(ManaCopySource, u64)>>()
+                    + sources.len() * std::mem::size_of::<(ManaCopySource, u64)>()
+            })
+            + self.copy_event.as_ref().map_or(0, |event| {
+                std::mem::size_of::<stack_copies::CopyEvent>() + event.spell.owned_bytes()
+            })
+            + self.source_counter_lki.as_ref().map_or(0, |facts| {
+                std::mem::size_of::<Vec<SourceCounterQuantityView>>()
+                    + facts.len() * std::mem::size_of::<SourceCounterQuantityView>()
+            })
+            + self.target_controller_lki.as_ref().map_or(0, |v| {
+                std::mem::size_of::<Vec<(ObjectRef, Player)>>()
+                    + v.len() * std::mem::size_of::<(ObjectRef, Player)>()
+            })
+            + self
+                .gift
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<GiftContext>())
             + self
                 .source_move
                 .as_ref()
@@ -1574,6 +1583,8 @@ struct State {
     graveyard_entries: Option<SharedVec<ObjectRef>>,
     nightmare_cull: Option<Box<copy_characteristics::NightmareCull>>,
     stack_copy_data: Option<Box<stack_copies::CopyState>>,
+    #[allow(clippy::box_collection)]
+    delayed_artifact_copies: Option<Box<Vec<SpellView>>>,
     modal_history: modal_history::Rows,
     ability_resolutions: ability_resolutions::Rows,
     attacked_this_turn: SharedVec<ObjectRef>,
@@ -1920,6 +1931,7 @@ pub struct Observation {
     pub endure_choice: Option<EndureChoiceView>,
     pub convoke_choice: Option<ConvokeChoiceView>,
     pub delayed_sacrifices: Vec<DelayedSacrificeView>,
+    pub delayed_artifact_copies: Vec<SpellView>,
     pub delayed_returns: Vec<DelayedReturnView>,
     pub mobilize_choice: Option<MobilizeChoiceView>,
     pub saddle_choice: Option<SaddleChoiceView>,
@@ -2143,6 +2155,7 @@ impl Game {
                 graveyard_entries: None,
                 nightmare_cull: None,
                 stack_copy_data: None,
+                delayed_artifact_copies: None,
                 modal_history: None,
                 ability_resolutions: None,
                 attacked_this_turn: Vec::new().into(),
@@ -3916,9 +3929,17 @@ impl Game {
                 self.state.passes = 0;
             }
             Action::TapGrantedMana {
-                card, production, ..
+                card,
+                grantor,
+                production,
             } => {
+                let sacrifice = ability_world::CharacteristicWorld::granted_mana(self, card)
+                    .iter()
+                    .any(|g| g.source == grantor && g.sacrifice);
                 self.tap_objects(&[card]);
+                if sacrifice {
+                    self.sacrifice_batch(&[(actor, card)]);
+                }
                 self.add_mana(actor, production);
                 self.state.passes = 0;
             }
@@ -5387,9 +5408,10 @@ impl Game {
         // Avoid allocating on the ordinary, unprevented damage path.
         let prevented = |event: &DamageEvent| {
             event.preventable
-                && event.combat
-                && (event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY)
-                    || matches!(event.target, Target::Card(id) if self.keywords(id).contains(Keywords::PREVENT_COMBAT_TO)))
+                && ((event.combat
+                    && (event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY)
+                        || matches!(event.target, Target::Card(id) if self.keywords(id).contains(Keywords::PREVENT_COMBAT_TO))))
+                    || matches!(event.target, Target::Card(id) if self.keywords(id).contains(Keywords::PROTECTION_EVERYTHING) || (self.keywords(id).contains(Keywords::PROTECTION_INSTANT_SORCERY) && event.source.facts.kinds & (4 | 8) != 0)))
         };
         let dealt = events.iter().any(prevented).then(|| {
             events
@@ -5670,6 +5692,12 @@ impl Game {
                 .map_or_else(Vec::new, |rows| {
                     rows.iter().map(|r| r.view.clone()).collect()
                 }),
+            delayed_artifact_copies: self
+                .state
+                .delayed_artifact_copies
+                .as_deref()
+                .cloned()
+                .unwrap_or_default(),
             delayed_sacrifices: self
                 .state
                 .delayed_sacrifices
@@ -6224,6 +6252,13 @@ impl Game {
             })
             + copy_characteristics::cull_bytes(&s.nightmare_cull)
             + stack_copies::owned_bytes(&s.stack_copy_data)
+            + s.delayed_artifact_copies.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<SpellView>>()
+                    + rows
+                        .iter()
+                        .map(|row| std::mem::size_of::<SpellView>() + row.owned_bytes())
+                        .sum::<usize>()
+            })
             + modal_history::owned_bytes(&s.modal_history)
             + cast_permissions::owned_bytes(&s.graveyard_cast_permissions)
             + s.resolution_free_casts.as_ref().map_or(0, |f| {
@@ -7249,3 +7284,7 @@ mod fdn_growth_cost_tests;
 #[cfg(test)]
 #[path = "engine_linked_choices_tests.rs"]
 mod linked_choices_tests;
+
+#[cfg(test)]
+#[path = "engine_big_equipment_tests.rs"]
+mod big_equipment_tests;

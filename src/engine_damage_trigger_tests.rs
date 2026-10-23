@@ -533,6 +533,7 @@ fn damage_observer_index_matches_all_admissions_and_snapshot_restoration() {
                 t.condition.event(),
                 TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::SourceDealtCombatDamage
+                    | TriggerCondition::AttachedDealtCombatDamage
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn
             )
         });

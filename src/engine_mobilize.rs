@@ -206,6 +206,7 @@ impl Game {
                 crew: None,
                 cast_event: None,
                 copy_event: None,
+                captured_artifact_copy: None,
                 source_copy_recipe: None,
                 target_allocations: None,
                 mana_copy_sources: None,

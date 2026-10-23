@@ -9,6 +9,9 @@ impl Game {
         if step == Step::End {
             self.queue_copy_end_step_abilities();
             self.queue_delayed_sacrifices();
+            if let Some(items) = self.state.delayed_artifact_copies.take() {
+                self.state.pending_triggers.extend(*items);
+            }
             self.queue_delayed_returns();
             self.queue_warp_exiles();
         }

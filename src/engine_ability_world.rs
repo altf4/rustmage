@@ -147,12 +147,18 @@ pub(super) trait CharacteristicWorld {
             }
             for group in self.object(source).card.static_ability_groups() {
                 for fragment in group.fragments {
-                    if let crate::cards::StaticAbilityFragment::AttachmentMana(production) =
-                        *fragment
+                    if let crate::cards::StaticAbilityFragment::AttachmentMana(production)
+                    | crate::cards::StaticAbilityFragment::AttachmentSacrificeMana(
+                        production,
+                    ) = *fragment
                     {
                         result.push(ability_order::GrantedManaAbility {
                             source: reference,
                             production,
+                            sacrifice: matches!(
+                                *fragment,
+                                crate::cards::StaticAbilityFragment::AttachmentSacrificeMana(_)
+                            ),
                         });
                     }
                 }

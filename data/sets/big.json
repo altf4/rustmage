@@ -1,0 +1,320 @@
+{
+  "schema": 1,
+  "set": "BIG",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "table": {
+    "source": "Mage.Sets/src/mage/sets/TheBigScore.java",
+    "sha256": "d33c27f163efcc93fa40c6fbb0799076f9ceffe82b792c2937faa2e1b6bee7d5",
+    "printing_count": 95
+  },
+  "scope": "All physical set card identities, including reprints and starter products; cosmetic printings counted once",
+  "card_count": 30,
+  "cards": [
+    {
+      "name": "Ancient Cornucopia",
+      "oracle_id": "f0950c95-a297-489d-b166-74bba6af5376",
+      "facts_sha256": "c5ce32184db9b6b89ca220f8b341dea265cdc787ae600ec94b376aaad6f77bb9",
+      "printings": [
+        "16",
+        "46",
+        "81"
+      ]
+    },
+    {
+      "name": "Bristlebud Farmer",
+      "oracle_id": "3e44226b-51a2-4099-aff8-a5befab720cb",
+      "facts_sha256": "4b442d92272bb2bf246475a47079b357f3c977f8c60f99230b9562f47a62e33d",
+      "printings": [
+        "17",
+        "47",
+        "82"
+      ]
+    },
+    {
+      "name": "Collector's Cage",
+      "oracle_id": "8f5b71fd-469f-4370-a806-9bfefbae03a2",
+      "facts_sha256": "88e2d56d75859036202fafb8759475f6f78026674c9853b80ea63ba56f5b0212",
+      "printings": [
+        "1",
+        "31",
+        "66"
+      ]
+    },
+    {
+      "name": "Esoteric Duplicator",
+      "oracle_id": "0752fe67-9b8a-42c0-90e3-087d426b2f3b",
+      "facts_sha256": "f7c22cd2d3a9f3a881c55e7ff1a1ceeaf09d2772df67fff0e9ec274c2a7719c5",
+      "printings": [
+        "35",
+        "5",
+        "70"
+      ]
+    },
+    {
+      "name": "Fomori Vault",
+      "oracle_id": "622a53bd-d894-422c-a606-7126041afa02",
+      "facts_sha256": "f5d5dd3cdce268fe5e951ff51956d1f6e394b7e1c253473cfedb9d869b99cd59",
+      "printings": [
+        "29",
+        "59",
+        "94"
+      ]
+    },
+    {
+      "name": "Generous Plunderer",
+      "oracle_id": "91c835d1-22ca-4c90-9ba6-c8e01bbc0347",
+      "facts_sha256": "f46b679316fdd43aa984da670b3c56b17a3dadebcfac6a9be04016395d8cbc36",
+      "printings": [
+        "11",
+        "41",
+        "76"
+      ]
+    },
+    {
+      "name": "Grand Abolisher",
+      "oracle_id": "c749f23c-40c0-4159-b84c-a70cbb062c14",
+      "facts_sha256": "4131277c39044b188e5e3d4e3f762fbc5df1b7c356957d531024006549476ba7",
+      "printings": [
+        "2",
+        "32",
+        "67"
+      ]
+    },
+    {
+      "name": "Greed's Gambit",
+      "oracle_id": "0868ebbb-2fe9-4f53-9697-acad8cda5ec1",
+      "facts_sha256": "b128e3f40eb4a08a9db16783112fa186916d03095ef7dc9a74437973c3dc464d",
+      "printings": [
+        "38",
+        "73",
+        "8"
+      ]
+    },
+    {
+      "name": "Harvester of Misery",
+      "oracle_id": "a0d3bb63-2977-41b2-bcc3-2488e6696cb8",
+      "facts_sha256": "dd2239d6624e1695bdfb01b473dd50ad9c0205a0133dc64833251ae27ffcef88",
+      "printings": [
+        "39",
+        "74",
+        "9"
+      ]
+    },
+    {
+      "name": "Hostile Investigator",
+      "oracle_id": "de83b1a4-0ce0-4cc1-aff3-6d0239d92302",
+      "facts_sha256": "21949449cab069b6d73a3d58abf623e2724c0d94521ee002c632d59982b9e5f7",
+      "printings": [
+        "10",
+        "40",
+        "75"
+      ]
+    },
+    {
+      "name": "Legion Extruder",
+      "oracle_id": "c77dc11e-d95d-4e7e-bb24-d971c179e9b0",
+      "facts_sha256": "a229a4e09fe5cade50e84a606091ff6117f827978a213f5a6c4af79ede8651fe",
+      "printings": [
+        "12",
+        "42",
+        "77"
+      ]
+    },
+    {
+      "name": "Loot, the Key to Everything",
+      "oracle_id": "542be13f-b9c0-4b79-b486-be576c531a82",
+      "facts_sha256": "69ee91a81d678b2fc135e00c2641faed8b4e7e249ff3c001e6a5f6dcaecf7108",
+      "printings": [
+        "21",
+        "51",
+        "62",
+        "86"
+      ]
+    },
+    {
+      "name": "Lost Jitte",
+      "oracle_id": "a9d72f78-2ab5-4e2e-ab7b-ef875e0a0609",
+      "facts_sha256": "61462b4ed61f5276f3ba68f461d8ae43d0e870b48eca1e572149bcd7abad5725",
+      "printings": [
+        "23",
+        "53",
+        "88"
+      ]
+    },
+    {
+      "name": "Lotus Ring",
+      "oracle_id": "ca4d3d27-ea3a-44ac-96e9-b52b563129f8",
+      "facts_sha256": "149cbab9977f3ab60e78b41cc8db68a3b66fcec046fefd5f5e03e024f221149d",
+      "printings": [
+        "24",
+        "54",
+        "63",
+        "89"
+      ]
+    },
+    {
+      "name": "Memory Vessel",
+      "oracle_id": "0179bc62-823e-46b9-b536-342904fedafc",
+      "facts_sha256": "5ad892fa23136c47441b440df1ca3259bc62e05c51293a61f150e622840410b8",
+      "printings": [
+        "13",
+        "43",
+        "78"
+      ]
+    },
+    {
+      "name": "Molten Duplication",
+      "oracle_id": "92b91910-9b65-4421-8eef-a33793161089",
+      "facts_sha256": "d72fd9840f5b606269a48d0e727eaa20a3556e79f5493d5364925f4d7a64acc7",
+      "printings": [
+        "14",
+        "44",
+        "79"
+      ]
+    },
+    {
+      "name": "Nexus of Becoming",
+      "oracle_id": "07142ee9-dc2c-4b33-ad20-2f5285225e86",
+      "facts_sha256": "14dc42e07756f8c7a1f5ff43a042bd87c6f9e688e321d4be9786eb1ea1f56c40",
+      "printings": [
+        "25",
+        "55",
+        "90"
+      ]
+    },
+    {
+      "name": "Oltec Matterweaver",
+      "oracle_id": "3cb91696-242f-4e91-806b-61b1bb45a20c",
+      "facts_sha256": "2010ea6013adc1be5515380765d5b98eb122b1fc5ef473d4f37fa651b54d9026",
+      "printings": [
+        "3",
+        "33",
+        "68"
+      ]
+    },
+    {
+      "name": "Omenpath Journey",
+      "oracle_id": "8b067e44-2001-4b49-aa4a-2c86f8929751",
+      "facts_sha256": "8d70d6b16fc2eaa6ca37a52c690b05a6104da6b74efb8780b48dab67e2a3ace5",
+      "printings": [
+        "18",
+        "48",
+        "83"
+      ]
+    },
+    {
+      "name": "Pest Control",
+      "oracle_id": "072db429-3838-42ba-89b6-e26cbce22af9",
+      "facts_sha256": "d62908e9fcf72208c70f34bca23bd971c9d540bf3c8d045b6966a00baa09bd3d",
+      "printings": [
+        "22",
+        "52",
+        "87"
+      ]
+    },
+    {
+      "name": "Rest in Peace",
+      "oracle_id": "087f9ad7-e74f-40e2-8102-1ed2925d0418",
+      "facts_sha256": "2d35f61dd39d2a7c100d9072720d5534e7184b6ac0dddf2f3791aefdd2b0bddb",
+      "printings": [
+        "34",
+        "4",
+        "69"
+      ]
+    },
+    {
+      "name": "Sandstorm Salvager",
+      "oracle_id": "ec19a9bc-6fc1-4150-976b-37a47b165016",
+      "facts_sha256": "962c358e30cfb2dd7b73df231381ba89fb1e7feb9cf7edff4d359683722abbfb",
+      "printings": [
+        "19",
+        "49",
+        "84"
+      ]
+    },
+    {
+      "name": "Simulacrum Synthesizer",
+      "oracle_id": "eb7a1f21-a66d-415b-8520-710b44890bb6",
+      "facts_sha256": "4b92d4042f136f85d5a626f3f5e0b8b77b0820e5af5529e6026994b8b93034f8",
+      "printings": [
+        "36",
+        "6",
+        "71"
+      ]
+    },
+    {
+      "name": "Sword of Wealth and Power",
+      "oracle_id": "b3a80545-9a8a-46b2-9d8c-b0d66fb68a5d",
+      "facts_sha256": "b2fb2f4ebc290d4c012738ffdf53f5437cab4fd2a086e33c035f9b55b203d860",
+      "printings": [
+        "26",
+        "56",
+        "64",
+        "91"
+      ]
+    },
+    {
+      "name": "Tarnation Vista",
+      "oracle_id": "b0be3f25-edb1-4299-959c-9aad909730ca",
+      "facts_sha256": "59b28029b3799c7de8b4ebc7dc66c064788e7d5cbfb614f45cca8c5abf2ee4b4",
+      "printings": [
+        "30",
+        "60",
+        "65",
+        "95"
+      ]
+    },
+    {
+      "name": "Territory Forge",
+      "oracle_id": "a14d89b6-23eb-4337-8dee-93c39b0efbf1",
+      "facts_sha256": "c4360cf4d37bf2e0ffe40283a5a36d95de6c121d438c94e807579630a143b1cb",
+      "printings": [
+        "15",
+        "45",
+        "80"
+      ]
+    },
+    {
+      "name": "Torpor Orb",
+      "oracle_id": "97326cad-b13c-4e52-82ce-850a39e5ff08",
+      "facts_sha256": "609b4989a6815722b9ed33b1578b025723a5c1f8e4cc511368ff8c55e214de43",
+      "printings": [
+        "27",
+        "57",
+        "92"
+      ]
+    },
+    {
+      "name": "Transmutation Font",
+      "oracle_id": "a68e57f3-f138-4c26-b8d5-55d1adec44a8",
+      "facts_sha256": "caa44fb801d6a152f64cbf7a7c0649fb0bd0780e3e8ba3decdc5988a7faf978c",
+      "printings": [
+        "28",
+        "58",
+        "93"
+      ]
+    },
+    {
+      "name": "Vaultborn Tyrant",
+      "oracle_id": "e8d0accc-b320-4c07-8a71-a09db860351e",
+      "facts_sha256": "fb22d21c7545e5f07246fe7bd941df1f0b26a50c1e2e41fc08fe6606d590c126",
+      "printings": [
+        "20",
+        "50",
+        "61",
+        "85"
+      ]
+    },
+    {
+      "name": "Worldwalker Helm",
+      "oracle_id": "9573c85a-e574-4b4e-aae0-2165c45fd27e",
+      "facts_sha256": "faded4bae241e9656731834b859f14108a491655abd81358baa599abf23049be",
+      "printings": [
+        "37",
+        "7",
+        "72"
+      ]
+    }
+  ],
+  "unresolved": []
+}

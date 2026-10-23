@@ -498,6 +498,7 @@ fn granted_mana_layer_six_obeys_recipient_removal_timestamps() {
             generation: 1,
         };
         let grant = GrantedManaAbility {
+            sacrifice: false,
             source,
             production: ManaProduction::Choice {
                 mask: 31,

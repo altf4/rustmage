@@ -3,10 +3,13 @@
   "catalogue_id": 2566,
   "oracle_id": "ca4d3d27-ea3a-44ac-96e9-b52b563129f8",
   "facts_sha256": "149cbab9977f3ab60e78b41cc8db68a3b66fcec046fefd5f5e03e024f221149d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0705d247879612e20d9844788b940e8445f3180e6c3bd8dacaf1464e3900de61"
   },
-  "physical_metadata_sha256": "78cbf5864384d2eb00f90a957ed4a5e015ef2abb81e86bdaf4d7c187d8bc1f3b"
+  "physical_metadata_sha256": "78cbf5864384d2eb00f90a957ed4a5e015ef2abb81e86bdaf4d7c187d8bc1f3b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LotusRing.java",
+  "java_sha256": "cf20312c465fc2e6c5991186414c5ac66da446ba4a573f6622f3246243c7b80d"
 }

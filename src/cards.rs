@@ -696,6 +696,10 @@ pub(crate) enum Instruction {
     ReturnDeathCard(ReturnKind),
     ResolveDelayedReturn,
     CopyNextInstantSorcery,
+    ScheduleSacrificedArtifactCopy {
+        ability: u16,
+    },
+    CreateCapturedArtifactCopy,
     CopyCastSpell {
         prior_spells: bool,
     },
@@ -1055,6 +1059,13 @@ pub(crate) enum Instruction {
     Damage(i32),
     DamageScaled(AmountValue),
     DamagePlayers(PlayerSet, i32),
+    DamagePlayersScaled(PlayerSet, AmountValue),
+    CreateTokensFor {
+        players: PlayerSet,
+        token: Card,
+        amount: u16,
+        tapped: bool,
+    },
     UntapSource,
     TapSource,
     UntapCreatures(CreatureFilter),
@@ -1572,10 +1583,11 @@ pub enum CounterKind {
     Fellowship,
     Wish,
     Stash,
+    Charge,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 14] = [
+    pub const ALL: [Self; 15] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -1590,6 +1602,7 @@ impl CounterKind {
         Self::Fellowship,
         Self::Wish,
         Self::Stash,
+        Self::Charge,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -1603,6 +1616,7 @@ impl CounterKind {
                 | Self::Fellowship
                 | Self::Wish
                 | Self::Stash
+                | Self::Charge
         )
     }
 }
@@ -2154,6 +2168,7 @@ pub(crate) enum TriggerCondition {
         spells_only: bool,
     },
     SourceDealtCombatDamage,
+    AttachedDealtCombatDamage,
     ControlledCreatureCombatDamageOwnTurn,
     DamagedCreatureDies,
     StateCounterAtLeast {
@@ -2472,6 +2487,7 @@ impl Keywords {
     pub const PREVENT_COMBAT_BY: Self = Self(33554432);
     pub const NO_HUMAN_BLOCKERS: Self = Self(67108864);
     pub const PROTECTION_EVERYTHING: Self = Self(134217728);
+    pub const PROTECTION_INSTANT_SORCERY: Self = Self(268435456);
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
     }

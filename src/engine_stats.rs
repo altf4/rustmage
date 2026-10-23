@@ -85,6 +85,7 @@ impl Game {
                 ability.condition.event(),
                 TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::SourceDealtCombatDamage
+                    | TriggerCondition::AttachedDealtCombatDamage
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn
             )
         }) {

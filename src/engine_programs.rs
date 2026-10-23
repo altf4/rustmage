@@ -432,11 +432,24 @@ impl Game {
                         }
                         _ => false,
                     };
-                    if matched
-                        && self.queue_zone_trigger(source, index, event)
-                        && matches!(ability.condition.event(), TriggerCondition::ReturnDeath(_))
-                    {
-                        self.capture_return_death(event);
+                    if matched && self.queue_zone_trigger(source, index, event) {
+                        if matches!(ability.condition.event(), TriggerCondition::ReturnDeath(_)) {
+                            self.capture_return_death(event);
+                        }
+                        if ability.program.iter().any(|i| {
+                            matches!(i, Instruction::ScheduleSacrificedArtifactCopy { .. })
+                        }) {
+                            self.state
+                                .pending_triggers
+                                .last_mut()
+                                .unwrap()
+                                .captured_artifact_copy = Some(Box::new(
+                                event
+                                    .before
+                                    .copy_recipe
+                                    .unwrap_or_else(|| CopyRecipe::new(event.before.card)),
+                            ));
+                        }
                     }
                 }
             }
@@ -491,6 +504,7 @@ impl Game {
                     | TriggerCondition::Discarded { .. }
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn
                     | TriggerCondition::SourceDealtCombatDamage
+                    | TriggerCondition::AttachedDealtCombatDamage
                     | TriggerCondition::DamagedCreatureDies
                     | TriggerCondition::StateCounterAtLeast { .. }
                     | TriggerCondition::PlayerDamaged { .. }
@@ -742,6 +756,7 @@ impl Game {
             cast_event: None,
             copy_event: None,
             target_allocations: None,
+            captured_artifact_copy: None,
             source_copy_recipe: source
                 .copy_recipe
                 .filter(|r| r.exceptions != CopyExceptions::NONE)
@@ -1571,6 +1586,21 @@ impl Game {
                     }
                 }
                 Instruction::ReturnLinkedExileToHand => self.return_linked_exile(item.object),
+                Instruction::ScheduleSacrificedArtifactCopy { ability } => {
+                    let mut delayed = item.clone();
+                    delayed.id = self.next_stack_id();
+                    delayed.kind = StackKind::TriggeredAbility { ability };
+                    delayed.targets.clear();
+                    self.state
+                        .delayed_artifact_copies
+                        .get_or_insert_default()
+                        .push(delayed);
+                }
+                Instruction::CreateCapturedArtifactCopy => {
+                    if let Some(recipe) = item.captured_artifact_copy.as_deref() {
+                        self.stage_copy_creation(item.controller, *recipe, 1);
+                    }
+                }
                 Instruction::CopyNextInstantSorcery => self.remember_next_spell_copy(&item),
                 Instruction::CopyCastSpell { .. } => {
                     if self.copy_captured_spell(&item) {
@@ -2556,6 +2586,16 @@ impl Game {
                         replacements::TokenCompletion::JobAttach(item.object),
                     );
                 }
+                Instruction::CreateTokensFor {
+                    players,
+                    token,
+                    amount,
+                    tapped,
+                } => {
+                    for player in self.program_players(players, &item).collect::<Vec<_>>() {
+                        self.create_tokens(player, token, u128::from(amount), tapped);
+                    }
+                }
                 Instruction::CreateTokens {
                     token,
                     amount,
@@ -2739,12 +2779,14 @@ impl Game {
                 Instruction::Damage(_)
                 | Instruction::DamageScaled(_)
                 | Instruction::DamagePlayers(_, _)
+                | Instruction::DamagePlayersScaled(_, _)
                 | Instruction::DamageDiscardAmount(_) => {
                     let amount = match instruction {
                         Instruction::Damage(amount) | Instruction::DamagePlayers(_, amount) => {
                             i128::from(amount)
                         }
-                        Instruction::DamageScaled(value) => {
+                        Instruction::DamageScaled(value)
+                        | Instruction::DamagePlayersScaled(_, value) => {
                             i128::try_from(self.item_amount(value, &item))
                                 .capacity("damage amount representation exhausted")
                         }
@@ -2764,6 +2806,7 @@ impl Game {
                         combat: false,
                     };
                     let events: Vec<_> = if let Instruction::DamagePlayers(players, _)
+                    | Instruction::DamagePlayersScaled(players, _)
                     | Instruction::DamageDiscardAmount(players) =
                         instruction
                     {

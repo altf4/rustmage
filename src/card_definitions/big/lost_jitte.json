@@ -3,10 +3,13 @@
   "catalogue_id": 2563,
   "oracle_id": "a9d72f78-2ab5-4e2e-ab7b-ef875e0a0609",
   "facts_sha256": "61462b4ed61f5276f3ba68f461d8ae43d0e870b48eca1e572149bcd7abad5725",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d8c636f836f79505688303fb89af0a148a53cbde50a6af054ee656e4977e2c0d"
   },
-  "physical_metadata_sha256": "b4c6324c8473a2f0e4b5b2c99795ecda50e0a9a58ae4972ad5f9da9043f11de8"
+  "physical_metadata_sha256": "b4c6324c8473a2f0e4b5b2c99795ecda50e0a9a58ae4972ad5f9da9043f11de8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LostJitte.java",
+  "java_sha256": "5af202ea333a220d5819a205c206d8d9244ef153ea6f5fb5463c2cc64250916f"
 }

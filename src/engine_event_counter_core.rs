@@ -9,6 +9,25 @@ pub struct CreatureDamageHistoryView {
 impl Game {
     pub(super) fn creature_damage_events(&mut self, events: &[DamageEvent]) {
         self.controlled_combat_damage_triggers(events);
+        let sources = self.state.damage_sources.clone();
+        for id in sources {
+            let source = self.object_view(id);
+            let Some(recipient) = source.attached_to else {
+                continue;
+            };
+            if !events
+                .iter()
+                .any(|e| e.amount > 0 && e.combat && e.source.reference == recipient)
+            {
+                continue;
+            }
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::AttachedDealtCombatDamage {
+                    self.queue_trigger(&source, index);
+                }
+            }
+        }
+
         for event in events {
             if event.amount <= 0 {
                 continue;

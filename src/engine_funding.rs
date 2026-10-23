@@ -317,6 +317,7 @@ impl<'g> FundingState<'g> {
                     || object.zone == Zone::Battlefield
                         && (game.state.controls.is_some() || object.card.has_cast_origin_abilities()
                             || object.card.attachment_bonus().is_some()
+                            || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
                             || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
@@ -716,6 +717,11 @@ impl<'g> FundingState<'g> {
             *pool -= u128::from(paid);
         }
         let id = self.resources[step.resource].id;
+        let sacrifice_grant = step.grantor.is_some_and(|source| {
+            ability_world::CharacteristicWorld::granted_mana(self, id)
+                .iter()
+                .any(|g| g.source == source && g.sacrifice)
+        });
         let object = &mut self.resources[step.resource].object;
         if let Some(index) = step.ability {
             let cost = object.card.activations()[index as usize].cost;
@@ -740,6 +746,18 @@ impl<'g> FundingState<'g> {
             }
         } else {
             object.tapped = true;
+            if sacrifice_grant {
+                object.zone = Zone::Graveyard;
+                object.counters = InitialCounters::default();
+                live_counters::set(
+                    &mut self.named_counters,
+                    ObjectRef {
+                        card: id,
+                        generation: object.generation,
+                    },
+                    None,
+                );
+            }
         }
         self.refresh_control_projection();
         for (pool, produced) in self.mana.iter_mut().zip(step.production) {
@@ -870,7 +888,7 @@ impl<'g> FundingState<'g> {
                             for fragment in group.fragments {
                                 if let crate::cards::StaticAbilityFragment::AttachmentMana(
                                     production,
-                                ) = fragment
+                                ) | crate::cards::StaticAbilityFragment::AttachmentSacrificeMana(production) = fragment
                                 {
                                     let mut maximum = 0;
                                     production.visit(|mana| {
@@ -962,8 +980,10 @@ impl<'g> FundingState<'g> {
                     }
                     for group in provider.card.static_ability_groups() {
                         for fragment in group.fragments {
-                            if let crate::cards::StaticAbilityFragment::AttachmentMana(production) =
-                                *fragment
+                            if let crate::cards::StaticAbilityFragment::AttachmentMana(production)
+                            | crate::cards::StaticAbilityFragment::AttachmentSacrificeMana(
+                                production,
+                            ) = *fragment
                             {
                                 add(production, 1);
                             }
