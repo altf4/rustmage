@@ -10,7 +10,7 @@ mod creature_actions;
 mod entry_batch_triggers;
 #[path = "engine_entry_history.rs"]
 mod entry_history;
-pub use entry_batch_triggers::EntryBatchEventView;
+pub use entry_batch_triggers::{EntryBatchCopyView, EntryBatchEventView};
 pub use entry_history::CreatureEntryHistoryView;
 #[path = "engine_endgame.rs"]
 mod endgame;
@@ -1134,6 +1134,7 @@ impl SpellView {
             + self.entry_batch_event.as_ref().map_or(0, |event| {
                 std::mem::size_of::<EntryBatchEventView>()
                     + event.objects.len() * std::mem::size_of::<ObjectRef>()
+                    + event.last_known.len() * std::mem::size_of::<EntryBatchCopyView>()
             })
             + self
                 .transform_stamp
@@ -3172,8 +3173,7 @@ impl Game {
                 {
                     return true;
                 }
-                for (index, _) in s.objects.iter().enumerate() {
-                    let object = self.object_ref(index as CardId);
+                for object in self.effect_choice_objects(choice) {
                     if self.effect_choice_candidate(choice, player, object) {
                         let action = match choice.kind {
                             EffectChoiceKind::HandCreature => Action::PutHandCreature { object },
@@ -5664,6 +5664,7 @@ impl Game {
         {
             self.state.step_sources.retain(|&source| source != id);
         }
+        self.capture_entry_batch_copy_departure(&before);
         self.capture_source_counter_departure(&before);
         self.clear_entry_value(before.reference);
         if before.zone == Zone::Battlefield {

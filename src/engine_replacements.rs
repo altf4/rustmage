@@ -138,7 +138,28 @@ pub(super) struct ReplacementState {
     resume: Option<Pending>,
     mode: ResumeMode,
 }
+impl ReplacementState {
+    pub(super) fn visit_owned_packets(&mut self, visit: &mut impl FnMut(&mut SpellView)) {
+        if let Some(Event::Tokens(batch)) = &mut self.active {
+            batch.completion.visit_owned_packets(visit);
+        }
+        for work in &mut self.work {
+            match work {
+                Work::Tokens(batch) => batch.completion.visit_owned_packets(visit),
+                Work::CompleteTokens { completion, .. } => completion.visit_owned_packets(visit),
+                _ => {}
+            }
+        }
+    }
+}
 impl TokenCompletion {
+    fn visit_owned_packets(&mut self, visit: &mut impl FnMut(&mut SpellView)) {
+        match self {
+            Self::Reflexive { item, .. } | Self::MobilizeDelayed(item) => visit(item),
+            Self::RoleReflexive(completion) => visit(&mut completion.item),
+            _ => {}
+        }
+    }
     fn owned_bytes(&self) -> usize {
         match self {
             Self::Reflexive { item, .. } | Self::MobilizeDelayed(item) => {

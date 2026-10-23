@@ -6795,7 +6795,7 @@ fn twilight_queued_batch_keeps_controller_and_current_copy_values_without_target
     }
 }
 #[test]
-fn twilight_departed_and_reentered_objects_are_not_rebound_or_copied_from_lki() {
+fn twilight_departed_objects_use_lki_without_rebinding_reentered_incarnations() {
     for p in [Player::P0, Player::P1] {
         let mut g = hexing_setup(p);
         let source = named(&mut g, p, "Twilight Diviner", Zone::Battlefield);
@@ -6806,15 +6806,25 @@ fn twilight_departed_and_reentered_objects_are_not_rebound_or_copied_from_lki() 
         g.move_object(id, Zone::Battlefield);
         assert_ne!(g.object_ref(id), old);
         assert_eq!(twilight_count(&g, source), 1);
+        let reentered = g.object_ref(id);
+        g.copy_permanents_exact(
+            &[reentered],
+            CopyRecipe::new(Card::from_name("Shivan Dragon").unwrap()),
+        );
+        twilight_wait(&mut g);
+        reject(&mut g, Action::ChooseCreature { object: reentered });
+        checked(&mut g, Action::ChooseCreature { object: old });
         settle(&mut g);
-        assert!(twilight_tokens(&g, p).is_empty());
+        let tokens = twilight_tokens(&g, p);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(g.object_view(tokens[0]).card.name(), "Grizzly Bears");
         // A new observer incarnation has its own use, even in this same turn.
         g.move_object(source, Zone::Hand);
         g.move_object(source, Zone::Battlefield);
         let next = named(&mut g, p, "Llanowar Elves", Zone::Graveyard);
         g.move_object(next, Zone::Battlefield);
         settle(&mut g);
-        assert_eq!(twilight_tokens(&g, p).len(), 1);
+        assert_eq!(twilight_tokens(&g, p).len(), 2);
     }
 }
 #[test]
@@ -6941,6 +6951,24 @@ fn twilight_packet_layout_and_owned_event_bytes_are_explicit() {
         std::mem::size_of::<TriggerUse>(),
         std::mem::size_of::<ZoneChange>()
     );
+    g.move_object(id, Zone::Hand);
+    let departed = g
+        .state
+        .pending_triggers
+        .iter()
+        .find(|item| item.card == source)
+        .unwrap();
+    assert_eq!(
+        departed.owned_bytes() - bare.owned_bytes(),
+        std::mem::size_of::<EntryBatchEventView>()
+            + std::mem::size_of::<ObjectRef>()
+            + std::mem::size_of::<EntryBatchCopyView>()
+    );
+    println!(
+        "Twilight rare event={} departure row={}",
+        std::mem::size_of::<EntryBatchEventView>(),
+        std::mem::size_of::<EntryBatchCopyView>()
+    );
 }
 #[test]
 fn twilight_apnap_simultaneous_entries_and_removed_observers_are_exact() {
@@ -7032,5 +7060,239 @@ fn twilight_stack_copies_of_a_graveyard_cast_are_not_themselves_cast_from_there(
         checked(&mut g, Action::ChooseCreature { object });
         settle(&mut g);
         assert_eq!(twilight_tokens(&g, p).len(), 2);
+    }
+}
+
+#[test]
+fn twilight_lki_paid_dose_then_opponent_paid_removal_preserves_old_creature() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        named(&mut g, p, "Twilight Diviner", Zone::Battlefield);
+        let bear = named(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+        hexing_open(&mut g, p, "Dose of Dawnglow", Some(Target::Card(bear)));
+        for _ in 0..40 {
+            if g.on_battlefield(bear)
+                && g.state.resolving.is_none()
+                && g.state.pending == Pending::Priority
+            {
+                break;
+            }
+            advance(&mut g);
+        }
+        assert!(g.on_battlefield(bear));
+        let old = g.object_ref(bear);
+        let murder = hexing_open(&mut g, p.other(), "Murder", Some(Target::Card(bear)));
+        assert!(g.state.stack.iter().any(|item| item.card == murder
+            && item.cast.is_some_and(|c| c.payment.iter().any(|n| *n > 0))));
+        twilight_wait(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
+        assert_ne!(g.object_ref(bear), old);
+        assert!(
+            g.observe(p)
+                .effect_choice
+                .unwrap()
+                .candidates
+                .contains(&old)
+        );
+        checked(&mut g, Action::ChooseCreature { object: old });
+        settle(&mut g);
+        let tokens = twilight_tokens(&g, p);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(g.object_view(tokens[0]).card.name(), "Grizzly Bears");
+    }
+}
+#[test]
+fn twilight_lki_freezes_latest_copy_then_ignores_new_copy_and_source_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Twilight Diviner", Zone::Battlefield);
+        let body = named(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+        g.move_object(body, Zone::Battlefield);
+        let old = g.object_ref(body);
+        g.copy_permanents_exact(
+            &[old],
+            CopyRecipe::new(Card::from_name("Doubling Season").unwrap()),
+        );
+        let expected = g.copiable_recipe(old);
+        g.move_object(body, Zone::Hand);
+        g.move_object(body, Zone::Battlefield);
+        let next = g.object_ref(body);
+        g.copy_permanents_exact(
+            &[next],
+            CopyRecipe::new(Card::from_name("Llanowar Elves").unwrap()),
+        );
+        g.move_object(source, Zone::Hand);
+        twilight_wait(&mut g);
+        let event = g
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .item
+            .entry_batch_event
+            .as_ref()
+            .unwrap();
+        assert_eq!(
+            event.last_known,
+            vec![EntryBatchCopyView {
+                object: old,
+                recipe: expected
+            }]
+        );
+        reject(&mut g, Action::ChooseCreature { object: next });
+        checked(&mut g, Action::ChooseCreature { object: old });
+        settle(&mut g);
+        let tokens = twilight_tokens(&g, p);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(
+            g.copiable_recipe(g.object_ref(tokens[0])).definition,
+            expected.definition
+        );
+        assert_eq!(g.object_view(tokens[0]).card.name(), "Doubling Season");
+    }
+}
+#[test]
+fn twilight_lki_mixed_entry_group_keeps_both_exact_choices_and_owned_restore() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let source = named(&mut g, p, "Twilight Diviner", Zone::Battlefield);
+        let a = named(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+        let b = named(&mut g, p, "Llanowar Elves", Zone::Graveyard);
+        let moves = [a, b]
+            .into_iter()
+            .map(|id| g.entry_move(id, Zone::Battlefield, false))
+            .collect();
+        g.stage_entries(moves, None);
+        assert!(!g.advance_entries());
+        let old = g.object_ref(a);
+        let live = g.object_ref(b);
+        g.move_object(a, Zone::Graveyard);
+        g.move_object(source, Zone::Hand);
+        twilight_wait(&mut g);
+        assert_eq!(
+            g.observe(p).effect_choice.unwrap().candidates,
+            vec![old, live]
+        );
+        let choice = g.snapshot();
+        let mut branch = g.clone();
+        checked(&mut branch, Action::ChooseCreature { object: live });
+        settle(&mut branch);
+        assert_eq!(
+            branch
+                .object_view(twilight_tokens(&branch, p)[0])
+                .card
+                .name(),
+            "Llanowar Elves"
+        );
+        g.restore(&choice).unwrap();
+        checked(&mut g, Action::ChooseCreature { object: old });
+        settle(&mut g);
+        assert_eq!(
+            g.object_view(twilight_tokens(&g, p)[0]).card.name(),
+            "Grizzly Bears"
+        );
+    }
+}
+
+#[test]
+fn twilight_lki_preserves_departed_double_face_and_intrinsic_copy_exceptions() {
+    for p in [Player::P0, Player::P1] {
+        for shape in 0..3 {
+            let transformed = shape == 1;
+            let mut g = hexing_setup(p);
+            named(&mut g, p, "Twilight Diviner", Zone::Battlefield);
+            let body = named(
+                &mut g,
+                p,
+                if transformed {
+                    "Brigid, Clachan's Heart"
+                } else {
+                    "Grizzly Bears"
+                },
+                Zone::Graveyard,
+            );
+            g.move_object(body, Zone::Battlefield);
+            let old = g.object_ref(body);
+            if transformed {
+                g.transform_permanent(body);
+            } else if shape == 2 {
+                let donor = named(
+                    &mut g,
+                    p.other(),
+                    "Brigid, Clachan's Heart",
+                    Zone::Battlefield,
+                );
+                g.transform_permanent(donor);
+                let back = g.copiable_recipe(g.object_ref(donor));
+                g.copy_permanents_exact(&[old], back);
+                assert_eq!(g.copiable_recipe(old).faces(), CopyFaces::Single);
+            } else {
+                let mut recipe = CopyRecipe::new(Card::from_name("Grizzly Bears").unwrap());
+                recipe.exceptions = crate::cards::CopyExceptions::HASTE_AND_SACRIFICE;
+                g.copy_permanents_exact(&[old], recipe);
+            }
+            let expected = g.copiable_recipe(old);
+            g.move_object(body, Zone::Graveyard);
+            twilight_wait(&mut g);
+            checked(&mut g, Action::ChooseCreature { object: old });
+            settle(&mut g);
+            let tokens = twilight_tokens(&g, p)
+                .into_iter()
+                .filter(|id| g.copiable_recipe(g.object_ref(*id)).definition == expected.definition)
+                .collect::<Vec<_>>();
+            assert_eq!(tokens.len(), 1);
+            let result = g.copiable_recipe(g.object_ref(tokens[0]));
+            assert_eq!(result.definition, expected.definition);
+            assert_eq!(result.faces(), expected.faces());
+            assert_eq!(result.exceptions, expected.exceptions);
+            if shape == 0 {
+                assert!(g.keywords(tokens[0]).contains(Keywords::HASTE));
+            }
+        }
+    }
+}
+#[test]
+fn twilight_lki_generic_fixed_group_handles_ceased_tokens_and_reused_slots() {
+    // Backend coverage: ordinary tokens cannot return from a graveyard (CR111.8).
+    // Seed an already-qualified exact group to exercise its generic LKI storage,
+    // independently of Twilight's printed graveyard-entry qualification.
+    for p in [Player::P0, Player::P1] {
+        let mut g = hexing_setup(p);
+        let bear = Card::from_name("Grizzly Bears").unwrap();
+        g.stage_copy_creation(p, CopyRecipe::new(bear), 1);
+        settle(&mut g);
+        let token = twilight_tokens(&g, p)[0];
+        let old = g.object_ref(token);
+        let source = named(&mut g, p, "Twilight Diviner", Zone::Battlefield);
+        let physical = named(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+        g.move_object(physical, Zone::Battlefield);
+        let packet = g
+            .state
+            .pending_triggers
+            .iter_mut()
+            .find(|item| item.card == source)
+            .unwrap();
+        packet.entry_batch_event.as_mut().unwrap().objects = vec![old];
+        g.move_object(token, Zone::Graveyard);
+        checked(&mut g, Action::Pass); // Real SBA ceases the token.
+        assert_eq!(g.object_view(token).zone, Zone::Outside);
+        let elf = Card::from_name("Llanowar Elves").unwrap();
+        g.stage_copy_creation(p, CopyRecipe::new(elf), 1);
+        assert!(!g.advance_replacements(false));
+        assert!(!g.advance_entries());
+        assert!(g.on_battlefield(token));
+        assert_ne!(g.object_ref(token), old);
+        assert_eq!(g.object_view(token).card, elf);
+        twilight_wait(&mut g);
+        let new_ref = g.object_ref(token);
+        reject(&mut g, Action::ChooseCreature { object: new_ref });
+        checked(&mut g, Action::ChooseCreature { object: old });
+        settle(&mut g);
+        assert!(
+            twilight_tokens(&g, p)
+                .iter()
+                .any(|id| g.object_view(*id).card == bear)
+        );
+        assert_eq!(g.object_view(token).card, elf);
     }
 }

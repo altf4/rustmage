@@ -53,5 +53,6 @@
       "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
       "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
     }
-  ]
+  ],
+  "rules_discrepancy": "Oracle specifies a non-targeted copy of one of the exact creatures in the entry event. CR608.2h uses that incarnation's last battlefield copiable values if it departed; CR400.7 forbids rebinding a reentered incarnation. XMage TwilightDivinerEffect filters game.getPermanent and drops departed objects. Rust follows Oracle and CR608.2h/400.7, preserving departure-time copy effects under CR707.2. Primary rules: https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt"
 }

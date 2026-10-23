@@ -44,6 +44,26 @@ impl EffectChoice {
     }
 }
 impl Game {
+    pub(super) fn effect_choice_objects(
+        &self,
+        choice: &EffectChoice,
+    ) -> impl Iterator<Item = ObjectRef> + '_ {
+        let fixed = choice.kind == EffectChoiceKind::CopyEntryObject;
+        let event = if fixed {
+            self.state
+                .resolving
+                .as_ref()
+                .and_then(|r| r.item.entry_batch_event.as_ref())
+                .map(|e| e.objects.as_slice())
+        } else {
+            None
+        };
+        event.into_iter().flatten().copied().chain(
+            (0..if fixed { 0 } else { self.state.objects.len() })
+                .map(|id| self.object_ref(id as CardId)),
+        )
+    }
+
     pub(super) fn effect_choice_candidate(
         &self,
         choice: &EffectChoice,
@@ -57,17 +77,7 @@ impl Game {
             return false;
         }
         if choice.kind == EffectChoiceKind::CopyEntryObject {
-            return self.on_battlefield(object.card)
-                && self.object_ref(object.card) == object
-                && self
-                    .state
-                    .resolving
-                    .as_ref()
-                    .unwrap()
-                    .item
-                    .entry_batch_event
-                    .as_ref()
-                    .is_some_and(|event| event.objects.contains(&object))
+            return self.entry_batch_copy_recipe(object).is_some()
                 && !choice.selected[player.index()].contains(&object);
         }
         if choice.kind == EffectChoiceKind::KeepSharedCreatureTypes {
@@ -445,13 +455,8 @@ impl Game {
                     .max();
             }
             let available = self
-                .state
-                .objects
-                .iter()
-                .enumerate()
-                .filter(|(id, _)| {
-                    self.effect_choice_candidate(&choice, player, self.object_ref(*id as CardId))
-                })
+                .effect_choice_objects(&choice)
+                .filter(|&object| self.effect_choice_candidate(&choice, player, object))
                 .count();
             if kind == EffectChoiceKind::PowerDifferenceBoost && available < usize::from(amount) {
                 return false;
@@ -618,10 +623,8 @@ impl Game {
         if choice.kind == EffectChoiceKind::CopyEntryObject {
             let controller = self.state.resolving.as_ref().unwrap().item.controller;
             if let Some(&object) = choice.selected[controller.index()].first()
-                && self.on_battlefield(object.card)
-                && self.object_ref(object.card) == object
+                && let Some(recipe) = self.entry_batch_copy_recipe(object)
             {
-                let recipe = self.copiable_recipe(object);
                 self.stage_copy_creation(controller, recipe, 1);
             }
         } else if let EffectChoiceKind::Blight(amount) | EffectChoiceKind::BlightCost(amount) =
@@ -849,11 +852,7 @@ impl Game {
         let public_only =
             viewer != actor && matches!(choice.kind, EffectChoiceKind::LandCards { .. });
         let candidates = self
-            .state
-            .objects
-            .iter()
-            .enumerate()
-            .map(|(id, _)| self.object_ref(id as CardId))
+            .effect_choice_objects(choice)
             .filter(|&object| self.effect_choice_candidate(choice, actor, object))
             .filter(|object| {
                 !public_only || self.state.objects[object.card as usize].zone == Zone::Graveyard
