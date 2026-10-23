@@ -121,7 +121,7 @@ fn trace(card: Card) -> Trace {
     let status = if offered {
         act(&mut g, opening.clone());
         journal.push(opening);
-        for _ in 0..64 {
+        for _ in 0..63 {
             if g.outcome().is_some()
                 || (g.state.pending == Pending::Priority
                     && g.state.stack.is_empty()
@@ -177,6 +177,11 @@ fn trace(card: Card) -> Trace {
     } else {
         "not_offered"
     };
+    assert!(
+        g.state.objects.len() < 192,
+        "{} exceeded object budget",
+        card.identity()
+    );
     let mut views = [g.observe(Player::P0), g.observe(Player::P1)];
     for view in &mut views {
         view.catalogue = "";

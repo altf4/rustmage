@@ -116,8 +116,8 @@ for the changed rule. Then record a candidate under the persistent cache:
 ```sh
 RUSTMAGE_RECORD_CARD_TRACES="$HOME/.cache/rustmage-card-traces-candidate.json" \
   python3 scripts/resource_guard.py -- cargo test --lib \
-  supported_cards_retain_bounded_cast_and_entry_traces -- --exact \
-  engine::assurance::regressions::supported_cards_retain_bounded_cast_and_entry_traces
+  engine::assurance::regressions::supported_cards_retain_bounded_cast_and_entry_traces \
+  -- --exact
 ```
 
 The recording run still compares with the committed baseline and fails on drift.
