@@ -1,0 +1,172 @@
+{
+  "schema": 1,
+  "set": "TMT",
+  "status": "incomplete checkpoint",
+  "source_revision": "efe5d031629a251fba434465c463bb6d6b3ed4b2",
+  "scope": {
+    "total": 195,
+    "admitted": 115,
+    "gated": 80,
+    "unresolved": 0,
+    "inherited_admission": 71,
+    "inherited_audits_completed": 0,
+    "newly_tested_candidates": 44,
+    "independently_reviewed": 0,
+    "upstream_merged_new_cards": 0
+  },
+  "newly_tested_cards": [
+    "Ninja Teen"
+  ],
+  "validation": {
+    "command": "python3 scripts/validate.py --release --python smoke",
+    "terminal": true,
+    "success": true,
+    "seconds": 638.3250369029993,
+    "files_verified": 11865,
+    "changed_inputs": [],
+    "report": "<cache>/rustmage-validation-b_sk0dwn/report/result.json",
+    "report_sha256": "ab3b6ea82de3f053438c2f68aa85181d6b9211cc9b340937ef9e16618328a7cd",
+    "phases": [
+      {
+        "index": 1,
+        "exit": 0,
+        "seconds": 2.2549572509888094,
+        "log": "<cache>/rustmage-validation-b_sk0dwn/report/0.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 2,
+        "exit": 0,
+        "seconds": 0.9338076130079571,
+        "log": "<cache>/rustmage-validation-b_sk0dwn/report/1.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 3,
+        "exit": 0,
+        "seconds": 0.45181678800145164,
+        "log": "<cache>/rustmage-validation-b_sk0dwn/report/2.log",
+        "log_sha256": "bef5168f25454a1d5c17ecc09a1d04d3fa215f428d5e8e3cbdd1e9d97720cf07"
+      },
+      {
+        "index": 4,
+        "exit": 0,
+        "seconds": 8.155786491988692,
+        "log": "<cache>/rustmage-validation-b_sk0dwn/report/3.log",
+        "log_sha256": "2314d8d5a84c95bde0bd2808a18b9761100e22cbd0aea868639e999d62968883"
+      },
+      {
+        "index": 5,
+        "exit": 0,
+        "seconds": 47.74555373901967,
+        "log": "<cache>/rustmage-validation-b_sk0dwn/report/4.log",
+        "log_sha256": "6255eb77032436e1b337b72560a61d6179149c6c17a86e85d5a72ff421b30892"
+      },
+      {
+        "index": 6,
+        "exit": 0,
+        "seconds": 480.9547786549956,
+        "log": "<cache>/rustmage-validation-b_sk0dwn/report/5.log",
+        "log_sha256": "6508d961756ee3ca87af696c55dccb469f26ed2dd56f0eb036e251a2fee4a43d"
+      },
+      {
+        "index": 7,
+        "exit": 0,
+        "seconds": 96.99978696997277,
+        "log": "<cache>/rustmage-validation-b_sk0dwn/report/6.log",
+        "log_sha256": "b09fcf8c7787779c6a1af3aef42a549ef52717aab6802e6a42f9f833610917e7"
+      },
+      {
+        "index": 8,
+        "exit": 0,
+        "seconds": 0.32588724899687804,
+        "log": "<cache>/rustmage-validation-b_sk0dwn/report/7.log",
+        "log_sha256": "590b4a6c6dab53d4891412b6e8f18e8f3a70133963e74bc582b87e91b8fc7233"
+      },
+      {
+        "index": 9,
+        "exit": 0,
+        "seconds": 0.4032415730180219,
+        "log": "<cache>/rustmage-validation-b_sk0dwn/report/8.log",
+        "log_sha256": "4909a7ddbe4e6321d8c2210480ef50cded2a3e1a0d88dd43c0a917b63a71fc29"
+      }
+    ],
+    "shared_libraries": {
+      "<cache>/rustmage-validation-b_sk0dwn/release/librustmage.so": "e37d67a3388a18c7b6f5d3286f91a4e735012a50c549e09699d7902cfd65179f",
+      "<cache>/rustmage-validation-b_sk0dwn/release/deps/librustmage.so": "e37d67a3388a18c7b6f5d3286f91a4e735012a50c549e09699d7902cfd65179f",
+      "<cache>/rustmage-validation-b_sk0dwn/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+      "<cache>/rustmage-validation-b_sk0dwn/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-b_sk0dwn/release-test/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-b_sk0dwn/release-test/deps/librustmage.so": "d77e3f1c86d796c4f49dcb9ee49d24a649ba4ae5df7113b391986ab933c7606e"
+    },
+    "cleaned_allocated_bytes": 857206784
+  },
+  "producing_host_library_manifest": {
+    "path": "<cache>/rustmage-tmt-ninja-library-paths.json",
+    "sha256": "7d65ce720e95f1781a299319d60b138b926b6498882ffea522d7693783907ff5"
+  },
+  "resource_guard": {
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 638.6078121740138,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 3849527296,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "report": "<cache>/rustmage-build-reports/ccc5db718b064850a37691d6d7fb8761.json",
+    "report_sha256": "ca65f2bfe9210ac1e3062cc092f7eb2f050dd2efb53791a43db45f8212d04a53"
+  },
+  "rules_tests": {
+    "library_passed": 3368,
+    "ignored": 1,
+    "sneak_scenarios": 53,
+    "python_smoke": 7,
+    "tmt_scenarios": 117,
+    "class_scenarios": 21,
+    "ninja_scenarios": 23,
+    "class_family_scenarios": 44
+  },
+  "freeform_smoke_regression": {
+    "clone_ns": 289.2256,
+    "decisions": 49832,
+    "decisions_per_second": 180102.7158692261,
+    "games": 100,
+    "games_per_second": 361.4198022740932,
+    "initial_state_bytes_excluding_capacity_and_allocator": 21160,
+    "max_decisions_per_game": 1129,
+    "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+    "restore_ns": 157.06919,
+    "seconds": 0.276686555,
+    "workload": "Existing Freeform regression smoke, not TMT acceptance",
+    "seed_range": [
+      0,
+      99
+    ],
+    "policy": "rustmage::policy::smoke_index",
+    "decks": {
+      "Mountain": 24,
+      "Lightning Bolt": 20,
+      "Goblin Piker": 12,
+      "Hill Giant": 4
+    },
+    "hardware": "Intel Core Ultra 5 335",
+    "compiler": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+    "profile": "release, opt-level 3, thin LTO",
+    "clone_restore_iterations": 100000,
+    "source": "efe5d031629a251fba434465c463bb6d6b3ed4b2"
+  },
+  "implementation_throughput": {
+    "start": "2026-10-23T11:03:47.504804+00:00",
+    "end": "2026-10-23T12:17:05.531544+00:00",
+    "seconds": 4398.02674,
+    "newly_verified_physical_cards": 1,
+    "cards_per_hour": 0.8185489113238088,
+    "scope": "Elapsed continuation interval includes source intake, implementation, repairs, future-card preparation and validation; excludes inherited coverage"
+  },
+  "tmt_simulation_throughput": null,
+  "tmt_full_game_acceptance": "pending",
+  "reviews": [],
+  "known_external_blockers": [],
+  "next_action": "Implement departure counter LKI and animation consumers: Donatello Mutant Mechanic, The Ooze, Pizza Face, Mind Transfer Protocol and Super Shredder; continue remaining cards, inherited audits and set-only acceptance."
+}

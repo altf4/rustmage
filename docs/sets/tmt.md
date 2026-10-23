@@ -439,3 +439,23 @@ sickness. Its complete failure evidence remains in
 `<cache>/rustmage-validation-zx31120f/report/result.json`. Both fixtures now let
 the controller's next real turn begin before animating/attacking; gameplay
 sickness enforcement is unchanged. The integrated release rerun is pending.
+
+## Validated 115-card checkpoint
+
+Ninja Teen and all shared cost composition pass all nine release phases on
+`efe5d031` in 638.33 seconds. All 3,368 library tests (one
+ignored), 117 TMT scenarios (23 Ninja, 21 other Class, 53 Sneak, 20 initial),
+existing full-game suites and seven Python binding checks pass. All five
+Classes now have integrated release evidence. Admission is 115/195, 80 gated,
+zero unresolved; 44 new physical candidates are rules/release verified, while
+71 inherited admission flags still need audits. Final independent reviews
+and set-only acceptance remain pending.
+
+See [portable evidence](tmt-ninja-validation.json) for report/library hashes,
+resource limits, elapsed implementation throughput and the Freeform regression
+measurement. Completed disposable validator outputs were cleaned; required
+shared libraries remain at their exact producing paths and hashes.
+
+Next: general departure-counter LKI and animation consumers (Donatello, Mutant
+Mechanic; The Ooze; Pizza Face; Mind Transfer Protocol; Super Shredder).
+The full set goal stays open; no partial implementation PR is published.
