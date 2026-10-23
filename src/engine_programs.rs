@@ -3909,6 +3909,18 @@ impl Game {
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
+                Instruction::TapOrUntap => {
+                    if let [bound] = item.targets.as_slice()
+                        && self.same_target_object(*bound)
+                        && let Target::Card(id) = bound.target
+                    {
+                        if self.state.objects[id as usize].tapped {
+                            self.untap_objects(&[id], untap_rules::UntapCause::Effect);
+                        } else {
+                            self.tap_objects(&[id]);
+                        }
+                    }
+                }
                 Instruction::Tap | Instruction::Untap => {
                     if instruction == Instruction::Untap {
                         let ids: Vec<_> = item

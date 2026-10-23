@@ -1429,6 +1429,9 @@ pub(crate) enum Instruction {
     Destroy,
     Tap,
     Untap,
+    /// Resolve a single target's tap/untap choice against its current tapped state.
+    /// With a preceding optional instruction, declining represents leaving it unchanged.
+    TapOrUntap,
     PutCreatureCounters {
         filter: CreatureFilter,
         kind: CounterKind,
@@ -2370,6 +2373,7 @@ pub(crate) struct CombatRestriction {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepGuard {
+    PermanentLeftBattlefieldThisTurn,
     PutCounterOnCreatureThisTurn,
     YourMainPhase {
         expected: bool,

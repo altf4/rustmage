@@ -862,6 +862,7 @@ impl Object {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct PlayerState {
+    permanent_left_battlefield_this_turn: bool,
     token_creation_attempted_this_turn: bool,
     put_counter_on_creature_this_turn: bool,
     hexproof_until_end_turn: bool,
@@ -1982,6 +1983,8 @@ pub struct ZoneChange {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
+    /// Public departure history, attributed to the controller immediately before movement.
+    pub permanent_left_battlefield_this_turn: bool,
     pub token_creation_attempted_this_turn: bool,
     pub put_counter_on_creature_this_turn: bool,
     pub hexproof_until_end_turn: bool,
@@ -2362,6 +2365,7 @@ impl Game {
         }
         let mut objects = Vec::with_capacity(config.decks.iter().map(Vec::len).sum());
         let mut players = std::array::from_fn(|_| PlayerState {
+            permanent_left_battlefield_this_turn: false,
             token_creation_attempted_this_turn: false,
             put_counter_on_creature_this_turn: false,
             hexproof_until_end_turn: false,
@@ -5668,6 +5672,8 @@ impl Game {
         self.capture_source_counter_departure(&before);
         self.clear_entry_value(before.reference);
         if before.zone == Zone::Battlefield {
+            self.state.players[before.controller.index()].permanent_left_battlefield_this_turn =
+                true;
             self.end_source_exile_permissions(before.reference);
             self.clear_suspected_reference(before.reference);
             self.forget_graveyard_type_source(before.reference);
@@ -5984,6 +5990,7 @@ impl Game {
         self.state.creatures_died_this_turn = 0;
         self.state.graveyard_entries = None;
         for player in &mut self.state.players {
+            player.permanent_left_battlefield_this_turn = false;
             player.token_creation_attempted_this_turn = false;
             player.put_counter_on_creature_this_turn = false;
             player.nonland_permanents_entered_this_turn = 0;
@@ -6723,6 +6730,8 @@ impl Game {
                 } else {
                     Player::P1
                 }),
+                permanent_left_battlefield_this_turn: s.players[i]
+                    .permanent_left_battlefield_this_turn,
                 nonland_permanents_entered_this_turn: s.players[i]
                     .nonland_permanents_entered_this_turn,
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
@@ -8325,3 +8334,7 @@ mod linked_funding;
 pub use linked_funding::CostCompletionView;
 use linked_funding::LinkedFundingGoal;
 use linked_funding::LinkedFundingWindow;
+
+#[cfg(test)]
+#[path = "engine_tmt_disappear_tests.rs"]
+mod tmt_disappear_tests;

@@ -3,10 +3,30 @@
   "catalogue_id": 222,
   "oracle_id": "e2a35850-92c5-40ab-8697-2e995819d7ac",
   "facts_sha256": "2afa612ec6d6774e9e67f1e273b154cb3a0cd16448c2a4e981574e71be80cabb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "33c467706e5c44604edf9d2df200db70e8cc91f3e37431ebf0d73dd224353d8b"
   },
-  "physical_metadata_sha256": "df44d822f6d376cca2281836f59193017a55552ee65040da0547ce25e47957df"
+  "physical_metadata_sha256": "df44d822f6d376cca2281836f59193017a55552ee65040da0547ce25e47957df",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/ArmaggonFutureShark.java",
+  "java_sha256": "a4f6d4ef6479a409415d7b73f3cd9ed0f58b972d351260ae2fb270c7a8f0a213",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ]
 }

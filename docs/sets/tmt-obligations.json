@@ -1,0 +1,4197 @@
+{
+  "membership": "data/sets/tmt.json",
+  "note": "Printed obligations awaiting implementation/rules audit; admission is not certification.",
+  "cards": [
+    {
+      "oracle_id": "a9d68cf5-3055-4ec9-9893-244bfd7046be",
+      "name": "Action News Crew",
+      "definition": "src/card_definitions/tmt/action_news_crew.rs",
+      "state": "implementing; focused validation pending",
+      "printed_obligations": [
+        {
+          "face": "Action News Crew",
+          "mana_cost": "{1}{W}",
+          "type_line": "Creature — Human Citizen",
+          "rules": [
+            "Vigilance",
+            "Channel — {6}, Discard this card: Put a +1/+1 counter on each creature you control. Draw a card."
+          ],
+          "power": "2",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": [
+        "src/engine_tmt_disappear_tests.rs",
+        "src/card_definitions/tmt/action_news_crew.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 2
+    },
+    {
+      "oracle_id": "f33217cc-175f-45e8-bc69-801f41cb4495",
+      "name": "Agent Bishop, Man in Black",
+      "definition": "src/card_definitions/tmt/agent_bishop_man_in_black.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Agent Bishop, Man in Black",
+          "mana_cost": "{2}{W}",
+          "type_line": "Legendary Creature — Human Soldier",
+          "rules": [
+            "At the beginning of combat on your turn, put a +1/+1 counter on each of up to two target creatures."
+          ],
+          "power": "1",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "5f4834c7-cd63-420b-8492-ef127ffd4f45",
+      "name": "Anchovy & Banana Pizza",
+      "definition": "src/card_definitions/tmt/anchovy_banana_pizza.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Anchovy & Banana Pizza",
+          "mana_cost": "{2}{B}{B}",
+          "type_line": "Artifact — Food",
+          "rules": [
+            "When this artifact enters, destroy target creature.",
+            "{2}, {T}, Sacrifice this artifact: You gain 3 life."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "d379a919-02cd-46fd-a6ce-b66a77745ae7",
+      "name": "April O'Neil, Hacktivist",
+      "definition": "src/card_definitions/tmt/april_o_neil_hacktivist.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "April O'Neil, Hacktivist",
+          "mana_cost": "{3}{U}",
+          "type_line": "Legendary Creature — Human Scientist",
+          "rules": [
+            "At the beginning of your end step, draw a card for each card type among spells you've cast this turn."
+          ],
+          "power": "1",
+          "toughness": "5",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "3f166376-2739-411c-8f42-96f2ef28ef86",
+      "name": "April O'Neil, Kunoichi Trainee",
+      "definition": "src/card_definitions/tmt/april_o_neil_kunoichi_trainee.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "April O'Neil, Kunoichi Trainee",
+          "mana_cost": "{1}{W}",
+          "type_line": "Legendary Creature — Human Ninja",
+          "rules": [
+            "When April O'Neil enters, scry 2. (Look at the top two cards of your library, then put any number of them on the bottom and the rest on top in any order.)",
+            "April O'Neil can't be blocked by creatures with power 3 or greater."
+          ],
+          "power": "2",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "1c371003-e4f0-4d7c-b021-273176772f97",
+      "name": "April, Reporter of the Weird",
+      "definition": "src/card_definitions/tmt/april_reporter_of_the_weird.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "April, Reporter of the Weird",
+          "mana_cost": "{2}{U}",
+          "type_line": "Legendary Creature — Human Detective",
+          "rules": [
+            "Whenever April deals combat damage to a player, draw that many cards, then discard a card."
+          ],
+          "power": "2",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "e2a35850-92c5-40ab-8697-2e995819d7ac",
+      "name": "Armaggon, Future Shark",
+      "definition": "src/card_definitions/tmt/armaggon_future_shark.rs",
+      "state": "implementing; focused validation pending",
+      "printed_obligations": [
+        {
+          "face": "Armaggon, Future Shark",
+          "mana_cost": "{6}{B}{B}",
+          "type_line": "Legendary Creature — Shark Horror Mutant",
+          "rules": [
+            "Flash",
+            "When Armaggon enters, destroy up to three target creatures."
+          ],
+          "power": "9",
+          "toughness": "6",
+          "loyalty": null
+        }
+      ],
+      "evidence": [
+        "src/engine_tmt_disappear_tests.rs",
+        "src/card_definitions/tmt/armaggon_future_shark.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 2
+    },
+    {
+      "oracle_id": "e610bfd4-d064-410b-929c-1d9dd82828b1",
+      "name": "Baxter Stockman",
+      "definition": "src/card_definitions/tmt/baxter_stockman.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Baxter Stockman",
+          "mana_cost": "{3}{U}{R}",
+          "type_line": "Legendary Creature — Human Scientist",
+          "rules": [
+            "When Baxter Stockman enters, create a 1/1 colorless Robot artifact creature token.",
+            "At the beginning of combat on your turn, target artifact creature you control gets +3/+0 and gains first strike and vigilance until end of turn."
+          ],
+          "power": "3",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "a08b0a07-6da2-4ff6-88e5-88355dd84589",
+      "name": "Bebop & Rocksteady",
+      "definition": "src/card_definitions/tmt/bebop_rocksteady.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Bebop & Rocksteady",
+          "mana_cost": "{1}{B/G}{B/G}",
+          "type_line": "Legendary Creature — Boar Rhino Mutant",
+          "rules": [
+            "Whenever Bebop & Rocksteady attack or block, sacrifice a permanent unless you discard a card."
+          ],
+          "power": "7",
+          "toughness": "5",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "39c813e1-0e26-440a-b9bd-e781f7576b8b",
+      "name": "Bebop, Warthog Warrior",
+      "definition": "src/card_definitions/tmt/bebop_warthog_warrior.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Bebop, Warthog Warrior",
+          "mana_cost": "{4}{B}",
+          "type_line": "Legendary Creature — Boar Mutant Warrior",
+          "rules": [
+            "Menace (This creature can't be blocked except by two or more creatures.)",
+            "Rhinos you control have menace.",
+            "Swampcycling {2} ({2}, Discard this card: Search your library for a Swamp card, reveal it, put it into your hand, then shuffle.)"
+          ],
+          "power": "5",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "679480aa-f9ad-4a6c-bd79-db9f9f75433d",
+      "name": "Bespoke Bō",
+      "definition": "src/card_definitions/tmt/bespoke_bo.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Bespoke Bō",
+          "mana_cost": "{2}{U}",
+          "type_line": "Artifact — Equipment",
+          "rules": [
+            "When this Equipment enters, return up to one other target nonland permanent to its owner's hand.",
+            "Equipped creature gets +2/+1 and has vigilance.",
+            "Equip {3} ({3}: Attach to target creature you control. Equip only as a sorcery.)"
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "14079f05-fbc1-401c-9008-da678656b4c6",
+      "name": "Bot Bashing Time",
+      "definition": "src/card_definitions/tmt/bot_bashing_time.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Bot Bashing Time",
+          "mana_cost": "{3}{R}",
+          "type_line": "Sorcery",
+          "rules": [
+            "Bot Bashing Time deals 6 damage to target creature. If that creature would die this turn, exile it instead."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "b047cd3f-9129-41cc-8b91-b0dc970f5068",
+      "name": "Brilliance Unleashed",
+      "definition": "src/card_definitions/tmt/brilliance_unleashed.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Brilliance Unleashed",
+          "mana_cost": "{4}{U}{R}",
+          "type_line": "Sorcery",
+          "rules": [
+            "Choose one or both —",
+            "• Brilliance Unleashed deals 5 damage to target creature.",
+            "• Choose target artifact card in your graveyard. Return it to the battlefield if it's an artifact creature card. Otherwise, return it to the battlefield and it's a 3/3 Robot artifact creature with flying."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "e0d221da-16cd-4399-830f-eecc9a0912eb",
+      "name": "Broadcast Takeover",
+      "definition": "src/card_definitions/tmt/broadcast_takeover.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Broadcast Takeover",
+          "mana_cost": "{2}{R}{R}{R}",
+          "type_line": "Sorcery",
+          "rules": [
+            "Gain control of all artifacts your opponents control until end of turn. Untap them. They gain haste until end of turn."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "434e720f-2bfa-49b6-a5ac-fe0c0b24764d",
+      "name": "Buzz Bots",
+      "definition": "src/card_definitions/tmt/buzz_bots.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Buzz Bots",
+          "mana_cost": "{1}{U}",
+          "type_line": "Artifact Creature — Robot Insect",
+          "rules": [
+            "Flying, vigilance",
+            "When this creature dies, draw a card."
+          ],
+          "power": "1",
+          "toughness": "1",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "b4c4fdb9-e034-49c0-9f7f-07e8cae19eb2",
+      "name": "Casey Jones, Jury-Rig Justiciar",
+      "definition": "src/card_definitions/tmt/casey_jones_jury_rig_justiciar.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Casey Jones, Jury-Rig Justiciar",
+          "mana_cost": "{1}{R}",
+          "type_line": "Legendary Creature — Human Berserker",
+          "rules": [
+            "Haste",
+            "When Casey Jones enters, look at the top four cards of your library. You may reveal an artifact card from among them and put it into your hand. Put the rest on the bottom of your library in a random order."
+          ],
+          "power": "2",
+          "toughness": "1",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "bc163b5a-0b1a-4257-8c07-5c7d5284015f",
+      "name": "Casey Jones, Vigilante",
+      "definition": "src/card_definitions/tmt/casey_jones_vigilante.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Casey Jones, Vigilante",
+          "mana_cost": "{1}{R}{R}",
+          "type_line": "Legendary Creature — Human Berserker",
+          "rules": [
+            "When Casey Jones enters, draw three cards. At the beginning of your next upkeep, discard three cards at random."
+          ],
+          "power": "4",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "3dc71e16-b935-4ad7-b3f7-945ac2c179a7",
+      "name": "Chrome Dome",
+      "definition": "src/card_definitions/tmt/chrome_dome.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Chrome Dome",
+          "mana_cost": "{2}",
+          "type_line": "Artifact Creature — Robot Ninja",
+          "rules": [
+            "Other artifact creatures you control get +1/+0.",
+            "{5}: Create a token that's a copy of another target artifact you control. That token gains haste. Sacrifice it at the beginning of the next end step."
+          ],
+          "power": "1",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "1f076303-d160-4e02-aa1e-9ed6040c3735",
+      "name": "Cool but Rude",
+      "definition": "src/card_definitions/tmt/cool_but_rude.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Cool but Rude",
+          "mana_cost": "{1}{R}",
+          "type_line": "Enchantment — Class",
+          "rules": [
+            "(Gain the next level as a sorcery to add its ability.)",
+            "Whenever you attack, you may discard a card. If you do, draw a card.",
+            "{1}{R}: Level 2",
+            "Whenever you discard a card, this Class deals 2 damage to each opponent.",
+            "{1}{R}: Level 3",
+            "When this Class becomes level 3, search your library for a card, put it into your hand, shuffle, then discard a card at random."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "049d8b06-db90-4b9c-8195-d987b3ef1005",
+      "name": "Courier of Comestibles",
+      "definition": "src/card_definitions/tmt/courier_of_comestibles.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Courier of Comestibles",
+          "mana_cost": "{1}{G}",
+          "type_line": "Creature — Human Citizen",
+          "rules": [
+            "When this creature enters, you may search your library for a Food card, reveal it, put it into your hand, then shuffle. If you don't put a card into your hand this way, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")"
+          ],
+          "power": "1",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "a1ddf985-1646-468c-b1a4-ab6bb8e9dd7c",
+      "name": "Cowabunga!",
+      "definition": "src/card_definitions/tmt/cowabunga.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Cowabunga!",
+          "mana_cost": "{G}",
+          "type_line": "Sorcery",
+          "rules": [
+            "Look at the top four cards of your library. You may reveal a Mutant, Ninja, Turtle, or land card from among them and put it into your hand. Put the rest on the bottom of your library in a random order."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "b24a87af-407f-4c58-80b4-caab9c65a233",
+      "name": "Crustacean Commando",
+      "definition": "src/card_definitions/tmt/crustacean_commando.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Crustacean Commando",
+          "mana_cost": "{1}{U}",
+          "type_line": "Creature — Crab Mutant Soldier",
+          "rules": [
+            "When this creature enters, create a Mutagen token. (It's an artifact with \"{1}, {T}, Sacrifice this token: Put a +1/+1 counter on target creature. Activate only as a sorcery.\")"
+          ],
+          "power": "0",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "c3ea6af5-48b9-45d2-9576-46cacb2db5b0",
+      "name": "Dark Leo & Shredder",
+      "definition": "src/card_definitions/tmt/dark_leo_shredder.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Dark Leo & Shredder",
+          "mana_cost": "{W}{B}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle Human",
+          "rules": [
+            "Sneak {W}{B}",
+            "Attacking Ninjas you control have deathtouch.",
+            "Whenever Dark Leo & Shredder deal combat damage to a player, create a 1/1 black Ninja creature token. Then if you control five or more Ninjas, that player loses half their life, rounded up."
+          ],
+          "power": "1",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "f599471a-31a6-4fb0-bf27-c5b707e1db6a",
+      "name": "Death in the Family",
+      "definition": "src/card_definitions/tmt/death_in_the_family.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Death in the Family",
+          "mana_cost": "{1}{B}",
+          "type_line": "Instant",
+          "rules": [
+            "Exile target creature with mana value 3 or less."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "8683341a-e836-41e5-9034-4da09eb0ab42",
+      "name": "Dimension X",
+      "definition": "src/card_definitions/tmt/dimension_x.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Dimension X",
+          "mana_cost": "",
+          "type_line": "Land",
+          "rules": [
+            "This land enters tapped.",
+            "When this land enters, you gain 1 life.",
+            "{T}: Add {R} or {W}."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "8f0777bc-4fca-4601-beed-1fd060f28075",
+      "name": "Dimensional Exile",
+      "definition": "src/card_definitions/tmt/dimensional_exile.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Dimensional Exile",
+          "mana_cost": "{1}{W}",
+          "type_line": "Enchantment — Aura",
+          "rules": [
+            "Enchant basic land you control",
+            "When this Aura enters, exile target creature an opponent controls until this Aura leaves the battlefield."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "df54b79d-f31d-4582-86c0-1d34ec77be0f",
+      "name": "Does Machines",
+      "definition": "src/card_definitions/tmt/does_machines.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Does Machines",
+          "mana_cost": "{1}{U}",
+          "type_line": "Enchantment — Class",
+          "rules": [
+            "(Gain the next level as a sorcery to add its ability.)",
+            "When this Class enters, mill two cards, draw two cards, then discard two cards.",
+            "{1}{U}: Level 2",
+            "When this Class becomes level 2, return up to two target artifact cards from your graveyard to your hand.",
+            "{4}{U}: Level 3",
+            "At the beginning of combat on your turn, put three +1/+1 counters on target artifact you control. If it isn't a creature, it becomes a 0/0 Robot creature in addition to its other types."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "a4ae71c8-ea1b-4fa4-9e47-cf00ab60c5ee",
+      "name": "Don & Leo, Problem Solvers",
+      "definition": "src/card_definitions/tmt/don_leo_problem_solvers.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Don & Leo, Problem Solvers",
+          "mana_cost": "{3}{W/U}{W/U}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "Vigilance",
+            "At the beginning of your end step, exile up to one target artifact you control and up to one target creature you control. Then return them to the battlefield under their owners' control."
+          ],
+          "power": "4",
+          "toughness": "6",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "01758a4a-ac29-47ad-8e88-158374f1ae4c",
+      "name": "Don & Raph, Hard Science",
+      "definition": "src/card_definitions/tmt/don_raph_hard_science.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Don & Raph, Hard Science",
+          "mana_cost": "{1}{U/R}{U/R}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "Menace",
+            "Whenever Don & Raph attack, the next noncreature spell you cast this turn has affinity for artifacts. (It costs {1} less to cast for each artifact you control.)"
+          ],
+          "power": "2",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "194284f7-cf92-4d9f-a8ce-e4dc3505ab7a",
+      "name": "Donatello's Technique",
+      "definition": "src/card_definitions/tmt/donatello_s_technique.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Donatello's Technique",
+          "mana_cost": "{2}{U}",
+          "type_line": "Sorcery",
+          "rules": [
+            "Sneak {U} (You may cast this spell for {U} if you also return an unblocked attacker you control to hand during the declare blockers step.)",
+            "Draw two cards."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "bb6aef0d-052b-44e6-b4cd-2d2eafd84969",
+      "name": "Donatello, Gadget Master",
+      "definition": "src/card_definitions/tmt/donatello_gadget_master.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Donatello, Gadget Master",
+          "mana_cost": "{2}{U}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "Sneak {1}{U} (You may cast this spell for {1}{U} if you also return an unblocked attacker you control to hand during the declare blockers step. He enters tapped and attacking.)",
+            "Whenever Donatello deals combat damage to a player, create a token that's a copy of target artifact you control."
+          ],
+          "power": "3",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "f6a7838d-380f-4752-a647-c55c2a0eb6e2",
+      "name": "Donatello, Mutant Mechanic",
+      "definition": "src/card_definitions/tmt/donatello_mutant_mechanic.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Donatello, Mutant Mechanic",
+          "mana_cost": "{3}{U}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "{T}: Put three +1/+1 counters on target artifact you control. If it isn't a creature, it becomes a 0/0 Robot creature in addition to its other types. Activate only as a sorcery.",
+            "Whenever an artifact you control is put into a graveyard from the battlefield, if it had counters on it, put those counters on up to one target artifact or creature you control."
+          ],
+          "power": "3",
+          "toughness": "5",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "f84850bc-6348-449e-bd82-bb39e2119bec",
+      "name": "Donatello, Turtle Techie",
+      "definition": "src/card_definitions/tmt/donatello_turtle_techie.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Donatello, Turtle Techie",
+          "mana_cost": "{3}{U}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "When Donatello enters, if you control an artifact, draw a card."
+          ],
+          "power": "3",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "194af2be-50c7-484b-bdd3-402bad70335b",
+      "name": "Donatello, Way with Machines",
+      "definition": "src/card_definitions/tmt/donatello_way_with_machines.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Donatello, Way with Machines",
+          "mana_cost": "{2}{U}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "Flying",
+            "Whenever an artifact you control enters, put a +1/+1 counter on Donatello."
+          ],
+          "power": "1",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "a1cec8e8-cf3c-42a4-b625-ca0cd148664e",
+      "name": "Dream Beavers",
+      "definition": "src/card_definitions/tmt/dream_beavers.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Dream Beavers",
+          "mana_cost": "{B}",
+          "type_line": "Creature — Beaver Nightmare",
+          "rules": [
+            "Flying",
+            "When this creature enters, each opponent loses 1 life and you gain 1 life. Scry 1. (Look at the top card of your library. You may put that card on the bottom.)"
+          ],
+          "power": "1",
+          "toughness": "1",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "2dea1935-c227-46d5-9d98-e7d2cd612f98",
+      "name": "EPF Point Squad",
+      "definition": "src/card_definitions/tmt/epf_point_squad.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "EPF Point Squad",
+          "mana_cost": "{1}{R/W}{R/W}",
+          "type_line": "Creature — Human Soldier",
+          "rules": [
+            "Alliance — Whenever another creature you control enters, put a +1/+1 counter on this creature."
+          ],
+          "power": "2",
+          "toughness": "1",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "e2ef355a-2472-47e0-9b2e-987994291921",
+      "name": "East Wind Avatar",
+      "definition": "src/card_definitions/tmt/east_wind_avatar.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "East Wind Avatar",
+          "mana_cost": "{3}{W}",
+          "type_line": "Creature — Bird Spirit Avatar",
+          "rules": [
+            "Flying, vigilance",
+            "Alliance — Whenever another creature you control enters, this creature gets +1/+0 until end of turn."
+          ],
+          "power": "2",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "0056fc91-4398-471c-b561-7ff99750ac8a",
+      "name": "Escape Tunnel",
+      "definition": "src/card_definitions/tmt/escape_tunnel.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Escape Tunnel",
+          "mana_cost": "",
+          "type_line": "Land",
+          "rules": [
+            "{T}, Sacrifice this land: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle.",
+            "{T}, Sacrifice this land: Target creature with power 2 or less can't be blocked this turn."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "aa481983-8f1a-4519-9371-5e7edcd3274f",
+      "name": "Everything Pizza",
+      "definition": "src/card_definitions/tmt/everything_pizza.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Everything Pizza",
+          "mana_cost": "{2}",
+          "type_line": "Artifact — Food",
+          "rules": [
+            "When this artifact enters, search your library for a basic land card, reveal it, put it into your hand, then shuffle.",
+            "{2}{W}{U}{B}{R}{G}, {T}, Sacrifice this artifact: Target player gains 3 life and draws a card. Each of your opponents discards a card. This artifact deals 3 damage to any target. Put three +1/+1 counters on up to one target creature."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "79a9fc1c-a6a9-483a-9ba7-d09fe41760c3",
+      "name": "Featherbrained Filcher",
+      "definition": "src/card_definitions/tmt/featherbrained_filcher.rs",
+      "state": "tested candidate; full-set integration/review pending",
+      "printed_obligations": [
+        {
+          "face": "Featherbrained Filcher",
+          "mana_cost": "{W}",
+          "type_line": "Creature — Bird Mutant",
+          "rules": [
+            "Flying",
+            "When this creature leaves the battlefield, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")"
+          ],
+          "power": "0",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": [
+        "src/engine_tmt_disappear_tests.rs",
+        "src/card_definitions/tmt/featherbrained_filcher.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 1
+    },
+    {
+      "oracle_id": "b6244b6c-664d-417a-bd58-ace5c7a995a2",
+      "name": "Foot Elite",
+      "definition": "src/card_definitions/tmt/foot_elite.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Foot Elite",
+          "mana_cost": "{2}{W/B}",
+          "type_line": "Creature — Human Ninja",
+          "rules": [
+            "Whenever this creature attacks, another target creature you control gets +1/+0 and gains indestructible until end of turn. (Damage and effects that say \"destroy\" don't destroy it.)"
+          ],
+          "power": "2",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "063dd25b-d4b4-4e09-acae-8c52dcb40803",
+      "name": "Foot Headquarters",
+      "definition": "src/card_definitions/tmt/foot_headquarters.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Foot Headquarters",
+          "mana_cost": "",
+          "type_line": "Land",
+          "rules": [
+            "This land enters tapped.",
+            "When this land enters, you gain 1 life.",
+            "{T}: Add {W} or {B}."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "2043fbde-48c4-4a77-8911-8991d77de1eb",
+      "name": "Foot Mystic",
+      "definition": "src/card_definitions/tmt/foot_mystic.rs",
+      "state": "tested candidate; full-set integration/review pending",
+      "printed_obligations": [
+        {
+          "face": "Foot Mystic",
+          "mana_cost": "{3}{B}",
+          "type_line": "Creature — Human Ninja Warlock",
+          "rules": [
+            "Lifelink",
+            "Disappear — When this creature enters, if a permanent left the battlefield under your control this turn, create a 1/1 black Ninja creature token."
+          ],
+          "power": "2",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": [
+        "src/engine_tmt_disappear_tests.rs",
+        "src/card_definitions/tmt/foot_mystic.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 1
+    },
+    {
+      "oracle_id": "306652a8-9a9c-4b33-96d7-b59234d148e9",
+      "name": "Foot Ninjas",
+      "definition": "src/card_definitions/tmt/foot_ninjas.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Foot Ninjas",
+          "mana_cost": "{4}{W/B}{W/B}",
+          "type_line": "Creature — Human Ninja",
+          "rules": [
+            "Sneak {3}{W/B} (You may cast this spell for {3}{W/B} if you also return an unblocked attacker you control to hand during the declare blockers step. It enters tapped and attacking.)",
+            "When this creature enters, you gain 3 life."
+          ],
+          "power": "5",
+          "toughness": "5",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+      "name": "Forest",
+      "definition": "src/card_definitions/fra/forest.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Forest",
+          "mana_cost": "",
+          "type_line": "Basic Land — Forest",
+          "rules": [
+            "({T}: Add {G}.)"
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "5b865275-4114-44d0-9832-ae5d3b4efba4",
+      "name": "Frog Butler",
+      "definition": "src/card_definitions/tmt/frog_butler.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Frog Butler",
+          "mana_cost": "{1}{G}",
+          "type_line": "Creature — Frog Spirit",
+          "rules": [
+            "Deathtouch",
+            "{T}: Add one mana of any color.",
+            "{2}: This creature gains reach until end of turn."
+          ],
+          "power": "1",
+          "toughness": "1",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "c04d4fd4-e5aa-431d-824b-8bc94245f103",
+      "name": "Fugitive Droid",
+      "definition": "src/card_definitions/tmt/fugitive_droid.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Fugitive Droid",
+          "mana_cost": "{U}",
+          "type_line": "Artifact Creature — Robot Scientist",
+          "rules": [
+            "This creature can't be blocked if an artifact entered the battlefield under your control this turn.",
+            "{U}, Sacrifice this creature: Counter target spell that targets an artifact or creature you control."
+          ],
+          "power": "1",
+          "toughness": "1",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "ade54bb7-3df8-4578-add8-1f85afee57ab",
+      "name": "General Traag, Heart of Stone",
+      "definition": "src/card_definitions/tmt/general_traag_heart_of_stone.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "General Traag, Heart of Stone",
+          "mana_cost": "{3}{R}{R}",
+          "type_line": "Legendary Artifact Creature — Elemental Soldier",
+          "rules": [
+            "Trample",
+            "When General Traag enters, you may sacrifice another artifact. When you do, General Traag deals 4 damage to target creature."
+          ],
+          "power": "4",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "1d6d0348-46ad-46ed-ae7b-d7510f0ebe70",
+      "name": "Genghis Frog",
+      "definition": "src/card_definitions/tmt/genghis_frog.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Genghis Frog",
+          "mana_cost": "{G}{U}",
+          "type_line": "Legendary Creature — Frog Mutant Rogue",
+          "rules": [
+            "Trample",
+            "Whenever Genghis Frog or another Mutant you control enters, create a Mutagen token. (It's an artifact with \"{1}, {T}, Sacrifice this token: Put a +1/+1 counter on target creature. Activate only as a sorcery.\")"
+          ],
+          "power": "1",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "46f77c8c-6817-4aea-a80a-d91f508ccbd0",
+      "name": "Go Ninja Go",
+      "definition": "src/card_definitions/tmt/go_ninja_go.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Go Ninja Go",
+          "mana_cost": "{R}{W}",
+          "type_line": "Sorcery",
+          "rules": [
+            "Choose one or both —",
+            "• Exile target creature you control, then return it to the battlefield under its owner's control.",
+            "• Go Ninja Go deals damage equal to the greatest power among creatures you control to target creature an opponent controls."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "da344e46-6bdf-4032-8590-bac850d5713d",
+      "name": "Groundchuck & Dirtbag",
+      "definition": "src/card_definitions/tmt/groundchuck_dirtbag.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Groundchuck & Dirtbag",
+          "mana_cost": "{4}{G}{G}",
+          "type_line": "Legendary Creature — Ox Mole Mutant",
+          "rules": [
+            "Trample",
+            "Whenever you tap a land for mana, add {G}."
+          ],
+          "power": "8",
+          "toughness": "8",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "9a334434-072a-4486-810a-63efb29dea6d",
+      "name": "Grounded for Life",
+      "definition": "src/card_definitions/tmt/grounded_for_life.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Grounded for Life",
+          "mana_cost": "{4}{W}",
+          "type_line": "Instant",
+          "rules": [
+            "This spell costs {3} less to cast if it targets a tapped creature.",
+            "Destroy target creature."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "d6d83a51-9d57-44a7-aae3-a96d43ec5ac8",
+      "name": "Guac & Marshmallow Pizza",
+      "definition": "src/card_definitions/tmt/guac_marshmallow_pizza.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Guac & Marshmallow Pizza",
+          "mana_cost": "{G}",
+          "type_line": "Artifact — Food",
+          "rules": [
+            "Flash",
+            "When this artifact enters, target creature gets +2/+2 until end of turn. Untap it.",
+            "{2}, {T}, Sacrifice this artifact: You gain 3 life."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "e08b19ca-f9d7-4c33-b37a-a77b37aabf1b",
+      "name": "Hamato Guardian Stance",
+      "definition": "src/card_definitions/tmt/hamato_guardian_stance.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Hamato Guardian Stance",
+          "mana_cost": "{W}",
+          "type_line": "Instant",
+          "rules": [
+            "Target creature gets +1/+3 and gains flying until end of turn. Scry 1. (Look at the top card of your library. You may put that card on the bottom.)"
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "ab433d41-e801-405c-81f7-06fa6640797d",
+      "name": "Hard-Won Jitte",
+      "definition": "src/card_definitions/tmt/hard_won_jitte.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Hard-Won Jitte",
+          "mana_cost": "{1}{R}",
+          "type_line": "Artifact — Equipment",
+          "rules": [
+            "Equipped creature has double strike.",
+            "Equip {2} ({2}: Attach to target creature you control. Equip only as a sorcery.)"
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "1f097c91-6c2e-410f-8c8f-c021f39491af",
+      "name": "Henchbots",
+      "definition": "src/card_definitions/tmt/henchbots.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Henchbots",
+          "mana_cost": "{4}",
+          "type_line": "Artifact Creature — Robot",
+          "rules": [
+            "When this creature enters, exile target tapped creature an opponent controls until this creature leaves the battlefield."
+          ],
+          "power": "2",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "84a56740-8563-4ce5-8560-d44998d7f80d",
+      "name": "High-Flying Ace",
+      "definition": "src/card_definitions/tmt/high_flying_ace.rs",
+      "state": "implementing; focused validation pending",
+      "printed_obligations": [
+        {
+          "face": "High-Flying Ace",
+          "mana_cost": "{2}{W}",
+          "type_line": "Creature — Bird Mutant",
+          "rules": [
+            "Flying",
+            "{3}{W}: Target creature without flying gains flying until end of turn. Activate only as a sorcery."
+          ],
+          "power": "2",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": [
+        "src/engine_tmt_disappear_tests.rs",
+        "src/card_definitions/tmt/high_flying_ace.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 2
+    },
+    {
+      "oracle_id": "f8131dca-ba6e-4ca4-943e-a3d26c75b8b8",
+      "name": "Ice Cream Kitty",
+      "definition": "src/card_definitions/tmt/ice_cream_kitty.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Ice Cream Kitty",
+          "mana_cost": "{1}{B/G}",
+          "type_line": "Artifact Creature — Food Cat Mutant",
+          "rules": [
+            "{2}, Sacrifice another creature or token: Draw a card. Activate only as a sorcery.",
+            "{2}, {T}, Sacrifice this creature: You gain 3 life."
+          ],
+          "power": "1",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "01ee70d4-6527-45ae-9600-bd3d16b3037d",
+      "name": "Illegitimate Business",
+      "definition": "src/card_definitions/tmt/illegitimate_business.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Illegitimate Business",
+          "mana_cost": "",
+          "type_line": "Land",
+          "rules": [
+            "This land enters tapped.",
+            "When this land enters, you gain 1 life.",
+            "{T}: Add {B} or {G}."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "4f02aa99-481c-4089-8f7c-cfe7eaa7dda0",
+      "name": "Improvised Arsenal",
+      "definition": "src/card_definitions/tmt/improvised_arsenal.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Improvised Arsenal",
+          "mana_cost": "{1}{R}",
+          "type_line": "Artifact — Equipment",
+          "rules": [
+            "Equipped creature gets +1/+0 for each artifact you control.",
+            "{4}{R}: Create a token that's a copy of this Equipment.",
+            "Equip {R}"
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "3d081701-514b-4611-b5a1-239b8f335fb6",
+      "name": "Insectoid Exterminator",
+      "definition": "src/card_definitions/tmt/insectoid_exterminator.rs",
+      "state": "tested candidate; full-set integration/review pending",
+      "printed_obligations": [
+        {
+          "face": "Insectoid Exterminator",
+          "mana_cost": "{2}{B}",
+          "type_line": "Creature — Insect Mutant",
+          "rules": [
+            "Flying",
+            "Disappear — At the beginning of your end step, if a permanent left the battlefield under your control this turn, scry 1. (Look at the top card of your library. You may put that card on the bottom.)"
+          ],
+          "power": "2",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": [
+        "src/engine_tmt_disappear_tests.rs",
+        "src/card_definitions/tmt/insectoid_exterminator.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 1
+    },
+    {
+      "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+      "name": "Island",
+      "definition": "src/card_definitions/fra/island.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Island",
+          "mana_cost": "",
+          "type_line": "Basic Land — Island",
+          "rules": [
+            "({T}: Add {U}.)"
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "90b1226f-4c90-47fd-98f3-ad4edd3b3518",
+      "name": "Jennika's Technique",
+      "definition": "src/card_definitions/tmt/jennika_s_technique.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Jennika's Technique",
+          "mana_cost": "{2}{R}",
+          "type_line": "Instant",
+          "rules": [
+            "Sneak {R} (You may cast this spell for {R} if you also return an unblocked attacker you control to hand during the declare blockers step.)",
+            "Jennika's Technique deals 2 damage to each creature."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "b55da4d3-2cad-4c89-ad3f-7d8397b64d52",
+      "name": "Jennika, Bad Apple Big Sister",
+      "definition": "src/card_definitions/tmt/jennika_bad_apple_big_sister.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Jennika, Bad Apple Big Sister",
+          "mana_cost": "{4}{W}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "When Jennika enters, create a 2/2 red Mutant creature token.",
+            "Plainscycling {2} ({2}, Discard this card: Search your library for a Plains card, reveal it, put it into your hand, then shuffle.)"
+          ],
+          "power": "3",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "e53fb128-bf90-4af6-b998-ef9c250001cb",
+      "name": "Karai's Technique",
+      "definition": "src/card_definitions/tmt/karai_s_technique.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Karai's Technique",
+          "mana_cost": "{1}{W}{B}",
+          "type_line": "Sorcery",
+          "rules": [
+            "Sneak {W}{B} (You may cast this spell for {W}{B} if you also return an unblocked attacker you control to hand during the declare blockers step.)",
+            "Choose one or both —",
+            "• Target creature gets +3/+3 until end of turn.",
+            "• Target creature gets -3/-3 until end of turn."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "7246638e-0361-40e3-8019-3c10210a593e",
+      "name": "Karai, Future of the Foot",
+      "definition": "src/card_definitions/tmt/karai_future_of_the_foot.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Karai, Future of the Foot",
+          "mana_cost": "{1}{W}{B}",
+          "type_line": "Legendary Creature — Human Ninja",
+          "rules": [
+            "Sneak {2}{W}{B} (You may cast this spell for {2}{W}{B} if you also return an unblocked attacker you control to hand during the declare blockers step. She enters tapped and attacking.)",
+            "Whenever Karai deals combat damage to a player, return target creature card from your graveyard to your hand. If her sneak cost was paid this turn, instead return that card to the battlefield."
+          ],
+          "power": "3",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "3e0f8ab3-75a6-49a2-a228-fa720cbde3d8",
+      "name": "Kitsune's Technique",
+      "definition": "src/card_definitions/tmt/kitsune_s_technique.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Kitsune's Technique",
+          "mana_cost": "{4}{U}{U}",
+          "type_line": "Instant",
+          "rules": [
+            "Sneak {1}{U} (You may cast this spell for {1}{U} if you also return an unblocked attacker you control to hand during the declare blockers step.)",
+            "Target opponent mills half their library, rounded up."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "9be19bdf-db1e-433e-8be4-8b985a568211",
+      "name": "Kitsune, Dragon's Daughter",
+      "definition": "src/card_definitions/tmt/kitsune_dragon_s_daughter.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Kitsune, Dragon's Daughter",
+          "mana_cost": "{4}{U}{U}",
+          "type_line": "Legendary Creature — Fox Warlock Avatar",
+          "rules": [
+            "Vigilance",
+            "Whenever Kitsune enters or deals combat damage to a player, you may exchange control of two other target creatures controlled by different players."
+          ],
+          "power": "6",
+          "toughness": "6",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "e7cd87d4-028c-49d9-9416-69f57e7dfec5",
+      "name": "Koya, Death from Above",
+      "definition": "src/card_definitions/tmt/koya_death_from_above.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Koya, Death from Above",
+          "mana_cost": "{2}{W}",
+          "type_line": "Legendary Creature — Mutant Ninja Bird",
+          "rules": [
+            "Flying",
+            "When Koya enters, exile up to one other target creature. At the beginning of the next end step, you may pay {3}{B}. If you don't, return that card to the battlefield under its owner's control."
+          ],
+          "power": "2",
+          "toughness": "1",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "2385c8fb-9c38-4ff3-8f61-4e25a8c7d46b",
+      "name": "Krang & Shredder",
+      "definition": "src/card_definitions/tmt/krang_shredder.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Krang & Shredder",
+          "mana_cost": "{4}{U/B}{U/B}",
+          "type_line": "Legendary Creature — Utrom Human Ninja",
+          "rules": [
+            "Whenever Krang & Shredder enter or attack, each opponent exiles cards from the top of their library until they exile a nonland card.",
+            "Disappear — At the beginning of your end step, if a permanent left the battlefield under your control this turn, you may cast a card exiled with Krang & Shredder without paying its mana cost."
+          ],
+          "power": "6",
+          "toughness": "7",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "52562194-4a97-40d2-aa73-7827f7834f2f",
+      "name": "Krang, Master Mind",
+      "definition": "src/card_definitions/tmt/krang_master_mind.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Krang, Master Mind",
+          "mana_cost": "{6}{U}{U}",
+          "type_line": "Legendary Artifact Creature — Utrom Warrior",
+          "rules": [
+            "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)",
+            "When Krang enters, if you have fewer than four cards in hand, draw cards equal to the difference.",
+            "Krang gets +1/+0 for each other artifact you control."
+          ],
+          "power": "1",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "2d56a491-b3eb-4f3e-82ab-981d3036c45d",
+      "name": "Krang, Utrom Warlord",
+      "definition": "src/card_definitions/tmt/krang_utrom_warlord.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Krang, Utrom Warlord",
+          "mana_cost": "{9}",
+          "type_line": "Legendary Artifact Creature — Utrom Robot",
+          "rules": [
+            "Flying, trample, indestructible, haste",
+            "Other artifact creatures you control have flying, trample, indestructible, and haste."
+          ],
+          "power": "9",
+          "toughness": "9",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "134430b7-d566-485a-bd5c-7db8a285f4ca",
+      "name": "Leader's Talent",
+      "definition": "src/card_definitions/tmt/leader_s_talent.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Leader's Talent",
+          "mana_cost": "{1}{W}",
+          "type_line": "Enchantment — Class",
+          "rules": [
+            "(Gain the next level as a sorcery to add its ability.)",
+            "Whenever you attack, put a +1/+1 counter on target attacking creature.",
+            "{2}{W}: Level 2",
+            "Whenever a creature you control leaves the battlefield, if it had a counter on it, you gain 2 life.",
+            "{3}{W}: Level 3",
+            "Whenever you cast a spell, put a +1/+1 counter on each creature you control."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "ee9b606a-a1fe-43c8-84d0-9bf7b012cc75",
+      "name": "Leatherhead, Swamp Stalker",
+      "definition": "src/card_definitions/tmt/leatherhead_swamp_stalker.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Leatherhead, Swamp Stalker",
+          "mana_cost": "{2}{G}{G}",
+          "type_line": "Legendary Creature — Crocodile Mutant Rogue",
+          "rules": [
+            "Trample",
+            "Leatherhead enters with a hexproof counter on her.",
+            "Whenever Leatherhead deals combat damage to a player, you may remove a counter from her. When you do, destroy target artifact or enchantment that player controls."
+          ],
+          "power": "5",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "e98c2af9-1393-487d-b8e9-f49a67bb7296",
+      "name": "Leonardo's Technique",
+      "definition": "src/card_definitions/tmt/leonardo_s_technique.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Leonardo's Technique",
+          "mana_cost": "{3}{W}",
+          "type_line": "Sorcery",
+          "rules": [
+            "Sneak {1}{W} (You may cast this spell for {1}{W} if you also return an unblocked attacker you control to hand during the declare blockers step.)",
+            "Return one or two target creature cards each with mana value 3 or less from your graveyard to the battlefield."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "6496eea7-38f5-4428-a379-b08b0eeb5239",
+      "name": "Leonardo, Big Brother",
+      "definition": "src/card_definitions/tmt/leonardo_big_brother.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Leonardo, Big Brother",
+          "mana_cost": "{2}{W}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "Sneak {W} (You may cast this spell for {W} if you also return an unblocked attacker you control to hand during the declare blockers step. He enters tapped and attacking.)",
+            "Leonardo gets +1/+0 for each other creature you control."
+          ],
+          "power": "1",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "933fe6e5-8d00-4411-aa54-7780382c1ea6",
+      "name": "Leonardo, Cutting Edge",
+      "definition": "src/card_definitions/tmt/leonardo_cutting_edge.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Leonardo, Cutting Edge",
+          "mana_cost": "{1}{W}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "Sneak {W} (You may cast this spell for {W} if you also return an unblocked attacker you control to hand during the declare blockers step. He enters tapped and attacking.)",
+            "Lifelink",
+            "Whenever you gain life, put a +1/+1 counter on Leonardo."
+          ],
+          "power": "1",
+          "toughness": "1",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "348c7e22-2179-41b8-a5d2-8dd488e7e66d",
+      "name": "Leonardo, Leader in Blue",
+      "definition": "src/card_definitions/tmt/leonardo_leader_in_blue.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Leonardo, Leader in Blue",
+          "mana_cost": "{W}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "Sneak {3}{W}{W} (You may cast this spell for {3}{W}{W} if you also return an unblocked attacker you control to hand during the declare blockers step. He enters tapped and attacking.)",
+            "When Leonardo enters, if his sneak cost was paid, creatures you control get +2/+0 until end of turn.",
+            "{1}{W}: Leonardo gains first strike until end of turn."
+          ],
+          "power": "2",
+          "toughness": "1",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "74e3243b-6707-4769-8767-7cf2ef71009a",
+      "name": "Leonardo, Sewer Samurai",
+      "definition": "src/card_definitions/tmt/leonardo_sewer_samurai.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Leonardo, Sewer Samurai",
+          "mana_cost": "{3}{W}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle Samurai",
+          "rules": [
+            "Sneak {2}{W}{W}",
+            "Double strike",
+            "During your turn, you may cast creature spells with power or toughness 1 or less from your graveyard. If you cast a spell this way, that creature enters with a finality counter on it. (If a creature with a finality counter on it would die, exile it instead.)"
+          ],
+          "power": "3",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "51df0203-578d-47e1-a9f7-a13445f597d7",
+      "name": "Lessons from Life",
+      "definition": "src/card_definitions/tmt/lessons_from_life.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Lessons from Life",
+          "mana_cost": "{2}{G}{U}",
+          "type_line": "Sorcery",
+          "rules": [
+            "Draw three cards. You may put a land card from your hand onto the battlefield tapped."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "212fdb7c-1c7e-4eed-b1ed-bcc14a425da8",
+      "name": "Lita, Little Orphan Amphibian",
+      "definition": "src/card_definitions/tmt/lita_little_orphan_amphibian.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Lita, Little Orphan Amphibian",
+          "mana_cost": "{1}{W}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "Alliance — Whenever another creature you control enters, choose one that hasn't been chosen this turn.",
+            "• Put a +1/+1 counter on Lita.",
+            "• Create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")",
+            "• Scry 1."
+          ],
+          "power": "2",
+          "toughness": "1",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "2db77e35-a54a-4e9c-8081-c97822515879",
+      "name": "Lord Dregg, Insect Invader",
+      "definition": "src/card_definitions/tmt/lord_dregg_insect_invader.rs",
+      "state": "tested candidate; full-set integration/review pending",
+      "printed_obligations": [
+        {
+          "face": "Lord Dregg, Insect Invader",
+          "mana_cost": "{3}{B}",
+          "type_line": "Legendary Creature — Insect Warrior",
+          "rules": [
+            "Flying",
+            "Disappear — At the beginning of your end step, if a permanent left the battlefield under your control this turn, create a 1/1 black Insect Warrior creature token with flying.",
+            "{3}{G}, Sacrifice a token: Draw a card."
+          ],
+          "power": "3",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": [
+        "src/engine_tmt_disappear_tests.rs",
+        "src/card_definitions/tmt/lord_dregg_insect_invader.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 1
+    },
+    {
+      "oracle_id": "73413bd5-8c40-4d45-8f05-c20c39ee4017",
+      "name": "Madame Null, Power Broker",
+      "definition": "src/card_definitions/tmt/madame_null_power_broker.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Madame Null, Power Broker",
+          "mana_cost": "{2}{B}",
+          "type_line": "Legendary Creature — Demon Advisor",
+          "rules": [
+            "Deathtouch",
+            "Whenever another creature you control enters, you may pay life equal to its power. If you do, put that many +1/+1 counters on it."
+          ],
+          "power": "1",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "8226f31d-6f51-49c3-87f7-0c68f7f4f9ce",
+      "name": "Make Your Move",
+      "definition": "src/card_definitions/msc/make_your_move.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Make Your Move",
+          "mana_cost": "{2}{W}",
+          "type_line": "Instant",
+          "rules": [
+            "Destroy target artifact, enchantment, or creature with power 4 or greater."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "c596b847-4e05-4279-8675-b4e39cb3dc91",
+      "name": "Manhole Missile",
+      "definition": "src/card_definitions/tmt/manhole_missile.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Manhole Missile",
+          "mana_cost": "{1}{R}",
+          "type_line": "Instant",
+          "rules": [
+            "Manhole Missile deals 3 damage to target creature. You may put a card from your hand on the bottom of your library. If you do, draw a card."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "2db8dda3-8136-4cf2-ba2d-ecc344a36725",
+      "name": "Mechanized Ninja Cavalry",
+      "definition": "src/card_definitions/tmt/mechanized_ninja_cavalry.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Mechanized Ninja Cavalry",
+          "mana_cost": "{1}{R/W}",
+          "type_line": "Artifact Creature — Robot Ninja",
+          "rules": [
+            "When this creature enters, create a 1/1 colorless Robot artifact creature token."
+          ],
+          "power": "1",
+          "toughness": "1",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "7df45a2a-75bc-4343-8dad-3a642efd13ee",
+      "name": "Metalhead",
+      "definition": "src/card_definitions/tmt/metalhead.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Metalhead",
+          "mana_cost": "{4}{U}",
+          "type_line": "Legendary Artifact Creature — Robot Turtle",
+          "rules": [
+            "When Metalhead enters, return up to one other target artifact or creature to its owner's hand.",
+            "{R}, Sacrifice another artifact: Put a +1/+1 counter on Metalhead. He gains menace and haste until end of turn."
+          ],
+          "power": "4",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "42f12942-9ac1-497e-a8b7-9f66a5afd0ae",
+      "name": "Michelangelo's Technique",
+      "definition": "src/card_definitions/tmt/michelangelo_s_technique.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Michelangelo's Technique",
+          "mana_cost": "{4}{G}",
+          "type_line": "Sorcery",
+          "rules": [
+            "Sneak {3}{G} (You may cast this spell for {3}{G} if you also return an unblocked attacker you control to hand during the declare blockers step.)",
+            "Look at the top eight cards of your library. Put up to two creature cards with total mana value 6 or less from among them onto the battlefield and the rest on the bottom of your library in a random order."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "594c6b1f-ff0e-4122-8b29-852632a22a79",
+      "name": "Michelangelo, Game Master",
+      "definition": "src/card_definitions/tmt/michelangelo_game_master.rs",
+      "state": "tested candidate; full-set integration/review pending",
+      "printed_obligations": [
+        {
+          "face": "Michelangelo, Game Master",
+          "mana_cost": "{2}{G}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "Disappear — At the beginning of your end step, if a permanent left the battlefield under your control this turn, put a +1/+1 counter on Michelangelo."
+          ],
+          "power": "3",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": [
+        "src/engine_tmt_disappear_tests.rs",
+        "src/card_definitions/tmt/michelangelo_game_master.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 1
+    },
+    {
+      "oracle_id": "1939679b-ea2e-4a75-b3ce-d7af68437484",
+      "name": "Michelangelo, Improviser",
+      "definition": "src/card_definitions/tmt/michelangelo_improviser.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Michelangelo, Improviser",
+          "mana_cost": "{3}{G}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "Sneak {2}{G}{G} (You may cast this spell for {2}{G}{G} if you also return an unblocked attacker you control to hand during the declare blockers step. He enters tapped and attacking.)",
+            "Whenever Michelangelo deals combat damage to a player, you may put a creature card and/or a land card from your hand onto the battlefield."
+          ],
+          "power": "4",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "fe1eb8b3-c605-4711-a057-ed3565bfe75c",
+      "name": "Michelangelo, Mutant BFF",
+      "definition": "src/card_definitions/tmt/michelangelo_mutant_bff.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Michelangelo, Mutant BFF",
+          "mana_cost": "{2}{G}{G}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "Each creature you control with a counter on it can't be blocked by more than one creature.",
+            "Whenever Michelangelo enters or attacks, create a Mutagen token. (It's an artifact with \"{1}, {T}, Sacrifice this token: Put a +1/+1 counter on target creature. Activate only as a sorcery.\")"
+          ],
+          "power": "4",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "170ab932-9d50-4ce7-9a42-08e1edce7e7c",
+      "name": "Michelangelo, Weirdness to 11",
+      "definition": "src/card_definitions/tmt/michelangelo_weirdness_to_11.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Michelangelo, Weirdness to 11",
+          "mana_cost": "{1}{G}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "When Michelangelo enters, create a Mutagen token. (It's an artifact with \"{1}, {T}, Sacrifice this token: Put a +1/+1 counter on target creature. Activate only as a sorcery.\")",
+            "If one or more +1/+1 counters would be put on a creature you control, that many plus one +1/+1 counters are put on it instead."
+          ],
+          "power": "1",
+          "toughness": "1",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "fcdc7dfc-04b5-411a-ab49-282b9c2608e2",
+      "name": "Mighty Mutanimals",
+      "definition": "src/card_definitions/tmt/mighty_mutanimals.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Mighty Mutanimals",
+          "mana_cost": "{2}{W}{W}",
+          "type_line": "Creature — Mutant Rebel",
+          "rules": [
+            "When this creature enters, create a 2/2 red Mutant creature token.",
+            "Alliance — Whenever another creature you control enters, put a +1/+1 counter on target creature you control."
+          ],
+          "power": "2",
+          "toughness": "1",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "529178e8-425e-4d59-948c-ca7d0663f6ff",
+      "name": "Mikey & Don, Party Planners",
+      "definition": "src/card_definitions/tmt/mikey_don_party_planners.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Mikey & Don, Party Planners",
+          "mana_cost": "{2}{G/U}{G/U}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "Ward {2}",
+            "You may look at the top card of your library any time.",
+            "You may play lands and cast Mutant, Ninja, or Turtle spells from the top of your library. If you cast a creature spell this way, that creature enters with an additional +1/+1 counter on it."
+          ],
+          "power": "3",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "a86117c1-b83d-4350-9a10-a23b7e67e1bd",
+      "name": "Mikey & Leo, Chaos & Order",
+      "definition": "src/card_definitions/tmt/mikey_leo_chaos_order.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Mikey & Leo, Chaos & Order",
+          "mana_cost": "{G/W}{G/W}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "Whenever you put a counter on a creature you control, draw a card. This ability triggers only once each turn."
+          ],
+          "power": "2",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "0d80d0f7-a436-431c-a54e-e7dd7dbba8de",
+      "name": "Mind Transfer Protocol",
+      "definition": "src/card_definitions/tmt/mind_transfer_protocol.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Mind Transfer Protocol",
+          "mana_cost": "{2}{U}",
+          "type_line": "Instant",
+          "rules": [
+            "Until end of turn, target artifact or creature becomes an artifact creature with base power and toughness 4/5.",
+            "Draw a card."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "e6490e98-37a9-4a8b-a04c-cceeb22b0c35",
+      "name": "Mona Lisa, Science Geek",
+      "definition": "src/card_definitions/tmt/mona_lisa_science_geek.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Mona Lisa, Science Geek",
+          "mana_cost": "{2}{G}",
+          "type_line": "Legendary Creature — Lizard Mutant",
+          "rules": [
+            "Reach",
+            "{T}: Add X mana of any one color, where X is Mona Lisa's power."
+          ],
+          "power": "1",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "fa3ae120-756d-4c52-91f9-235767539d67",
+      "name": "Mondo Gecko",
+      "definition": "src/card_definitions/tmt/mondo_gecko.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Mondo Gecko",
+          "mana_cost": "{1}{U}{U}",
+          "type_line": "Legendary Creature — Lizard Mutant",
+          "rules": [
+            "{1}, Discard a card: Until end of turn, Mondo Gecko becomes the color of your choice and gains hexproof from that color.",
+            "Whenever Mondo Gecko deals combat damage to a player, draw a card for each color among permanents you control."
+          ],
+          "power": "2",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+      "name": "Mountain",
+      "definition": "src/card_definitions/fra/mountain.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Mountain",
+          "mana_cost": "",
+          "type_line": "Basic Land — Mountain",
+          "rules": [
+            "({T}: Add {R}.)"
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "bae5dc68-1fd1-428d-bee7-c238e07b21ea",
+      "name": "Mouser Attack!",
+      "definition": "src/card_definitions/tmt/mouser_attack.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Mouser Attack!",
+          "mana_cost": "{1}{R}",
+          "type_line": "Instant",
+          "rules": [
+            "Choose one —",
+            "• Create a 1/1 colorless Robot artifact creature token.",
+            "• Target creature gets +3/+0 and gains first strike until end of turn."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "404e958b-ead9-4ec7-b786-7b3d65e29967",
+      "name": "Mouser Foundry",
+      "definition": "src/card_definitions/tmt/mouser_foundry.rs",
+      "state": "implementing; focused validation pending",
+      "printed_obligations": [
+        {
+          "face": "Mouser Foundry",
+          "mana_cost": "{1}{R}",
+          "type_line": "Artifact",
+          "rules": [
+            "When this artifact enters or leaves the battlefield, create a 1/1 colorless Robot artifact creature token.",
+            "{4}{R}, Sacrifice this artifact: It deals 3 damage to target creature."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": [
+        "src/engine_tmt_disappear_tests.rs",
+        "src/card_definitions/tmt/mouser_foundry.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 3
+    },
+    {
+      "oracle_id": "ad0c6d46-a1ca-4a9f-93f0-4a4dc31868e6",
+      "name": "Mouser Mark III",
+      "definition": "src/card_definitions/tmt/mouser_mark_iii.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Mouser Mark III",
+          "mana_cost": "{1}{U/R}",
+          "type_line": "Artifact Creature — Robot",
+          "rules": [
+            "This creature can't attack unless you control another artifact."
+          ],
+          "power": "2",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "472d9a18-19a0-46c0-a4bf-328ebec7ce41",
+      "name": "Mutagen Man, Living Ooze",
+      "definition": "src/card_definitions/tmt/mutagen_man_living_ooze.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Mutagen Man, Living Ooze",
+          "mana_cost": "{X}{G}{G}",
+          "type_line": "Legendary Creature — Ooze Mutant",
+          "rules": [
+            "Trample",
+            "Activated abilities of artifact tokens you control cost {1} less to activate.",
+            "When Mutagen Man enters, create X Mutagen tokens. (They're artifacts with \"{1}, {T}, Sacrifice this token: Put a +1/+1 counter on target creature. Activate only as a sorcery.\")"
+          ],
+          "power": "2",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "ea9fc868-374b-4acc-be0d-4283907b4524",
+      "name": "Mutant Chain Reaction",
+      "definition": "src/card_definitions/tmt/mutant_chain_reaction.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Mutant Chain Reaction",
+          "mana_cost": "{2}{G}",
+          "type_line": "Sorcery",
+          "rules": [
+            "Destroy up to one target artifact, enchantment, or creature with flying. Create a Mutagen token. (It's an artifact with \"{1}, {T}, Sacrifice this token: Put a +1/+1 counter on target creature. Activate only as a sorcery.\")"
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "f6059731-2e10-4f72-a214-b257f1677e9e",
+      "name": "Mutant Town",
+      "definition": "src/card_definitions/tmt/mutant_town.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Mutant Town",
+          "mana_cost": "",
+          "type_line": "Land",
+          "rules": [
+            "This land enters tapped.",
+            "When this land enters, you gain 1 life.",
+            "{T}: Add {G} or {U}."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "9f318ddc-3dc5-4e43-92b3-3a776e41c56e",
+      "name": "Mutant Town Musicians",
+      "definition": "src/card_definitions/tmt/mutant_town_musicians.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Mutant Town Musicians",
+          "mana_cost": "{2}{R}",
+          "type_line": "Creature — Mutant Bard Performer",
+          "rules": [
+            "Trample",
+            "Alliance — Whenever another creature you control enters, this creature gets +1/+0 until end of turn."
+          ],
+          "power": "2",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "3407fe41-fdd3-4119-8f70-4bc4590a379f",
+      "name": "Negate",
+      "definition": "src/card_definitions/tmt/negate.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Negate",
+          "mana_cost": "{1}{U}",
+          "type_line": "Instant",
+          "rules": [
+            "Counter target noncreature spell."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "e7ae3ee7-824f-4dcb-8f28-7de99e4d8c3e",
+      "name": "New Generation's Technique",
+      "definition": "src/card_definitions/tmt/new_generation_s_technique.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "New Generation's Technique",
+          "mana_cost": "{3}{G}",
+          "type_line": "Sorcery",
+          "rules": [
+            "Sneak {2}{G} (You may cast this spell for {2}{G} if you also return an unblocked attacker you control to hand during the declare blockers step.)",
+            "Search your library for up to two basic land cards, put them onto the battlefield tapped, then shuffle."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "2c5044ff-a303-4276-8e23-7caac30a275b",
+      "name": "Ninja Teen",
+      "definition": "src/card_definitions/tmt/ninja_teen.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Ninja Teen",
+          "mana_cost": "{2}{B}",
+          "type_line": "Enchantment — Class",
+          "rules": [
+            "(Gain the next level as a sorcery to add its ability.)",
+            "Whenever a creature you control leaves the battlefield, each opponent loses 1 life.",
+            "{1}{B}: Level 2",
+            "Creatures you control get +1/+0 and have menace.",
+            "{B}: Level 3",
+            "Creature cards in your graveyard have sneak {3}{B}.",
+            "You may cast creature spells from your graveyard using their sneak abilities."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "eddab60f-2eac-4f20-934c-3d9307f885c3",
+      "name": "Nobody",
+      "definition": "src/card_definitions/tmt/nobody.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Nobody",
+          "mana_cost": "{1}{U/R}{U/R}",
+          "type_line": "Artifact Creature — Human Hero",
+          "rules": [
+            "When this creature enters, return up to one other target artifact you control to its owner's hand. Scry 1. (Look at the top card of your library. You may put that card on the bottom.)"
+          ],
+          "power": "3",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "b408c345-b308-4920-8494-4f204d856aa3",
+      "name": "North Wind Avatar",
+      "definition": "src/card_definitions/tmt/north_wind_avatar.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "North Wind Avatar",
+          "mana_cost": "{2}{U}{U}{R}",
+          "type_line": "Creature — Dragon Spirit Avatar",
+          "rules": [
+            "Flying",
+            "When this creature enters, if you cast it, you may put a card you own from outside the game into your hand."
+          ],
+          "power": "5",
+          "toughness": "5",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "e05f1a43-16ce-4e88-b0ad-2202efb25516",
+      "name": "Northampton Farm",
+      "definition": "src/card_definitions/tmt/northampton_farm.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Northampton Farm",
+          "mana_cost": "",
+          "type_line": "Land",
+          "rules": [
+            "{T}: Add {C}.",
+            "{1}, {T}: Exile target creature you own.",
+            "{2}, {T}, Sacrifice this land: Return a creature card exiled with this land to the battlefield under your control. Return each other card exiled with this land to its owner's hand."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "6d819742-3d02-4d60-9b10-82caa49a9d49",
+      "name": "Novel Nunchaku",
+      "definition": "src/card_definitions/tmt/novel_nunchaku.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Novel Nunchaku",
+          "mana_cost": "{2}{G}",
+          "type_line": "Artifact — Equipment",
+          "rules": [
+            "When this Equipment enters, attach it to target creature you control. When you do, equipped creature fights up to one target creature an opponent controls. (Each deals damage equal to its power to the other.)",
+            "Equipped creature gets +1/+1 and has trample.",
+            "Equip {3} ({3}: Attach to target creature you control. Equip only as a sorcery.)"
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "49598fd5-2aad-4974-b499-38b60fc371b6",
+      "name": "Null Group Biological Assets",
+      "definition": "src/card_definitions/tmt/null_group_biological_assets.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Null Group Biological Assets",
+          "mana_cost": "{2}{R}",
+          "type_line": "Creature — Mutant Mercenary",
+          "rules": [
+            "During your turn, this creature has first strike.",
+            "Whenever this creature attacks, you may discard a card. If you do, draw a card."
+          ],
+          "power": "3",
+          "toughness": "1",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "e88b1520-aa9a-41ee-9036-4d4bebd1a0c0",
+      "name": "Old Hob, Alleycat Blues",
+      "definition": "src/card_definitions/tmt/old_hob_alleycat_blues.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Old Hob, Alleycat Blues",
+          "mana_cost": "{4}{R}",
+          "type_line": "Legendary Creature — Cat Mutant Rebel",
+          "rules": [
+            "At the beginning of combat on your turn, create a 2/2 red Mutant creature token. It gains haste until end of turn. Destroy it at the beginning of the next end step.",
+            "{1}{W}: Target attacking creature token gains indestructible until end of turn."
+          ],
+          "power": "4",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "73144877-1d37-4c7a-8493-3cef191b9211",
+      "name": "Omni-Cheese Pizza",
+      "definition": "src/card_definitions/tmt/omni_cheese_pizza.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Omni-Cheese Pizza",
+          "mana_cost": "{2}",
+          "type_line": "Artifact — Food",
+          "rules": [
+            "When this artifact enters, draw a card.",
+            "{1}, {T}, Sacrifice this artifact: Add one mana of any color.",
+            "{2}, {T}, Sacrifice this artifact: You gain 3 life."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "c1c5f9da-1396-4406-b803-b64f66b8e49d",
+      "name": "Ooze Spill",
+      "definition": "src/card_definitions/tmt/ooze_spill.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Ooze Spill",
+          "mana_cost": "{1}{U}{U}",
+          "type_line": "Instant",
+          "rules": [
+            "Counter target spell. Create a Mutagen token. (It's an artifact with \"{1}, {T}, Sacrifice this token: Put a +1/+1 counter on target creature. Activate only as a sorcery.\")"
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "d14f620c-0fbd-485c-9fe4-34949e742147",
+      "name": "Oroku Saki, Shredder Rising",
+      "definition": "src/card_definitions/tmt/oroku_saki_shredder_rising.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Oroku Saki, Shredder Rising",
+          "mana_cost": "{2}{B}",
+          "type_line": "Legendary Creature — Human Ninja",
+          "rules": [
+            "Sneak {1}{B} (You may cast this spell for {1}{B} if you also return an unblocked attacker you control to hand during the declare blockers step. He enters tapped and attacking.)",
+            "Whenever Oroku Saki deals combat damage to a player, you draw a card and lose 1 life."
+          ],
+          "power": "3",
+          "toughness": "1",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "e9975888-c75f-471e-a70d-17449e92226d",
+      "name": "Pain 101",
+      "definition": "src/card_definitions/tmt/pain_101.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Pain 101",
+          "mana_cost": "{1}{B}",
+          "type_line": "Instant",
+          "rules": [
+            "Until end of turn, target creature gains deathtouch and \"When this creature dies, return it to the battlefield tapped under its owner's control.\""
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "9076a886-efe0-4c99-8661-f0fd7a7b3129",
+      "name": "Paramecia Coloniex",
+      "definition": "src/card_definitions/tmt/paramecia_coloniex.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Paramecia Coloniex",
+          "mana_cost": "{1}{B}",
+          "type_line": "Creature — Zombie Worm",
+          "rules": [
+            "When this creature enters, mill three cards. (Put the top three cards of your library into your graveyard.)",
+            "When this creature dies, you may exile it. When you do, put target creature card from your graveyard on top of your library."
+          ],
+          "power": "2",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "8df7a58c-053f-4ead-a778-2747718e5f10",
+      "name": "Party Dude",
+      "definition": "src/card_definitions/tmt/party_dude.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Party Dude",
+          "mana_cost": "{G}",
+          "type_line": "Enchantment — Class",
+          "rules": [
+            "(Gain the next level as a sorcery to add its ability.)",
+            "When this Class enters, each player creates a Food token.",
+            "{1}{G}: Level 2",
+            "Whenever an artifact an opponent controls is put into a graveyard from the battlefield, draw a card.",
+            "{4}{G}: Level 3",
+            "Whenever one or more of your opponents are attacked, up to one target attacking creature gets +X/+X until end of turn, where X is the number of cards in your hand."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "e71479c9-bb38-4112-bf8a-41b39a3ade51",
+      "name": "Pizza Face, Gastromancer",
+      "definition": "src/card_definitions/tmt/pizza_face_gastromancer.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Pizza Face, Gastromancer",
+          "mana_cost": "{3}{B}{G}",
+          "type_line": "Legendary Artifact Creature — Food Mutant",
+          "rules": [
+            "When Pizza Face enters, create a Food token.",
+            "Disappear — At the beginning of your end step, if a permanent left the battlefield under your control this turn, put three +1/+1 counters on up to one other target artifact or creature. If it isn't a creature, it becomes a 0/0 Mutant creature in addition to its other types.",
+            "{10}, {T}, Sacrifice Pizza Face: You gain 15 life."
+          ],
+          "power": "2",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+      "name": "Plains",
+      "definition": "src/card_definitions/fra/plains.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Plains",
+          "mana_cost": "",
+          "type_line": "Basic Land — Plains",
+          "rules": [
+            "({T}: Add {W}.)"
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "2519ccc0-c206-41fb-aa15-2ef88025ff96",
+      "name": "Prehistoric Pet",
+      "definition": "src/card_definitions/tmt/prehistoric_pet.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Prehistoric Pet",
+          "mana_cost": "{W}",
+          "type_line": "Creature — Dinosaur Ninja",
+          "rules": [
+            "This creature can't be blocked by creatures with greater power.",
+            "{1}{W}, {T}: Return another target creature you control to its owner's hand. Activate only during your turn."
+          ],
+          "power": "1",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "5ebdc1a5-e678-444b-abb8-8753558a39de",
+      "name": "Primordial Pachyderm",
+      "definition": "src/card_definitions/tmt/primordial_pachyderm.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Primordial Pachyderm",
+          "mana_cost": "{3}{G}",
+          "type_line": "Creature — Elephant Avatar",
+          "rules": [
+            "Reach, trample",
+            "When this creature enters, you gain 2 life."
+          ],
+          "power": "4",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "dfb13eca-55fd-4ac6-aee3-2bdbfe9e1c4e",
+      "name": "Punk Frogs",
+      "definition": "src/card_definitions/tmt/punk_frogs.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Punk Frogs",
+          "mana_cost": "{3}{G/U}{G/U}",
+          "type_line": "Creature — Frog Mutant Rebel",
+          "rules": [
+            "Ward {3} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {3}.)"
+          ],
+          "power": "4",
+          "toughness": "5",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "d1edb950-a118-4b4d-a0ef-9a6683d74c9f",
+      "name": "Purple Dragon Punks",
+      "definition": "src/card_definitions/tmt/purple_dragon_punks.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Purple Dragon Punks",
+          "mana_cost": "{1}{R}",
+          "type_line": "Creature — Human Rogue",
+          "rules": [
+            "{T}: Add {R}. Spend this mana only to cast an artifact spell or to activate an ability."
+          ],
+          "power": "2",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "3aa3b908-e8d3-4944-8ced-5219d4129594",
+      "name": "Putrid Pals",
+      "definition": "src/card_definitions/tmt/putrid_pals.rs",
+      "state": "tested candidate; full-set integration/review pending",
+      "printed_obligations": [
+        {
+          "face": "Putrid Pals",
+          "mana_cost": "{2}{B/G}{B/G}",
+          "type_line": "Creature — Human Ooze Mutant",
+          "rules": [
+            "Deathtouch",
+            "Disappear — This creature enters with two +1/+1 counters on it if a permanent left the battlefield under your control this turn."
+          ],
+          "power": "3",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": [
+        "src/engine_tmt_disappear_tests.rs",
+        "src/card_definitions/tmt/putrid_pals.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 1
+    },
+    {
+      "oracle_id": "e9685c61-e33d-4ae0-9dd3-7fd0df5eb46f",
+      "name": "Quintessential Katana",
+      "definition": "src/card_definitions/tmt/quintessential_katana.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Quintessential Katana",
+          "mana_cost": "{W}",
+          "type_line": "Artifact — Equipment",
+          "rules": [
+            "Equipped creature gets +1/+1 and has \"Whenever this creature deals combat damage, untap it and you gain 2 life.\"",
+            "Whenever a Ninja you control enters, you may attach this Equipment to it.",
+            "Equip {2} ({2}: Attach to target creature you control. Equip only as a sorcery.)"
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "71b81f3f-6092-4819-8529-e27bccfcf088",
+      "name": "Ragamuffin Raptor",
+      "definition": "src/card_definitions/tmt/ragamuffin_raptor.rs",
+      "state": "implementing; focused validation pending",
+      "printed_obligations": [
+        {
+          "face": "Ragamuffin Raptor",
+          "mana_cost": "{4}{G}",
+          "type_line": "Creature — Dinosaur",
+          "rules": [
+            "When this creature enters, return up to one target creature or Food card from your graveyard to your hand."
+          ],
+          "power": "4",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": [
+        "src/engine_tmt_disappear_tests.rs",
+        "src/card_definitions/tmt/ragamuffin_raptor.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 3
+    },
+    {
+      "oracle_id": "57f39ce2-ecbb-4262-8140-03aba5c4303f",
+      "name": "Raph & Leo, Sibling Rivals",
+      "definition": "src/card_definitions/tmt/raph_leo_sibling_rivals.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Raph & Leo, Sibling Rivals",
+          "mana_cost": "{1}{R/W}{R/W}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "Whenever Raph & Leo attack, if it's the first combat phase of the turn, untap one or two target attacking creatures. After this phase, there is an additional combat phase."
+          ],
+          "power": "2",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "82563a5f-cae4-4ece-876c-0df245d2dc58",
+      "name": "Raph & Mikey, Troublemakers",
+      "definition": "src/card_definitions/tmt/raph_mikey_troublemakers.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Raph & Mikey, Troublemakers",
+          "mana_cost": "{5}{R/G}{R/G}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "Trample, haste",
+            "Whenever Raph & Mikey attack, reveal cards from the top of your library until you reveal a creature card. Put that card onto the battlefield tapped and attacking and the rest on the bottom of your library in a random order."
+          ],
+          "power": "7",
+          "toughness": "7",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "f58a5f8b-254c-4206-bdbe-55a23798ed2d",
+      "name": "Raphael's Technique",
+      "definition": "src/card_definitions/tmt/raphael_s_technique.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Raphael's Technique",
+          "mana_cost": "{4}{R}{R}",
+          "type_line": "Instant",
+          "rules": [
+            "Sneak {2}{R} (You may cast this spell for {2}{R} if you also return an unblocked attacker you control to hand during the declare blockers step.)",
+            "Each player may discard their hand and draw seven cards."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "eaf194a7-d95f-4738-9052-92ad00443a76",
+      "name": "Raphael, Most Attitude",
+      "definition": "src/card_definitions/tmt/raphael_most_attitude.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Raphael, Most Attitude",
+          "mana_cost": "{3}{R}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "Menace (This creature can't be blocked except by two or more creatures.)",
+            "Alliance — Whenever another creature you control enters, you may exile the top card of your library.",
+            "Whenever Raphael attacks, until end of turn, you may play a card exiled with Raphael."
+          ],
+          "power": "4",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "fdb8e862-c642-4b7b-b061-400de6061ffe",
+      "name": "Raphael, Ninja Destroyer",
+      "definition": "src/card_definitions/tmt/raphael_ninja_destroyer.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Raphael, Ninja Destroyer",
+          "mana_cost": "{2}{R}{R}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "Raphael must be blocked if able.",
+            "Enrage — Whenever Raphael is dealt damage, add that much {R}. Until end of turn, you don't lose this mana as steps and phases end."
+          ],
+          "power": "4",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "2c72e6d2-bbb0-42de-b465-438d584cbddc",
+      "name": "Raphael, Tough Turtle",
+      "definition": "src/card_definitions/tmt/raphael_tough_turtle.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Raphael, Tough Turtle",
+          "mana_cost": "{1}{R}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "Alliance — Whenever another creature you control enters, Raphael deals 1 damage to target opponent."
+          ],
+          "power": "1",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "8c1e5b25-ee5a-4ea9-a715-08dd1a4f51c4",
+      "name": "Raphael, the Nightwatcher",
+      "definition": "src/card_definitions/tmt/raphael_the_nightwatcher.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Raphael, the Nightwatcher",
+          "mana_cost": "{2}{R}{R}",
+          "type_line": "Legendary Creature — Mutant Ninja Turtle",
+          "rules": [
+            "Sneak {1}{R}{R} (You may cast this spell for {1}{R}{R} if you also return an unblocked attacker you control to hand during the declare blockers step. He enters tapped and attacking.)",
+            "Attacking creatures you control have double strike."
+          ],
+          "power": "2",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "a5656dab-5ce6-48fd-9eae-2c06969bb8df",
+      "name": "Rat King, Verminister",
+      "definition": "src/card_definitions/tmt/rat_king_verminister.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Rat King, Verminister",
+          "mana_cost": "{1}{B}",
+          "type_line": "Legendary Creature — Rat Avatar",
+          "rules": [
+            "Disappear — At the beginning of your end step, if a permanent left the battlefield under your control this turn, create a 1/1 black Rat creature token and put a +1/+1 counter on Rat King.",
+            "{T}, Sacrifice three Rats: Return target creature card and all other cards with the same name as that card from your graveyard to the battlefield tapped."
+          ],
+          "power": "1",
+          "toughness": "1",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "45873747-f2a4-4d83-9492-bfc97df7b605",
+      "name": "Ravenous Robots",
+      "definition": "src/card_definitions/tmt/ravenous_robots.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Ravenous Robots",
+          "mana_cost": "{1}{R}",
+          "type_line": "Artifact Creature — Robot",
+          "rules": [
+            "Whenever you cast an artifact spell, create a 1/1 colorless Robot artifact creature token.",
+            "{R}, {T}: Creature tokens you control gain haste until end of turn."
+          ],
+          "power": "2",
+          "toughness": "1",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "698098b8-b8e4-4e88-b13a-6b039579d192",
+      "name": "Ray Fillet, Man Ray",
+      "definition": "src/card_definitions/tmt/ray_fillet_man_ray.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Ray Fillet, Man Ray",
+          "mana_cost": "{3}{U}",
+          "type_line": "Legendary Creature — Fish Mutant",
+          "rules": [
+            "Flying",
+            "When Ray Fillet enters, create a Mutagen token. (It's an artifact with \"{1}, {T}, Sacrifice this token: Put a +1/+1 counter on target creature. Activate only as a sorcery.\")",
+            "{2}, Remove a +1/+1 counter from a creature you control: Draw a card."
+          ],
+          "power": "3",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "6c754808-86a6-43d3-8aeb-96ec19f7396c",
+      "name": "Renet, Temporal Apprentice",
+      "definition": "src/card_definitions/tmt/renet_temporal_apprentice.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Renet, Temporal Apprentice",
+          "mana_cost": "{3}{U}{U}",
+          "type_line": "Legendary Creature — Human Wizard",
+          "rules": [
+            "Flash",
+            "When Renet enters, return each other nonland permanent that entered this turn to its owner's hand."
+          ],
+          "power": "4",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "d8b5de6d-8654-4550-bccb-79de6cbef4d5",
+      "name": "Retro-Mutation",
+      "definition": "src/card_definitions/tmt/retro_mutation.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Retro-Mutation",
+          "mana_cost": "{2}{U}",
+          "type_line": "Enchantment — Aura",
+          "rules": [
+            "Flash",
+            "Enchant creature",
+            "Enchanted creature is a Turtle with base power and toughness 0/1. It can't attack and loses all abilities. (It also loses all other creature types.)"
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "a3ee8565-f34c-4073-bc94-3fe9ec6bbe8a",
+      "name": "Return to the Sewers",
+      "definition": "src/card_definitions/tmt/return_to_the_sewers.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Return to the Sewers",
+          "mana_cost": "{3}{U}",
+          "type_line": "Instant",
+          "rules": [
+            "Target creature's owner puts it on their choice of the top or bottom of their library. You create a Mutagen token. (It's an artifact with \"{1}, {T}, Sacrifice this token: Put a +1/+1 counter on target creature. Activate only as a sorcery.\")"
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "0217da8e-e74f-4f5c-ab75-f17600f94405",
+      "name": "Rock Soldiers",
+      "definition": "src/card_definitions/tmt/rock_soldiers.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Rock Soldiers",
+          "mana_cost": "{3}{R}",
+          "type_line": "Artifact Creature — Elemental Soldier",
+          "rules": [
+            "When this creature enters, destroy up to one target noncreature artifact."
+          ],
+          "power": "4",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "f9330a7b-8a65-4e04-a777-bf6512332850",
+      "name": "Rocksteady, Crash Courser",
+      "definition": "src/card_definitions/tmt/rocksteady_crash_courser.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Rocksteady, Crash Courser",
+          "mana_cost": "{4}{G}{G}",
+          "type_line": "Legendary Creature — Rhino Mutant",
+          "rules": [
+            "Rocksteady can't be blocked by more than one creature.",
+            "Boars you control can't be blocked by more than one creature.",
+            "Forestcycling {2} ({2}, Discard this card: Search your library for a Forest card, reveal it, put it into your hand, then shuffle.)"
+          ],
+          "power": "7",
+          "toughness": "7",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "b529f6b0-c6b2-4eb3-bb48-178e1eda75f3",
+      "name": "Sally Pride, Lioness Leader",
+      "definition": "src/card_definitions/tmt/sally_pride_lioness_leader.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Sally Pride, Lioness Leader",
+          "mana_cost": "{3}{W}{W}",
+          "type_line": "Legendary Creature — Cat Mutant Rebel",
+          "rules": [
+            "When Sally Pride enters, create X 2/2 red Mutant creature tokens, where X is the number of nontoken creatures you control.",
+            "Whenever Sally Pride attacks, put a +1/+1 counter on each creature you control."
+          ],
+          "power": "2",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "6074632b-4520-4ae8-bcdc-26b1eff71af9",
+      "name": "Savanti Romero, Time's Exile",
+      "definition": "src/card_definitions/tmt/savanti_romero_time_s_exile.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Savanti Romero, Time's Exile",
+          "mana_cost": "{3}{B}{B}",
+          "type_line": "Legendary Creature — Demon Wizard",
+          "rules": [
+            "Trample",
+            "At the beginning of combat on your turn, put a +1/+1 counter on Savanti Romero. Then you draw X cards and lose X life, where X is the number of counters on Savanti Romero."
+          ],
+          "power": "4",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "7ef5c812-ad7d-4d6c-8ee5-68561e7e4bd7",
+      "name": "Saved by the Shell",
+      "definition": "src/card_definitions/tmt/saved_by_the_shell.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Saved by the Shell",
+          "mana_cost": "{1}{G}",
+          "type_line": "Instant",
+          "rules": [
+            "This spell costs {1} less to cast if you control a Turtle.",
+            "Put a +1/+1 counter on target creature you control. It gains trample, hexproof, and indestructible until end of turn."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "25c83d45-581f-48ba-b6bb-feb66e8a65c7",
+      "name": "Sewer-veillance Cam",
+      "definition": "src/card_definitions/tmt/sewer_veillance_cam.rs",
+      "state": "implementing; focused validation pending",
+      "printed_obligations": [
+        {
+          "face": "Sewer-veillance Cam",
+          "mana_cost": "{U}",
+          "type_line": "Artifact",
+          "rules": [
+            "Flash",
+            "When this artifact enters or leaves the battlefield, you may tap or untap target creature.",
+            "{3}{U}, Sacrifice this artifact: Draw two cards."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": [
+        "src/engine_tmt_disappear_tests.rs",
+        "src/card_definitions/tmt/sewer_veillance_cam.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 3
+    },
+    {
+      "oracle_id": "dabd0867-ee3f-40cb-8314-b4a3966f8b24",
+      "name": "Shark Shredder, Killer Clone",
+      "definition": "src/card_definitions/tmt/shark_shredder_killer_clone.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Shark Shredder, Killer Clone",
+          "mana_cost": "{2}{B}{B}",
+          "type_line": "Legendary Creature — Shark Octopus Ninja",
+          "rules": [
+            "Sneak {3}{B}{B}",
+            "First strike",
+            "Whenever Shark Shredder deals combat damage to a player, put up to one target creature card from that player's graveyard onto the battlefield under your control. It enters tapped and attacking that player."
+          ],
+          "power": "4",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "bda5d0aa-3ed0-4f8c-80ae-f9cb8ed0ac82",
+      "name": "Shredder's Armor",
+      "definition": "src/card_definitions/tmt/shredder_s_armor.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Shredder's Armor",
+          "mana_cost": "{1}{B}",
+          "type_line": "Artifact — Equipment",
+          "rules": [
+            "Equipped creature gets +2/+1.",
+            "When this Equipment enters, attach it to target creature you control.",
+            "Equip—Sacrifice another nonland permanent. Activate only once each turn."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "5dd31fcd-72db-4daf-b127-ceb27bf25a94",
+      "name": "Shredder's Revenge",
+      "definition": "src/card_definitions/tmt/shredder_s_revenge.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Shredder's Revenge",
+          "mana_cost": "{2}{B}",
+          "type_line": "Sorcery",
+          "rules": [
+            "Choose one —",
+            "• Target player discards two cards.",
+            "• Target player draws two cards and loses 2 life."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "d92714c0-4e22-47f9-a4d4-405894e734d0",
+      "name": "Shredder's Technique",
+      "definition": "src/card_definitions/tmt/shredder_s_technique.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Shredder's Technique",
+          "mana_cost": "{2}{B}",
+          "type_line": "Sorcery",
+          "rules": [
+            "Sneak {B} (You may cast this spell for {B} if you also return an unblocked attacker you control to hand during the declare blockers step.)",
+            "Destroy target creature or enchantment. If an enchantment was destroyed this way, you lose 2 life."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "59d96fc0-6580-43c2-8c6a-dcf983644561",
+      "name": "Shredder, Unrelenting",
+      "definition": "src/card_definitions/tmt/shredder_unrelenting.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Shredder, Unrelenting",
+          "mana_cost": "{4}{B}",
+          "type_line": "Legendary Creature — Human Ninja",
+          "rules": [
+            "Sneak {3}{B} (You may cast this spell for {3}{B} if you also return an unblocked attacker you control to hand during the declare blockers step. He enters tapped and attacking.)",
+            "Deathtouch",
+            "Whenever Shredder enters or attacks, another target creature you control gains deathtouch until end of turn."
+          ],
+          "power": "6",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "decfde5e-ea53-4b15-8f69-51da7ef39d15",
+      "name": "Skateboard",
+      "definition": "src/card_definitions/tmt/skateboard.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Skateboard",
+          "mana_cost": "{1}",
+          "type_line": "Artifact — Equipment",
+          "rules": [
+            "When this Equipment enters, tap target permanent.",
+            "Equipped creature gets +1/+0 and has haste.",
+            "Equip {1} ({1}: Attach to target creature you control. Equip only as a sorcery.)"
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "8abff7b5-fe27-46bd-b951-b5d9f93f3a14",
+      "name": "Slash, Reptile Rampager",
+      "definition": "src/card_definitions/tmt/slash_reptile_rampager.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Slash, Reptile Rampager",
+          "mana_cost": "{3}{R}{R}",
+          "type_line": "Legendary Creature — Mutant Berserker Turtle",
+          "rules": [
+            "Alliance — Whenever another creature you control enters, Slash deals 2 damage to each opponent.",
+            "Whenever Slash attacks, create a 2/2 red Mutant creature token."
+          ],
+          "power": "7",
+          "toughness": "5",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "f570bac8-9987-4963-af02-476d18abc847",
+      "name": "Slithering Cryptid",
+      "definition": "src/card_definitions/tmt/slithering_cryptid.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Slithering Cryptid",
+          "mana_cost": "{2}{G/U}",
+          "type_line": "Creature — Fish Mutant",
+          "rules": [
+            "When this creature enters, create a Mutagen token. (It's an artifact with \"{1}, {T}, Sacrifice this token: Put a +1/+1 counter on target creature. Activate only as a sorcery.\")"
+          ],
+          "power": "2",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "003e5dc6-8b26-4a0a-a50b-5f0806a7bacd",
+      "name": "South Wind Avatar",
+      "definition": "src/card_definitions/tmt/south_wind_avatar.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "South Wind Avatar",
+          "mana_cost": "{3}{B}",
+          "type_line": "Creature — Snake Spirit Avatar",
+          "rules": [
+            "Deathtouch",
+            "Whenever another creature you control dies, you gain life equal to its toughness.",
+            "Whenever you gain life, each opponent loses 1 life."
+          ],
+          "power": "3",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "9665f940-c0a4-4d3e-b889-8049cf549a4f",
+      "name": "Spicy Oatmeal Pizza",
+      "definition": "src/card_definitions/tmt/spicy_oatmeal_pizza.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Spicy Oatmeal Pizza",
+          "mana_cost": "{2}{R}",
+          "type_line": "Artifact — Food",
+          "rules": [
+            "When this artifact enters, it deals 4 damage to any target and 3 damage to you.",
+            "{2}, {T}, Sacrifice this artifact: You gain 3 life."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "532ee9c3-391c-44db-8ed5-a1d28fd7f876",
+      "name": "Splinter's Technique",
+      "definition": "src/card_definitions/tmt/splinter_s_technique.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Splinter's Technique",
+          "mana_cost": "{3}{B}",
+          "type_line": "Sorcery",
+          "rules": [
+            "Sneak {1}{B} (You may cast this spell for {1}{B} if you also return an unblocked attacker you control to hand during the declare blockers step.)",
+            "Search your library for a card, put that card into your hand, then shuffle."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "41fbdaa2-7a7a-44d5-a8f4-77624350eedd",
+      "name": "Splinter, Hamato Yoshi",
+      "definition": "src/card_definitions/tmt/splinter_hamato_yoshi.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Splinter, Hamato Yoshi",
+          "mana_cost": "{1}{B}",
+          "type_line": "Legendary Creature — Mutant Ninja Rat",
+          "rules": [
+            "Sneak {B} (You may cast this spell for {B} if you also return an unblocked attacker you control to hand during the declare blockers step. He enters tapped and attacking.)",
+            "Menace (This creature can't be blocked except by two or more creatures.)",
+            "Other Ninjas you control get +1/+1."
+          ],
+          "power": "1",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "fb2cd508-f5cd-4d5b-b8e7-3cae1f39fd58",
+      "name": "Splinter, Radical Rat",
+      "definition": "src/card_definitions/tmt/splinter_radical_rat.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Splinter, Radical Rat",
+          "mana_cost": "{1}{W/B}{W/B}",
+          "type_line": "Legendary Creature — Mutant Ninja Rat",
+          "rules": [
+            "If a triggered ability of a Ninja creature you control triggers, that ability triggers an additional time.",
+            "{1}{U}: Target Ninja can't be blocked this turn."
+          ],
+          "power": "2",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "315ddc7a-c39c-43d9-b134-23acbd865e3e",
+      "name": "Squirrelanoids",
+      "definition": "src/card_definitions/tmt/squirrelanoids.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Squirrelanoids",
+          "mana_cost": "{B}",
+          "type_line": "Creature — Squirrel Mutant",
+          "rules": [
+            "Deathtouch"
+          ],
+          "power": "1",
+          "toughness": "1",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "baa4cb1b-6fb5-46df-9cdd-54421ee0fc88",
+      "name": "Stockman, Mad Fly-entist",
+      "definition": "src/card_definitions/tmt/stockman_mad_fly_entist.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Stockman, Mad Fly-entist",
+          "mana_cost": "{4}{U}",
+          "type_line": "Legendary Creature — Insect Mutant Scientist",
+          "rules": [
+            "Flying",
+            "When Stockman enters, draw a card, then discard a card.",
+            "Islandcycling {2} ({2}, Discard this card: Search your library for an Island card, reveal it, put it into your hand, then shuffle.)"
+          ],
+          "power": "3",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "10185447-a13f-40d8-a8b6-39ce801f2fc0",
+      "name": "Stomped by the Foot",
+      "definition": "src/card_definitions/tmt/stomped_by_the_foot.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Stomped by the Foot",
+          "mana_cost": "{1}{B}",
+          "type_line": "Instant",
+          "rules": [
+            "Kicker—Sacrifice an artifact or creature. (You may sacrifice an artifact or creature in addition to any other costs as you cast this spell.)",
+            "Target creature gets -2/-2 until end of turn. If this spell was kicked, that creature gets -5/-5 until end of turn instead."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "b7ee76bf-d15a-489e-8f05-414788f8f649",
+      "name": "Super Shredder",
+      "definition": "src/card_definitions/tmt/super_shredder.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Super Shredder",
+          "mana_cost": "{1}{B}",
+          "type_line": "Legendary Creature — Mutant Ninja Human",
+          "rules": [
+            "Menace",
+            "Whenever another permanent leaves the battlefield, put a +1/+1 counter on Super Shredder."
+          ],
+          "power": "1",
+          "toughness": "1",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+      "name": "Swamp",
+      "definition": "src/card_definitions/fra/swamp.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Swamp",
+          "mana_cost": "",
+          "type_line": "Basic Land — Swamp",
+          "rules": [
+            "({T}: Add {B}.)"
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "4139f40a-873b-4842-96a2-b7875de1c20a",
+      "name": "TCRI Building",
+      "definition": "src/card_definitions/tmt/tcri_building.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "TCRI Building",
+          "mana_cost": "",
+          "type_line": "Land",
+          "rules": [
+            "This land enters tapped.",
+            "When this land enters, you gain 1 life.",
+            "{T}: Add {U} or {R}."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "60826714-b9fd-4c89-b9f2-1a3c3229686b",
+      "name": "Tainted Treats",
+      "definition": "src/card_definitions/tmt/tainted_treats.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Tainted Treats",
+          "mana_cost": "{1}{B}{G}",
+          "type_line": "Instant",
+          "rules": [
+            "Destroy target artifact or creature. If its mana value was 4 or less, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")"
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "51c0b46c-c379-420a-a4a4-d18724c759aa",
+      "name": "Technodrome",
+      "definition": "src/card_definitions/tmt/technodrome.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Technodrome",
+          "mana_cost": "{2}",
+          "type_line": "Artifact Creature — Construct",
+          "rules": [
+            "Reach, trample",
+            "This creature can't attack or block unless its power is 6 or greater.",
+            "{T}, Sacrifice another artifact: Draw a card. Put a +1/+1 counter on this creature."
+          ],
+          "power": "3",
+          "toughness": "3",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "a03fa584-ceb5-410c-9b80-f75d00215537",
+      "name": "Tenderize",
+      "definition": "src/card_definitions/tmt/tenderize.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Tenderize",
+          "mana_cost": "{1}{G}",
+          "type_line": "Instant",
+          "rules": [
+            "Target creature you control deals damage equal to its power to target creature an opponent controls."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "bd768e8f-8f04-487e-85e9-2828d6fd8745",
+      "name": "The Cloning of Shredder",
+      "definition": "src/card_definitions/tmt/the_cloning_of_shredder.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "The Cloning of Shredder",
+          "mana_cost": "{4}{B}{B}",
+          "type_line": "Enchantment — Saga",
+          "rules": [
+            "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)",
+            "I — Exile target creature card from your graveyard. Create a token that's a copy of it, except it isn't legendary and is a Mutant in addition to its other types.",
+            "II, III — Create a token that's a copy of a card exiled with this Saga, except it isn't legendary and is a Mutant in addition to its other types."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "e1865bec-1744-40c2-9031-7d6363be5333",
+      "name": "The Last Ronin",
+      "definition": "src/card_definitions/tmt/the_last_ronin.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "The Last Ronin",
+          "mana_cost": "{4}{B}{G}",
+          "type_line": "Enchantment — Saga",
+          "rules": [
+            "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)",
+            "I — Destroy all creatures.",
+            "II — Mill four cards. When you do, return target creature card from your graveyard to your hand.",
+            "III — Whenever a creature you control attacks alone this turn, put three +1/+1 counters on it. It gains trample, lifelink, and indestructible until end of turn."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "6a51bb21-0c01-4ad8-99d7-17685db90b69",
+      "name": "The Last Ronin's Technique",
+      "definition": "src/card_definitions/tmt/the_last_ronin_s_technique.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "The Last Ronin's Technique",
+          "mana_cost": "{3}{W}",
+          "type_line": "Instant",
+          "rules": [
+            "Sneak {1}{W} (You may cast this spell for {1}{W} if you also return an unblocked attacker you control to hand during the declare blockers step.)",
+            "Create three 1/1 white Ninja Turtle Spirit creature tokens. If this spell's sneak cost was paid, they enter tapped and attacking."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "b1462c82-7702-451b-b612-990353a79ac4",
+      "name": "The Neutrinos",
+      "definition": "src/card_definitions/tmt/the_neutrinos.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "The Neutrinos",
+          "mana_cost": "{2}{R}{W}",
+          "type_line": "Legendary Creature — Elf Rebel",
+          "rules": [
+            "Flying",
+            "Alliance — Whenever another creature you control enters, The Neutrinos get +1/+0 until end of turn.",
+            "Whenever The Neutrinos attack, exile up to one target creature you own, then return it to the battlefield under your control tapped and attacking."
+          ],
+          "power": "2",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "82a6fa6f-13c2-4ea3-bec2-c51b56b2783b",
+      "name": "The Ooze",
+      "definition": "src/card_definitions/tmt/the_ooze.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "The Ooze",
+          "mana_cost": "{2}",
+          "type_line": "Legendary Artifact",
+          "rules": [
+            "Whenever a creature you control with a +1/+1 counter on it leaves the battlefield, create a Mutagen token for each +1/+1 counter on it. (A Mutagen token is an artifact with \"{1}, {T}, Sacrifice this token: Put a +1/+1 counter on target creature. Activate only as a sorcery.\")",
+            "{T}: Exile target card from a graveyard. Create a Mutagen token."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "86ef86de-104f-4eae-a2db-893b50e95ad7",
+      "name": "Tokka & Rahzar, Terrible Twos",
+      "definition": "src/card_definitions/tmt/tokka_rahzar_terrible_twos.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Tokka & Rahzar, Terrible Twos",
+          "mana_cost": "{B/R}{B/R}",
+          "type_line": "Legendary Creature — Turtle Wolf Mutant",
+          "rules": [
+            "This spell can't be countered.",
+            "Menace",
+            "Whenever a player casts a spell, if the amount of mana spent to cast it was less than its mana value, Tokka & Rahzar deal 3 damage to that player."
+          ],
+          "power": "3",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "eaa6b294-ac66-4fe2-b694-97b0a04f7be1",
+      "name": "Transdimensional Bovine",
+      "definition": "src/card_definitions/tmt/transdimensional_bovine.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Transdimensional Bovine",
+          "mana_cost": "{2}{G}",
+          "type_line": "Creature — Ox Avatar",
+          "rules": [
+            "Flying",
+            "{T}: Add two mana of any one color."
+          ],
+          "power": "0",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "45d40cdb-21cc-4569-a894-83dd3026c947",
+      "name": "Triceraton Commander",
+      "definition": "src/card_definitions/tmt/triceraton_commander.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Triceraton Commander",
+          "mana_cost": "{X}{X}{W}{W}",
+          "type_line": "Creature — Dinosaur Soldier",
+          "rules": [
+            "Flying",
+            "When this creature enters, create X 2/2 white Dinosaur Soldier creature tokens.",
+            "Whenever this creature attacks, Dinosaurs you control other than this creature get +1/+1 and gain flying until end of turn."
+          ],
+          "power": "2",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "0a8e5c48-885d-4ea8-9c68-a3e9213d4289",
+      "name": "Tunnel Rats",
+      "definition": "src/card_definitions/tmt/tunnel_rats.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Tunnel Rats",
+          "mana_cost": "{1}{B}",
+          "type_line": "Creature — Rat",
+          "rules": [
+            "{4}{B}: Return this card from your graveyard to the battlefield tapped."
+          ],
+          "power": "2",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "0f35cf85-6783-4d69-b5e6-a81f7c1f21e7",
+      "name": "Turncoat Kunoichi",
+      "definition": "src/card_definitions/tmt/turncoat_kunoichi.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Turncoat Kunoichi",
+          "mana_cost": "{2}{W}",
+          "type_line": "Creature — Mutant Ninja Fox",
+          "rules": [
+            "Sneak {2}{W}{B} (You may cast this spell for {2}{W}{B} if you also return an unblocked attacker you control to hand during the declare blockers step. It enters tapped and attacking.)",
+            "When this creature enters, choose target creature an opponent controls. Exile that creature until this creature leaves the battlefield. If this creature's sneak cost was paid, instead exile the chosen creature."
+          ],
+          "power": "3",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "bb8c6dd2-1abe-4eb2-be1f-b0c078e5f257",
+      "name": "Turtle Blimp",
+      "definition": "src/card_definitions/tmt/turtle_blimp.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Turtle Blimp",
+          "mana_cost": "{5}",
+          "type_line": "Artifact — Vehicle",
+          "rules": [
+            "Flying",
+            "When this Vehicle enters, create a 2/2 red Mutant creature token.",
+            "Crew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)"
+          ],
+          "power": "3",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "eb002bbc-08df-4bf0-bea3-46494ad261b6",
+      "name": "Turtle Lair",
+      "definition": "src/card_definitions/tmt/turtle_lair.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Turtle Lair",
+          "mana_cost": "",
+          "type_line": "Land",
+          "rules": [
+            "{T}: Add {C}.",
+            "{T}: Add one mana of any color. Spend this mana only to cast a Ninja or Turtle spell.",
+            "{3}, {T}: Target Ninja or Turtle can't be blocked this turn."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "15934a19-a29e-4728-816f-20b610eec377",
+      "name": "Turtle Power!",
+      "definition": "src/card_definitions/tmt/turtle_power.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Turtle Power!",
+          "mana_cost": "{2}{G}",
+          "type_line": "Enchantment",
+          "rules": [
+            "Flash",
+            "Turtles you control get +2/+2."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "aeb9a2e6-ad11-4e2c-81d0-caf279d31ece",
+      "name": "Turtle Van",
+      "definition": "src/card_definitions/tmt/turtle_van.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Turtle Van",
+          "mana_cost": "{3}",
+          "type_line": "Artifact — Vehicle",
+          "rules": [
+            "Whenever this Vehicle attacks, put a +1/+1 counter on target creature that crewed it this turn. Then if that creature is a Mutant, Ninja, or Turtle, double the number of +1/+1 counters on it.",
+            "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
+          ],
+          "power": "4",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "cff5aca2-72c5-4053-a32c-c0bd3174c52d",
+      "name": "Turtles Forever",
+      "definition": "src/card_definitions/tmt/turtles_forever.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Turtles Forever",
+          "mana_cost": "{3}{W}",
+          "type_line": "Instant",
+          "rules": [
+            "Search your library and/or outside the game for exactly four legendary creature cards you own with different names, then reveal those cards. An opponent chooses two of them. Put the chosen cards into your hand and shuffle the rest into your library."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "803971e6-67f3-4fda-aeb6-69ef8ea4b54e",
+      "name": "Turtles in Time",
+      "definition": "src/card_definitions/tmt/turtles_in_time.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Turtles in Time",
+          "mana_cost": "{5}{U}{U}",
+          "type_line": "Sorcery",
+          "rules": [
+            "Return all creatures to their owners' hands. Each player may shuffle their hand and graveyard into their library, then each player who does draws seven cards.",
+            "Exile Turtles in Time."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "989b93fe-cad0-4890-a228-8a20ca666f10",
+      "name": "Uneasy Alliance",
+      "definition": "src/card_definitions/tmt/uneasy_alliance.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Uneasy Alliance",
+          "mana_cost": "{1}{W}",
+          "type_line": "Enchantment — Aura",
+          "rules": [
+            "Enchant creature",
+            "Enchanted creature can't attack or block.",
+            "{5}, Sacrifice this Aura: Exile enchanted creature. You create a 1/1 black Ninja creature token. Activate only as a sorcery."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "89793c8c-98a3-4621-ad3d-cfc5949c65da",
+      "name": "Utrom Scientists",
+      "definition": "src/card_definitions/tmt/utrom_scientists.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Utrom Scientists",
+          "mana_cost": "{2}{U}",
+          "type_line": "Artifact Creature — Utrom Robot Scientist",
+          "rules": [
+            "When this creature enters, tap up to one target creature and put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)"
+          ],
+          "power": "2",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "7b3d364d-6581-43de-a80a-d5b07f5d21ed",
+      "name": "Venus, Torn Between Worlds",
+      "definition": "src/card_definitions/tmt/venus_torn_between_worlds.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Venus, Torn Between Worlds",
+          "mana_cost": "{4}{G}",
+          "type_line": "Legendary Creature — Mutant Frog Turtle",
+          "rules": [
+            "Whenever Venus is dealt damage, put that many +1/+1 counters on her. (She must survive the damage to get the counters.)",
+            "Whenever a creature you control with a counter on it deals combat damage to a player, you may pay {U}. If you do, draw a card."
+          ],
+          "power": "5",
+          "toughness": "5",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "4097fea2-ae34-4b99-ab7e-a276d608b489",
+      "name": "Weather Maker",
+      "definition": "src/card_definitions/tmt/weather_maker.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Weather Maker",
+          "mana_cost": "{3}",
+          "type_line": "Artifact",
+          "rules": [
+            "Landfall — Whenever a land you control enters, put a charge counter on this artifact.",
+            "{T}: Add one mana of any color.",
+            "{T}, Remove two charge counters from this artifact: Add {C}{C}.",
+            "{T}, Remove three charge counters from this artifact: It deals 3 damage to any target."
+          ],
+          "power": null,
+          "toughness": null,
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "92e45a8f-c582-45e1-9b7f-def219023ebf",
+      "name": "West Wind Avatar",
+      "definition": "src/card_definitions/tmt/west_wind_avatar.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "West Wind Avatar",
+          "mana_cost": "{5}{G}{G}",
+          "type_line": "Creature — Cat Spirit Avatar",
+          "rules": [
+            "Trample",
+            "Whenever this creature enters or attacks, you may sacrifice a token or a land. If you do, you gain 3 life.",
+            "Disappear — At the beginning of your end step, if a permanent left the battlefield under your control this turn, draw a card."
+          ],
+          "power": "7",
+          "toughness": "7",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "392a71c7-8f6d-46b8-bcc3-613e086d86ed",
+      "name": "Wingnut, Bat on the Belfry",
+      "definition": "src/card_definitions/tmt/wingnut_bat_on_the_belfry.rs",
+      "state": "gated",
+      "printed_obligations": [
+        {
+          "face": "Wingnut, Bat on the Belfry",
+          "mana_cost": "{1}{R}",
+          "type_line": "Legendary Creature — Bat Mutant",
+          "rules": [
+            "Alliance — Whenever another creature you control enters, Wingnut gains your choice of flying, menace, or haste until end of turn.",
+            "Whenever Wingnut attacks, each other attacking creature gets +1/+0 until end of turn."
+          ],
+          "power": "1",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "d944d33d-0a95-4d0d-96ce-49d02500227d",
+      "name": "Zog, Triceraton Castaway",
+      "definition": "src/card_definitions/tmt/zog_triceraton_castaway.rs",
+      "state": "inherited admission; rules audit pending",
+      "printed_obligations": [
+        {
+          "face": "Zog, Triceraton Castaway",
+          "mana_cost": "{4}{R}",
+          "type_line": "Legendary Creature — Dinosaur Soldier",
+          "rules": [
+            "Reach, trample",
+            "When Zog enters, target creature can't block this turn.",
+            "Mountaincycling {2} ({2}, Discard this card: Search your library for a Mountain card, reveal it, put it into your hand, then shuffle.)"
+          ],
+          "power": "5",
+          "toughness": "4",
+          "loyalty": null
+        }
+      ],
+      "evidence": []
+    },
+    {
+      "oracle_id": "107e9ada-4e2e-4032-addd-274bca956621",
+      "name": "Zoo Escapees",
+      "definition": "src/card_definitions/tmt/zoo_escapees.rs",
+      "state": "tested candidate; full-set integration/review pending",
+      "printed_obligations": [
+        {
+          "face": "Zoo Escapees",
+          "mana_cost": "{1}{G}",
+          "type_line": "Creature — Boar Rhino",
+          "rules": [
+            "When this creature leaves the battlefield, create a Mutagen token. (It's an artifact with \"{1}, {T}, Sacrifice this token: Put a +1/+1 counter on target creature. Activate only as a sorcery.\")"
+          ],
+          "power": "2",
+          "toughness": "2",
+          "loyalty": null
+        }
+      ],
+      "evidence": [
+        "src/engine_tmt_disappear_tests.rs",
+        "src/card_definitions/tmt/zoo_escapees.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 1
+    }
+  ]
+}

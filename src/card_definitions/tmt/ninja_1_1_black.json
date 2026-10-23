@@ -1,0 +1,11 @@
+{
+  "name": "@token/ninja_1_1_black",
+  "catalogue_id": 5357,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "5ce060327244df574028f3cd518569f715f791279310ce4f38dc4a5eceb8ed81",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/Ninja11Token.java",
+  "java_sha256": "f38c0283434bcd3a5c753a3868a773c8b288df3b86b7d8d2e8fa5f71c1f6e8d3"
+}

@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "1ebd07228763be5deb72b9bbcc148faa930b7d93b035cfa50b86c6a40cd21aec",
+  "catalogue_version": "44b12b079aa6c371f96d5c6facf463bc68e3e4b7e36ffe83c76ca6c8ba618b83",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2356,
-  "implemented_total": 2362,
-  "token_definitions": 110,
+  "implemented_standard_cards": 2369,
+  "implemented_total": 2375,
+  "token_definitions": 112,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
   "omen_definitions": 13,
@@ -185,8 +185,8 @@
     },
     "tmt": {
       "total": 189,
-      "gated": 124,
-      "complete": 65
+      "complete": 78,
+      "gated": 111
     },
     "w17": {
       "total": 1,
@@ -622,8 +622,8 @@
     {
       "name": "Action News Crew",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/action_news_crew.rs",
       "set": "tmt"
     },
@@ -1982,8 +1982,8 @@
     {
       "name": "Armaggon, Future Shark",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/armaggon_future_shark.rs",
       "set": "tmt"
     },
@@ -12022,8 +12022,8 @@
     {
       "name": "Featherbrained Filcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/featherbrained_filcher.rs",
       "set": "tmt"
     },
@@ -12902,8 +12902,8 @@
     {
       "name": "Foot Mystic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/foot_mystic.rs",
       "set": "tmt"
     },
@@ -16526,8 +16526,8 @@
     {
       "name": "High-Flying Ace",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/high_flying_ace.rs",
       "set": "tmt"
     },
@@ -17638,8 +17638,8 @@
     {
       "name": "Insectoid Exterminator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/insectoid_exterminator.rs",
       "set": "tmt"
     },
@@ -20646,8 +20646,8 @@
     {
       "name": "Lord Dregg, Insect Invader",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/lord_dregg_insect_invader.rs",
       "set": "tmt"
     },
@@ -22118,8 +22118,8 @@
     {
       "name": "Michelangelo, Game Master",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/michelangelo_game_master.rs",
       "set": "tmt"
     },
@@ -23126,8 +23126,8 @@
     {
       "name": "Mouser Foundry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/mouser_foundry.rs",
       "set": "tmt"
     },
@@ -26518,8 +26518,8 @@
     {
       "name": "Putrid Pals",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/putrid_pals.rs",
       "set": "tmt"
     },
@@ -26902,8 +26902,8 @@
     {
       "name": "Ragamuffin Raptor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/ragamuffin_raptor.rs",
       "set": "tmt"
     },
@@ -30622,8 +30622,8 @@
     {
       "name": "Sewer-veillance Cam",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/sewer_veillance_cam.rs",
       "set": "tmt"
     },
@@ -41566,8 +41566,8 @@
     {
       "name": "Zoo Escapees",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/zoo_escapees.rs",
       "set": "tmt"
     },

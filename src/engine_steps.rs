@@ -124,6 +124,9 @@ impl Game {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
             StepGuard::Always => return true,
+            StepGuard::PermanentLeftBattlefieldThisTurn => {
+                return p.permanent_left_battlefield_this_turn;
+            }
             StepGuard::PutCounterOnCreatureThisTurn => return p.put_counter_on_creature_this_turn,
             StepGuard::YourMainPhase { expected } => {
                 return (self.state.active == player
