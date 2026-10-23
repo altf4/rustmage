@@ -785,3 +785,12 @@ inherited audits currently have combined release evidence.
 The complete-pool natural games, private mixed-search and outside-card choices,
 optimized throughput and final combined release are the next acceptance gates.
 Final published-head reviews remain pending; no implementation PR is open.
+
+The first complete-pool development run exposed slow dense-artifact decisions
+(up to 28.083 seconds including verification). It was deliberately stopped
+with inputs fixed, and is not counted as acceptance. Named counters globally
+disabled equivalent-basic-land funding memoization; an isolated author is
+testing a narrower exact-identity rule. The declared decks, seeds and policy
+remain fixed. [Investigation record](tmt-performance-investigation.json)
+preserves the stopped log and distinguishes verified-decision timing from
+optimized simulation throughput.

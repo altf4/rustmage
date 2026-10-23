@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "set": "TMT",
+  "status": "investigation in progress; initial run deliberately stopped, no full-game acceptance claimed",
+  "source": "e3cfffd6731e77a86c474f0c65ba2cf117f79cd4",
+  "command": "python3 scripts/resource_guard.py -- cargo test --test tmt_acceptance tmt_entire_pool_and_theme_acceptance -- --nocapture",
+  "terminal": true,
+  "outer_exit_code": 1,
+  "termination": "Owner stopped own service with SIGTERM to repair observed performance; source inputs stayed fixed until terminal.",
+  "slowest_observed_verified_decision_seconds": 28.083,
+  "measurement_scope": "Whole verified decision including legal actions, smoke policy, observations, accepted action validation and optional owned/replay checks; not pure simulator throughput.",
+  "progress": "First entire-pool pairing, seed0 starterP0; last completed progress marker2560 decisions; later slow decision2788.",
+  "log": "<cache>/rustmage-tmt-195-acceptance-first.log",
+  "log_sha256": "49a5c25309bc87a8aa54363b5a371f0c0d0ee28d04aa9c5cfc1fba0286dcc00e",
+  "guard_report": "<cache>/rustmage-build-reports/e6f8850826a44ddab57a71f0a30932f0.json",
+  "guard_report_sha256": "7d546fd03a1bd9200e37488d5e5744ab4709b51e0801c1d93e01fa73aa152ca0",
+  "code_level_lead": "Any named counter disabled equivalent-basic-land memoization globally; Weather Maker Charge counters activate this path. Independent flexible-color upper bounds also cannot rule out joint colored infeasibility.",
+  "next_action": "Test a narrow exact-identity rule for actual named-counter/attachment participants, then rerun the identical decks/seeds/policy; preserve each required shared library."
+}

@@ -475,17 +475,17 @@ fn run_workloads(workloads: Vec<Workload>, verify: bool) -> Evidence {
                                 after_view.stack.len(),
                             );
                             evidence.transition(&before_view, &after_view, &action);
+                            if let Some(decision_start) = decision_start
+                                && decision_start.elapsed().as_secs() >= 1
+                            {
+                                eprintln!(
+                                    "TMT_SLOW scope={scope} pair={pair} seed={seed} starter={starting_player:?} decision={decisions} seconds={:.3} action={action:?}",
+                                    decision_start.elapsed().as_secs_f64()
+                                );
+                            }
                             journal.push((actor, action));
                         } else {
                             game.apply(actor, action).unwrap();
-                        }
-                        if let Some(decision_start) = decision_start
-                            && decision_start.elapsed().as_secs() >= 1
-                        {
-                            eprintln!(
-                                "TMT_SLOW scope={scope} pair={pair} seed={seed} starter={starting_player:?} decision={decisions} seconds={:.3}",
-                                decision_start.elapsed().as_secs_f64()
-                            );
                         }
                         decisions += 1;
                     }
