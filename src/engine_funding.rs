@@ -1242,7 +1242,7 @@ impl<'g> FundingState<'g> {
                                     },
                                 }
                             }
-                            ManaProduction::CountSubtype { color, .. } if spendable => {
+                            ManaProduction::CountSubtype { color, .. } => {
                                 let mut mana = [0; 6];
                                 mana[usize::from(color)] =
                                     u32::try_from(self.game.state.objects.len())
@@ -1438,10 +1438,22 @@ impl<'g> FundingState<'g> {
         {
             return true;
         }
-        // A virtual source departure can restore an ability under layer6.
-        // The total upper bound remains conservative; color/readiness pruning
-        // must not assume the current blanking is permanent for this search.
-        if ability_world::CharacteristicWorld::has_ability_removal(self) {
+        // Converters can change colors before dynamic mana production (for
+        // example Wickermaw followed by Bloom Tender). Departing characteristic
+        // providers can also restore kinds, colors, guards or abilities. In
+        // either case current production/readiness is not an upper bound.
+        // Keep purpose-aware pruning only in its proven closed world, and use
+        // all possible dynamic production otherwise. The exact DFS still
+        // validates each activation, its costs and its current production.
+        if spendable_upper.is_none()
+            || ability_world::CharacteristicWorld::has_ability_removal(self)
+            || self
+                .game
+                .state
+                .roles
+                .as_ref()
+                .is_some_and(|roles| !roles.characteristic_sources.is_empty())
+        {
             let upper = self.possible_color_upper();
             return upper
                 .into_iter()

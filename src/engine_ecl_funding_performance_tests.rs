@@ -1,5 +1,6 @@
 //! A real vivid-deck negative funding search and a legal restricted-mana converter.
-use super::super::ability_timeline_tests::{checked, named, settle, setup};
+use super::super::ability_timeline_tests::{cast, checked, named, settle, setup};
+use super::super::ability_world::CharacteristicWorld;
 use super::*;
 
 fn position(p: Player, converter: bool) -> (Game, CardId, CardId) {
@@ -381,5 +382,115 @@ fn absent_external_tap_witness_prunes_many_meek_attacks_but_fresh_creature_funds
         assert!(g.state.objects[bear as usize].summoning_sick);
         settle(&mut g);
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+
+#[test]
+fn wickermaw_recoloring_tender_funds_paid_double_blue_counterspell() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p.other());
+        let victim = named(&mut g, p.other(), "Divination", Zone::Hand);
+        cast(&mut g, victim, None, &[]);
+        checked(&mut g, Action::Pass);
+        let tender = named(&mut g, p, "Bloom Tender", Zone::Battlefield);
+        g.state.objects[tender as usize].summoning_sick = false;
+        let wicker = named(&mut g, p, "Foraging Wickermaw", Zone::Battlefield);
+        let spell = named(&mut g, p, "Wild Unraveling", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        assert_eq!(g.colors(wicker), 0);
+        // The only initial colored permanent is the green Tender. The spell
+        // in hand/stack cannot contribute blue to its production.
+        assert_eq!(g.colors(tender), 16);
+        let (world, mut goal) = world_for(&g, p, spell);
+        goal.generic = 1;
+        assert_eq!(world.spendable_mana_upper(), None);
+        assert!(world.optimistic(&goal));
+        assert!(world.reachable(&goal, &mut HashSet::new()));
+        let mut tapped_control = g.clone();
+        tapped_control.state.objects[tender as usize].tapped = true;
+        assert!(
+            !tapped_control
+                .legal_actions()
+                .contains(&Action::AnnounceCast { card: spell })
+        );
+        let before = tapped_control.snapshot();
+        let revision = tapped_control.revision();
+        assert_eq!(
+            tapped_control.apply(p, Action::AnnounceCast { card: spell }),
+            Err(Error::IllegalAction)
+        );
+        assert_eq!(tapped_control.snapshot(), before);
+        assert_eq!(tapped_control.revision(), revision);
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        checked(&mut g, Action::ChooseSpellCost { cost: 1 });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Spell(victim),
+            },
+        );
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            checked(&mut g, Action::FinishTargets);
+        }
+        let unpaid = g.snapshot();
+        let revision = g.revision();
+        assert_eq!(
+            g.apply(
+                p,
+                Action::PayCosts {
+                    payment: [0, 2, 0, 0, 1, 0]
+                }
+            ),
+            Err(Error::IllegalAction)
+        );
+        assert_eq!(g.snapshot(), unpaid);
+        assert_eq!(g.revision(), revision);
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: wicker,
+                ability: 0,
+                payment: [0, 0, 0, 0, 0, 1],
+                counter_payment: Counters::default(),
+                production: [0, 1, 0, 0, 0, 0],
+            },
+        );
+        assert_eq!(g.colors(wicker), 2);
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: tender,
+                ability: 0,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [0, 1, 0, 0, 1, 0],
+            },
+        );
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 2, 0, 0, 1, 0],
+            },
+        );
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert_eq!(g.state.objects[tender as usize].counters.minus_one, 0);
+        assert_eq!(g.state.objects[wicker as usize].counters.minus_one, 0);
+        let library = g
+            .state
+            .objects
+            .iter()
+            .filter(|o| o.owner == p.other() && o.zone == Zone::Library)
+            .count();
+        settle(&mut g);
+        assert_eq!(g.state.objects[victim as usize].zone, Zone::Graveyard);
+        assert_eq!(g.state.objects[spell as usize].zone, Zone::Graveyard);
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.owner == p.other() && o.zone == Zone::Library)
+                .count(),
+            library
+        );
     }
 }
