@@ -4,6 +4,11 @@ on:
   pull_request:
   workflow_dispatch:
     inputs:
+      acceptance_suite:
+        description: Native acceptance tier (comprehensive includes all 172 TMT stress games)
+        type: choice
+        options: [regression, comprehensive]
+        default: regression
       python_suite:
         description: Python tests (full is manual and records per-test timings)
         type: choice
@@ -30,6 +35,7 @@ jobs:
       PYTHONDONTWRITEBYTECODE: '1'
       RUSTUP_TOOLCHAIN: '1.98.0'
       PYTHON_SUITE: ${{ inputs.python_suite || 'smoke' }}
+      ACCEPTANCE_SUITE: ${{ inputs.acceptance_suite || 'regression' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -95,14 +101,15 @@ jobs:
         if: steps.scope.outputs.code == 'true'
         run: python3 -m unittest scripts.test_resource_guard -v 2>&1 | tee "$XDG_CACHE_HOME/resource-guard.log"
 
-      - name: Full native validation and Python tests
-        # Native rules plus Foundations/ECL/TMT games use the original bounded CI window.
+      - name: Native validation and Python tests
+        # PRs retain every rules test and focused game regression. The unchanged
+        # TMT 172-game stress matrix is available through explicit comprehensive runs.
         # Leave 5 min outside validation for setup and terminal diagnostic collection.
         timeout-minutes: ${{ inputs.python_suite == 'full' && 50 || 40 }}
         if: steps.scope.outputs.code == 'true'
         # Set test-output capture inside the guard: its outer environment is restricted.
         # This exposes per-game progress without changing game inputs or assertions.
-        run: python3 scripts/resource_guard.py -- env RUST_TEST_NOCAPTURE=1 python3 scripts/validate.py --release --python "$PYTHON_SUITE" 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
+        run: python3 scripts/resource_guard.py -- env RUST_TEST_NOCAPTURE=1 python3 scripts/validate.py --release --acceptance "$ACCEPTANCE_SUITE" --python "$PYTHON_SUITE" 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
 
       # systemd owns the process tree. Stop it even if the waiting CLI was
       # cancelled, before collecting partial logs on this disposable VM.

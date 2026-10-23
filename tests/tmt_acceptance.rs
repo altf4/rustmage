@@ -408,6 +408,7 @@ fn run_workloads(workloads: Vec<Workload>, verify: bool) -> Evidence {
     evidence
 }
 #[test]
+#[ignore = "comprehensive 172-game acceptance; selected by validate.py's default comprehensive tier"]
 fn tmt_entire_pool_and_theme_acceptance() {
     let e = run_workloads(workloads(), true);
     assert!(
