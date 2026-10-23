@@ -733,3 +733,24 @@ have combined release evidence. Admission remains 173/195 with zero unresolved.
 resource limits. The measured continuation interval verified 22 new physical
 cards in 2,246.78 seconds (35.25 cards/hour). The last 22 cards, complete-pool
 games, optimized TMT throughput and independent reviews remain pending.
+
+## 188-card candidate integration
+
+The final control/exile and damage-legend sources `a99afa97` / `0e9a9038`,
+Casey source `99aae481`, and final spell source `0f4a895a` integrate 15 more
+focused-tested physical cards. Admission is 188/195, seven gated, zero unresolved.
+All 117 newly authored candidates have focused evidence (102 release verified);
+all 71 inherited audits remain release verified.
+
+[Candidate evidence](tmt-final-candidates.json) records source hashes and terminal
+checks: 63 control/exile scenarios; 17 damage scenarios plus 1,121 regression
+executions; 15 final-spell scenarios, all 400 author-branch TMT tests, 27 kicker,
+81 Aura and 213 return regressions; and all-target Clippy. Casey's six scenarios
+are included in the author-branch TMT check. Shared mechanics retain owned
+delayed-step packets, exact attacking-entry defenders, sparse hexproof counters,
+color-specific timestamped hexproof, private outside pools and coupled nonmana
+kicker funding. No final independent reviews are claimed.
+
+The full-pool game workload is prepared with all 195 members, eleven mechanic
+themes, actual private tournament sideboards, both starters, fixed seeds and
+complete journal replay. It remains gated until the last seven cards integrate.

@@ -1,0 +1,178 @@
+{
+  "schema": 1,
+  "set": "TMT",
+  "status": "188/195 focused-tested; combined release, full-pool games, optimized throughput and final reviews pending",
+  "batches": [
+    {
+      "batch": 33,
+      "owner": "tmt_mana",
+      "source": "a99afa97e55b398cc7135d90f12f74a0b1124e66",
+      "cards": [
+        "Kitsune, Dragon's Daughter",
+        "Koya, Death from Above",
+        "Krang & Shredder",
+        "The Neutrinos",
+        "North Wind Avatar"
+      ],
+      "rules_scenarios": "src/engine_tmt_last_origins_tests.rs",
+      "checks": [
+        {
+          "log": "<cache>/rustmage-tmt-last-agent-third.log",
+          "log_sha256": "5a9eb105f17297ff28f41755514d1744ee003f878ec15547462aecd7136a0e4b",
+          "guard_reports": [
+            {
+              "path": "<cache>/rustmage-build-reports/5e1bae66ad7946e48b6660fab7f0e3f5.json",
+              "sha256": "f1ba5927e04bbbd43770c82505bb72268b296485f8ab15172e0a0648389c0d49"
+            }
+          ],
+          "terminal_success": true
+        },
+        {
+          "log": "<cache>/rustmage-tmt-last-agent-clippy.log",
+          "log_sha256": "8210f4b9727680da51b3cf507fa997aa194412c64ac1b78cc6c12078fd4322f9",
+          "guard_reports": [
+            {
+              "path": "<cache>/rustmage-build-reports/99b7b3f3f2c64b90b8d6ced1442fa9d4.json",
+              "sha256": "903e596596773c3ec6c2b3314964ae70db01d6ce99840f8f2038b1c4a1e29ef2"
+            }
+          ],
+          "terminal_success": true
+        }
+      ]
+    },
+    {
+      "batch": 34,
+      "owner": "tmt_audit",
+      "source": "0e9a90383d9d6432ae536981ae1ac91bb5f7856a",
+      "cards": [
+        "Venus, Torn Between Worlds",
+        "Leatherhead, Swamp Stalker",
+        "Mondo Gecko",
+        "Raph & Mikey, Troublemakers",
+        "Old Hob, Alleycat Blues"
+      ],
+      "rules_scenarios": "src/engine_tmt_damage_legends_tests.rs",
+      "checks": [
+        {
+          "log": "<cache>/rustmage-tmt-damage-legends-final-two.log",
+          "log_sha256": "abdf417e11946c105c98f04d6cb71082d9a2c83fe27632d9627bce888f69377e",
+          "guard_reports": [
+            {
+              "path": "<cache>/rustmage-build-reports/7b3793d404014f55a0f5503af4a2f3a5.json",
+              "sha256": "1d449bf270efdc9e05de6ccd7da0630aa42bac9965794b388f830ebc1ce5483b"
+            },
+            {
+              "path": "<cache>/rustmage-build-reports/8388d3cacecd4b29aa66f69be34291f7.json",
+              "sha256": "84fada990bdf4caedb0c4c0cba3afdbed853d7a674509e8f92e609259a7ef02a"
+            },
+            {
+              "path": "<cache>/rustmage-build-reports/d3d2cbd993f949e08cc13c1869d7eb02.json",
+              "sha256": "6c7c89111b63934d17030d35b76df1bfc6d00c6f4fa1c0e9733817a2cecf4a71"
+            },
+            {
+              "path": "<cache>/rustmage-build-reports/0feb202e11f3414c9f856b5f16784f27.json",
+              "sha256": "8f286218eb3d40cd24c9f0848d84f33cee26fa20f9a361bc87ab0c5e572075af"
+            },
+            {
+              "path": "<cache>/rustmage-build-reports/93ff3e9d5a82484b9a5988b63c9170d0.json",
+              "sha256": "95fcddc4b0d11d678168e699988be0057739bdd66c4770c4b5e73a15dd269644"
+            },
+            {
+              "path": "<cache>/rustmage-build-reports/1007e35a25454953b60708e691afd65a.json",
+              "sha256": "7f445ec8f5681651489a1a505ec8539a5223177e2ac20f8e078117069f0ab060"
+            },
+            {
+              "path": "<cache>/rustmage-build-reports/7b7cafdff7f84ae486aab42f8cb9d4d1.json",
+              "sha256": "d492ebaa156b022f5e8eedc38b5ab19769468d4e6961ae62e7b9dd9bad376edc"
+            },
+            {
+              "path": "<cache>/rustmage-build-reports/f8617e09889e45119b39516ddd7144c1.json",
+              "sha256": "20755850a42416e97254df153598fc46ef0f8577f5d0ef33382c9511cc53c63f"
+            }
+          ],
+          "terminal_success": true
+        }
+      ]
+    },
+    {
+      "batch": 35,
+      "owner": "integrator",
+      "source": "0f4a895a11a98bc040f25c3500c8dab8cf70c813",
+      "cards": [
+        "Brilliance Unleashed",
+        "Retro-Mutation",
+        "Stomped by the Foot",
+        "Uneasy Alliance"
+      ],
+      "rules_scenarios": "src/engine_tmt_final_spells_tests.rs",
+      "checks": [
+        {
+          "log": "<cache>/rustmage-tmt-final-spells-admitted.log",
+          "log_sha256": "7cbbff4c0037df5d27f87eb28a299fb11ea9f80102fa2b2c086b6e1ed33826d5",
+          "guard_reports": [
+            {
+              "path": "<cache>/rustmage-build-reports/887ca19fd0ae4ec6aca2d251f80bff94.json",
+              "sha256": "b17ec9997843fae2e993c11ba96fc0b59e9fa59b3b9ece2a84d7531c3e29899e"
+            }
+          ],
+          "terminal_success": true
+        },
+        {
+          "log": "<cache>/rustmage-tmt-final-spells-public.log",
+          "log_sha256": "de6cd9cf7d2a44fc70a06fc6117f88b8959a6da2cc26d5e948b454aabf8ccba5",
+          "guard_reports": [
+            {
+              "path": "<cache>/rustmage-build-reports/d0e8cdf4962846089e59fb32140255c4.json",
+              "sha256": "bb66f2f8e041113c1a08e412d0b5faa15f04b964285bfb4dd1ee67d27b997e5b"
+            }
+          ],
+          "terminal_success": true
+        },
+        {
+          "log": "<cache>/rustmage-tmt-final-spells-kicker.log",
+          "log_sha256": "2577bf449f4881c3774406751fadb519d319e4dd73f8499be77caf5e9698fd72",
+          "guard_reports": [
+            {
+              "path": "<cache>/rustmage-build-reports/21be504c5e5f4f4c8ce33283a09f8f99.json",
+              "sha256": "34d6f885aa38431eaeee67244563cf006e3926bdc9053df6bb119ca775ada869"
+            }
+          ],
+          "terminal_success": true
+        },
+        {
+          "log": "<cache>/rustmage-tmt-final-spells-aura.log",
+          "log_sha256": "217221807a8a7e8481a6874b5d8b12d244f20639f817c4939317860e129ac725",
+          "guard_reports": [
+            {
+              "path": "<cache>/rustmage-build-reports/2cf27705b9864736aed48d9a3e17b756.json",
+              "sha256": "6d6ec38750c9a06ac4a81a60c37a77cb17a12e6a4a1aafc7f414a1ade3c9abf7"
+            }
+          ],
+          "terminal_success": true
+        },
+        {
+          "log": "<cache>/rustmage-tmt-final-spells-return.log",
+          "log_sha256": "cf902a9f32a4f497a7f0ffa02008cbbe5aa12f1691d199f49d6345d85496260b",
+          "guard_reports": [
+            {
+              "path": "<cache>/rustmage-build-reports/f2032186c1b54e12b5aeca1924a475de.json",
+              "sha256": "3b17bec96d2fff15b7bff3222ca8ca49979f1668a1f3e9dd70f1ee793e8de5a9"
+            }
+          ],
+          "terminal_success": true
+        },
+        {
+          "log": "<cache>/rustmage-tmt-final-spells-clippy.log",
+          "log_sha256": "79591bb84ffd4104de99951c5a009b4b3665b38f4ccdf58150f297b5f46fedea",
+          "guard_reports": [
+            {
+              "path": "<cache>/rustmage-build-reports/03d69e1118634e96b6f4e6136f908558.json",
+              "sha256": "57efd6829538e6e9591c81ea3ddddb4d38b1704e8bd420898eaa4d67146a4491"
+            }
+          ],
+          "terminal_success": true
+        }
+      ]
+    }
+  ]
+}

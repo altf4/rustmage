@@ -327,7 +327,7 @@
       "oracle_id": "b047cd3f-9129-41cc-8b91-b0dc970f5068",
       "name": "Brilliance Unleashed",
       "definition": "src/card_definitions/tmt/brilliance_unleashed.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Brilliance Unleashed",
@@ -343,7 +343,14 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_final_spells_tests.rs",
+        "src/card_definitions/tmt/brilliance_unleashed.json",
+        "docs/sets/tmt-final-candidates.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 35,
+      "source_commit": "0f4a895a11a98bc040f25c3500c8dab8cf70c813"
     },
     {
       "oracle_id": "e0d221da-16cd-4399-830f-eecc9a0912eb",
@@ -1804,7 +1811,7 @@
       "oracle_id": "9be19bdf-db1e-433e-8be4-8b985a568211",
       "name": "Kitsune, Dragon's Daughter",
       "definition": "src/card_definitions/tmt/kitsune_dragon_s_daughter.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Kitsune, Dragon's Daughter",
@@ -1819,13 +1826,20 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_last_origins_tests.rs",
+        "src/card_definitions/tmt/kitsune_dragon_s_daughter.json",
+        "docs/sets/tmt-final-candidates.json"
+      ],
+      "owner": "tmt_mana",
+      "local_batch": 33,
+      "source_commit": "a99afa97e55b398cc7135d90f12f74a0b1124e66"
     },
     {
       "oracle_id": "e7cd87d4-028c-49d9-9416-69f57e7dfec5",
       "name": "Koya, Death from Above",
       "definition": "src/card_definitions/tmt/koya_death_from_above.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Koya, Death from Above",
@@ -1840,13 +1854,20 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_last_origins_tests.rs",
+        "src/card_definitions/tmt/koya_death_from_above.json",
+        "docs/sets/tmt-final-candidates.json"
+      ],
+      "owner": "tmt_mana",
+      "local_batch": 33,
+      "source_commit": "a99afa97e55b398cc7135d90f12f74a0b1124e66"
     },
     {
       "oracle_id": "2385c8fb-9c38-4ff3-8f61-4e25a8c7d46b",
       "name": "Krang & Shredder",
       "definition": "src/card_definitions/tmt/krang_shredder.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Krang & Shredder",
@@ -1861,7 +1882,14 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_last_origins_tests.rs",
+        "src/card_definitions/tmt/krang_shredder.json",
+        "docs/sets/tmt-final-candidates.json"
+      ],
+      "owner": "tmt_mana",
+      "local_batch": 33,
+      "source_commit": "a99afa97e55b398cc7135d90f12f74a0b1124e66"
     },
     {
       "oracle_id": "52562194-4a97-40d2-aa73-7827f7834f2f",
@@ -1946,7 +1974,7 @@
       "oracle_id": "ee9b606a-a1fe-43c8-84d0-9bf7b012cc75",
       "name": "Leatherhead, Swamp Stalker",
       "definition": "src/card_definitions/tmt/leatherhead_swamp_stalker.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Leatherhead, Swamp Stalker",
@@ -1962,7 +1990,14 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_damage_legends_tests.rs",
+        "src/card_definitions/tmt/leatherhead_swamp_stalker.json",
+        "docs/sets/tmt-final-candidates.json"
+      ],
+      "owner": "tmt_audit",
+      "local_batch": 34,
+      "source_commit": "0e9a90383d9d6432ae536981ae1ac91bb5f7856a"
     },
     {
       "oracle_id": "e98c2af9-1393-487d-b8e9-f49a67bb7296",
@@ -2589,7 +2624,7 @@
       "oracle_id": "fa3ae120-756d-4c52-91f9-235767539d67",
       "name": "Mondo Gecko",
       "definition": "src/card_definitions/tmt/mondo_gecko.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Mondo Gecko",
@@ -2604,7 +2639,14 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_damage_legends_tests.rs",
+        "src/card_definitions/tmt/mondo_gecko.json",
+        "docs/sets/tmt-final-candidates.json"
+      ],
+      "owner": "tmt_audit",
+      "local_batch": 34,
+      "source_commit": "0e9a90383d9d6432ae536981ae1ac91bb5f7856a"
     },
     {
       "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
@@ -2937,7 +2979,7 @@
       "oracle_id": "b408c345-b308-4920-8494-4f204d856aa3",
       "name": "North Wind Avatar",
       "definition": "src/card_definitions/tmt/north_wind_avatar.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "North Wind Avatar",
@@ -2952,7 +2994,14 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_last_origins_tests.rs",
+        "src/card_definitions/tmt/north_wind_avatar.json",
+        "docs/sets/tmt-final-candidates.json"
+      ],
+      "owner": "tmt_mana",
+      "local_batch": 33,
+      "source_commit": "a99afa97e55b398cc7135d90f12f74a0b1124e66"
     },
     {
       "oracle_id": "e05f1a43-16ce-4e88-b0ad-2202efb25516",
@@ -3041,7 +3090,7 @@
       "oracle_id": "e88b1520-aa9a-41ee-9036-4d4bebd1a0c0",
       "name": "Old Hob, Alleycat Blues",
       "definition": "src/card_definitions/tmt/old_hob_alleycat_blues.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Old Hob, Alleycat Blues",
@@ -3056,7 +3105,14 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_damage_legends_tests.rs",
+        "src/card_definitions/tmt/old_hob_alleycat_blues.json",
+        "docs/sets/tmt-final-candidates.json"
+      ],
+      "owner": "tmt_audit",
+      "local_batch": 34,
+      "source_commit": "0e9a90383d9d6432ae536981ae1ac91bb5f7856a"
     },
     {
       "oracle_id": "73144877-1d37-4c7a-8493-3cef191b9211",
@@ -3493,7 +3549,7 @@
       "oracle_id": "82563a5f-cae4-4ece-876c-0df245d2dc58",
       "name": "Raph & Mikey, Troublemakers",
       "definition": "src/card_definitions/tmt/raph_mikey_troublemakers.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Raph & Mikey, Troublemakers",
@@ -3508,7 +3564,14 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_damage_legends_tests.rs",
+        "src/card_definitions/tmt/raph_mikey_troublemakers.json",
+        "docs/sets/tmt-final-candidates.json"
+      ],
+      "owner": "tmt_audit",
+      "local_batch": 34,
+      "source_commit": "0e9a90383d9d6432ae536981ae1ac91bb5f7856a"
     },
     {
       "oracle_id": "f58a5f8b-254c-4206-bdbe-55a23798ed2d",
@@ -3753,7 +3816,7 @@
       "oracle_id": "d8b5de6d-8654-4550-bccb-79de6cbef4d5",
       "name": "Retro-Mutation",
       "definition": "src/card_definitions/tmt/retro_mutation.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Retro-Mutation",
@@ -3769,7 +3832,14 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_final_spells_tests.rs",
+        "src/card_definitions/tmt/retro_mutation.json",
+        "docs/sets/tmt-final-candidates.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 35,
+      "source_commit": "0f4a895a11a98bc040f25c3500c8dab8cf70c813"
     },
     {
       "oracle_id": "a3ee8565-f34c-4073-bc94-3fe9ec6bbe8a",
@@ -4375,7 +4445,7 @@
       "oracle_id": "10185447-a13f-40d8-a8b6-39ce801f2fc0",
       "name": "Stomped by the Foot",
       "definition": "src/card_definitions/tmt/stomped_by_the_foot.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Stomped by the Foot",
@@ -4390,7 +4460,14 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_final_spells_tests.rs",
+        "src/card_definitions/tmt/stomped_by_the_foot.json",
+        "docs/sets/tmt-final-candidates.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 35,
+      "source_commit": "0f4a895a11a98bc040f25c3500c8dab8cf70c813"
     },
     {
       "oracle_id": "b7ee76bf-d15a-489e-8f05-414788f8f649",
@@ -4630,7 +4707,7 @@
       "oracle_id": "b1462c82-7702-451b-b612-990353a79ac4",
       "name": "The Neutrinos",
       "definition": "src/card_definitions/tmt/the_neutrinos.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "The Neutrinos",
@@ -4646,7 +4723,14 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_last_origins_tests.rs",
+        "src/card_definitions/tmt/the_neutrinos.json",
+        "docs/sets/tmt-final-candidates.json"
+      ],
+      "owner": "tmt_mana",
+      "local_batch": 33,
+      "source_commit": "a99afa97e55b398cc7135d90f12f74a0b1124e66"
     },
     {
       "oracle_id": "82a6fa6f-13c2-4ea3-bec2-c51b56b2783b",
@@ -4966,7 +5050,7 @@
       "oracle_id": "989b93fe-cad0-4890-a228-8a20ca666f10",
       "name": "Uneasy Alliance",
       "definition": "src/card_definitions/tmt/uneasy_alliance.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Uneasy Alliance",
@@ -4982,7 +5066,14 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_final_spells_tests.rs",
+        "src/card_definitions/tmt/uneasy_alliance.json",
+        "docs/sets/tmt-final-candidates.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 35,
+      "source_commit": "0f4a895a11a98bc040f25c3500c8dab8cf70c813"
     },
     {
       "oracle_id": "89793c8c-98a3-4621-ad3d-cfc5949c65da",
@@ -5014,7 +5105,7 @@
       "oracle_id": "7b3d364d-6581-43de-a80a-d5b07f5d21ed",
       "name": "Venus, Torn Between Worlds",
       "definition": "src/card_definitions/tmt/venus_torn_between_worlds.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Venus, Torn Between Worlds",
@@ -5029,7 +5120,14 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_damage_legends_tests.rs",
+        "src/card_definitions/tmt/venus_torn_between_worlds.json",
+        "docs/sets/tmt-final-candidates.json"
+      ],
+      "owner": "tmt_audit",
+      "local_batch": 34,
+      "source_commit": "0e9a90383d9d6432ae536981ae1ac91bb5f7856a"
     },
     {
       "oracle_id": "4097fea2-ae34-4b99-ab7e-a276d608b489",

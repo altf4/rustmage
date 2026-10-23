@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8f21254fd5362ce4373f2bd48a82133f47e786602b6ff7fbd083655d6470f4f0",
+  "catalogue_version": "2b28cb3341ea37d42310bb199a0eed2e20be6da6e58b46ede48f5d9276ebcced",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2459,
-  "implemented_total": 2465,
+  "implemented_standard_cards": 2473,
+  "implemented_total": 2479,
   "token_definitions": 114,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -185,8 +185,8 @@
     },
     "tmt": {
       "total": 189,
-      "complete": 168,
-      "gated": 21
+      "complete": 182,
+      "gated": 7
     },
     "w17": {
       "total": 1,
@@ -4630,8 +4630,8 @@
     {
       "name": "Brilliance Unleashed",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/brilliance_unleashed.rs",
       "set": "tmt"
     },
@@ -19246,8 +19246,8 @@
     {
       "name": "Kitsune, Dragon's Daughter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/kitsune_dragon_s_daughter.rs",
       "set": "tmt"
     },
@@ -19422,16 +19422,16 @@
     {
       "name": "Koya, Death from Above",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/koya_death_from_above.rs",
       "set": "tmt"
     },
     {
       "name": "Krang & Shredder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/krang_shredder.rs",
       "set": "tmt"
     },
@@ -19926,8 +19926,8 @@
     {
       "name": "Leatherhead, Swamp Stalker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/leatherhead_swamp_stalker.rs",
       "set": "tmt"
     },
@@ -22846,8 +22846,8 @@
     {
       "name": "Mondo Gecko",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/mondo_gecko.rs",
       "set": "tmt"
     },
@@ -23926,8 +23926,8 @@
     {
       "name": "North Wind Avatar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/north_wind_avatar.rs",
       "set": "tmt"
     },
@@ -24254,8 +24254,8 @@
     {
       "name": "Old Hob, Alleycat Blues",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/old_hob_alleycat_blues.rs",
       "set": "tmt"
     },
@@ -27214,8 +27214,8 @@
     {
       "name": "Raph & Mikey, Troublemakers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/raph_mikey_troublemakers.rs",
       "set": "tmt"
     },
@@ -28214,8 +28214,8 @@
     {
       "name": "Retro-Mutation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/retro_mutation.rs",
       "set": "tmt"
     },
@@ -33486,8 +33486,8 @@
     {
       "name": "Stomped by the Foot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/stomped_by_the_foot.rs",
       "set": "tmt"
     },
@@ -36062,8 +36062,8 @@
     {
       "name": "The Neutrinos",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/the_neutrinos.rs",
       "set": "tmt"
     },
@@ -38398,8 +38398,8 @@
     {
       "name": "Uneasy Alliance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/uneasy_alliance.rs",
       "set": "tmt"
     },
@@ -39190,8 +39190,8 @@
     {
       "name": "Venus, Torn Between Worlds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/venus_torn_between_worlds.rs",
       "set": "tmt"
     },
