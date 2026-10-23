@@ -2710,7 +2710,7 @@
       "oracle_id": "8df7a58c-053f-4ead-a778-2747718e5f10",
       "name": "Party Dude",
       "definition": "src/card_definitions/tmt/party_dude.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Party Dude",
@@ -2729,7 +2729,11 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/party_dude.json",
+        "src/engine_tmt_class_tests.rs"
+      ],
+      "local_batch": 15
     },
     {
       "oracle_id": "e71479c9-bb38-4112-bf8a-41b39a3ade51",

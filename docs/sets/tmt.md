@@ -19,9 +19,9 @@ Oracle facts remain pinned in `data/standard/cards.json`. The
 [obligation ledger](tmt-obligations.json) accounts for every printed line and
 canonical definition, including reprints; it is not a second membership source.
 
-Initial admission: **71/195**, **124 gated**. Current admission: **113/195**,
-**82 gated**, zero unresolved. The 71 inherited admission flags still require
-source/rules audits. **42 newly authored physical cards have rules scenarios; 42 have integrated release validation**;
+Initial admission: **71/195**, **124 gated**. Current admission: **114/195**,
+**81 gated**, zero unresolved. The 71 inherited admission flags still require
+source/rules audits. **43 newly authored physical cards have rules scenarios; 42 have integrated release validation**;
 zero have independent final published-head reviews or upstream merges.
 
 ## Active Sneak integration
@@ -362,3 +362,24 @@ Finality source-note clarification after the 113-card producing revision: full
 `ZoneChangeEvent.java` confirms that XMage’s `isDiesEvent()` is an all-permanent
 battlefield-to-graveyard predicate. Samurai’s provenance now pins that helper
 and corrects the earlier claimed discrepancy. No gameplay behavior changed.
+
+## Active Party Dude integration
+
+Party Dude and a generic staged cross-player token event pass all-target
+Clippy and the optimized **94-scenario TMT suite** (21 Class, 53 Sneak,
+20 initial), log `<cache>/rustmage-tmt-party-tests.log`, terminal success.
+Token replacements for every affected player complete before a single shared
+entry batch. Pending plans and copy recipes are fully owned and measured.
+A copied Doorkeeper Thrull suppresses the simultaneously entering Ninja’s
+entry trigger; no token enters between the two players’ replacement choices.
+The last choice rolls back all plans, recipes and partial allocations on failure.
+
+Other paid scenarios cover independent token doubling/ownership, opponent
+artifact-token deaths versus own artifacts/finality exile, simultaneous Class
+and artifact departure, zero/one attack targets, player-versus-planeswalker
+defenders, live hand count after a response, source departure and expiration.
+No new token identity or fake copy event is needed for ordinary Food creation.
+Admission is 114/195, 81 gated, zero unresolved. The 43rd newly authored card
+awaits full release validation; 42 have integrated release evidence and 71
+inherited flags await audits. Next is Ninja Teen’s dynamic Sneak and composed
+mandatory costs, then the remaining cards and inherited audits.

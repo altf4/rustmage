@@ -628,3 +628,300 @@ fn tmt_class_machines_vehicle_animation_keeps_zero_base_after_actual_crew() {
         );
     }
 }
+
+fn foods(g: &Game, player: Player) -> Vec<CardId> {
+    g.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter_map(|(id, o)| {
+            (o.zone == Zone::Battlefield
+                && o.controller == player
+                && o.is_token()
+                && g.object_view(id as CardId).has_subtype("Food"))
+            .then_some(id as CardId)
+        })
+        .collect()
+}
+#[test]
+fn tmt_class_party_paid_food_creation_is_owned_by_each_player_and_replaced_independently() {
+    for p in [Player::P0, Player::P1] {
+        for double in [false, true] {
+            let mut g = setup(p);
+            if double {
+                named(&mut g, p, "Doubling Season", Zone::Battlefield);
+            }
+            let class = named(&mut g, p, "Party Dude", Zone::Hand);
+            cast(&mut g, class, None, &[]);
+            settle(&mut g);
+            assert_eq!(foods(&g, p).len(), if double { 2 } else { 1 });
+            assert_eq!(foods(&g, p.other()).len(), 1);
+            for player in [p, p.other()] {
+                for id in foods(&g, player) {
+                    assert_eq!(g.state.objects[id as usize].owner, player);
+                }
+            }
+            assert!(
+                g.state
+                    .players
+                    .iter()
+                    .all(|s| s.token_creation_attempted_this_turn)
+            );
+            assert!(g.observe(p).copy_origins.is_empty());
+        }
+    }
+}
+fn party_copy_setup(p: Player) -> (Game, CardId) {
+    let mut g = setup(p);
+    let ninjas = named(&mut g, p, "Foot Ninjas", Zone::Battlefield);
+    let thrull = named(&mut g, p.other(), "Doorkeeper Thrull", Zone::Battlefield);
+    let first = named(&mut g, p, "Mirrormind Crown", Zone::Battlefield);
+    let second = named(&mut g, p.other(), "Mirrormind Crown", Zone::Battlefield);
+    assert!(g.attach_equipment(g.object_ref(first), g.object_ref(ninjas)));
+    assert!(g.attach_equipment(g.object_ref(second), g.object_ref(thrull)));
+    let aura = named(&mut g, p, "Witness Protection", Zone::Hand);
+    cast(&mut g, aura, None, &[Target::Card(thrull)]);
+    settle(&mut g);
+    assert!(!g.printed_abilities_available(thrull));
+    let class = named(&mut g, p, "Party Dude", Zone::Hand);
+    cast(&mut g, class, None, &[]);
+    while !matches!(g.state.pending, Pending::Replacement { .. }) {
+        checked(&mut g, Action::Pass);
+    }
+    assert_eq!(g.actor(), Some(p));
+    (g, class)
+}
+#[test]
+fn tmt_class_party_all_copy_replacements_precede_one_shared_entry_event() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, _) = party_copy_setup(p);
+        let life = g.state.players[p.index()].life;
+        checked(&mut g, Action::ChooseOptional { accept: true });
+        assert_eq!(g.actor(), Some(p.other()));
+        assert!(
+            !g.state
+                .objects
+                .iter()
+                .any(|o| o.zone == Zone::Battlefield && o.is_token())
+        );
+        checked(&mut g, Action::ChooseOptional { accept: true });
+        settle(&mut g);
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.zone == Zone::Battlefield && o.is_token())
+                .count(),
+            2
+        );
+        assert_eq!(
+            g.state.players[p.index()].life,
+            life,
+            "the new Thrull suppresses the simultaneously entering Ninja token's ETB"
+        );
+        assert_eq!(foods(&g, p).len() + foods(&g, p.other()).len(), 0);
+    }
+}
+#[test]
+fn tmt_class_party_last_copy_choice_capacity_failure_restores_all_plans_and_no_partial_tokens() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, _) = party_copy_setup(p);
+        let factory = Card::from_name("@token/283fd83a9aec83a51b736926").unwrap();
+        let spare = super::tests::spawn(&mut g, p, factory, Zone::Outside);
+        g.state.objects[spare as usize].generation = u64::MAX;
+        g.state.free_tokens.push(spare);
+        checked(&mut g, Action::ChooseOptional { accept: true });
+        let before = g.snapshot();
+        let revision = g.revision();
+        assert!(matches!(
+            g.apply(p.other(), Action::ChooseOptional { accept: true }),
+            Err(Error::CapacityExceeded(_))
+        ));
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(g.revision(), revision);
+        assert!(
+            !g.state
+                .objects
+                .iter()
+                .any(|o| o.zone == Zone::Battlefield && o.is_token())
+        );
+    }
+}
+#[test]
+fn tmt_class_party_level_two_counts_opponent_artifact_tokens_but_not_own_or_finality_exile() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let class = named(&mut g, p, "Party Dude", Zone::Hand);
+        cast(&mut g, class, None, &[]);
+        settle(&mut g);
+        level(&mut g, class, 0);
+        let own = foods(&g, p)[0];
+        let enemy = foods(&g, p.other())[0];
+        let draws = g.state.players[p.index()].cards_drawn_this_turn;
+        pay_class_level(&mut g, own, 0);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, draws);
+        checked(&mut g, Action::Pass);
+        pay_class_level(&mut g, enemy, 0);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, draws + 1);
+        let artifact = named(&mut g, p.other(), "Solemn Simulacrum", Zone::Battlefield);
+        g.set_counters(artifact, Counters::of(CounterKind::Finality, 1));
+        g.state.priority = p;
+        let murder = named(&mut g, p, "Murder", Zone::Hand);
+        cast(&mut g, murder, None, &[Target::Card(artifact)]);
+        settle(&mut g);
+        assert_eq!(g.state.objects[artifact as usize].zone, Zone::Exile);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, draws + 1);
+    }
+}
+#[test]
+fn tmt_class_party_level_three_only_opponent_player_attack_uses_live_hand_and_expires() {
+    for p in [Player::P0, Player::P1] {
+        for walker_only in [false, true] {
+            let mut g = setup(p);
+            let class = named(&mut g, p, "Party Dude", Zone::Battlefield);
+            level(&mut g, class, 0);
+            level(&mut g, class, 1);
+            let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let other = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+            let shock = named(&mut g, p, "Shock", Zone::Hand);
+            named(&mut g, p, "Opt", Zone::Hand);
+            named(&mut g, p, "Bear Cub", Zone::Hand);
+            let walker = named(
+                &mut g,
+                p.other(),
+                "Kaito, Cunning Infiltrator",
+                Zone::Battlefield,
+            );
+            g.set_counters(walker, Counters::of(CounterKind::Loyalty, 5));
+            g.state.step = Step::Attackers;
+            g.state.pending = Pending::Attackers;
+            if walker_only {
+                let defender = g.object_ref(walker);
+                checked(
+                    &mut g,
+                    Action::AttackPlaneswalker {
+                        card: bear,
+                        defender,
+                    },
+                );
+            } else {
+                checked(&mut g, Action::Attack { card: bear });
+                checked(&mut g, Action::Attack { card: other });
+            }
+            checked(&mut g, Action::FinishAttackers);
+            if walker_only {
+                assert!(
+                    !g.legal_actions()
+                        .iter()
+                        .any(|a| matches!(a, Action::ChooseTarget { .. }))
+                );
+                assert_eq!(
+                    g.stats(bear),
+                    Stats {
+                        power: 2,
+                        toughness: 2
+                    }
+                );
+                continue;
+            }
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(bear),
+                },
+            );
+            if g.state.announcing.is_some() {
+                checked(&mut g, Action::FinishTargets);
+            }
+            cast(&mut g, shock, None, &[Target::Player(p.other())]);
+            settle(&mut g);
+            assert_eq!(
+                g.stats(bear),
+                Stats {
+                    power: 4,
+                    toughness: 4
+                }
+            );
+            assert_eq!(
+                g.stats(other),
+                Stats {
+                    power: 3,
+                    toughness: 3
+                }
+            );
+            super::ability_timeline_tests::next_turn(&mut g);
+            assert_eq!(
+                g.stats(bear),
+                Stats {
+                    power: 2,
+                    toughness: 2
+                }
+            );
+        }
+    }
+}
+
+#[test]
+fn tmt_class_party_attack_zero_target_and_departed_source_use_frozen_trigger_and_current_hand() {
+    for p in [Player::P0, Player::P1] {
+        for choose in [false, true] {
+            let mut g = setup(p);
+            let class = named(&mut g, p, "Party Dude", Zone::Battlefield);
+            level(&mut g, class, 0);
+            level(&mut g, class, 1);
+            let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            named(&mut g, p, "Shock", Zone::Hand);
+            g.state.step = Step::Attackers;
+            g.state.pending = Pending::Attackers;
+            checked(&mut g, Action::Attack { card: bear });
+            checked(&mut g, Action::FinishAttackers);
+            if choose {
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(bear),
+                    },
+                );
+                if g.state.announcing.is_some() {
+                    checked(&mut g, Action::FinishTargets);
+                }
+                g.move_object(class, Zone::Hand);
+            } else {
+                checked(&mut g, Action::FinishTargets);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.stats(bear),
+                if choose {
+                    Stats {
+                        power: 4,
+                        toughness: 4,
+                    }
+                } else {
+                    Stats {
+                        power: 2,
+                        toughness: 2,
+                    }
+                }
+            );
+        }
+    }
+}
+#[test]
+fn tmt_class_party_opponent_artifact_and_class_leave_simultaneously_using_pre_event_level() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let class = named(&mut g, p, "Party Dude", Zone::Battlefield);
+        level(&mut g, class, 0);
+        let artifact = named(&mut g, p.other(), "Skateboard", Zone::Battlefield);
+        let draws = g.state.players[p.index()].cards_drawn_this_turn;
+        let sources = g.death_trigger_sources();
+        let events = g.move_objects_raw(&[class, artifact], Zone::Graveyard);
+        g.finish_zone_events(&events, &sources);
+        settle(&mut g);
+        assert_eq!(g.state.objects[class as usize].zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, draws + 1);
+    }
+}

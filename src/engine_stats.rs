@@ -61,6 +61,7 @@ impl Game {
                 TriggerCondition::CreatureAttacksOrBlocksYou
                     | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::CreatureAttacksYou { .. }
+                    | TriggerCondition::OpponentAttacked
                     | TriggerCondition::AttackDeclared { .. }
             )
         }) {

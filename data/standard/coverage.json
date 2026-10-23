@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "3f1943ab96929b13c6ad683aa9eaa99e2e26eeecb4431488a6f2fc00ee966f7c",
+  "catalogue_version": "644d395617af9a57d17cb11a8a027cb1cbafb6eb162ccf241150d8ba95db60e3",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2398,
-  "implemented_total": 2404,
+  "implemented_standard_cards": 2399,
+  "implemented_total": 2405,
   "token_definitions": 113,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -185,8 +185,8 @@
     },
     "tmt": {
       "total": 189,
-      "complete": 107,
-      "gated": 82
+      "complete": 108,
+      "gated": 81
     },
     "w17": {
       "total": 1,
@@ -25046,8 +25046,8 @@
     {
       "name": "Party Dude",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/party_dude.rs",
       "set": "tmt"
     },

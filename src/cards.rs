@@ -1511,6 +1511,12 @@ pub(crate) enum Instruction {
         amount: AmountValue,
         tapped: bool,
     },
+    CreateTokensForPlayers {
+        players: PlayerSet,
+        token: Card,
+        amount: u16,
+        tapped: bool,
+    },
     CreateTokensForTargetPlayer {
         token: Card,
         amount: u16,
@@ -2665,6 +2671,7 @@ pub(crate) enum TriggerCondition {
     SelfEntersOrDies,
     SelfAttacks,
     SelfFirstAttack,
+    OpponentAttacked,
     CreatureAttacksOrBlocksYou,
     ControlledCreatureAttacksAlone,
     CreatureAttacksYou {

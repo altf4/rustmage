@@ -68,6 +68,7 @@ pub(super) struct RoleReflexiveCompletion {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum TokenCompletion {
     None,
+    Simultaneous(Box<SimultaneousTokens>),
     Keywords {
         source: ObjectRef,
         keywords: Keywords,
@@ -84,6 +85,17 @@ pub(super) enum TokenCompletion {
     Mobilize,
     Attacking,
     MobilizeDelayed(Box<SpellView>),
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct SimultaneousTokens {
+    waiting: VecDeque<TokenBatch>,
+    ready: Vec<ResolvedTokenPlan>,
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ResolvedTokenPlan {
+    player: Player,
+    groups: Vec<TokenGroupView>,
+    recipes: Vec<Option<CopyRecipe>>,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct TokenBatch {
@@ -157,6 +169,11 @@ impl TokenCompletion {
         match self {
             Self::Reflexive { item, .. } | Self::MobilizeDelayed(item) => visit(item),
             Self::RoleReflexive(completion) => visit(&mut completion.item),
+            Self::Simultaneous(sequence) => {
+                for batch in &mut sequence.waiting {
+                    batch.completion.visit_owned_packets(visit);
+                }
+            }
             _ => {}
         }
     }
@@ -169,6 +186,29 @@ impl TokenCompletion {
                 std::mem::size_of::<RoleReflexiveCompletion>() + c.item.owned_bytes()
             }
             Self::RoleAttachMany(r) => r.len() * std::mem::size_of::<ObjectRef>(),
+            Self::Simultaneous(sequence) => {
+                std::mem::size_of::<SimultaneousTokens>()
+                    + sequence.waiting.len() * std::mem::size_of::<TokenBatch>()
+                    + sequence
+                        .waiting
+                        .iter()
+                        .map(|b| {
+                            b.groups.len() * std::mem::size_of::<TokenGroupView>()
+                                + b.recipes.len() * std::mem::size_of::<Option<CopyRecipe>>()
+                                + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
+                                + b.completion.owned_bytes()
+                        })
+                        .sum::<usize>()
+                    + sequence.ready.len() * std::mem::size_of::<ResolvedTokenPlan>()
+                    + sequence
+                        .ready
+                        .iter()
+                        .map(|b| {
+                            b.groups.len() * std::mem::size_of::<TokenGroupView>()
+                                + b.recipes.len() * std::mem::size_of::<Option<CopyRecipe>>()
+                        })
+                        .sum::<usize>()
+            }
             _ => 0,
         }
     }
@@ -947,6 +987,60 @@ impl Game {
         }));
     }
 
+    pub(super) fn stage_token_creation_for_players(
+        &mut self,
+        players: &[Player],
+        token: Card,
+        amount: u128,
+        tapped: bool,
+    ) {
+        if amount == 0 || players.is_empty() {
+            return;
+        }
+        if let [player] = players {
+            self.stage_token_creation(*player, token, amount, tapped, TokenCompletion::None);
+            return;
+        }
+        let mut batches: VecDeque<_> = players
+            .iter()
+            .enumerate()
+            .map(|(index, &player)| {
+                assert!(!players[..index].contains(&player));
+                TokenBatch {
+                    first_this_turn: self.begin_token_event(player, amount),
+                    recipes: Vec::new(),
+                    player,
+                    groups: vec![TokenGroupView {
+                        token,
+                        amount,
+                        tapped,
+                    }],
+                    effect: true,
+                    used: Vec::new(),
+                    completion: TokenCompletion::None,
+                }
+            })
+            .collect();
+        let mut first = batches.pop_front().unwrap();
+        first.completion = TokenCompletion::Simultaneous(Box::new(SimultaneousTokens {
+            waiting: batches,
+            ready: Vec::new(),
+        }));
+        self.state
+            .replacements
+            .get_or_insert_with(|| {
+                Box::new(ReplacementState {
+                    work: VecDeque::new(),
+                    active: None,
+                    attachment: None,
+                    optional_token: None,
+                    resume: None,
+                    mode: ResumeMode::Program,
+                })
+            })
+            .work
+            .push_back(Work::Tokens(first));
+    }
     pub(super) fn stage_token_creation(
         &mut self,
         player: Player,
@@ -1213,6 +1307,40 @@ impl Game {
                             let Some(Event::Tokens(batch)) = state.active.take() else {
                                 unreachable!()
                             };
+                            if let TokenCompletion::Simultaneous(mut sequence) = batch.completion {
+                                sequence.ready.push(ResolvedTokenPlan {
+                                    player: batch.player,
+                                    groups: batch.groups,
+                                    recipes: batch.recipes,
+                                });
+                                if let Some(mut next) = sequence.waiting.pop_front() {
+                                    next.completion = TokenCompletion::Simultaneous(sequence);
+                                    state.work.push_front(Work::Tokens(next));
+                                } else {
+                                    let mut players = Vec::new();
+                                    let mut groups = Vec::new();
+                                    let mut recipes = Vec::new();
+                                    for plan in sequence.ready {
+                                        assert!(
+                                            plan.recipes.is_empty()
+                                                || plan.recipes.len() == plan.groups.len()
+                                        );
+                                        for (index, group) in plan.groups.into_iter().enumerate() {
+                                            players.push(plan.player);
+                                            groups.push(group);
+                                            recipes
+                                                .push(plan.recipes.get(index).copied().flatten());
+                                        }
+                                    }
+                                    self.create_mixed_token_groups(&players, &groups, &recipes);
+                                    if let Some(entry) = self.state.entry_batch.as_mut() {
+                                        assert!(entry.replacement_resume.is_none());
+                                        entry.replacement_resume = Some(state);
+                                        return self.advance_entries();
+                                    }
+                                }
+                                continue;
+                            }
                             if matches!(
                                 batch.completion,
                                 TokenCompletion::Mobilize | TokenCompletion::Attacking

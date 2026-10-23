@@ -617,6 +617,7 @@ impl Game {
                     | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::OtherCreatureCountersAdded { .. }
+                    | TriggerCondition::OpponentAttacked
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SelfFirstAttack
@@ -1241,6 +1242,13 @@ impl Game {
                     for _ in 0..count {
                         self.queue_trigger(&source, index);
                     }
+                }
+                if ability.condition.event() == TriggerCondition::OpponentAttacked
+                    && self.state.attackers.iter().any(|a| {
+                        a.defender == Some(CombatDefender::Player(source.controller.other()))
+                    })
+                {
+                    self.queue_trigger(&source, index);
                 }
                 if let TriggerCondition::AttackDeclared {
                     minimum,
@@ -3266,6 +3274,23 @@ impl Game {
                         u128::from(amount),
                         true,
                         replacements::TokenCompletion::Attacking,
+                    );
+                    if self.advance_replacements(false) {
+                        return;
+                    }
+                }
+                Instruction::CreateTokensForPlayers {
+                    players,
+                    token,
+                    amount,
+                    tapped,
+                } => {
+                    let players: Vec<_> = self.program_players(players, &item).collect();
+                    self.stage_token_creation_for_players(
+                        &players,
+                        token,
+                        u128::from(amount),
+                        tapped,
                     );
                     if self.advance_replacements(false) {
                         return;
