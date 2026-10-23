@@ -6,7 +6,7 @@
       "oracle_id": "a9d68cf5-3055-4ec9-9893-244bfd7046be",
       "name": "Action News Crew",
       "definition": "src/card_definitions/tmt/action_news_crew.rs",
-      "state": "implementing; focused validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Action News Crew",
@@ -23,7 +23,8 @@
       ],
       "evidence": [
         "src/engine_tmt_disappear_tests.rs",
-        "src/card_definitions/tmt/action_news_crew.json"
+        "src/card_definitions/tmt/action_news_crew.json",
+        "docs/sets/tmt-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 2
@@ -134,7 +135,7 @@
       "oracle_id": "e2a35850-92c5-40ab-8697-2e995819d7ac",
       "name": "Armaggon, Future Shark",
       "definition": "src/card_definitions/tmt/armaggon_future_shark.rs",
-      "state": "implementing; focused validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Armaggon, Future Shark",
@@ -151,7 +152,8 @@
       ],
       "evidence": [
         "src/engine_tmt_disappear_tests.rs",
-        "src/card_definitions/tmt/armaggon_future_shark.json"
+        "src/card_definitions/tmt/armaggon_future_shark.json",
+        "docs/sets/tmt-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 2
@@ -835,7 +837,7 @@
       "oracle_id": "79a9fc1c-a6a9-483a-9ba7-d09fe41760c3",
       "name": "Featherbrained Filcher",
       "definition": "src/card_definitions/tmt/featherbrained_filcher.rs",
-      "state": "tested candidate; full-set integration/review pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Featherbrained Filcher",
@@ -852,7 +854,8 @@
       ],
       "evidence": [
         "src/engine_tmt_disappear_tests.rs",
-        "src/card_definitions/tmt/featherbrained_filcher.json"
+        "src/card_definitions/tmt/featherbrained_filcher.json",
+        "docs/sets/tmt-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 1
@@ -903,7 +906,7 @@
       "oracle_id": "2043fbde-48c4-4a77-8911-8991d77de1eb",
       "name": "Foot Mystic",
       "definition": "src/card_definitions/tmt/foot_mystic.rs",
-      "state": "tested candidate; full-set integration/review pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Foot Mystic",
@@ -920,7 +923,8 @@
       ],
       "evidence": [
         "src/engine_tmt_disappear_tests.rs",
-        "src/card_definitions/tmt/foot_mystic.json"
+        "src/card_definitions/tmt/foot_mystic.json",
+        "docs/sets/tmt-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 1
@@ -1202,7 +1206,7 @@
       "oracle_id": "84a56740-8563-4ce5-8560-d44998d7f80d",
       "name": "High-Flying Ace",
       "definition": "src/card_definitions/tmt/high_flying_ace.rs",
-      "state": "implementing; focused validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "High-Flying Ace",
@@ -1219,7 +1223,8 @@
       ],
       "evidence": [
         "src/engine_tmt_disappear_tests.rs",
-        "src/card_definitions/tmt/high_flying_ace.json"
+        "src/card_definitions/tmt/high_flying_ace.json",
+        "docs/sets/tmt-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 2
@@ -1293,7 +1298,7 @@
       "oracle_id": "3d081701-514b-4611-b5a1-239b8f335fb6",
       "name": "Insectoid Exterminator",
       "definition": "src/card_definitions/tmt/insectoid_exterminator.rs",
-      "state": "tested candidate; full-set integration/review pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Insectoid Exterminator",
@@ -1310,7 +1315,8 @@
       ],
       "evidence": [
         "src/engine_tmt_disappear_tests.rs",
-        "src/card_definitions/tmt/insectoid_exterminator.json"
+        "src/card_definitions/tmt/insectoid_exterminator.json",
+        "docs/sets/tmt-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 1
@@ -1750,7 +1756,7 @@
       "oracle_id": "2db77e35-a54a-4e9c-8081-c97822515879",
       "name": "Lord Dregg, Insect Invader",
       "definition": "src/card_definitions/tmt/lord_dregg_insect_invader.rs",
-      "state": "tested candidate; full-set integration/review pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Lord Dregg, Insect Invader",
@@ -1768,7 +1774,8 @@
       ],
       "evidence": [
         "src/engine_tmt_disappear_tests.rs",
-        "src/card_definitions/tmt/lord_dregg_insect_invader.json"
+        "src/card_definitions/tmt/lord_dregg_insect_invader.json",
+        "docs/sets/tmt-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 1
@@ -1900,7 +1907,7 @@
       "oracle_id": "594c6b1f-ff0e-4122-8b29-852632a22a79",
       "name": "Michelangelo, Game Master",
       "definition": "src/card_definitions/tmt/michelangelo_game_master.rs",
-      "state": "tested candidate; full-set integration/review pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Michelangelo, Game Master",
@@ -1916,7 +1923,8 @@
       ],
       "evidence": [
         "src/engine_tmt_disappear_tests.rs",
-        "src/card_definitions/tmt/michelangelo_game_master.json"
+        "src/card_definitions/tmt/michelangelo_game_master.json",
+        "docs/sets/tmt-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 1
@@ -2156,7 +2164,7 @@
       "oracle_id": "404e958b-ead9-4ec7-b786-7b3d65e29967",
       "name": "Mouser Foundry",
       "definition": "src/card_definitions/tmt/mouser_foundry.rs",
-      "state": "implementing; focused validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Mouser Foundry",
@@ -2173,7 +2181,8 @@
       ],
       "evidence": [
         "src/engine_tmt_disappear_tests.rs",
-        "src/card_definitions/tmt/mouser_foundry.json"
+        "src/card_definitions/tmt/mouser_foundry.json",
+        "docs/sets/tmt-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 3
@@ -2734,7 +2743,7 @@
       "oracle_id": "3aa3b908-e8d3-4944-8ced-5219d4129594",
       "name": "Putrid Pals",
       "definition": "src/card_definitions/tmt/putrid_pals.rs",
-      "state": "tested candidate; full-set integration/review pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Putrid Pals",
@@ -2751,7 +2760,8 @@
       ],
       "evidence": [
         "src/engine_tmt_disappear_tests.rs",
-        "src/card_definitions/tmt/putrid_pals.json"
+        "src/card_definitions/tmt/putrid_pals.json",
+        "docs/sets/tmt-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 1
@@ -2782,7 +2792,7 @@
       "oracle_id": "71b81f3f-6092-4819-8529-e27bccfcf088",
       "name": "Ragamuffin Raptor",
       "definition": "src/card_definitions/tmt/ragamuffin_raptor.rs",
-      "state": "implementing; focused validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Ragamuffin Raptor",
@@ -2798,7 +2808,8 @@
       ],
       "evidence": [
         "src/engine_tmt_disappear_tests.rs",
-        "src/card_definitions/tmt/ragamuffin_raptor.json"
+        "src/card_definitions/tmt/ragamuffin_raptor.json",
+        "docs/sets/tmt-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 3
@@ -3185,7 +3196,7 @@
       "oracle_id": "25c83d45-581f-48ba-b6bb-feb66e8a65c7",
       "name": "Sewer-veillance Cam",
       "definition": "src/card_definitions/tmt/sewer_veillance_cam.rs",
-      "state": "implementing; focused validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Sewer-veillance Cam",
@@ -3203,7 +3214,8 @@
       ],
       "evidence": [
         "src/engine_tmt_disappear_tests.rs",
-        "src/card_definitions/tmt/sewer_veillance_cam.json"
+        "src/card_definitions/tmt/sewer_veillance_cam.json",
+        "docs/sets/tmt-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 3
@@ -4172,7 +4184,7 @@
       "oracle_id": "107e9ada-4e2e-4032-addd-274bca956621",
       "name": "Zoo Escapees",
       "definition": "src/card_definitions/tmt/zoo_escapees.rs",
-      "state": "tested candidate; full-set integration/review pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Zoo Escapees",
@@ -4188,7 +4200,8 @@
       ],
       "evidence": [
         "src/engine_tmt_disappear_tests.rs",
-        "src/card_definitions/tmt/zoo_escapees.json"
+        "src/card_definitions/tmt/zoo_escapees.json",
+        "docs/sets/tmt-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 1

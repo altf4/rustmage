@@ -2,97 +2,146 @@
 
 ## Scope and baseline
 
-Implement all TMT physical identities in the repository's frozen **2026-10-15
-Standard tabletop/MTGO snapshot**. This work preserves that target; it does not
-claim a live-format update. Implementation branch created 2026-10-23 04:41:28 UTC (2026-10-22 local).
-Integration branch `codex/tmt-complete-set`, base `1a795dcf`.
+Implement every physical TMT identity in the repository's frozen **2026-10-15
+Standard tabletop/MTGO snapshot**. This work preserves that target.
+Integration branch: `codex/tmt-complete-set`, base `1a795dcf`.
+Branch created 2026-10-23 04:41:28 UTC (2026-10-22 local).
 Tracking issue: https://github.com/altf4/rustmage/issues/464.
-No implementation PR: publish exactly one only after complete-set acceptance.
+**The set is incomplete. No implementation PR has been opened.**
 
 Pinned XMage revision: `492369c7844b8d76479f0393ff9eb6b0b0cf30d7`.
 [Frozen membership](../../data/sets/tmt.json): **195 physical identities**,
-320 XMage printings, zero unresolved identities. Independent Scryfall
-`set:tmt`, `unique=cards`, `include_extras=true` reconciliation matches all 195
-identities, including reprints; [evidence](tmt-membership-reconciliation.json).
-No TMT member appears on the frozen target's banned list. Commander/bonus-set
-cards outside TMT are not added to Standard. Official product/card gallery:
-https://magic.wizards.com/en/products/teenage-mutant-ninja-turtles/card-image-gallery.
-Oracle facts remain pinned in `data/standard/cards.json`.
-
-Initial admission: **71/195**, **124 gated**. Those 71 are inherited admission
-flags and still require full source/rules audits. The
+320 pinned XMage printings, zero unresolved identities. Independent Scryfall
+`set:tmt`, `unique=cards`, `include_extras=true` reconciliation matches all 195;
+[evidence](tmt-membership-reconciliation.json). No member appears on the frozen
+target's banned list. Commander/bonus-set products outside TMT are excluded.
+Oracle facts remain pinned in `data/standard/cards.json`. The
 [obligation ledger](tmt-obligations.json) accounts for every printed line and
-canonical definition. It is not a duplicate membership source.
+canonical definition, including reprints; it is not a second membership source.
 
-## Local batches and shared mechanics
+Initial admission: **71/195**, **124 gated**. Current admission: **84/195**,
+**111 gated**, zero unresolved. The 71 inherited admission flags still require
+source/rules audits. **13 new physical cards are locally tested candidates**;
+zero have independent final published-head reviews or upstream merges.
 
-First local batch owns seven physical card pairs: Foot Mystic, Insectoid
-Exterminator, Michelangelo, Game Master, Lord Dregg, Insect Invader, Putrid Pals,
-Featherbrained Filcher and Zoo Escapees. Supporting definitions append the
-missing black 1/1 Ninja and black 1/1 flying Insect Warrior tokens without
-renumbering existing identities. Existing Food and Mutagen token definitions
-retain their historical typed-lift records and acquire source pins.
+## Card obligations and local batches
 
-Shared mechanic: public per-player Disappear/Revolt departure history, recorded
-from the actual committed departure's pre-move controller, including tokens,
-lands, bounce and exile; nonbattlefield movements and control changes do not
-qualify. History resets for both players at each turn start. The typed guard
-serves intervening-if triggers and pre-entry counter replacements. History is
-owned in snapshots/branches and exposed to both observations. The shared
-observation schema version advances for the additional public player field.
+All three batches were authored locally by the integrator on base `1a795dcf`,
+with complete Oracle bodies, complete XMage classes and relevant reusable
+helpers read before authoring. Paired JSON records pin the read bytes and retain
+historical typed-lift records. The ledger links each card to its source record,
+printed obligations, rules scenarios and [validation evidence](tmt-validation.json).
 
-Full Oracle bodies, complete XMage classes and relevant reusable helpers were
-read; paired JSON records pin the read bytes. Putrid Pals uses the shared
-pre-entry replacement/counter-replacement pipeline, rather than a trigger.
+| Local batch | Newly tested physical cards | Shared behavior |
+| --- | --- | --- |
+| 1 | Foot Mystic; Insectoid Exterminator; Michelangelo, Game Master; Lord Dregg, Insect Invader; Putrid Pals; Featherbrained Filcher; Zoo Escapees | Disappear/Revolt history; conditional triggers and pre-entry counters; departing-source tokens and token payments |
+| 2 | Action News Crew; Armaggon, Future Shark; High-Flying Ace | Instant-speed Channel; Flash; zero-to-three targets and partial invalidation; resolution-time target restrictions |
+| 3 | Mouser Foundry; Sewer-veillance Cam; Ragamuffin Raptor | Entry/departure abilities; sacrifice costs and source LKI; optional tap/untap; graveyard creature/Food union targeting |
 
-## Validation, reviews and measurements
+Supporting definitions append black 1/1 Ninja and black 1/1 flying Insect Warrior
+tokens without renumbering existing identities. Existing Food, Mutagen and Robot
+tokens have audited source pins and paid interaction evidence.
 
-Initial source/provenance suite: `python3 -m unittest scripts.test_direct_cards
-scripts.test_set_status scripts.test_source_paths`: **14 tests passed**.
-Resource-guard preflight passed with enforced systemd cgroup, 6 GiB shared cap,
-one Cargo job and one test thread; no allocation/OOM probe.
+Disappear history is public, per player, and recorded only on an actual committed
+battlefield departure under its pre-move controller. Tokens, lands, bounce and
+exile count; nonbattlefield movements and control changes do not. Both players'
+histories reset at each turn start. The typed guard serves intervening-if
+triggers and pre-entry counter replacements, including Putrid Pals through the
+normal counter-replacement pipeline. Snapshots and branches own the history;
+observation schema 169 exposes it to both viewers.
 
-First batch: **10 optimized native scenarios passed in 0.07 seconds**, covering
-seven newly verified physical cards. Build/test resource report:
-`<cache>/rustmage-build-reports/ed4718ecfa4446f48a28713983d9b7b0.json`
-(243.59 seconds, 3,228,803,072-byte peak, zero OOM events).
+Cam's typed tap/untap instruction uses the target's state when its optional
+effect resolves and follows normal tapping/untapping replacement paths,
+including stun counters. The engine contains no card-name dispatch or English
+interpretation for these cards.
 
-Second batch adds Action News Crew, Armaggon, Future Shark and High-Flying Ace.
-Third adds Mouser Foundry, Sewer-veillance Cam and Ragamuffin Raptor. These six
-remain candidates until the combined focused suite passes. Current admission
-flags: **84/195**, comprising 71 inherited plus 13 local definitions; **111 gated**.
-Cam uses a typed resolution-time tap/untap instruction through the normal
-tapping and untapping replacement paths, with an optional decline.
+## Validation, reviews and game coverage
 
-The combined 20-scenario run passed 19 scenarios; the last Cam scenario tried
-to activate while the opponent held priority after a Flash spell. The test now
-passes priority through a legal action before activation. The full release
-validator will verify that repair alongside all existing rules/game suites.
-Implementation code did not require a repair for that failure.
+Source revision **`f12b667abdda9abb0212130a5ec15547c1ff5baa`** passed
+`python3 scripts/validate.py --release --python smoke`: **all nine stages passed
+in 610.68 seconds**, with **11,849 tracked inputs unchanged**. This includes
+format/link checks, **54 Python source tests** (three skipped), Clippy,
+**3,271 library rules tests** (one ignored), **20 TMT scenarios**, nine catalogue
+checks, 22 Foundations game suites, existing ECL acceptance and protocol suites,
+production release compilation, the regression benchmark and **seven Python
+binding smoke tests**. All native targets total 3,307 passing tests.
 
-Full release validation with Python smoke checks is pending on the local
-integration revision; keep all inputs fixed until its process terminates.
-No new whole cards count as verified until those scenarios pass. No local or
-published-head independent reviews yet. No TMT full-game acceptance workload or
-TMT simulation throughput measurement yet; inherited ECL/Freeform measurements
-do not establish TMT performance. Implementation throughput pending completion
-of the first verified batch.
+TMT scenarios exercise actual paid legal actions, private scry choices, both
+seats, rejected-action atomicity, exact incarnations, queued source departure,
+partial target invalidation, owned raw/indexed branches, parent disposal and
+restore. The existing full native suite also tests capacity-failure rollback of
+simultaneous departures. The repaired Cam scenario correctly passes priority
+before activating on an opponent's turn. Earlier failed test attempts remain in
+cache logs; the final complete validator passed.
+
+Resource guard: one Cargo job, one test thread, shared **6 GiB cap**;
+**3,709,431,808-byte peak**, zero OOM events. Validator cleaned 818,245,632
+allocated bytes; completed focused builds cleaned another 97,030,144 bytes.
+Every required shared library remains at its exact producing-host path/hash in
+[tmt-validation.json](tmt-validation.json). Full report:
+`<cache>/rustmage-validation-iywsk6p6/report/result.json`.
+
+**TMT full-game acceptance, journal replay across set-specific games, entire-pool
+interaction coverage and final independent reviews remain pending.** No local
+reviews are claimed. Publish one complete-set PR only after all implementation
+and set-level validation gates pass; then obtain two independent nonauthor
+reviews of the exact final published head.
+
+## Measurements
+
+Thirteen new locally verified physical cards from branch creation at
+04:41:28 UTC to validation completion at 05:13:19.924082 UTC:
+**24.48 cards/hour over 1,911.92 seconds**. This includes source intake,
+authoring and release verification; inherited admissions are excluded.
+
+The separate existing **Freeform smoke** workload completed 100 natural games,
+49,832 decisions in 0.278615334 seconds: **178,855.91 decisions/second**,
+358.92 games/second, 270.45 ns clone and 126.34 ns restore. Both decks contain
+24 Mountain, 20 Lightning Bolt, 12 Goblin Piker and four Hill Giant; seeds 0–99,
+`policy::smoke_index`, starting player P0. Intel Core Ultra 5 335, rustc 1.98.0,
+release opt-level 3/thin LTO, bounded single test thread. Simulation includes
+initialization, legal actions, policy, apply, observation construction and
+terminal checks; it excludes compilation, model/tensor/JSON work and the
+separately timed 100,000 clone/restore iterations.
+**This is regression evidence, not TMT simulation throughput. TMT-specific
+simulation throughput has not yet been measured.**
 
 ## Resume here
 
-Current branch `codex/tmt-complete-set`; local uncommitted work comprises the
-manifest/reconciliation/obligation ledger, first batch, supporting token metadata,
-shared departure history, schema version and `src/engine_tmt_disappear_tests.rs`.
-Do not discard prior-set work inherited at the base revision.
+Current source revision `f12b667a` on `codex/tmt-complete-set`; subsequent
+checkpoint changes affect only this ledger, obligation states and validation
+records. No active build/test processes remain. Completed logs are under
+`<cache>/rustmage-tmt-*.log`; reports and exact retained library paths/hashes are
+in the validation JSON. Focused disposable outputs have been cleaned. A new
+host rebuilds missing libraries rather than inventing old producing-host paths.
 
-Next: finish the focused `tmt_` rules suite, repair failures, then run the complete
-release validator with Python smoke checks on fixed inputs.
-Keep Sneak and the remaining Disappear consumers visible as engine work, not
-source blockers. Complete all 124 originally gated cards plus inherited audits,
-then full-set games, release validation and the final two independent reviews.
+**Next action: implement the shared Sneak kernel**, then start Donatello's
+Technique, Foot Ninjas, Leonardo, Big Brother and Oroku Saki, Shredder Rising.
+There are **26 physical TMT Sneak consumers**. Read the pinned
+`Mage/src/main/java/mage/abilities/keyword/SneakAbility.java`, its referenced
+return-to-hand cost, entry handling and each consumer in full. Verify against
+the pinned comprehensive rules and the [official mechanics guide](https://magic.wizards.com/en/news/feature/teenage-mutant-ninja-turtles-mechanics):
+Sneak is an alternative spell cost paid during your post-declaration blockers
+step, can respond at instant speed, returns an unblocked attacker to its owner's
+hand as a cost, and creature spells enter tapped attacking that exact attacker's
+defender. Normal-cost casting remains available. Preserve paid qualification,
+exact object/defender identity, funding, transactional failure and hidden choices.
+The pinned XMage keyword class marks the cast; audit its entry integration and
+resolve discrepancies against Oracle/rules rather than assuming the mark alone
+implements attacking entry.
 
-Current build cache on producing host: `<cache>/rustmage-tmt-first-batch`;
-focused log `<cache>/rustmage-tmt-first-batch.log`. Inspect any active session
-before editing its inputs. Every Cargo command must use
-`python3 scripts/resource_guard.py -- cargo ...`. Read the updated checkpoint
-before resuming; a historical session ID is not portable.
+Remaining Disappear consumers are Krang & Shredder (linked exile/free casting),
+Pizza Face, Gastromancer (conditional animation), Rat King, Verminister
+(three-Rat payment and same-name reanimation), and West Wind Avatar
+(optional token-or-land sacrifice). Other outstanding mechanics include Class
+levels, special casting permissions, linked choices, equipment and copy effects.
+These are engineering work, not known external access/source blockers.
+
+Continue auditing the 71 inherited cards and implementing the remaining 111
+gated cards. Keep the 195 denominator fixed. Integrate locally, regenerate with
+`python3 scripts/link_catalogue.py`, authenticate with
+`python3 -m scripts.set_status TMT --check`, and run the complete release
+validator on fixed inputs. Every Cargo command must use
+`python3 scripts/resource_guard.py -- cargo ...`. Do not publish a partial PR.
+
+Resume with: “Use rustmage-implement-set to continue TMT from docs/sets/tmt.md.”
