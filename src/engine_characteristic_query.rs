@@ -28,7 +28,15 @@ impl Game {
         }
     }
 }
-impl CharacteristicQuery<'_> {
+impl<'a> CharacteristicQuery<'a> {
+    #[cfg(test)]
+    pub(super) fn with_evaluation(game: &'a Game, evaluation: AbilityEvaluation) -> Self {
+        Self {
+            game,
+            evaluation: Some(evaluation),
+        }
+    }
+
     pub(super) fn creature_matches(
         &self,
         filter: CreatureFilter,
