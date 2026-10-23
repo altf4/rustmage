@@ -721,3 +721,15 @@ frozen deck rules and exact membership/movement/observation/branch behavior and
 admits no card by itself. Schema is 181 for the added private outside-game field.
 Combined release validation follows; full-pool games and final reviews remain
 pending while isolated authors complete all 22 remaining cards.
+
+## Validated 173-card checkpoint
+
+All nine release phases pass on `b8275317` in 689.85 seconds, including
+3,655 library tests (one ignored), 405 TMT scenarios, native games and seven
+Python smoke checks. All 102 newly authored candidates and 71 inherited audits
+have combined release evidence. Admission remains 173/195 with zero unresolved.
+
+[Portable evidence](tmt-173-validation.json) records preserved libraries and
+resource limits. The measured continuation interval verified 22 new physical
+cards in 2,246.78 seconds (35.25 cards/hour). The last 22 cards, complete-pool
+games, optimized TMT throughput and independent reviews remain pending.

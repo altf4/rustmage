@@ -86,7 +86,7 @@
       "oracle_id": "d379a919-02cd-46fd-a6ce-b66a77745ae7",
       "name": "April O'Neil, Hacktivist",
       "definition": "src/card_definitions/tmt/april_o_neil_hacktivist.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "April O'Neil, Hacktivist",
@@ -102,7 +102,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/april_o_neil_hacktivist.json",
-        "src/engine_tmt_alliance_batch_tests.rs"
+        "src/engine_tmt_alliance_batch_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 31,
       "owner": "tmt_spells"
@@ -244,7 +245,7 @@
       "oracle_id": "39c813e1-0e26-440a-b9bd-e781f7576b8b",
       "name": "Bebop, Warthog Warrior",
       "definition": "src/card_definitions/tmt/bebop_warthog_warrior.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Bebop, Warthog Warrior",
@@ -262,7 +263,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/bebop_warthog_warrior.json",
-        "src/engine_tmt_combat_batch_tests.rs"
+        "src/engine_tmt_combat_batch_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 28,
       "owner": "tmt_audit"
@@ -504,7 +506,7 @@
       "oracle_id": "049d8b06-db90-4b9c-8195-d987b3ef1005",
       "name": "Courier of Comestibles",
       "definition": "src/card_definitions/tmt/courier_of_comestibles.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Courier of Comestibles",
@@ -520,7 +522,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/courier_of_comestibles.json",
-        "src/engine_tmt_alliance_batch_tests.rs"
+        "src/engine_tmt_alliance_batch_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 31,
       "owner": "tmt_spells"
@@ -663,7 +666,7 @@
       "oracle_id": "8f0777bc-4fca-4601-beed-1fd060f28075",
       "name": "Dimensional Exile",
       "definition": "src/card_definitions/tmt/dimensional_exile.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Dimensional Exile",
@@ -680,7 +683,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/dimensional_exile.json",
-        "src/engine_tmt_exile_returns_tests.rs"
+        "src/engine_tmt_exile_returns_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 29,
       "owner": "tmt_mana"
@@ -981,7 +985,7 @@
       "oracle_id": "0056fc91-4398-471c-b561-7ff99750ac8a",
       "name": "Escape Tunnel",
       "definition": "src/card_definitions/tmt/escape_tunnel.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Escape Tunnel",
@@ -998,7 +1002,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/escape_tunnel.json",
-        "src/engine_tmt_exile_returns_tests.rs"
+        "src/engine_tmt_exile_returns_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 29,
       "owner": "tmt_mana"
@@ -1007,7 +1012,7 @@
       "oracle_id": "aa481983-8f1a-4519-9371-5e7edcd3274f",
       "name": "Everything Pizza",
       "definition": "src/card_definitions/tmt/everything_pizza.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Everything Pizza",
@@ -1024,7 +1029,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/everything_pizza.json",
-        "src/engine_tmt_alliance_batch_tests.rs"
+        "src/engine_tmt_alliance_batch_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 31,
       "owner": "tmt_spells"
@@ -1574,7 +1580,7 @@
       "oracle_id": "4f02aa99-481c-4089-8f7c-cfe7eaa7dda0",
       "name": "Improvised Arsenal",
       "definition": "src/card_definitions/tmt/improvised_arsenal.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Improvised Arsenal",
@@ -1592,7 +1598,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/improvised_arsenal.json",
-        "src/engine_tmt_equipment_tests.rs"
+        "src/engine_tmt_equipment_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 30,
       "owner": "integrator"
@@ -2118,7 +2125,7 @@
       "oracle_id": "212fdb7c-1c7e-4eed-b1ed-bcc14a425da8",
       "name": "Lita, Little Orphan Amphibian",
       "definition": "src/card_definitions/tmt/lita_little_orphan_amphibian.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Lita, Little Orphan Amphibian",
@@ -2137,7 +2144,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/lita_little_orphan_amphibian.json",
-        "src/engine_tmt_alliance_batch_tests.rs"
+        "src/engine_tmt_alliance_batch_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 31,
       "owner": "tmt_spells"
@@ -2174,7 +2182,7 @@
       "oracle_id": "73413bd5-8c40-4d45-8f05-c20c39ee4017",
       "name": "Madame Null, Power Broker",
       "definition": "src/card_definitions/tmt/madame_null_power_broker.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Madame Null, Power Broker",
@@ -2191,7 +2199,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/madame_null_power_broker.json",
-        "src/engine_tmt_alliance_batch_tests.rs"
+        "src/engine_tmt_alliance_batch_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 31,
       "owner": "tmt_spells"
@@ -2943,7 +2952,7 @@
       "oracle_id": "e05f1a43-16ce-4e88-b0ad-2202efb25516",
       "name": "Northampton Farm",
       "definition": "src/card_definitions/tmt/northampton_farm.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Northampton Farm",
@@ -2961,7 +2970,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/northampton_farm.json",
-        "src/engine_tmt_exile_returns_tests.rs"
+        "src/engine_tmt_exile_returns_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 29,
       "owner": "tmt_mana"
@@ -2970,7 +2980,7 @@
       "oracle_id": "6d819742-3d02-4d60-9b10-82caa49a9d49",
       "name": "Novel Nunchaku",
       "definition": "src/card_definitions/tmt/novel_nunchaku.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Novel Nunchaku",
@@ -2988,7 +2998,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/novel_nunchaku.json",
-        "src/engine_tmt_equipment_tests.rs"
+        "src/engine_tmt_equipment_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 30,
       "owner": "integrator"
@@ -3396,7 +3407,7 @@
       "oracle_id": "e9685c61-e33d-4ae0-9dd3-7fd0df5eb46f",
       "name": "Quintessential Katana",
       "definition": "src/card_definitions/tmt/quintessential_katana.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Quintessential Katana",
@@ -3414,7 +3425,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/quintessential_katana.json",
-        "src/engine_tmt_equipment_tests.rs"
+        "src/engine_tmt_equipment_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 30,
       "owner": "integrator"
@@ -3449,7 +3461,7 @@
       "oracle_id": "57f39ce2-ecbb-4262-8140-03aba5c4303f",
       "name": "Raph & Leo, Sibling Rivals",
       "definition": "src/card_definitions/tmt/raph_leo_sibling_rivals.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Raph & Leo, Sibling Rivals",
@@ -3465,7 +3477,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/raph_leo_sibling_rivals.json",
-        "src/engine_tmt_combat_batch_tests.rs"
+        "src/engine_tmt_combat_batch_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 28,
       "owner": "tmt_audit"
@@ -3523,7 +3536,7 @@
       "oracle_id": "eaf194a7-d95f-4738-9052-92ad00443a76",
       "name": "Raphael, Most Attitude",
       "definition": "src/card_definitions/tmt/raphael_most_attitude.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Raphael, Most Attitude",
@@ -3541,7 +3554,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/raphael_most_attitude.json",
-        "src/engine_tmt_combat_batch_tests.rs"
+        "src/engine_tmt_combat_batch_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 28,
       "owner": "tmt_audit"
@@ -3550,7 +3564,7 @@
       "oracle_id": "fdb8e862-c642-4b7b-b061-400de6061ffe",
       "name": "Raphael, Ninja Destroyer",
       "definition": "src/card_definitions/tmt/raphael_ninja_destroyer.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Raphael, Ninja Destroyer",
@@ -3567,7 +3581,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/raphael_ninja_destroyer.json",
-        "src/engine_tmt_combat_batch_tests.rs"
+        "src/engine_tmt_combat_batch_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 28,
       "owner": "tmt_audit"
@@ -3705,7 +3720,7 @@
       "oracle_id": "6c754808-86a6-43d3-8aeb-96ec19f7396c",
       "name": "Renet, Temporal Apprentice",
       "definition": "src/card_definitions/tmt/renet_temporal_apprentice.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Renet, Temporal Apprentice",
@@ -3722,7 +3737,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/renet_temporal_apprentice.json",
-        "src/engine_tmt_exile_returns_tests.rs"
+        "src/engine_tmt_exile_returns_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 29,
       "owner": "tmt_mana"
@@ -3805,7 +3821,7 @@
       "oracle_id": "f9330a7b-8a65-4e04-a777-bf6512332850",
       "name": "Rocksteady, Crash Courser",
       "definition": "src/card_definitions/tmt/rocksteady_crash_courser.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Rocksteady, Crash Courser",
@@ -3823,7 +3839,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/rocksteady_crash_courser.json",
-        "src/engine_tmt_combat_batch_tests.rs"
+        "src/engine_tmt_combat_batch_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 28,
       "owner": "tmt_audit"
@@ -3969,7 +3986,7 @@
       "oracle_id": "bda5d0aa-3ed0-4f8c-80ae-f9cb8ed0ac82",
       "name": "Shredder's Armor",
       "definition": "src/card_definitions/tmt/shredder_s_armor.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Shredder's Armor",
@@ -3987,7 +4004,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/shredder_s_armor.json",
-        "src/engine_tmt_equipment_tests.rs"
+        "src/engine_tmt_equipment_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 30,
       "owner": "integrator"
@@ -4655,7 +4673,7 @@
       "oracle_id": "86ef86de-104f-4eae-a2db-893b50e95ad7",
       "name": "Tokka & Rahzar, Terrible Twos",
       "definition": "src/card_definitions/tmt/tokka_rahzar_terrible_twos.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Tokka & Rahzar, Terrible Twos",
@@ -4673,7 +4691,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/tokka_rahzar_terrible_twos.json",
-        "src/engine_tmt_alliance_batch_tests.rs"
+        "src/engine_tmt_alliance_batch_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 31,
       "owner": "tmt_spells"
@@ -4709,7 +4728,7 @@
       "oracle_id": "45d40cdb-21cc-4569-a894-83dd3026c947",
       "name": "Triceraton Commander",
       "definition": "src/card_definitions/tmt/triceraton_commander.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Triceraton Commander",
@@ -4727,7 +4746,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/triceraton_commander.json",
-        "src/engine_tmt_alliance_batch_tests.rs"
+        "src/engine_tmt_alliance_batch_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 31,
       "owner": "tmt_spells"
@@ -4913,7 +4933,7 @@
       "oracle_id": "803971e6-67f3-4fda-aeb6-69ef8ea4b54e",
       "name": "Turtles in Time",
       "definition": "src/card_definitions/tmt/turtles_in_time.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Turtles in Time",
@@ -4930,7 +4950,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/turtles_in_time.json",
-        "src/engine_tmt_exile_returns_tests.rs"
+        "src/engine_tmt_exile_returns_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 29,
       "owner": "tmt_mana"
@@ -5065,7 +5086,7 @@
       "oracle_id": "392a71c7-8f6d-46b8-bcc3-613e086d86ed",
       "name": "Wingnut, Bat on the Belfry",
       "definition": "src/card_definitions/tmt/wingnut_bat_on_the_belfry.rs",
-      "state": "tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Wingnut, Bat on the Belfry",
@@ -5082,7 +5103,8 @@
       ],
       "evidence": [
         "src/card_definitions/tmt/wingnut_bat_on_the_belfry.json",
-        "src/engine_tmt_alliance_batch_tests.rs"
+        "src/engine_tmt_alliance_batch_tests.rs",
+        "docs/sets/tmt-173-validation.json"
       ],
       "local_batch": 31,
       "owner": "tmt_spells"
