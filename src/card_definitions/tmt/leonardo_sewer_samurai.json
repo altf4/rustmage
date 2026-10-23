@@ -37,6 +37,11 @@
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/abilities/effects/keyword/FinalityCounterEffect.java",
       "sha256": "6d356fb017f60a29c2d49947426ea437c5e5fe983f71222b8a38094e8b81e84c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/events/ZoneChangeEvent.java",
+      "sha256": "eba0b01196de4b4ee1c99ca60b2734755800c5eedbc724f5573216d38b77df1e"
     }
   ],
   "rules_evidence": {
@@ -50,6 +55,6 @@
       "122.1h"
     ],
     "rulings_url": "https://magic.wizards.com/en/news/feature/teenage-mutant-ninja-turtles-release-notes",
-    "note": "Finality is an intrinsic replacement on every permanent, independent of abilities; pinned Java restricts to creature dies events. Explicit permission selection preserves normal/alternative costs and finality only for this permission."
+    "note": "Finality is an intrinsic replacement on every permanent, independent of abilities. The pinned Java FinalityCounterEffect agrees: its isDiesEvent helper checks any battlefield-to-graveyard move, without a creature restriction. Explicit permission selection preserves normal/alternative costs and finality only for this permission."
   }
 }

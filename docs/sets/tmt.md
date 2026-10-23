@@ -287,8 +287,9 @@ Muldrotha’s separate quota and Sneak/Warp routes, and compact 40-byte CastInfo
 
 Intrinsic finality replacement works on all permanents, survives ability loss,
 competes with self-shuffling replacement once, and clears on bounce/reentry.
-Paired provenance records the pinned Java creature-only discrepancy against
-CR122.1h and official TMT rulings. Source/provenance and portability checks pass.
+Paired provenance confirms agreement with pinned Java, CR122.1h and official
+TMT rulings: XMage’s isDiesEvent helper covers every battlefield-to-graveyard
+move. An earlier note incorrectly inferred a creature restriction from its name. Source/provenance and portability checks pass.
 Observation schema is 174. Admission is 110/195, 85 gated; the 39th newly authored
 card awaits integrated release validation. Next: the five Class cards, including
 true Class level designations, gained abilities and Ninja Teen’s granted Sneak
@@ -356,3 +357,8 @@ every admitted definition and passes in the complete rerun.
 
 Next: Party Dude's shared cross-player token event, then Ninja Teen's dynamic
 Sneak/cost composition. The full 195-card goal stays open.
+
+Finality source-note clarification after the 113-card producing revision: full
+`ZoneChangeEvent.java` confirms that XMage’s `isDiesEvent()` is an all-permanent
+battlefield-to-graveyard predicate. Samurai’s provenance now pins that helper
+and corrects the earlier claimed discrepancy. No gameplay behavior changed.
