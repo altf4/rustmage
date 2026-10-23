@@ -8,5 +8,22 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "27b386423243090264750bd7fedbcb3780b774f3e0ebcba155e42c5951bcd0c9"
   },
-  "physical_metadata_sha256": "b6e96415001d39955f2d7933870a3de4ed9bb04d23d1a8559a4e93595e12b740"
+  "physical_metadata_sha256": "b6e96415001d39955f2d7933870a3de4ed9bb04d23d1a8559a4e93595e12b740",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MakeYourMove.java",
+  "java_sha256": "89538d0b8cb370df1512234e48977e91d196de8f50487ee0cb1b94fc504814c2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    }
+  ],
+  "source_audit": {
+    "scope": "Full Oracle body, complete XMage card class and listed complete reusable implementations read; inherited typed behavior independently exercised with paid legal actions.",
+    "tests": [
+      "src/engine_tmt_inherited_batch_two_tests.rs"
+    ],
+    "status": "Focused rules audit; integrated release and complete-set acceptance remain integrator obligations."
+  }
 }
