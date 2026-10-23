@@ -700,3 +700,24 @@ choices, optional hand/graveyard shuffle, successful attachment reflexives and
 granted any-recipient combat-damage batches. Novel Nunchaku uses the current
 equipped creature (or source attachment LKI) under Oracle/CR608.2h, correcting
 XMage's captured-original-target discrepancy. Observation schema is 180.
+
+## 173-card candidate integration and outside-game API
+
+Source `efbd038e` adds eight alliance/search/cast-history consumers and the
+stable Dinosaur Soldier token factory at 5360. Its 21 focused scenarios, 157
+affected regressions, 63 Java pins and Clippy pass. Triceraton Commander's
+inherited fixed white mana components were corrected against pinned XXWW
+Oracle metadata. Admission is 173/195, 22 gated, zero unresolved. 102 new
+physical candidates have focused evidence (80 release verified).
+
+The prior combined 165-card source `70249133` passed all 379 TMT scenarios and
+the 20-game TMT workload. The new batch adds explicit resolution-time keyword
+options, per-turn modal reservations, spell-type and actual mana-spent history,
+optional life/counter choices and actual search movement completion.
+
+Tested outside-game API source `daa08e99` supplies a checked constructor with
+private owned sideboard pools; existing Config literals remain valid. It enforces
+frozen deck rules and exact membership/movement/observation/branch behavior and
+admits no card by itself. Schema is 181 for the added private outside-game field.
+Combined release validation follows; full-pool games and final reviews remain
+pending while isolated authors complete all 22 remaining cards.

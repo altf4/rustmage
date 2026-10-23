@@ -8813,8 +8813,8 @@ mod tmt_equipment_tests;
 #[path = "engine_outside_game.rs"]
 mod outside_game;
 #[cfg(test)]
-#[path = "engine_tmt_last_origins_tests.rs"]
-mod tmt_last_origins_tests;
-#[cfg(test)]
 #[path = "engine_tmt_alliance_batch_tests.rs"]
 mod tmt_alliance_batch_tests;
+#[cfg(test)]
+#[path = "engine_tmt_last_origins_tests.rs"]
+mod tmt_last_origins_tests;

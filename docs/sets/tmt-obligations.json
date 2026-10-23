@@ -86,7 +86,7 @@
       "oracle_id": "d379a919-02cd-46fd-a6ce-b66a77745ae7",
       "name": "April O'Neil, Hacktivist",
       "definition": "src/card_definitions/tmt/april_o_neil_hacktivist.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "April O'Neil, Hacktivist",
@@ -100,7 +100,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/april_o_neil_hacktivist.json",
+        "src/engine_tmt_alliance_batch_tests.rs"
+      ],
+      "local_batch": 31,
+      "owner": "tmt_spells"
     },
     {
       "oracle_id": "3f166376-2739-411c-8f42-96f2ef28ef86",
@@ -499,7 +504,7 @@
       "oracle_id": "049d8b06-db90-4b9c-8195-d987b3ef1005",
       "name": "Courier of Comestibles",
       "definition": "src/card_definitions/tmt/courier_of_comestibles.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Courier of Comestibles",
@@ -513,7 +518,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/courier_of_comestibles.json",
+        "src/engine_tmt_alliance_batch_tests.rs"
+      ],
+      "local_batch": 31,
+      "owner": "tmt_spells"
     },
     {
       "oracle_id": "a1ddf985-1646-468c-b1a4-ab6bb8e9dd7c",
@@ -997,7 +1007,7 @@
       "oracle_id": "aa481983-8f1a-4519-9371-5e7edcd3274f",
       "name": "Everything Pizza",
       "definition": "src/card_definitions/tmt/everything_pizza.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Everything Pizza",
@@ -1012,7 +1022,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/everything_pizza.json",
+        "src/engine_tmt_alliance_batch_tests.rs"
+      ],
+      "local_batch": 31,
+      "owner": "tmt_spells"
     },
     {
       "oracle_id": "79a9fc1c-a6a9-483a-9ba7-d09fe41760c3",
@@ -2103,7 +2118,7 @@
       "oracle_id": "212fdb7c-1c7e-4eed-b1ed-bcc14a425da8",
       "name": "Lita, Little Orphan Amphibian",
       "definition": "src/card_definitions/tmt/lita_little_orphan_amphibian.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Lita, Little Orphan Amphibian",
@@ -2120,7 +2135,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/lita_little_orphan_amphibian.json",
+        "src/engine_tmt_alliance_batch_tests.rs"
+      ],
+      "local_batch": 31,
+      "owner": "tmt_spells"
     },
     {
       "oracle_id": "2db77e35-a54a-4e9c-8081-c97822515879",
@@ -2154,7 +2174,7 @@
       "oracle_id": "73413bd5-8c40-4d45-8f05-c20c39ee4017",
       "name": "Madame Null, Power Broker",
       "definition": "src/card_definitions/tmt/madame_null_power_broker.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Madame Null, Power Broker",
@@ -2169,7 +2189,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/madame_null_power_broker.json",
+        "src/engine_tmt_alliance_batch_tests.rs"
+      ],
+      "local_batch": 31,
+      "owner": "tmt_spells"
     },
     {
       "oracle_id": "8226f31d-6f51-49c3-87f7-0c68f7f4f9ce",
@@ -4630,7 +4655,7 @@
       "oracle_id": "86ef86de-104f-4eae-a2db-893b50e95ad7",
       "name": "Tokka & Rahzar, Terrible Twos",
       "definition": "src/card_definitions/tmt/tokka_rahzar_terrible_twos.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Tokka & Rahzar, Terrible Twos",
@@ -4646,7 +4671,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/tokka_rahzar_terrible_twos.json",
+        "src/engine_tmt_alliance_batch_tests.rs"
+      ],
+      "local_batch": 31,
+      "owner": "tmt_spells"
     },
     {
       "oracle_id": "eaa6b294-ac66-4fe2-b694-97b0a04f7be1",
@@ -4679,7 +4709,7 @@
       "oracle_id": "45d40cdb-21cc-4569-a894-83dd3026c947",
       "name": "Triceraton Commander",
       "definition": "src/card_definitions/tmt/triceraton_commander.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Triceraton Commander",
@@ -4695,7 +4725,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/triceraton_commander.json",
+        "src/engine_tmt_alliance_batch_tests.rs"
+      ],
+      "local_batch": 31,
+      "owner": "tmt_spells"
     },
     {
       "oracle_id": "0a8e5c48-885d-4ea8-9c68-a3e9213d4289",
@@ -5030,7 +5065,7 @@
       "oracle_id": "392a71c7-8f6d-46b8-bcc3-613e086d86ed",
       "name": "Wingnut, Bat on the Belfry",
       "definition": "src/card_definitions/tmt/wingnut_bat_on_the_belfry.rs",
-      "state": "gated",
+      "state": "tested candidate; integrated release validation pending",
       "printed_obligations": [
         {
           "face": "Wingnut, Bat on the Belfry",
@@ -5045,7 +5080,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/card_definitions/tmt/wingnut_bat_on_the_belfry.json",
+        "src/engine_tmt_alliance_batch_tests.rs"
+      ],
+      "local_batch": 31,
+      "owner": "tmt_spells"
     },
     {
       "oracle_id": "d944d33d-0a95-4d0d-96ce-49d02500227d",

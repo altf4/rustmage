@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "243b9eae93bae3479ace30f9369fc427cd8ed12962a28e5b7d266250f142cc54",
+  "catalogue_version": "c25b649286cca13b97d3a6bd4ea9ad037f86edfddb354833093649969d3c947a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2450,
-  "implemented_total": 2456,
-  "token_definitions": 113,
+  "implemented_standard_cards": 2458,
+  "implemented_total": 2464,
+  "token_definitions": 114,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
   "omen_definitions": 13,
@@ -185,8 +185,8 @@
     },
     "tmt": {
       "total": 189,
-      "complete": 159,
-      "gated": 30
+      "complete": 167,
+      "gated": 22
     },
     "w17": {
       "total": 1,
@@ -1734,8 +1734,8 @@
     {
       "name": "April O'Neil, Hacktivist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/april_o_neil_hacktivist.rs",
       "set": "tmt"
     },
@@ -7182,8 +7182,8 @@
     {
       "name": "Courier of Comestibles",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/courier_of_comestibles.rs",
       "set": "tmt"
     },
@@ -11302,8 +11302,8 @@
     {
       "name": "Everything Pizza",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/everything_pizza.rs",
       "set": "tmt"
     },
@@ -20334,8 +20334,8 @@
     {
       "name": "Lita, Little Orphan Amphibian",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/lita_little_orphan_amphibian.rs",
       "set": "tmt"
     },
@@ -21070,8 +21070,8 @@
     {
       "name": "Madame Null, Power Broker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/madame_null_power_broker.rs",
       "set": "tmt"
     },
@@ -37158,8 +37158,8 @@
     {
       "name": "Tokka & Rahzar, Terrible Twos",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/tokka_rahzar_terrible_twos.rs",
       "set": "tmt"
     },
@@ -37646,8 +37646,8 @@
     {
       "name": "Triceraton Commander",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/triceraton_commander.rs",
       "set": "tmt"
     },
@@ -40838,8 +40838,8 @@
     {
       "name": "Wingnut, Bat on the Belfry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/wingnut_bat_on_the_belfry.rs",
       "set": "tmt"
     },
