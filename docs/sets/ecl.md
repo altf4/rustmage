@@ -113,18 +113,22 @@ Only terminated disposable outputs were cleaned (879,046,656 bytes).
 A second review finding affects the shared optimistic mana-color bound. With
 Bloom Tender, a colorless Foraging Wickermaw and one colorless mana, Wickermaw can
 become blue while producing blue, then Tender produces green and blue. The
-current bound misses that second blue and rejects a legal Wild Unraveling
-declaration. The green author is repairing this in an isolated worktree with
-an actual paid counterspell regression. This is the sole known open code issue.
+former bound missed that second blue and rejected a legal Wild Unraveling
+declaration. The repair at `9877dfd1` uses conservative dynamic maxima outside
+the proven closed world and preserves all three earlier performance bounds.
+The paid counterspell regression passes for both seats; all132 funding tests
+and Clippy pass. The independent reviewer cleared the patch statically. No
+known code findings remain; final combined validation and published-head reviews
+are pending.
 
 ## Resume and remaining work
 
 Branch `codex/ecl-complete-set`; issue [#462](https://github.com/altf4/rustmage/issues/462).
 Authenticate frozen membership using `python3 -m scripts.set_status ECL --check`.
-Finish the dynamic-production mana bound repair, integrate and regenerate, then
-rerun the strict whole-pool workload and its
-optimized throughput companion. Regenerate links and run final release
-validation, including Python binding smoke checks for the changed public schema.
+The dynamic-production repair is integrated and catalogue links regenerated.
+Run final release validation, including the strict236-game whole-pool workload
+and Python binding smoke checks for the changed public schema, then its optimized
+throughput companion.
 Keep consuming inputs fixed until each process terminates; poll the same job.
 
 Publish one implementation PR only after every local gate passes. Obtain two

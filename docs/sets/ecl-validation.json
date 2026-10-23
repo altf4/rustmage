@@ -2022,12 +2022,30 @@
   },
   "dynamic_production_review_finding": {
     "reviewer": "/root/ecl_final_review_b",
-    "status": "accepted; isolated author repair in progress",
+    "status": "fixed; independent reviewer cleared repair statically; final combined validation and published-head review pending",
     "severity": "P2",
     "file": "src/engine_funding.rs",
     "problem": "Optimistic per-color bound uses current Bloom Tender output and misses Foraging Wickermaw changing its color during a mana ability.",
     "actual_plan": "Only usable Tender+colorless Wicker, poolC: WickerC\u2192U turnsblue; Tender addsGU; totalUUG pays Wild Unraveling1UU route to counter an opposing spell. Initial upper incorrectly sees onlyU1.",
     "scope": "Shared legal-announcement funding false-negative; exact behavior works when mana is produced first, but the declaration/prefix must also be offered.",
-    "owner": "/root/ecl_green_colorless"
+    "owner": "/root/ecl_green_colorless",
+    "source_commit": "33caca5d",
+    "integrated_commit": "9877dfd1",
+    "fix": "Use conservative possible_color_upper for converters, nonclosed worlds, ability removal and characteristic providers; preserve all three eligible closed-world bounds. Use broad object-count maximum for subtype production quantity.",
+    "focused": {
+      "tests": 132,
+      "seconds": 30.21,
+      "resource_report": "e2d7cfcfea1c4dd7b21bfee7077e4022"
+    },
+    "paid_both_seat_regression": {
+      "tests": 1,
+      "seconds": 0.04,
+      "resource_report": "4a4272ef081d4163bca1f5924ef6affe"
+    },
+    "clippy": {
+      "seconds": 41.18,
+      "resource_report": "16a4a9a022864d80b2ce61b56a8b5589"
+    },
+    "dynamic_production_audit": "Current typed producers: Bloom Tender colors, Brigid creature count and Elvish Archdruid Elf count; no admitted devotion mana producer. Exact DFS validates actual activation costs and production."
   }
 }
