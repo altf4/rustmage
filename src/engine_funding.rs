@@ -254,6 +254,30 @@ fn funding_cost_payments(
 fn concrete_payment(payment: [u64; 6]) -> Mana {
     payment.map(|n| u32::try_from(n).capacity("mana payment exhausted"))
 }
+fn sacrifice_group_spec(
+    game: &Game,
+    goal: &FundingGoal,
+) -> Option<(ObjectRef, AdditionalCost, u16)> {
+    if let Some((source, index, _, definition)) = &goal.source
+        && let Some(spec) = definition.activations()[usize::from(*index)]
+            .cost
+            .additional
+        && let EffectChoiceKind::SacrificePermanents(amount) = spec.kind
+    {
+        return Some((*source, spec, amount));
+    }
+    let announcement = game
+        .state
+        .announcing
+        .as_ref()
+        .filter(|a| !a.additional_paid)?;
+    let spec = announcement.additional_cost()?;
+    if let EffectChoiceKind::SacrificePermanents(amount) = spec.kind {
+        Some((announcement.item.object, spec, amount))
+    } else {
+        None
+    }
+}
 fn reserve_obligations(
     goal: &FundingGoal,
     object: Option<&Object>,
@@ -430,6 +454,7 @@ impl<'g> FundingState<'g> {
             .announcing
             .as_ref()
             .and_then(|a| a.sneak_extra_reservation());
+        let grouped_sacrifice = sacrifice_group_spec(game, goal).is_some();
         let resources = game
             .state
             .objects
@@ -452,7 +477,7 @@ impl<'g> FundingState<'g> {
                                     .iter()
                                     .any(|subtype| game.has_subtype(*id as CardId, subtype))
                             || (object.controller == goal.actor
-                                && ((needs_permanent_colors || has_external_tap_mana
+                                && ((grouped_sacrifice || needs_permanent_colors || has_external_tap_mana
                                     || (convoke || counter_cost)
                                     && game.object_kinds(*id as CardId, object) & 1 != 0)
                                     || object.card.mana_color().is_some()
@@ -489,6 +514,31 @@ impl<'g> FundingState<'g> {
             reserve_group: sneak_extra.map(|r| Box::new(vec![r])),
         }
     }
+    fn sacrifice_group_available(&self, goal: &FundingGoal) -> bool {
+        let Some((source, spec, amount)) = sacrifice_group_spec(self.game, goal) else {
+            return true;
+        };
+        self.resources
+            .iter()
+            .filter(|resource| {
+                let object = ObjectRef {
+                    card: resource.id,
+                    generation: resource.object.generation,
+                };
+                (!spec.filter.other || object != source)
+                    && (!spec.filter.source_only || object == source)
+                    && Game::additional_object_matches(
+                        spec,
+                        goal.actor,
+                        &resource.object,
+                        self.kinds(resource),
+                        self.keywords(resource),
+                        self.granted_subtypes(resource.id),
+                    )
+            })
+            .count()
+            >= usize::from(amount)
+    }
     fn obligations(&self, goal: &FundingGoal) -> bool {
         let source = goal
             .source
@@ -517,6 +567,7 @@ impl<'g> FundingState<'g> {
                         )
                 });
         counter_cost_allowed
+            && self.sacrifice_group_available(goal)
             && self.reserve_group.as_ref().is_none_or(|group| {
                 group.iter().all(|&(reference, spec)| {
                     self.reserved_witness_matches(goal.actor, reference, spec)
@@ -1944,7 +1995,21 @@ impl Game {
         let purpose = self.funding_purpose(&goal);
         self.can_fund_for(goal, purpose)
     }
+    pub(super) fn sacrifice_group_available(&self, goal: &FundingGoal) -> bool {
+        let Some((source, spec, amount)) = sacrifice_group_spec(self, goal) else {
+            return true;
+        };
+        (0..self.state.objects.len())
+            .filter(|&id| {
+                self.additional_candidate(spec, goal.actor, source, self.object_ref(id as CardId))
+            })
+            .count()
+            >= usize::from(amount)
+    }
     pub(super) fn can_fund_for(&self, goal: FundingGoal, purpose: mana_lots::Purpose) -> bool {
+        if !self.sacrifice_group_available(&goal) {
+            return false;
+        }
         if let Some(a) = &self.state.announcing
             && !a.additional_paid
             && matches!(a.item.kind, StackKind::ActivatedAbility { .. })

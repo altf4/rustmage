@@ -734,6 +734,7 @@ impl CharacteristicQuery<'_> {
             self.layered_stats_without_hand(id, None)
         };
         ObjectView {
+            legendary: CharacteristicWorld::legendary(self, id),
             copy_ability_origin: self.copy_ability_origin(self.object_ref(id)),
             abilities: self.ability_availability(id),
             kinds: self.current_kinds(id),

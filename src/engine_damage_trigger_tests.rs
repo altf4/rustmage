@@ -583,6 +583,7 @@ fn departed_hero_damage_uses_frozen_battlefield_facts_for_observers() {
         selection: None,
         target_library: None,
         search: None,
+        legendary_search: None,
         optional_searches: None,
         choice: None,
     });

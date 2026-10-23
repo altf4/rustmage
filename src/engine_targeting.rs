@@ -1149,7 +1149,17 @@ impl Game {
                     TargetPredicate::Permanent => {
                         self.current_kinds(id) & (1 | 2 | 16 | 32 | 64 | 256) != 0
                     }
-                    TargetPredicate::Legendary => object.card.info().legendary,
+                    TargetPredicate::Legendary => {
+                        ability_world::CharacteristicWorld::legendary(self, id)
+                    }
+                    TargetPredicate::CrewedSourceThisTurn => {
+                        self.state.crew.as_ref().is_some_and(|data| {
+                            data.history.iter().any(|row| {
+                                row.vehicle == source
+                                    && row.contributors.contains(&self.object_ref(id))
+                            })
+                        })
+                    }
                     TargetPredicate::Basic => object.card.is_basic_land(),
                     TargetPredicate::Nonbasic => !object.card.is_basic_land(),
                     TargetPredicate::NonOutlaw => {
@@ -1759,6 +1769,7 @@ impl Game {
                     spec.kind,
                     EffectChoiceKind::BlightCost(_)
                         | EffectChoiceKind::Sacrifice
+                        | EffectChoiceKind::SacrificePermanents(_)
                         | EffectChoiceKind::SacrificeCreatureOrToken
                         | EffectChoiceKind::ReturnToHand
                         | EffectChoiceKind::RemoveCreatureCounters(_)

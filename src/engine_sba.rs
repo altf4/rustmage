@@ -96,7 +96,7 @@ impl Game {
             {
                 batch.detached.push(self.object_ref(id));
             }
-            if object.card.is_legendary() {
+            if ability_world::CharacteristicWorld::legendary(self, id) {
                 legends[object.controller.index()]
                     .entry(crate::card_names::comparison_key(self.object_name(id)))
                     .or_default()

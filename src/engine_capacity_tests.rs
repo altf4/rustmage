@@ -295,6 +295,7 @@ fn unrepresentable_derived_stats_cannot_escape_at_an_optional_resolution_boundar
         selection: None,
         target_library: None,
         search: None,
+        legendary_search: None,
         optional_searches: None,
         choice: None,
     });

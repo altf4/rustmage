@@ -17,6 +17,8 @@ pub struct CopyExceptions {
     pub haste: bool,
     pub nightmare: bool,
     pub changeling: bool,
+    pub nonlegendary: bool,
+    pub mutant: bool,
 }
 impl CopyExceptions {
     pub const NONE: Self = Self {
@@ -24,24 +26,32 @@ impl CopyExceptions {
         haste: false,
         nightmare: false,
         changeling: false,
+        nonlegendary: false,
+        mutant: false,
     };
     pub const HASTE_AND_SACRIFICE: Self = Self {
         sacrifice_abilities: 1,
         haste: true,
         nightmare: false,
         changeling: false,
+        nonlegendary: false,
+        mutant: false,
     };
     pub const SACRIFICE_ONLY: Self = Self {
         sacrifice_abilities: 1,
         haste: false,
         nightmare: false,
         changeling: false,
+        nonlegendary: false,
+        mutant: false,
     };
     pub const NIGHTMARE: Self = Self {
         sacrifice_abilities: 0,
         haste: false,
         nightmare: true,
         changeling: false,
+        nonlegendary: false,
+        mutant: false,
     };
     pub const CHANGELING: Self = Self {
         changeling: true,
@@ -56,6 +66,8 @@ impl CopyExceptions {
             haste: self.haste || other.haste,
             nightmare: self.nightmare || other.nightmare,
             changeling: self.changeling || other.changeling,
+            nonlegendary: self.nonlegendary || other.nonlegendary,
+            mutant: self.mutant || other.mutant,
         }
     }
 }
@@ -238,6 +250,7 @@ pub(crate) enum TargetPredicate {
     Basic,
     Nonbasic,
     Legendary,
+    CrewedSourceThisTurn,
     NonOutlaw,
 }
 
@@ -684,6 +697,7 @@ pub(crate) struct SearchSpec {
 pub enum EffectChoiceKind {
     /// Choose one surviving exact member of a captured entry batch, without targeting.
     CopyEntryObject,
+    CopyLinkedExile(CopyExceptions),
     /// Non-targeted creature card choice among this exact source ability family links.
     ReturnLinkedCreature,
     OutsideGameCard,
@@ -733,6 +747,7 @@ pub enum EffectChoiceKind {
     Forage,
     ForageOrBlack,
     Sacrifice,
+    SacrificePermanents(u16),
     /// Sacrifice another eligible creature or token; the source exclusion is in its filter.
     SacrificeCreatureOrToken,
     /// Non-targeting optional payment of a token or a land.
@@ -1087,6 +1102,22 @@ pub(crate) enum Instruction {
     SacrificeSourceByController,
     SacrificeSource,
     ExileAndCopyNightmare,
+    ExileGraveyardAndCopy(CopyExceptions),
+    CopyLinkedExiled(CopyExceptions),
+    GrantNextNoncreatureArtifactAffinity,
+    DrawToHandSize {
+        players: PlayerSet,
+        size: u16,
+    },
+    ReturnGraveyardNameTapped,
+    DelayCreatureAttacksAlone {
+        ability: u16,
+    },
+    IfSubjectSubtypeAny {
+        subject: Subject,
+        subtypes: &'static [&'static str],
+        skip: usize,
+    },
     ExileOtherNightmares,
     DamageDivided {
         total: u16,
@@ -1351,6 +1382,10 @@ pub(crate) enum Instruction {
     AnimateTargetsIfNoncreature(AnimationSpec),
     AnimateTargets(AnimationSpec),
     SetClassLevel(u8),
+    SearchLibraryOrOutsideLegendarySplit {
+        maximum: u16,
+        opponent_choices: u16,
+    },
     Search(SearchSpec),
     SearchCreatureManaValue {
         maximum: AmountValue,
@@ -2786,6 +2821,7 @@ pub(crate) enum TriggerCondition {
     SelfEntersOrDies,
     SelfAttacks,
     SelfAttacksOrBlocks,
+    DelayedCreatureAttacksAlone,
     SelfFirstAttack,
     OpponentAttacked,
     CreatureAttacksOrBlocksYou,

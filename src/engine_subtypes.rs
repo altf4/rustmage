@@ -179,6 +179,13 @@ impl Game {
         if (target.zone == Zone::Battlefield || target.is_token())
             && self
                 .copy_recipe(reference)
+                .is_some_and(|r| r.exceptions.mutant)
+        {
+            mask.insert("Mutant");
+        }
+        if (target.zone == Zone::Battlefield || target.is_token())
+            && self
+                .copy_recipe(reference)
                 .is_some_and(|r| r.exceptions.nightmare)
         {
             mask.insert("Nightmare");
@@ -456,6 +463,9 @@ impl Game {
             && m.before.kinds & CREATURE_OR_KINDRED != 0
         {
             result.set_flag(ALL_CREATURE_TYPES, true);
+        }
+        if m.before.copy_recipe.is_some_and(|r| r.exceptions.mutant) {
+            result.insert("Mutant");
         }
         if m.before.copy_recipe.is_some_and(|r| r.exceptions.nightmare) {
             result.insert("Nightmare");

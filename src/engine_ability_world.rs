@@ -192,6 +192,13 @@ pub(super) trait CharacteristicWorld {
             generation: self.object(id).generation,
         }
     }
+    fn legendary(&self, id: CardId) -> bool {
+        self.object(id).card.is_legendary()
+            && !self
+                .game()
+                .copy_recipe(self.reference(id))
+                .is_some_and(|recipe| recipe.exceptions.nonlegendary)
+    }
     fn kinds(&self, id: CardId) -> u16 {
         characteristic_layers::kinds(self, id, self.object(id))
     }

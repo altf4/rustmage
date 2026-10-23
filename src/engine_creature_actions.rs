@@ -7,6 +7,9 @@ impl Game {
         creatures: &[CardId],
         kind: CreatureActionKind,
     ) {
+        if kind == CreatureActionKind::Attack && creatures.len() == 1 {
+            self.delayed_attack_alone_triggers(actor, creatures[0]);
+        }
         if creatures.is_empty() {
             return;
         }

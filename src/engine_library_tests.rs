@@ -53,6 +53,7 @@ fn scry_partition_orders_both_groups_and_keeps_middle() {
         selection: None,
         target_library: None,
         search: None,
+        legendary_search: None,
         optional_searches: None,
         choice: None,
     });
@@ -271,6 +272,7 @@ fn short_empty_and_zero_looks_do_not_attempt_empty_draws() {
         selection: None,
         target_library: None,
         search: None,
+        legendary_search: None,
         optional_searches: None,
         choice: None,
     });
@@ -381,6 +383,7 @@ fn sba_waits_through_library_choices_and_following_instructions() {
         selection: None,
         target_library: None,
         search: None,
+        legendary_search: None,
         optional_searches: None,
         choice: None,
     });

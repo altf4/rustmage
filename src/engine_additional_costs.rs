@@ -48,6 +48,7 @@ impl Game {
             EffectChoiceKind::Discard => o.owner == actor,
             EffectChoiceKind::BlightCost(_)
             | EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::SacrificePermanents(_)
             | EffectChoiceKind::SacrificeCreatureOrToken
             | EffectChoiceKind::ReturnToHand
             | EffectChoiceKind::TapPermanents(_) => o.controller == actor,
@@ -93,6 +94,7 @@ impl Game {
             EffectChoiceKind::Discard => Zone::Hand,
             EffectChoiceKind::BlightCost(_)
             | EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::SacrificePermanents(_)
             | EffectChoiceKind::SacrificeCreatureOrToken
             | EffectChoiceKind::ReturnToHand
             | EffectChoiceKind::TapPermanents(_) => Zone::Battlefield,
@@ -386,6 +388,9 @@ impl Game {
             return result;
         }
 
+        if matches!(spec.kind, EffectChoiceKind::SacrificePermanents(_)) {
+            return self.sacrifice_group_available(&goal) && self.can_fund(goal);
+        }
         if let EffectChoiceKind::TapPermanents(amount) = spec.kind {
             let excludes_source = spec.filter.other
                 || goal
@@ -434,6 +439,18 @@ impl Game {
             selected.push(object);
             return self.behold_group_fundable(a, None, &selected);
         }
+        if let EffectChoiceKind::SacrificePermanents(amount) = spec.kind {
+            let mut selected = a
+                .additional_group
+                .as_deref()
+                .map_or_else(Vec::new, |group| group.clone());
+            if selected.contains(&object) || selected.len() >= usize::from(amount) {
+                return false;
+            }
+            selected.push(object);
+            return self.sacrifice_group_available(&self.funding_goal(a))
+                && self.behold_witnesses_fundable(a, spec, &selected, None);
+        }
         if let EffectChoiceKind::TapPermanents(_) = spec.kind {
             return (!a.tap_group_excludes_source(spec) || object != a.item.object)
                 && !a
@@ -458,7 +475,10 @@ impl Game {
     pub(super) fn choose_additional_cost(&mut self, object: ObjectRef) {
         let a = self.state.announcing.as_mut().unwrap();
         if let Some(AdditionalCost {
-            kind: EffectChoiceKind::TapPermanents(amount) | EffectChoiceKind::BeholdMany(amount),
+            kind:
+                EffectChoiceKind::TapPermanents(amount)
+                | EffectChoiceKind::BeholdMany(amount)
+                | EffectChoiceKind::SacrificePermanents(amount),
             ..
         }) = a.additional_cost()
         {
@@ -516,6 +536,29 @@ impl Game {
                 }
             }
             a.additional_paid = true;
+            return;
+        }
+        if let EffectChoiceKind::SacrificePermanents(amount) = spec.kind {
+            let group = a
+                .additional_group
+                .as_ref()
+                .expect("selected sacrifice group");
+            assert_eq!(group.len(), usize::from(amount));
+            assert!(group.iter().all(|&object| self.additional_candidate(
+                spec,
+                a.item.controller,
+                a.item.object,
+                object
+            )));
+            if group.contains(&a.item.object) {
+                self.refresh_local_source_counter_quantities(&mut a.item);
+            }
+            let sacrifices = group
+                .iter()
+                .map(|object| (a.item.controller, object.card))
+                .collect::<Vec<_>>();
+            a.additional_paid = true;
+            self.sacrifice_batch(&sacrifices);
             return;
         }
         if let EffectChoiceKind::TapPermanents(amount) = spec.kind {
@@ -577,7 +620,8 @@ impl Game {
                     a.item.controller,
                 );
             }
-            EffectChoiceKind::CopyEntryObject
+            EffectChoiceKind::CopyLinkedExile(_)
+            | EffectChoiceKind::CopyEntryObject
             | EffectChoiceKind::ReturnLinkedCreature
             | EffectChoiceKind::OutsideGameCard
             | EffectChoiceKind::RevealHandThenExile
@@ -589,6 +633,7 @@ impl Game {
             | EffectChoiceKind::OptionalBeholdType(_)
             | EffectChoiceKind::RemoveCreatureCounters(_)
             | EffectChoiceKind::RemoveCreatureCounter(_)
+            | EffectChoiceKind::SacrificePermanents(_)
             | EffectChoiceKind::TapPermanents(_)
             | EffectChoiceKind::UntapLands { .. }
             | EffectChoiceKind::PowerDifferenceBoost

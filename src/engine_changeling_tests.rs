@@ -95,6 +95,7 @@ fn program(g: &mut Game, code: &'static [Instruction]) {
         selection: None,
         target_library: None,
         search: None,
+        legendary_search: None,
         optional_searches: None,
         choice: None,
         mana_payment: None,

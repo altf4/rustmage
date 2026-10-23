@@ -85,6 +85,7 @@ fn program(g: &mut Game, code: &'static [Instruction], targets: Vec<BoundTarget>
         selection: None,
         target_library: None,
         search: None,
+        legendary_search: None,
         optional_searches: None,
         choice: None,
     });
@@ -522,6 +523,7 @@ fn self_payment_uses_exact_incarnation_and_damage_uses_departure_keywords() {
             selection: None,
             target_library: None,
             search: None,
+            legendary_search: None,
             optional_searches: None,
             choice: None,
         });

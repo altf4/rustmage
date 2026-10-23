@@ -12,6 +12,17 @@ pub(super) struct SearchChoice {
 
 impl Game {
     pub(super) fn choose_search(&mut self, card: CardId) {
+        if self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .legendary_search
+            .is_some()
+        {
+            self.choose_legendary_split_card(card);
+            return;
+        }
         let choice = self
             .state
             .resolving
@@ -45,6 +56,17 @@ impl Game {
     }
 
     pub(super) fn finish_search(&mut self, player: Player) {
+        if self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .legendary_search
+            .is_some()
+        {
+            self.finish_legendary_split_search();
+            return;
+        }
         let choice = self
             .state
             .resolving

@@ -39,6 +39,7 @@ fn program(g: &mut Game, player: Player, target: CardId, code: &'static [Instruc
         library: None,
         selection: None,
         search: None,
+        legendary_search: None,
         optional_searches: None,
         choice: None,
     });

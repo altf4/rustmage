@@ -26,6 +26,7 @@ pub(super) struct Resolution {
     pub library: Option<LibraryChoice>,
     pub selection: Option<Box<super::library_selection::LibrarySelection>>,
     pub search: Option<Box<super::search::SearchChoice>>,
+    pub legendary_search: Option<Box<legendary_split_search::LegendarySplitSearch>>,
     pub optional_searches: Option<Box<super::search::OptionalSearchSequence>>,
     pub choice: Option<Box<super::effect_choices::EffectChoice>>,
 }
@@ -648,6 +649,7 @@ impl Game {
                     | TriggerCondition::LifeGained { .. }
                     | TriggerCondition::LifeLost { .. }
                     | TriggerCondition::SelfCountersAdded { .. }
+                    | TriggerCondition::DelayedCreatureAttacksAlone
                     | TriggerCondition::SelfAttacksOrBlocks
                     | TriggerCondition::CreatureAttacksOrBlocksYou
                     | TriggerCondition::ControlledCreatureAttacksAlone
@@ -1110,6 +1112,7 @@ impl Game {
             );
         }
         let kinds = stack.map_or(card.kind_mask(), |i| self.state.stack[i].source_facts.kinds);
+        self.consume_next_spell_affinities(caster, kinds);
         self.state.players[caster.index()].cast_card_types_this_turn |= kinds;
         let first_trigger = self.state.pending_triggers.len();
         let count = &mut self.state.players[caster.index()].spells_cast_this_turn;
@@ -1656,6 +1659,7 @@ impl Game {
             selection: None,
             target_library: None,
             search: None,
+            legendary_search: None,
             optional_searches: None,
             choice: None,
         });
@@ -3023,6 +3027,55 @@ impl Game {
                     }
                 }
                 Instruction::SacrificeSource => self.sacrifice_exact_source(&item),
+                Instruction::GrantNextNoncreatureArtifactAffinity => {
+                    self.grant_next_spell_affinity(&item)
+                }
+                Instruction::DelayCreatureAttacksAlone { ability } => {
+                    self.remember_attack_alone_observer(&item, ability)
+                }
+                Instruction::DrawToHandSize { players, size } => {
+                    let draws: Vec<_> = self
+                        .program_players(players, &item)
+                        .map(|player| {
+                            (
+                                player,
+                                usize::from(size).saturating_sub(self.hand_count(player)),
+                            )
+                        })
+                        .collect();
+                    for (player, amount) in draws {
+                        self.draw_many(player, amount as u128);
+                    }
+                }
+                Instruction::ReturnGraveyardNameTapped => self.return_graveyard_name_tapped(&item),
+                Instruction::IfSubjectSubtypeAny {
+                    subject,
+                    subtypes,
+                    skip,
+                } => {
+                    if !self
+                        .keyword_subjects(&item, subject)
+                        .iter()
+                        .any(|&id| subtypes.iter().any(|subtype| self.has_subtype(id, subtype)))
+                    {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::ExileGraveyardAndCopy(exceptions) => {
+                    self.exile_graveyard_and_copy(&item, exceptions)
+                }
+                Instruction::CopyLinkedExiled(exceptions) => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::CopyLinkedExile(exceptions),
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        None,
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::ExileAndCopyNightmare => self.exile_and_copy_nightmare(&item),
                 Instruction::ExileOtherNightmares => self.exile_other_nightmares(item.controller),
                 Instruction::DamageDivided { .. } => self.damage_divided(&item),
@@ -3117,6 +3170,13 @@ impl Game {
                     self.state.pending = Pending::EffectSearch {
                         player: item.controller,
                     };
+                    return;
+                }
+                Instruction::SearchLibraryOrOutsideLegendarySplit {
+                    maximum,
+                    opponent_choices,
+                } => {
+                    self.start_legendary_split_search(item.controller, maximum, opponent_choices);
                     return;
                 }
                 Instruction::Search(mut spec)

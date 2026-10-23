@@ -377,7 +377,7 @@ impl Game {
         };
         // Raw scalar requirements fit u64; discounts above u64::MAX are
         // equivalent and impose no artificial reducer-count limit.
-        let mut reduction = 0u64;
+        let mut reduction = self.next_noncreature_affinity_reduction(actor, definition);
         for rule in definition.cost_reductions() {
             if rule.source_only && applies(rule, id) {
                 reduction = reduction.saturating_add(amount(rule, id));

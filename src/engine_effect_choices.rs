@@ -84,6 +84,11 @@ impl Game {
         if choice.counter_removal.is_some() {
             return false;
         }
+        if matches!(choice.kind, EffectChoiceKind::CopyLinkedExile(_)) {
+            let item = &self.state.resolving.as_ref().unwrap().item;
+            return self.linked_copy_candidate(item, object)
+                && !choice.selected[player.index()].contains(&object);
+        }
         if choice.kind == EffectChoiceKind::CopyEntryObject {
             return self.entry_batch_copy_recipe(object).is_some()
                 && !choice.selected[player.index()].contains(&object);
@@ -716,6 +721,15 @@ impl Game {
                 .collect();
             let events = self.move_objects_raw(&ids, Zone::Hand);
             self.finish_zone_events(&events, &[]);
+        } else if let EffectChoiceKind::CopyLinkedExile(exceptions) = choice.kind {
+            let item = self.state.resolving.as_ref().unwrap().item.clone();
+            if let Some(&object) = choice.selected[item.controller.index()].first()
+                && self.linked_copy_candidate(&item, object)
+            {
+                let mut recipe = CopyRecipe::new(self.state.objects[object.card as usize].card);
+                recipe.exceptions = recipe.exceptions.union(exceptions);
+                self.stage_copy_creation(item.controller, recipe, 1);
+            }
         } else if choice.kind == EffectChoiceKind::ReturnLinkedCreature {
             self.complete_linked_creature_return(&choice);
         } else if choice.kind == EffectChoiceKind::CopyEntryObject {

@@ -376,6 +376,7 @@ fn gain_only_suspension_cannot_commit_unrepresentable_continuous_stats() {
                     selection: None,
                     target_library: None,
                     search: None,
+                    legendary_search: None,
                     optional_searches: None,
                     choice: None,
                 });

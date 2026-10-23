@@ -39,6 +39,16 @@ pub use mana_lots::{
 mod copies;
 #[path = "engine_delayed_combat_draw.rs"]
 mod delayed_combat_draw;
+#[path = "engine_next_spell_affinity.rs"]
+mod next_spell_affinity;
+pub use next_spell_affinity::NextSpellAffinityView;
+#[path = "engine_delayed_attack_alone.rs"]
+mod delayed_attack_alone;
+#[path = "engine_legendary_split_search.rs"]
+mod legendary_split_search;
+#[path = "engine_saga_copies.rs"]
+mod saga_copies;
+pub use legendary_split_search::LegendarySplitSearchView;
 #[cfg(test)]
 #[path = "engine_linked_choice_epoch_tests.rs"]
 mod linked_choice_epoch_tests;
@@ -1805,6 +1815,9 @@ enum Pending {
     EffectSearch {
         player: Player,
     },
+    LegendarySplitSearch {
+        player: Player,
+    },
     EffectMana {
         player: Player,
         production: ManaProduction,
@@ -1921,6 +1934,12 @@ struct State {
     // Rare observer storage keeps the common State footprint to one pointer.
     #[allow(clippy::box_collection)]
     delayed_combat_draws: Option<Box<Vec<SpellView>>>,
+    #[allow(
+        clippy::box_collection,
+        reason = "Rare delayed observers keep ordinary game state compact"
+    )]
+    delayed_attack_alone: Option<Box<Vec<SpellView>>>,
+    next_spell_affinities: Option<SharedVec<NextSpellAffinityView>>,
     modal_history: modal_history::Rows,
     ability_resolutions: ability_resolutions::Rows,
     attacked_this_turn: SharedVec<ObjectRef>,
@@ -2006,6 +2025,7 @@ pub struct EndureChoiceView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ObjectView {
+    pub legendary: bool,
     /// A copy effect creates new linked abilities without changing the incarnation.
     pub copy_ability_origin: u64,
     /// Frozen effective nonkeyword abilities only while a removal effect exists.
@@ -2369,6 +2389,8 @@ pub struct Observation {
     pub target_amount: Option<TargetAmountChoiceView>,
     pub delayed_spell_copies: Vec<SpellView>,
     pub delayed_combat_draws: Vec<SpellView>,
+    pub delayed_attack_alone: Vec<SpellView>,
+    pub next_spell_affinities: Vec<NextSpellAffinityView>,
     pub group_move_count: Option<u64>,
     pub optional_search_sequence: Option<OptionalSearchSequence>,
     pub announcing: Option<SpellView>,
@@ -2386,6 +2408,7 @@ pub struct Observation {
     pub recovery_choice: Option<RecoveryChoiceView>,
     pub milled_choice: Option<MilledSelectionView>,
     pub search_choice: Option<SearchChoiceView>,
+    pub legendary_split_search: Option<LegendarySplitSearchView>,
     pub search_distribution: Option<SearchDistributionView>,
     pub effect_choice: Option<EffectChoiceView>,
     pub entry_value: Option<entry_choices::EntryChoiceView>,
@@ -2562,6 +2585,8 @@ impl Game {
                 nightmare_cull: None,
                 stack_copy_data: None,
                 delayed_combat_draws: None,
+                delayed_attack_alone: None,
+                next_spell_affinities: None,
                 modal_history: None,
                 ability_resolutions: None,
                 attacked_this_turn: Vec::new().into(),
@@ -2732,6 +2757,7 @@ impl Game {
             | Pending::MilledSelection { player }
             | Pending::RevealedDiscard { player, .. }
             | Pending::RecoverMilled { player, .. }
+            | Pending::LegendarySplitSearch { player }
             | Pending::EffectSearch { player }
             | Pending::EffectLibrarySelection { player }
             | Pending::EffectLibrary { player }
@@ -3344,11 +3370,13 @@ impl Game {
                             }
                             EffectChoiceKind::TapPermanents(_) => Action::TapForEffect { object },
                             EffectChoiceKind::Sacrifice
+                            | EffectChoiceKind::SacrificePermanents(_)
                             | EffectChoiceKind::SacrificeCreatureOrToken
                             | EffectChoiceKind::SacrificeLandOrToken => {
                                 Action::Sacrifice { object }
                             }
                             EffectChoiceKind::PowerDifferenceBoost
+                            | EffectChoiceKind::CopyLinkedExile(_)
                             | EffectChoiceKind::CopyEntryObject
                             | EffectChoiceKind::ReturnLinkedCreature
                             | EffectChoiceKind::KeepSharedCreatureTypes => {
@@ -4436,6 +4464,16 @@ impl Game {
                             object: Some(object),
                         })
                     {
+                        return true;
+                    }
+                }
+            }
+            Pending::LegendarySplitSearch { player } => {
+                if self.legendary_split_can_finish() && emit(Action::FinishSearch) {
+                    return true;
+                }
+                for object in self.legendary_split_candidates(player) {
+                    if emit(Action::ChooseSearch { card: object.card }) {
                         return true;
                     }
                 }
@@ -6322,6 +6360,8 @@ impl Game {
         self.clear_crew_history();
         self.expire_spell_copies();
         self.state.delayed_combat_draws = None;
+        self.state.delayed_attack_alone = None;
+        self.state.next_spell_affinities = None;
         self.state.triggered_this_turn.clear();
         self.state.ability_resolutions = None;
         self.state.creature_damage_history = None;
@@ -6481,6 +6521,8 @@ impl Game {
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.expire_spell_copies();
         self.state.delayed_combat_draws = None;
+        self.state.delayed_attack_alone = None;
+        self.state.next_spell_affinities = None;
         self.expire_temporary_controls();
         if let Some(grants) = &mut self.state.temporary_abilities {
             grants.retain(|grant| grant.permanent);
@@ -7055,6 +7097,20 @@ impl Game {
                 Pending::RevealedDiscard { .. } => "revealed_discard",
                 Pending::RecoverMilled { .. } => "recover_milled",
                 Pending::MilledSelection { .. } => "milled_selection",
+                Pending::LegendarySplitSearch { .. } => {
+                    if s.resolving
+                        .as_ref()
+                        .unwrap()
+                        .legendary_search
+                        .as_ref()
+                        .unwrap()
+                        .revealed
+                    {
+                        "revealed_legendary_search"
+                    } else {
+                        "private_legendary_search"
+                    }
+                }
                 Pending::EffectSearch { .. } => {
                     if s.resolving
                         .as_ref()
@@ -7260,6 +7316,17 @@ impl Game {
             retarget: self.retarget_view(),
             target_amount: self.target_amount_choice(),
             delayed_spell_copies: self.delayed_spell_copy_view(),
+            delayed_attack_alone: self
+                .state
+                .delayed_attack_alone
+                .as_deref()
+                .cloned()
+                .unwrap_or_default(),
+            next_spell_affinities: self
+                .state
+                .next_spell_affinities
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             delayed_combat_draws: self
                 .state
                 .delayed_combat_draws
@@ -7408,6 +7475,7 @@ impl Game {
                 .as_ref()
                 .and_then(|r| r.optional_searches.as_deref())
                 .cloned(),
+            legendary_split_search: self.legendary_split_view(viewer),
             search_choice: if owns_choice && matches!(s.pending, Pending::EffectSearch { .. }) {
                 s.resolving
                     .as_ref()
@@ -7567,6 +7635,11 @@ impl Game {
             })
             + copy_characteristics::cull_bytes(&s.nightmare_cull)
             + delayed_combat_draw::owned_bytes(&s.delayed_combat_draws)
+            + delayed_combat_draw::owned_bytes(&s.delayed_attack_alone)
+            + s.next_spell_affinities.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<NextSpellAffinityView>>()
+                    + rows.len() * std::mem::size_of::<NextSpellAffinityView>()
+            })
             + stack_copies::owned_bytes(&s.stack_copy_data)
             + modal_history::owned_bytes(&s.modal_history)
             + s.class_levels
@@ -7639,6 +7712,10 @@ impl Game {
                             .milled_selection
                             .as_ref()
                             .map_or(0, |f| f.bytes())
+                        + resolution
+                            .legendary_search
+                            .as_ref()
+                            .map_or(0, |choice| choice.bytes())
                         + resolution
                             .optional_searches
                             .as_ref()
@@ -8861,3 +8938,7 @@ mod tmt_final_spells;
 #[cfg(test)]
 #[path = "engine_tmt_final_spells_tests.rs"]
 mod tmt_final_spells_tests;
+
+#[cfg(test)]
+#[path = "engine_tmt_final_batch_tests.rs"]
+mod tmt_final_batch_tests;
