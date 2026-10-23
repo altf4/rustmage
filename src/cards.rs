@@ -305,6 +305,7 @@ pub(crate) enum PlayerSet {
     DrawingPlayer,
     Active,
     DamagedPlayer,
+    Wheelers,
     Controller,
     Opponent,
     Each,
@@ -831,6 +832,9 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    ChooseWheel {
+        draw: u16,
+    },
     ChooseColor,
     SetColors {
         subject: Subject,
@@ -1229,6 +1233,7 @@ pub(crate) enum Instruction {
     PutDiscardCounters(CounterKind),
     DamageDiscardAmount(PlayerSet),
     DiscardHand(PlayerSet),
+    DiscardWholeHands(PlayerSet),
     TapCreatures(CreatureFilter),
     Mill(PlayerSet, MillAmount),
     MayMill(u16),

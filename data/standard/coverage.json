@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "396b8a010122295d42cd82b6c1d240bc605c8293ba05eaf985dcea455e0a4fe1",
+  "catalogue_version": "5fa9980b42d7ea3748b2931fbaa24714562e6fff93617d10e6da28b6aa9e41b2",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2393,
-  "implemented_total": 2399,
+  "implemented_standard_cards": 2394,
+  "implemented_total": 2400,
   "token_definitions": 113,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -185,8 +185,8 @@
     },
     "tmt": {
       "total": 189,
-      "complete": 102,
-      "gated": 87
+      "complete": 103,
+      "gated": 86
     },
     "w17": {
       "total": 1,
@@ -27222,8 +27222,8 @@
     {
       "name": "Raphael's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/raphael_s_technique.rs",
       "set": "tmt"
     },

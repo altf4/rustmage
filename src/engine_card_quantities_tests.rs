@@ -25,6 +25,7 @@ const STASH_LOSS: &[Instruction] = &[Instruction::LoseLifeScaled(
 // printed definition or claiming that a gated consumer is supported.
 fn resolve(g: &mut Game, item: SpellView, program: &'static [Instruction]) {
     g.state.resolving = Some(Resolution {
+        wheel: None,
         continuation: None,
         chosen_creature_type: None,
         chosen_color: None,

@@ -4,6 +4,7 @@ use crate::cards::{CastFilter, CastTarget, StaticAbilityFragment};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
+    pub wheel: Option<Box<super::wheel::WheelPlan>>,
     pub continuation: Option<Box<ProgramContinuation>>,
     pub chosen_creature_type: Option<crate::cards::CreatureType>,
     pub chosen_color: Option<crate::cards::ChoiceColor>,
@@ -1545,6 +1546,7 @@ impl Game {
         }
         assert!(self.state.resolving.is_none());
         self.state.resolving = Some(Resolution {
+            wheel: None,
             continuation: None,
             chosen_creature_type: None,
             chosen_color: None,
@@ -1604,6 +1606,17 @@ impl Game {
                 ),
                 None,
             ],
+            PlayerSet::Wheelers => {
+                let w = self
+                    .state
+                    .resolving
+                    .as_ref()
+                    .and_then(|r| r.wheel.as_ref())
+                    .expect("wheel decisions");
+                assert_eq!(w.answered, 3);
+                [w.first, w.first.other()]
+                    .map(|p| (w.accepted & (1 << p.index()) != 0).then_some(p))
+            }
             PlayerSet::Active => [Some(self.state.active), None],
             PlayerSet::Controller => [Some(controller), None],
             PlayerSet::Opponent => [Some(controller.other()), None],
@@ -2476,6 +2489,18 @@ impl Game {
                             .amount,
                     );
                 }
+                Instruction::DiscardWholeHands(players) => {
+                    let players: Vec<_> = self.program_players(players, &item).collect();
+                    let ids: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(_, o)| o.zone == Zone::Hand && players.contains(&o.owner))
+                        .map(|(id, _)| id as CardId)
+                        .collect();
+                    self.discard_batch_caused(&ids, None, Some(item.controller));
+                }
                 Instruction::DiscardHand(players) => {
                     for player in self.program_players(players, &item) {
                         self.state.resolving.as_mut().unwrap().discards[player.index()] =
@@ -3130,6 +3155,10 @@ impl Game {
                     if self.start_hand_creature_attacking(&item, maximum) {
                         return;
                     }
+                }
+                Instruction::ChooseWheel { draw } => {
+                    self.start_wheel(draw);
+                    return;
                 }
                 Instruction::PutHandCreatureAndLand => {
                     if self.start_effect_choice(

@@ -415,6 +415,7 @@ fn group_counter_instructions_finish_before_state_based_deaths_and_pair_cancella
         artifact: false,
     };
     g.state.resolving = Some(Resolution {
+        wheel: None,
         continuation: None,
         chosen_creature_type: None,
         chosen_color: None,

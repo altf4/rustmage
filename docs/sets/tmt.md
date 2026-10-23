@@ -19,9 +19,9 @@ Oracle facts remain pinned in `data/standard/cards.json`. The
 [obligation ledger](tmt-obligations.json) accounts for every printed line and
 canonical definition, including reprints; it is not a second membership source.
 
-Initial admission: **71/195**, **124 gated**. Current admission: **108/195**,
-**87 gated**, zero unresolved. The 71 inherited admission flags still require
-source/rules audits. **37 newly authored physical cards have rules scenarios; 36 have integrated release validation**;
+Initial admission: **71/195**, **124 gated**. Current admission: **109/195**,
+**86 gated**, zero unresolved. The 71 inherited admission flags still require
+source/rules audits. **38 newly authored physical cards have rules scenarios; 36 have integrated release validation**;
 zero have independent final published-head reviews or upstream merges.
 
 ## Active Sneak integration
@@ -239,3 +239,21 @@ roles, and untapped nonattacking enchantment-creature entry. Both seats, private
 observations and owned raw/index branch/restore are exercised by paid actions.
 Observation schema is 172. Full release validation for this card is pending.
 Next printed Sneak consumers: Raphael’s Technique and Leonardo, Sewer Samurai.
+
+## Active optional hand refresh
+
+Raphael’s Technique passes all-target checks and the expanded optimized
+**45-scenario Sneak suite** (`<cache>/rustmage-tmt-sneak-wheel-tests-third.log`,
+terminal success). Both public APNAP answers precede a single whole-hand discard
+batch, followed by APNAP draws. New owned optional state preserves choices in
+both observers’ views and branch/restore. Scenarios cover all acceptance masks,
+either active player for normal instant casting, empty hands, simultaneous
+empty-library losses, discard replacements entering before draws resume, and
+transactional rollback of the final answer and partial discard events. A live
+draw prohibition prevents choosing the impossible seven-card refresh, tested
+against Mornsong Aria. The pinned Java loop interleaves each accepter’s discard
+and draw; the authored implementation follows Oracle and CR101.4/608.2e/121.2c.
+Observation schema is 173. Integrated release validation for Improviser and
+Raphael’s Technique is pending. Next: Leonardo, Sewer Samurai, including exact
+graveyard permission choice, normal/Sneak casting, and intrinsic finality-counter
+replacement on every permanent under CR122.1h. Keep the full 195-card goal open.

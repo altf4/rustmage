@@ -17,6 +17,7 @@ fn program(g: &mut Game, player: Player, target: CardId, code: &'static [Instruc
         object: Some(g.object_ref(target)),
     });
     g.state.resolving = Some(Resolution {
+        wheel: None,
         continuation: None,
         chosen_creature_type: None,
         chosen_color: None,

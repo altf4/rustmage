@@ -1843,3 +1843,237 @@ fn tmt_sneak_improviser_placed_enchantment_creature_enters_untapped_without_atta
         assert!(!view.tapped && !view.attacking);
     }
 }
+#[test]
+fn tmt_sneak_raphael_public_apnap_choices_precede_simultaneous_discards_and_seven_draws() {
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            for enemy_turn in [false, true] {
+                if paid && enemy_turn {
+                    continue;
+                }
+                for mask in 0..4 {
+                    let mut g = setup(p);
+                    if enemy_turn {
+                        g.state.active = p.other();
+                        g.state.priority = p;
+                    }
+                    let returned = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+                    let source = named(&mut g, p, "Raphael's Technique", Zone::Hand);
+                    for q in [Player::P0, Player::P1] {
+                        named(&mut g, q, "Opt", Zone::Hand);
+                        named(&mut g, q, "Bear Cub", Zone::Hand);
+                    }
+                    if paid {
+                        unblocked(&mut g, returned);
+                        sneak(&mut g, source, returned, None);
+                    } else {
+                        cast(&mut g, source, None, &[]);
+                    }
+                    checked(&mut g, Action::Pass);
+                    checked(&mut g, Action::Pass);
+                    let first = g.state.active;
+                    assert_eq!(g.actor(), Some(first));
+                    assert!(matches!(g.state.pending, Pending::Wheel { .. }));
+                    assert_eq!(g.observe(p).wheel_choice.unwrap().decisions, [None, None]);
+                    let hands: [Vec<_>; 2] = std::array::from_fn(|index| {
+                        g.state
+                            .objects
+                            .iter()
+                            .enumerate()
+                            .filter(|(_, o)| o.zone == Zone::Hand && o.owner.index() == index)
+                            .map(|(id, _)| id as CardId)
+                            .collect()
+                    });
+                    let libraries: [usize; 2] =
+                        std::array::from_fn(|index| g.state.players[index].library.len());
+                    checked(
+                        &mut g,
+                        Action::ChooseOptional {
+                            accept: mask & (1 << first.index()) != 0,
+                        },
+                    );
+                    assert_eq!(g.actor(), Some(first.other()));
+                    for &id in hands.iter().flatten() {
+                        assert_eq!(g.state.objects[id as usize].zone, Zone::Hand);
+                    }
+                    let view = g.observe(p).wheel_choice.unwrap();
+                    assert_eq!(view.draw, 7);
+                    assert_eq!(
+                        view.decisions[first.index()],
+                        Some(mask & (1 << first.index()) != 0)
+                    );
+                    assert_eq!(view.decisions[first.other().index()], None);
+                    assert_eq!(Some(view), g.observe(p.other()).wheel_choice);
+                    checked(
+                        &mut g,
+                        Action::ChooseOptional {
+                            accept: mask & (1 << first.other().index()) != 0,
+                        },
+                    );
+                    settle(&mut g);
+                    for q in [Player::P0, Player::P1] {
+                        let accepted = mask & (1 << q.index()) != 0;
+                        assert_eq!(
+                            g.hand_count(q),
+                            if accepted { 7 } else { hands[q.index()].len() }
+                        );
+                        assert_eq!(
+                            g.state.players[q.index()].library.len(),
+                            libraries[q.index()] - if accepted { 7 } else { 0 }
+                        );
+                        assert_eq!(
+                            g.state.players[q.index()].cards_drawn_this_turn,
+                            if accepted { 7 } else { 0 }
+                        );
+                        assert_eq!(
+                            g.state.players[q.index()].cards_discarded_this_turn,
+                            if accepted {
+                                hands[q.index()].len() as u64
+                            } else {
+                                0
+                            }
+                        );
+                        for &id in &hands[q.index()] {
+                            assert_eq!(
+                                g.state.objects[id as usize].zone,
+                                if accepted {
+                                    Zone::Graveyard
+                                } else {
+                                    Zone::Hand
+                                }
+                            );
+                        }
+                    }
+                    assert!(g.observe(p).wheel_choice.is_none());
+                    assert_eq!(g.state.objects[source as usize].zone, Zone::Graveyard);
+                }
+            }
+        }
+    }
+}
+#[test]
+fn tmt_sneak_raphael_can_refresh_empty_hands_and_both_empty_library_draws_lose_together() {
+    for p in [Player::P0, Player::P1] {
+        for empty in [false, true] {
+            let mut g = setup(p);
+            if empty {
+                for q in [Player::P0, Player::P1] {
+                    let ids = g.state.players[q.index()].library.to_vec();
+                    for id in ids {
+                        g.move_object(id, Zone::Exile);
+                    }
+                }
+            }
+            let source = named(&mut g, p, "Raphael's Technique", Zone::Hand);
+            cast(&mut g, source, None, &[]);
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::ChooseOptional { accept: true });
+            checked(&mut g, Action::ChooseOptional { accept: true });
+            if empty {
+                assert_eq!(g.outcome(), Some(Outcome::Draw));
+            } else {
+                settle(&mut g);
+                assert_eq!(g.outcome(), None);
+                for q in [Player::P0, Player::P1] {
+                    assert_eq!(g.hand_count(q), 7);
+                }
+            }
+        }
+    }
+}
+#[test]
+fn tmt_sneak_raphael_last_answer_and_all_discard_events_roll_back_on_capacity_failure() {
+    let mut g = setup(Player::P0);
+    let source = named(&mut g, Player::P0, "Raphael's Technique", Zone::Hand);
+    let first = named(&mut g, Player::P0, "Opt", Zone::Hand);
+    let second = named(&mut g, Player::P1, "Opt", Zone::Hand);
+    cast(&mut g, source, None, &[]);
+    checked(&mut g, Action::Pass);
+    checked(&mut g, Action::Pass);
+    checked(&mut g, Action::ChooseOptional { accept: true });
+    g.state.objects[second as usize].generation = u64::MAX;
+    let snapshot = g.snapshot();
+    let revision = g.revision();
+    let views =
+        [g.observe(Player::P0), g.observe(Player::P1)].map(|o| serde_json::to_value(o).unwrap());
+    assert!(matches!(
+        g.apply(Player::P1, Action::ChooseOptional { accept: true }),
+        Err(Error::CapacityExceeded(_))
+    ));
+    assert_eq!(g.snapshot(), snapshot);
+    assert_eq!(g.revision(), revision);
+    assert_eq!(
+        [g.observe(Player::P0), g.observe(Player::P1)].map(|o| serde_json::to_value(o).unwrap()),
+        views
+    );
+    assert_eq!(g.state.objects[first as usize].zone, Zone::Hand);
+    assert_eq!(
+        g.observe(Player::P0).wheel_choice.unwrap().decisions,
+        [Some(true), None]
+    );
+    checked(&mut g, Action::ChooseOptional { accept: false });
+    settle(&mut g);
+    assert_eq!(g.hand_count(Player::P0), 7);
+    assert_eq!(g.state.objects[second as usize].zone, Zone::Hand);
+}
+
+#[test]
+fn tmt_sneak_raphael_opponent_caused_discard_replacement_enters_before_draws_resume() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Raphael's Technique", Zone::Hand);
+        let own = named(&mut g, p, "Wilt-Leaf Liege", Zone::Hand);
+        let enemy = named(&mut g, p.other(), "Wilt-Leaf Liege", Zone::Hand);
+        cast(&mut g, source, None, &[]);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::ChooseOptional { accept: true });
+        checked(&mut g, Action::ChooseOptional { accept: true });
+        settle(&mut g);
+        assert_eq!(g.state.objects[own as usize].zone, Zone::Graveyard);
+        assert_eq!(g.state.objects[enemy as usize].zone, Zone::Battlefield);
+        assert_eq!(g.state.objects[enemy as usize].controller, p.other());
+        for q in [Player::P0, Player::P1] {
+            assert_eq!(g.hand_count(q), 7);
+            assert_eq!(g.state.players[q.index()].cards_drawn_this_turn, 7);
+        }
+    }
+}
+
+#[test]
+fn tmt_sneak_raphael_cannot_choose_impossible_draw_under_mornsong_aria() {
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            let mut g = setup(p);
+            named(&mut g, p.other(), "Mornsong Aria", Zone::Battlefield);
+            let returned = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let source = named(&mut g, p, "Raphael's Technique", Zone::Hand);
+            named(&mut g, p, "Opt", Zone::Hand);
+            named(&mut g, p.other(), "Opt", Zone::Hand);
+            if paid {
+                unblocked(&mut g, returned);
+                sneak(&mut g, source, returned, None);
+            } else {
+                cast(&mut g, source, None, &[]);
+            }
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            let before = [g.hand_count(Player::P0), g.hand_count(Player::P1)];
+            for _ in 0..2 {
+                assert!(
+                    !g.legal_actions()
+                        .contains(&Action::ChooseOptional { accept: true })
+                );
+                reject(&mut g, Action::ChooseOptional { accept: true });
+                checked(&mut g, Action::ChooseOptional { accept: false });
+            }
+            settle(&mut g);
+            for q in [Player::P0, Player::P1] {
+                assert_eq!(g.hand_count(q), before[q.index()]);
+                assert_eq!(g.state.players[q.index()].cards_discarded_this_turn, 0);
+                assert_eq!(g.state.players[q.index()].cards_drawn_this_turn, 0);
+            }
+        }
+    }
+}

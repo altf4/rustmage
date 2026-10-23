@@ -115,6 +115,9 @@ mod mobilize;
 mod plot;
 #[path = "engine_sneak.rs"]
 mod sneak;
+#[path = "engine_wheel.rs"]
+mod wheel;
+pub use wheel::WheelChoiceView;
 #[path = "engine_tiered.rs"]
 mod tiered;
 #[path = "engine_warp.rs"]
@@ -1554,6 +1557,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    Wheel {
+        player: Player,
+    },
     FundingProbe {
         player: Player,
     },
@@ -2290,6 +2296,7 @@ pub struct Observation {
     pub announcing_cost: Option<ManaCost>,
     pub targeting_group: Option<u16>,
     pub library_choice: Option<LibraryChoiceView>,
+    pub wheel_choice: Option<WheelChoiceView>,
     pub library_selection: Option<LibrarySelectionView>,
     pub target_library: Option<TargetLibraryView>,
     pub last_target_library_move: Option<TargetLibraryMovement>,
@@ -2647,6 +2654,7 @@ impl Game {
             | Pending::ForageMethod { player }
             | Pending::Forage { player }
             | Pending::EffectOptional { player, .. }
+            | Pending::Wheel { player }
             | Pending::EffectDiscard { player, .. } => Some(player),
             Pending::Attackers | Pending::Damage | Pending::Discard => Some(self.state.active),
             Pending::Blockers => Some(self.state.active.other()),
@@ -4361,6 +4369,23 @@ impl Game {
                     }
                 }
             }
+            Pending::Wheel { .. } => {
+                let count = self
+                    .state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .wheel
+                    .as_ref()
+                    .unwrap()
+                    .draw;
+                if ((count == 0 || !self.draw_prohibited())
+                    && emit(Action::ChooseOptional { accept: true }))
+                    || emit(Action::ChooseOptional { accept: false })
+                {
+                    return true;
+                }
+            }
             Pending::EffectOptional { .. } => {
                 if emit(Action::ChooseOptional { accept: true })
                     || emit(Action::ChooseOptional { accept: false })
@@ -5205,6 +5230,11 @@ impl Game {
             {
                 self.choose_optional_search(actor, accept);
             }
+            Action::ChooseOptional { accept }
+                if matches!(self.state.pending, Pending::Wheel { .. }) =>
+            {
+                self.choose_wheel(actor, accept);
+            }
             Action::ChooseOptional { accept } => {
                 let Pending::EffectOptional { skip_to, .. } = self.state.pending else {
                     unreachable!()
@@ -5309,10 +5339,8 @@ impl Game {
             .count()
     }
 
-    fn draw(&mut self, p: Player) {
-        // Ordinary draws avoid building a layered query unless a printed source
-        // actually carries this prohibition.
-        if self.state.static_sources.iter().any(|&id| {
+    fn draw_prohibited(&self) -> bool {
+        self.state.static_sources.iter().any(|&id| {
             self.state.objects[id as usize]
                 .card
                 .static_ability_groups()
@@ -5325,7 +5353,11 @@ impl Game {
                 && self.continuous_fragment_available(id, |fragment| {
                     matches!(fragment, crate::cards::StaticAbilityFragment::CantDrawCards)
                 })
-        }) {
+        })
+    }
+
+    fn draw(&mut self, p: Player) {
+        if self.draw_prohibited() {
             return;
         }
         match self.state.players[p.index()].library.last().copied() {
@@ -6739,7 +6771,7 @@ impl Game {
                 Pending::AdditionalCost { .. } => "additional_cost",
                 Pending::PayCosts { .. } => "pay_costs",
                 Pending::OrderTriggers { .. } => "order_triggers",
-                Pending::EffectOptional { .. } => "optional_effect",
+                Pending::Wheel { .. } | Pending::EffectOptional { .. } => "optional_effect",
                 Pending::TargetLibrary { .. } => "target_library",
                 Pending::ForageMethod { .. } => "forage_method",
                 Pending::Forage { .. } => "forage",
@@ -7041,6 +7073,7 @@ impl Game {
                 }
                 options
             },
+            wheel_choice: self.wheel_choice(),
             library_selection: self.library_selection_view(viewer),
             target_library: self.target_library_view(viewer),
             last_target_library_move: s.last_target_library_move.as_deref().copied(),
@@ -7315,6 +7348,10 @@ impl Game {
                                     _ => 0,
                                 }
                         })
+                        + resolution
+                            .wheel
+                            .as_ref()
+                            .map_or(0, |_| std::mem::size_of::<wheel::WheelPlan>())
                         + resolution.target_library.as_ref().map_or(0, |f| f.bytes())
                         + resolution.forage.as_ref().map_or(0, |f| f.bytes())
                         + resolution.evidence.as_ref().map_or(0, |f| f.bytes())

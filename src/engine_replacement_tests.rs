@@ -407,6 +407,7 @@ fn synthetic(g: &mut Game, source: CardId, code: &'static [Instruction], targets
         .map(|&id| g.bind_target(Target::Card(id)))
         .collect();
     g.state.resolving = Some(Resolution {
+        wheel: None,
         continuation: None,
         chosen_creature_type: None,
         chosen_color: None,
