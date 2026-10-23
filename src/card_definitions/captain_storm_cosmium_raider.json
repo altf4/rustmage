@@ -1,0 +1,9 @@
+{
+  "name": "Captain Storm, Cosmium Raider",
+  "oracle_id": "431e85e3-15e6-471b-ba71-6058394c9a96",
+  "facts_sha256": "d0f923d2e1107fa940162fa30252704f5e8b3457c6f5eb18846eff5f14aa701d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CaptainStormCosmiumRaider.java",
+  "java_sha256": "962dc3bd3af7bbbe898c9f8fe82655b9afcb3c953aee5fd347a124393a541ac5",
+  "complete": true
+}

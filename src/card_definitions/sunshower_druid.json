@@ -1,0 +1,9 @@
+{
+  "name": "Sunshower Druid",
+  "oracle_id": "7a70faf5-cc04-402b-92e3-67746788f510",
+  "facts_sha256": "26cfc85f465bcabc6da294b78a906c8e5f05f8de006dd22f2c8a8f8c911b1e66",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SunshowerDruid.java",
+  "java_sha256": "2579ce3f306900eca2379cf1a3662211d9dbb64dfc47695628bf26983789b8b4",
+  "complete": true
+}

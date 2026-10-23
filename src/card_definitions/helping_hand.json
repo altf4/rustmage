@@ -1,0 +1,9 @@
+{
+  "name": "Helping Hand",
+  "oracle_id": "170a5dbc-6a43-4715-9501-178b1eb7b08c",
+  "facts_sha256": "cdf149f47ef3b07566688871b86481817036cb1c7757248d1e469634e4ac041c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HelpingHand.java",
+  "java_sha256": "58c7aed85e38a2876e6ba18f131ed3a8ac80efdbbb1259b646fc07d710baa2c7",
+  "complete": true
+}

@@ -1,0 +1,9 @@
+{
+  "name": "Wraith, Vicious Vigilante",
+  "oracle_id": "38684c31-e8c6-4825-8740-1a3d34b58b39",
+  "facts_sha256": "6b47b5a83c537f0e0578466ed03f772d572109082169c3c53f6d558def4815a1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WraithViciousVigilante.java",
+  "java_sha256": "6fc44bcfc214b54d21201c3ddff0db39b49ac58c7d0b802c6723734ec5f65c2f",
+  "complete": true
+}
