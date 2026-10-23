@@ -11,6 +11,7 @@ impl Game {
         // Freeze all players' top cards before moving anything. Mandatory milling
         // does as much as possible and never attempts a draw from an empty library.
         let maximum = match amount {
+            MillAmount::HalfLibraryRoundedUp => usize::MAX,
             MillAmount::Fixed(n) => usize::from(n),
             MillAmount::ChosenX => {
                 usize::try_from(self.state.resolving.as_ref().unwrap().item.x.unwrap_or(0))
@@ -24,6 +25,11 @@ impl Game {
         let ids: Vec<_> = players
             .iter()
             .flat_map(|player| {
+                let maximum = if amount == MillAmount::HalfLibraryRoundedUp {
+                    self.state.players[player.index()].library.len().div_ceil(2)
+                } else {
+                    maximum
+                };
                 self.state.players[player.index()]
                     .library
                     .iter()

@@ -1503,6 +1503,7 @@ impl Game {
                             .filter(|c| c.method == CastMethod::Warp)
                             .map(|_| item.controller);
                         movement.evoked = item.cast.is_some_and(|c| c.evoked);
+                        movement.sneak_paid = item.sneak.is_some();
                         if let Some(sneak) = item.sneak.as_deref() {
                             movement.tapped = true;
                             movement.attacking = sneak
@@ -3264,6 +3265,12 @@ impl Game {
                         .capacity("life loss amount exhausted");
                     for player in self.program_players(set, &item) {
                         self.lose_life(player, amount);
+                    }
+                }
+                Instruction::LoseHalfLifeRoundedUp(set) => {
+                    for player in self.program_players(set, &item) {
+                        let life = self.state.players[player.index()].life.max(0);
+                        self.lose_life(player, life / 2 + life % 2);
                     }
                 }
                 Instruction::LoseLife(set, amount) => {

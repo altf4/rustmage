@@ -939,3 +939,359 @@ fn tmt_sneak_uses_library_top_cast_permission_and_keeps_the_next_top_private_dur
         assert!(g.object_view(source).tapped && g.object_view(source).attacking);
     }
 }
+
+#[test]
+fn tmt_sneak_leader_entry_boost_requires_paid_cost_and_freezes_recipients() {
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            let mut g = setup(p);
+            let returned = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let ally = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let enemy = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let source = named(&mut g, p, "Leonardo, Leader in Blue", Zone::Hand);
+            if paid {
+                unblocked(&mut g, returned);
+                sneak(&mut g, source, returned, None);
+            } else {
+                cast(&mut g, source, None, &[]);
+            }
+            settle(&mut g);
+            assert_eq!(g.stats(source).power, if paid { 4 } else { 2 });
+            assert_eq!(g.stats(ally).power, if paid { 4 } else { 2 });
+            assert_eq!(g.stats(enemy).power, 2);
+            assert_eq!(
+                g.observe(p).sneak_entries,
+                g.observe(p.other()).sneak_entries
+            );
+            assert_eq!(
+                g.observe(p).sneak_entries.contains(&g.object_ref(source)),
+                paid
+            );
+            let late = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            assert_eq!(g.stats(late).power, 2);
+            g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 1];
+            let activation = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::Activate{card,..} if *card==source))
+                .unwrap();
+            checked(&mut g, activation);
+            settle(&mut g);
+            assert!(g.keywords(source).contains(Keywords::FIRST_STRIKE));
+            super::ability_timeline_tests::next_turn(&mut g);
+            assert_eq!(g.stats(source).power, 2);
+            assert_eq!(g.stats(ally).power, 2);
+            assert!(!g.keywords(source).contains(Keywords::FIRST_STRIKE));
+            assert!(g.observe(p).sneak_entries.is_empty());
+        }
+    }
+}
+#[test]
+fn tmt_sneak_leader_intervening_guard_keeps_departed_incarnation_without_rebinding() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let returned = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let ally = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let source = named(&mut g, p, "Leonardo, Leader in Blue", Zone::Hand);
+        unblocked(&mut g, returned);
+        sneak(&mut g, source, returned, None);
+        checked(&mut g, Action::Pass);
+        checked(&mut g, Action::Pass);
+        g.prepare_triggers();
+        assert!(!g.state.stack.is_empty() || !g.state.pending_triggers.is_empty());
+        let old = g.object_ref(source);
+        g.move_object(source, Zone::Exile);
+        g.move_object(source, Zone::Battlefield);
+        assert_ne!(old, g.object_ref(source));
+        settle(&mut g);
+        assert_eq!(g.stats(ally).power, 4);
+        assert_eq!(g.stats(source).power, 4); // new incarnation is a recipient, not a Sneak source
+        assert!(!g.observe(p).sneak_entries.contains(&g.object_ref(source)));
+    }
+}
+#[test]
+fn tmt_sneak_kunoichi_normal_link_or_permanent_exile_and_source_departure() {
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            for depart in [false, true] {
+                let mut g = setup(p);
+                let returned = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+                let enemy = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+                let source = named(&mut g, p, "Turncoat Kunoichi", Zone::Hand);
+                if paid {
+                    unblocked(&mut g, returned);
+                    sneak(&mut g, source, returned, None);
+                } else {
+                    cast(&mut g, source, None, &[]);
+                }
+                checked(&mut g, Action::Pass);
+                checked(&mut g, Action::Pass);
+                g.prepare_triggers();
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(source),
+                    },
+                );
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(enemy),
+                    },
+                );
+                if g.legal_actions().contains(&Action::FinishTargets) {
+                    checked(&mut g, Action::FinishTargets);
+                }
+                if depart {
+                    g.move_object(source, Zone::Exile);
+                }
+                settle(&mut g);
+                assert_eq!(
+                    g.state.objects[enemy as usize].zone,
+                    if !paid && depart {
+                        Zone::Battlefield
+                    } else {
+                        Zone::Exile
+                    }
+                );
+                if !depart {
+                    g.move_object(source, Zone::Exile);
+                    settle(&mut g);
+                    assert_eq!(
+                        g.state.objects[enemy as usize].zone,
+                        if paid { Zone::Exile } else { Zone::Battlefield }
+                    );
+                }
+            }
+        }
+    }
+}
+#[test]
+fn tmt_sneak_karai_actual_combat_reanimates_only_during_paid_entry_turn() {
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            let mut g = setup(p);
+            let returned = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let dead = named(&mut g, p, "Hill Giant", Zone::Graveyard);
+            let source = named(&mut g, p, "Karai, Future of the Foot", Zone::Hand);
+            if paid {
+                unblocked(&mut g, returned);
+                sneak(&mut g, source, returned, None);
+                settle(&mut g);
+            } else {
+                cast(&mut g, source, None, &[]);
+                settle(&mut g);
+                g.state.objects[source as usize].summoning_sick = false;
+                unblocked(&mut g, source);
+            }
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            settle_target(&mut g, dead);
+            assert_eq!(g.state.players[p.other().index()].life, 17);
+            assert_eq!(
+                g.state.objects[dead as usize].zone,
+                if paid { Zone::Battlefield } else { Zone::Hand }
+            );
+            if paid {
+                assert!(!g.object_view(dead).attacking && !g.object_view(dead).tapped);
+            }
+            super::ability_timeline_tests::next_turn(&mut g);
+            assert!(g.observe(p).sneak_entries.is_empty());
+            g.move_object(dead, Zone::Graveyard);
+            g.state.active = p;
+            g.state.priority = p;
+            g.state.objects[source as usize].tapped = false;
+            g.state.objects[source as usize].summoning_sick = false;
+            unblocked(&mut g, source);
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            settle_target(&mut g, dead);
+            assert_eq!(g.state.objects[dead as usize].zone, Zone::Hand);
+        }
+    }
+}
+#[test]
+fn tmt_sneak_gadget_master_copies_artifact_copiable_values_and_real_entry_triggers() {
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            let mut g = setup(p);
+            let returned = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let foundry = named(&mut g, p, "Mouser Foundry", Zone::Battlefield);
+            let foreign = named(&mut g, p.other(), "Mouser Foundry", Zone::Battlefield);
+            let source = named(&mut g, p, "Donatello, Gadget Master", Zone::Hand);
+            if paid {
+                unblocked(&mut g, returned);
+                sneak(&mut g, source, returned, None);
+                settle(&mut g);
+            } else {
+                cast(&mut g, source, None, &[]);
+                settle(&mut g);
+                g.state.objects[source as usize].summoning_sick = false;
+                unblocked(&mut g, source);
+            }
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            g.prepare_triggers();
+            for invalid in [source, foreign] {
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(invalid),
+                    },
+                );
+            }
+            assert!(g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Card(foundry)
+            }));
+            let count = g.state.objects.len();
+            settle_target(&mut g, foundry);
+            assert_eq!(g.state.players[p.other().index()].life, 17);
+            let copy = (count..g.state.objects.len())
+                .map(|id| id as CardId)
+                .find(|&id| {
+                    g.state.objects[id as usize].zone == Zone::Battlefield
+                        && g.object_view(id).card == g.object_view(foundry).card
+                })
+                .unwrap();
+            assert!(g.object_view(copy).is_token());
+            assert_eq!(g.state.objects[copy as usize].controller, p);
+            assert_eq!(g.state.objects.len(), count + 2); // copy plus its actual Robot ETB
+            g.move_object(source, Zone::Exile);
+            g.move_object(foundry, Zone::Exile);
+            settle(&mut g);
+            assert_eq!(g.state.objects[copy as usize].zone, Zone::Battlefield);
+            g.move_object(copy, Zone::Exile);
+            settle(&mut g);
+            assert!(
+                g.state
+                    .objects
+                    .iter()
+                    .filter(|o| o.zone == Zone::Battlefield
+                        && o.controller == p
+                        && o.card == Card::from_name("@token/667dad32c9f20b70d5e9bda3").unwrap())
+                    .count()
+                    >= 3
+            );
+        }
+    }
+}
+#[test]
+fn tmt_sneak_kitsune_mills_opponent_half_rounded_up_from_current_library() {
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            for size in [0, 1, 2, 5, 6] {
+                let mut g = setup(p);
+                // Clear only the opponent library to exercise the zero and one-card boundaries.
+                let old = g.state.players[p.other().index()].library.to_vec();
+                for id in old {
+                    g.move_object(id, Zone::Exile);
+                }
+                let returned = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+                let source = named(&mut g, p, "Kitsune's Technique", Zone::Hand);
+                for _ in 0..size {
+                    named(&mut g, p.other(), "Forest", Zone::Library);
+                }
+                let before = g.state.players[p.other().index()].library.len();
+                let own = g.state.players[p.index()].library.len();
+                if paid {
+                    unblocked(&mut g, returned);
+                    let attacker = g.object_ref(returned);
+                    checked(
+                        &mut g,
+                        Action::AnnounceSneak {
+                            card: source,
+                            attacker,
+                        },
+                    );
+                } else {
+                    checked(&mut g, Action::AnnounceCast { card: source });
+                }
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Player(p),
+                    },
+                );
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Player(p.other()),
+                    },
+                );
+                for _ in 0..8 {
+                    if g.state.announcing.is_none() {
+                        break;
+                    }
+                    let a = g
+                        .legal_actions()
+                        .into_iter()
+                        .find(|a| matches!(a, Action::PayCosts { .. } | Action::FinishTargets))
+                        .unwrap();
+                    checked(&mut g, a);
+                }
+                settle(&mut g);
+                assert_eq!(g.state.players[p.other().index()].library.len(), before / 2);
+                assert_eq!(g.state.players[p.index()].library.len(), own);
+                assert_eq!(
+                    g.state
+                        .objects
+                        .iter()
+                        .filter(|o| o.zone == Zone::Graveyard && o.owner == p.other())
+                        .count(),
+                    before.div_ceil(2)
+                );
+                assert_eq!(g.state.objects[source as usize].zone, Zone::Graveyard);
+            }
+        }
+    }
+}
+#[test]
+fn tmt_sneak_dark_leo_token_counts_before_half_loss_and_only_attacking_own_ninjas_gain_dt() {
+    for p in [Player::P0, Player::P1] {
+        for others in [2, 3, 4] {
+            let mut g = setup(p);
+            let returned = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let source = named(&mut g, p, "Dark Leo & Shredder", Zone::Hand);
+            let mut ninjas = Vec::new();
+            for _ in 0..others {
+                ninjas.push(named(
+                    &mut g,
+                    p,
+                    "@token/ninja_1_1_black",
+                    Zone::Battlefield,
+                ));
+            }
+            let enemy = named(
+                &mut g,
+                p.other(),
+                "@token/ninja_1_1_black",
+                Zone::Battlefield,
+            );
+            unblocked(&mut g, returned);
+            sneak(&mut g, source, returned, None);
+            settle(&mut g);
+            assert!(g.keywords(source).contains(Keywords::DEATHTOUCH));
+            for id in ninjas.iter().copied().chain([enemy]) {
+                assert!(!g.keywords(id).contains(Keywords::DEATHTOUCH));
+            }
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            settle(&mut g);
+            // One damage leaves 19, then a qualifying five-Ninja board loses ceil(19/2).
+            assert_eq!(
+                g.state.players[p.other().index()].life,
+                if others >= 3 { 9 } else { 19 }
+            );
+            assert_eq!(
+                g.state
+                    .objects
+                    .iter()
+                    .filter(|o| o.zone == Zone::Battlefield
+                        && o.controller == p
+                        && o.card.has_subtype("Ninja"))
+                    .count(),
+                others + 2
+            );
+        }
+    }
+}

@@ -477,7 +477,7 @@
       "oracle_id": "c3ea6af5-48b9-45d2-9576-46cacb2db5b0",
       "name": "Dark Leo & Shredder",
       "definition": "src/card_definitions/tmt/dark_leo_shredder.rs",
-      "state": "gated",
+      "state": "focused rules tested; integrated full release validation pending",
       "printed_obligations": [
         {
           "face": "Dark Leo & Shredder",
@@ -493,7 +493,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/dark_leo_shredder.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 6
     },
     {
       "oracle_id": "f599471a-31a6-4fb0-bf27-c5b707e1db6a",
@@ -656,7 +661,7 @@
       "oracle_id": "bb6aef0d-052b-44e6-b4cd-2d2eafd84969",
       "name": "Donatello, Gadget Master",
       "definition": "src/card_definitions/tmt/donatello_gadget_master.rs",
-      "state": "gated",
+      "state": "focused rules tested; integrated full release validation pending",
       "printed_obligations": [
         {
           "face": "Donatello, Gadget Master",
@@ -671,7 +676,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/donatello_gadget_master.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 5
     },
     {
       "oracle_id": "f6a7838d-380f-4752-a647-c55c2a0eb6e2",
@@ -1434,7 +1444,7 @@
       "oracle_id": "7246638e-0361-40e3-8019-3c10210a593e",
       "name": "Karai, Future of the Foot",
       "definition": "src/card_definitions/tmt/karai_future_of_the_foot.rs",
-      "state": "gated",
+      "state": "focused rules tested; integrated full release validation pending",
       "printed_obligations": [
         {
           "face": "Karai, Future of the Foot",
@@ -1449,13 +1459,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/karai_future_of_the_foot.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 5
     },
     {
       "oracle_id": "3e0f8ab3-75a6-49a2-a228-fa720cbde3d8",
       "name": "Kitsune's Technique",
       "definition": "src/card_definitions/tmt/kitsune_s_technique.rs",
-      "state": "gated",
+      "state": "focused rules tested; integrated full release validation pending",
       "printed_obligations": [
         {
           "face": "Kitsune's Technique",
@@ -1470,7 +1485,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/kitsune_s_technique.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 6
     },
     {
       "oracle_id": "9be19bdf-db1e-433e-8be4-8b985a568211",
@@ -1711,7 +1731,7 @@
       "oracle_id": "348c7e22-2179-41b8-a5d2-8dd488e7e66d",
       "name": "Leonardo, Leader in Blue",
       "definition": "src/card_definitions/tmt/leonardo_leader_in_blue.rs",
-      "state": "gated",
+      "state": "focused rules tested; integrated full release validation pending",
       "printed_obligations": [
         {
           "face": "Leonardo, Leader in Blue",
@@ -1727,7 +1747,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/leonardo_leader_in_blue.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 5
     },
     {
       "oracle_id": "74e3243b-6707-4769-8767-7cf2ef71009a",
@@ -3963,7 +3988,7 @@
       "oracle_id": "0f35cf85-6783-4d69-b5e6-a81f7c1f21e7",
       "name": "Turncoat Kunoichi",
       "definition": "src/card_definitions/tmt/turncoat_kunoichi.rs",
-      "state": "gated",
+      "state": "focused rules tested; integrated full release validation pending",
       "printed_obligations": [
         {
           "face": "Turncoat Kunoichi",
@@ -3978,7 +4003,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/turncoat_kunoichi.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 5
     },
     {
       "oracle_id": "bb8c6dd2-1abe-4eb2-be1f-b0c078e5f257",

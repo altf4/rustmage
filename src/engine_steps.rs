@@ -124,6 +124,13 @@ impl Game {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
             StepGuard::Always => return true,
+            StepGuard::SourceSneakedThisTurn => {
+                return self
+                    .state
+                    .sneak_entries
+                    .as_ref()
+                    .is_some_and(|rows| rows.contains(&source));
+            }
             StepGuard::PermanentLeftBattlefieldThisTurn => {
                 return p.permanent_left_battlefield_this_turn;
             }

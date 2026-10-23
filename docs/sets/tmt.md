@@ -19,9 +19,9 @@ Oracle facts remain pinned in `data/standard/cards.json`. The
 [obligation ledger](tmt-obligations.json) accounts for every printed line and
 canonical definition, including reprints; it is not a second membership source.
 
-Initial admission: **71/195**, **124 gated**. Current admission: **97/195**,
-**98 gated**, zero unresolved. The 71 inherited admission flags still require
-source/rules audits. **26 new physical cards are locally tested candidates**;
+Initial admission: **71/195**, **124 gated**. Current admission: **103/195**,
+**92 gated**, zero unresolved. The 71 inherited admission flags still require
+source/rules audits. **32 new physical cards have rules scenarios; 26 have integrated release validation**;
 zero have independent final published-head reviews or upstream merges.
 
 ## Active Sneak integration
@@ -158,3 +158,17 @@ validator on fixed inputs. Every Cargo command must use
 `python3 scripts/resource_guard.py -- cargo ...`. Do not publish a partial PR.
 
 Resume with: “Use rustmage-implement-set to continue TMT from docs/sets/tmt.md.”
+
+## Active conditional Sneak batch
+
+Six further physical cards pass the expanded 31-scenario optimized Sneak suite:
+Leonardo, Leader in Blue; Karai, Future of the Foot; Turncoat Kunoichi; Donatello,
+Gadget Master; Dark Leo & Shredder; Kitsune’s Technique. Sparse public exact-entry
+history preserves departure LKI and prevents new incarnations from inheriting
+payment. The suite covers normal/Sneak entry differences, timing of the
+reanimation branch, actual artifact copies and copied ETB/leave abilities,
+post-token Ninja thresholds, and rounded-up milling/life loss. Focused log:
+`<cache>/rustmage-tmt-sneak-six-tests-second.log` (terminal success, 31 passed).
+Integrated full release validation for these six remains pending. Next: The Last
+Ronin’s Technique using the existing defender-selection and attacking-entry
+planner, plus its missing white 1/1 Ninja Turtle Spirit token.

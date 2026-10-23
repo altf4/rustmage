@@ -28,6 +28,7 @@ pub(super) struct EntryMove {
     pub life_paid: Option<bool>,
     pub offspring_paid: bool,
     pub evoked: bool,
+    pub sneak_paid: bool,
     pub cast_payment: Option<Mana>,
     /// Explicit origin of an actual spell cast; absent for reanimation/put effects.
     pub cast_origin: Option<Zone>,
@@ -237,6 +238,7 @@ impl Game {
             life_paid: None,
             offspring_paid: false,
             evoked: false,
+            sneak_paid: false,
             cast_payment: None,
             cast_origin: None,
             warp_controller: None,
@@ -590,6 +592,12 @@ impl Game {
                 } else {
                     self.apply_return_modification(event.after, kind, source);
                 }
+            }
+            if event.moved && event.destination == Zone::Battlefield && movement.sneak_paid {
+                self.state
+                    .sneak_entries
+                    .get_or_insert_with(Default::default)
+                    .push(event.after);
             }
             event.evoked = movement.evoked;
             event.cast_payment = movement.cast_payment;

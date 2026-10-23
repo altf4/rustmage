@@ -778,6 +778,7 @@ impl RecoveryFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum MillAmount {
+    HalfLibraryRoundedUp,
     ChosenX,
     Fixed(u16),
     ControllerLife,
@@ -1501,6 +1502,7 @@ pub(crate) enum Instruction {
     GainLife(PlayerSet, u16),
     GainLifeScaled(PlayerSet, AmountValue),
     LoseLife(PlayerSet, u16),
+    LoseHalfLifeRoundedUp(PlayerSet),
     LoseLifeScaled(PlayerSet, AmountValue),
     /// Each opponent loses the frozen amount; the controller gains it once.
     DrainLifeScaled(AmountValue),
@@ -2373,6 +2375,7 @@ pub(crate) struct CombatRestriction {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepGuard {
+    SourceSneakedThisTurn,
     PermanentLeftBattlefieldThisTurn,
     PutCounterOnCreatureThisTurn,
     YourMainPhase {
