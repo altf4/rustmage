@@ -496,3 +496,22 @@ were corrected; the complete 138-scenario run passes. Observation schema is
 177 and additive Mutant animation joins the existing compact subtype grants.
 The full 195-card goal, inherited audits, set-only acceptance and final reviews
 remain open; no partial PR is published.
+
+## Validated 120-card checkpoint
+
+All nine release phases pass on `1974e593` in 640.90 seconds.
+3,389 library rules tests (one ignored), all 138 TMT scenarios (21 departure,
+23 Ninja, 21 other Class, 53 Sneak, 20 initial), existing native games and seven
+Python binding checks pass. The admitted scenarios now use normal paid casts
+for the five new cards and real turns before their creature tap/attack fixtures.
+Admission is 120/195, 75 gated, zero unresolved; 49 new physical candidates have
+integrated release evidence, while 71 inherited flags still await audits.
+
+[Portable evidence](tmt-departure-validation.json) retains report hashes, exact
+shared libraries, resource limits, measured implementation throughput and the
+Freeform regression benchmark. Disposable completed validator outputs are cleaned.
+No TMT-specific simulation acceptance or final independent reviews are claimed.
+
+Next: Mutagen Man; Mikey & Leo; Ray Fillet; Michelangelo, Mutant BFF; and
+Mutant Chain Reaction, with shared activation-cost and counter-trigger support.
+The full set goal remains open, with one implementation PR only after acceptance.
