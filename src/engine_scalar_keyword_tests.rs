@@ -50,9 +50,17 @@ fn scalar_keywords_all_authored_fragment_families_both_controls_and_active_playe
         g.add_counter(bear, CounterKind::PlusOne, 1);
         g.grant_keyword_effects(&[bear], g.object_ref(bear), Keywords::INDESTRUCTIBLE);
         let mut seen = [false; 18];
-        for definition in
-            Card::catalogue().filter(|c| c.is_supported() && !c.is_token() && !c.is_emblem())
-        {
+        for definition in Card::catalogue().filter(|c| {
+            c.is_supported()
+                && !c.is_token()
+                && !c.is_emblem()
+                && !c.static_ability_groups().iter().any(|group| {
+                    group
+                        .fragments
+                        .iter()
+                        .any(|f| matches!(f, StaticAbilityFragment::RemoveAttachedAbilities))
+                })
+        }) {
             let wanted = definition
                 .static_ability_groups()
                 .iter()
@@ -82,10 +90,17 @@ fn scalar_keywords_all_authored_fragment_families_both_controls_and_active_playe
                     }
                 }
             }
+            assert!(
+                scalar_keywords_without_removal(&g, bear).is_some(),
+                "fast family provider {}",
+                definition.name()
+            );
             same(&g);
             g.state.objects[id as usize].controller = p.other();
+            assert!(scalar_keywords_without_removal(&g, bear).is_some());
             same(&g);
             g.state.objects[id as usize].attached_to = Some(g.object_ref(skeleton));
+            assert!(scalar_keywords_without_removal(&g, bear).is_some());
             same(&g);
             g.move_object(id, Zone::Exile);
             same(&g);
@@ -98,6 +113,7 @@ fn scalar_keywords_all_authored_fragment_families_both_controls_and_active_playe
         // exact attachment/rules grant through the same primitive used above.
         let equipment = named(&mut g, p, "Skateboard", Zone::Battlefield);
         assert!(g.attach_equipment(g.object_ref(equipment), g.object_ref(bear)));
+        assert!(scalar_keywords_without_removal(&g, bear).is_some());
         let fragment = StaticAbilityFragment::AttachmentRule(Keywords::CANT_BLOCK);
         let source = g.object_ref(equipment);
         assert_eq!(
@@ -302,6 +318,10 @@ fn scalar_keywords_dense_single_recipient_benchmark_and_observation_snapshot_par
             },
         );
         same(&g);
+        assert!(
+            ids.iter()
+                .all(|&id| scalar_keywords_without_removal(&g, id).is_some())
+        );
         let snapshot = g.snapshot();
         let elapsed = Instant::now();
         for i in 0..256 {
