@@ -629,7 +629,7 @@
       "oracle_id": "194284f7-cf92-4d9f-a8ce-e4dc3505ab7a",
       "name": "Donatello's Technique",
       "definition": "src/card_definitions/tmt/donatello_s_technique.rs",
-      "state": "gated",
+      "state": "implemented; complete release verification pending",
       "printed_obligations": [
         {
           "face": "Donatello's Technique",
@@ -644,7 +644,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/donatello_s_technique.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 4
     },
     {
       "oracle_id": "bb6aef0d-052b-44e6-b4cd-2d2eafd84969",
@@ -933,7 +938,7 @@
       "oracle_id": "306652a8-9a9c-4b33-96d7-b59234d148e9",
       "name": "Foot Ninjas",
       "definition": "src/card_definitions/tmt/foot_ninjas.rs",
-      "state": "gated",
+      "state": "implemented; complete release verification pending",
       "printed_obligations": [
         {
           "face": "Foot Ninjas",
@@ -948,7 +953,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/foot_ninjas.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 4
     },
     {
       "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
@@ -1345,7 +1355,7 @@
       "oracle_id": "90b1226f-4c90-47fd-98f3-ad4edd3b3518",
       "name": "Jennika's Technique",
       "definition": "src/card_definitions/tmt/jennika_s_technique.rs",
-      "state": "gated",
+      "state": "implemented; complete release verification pending",
       "printed_obligations": [
         {
           "face": "Jennika's Technique",
@@ -1360,7 +1370,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/jennika_s_technique.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 4
     },
     {
       "oracle_id": "b55da4d3-2cad-4c89-ad3f-7d8397b64d52",
@@ -1387,7 +1402,7 @@
       "oracle_id": "e53fb128-bf90-4af6-b998-ef9c250001cb",
       "name": "Karai's Technique",
       "definition": "src/card_definitions/tmt/karai_s_technique.rs",
-      "state": "gated",
+      "state": "implemented; complete release verification pending",
       "printed_obligations": [
         {
           "face": "Karai's Technique",
@@ -1404,7 +1419,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/karai_s_technique.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 4
     },
     {
       "oracle_id": "7246638e-0361-40e3-8019-3c10210a593e",
@@ -1605,7 +1625,7 @@
       "oracle_id": "e98c2af9-1393-487d-b8e9-f49a67bb7296",
       "name": "Leonardo's Technique",
       "definition": "src/card_definitions/tmt/leonardo_s_technique.rs",
-      "state": "gated",
+      "state": "implemented; complete release verification pending",
       "printed_obligations": [
         {
           "face": "Leonardo's Technique",
@@ -1620,13 +1640,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/leonardo_s_technique.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 4
     },
     {
       "oracle_id": "6496eea7-38f5-4428-a379-b08b0eeb5239",
       "name": "Leonardo, Big Brother",
       "definition": "src/card_definitions/tmt/leonardo_big_brother.rs",
-      "state": "gated",
+      "state": "implemented; complete release verification pending",
       "printed_obligations": [
         {
           "face": "Leonardo, Big Brother",
@@ -1641,13 +1666,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/leonardo_big_brother.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 4
     },
     {
       "oracle_id": "933fe6e5-8d00-4411-aa54-7780382c1ea6",
       "name": "Leonardo, Cutting Edge",
       "definition": "src/card_definitions/tmt/leonardo_cutting_edge.rs",
-      "state": "gated",
+      "state": "implemented; complete release verification pending",
       "printed_obligations": [
         {
           "face": "Leonardo, Cutting Edge",
@@ -1663,7 +1693,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/leonardo_cutting_edge.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 4
     },
     {
       "oracle_id": "348c7e22-2179-41b8-a5d2-8dd488e7e66d",
@@ -2316,7 +2351,7 @@
       "oracle_id": "e7ae3ee7-824f-4dcb-8f28-7de99e4d8c3e",
       "name": "New Generation's Technique",
       "definition": "src/card_definitions/tmt/new_generation_s_technique.rs",
-      "state": "gated",
+      "state": "implemented; complete release verification pending",
       "printed_obligations": [
         {
           "face": "New Generation's Technique",
@@ -2331,7 +2366,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/new_generation_s_technique.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 4
     },
     {
       "oracle_id": "2c5044ff-a303-4276-8e23-7caac30a275b",
@@ -2532,7 +2572,7 @@
       "oracle_id": "d14f620c-0fbd-485c-9fe4-34949e742147",
       "name": "Oroku Saki, Shredder Rising",
       "definition": "src/card_definitions/tmt/oroku_saki_shredder_rising.rs",
-      "state": "gated",
+      "state": "implemented; complete release verification pending",
       "printed_obligations": [
         {
           "face": "Oroku Saki, Shredder Rising",
@@ -2547,7 +2587,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/oroku_saki_shredder_rising.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 4
     },
     {
       "oracle_id": "e9975888-c75f-471e-a70d-17449e92226d",
@@ -2943,7 +2988,7 @@
       "oracle_id": "8c1e5b25-ee5a-4ea9-a715-08dd1a4f51c4",
       "name": "Raphael, the Nightwatcher",
       "definition": "src/card_definitions/tmt/raphael_the_nightwatcher.rs",
-      "state": "gated",
+      "state": "implemented; complete release verification pending",
       "printed_obligations": [
         {
           "face": "Raphael, the Nightwatcher",
@@ -2958,7 +3003,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/raphael_the_nightwatcher.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 4
     },
     {
       "oracle_id": "a5656dab-5ce6-48fd-9eae-2c06969bb8df",
@@ -3311,7 +3361,7 @@
       "oracle_id": "59d96fc0-6580-43c2-8c6a-dcf983644561",
       "name": "Shredder, Unrelenting",
       "definition": "src/card_definitions/tmt/shredder_unrelenting.rs",
-      "state": "gated",
+      "state": "implemented; complete release verification pending",
       "printed_obligations": [
         {
           "face": "Shredder, Unrelenting",
@@ -3327,7 +3377,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/shredder_unrelenting.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 4
     },
     {
       "oracle_id": "decfde5e-ea53-4b15-8f69-51da7ef39d15",
@@ -3439,7 +3494,7 @@
       "oracle_id": "532ee9c3-391c-44db-8ed5-a1d28fd7f876",
       "name": "Splinter's Technique",
       "definition": "src/card_definitions/tmt/splinter_s_technique.rs",
-      "state": "gated",
+      "state": "implemented; complete release verification pending",
       "printed_obligations": [
         {
           "face": "Splinter's Technique",
@@ -3454,13 +3509,18 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/splinter_s_technique.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 4
     },
     {
       "oracle_id": "41fbdaa2-7a7a-44d5-a8f4-77624350eedd",
       "name": "Splinter, Hamato Yoshi",
       "definition": "src/card_definitions/tmt/splinter_hamato_yoshi.rs",
-      "state": "gated",
+      "state": "implemented; complete release verification pending",
       "printed_obligations": [
         {
           "face": "Splinter, Hamato Yoshi",
@@ -3476,7 +3536,12 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_sneak_tests.rs",
+        "src/card_definitions/tmt/splinter_hamato_yoshi.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 4
     },
     {
       "oracle_id": "fb2cd508-f5cd-4d5b-b8e7-3cae1f39fd58",

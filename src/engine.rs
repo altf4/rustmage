@@ -113,6 +113,8 @@ mod cast_payments;
 mod mobilize;
 #[path = "engine_plot.rs"]
 mod plot;
+#[path = "engine_sneak.rs"]
+mod sneak;
 #[path = "engine_tiered.rs"]
 mod tiered;
 #[path = "engine_warp.rs"]
@@ -121,6 +123,7 @@ pub use cast_payments::{CastPaymentEvent, ManaPaymentDomain};
 pub use hand_reveal::HandRevealView;
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
 pub use plot::{PlotPaymentView, PlottedCard};
+pub use sneak::SneakCastView;
 
 #[path = "engine_hand_reveal.rs"]
 mod hand_reveal;
@@ -594,6 +597,7 @@ define_actions! {
     },
     AnnounceFlashSurcharge { card: CardId },
     AnnounceWarp { card: CardId },
+    AnnounceSneak { card: CardId, attacker: ObjectRef },
     AnnounceAdventure { card: CardId },
     AnnounceOmen { card: CardId },
     AnnouncePlot { card: CardId },
@@ -892,6 +896,7 @@ struct PlayerState {
 /// How an actual spell was cast; abilities have no cast information.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum CastMethod {
+    Sneak,
     Normal,
     GraveyardCounterCost,
     /// An owned declaration freezes a live provider's extra cost at cast start.
@@ -943,6 +948,9 @@ impl Serialize for CastOriginPermissions {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CastInfo {
+    /// Exact non-targeted return cost and its captured attack destination.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sneak: Option<SneakCastView>,
     /// A non-targeted promise, declared before targets; absent until chosen.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gift: Option<GiftDeclaration>,
@@ -3457,6 +3465,9 @@ impl Game {
                     {
                         return true;
                     }
+                    if obj.zone == Zone::Hand && self.visit_sneak_casts(actor, card, &mut emit) {
+                        return true;
+                    }
                     if obj.zone == Zone::Hand
                         && (sorcery
                             || obj.card.is_instant()
@@ -4645,6 +4656,16 @@ impl Game {
             Action::AnnounceWarp { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 item.cast.as_mut().unwrap().method = CastMethod::Warp;
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceSneak { card, attacker } => {
+                let sneak = self
+                    .sneak_attacker(actor, attacker)
+                    .expect("legal Sneak attacker");
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                let cast = item.cast.as_mut().unwrap();
+                cast.method = CastMethod::Sneak;
+                cast.sneak = Some(sneak);
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnouncePlot { card } => self.begin_plot(actor, card),
@@ -8338,3 +8359,7 @@ use linked_funding::LinkedFundingWindow;
 #[cfg(test)]
 #[path = "engine_tmt_disappear_tests.rs"]
 mod tmt_disappear_tests;
+
+#[cfg(test)]
+#[path = "engine_tmt_sneak_tests.rs"]
+mod tmt_sneak_tests;

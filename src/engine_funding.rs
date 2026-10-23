@@ -453,6 +453,9 @@ impl<'g> FundingState<'g> {
                 })
             })
             && self.game.state.announcing.as_ref().is_none_or(|a| {
+                if !self.game.sneak_reservation_valid(a) {
+                    return false;
+                }
                 a.additional_group.as_ref().is_none_or(|group| {
                     let Some(spec) = a.additional_cost() else {
                         return true;
@@ -2070,6 +2073,15 @@ impl Game {
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
         if self.conspire_has_payment() && !self.conspire_projecting() {
             return self.conspire_fundable(a, cost);
+        }
+        if a.item.cast.is_some_and(|c| c.method == CastMethod::Sneak) {
+            return self.sneak_reservation_valid(a)
+                && self.sneak_cost_fundable(
+                    a.item.controller,
+                    a.item.card,
+                    a.additional.unwrap(),
+                    cost,
+                );
         }
         if a.item
             .cast

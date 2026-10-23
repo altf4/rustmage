@@ -35,6 +35,14 @@ impl Announcement {
                 if self
                     .item
                     .cast
+                    .is_some_and(|c| c.method == CastMethod::Sneak) =>
+            {
+                Some(sneak::RETURN_COST)
+            }
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
                     .is_some_and(|c| c.method == CastMethod::GraveyardCounterCost) =>
             {
                 Some(Game::creature_counter_spec(
@@ -117,6 +125,7 @@ impl Announcement {
     fn method_base_cost(&self) -> ManaCost {
         let card = self.item.source_card;
         match self.item.cast.map(|cast| cast.method) {
+            Some(CastMethod::Sneak) => card.sneak_costs()[0],
             Some(CastMethod::Warp) => card.warp_cost().expect("fixed Warp cost"),
             Some(CastMethod::Flashback) => card.flashback_cost().unwrap(),
             Some(CastMethod::Plot | CastMethod::Free) => ManaCost {
@@ -173,6 +182,15 @@ impl Announcement {
             )
         });
         let options = match self.item.kind {
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
+                    .is_some_and(|c| c.method == CastMethod::Sneak) =>
+            {
+                std::iter::once(card.sneak_costs()[0])
+                    .chain(card.sneak_costs()[1..].iter().copied())
+            }
             StackKind::Spell if fixed_method => std::iter::once(self.method_base_cost())
                 .chain(card.additional_mana_alternatives().iter().copied()),
             StackKind::Spell => card.cost_options(),
@@ -248,6 +266,13 @@ impl Announcement {
             && self.cost.is_none()
             && match self.item.kind {
                 StackKind::Spell => {
+                    if self
+                        .item
+                        .cast
+                        .is_some_and(|c| c.method == CastMethod::Sneak)
+                    {
+                        return self.item.source_card.sneak_costs().len() > 1;
+                    }
                     self.item.cast.is_none_or(|cast| {
                         !matches!(
                             cast.method,
@@ -1348,6 +1373,7 @@ impl Game {
             x: None,
             attachment_trigger: None,
             cast: Some(CastInfo {
+                sneak: None,
                 gift: None,
                 physical_card: None,
                 face: CastFace::Normal,
@@ -1497,6 +1523,7 @@ impl Game {
                     .is_some_and(|plan| { self.item_targets_available(&item, plan) })
         );
         let needs_mode = item.modes().is_some() && item.mode.is_none();
+        let additional = item.cast.and_then(|c| c.sneak).map(|s| s.attacker);
         self.state.announcing = Some(Announcement {
             item,
             spec: TargetSpec::NONE,
@@ -1507,7 +1534,7 @@ impl Game {
             cost: None,
             total_cost: None,
             counter_payment: counters,
-            additional: None,
+            additional,
             additional_group: None,
             creature_counter_cost: None,
             forage: None,

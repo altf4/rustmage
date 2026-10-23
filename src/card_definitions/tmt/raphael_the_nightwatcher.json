@@ -3,10 +3,30 @@
   "catalogue_id": 3381,
   "oracle_id": "8c1e5b25-ee5a-4ea9-a715-08dd1a4f51c4",
   "facts_sha256": "f7ae108cf2033ffb09655d8a2c50096158d8394e3713bcf0c27f295c74371483",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6c90a2b7db51ef5289b88287f9a82f8d7bc4df125bbf86a49f87109a5071bbf0"
   },
-  "physical_metadata_sha256": "15420a3143384609f3a83a5aeef9e1bbf3ab26b3c19cb7a9d830c0b2bdf9d28b"
+  "physical_metadata_sha256": "15420a3143384609f3a83a5aeef9e1bbf3ab26b3c19cb7a9d830c0b2bdf9d28b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RaphaelTheNightwatcher.java",
+  "java_sha256": "70fdc51bcfec3836a57a6e09978e546e70ec6bd4d92f0092901f035e4834e2ba",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SneakAbility.java",
+      "sha256": "b25a32bf041c6a146f7d602c757f3be034f9282db5ed9c6cc03070b374611c70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ReturnToHandChosenControlledPermanentCost.java",
+      "sha256": "ea8192aa5d4930687e7803379d509a1bd5a1910bcd418503f19a8de6417072b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    }
+  ]
 }

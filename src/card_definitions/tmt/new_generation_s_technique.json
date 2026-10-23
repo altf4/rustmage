@@ -3,10 +3,35 @@
   "catalogue_id": 2924,
   "oracle_id": "e7ae3ee7-824f-4dcb-8f28-7de99e4d8c3e",
   "facts_sha256": "98eb5d0630994cf34a08b16469df6c41e12aef800463fbfa2043d33fbe8007f3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2fd15639ae829e5f394f793fc076e681521fc891d3f745b112c812ac51b97bc3"
   },
-  "physical_metadata_sha256": "49acf4fb85563074da4fc5d9073c938167f64031e23730f95d366ad67ce96a3c"
+  "physical_metadata_sha256": "49acf4fb85563074da4fc5d9073c938167f64031e23730f95d366ad67ce96a3c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NewGenerationsTechnique.java",
+  "java_sha256": "3c2a1cc0e30ba21fdfa7b4653ee02d9dd8290e4d0fa89a49b32e34f59cc1e668",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SneakAbility.java",
+      "sha256": "b25a32bf041c6a146f7d602c757f3be034f9282db5ed9c6cc03070b374611c70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ReturnToHandChosenControlledPermanentCost.java",
+      "sha256": "ea8192aa5d4930687e7803379d509a1bd5a1910bcd418503f19a8de6417072b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ]
 }

@@ -24,6 +24,17 @@ Initial admission: **71/195**, **124 gated**. Current admission: **84/195**,
 source/rules audits. **13 new physical cards are locally tested candidates**;
 zero have independent final published-head reviews or upstream merges.
 
+## Active Sneak integration
+
+Local continuation implements the shared Sneak alternative casting/return-cost
+path and thirteen consumers. Admission is now **97/195**, with **98 gated**.
+The initial optimized run passed 20/21 scenarios; Splinter's Technique was
+corrected to the existing mandatory unrestricted-search primitive. The full
+release validator is pending on the current integration revision. No additional
+whole-card verification or final-set acceptance is claimed until it passes.
+The earlier validation JSON is now portable; its exact producing-host library
+manifest is retained separately in cache, with a hash in the JSON.
+
 ## Card obligations and local batches
 
 All three batches were authored locally by the integrator on base `1a795dcf`,

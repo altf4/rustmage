@@ -3,10 +3,35 @@
   "catalogue_id": 1588,
   "oracle_id": "306652a8-9a9c-4b33-96d7-b59234d148e9",
   "facts_sha256": "433274317c197bd60a81b92f1ca4ea6e4fff4e65d585688194cf449f2a1a4207",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e7e3570baece2e86f28b95d81c261c113fb4d446b3bc8f75358faa36979127c4"
   },
-  "physical_metadata_sha256": "f14555c601f699548b0dcd0ead75af1a0203834cecb97ee63c8874025a54f973"
+  "physical_metadata_sha256": "f14555c601f699548b0dcd0ead75af1a0203834cecb97ee63c8874025a54f973",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FootNinjas.java",
+  "java_sha256": "33c39cc5d7325098405cd725924eef9a8f22cac15742878f910136e953b9e059",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SneakAbility.java",
+      "sha256": "b25a32bf041c6a146f7d602c757f3be034f9282db5ed9c6cc03070b374611c70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ReturnToHandChosenControlledPermanentCost.java",
+      "sha256": "ea8192aa5d4930687e7803379d509a1bd5a1910bcd418503f19a8de6417072b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    }
+  ]
 }

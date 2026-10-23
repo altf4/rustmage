@@ -171,7 +171,7 @@
     "python_source_tests_skipped": 3,
     "python_binding_smoke": {
       "suite": "smoke",
-      "library": "/home/altf4/.cache/rustmage-validation-iywsk6p6/release/librustmage.so",
+      "library": "<cache>/rustmage-validation-iywsk6p6/release/librustmage.so",
       "tests": 7,
       "success": true,
       "seconds": 0.3476187699998263,
@@ -182,7 +182,7 @@
     "resource_guard": {
       "command": [
         "/usr/bin/python3",
-        "/home/altf4/Code/rustmage/scripts/validate.py",
+        "<checkout>/scripts/validate.py",
         "--release",
         "--python",
         "smoke"
@@ -197,12 +197,12 @@
       "test_threads": 1
     },
     "shared_libraries_on_producing_host": {
-      "/home/altf4/.cache/rustmage-validation-iywsk6p6/release/librustmage.so": "a336eb80a17aa41be192e58a2f2397201102dd8aee91009774eb705335d14d18",
-      "/home/altf4/.cache/rustmage-validation-iywsk6p6/release/deps/librustmage.so": "a336eb80a17aa41be192e58a2f2397201102dd8aee91009774eb705335d14d18",
-      "/home/altf4/.cache/rustmage-validation-iywsk6p6/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
-      "/home/altf4/.cache/rustmage-validation-iywsk6p6/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
-      "/home/altf4/.cache/rustmage-validation-iywsk6p6/release-test/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
-      "/home/altf4/.cache/rustmage-validation-iywsk6p6/release-test/deps/librustmage.so": "c1b48273233049621a5a1c8d026fb9a98d7315e41479a2c7e7aa6430e88d281b"
+      "<cache>/rustmage-validation-iywsk6p6/release/librustmage.so": "a336eb80a17aa41be192e58a2f2397201102dd8aee91009774eb705335d14d18",
+      "<cache>/rustmage-validation-iywsk6p6/release/deps/librustmage.so": "a336eb80a17aa41be192e58a2f2397201102dd8aee91009774eb705335d14d18",
+      "<cache>/rustmage-validation-iywsk6p6/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+      "<cache>/rustmage-validation-iywsk6p6/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-iywsk6p6/release-test/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-iywsk6p6/release-test/deps/librustmage.so": "c1b48273233049621a5a1c8d026fb9a98d7315e41479a2c7e7aa6430e88d281b"
     },
     "cleaned_allocated_bytes": 818245632
   },
@@ -210,7 +210,7 @@
     "terminal": true,
     "cleaned_allocated_bytes": 97030144,
     "shared_libraries": {
-      "/home/altf4/.cache/rustmage-tmt-first-batch/release-test/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      "<cache>/rustmage-tmt-first-batch/release-test/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
     },
     "note": "Only this completed focused TMT target was cleaned; exact shared-library paths and hashes preserved."
   },
@@ -255,5 +255,9 @@
   "tmt_full_game_acceptance": "pending",
   "reviews": [],
   "known_external_blockers": [],
-  "next_action": "Implement and test the shared Sneak alternative-cast cost, precise post-blocker timing, exact returned-attacker defender, and paid cast-to-entry history before its 26 TMT consumers; start Donatello's Technique, Foot Ninjas, Leonardo, Big Brother, and Oroku Saki, Shredder Rising."
+  "next_action": "Implement and test the shared Sneak alternative-cast cost, precise post-blocker timing, exact returned-attacker defender, and paid cast-to-entry history before its 26 TMT consumers; start Donatello's Technique, Foot Ninjas, Leonardo, Big Brother, and Oroku Saki, Shredder Rising.",
+  "producing_host_library_manifest": {
+    "path": "<cache>/rustmage-tmt-initial-library-paths.json",
+    "sha256": "b5a0ceb152ee45bbcd3edb95d89a9d7f6b788ac648b61ac7e7f53ef6e2be3c06"
+  }
 }

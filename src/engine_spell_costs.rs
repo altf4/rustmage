@@ -30,6 +30,9 @@ impl Game {
     }
     pub(super) fn announcement_base_cost(a: &Announcement) -> ManaCost {
         let mut base = a.cost.unwrap_or_else(|| {
+            if a.item.cast.is_some_and(|c| c.method == CastMethod::Sneak) {
+                return a.item.source_card.sneak_costs()[0];
+            }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Warp) {
                 return a.item.source_card.warp_cost().expect("fixed Warp cost");
             }

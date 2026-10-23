@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "44b12b079aa6c371f96d5c6facf463bc68e3e4b7e36ffe83c76ca6c8ba618b83",
+  "catalogue_version": "0d6b0f2b81c15df5b214cd2651be0fe1b038bae5a3140391ebcc89c49778f4c2",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2369,
-  "implemented_total": 2375,
+  "implemented_standard_cards": 2382,
+  "implemented_total": 2388,
   "token_definitions": 112,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -185,8 +185,8 @@
     },
     "tmt": {
       "total": 189,
-      "complete": 78,
-      "gated": 111
+      "complete": 91,
+      "gated": 98
     },
     "w17": {
       "total": 1,
@@ -9222,8 +9222,8 @@
     {
       "name": "Donatello's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/donatello_s_technique.rs",
       "set": "tmt"
     },
@@ -12910,8 +12910,8 @@
     {
       "name": "Foot Ninjas",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/foot_ninjas.rs",
       "set": "tmt"
     },
@@ -18318,8 +18318,8 @@
     {
       "name": "Jennika's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/jennika_s_technique.rs",
       "set": "tmt"
     },
@@ -18718,8 +18718,8 @@
     {
       "name": "Karai's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/karai_s_technique.rs",
       "set": "tmt"
     },
@@ -19974,24 +19974,24 @@
     {
       "name": "Leonardo's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/leonardo_s_technique.rs",
       "set": "tmt"
     },
     {
       "name": "Leonardo, Big Brother",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/leonardo_big_brother.rs",
       "set": "tmt"
     },
     {
       "name": "Leonardo, Cutting Edge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/leonardo_cutting_edge.rs",
       "set": "tmt"
     },
@@ -23598,8 +23598,8 @@
     {
       "name": "New Generation's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/new_generation_s_technique.rs",
       "set": "tmt"
     },
@@ -24542,8 +24542,8 @@
     {
       "name": "Oroku Saki, Shredder Rising",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/oroku_saki_shredder_rising.rs",
       "set": "tmt"
     },
@@ -27254,8 +27254,8 @@
     {
       "name": "Raphael, the Nightwatcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/raphael_the_nightwatcher.rs",
       "set": "tmt"
     },
@@ -31014,8 +31014,8 @@
     {
       "name": "Shredder, Unrelenting",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/shredder_unrelenting.rs",
       "set": "tmt"
     },
@@ -32718,16 +32718,16 @@
     {
       "name": "Splinter's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/splinter_s_technique.rs",
       "set": "tmt"
     },
     {
       "name": "Splinter, Hamato Yoshi",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/splinter_hamato_yoshi.rs",
       "set": "tmt"
     },

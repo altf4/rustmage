@@ -3134,6 +3134,9 @@ impl Card {
     pub fn warp_cost(self) -> Option<ManaCost> {
         generated::warp_cost(self)
     }
+    pub(crate) fn sneak_costs(self) -> &'static [ManaCost] {
+        authored::rules(self).map_or(&[], |rules| rules.extras.sneak_costs)
+    }
     pub fn plot_cost(self) -> Option<ManaCost> {
         generated::plot_cost(self)
     }

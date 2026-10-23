@@ -1475,7 +1475,7 @@ impl Game {
                                 || c.bargain == Some(true)
                                 || c.evidence == Some(true)
                                 || matches!(c.gift, Some(GiftDeclaration::Promised { .. }))
-                                || c.method == CastMethod::Warp
+                                || matches!(c.method, CastMethod::Warp | CastMethod::Sneak)
                                 || item.source_card.entry_counter_rules().iter().any(|r| {
                                     matches!(
                                         r.amount,
@@ -1502,6 +1502,12 @@ impl Game {
                             .filter(|c| c.method == CastMethod::Warp)
                             .map(|_| item.controller);
                         movement.evoked = item.cast.is_some_and(|c| c.evoked);
+                        if let Some(sneak) = item.cast.and_then(|c| c.sneak) {
+                            movement.tapped = true;
+                            movement.attacking = sneak
+                                .defender
+                                .filter(|&d| self.sneak_defender_exists(item.controller, d));
+                        }
                         movement.cast_payment =
                             item.cast.filter(|_| !item.is_copy).map(|c| c.payment);
                         movement.cast_origin =
