@@ -3465,7 +3465,7 @@ impl Game {
                     {
                         return true;
                     }
-                    if obj.zone == Zone::Hand && self.visit_sneak_casts(actor, card, &mut emit) {
+                    if self.visit_sneak_casts(actor, card, &mut emit) {
                         return true;
                     }
                     if obj.zone == Zone::Hand

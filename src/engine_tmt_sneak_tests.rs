@@ -847,3 +847,96 @@ fn tmt_sneak_karai_one_or_both_modes_allow_shared_targets_and_expire_normally() 
         }
     }
 }
+
+#[test]
+fn tmt_sneak_uses_generic_graveyard_permission_but_never_flashback_permission() {
+    for p in [Player::P0, Player::P1] {
+        for kind in [GraveyardCastKind::Cast, GraveyardCastKind::Flashback] {
+            let mut g = setup(p);
+            let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let source = named(&mut g, p, "Donatello's Technique", Zone::Graveyard);
+            unblocked(&mut g, bear);
+            let action = Action::AnnounceSneak {
+                card: source,
+                attacker: g.object_ref(bear),
+            };
+            reject(&mut g, action.clone());
+            let mut permission = g.activation_item(p, bear, 0);
+            permission.targets.push(g.bind_target(Target::Card(source)));
+            g.grant_graveyard_cast(&permission, kind);
+            if kind == GraveyardCastKind::Flashback {
+                reject(&mut g, action);
+                continue;
+            }
+            sneak(&mut g, source, bear, None);
+            assert_eq!(
+                g.state.stack.last().unwrap().cast.unwrap().origin,
+                Zone::Graveyard
+            );
+            settle(&mut g);
+            assert_eq!(g.state.objects[source as usize].zone, Zone::Graveyard);
+            assert!(!g.has_graveyard_cast(p, source, GraveyardCastKind::Cast));
+        }
+    }
+}
+#[test]
+fn tmt_sneak_uses_paid_exile_permission_for_a_foreign_card_but_not_a_free_only_route() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let source = named(&mut g, p.other(), "Foot Ninjas", Zone::Exile);
+        unblocked(&mut g, bear);
+        let action = Action::AnnounceSneak {
+            card: source,
+            attacker: g.object_ref(bear),
+        };
+        reject(&mut g, action.clone());
+        let reference = g.object_ref(source);
+        g.grant_exile_free_cast_permission(p, reference);
+        reject(&mut g, action);
+        g.grant_exile_cast_permission(p, reference);
+        sneak(&mut g, source, bear, Some(0));
+        assert_eq!(
+            g.state.stack.last().unwrap().cast.unwrap().origin,
+            Zone::Exile
+        );
+        settle(&mut g);
+        let view = g.object_view(source);
+        assert_eq!(view.owner, p.other());
+        assert_eq!(view.controller, p);
+        assert!(view.tapped && view.attacking);
+    }
+}
+#[test]
+fn tmt_sneak_uses_library_top_cast_permission_and_keeps_the_next_top_private_during_payment() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        named(&mut g, p, "Vizier of the Menagerie", Zone::Battlefield);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let source = named(&mut g, p, "Foot Ninjas", Zone::Library);
+        unblocked(&mut g, bear);
+        let witness = g.object_ref(bear);
+        checked(
+            &mut g,
+            Action::AnnounceSneak {
+                card: source,
+                attacker: witness,
+            },
+        );
+        assert!(g.observe(p).known_library_top[p.index()].is_none());
+        assert!(g.observe(p.other()).known_library_top[p.index()].is_none());
+        checked(&mut g, Action::ChooseSpellCost { cost: 0 });
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        assert_eq!(
+            g.state.stack.last().unwrap().cast.unwrap().origin,
+            Zone::Library
+        );
+        settle(&mut g);
+        assert!(g.object_view(source).tapped && g.object_view(source).attacking);
+    }
+}

@@ -22,6 +22,16 @@ pub(super) const RETURN_COST: AdditionalCost = AdditionalCost {
     },
 };
 impl Game {
+    pub(super) fn sneak_origin_allowed(&self, player: Player, card: CardId) -> bool {
+        let object = &self.state.objects[card as usize];
+        match object.zone {
+            Zone::Hand => object.owner == player,
+            Zone::Graveyard => self.has_graveyard_cast(player, card, GraveyardCastKind::Cast),
+            Zone::Exile => self.can_cast_exiled(player, card),
+            Zone::Library => self.can_cast_library_top(player, card),
+            _ => false,
+        }
+    }
     pub(super) fn sneak_attacker(
         &self,
         player: Player,
@@ -83,11 +93,10 @@ impl Game {
         if self.state.active != player
             || self.state.step != Step::Blockers
             || self.state.pending != Pending::Priority
-            || object.zone != Zone::Hand
-            || object.owner != player
             || object.is_token()
             || !object.card.is_supported()
             || object.card.sneak_costs().is_empty()
+            || !self.sneak_origin_allowed(player, card)
         {
             return false;
         }
