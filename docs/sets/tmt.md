@@ -671,3 +671,16 @@ All remaining 44 cards are assigned in disjoint current and subsequent batches:
 equipment/spells for the integrator, combat/damage for the audit author,
 exile/control/outside-game for the mana author, and tokens/Sagas/search for the
 spell author. No partial PR is published.
+
+## Initial TMT-only natural-game evidence
+
+The five-color TMT game workload passes 20 complete Standard games on
+`7b387699`, with 11,823 decisions and 205 owned raw/index/restore checks. All
+45 selected physical nonlands were cast; seven actual Sneak announcements,
+Class levels, counters, departure-associated triggers and 13 private decisions
+were observed. No concessions or illegal-action shortcuts terminate these games.
+
+[Initial game evidence](tmt-games-initial.json) records fixed seeds, hardware,
+logs and limits. The development-build rate is 1,968 decisions/s including
+privacy observations, snapshots, sibling equality and replay. This covers core
+mechanics and 45 cast identities, not yet the entire pool or optimized throughput.
