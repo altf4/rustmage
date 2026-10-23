@@ -3,10 +3,40 @@
   "catalogue_id": 3458,
   "oracle_id": "6c754808-86a6-43d3-8aeb-96ec19f7396c",
   "facts_sha256": "534a9ad551d0af6999f3f1dc10e496ec31ed30c91493d3c33456d346404297a3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "453eea5c3a89d97b8e522cf3c1f56afc2b3df136deba5112fd307004f5b605fc"
   },
-  "physical_metadata_sha256": "df871e27844a0bb8d965204dc4dee8c64a3685e5f9ba4343793d30af6d1c06d9"
+  "physical_metadata_sha256": "df871e27844a0bb8d965204dc4dee8c64a3685e5f9ba4343793d30af6d1c06d9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RenetTemporalApprentice.java",
+  "java_sha256": "87190f29a15f1e81eb4bb087193a8c1aef7ae5aa3b0096d36bb945a5b29b5474",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandFromBattlefieldAllEffect.java",
+      "sha256": "f8ea6d746634b1c78d29e989867a33b2f66c883130595784f62fb04f8e447d5f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/EnteredThisTurnPredicate.java",
+      "sha256": "fe50a805b5eab58450ca27c609f5a990d36e9471e9f04d6ac538b17e1e8e1cee"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+      "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+    }
+  ]
 }

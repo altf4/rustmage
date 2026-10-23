@@ -70,6 +70,10 @@ impl Game {
         player: Player,
         object: ObjectRef,
     ) -> bool {
+        if choice.kind == EffectChoiceKind::ReturnLinkedCreature {
+            return !choice.selected[player.index()].contains(&object)
+                && self.linked_creature_return_candidate(object);
+        }
         if choice.hand_reveal.is_some() {
             return self.hand_reveal_candidate(choice, object);
         }
@@ -683,7 +687,9 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        if choice.kind == EffectChoiceKind::CopyEntryObject {
+        if choice.kind == EffectChoiceKind::ReturnLinkedCreature {
+            self.complete_linked_creature_return(&choice);
+        } else if choice.kind == EffectChoiceKind::CopyEntryObject {
             let controller = self.state.resolving.as_ref().unwrap().item.controller;
             if let Some(&object) = choice.selected[controller.index()].first()
                 && let Some(recipe) = self.entry_batch_copy_recipe(object)

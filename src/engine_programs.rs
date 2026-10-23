@@ -1899,6 +1899,25 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::ChooseLinkedCreatureReturn => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::ReturnLinkedCreature,
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        None,
+                    ) {
+                        return;
+                    }
+                }
+                Instruction::ReturnOtherLinkedExileToHand => self.return_other_linked_exile(&item),
+                Instruction::ReturnNewNonlandPermanents => {
+                    self.return_new_nonland_permanents(&item)
+                }
+                Instruction::ShuffleWheelHandsAndGraveyards => {
+                    self.shuffle_wheel_hands_and_graveyards(&item)
+                }
                 Instruction::ReturnLinkedExileToHand => {
                     self.return_linked_exile(item.object, item.ability_origin())
                 }

@@ -1898,6 +1898,7 @@ struct State {
     named_counters: Option<SharedVec<live_counters::NamedCounterRow>>,
     creature_damage_history: Option<SharedVec<CreatureDamageHistoryView>>,
     creature_entry_history: Option<SharedVec<CreatureEntryHistoryView>>,
+    permanent_entry_history: Option<SharedVec<ObjectRef>>,
     entry_values: entry_choices::Rows,
     copy_recipes: copies::Rows,
     graveyard_entries: Option<SharedVec<ObjectRef>>,
@@ -2260,6 +2261,7 @@ pub struct Observation {
     pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub creature_damage_history: Vec<CreatureDamageHistoryView>,
     pub creature_entry_history: Vec<CreatureEntryHistoryView>,
+    pub permanent_entry_history: Vec<ObjectRef>,
     pub additional_combats: u64,
     pub combat_phase: u64,
     pub limited_exile_plays: Vec<LimitedExilePlayView>,
@@ -2533,6 +2535,7 @@ impl Game {
                 limited_exile_plays: None,
                 creature_damage_history: None,
                 creature_entry_history: None,
+                permanent_entry_history: None,
                 entry_values: None,
                 copy_recipes: None,
                 graveyard_entries: None,
@@ -3317,6 +3320,7 @@ impl Game {
                             }
                             EffectChoiceKind::PowerDifferenceBoost
                             | EffectChoiceKind::CopyEntryObject
+                            | EffectChoiceKind::ReturnLinkedCreature
                             | EffectChoiceKind::KeepSharedCreatureTypes => {
                                 Action::ChooseCreature { object }
                             }
@@ -6275,6 +6279,7 @@ impl Game {
         self.state.ability_resolutions = None;
         self.state.creature_damage_history = None;
         self.state.creature_entry_history = None;
+        self.state.permanent_entry_history = None;
         self.state.combat_rules = None;
         self.state.attacked_this_turn.clear();
         self.state.creatures_died_this_turn = 0;
@@ -6893,6 +6898,10 @@ impl Game {
                 .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             creature_entry_history: s
                 .creature_entry_history
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
+            permanent_entry_history: s
+                .permanent_entry_history
                 .as_ref()
                 .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             schema: OBSERVATION_SCHEMA,
@@ -7673,6 +7682,10 @@ impl Game {
             + s.creature_entry_history.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<CreatureEntryHistoryView>>()
                     + rows.len() * std::mem::size_of::<CreatureEntryHistoryView>()
+            })
+            + s.permanent_entry_history.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<ObjectRef>>()
+                    + rows.len() * std::mem::size_of::<ObjectRef>()
             })
             + s.first_strikers.len() * std::mem::size_of::<CardId>()
             + s.damage_choices.len() * std::mem::size_of::<DamageChoice>()
@@ -8734,3 +8747,9 @@ pub use tmt_combat_rules::LimitedExilePlayView;
 #[cfg(test)]
 #[path = "engine_tmt_combat_batch_tests.rs"]
 mod tmt_combat_batch_tests;
+
+#[path = "engine_tmt_exile_returns.rs"]
+mod tmt_exile_returns;
+#[cfg(test)]
+#[path = "engine_tmt_exile_returns_tests.rs"]
+mod tmt_exile_returns_tests;

@@ -189,6 +189,10 @@ impl Game {
             return false;
         };
         self.on_battlefield(target.card)
+            && (!aura.enchant_basic()
+                || self.state.objects[target.card as usize]
+                    .card
+                    .is_basic_land())
             && self.object_ref(target.card) == target
             && !self.protected_from_source(target.card, colors, controller)
             && (if spec.kinds == 0 {

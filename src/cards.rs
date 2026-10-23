@@ -235,6 +235,7 @@ pub(crate) enum TargetPredicate {
     Token,
     Subtype(&'static str),
     SourceChosenCreatureType,
+    Basic,
     Nonbasic,
     Legendary,
     NonOutlaw,
@@ -682,6 +683,8 @@ pub(crate) struct SearchSpec {
 pub enum EffectChoiceKind {
     /// Choose one surviving exact member of a captured entry batch, without targeting.
     CopyEntryObject,
+    /// Non-targeted creature card choice among this exact source ability family links.
+    ReturnLinkedCreature,
     /// A controlled permanent or revealed hand card witnesses a casting cost.
     Behold,
     /// Behold one permanent or hand card and exile that exact witness as a cost.
@@ -870,6 +873,10 @@ pub(crate) enum Instruction {
     RememberOwnSacrifice,
     RecoverAnotherPermanent,
     ReturnLinkedExileToHand,
+    ChooseLinkedCreatureReturn,
+    ReturnOtherLinkedExileToHand,
+    ReturnNewNonlandPermanents,
+    ShuffleWheelHandsAndGraveyards,
     ExileTargetsLinkedToSource,
     /// Immediate public-zone tracking, including redirected first movement (CR400.7j).
     BlinkImmediate,
@@ -3364,6 +3371,9 @@ impl Card {
     }
     pub(crate) fn aura(self) -> Option<AuraSpec> {
         authored::rules(self).map_or_else(|| generated::aura(self), |rules| rules.aura)
+    }
+    pub(crate) fn enchant_basic(self) -> bool {
+        authored::rules(self).is_some_and(|rules| rules.extras.enchant_basic)
     }
     pub(crate) fn attachment_bonus(self) -> Option<EquipmentSpec> {
         self.equipment().or_else(|| self.aura().map(|a| a.bonus))

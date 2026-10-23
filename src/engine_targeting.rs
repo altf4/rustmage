@@ -1128,6 +1128,7 @@ impl Game {
                         self.current_kinds(id) & (1 | 2 | 16 | 32 | 64 | 256) != 0
                     }
                     TargetPredicate::Legendary => object.card.info().legendary,
+                    TargetPredicate::Basic => object.card.is_basic_land(),
                     TargetPredicate::Nonbasic => !object.card.is_basic_land(),
                     TargetPredicate::NonOutlaw => {
                         !["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]

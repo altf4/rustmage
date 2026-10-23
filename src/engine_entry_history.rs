@@ -13,6 +13,16 @@ impl Game {
                 && event.destination == Zone::Battlefield
                 && self.on_battlefield(event.after.card)
                 && self.object_ref(event.after.card) == event.after
+            {
+                self.state
+                    .permanent_entry_history
+                    .get_or_insert_with(|| Vec::new().into())
+                    .push(event.after);
+            }
+            if event.moved
+                && event.destination == Zone::Battlefield
+                && self.on_battlefield(event.after.card)
+                && self.object_ref(event.after.card) == event.after
                 && self.current_kinds(event.after.card) & 16 != 0
             {
                 let controller = self.state.objects[event.after.card as usize].controller;

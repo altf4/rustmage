@@ -578,6 +578,7 @@ impl Game {
                 );
             }
             EffectChoiceKind::CopyEntryObject
+            | EffectChoiceKind::ReturnLinkedCreature
             | EffectChoiceKind::RevealHandThenExile
             | EffectChoiceKind::ExileFromHand
             | EffectChoiceKind::ExileGraveyardCard
