@@ -3,10 +3,30 @@
   "catalogue_id": 1707,
   "oracle_id": "91c835d1-22ca-4c90-9ba6-c8e01bbc0347",
   "facts_sha256": "f46b679316fdd43aa984da670b3c56b17a3dadebcfac6a9be04016395d8cbc36",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a7fc1590f81138928f5b6ae6eb516bcfc7b707f2be70a778d23994b4192d489f"
   },
-  "physical_metadata_sha256": "2eff9a816f072183d405a3fb0269d4254ec77046ddef5852ab2ed17cb23ee5e2"
+  "physical_metadata_sha256": "2eff9a816f072183d405a3fb0269d4254ec77046ddef5852ab2ed17cb23ee5e2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GenerousPlunderer.java",
+  "java_sha256": "e86560702dbd8825fa29ff3ecaccd2776056586682cba0c40bb517433ea07a1f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/DefendingPlayerControlsSourceAttackingPredicate.java",
+      "sha256": "f043e4567f17028e330bb89d2999678709dc498c91a0ad83494bd9f496f059f9"
+    }
+  ]
 }

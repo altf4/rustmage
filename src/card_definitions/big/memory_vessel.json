@@ -3,10 +3,41 @@
   "catalogue_id": 2717,
   "oracle_id": "0179bc62-823e-46b9-b536-342904fedafc",
   "facts_sha256": "5ad892fa23136c47441b440df1ca3259bc62e05c51293a61f150e622840410b8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "07aaf03d3499986a1f8c7f5ffd2eea2ed86600056cf9cdd396dd146043ad6bdd"
   },
-  "physical_metadata_sha256": "b0c81a58fbef9926ad9106cb54b2f5ce055a9dd666d60d40af2ff1d46b13ff5e"
+  "physical_metadata_sha256": "b0c81a58fbef9926ad9106cb54b2f5ce055a9dd666d60d40af2ff1d46b13ff5e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MemoryVessel.java",
+  "java_sha256": "19474a699a08d99054fea2f621e25b9245f46af9b29d46d1dab7b84daa7eaee0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceCost.java",
+      "sha256": "1cd064f3443f1a13cffbc141dbc6ddd71762a8a7a6b4c4d2aad6b432bf870d73"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/CardUtil.java",
+      "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/CanPlayCardControllerEffect.java",
+      "sha256": "f038661e1695132acc06c2886f17d98832360a6d92fbd59d3956fe87d4e78387"
+    }
+  ],
+  "remaining_obligations": []
 }

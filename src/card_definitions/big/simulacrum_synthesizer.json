@@ -3,10 +3,40 @@
   "catalogue_id": 3878,
   "oracle_id": "eb7a1f21-a66d-415b-8520-710b44890bb6",
   "facts_sha256": "4b92d4042f136f85d5a626f3f5e0b8b77b0820e5af5529e6026994b8b93034f8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b27dc420ea6633d30d70b9dc363ef9fa37f035fbbea73e9b5ae8a467262c8d3d"
   },
-  "physical_metadata_sha256": "c580aff3469533c8e78e19b281c96330db9067c82d12e9ad4a82355ff600d043"
+  "physical_metadata_sha256": "c580aff3469533c8e78e19b281c96330db9067c82d12e9ad4a82355ff600d043",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SimulacrumSynthesizer.java",
+  "java_sha256": "42307e6bb0c8f1fb4b7197e134111a13b134c2d0115266cee9c27f12691bac31",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+      "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/KarnConstructToken.java",
+      "sha256": "007e07ef25d8afce37b2929ea07cbbf20ee8817951cef63f220115f62edebf4d"
+    }
+  ]
 }

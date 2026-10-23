@@ -65,9 +65,7 @@ impl Announcement {
             }
             StackKind::Spell => self.item.source_card.additional_cost(),
             StackKind::ActivatedAbility { ability } => {
-                self.item.source_card.activations()[ability as usize]
-                    .cost
-                    .additional
+                self.item.source_card.activation(ability).cost.additional
             }
             StackKind::TriggeredAbility { .. }
             | StackKind::CopyEndStepSacrifice
@@ -105,8 +103,10 @@ impl Announcement {
                 .chain([].iter().copied())
             }
             StackKind::Spell => self.item.source_card.cost_options(),
-            StackKind::ActivatedAbility { ability } => self.item.source_card.activations()
-                [ability as usize]
+            StackKind::ActivatedAbility { ability } => self
+                .item
+                .source_card
+                .activation(ability)
                 .cost
                 .mana_options(),
             StackKind::TriggeredAbility { .. }
@@ -189,8 +189,10 @@ impl Announcement {
                         )
                     }) && self.item.source_card.has_hybrid_cost()
                 }
-                StackKind::ActivatedAbility { ability } => !self.item.source_card.activations()
-                    [ability as usize]
+                StackKind::ActivatedAbility { ability } => !self
+                    .item
+                    .source_card
+                    .activation(ability)
                     .cost
                     .alternatives
                     .is_empty(),
@@ -707,6 +709,38 @@ impl Game {
             .map(|_| source.card);
         self.target_matches_without_hand(rule, controller, source, target, departing, None)
     }
+    fn instant_sorcery_source(
+        &self,
+        source: ObjectRef,
+        qualification: Option<TargetSourceCharacteristics<'_>>,
+    ) -> bool {
+        let qualification = qualification.or_else(|| {
+            self.state
+                .stack
+                .iter()
+                .chain(self.state.pending_triggers.iter())
+                .chain(self.state.ordering_triggers.iter())
+                .chain(self.state.announcing.iter().map(|a| &a.item))
+                .chain(self.state.resolving.iter().map(|r| &r.item))
+                .find(|item| item.object == source)
+                .map(TargetSourceCharacteristics::from_item)
+        });
+        let kinds = if let Some(card) = qualification.and_then(|q| q.spell) {
+            card.kind_mask()
+        } else if let Some(object) = self
+            .state
+            .objects
+            .get(source.card as usize)
+            .filter(|o| o.generation == source.generation)
+        {
+            self.object_kinds(source.card, object)
+        } else {
+            qualification
+                .and_then(|q| q.snapshot)
+                .map_or(0, |f| f.kinds)
+        };
+        kinds & (4 | 8) != 0
+    }
     fn target_matches_without_hand(
         &self,
         rule: TargetRule,
@@ -888,7 +922,11 @@ impl Game {
                     return false;
                 };
                 if obj.zone == Zone::Battlefield
-                    && self.keywords(id).contains(Keywords::PROTECTION_EVERYTHING)
+                    && (self.keywords(id).contains(Keywords::PROTECTION_EVERYTHING)
+                        || (self
+                            .keywords(id)
+                            .contains(Keywords::PROTECTION_INSTANT_SORCERY)
+                            && self.instant_sorcery_source(source, qualification)))
                 {
                     return false;
                 }
@@ -1102,11 +1140,13 @@ impl Game {
         SpellView {
             gift: None,
             source_move: None,
+            borrowed_slot: None,
             target_controller_lki: None,
             reflexive_subject: None,
             crew: None,
             cast_event: None,
             copy_event: None,
+            captured_artifact_copy: None,
             source_copy_recipe: None,
             target_allocations: None,
             mana_copy_sources: None,
@@ -1358,7 +1398,9 @@ impl Game {
             if announcement.additional_cost().is_some_and(|spec| {
                 matches!(
                     spec.kind,
-                    EffectChoiceKind::Sacrifice | EffectChoiceKind::ReturnToHand
+                    EffectChoiceKind::Sacrifice
+                        | EffectChoiceKind::SacrificeDifferentNames(_)
+                        | EffectChoiceKind::ReturnToHand
                 ) || forage::is_forage_cost(spec)
                     || evidence::threshold(spec).is_some()
             }) && let Some(payment) = announcement.payment.take()

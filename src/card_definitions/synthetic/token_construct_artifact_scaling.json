@@ -1,0 +1,23 @@
+{
+  "name": "@token/construct_artifact_scaling",
+  "catalogue_id": 5345,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "a1b2f10cc682d1ae3b3a7aee0845bd1b9b3f4a474b1156c66dad2575b42f4576",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/KarnConstructToken.java",
+  "java_sha256": "007e07ef25d8afce37b2929ea07cbbf20ee8817951cef63f220115f62edebf4d",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ArtifactYouControlCount.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "92087ef848245fb2f446712fb82cfc54bd7d12bf00b8babd522e4ba655a52a6a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    }
+  ]
+}

@@ -5349,7 +5349,10 @@
     2,
     0,
     1,
-    8
+    8,
+    4,
+    0,
+    0
   ],
   "aliases": [
     [
@@ -5853,6 +5856,14 @@
       5304
     ],
     [
+      "@token/bat_2_1_black_flying",
+      5344
+    ],
+    [
+      "@token/blood",
+      5346
+    ],
+    [
       "@token/c39aeea0961ef620ee35343a",
       5305
     ],
@@ -5891,6 +5902,10 @@
     [
       "@token/cf02fa6b398266a5c94335e8",
       5313
+    ],
+    [
+      "@token/construct_artifact_scaling",
+      5345
     ],
     [
       "@token/d053682b1087bdf4527d8c3d",
@@ -27787,6 +27802,24 @@
       "name": "Phyrexian Goblin Token",
       "subtypes": "Phyrexian Goblin",
       "colors": 8
+    },
+    {
+      "factory_identity": "@token/bat_2_1_black_flying",
+      "name": "Bat Token",
+      "subtypes": "Bat",
+      "colors": 4
+    },
+    {
+      "factory_identity": "@token/construct_artifact_scaling",
+      "name": "Construct Token",
+      "subtypes": "Construct",
+      "colors": 0
+    },
+    {
+      "factory_identity": "@token/blood",
+      "name": "Blood Token",
+      "subtypes": "Blood",
+      "colors": 0
     }
   ],
   "emblems": [
@@ -180487,6 +180520,89 @@
       "standard_legal": false,
       "legendary": false,
       "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5344,
+      "module": "card_5344",
+      "path": "synthetic/token_bat_2_1_black_flying.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/bat_2_1_black_flying",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Bat",
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5345,
+      "module": "card_5345",
+      "path": "synthetic/token_construct_artifact_scaling.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/construct_artifact_scaling",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Construct",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 17,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5346,
+      "module": "card_5346",
+      "path": "synthetic/token_blood.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/blood",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact — Blood",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 16,
       "basic": false,
       "mana_color": null,
       "colored": [

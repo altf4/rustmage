@@ -3,10 +3,36 @@
   "catalogue_id": 4397,
   "oracle_id": "a14d89b6-23eb-4337-8dee-93c39b0efbf1",
   "facts_sha256": "c4360cf4d37bf2e0ffe40283a5a36d95de6c121d438c94e807579630a143b1cb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "445000ecf63f366cbad48c45ef91c57d09b09c3ebe3238e1c4163669510e7483"
   },
-  "physical_metadata_sha256": "390cc461937521edc258c07747e5b28a55fef97bb83ab21382e997fb98460def"
+  "physical_metadata_sha256": "390cc461937521edc258c07747e5b28a55fef97bb83ab21382e997fb98460def",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TerritoryForge.java",
+  "java_sha256": "fb4dbafda5abce26fed3e2c1c4a7b64c7c4769d081f74d03e5a38b19a5225ddf",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CastFromEverywhereSourceCondition.java",
+      "sha256": "2d091ae95c227de0b227151a9b315cf5370e50f5e0f5177f5e50d8ab3825c4ba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    }
+  ],
+  "remaining_obligations": []
 }

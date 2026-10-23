@@ -185,6 +185,28 @@ impl Game {
             .capacity("delayed sacrifice allocation exhausted");
         batches.push(batch);
     }
+    pub(super) fn finish_temporary_copy(&mut self, item: &SpellView, tokens: Vec<ObjectRef>) {
+        let ids = tokens.iter().map(|r| r.card).collect::<Vec<_>>();
+        self.grant_keyword_effects(&ids, item.object, Keywords::HASTE);
+        let id = self.next_stack_id();
+        let batch = DelayedBatch {
+            view: DelayedSacrificeView {
+                id,
+                source: item.object,
+                source_card: item.source_card,
+                controller: item.controller,
+                tokens,
+            },
+            keywords: item.source_keywords,
+            tapped: item.source_tapped,
+            facts: item.source_facts,
+            attachment: item.source_attachment,
+        };
+        self.state
+            .delayed_sacrifices
+            .get_or_insert_with(|| Box::new(Vec::new()))
+            .push(batch);
+    }
     pub(super) fn queue_delayed_sacrifices(&mut self) {
         let Some(batches) = self.state.delayed_sacrifices.take() else {
             return;
@@ -200,12 +222,14 @@ impl Game {
             let controller = b.view.controller;
             self.state.pending_triggers.push(SpellView {
                 source_move: None,
+                borrowed_slot: None,
                 target_controller_lki: None,
                 gift: None,
                 reflexive_subject: None,
                 crew: None,
                 cast_event: None,
                 copy_event: None,
+                captured_artifact_copy: None,
                 source_copy_recipe: None,
                 target_allocations: None,
                 mana_copy_sources: None,

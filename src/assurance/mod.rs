@@ -1,6 +1,7 @@
 //! Bounded rules assurance. Card outcomes use ordinary checked actions; expensive
 //! ownership/rollback contracts are checked once at representative decision roots.
 use super::*;
+pub(super) mod big_helpers;
 mod cards;
 mod contracts;
 mod interactions;

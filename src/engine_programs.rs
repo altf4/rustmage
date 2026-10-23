@@ -329,11 +329,29 @@ impl Game {
             return;
         }
         self.temporary_departure_triggers(event);
-        if event.before.zone == Zone::Battlefield && event.destination == Zone::Graveyard {
+        if event.before.zone == Zone::Battlefield {
+            // A self-departure trigger needs only its frozen pre-event source.
+            // This also covers exile/bounce paths which do not collect death observers.
+            let source = &event.before;
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::SelfLeaves {
+                    self.queue_zone_trigger(source, index, event);
+                }
+            }
+        }
+        if event.before.zone == Zone::Battlefield {
             // Departure triggers look back at the entire pre-event battlefield;
             // simultaneous departures still see each other exactly once.
             for source in death_sources {
                 for (index, ability) in source.card.triggers().iter().enumerate() {
+                    if event.destination != Zone::Graveyard
+                        && !matches!(
+                            ability.condition.event(),
+                            TriggerCondition::Sacrificed { .. }
+                        )
+                    {
+                        continue;
+                    }
                     let matched = match ability.condition.event() {
                         TriggerCondition::AttachedCreatureDies => {
                             event.before.is_creature()
@@ -354,6 +372,9 @@ impl Game {
                         }
                         TriggerCondition::ReturnDeath(filter) => {
                             self.return_death_matches(filter, source, event)
+                        }
+                        TriggerCondition::SelfNontokenDies => {
+                            source.reference == event.before.reference && !event.before.is_token()
                         }
                         TriggerCondition::SelfDies | TriggerCondition::SelfEntersOrDies => {
                             source.reference == event.before.reference
@@ -432,11 +453,24 @@ impl Game {
                         }
                         _ => false,
                     };
-                    if matched
-                        && self.queue_zone_trigger(source, index, event)
-                        && matches!(ability.condition.event(), TriggerCondition::ReturnDeath(_))
-                    {
-                        self.capture_return_death(event);
+                    if matched && self.queue_zone_trigger(source, index, event) {
+                        if matches!(ability.condition.event(), TriggerCondition::ReturnDeath(_)) {
+                            self.capture_return_death(event);
+                        }
+                        if ability.program.iter().any(|i| {
+                            matches!(i, Instruction::ScheduleSacrificedArtifactCopy { .. })
+                        }) {
+                            self.state
+                                .pending_triggers
+                                .last_mut()
+                                .unwrap()
+                                .captured_artifact_copy = Some(Box::new(
+                                event
+                                    .before
+                                    .copy_recipe
+                                    .unwrap_or_else(|| CopyRecipe::new(event.before.card)),
+                            ));
+                        }
                     }
                 }
             }
@@ -468,6 +502,7 @@ impl Game {
                     | TriggerCondition::InterveningIf { .. } => {
                         unreachable!("unwrapped event")
                     }
+                    TriggerCondition::SelfEntersIfCast => same && event.was_cast,
                     TriggerCondition::SelfOffspring => same && event.offspring_paid,
                     TriggerCondition::SelfKicked => same && event.kicked,
                     TriggerCondition::SelfGiftEnters => same && event.gift.is_some(),
@@ -491,10 +526,13 @@ impl Game {
                     | TriggerCondition::Discarded { .. }
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn
                     | TriggerCondition::SourceDealtCombatDamage
+                    | TriggerCondition::AttachedDealtCombatDamage
                     | TriggerCondition::DamagedCreatureDies
                     | TriggerCondition::StateCounterAtLeast { .. }
                     | TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::SelfDies
+                    | TriggerCondition::SelfNontokenDies
+                    | TriggerCondition::SelfLeaves
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::AttachedCreatureDies
@@ -544,6 +582,10 @@ impl Game {
                                     TriggerCondition::FilteredEntersYou(_)
                                 ))
                             && match predicate {
+                                EntryPredicate::ArtifactManaValueAtLeast(minimum) => {
+                                    entered.kinds & 16 != 0
+                                        && entered.card.fixed_mana_value() >= u64::from(minimum)
+                                }
                                 EntryPredicate::CreatureWithoutSubtype(subtype) => {
                                     entered.is_creature() && !entered.has_subtype(subtype)
                                 }
@@ -579,12 +621,12 @@ impl Game {
                     TriggerCondition::SubtypeEntersYou(subtype) => {
                         yours && entered.has_subtype(subtype)
                     }
-                    TriggerCondition::ArtifactEntersYou => yours && entered.card.is_artifact(),
+                    TriggerCondition::ArtifactEntersYou => yours && entered.kinds & 16 != 0,
                     TriggerCondition::EnchantmentEntersYou => yours && entered.kinds & 32 != 0,
                     TriggerCondition::CreatureEntersYou => yours && entered.is_creature(),
                     TriggerCondition::LandEntersYou => yours && entered.kinds & 2 != 0,
                     TriggerCondition::OtherArtifactEntersYou => {
-                        yours && !same && entered.card.is_artifact()
+                        yours && !same && entered.kinds & 16 != 0
                     }
                 };
                 if matched && self.queue_zone_trigger(source, index, event) {
@@ -666,6 +708,7 @@ impl Game {
         index: usize,
         event: Option<Box<AttachmentTriggerView>>,
     ) -> bool {
+        self.remember_hideaway_controller(source.reference, source.controller);
         if let Some(grant) = event.as_ref().filter(|grant| grant.granted) {
             if !source.grant_available(
                 grant.grantor,
@@ -720,6 +763,15 @@ impl Game {
         ) {
             return false;
         }
+        if matches!(
+            definition.triggers()[index].program.first(),
+            Some(Instruction::MayOncePerTurn { .. })
+        ) && self.state.triggered_this_turn.contains(&TriggerUse {
+            source: source.reference,
+            ability: u16::try_from(index).expect("ability index"),
+        }) {
+            return false;
+        }
         if condition.once_per_turn() {
             let used = TriggerUse {
                 source: source.reference,
@@ -736,12 +788,14 @@ impl Game {
         self.state.pending_triggers.push(SpellView {
             gift: None,
             source_move: None,
+            borrowed_slot: None,
             target_controller_lki: None,
             reflexive_subject: None,
             crew: None,
             cast_event: None,
             copy_event: None,
             target_allocations: None,
+            captured_artifact_copy: None,
             source_copy_recipe: source
                 .copy_recipe
                 .filter(|r| r.exceptions != CopyExceptions::NONE)
@@ -937,7 +991,8 @@ impl Game {
                             || ability.program.iter().any(|instruction| {
                                 matches!(
                                     instruction,
-                                    Instruction::CreateTokensWithTemporaryKeywords { .. }
+                                    Instruction::GainLifeScaled(_, AmountValue::SpellColors)
+                                        | Instruction::CreateTokensWithTemporaryKeywords { .. }
                                         | Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
                                         | Instruction::PutCountersScaled {
                                             amount: AmountValue::SpellColors,
@@ -1314,7 +1369,9 @@ impl Game {
                             item.cast.is_some_and(|c| c.evidence == Some(true));
                         self.stage_entries(vec![movement], None);
                     } else {
-                        self.move_object(item.card, Zone::Battlefield);
+                        let mut event = self.move_object_raw(item.card, Zone::Battlefield);
+                        event.was_cast = item.cast.is_some();
+                        self.finish_zone_events(std::slice::from_ref(&event), &[]);
                     }
                     self.give_priority();
                     return;
@@ -1509,6 +1566,7 @@ impl Game {
                         self.move_adventure_spell(&item, Zone::Graveyard);
                     }
                 }
+                self.prune_linked_exiles();
                 self.give_priority();
                 return;
             };
@@ -1544,7 +1602,24 @@ impl Game {
                     }
                 }
                 Instruction::ReturnLinkedExileToHand => self.return_linked_exile(item.object),
-                Instruction::CopyNextInstantSorcery => self.remember_next_spell_copy(&item),
+                Instruction::ScheduleSacrificedArtifactCopy { ability } => {
+                    let mut delayed = item.clone();
+                    delayed.id = self.next_stack_id();
+                    delayed.kind = StackKind::TriggeredAbility { ability };
+                    delayed.targets.clear();
+                    self.state
+                        .delayed_artifact_copies
+                        .get_or_insert_default()
+                        .push(delayed);
+                }
+                Instruction::CreateCapturedArtifactCopy => {
+                    if let Some(recipe) = item.captured_artifact_copy.as_deref() {
+                        self.stage_copy_creation(item.controller, *recipe, 1);
+                    }
+                }
+                Instruction::CopyNextInstantSorcery { ability } => {
+                    self.remember_next_spell_copy(&item, ability)
+                }
                 Instruction::CopyCastSpell { .. } => {
                     if self.copy_captured_spell(&item) {
                         return;
@@ -2169,6 +2244,25 @@ impl Game {
                         self.attach_equipment(item.object, target);
                     }
                 }
+                Instruction::CreateTokenChoice(tokens) => {
+                    self.state.pending = Pending::TokenChoice {
+                        player: item.controller,
+                        tokens,
+                    };
+                    return;
+                }
+                Instruction::ExileHandCardCopy => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::HandExileCopy,
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        Some(0),
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::ChooseObjects {
                     kind,
                     players,
@@ -2179,6 +2273,12 @@ impl Game {
                     if self.start_effect_choice(&item, kind, players, filter, amount, optional_skip)
                     {
                         return;
+                    }
+                }
+                Instruction::CreateTemporaryArtifactCopy => {
+                    if let Some(mut recipe) = self.recipe_for_subject(&item, Subject::Targets) {
+                        recipe.exceptions = recipe.exceptions.union(CopyExceptions::ARTIFACT);
+                        self.stage_temporary_copy_creation(&item, recipe);
                     }
                 }
                 Instruction::CreateCopyToken { subject, amount }
@@ -2225,9 +2325,12 @@ impl Game {
                     );
                 }
                 Instruction::AddMana(production) => {
-                    let quality = self.mana_quality(production, item.card);
+                    let quality = self
+                        .mana_quality(production, item.card)
+                        .map(|quality| quality.with_definition(item.source_card));
                     match production.base().in_world(self, item.card) {
                         ManaProduction::ChosenColor
+                        | ManaProduction::MonocoloredPermanentColors
                         | ManaProduction::CountSubtype { .. }
                         | ManaProduction::Tagged { .. } => unreachable!("resolved production"),
                         ManaProduction::Fixed(mana) => {
@@ -2248,7 +2351,9 @@ impl Game {
                 }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
                 Instruction::DestroyLandAndSearch => self.destroy_land_and_search(&item),
-                Instruction::Search(spec) | Instruction::SearchRequired(spec) => {
+                Instruction::Search(spec)
+                | Instruction::SearchRequired(spec)
+                | Instruction::SearchDifferentNames(spec) => {
                     let minimum = if matches!(instruction, Instruction::SearchRequired(_)) {
                         assert_eq!(
                             spec.filter,
@@ -2265,6 +2370,10 @@ impl Game {
                         Some(Box::new(search::SearchChoice {
                             spec,
                             minimum,
+                            different_names: matches!(
+                                instruction,
+                                Instruction::SearchDifferentNames(_)
+                            ),
                             selected: Vec::new(),
                             battlefield: None,
                         }));
@@ -2277,6 +2386,13 @@ impl Game {
                     if self.exile_top_choose_play(item.controller, amount, next_turn) {
                         return;
                     }
+                }
+                Instruction::RandomLinkedExileToBattlefield => {
+                    self.random_linked_exile_to_battlefield(item.object, item.controller)
+                }
+                Instruction::ExileTopPlayScaled { amount, next_turn } => {
+                    let count = self.item_amount(amount, &item).min(u128::from(u16::MAX)) as u16;
+                    self.exile_top_play(item.controller, count, next_turn);
                 }
                 Instruction::ExileTopPlay { amount, next_turn } => {
                     self.exile_top_play(item.controller, amount, next_turn);
@@ -2334,6 +2450,12 @@ impl Game {
                         && self.state.objects[item.card as usize].zone == Zone::Stack
                     {
                         self.move_object(item.card, Zone::Exile);
+                    }
+                }
+                Instruction::PlayHideawayIfCoven => {
+                    self.play_hideaway_if_coven(&item);
+                    if self.state.resolution_free_casts.is_some() {
+                        return;
                     }
                 }
                 Instruction::SelectLibraryTo(effect) => {
@@ -2529,12 +2651,40 @@ impl Game {
                         replacements::TokenCompletion::JobAttach(item.object),
                     );
                 }
+                Instruction::CreateTokensFor {
+                    players,
+                    token,
+                    amount,
+                    tapped,
+                } => {
+                    for player in self.program_players(players, &item).collect::<Vec<_>>() {
+                        self.create_tokens(player, token, u128::from(amount), tapped);
+                    }
+                }
                 Instruction::CreateTokens {
                     token,
                     amount,
                     tapped,
                 } => {
                     self.create_tokens(item.controller, token, u128::from(amount), tapped);
+                }
+                Instruction::ExileAndBorrowActivatedAbilities => {
+                    self.exile_and_borrow_activated_abilities(&item)
+                }
+                Instruction::MemoryVessel => self.resolve_memory_vessel(&item),
+                Instruction::RecordOncePerTurn => self.record_optional_ability_use(&item),
+                Instruction::MayOncePerTurn { skip } => {
+                    let skip_to = resolution.pc.checked_add(skip).expect("program offset");
+                    assert!(skip_to <= resolution.program.len());
+                    if self.optional_ability_used(&item) {
+                        self.state.resolving.as_mut().unwrap().pc = skip_to;
+                    } else {
+                        self.state.pending = Pending::EffectOptional {
+                            player: item.controller,
+                            skip_to,
+                        };
+                        return;
+                    }
                 }
                 Instruction::May { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
@@ -2712,12 +2862,14 @@ impl Game {
                 Instruction::Damage(_)
                 | Instruction::DamageScaled(_)
                 | Instruction::DamagePlayers(_, _)
+                | Instruction::DamagePlayersScaled(_, _)
                 | Instruction::DamageDiscardAmount(_) => {
                     let amount = match instruction {
                         Instruction::Damage(amount) | Instruction::DamagePlayers(_, amount) => {
                             i128::from(amount)
                         }
-                        Instruction::DamageScaled(value) => {
+                        Instruction::DamageScaled(value)
+                        | Instruction::DamagePlayersScaled(_, value) => {
                             i128::try_from(self.item_amount(value, &item))
                                 .capacity("damage amount representation exhausted")
                         }
@@ -2737,6 +2889,7 @@ impl Game {
                         combat: false,
                     };
                     let events: Vec<_> = if let Instruction::DamagePlayers(players, _)
+                    | Instruction::DamagePlayersScaled(players, _)
                     | Instruction::DamageDiscardAmount(players) =
                         instruction
                     {

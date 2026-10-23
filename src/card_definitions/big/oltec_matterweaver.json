@@ -3,10 +3,35 @@
   "catalogue_id": 3011,
   "oracle_id": "3cb91696-242f-4e91-806b-61b1bb45a20c",
   "facts_sha256": "2010ea6013adc1be5515380765d5b98eb122b1fc5ef473d4f37fa651b54d9026",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7851909d5574a5ea845a1889f95bcbfdccc942741eaa73df61f0a6376ac6ac92"
   },
-  "physical_metadata_sha256": "9961e6aaa4b196e8877eb1451e0dfe1c011c31ce7fb623270e8e971e9b46a217"
+  "physical_metadata_sha256": "9961e6aaa4b196e8877eb1451e0dfe1c011c31ce7fb623270e8e971e9b46a217",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OltecMatterweaver.java",
+  "java_sha256": "57211df0d635e090deda6edb1fc410baaf9fd6ca04d73975e27974677dcce141",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/GnomeToken.java",
+      "sha256": "457bbd07a6ca7e3b2c39361c71ecaf9fa0214fcb281590c6b0ded7f750cb14c7"
+    }
+  ]
 }

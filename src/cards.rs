@@ -15,19 +15,36 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 pub struct CopyExceptions {
     pub sacrifice_abilities: u16,
     pub nightmare: bool,
+    pub artifact: bool,
+    pub golem: bool,
 }
 impl CopyExceptions {
     pub const NONE: Self = Self {
         sacrifice_abilities: 0,
         nightmare: false,
+        artifact: false,
+        golem: false,
     };
     pub const HASTE_AND_SACRIFICE: Self = Self {
         sacrifice_abilities: 1,
         nightmare: false,
+        artifact: false,
+        golem: false,
     };
     pub const NIGHTMARE: Self = Self {
         sacrifice_abilities: 0,
         nightmare: true,
+        artifact: false,
+        golem: false,
+    };
+    pub const ARTIFACT: Self = Self {
+        artifact: true,
+        ..Self::NONE
+    };
+    pub const GOLEM: Self = Self {
+        artifact: true,
+        golem: true,
+        ..Self::NONE
     };
     pub fn union(self, other: Self) -> Self {
         Self {
@@ -36,6 +53,8 @@ impl CopyExceptions {
                 .checked_add(other.sacrifice_abilities)
                 .capacity("copy sacrifice abilities"),
             nightmare: self.nightmare || other.nightmare,
+            artifact: self.artifact || other.artifact,
+            golem: self.golem || other.golem,
         }
     }
 }
@@ -384,6 +403,7 @@ pub(crate) enum ManaProduction {
         quality: &'static ManaQuality,
     },
     ChosenColor,
+    MonocoloredPermanentColors,
     Fixed(Mana),
     CountSubtype {
         color: u8,
@@ -414,7 +434,7 @@ impl ManaProduction {
     pub(crate) fn visit(self, mut emit: impl FnMut(Mana) -> bool) -> bool {
         match self {
             Self::Tagged { production, .. } => production.visit(emit),
-            Self::ChosenColor | Self::CountSubtype { .. } => {
+            Self::ChosenColor | Self::MonocoloredPermanentColors | Self::CountSubtype { .. } => {
                 panic!("dynamic mana requires a characteristic world")
             }
             Self::Fixed(mana) => emit(mana),
@@ -470,12 +490,14 @@ pub(crate) struct LibrarySelectionSpec {
 /// Explicit destinations for cards looked at without changing zones first.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibraryPickDestination {
+    Hideaway,
     Hand,
     Battlefield,
     Top,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibraryLook {
+    Amount(AmountValue),
     Fixed(u16),
     ChosenX,
     UntilKinds(u16),
@@ -556,6 +578,7 @@ pub(crate) struct SearchSpec {
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
+    SacrificeDifferentNames(u16),
     /// Choose distinct untapped permanents as a non-targeting activation cost.
     TapPermanents(u16),
     RemoveCreatureCounters(u16),
@@ -563,6 +586,7 @@ pub enum EffectChoiceKind {
         maximum: u16,
     },
     HandCreature,
+    HandExileCopy,
     HandLand {
         tapped: bool,
     },
@@ -685,6 +709,15 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    CreateTokenChoice(&'static [Card]),
+    PlayHideawayIfCoven,
+    ExileHandCardCopy,
+    ExileTopPlayScaled {
+        amount: AmountValue,
+        next_turn: bool,
+    },
+    SearchDifferentNames(SearchSpec),
+    RandomLinkedExileToBattlefield,
     PartitionLibraryPiles(u16),
     KeepOneOfEachPermanentType,
     RememberOwnSacrifice,
@@ -695,7 +728,13 @@ pub(crate) enum Instruction {
     },
     ReturnDeathCard(ReturnKind),
     ResolveDelayedReturn,
-    CopyNextInstantSorcery,
+    CopyNextInstantSorcery {
+        ability: u16,
+    },
+    ScheduleSacrificedArtifactCopy {
+        ability: u16,
+    },
+    CreateCapturedArtifactCopy,
     CopyCastSpell {
         prior_spells: bool,
     },
@@ -709,6 +748,7 @@ pub(crate) enum Instruction {
         cost: ManaCost,
         life: u32,
     },
+    CreateTemporaryArtifactCopy,
     CreateCopyToken {
         subject: Subject,
         amount: u16,
@@ -1055,6 +1095,13 @@ pub(crate) enum Instruction {
     Damage(i32),
     DamageScaled(AmountValue),
     DamagePlayers(PlayerSet, i32),
+    DamagePlayersScaled(PlayerSet, AmountValue),
+    CreateTokensFor {
+        players: PlayerSet,
+        token: Card,
+        amount: u16,
+        tapped: bool,
+    },
     UntapSource,
     TapSource,
     UntapCreatures(CreatureFilter),
@@ -1194,6 +1241,13 @@ pub(crate) enum Instruction {
     Draw(PlayerSet, u16),
     DrawScaled(PlayerSet, AmountValue),
     Discard(PlayerSet, u16),
+    /// Optional resolution choice; its accepted branch records an exact ability use.
+    MayOncePerTurn {
+        skip: usize,
+    },
+    RecordOncePerTurn,
+    MemoryVessel,
+    ExileAndBorrowActivatedAbilities,
     GainLife(PlayerSet, u16),
     GainLifeScaled(PlayerSet, AmountValue),
     LoseLife(PlayerSet, u16),
@@ -1554,6 +1608,7 @@ pub(crate) enum ReplacementSpec {
     },
     AddToken(Card),
     ReplaceArtifactTokens(Card),
+    AddArtifactToken(Card),
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
@@ -1572,10 +1627,11 @@ pub enum CounterKind {
     Fellowship,
     Wish,
     Stash,
+    Charge,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 14] = [
+    pub const ALL: [Self; 15] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -1590,6 +1646,7 @@ impl CounterKind {
         Self::Fellowship,
         Self::Wish,
         Self::Stash,
+        Self::Charge,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -1603,6 +1660,7 @@ impl CounterKind {
                 | Self::Fellowship
                 | Self::Wish
                 | Self::Stash
+                | Self::Charge
         )
     }
 }
@@ -2071,6 +2129,7 @@ pub(crate) enum DamageSubject {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum EntryPredicate {
     CreatureWithoutSubtype(&'static str),
+    ArtifactManaValueAtLeast(u32),
     CreaturePowerAtMost(i32),
     CreaturePowerAtLeast(i32),
     SubtypeAny(&'static [&'static str]),
@@ -2116,6 +2175,7 @@ pub(crate) enum TriggerCondition {
     SelfSaddledFirst,
     /// A paid promise belongs to this actual cast-to-battlefield entry event.
     SelfGiftEnters,
+    SelfEntersIfCast,
     Foraged,
     FoodsSacrificed,
     Reflexive,
@@ -2147,6 +2207,7 @@ pub(crate) enum TriggerCondition {
         spells_only: bool,
     },
     SourceDealtCombatDamage,
+    AttachedDealtCombatDamage,
     ControlledCreatureCombatDamageOwnTurn,
     DamagedCreatureDies,
     StateCounterAtLeast {
@@ -2219,6 +2280,8 @@ pub(crate) enum TriggerCondition {
     SelfEvidence,
     EvidenceCollected,
     SelfDies,
+    SelfNontokenDies,
+    SelfLeaves,
     SelfEntersOrDies,
     SelfAttacks,
     SelfFirstAttack,
@@ -2426,6 +2489,7 @@ impl ActivatedAbility {
 pub(crate) enum ZoneReplacementRule {
     RevealShuffleSelf,
     ExileInstantSorceryCards,
+    ExileAllCardsAndTokens,
     OpponentDiscardToBattlefield,
 }
 
@@ -2465,6 +2529,7 @@ impl Keywords {
     pub const PREVENT_COMBAT_BY: Self = Self(33554432);
     pub const NO_HUMAN_BLOCKERS: Self = Self(67108864);
     pub const PROTECTION_EVERYTHING: Self = Self(134217728);
+    pub const PROTECTION_INSTANT_SORCERY: Self = Self(268435456);
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
     }
@@ -2857,6 +2922,178 @@ impl Card {
                 .iter()
                 .any(|f| matches!(f, StaticAbilityFragment::AttachmentActivation(i) if *i == index))
         })
+    }
+    pub(crate) fn borrows_exiled_activations(self) -> bool {
+        authored::RULES[self.index()]
+            .extras
+            .borrows_exiled_activations
+    }
+    /// Intrinsic land/dork mana is stored separately from printed activation tables.
+    /// The reserved index is used only by a captured inherited-ability descriptor.
+    pub(crate) fn activation(self, index: u16) -> &'static ActivatedAbility {
+        if index == u16::MAX {
+            static INTRINSIC: [ActivatedAbility; 6] = [
+                ActivatedAbility {
+                    exhaust: false,
+                    guard: ActivationGuard::Always,
+                    origin: ActivationOrigin::Battlefield,
+                    cycling: false,
+                    cost: ActivationCost {
+                        colored: [0; 6],
+                        generic: 0,
+                        alternatives: &[],
+                        additional: None,
+                        mana_component: false,
+                        tap: true,
+                        sacrifice: false,
+                        exile_self: false,
+                        discard: false,
+                        life: 0,
+                        remove: None,
+                        loyalty: None,
+                    },
+                    targets: TargetPlan::NONE,
+                    program: &[Instruction::AddMana(ManaProduction::Fixed([
+                        1, 0, 0, 0, 0, 0,
+                    ]))],
+                    sorcery: false,
+                    once_per_turn: false,
+                },
+                ActivatedAbility {
+                    exhaust: false,
+                    guard: ActivationGuard::Always,
+                    origin: ActivationOrigin::Battlefield,
+                    cycling: false,
+                    cost: ActivationCost {
+                        colored: [0; 6],
+                        generic: 0,
+                        alternatives: &[],
+                        additional: None,
+                        mana_component: false,
+                        tap: true,
+                        sacrifice: false,
+                        exile_self: false,
+                        discard: false,
+                        life: 0,
+                        remove: None,
+                        loyalty: None,
+                    },
+                    targets: TargetPlan::NONE,
+                    program: &[Instruction::AddMana(ManaProduction::Fixed([
+                        0, 1, 0, 0, 0, 0,
+                    ]))],
+                    sorcery: false,
+                    once_per_turn: false,
+                },
+                ActivatedAbility {
+                    exhaust: false,
+                    guard: ActivationGuard::Always,
+                    origin: ActivationOrigin::Battlefield,
+                    cycling: false,
+                    cost: ActivationCost {
+                        colored: [0; 6],
+                        generic: 0,
+                        alternatives: &[],
+                        additional: None,
+                        mana_component: false,
+                        tap: true,
+                        sacrifice: false,
+                        exile_self: false,
+                        discard: false,
+                        life: 0,
+                        remove: None,
+                        loyalty: None,
+                    },
+                    targets: TargetPlan::NONE,
+                    program: &[Instruction::AddMana(ManaProduction::Fixed([
+                        0, 0, 1, 0, 0, 0,
+                    ]))],
+                    sorcery: false,
+                    once_per_turn: false,
+                },
+                ActivatedAbility {
+                    exhaust: false,
+                    guard: ActivationGuard::Always,
+                    origin: ActivationOrigin::Battlefield,
+                    cycling: false,
+                    cost: ActivationCost {
+                        colored: [0; 6],
+                        generic: 0,
+                        alternatives: &[],
+                        additional: None,
+                        mana_component: false,
+                        tap: true,
+                        sacrifice: false,
+                        exile_self: false,
+                        discard: false,
+                        life: 0,
+                        remove: None,
+                        loyalty: None,
+                    },
+                    targets: TargetPlan::NONE,
+                    program: &[Instruction::AddMana(ManaProduction::Fixed([
+                        0, 0, 0, 1, 0, 0,
+                    ]))],
+                    sorcery: false,
+                    once_per_turn: false,
+                },
+                ActivatedAbility {
+                    exhaust: false,
+                    guard: ActivationGuard::Always,
+                    origin: ActivationOrigin::Battlefield,
+                    cycling: false,
+                    cost: ActivationCost {
+                        colored: [0; 6],
+                        generic: 0,
+                        alternatives: &[],
+                        additional: None,
+                        mana_component: false,
+                        tap: true,
+                        sacrifice: false,
+                        exile_self: false,
+                        discard: false,
+                        life: 0,
+                        remove: None,
+                        loyalty: None,
+                    },
+                    targets: TargetPlan::NONE,
+                    program: &[Instruction::AddMana(ManaProduction::Fixed([
+                        0, 0, 0, 0, 1, 0,
+                    ]))],
+                    sorcery: false,
+                    once_per_turn: false,
+                },
+                ActivatedAbility {
+                    exhaust: false,
+                    guard: ActivationGuard::Always,
+                    origin: ActivationOrigin::Battlefield,
+                    cycling: false,
+                    cost: ActivationCost {
+                        colored: [0; 6],
+                        generic: 0,
+                        alternatives: &[],
+                        additional: None,
+                        mana_component: false,
+                        tap: true,
+                        sacrifice: false,
+                        exile_self: false,
+                        discard: false,
+                        life: 0,
+                        remove: None,
+                        loyalty: None,
+                    },
+                    targets: TargetPlan::NONE,
+                    program: &[Instruction::AddMana(ManaProduction::Fixed([
+                        0, 0, 0, 0, 0, 1,
+                    ]))],
+                    sorcery: false,
+                    once_per_turn: false,
+                },
+            ];
+            &INTRINSIC[self.mana_color().expect("captured intrinsic mana")]
+        } else {
+            &self.activations()[usize::from(index)]
+        }
     }
     pub(crate) fn activations(self) -> &'static [ActivatedAbility] {
         generated::DEFINITIONS[self.0 as usize].activated

@@ -30,6 +30,32 @@ pub(super) trait CharacteristicWorld {
         characteristic_layers::colors(self, id)
     }
 
+    fn borrowed_activation_used(&self, source: ObjectRef, slot: u64) -> bool {
+        self.game()
+            .state
+            .borrowed_uses
+            .as_ref()
+            .is_some_and(|rows| {
+                rows.iter().any(|row| {
+                    row.source == source
+                        && row.slot == slot
+                        && (row.exhaust || row.turn == self.game().state.turn)
+                })
+            })
+    }
+    fn activation_prohibited(&self, actor: Player, id: CardId) -> bool {
+        let target = self.object(id);
+        target.zone == Zone::Battlefield
+            && self.kinds(id) & (1 | 16 | 32) != 0
+            && self.game().state.static_sources.iter().any(|&source| {
+                let provider = self.object(source);
+                provider.zone == Zone::Battlefield
+                    && provider.controller == self.game().state.active
+                    && provider.controller != actor
+                    && provider.card.static_cast_restriction() & 2 != 0
+                    && self.printed_abilities_available(source)
+            })
+    }
     fn is_token(&self, id: CardId) -> bool {
         self.object(id).is_token()
     }
@@ -147,12 +173,18 @@ pub(super) trait CharacteristicWorld {
             }
             for group in self.object(source).card.static_ability_groups() {
                 for fragment in group.fragments {
-                    if let crate::cards::StaticAbilityFragment::AttachmentMana(production) =
-                        *fragment
+                    if let crate::cards::StaticAbilityFragment::AttachmentMana(production)
+                    | crate::cards::StaticAbilityFragment::AttachmentSacrificeMana(
+                        production,
+                    ) = *fragment
                     {
                         result.push(ability_order::GrantedManaAbility {
                             source: reference,
                             production,
+                            sacrifice: matches!(
+                                *fragment,
+                                crate::cards::StaticAbilityFragment::AttachmentSacrificeMana(_)
+                            ),
                         });
                     }
                 }
@@ -254,6 +286,25 @@ impl ManaProduction {
                     world.game().entry_value(world.reference(source))
                 {
                     mana[color.index()] = 1;
+                }
+                Self::Fixed(mana)
+            }
+            Self::MonocoloredPermanentColors => {
+                let controller = world.object(source).controller;
+                let mut mask = 0u8;
+                for id in 0..world.game().state.objects.len() {
+                    let id = id as CardId;
+                    let object = world.object(id);
+                    if object.zone == Zone::Battlefield && object.controller == controller {
+                        let colors = world.colors(id);
+                        if colors.count_ones() == 1 {
+                            mask |= colors;
+                        }
+                    }
+                }
+                let mut mana = [0; 6];
+                for (index, amount) in mana.iter_mut().enumerate().take(5) {
+                    *amount = u32::from(mask & (1 << index) != 0);
                 }
                 Self::Fixed(mana)
             }

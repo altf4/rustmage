@@ -106,7 +106,11 @@ impl Game {
         };
         let source = self.object_view(recipient.card);
         for (index, ability) in giver.card.activations().iter().enumerate() {
-            if !giver.card.grants_activation(index as u16)
+            if ability_world::CharacteristicWorld::activation_prohibited(
+                self,
+                actor,
+                recipient.card,
+            ) || !giver.card.grants_activation(index as u16)
                 || !source.grant_available(grantor, giver.card, index as u16, None)
                 || (ability.mana_production().is_none()
                     && self.named_activation_prohibited(recipient.card))
@@ -130,7 +134,13 @@ impl Game {
                 required: ability.cost.colored,
                 generic: ability.cost.generic,
                 reserve: Some((grantor, Self::attached_tap_spec())),
-                source: Some((recipient, index as u16, Counters::default(), giver.card)),
+                source: Some((
+                    recipient,
+                    index as u16,
+                    Counters::default(),
+                    giver.card,
+                    None,
+                )),
             }) && emit(Action::AnnounceAttachedAbility {
                 grantor,
                 ability: index as u16,

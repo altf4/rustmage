@@ -1,16 +1,71 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfEnters,
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::Draw(PlayerSet::Controller, 3),
+                Instruction::GainLife(PlayerSet::Controller, 6),
+                Instruction::CreateTokens {
+                    token: Card(5344),
+                    amount: 3,
+                    tapped: false,
+                },
+            ],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::AtStep {
+                step: TriggerStep::End,
+                relation: CastRelation::You,
+                guard: StepGuard::Always,
+            },
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::Discard(PlayerSet::Controller, 1),
+                Instruction::LoseLife(PlayerSet::Controller, 2),
+                Instruction::ChooseObjects {
+                    kind: EffectChoiceKind::Sacrifice,
+                    players: PlayerSet::Controller,
+                    filter: SacrificeFilter {
+                        keywords: Keywords::NONE,
+                        source_only: false,
+                        kinds: 1,
+                        nonland: false,
+                        other: false,
+                        tokens: None,
+                        artifact_enchantment_or_token: false,
+                        subtype: None,
+                    },
+                    amount: 1,
+                    optional_skip: None,
+                },
+            ],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::SelfLeaves,
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::Discard(PlayerSet::Controller, 3),
+                Instruction::LoseLife(PlayerSet::Controller, 6),
+                Instruction::ChooseObjects {
+                    kind: EffectChoiceKind::Sacrifice,
+                    players: PlayerSet::Controller,
+                    filter: SacrificeFilter {
+                        keywords: Keywords::NONE,
+                        source_only: false,
+                        kinds: 1,
+                        nonland: false,
+                        other: false,
+                        tokens: None,
+                        artifact_enchantment_or_token: false,
+                        subtype: None,
+                    },
+                    amount: 3,
+                    optional_skip: None,
+                },
+            ],
+        },
+    ],
     ..CardRules::EMPTY
 };

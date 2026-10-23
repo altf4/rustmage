@@ -128,6 +128,9 @@ impl Game {
         flash_surcharge: bool,
     ) -> bool {
         let object = &self.state.objects[card as usize];
+        if object.zone == Zone::Hand && self.hand_play_prohibited() {
+            return false;
+        }
         let Some(definition) = (match face {
             CastFace::Normal => Some(object.card),
             CastFace::Adventure => object.card.adventure_spell(),

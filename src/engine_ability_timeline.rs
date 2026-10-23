@@ -42,6 +42,7 @@ impl Card {
                             | StaticAbilityFragment::AttachmentTrigger(..)
                             | StaticAbilityFragment::AttachmentActivation(..)
                             | StaticAbilityFragment::AttachmentMana(..)
+                            | StaticAbilityFragment::AttachmentSacrificeMana(..)
                             | StaticAbilityFragment::CounterKeyword(..)
                             | StaticAbilityFragment::CounterKeywordOwnTurn(..)
                             | StaticAbilityFragment::DeathBaronLord

@@ -3,10 +3,30 @@
   "catalogue_id": 2551,
   "oracle_id": "542be13f-b9c0-4b79-b486-be576c531a82",
   "facts_sha256": "69ee91a81d678b2fc135e00c2641faed8b4e7e249ff3c001e6a5f6dcaecf7108",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "01eadaa519be4dcb68c410af92e339a7ec145fd0f2f15fc981b91d126abc0af2"
   },
-  "physical_metadata_sha256": "0e83428d1a5484a482b9920663a96c166c271f672e647d9cef11af71e5de226b"
+  "physical_metadata_sha256": "0e83428d1a5484a482b9920663a96c166c271f672e647d9cef11af71e5de226b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LootTheKeyToEverything.java",
+  "java_sha256": "cda99e650da9de35fa7afa02eed9fadd1babe7da087e1fdbd2ea9e4795852a6d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+      "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    }
+  ]
 }

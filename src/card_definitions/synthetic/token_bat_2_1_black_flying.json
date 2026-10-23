@@ -1,0 +1,11 @@
+{
+  "name": "@token/bat_2_1_black_flying",
+  "catalogue_id": 5344,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "acdd1c089a37f88a354afc0ac1993fb26f59da15a4c5ec0eaf59dabe1debe218",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/Bat21Token.java",
+  "java_sha256": "4387654303be0b8e79705d90838ff3101c85ed062b03fb9f68a498908d4b2fdf"
+}

@@ -24,6 +24,7 @@ impl Game {
         let controls_cost_object = match spec.kind {
             EffectChoiceKind::Discard => o.owner == actor,
             EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::SacrificeDifferentNames(_)
             | EffectChoiceKind::ReturnToHand
             | EffectChoiceKind::TapPermanents(_) => o.controller == actor,
             _ => false,
@@ -55,6 +56,7 @@ impl Game {
         let zone = match spec.kind {
             EffectChoiceKind::Discard => Zone::Hand,
             EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::SacrificeDifferentNames(_)
             | EffectChoiceKind::ReturnToHand
             | EffectChoiceKind::TapPermanents(_) => Zone::Battlefield,
             _ => return false,
@@ -152,6 +154,35 @@ impl Game {
                 )
         })
     }
+    pub(super) fn different_name_sacrifice_fundable(
+        &self,
+        goal: FundingGoal,
+        spec: AdditionalCost,
+        amount: u16,
+        chosen: &[ObjectRef],
+    ) -> bool {
+        if chosen.len() == usize::from(amount) {
+            return self.can_fund_sacrifice_group(goal, spec, chosen);
+        }
+        let source = goal.source.as_ref().expect("activation source").0;
+        (0..self.state.objects.len()).any(|id| {
+            let object = self.object_ref(id as CardId);
+            if chosen.contains(&object)
+                || !self.additional_candidate(spec, goal.actor, source, object)
+                || chosen.iter().any(|r| {
+                    crate::card_names::same_name(
+                        self.object_view(r.card).name(),
+                        self.object_view(object.card).name(),
+                    )
+                })
+            {
+                return false;
+            }
+            let mut next = chosen.to_vec();
+            next.push(object);
+            self.different_name_sacrifice_fundable(goal.clone(), spec, amount, &next)
+        })
+    }
     pub(super) fn activation_can_fund(
         &self,
         goal: FundingGoal,
@@ -170,6 +201,9 @@ impl Game {
                 })
                 .count();
             return count >= usize::from(amount) && self.can_fund(goal);
+        }
+        if let EffectChoiceKind::SacrificeDifferentNames(amount) = spec.kind {
+            return self.different_name_sacrifice_fundable(goal, spec, amount, &[]);
         }
         if let Some(n) = evidence::threshold(spec) {
             return self.can_collect_evidence(goal.actor, n) && self.can_fund(goal);
@@ -191,6 +225,30 @@ impl Game {
         let Some(spec) = a.additional_cost() else {
             return false;
         };
+        if let EffectChoiceKind::SacrificeDifferentNames(amount) = spec.kind {
+            let mut selected = a
+                .additional_group
+                .as_ref()
+                .map_or_else(Vec::new, |g| g.to_vec());
+            if selected.contains(&object)
+                || selected.iter().any(|r| {
+                    crate::card_names::same_name(
+                        self.object_view(r.card).name(),
+                        self.object_view(object.card).name(),
+                    )
+                })
+                || !self.additional_candidate(spec, a.item.controller, a.item.object, object)
+            {
+                return false;
+            }
+            selected.push(object);
+            return self.different_name_sacrifice_fundable(
+                self.funding_goal(a),
+                spec,
+                amount,
+                &selected,
+            );
+        }
         if let EffectChoiceKind::TapPermanents(_) = spec.kind {
             return object != a.item.object
                 && !a
@@ -209,7 +267,9 @@ impl Game {
     pub(super) fn choose_additional_cost(&mut self, object: ObjectRef) {
         let a = self.state.announcing.as_mut().unwrap();
         if let Some(AdditionalCost {
-            kind: EffectChoiceKind::TapPermanents(amount),
+            kind:
+                EffectChoiceKind::TapPermanents(amount)
+                | EffectChoiceKind::SacrificeDifferentNames(amount),
             ..
         }) = a.additional_cost()
         {
@@ -236,6 +296,27 @@ impl Game {
             for &(r, kind) in selected.iter() {
                 self.pay_counters(r.card, &Counters::of(kind, 1));
             }
+            a.additional_paid = true;
+            return;
+        }
+        if let EffectChoiceKind::SacrificeDifferentNames(amount) = spec.kind {
+            let group = a
+                .additional_group
+                .as_ref()
+                .expect("selected sacrifice group");
+            assert_eq!(group.len(), usize::from(amount));
+            assert!(group.iter().all(|&r| self.additional_candidate(
+                spec,
+                a.item.controller,
+                a.item.object,
+                r
+            )));
+            self.sacrifice_batch(
+                &group
+                    .iter()
+                    .map(|r| (a.item.controller, r.card))
+                    .collect::<Vec<_>>(),
+            );
             a.additional_paid = true;
             return;
         }
@@ -274,9 +355,11 @@ impl Game {
             self.refresh_local_source_counter_quantities(&mut a.item);
         }
         match spec.kind {
-            EffectChoiceKind::RemoveCreatureCounters(_)
+            EffectChoiceKind::SacrificeDifferentNames(_)
+            | EffectChoiceKind::RemoveCreatureCounters(_)
             | EffectChoiceKind::TapPermanents(_)
             | EffectChoiceKind::UntapLands { .. }
+            | EffectChoiceKind::HandExileCopy
             | EffectChoiceKind::HandCreature
             | EffectChoiceKind::HandLand { .. }
             | EffectChoiceKind::LandCards { .. }

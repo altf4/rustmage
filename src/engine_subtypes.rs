@@ -23,7 +23,7 @@ const LAND_TYPES: [&str; 17] = [
     "Planet",
     "Urza's",
 ];
-const JOB_TYPES: [&str; 14] = [
+const JOB_TYPES: [&str; 15] = [
     "Artificer",
     "Bard",
     "Cleric",
@@ -38,8 +38,9 @@ const JOB_TYPES: [&str; 14] = [
     "Angel",
     "Demon",
     "Nightmare",
+    "Golem",
 ];
-// Fourteen named grants and three projection flags use the view's existing padding.
+// Fifteen named grants and three projection flags use the view's existing padding.
 const CREATURE_OR_KINDRED: u16 = 1 | 128;
 const JOB_MASK: u32 = (1 << JOB_TYPES.len()) - 1;
 const SUPPRESS_PRINTED: u32 = 1 << JOB_TYPES.len();
@@ -175,6 +176,12 @@ impl Game {
             .is_some_and(|r| r.exceptions.nightmare)
         {
             mask.insert("Nightmare");
+        }
+        if self
+            .copy_recipe(reference)
+            .is_some_and(|r| r.exceptions.golem)
+        {
+            mask.insert("Golem");
         }
         // Copy exceptions already exist while an owned token awaits entry.
         // Later continuous type changes apply only on the battlefield.
@@ -374,6 +381,9 @@ impl Game {
         let mut result = GrantedSubtypes::default();
         if m.before.copy_recipe.is_some_and(|r| r.exceptions.nightmare) {
             result.insert("Nightmare");
+        }
+        if m.before.copy_recipe.is_some_and(|r| r.exceptions.golem) {
+            result.insert("Golem");
         }
         if m.before.card.static_ability_groups().iter().any(|g| {
             g.fragments

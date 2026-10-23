@@ -255,6 +255,7 @@ impl Game {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ResolutionFreeCasts {
+    pub allow_lands: bool,
     pub player: Player,
     pub remaining: Vec<ObjectRef>,
 }
@@ -271,8 +272,11 @@ impl Game {
             .map(|event| event.after)
             .collect();
         self.finish_zone_events(&events, &[]);
-        self.state.resolution_free_casts =
-            Some(Box::new(ResolutionFreeCasts { player, remaining }));
+        self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            player,
+            remaining,
+            allow_lands: false,
+        }));
         self.state.pending = Pending::ResolutionCasts { player };
     }
     pub(super) fn visit_resolution_casts(
@@ -283,9 +287,8 @@ impl Game {
         if emit(Action::FinishResolutionCasts) {
             return true;
         }
-        if self.state.casting_prohibited || self.static_casting_prohibited(player) {
-            return false;
-        }
+        let casting_prohibited =
+            self.state.casting_prohibited || self.static_casting_prohibited(player);
         let Some(free) = &self.state.resolution_free_casts else {
             return false;
         };
@@ -293,6 +296,23 @@ impl Game {
             if self.object_ref(object.card) != object
                 || self.state.objects[object.card as usize].zone != Zone::Exile
             {
+                continue;
+            }
+            let physical = self.state.objects[object.card as usize].card;
+            if free.allow_lands
+                && physical.is_land()
+                && self.state.active == player
+                && (!self.state.land_played
+                    || self
+                        .continuous_land_plays(player)
+                        .checked_add(self.state.players[player.index()].extra_land_plays_granted)
+                        .capacity("land allowance exhausted")
+                        > self.state.continuous_land_plays_used)
+                && emit(Action::PlayLand { card: object.card })
+            {
+                return true;
+            }
+            if casting_prohibited {
                 continue;
             }
             for face in [CastFace::Normal, CastFace::Adventure, CastFace::Omen] {
@@ -331,6 +351,7 @@ impl Game {
             .unwrap()
             .remaining
             .retain(|&r| r != object);
+        self.reveal_hideaway_object(object);
         let mut item = self.cast_item(player, object.card, [0; 6]);
         self.set_cast_face(&mut item, face);
         item.cast.as_mut().unwrap().method = CastMethod::Free;

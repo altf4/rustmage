@@ -95,9 +95,9 @@ impl Game {
             _ => false,
         })
     }
-    pub(super) fn remember_next_spell_copy(&mut self, item: &SpellView) {
+    pub(super) fn remember_next_spell_copy(&mut self, item: &SpellView, ability: u16) {
         let mut delayed = item.clone();
-        delayed.kind = StackKind::TriggeredAbility { ability: 0 };
+        delayed.kind = StackKind::TriggeredAbility { ability };
         delayed.cast = None;
         delayed.is_copy = false;
         delayed.targets.clear();
@@ -169,7 +169,7 @@ impl Game {
                 trigger.kind = StackKind::TriggeredAbility { ability: 0 };
                 trigger.card = source.object.card;
                 trigger.object = source.object;
-                trigger.source_card = source.card;
+                trigger.source_card = source.definition;
                 trigger.source_facts = source.facts;
                 trigger.source_keywords = source.keywords;
                 trigger.source_tapped = source.tapped;

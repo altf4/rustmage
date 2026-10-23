@@ -226,7 +226,7 @@ impl Announcement {
         match self.item.kind {
             StackKind::Spell => self.item.source_card.x_symbols() > 0,
             StackKind::ActivatedAbility { ability } => {
-                self.item.source_card.activations()[usize::from(ability)].has_x_cost()
+                self.item.source_card.activation(ability).has_x_cost()
             }
             _ => false,
         }

@@ -40,13 +40,13 @@ To explore the project:
 
 ## Standard set tracker
 
-**3 / 20 sets complete · 15%**
+**2 / 20 sets complete · 10%**
 
-`███░░░░░░░░░░░░░░░░░`
+`██░░░░░░░░░░░░░░░░░░`
 
-**2,480 / 5,164 unique Standard cards supported · 48%**
+**2,215 / 5,164 unique Standard cards supported · 43%**
 
-`██████████░░░░░░░░░░`
+`█████████░░░░░░░░░░░`
 
 Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 ([inventory](data/standard/xmage-inventory.json)), rather than live format legality.
@@ -64,8 +64,8 @@ is separate from upstream review and merge status.
 | Set | Code | Supported cards | Implementation status |
 | --- | --- | ---: | --- |
 | Foundations | FDN | 517/517 (100%) | ✅ Complete |
-| Lorwyn Eclipsed | ECL | 273/273 (100%) | ✅ Complete |
-| Teenage Mutant Ninja Turtles | TMT | 195/195 (100%) | ✅ Complete |
+| Lorwyn Eclipsed | ECL | 107/273 (39%) | ⏳ Partial |
+| Teenage Mutant Ninja Turtles | TMT | 71/195 (36%) | ⏳ Partial |
 | Aetherdrift | DFT | 110/276 (40%) | ⏳ Partial |
 | Avatar: The Last Airbender | TLA | 97/286 (34%) | ⏳ Partial |
 | Bloomburrow | BLB | 127/279 (46%) | ⏳ Partial |
@@ -74,12 +74,12 @@ is separate from upstream review and merge status.
 | Final Fantasy | FIN | 133/312 (43%) | ⏳ Partial |
 | Marvel Super Heroes | MSH | 84/281 (30%) | ⏳ Partial |
 | Marvel's Spider-Man | SPM | 76/193 (39%) | ⏳ Partial |
-| Murders at Karlov Manor | MKM | 81/279 (29%) | ⏳ Partial |
+| Murders at Karlov Manor | MKM | 80/279 (29%) | ⏳ Partial |
 | Outlaws of Thunder Junction | OTJ | 101/276 (37%) | ⏳ Partial |
 | Reality Fracture | FRA | 89/285 (31%) | ⏳ Partial |
 | Secrets of Strixhaven | SOS | 105/271 (39%) | ⏳ Partial |
 | Tarkir: Dragonstorm | TDM | 127/276 (46%) | ⏳ Partial |
-| The Big Score | BIG | 5/30 (17%) | ⏳ Partial |
+| The Big Score | BIG | 30/30 (100%) | ✅ Complete |
 | The Hobbit | HOB | 69/193 (36%) | ⏳ Partial |
 | The Lost Caverns of Ixalan | LCI | 105/291 (36%) | ⏳ Partial |
 | Wilds of Eldraine | WOE | 150/281 (53%) | ⏳ Partial |

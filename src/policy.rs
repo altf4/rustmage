@@ -247,8 +247,10 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceExile { .. }
             | Action::AnnounceFlashback { .. } => 79,
             Action::AnnouncePlot { .. } => 40,
-            Action::AnnounceActivate { .. } | Action::AnnounceAttachedAbility { .. } => 34,
-            Action::AnnounceMana { .. } => -2,
+            Action::AnnounceActivate { .. }
+            | Action::AnnounceAttachedAbility { .. }
+            | Action::AnnounceBorrowedAbility { .. } => 34,
+            Action::AnnounceMana { .. } | Action::AnnounceBorrowedMana { .. } => -2,
             Action::PayCosts { .. } | Action::PayPlot { .. } => 100,
             Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,
             Action::ChooseMode { .. } => 50,
@@ -364,6 +366,11 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 production,
                 payment,
                 ..
+            }
+            | Action::ActivateBorrowedMana {
+                production,
+                payment,
+                ..
             } => {
                 if observation.resolution_payment.is_some() {
                     return resolution_mana_score(*payment, *production);
@@ -464,6 +471,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     10
                 }
             }
+            Action::ChooseToken { .. } => 10,
             Action::Pass | Action::FinishAttackers | Action::FinishBlockers => 0,
         }
     };

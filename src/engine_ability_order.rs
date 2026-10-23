@@ -14,6 +14,7 @@ pub(super) struct GrantedAbilityKey {
 pub(super) struct GrantedManaAbility {
     pub source: ObjectRef,
     pub production: ManaProduction,
+    pub sacrifice: bool,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct LayerSixObject {

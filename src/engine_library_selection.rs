@@ -83,6 +83,9 @@ impl Game {
         let owner = item.controller;
         let limit = match effect.look {
             LibraryLook::Fixed(n) => usize::from(n),
+            LibraryLook::Amount(value) => {
+                usize::try_from(self.item_amount(value, item)).unwrap_or(usize::MAX)
+            }
             LibraryLook::ChosenX => usize::try_from(item.x.unwrap_or(0)).unwrap_or(usize::MAX),
             LibraryLook::UntilKinds(kinds) => self.state.players[owner.index()]
                 .library
@@ -254,6 +257,23 @@ impl Game {
         } else {
             Vec::new()
         };
+        if f.destination == LibraryPickDestination::Hideaway {
+            let events = self.move_objects_raw(&ids, Zone::Exile);
+            self.remember_linked_exile(&ids);
+            let source = self.state.resolving.as_ref().unwrap().item.object;
+            for event in &events {
+                if event.moved && event.destination == Zone::Exile {
+                    let data = self.state.linked_choices.get_or_insert_default();
+                    let viewers = data
+                        .hideaway_controllers
+                        .iter()
+                        .find(|(r, _)| *r == source)
+                        .map_or(1 << owner.index(), |(_, mask)| *mask | (1 << owner.index()));
+                    data.hidden.push((source, event.after, viewers));
+                }
+            }
+            self.finish_zone_events(&events, &[]);
+        }
         if f.spec.reveal {
             for e in &events {
                 self.state.known_hand.push(e.after);
@@ -353,6 +373,7 @@ impl Game {
                 LibraryPickDestination::Hand => "hand",
                 LibraryPickDestination::Battlefield => "battlefield",
                 LibraryPickDestination::Top => "top",
+                LibraryPickDestination::Hideaway => "hideaway",
             },
             remainder: match f.spec.remainder {
                 LibraryRemainder::Graveyard => "graveyard",

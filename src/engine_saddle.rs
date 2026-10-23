@@ -185,8 +185,7 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             return false;
         };
-        let Some(minimum) = a.item.source_card.activations()[ability as usize].saddle_minimum()
-        else {
+        let Some(minimum) = a.item.source_card.activation(ability).saddle_minimum() else {
             return false;
         };
         assert!(a.pay_window && a.item.targets.is_empty());
@@ -233,7 +232,7 @@ impl Game {
         }
         if first {
             let source = self.object_view(item.card);
-            for (index, a) in item.source_card.triggers().iter().enumerate() {
+            for (index, a) in source.card.triggers().iter().enumerate() {
                 if matches!(a.condition.event(), TriggerCondition::SelfSaddledFirst) {
                     self.queue_trigger(&source, index);
                 }

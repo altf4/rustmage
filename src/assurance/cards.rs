@@ -174,3 +174,26 @@ fn basic_lands_supply_exact_colors_once_per_untap() {
         reject(&mut g, Action::PlayLand { card: next });
     }
 }
+
+#[test]
+fn token_factories_reject_deck_submission_in_every_format() {
+    for card in Card::catalogue().filter(|card| card.is_token()) {
+        for deck_rules in [
+            DeckRules::Freeform,
+            DeckRules::Constructed,
+            DeckRules::Standard,
+        ] {
+            let result = Game::new(Config {
+                decks: [vec![card; 60], vec![Card::Forest; 60]],
+                seed: 1,
+                starting_player: Player::P0,
+                deck_rules,
+            });
+            assert!(
+                result.unwrap_err().to_string().contains("tokens cannot"),
+                "{} {deck_rules:?}",
+                card.identity()
+            );
+        }
+    }
+}

@@ -137,7 +137,7 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             return Vec::new();
         };
-        let definition = a.item.source_card.activations()[usize::from(ability)];
+        let definition = a.item.source_card.activation(ability);
         let base = a.cost.unwrap_or(ManaCost {
             colored: definition.cost.colored,
             generic: definition.cost.generic,
@@ -155,6 +155,7 @@ impl Game {
                             ability,
                             a.counter_payment.clone(),
                             a.item.source_card,
+                            a.item.borrowed_slot,
                         )),
                     },
                     a.additional_cost(),

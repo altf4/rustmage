@@ -3,10 +3,51 @@
   "catalogue_id": 4339,
   "oracle_id": "b0be3f25-edb1-4299-959c-9aad909730ca",
   "facts_sha256": "59b28029b3799c7de8b4ebc7dc66c064788e7d5cbfb614f45cca8c5abf2ee4b4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7c34882b61edad5542c900fbe1c4402fc5c907a86458139b3ae8cd664fd9881d"
   },
-  "physical_metadata_sha256": "57fa59d82df312894f77ab178762c2abbb143b212eb4d83a906605036d2a2b2d"
+  "physical_metadata_sha256": "57fa59d82df312894f77ab178762c2abbb143b212eb4d83a906605036d2a2b2d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TarnationVista.java",
+  "java_sha256": "8e57053d055ce0f4ce862a3742ef262cc073540ed707e220aa5420df9e6229e3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAsItEntersChooseColorAbility.java",
+      "sha256": "ae5f335e82c104afe8d7165f2d404c4ad5e1972a28225b7b9af732c30e8b125d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaChosenColorEffect.java",
+      "sha256": "e129dbded6a8eeaa978804934e34f9b3c5992ad5c560692e1fa5120b8c3f2e48"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ColorsAmongControlledPermanentsCount.java",
+      "sha256": "94d0639d201ef40c27aa8b05d8dc072166ac4f2c82494425ebe1449d385eb8a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/SimpleManaAbility.java",
+      "sha256": "ffbd6c3be6ec8684aa67a8fc907e8ac29726751ae3f37cda50a024843e650bba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseColorEffect.java",
+      "sha256": "bbc363d77d1883e5473b95e94ecb24c6d33f8c03a85dd2c6d570c56d112dcba6"
+    }
+  ],
+  "remaining_obligations": []
 }

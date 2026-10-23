@@ -79,7 +79,8 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             value
         }
-        StaticAbilityFragment::AttachmentMana(production) => {
+        StaticAbilityFragment::AttachmentMana(production)
+        | StaticAbilityFragment::AttachmentSacrificeMana(production) => {
             if !world.attachment_link(source, world.reference(id))
                 || world.kinds(source.card) & 1 != 0
             {
@@ -89,7 +90,14 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 recipient: id,
                 keywords: Keywords::NONE,
                 abilities: Vec::new(),
-                mana: vec![GrantedManaAbility { source, production }],
+                mana: vec![GrantedManaAbility {
+                    source,
+                    production,
+                    sacrifice: matches!(
+                        fragment,
+                        StaticAbilityFragment::AttachmentSacrificeMana(_)
+                    ),
+                }],
             });
         }
         StaticAbilityFragment::AttachmentTrigger(ability)
@@ -248,6 +256,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::AttachmentTrigger(..)
                         | StaticAbilityFragment::AttachmentActivation(..)
                         | StaticAbilityFragment::AttachmentMana(..)
+                        | StaticAbilityFragment::AttachmentSacrificeMana(..)
                         | StaticAbilityFragment::CounterKeyword(..)
                         | StaticAbilityFragment::CounterKeywordOwnTurn(..)
                         | StaticAbilityFragment::DeathBaronLord

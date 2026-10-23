@@ -87,6 +87,7 @@ impl Game {
             let id = self.next_stack_id();
             self.state.pending_triggers.push(SpellView {
                 source_move: None,
+                borrowed_slot: None,
                 target_controller_lki: None,
                 gift: None,
                 reflexive_subject: None,
@@ -95,6 +96,7 @@ impl Game {
                 crew: None,
                 cast_event: None,
                 copy_event: None,
+                captured_artifact_copy: None,
                 source_copy_recipe: None,
                 target_allocations: None,
                 mana_copy_sources: None,
