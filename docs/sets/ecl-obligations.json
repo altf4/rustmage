@@ -6664,7 +6664,7 @@
       "name": "Twilight Diviner",
       "definition": "src/card_definitions/ecl/twilight_diviner.rs",
       "owner": "ecl_black_red",
-      "state": "incomplete: independent review found departed-entry LKI copy gap; repair pending",
+      "state": "tested candidate; exact departure LKI repair verified; integrated final-set acceptance and reviews pending",
       "printed_obligations": [
         {
           "face": "Twilight Diviner",

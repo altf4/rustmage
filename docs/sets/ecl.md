@@ -21,9 +21,9 @@ The frozen manifest accounts for every identity. The [per-card obligation ledger
 
 ## Current implementation checkpoint (2026-10-22)
 
-Admission flags: **272/273**. All 166 newly authored physical candidates have
-focused evidence, but Twilight Diviner is temporarily gated after independent
-review found a departed-object copy obligation. One definition remains incomplete. All107 inherited cards have passed source/rules audits.
+Admission flags: **273/273**, comprising **107 inherited** and **166 newly
+implemented/focused-tested physical candidates**; **zero remain gated**.
+Twilight Diviner’s review-discovered LKI gap is repaired and its admission restored. All107 inherited cards have passed source/rules audits.
 The supporting closure includes eleven tokens, seven backs and one emblem;
 all have complete source pins and parent interaction evidence. Final combined
 full-game acceptance, release validation and two published-head reviews remain
@@ -92,15 +92,16 @@ audit credit, final acceptance, independent published-head review and upstream
 merge. Compiler, hardware, commands, seeds and retained reports are in
 [ecl-validation.json](ecl-validation.json).
 
-## Independent review finding under repair
+## Independent review findings
 
 Fresh reviewer `/root/ecl_final_review_b` found a Twilight Diviner LKI gap at
 `b9996a22`. Its non-targeting fixed entering-object group must retain departed
 incarnations under CR608.2h; a new incarnation must never replace the old one.
 The pinned XMage class shares the live-only restriction, so this is an explicit
-Oracle/rules adjudication. Twilight is marked incomplete until the repair and
-regressions pass. Both independent reviewers remain pending final published-head
-sign-off.
+Oracle/rules adjudication. The repair at `3f9e1b4c` preserves departure-time copy recipes, exact old references,
+native/Single DFC shape and all stored packet owners. All 16 focused scenarios,
+Clippy and provenance pass; both independent reviewers cleared the repair
+statically. Observation schema is168. Final published-head sign-off remains pending.
 
 The first final release attempt was deliberately terminated after this finding.
 Five preliminary phases, 3,245 native tests (one ignored), nine catalogue tests
@@ -109,12 +110,19 @@ report `9480b9f45a784c25aaa9ea6549756e41`, logs and exact retained library hashe
 are preserved in `<cache>/rustmage-validation-8utn2glt/report/interrupted-evidence.json`.
 Only terminated disposable outputs were cleaned (879,046,656 bytes).
 
+A second review finding affects the shared optimistic mana-color bound. With
+Bloom Tender, a colorless Foraging Wickermaw and one colorless mana, Wickermaw can
+become blue while producing blue, then Tender produces green and blue. The
+current bound misses that second blue and rejects a legal Wild Unraveling
+declaration. The green author is repairing this in an isolated worktree with
+an actual paid counterspell regression. This is the sole known open code issue.
+
 ## Resume and remaining work
 
 Branch `codex/ecl-complete-set`; issue [#462](https://github.com/altf4/rustmage/issues/462).
 Authenticate frozen membership using `python3 -m scripts.set_status ECL --check`.
-Fix Twilight Diviner departed-object LKI, restore its complete flag only after
-verified regressions, then rerun the strict whole-pool workload and its
+Finish the dynamic-production mana bound repair, integrate and regenerate, then
+rerun the strict whole-pool workload and its
 optimized throughput companion. Regenerate links and run final release
 validation, including Python binding smoke checks for the changed public schema.
 Keep consuming inputs fixed until each process terminates; poll the same job.

@@ -77,6 +77,14 @@ impl Game {
         if let Some(replacements) = &mut self.state.replacements {
             replacements.visit_owned_packets(&mut capture);
         }
+        if let Some(replacements) = self
+            .state
+            .entry_batch
+            .as_mut()
+            .and_then(|batch| batch.replacement_resume.as_deref_mut())
+        {
+            replacements.visit_owned_packets(&mut capture);
+        }
         if let Some(draws) = &mut self.state.delayed_combat_draws {
             draws.iter_mut().for_each(&mut capture);
         }

@@ -1,5 +1,5 @@
 {
-  "scope": "273 frozen ECL identities; Twilight Diviner temporarily gated after independent LKI finding; final acceptance pending.",
+  "scope": "273 frozen ECL identities implemented/focused-tested; final acceptance pending dynamic-production funding repair, complete games/performance/release and published-head reviews.",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
   "newly_tested_physical_cards": 166,
@@ -171,8 +171,8 @@
     "Winnowing",
     "Wistfulness"
   ],
-  "current_admission_flags": 272,
-  "remaining_gated": 1,
+  "current_admission_flags": 273,
+  "remaining_gated": 0,
   "inherited_evidence_audit": {
     "audited": 107,
     "total": 107,
@@ -1984,7 +1984,7 @@
   "twilight_lki_review_finding": {
     "reviewer": "/root/ecl_final_review_b",
     "reviewed_head": "b9996a22dd9043b3f26415e5d9f5d5bdbfd59a53",
-    "status": "accepted; definition temporarily incomplete until repair verified",
+    "status": "fixed; both independent reviewers cleared repair statically; final published-head signoff pending",
     "severity": "P2",
     "problem": "Non-target copy choice incorrectly excludes original entering incarnations after departure. Reentry must not rebind the old reference; original last-known copiable values remain usable.",
     "rules": [
@@ -1992,6 +1992,42 @@
       "400.7"
     ],
     "source_discrepancy": "Pinned XMage getPermanent filter shares the restrictive behavior; Oracle/CR take precedence. Official ECL release notes provide generic copy rulings and no exception.",
-    "stale_test": "twilight_departed_and_reentered_objects_are_not_rebound_or_copied_from_lki incorrectly expected no token; replace with old-incarnation LKI assertions."
+    "stale_test": "twilight_departed_and_reentered_objects_are_not_rebound_or_copied_from_lki incorrectly expected no token; replace with old-incarnation LKI assertions.",
+    "source_commit": "1d00f7d7af5c4f9b4f7a84a13edeffdc32d17c5e",
+    "integrated_commit": "3f9e1b4c",
+    "focused": {
+      "tests": 16,
+      "seconds": 0.41,
+      "resource_report": "c45b615e8f3f4acc9c4817180119e551"
+    },
+    "integration_focused": {
+      "tests": 16,
+      "seconds": 0.42,
+      "resource_report": "0e3aeb9d81154b6488575d2f2fbb5f49"
+    },
+    "clippy": {
+      "seconds": 40.98,
+      "resource_report": "7325a4dd9a2e45df8fea56097fab1049"
+    },
+    "provenance_seconds": 4.064,
+    "observation_schema": 168,
+    "ownership_followup": "Root also visits EntryBatch.replacement_resume with the same packet visitor; integrated16-scenario rerun passes.",
+    "layout_bytes": {
+      "State": 3296,
+      "SpellView": 528,
+      "rare_entry_event": 48,
+      "event_reference": 16,
+      "departed_recipe_row": 32
+    }
+  },
+  "dynamic_production_review_finding": {
+    "reviewer": "/root/ecl_final_review_b",
+    "status": "accepted; isolated author repair in progress",
+    "severity": "P2",
+    "file": "src/engine_funding.rs",
+    "problem": "Optimistic per-color bound uses current Bloom Tender output and misses Foraging Wickermaw changing its color during a mana ability.",
+    "actual_plan": "Only usable Tender+colorless Wicker, poolC: WickerC\u2192U turnsblue; Tender addsGU; totalUUG pays Wild Unraveling1UU route to counter an opposing spell. Initial upper incorrectly sees onlyU1.",
+    "scope": "Shared legal-announcement funding false-negative; exact behavior works when mana is produced first, but the declaration/prefix must also be offered.",
+    "owner": "/root/ecl_green_colorless"
   }
 }
