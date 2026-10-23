@@ -40,32 +40,36 @@ To explore the project:
 
 ## Standard set tracker
 
-**2 / 20 sets complete · 10%**
+**4 / 20 sets complete · 20%**
 
-`██░░░░░░░░░░░░░░░░░░`
+`████░░░░░░░░░░░░░░░░`
 
-**2,215 / 5,164 unique Standard cards supported · 43%**
+**2,505 / 5,164 unique Standard cards implemented across accepted branches · 49%**
 
-`█████████░░░░░░░░░░░`
+`██████████░░░░░░░░░░`
 
 Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 ([inventory](data/standard/xmage-inventory.json)), rather than live format legality.
 “Complete” means whole-set implementation with rules and full-game acceptance;
 partial admission or catalogue entries do not establish set completion. Set completion
-is separate from upstream review and merge status.
+is separate from integration into `main`. Accepted [Lorwyn Eclipsed](https://github.com/altf4/rustmage/pull/463)
+and [TMNT](https://github.com/altf4/rustmage/pull/465) implementations are merged into
+`codex/portable-set-skill`; [BIG](https://github.com/altf4/rustmage/pull/470) is merged
+into `main`. The totals below combine their coverage by unique identity. The current
+`main` [coverage report](data/standard/coverage.json) separately admits 2,215 cards;
+its lower count does not undo accepted set milestones.
 
-<!-- Refresh supported counts from scripts/set_status.py freeze/status using the
-     pinned XMage tables, Oracle facts and data/standard/coverage.json. Refresh
-     the card summary from implemented_standard_cards / standard_legal_cards
-     (unique legal identities, excluding banned cards and supporting faces). Reconcile
-     accepted sets with data/sets/<code>.json. Keep summary and rows in sync when
-     a set passes acceptance; definition-directory counts omit shared reprints. -->
+<!-- Refresh supported counts from the union of accepted implementation branches,
+     using their pinned set membership and coverage reports. Deduplicate by physical
+     identity; never demote an accepted set using a checkout that lacks its merged
+     integration branch. Keep current-main admission separate from accepted coverage.
+     Reconcile set acceptance with its rules/game evidence and published PR. -->
 
 | Set | Code | Supported cards | Implementation status |
 | --- | --- | ---: | --- |
 | Foundations | FDN | 517/517 (100%) | ✅ Complete |
-| Lorwyn Eclipsed | ECL | 107/273 (39%) | ⏳ Partial |
-| Teenage Mutant Ninja Turtles | TMT | 71/195 (36%) | ⏳ Partial |
+| Lorwyn Eclipsed | ECL | 273/273 (100%) | ✅ Complete |
+| Teenage Mutant Ninja Turtles | TMT | 195/195 (100%) | ✅ Complete |
 | Aetherdrift | DFT | 110/276 (40%) | ⏳ Partial |
 | Avatar: The Last Airbender | TLA | 97/286 (34%) | ⏳ Partial |
 | Bloomburrow | BLB | 127/279 (46%) | ⏳ Partial |
@@ -74,7 +78,7 @@ is separate from upstream review and merge status.
 | Final Fantasy | FIN | 133/312 (43%) | ⏳ Partial |
 | Marvel Super Heroes | MSH | 84/281 (30%) | ⏳ Partial |
 | Marvel's Spider-Man | SPM | 76/193 (39%) | ⏳ Partial |
-| Murders at Karlov Manor | MKM | 80/279 (29%) | ⏳ Partial |
+| Murders at Karlov Manor | MKM | 81/279 (29%) | ⏳ Partial |
 | Outlaws of Thunder Junction | OTJ | 101/276 (37%) | ⏳ Partial |
 | Reality Fracture | FRA | 89/285 (31%) | ⏳ Partial |
 | Secrets of Strixhaven | SOS | 105/271 (39%) | ⏳ Partial |
@@ -84,7 +88,7 @@ is separate from upstream review and merge status.
 | The Lost Caverns of Ixalan | LCI | 105/291 (36%) | ⏳ Partial |
 | Wilds of Eldraine | WOE | 150/281 (53%) | ⏳ Partial |
 
-Supported counts use the current [coverage report](data/standard/coverage.json)
+Supported counts use the union of the accepted branches’ coverage reports
 and full physical set membership from pinned XMage tables and Oracle facts,
 including reprints and starter products. Banned members remain in the totals and
 count as unsupported when gated; cosmetic printings count once. Partial-set
