@@ -763,7 +763,7 @@
       "oracle_id": "01758a4a-ac29-47ad-8e88-158374f1ae4c",
       "name": "Don & Raph, Hard Science",
       "definition": "src/card_definitions/tmt/don_raph_hard_science.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Don & Raph, Hard Science",
@@ -778,7 +778,14 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_final_batch_tests.rs",
+        "src/card_definitions/tmt/don_raph_hard_science.json",
+        "docs/sets/tmt-195-candidates.json"
+      ],
+      "owner": "tmt_spells",
+      "local_batch": 36,
+      "source_commit": "341595ef10535d9fe14d5e89f351ea5e0d376af8"
     },
     {
       "oracle_id": "194284f7-cf92-4d9f-a8ce-e4dc3505ab7a",
@@ -1895,7 +1902,7 @@
       "oracle_id": "52562194-4a97-40d2-aa73-7827f7834f2f",
       "name": "Krang, Master Mind",
       "definition": "src/card_definitions/tmt/krang_master_mind.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Krang, Master Mind",
@@ -1911,7 +1918,14 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_final_batch_tests.rs",
+        "src/card_definitions/tmt/krang_master_mind.json",
+        "docs/sets/tmt-195-candidates.json"
+      ],
+      "owner": "tmt_spells",
+      "local_batch": 36,
+      "source_commit": "341595ef10535d9fe14d5e89f351ea5e0d376af8"
     },
     {
       "oracle_id": "2d56a491-b3eb-4f3e-82ab-981d3036c45d",
@@ -3713,7 +3727,7 @@
       "oracle_id": "a5656dab-5ce6-48fd-9eae-2c06969bb8df",
       "name": "Rat King, Verminister",
       "definition": "src/card_definitions/tmt/rat_king_verminister.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Rat King, Verminister",
@@ -3728,7 +3742,14 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_final_batch_tests.rs",
+        "src/card_definitions/tmt/rat_king_verminister.json",
+        "docs/sets/tmt-195-candidates.json"
+      ],
+      "owner": "tmt_spells",
+      "local_batch": 36,
+      "source_commit": "341595ef10535d9fe14d5e89f351ea5e0d376af8"
     },
     {
       "oracle_id": "45873747-f2a4-4d83-9492-bfc97df7b605",
@@ -4634,7 +4655,7 @@
       "oracle_id": "bd768e8f-8f04-487e-85e9-2828d6fd8745",
       "name": "The Cloning of Shredder",
       "definition": "src/card_definitions/tmt/the_cloning_of_shredder.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "The Cloning of Shredder",
@@ -4650,13 +4671,20 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_final_batch_tests.rs",
+        "src/card_definitions/tmt/the_cloning_of_shredder.json",
+        "docs/sets/tmt-195-candidates.json"
+      ],
+      "owner": "tmt_spells",
+      "local_batch": 36,
+      "source_commit": "341595ef10535d9fe14d5e89f351ea5e0d376af8"
     },
     {
       "oracle_id": "e1865bec-1744-40c2-9031-7d6363be5333",
       "name": "The Last Ronin",
       "definition": "src/card_definitions/tmt/the_last_ronin.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "The Last Ronin",
@@ -4673,7 +4701,14 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_final_batch_tests.rs",
+        "src/card_definitions/tmt/the_last_ronin.json",
+        "docs/sets/tmt-195-candidates.json"
+      ],
+      "owner": "tmt_spells",
+      "local_batch": 36,
+      "source_commit": "341595ef10535d9fe14d5e89f351ea5e0d376af8"
     },
     {
       "oracle_id": "6a51bb21-0c01-4ad8-99d7-17685db90b69",
@@ -4982,7 +5017,7 @@
       "oracle_id": "aeb9a2e6-ad11-4e2c-81d0-caf279d31ece",
       "name": "Turtle Van",
       "definition": "src/card_definitions/tmt/turtle_van.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Turtle Van",
@@ -4997,13 +5032,20 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_final_batch_tests.rs",
+        "src/card_definitions/tmt/turtle_van.json",
+        "docs/sets/tmt-195-candidates.json"
+      ],
+      "owner": "tmt_spells",
+      "local_batch": 36,
+      "source_commit": "341595ef10535d9fe14d5e89f351ea5e0d376af8"
     },
     {
       "oracle_id": "cff5aca2-72c5-4053-a32c-c0bd3174c52d",
       "name": "Turtles Forever",
       "definition": "src/card_definitions/tmt/turtles_forever.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Turtles Forever",
@@ -5017,7 +5059,14 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_final_batch_tests.rs",
+        "src/card_definitions/tmt/turtles_forever.json",
+        "docs/sets/tmt-195-candidates.json"
+      ],
+      "owner": "tmt_spells",
+      "local_batch": 36,
+      "source_commit": "341595ef10535d9fe14d5e89f351ea5e0d376af8"
     },
     {
       "oracle_id": "803971e6-67f3-4fda-aeb6-69ef8ea4b54e",

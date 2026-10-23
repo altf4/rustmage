@@ -19,9 +19,9 @@ Oracle facts remain pinned in `data/standard/cards.json`. The
 [obligation ledger](tmt-obligations.json) accounts for every printed line and
 canonical definition, including reprints; it is not a second membership source.
 
-Initial admission: **71/195**, **124 gated**. Current admission: **188/195**,
-**7 gated**, zero unresolved. All 71 inherited admissions have source/rules
-audits and combined release evidence. **117 newly authored physical cards have rules scenarios; 102 have integrated release validation**;
+Initial admission: **71/195**, **124 gated**. Current admission: **195/195**,
+**0 gated**, zero unresolved. All 71 inherited admissions have source/rules
+audits and combined release evidence. **124 newly authored physical cards have rules scenarios; 102 have integrated release validation**;
 zero have independent final published-head reviews or upstream merges.
 
 ## Active Sneak integration
@@ -772,3 +772,16 @@ paid-spell/two-Doubling-Seasons scenario for both seats, including exact owned
 byte difference, packet visitation and public completion of four hasty tokens.
 [Finding and evidence](tmt-preliminary-review-fix.json) distinguishes this
 preliminary check from the still-pending final published-head reviews.
+
+## Complete candidate integration, acceptance pending
+
+Final source `341595ef` adds the last seven physical cards, with 28 focused
+scenario families, 277 affected regressions, Clippy and 154 Java class/helper
+pins passing. All 195 physical cards are admitted; zero gated or unresolved.
+[Final candidate evidence](tmt-195-candidates.json) preserves the terminal logs.
+All 124 newly authored cards have focused rules evidence; 102 plus all 71
+inherited audits currently have combined release evidence.
+
+The complete-pool natural games, private mixed-search and outside-card choices,
+optimized throughput and final combined release are the next acceptance gates.
+Final published-head reviews remain pending; no implementation PR is open.

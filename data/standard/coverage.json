@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "2b28cb3341ea37d42310bb199a0eed2e20be6da6e58b46ede48f5d9276ebcced",
+  "catalogue_version": "54b50191034410101eb901ebdcc77c833bffba9d4a800339746de44ab53e3f2e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2473,
-  "implemented_total": 2479,
+  "implemented_standard_cards": 2480,
+  "implemented_total": 2486,
   "token_definitions": 114,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -185,8 +185,7 @@
     },
     "tmt": {
       "total": 189,
-      "complete": 182,
-      "gated": 7
+      "complete": 189
     },
     "w17": {
       "total": 1,
@@ -9206,8 +9205,8 @@
     {
       "name": "Don & Raph, Hard Science",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/don_raph_hard_science.rs",
       "set": "tmt"
     },
@@ -19438,8 +19437,8 @@
     {
       "name": "Krang, Master Mind",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/krang_master_mind.rs",
       "set": "tmt"
     },
@@ -27286,8 +27285,8 @@
     {
       "name": "Rat King, Verminister",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/rat_king_verminister.rs",
       "set": "tmt"
     },
@@ -35638,8 +35637,8 @@
     {
       "name": "The Cloning of Shredder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/the_cloning_of_shredder.rs",
       "set": "tmt"
     },
@@ -35894,8 +35893,8 @@
     {
       "name": "The Last Ronin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/the_last_ronin.rs",
       "set": "tmt"
     },
@@ -37886,8 +37885,8 @@
     {
       "name": "Turtle Van",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/turtle_van.rs",
       "set": "tmt"
     },
@@ -37902,8 +37901,8 @@
     {
       "name": "Turtles Forever",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/turtles_forever.rs",
       "set": "tmt"
     },

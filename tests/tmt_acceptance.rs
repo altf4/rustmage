@@ -298,7 +298,11 @@ fn semantic_observation(game: &Game, viewer: Player) -> serde_json::Value {
     value
 }
 fn private_choice(observation: &Observation) -> bool {
-    observation.library_choice.is_some()
+    observation
+        .legendary_split_search
+        .as_ref()
+        .is_some_and(|c| !c.revealed)
+        || observation.library_choice.is_some()
         || observation.search_choice.is_some()
         || observation.connive_choice.is_some()
         || observation
@@ -306,11 +310,13 @@ fn private_choice(observation: &Observation) -> bool {
             .as_ref()
             .is_some_and(|v| v.opponent_hand.is_some())
         || observation.effect_choice.as_ref().is_some_and(|choice| {
-            choice.kind == rustmage::EffectChoiceKind::Discard
-                || choice
-                    .hand_reveal
-                    .as_ref()
-                    .is_some_and(|view| !view.revealed)
+            matches!(
+                choice.kind,
+                rustmage::EffectChoiceKind::Discard | rustmage::EffectChoiceKind::OutsideGameCard
+            ) || choice
+                .hand_reveal
+                .as_ref()
+                .is_some_and(|view| !view.revealed)
         })
 }
 fn run_workloads(workloads: Vec<Workload>, verify: bool) -> Evidence {
@@ -403,6 +409,12 @@ fn run_workloads(workloads: Vec<Workload>, verify: bool) -> Evidence {
                                     assert!(view.library_choice.is_none());
                                     assert!(view.search_choice.is_none());
                                     assert!(view.connive_choice.is_none());
+                                    if let Some(search) = &view.legendary_split_search {
+                                        assert!(search.revealed);
+                                        assert!(
+                                            search.library.is_empty() && search.outside.is_empty()
+                                        );
+                                    }
                                 }
                             }
                             if private {
