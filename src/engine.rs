@@ -6998,7 +6998,7 @@ impl Game {
                 .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             outside_game_cards: self
                 .outside_game_cards(viewer)
-                .map(|object| self.object_view(object.card))
+                .map(|object| query.object_view(object.card))
                 .collect(),
             schema: OBSERVATION_SCHEMA,
             additional_combats: s.combat_rules.as_ref().map_or(0, |r| r.additional_combats),
