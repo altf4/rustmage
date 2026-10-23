@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c25b649286cca13b97d3a6bd4ea9ad037f86edfddb354833093649969d3c947a",
+  "catalogue_version": "8f21254fd5362ce4373f2bd48a82133f47e786602b6ff7fbd083655d6470f4f0",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2458,
-  "implemented_total": 2464,
+  "implemented_standard_cards": 2459,
+  "implemented_total": 2465,
   "token_definitions": 114,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -185,8 +185,8 @@
     },
     "tmt": {
       "total": 189,
-      "complete": 167,
-      "gated": 22
+      "complete": 168,
+      "gated": 21
     },
     "w17": {
       "total": 1,
@@ -5598,8 +5598,8 @@
     {
       "name": "Casey Jones, Vigilante",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/casey_jones_vigilante.rs",
       "set": "tmt"
     },

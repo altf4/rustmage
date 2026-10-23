@@ -97,6 +97,12 @@ fn tmt_five_color_set_only_natural_games_and_owned_replay() {
             ],
         ),
     ];
+    let expected_casts = decks
+        .iter()
+        .flatten()
+        .filter(|c| !c.is_land())
+        .map(|c| c.name())
+        .collect::<BTreeSet<_>>();
     let start = Instant::now();
     let mut total = 0usize;
     let mut branches = 0usize;
@@ -211,6 +217,11 @@ fn tmt_five_color_set_only_natural_games_and_owned_replay() {
             && departure_triggers > 0
             && private > 0
             && !triggers.is_empty()
+    );
+    assert!(
+        expected_casts.is_subset(&casts),
+        "selected identities never cast: {:?}",
+        expected_casts.difference(&casts).collect::<Vec<_>>()
     );
     println!(
         "TMT_GAMES games={terminal} decisions={total} owned_branches={branches} sneak_casts={sneak_casts} class_observations={classes} counter_observations={counters} departure_trigger_observations={departure_triggers} private_decisions={private} seconds={:.6} decisions_per_second={:.3} casts={casts:?} triggered={triggers:?}",

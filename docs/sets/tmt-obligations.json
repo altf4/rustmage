@@ -429,7 +429,7 @@
       "oracle_id": "bc163b5a-0b1a-4257-8c07-5c7d5284015f",
       "name": "Casey Jones, Vigilante",
       "definition": "src/card_definitions/tmt/casey_jones_vigilante.rs",
-      "state": "gated",
+      "state": "focused-tested candidate; combined release, full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Casey Jones, Vigilante",
@@ -443,7 +443,13 @@
           "loyalty": null
         }
       ],
-      "evidence": []
+      "evidence": [
+        "src/engine_tmt_delayed_steps_tests.rs",
+        "src/card_definitions/tmt/casey_jones_vigilante.json"
+      ],
+      "owner": "integrator",
+      "local_batch": 32,
+      "source_commit": "99aae481"
     },
     {
       "oracle_id": "3dc71e16-b935-4ad7-b3f7-945ac2c179a7",
