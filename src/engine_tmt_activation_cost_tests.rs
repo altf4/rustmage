@@ -548,3 +548,35 @@ fn tmt_activation_man_multiple_providers_stack_only_generic_reduction_and_source
         assert_eq!(g.reduced_activation_cost(p, token, cost), cost);
     }
 }
+
+#[test]
+fn tmt_activation_ray_generates_mona_power_mana_before_removing_reserved_counter() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let ray = candidate(&mut g, p, "Ray Fillet, Man Ray", Zone::Battlefield);
+        let mona = candidate(&mut g, p, "Mona Lisa, Science Geek", Zone::Battlefield);
+        g.set_counters(mona, Counters::of(CounterKind::PlusOne, 1));
+        g.state.players[p.index()].mana = [0; 6];
+        let before = g.state.players[p.index()].library.len();
+        announce(&mut g, ray, 0);
+        choose_counter(&mut g, mona, CounterKind::PlusOne);
+        assert_eq!(g.stats(mona).power, 2);
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: mona,
+                ability: 0,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 0, 2, 0],
+            },
+        );
+        assert_eq!(g.counter_count(mona, CounterKind::PlusOne), 1);
+        finish(&mut g);
+        assert_eq!(g.counter_count(mona, CounterKind::PlusOne), 0);
+        assert_eq!(g.stats(mona).power, 1);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].library.len(), before - 1);
+    }
+}
