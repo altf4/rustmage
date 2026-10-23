@@ -1623,8 +1623,20 @@ struct State {
     attachment_sources: Vec<CardId>,
     exile_links: Vec<ExileLink>,
     exile_permissions: Vec<ExilePlayPermission>,
+    #[allow(
+        clippy::box_collection,
+        reason = "Cold rule state keeps one pointer in games without this mechanic"
+    )]
     hand_play_bans: Option<Box<Vec<u32>>>,
+    #[allow(
+        clippy::box_collection,
+        reason = "Cold rule state keeps one pointer in games without this mechanic"
+    )]
     borrowed_links: Option<Box<Vec<borrowed_activations::Link>>>,
+    #[allow(
+        clippy::box_collection,
+        reason = "Cold rule state keeps one pointer in games without this mechanic"
+    )]
     borrowed_uses: Option<Box<Vec<borrowed_activations::Use>>>,
     graveyard_cast_permissions: cast_permissions::Rows,
     graveyard_type_uses: Option<SharedVec<GraveyardTypeUse>>,
