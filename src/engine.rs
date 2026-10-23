@@ -8691,11 +8691,11 @@ mod tmt_mana_batch_tests;
 mod tmt_inherited_batch_two_tests;
 
 #[cfg(test)]
-#[path = "engine_tmt_spell_batch_tests.rs"]
-mod tmt_spell_batch_tests;
-#[cfg(test)]
 #[path = "engine_tmt_inherited_batch_three_tests.rs"]
 mod tmt_inherited_batch_three_tests;
+#[cfg(test)]
+#[path = "engine_tmt_spell_batch_tests.rs"]
+mod tmt_spell_batch_tests;
 
 #[cfg(test)]
 #[path = "engine_tmt_inherited_batch_four_tests.rs"]
