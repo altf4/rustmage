@@ -437,3 +437,26 @@ fn territory_forge_courtyard_mana_has_no_inherited_creature_type_choice() {
         }));
     }
 }
+
+#[test]
+fn territory_forge_inherited_saddle_does_not_inherit_mount_trigger() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let mount = fixture(&mut g, p.other(), "Stubborn Burrowfiend", Zone::Battlefield);
+        let moon = fixture(&mut g, p, "Imprisoned in the Moon", Zone::Hand);
+        cast(&mut g, moon, None, &[Target::Card(mount)]);
+        settle(&mut g);
+        assert_eq!(g.current_kinds(mount), 2);
+        let id = forge(&mut g, p, mount);
+        let bear = fixture(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let saddler = g.object_ref(bear);
+        announce(&mut g, id, 0);
+        checked(&mut g, Action::ChooseSaddler { object: saddler });
+        checked(&mut g, Action::FinishSaddle);
+        settle(&mut g);
+        assert!(g.is_saddled(g.object_ref(id)));
+        assert!(g.on_battlefield(id));
+        assert!(g.state.pending_triggers.is_empty());
+        assert_eq!(g.state.objects[moon as usize].zone, Zone::Graveyard);
+    }
+}

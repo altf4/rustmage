@@ -52,7 +52,7 @@ fn big_complete_games_replay_owned_search_all_colors() {
                 "Omenpath Journey",
                 "Ancient Cornucopia",
                 "Tarnation Vista",
-                "Lost Jitte",
+                "Territory Forge",
                 "Grand Abolisher",
             ],
             &[("Forest", 8), ("Island", 6), ("Mountain", 5), ("Plains", 5)],
@@ -148,6 +148,7 @@ fn big_complete_games_replay_owned_search_all_colors() {
             decisions += count;
         }
     }
+    assert_eq!(colors, 31, "full BIG games must cast all five colors");
     let seconds = start.elapsed().as_secs_f64();
     println!(
         "BIG_GAME_EVIDENCE {}",

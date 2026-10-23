@@ -232,7 +232,7 @@ impl Game {
         }
         if first {
             let source = self.object_view(item.card);
-            for (index, a) in item.source_card.triggers().iter().enumerate() {
+            for (index, a) in source.card.triggers().iter().enumerate() {
                 if matches!(a.condition.event(), TriggerCondition::SelfSaddledFirst) {
                     self.queue_trigger(&source, index);
                 }
