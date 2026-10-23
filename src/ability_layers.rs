@@ -59,6 +59,8 @@ pub(crate) enum StaticAbilityFragment {
     AttachmentManaBonus(ManaProduction),
     /// A triggered mana ability for any player tapping a basic land.
     BasicLandTapManaBonus(u16),
+    /// Immediate fixed mana from tapping a land controlled by this provider's controller.
+    ControlledLandTapManaBonus(Mana),
     ChosenCreatureType,
     OtherSubtypeEntryCounters(&'static str),
     /// Adds independent triggers for abilities owned by matching permanents.

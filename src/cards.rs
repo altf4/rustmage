@@ -393,6 +393,8 @@ pub(crate) struct ChosenModifier {
 pub(crate) enum ManaRestriction {
     Unrestricted,
     SpellSubtype(&'static str),
+    SpellSubtypeAny(&'static [&'static str]),
+    ArtifactSpellOrActivation,
     SubtypeSpellOrActivation(&'static str),
     ChosenCreatureSpellOrActivation,
     SpellManaValueAtLeast(u64),
@@ -434,6 +436,9 @@ pub(crate) enum ManaProduction {
     },
     ChosenColor,
     ColorsAmongControlledPermanents,
+    SourcePowerChoice {
+        colors: u8,
+    },
     Fixed(Mana),
     ChoiceStat {
         colors: u8,
@@ -485,6 +490,7 @@ impl ManaProduction {
             Self::AnyColorChangingSource(amount) => Self::any_color(amount).visit(emit),
             Self::ChosenColor
             | Self::ColorsAmongControlledPermanents
+            | Self::SourcePowerChoice { .. }
             | Self::CountSubtype { .. }
             | Self::ChoiceStat { .. } => {
                 panic!("dynamic mana requires a characteristic world")

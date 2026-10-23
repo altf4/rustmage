@@ -49,6 +49,50 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
                 &resource.object
             })
     }
+    fn source_power(&self, id: CardId) -> i128 {
+        // Only current-power mana uses the later-layer query. Project the rare
+        // borrowed funding overlay through the same characteristic engine.
+        let mut projected = self.game.clone();
+        for resource in &self.resources {
+            projected.state.objects[resource.id as usize] = resource.object.clone();
+        }
+        // Ordinary moves maintain the live provider indexes. A borrowed
+        // virtual departure must materialize that invariant before using them.
+        let objects = &projected.state.objects;
+        projected
+            .state
+            .attachment_sources
+            .retain(|&source| objects[source as usize].zone == Zone::Battlefield);
+        projected
+            .state
+            .static_sources
+            .retain(|&source| objects[source as usize].zone == Zone::Battlefield);
+        projected.state.named_counters = self.named_counters.clone();
+        projected.state.players[self.actor.index()].life = self.life;
+        for player in [Player::P0, Player::P1] {
+            if self.life_gained[player.index()]
+                && projected.state.players[player.index()].life_gained_this_turn == 0
+            {
+                projected.state.players[player.index()].life_gained_this_turn = 1;
+            }
+        }
+        for resource in &self.resources {
+            if let Some(colors) = resource.color_override {
+                projected.set_color_effects(
+                    &[resource.id],
+                    colors,
+                    crate::cards::AnimationDuration::Permanent,
+                );
+            }
+        }
+        projected.state.attackers.retain(|attacker| {
+            self.resources
+                .iter()
+                .find(|r| r.id == attacker.card)
+                .is_none_or(|r| r.attacking && r.object.zone == Zone::Battlefield)
+        });
+        projected.stats(id).power
+    }
     fn colors(&self, id: CardId) -> u8 {
         if let Some(colors) = self
             .resources
@@ -345,6 +389,7 @@ impl<'g> FundingState<'g> {
                         matches!(
                             production.base(),
                             ManaProduction::ColorsAmongControlledPermanents
+                                | ManaProduction::SourcePowerChoice { .. }
                                 | ManaProduction::ChoiceStat { .. }
                         )
                     })
@@ -381,7 +426,7 @@ impl<'g> FundingState<'g> {
                             || object.card.attachment_bonus().is_some()
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ConvokeCreatureSpells | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(..) | crate::cards::StaticAbilityFragment::AdditionalSubtypeTriggers { .. } | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureCounterRule { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::ChosenCreatureKeywords(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ConvokeCreatureSpells | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(..) | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(..) | crate::cards::StaticAbilityFragment::AdditionalSubtypeTriggers { .. } | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureCounterRule { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::ChosenCreatureKeywords(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -1244,6 +1289,12 @@ impl<'g> FundingState<'g> {
                             ManaProduction::ColorsAmongControlledPermanents => {
                                 ManaProduction::Fixed([1, 1, 1, 1, 1, 0])
                             }
+                            ManaProduction::SourcePowerChoice { colors } => {
+                                ManaProduction::Choice {
+                                    mask: colors,
+                                    amount: u32::MAX,
+                                }
+                            }
                             ManaProduction::ChoiceStat { colors, amount } => {
                                 ManaProduction::Choice {
                                     mask: colors,
@@ -1324,6 +1375,10 @@ impl<'g> FundingState<'g> {
                     ManaProduction::ColorsAmongControlledPermanents => {
                         ManaProduction::Fixed([1, 1, 1, 1, 1, 0])
                     }
+                    ManaProduction::SourcePowerChoice { colors } => ManaProduction::Choice {
+                        mask: colors,
+                        amount: u32::MAX,
+                    },
                     ManaProduction::ChoiceStat { colors, amount } => ManaProduction::Choice {
                         mask: colors,
                         amount: match amount {
@@ -4632,5 +4687,85 @@ impl Game {
             }
         }
         plans
+    }
+}
+
+#[cfg(test)]
+mod tmt_mana_power_tests {
+    use super::*;
+    use ability_world::CharacteristicWorld;
+    #[test]
+    fn tmt_mana_funding_power_overlay_tracks_counter_payment_and_departed_provider() {
+        let p = Player::P0;
+        let mut game = super::super::ability_timeline_tests::setup(p);
+        let mona = super::super::ability_timeline_tests::named(
+            &mut game,
+            p,
+            "Mona Lisa, Science Geek",
+            Zone::Battlefield,
+        );
+        game.state.objects[mona as usize].summoning_sick = false;
+        game.add_counter(mona, CounterKind::PlusOne, 3);
+        let aura = super::super::ability_timeline_tests::named(
+            &mut game,
+            p,
+            "Unflinching Courage",
+            Zone::Hand,
+        );
+        super::super::ability_timeline_tests::cast(&mut game, aura, None, &[Target::Card(mona)]);
+        super::super::ability_timeline_tests::settle(&mut game);
+        assert_eq!(game.stats(mona).power, 6);
+        let goal = FundingGoal {
+            actor: p,
+            required: [0; 6],
+            generic: 4,
+            reserve: None,
+            source: None,
+        };
+        let mut world = FundingState::from_game(&game, &goal);
+        assert_eq!(world.source_power(mona), 6);
+        for _ in 0..3 {
+            assert!(world.remove_creature_counter(game.object_ref(mona), CounterKind::PlusOne));
+        }
+        assert_eq!(world.source_power(mona), 3);
+        let provider = world.resources.iter().position(|r| r.id == aura).unwrap();
+        world.resources[provider].object.zone = Zone::Graveyard;
+        assert_eq!(world.source_power(mona), 1);
+        assert_eq!(
+            game.stats(mona).power,
+            6,
+            "counter payments and departed providers stay isolated"
+        );
+    }
+    #[test]
+    fn tmt_mana_current_power_legality_cost_is_measured_without_state_growth() {
+        let p = Player::P0;
+        let mut game = super::super::ability_timeline_tests::setup(p);
+        let mona = super::super::ability_timeline_tests::named(
+            &mut game,
+            p,
+            "Mona Lisa, Science Geek",
+            Zone::Battlefield,
+        );
+        game.state.objects[mona as usize].summoning_sick = false;
+        game.state.players[p.index()].mana = [0; 6];
+        let spell =
+            super::super::ability_timeline_tests::named(&mut game, p, "Giant Growth", Zone::Hand);
+        let before = game.snapshot();
+        let bytes = game.state_bytes();
+        let started = std::time::Instant::now();
+        for _ in 0..100 {
+            assert!(
+                game.legal_actions()
+                    .contains(&Action::AnnounceCast { card: spell })
+            );
+        }
+        eprintln!(
+            "TMT Mona current-power legal-actions: 100 queries in {:?}; {} initialized bytes",
+            started.elapsed(),
+            bytes
+        );
+        assert_eq!(game.snapshot(), before);
+        assert_eq!(game.state_bytes(), bytes);
     }
 }

@@ -2853,6 +2853,7 @@ impl Game {
                         ManaProduction::AnyColorChangingSource(_)
                         | ManaProduction::ChosenColor
                         | ManaProduction::ColorsAmongControlledPermanents
+                        | ManaProduction::SourcePowerChoice { .. }
                         | ManaProduction::ChoiceStat { .. }
                         | ManaProduction::CountSubtype { .. }
                         | ManaProduction::Tagged { .. } => unreachable!("resolved production"),
