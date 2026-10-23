@@ -1,0 +1,224 @@
+{
+  "schema": 1,
+  "set": "TMT",
+  "status": "incomplete checkpoint",
+  "source_revision": "10c8ed1c29bbd3f6760da832b943a4da255cb82d",
+  "scope": {
+    "total": 195,
+    "admitted": 151,
+    "gated": 44,
+    "unresolved": 0,
+    "inherited_admission": 71,
+    "inherited_audits_completed": 71,
+    "newly_tested_candidates": 80,
+    "independently_reviewed": 0,
+    "upstream_merged_new_cards": 0
+  },
+  "newly_tested_cards": [
+    "Bebop & Rocksteady",
+    "Broadcast Takeover",
+    "Chrome Dome",
+    "Don & Leo, Problem Solvers",
+    "Fugitive Droid",
+    "General Traag, Heart of Stone",
+    "Mikey & Don, Party Planners",
+    "Mutagen Man, Living Ooze",
+    "Pain 101",
+    "Paramecia Coloniex",
+    "Ray Fillet, Man Ray",
+    "Savanti Romero, Time's Exile",
+    "South Wind Avatar",
+    "Splinter, Radical Rat",
+    "West Wind Avatar"
+  ],
+  "validation": {
+    "command": "python3 scripts/validate.py --release --python smoke",
+    "terminal": true,
+    "success": true,
+    "seconds": 666.1847204150108,
+    "files_verified": 11884,
+    "changed_inputs": [],
+    "report": "<cache>/rustmage-validation-bubeuotc/report/result.json",
+    "report_sha256": "9439cf027a31c837f6cad810a9d9e91887bfa61c59e2e8df6270253ce9c087ad",
+    "phases": [
+      {
+        "index": 1,
+        "exit": 0,
+        "seconds": 2.5272033930232283,
+        "log": "<cache>/rustmage-validation-bubeuotc/report/0.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 2,
+        "exit": 0,
+        "seconds": 0.9980842879740521,
+        "log": "<cache>/rustmage-validation-bubeuotc/report/1.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 3,
+        "exit": 0,
+        "seconds": 0.4821595419780351,
+        "log": "<cache>/rustmage-validation-bubeuotc/report/2.log",
+        "log_sha256": "2b21762a8ea3d765b2ee96f9a284f9e492b335d78a94de4506cd1853d0c72a8b"
+      },
+      {
+        "index": 4,
+        "exit": 0,
+        "seconds": 9.116661517997272,
+        "log": "<cache>/rustmage-validation-bubeuotc/report/3.log",
+        "log_sha256": "b078eea81a9c7242b7fca5a23d33d56d8a92a4aee305934b8c701655485aa6f3"
+      },
+      {
+        "index": 5,
+        "exit": 0,
+        "seconds": 49.659480815025745,
+        "log": "<cache>/rustmage-validation-bubeuotc/report/4.log",
+        "log_sha256": "61a9dce1fe818cd8e2e18ad15d5631666aaf7cdd5b76ca0effa3ecae0223ae16"
+      },
+      {
+        "index": 6,
+        "exit": 0,
+        "seconds": 503.3006859929883,
+        "log": "<cache>/rustmage-validation-bubeuotc/report/5.log",
+        "log_sha256": "a8777352ce6447b1bca8f74f937e27000a80de41abd5c1719bae6b389b653df6"
+      },
+      {
+        "index": 7,
+        "exit": 0,
+        "seconds": 99.26395822598715,
+        "log": "<cache>/rustmage-validation-bubeuotc/report/6.log",
+        "log_sha256": "d47b5a9b2697563e31f1538934ced8a2c131483e6dfd69ec71d3d741c48667fb"
+      },
+      {
+        "index": 8,
+        "exit": 0,
+        "seconds": 0.31319907400757074,
+        "log": "<cache>/rustmage-validation-bubeuotc/report/7.log",
+        "log_sha256": "8c1a1fc8129e6923d7b8f960df2d6defe43cb76114d711b7e302657a39258b72"
+      },
+      {
+        "index": 9,
+        "exit": 0,
+        "seconds": 0.39262394499382935,
+        "log": "<cache>/rustmage-validation-bubeuotc/report/8.log",
+        "log_sha256": "3af8b84f4e638781cbdec67dc668ebe1b2a2a53897e1e66c6fb2e5765543d0a6"
+      }
+    ],
+    "shared_libraries": {
+      "<cache>/rustmage-validation-bubeuotc/release/librustmage.so": "c5b728654d030a3567a51a056328cf1e4f6a8d0fbe99470e8268b7008a7ad206",
+      "<cache>/rustmage-validation-bubeuotc/release/deps/librustmage.so": "c5b728654d030a3567a51a056328cf1e4f6a8d0fbe99470e8268b7008a7ad206",
+      "<cache>/rustmage-validation-bubeuotc/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+      "<cache>/rustmage-validation-bubeuotc/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-bubeuotc/release-test/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-bubeuotc/release-test/deps/librustmage.so": "bf94e28988a2080c133a5f10a7a9ed9e483f3a2856060c40f2486ebe05c1bca6"
+    },
+    "cleaned_allocated_bytes": 865669120
+  },
+  "producing_host_library_manifest": {
+    "path": "<cache>/rustmage-tmt-151-library-paths.json",
+    "sha256": "b7721eeae5b004dbeea58e554039ebf1571aaecf3008fba2ead405083c0fb676"
+  },
+  "resource_guard": {
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 680.4713524120161,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 3946483712,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "report": "<cache>/rustmage-build-reports/8c8d9b28c6ab4ccda9fbfe8e273b683b.json",
+    "report_sha256": "6f22feb24bff646765cb8499b2f9ef64ef75d6520d9962e838b77e5e3b37763d"
+  },
+  "rules_tests": {
+    "library_passed": 3578,
+    "ignored": 1,
+    "sneak_scenarios": 53,
+    "python_smoke": 7,
+    "tmt_scenarios": 327,
+    "class_scenarios": 21,
+    "ninja_scenarios": 23,
+    "class_family_scenarios": 44,
+    "departure_scenarios": 21,
+    "mutagen_scenarios": 16,
+    "land_audit_scenarios": 5,
+    "inherited_basic_land_shared_scenarios": 1
+  },
+  "freeform_smoke_regression": {
+    "clone_ns": 162.3162,
+    "decisions": 49832,
+    "decisions_per_second": 177703.63997513562,
+    "games": 100,
+    "games_per_second": 356.60547434406726,
+    "initial_state_bytes_excluding_capacity_and_allocator": 21160,
+    "max_decisions_per_game": 1129,
+    "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+    "restore_ns": 134.85085,
+    "seconds": 0.280421943,
+    "workload": "Existing Freeform regression smoke, not TMT acceptance",
+    "seed_range": [
+      0,
+      99
+    ],
+    "policy": "rustmage::policy::smoke_index",
+    "decks": {
+      "Mountain": 24,
+      "Lightning Bolt": 20,
+      "Goblin Piker": 12,
+      "Hill Giant": 4
+    },
+    "hardware": "Intel Core Ultra 5 335",
+    "compiler": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+    "profile": "release, opt-level 3, thin LTO",
+    "clone_restore_iterations": 100000,
+    "source": "10c8ed1c29bbd3f6760da832b943a4da255cb82d"
+  },
+  "implementation_throughput": {
+    "start": "2026-10-23T14:34:04.724377+00:00",
+    "end": "2026-10-23T15:10:00.162083+00:00",
+    "seconds": 2155.437706,
+    "newly_verified_physical_cards": 15,
+    "cards_per_hour": 25.052916096662177,
+    "scope": "Elapsed continuation interval includes source intake, implementation, repairs, future-card preparation and validation; excludes inherited coverage",
+    "inherited_cards_audited": 31
+  },
+  "tmt_simulation_throughput": null,
+  "tmt_full_game_acceptance": "pending",
+  "reviews": [],
+  "known_external_blockers": [],
+  "next_action": "Finish the remaining 44 gated cards and TMT full-game acceptance, then independent reviews.",
+  "inherited_audited_cards": [
+    "Mighty Mutanimals",
+    "Mouser Attack!",
+    "Mouser Mark III",
+    "Mutant Town Musicians",
+    "Negate",
+    "Null Group Biological Assets",
+    "Omni-Cheese Pizza",
+    "Ooze Spill",
+    "Prehistoric Pet",
+    "Primordial Pachyderm",
+    "Punk Frogs",
+    "Raphael, Tough Turtle",
+    "Ravenous Robots",
+    "Return to the Sewers",
+    "Rock Soldiers",
+    "Sally Pride, Lioness Leader",
+    "Saved by the Shell",
+    "Shredder's Revenge",
+    "Skateboard",
+    "Slash, Reptile Rampager",
+    "Slithering Cryptid",
+    "Squirrelanoids",
+    "Stockman, Mad Fly-entist",
+    "Technodrome",
+    "Tenderize",
+    "Transdimensional Bovine",
+    "Tunnel Rats",
+    "Turtle Blimp",
+    "Turtle Power!",
+    "Utrom Scientists",
+    "Zog, Triceraton Castaway"
+  ]
+}

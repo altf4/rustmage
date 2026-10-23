@@ -652,3 +652,22 @@ temporary copy haste, actual spell-target artifact entry triggers, optional
 sacrifice/reflexive windows, signed death toughness and Ninja creature trigger
 multiplicity. Schema is 179. Combined release validation is next; no set-only
 full-game acceptance, TMT simulation throughput or final reviews are claimed.
+
+## Validated 151-card checkpoint
+
+All nine release phases pass on `10c8ed1c` in 666.18 seconds: 3,578 library
+rules tests (one ignored), all 327 TMT scenarios, existing native games and seven
+Python smoke checks. Admission is 151/195, 44 gated, zero unresolved. All 80
+newly authored physical candidates and all 71 inherited audits have combined
+release evidence. Final reviews and full-set acceptance remain pending.
+
+[Portable evidence](tmt-151-validation.json) retains report/library hashes,
+resource limits and measured whole-card implementation throughput. Earlier
+combined checks caught module formatting and an inherited reverse-iterator lint;
+both are corrected on the validated source. The Freeform regression remains
+separate from the prepared TMT-specific five-color game/replay workload.
+
+All remaining 44 cards are assigned in disjoint current and subsequent batches:
+equipment/spells for the integrator, combat/damage for the audit author,
+exile/control/outside-game for the mana author, and tokens/Sagas/search for the
+spell author. No partial PR is published.
