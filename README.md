@@ -44,6 +44,10 @@ To explore the project:
 
 `███░░░░░░░░░░░░░░░░░`
 
+**2,480 / 5,164 unique Standard cards supported · 48%**
+
+`██████████░░░░░░░░░░`
+
 Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 ([inventory](data/standard/xmage-inventory.json)), rather than live format legality.
 “Complete” means whole-set implementation with rules and full-game acceptance;
@@ -51,7 +55,9 @@ partial admission or catalogue entries do not establish set completion. Set comp
 is separate from upstream review and merge status.
 
 <!-- Refresh supported counts from scripts/set_status.py freeze/status using the
-     pinned XMage tables, Oracle facts and data/standard/coverage.json. Reconcile
+     pinned XMage tables, Oracle facts and data/standard/coverage.json. Refresh
+     the card summary from implemented_standard_cards / standard_legal_cards
+     (unique legal identities, excluding banned cards and supporting faces). Reconcile
      accepted sets with data/sets/<code>.json. Keep summary and rows in sync when
      a set passes acceptance; definition-directory counts omit shared reprints. -->
 
