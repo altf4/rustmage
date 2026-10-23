@@ -21,8 +21,9 @@ The engine is available through a native Rust API and in-process Python bindings
 Your application supplies the bot, learning algorithm, and reward function;
 Rustmage supplies the game rules and state transitions.
 
-Three full sets are implemented: **Foundations**, **Lorwyn Eclipsed**, and
-**Teenage Mutant Ninja Turtles**, with rules tests and complete-game acceptance.
+Four full sets are implemented: **Foundations**, **Lorwyn Eclipsed**,
+**Teenage Mutant Ninja Turtles**, and **The Big Score**, with rules tests and
+complete-game acceptance.
 The long-term goal is complete Standard coverage; implementation of the wider
 card pool is still in progress. Standard games reject cards whose rules have not
 been implemented.
