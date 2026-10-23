@@ -171,7 +171,8 @@ impl TokenCompletion {
         match self {
             Self::Reflexive { item, .. }
             | Self::MobilizeDelayed(item)
-            | Self::HastyDelayedCopy(item) => visit(item),
+            | Self::HastyDelayedCopy(item)
+            | Self::HastyDestroyAtEnd(item) => visit(item),
             Self::RoleReflexive(completion) => visit(&mut completion.item),
             Self::Simultaneous(sequence) => {
                 for batch in &mut sequence.waiting {
@@ -185,7 +186,10 @@ impl TokenCompletion {
         match self {
             Self::Reflexive { item, .. }
             | Self::MobilizeDelayed(item)
-            | Self::HastyDelayedCopy(item) => std::mem::size_of::<SpellView>() + item.owned_bytes(),
+            | Self::HastyDelayedCopy(item)
+            | Self::HastyDestroyAtEnd(item) => {
+                std::mem::size_of::<SpellView>() + item.owned_bytes()
+            }
             Self::RoleReflexive(c) => {
                 std::mem::size_of::<RoleReflexiveCompletion>() + c.item.owned_bytes()
             }
@@ -1870,5 +1874,80 @@ mod role_success_memory_tests {
             state.bytes() - n,
             std::mem::size_of::<ReflexiveSubjectView>()
         );
+    }
+}
+
+#[cfg(test)]
+mod hasty_destroy_memory_tests {
+    use super::super::ability_timeline_tests::{cast, checked, named, settle, setup};
+    use super::*;
+    #[test]
+    fn tmt_old_hob_paused_token_completion_accounts_and_visits_its_owned_packet() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = setup(p);
+            let hob = named(&mut g, p, "Old Hob, Alleycat Blues", Zone::Hand);
+            cast(&mut g, hob, None, &[]);
+            settle(&mut g);
+            named(&mut g, p, "Doubling Season", Zone::Battlefield);
+            named(&mut g, p, "Doubling Season", Zone::Battlefield);
+            for _ in 0..80 {
+                if g.observe(p).replacement_choice.is_some() {
+                    break;
+                }
+                let action = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| {
+                        matches!(
+                            a,
+                            Action::Pass | Action::FinishAttackers | Action::FinishBlockers
+                        )
+                    })
+                    .expect("reach Old Hob beginning combat trigger");
+                checked(&mut g, action);
+            }
+            assert!(g.observe(p).replacement_choice.is_some());
+            let mut without = g.clone();
+            let state = without
+                .state
+                .replacements
+                .as_mut()
+                .expect("paused token replacement");
+            let Some(Event::Tokens(batch)) = &mut state.active else {
+                panic!("token replacement event")
+            };
+            let TokenCompletion::HastyDestroyAtEnd(item) =
+                std::mem::replace(&mut batch.completion, TokenCompletion::None)
+            else {
+                panic!("Old Hob owned completion")
+            };
+            assert_eq!(
+                g.state_bytes() - without.state_bytes(),
+                std::mem::size_of::<SpellView>() + item.owned_bytes()
+            );
+            let mut visited = Vec::new();
+            g.state
+                .replacements
+                .as_mut()
+                .unwrap()
+                .visit_owned_packets(&mut |packet| visited.push((packet.id, packet.object)));
+            assert_eq!(visited, vec![(item.id, item.object)]);
+            // The real public replacement choices still complete four hasty tokens.
+            settle(&mut g);
+            let tokens = g
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter(|(_, o)| o.zone == Zone::Battlefield && o.is_token())
+                .map(|(id, _)| id as CardId)
+                .collect::<Vec<_>>();
+            assert_eq!(tokens.len(), 4);
+            assert!(
+                tokens
+                    .iter()
+                    .all(|&id| g.keywords(id).contains(Keywords::HASTE))
+            );
+        }
     }
 }

@@ -765,3 +765,10 @@ The eventual single TMT PR targets `codex/portable-set-skill`: ECL PR463 was
 already merged there at `32457107`; its tree matches the TMT baseline `1a795dcf`.
 This preserves the existing stack above open prerequisite PR461 and keeps the
 TMT diff separate from previously accepted ECL work.
+
+A fresh nonauthor preparatory inspection found omitted boxed-packet accounting
+and traversal in Old Hob's suspended token completion. The fix passes a real
+paid-spell/two-Doubling-Seasons scenario for both seats, including exact owned
+byte difference, packet visitation and public completion of four hasty tokens.
+[Finding and evidence](tmt-preliminary-review-fix.json) distinguishes this
+preliminary check from the still-pending final published-head reviews.
