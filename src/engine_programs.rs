@@ -762,6 +762,15 @@ impl Game {
         ) {
             return false;
         }
+        if matches!(
+            definition.triggers()[index].program.first(),
+            Some(Instruction::MayOncePerTurn { .. })
+        ) && self.state.triggered_this_turn.contains(&TriggerUse {
+            source: source.reference,
+            ability: u16::try_from(index).expect("ability index"),
+        }) {
+            return false;
+        }
         if condition.once_per_turn() {
             let used = TriggerUse {
                 source: source.reference,
@@ -1002,7 +1011,8 @@ impl Game {
                             || ability.program.iter().any(|instruction| {
                                 matches!(
                                     instruction,
-                                    Instruction::CreateTokensWithTemporaryKeywords { .. }
+                                    Instruction::GainLifeScaled(_, AmountValue::SpellColors)
+                                        | Instruction::CreateTokensWithTemporaryKeywords { .. }
                                         | Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
                                         | Instruction::PutCountersScaled {
                                             amount: AmountValue::SpellColors,
@@ -2339,6 +2349,7 @@ impl Game {
                     let quality = self.mana_quality(production, item.card);
                     match production.base().in_world(self, item.card) {
                         ManaProduction::ChosenColor
+                        | ManaProduction::MonocoloredPermanentColors
                         | ManaProduction::CountSubtype { .. }
                         | ManaProduction::Tagged { .. } => unreachable!("resolved production"),
                         ManaProduction::Fixed(mana) => {
@@ -2675,6 +2686,21 @@ impl Game {
                     tapped,
                 } => {
                     self.create_tokens(item.controller, token, u128::from(amount), tapped);
+                }
+                Instruction::MemoryVessel => self.resolve_memory_vessel(&item),
+                Instruction::RecordOncePerTurn => self.record_optional_ability_use(&item),
+                Instruction::MayOncePerTurn { skip } => {
+                    let skip_to = resolution.pc.checked_add(skip).expect("program offset");
+                    assert!(skip_to <= resolution.program.len());
+                    if self.optional_ability_used(&item) {
+                        self.state.resolving.as_mut().unwrap().pc = skip_to;
+                    } else {
+                        self.state.pending = Pending::EffectOptional {
+                            player: item.controller,
+                            skip_to,
+                        };
+                        return;
+                    }
                 }
                 Instruction::May { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");

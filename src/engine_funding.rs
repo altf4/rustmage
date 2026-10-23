@@ -571,6 +571,10 @@ impl<'g> FundingState<'g> {
             if object.zone != Zone::Battlefield || object.controller != goal.actor {
                 continue;
             }
+            if ability_world::CharacteristicWorld::activation_prohibited(self, goal.actor, entry.id)
+            {
+                continue;
+            }
             if !object.tapped
                 && (self.kinds(entry) & 1 == 0
                     || !object.summoning_sick
@@ -961,6 +965,9 @@ impl<'g> FundingState<'g> {
                 let production = match production.base() {
                     // Types may be restored after an Aura leaves. Counting every
                     // object (even in other zones) deliberately overestimates.
+                    ManaProduction::MonocoloredPermanentColors => {
+                        ManaProduction::Fixed([1, 1, 1, 1, 1, 0])
+                    }
                     ManaProduction::CountSubtype { color, .. } => {
                         let mut mana = [0; 6];
                         mana[usize::from(color)] =

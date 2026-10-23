@@ -169,13 +169,15 @@ impl Game {
         let spell = before.kinds & 12 != 0 && !before.is_token();
         FrozenRules {
             shuffle_self: own_available && own == Some(ZoneReplacementRule::RevealShuffleSelf),
-            exile_spell: spell
-                && self.state.static_sources.iter().any(|&id| {
-                    self.on_battlefield(id)
-                        && self.state.objects[id as usize].card.zone_replacement()
-                            == Some(ZoneReplacementRule::ExileInstantSorceryCards)
-                        && self.printed_abilities_available(id)
-                }),
+            exile_spell: self.state.static_sources.iter().any(|&id| {
+                self.on_battlefield(id)
+                    && self.printed_abilities_available(id)
+                    && match self.state.objects[id as usize].card.zone_replacement() {
+                        Some(ZoneReplacementRule::ExileAllCardsAndTokens) => true,
+                        Some(ZoneReplacementRule::ExileInstantSorceryCards) => spell,
+                        _ => false,
+                    }
+            }),
             discard_to_battlefield: before.zone == Zone::Hand
                 && own == Some(ZoneReplacementRule::OpponentDiscardToBattlefield)
                 && discard_cause.is_some_and(|cause| cause != before.owner),

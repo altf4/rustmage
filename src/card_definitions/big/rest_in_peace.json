@@ -3,10 +3,36 @@
   "catalogue_id": 3482,
   "oracle_id": "087f9ad7-e74f-40e2-8102-1ed2925d0418",
   "facts_sha256": "2d35f61dd39d2a7c100d9072720d5534e7184b6ac0dddf2f3791aefdd2b0bddb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "82feecf1fd54bf32b7408b3d7ba257ea8d97f56978bb07ba3605c38c1b8bf90f"
   },
-  "physical_metadata_sha256": "7d905eb603d14b978db970d8fe7d774e1c2641f53181d52dc2518fcef07874fa"
+  "physical_metadata_sha256": "7d905eb603d14b978db970d8fe7d774e1c2641f53181d52dc2518fcef07874fa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RestInPeace.java",
+  "java_sha256": "e3e2b39764c202de44d2b416249051f41351dc5c341ddce58429779b831b4335",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileGraveyardAllPlayersEffect.java",
+      "sha256": "1cb76306c21bfd1517a5ca5e612eb3455d2d26e339e25484470cb9c3d8c4ad8c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/GraveyardFromAnywhereExileReplacementEffect.java",
+      "sha256": "f2234484cde3a8148ea5ea49244dea8bb74ef2106f5682453a85341448c85a78"
+    }
+  ],
+  "remaining_obligations": []
 }

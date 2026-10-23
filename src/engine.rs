@@ -267,6 +267,11 @@ mod ability_resolutions;
 #[cfg(test)]
 #[path = "engine_activation_guard_tests.rs"]
 mod activation_guard_tests;
+#[path = "engine_big_core.rs"]
+mod big_core;
+#[cfg(test)]
+#[path = "engine_big_core_tests.rs"]
+mod big_core_tests;
 #[cfg(test)]
 #[path = "engine_damage_tests.rs"]
 mod damage_tests;
@@ -1610,6 +1615,7 @@ struct State {
     attachment_sources: Vec<CardId>,
     exile_links: Vec<ExileLink>,
     exile_permissions: Vec<ExilePlayPermission>,
+    hand_play_bans: Option<Box<Vec<u32>>>,
     graveyard_cast_permissions: cast_permissions::Rows,
     graveyard_type_uses: Option<SharedVec<GraveyardTypeUse>>,
     resolution_free_casts: Option<Box<ResolutionFreeCasts>>,
@@ -2181,6 +2187,7 @@ impl Game {
                 attachment_sources: Vec::new(),
                 exile_links: Vec::new(),
                 exile_permissions: Vec::new(),
+                hand_play_bans: None,
                 graveyard_cast_permissions: None,
                 graveyard_type_uses: None,
                 resolution_free_casts: None,
@@ -2976,6 +2983,9 @@ impl Game {
                         continue;
                     }
                     if obj.zone == Zone::Battlefield
+                        && !ability_world::CharacteristicWorld::activation_prohibited(
+                            self, actor, card,
+                        )
                         && self.printed_abilities_available(card)
                         && !obj.tapped
                         && obj.card.mana_color().is_some()
@@ -3011,6 +3021,9 @@ impl Game {
                         && emit(Action::AnnouncePlot { card })
                     {
                         return true;
+                    }
+                    if obj.zone == Zone::Hand && self.hand_play_prohibited() {
+                        continue;
                     }
                     if casting_prohibited {
                         if obj.card.is_land()
@@ -4914,9 +4927,11 @@ impl Game {
                 evidence_collected: false,
             };
         }
-        assert_ne!(
-            before.zone, destination,
-            "same-zone moves are ordering operations"
+        // CR400.8: re-exiling an exiled card creates a new incarnation even
+        // though its zone stays exile. Clear exact links and permissions below.
+        assert!(
+            before.zone != destination || destination == Zone::Exile,
+            "same-zone moves are ordering operations except re-exile"
         );
         if before.zone == Zone::Graveyard
             && before.card.triggers().iter().any(|a| {
@@ -5188,6 +5203,12 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        if let Some(bans) = &mut self.state.hand_play_bans {
+            bans.retain(|&deadline| deadline >= self.state.turn);
+            if bans.is_empty() {
+                self.state.hand_play_bans = None;
+            }
+        }
         self.clear_crew_history();
         self.expire_spell_copies();
         self.state.triggered_this_turn.clear();
@@ -6311,6 +6332,9 @@ impl Game {
                 .map_or(0, |a| a.counter_payment.owned_bytes())
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
             + s.exile_permissions.len() * std::mem::size_of::<ExilePlayPermission>()
+            + s.hand_play_bans.as_ref().map_or(0, |bans| {
+                std::mem::size_of::<Vec<u32>>() + bans.len() * std::mem::size_of::<u32>()
+            })
             + s.adventures.as_ref().map_or(0, |p| p.bytes())
             + s.plot.as_ref().map_or(0, |p| p.bytes())
             + s.crew.as_ref().map_or(0, |c| c.bytes())

@@ -93,7 +93,8 @@ impl Game {
         actor: Player,
         sorcery: bool,
     ) -> bool {
-        self.printed_abilities_available(card)
+        !ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
+            && self.printed_abilities_available(card)
             && (ability.mana_production().is_some() || !self.named_activation_prohibited(card))
             && self.activation_guard_available(ability.guard, actor)
             && Self::object_activation_available_with_kinds(
@@ -187,7 +188,8 @@ impl Game {
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let object = &self.state.objects[card as usize];
-        if object.zone != Zone::Battlefield
+        if ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
+            || object.zone != Zone::Battlefield
             || object.controller != actor
             || object.tapped
             || (self.is_creature(card)

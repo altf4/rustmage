@@ -171,8 +171,13 @@ impl Game {
                     )
                 })
             })
-            || self.state.objects[id as usize].card.zone_replacement()
-                == Some(crate::cards::ZoneReplacementRule::ExileInstantSorceryCards)
+            || matches!(
+                self.state.objects[id as usize].card.zone_replacement(),
+                Some(
+                    crate::cards::ZoneReplacementRule::ExileInstantSorceryCards
+                        | crate::cards::ZoneReplacementRule::ExileAllCardsAndTokens
+                )
+            )
             || !self.state.objects[id as usize]
                 .card
                 .replacement_effects()

@@ -396,6 +396,7 @@ pub(crate) enum ManaProduction {
         quality: &'static ManaQuality,
     },
     ChosenColor,
+    MonocoloredPermanentColors,
     Fixed(Mana),
     CountSubtype {
         color: u8,
@@ -426,7 +427,7 @@ impl ManaProduction {
     pub(crate) fn visit(self, mut emit: impl FnMut(Mana) -> bool) -> bool {
         match self {
             Self::Tagged { production, .. } => production.visit(emit),
-            Self::ChosenColor | Self::CountSubtype { .. } => {
+            Self::ChosenColor | Self::MonocoloredPermanentColors | Self::CountSubtype { .. } => {
                 panic!("dynamic mana requires a characteristic world")
             }
             Self::Fixed(mana) => emit(mana),
@@ -1231,6 +1232,12 @@ pub(crate) enum Instruction {
     Draw(PlayerSet, u16),
     DrawScaled(PlayerSet, AmountValue),
     Discard(PlayerSet, u16),
+    /// Optional resolution choice; its accepted branch records an exact ability use.
+    MayOncePerTurn {
+        skip: usize,
+    },
+    RecordOncePerTurn,
+    MemoryVessel,
     GainLife(PlayerSet, u16),
     GainLifeScaled(PlayerSet, AmountValue),
     LoseLife(PlayerSet, u16),
@@ -2478,6 +2485,7 @@ impl ActivatedAbility {
 pub(crate) enum ZoneReplacementRule {
     RevealShuffleSelf,
     ExileInstantSorceryCards,
+    ExileAllCardsAndTokens,
     OpponentDiscardToBattlefield,
 }
 
