@@ -8607,3 +8607,7 @@ mod tmt_ninja_tests;
 #[cfg(test)]
 #[path = "engine_tmt_sneak_tests.rs"]
 mod tmt_sneak_tests;
+
+#[cfg(test)]
+#[path = "engine_tmt_inherited_batch_tests.rs"]
+mod tmt_inherited_batch_tests;
