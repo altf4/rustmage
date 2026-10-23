@@ -7355,3 +7355,7 @@ mod big_library_tests;
 #[cfg(test)]
 #[path = "engine_big_token_tests.rs"]
 mod big_token_tests;
+
+#[cfg(test)]
+#[path = "engine_big_game_tests.rs"]
+mod big_game_tests;

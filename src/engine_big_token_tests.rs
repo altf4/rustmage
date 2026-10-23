@@ -404,3 +404,42 @@ fn molten_postcreation_haste_and_delayed_sacrifice_also_apply_to_helm_maps() {
         assert!(!g.on_battlefield(bear_copy));
     }
 }
+
+#[test]
+fn artifact_copy_exceptions_participate_in_dragon_replacement() {
+    for p in [Player::P0, Player::P1] {
+        for golem in [false, true] {
+            let mut g = setup(p);
+            named(&mut g, p, "Draconic Visitor", Zone::Battlefield);
+            if golem {
+                g.stage_copy_creation(
+                    p,
+                    CopyRecipe {
+                        definition: factory("Bear Cub"),
+                        exceptions: CopyExceptions::GOLEM,
+                    },
+                    1,
+                );
+            } else {
+                let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+                let molten = named(&mut g, p, "Molten Duplication", Zone::Hand);
+                cast(&mut g, molten, None, &[Target::Card(bear)]);
+            }
+            if golem {
+                g.advance_replacements(false);
+            }
+            settle(&mut g);
+            let dragons = tokens(&g, p, "Dragon");
+            assert_eq!(dragons.len(), 1, "golem={golem}");
+            assert!(!g.state.objects[dragons[0] as usize].is_copy_token());
+            assert_eq!(g.stats(dragons[0]).power, 5);
+            assert!(g.keywords(dragons[0]).contains(Keywords::FLYING));
+            if !golem {
+                assert!(g.keywords(dragons[0]).contains(Keywords::HASTE));
+                g.begin_step(Step::End);
+                settle(&mut g);
+                assert!(!g.on_battlefield(dragons[0]));
+            }
+        }
+    }
+}

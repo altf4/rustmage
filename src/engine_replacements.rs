@@ -93,6 +93,16 @@ struct TokenBatch {
     used: Vec<(ObjectRef, u16)>,
     completion: TokenCompletion,
 }
+impl TokenBatch {
+    fn artifact_at(&self, index: usize) -> bool {
+        self.groups[index].token.is_artifact()
+            || self
+                .recipes
+                .get(index)
+                .and_then(|r| *r)
+                .is_some_and(|r| r.exceptions.artifact || r.exceptions.golem)
+    }
+}
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct DamageBatch {
     events: Vec<DamageEvent>,
@@ -594,19 +604,12 @@ impl Game {
                 let applicable = match spec {
                     ReplacementSpec::DoubleTokens { effects_only } => !effects_only || b.effect,
                     ReplacementSpec::AddToken(_) => true,
-                    ReplacementSpec::AddArtifactToken(_) => {
-                        b.groups.iter().enumerate().any(|(i, g)| {
-                            g.amount > 0
-                                && (g.token.is_artifact()
-                                    || b.recipes.get(i).and_then(|r| *r).is_some_and(|r| {
-                                        r.exceptions.artifact || r.exceptions.golem
-                                    }))
-                        })
-                    }
-                    ReplacementSpec::ReplaceArtifactTokens(_) => b
+                    ReplacementSpec::AddArtifactToken(_)
+                    | ReplacementSpec::ReplaceArtifactTokens(_) => b
                         .groups
                         .iter()
-                        .any(|g| g.amount > 0 && g.token.is_artifact()),
+                        .enumerate()
+                        .any(|(index, group)| group.amount > 0 && b.artifact_at(index)),
                     _ => false,
                 };
                 if applicable && !b.used.contains(&(source, ability)) {
@@ -655,9 +658,9 @@ impl Game {
                 }
             }
             ReplacementSpec::ReplaceArtifactTokens(token) => {
-                for (index, g) in b.groups.iter_mut().enumerate() {
-                    if g.token.is_artifact() {
-                        g.token = token;
+                for index in 0..b.groups.len() {
+                    if b.artifact_at(index) {
+                        b.groups[index].token = token;
                         if let Some(recipe) = b.recipes.get_mut(index) {
                             *recipe = None;
                         }

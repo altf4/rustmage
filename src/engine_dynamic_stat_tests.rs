@@ -350,10 +350,23 @@ fn all_scaling_sources_are_indexed_and_round_trip_source_removal() {
         assert!(cards.contains(&Card::from_name(name).unwrap()), "{name}");
     }
     for card in cards {
-        let id = spawn(&mut g, Player::P0, card, Zone::Hand);
-        assert!(!g.state.static_sources.contains(&id));
-        // Source-index structural fixture, not a claim of legal unattached Aura play.
-        g.move_object(id, Zone::Battlefield);
+        let id = if card.is_token() {
+            // Tokens cannot enter from a hand; exercise their actual creation path.
+            g.create_tokens(Player::P0, card, 1, false);
+            g.state
+                .objects
+                .iter()
+                .enumerate()
+                .find(|(_, o)| o.card == card && o.zone == Zone::Battlefield)
+                .unwrap()
+                .0 as CardId
+        } else {
+            let id = spawn(&mut g, Player::P0, card, Zone::Hand);
+            assert!(!g.state.static_sources.contains(&id));
+            // Source-index structural fixture, not a claim of legal unattached Aura play.
+            g.move_object(id, Zone::Battlefield);
+            id
+        };
         assert_eq!(
             g.state.static_sources.iter().filter(|&&s| s == id).count(),
             1
