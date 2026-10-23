@@ -2201,6 +2201,12 @@ impl Game {
         })
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        if a.item.kind == StackKind::Spell
+            && a.item.cast.is_some_and(|c| c.kicker == Some(true))
+            && a.item.source_card.kicker_additional_cost().is_some()
+        {
+            return self.kicker_additional_fundable(a, cost);
+        }
         if self.conspire_has_payment() && !self.conspire_projecting() {
             return self.conspire_fundable(a, cost);
         }

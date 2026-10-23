@@ -375,7 +375,7 @@ impl Game {
             }
         }
     }
-    fn animate_exact(&mut self, object: ObjectRef, spec: AnimationSpec) {
+    pub(super) fn animate_exact(&mut self, object: ObjectRef, spec: AnimationSpec) {
         if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
             return;
         }

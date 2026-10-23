@@ -8855,3 +8855,9 @@ mod tmt_last_origins;
 #[cfg(test)]
 #[path = "engine_tmt_damage_legends_tests.rs"]
 mod tmt_damage_legends_tests;
+
+#[path = "engine_tmt_final_spells.rs"]
+mod tmt_final_spells;
+#[cfg(test)]
+#[path = "engine_tmt_final_spells_tests.rs"]
+mod tmt_final_spells_tests;

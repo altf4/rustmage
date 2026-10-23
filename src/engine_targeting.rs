@@ -58,6 +58,12 @@ impl Announcement {
             {
                 self.item.source_card.flashback_additional_cost()
             }
+            StackKind::Spell
+                if self.item.cast.is_some_and(|c| c.kicker == Some(true))
+                    && self.item.source_card.kicker_additional_cost().is_some() =>
+            {
+                self.item.source_card.kicker_additional_cost()
+            }
             StackKind::Spell if self.item.cast.is_some_and(|c| c.evidence == Some(true)) => Some(
                 evidence::cost(self.item.source_card.collect_evidence_cost().unwrap()),
             ),

@@ -3088,6 +3088,7 @@ impl Game {
                         }
                     }
                 }
+                Instruction::ReturnArtifactAsRobot => self.return_artifact_as_robot(&item),
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
                 Instruction::AnimateTargets(spec) => self.animate_targets(&item, spec),
                 Instruction::AnimateTargetsIfNoncreature(spec) => {

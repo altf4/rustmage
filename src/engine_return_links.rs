@@ -238,6 +238,10 @@ impl Game {
         };
         let mut link = (**link).clone();
         match kind {
+            ReturnKind::FlyingRobot => {
+                link.counter = None;
+                self.stage_linked_return(&link, Some((kind, item.object)));
+            }
             ReturnKind::Persist => {
                 link.counter = Some((CounterKind::MinusOne, 1));
                 self.stage_linked_return(&link, None);
@@ -380,6 +384,19 @@ impl Game {
                 self.remove_abilities_exact(
                     &[recipient],
                     crate::cards::AnimationDuration::Permanent,
+                );
+                return;
+            }
+            ReturnKind::FlyingRobot => {
+                self.animate_exact(
+                    recipient,
+                    crate::cards::AnimationSpec {
+                        artifact: true,
+                        creature_types: crate::cards::AnimationCreatureTypes::Named(&["Robot"]),
+                        base: Some((3, 3)),
+                        keywords: Keywords::FLYING,
+                        duration: crate::cards::AnimationDuration::Permanent,
+                    },
                 );
                 return;
             }

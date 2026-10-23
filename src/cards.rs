@@ -1526,6 +1526,7 @@ pub(crate) enum Instruction {
         factor: u8,
     },
     ReturnToBattlefield,
+    ReturnArtifactAsRobot,
     ReturnToBattlefieldAttacking(PlayerSet),
     ReturnToBattlefieldTapped,
     Destroy,
@@ -2601,6 +2602,7 @@ pub(crate) enum ReturnDeathFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ReturnKind {
+    FlyingRobot,
     Persist,
     WithoutAbilities,
     Demon,
@@ -3630,7 +3632,11 @@ impl Card {
     pub(crate) fn bargain_reduction(self) -> u32 {
         generated::bargain_reduction(self).unwrap_or(0)
     }
-    /// Fixed optional kicker surcharge for this immutable whole-card definition.
+    /// Immutable nonmana kicker cost, selected only for a kicked announcement.
+    pub(crate) fn kicker_additional_cost(self) -> Option<AdditionalCost> {
+        authored::rules(self).and_then(|r| r.extras.kicker_additional_cost)
+    }
+    /// Fixed optional kicker mana surcharge.
     pub fn kicker_cost(self) -> Option<ManaCost> {
         generated::kicker_cost(self)
     }

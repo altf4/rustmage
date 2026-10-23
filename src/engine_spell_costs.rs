@@ -181,6 +181,48 @@ impl Game {
             .cost_options()
             .any(|cost| self.announcement_cost_fundable(&proposal, cost))
     }
+    /// Nonmana kicker shares the base spell's mana and exact sacrifice witness.
+    pub(super) fn kicker_additional_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        let spec = a
+            .item
+            .source_card
+            .kicker_additional_cost()
+            .expect("declared nonmana kicker");
+        let mut proposal = a.clone();
+        if proposal.cost.is_some_and(|old| old != cost) {
+            proposal.total_cost = None;
+        }
+        proposal.cost = Some(cost);
+        let goal = self.funding_goal(&proposal);
+        let purpose = self.purpose_for_item(&proposal.item);
+        if let Some(object) = a.additional {
+            return self.additional_candidate(spec, a.item.controller, a.item.object, object)
+                && self.can_fund_for(goal, purpose);
+        }
+        if self.linked_funding_can_probe(a.item.controller)
+            && let Some(result) = self.linked_deferred_funding(
+                goal.clone(),
+                purpose,
+                linked_funding::DeferredFundingCost::Additional {
+                    source: a.item.object,
+                    spec,
+                },
+            )
+        {
+            return result;
+        }
+        (0..self.state.objects.len()).any(|id| {
+            let object = self.object_ref(id as CardId);
+            self.additional_candidate(spec, a.item.controller, a.item.object, object)
+                && self.can_fund_for(
+                    FundingGoal {
+                        reserve: Some((object, spec)),
+                        ..goal.clone()
+                    },
+                    purpose,
+                )
+        })
+    }
     pub(super) fn with_offspring_cost(mut base: ManaCost, card: Card, pay: bool) -> ManaCost {
         if pay {
             let extra = card.offspring_cost().expect("offspring recipe");
