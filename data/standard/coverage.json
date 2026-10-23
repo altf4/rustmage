@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f75568ed04ef544bacd3de5bec038d5df56e7e4cb2bf463d6c8face39e953375",
+  "catalogue_version": "6927b2596bd15d6fe91e01d3a320479f2e3ca247cf9ffa4cbd89126466f92589",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2408,
-  "implemented_total": 2414,
+  "implemented_standard_cards": 2421,
+  "implemented_total": 2427,
   "token_definitions": 113,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -185,8 +185,8 @@
     },
     "tmt": {
       "total": 189,
-      "complete": 117,
-      "gated": 72
+      "complete": 130,
+      "gated": 59
     },
     "w17": {
       "total": 1,
@@ -3030,8 +3030,8 @@
     {
       "name": "Baxter Stockman",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/baxter_stockman.rs",
       "set": "tmt"
     },
@@ -14590,8 +14590,8 @@
     {
       "name": "Go Ninja Go",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/go_ninja_go.rs",
       "set": "tmt"
     },
@@ -15278,8 +15278,8 @@
     {
       "name": "Groundchuck & Dirtbag",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/groundchuck_dirtbag.rs",
       "set": "tmt"
     },
@@ -17158,8 +17158,8 @@
     {
       "name": "Ice Cream Kitty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/ice_cream_kitty.rs",
       "set": "tmt"
     },
@@ -21398,8 +21398,8 @@
     {
       "name": "Manhole Missile",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/manhole_missile.rs",
       "set": "tmt"
     },
@@ -22038,8 +22038,8 @@
     {
       "name": "Metalhead",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/metalhead.rs",
       "set": "tmt"
     },
@@ -22830,8 +22830,8 @@
     {
       "name": "Mona Lisa, Science Geek",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/mona_lisa_science_geek.rs",
       "set": "tmt"
     },
@@ -23838,8 +23838,8 @@
     {
       "name": "Nobody",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/nobody.rs",
       "set": "tmt"
     },
@@ -26486,8 +26486,8 @@
     {
       "name": "Purple Dragon Punks",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/purple_dragon_punks.rs",
       "set": "tmt"
     },
@@ -32342,8 +32342,8 @@
     {
       "name": "Spicy Oatmeal Pizza",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/spicy_oatmeal_pizza.rs",
       "set": "tmt"
     },
@@ -34750,8 +34750,8 @@
     {
       "name": "Tainted Treats",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/tainted_treats.rs",
       "set": "tmt"
     },
@@ -37870,8 +37870,8 @@
     {
       "name": "Turtle Lair",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/turtle_lair.rs",
       "set": "tmt"
     },
@@ -40390,8 +40390,8 @@
     {
       "name": "Weather Maker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/weather_maker.rs",
       "set": "tmt"
     },

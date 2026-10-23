@@ -570,3 +570,35 @@ Mutagen Man and Ray Fillet's cost kernel in a fourth isolated checkout while
 this integration branch remains available for combining completed batches.
 No author batch is counted as integrated or independently reviewed yet. The full
 195-card goal and one complete-set implementation PR boundary remain open.
+
+## Parallel candidate integration at 136 admitted cards
+
+Three independent isolated authors supplied five complete mana consumers,
+eight complete spell/entry consumers, and thirty inherited-card audits in two
+fifteen-card batches. Source commits are `42165f57` (mana), `5de3c322` (spells),
+`08adab3e` and `822e39de` (audits); integration preserves all disjoint source,
+provenance, test modules and shared-engine changes. Catalogue regeneration is
+owned by the integrator. Each author used actual paid checked actions, full
+pinned Oracle/XMage sources and isolated guarded builds.
+
+The candidate branch admits 136/195, 59 gated, zero unresolved. 65 new physical
+candidates have focused evidence, while 52 are integrated release verified;
+40 inherited audits have focused evidence, while ten are integrated release
+verified. 31 other inherited flags remain unaudited. Combined release validation
+is pending and no full-set acceptance or final review is claimed.
+
+Shared mana mechanics include artifact-or-activation and subtype-union restricted
+mana, any-land tap bonuses, and exact current-power production in rare projected
+funding worlds. Fifteen audit scenarios were not assumed from admission flags:
+17 and 18 focused scenarios cover the two inherited batches. The mana author
+passed 14 focused and 3,403 library tests; the spell author passed 18 focused,
+19 existing library-movement regressions and Clippy, with the full library suite
+passing before a final private-movement extraction. Integrated validation must
+verify the exact combined source.
+
+Manhole Missile's optional private bottoming suppresses public targeted-library
+movement history, preventing disclosure of the selected hand card. Other typed
+additions include creature-or-token sacrifice, positive kind intersection,
+pre-destruction target mana-value conditions and simultaneous damage. Public
+observation schema is 178. The authors continue on disjoint batches, while the
+integrator implements Mutagen Man/Ray Fillet cost mechanics separately.
