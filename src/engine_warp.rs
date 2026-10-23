@@ -86,6 +86,7 @@ impl Game {
             let view = d.view;
             let id = self.next_stack_id();
             self.state.pending_triggers.push(SpellView {
+                sneak: None,
                 source_move: None,
                 death_event: None,
                 creature_action_event: None,

@@ -948,9 +948,6 @@ impl Serialize for CastOriginPermissions {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CastInfo {
-    /// Exact non-targeted return cost and its captured attack destination.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sneak: Option<SneakCastView>,
     /// A non-targeted promise, declared before targets; absent until chosen.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gift: Option<GiftDeclaration>,
@@ -1029,6 +1026,9 @@ pub struct DeathEventView {
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    /// Exact return cost and attack destination, allocated only for Sneak.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sneak: Option<Box<SneakCastView>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub entry_batch_event: Option<Box<EntryBatchEventView>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1184,6 +1184,10 @@ impl SpellView {
                 .source_copy_recipe
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<SourceCopyFacts>())
+            + self
+                .sneak
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<SneakCastView>())
             + self.return_link.as_ref().map_or(0, |link| link.bytes())
             + self
                 .creature_combat_event
@@ -4665,7 +4669,7 @@ impl Game {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 let cast = item.cast.as_mut().unwrap();
                 cast.method = CastMethod::Sneak;
-                cast.sneak = Some(sneak);
+                item.sneak = Some(Box::new(sneak));
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnouncePlot { card } => self.begin_plot(actor, card),

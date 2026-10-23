@@ -439,6 +439,7 @@ impl Game {
     ) -> SpellView {
         self.state.passes = 0;
         SpellView {
+            sneak: None,
             source_move: None,
             death_event: None,
             creature_action_event: None,

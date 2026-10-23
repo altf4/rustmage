@@ -56,7 +56,7 @@ impl Game {
         announcement.additional_paid
             || announcement.item.cast.is_none_or(|cast| {
                 cast.method != CastMethod::Sneak
-                    || cast.sneak.is_some_and(|s| {
+                    || announcement.item.sneak.as_ref().is_some_and(|s| {
                         announcement.additional == Some(s.attacker)
                             && self
                                 .sneak_attacker(announcement.item.controller, s.attacker)

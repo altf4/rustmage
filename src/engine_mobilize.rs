@@ -251,6 +251,7 @@ impl Game {
             let card = b.view.source_card;
             let controller = b.view.controller;
             self.state.pending_triggers.push(SpellView {
+                sneak: None,
                 source_move: None,
                 death_event: None,
                 creature_action_event: None,

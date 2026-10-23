@@ -179,9 +179,8 @@ fn tmt_sneak_sorcery_pays_only_alternative_and_return_cost_before_any_response()
                 .stack
                 .last()
                 .unwrap()
-                .cast
-                .unwrap()
                 .sneak
+                .as_ref()
                 .unwrap()
                 .attacker,
             witness

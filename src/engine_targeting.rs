@@ -1352,6 +1352,7 @@ impl Game {
         payment: Mana,
     ) -> SpellView {
         SpellView {
+            sneak: None,
             gift: None,
             source_move: None,
             death_event: None,
@@ -1373,7 +1374,6 @@ impl Game {
             x: None,
             attachment_trigger: None,
             cast: Some(CastInfo {
-                sneak: None,
                 gift: None,
                 physical_card: None,
                 face: CastFace::Normal,
@@ -1523,7 +1523,7 @@ impl Game {
                     .is_some_and(|plan| { self.item_targets_available(&item, plan) })
         );
         let needs_mode = item.modes().is_some() && item.mode.is_none();
-        let additional = item.cast.and_then(|c| c.sneak).map(|s| s.attacker);
+        let additional = item.sneak.as_ref().map(|s| s.attacker);
         self.state.announcing = Some(Announcement {
             item,
             spec: TargetSpec::NONE,

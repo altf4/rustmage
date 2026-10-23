@@ -843,6 +843,7 @@ impl Game {
         }
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
+            sneak: None,
             gift: None,
             source_move: None,
             death_event: None,
@@ -1502,7 +1503,7 @@ impl Game {
                             .filter(|c| c.method == CastMethod::Warp)
                             .map(|_| item.controller);
                         movement.evoked = item.cast.is_some_and(|c| c.evoked);
-                        if let Some(sneak) = item.cast.and_then(|c| c.sneak) {
+                        if let Some(sneak) = item.sneak.as_deref() {
                             movement.tapped = true;
                             movement.attacking = sneak
                                 .defender
