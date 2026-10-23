@@ -110,31 +110,6 @@ impl Game {
             )
     }
 
-    #[cfg(test)]
-    pub(super) fn object_activation_available(
-        object: &Object,
-        keywords: Keywords,
-        life: i128,
-        ability: &ActivatedAbility,
-        index: usize,
-        actor: Player,
-        sorcery: bool,
-    ) -> bool {
-        Self::object_activation_available_with_kinds(
-            object,
-            CounterAmounts {
-                hot: object.counters,
-                named: None,
-            },
-            object.card.kind_mask(),
-            || keywords,
-            life,
-            ability,
-            index,
-            actor,
-            sorcery,
-        )
-    }
     // Shared real/virtual readiness query: no allocation or speculative state clone.
     #[allow(clippy::too_many_arguments)]
     pub(super) fn object_activation_available_with_kinds(

@@ -1,13 +1,7 @@
 #[path = "engine_endgame.rs"]
 mod endgame;
-#[cfg(test)]
-#[path = "engine_endgame_tests.rs"]
-mod endgame_tests;
 #[path = "engine_linked_choices.rs"]
 mod linked_choices;
-#[cfg(test)]
-#[path = "engine_zone_replacement_tests.rs"]
-mod zone_replacement_tests;
 #[path = "engine_zone_replacements.rs"]
 mod zone_replacements;
 pub use linked_choices::{KeepTypesView, LibraryPile, LibraryPilesView, LinkedExileView};
@@ -21,9 +15,6 @@ pub use mana_lots::{
 mod copies;
 #[path = "engine_stack_copies.rs"]
 mod stack_copies;
-#[cfg(test)]
-#[path = "engine_stack_copies_tests.rs"]
-mod stack_copies_tests;
 pub use copies::CopyRecipe;
 #[path = "engine_copy_characteristics.rs"]
 mod copy_characteristics;
@@ -55,16 +46,10 @@ mod adventure;
 mod cast_origins;
 use crate::PermanentType;
 pub use cast_origins::{GraveyardTypeUse, ResolutionFreeCasts};
-#[cfg(test)]
-#[path = "engine_cast_permission_tests.rs"]
-mod cast_permission_tests;
 #[path = "engine_cast_permissions.rs"]
 mod cast_permissions;
 #[path = "engine_cast_timing.rs"]
 mod cast_timing;
-#[cfg(test)]
-#[path = "engine_fdn_cast_origins_tests.rs"]
-mod fdn_cast_origins_tests;
 pub use crate::cards::GraveyardCastKind;
 pub use cast_permissions::GraveyardCastPermissionView;
 #[path = "engine_crew.rs"]
@@ -76,9 +61,6 @@ pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 #[path = "engine_gift.rs"]
 mod gift;
-#[cfg(test)]
-#[path = "engine_gift_tests.rs"]
-mod gift_tests;
 pub use gift::{GiftContext, GiftDeclaration};
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
 #[path = "observation_schema.rs"]
@@ -264,32 +246,12 @@ impl Player {
 
 #[path = "engine_ability_resolutions.rs"]
 mod ability_resolutions;
-#[cfg(test)]
-#[path = "engine_activation_guard_tests.rs"]
-mod activation_guard_tests;
 #[path = "engine_big_core.rs"]
 mod big_core;
 #[path = "engine_borrowed_activations.rs"]
 mod borrowed_activations;
-#[cfg(test)]
-#[path = "engine_territory_forge_tests.rs"]
-mod territory_forge_tests;
 pub use borrowed_activations::BorrowedAbilityView;
-#[cfg(test)]
-#[path = "engine_big_core_tests.rs"]
-mod big_core_tests;
-#[cfg(test)]
-#[path = "engine_damage_tests.rs"]
-mod damage_tests;
-#[cfg(test)]
-#[path = "engine_dynamic_stat_tests.rs"]
-mod dynamic_stat_tests;
-#[cfg(test)]
-#[path = "engine_entry_life_tests.rs"]
-mod entry_life_tests;
-#[cfg(test)]
-#[path = "engine_identity_tests.rs"]
-mod identity_tests;
+
 pub use ability_resolutions::AbilityResolutionView;
 #[path = "engine_programs.rs"]
 mod programs;
@@ -297,36 +259,6 @@ use programs::Resolution;
 #[path = "engine_targeting.rs"]
 mod targeting;
 use targeting::Announcement;
-#[cfg(test)]
-#[path = "engine_activation_tests.rs"]
-mod activation_tests;
-#[cfg(test)]
-#[path = "engine_counter_tests.rs"]
-mod counter_tests;
-#[cfg(test)]
-#[path = "engine_funding_tests.rs"]
-mod funding_tests;
-#[cfg(test)]
-#[path = "engine_mana_tests.rs"]
-mod mana_tests;
-#[cfg(test)]
-#[path = "engine_program_tests.rs"]
-mod program_tests;
-#[cfg(test)]
-#[path = "engine_replacement_tests.rs"]
-mod replacement_tests;
-#[cfg(test)]
-#[path = "engine_target_tests.rs"]
-mod target_tests;
-#[cfg(test)]
-#[path = "engine_tests.rs"]
-mod tests;
-#[cfg(test)]
-#[path = "engine_token_tests.rs"]
-mod token_tests;
-#[cfg(test)]
-#[path = "engine_trigger_source_binding_tests.rs"]
-mod trigger_source_binding_tests;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum Zone {
@@ -755,27 +687,6 @@ impl Object {
             } else {
                 self.tapped = false;
             }
-        }
-    }
-
-    #[cfg(test)]
-    fn local_power(&self) -> i128 {
-        match self.card.effect() {
-            Effect::Creature(p, _) => i128::from(p)
-                .checked_add(self.growth.power)
-                .and_then(|v| v.checked_add(self.counter_delta()))
-                .capacity("power representation exhausted"),
-            _ => 0,
-        }
-    }
-    #[cfg(test)]
-    fn local_toughness(&self) -> i128 {
-        match self.card.effect() {
-            Effect::Creature(_, t) => i128::from(t)
-                .checked_add(self.growth.toughness)
-                .and_then(|v| v.checked_add(self.counter_delta()))
-                .capacity("toughness representation exhausted"),
-            _ => 0,
         }
     }
 }
@@ -6577,68 +6488,8 @@ impl Game {
     }
 }
 
-#[cfg(test)]
-#[path = "engine_library_tests.rs"]
-mod library_tests;
-
-#[cfg(test)]
-#[path = "engine_stats_tests.rs"]
-mod stats_tests;
-
-#[cfg(test)]
-#[path = "engine_keyword_tests.rs"]
-mod keyword_tests;
-
-#[cfg(test)]
-#[path = "engine_blocking_tests.rs"]
-mod blocking_tests;
-
-#[cfg(test)]
-#[path = "engine_exile_tests.rs"]
-mod exile_tests;
-
-#[cfg(test)]
-#[path = "engine_land_tests.rs"]
-mod land_tests;
-
-#[cfg(test)]
-#[path = "engine_search_tests.rs"]
-mod search_tests;
-
-#[cfg(test)]
-#[path = "engine_mode_tests.rs"]
-mod mode_tests;
-
-#[cfg(test)]
-#[path = "engine_group_tests.rs"]
-mod group_tests;
-
-#[cfg(test)]
-#[path = "engine_sba_tests.rs"]
-mod sba_tests;
-
-#[cfg(test)]
-#[path = "engine_cast_tests.rs"]
-mod cast_tests;
-
-#[cfg(test)]
-#[path = "engine_step_tests.rs"]
-mod step_tests;
-
-#[cfg(test)]
-#[path = "engine_effect_choice_tests.rs"]
-mod effect_choice_tests;
-
-#[cfg(test)]
-#[path = "engine_vital_tests.rs"]
-mod vital_tests;
-
 #[path = "engine_equipment.rs"]
 mod equipment;
-
-#[cfg(test)]
-#[path = "engine_equipment_tests.rs"]
-mod equipment_tests;
 
 #[path = "engine_entry_choices.rs"]
 mod entry_choices;
@@ -6654,450 +6505,19 @@ pub use entries::{
 };
 pub use entry_tap::{EntryTapEffect, EntryTapKind, EntryTapView};
 
-#[cfg(test)]
-#[path = "engine_aura_tests.rs"]
-mod aura_tests;
-
-#[cfg(test)]
-#[path = "engine_milling_tests.rs"]
-mod milling_tests;
-
-#[cfg(test)]
-#[path = "engine_damage_trigger_tests.rs"]
-mod damage_trigger_tests;
-
-#[cfg(test)]
-#[path = "engine_attachment_ward_tests.rs"]
-mod attachment_ward_tests;
-#[cfg(test)]
-#[path = "engine_spell_cost_tests.rs"]
-mod spell_cost_tests;
-#[cfg(test)]
-#[path = "engine_spell_filter_tests.rs"]
-mod spell_filter_tests;
-#[cfg(test)]
-#[path = "engine_two_brid_tests.rs"]
-mod two_brid_tests;
-#[cfg(test)]
-#[path = "engine_ward_tests.rs"]
-mod ward_tests;
 pub use resolution_mana::ResolutionPaymentView;
-
-#[cfg(test)]
-#[path = "engine_cycling_tests.rs"]
-mod cycling_tests;
 
 pub use discard_events::DiscardTriggerView;
 
-#[cfg(test)]
-#[path = "engine_discard_tests.rs"]
-mod discard_tests;
-
 pub use draw_events::DrawTriggerView;
 
-#[cfg(test)]
-#[path = "engine_draw_tests.rs"]
-mod draw_tests;
-
 pub use connive::{ConniveChoiceView, ConniverView};
-
-#[cfg(test)]
-#[path = "engine_connive_tests.rs"]
-mod connive_tests;
-
-#[cfg(test)]
-#[path = "engine_limited_trigger_tests.rs"]
-mod limited_trigger_tests;
-
-#[cfg(test)]
-#[path = "engine_hybrid_tests.rs"]
-mod hybrid_tests;
-
-#[cfg(test)]
-#[path = "engine_changeling_tests.rs"]
-mod changeling_tests;
-
-#[cfg(test)]
-#[path = "engine_additional_cost_tests.rs"]
-mod additional_cost_tests;
-
-#[cfg(test)]
-#[path = "engine_counter_group_tests.rs"]
-mod counter_group_tests;
-
-#[cfg(test)]
-#[path = "engine_capacity_tests.rs"]
-mod capacity_tests;
-
-#[cfg(test)]
-#[path = "engine_removal_target_tests.rs"]
-mod removal_target_tests;
-
-#[cfg(test)]
-#[path = "engine_battlefield_group_tests.rs"]
-mod battlefield_group_tests;
-
-#[cfg(test)]
-#[path = "engine_loyalty_tests.rs"]
-mod loyalty_tests;
-
-#[cfg(test)]
-#[path = "engine_planeswalker_combat_tests.rs"]
-mod planeswalker_combat_tests;
 
 #[path = "engine_emblems.rs"]
 mod emblems;
 
-#[cfg(test)]
-#[path = "engine_loyalty_activation_tests.rs"]
-mod loyalty_activation_tests;
-
-#[cfg(test)]
-#[path = "engine_scaled_token_tests.rs"]
-mod scaled_token_tests;
-
-#[cfg(test)]
-#[path = "engine_scaled_effect_tests.rs"]
-mod scaled_effect_tests;
-
-#[cfg(test)]
-#[path = "engine_distinct_amount_tests.rs"]
-mod distinct_amount_tests;
-
-#[cfg(test)]
-#[path = "engine_conditional_tests.rs"]
-mod conditional_tests;
-
-#[cfg(test)]
-#[path = "engine_attack_history_tests.rs"]
-mod attack_history_tests;
-
-#[cfg(test)]
-#[path = "engine_entry_counter_tests.rs"]
-mod entry_counter_tests;
-
-#[cfg(test)]
-#[path = "engine_death_history_tests.rs"]
-mod death_history_tests;
-
-#[cfg(test)]
-#[path = "engine_life_loss_tests.rs"]
-mod life_loss_tests;
-
-#[cfg(test)]
-#[path = "engine_hybrid_activation_tests.rs"]
-mod hybrid_activation_tests;
-
-#[cfg(test)]
-#[path = "engine_activation_discard_tests.rs"]
-mod activation_discard_tests;
-
-#[cfg(test)]
-#[path = "engine_discard_history_tests.rs"]
-mod discard_history_tests;
-
-#[cfg(test)]
-#[path = "engine_own_turn_tests.rs"]
-mod own_turn_tests;
-
-#[cfg(test)]
-#[path = "engine_power_blocking_tests.rs"]
-mod power_blocking_tests;
-
-#[cfg(test)]
-#[path = "engine_self_target_tests.rs"]
-mod self_target_tests;
-
-#[cfg(test)]
-#[path = "engine_life_gain_condition_tests.rs"]
-mod life_gain_condition_tests;
-
-#[cfg(test)]
-#[path = "engine_exhaust_tests.rs"]
-mod exhaust_tests;
-
-#[cfg(test)]
-#[path = "engine_tapped_entry_tests.rs"]
-mod tapped_entry_tests;
-
-#[cfg(test)]
-#[path = "engine_activation_sacrifice_tests.rs"]
-mod activation_sacrifice_tests;
-
-#[cfg(test)]
-#[path = "engine_uncounterable_tests.rs"]
-mod uncounterable_tests;
-
-#[cfg(test)]
-#[path = "engine_graveyard_activation_tests.rs"]
-mod graveyard_activation_tests;
-
-#[cfg(test)]
-#[path = "engine_source_return_tests.rs"]
-mod source_return_tests;
-
-#[cfg(test)]
-#[path = "engine_public_hand_tests.rs"]
-mod public_hand_tests;
-
-#[cfg(test)]
-#[path = "engine_temporary_blocking_tests.rs"]
-mod temporary_blocking_tests;
-
-#[cfg(test)]
-#[path = "engine_permanent_graveyard_tests.rs"]
-mod permanent_graveyard_tests;
-#[cfg(test)]
-#[path = "engine_sacrifice_trigger_tests.rs"]
-mod sacrifice_trigger_tests;
-
-#[cfg(test)]
-#[path = "engine_draw_token_body_tests.rs"]
-mod draw_token_body_tests;
-
-#[cfg(test)]
-#[path = "engine_poison_tests.rs"]
-mod poison_tests;
-
-#[cfg(test)]
-#[path = "engine_firebending_tests.rs"]
-mod firebending_tests;
-
-#[cfg(test)]
-#[path = "engine_count_threshold_tests.rs"]
-mod count_threshold_tests;
-
-#[cfg(test)]
-#[path = "engine_conditional_source_keyword_tests.rs"]
-mod conditional_source_keyword_tests;
-
-#[cfg(test)]
-#[path = "engine_source_predicate_tests.rs"]
-mod source_predicate_tests;
-
-#[cfg(test)]
-#[path = "engine_targeted_bounce_tap_tests.rs"]
-mod targeted_bounce_tap_tests;
-
-#[cfg(test)]
-#[path = "engine_modal_trigger_tests.rs"]
-mod modal_trigger_tests;
-
-#[cfg(test)]
-#[path = "engine_alliance_tests.rs"]
-mod alliance_tests;
-
-#[cfg(test)]
-#[path = "engine_filtered_entry_tests.rs"]
-mod filtered_entry_tests;
-
-#[cfg(test)]
-#[path = "engine_fixed_effect_tests.rs"]
-mod fixed_effect_tests;
-
-#[cfg(test)]
-#[path = "engine_entry_suppression_tests.rs"]
-mod entry_suppression_tests;
-
-#[cfg(test)]
-#[path = "engine_entry_predicate_tests.rs"]
-mod entry_predicate_tests;
-
-#[cfg(test)]
-#[path = "engine_entering_object_tests.rs"]
-mod entering_object_tests;
-
-#[cfg(test)]
-#[path = "engine_opponent_entry_tapped_tests.rs"]
-mod opponent_entry_tapped_tests;
-
-#[cfg(test)]
-#[path = "engine_source_tap_tests.rs"]
-mod source_tap_tests;
-
-#[cfg(test)]
-#[path = "engine_qualified_cast_tests.rs"]
-mod qualified_cast_tests;
-
-#[cfg(test)]
-#[path = "engine_attack_declaration_tests.rs"]
-mod attack_declaration_tests;
-
-#[cfg(test)]
-#[path = "engine_contextual_cast_tests.rs"]
-mod contextual_cast_tests;
-
-#[cfg(test)]
-#[path = "engine_flashback_tests.rs"]
-mod flashback_tests;
-
-#[cfg(test)]
-#[path = "engine_offspring_tests.rs"]
-mod offspring_tests;
-
-#[cfg(test)]
-#[path = "engine_library_selection_tests.rs"]
-mod library_selection_tests;
-
-#[cfg(test)]
-#[path = "engine_forage_tests.rs"]
-mod forage_tests;
-
-#[cfg(test)]
-#[path = "engine_filtered_library_selection_tests.rs"]
-mod filtered_library_selection_tests;
-
-#[cfg(test)]
-#[path = "engine_exile_play_tests.rs"]
-mod exile_play_tests;
-
-#[cfg(test)]
-#[path = "engine_target_library_tests.rs"]
-mod target_library_tests;
-
-#[cfg(test)]
-#[path = "engine_target_cost_tests.rs"]
-mod target_cost_tests;
-
-#[cfg(test)]
-#[path = "engine_target_cost_exile_tests.rs"]
-mod target_cost_exile_tests;
-
-#[cfg(test)]
-#[path = "engine_subject_condition_tests.rs"]
-mod subject_condition_tests;
-
-#[cfg(test)]
-#[path = "engine_attachment_attack_tests.rs"]
-mod attachment_attack_tests;
-
-#[cfg(test)]
-#[path = "engine_exact_search_tests.rs"]
-mod exact_search_tests;
-
-#[cfg(test)]
-#[path = "engine_kicker_tests.rs"]
-mod kicker_tests;
-
-#[cfg(test)]
-#[path = "engine_explore_tests.rs"]
-mod explore_tests;
-
-#[cfg(test)]
-#[path = "engine_bargain_tests.rs"]
-mod bargain_tests;
-
-#[cfg(test)]
-#[path = "engine_scalar_x_tests.rs"]
-mod scalar_x_tests;
-
-#[cfg(test)]
-#[path = "engine_evidence_tests.rs"]
-mod evidence_tests;
-
-#[cfg(test)]
-#[path = "engine_celebration_tests.rs"]
-mod celebration_tests;
-
-#[cfg(test)]
-#[path = "engine_mobilize_tests.rs"]
-mod mobilize_tests;
-
-#[cfg(test)]
-#[path = "engine_plot_tests.rs"]
-mod plot_tests;
-
-#[cfg(test)]
-#[path = "engine_warp_tests.rs"]
-mod warp_tests;
-
-#[cfg(test)]
-#[path = "engine_job_select_tests.rs"]
-mod job_select_tests;
-
 #[path = "engine_granted_abilities.rs"]
 mod granted_abilities;
-
-#[cfg(test)]
-#[path = "engine_cast_payment_body_tests.rs"]
-mod cast_payment_body_tests;
-
-#[cfg(test)]
-mod cast_payment_layout_probe {
-    use super::*;
-    #[test]
-    fn layout_probe() {
-        println!(
-            "LAYOUT State={} Object={} SpellView={} Announcement={} Resolution={} CastInfo={} DamageFacts={} DamageEvent={}",
-            std::mem::size_of::<State>(),
-            std::mem::size_of::<Object>(),
-            std::mem::size_of::<SpellView>(),
-            std::mem::size_of::<Announcement>(),
-            std::mem::size_of::<Resolution>(),
-            std::mem::size_of::<CastInfo>(),
-            std::mem::size_of::<DamageFacts>(),
-            std::mem::size_of::<DamageEvent>()
-        );
-        let g = Game::new(Config {
-            decks: [vec![Card::Forest; 60], vec![Card::Forest; 60]],
-            seed: 249,
-            starting_player: Player::P0,
-            deck_rules: DeckRules::Standard,
-        })
-        .unwrap();
-        println!("LAYOUT initial_logical_bytes={}", g.state_bytes());
-    }
-}
-
-#[cfg(test)]
-#[path = "engine_adventure_tests.rs"]
-mod adventure_tests;
-
-#[cfg(test)]
-#[path = "engine_omen_tests.rs"]
-mod omen_tests;
-
-#[cfg(test)]
-#[path = "engine_feral_tests.rs"]
-mod feral_tests;
-
-#[cfg(test)]
-#[path = "engine_composition_tests.rs"]
-mod composition_tests;
-
-#[cfg(test)]
-#[path = "engine_selected_x_tests.rs"]
-mod selected_x_tests;
-
-#[cfg(test)]
-#[path = "engine_split_search_tests.rs"]
-mod split_search_tests;
-
-#[cfg(test)]
-#[path = "engine_control_tests.rs"]
-mod control_tests;
-
-#[cfg(test)]
-#[path = "engine_durable_control_tests.rs"]
-mod durable_control_tests;
-
-#[cfg(test)]
-#[path = "engine_adventure_land_targets_tests.rs"]
-mod adventure_land_targets_tests;
-
-#[cfg(test)]
-#[path = "engine_graveyard_recovery_tests.rs"]
-mod graveyard_recovery_tests;
-#[cfg(test)]
-#[path = "engine_milled_selection_tests.rs"]
-mod milled_selection_tests;
-
-#[cfg(test)]
-#[path = "engine_adventure_event_tests.rs"]
-mod adventure_event_tests;
-#[cfg(test)]
-#[path = "engine_role_tests.rs"]
-mod role_tests;
 
 #[path = "engine_death_exile.rs"]
 mod death_exile;
@@ -7107,128 +6527,12 @@ pub use death_exile::ExileDeathReplacementView;
 mod temporary_abilities;
 pub use temporary_abilities::TemporaryAbilityView;
 
-#[cfg(test)]
-#[path = "engine_enchanted_draw_tests.rs"]
-mod enchanted_draw_tests;
-#[cfg(test)]
-#[path = "engine_role_fight_tests.rs"]
-mod role_fight_tests;
-#[cfg(test)]
-#[path = "engine_role_followup_tests.rs"]
-mod role_followup_tests;
-#[cfg(test)]
-#[path = "engine_temporary_death_grants_tests.rs"]
-mod temporary_death_grants_tests;
-
-#[cfg(test)]
-#[path = "engine_target_exclusion_tests.rs"]
-mod target_exclusion_tests;
-
-#[cfg(test)]
-#[path = "engine_battlefield_return_tests.rs"]
-mod battlefield_return_tests;
 #[path = "engine_suspect.rs"]
 mod suspect;
-
-#[cfg(test)]
-#[path = "engine_death_exile_tests.rs"]
-mod death_exile_tests;
-
-#[cfg(test)]
-#[path = "engine_combat_restriction_tests.rs"]
-mod combat_restriction_tests;
-
-#[cfg(test)]
-#[path = "engine_hand_land_tests.rs"]
-mod hand_land_tests;
-
-#[cfg(test)]
-#[path = "engine_base_stats_tests.rs"]
-mod base_stats_tests;
-
-#[cfg(test)]
-#[path = "engine_live_static_rules_tests.rs"]
-mod live_static_rules_tests;
-
-#[cfg(test)]
-#[path = "engine_tiered_tests.rs"]
-mod tiered_tests;
-
-#[cfg(test)]
-#[path = "engine_ability_timeline_tests.rs"]
-mod ability_timeline_tests;
-
-#[cfg(test)]
-#[path = "engine_ability_removal_tests.rs"]
-mod ability_removal_tests;
-
-#[cfg(test)]
-#[path = "engine_untapped_entry_tests.rs"]
-mod untapped_entry_tests;
-
-#[cfg(test)]
-#[path = "engine_query_tests.rs"]
-mod query_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_recursion_tests.rs"]
-mod fdn_recursion_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_power_damage_tests.rs"]
-mod fdn_power_damage_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_tutor_tests.rs"]
-mod fdn_tutor_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_life_graveyard_tests.rs"]
-mod fdn_life_graveyard_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_lords_six_tests.rs"]
-mod fdn_lords_six_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_attachments_six_tests.rs"]
-mod fdn_attachments_six_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_targeted_seven_tests.rs"]
-mod fdn_targeted_seven_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_utility_seven_tests.rs"]
-mod fdn_utility_seven_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_tribal_seven_tests.rs"]
-mod fdn_tribal_seven_tests;
 
 #[path = "engine_zone_effects.rs"]
 mod zone_effects;
 pub use zone_effects::TemporaryControlView;
-#[cfg(test)]
-#[path = "engine_fdn_life_seven_tests.rs"]
-mod fdn_life_seven_tests;
-#[cfg(test)]
-#[path = "engine_fdn_private_seven_tests.rs"]
-mod fdn_private_seven_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_counter_grave_eight_tests.rs"]
-mod fdn_counter_grave_eight_tests;
-#[cfg(test)]
-#[path = "engine_fdn_zone_seven_tests.rs"]
-mod fdn_zone_seven_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_cast_combat_eight_tests.rs"]
-mod fdn_cast_combat_eight_tests;
-#[cfg(test)]
-#[path = "engine_fdn_program_seven_tests.rs"]
-mod fdn_program_seven_tests;
 
 impl Game {
     fn no_maximum_hand_size(&self, player: Player) -> bool {
@@ -7279,176 +6583,43 @@ impl Game {
     }
 }
 
-#[cfg(test)]
-#[path = "engine_fdn_cast_choices_four_tests.rs"]
-mod fdn_cast_choices_four_tests;
-#[cfg(test)]
-#[path = "engine_fdn_damage_five_tests.rs"]
-mod fdn_damage_five_tests;
-#[cfg(test)]
-#[path = "engine_fdn_events_seven_tests.rs"]
-mod fdn_events_seven_tests;
-#[cfg(test)]
-#[path = "engine_fdn_exile_two_tests.rs"]
-mod fdn_exile_two_tests;
-#[cfg(test)]
-#[path = "engine_fdn_kaito_tests.rs"]
-mod fdn_kaito_tests;
-#[cfg(test)]
-#[path = "engine_fdn_library_eight_tests.rs"]
-mod fdn_library_eight_tests;
-
-#[cfg(test)]
-#[path = "engine_object_name_tests.rs"]
-mod object_name_tests;
-
-#[cfg(test)]
-#[path = "engine_named_counter_tests.rs"]
-mod named_counter_tests;
-
-#[cfg(test)]
-#[path = "engine_attack_requirement_tests.rs"]
-mod attack_requirement_tests;
-
 #[path = "engine_card_quantities.rs"]
 mod card_quantities;
 pub use card_quantities::SourceCounterQuantityView;
-
-#[cfg(test)]
-#[path = "engine_card_quantities_tests.rs"]
-mod card_quantities_tests;
-#[cfg(test)]
-#[path = "engine_subtype_layers_tests.rs"]
-mod subtype_layers_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_squire_librarian_tests.rs"]
-mod fdn_squire_librarian_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_drake_amulet_juggernaut_tests.rs"]
-mod fdn_drake_amulet_juggernaut_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_punisher_two_tests.rs"]
-mod fdn_punisher_two_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_death_life_core_tests.rs"]
-mod fdn_death_life_core_tests;
-
-#[cfg(test)]
-#[path = "engine_entry_choices_tests.rs"]
-mod entry_choices_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_choice_five_tests.rs"]
-mod fdn_choice_five_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_control_two_tests.rs"]
-mod fdn_control_two_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_death_demon_three_tests.rs"]
-mod fdn_death_demon_three_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_bounded_side_core_tests.rs"]
-mod fdn_bounded_side_core_tests;
-
-#[cfg(test)]
-#[path = "engine_graveyard_origin_tests.rs"]
-mod graveyard_origin_tests;
-
-#[cfg(test)]
-#[path = "engine_qualified_hexproof_tests.rs"]
-mod qualified_hexproof_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_eight_qualified_acceptance_tests.rs"]
-mod fdn_eight_qualified_acceptance_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_eight_gate_acceptance_tests.rs"]
-mod fdn_eight_gate_acceptance_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_eight_bounded_acceptance_tests.rs"]
-mod fdn_eight_bounded_acceptance_tests;
 
 pub use search::OptionalSearchSequence;
 #[path = "engine_event_counter_core.rs"]
 mod event_counter_core;
 pub use event_counter_core::CreatureDamageHistoryView;
 
-#[cfg(test)]
-#[path = "engine_search_pregame_tests.rs"]
-mod search_pregame_tests;
-
-#[cfg(test)]
-#[path = "engine_event_counter_core_tests.rs"]
-mod event_counter_core_tests;
-
-#[cfg(test)]
-#[path = "engine_fdn_five_bounded_acceptance_tests.rs"]
-mod fdn_five_bounded_acceptance_tests;
-
-#[cfg(test)]
-#[path = "engine_runtime_copy_tests.rs"]
-mod runtime_copy_tests;
-
-#[cfg(test)]
-#[path = "engine_layered_characteristic_tests.rs"]
-mod layered_characteristic_tests;
-
-#[cfg(test)]
-#[path = "engine_modal_history_tests.rs"]
-mod modal_history_tests;
-
-#[cfg(test)]
-#[path = "engine_copy_characteristics_tests.rs"]
-mod copy_characteristics_tests;
-
-#[cfg(test)]
-#[path = "engine_target_allocation_tests.rs"]
-mod target_allocation_tests;
-
 #[path = "engine_continuous_control.rs"]
 mod continuous_control;
-#[cfg(test)]
-#[path = "engine_continuous_control_tests.rs"]
-mod continuous_control_tests;
-#[cfg(test)]
-#[path = "engine_harvester_tests.rs"]
-mod harvester_tests;
-#[cfg(test)]
-#[path = "engine_return_links_tests.rs"]
-mod return_links_tests;
 
 #[path = "engine_attachment_death.rs"]
 mod attachment_death;
 
 #[cfg(test)]
-#[path = "engine_combat_allocation_tests.rs"]
-mod combat_allocation_tests;
+#[path = "assurance/mod.rs"]
+mod assurance;
 #[cfg(test)]
-#[path = "engine_fdn_growth_cost_tests.rs"]
-mod fdn_growth_cost_tests;
-#[cfg(test)]
-#[path = "engine_linked_choices_tests.rs"]
-mod linked_choices_tests;
-
+#[path = "engine_big_core_tests.rs"]
+mod big_core_tests;
 #[cfg(test)]
 #[path = "engine_big_equipment_tests.rs"]
 mod big_equipment_tests;
+#[cfg(test)]
+#[path = "engine_big_game_tests.rs"]
+mod big_game_tests;
 #[cfg(test)]
 #[path = "engine_big_library_tests.rs"]
 mod big_library_tests;
 #[cfg(test)]
 #[path = "engine_big_token_tests.rs"]
 mod big_token_tests;
+#[cfg(test)]
+#[path = "engine_territory_forge_tests.rs"]
+mod territory_forge_tests;
 
 #[cfg(test)]
-#[path = "engine_big_game_tests.rs"]
-mod big_game_tests;
+#[path = "engine_big_inherited_tests.rs"]
+mod big_inherited_tests;

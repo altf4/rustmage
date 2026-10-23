@@ -4,6 +4,7 @@ const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
     fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLYING)],
 }];
 pub(in crate::cards) const RULES: CardRules = CardRules {
+    deck_limit: None,
     effect: Effect::Creature(2, 1),
     keywords: Keywords::FLYING,
     static_groups: GROUPS,

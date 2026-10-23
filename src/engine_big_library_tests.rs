@@ -1,5 +1,5 @@
 //! Whole-card BIG library rules, paid actions and owned branch/restore checks.
-use super::ability_timeline_tests::{cast, checked, named, settle, setup};
+use super::assurance::big_helpers::{cast, checked, named, settle, setup, spawn};
 use super::*;
 fn until(g: &mut Game, stop: impl Fn(&Game) -> bool) {
     g.prepare_triggers();
@@ -102,8 +102,7 @@ fn big_farmer_entry_attack_food_cost_exact_milled_recovery_and_decline_both_seat
             until(&mut g, |g| {
                 matches!(g.state.pending, Pending::EffectChoice { .. })
             });
-            let opponent_food =
-                super::tests::spawn(&mut g, p.other(), token("Food"), Zone::Battlefield);
+            let opponent_food = spawn(&mut g, p.other(), token("Food"), Zone::Battlefield);
             let bad = g.object_ref(opponent_food);
             reject(&mut g, Action::Sacrifice { object: bad });
             if pay {
@@ -144,8 +143,8 @@ fn big_fomori_external_discard_dynamic_artifacts_private_pick_and_random_bottom(
         let mut g = setup(p);
         let vault = named(&mut g, p, "Fomori Vault", Zone::Battlefield);
         let discard = named(&mut g, p, "Forest", Zone::Hand);
-        super::tests::spawn(&mut g, p, token("Food"), Zone::Battlefield);
-        let second = super::tests::spawn(&mut g, p, token("Food"), Zone::Battlefield);
+        spawn(&mut g, p, token("Food"), Zone::Battlefield);
+        let second = spawn(&mut g, p, token("Food"), Zone::Battlefield);
         let chosen = named(&mut g, p, "Grizzly Bears", Zone::Library);
         let rest = named(&mut g, p, "Giant Growth", Zone::Library);
         checked(
@@ -164,7 +163,7 @@ fn big_fomori_external_discard_dynamic_artifacts_private_pick_and_random_bottom(
         assert_eq!(g.object_view(vault).zone, Zone::Battlefield);
         assert!(g.object_view(vault).tapped);
         // X is evaluated at resolution, after a third artifact appears.
-        super::tests::spawn(&mut g, p, token("Food"), Zone::Battlefield);
+        spawn(&mut g, p, token("Food"), Zone::Battlefield);
         until(&mut g, |g| {
             matches!(g.state.pending, Pending::EffectLibrarySelection { .. })
         });
@@ -184,7 +183,7 @@ fn big_loot_counts_other_nonland_types_and_permission_survives_source() {
         let loot = named(&mut g, p, "Loot, the Key to Everything", Zone::Battlefield);
         named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
         named(&mut g, p, "Omenpath Journey", Zone::Battlefield);
-        super::tests::spawn(&mut g, p, token("Food"), Zone::Battlefield);
+        spawn(&mut g, p, token("Food"), Zone::Battlefield);
         named(&mut g, p, "Forest", Zone::Battlefield);
         let count = g.state.players[p.index()].library.len();
         start_step(&mut g, p, Step::Upkeep);
@@ -406,7 +405,7 @@ fn big_font_chooses_token_on_resolution_and_pays_three_distinct_token_names_atom
             settle(&mut g);
             assert_eq!(tokens(&g, p, subtype).len(), 1);
         }
-        let duplicate = super::tests::spawn(&mut g, p, token("Food"), Zone::Battlefield);
+        let duplicate = spawn(&mut g, p, token("Food"), Zone::Battlefield);
         g.state.objects[font as usize].tapped = false;
         let chosen = [
             tokens(&g, p, "Blood")[0],
@@ -457,12 +456,12 @@ fn big_font_chooses_token_on_resolution_and_pays_three_distinct_token_names_atom
 fn big_font_sorcery_timing_and_funding_cannot_spend_a_reserved_sacrifice_token() {
     let mut g = setup(Player::P0);
     let font = named(&mut g, Player::P0, "Transmutation Font", Zone::Battlefield);
-    super::tests::spawn(&mut g, Player::P0, token("Blood"), Zone::Battlefield);
-    super::tests::spawn(&mut g, Player::P0, token("Food"), Zone::Battlefield);
+    spawn(&mut g, Player::P0, token("Blood"), Zone::Battlefield);
+    spawn(&mut g, Player::P0, token("Food"), Zone::Battlefield);
     let treasure = Card::catalogue()
         .find(|c| c.token_info().is_some_and(|t| t.subtypes == "Treasure"))
         .unwrap();
-    super::tests::spawn(&mut g, Player::P0, treasure, Zone::Battlefield);
+    spawn(&mut g, Player::P0, treasure, Zone::Battlefield);
     named(&mut g, Player::P0, "Forest", Zone::Battlefield);
     named(&mut g, Player::P0, "Island", Zone::Battlefield);
     g.state.players[0].mana = [0; 6];
@@ -557,7 +556,7 @@ fn big_font_helm_adds_map_to_chosen_token_event_and_map_can_pay_distinct_cost() 
         settle(&mut g);
         assert_eq!(tokens(&g, p, "Blood").len(), 1);
         assert_eq!(tokens(&g, p, "Map").len(), 1);
-        let food = super::tests::spawn(&mut g, p, token("Food"), Zone::Battlefield);
+        let food = spawn(&mut g, p, token("Food"), Zone::Battlefield);
         let blood = tokens(&g, p, "Blood")[0];
         let map = tokens(&g, p, "Map")[0];
         g.state.objects[font as usize].tapped = false;

@@ -18,6 +18,9 @@ debug = false
 incremental = false
 
 [profile.test]
+# Rules scenarios need fast execution without release LTO or full optimization.
+opt-level = 1
+lto = false
 debug = false
 incremental = false
 

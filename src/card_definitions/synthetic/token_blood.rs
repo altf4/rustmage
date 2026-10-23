@@ -1,4 +1,5 @@
 pub(in crate::cards) const RULES: CardRules = CardRules {
+    deck_limit: None,
     effect: Effect::Permanent,
     activated: &[ActivatedAbility {
         exhaust: false,

@@ -1,51 +1,74 @@
 # Continuous integration
 
-The **CI** workflow runs on pull requests using one `ubuntu-24.04` VM and Rust
-1.98.0. Code changes run formatting, pinned-source provenance checks, strict
-Clippy, every native test target (including Foundations full games), a release
-build, the existing benchmark smoke workload, and seven Python smoke tests.
-The Python checks cover schema agreement, handle lifecycle, card admission,
-invalid input, hidden observations, stale actions, independent branches,
-snapshot restore and a complete game. Existing tests are selected by name in
-`scripts/python_tests.py`.
+The **CI** workflow runs card and interaction assurance on pull requests with one
+Ubuntu 24.04 runner and Rust 1.98.0. Markdown-only and LICENSE changes run a
+whitespace check without compilation. New commits cancel superseded runs for the
+same PR. There is one native library test executable and one small Python API
+suite; no full-game discovery suite or build matrix runs on every change.
 
-Changes containing only Markdown or LICENSE run a whitespace check and skip
-compilation. Machine-read provenance JSON under docs/ still runs the full job. New
-commits cancel superseded runs for the same PR. The normal job timeout is 25
-minutes, with a 20-minute validation-step limit to leave room for diagnostics.
-There is no duplicate push workflow or platform matrix.
+Validation checks generated catalogue linkage, pinned Oracle metadata and unique
+XMage source hashes before compilation. XMage is fetched at the inventory's
+pinned revision, but its working tree is not checked out and Java is not built.
+One `git cat-file` process verifies the distinct source blobs referenced by card
+provenance and shared dependencies, rather than repeatedly hashing the same
+sources through separate development-era test modules.
 
-All compilation and Python simulations use `scripts/resource_guard.py`. The
-runner initializes a systemd user manager, then verifies the existing 6 GiB
-parent/child cgroup limits, no swap, one Cargo job, one test thread, and serialized
-builds. No allocation probes deliberately trigger the OOM killer. A runner that
-cannot enforce those constraints fails before compilation. XMage is fetched at
-the inventory's pinned revision for provenance tests; Java is not compiled.
+The compiled phases are formatting, strict Clippy on all targets, the optimized
+library test build, production release library/benchmark build, and the Python
+API checks against that exact release library. The test profile uses optimization
+level 1 without LTO. `cargo test --lib --no-run` builds the native suite once;
+the runner then invokes exact scenarios from that binary, records each duration,
+and fails on the first unsuccessful scenario. Production release optimization
+and thin LTO remain unchanged.
 
-To measure the full Python suite, open **Actions → CI → Run workflow** and select
-`full` for `python_suite`. This manual job runs native validation plus full Python
-discovery with a 50-minute validation-step limit and 60-minute job ceiling. Full Python tests never run automatically.
-Each test writes a flushed start/finish timing record, so an interrupted run
-still identifies the unfinished test. An always-run cleanup stops remaining
-systemd build processes before collecting diagnostics. Until this suite is measured, its total
-runtime and current passing status remain unverified.
+Runtime limits are explicit:
 
-CI retains diagnostic logs, resource reports, validation results and Python
-timings as `ci-diagnostics-*` artifacts for seven days, including on failure.
-It caches downloaded Cargo dependencies, not build outputs or shared libraries.
-The validator cleans completed disposable outputs and preserves its exact
-shared libraries for the lifetime of the VM. Benchmark timings are diagnostic,
-not performance pass/fail thresholds on shared runners.
+| Work | Wall-clock limit |
+| --- | ---: |
+| One native scenario | 10 seconds |
+| All native scenario execution | 30 seconds |
+| Python API execution / worker wall timeout | 5 / 15 seconds |
+| One test or release compilation phase | 6 minutes |
+| Validator, including all builds | 9 minutes in CI |
+| Validation step | 10 minutes |
+| Entire job, including setup and diagnostics | 12 minutes |
 
-The same commands work locally:
+The local validator defaults to a 10-minute overall budget. Build time and test
+execution time are reported separately. These ceilings are failure limits, not
+promised runtimes. Use the measured phase durations in the retained report to
+identify regressions; shared GitHub runners are unsuitable for tight
+millisecond-level timing assertions. The release benchmark runs ten seeded
+games by default and records simulation decisions/second and games/second. It
+provides a small diagnostic sample rather than a statistical performance claim.
+
+All compilation and simulations enter `scripts/resource_guard.py`. Its shared
+build lock, one Cargo job/test thread, 6 GiB parent/child cgroup and no-swap policy
+remain enforced. A runner without those limits fails closed. Routine checks do
+not allocate memory merely to trigger the OOM killer. Timeout handling stops
+and reaps the command tree before disposable outputs are cleaned; an always-run
+CI step also stops the systemd build slice on cancellation.
+
+Logs, flushed per-scenario JSONL events, JSON phase reports and resource reports
+remain under `~/.cache`. CI uploads them as `ci-diagnostics-*` artifacts for seven
+days, including failures. Only Cargo downloads are cached. Completed disposable
+build products are removed while every shared library is retained at its exact
+path and verified SHA-256 for the lifetime of the runner.
+
+Reproduce the CI workload locally:
 
 ```sh
-python3 scripts/validate.py --release --python smoke
-# Opt in to the potentially long full Python suite:
-python3 scripts/validate.py --release --python full
+python3 scripts/link_catalogue.py
+python3 scripts/validate.py --release --python smoke --timeout 540
 ```
 
-The binding accepts `RUSTMAGE_LIBRARY` to select a built library. An explicit
-`Game(..., library=...)` overrides it; without either, the normal
-`target/release` location is used. The validator supplies its own library path,
-including to tests that start child Python processes.
+For native changes without a binding or release-build check:
+
+```sh
+python3 scripts/validate.py
+```
+
+`RUSTMAGE_XMAGE_SOURCE` selects a relocated pinned-source repository; otherwise
+the sibling `mage` repository is discovered. `RUSTMAGE_LIBRARY` selects a built
+binding library, and explicit `Game(..., library=...)` takes precedence. The
+validator supplies the exact library from its own run to Python and its children.
+Do not edit input sources while a consuming validation job is still running.

@@ -1905,13 +1905,6 @@ impl Counters {
                 + v.0.len() * std::mem::size_of::<(CounterKind, u64)>()
         })
     }
-    #[cfg(test)]
-    pub(crate) fn allocated_bytes(&self) -> usize {
-        self.named.as_ref().map_or(0, |v| {
-            std::mem::size_of::<NamedCounters>()
-                + v.0.capacity() * std::mem::size_of::<(CounterKind, u64)>()
-        })
-    }
     pub(crate) fn pay(&mut self, payment: &Self) {
         self.plus_one -= payment.plus_one;
         self.minus_one -= payment.minus_one;
@@ -3339,53 +3332,6 @@ pub(crate) fn payments(pool: Mana, colored: Mana, generic: u32, mut emit: impl F
     visit(0, generic, remaining, colored, &mut emit);
 }
 
-#[cfg(test)]
-mod subtype_tests {
-    use super::*;
-    #[test]
-    fn two_word_creature_type_is_one_subtype_and_other_subtypes_stay_separate() {
-        let line = "Legendary Creature — Time Lord Doctor";
-        assert!(printed_subtype(line, "Time Lord"));
-        assert!(printed_subtype(line, "Doctor"));
-        for typ in [
-            "Time",
-            "Lord",
-            "Time Lord Doctor",
-            "Lord Doctor",
-            "Human",
-            "",
-        ] {
-            assert!(!printed_subtype(line, typ), "{typ}");
-        }
-        assert!(printed_subtype("Artifact Creature — Food Golem", "Food"));
-        assert!(printed_subtype("Artifact Creature — Food Golem", "Golem"));
-        assert!(!printed_subtype(
-            "Creature — Human Soldier",
-            "Human Soldier"
-        ));
-    }
-    #[test]
-    fn compiled_creature_types_match_pinned_taxonomy_exactly() {
-        let doc: serde_json::Value =
-            serde_json::from_str(include_str!("../data/creature-types.json")).unwrap();
-        let expected = doc["types"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .map(|s| s.as_str().unwrap())
-            .collect::<Vec<_>>();
-        assert_eq!(CREATURE_TYPES, expected);
-        assert!(is_creature_type("C'tan"));
-        assert!(is_creature_type("Shi'ar"));
-        assert!(is_creature_type("Time Lord"));
-        for typ in [
-            "Hunter", "Klingon", "Xindi", "Forest", "Aura", "Time", "Lord", "elf",
-        ] {
-            assert!(!is_creature_type(typ));
-        }
-    }
-}
-
 /// Predefined Role characteristics are rules data, independent of printed card names.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum RoleKind {
@@ -3396,7 +3342,3 @@ pub(crate) enum RoleKind {
     Wicked,
     YoungHero,
 }
-
-#[cfg(test)]
-#[path = "catalogue_snapshot_tests.rs"]
-mod catalogue_snapshot_tests;

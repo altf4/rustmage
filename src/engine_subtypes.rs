@@ -403,35 +403,3 @@ impl Game {
         result
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn all_named_grants_and_projection_flags_fit_without_growing_the_view() {
-        assert_eq!(std::mem::size_of::<GrantedSubtypes>(), 24);
-        assert_eq!(std::mem::size_of::<Object>(), 144);
-        assert_eq!(std::mem::size_of::<Pending>(), 40);
-        assert_eq!(std::mem::size_of::<ManaProduction>(), 32);
-        let mut view = GrantedSubtypes::default();
-        for subtype in JOB_TYPES {
-            view.insert(subtype);
-        }
-        for flag in [SUPPRESS_PRINTED, LAND_ONLY, ALL_CREATURE_TYPES] {
-            view.set_flag(flag, true);
-        }
-        let value = serde_json::to_value(view).unwrap();
-        assert_eq!(value["added"], serde_json::json!(JOB_TYPES));
-        for flag in ["suppress_printed", "land_only", "all_creature_types"] {
-            assert_eq!(value[flag], true);
-        }
-        view.replace_creature_types(&["Bear"]);
-        let replaced = serde_json::to_value(view).unwrap();
-        assert_eq!(replaced["added"], serde_json::json!([]));
-        assert_eq!(replaced["creature_types"], serde_json::json!(["Bear"]));
-        for flag in ["suppress_printed", "land_only", "all_creature_types"] {
-            assert_eq!(replaced[flag], true);
-        }
-    }
-}

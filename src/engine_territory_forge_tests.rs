@@ -1,6 +1,6 @@
 //! Paid inherited abilities keep the Forge's source identity and exact linked exile.
-use super::ability_timeline_tests::{cast, checked, next_turn, settle, setup};
-use super::tests::spawn;
+use super::assurance::big_helpers::spawn;
+use super::assurance::big_helpers::{cast, checked, next_turn, settle, setup};
 use super::*;
 fn fixture(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
     spawn(g, p, Card::from_name(name).unwrap(), zone)

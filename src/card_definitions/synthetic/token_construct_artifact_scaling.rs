@@ -21,6 +21,7 @@ const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
     fragments: &[StaticAbilityFragment::ScalingModifier(0, MODIFIER)],
 }];
 pub(in crate::cards) const RULES: CardRules = CardRules {
+    deck_limit: None,
     effect: Effect::Creature(0, 0),
     static_groups: GROUPS,
     extras: &CardExtras {

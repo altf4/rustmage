@@ -1,5 +1,5 @@
 //! BIG tokens exercise paid legal actions, exact incarnations and owned continuations.
-use super::ability_timeline_tests::{cast, checked, named, settle, setup};
+use super::assurance::big_helpers::{cast, checked, named, settle, setup};
 use super::*;
 
 fn enter(g: &mut Game, p: Player, name: &str) -> CardId {

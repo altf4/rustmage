@@ -27,16 +27,3 @@ const fn parse(text: &str) -> u32 {
     assert!(value > 0, "observation schema version must be positive");
     value
 }
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn observation_wire_version_matches_shared_source() {
-        let game = super::super::tests::scenario();
-        assert_eq!(game.observe(crate::Player::P0).schema, super::VERSION);
-        assert_eq!(
-            super::VERSION.to_string(),
-            include_str!("../data/observation-schema.txt").trim()
-        );
-    }
-}

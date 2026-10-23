@@ -1,6 +1,6 @@
 //! Paid interactions for the Big Score's mana, lock, and zone-replacement cards.
-use super::ability_timeline_tests::{cast, checked, next_turn, settle, setup};
-use super::tests::spawn;
+use super::assurance::big_helpers::spawn;
+use super::assurance::big_helpers::{cast, checked, next_turn, settle, setup};
 use super::*;
 use crate::cards::ChoiceColor;
 

@@ -849,29 +849,7 @@ impl Game {
         self.record_cast(caster, card, Some(self.state.stack.len() - 1));
     }
 
-    #[cfg(test)]
-    pub(super) fn record_spell_cast(&mut self, caster: Player, card: Card) {
-        self.record_cast(caster, card, None);
-    }
-
     /// CR115.9b: inspect the current expected zone/incarnation; never use target LKI.
-    #[cfg(test)]
-    pub(super) fn cast_filter_matches(
-        &self,
-        filter: CastFilter,
-        card: Card,
-        source: &ObjectView,
-        targets: &[BoundTarget],
-    ) -> bool {
-        self.cast_filter_matches_value(
-            filter,
-            card,
-            card.fixed_mana_value(),
-            source.controller,
-            source,
-            targets,
-        )
-    }
     fn cast_filter_matches_value(
         &self,
         filter: CastFilter,
@@ -1203,11 +1181,6 @@ impl Game {
                 self.queue_trigger_from(&source, index, Some(event));
             }
         }
-    }
-
-    #[cfg(test)]
-    pub(super) fn attack_triggers(&mut self, source: &ObjectView) {
-        self.attack_triggers_for_declaration(source, 1, true);
     }
 
     pub(super) fn attack_triggers_for_declaration(

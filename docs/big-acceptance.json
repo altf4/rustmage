@@ -1,0 +1,360 @@
+{
+  "schema": 1,
+  "set": "BIG",
+  "membership": "data/sets/big.json",
+  "total_cards": 30,
+  "newly_supported_cards": 25,
+  "inherited_verified_cards": 5,
+  "remaining_big_obligations": [],
+  "standard_goal": "open; other gated cards and all-pool interactions/performance remain",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "tracking_issue": 469,
+  "pull_request": 470,
+  "observation_schema": 132,
+  "focused_cases": {
+    "src/engine_big_core_tests.rs": [
+      "big_cornucopia_decline_colored_amount_once_resolution_and_reentry",
+      "big_rest_in_peace_entry_every_zone_tokens_and_own_departure",
+      "big_abolisher_stops_opposing_spell_and_mana_abilities_allows_lands_and_releases",
+      "big_vista_paid_entry_chosen_color_and_distinct_monocolor_mana_in_funding",
+      "big_memory_vessel_exile_cost_separate_owners_hand_lock_and_exact_deadline",
+      "big_cornucopia_two_waiting_triggers_only_one_accepted_resolution",
+      "big_vista_mana_queries_use_owned_speculative_departures_without_touching_parent",
+      "big_rest_in_peace_freezes_simultaneous_departures_and_competing_shuffle"
+    ],
+    "src/engine_big_equipment_tests.rs": [
+      "big_lotus_ring_grants_paid_sacrifice_mana_and_funding_tracks_departure",
+      "big_lost_jitte_combat_batch_charge_cost_all_three_choices_and_atomicity",
+      "big_sword_protection_prevents_targeting_and_damage_and_delays_one_spell_copy",
+      "big_generous_plunderer_optional_reflexive_tapped_treasure_and_attack_count",
+      "big_esoteric_sacrifice_uses_saved_recipe_and_source_independent_next_end_copy",
+      "big_lotus_vista_funding_recomputes_monocolor_after_virtual_sacrifice",
+      "big_esoteric_tracks_simultaneous_artifact_sacrifices_replaced_by_exile"
+    ],
+    "src/engine_big_game_tests.rs": [
+      "big_complete_games_pairing_zero_replay_owned_search",
+      "big_complete_games_pairing_one_replay_owned_search",
+      "big_complete_games_pairing_two_replay_owned_search",
+      "big_complete_games_pairing_three_replay_owned_search"
+    ],
+    "src/engine_big_inherited_tests.rs": [
+      "big_inherited_harvester_paid_sweep_discard_duration_and_menace_block_legality",
+      "big_inherited_investigator_opponent_discard_clue_cost_and_once_each_turn",
+      "big_inherited_extruder_any_target_and_paid_other_artifact_golem",
+      "big_inherited_pest_control_nonland_threshold_both_seats_and_cycling_two",
+      "big_inherited_torpor_orb_suppresses_creature_entries_and_other_listeners_only"
+    ],
+    "src/engine_big_library_tests.rs": [
+      "big_farmer_entry_attack_food_cost_exact_milled_recovery_and_decline_both_seats",
+      "big_fomori_external_discard_dynamic_artifacts_private_pick_and_random_bottom",
+      "big_loot_counts_other_nonland_types_and_permission_survives_source",
+      "big_omenpath_distinct_names_private_search_linked_random_tapped_and_new_incarnation",
+      "big_nexus_private_optional_hand_exile_and_copiable_golem_exceptions",
+      "big_cage_private_hideaway_coven_after_counter_and_free_cast_both_seats",
+      "big_cage_historical_controllers_can_look_after_control_and_source_departure",
+      "big_font_chooses_token_on_resolution_and_pays_three_distinct_token_names_atomically",
+      "big_font_sorcery_timing_and_funding_cannot_spend_a_reserved_sacrifice_token",
+      "big_cage_free_land_keeps_tarnation_color_choice_and_obeys_land_allowance",
+      "big_font_helm_adds_map_to_chosen_token_event_and_map_can_pay_distinct_cost"
+    ],
+    "src/engine_big_token_tests.rs": [
+      "salvager_enters_then_counts_only_current_controlled_creature_tokens",
+      "oltec_modes_copy_only_owned_artifact_tokens_and_copy_keeps_name",
+      "helm_adds_one_map_per_artifact_creation_event_and_copies_maps",
+      "molten_copies_added_artifact_type_but_temporary_haste_and_delayed_sacrifice_are_not_copiable",
+      "tyrant_observes_self_and_four_power_entries_then_copies_only_nontoken_death",
+      "synthesizer_checks_artifact_mana_threshold_and_construct_bonus_tracks_artifact_world",
+      "gambit_leaves_from_any_destination_and_all_penalties_use_departing_controller",
+      "fixed_golem_copy_removes_pt_cda_and_retains_other_subtypes_through_copying",
+      "molten_target_must_remain_legal_and_control_transfer_prevents_delayed_sacrifice",
+      "blood_token_uses_separate_discard_and_sacrifice_costs",
+      "molten_postcreation_haste_and_delayed_sacrifice_also_apply_to_helm_maps",
+      "artifact_copy_exceptions_participate_in_dragon_replacement"
+    ],
+    "src/engine_territory_forge_tests.rs": [
+      "territory_forge_paid_intrinsic_land_mana_funding_exact_departure_and_abolisher",
+      "territory_forge_inherited_sacrifice_draw_and_target_costs_use_actual_source_lki",
+      "territory_forge_acquired_counter_costs_do_not_inherit_static_or_triggered_abilities",
+      "territory_forge_once_per_turn_exhaust_and_new_incarnations_have_sparse_usage",
+      "territory_forge_no_cast_entry_and_source_departure_do_not_rebind_links",
+      "territory_forge_more_than_sixty_four_acquired_abilities_never_alias_usage",
+      "territory_forge_inherited_amulet_uses_actual_soul_counter_lki_after_sacrifice",
+      "territory_forge_goggles_mana_preserves_borrowed_rider_definition_and_actual_source",
+      "territory_forge_courtyard_mana_has_no_inherited_creature_type_choice",
+      "territory_forge_inherited_saddle_does_not_inherit_mount_trigger"
+    ]
+  },
+  "native_assurance": {
+    "passed": 91,
+    "failed": 0,
+    "ignored": 0,
+    "execution_seconds": 2.1,
+    "log": "<cache>/rustmage-big-assurance-final-focused-2.log"
+  },
+  "games": {
+    "episodes": [
+      {
+        "cards_activated": [
+          "Clue Token",
+          "Food Token",
+          "Harvester of Misery",
+          "Legion Extruder",
+          "Lost Jitte",
+          "Lotus Ring",
+          "Memory Vessel"
+        ],
+        "cards_cast": [
+          "Ancient Cornucopia",
+          "Bristlebud Farmer",
+          "Generous Plunderer",
+          "Grand Abolisher",
+          "Greed's Gambit",
+          "Hostile Investigator",
+          "Legion Extruder",
+          "Loot, the Key to Everything",
+          "Lost Jitte",
+          "Lotus Ring",
+          "Memory Vessel",
+          "Molten Duplication",
+          "Nexus of Becoming",
+          "Omenpath Journey",
+          "Territory Forge",
+          "Vaultborn Tyrant"
+        ],
+        "decisions": 2653,
+        "decisions_per_second": 4100.846210774898,
+        "deck_pair": 1,
+        "excludes": "model inference, exhaustive choice coverage",
+        "games": 3,
+        "games_per_second": 4.637217727977646,
+        "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+        "outcomes": [
+          {
+            "decisions": 718,
+            "deck": 1,
+            "outcome": {
+              "Winner": "P1"
+            },
+            "seed": 56710
+          },
+          {
+            "decisions": 1134,
+            "deck": 1,
+            "outcome": {
+              "Winner": "P1"
+            },
+            "seed": 56711
+          },
+          {
+            "decisions": 801,
+            "deck": 1,
+            "outcome": {
+              "Winner": "P1"
+            },
+            "seed": 56712
+          }
+        ],
+        "seconds": 0.646939647,
+        "spell_colors_mask": 31
+      },
+      {
+        "cards_activated": [
+          "Collector's Cage",
+          "Esoteric Duplicator",
+          "Food Token",
+          "Harvester of Misery",
+          "Map Token",
+          "Pest Control",
+          "Sandstorm Salvager",
+          "Transmutation Font",
+          "Worldwalker Helm"
+        ],
+        "cards_cast": [
+          "Ancient Cornucopia",
+          "Collector's Cage",
+          "Esoteric Duplicator",
+          "Generous Plunderer",
+          "Oltec Matterweaver",
+          "Rest in Peace",
+          "Sandstorm Salvager",
+          "Sword of Wealth and Power",
+          "Torpor Orb",
+          "Transmutation Font",
+          "Vaultborn Tyrant",
+          "Worldwalker Helm"
+        ],
+        "decisions": 1858,
+        "decisions_per_second": 10645.636908058756,
+        "deck_pair": 3,
+        "excludes": "model inference, exhaustive choice coverage",
+        "games": 3,
+        "games_per_second": 17.18886476005181,
+        "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+        "outcomes": [
+          {
+            "decisions": 1017,
+            "deck": 3,
+            "outcome": {
+              "Winner": "P0"
+            },
+            "seed": 56710
+          },
+          {
+            "decisions": 354,
+            "deck": 3,
+            "outcome": {
+              "Winner": "P1"
+            },
+            "seed": 56711
+          },
+          {
+            "decisions": 487,
+            "deck": 3,
+            "outcome": {
+              "Winner": "P0"
+            },
+            "seed": 56712
+          }
+        ],
+        "seconds": 0.174531596,
+        "spell_colors_mask": 27
+      },
+      {
+        "cards_activated": [
+          "Food Token",
+          "Harvester of Misery",
+          "Pest Control",
+          "Sandstorm Salvager"
+        ],
+        "cards_cast": [
+          "Ancient Cornucopia",
+          "Bristlebud Farmer",
+          "Generous Plunderer",
+          "Grand Abolisher",
+          "Loot, the Key to Everything",
+          "Nexus of Becoming",
+          "Oltec Matterweaver",
+          "Omenpath Journey",
+          "Rest in Peace",
+          "Sandstorm Salvager",
+          "Territory Forge",
+          "Torpor Orb",
+          "Vaultborn Tyrant"
+        ],
+        "decisions": 2822,
+        "decisions_per_second": 5989.237560826336,
+        "deck_pair": 2,
+        "excludes": "model inference, exhaustive choice coverage",
+        "games": 3,
+        "games_per_second": 6.367013707469528,
+        "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+        "outcomes": [
+          {
+            "decisions": 655,
+            "deck": 2,
+            "outcome": {
+              "Winner": "P0"
+            },
+            "seed": 56710
+          },
+          {
+            "decisions": 1271,
+            "deck": 2,
+            "outcome": {
+              "Winner": "P0"
+            },
+            "seed": 56711
+          },
+          {
+            "decisions": 896,
+            "deck": 2,
+            "outcome": {
+              "Winner": "P0"
+            },
+            "seed": 56712
+          }
+        ],
+        "seconds": 0.471178505,
+        "spell_colors_mask": 27
+      },
+      {
+        "cards_activated": [
+          "Fomori Vault",
+          "Food Token",
+          "Harvester of Misery",
+          "Legion Extruder",
+          "Lost Jitte",
+          "Memory Vessel",
+          "Sandstorm Salvager",
+          "Transmutation Font"
+        ],
+        "cards_cast": [
+          "Collector's Cage",
+          "Generous Plunderer",
+          "Greed's Gambit",
+          "Hostile Investigator",
+          "Legion Extruder",
+          "Lost Jitte",
+          "Lotus Ring",
+          "Memory Vessel",
+          "Molten Duplication",
+          "Sandstorm Salvager",
+          "Simulacrum Synthesizer",
+          "Sword of Wealth and Power",
+          "Transmutation Font",
+          "Worldwalker Helm"
+        ],
+        "decisions": 1455,
+        "decisions_per_second": 14155.405611813754,
+        "deck_pair": 0,
+        "excludes": "model inference, exhaustive choice coverage",
+        "games": 3,
+        "games_per_second": 29.186403323327326,
+        "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+        "outcomes": [
+          {
+            "decisions": 498,
+            "deck": 0,
+            "outcome": {
+              "Winner": "P1"
+            },
+            "seed": 56710
+          },
+          {
+            "decisions": 506,
+            "deck": 0,
+            "outcome": {
+              "Winner": "P0"
+            },
+            "seed": 56711
+          },
+          {
+            "decisions": 451,
+            "deck": 0,
+            "outcome": {
+              "Winner": "P1"
+            },
+            "seed": 56712
+          }
+        ],
+        "seconds": 0.102787588,
+        "spell_colors_mask": 31
+      }
+    ],
+    "total_games": 12,
+    "total_decisions": 8788,
+    "execution_seconds": 1.395437336,
+    "games_per_second": 8.599454587045678,
+    "decisions_per_second": 6297.667242579784,
+    "profile": "Cargo test opt-level=1, single test thread; includes complete replay and sampled owned branch/restore/observation assertions",
+    "acceptance": "natural terminal outcomes; all five colors; all 30 BIG identities in Standard-legal 60-card deck pool; only basic lands from outside BIG; fixed seeds and 2048-action ceiling"
+  },
+  "trace_review": {
+    "existing_rows": 2196,
+    "existing_semantic_changes": 0,
+    "existing_observation_only_changes": 2196,
+    "new_completed_big_rows": 25,
+    "max_new_actions": 8,
+    "explanation": "schema 132 adds borrowed ability and delayed artifact copy observations; all existing journals/counts/roots/status/zones unchanged"
+  }
+}
