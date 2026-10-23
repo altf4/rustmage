@@ -221,6 +221,27 @@ fn tmt_final_don_grants_expire_and_copies_do_not_consume() {
     assert!(g.observe(p).next_spell_affinities.is_empty());
 }
 #[test]
+fn tmt_final_krang_intrinsic_affinity_does_not_reduce_later_spells() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        for _ in 0..6 {
+            named(&mut g, p, "Hedron Archive", Zone::Battlefield);
+        }
+        g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 0];
+        let krang = paid(&mut g, p, "Krang, Master Mind");
+        settle(&mut g);
+        let archive = named(&mut g, p, "Hedron Archive", Zone::Hand);
+        assert_eq!(g.spell_reduction(p, archive), 0);
+        g.state.players[p.index()].mana = [4, 0, 0, 0, 0, 0];
+        checked(&mut g, Action::AnnounceCast { card: archive });
+        finish(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        settle(&mut g);
+        assert!(g.on_battlefield(archive));
+        assert_eq!(g.stats(krang).power, 8);
+    }
+}
+#[test]
 fn tmt_final_krang_affinity_other_artifact_power_and_hand_intervening_if() {
     for p in [Player::P0, Player::P1] {
         for hand in [0, 2, 4, 6] {

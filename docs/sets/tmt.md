@@ -816,3 +816,11 @@ both-seat paid Mikey scenario proving sibling hidden-next-card changes cannot
 affect observations or scoring. [Fix evidence](tmt-library-policy-fix.json)
 preserves the failure and focused pass. Complete validation is rerun with test
 output enabled so successful game metrics are retained directly.
+
+The second release attempt passed all 3,747 library tests, then failed in a
+forest/artifact theme game when Krang's intrinsic affinity was queried as a
+battlefield reduction. The generic reducer now excludes intrinsic rules before
+requesting a continuous group identity. Both-seat paid Krang/subsequent-spell
+regressions and all four short natural matchup replays pass.
+[Diagnostic and repair evidence](tmt-krang-query-fix.json) preserves both failed
+combined attempts; full acceptance and final reviews remain pending.

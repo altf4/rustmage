@@ -389,9 +389,14 @@ impl Game {
                 continue;
             }
             for (index, rule) in object.card.cost_reductions().iter().enumerate() {
+                // Intrinsic reductions apply only while casting their own card,
+                // and have no continuous battlefield source-group identity.
+                if rule.source_only {
+                    continue;
+                }
                 if !self.continuous_fragment_available(source, |fragment| matches!(fragment,
                     crate::cards::StaticAbilityFragment::CostReduction(slot, _) if usize::from(*slot) == index)) { continue; }
-                if !rule.source_only && applies(rule, source) {
+                if applies(rule, source) {
                     reduction = reduction.saturating_add(amount(rule, source));
                 }
             }
